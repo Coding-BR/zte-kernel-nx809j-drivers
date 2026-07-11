@@ -92,7 +92,7 @@ echo "[build] Writing log to $BUILD_LOG"
     touch "$KERNEL_DIR/protected_module_names_list"
   fi
 
-  export KBUILD_BUILD_USER=kleaf
+  export KBUILD_BUILD_USER=curator
   export KBUILD_BUILD_HOST=build-host
   export KBUILD_BUILD_VERSION=1
   export KBUILD_BUILD_TIMESTAMP="Wed Jul  9 10:22:53 UTC 2025"
