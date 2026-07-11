@@ -68,7 +68,7 @@ time.sleep(2)
 
 # === STEP A: Check which kernel is running ===
 print("\n=== KERNEL VERSION ===")
-r = subprocess.run(["adb", "shell", "uname", "-a"], capture_output=True)
+r = subprocess.run(["adb", "shell", "cat /proc/version"], capture_output=True)
 stdout = r.stdout.decode('utf-8', errors='replace')
 print(stdout.strip())
 running_our_kernel = "curator" in stdout  # our kernel build user is curator
