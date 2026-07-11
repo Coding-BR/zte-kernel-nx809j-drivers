@@ -1,0 +1,163 @@
+{
+  "compile_unit": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\09_init\\compile_probe.c",
+    "sha256": "33dcd482d6bf71c735f0ec44718eae464fd3306f2dd3cfffbc459bd520057e6b"
+  },
+  "compiler": {
+    "clang_revision": "clang-r536225",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir:/work/curated",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "/work/toolchains/clang-r536225/bin/clang",
+      "-c",
+      "--target=aarch64-linux-gnu",
+      "-nostdinc",
+      "-D__KERNEL__",
+      "-DMODULE",
+      "-DKBUILD_MODFILE=\"zte_ir_microtask\"",
+      "-DKBUILD_BASENAME=\"compile_probe\"",
+      "-DKBUILD_MODNAME=\"zte_ir_microtask\"",
+      "-D__KBUILD_MODNAME=kmod_zte_ir_microtask",
+      "-std=gnu11",
+      "-O2",
+      "-fshort-wchar",
+      "-funsigned-char",
+      "-fno-common",
+      "-fno-PIE",
+      "-fno-strict-aliasing",
+      "-fno-strict-overflow",
+      "-fno-delete-null-pointer-checks",
+      "-ftrivial-auto-var-init=zero",
+      "-fstrict-flex-arrays=3",
+      "-fstack-protector-strong",
+      "-fno-omit-frame-pointer",
+      "-fno-optimize-sibling-calls",
+      "-mgeneral-regs-only",
+      "-mbranch-protection=pac-ret",
+      "-mstack-protector-guard=sysreg",
+      "-mstack-protector-guard-reg=sp_el0",
+      "-mstack-protector-guard-offset=1808",
+      "-ffixed-x18",
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers",
+      "-falign-functions=4",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-sign-compare",
+      "-Wno-unused-function",
+      "-Wno-unused-parameter",
+      "-I./arch/arm64/include",
+      "-I./arch/arm64/include/generated",
+      "-I./include",
+      "-I./arch/arm64/include/uapi",
+      "-I./arch/arm64/include/generated/uapi",
+      "-I./include/uapi",
+      "-I./include/generated/uapi",
+      "-I/work/curated/headers",
+      "-include",
+      "./include/linux/compiler-version.h",
+      "-include",
+      "./include/linux/kconfig.h",
+      "-include",
+      "./include/linux/compiler_types.h",
+      "/work/curated/implementation/09_init/compile_probe.c",
+      "-o",
+      "/work/curated/implementation/09_init/compile_probe.o"
+    ],
+    "flags": [
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers"
+    ],
+    "stderr": "",
+    "stdout": ""
+  },
+  "dependencies": [
+    {
+      "crc": "0x95cd1ec9",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__register_chrdev"
+    },
+    {
+      "crc": "0x21739f25",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__spi_register_driver"
+    },
+    {
+      "crc": "0x52e65492",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__unregister_chrdev"
+    },
+    {
+      "crc": "0x16b5b21d",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "_printk"
+    },
+    {
+      "crc": "0xdc5f8372",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "class_create"
+    },
+    {
+      "crc": "0xe66cdaff",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "class_destroy"
+    }
+  ],
+  "disassembly": "\n/work/curated/implementation/09_init/compile_probe.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .init.text:\n\n0000000000000004 <zte_ir_init>:\n       4: d503233f     \tpaciasp\n       8: a9bd7bfd     \tstp\tx29, x30, [sp, #-0x30]!\n       c: f9000bf5     \tstr\tx21, [sp, #0x10]\n      10: a9024ff4     \tstp\tx20, x19, [sp, #0x20]\n      14: 910003fd     \tmov\tx29, sp\n      18: 90000003     \tadrp\tx3, 0x0 <.init.text>\n\t\t0000000000000018:  R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1\n      1c: 91000063     \tadd\tx3, x3, #0x0\n\t\t000000000000001c:  R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1\n      20: 90000004     \tadrp\tx4, 0x0 <.init.text>\n\t\t0000000000000020:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_fops\n      24: 91000084     \tadd\tx4, x4, #0x0\n\t\t0000000000000024:  R_AARCH64_ADD_ABS_LO12_NC\tzte_ir_fops\n      28: 2a1f03e0     \tmov\tw0, wzr\n      2c: 2a1f03e1     \tmov\tw1, wzr\n      30: 52800022     \tmov\tw2, #0x1                // =1\n      34: 94000000     \tbl\t0x34 <zte_ir_init+0x30>\n\t\t0000000000000034:  R_AARCH64_CALL26\t__register_chrdev\n      38: 2a0003f3     \tmov\tw19, w0\n      3c: 37f803a0     \ttbnz\tw0, #0x1f, 0xb0 <zte_ir_init+0xac>\n      40: 90000014     \tadrp\tx20, 0x0 <.init.text>\n\t\t0000000000000040:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_major\n      44: 90000000     \tadrp\tx0, 0x0 <.init.text>\n\t\t0000000000000044:  R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x7\n      48: 91000000     \tadd\tx0, x0, #0x0\n\t\t0000000000000048:  R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x7\n      4c: b9000293     \tstr\tw19, [x20]\n\t\t000000000000004c:  R_AARCH64_LDST32_ABS_LO12_NC\tzte_ir_major\n      50: 94000000     \tbl\t0x50 <zte_ir_init+0x4c>\n\t\t0000000000000050:  R_AARCH64_CALL26\tclass_create\n      54: 90000015     \tadrp\tx21, 0x0 <.init.text>\n\t\t0000000000000054:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_class\n      58: b13ffc1f     \tcmn\tx0, #0xfff\n      5c: f90002a0     \tstr\tx0, [x21]\n\t\t000000000000005c:  R_AARCH64_LDST64_ABS_LO12_NC\tzte_ir_class\n      60: 54000063     \tb.lo\t0x6c <zte_ir_init+0x68>\n      64: aa0003f3     \tmov\tx19, x0\n      68: 1400000a     \tb\t0x90 <zte_ir_init+0x8c>\n      6c: 90000000     \tadrp\tx0, 0x0 <.init.text>\n\t\t000000000000006c:  R_AARCH64_ADR_PREL_PG_HI21\t__this_module\n      70: 91000000     \tadd\tx0, x0, #0x0\n\t\t0000000000000070:  R_AARCH64_ADD_ABS_LO12_NC\t__this_module\n      74: 90000001     \tadrp\tx1, 0x0 <.init.text>\n\t\t0000000000000074:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_spi_driver\n      78: 91000021     \tadd\tx1, x1, #0x0\n\t\t0000000000000078:  R_AARCH64_ADD_ABS_LO12_NC\tzte_ir_spi_driver\n      7c: 94000000     \tbl\t0x7c <zte_ir_init+0x78>\n\t\t000000000000007c:  R_AARCH64_CALL26\t__spi_register_driver\n      80: 2a0003f3     \tmov\tw19, w0\n      84: 34000220     \tcbz\tw0, 0xc8 <zte_ir_init+0xc4>\n      88: f94002a0     \tldr\tx0, [x21]\n\t\t0000000000000088:  R_AARCH64_LDST64_ABS_LO12_NC\tzte_ir_class\n      8c: 94000000     \tbl\t0x8c <zte_ir_init+0x88>\n\t\t000000000000008c:  R_AARCH64_CALL26\tclass_destroy\n      90: b9400280     \tldr\tw0, [x20]\n\t\t0000000000000090:  R_AARCH64_LDST32_ABS_LO12_NC\tzte_ir_major\n      94: 90000003     \tadrp\tx3, 0x0 <.init.text>\n\t\t0000000000000094:  R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1\n      98: 91000063     \tadd\tx3, x3, #0x0\n\t\t0000000000000098:  R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1\n      9c: 2a1f03e1     \tmov\tw1, wzr\n      a0: 52800022     \tmov\tw2, #0x1                // =1\n      a4: f90002bf     \tstr\txzr, [x21]\n\t\t00000000000000a4:  R_AARCH64_LDST64_ABS_LO12_NC\tzte_ir_class\n      a8: 94000000     \tbl\t0xa8 <zte_ir_init+0xa4>\n\t\t00000000000000a8:  R_AARCH64_CALL26\t__unregister_chrdev\n      ac: b900029f     \tstr\twzr, [x20]\n\t\t00000000000000ac:  R_AARCH64_LDST32_ABS_LO12_NC\tzte_ir_major\n      b0: 2a1303e0     \tmov\tw0, w19\n      b4: a9424ff4     \tldp\tx20, x19, [sp, #0x20]\n      b8: f9400bf5     \tldr\tx21, [sp, #0x10]\n      bc: a8c37bfd     \tldp\tx29, x30, [sp], #0x30\n      c0: d50323bf     \tautiasp\n      c4: d65f03c0     \tret\n      c8: b9400281     \tldr\tw1, [x20]\n\t\t00000000000000c8:  R_AARCH64_LDST32_ABS_LO12_NC\tzte_ir_major\n      cc: 90000000     \tadrp\tx0, 0x0 <.init.text>\n\t\t00000000000000cc:  R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x14\n      d0: 91000000     \tadd\tx0, x0, #0x0\n\t\t00000000000000d0:  R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x14\n      d4: 94000000     \tbl\t0xd4 <zte_ir_init+0xd0>\n\t\t00000000000000d4:  R_AARCH64_CALL26\t_printk\n      d8: 17fffff6     \tb\t0xb0 <zte_ir_init+0xac>\n",
+  "function": "zte_ir_init",
+  "function_defined": true,
+  "generated_utc": "2026-07-11T16:19:00.955472+00:00",
+  "missing_expected_symbols": [],
+  "module_linker_symbols": [
+    "__this_module"
+  ],
+  "nm": "                 U __register_chrdev\n                 U __spi_register_driver\n                 U __this_module\n                 U __unregister_chrdev\n                 U _printk\n                 U class_create\n                 U class_destroy\n0000000000000000 r $d.0\n0000000000000000 t $d.1\n0000000000000000 r $d.3\n0000000000000000 d $d.4\n0000000000000000 r $d.5\n0000000000000000 r $d.6\n0000000000000000 b $d.7\n0000000000000000 n $d.8\n0000000000000000 r $d.9\n0000000000000000 t .init.text\n0000000000000000 r .rodata.str1.1\n0000000000000000 r __gendwarfksyms_rule_367\n0000000000000000 a compile_probe.c\n0000000000000000 D zte_ir_device_list\n0000000000000000 R zte_ir_fops\n0000000000000000 B zte_ir_major\n0000000000000004 t $x.2\n0000000000000004 t zte_ir_init\n0000000000000008 B zte_ir_class\n0000000000000010 D zte_ir_device_list_lock\n0000000000000010 B zte_ir_minors\n0000000000000040 D zte_ir_spi_driver\n0000000000000108 R zte_ir_of_match\n00000000000001d0 r checked_zte_ir_init\n",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\09_init\\compile_probe.o",
+    "sha256": "90aa091c82e63ebba657b7025a2c01914254c9da95e16d89426a2c06f2877fd5",
+    "size": 6704
+  },
+  "passed": true,
+  "required_module_import_ns": [],
+  "schema_version": "1.0",
+  "source": {
+    "contains_function": true,
+    "contains_required_debug_token": true,
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\09_init\\zte_ir_init.c",
+    "required_debug_token": "pr_info",
+    "sha256": "0d621776e19d2cf82698cb55cbdef54492d32beea15fe2374b1475f666a27d8f"
+  },
+  "undefined_symbols": [
+    "__register_chrdev",
+    "__spi_register_driver",
+    "__this_module",
+    "__unregister_chrdev",
+    "_printk",
+    "class_create",
+    "class_destroy"
+  ],
+  "unresolved_symbols": []
+}

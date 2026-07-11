@@ -1,0 +1,139 @@
+{
+  "compile_unit": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\10_exit\\compile_probe.c",
+    "sha256": "9bf50f93bbf782e568bc1882ce2f3b09ff81c97bc94f6ff77feb8ea079992b01"
+  },
+  "compiler": {
+    "clang_revision": "clang-r536225",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir:/work/curated",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "/work/toolchains/clang-r536225/bin/clang",
+      "-c",
+      "--target=aarch64-linux-gnu",
+      "-nostdinc",
+      "-D__KERNEL__",
+      "-DMODULE",
+      "-DKBUILD_MODFILE=\"zte_ir_microtask\"",
+      "-DKBUILD_BASENAME=\"compile_probe\"",
+      "-DKBUILD_MODNAME=\"zte_ir_microtask\"",
+      "-D__KBUILD_MODNAME=kmod_zte_ir_microtask",
+      "-std=gnu11",
+      "-O2",
+      "-fshort-wchar",
+      "-funsigned-char",
+      "-fno-common",
+      "-fno-PIE",
+      "-fno-strict-aliasing",
+      "-fno-strict-overflow",
+      "-fno-delete-null-pointer-checks",
+      "-ftrivial-auto-var-init=zero",
+      "-fstrict-flex-arrays=3",
+      "-fstack-protector-strong",
+      "-fno-omit-frame-pointer",
+      "-fno-optimize-sibling-calls",
+      "-mgeneral-regs-only",
+      "-mbranch-protection=pac-ret",
+      "-mstack-protector-guard=sysreg",
+      "-mstack-protector-guard-reg=sp_el0",
+      "-mstack-protector-guard-offset=1808",
+      "-ffixed-x18",
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers",
+      "-falign-functions=4",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-sign-compare",
+      "-Wno-unused-function",
+      "-Wno-unused-parameter",
+      "-I./arch/arm64/include",
+      "-I./arch/arm64/include/generated",
+      "-I./include",
+      "-I./arch/arm64/include/uapi",
+      "-I./arch/arm64/include/generated/uapi",
+      "-I./include/uapi",
+      "-I./include/generated/uapi",
+      "-I/work/curated/headers",
+      "-include",
+      "./include/linux/compiler-version.h",
+      "-include",
+      "./include/linux/kconfig.h",
+      "-include",
+      "./include/linux/compiler_types.h",
+      "/work/curated/implementation/10_exit/compile_probe.c",
+      "-o",
+      "/work/curated/implementation/10_exit/compile_probe.o"
+    ],
+    "flags": [
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers"
+    ],
+    "stderr": "",
+    "stdout": ""
+  },
+  "dependencies": [
+    {
+      "crc": "0x52e65492",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__unregister_chrdev"
+    },
+    {
+      "crc": "0xe66cdaff",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "class_destroy"
+    },
+    {
+      "crc": "0xfc2a1943",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "driver_unregister"
+    }
+  ],
+  "disassembly": "\n/work/curated/implementation/10_exit/compile_probe.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .exit.text:\n\n0000000000000004 <zte_ir_exit>:\n       4: d503233f     \tpaciasp\n       8: a9be7bfd     \tstp\tx29, x30, [sp, #-0x20]!\n       c: a9014ff4     \tstp\tx20, x19, [sp, #0x10]\n      10: 910003fd     \tmov\tx29, sp\n      14: 90000000     \tadrp\tx0, 0x0 <.exit.text>\n\t\t0000000000000014:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_spi_driver+0x20\n      18: 91000000     \tadd\tx0, x0, #0x0\n\t\t0000000000000018:  R_AARCH64_ADD_ABS_LO12_NC\tzte_ir_spi_driver+0x20\n      1c: 94000000     \tbl\t0x1c <zte_ir_exit+0x18>\n\t\t000000000000001c:  R_AARCH64_CALL26\tdriver_unregister\n      20: 90000013     \tadrp\tx19, 0x0 <.exit.text>\n\t\t0000000000000020:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_class\n      24: f9400260     \tldr\tx0, [x19]\n\t\t0000000000000024:  R_AARCH64_LDST64_ABS_LO12_NC\tzte_ir_class\n      28: 94000000     \tbl\t0x28 <zte_ir_exit+0x24>\n\t\t0000000000000028:  R_AARCH64_CALL26\tclass_destroy\n      2c: 90000014     \tadrp\tx20, 0x0 <.exit.text>\n\t\t000000000000002c:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_major\n      30: 90000003     \tadrp\tx3, 0x0 <.exit.text>\n\t\t0000000000000030:  R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1\n      34: 91000063     \tadd\tx3, x3, #0x0\n\t\t0000000000000034:  R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1\n      38: b9400280     \tldr\tw0, [x20]\n\t\t0000000000000038:  R_AARCH64_LDST32_ABS_LO12_NC\tzte_ir_major\n      3c: 2a1f03e1     \tmov\tw1, wzr\n      40: 52800022     \tmov\tw2, #0x1                // =1\n      44: f900027f     \tstr\txzr, [x19]\n\t\t0000000000000044:  R_AARCH64_LDST64_ABS_LO12_NC\tzte_ir_class\n      48: 94000000     \tbl\t0x48 <zte_ir_exit+0x44>\n\t\t0000000000000048:  R_AARCH64_CALL26\t__unregister_chrdev\n      4c: b900029f     \tstr\twzr, [x20]\n\t\t000000000000004c:  R_AARCH64_LDST32_ABS_LO12_NC\tzte_ir_major\n      50: a9414ff4     \tldp\tx20, x19, [sp, #0x10]\n      54: a8c27bfd     \tldp\tx29, x30, [sp], #0x20\n      58: d50323bf     \tautiasp\n      5c: d65f03c0     \tret\n",
+  "function": "zte_ir_exit",
+  "function_defined": true,
+  "generated_utc": "2026-07-11T16:19:04.754932+00:00",
+  "missing_expected_symbols": [],
+  "module_linker_symbols": [
+    "__this_module"
+  ],
+  "nm": "                 U __this_module\n                 U __unregister_chrdev\n                 U class_destroy\n                 U driver_unregister\n0000000000000000 r $d.0\n0000000000000000 t $d.1\n0000000000000000 r $d.3\n0000000000000000 d $d.4\n0000000000000000 r $d.5\n0000000000000000 r $d.6\n0000000000000000 b $d.7\n0000000000000000 n $d.8\n0000000000000000 r $d.9\n0000000000000000 t .exit.text\n0000000000000000 r .rodata.str1.1\n0000000000000000 r __gendwarfksyms_rule_367\n0000000000000000 a compile_probe.c\n0000000000000000 D zte_ir_device_list\n0000000000000000 R zte_ir_fops\n0000000000000000 B zte_ir_major\n0000000000000004 t $x.2\n0000000000000004 t zte_ir_exit\n0000000000000008 B zte_ir_class\n0000000000000010 D zte_ir_device_list_lock\n0000000000000010 B zte_ir_minors\n0000000000000040 D zte_ir_spi_driver\n0000000000000108 R zte_ir_of_match\n00000000000001d0 r checked_zte_ir_exit\n",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\10_exit\\compile_probe.o",
+    "sha256": "d643ad73952a9d525117ff447231b26b4192c590d889defa6e9ecf2f26c5f7cf",
+    "size": 6024
+  },
+  "passed": true,
+  "required_module_import_ns": [],
+  "schema_version": "1.0",
+  "source": {
+    "contains_function": true,
+    "contains_required_debug_token": true,
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\10_exit\\zte_ir_exit.c",
+    "required_debug_token": "pr_debug",
+    "sha256": "e1a9a1751f4a17f71b84aa3a7b16bcfdca3b880a4a963ec4c5a0cf610c3b81cb"
+  },
+  "undefined_symbols": [
+    "__this_module",
+    "__unregister_chrdev",
+    "class_destroy",
+    "driver_unregister"
+  ],
+  "unresolved_symbols": []
+}

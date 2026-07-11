@@ -1,0 +1,176 @@
+{
+  "compile_unit": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\08_remove\\compile_probe.c",
+    "sha256": "a05e6f98a7d33b7447e7bfb3bd5acd15eaebfcfc27507768f3ddf0cdb31b510d"
+  },
+  "compiler": {
+    "clang_revision": "clang-r536225",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir:/work/curated",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "/work/toolchains/clang-r536225/bin/clang",
+      "-c",
+      "--target=aarch64-linux-gnu",
+      "-nostdinc",
+      "-D__KERNEL__",
+      "-DMODULE",
+      "-DKBUILD_MODFILE=\"zte_ir_microtask\"",
+      "-DKBUILD_BASENAME=\"compile_probe\"",
+      "-DKBUILD_MODNAME=\"zte_ir_microtask\"",
+      "-D__KBUILD_MODNAME=kmod_zte_ir_microtask",
+      "-std=gnu11",
+      "-O2",
+      "-fshort-wchar",
+      "-funsigned-char",
+      "-fno-common",
+      "-fno-PIE",
+      "-fno-strict-aliasing",
+      "-fno-strict-overflow",
+      "-fno-delete-null-pointer-checks",
+      "-ftrivial-auto-var-init=zero",
+      "-fstrict-flex-arrays=3",
+      "-fstack-protector-strong",
+      "-fno-omit-frame-pointer",
+      "-fno-optimize-sibling-calls",
+      "-mgeneral-regs-only",
+      "-mbranch-protection=pac-ret",
+      "-mstack-protector-guard=sysreg",
+      "-mstack-protector-guard-reg=sp_el0",
+      "-mstack-protector-guard-offset=1808",
+      "-ffixed-x18",
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers",
+      "-falign-functions=4",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-sign-compare",
+      "-Wno-unused-function",
+      "-Wno-unused-parameter",
+      "-I./arch/arm64/include",
+      "-I./arch/arm64/include/generated",
+      "-I./include",
+      "-I./arch/arm64/include/uapi",
+      "-I./arch/arm64/include/generated/uapi",
+      "-I./include/uapi",
+      "-I./include/generated/uapi",
+      "-I/work/curated/headers",
+      "-include",
+      "./include/linux/compiler-version.h",
+      "-include",
+      "./include/linux/kconfig.h",
+      "-include",
+      "./include/linux/compiler_types.h",
+      "/work/curated/implementation/08_remove/compile_probe.c",
+      "-o",
+      "/work/curated/implementation/08_remove/compile_probe.o"
+    ],
+    "flags": [
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers"
+    ],
+    "stderr": "",
+    "stdout": ""
+  },
+  "dependencies": [
+    {
+      "crc": "0x802f8919",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__list_del_entry_valid_or_report"
+    },
+    {
+      "crc": "0xaa615763",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "_raw_spin_lock_irqsave"
+    },
+    {
+      "crc": "0x582af1c8",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "_raw_spin_unlock_irqrestore"
+    },
+    {
+      "crc": "0xb8c8345a",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "alt_cb_patch_nops"
+    },
+    {
+      "crc": "0x8b487fa5",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "device_destroy"
+    },
+    {
+      "crc": "0x31359e90",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "kfree"
+    },
+    {
+      "crc": "0x995658e3",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "mutex_lock"
+    },
+    {
+      "crc": "0x995658e3",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "mutex_unlock"
+    }
+  ],
+  "disassembly": "\n/work/curated/implementation/08_remove/compile_probe.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .text:\n\n0000000000000004 <zte_ir_remove>:\n       4: d503233f     \tpaciasp\n       8: a9bc7bfd     \tstp\tx29, x30, [sp, #-0x40]!\n       c: f9000bf7     \tstr\tx23, [sp, #0x10]\n      10: a90257f6     \tstp\tx22, x21, [sp, #0x20]\n      14: a9034ff4     \tstp\tx20, x19, [sp, #0x30]\n      18: 910003fd     \tmov\tx29, sp\n      1c: b40006e0     \tcbz\tx0, 0xf8 <zte_ir_remove+0xf4>\n      20: f9404c13     \tldr\tx19, [x0, #0x98]\n      24: aa0003f4     \tmov\tx20, x0\n      28: b4000693     \tcbz\tx19, 0xf8 <zte_ir_remove+0xf4>\n      2c: 90000000     \tadrp\tx0, 0x0 <.text>\n\t\t000000000000002c:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_device_list_lock\n      30: 91000000     \tadd\tx0, x0, #0x0\n\t\t0000000000000030:  R_AARCH64_ADD_ABS_LO12_NC\tzte_ir_device_list_lock\n      34: 91404e75     \tadd\tx21, x19, #0x13, lsl #12 // =0x13000\n      38: 94000000     \tbl\t0x38 <zte_ir_remove+0x34>\n\t\t0000000000000038:  R_AARCH64_CALL26\tmutex_lock\n      3c: 52871516     \tmov\tw22, #0x38a8            // =14504\n      40: 72a00036     \tmovk\tw22, #0x1, lsl #16\n      44: 8b160260     \tadd\tx0, x19, x22\n      48: 94000000     \tbl\t0x48 <zte_ir_remove+0x44>\n\t\t0000000000000048:  R_AARCH64_CALL26\tmutex_lock\n      4c: 52871417     \tmov\tw23, #0x38a0            // =14496\n      50: 52800028     \tmov\tw8, #0x1                // =1\n      54: 72a00037     \tmovk\tw23, #0x1, lsl #16\n      58: 3923b2a8     \tstrb\tw8, [x21, #0x8ec]\n      5c: 8b170260     \tadd\tx0, x19, x23\n      60: 94000000     \tbl\t0x60 <zte_ir_remove+0x5c>\n\t\t0000000000000060:  R_AARCH64_CALL26\t_raw_spin_lock_irqsave\n      64: aa0003e1     \tmov\tx1, x0\n      68: 8b170260     \tadd\tx0, x19, x23\n      6c: f9044abf     \tstr\txzr, [x21, #0x890]\n      70: 94000000     \tbl\t0x70 <zte_ir_remove+0x6c>\n\t\t0000000000000070:  R_AARCH64_CALL26\t_raw_spin_unlock_irqrestore\n      74: f9004e9f     \tstr\txzr, [x20, #0x98]\n      78: 912362a9     \tadd\tx9, x21, #0x8d8\n      7c: f94472a8     \tldr\tx8, [x21, #0x8e0]\n      80: f940010a     \tldr\tx10, [x8]\n      84: eb09015f     \tcmp\tx10, x9\n      88: 54000441     \tb.ne\t0x110 <zte_ir_remove+0x10c>\n      8c: f940012a     \tldr\tx10, [x9]\n      90: f940054b     \tldr\tx11, [x10, #0x8]\n      94: eb09017f     \tcmp\tx11, x9\n      98: 540003c1     \tb.ne\t0x110 <zte_ir_remove+0x10c>\n      9c: f9000548     \tstr\tx8, [x10, #0x8]\n      a0: f900010a     \tstr\tx10, [x8]\n      a4: 912362a8     \tadd\tx8, x21, #0x8d8\n      a8: f9046ea8     \tstr\tx8, [x21, #0x8d8]\n      ac: 90000008     \tadrp\tx8, 0x0 <.text>\n\t\t00000000000000ac:  R_AARCH64_ADR_PREL_PG_HI21\tzte_ir_class\n      b0: f90472a9     \tstr\tx9, [x21, #0x8e0]\n      b4: f9400100     \tldr\tx0, [x8]\n\t\t00000000000000b4:  R_AARCH64_LDST64_ABS_LO12_NC\tzte_ir_class\n      b8: b9400261     \tldr\tw1, [x19]\n      bc: 94000000     \tbl\t0xbc <zte_ir_remove+0xb8>\n\t\t00000000000000bc:  R_AARCH64_CALL26\tdevice_destroy\n      c0: 14000017     \tb\t0x11c <zte_ir_remove+0x118>\n",
+  "function": "zte_ir_remove",
+  "function_defined": true,
+  "generated_utc": "2026-07-11T16:18:55.429943+00:00",
+  "missing_expected_symbols": [],
+  "module_linker_symbols": [],
+  "nm": "                 U __list_del_entry_valid_or_report\n                 U _raw_spin_lock_irqsave\n                 U _raw_spin_unlock_irqrestore\n                 U alt_cb_patch_nops\n                 U device_destroy\n                 U kfree\n                 U mutex_lock\n                 U mutex_unlock\n0000000000000000 r $d.0\n0000000000000000 t $d.1\n0000000000000000 r $d.10\n0000000000000000 r $d.3\n0000000000000000 r $d.5\n0000000000000000 d $d.6\n0000000000000000 r $d.7\n0000000000000000 b $d.8\n0000000000000000 n $d.9\n0000000000000000 t .text\n0000000000000000 r __gendwarfksyms_rule_367\n0000000000000000 r checked_zte_ir_remove\n0000000000000000 a compile_probe.c\n0000000000000000 D zte_ir_device_list\n0000000000000000 B zte_ir_major\n0000000000000004 t $x.2\n0000000000000004 t zte_ir_remove\n0000000000000008 B zte_ir_class\n0000000000000010 D zte_ir_device_list_lock\n0000000000000010 B zte_ir_minors\n00000000000000c4 t $x.4\n",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\08_remove\\compile_probe.o",
+    "sha256": "33b9432e5fe1a39ae4f5ea04eaa0fab443844f1b4a8a1a27ec769551674644cd",
+    "size": 5792
+  },
+  "passed": true,
+  "required_module_import_ns": [],
+  "schema_version": "1.0",
+  "source": {
+    "contains_function": true,
+    "contains_required_debug_token": true,
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\08_remove\\zte_ir_remove.c",
+    "required_debug_token": "dev_dbg",
+    "sha256": "d88fdfa2cb046a20dc7e0f228259e699dedcfe65b4edc19e3ff62591c74a4a7c"
+  },
+  "undefined_symbols": [
+    "__list_del_entry_valid_or_report",
+    "_raw_spin_lock_irqsave",
+    "_raw_spin_unlock_irqrestore",
+    "alt_cb_patch_nops",
+    "device_destroy",
+    "kfree",
+    "mutex_lock",
+    "mutex_unlock"
+  ],
+  "unresolved_symbols": []
+}

@@ -1,0 +1,184 @@
+{
+  "compile_unit": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\07_probe\\compile_probe.c",
+    "sha256": "2a340637b8214b7f9a67efc375d7af7305f2e40c912e41832de9eb8c8a5ce73f"
+  },
+  "compiler": {
+    "clang_revision": "clang-r536225",
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir:/work/curated",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "/work/toolchains/clang-r536225/bin/clang",
+      "-c",
+      "--target=aarch64-linux-gnu",
+      "-nostdinc",
+      "-D__KERNEL__",
+      "-DMODULE",
+      "-DKBUILD_MODFILE=\"zte_ir_microtask\"",
+      "-DKBUILD_BASENAME=\"compile_probe\"",
+      "-DKBUILD_MODNAME=\"zte_ir_microtask\"",
+      "-D__KBUILD_MODNAME=kmod_zte_ir_microtask",
+      "-std=gnu11",
+      "-O2",
+      "-fshort-wchar",
+      "-funsigned-char",
+      "-fno-common",
+      "-fno-PIE",
+      "-fno-strict-aliasing",
+      "-fno-strict-overflow",
+      "-fno-delete-null-pointer-checks",
+      "-ftrivial-auto-var-init=zero",
+      "-fstrict-flex-arrays=3",
+      "-fstack-protector-strong",
+      "-fno-omit-frame-pointer",
+      "-fno-optimize-sibling-calls",
+      "-mgeneral-regs-only",
+      "-mbranch-protection=pac-ret",
+      "-mstack-protector-guard=sysreg",
+      "-mstack-protector-guard-reg=sp_el0",
+      "-mstack-protector-guard-offset=1808",
+      "-ffixed-x18",
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers",
+      "-falign-functions=4",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-sign-compare",
+      "-Wno-unused-function",
+      "-Wno-unused-parameter",
+      "-I./arch/arm64/include",
+      "-I./arch/arm64/include/generated",
+      "-I./include",
+      "-I./arch/arm64/include/uapi",
+      "-I./arch/arm64/include/generated/uapi",
+      "-I./include/uapi",
+      "-I./include/generated/uapi",
+      "-I/work/curated/headers",
+      "-include",
+      "./include/linux/compiler-version.h",
+      "-include",
+      "./include/linux/kconfig.h",
+      "-include",
+      "./include/linux/compiler_types.h",
+      "/work/curated/implementation/07_probe/compile_probe.c",
+      "-o",
+      "/work/curated/implementation/07_probe/compile_probe.o"
+    ],
+    "flags": [
+      "-fsanitize=kcfi",
+      "-fsanitize-cfi-icall-experimental-normalize-integers"
+    ],
+    "stderr": "",
+    "stdout": ""
+  },
+  "dependencies": [
+    {
+      "crc": "0x27865ec7",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__kmalloc_large_noprof"
+    },
+    {
+      "crc": "0x6fabd45b",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__list_add_valid_or_report"
+    },
+    {
+      "crc": "0x81d49dc6",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "__mutex_init"
+    },
+    {
+      "crc": "0xb8c8345a",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "alt_cb_patch_nops"
+    },
+    {
+      "crc": "0xbdd865ba",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "device_create"
+    },
+    {
+      "crc": "0x31359e90",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "kfree"
+    },
+    {
+      "crc": "0x8ee1928d",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "mem_alloc_profiling_key"
+    },
+    {
+      "crc": "0x995658e3",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "mutex_lock"
+    },
+    {
+      "crc": "0x995658e3",
+      "export": "EXPORT_SYMBOL",
+      "namespace": "",
+      "provider": "vmlinux",
+      "symbol": "mutex_unlock"
+    }
+  ],
+  "disassembly": "\n/work/curated/implementation/07_probe/compile_probe.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .text:\n\n0000000000000004 <zte_ir_probe>:\n       4: d503233f     \tpaciasp\n       8: a9bc7bfd     \tstp\tx29, x30, [sp, #-0x40]!\n       c: f9000bf7     \tstr\tx23, [sp, #0x10]\n      10: a90257f6     \tstp\tx22, x21, [sp, #0x20]\n      14: a9034ff4     \tstp\tx20, x19, [sp, #0x30]\n      18: 910003fd     \tmov\tx29, sp\n      1c: b4000980     \tcbz\tx0, 0x14c <zte_ir_probe+0x148>\n      20: aa0003f3     \tmov\tx19, x0\n      24: d503201f     \tnop\n",
+  "function": "zte_ir_probe",
+  "function_defined": true,
+  "generated_utc": "2026-07-11T16:18:51.448537+00:00",
+  "missing_expected_symbols": [],
+  "module_linker_symbols": [],
+  "nm": "                 U __kmalloc_large_noprof\n                 U __list_add_valid_or_report\n                 U __mutex_init\n                 U alt_cb_patch_nops\n                 U device_create\n                 U kfree\n                 U mem_alloc_profiling_key\n                 U mutex_lock\n                 U mutex_unlock\n0000000000000000 r $d.0\n0000000000000000 t $d.1\n0000000000000000 b $d.10\n0000000000000000 d $d.11\n0000000000000000 d $d.12\n0000000000000000 r $d.13\n0000000000000000 n $d.14\n0000000000000000 r $d.15\n0000000000000000 d $d.3\n0000000000000000 r $d.5\n0000000000000000 r $d.7\n0000000000000000 d $d.8\n0000000000000000 r $d.9\n0000000000000000 b .bss\n0000000000000000 d .data..percpu\n0000000000000000 r .rodata.str1.1\n0000000000000000 t .text\n0000000000000000 r __gendwarfksyms_rule_367\n0000000000000000 d alloc_tags\n0000000000000000 r checked_zte_ir_probe\n0000000000000000 a compile_probe.c\n0000000000000000 D zte_ir_device_list\n0000000000000000 B zte_ir_major\n0000000000000000 d zte_ir_probe._alloc_tag\n0000000000000000 d zte_ir_probe._alloc_tag_cntr\n0000000000000004 t $x.2\n0000000000000004 t zte_ir_probe\n0000000000000008 B zte_ir_class\n0000000000000010 D zte_ir_device_list_lock\n0000000000000010 B zte_ir_minors\n0000000000000018 b zte_ir_probe.__key\n0000000000000028 t $x.4\n00000000000000e8 t $x.6\n",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\07_probe\\compile_probe.o",
+    "sha256": "7cf6cd4ca5ef51e7090d5c79ac6d73a7e4ccbeb1bdb0c5ad1880c7e6a3e468f3",
+    "size": 7688
+  },
+  "passed": true,
+  "required_module_import_ns": [],
+  "schema_version": "1.0",
+  "source": {
+    "contains_function": true,
+    "contains_required_debug_token": true,
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ir\\implementation\\07_probe\\zte_ir_probe.c",
+    "required_debug_token": "dev_dbg",
+    "sha256": "e300c8632fe20d7ff2f05a8a73b0fb02bc49ece1d34ad1818033b8a0aafef7dc"
+  },
+  "undefined_symbols": [
+    "__kmalloc_large_noprof",
+    "__list_add_valid_or_report",
+    "__mutex_init",
+    "alt_cb_patch_nops",
+    "device_create",
+    "kfree",
+    "mem_alloc_profiling_key",
+    "mutex_lock",
+    "mutex_unlock"
+  ],
+  "unresolved_symbols": []
+}
