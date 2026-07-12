@@ -250,11 +250,19 @@ def reconstruction_map_check(
             stock_name = mapping.get("stock_function")
             source_file = mapping.get("source_file")
             source_function = mapping.get("source_function")
+            status = mapping.get("status")
+            evidence = mapping.get("evidence")
             if not all(isinstance(value, str) and value for value in (stock_name, source_file, source_function)):
                 errors.append(f"mapping {index} lacks stock_function/source_file/source_function")
                 continue
             if not (driver_dir / source_file).is_file():
                 errors.append(f"mapping {index} refers to missing source file: {source_file}")
+            if status != "reviewed":
+                errors.append(f"mapping {index} is not independently reviewed")
+            if not isinstance(evidence, list) or not evidence or not all(
+                isinstance(item, str) and item.strip() for item in evidence
+            ):
+                errors.append(f"mapping {index} has no review evidence")
             mapped_names.add(stock_name)
         unmapped = sorted(set(ghidra_names) - mapped_names)
         if unmapped:

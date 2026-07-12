@@ -1,58 +1,36 @@
-# Status de Reconstrução e Validação do Driver `zte_charger_policy`
+# Status do Driver `zte_charger_policy`
 
-Este documento registra o status e os testes de validação do driver **`zte_charger_policy`** do RedMagic 10 Pro (NX809J).
+Estado: `static_verified` (gates 0-7 PASS; gates 8-10 incompletos).
 
----
+## Artefato atual
 
-## Informações Gerais do Driver
-* **Função:** Política inteligente de carga rápida (80W/120W) com proteção térmica dinâmica.
-* **Tipo:** Módulo de política de energia (thermal + charger governor).
-* **Código-Fonte:** 1 arquivo(s) C (~470 linhas totais).
-* **Status de Reconstrução:** 100% COMPLETO. A lógica completa em C baseada em offsets de engenharia reversa foi preservada e compilada.
-* **Build:** COMPILADO - `zte_charger_policy.ko` presente em `artifacts/20260711-174917/`.
+- Arquivo: `zte_charger_policy.ko`
+- SHA-256: `e603c3f553c4d4375655dc7c9afe2595c449999c15e60acd5efdd2206309e927`
+- Tamanho: `301184` bytes
+- Kernel alvo: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`
 
----
+## Evidencias aprovadas
 
-## Detalhes da Validação no Hardware Real
+- Build limpa e reproduzivel em Docker: PASS.
+- Imports, aliases, namespaces e KMI: PASS.
+- Ghidra: inventario e multiplicidade de chamadas `38/38`.
+- KCFI: `35/35` assinaturas utilizaveis; tres funcoes diretas possuem N/A explicito.
+- Layout `struct charger_policy_info`: 544 bytes, protegido por `static_assert`.
+- Harness de host: duas builds e execucoes reproduziveis, cobertura `38/38`.
+- Microtarefas: `38/38` atestadas e hashes recalculados.
 
-O driver `zte_charger_policy.ko` reconstruído foi validado dinamicamente no dispositivo real rodando o kernel customizado `curator@build-host`.
+## Correcoes relevantes
 
-### Comando de Validação
-```powershell
-# 1. Enviar o driver reconstruído para o telefone
-adb push artifacts/20260711-174917/zte_charger_policy.ko /data/local/tmp/zte_charger_policy_custom.ko
+- Removido alias OF ausente no modulo stock.
+- Recuperada a tabela stock de quatro estados pelas relocacoes ELF.
+- Corrigida a consulta de estado/temperatura no handler de timeout.
+- Restaurada a chamada indireta dos handlers com assinatura KCFI correta.
+- Corrigidos os tipos `const void *` dos callbacks `zte_misc`.
+- Corrigidos os atrasos de workqueue e o reset de `running_discharging`.
+- Adicionados caminhos de erro e logs observados no pseudocodigo stock.
 
-# 2. Descarregar o módulo original do vendor (se presente)
-adb shell "su root rmmod comp_zte_charger_policy_ko"
-adb shell "su root rmmod zte_charger_policy"
+## Limites
 
-# 3. Carregar o nosso módulo customizado
-adb shell "su root insmod /data/local/tmp/zte_charger_policy_custom.ko"
+Nao existe validacao supervisionada deste candidato no smartphone. O modulo nao deve ser chamado de "100% reconstruido" e nao deve ser carregado automaticamente. Ainda faltam revisao independente (gate 8), teste controlado em hardware (gate 9) e promocao final (gate 10).
 
-# 4. Verificar se o módulo está ativo em memória
-adb shell "su root lsmod | grep zte_charger_policy"
-
-# 5. Auditar os logs de inicialização no dmesg
-adb shell "su root dmesg | grep -i zte_charger_policy"
-```
-
-### Evidência de Sucesso (Log de Execução)
-```
-artifacts/20260711-174917/zte_charger_policy.ko: 1 file pushed, 0 skipped.
-zte_charger_policy               <size>  0
-[    1.x] ... zte_charger_policy loaded successfully ...
-Linux version 6.12.23-android16-5-gf1bdb13583da-ab13761046-4k (curator@build-host)
-```
-
-### Análise do Log
-1. **`module_layout` Compatível:** O driver foi aceito sem erros de compatibilidade de assinatura de kernel, confirmando a higienização da ABI e o merge dos pré-requisitos no Kconfig.
-2. **Registro de Hardware:** O probe do driver foi disparado com sucesso e o hardware físico respondeu aos comandos de inicialização do kernel.
-
----
-
-## Organização dos Arquivos Locais
-Os arquivos deste driver estão organizados localmente na pasta:
-`c:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\curated\zte_charger_policy\`
-* `zte_charger_policy.c` — Código-fonte reconstruído do driver (~470 linhas)
-* `Makefile` — Instruções do Kbuild para compilação como módulo `obj-m`
-* `STATUS.md` — Este relatório técnico
+Consulte `validation/zte_charger_policy/cycle_validation.json` e o guia de harness antes de qualquer teste fisico.

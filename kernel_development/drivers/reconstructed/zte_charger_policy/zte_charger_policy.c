@@ -1,3 +1,6 @@
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#include "tests/host_stubs.h"
+#else
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -13,9 +16,10 @@
 #include <linux/ktime.h>
 #include <linux/pm_wakeup.h>
 #include <linux/delay.h>
+#endif
 
 /* Forward declarations */
-struct charger_policy;
+struct charger_policy_info;
 struct zte_power_supply;
 
 /* Custom ZTE API declarations */
@@ -31,16 +35,16 @@ extern int zte_poweroff_charging_status(void);
 
 struct zte_misc_cb {
 	const char *name;
-	int (*set)(const char *val, void *priv);
-	int (*get)(char *val, void *priv);
-	int (*show)(char *val, void *priv);
+	int (*set)(const char *val, const void *priv);
+	int (*get)(char *val, const void *priv);
+	int (*show)(char *val, const void *priv);
 	void *priv;
 };
 
 extern int zte_misc_register_callback(const struct zte_misc_cb *cb, void *priv);
 
-/* Layout of struct charger_policy aligned 1:1 with binary (544 bytes) */
-struct charger_policy {
+/* Layout of struct charger_policy_info aligned 1:1 with binary (544 bytes) */
+struct charger_policy_info {
 	union {
 		struct {
 			struct device *dev;                        /* 0x00 */
@@ -111,29 +115,40 @@ struct charger_policy {
 	u8 padding2[2];                                    /* 0x21E (542) */
 };
 
+static_assert(sizeof(struct charger_policy_info) == 544);
+static_assert(offsetof(struct charger_policy_info, timeout_alarm) == 40);
+static_assert(offsetof(struct charger_policy_info, timeout_wq) == 160);
+static_assert(offsetof(struct charger_policy_info, timeout_work) == 168);
+static_assert(offsetof(struct charger_policy_info, probe_wq) == 272);
+static_assert(offsetof(struct charger_policy_info, probe_work) == 280);
+static_assert(offsetof(struct charger_policy_info, policy_enable) == 384);
+static_assert(offsetof(struct charger_policy_info, interface_phy_name) == 432);
+static_assert(offsetof(struct charger_policy_info, ws) == 480);
+static_assert(offsetof(struct charger_policy_info, force_discharging_start_time) == 520);
+static_assert(offsetof(struct charger_policy_info, low_temp_status) == 536);
+
 /* Global logger limit tracker and probe count */
 static u64 charger_policy_logger_limit_time_pre_0;
 static u32 charger_policy_check_retry_probe_count;
 
 /* Status functions */
-static int charger_policy_status_disable(struct charger_policy *policy);
-static int charger_policy_status_runchging(struct charger_policy *policy);
-static int charger_policy_status_ide(struct charger_policy *policy);
-static int charger_policy_status_rundischging(struct charger_policy *policy);
-static int charger_policy_status_forcedischging(struct charger_policy *policy);
+static int charger_policy_status_disable(struct charger_policy_info *policy);
+static int charger_policy_status_runchging(struct charger_policy_info *policy);
+static int charger_policy_status_ide(struct charger_policy_info *policy);
+static int charger_policy_status_rundischging(struct charger_policy_info *policy);
+static int charger_policy_status_forcedischging(struct charger_policy_info *policy);
 
 struct charger_policy_status_item {
 	int id;
 	const char *name;
-	int (*handler)(struct charger_policy *policy);
+	int (*handler)(struct charger_policy_info *policy);
 };
 
 static const struct charger_policy_status_item policy_status_list[] = {
-	{ 0, "POLICY_DISABLE", charger_policy_status_disable },
+	{ 0, "POLICY_IDLE", charger_policy_status_ide },
 	{ 1, "POLICY_RUNNING_CHARGING", charger_policy_status_runchging },
-	{ 2, "POLICY_IDLE", charger_policy_status_ide },
-	{ 3, "POLICY_RUNNING_DISCHARGING", charger_policy_status_rundischging },
-	{ 4, "POLICY_STATUS_FORCE_DISCHARGING", charger_policy_status_forcedischging },
+	{ 2, "POLICY_RUNNING_DISCHARGING", charger_policy_status_rundischging },
+	{ 3, "POLICY_STATUS_FORCE_DISCHARGING", charger_policy_status_forcedischging },
 };
 
 /* Helper function to get current real-time in seconds */
@@ -231,7 +246,7 @@ static int zte_charger_policy_set_prop_by_name(const char *name, unsigned int pr
 }
 
 /* Control charging state through ZTE battery power supply properties */
-static int charger_policy_ctrl_charging_enable(struct charger_policy *policy, u32 batt_chg, u32 global_chg)
+static int charger_policy_ctrl_charging_enable(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg)
 {
 	u32 status_val = 0;
 	u32 cur_chg_enabled = 0;
@@ -290,7 +305,7 @@ static int charger_policy_ctrl_charging_enable(struct charger_policy *policy, u3
 }
 
 /* Disable or enable CAS (Charge Arbitration System) */
-static int charger_policy_disable_cas(struct charger_policy *policy, u32 disable)
+static int charger_policy_disable_cas(struct charger_policy_info *policy, u32 disable)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -300,6 +315,7 @@ static int charger_policy_disable_cas(struct charger_policy *policy, u32 disable
 
 	if (!policy->cas_phy_name) {
 		pr_info("policy: %s(): cas_phy_name is null\n", "charger_policy_disable_cas");
+		barrier();
 		return -EINVAL;
 	}
 
@@ -314,6 +330,8 @@ static int charger_policy_disable_cas(struct charger_policy *policy, u32 disable
 	ret = power_supply_set_property(psy, POWER_SUPPLY_PROP_AUTHENTIC, &pval);
 	if (ret < 0) {
 		pr_info("policy: %s(): Failed to disable cas rc=%d\n", "charger_policy_disable_cas", ret);
+		pr_info("policy: %s(): set property failed rc=%d\n", "charger_policy_disable_cas", ret);
+		return ret;
 	}
 
 	power_supply_put(psy);
@@ -321,7 +339,7 @@ static int charger_policy_disable_cas(struct charger_policy *policy, u32 disable
 }
 
 /* Check USB presence and online status across interfaces */
-static bool charger_policy_check_usb_present(struct charger_policy *policy)
+static bool charger_policy_check_usb_present(struct charger_policy_info *policy)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -338,6 +356,7 @@ static bool charger_policy_check_usb_present(struct charger_policy *policy)
 			online = pval.intval;
 		} else {
 			pr_info("policy: %s(): Failed to get POWER_SUPPLY_PROP_ONLINE!\n", "charger_policy_check_usb_present");
+			pr_info("policy: %s(): usb online property unavailable\n", "charger_policy_check_usb_present");
 		}
 		power_supply_put(psy);
 	} else {
@@ -369,15 +388,18 @@ static bool charger_policy_check_usb_present(struct charger_policy *policy)
 			wireless_online = (pval.intval != 0);
 		} else {
 			pr_info("policy: %s(): Failed to get POWER_SUPPLY_PROP_ONLINE for wireless!\n", "charger_policy_check_usb_present");
+			pr_info("policy: %s(): wireless online property unavailable\n", "charger_policy_check_usb_present");
 		}
 		power_supply_put(psy);
+	} else {
+		pr_info("policy: %s(): wireless power supply not found\n", "charger_policy_check_usb_present");
 	}
 
 	return suspend || online || present || wireless_online;
 }
 
 /* Check if SOC/Capacity has reached configured lower thresholds */
-static bool charger_policy_check_soc_reach_min(struct charger_policy *policy)
+static bool charger_policy_check_soc_reach_min(struct charger_policy_info *policy)
 {
 	u32 capacity = 0;
 	int limit = 0;
@@ -429,7 +451,7 @@ static bool charger_policy_check_soc_reach_min(struct charger_policy *policy)
 }
 
 /* Handler: State 0 - POLICY_DISABLE */
-static int charger_policy_status_disable(struct charger_policy *policy)
+static int charger_policy_status_disable(struct charger_policy_info *policy)
 {
 	charger_policy_ctrl_charging_enable(policy, 1, 1);
 	policy->running_discharging = 0;
@@ -440,7 +462,7 @@ static int charger_policy_status_disable(struct charger_policy *policy)
 }
 
 /* Handler: State 1 - POLICY_RUNNING_CHARGING */
-static int charger_policy_status_runchging(struct charger_policy *policy)
+static int charger_policy_status_runchging(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 	u32 capacity = 0;
@@ -496,9 +518,8 @@ static int charger_policy_status_runchging(struct charger_policy *policy)
 		if ((int)capacity >= limit) {
 			pr_info("policy: %s(): capacity(%u) reach demo max(%d)\n", "charger_policy_status_runchging", capacity, limit);
 			policy->last_status = policy->status;
-			policy->status = 2; /* Transition to State 2: POLICY_IDLE */
+			policy->status = 2; /* Transition to running discharging */
 			charger_policy_ctrl_charging_enable(policy, 0, 0);
-			charger_policy_disable_cas(policy, 1);
 			return 0;
 		}
 	}
@@ -520,9 +541,8 @@ static int charger_policy_status_runchging(struct charger_policy *policy)
 		if ((int)capacity >= limit) {
 			pr_info("policy: %s(): capacity(%u) reach overtime max(%d)\n", "charger_policy_status_runchging", capacity, limit);
 			policy->last_status = policy->status;
-			policy->status = 2; /* Transition to State 2: POLICY_IDLE */
+			policy->status = 2; /* Transition to running discharging */
 			charger_policy_ctrl_charging_enable(policy, 0, 0);
-			charger_policy_disable_cas(policy, 1);
 		}
 	}
 
@@ -530,7 +550,7 @@ static int charger_policy_status_runchging(struct charger_policy *policy)
 }
 
 /* Handler: State 2 - POLICY_IDLE */
-static int charger_policy_status_ide(struct charger_policy *policy)
+static int charger_policy_status_ide(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 
@@ -575,7 +595,7 @@ static int charger_policy_status_ide(struct charger_policy *policy)
 }
 
 /* Handler: State 3 - POLICY_RUNNING_DISCHARGING */
-static int charger_policy_status_rundischging(struct charger_policy *policy)
+static int charger_policy_status_rundischging(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 	u32 capacity = 0;
@@ -598,7 +618,7 @@ static int charger_policy_status_rundischging(struct charger_policy *policy)
 			policy->last_status = policy->status;
 			policy->status = 3; /* Remain in State 3 */
 			pr_info("policy: %s(): time is too long, force discharging\n", "charger_policy_status_rundischging");
-			goto check_min;
+			return 0;
 		}
 	}
 
@@ -667,7 +687,7 @@ check_min:
 }
 
 /* Handler: State 4 - POLICY_STATUS_FORCE_DISCHARGING */
-static int charger_policy_status_forcedischging(struct charger_policy *policy)
+static int charger_policy_status_forcedischging(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 
@@ -690,9 +710,13 @@ static int charger_policy_status_forcedischging(struct charger_policy *policy)
 /* Timeout handler work function (state machine scheduler) */
 static void charger_policy_timeout_handler_work(struct work_struct *work)
 {
-	struct charger_policy *policy = container_of(work, struct charger_policy, timeout_work.work);
+	struct charger_policy_info *policy = container_of(work, struct charger_policy_info, timeout_work.work);
+	const char *sleep_reason = NULL;
+	int (*status_handler)(struct charger_policy_info *policy);
 	u64 now_sec;
+	u32 batt_status = 0;
 	u32 batt_temp = 0;
+	bool is_charging = false;
 	int ret;
 
 	now_sec = get_current_time_seconds();
@@ -703,10 +727,17 @@ static void charger_policy_timeout_handler_work(struct work_struct *work)
 		policy->log_limit = 1;
 	}
 
-	/* Get battery temperature */
-	ret = charger_policy_get_prop_by_name(policy->battery_phy_name, POWER_SUPPLY_PROP_TEMP, &batt_temp);
+	ret = charger_policy_get_prop_by_name(policy->battery_phy_name,
+					      POWER_SUPPLY_PROP_STATUS,
+					      &batt_status);
 	if (ret < 0) {
-		pr_info("policy: %s(): Get battery temp failed\n", "charger_policy_timeout_handler_work");
+		pr_info("policy: %s(): Get battery status failed\n",
+			"charger_policy_battery_is_charging");
+	} else {
+		is_charging = batt_status == POWER_SUPPLY_STATUS_CHARGING ||
+			      batt_status == POWER_SUPPLY_STATUS_FULL;
+		pr_info("policy: %s(): charging=%d\n",
+			"charger_policy_battery_is_charging", is_charging);
 	}
 
 	if (policy->status != policy->last_status) {
@@ -717,60 +748,46 @@ static void charger_policy_timeout_handler_work(struct work_struct *work)
 	}
 
 	if (policy->log_limit) {
-		if (policy->status < 5) {
+		if (policy->status < ARRAY_SIZE(policy_status_list)) {
 			pr_info("policy: %s(): status=%s status=%s\n",
 				"charger_policy_status_debug",
 				policy_status_list[policy->status].name,
-				(ret >= 0 && (batt_temp <= 150)) ? "discharging" : "charging");
+				is_charging ? "charging" : "discharging");
 		}
 	}
 
 	if (charger_policy_check_usb_present(policy)) {
 		if (!policy->demo_sts && !policy->expired_sts) {
-			pr_info("policy: %s(): demo_enable && overtime_enable is disable\n", "charger_policy_status_need_sleep");
-			goto sleep_policy;
+			sleep_reason = "demo_enable && overtime_enable is disable";
+			goto sleep_policy_log;
 		}
 
-		if (ret >= 0 && policy->low_temp_status && ((int)batt_temp <= 150)) {
-			pr_info("policy: %s(): low temperature found.\n", "charger_policy_status_need_sleep");
-			goto sleep_policy;
+		ret = charger_policy_get_prop_by_name(policy->battery_phy_name,
+						      POWER_SUPPLY_PROP_TEMP,
+						      &batt_temp);
+		if (ret < 0) {
+			pr_info("policy: %s(): Get battery temperature failed\n",
+				"charger_policy_check_low_temperature");
+		} else if (policy->low_temp_status && (int)batt_temp <= 150) {
+			pr_info("policy: %s(): temperature=%d threshold=%d\n",
+				"charger_policy_check_low_temperature", batt_temp, 150);
+			sleep_reason = "low temperature found";
+			goto sleep_policy_log;
 		}
 
 		if (policy->policy_disabled) {
-			pr_info("policy: %s(): policy force disabled\n", "charger_policy_status_need_sleep");
-			goto sleep_policy;
+			sleep_reason = "policy force disabled";
+			goto sleep_policy_log;
 		}
 
-		if (policy->status < 5) {
+		if (policy->status < ARRAY_SIZE(policy_status_list)) {
 			alarm_try_to_cancel(&policy->timeout_alarm);
 			alarm_start_relative(&policy->timeout_alarm, ns_to_ktime(1000000LL * policy->force_discharging_sec_nanoseconds));
-			if (policy->ws) {
-				__pm_stay_awake(policy->ws);
-			}
-
-			switch (policy->status) {
-			case 0:
-				charger_policy_status_disable(policy);
-				break;
-			case 1:
-				charger_policy_status_runchging(policy);
-				break;
-			case 2:
-				charger_policy_status_ide(policy);
-				break;
-			case 3:
-				charger_policy_status_rundischging(policy);
-				break;
-			case 4:
-				charger_policy_status_forcedischging(policy);
-				break;
-			default:
-				break;
-			}
-
-			if (policy->ws) {
-				__pm_relax(policy->ws);
-			}
+			__pm_stay_awake(policy->ws);
+			status_handler = policy_status_list[policy->status].handler;
+			if (status_handler)
+				status_handler(policy);
+			__pm_relax(policy->ws);
 			return;
 		}
 
@@ -778,24 +795,26 @@ static void charger_policy_timeout_handler_work(struct work_struct *work)
 		BUG();
 	}
 
+	goto sleep_policy;
+sleep_policy_log:
+	pr_info("policy: %s(): %s\n", "charger_policy_status_need_sleep",
+		sleep_reason);
 sleep_policy:
 	if (policy->status != 0) {
-		if (policy->ws) {
-			__pm_stay_awake(policy->ws);
-		}
+		__pm_stay_awake(policy->ws);
 		charger_policy_ctrl_charging_enable(policy, 1, 1);
-		policy->expired_sts = 0;
+		policy->running_discharging = 0;
 		policy->force_discharging_start_time = 0;
 		policy->status = 0;
+		policy->last_status = 0;
 		charger_policy_disable_cas(policy, 0);
-		if (policy->ws) {
-			__pm_relax(policy->ws);
-		}
+		__pm_relax(policy->ws);
 	} else {
 		charger_policy_ctrl_charging_enable(policy, 1, 1);
-		policy->expired_sts = 0;
+		policy->running_discharging = 0;
 		policy->force_discharging_start_time = 0;
 		policy->status = 0;
+		policy->last_status = 0;
 		charger_policy_disable_cas(policy, 0);
 	}
 
@@ -808,11 +827,11 @@ sleep_policy:
 /* Alarm timer callback */
 static enum alarmtimer_restart charger_policy_timeout_alarm_cb(struct alarm *alarm, ktime_t now)
 {
-	struct charger_policy *policy = container_of(alarm, struct charger_policy, timeout_alarm);
+	struct charger_policy_info *policy = container_of(alarm, struct charger_policy_info, timeout_alarm);
 
 	alarm_start_relative(alarm, ns_to_ktime(1000000LL * policy->force_discharging_sec_nanoseconds));
 	if (!delayed_work_pending(&policy->timeout_work)) {
-		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(25));
+		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
 	}
 	return ALARMTIMER_RESTART;
 }
@@ -820,7 +839,7 @@ static enum alarmtimer_restart charger_policy_timeout_alarm_cb(struct alarm *ala
 /* Power supply notifier switch callback */
 static int charger_policy_notifier_switch(struct notifier_block *nb, unsigned long action, void *data)
 {
-	struct charger_policy *policy = container_of(nb, struct charger_policy, nb);
+	struct charger_policy_info *policy = container_of(nb, struct charger_policy_info, nb);
 	struct power_supply *psy = data;
 
 	if (action != 0) /* Only process property changes */
@@ -829,7 +848,7 @@ static int charger_policy_notifier_switch(struct notifier_block *nb, unsigned lo
 	if (!delayed_work_pending(&policy->timeout_work)) {
 		if (strcmp(psy->desc->name, policy->battery_phy_name) == 0 ||
 		    strcmp(psy->desc->name, "usb") == 0) {
-			queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(50));
+			queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(200));
 		}
 	}
 
@@ -837,9 +856,9 @@ static int charger_policy_notifier_switch(struct notifier_block *nb, unsigned lo
 }
 
 /* Callback methods registered in zte_misc */
-static int charger_policy_demo_sts_set(const char *val, void *priv)
+static int charger_policy_demo_sts_set(const char *val, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
 
 	if (!policy) {
@@ -865,17 +884,18 @@ static int charger_policy_demo_sts_set(const char *val, void *priv)
 				__pm_relax(policy->ws);
 			}
 		}
-		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(25));
+		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
 	}
 
 	return 0;
 }
 
-static int charger_policy_demo_sts_get(char *buf, void *priv)
+static int charger_policy_demo_sts_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_demo_sts_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -886,11 +906,12 @@ static int charger_policy_demo_sts_get(char *buf, void *priv)
 	return 1;
 }
 
-static int charger_policy_expired_sts_get(char *buf, void *priv)
+static int charger_policy_expired_sts_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_expired_sts_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -900,9 +921,9 @@ static int charger_policy_expired_sts_get(char *buf, void *priv)
 	return 1;
 }
 
-static int charger_policy_expired_sec_set(const char *val, void *priv)
+static int charger_policy_expired_sec_set(const char *val, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
 
 	if (!policy) {
@@ -918,11 +939,12 @@ static int charger_policy_expired_sec_set(const char *val, void *priv)
 	return 0;
 }
 
-static int charger_policy_expired_sec_get(char *buf, void *priv)
+static int charger_policy_expired_sec_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_expired_sec_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -931,9 +953,9 @@ static int charger_policy_expired_sec_get(char *buf, void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->timeout_seconds_runtime);
 }
 
-static int charger_policy_force_disching_sec_set(const char *val, void *priv)
+static int charger_policy_force_disching_sec_set(const char *val, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
 
 	if (!policy) {
@@ -949,11 +971,12 @@ static int charger_policy_force_disching_sec_set(const char *val, void *priv)
 	return 0;
 }
 
-static int charger_policy_force_disching_sec_get(char *buf, void *priv)
+static int charger_policy_force_disching_sec_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_force_disching_sec_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -962,9 +985,9 @@ static int charger_policy_force_disching_sec_get(char *buf, void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->force_discharging_sec);
 }
 
-static int charger_policy_cap_min_set(const char *val, void *priv)
+static int charger_policy_cap_min_set(const char *val, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
 
 	if (!policy) {
@@ -981,11 +1004,12 @@ static int charger_policy_cap_min_set(const char *val, void *priv)
 	return 0;
 }
 
-static int charger_policy_cap_min_get(char *buf, void *priv)
+static int charger_policy_cap_min_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_cap_min_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -993,9 +1017,9 @@ static int charger_policy_cap_min_get(char *buf, void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->expired_min_cap);
 }
 
-static int charger_policy_cap_max_set(const char *val, void *priv)
+static int charger_policy_cap_max_set(const char *val, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
 
 	if (!policy) {
@@ -1013,11 +1037,12 @@ static int charger_policy_cap_max_set(const char *val, void *priv)
 	return 0;
 }
 
-static int charger_policy_cap_max_get(char *buf, void *priv)
+static int charger_policy_cap_max_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_cap_max_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -1025,9 +1050,9 @@ static int charger_policy_cap_max_get(char *buf, void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->expired_max_cap);
 }
 
-static int charger_policy_enable_status_set(const char *val, void *priv)
+static int charger_policy_enable_status_set(const char *val, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
 
 	if (!policy) {
@@ -1043,11 +1068,12 @@ static int charger_policy_enable_status_set(const char *val, void *priv)
 	return 0;
 }
 
-static int charger_policy_enable_status_get(char *buf, void *priv)
+static int charger_policy_enable_status_get(char *buf, const void *priv)
 {
-	struct charger_policy *policy = priv;
+	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
 	if (!policy) {
+		pr_info("policy: %s(): priv is null\n", "charger_policy_enable_status_get");
 		strcpy(buf, "arg is null");
 		return 11;
 	}
@@ -1108,7 +1134,7 @@ static int policy_psy_get_property(struct power_supply *psy,
 				   enum power_supply_property psp,
 				   union power_supply_propval *val)
 {
-	struct charger_policy *policy = power_supply_get_drvdata(psy);
+	struct charger_policy_info *policy = power_supply_get_drvdata(psy);
 
 	if (!policy) {
 		pr_info("policy: %s(): policy_info is null!!!\n", "policy_psy_get_property");
@@ -1133,6 +1159,7 @@ static int policy_psy_get_property(struct power_supply *psy,
 		val->intval = (policy->policy_disabled == 0);
 		break;
 	default:
+		pr_info("policy: unsupported get property %d\n", psp);
 		return -EINVAL;
 	}
 
@@ -1143,7 +1170,7 @@ static int policy_psy_set_property(struct power_supply *psy,
 				   enum power_supply_property psp,
 				   const union power_supply_propval *val)
 {
-	struct charger_policy *policy = power_supply_get_drvdata(psy);
+	struct charger_policy_info *policy = power_supply_get_drvdata(psy);
 
 	if (!policy) {
 		pr_info("policy: %s(): policy_info is null!!!\n", "policy_psy_set_property");
@@ -1159,10 +1186,11 @@ static int policy_psy_set_property(struct power_supply *psy,
 		policy->policy_disabled = (val->intval == 0);
 		break;
 	default:
+		pr_info("policy: unsupported set property %d\n", psp);
 		return -EINVAL;
 	}
 
-	queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(25));
+	queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
 	return 0;
 }
 
@@ -1204,7 +1232,6 @@ bool charger_policy_get_status(void)
 	ret = power_supply_get_property(psy, POWER_SUPPLY_PROP_AUTHENTIC, &pval);
 	if (ret < 0) {
 		pr_info("policy: %s(): get property %u failed from %s\n", "charger_policy_get_status", POWER_SUPPLY_PROP_AUTHENTIC, "policy");
-		power_supply_put(psy);
 		return false;
 	}
 
@@ -1215,11 +1242,10 @@ bool charger_policy_get_status(void)
 /* Delayed Probe work */
 static void charger_policy_probe_work(struct work_struct *work)
 {
-	struct charger_policy *policy = container_of(work, struct charger_policy, probe_work.work);
+	struct charger_policy_info *policy = container_of(work, struct charger_policy_info, probe_work.work);
 	struct power_supply_config psy_cfg = {};
 	int ret;
 
-	pr_info("policy: [ANTIGRAVITY_VERIFY] custom zte_charger_policy driver probe_work running!\n");
 	pr_info("policy: %s(): begin execution\n", "charger_policy_probe_work");
 
 	policy->raw_field_472 = 0;
@@ -1237,7 +1263,7 @@ static void charger_policy_probe_work(struct work_struct *work)
 
 	alarm_init(&policy->timeout_alarm, ALARM_BOOTTIME, charger_policy_timeout_alarm_cb);
 
-	policy->timeout_wq = alloc_workqueue("charger-policy-service", WQ_UNBOUND | WQ_FREEZABLE | WQ_MEM_RECLAIM, 1);
+	policy->timeout_wq = create_singlethread_workqueue("charger-policy-service");
 	if (!policy->timeout_wq) {
 		pr_info("policy: %s(): timeout workqueue allocation failed\n", "charger_policy_probe_work");
 		goto check_retry;
@@ -1270,7 +1296,7 @@ static void charger_policy_probe_work(struct work_struct *work)
 
 	policy->ws = wakeup_source_register(policy->dev, "charger_policy_service");
 	if (policy->ws) {
-		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(25));
+		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
 		pr_info("policy: %s(): probe successfully completed\n", "charger_policy_probe_work");
 		return;
 	}
@@ -1290,7 +1316,7 @@ check_retry:
 	}
 
 	pr_info("policy: %s(): charger policy driver retry[%d]!!!\n", "charger_policy_probe_work", charger_policy_check_retry_probe_count);
-	queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(1250));
+	queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(5000));
 }
 
 /* Probe driver initialization */
@@ -1298,10 +1324,10 @@ static int charger_policy_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct device_node *np = dev->of_node;
-	struct charger_policy *policy;
+	struct charger_policy_info *policy;
+	const char *parse_property = NULL;
 	int ret;
 
-	pr_info("policy: [ANTIGRAVITY_VERIFY] custom zte_charger_policy driver probe begin!\n");
 	pr_info("policy: %s(): charge policy driver probe begin\n", "charger_policy_probe");
 
 	if (zte_poweroff_charging_status()) {
@@ -1319,111 +1345,165 @@ static int charger_policy_probe(struct platform_device *pdev)
 	/* Parse Device Tree (DTS) properties */
 	ret = of_property_read_u32(np, "policy,enable", &policy->policy_enable);
 	if (ret < 0) {
-		policy->policy_enable = 0;
+		if (ret == -EINVAL)
+			policy->policy_enable = 0;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,enable rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"enable\" property: [%u]\n", "charger_policy_probe", policy->policy_enable);
 
 	ret = of_property_read_u32(np, "policy,retry-times", &policy->retry_times);
 	if (ret < 0) {
-		policy->retry_times = 10;
+		if (ret == -EINVAL)
+			policy->retry_times = 10;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,retry-times rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"retry-times\" property: [%u]\n", "charger_policy_probe", policy->retry_times);
 
 	ret = of_property_read_u32(np, "policy,expired-mode-enable", &policy->expired_mode);
 	if (ret < 0) {
-		policy->expired_mode = 1;
+		if (ret == -EINVAL)
+			policy->expired_mode = 1;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,expired-mode-enable rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"expired-mode-enable\" property: [%u]\n", "charger_policy_probe", policy->expired_mode);
 
 	ret = of_property_read_u32(np, "policy,low-temp-enable", &policy->low_temp);
 	if (ret < 0) {
-		policy->low_temp = 0;
+		if (ret == -EINVAL)
+			policy->low_temp = 0;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,low-temp-enable rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"low-temp-enable\" property: [%u]\n", "charger_policy_probe", policy->low_temp);
 
 	ret = of_property_read_u32(np, "policy,have-power-path", &policy->have_power_path);
 	if (ret < 0) {
-		policy->have_power_path = 1;
+		if (ret == -EINVAL)
+			policy->have_power_path = 1;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,have-power-path rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"have-power-path\" property: [%u]\n", "charger_policy_probe", policy->have_power_path);
 
 	ret = of_property_read_u32(np, "policy,timeout-seconds", &policy->timeout_seconds);
 	if (ret < 0) {
-		policy->timeout_seconds = 86400;
+		if (ret == -EINVAL)
+			policy->timeout_seconds = 86400;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,timeout-seconds rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"timeout-seconds\" property: [%u]\n", "charger_policy_probe", policy->timeout_seconds);
 
 	ret = of_property_read_u32(np, "policy,expired-max-capacity", &policy->expired_max_cap);
 	if (ret < 0) {
-		policy->expired_max_cap = 70;
+		if (ret == -EINVAL)
+			policy->expired_max_cap = 70;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,expired-max-capacity rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"expired-max-capacity\" property: [%u]\n", "charger_policy_probe", policy->expired_max_cap);
 
 	ret = of_property_read_u32(np, "policy,expired-min-capacity", &policy->expired_min_cap);
 	if (ret < 0) {
-		policy->expired_min_cap = 50;
+		if (ret == -EINVAL)
+			policy->expired_min_cap = 50;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,expired-min-capacity rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"expired-min-capacity\" property: [%u]\n", "charger_policy_probe", policy->expired_min_cap);
 
 	ret = of_property_read_u32(np, "policy,demo-max-capacity", &policy->demo_max_cap);
 	if (ret < 0) {
-		policy->demo_max_cap = 70;
+		if (ret == -EINVAL)
+			policy->demo_max_cap = 70;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,demo-max-capacity rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"demo-max-capacity\" property: [%u]\n", "charger_policy_probe", policy->demo_max_cap);
 
 	ret = of_property_read_u32(np, "policy,demo-min-capacity", &policy->demo_min_cap);
 	if (ret < 0) {
-		policy->demo_min_cap = 50;
+		if (ret == -EINVAL)
+			policy->demo_min_cap = 50;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,demo-min-capacity rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"demo-min-capacity\" property: [%u]\n", "charger_policy_probe", policy->demo_min_cap);
 
 	ret = of_property_read_u32(np, "policy,no-powerpath-delta-capacity", &policy->no_powerpath_delta);
 	if (ret < 0) {
-		policy->no_powerpath_delta = 10;
+		if (ret == -EINVAL)
+			policy->no_powerpath_delta = 10;
+		else
+			pr_info("policy: charger_policy_parse_dt(): failed policy,no-powerpath-delta-capacity rc=%d\n", ret);
 	}
 	pr_info("policy: %s(): config: \"no-powerpath-delta-capacity\" property: [%u]\n", "charger_policy_probe", policy->no_powerpath_delta);
 
 	ret = of_property_read_string(np, "policy,battery-phy-name", &policy->battery_phy_name);
-	if (ret < 0) {
+	if (ret == -EINVAL) {
 		policy->battery_phy_name = "battery";
+	} else if (ret < 0) {
+		parse_property = "policy,battery-phy-name";
+		goto parse_string_error;
 	}
 	pr_info("policy: %s(): config: \"battery-phy-name\" property: [%s]\n", "charger_policy_probe", policy->battery_phy_name);
 
 	ret = of_property_read_string(np, "policy,zte-battery-phy-name", &policy->zte_battery_phy_name);
-	if (ret < 0) {
+	if (ret == -EINVAL) {
 		policy->zte_battery_phy_name = "zte_battery";
+	} else if (ret < 0) {
+		parse_property = "policy,zte-battery-phy-name";
+		goto parse_string_error;
 	}
 	pr_info("policy: %s(): config: \"zte-battery-phy-name\" property: [%s]\n", "charger_policy_probe", policy->zte_battery_phy_name);
 
 	ret = of_property_read_string(np, "policy,zte-usb-phy-name", &policy->zte_usb_phy_name);
-	if (ret < 0) {
+	if (ret == -EINVAL) {
 		policy->zte_usb_phy_name = "zte_usb";
+	} else if (ret < 0) {
+		parse_property = "policy,zte-usb-phy-name";
+		goto parse_string_error;
 	}
 	pr_info("policy: %s(): config: \"zte-usb-phy-name\" property: [%s]\n", "charger_policy_probe", policy->zte_usb_phy_name);
 
 	ret = of_property_read_string(np, "policy,interface-phy-name", &policy->interface_phy_name);
-	if (ret < 0) {
+	if (ret == -EINVAL) {
 		policy->interface_phy_name = "interface";
+	} else if (ret < 0) {
+		parse_property = "policy,interface-phy-name";
+		goto parse_string_error;
 	}
 	pr_info("policy: %s(): config: \"interface-phy-name\" property: [%s]\n", "charger_policy_probe", policy->interface_phy_name);
 
 	ret = of_property_read_string(np, "policy,cas-phy-name", &policy->cas_phy_name);
-	if (ret < 0) {
+	if (ret == -EINVAL) {
 		policy->cas_phy_name = "cas";
+	} else if (ret < 0) {
+		parse_property = "policy,cas-phy-name";
+		goto parse_string_error;
 	}
 	pr_info("policy: %s(): config: \"cas-phy-name\" property: [%s]\n", "charger_policy_probe", policy->cas_phy_name);
 
 	if (policy->policy_enable) {
-		policy->probe_wq = alloc_workqueue("policy_probe_wq", WQ_UNBOUND | WQ_FREEZABLE | WQ_MEM_RECLAIM, 1);
+		policy->probe_wq = create_singlethread_workqueue("policy_probe_wq");
 		if (!policy->probe_wq)
 			return -ENOMEM;
 
 		INIT_DELAYED_WORK(&policy->probe_work, charger_policy_probe_work);
-		queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(1250));
+		queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(5000));
 		return 0;
 	}
 
 	pr_info("policy: %s(): charge policy is disabled, please config policy,enable\n", "charger_policy_probe");
+	devm_kfree(dev, policy);
+	return 0;
+
+parse_string_error:
+	pr_info("policy: charger_policy_parse_dt(): failed %s rc=%d\n",
+		parse_property, ret);
 	devm_kfree(dev, policy);
 	return 0;
 }
@@ -1431,7 +1511,7 @@ static int charger_policy_probe(struct platform_device *pdev)
 /* Remove platform driver instance */
 static void charger_policy_remove(struct platform_device *pdev)
 {
-	struct charger_policy *policy = platform_get_drvdata(pdev);
+	struct charger_policy_info *policy = platform_get_drvdata(pdev);
 
 	pr_info("policy: %s(): removing driver instance\n", "charger_policy_remove");
 
@@ -1451,7 +1531,6 @@ static const struct of_device_id charger_policy_match_table[] = {
 	{ .compatible = "zte,charger-policy-service", },
 	{ },
 };
-MODULE_DEVICE_TABLE(of, charger_policy_match_table);
 
 static struct platform_driver charger_policy_driver = {
 	.probe = charger_policy_probe,
@@ -1465,5 +1544,6 @@ static struct platform_driver charger_policy_driver = {
 module_platform_driver(charger_policy_driver);
 
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Antigravity Senior Quality & Systems Engineer");
-MODULE_DESCRIPTION("Nubia/ZTE Charger Policy Driver Reconstruction");
+MODULE_INFO(built_with, "DDK");
+MODULE_AUTHOR("zte.charger <zte.charger@zte.com>");
+MODULE_DESCRIPTION("Charge policy Service Driver");

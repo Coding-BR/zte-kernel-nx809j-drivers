@@ -26,6 +26,40 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
     )
 
 
+def write_markdown(path: Path, driver: str, tasks: list[dict[str, Any]]) -> None:
+    lines = [
+        f"# Microtarefas Obrigatorias: {driver}",
+        "",
+        "Cada linha representa uma funcao stock com fonte revisado e evidencias de compilacao, KCFI e teste.",
+        "",
+        "| ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |",
+        "|---|---|---|---|---|---|",
+    ]
+    for task in tasks:
+        source = f"{task['source_file']}:{task['source_function']}"
+        lines.append(
+            f"| {task['id']} | {task['stock_function']} | {task['stock_entry']} | "
+            f"{task['category']} | {source} | {task['status']} |"
+        )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
+def write_prompts(path: Path, driver: str, tasks: list[dict[str, Any]]) -> None:
+    lines = [f"# Prompts Atomicos: {driver}", ""]
+    for task in tasks:
+        lines.extend(
+            [
+                f"## {task['id']} - {task['stock_function']}",
+                "",
+                "```text",
+                str(task.get("implementation_prompt", "")).rstrip(),
+                "```",
+                "",
+            ]
+        )
+    path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -86,12 +120,14 @@ def main() -> int:
     driver_root = engineering_root / "curated" / args.driver
     validation_root = engineering_root / "validation" / args.driver
     manifest_path = driver_root / "MICROTASKS.json"
+    map_path = driver_root / "reconstruction_map.json"
 
-    for path in (manifest_path, args.build_report, args.test_report, args.kcfi_report):
+    for path in (manifest_path, map_path, args.build_report, args.test_report, args.kcfi_report):
         if not path.resolve().is_file():
             raise ValueError(f"missing required input: {path}")
 
     manifest = read_json(manifest_path)
+    reconstruction_map = read_json(map_path)
     build_report = read_json(args.build_report.resolve())
     test_report = read_json(args.test_report.resolve())
     kcfi_report = read_json(args.kcfi_report.resolve())
@@ -119,6 +155,14 @@ def main() -> int:
     if not isinstance(tasks, list) or not tasks:
         raise ValueError("microtask manifest has no tasks")
     functions = {task.get("stock_function") for task in tasks}
+    mappings = {
+        item.get("stock_function"): item
+        for item in reconstruction_map.get("mappings", [])
+        if isinstance(item, dict) and item.get("status") == "reviewed"
+    }
+    missing_mappings = functions - set(mappings)
+    if missing_mappings:
+        raise ValueError("functions missing reviewed source mapping: " + ", ".join(sorted(missing_mappings)))
     missing_tests = functions - covered
     missing_kcfi = functions - set(kcfi_comparisons) - kcfi_not_applicable
     unknown_na = kcfi_not_applicable - functions
@@ -139,6 +183,7 @@ def main() -> int:
     for task in tasks:
         task_id = str(task["id"])
         function = str(task["stock_function"])
+        mapping = mappings[function]
         evidence_dir = validation_root / "microtasks" / task_id
         compile_path = evidence_dir / "compile.json"
         test_path = evidence_dir / "test.json"
@@ -190,6 +235,14 @@ def main() -> int:
         )
 
         task["status"] = "PASS"
+        task["source_file"] = mapping["source_file"]
+        task["source_function"] = mapping["source_function"]
+        prompt_lines = str(task.get("implementation_prompt", "")).splitlines()
+        task["implementation_prompt"] = "\n".join(
+            f"Alvo no fonte: {task['source_file']}:{task['source_function']}"
+            if line.startswith("Alvo no fonte:") else line
+            for line in prompt_lines
+        )
         task["evidence"] = [
             {
                 "role": role,
@@ -208,6 +261,8 @@ def main() -> int:
     manifest["status"] = "PASS"
     manifest["attestation_tool"] = str(Path(__file__).resolve())
     write_json(manifest_path, manifest)
+    write_markdown(driver_root / "MICROTASKS.md", args.driver, tasks)
+    write_prompts(driver_root / "MICROTASK_PROMPTS.md", args.driver, tasks)
     write_json(
         validation_root / "microtask_validation.json",
         {

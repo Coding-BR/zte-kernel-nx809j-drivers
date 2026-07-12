@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "CRITICAL: charger policy controls charging, discharge, alarms, wake locks and power-supply state shared with Android.",
+  "dependencies": [
+    "zte_power_supply",
+    "zte_misc callback registry",
+    "battery, USB, wireless and CAS power supplies",
+    "charger-policy-service Device Tree node"
+  ],
+  "rollback": "Do not unload or replace the stock charging stack automatically. Hardware validation requires external power monitoring, thermal monitoring, continuous logs and immediate reboot rollback.",
+  "stop_conditions": [
+    "kernel Oops or CFI failure",
+    "unexpected charge or discharge transition",
+    "battery temperature outside supervised limits",
+    "power-supply notifier loop",
+    "ADB loss",
+    "rollback unavailable"
+  ],
+  "automatic_hardware_test_allowed": false
+}
