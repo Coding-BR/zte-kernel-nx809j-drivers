@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "comparisons": [
+    {
+      "surface": "ELF/KMI",
+      "result": "PASS",
+      "detail": "exact imports, aliases, namespaces and target vermagic"
+    },
+    {
+      "surface": "Ghidra",
+      "result": "PASS",
+      "detail": "21/21 inventory and per-function call multiplicity match"
+    },
+    {
+      "surface": "KCFI",
+      "result": "PASS",
+      "detail": "18/18 indirect-call type IDs match under the target Kbuild"
+    },
+    {
+      "surface": "behavior",
+      "result": "PASS",
+      "detail": "21 functions, parse failures, axial bounds, mutex use, partial sysfs creation, registration failures and teardown covered twice"
+    },
+    {
+      "surface": "data",
+      "result": "PASS",
+      "detail": "enable defaults 0, all six sensitivity defaults 100, and private-data offsets match stock"
+    }
+  ],
+  "justified_differences": [
+    {
+      "difference": "OEM vermagic is maybe-dirty-4k",
+      "justification": "candidate targets the connected-kernel KMI recorded in target_kernel.json"
+    },
+    {
+      "difference": "candidate carries debug and BTF sections from the reproducible target build",
+      "justification": "ELF size is not an ABI or behavior parity requirement"
+    }
+  ],
+  "evidence": [
+    "engenharia/validation/zte_sensor_sensitivity/driver_audit_final.json",
+    "engenharia/validation/zte_sensor_sensitivity/ghidra_stock_candidate_comparison.json",
+    "engenharia/validation/zte_sensor_sensitivity/kcfi_callback_surface.json",
+    "engenharia/validation/zte_sensor_sensitivity/host_test_report.json",
+    "engenharia/validation/zte_sensor_sensitivity/microtask_audit.json"
+  ],
+  "candidate_sha256": "f3dddeecac42f78adaa2dffa58f4030c1e53ba161f0649bb14c01afaa0a6871e",
+  "candidate_size": 229296,
+  "blockers": []
+}

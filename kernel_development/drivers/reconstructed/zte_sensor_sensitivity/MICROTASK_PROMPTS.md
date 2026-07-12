@@ -11,7 +11,7 @@ Funcao stock: sensors_sensitivity_register
 Entrada Ghidra: 001005b4
 Tamanho stock: 864 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:sensors_sensitivity_register
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0000_001005b4_sensors_sensitivity_register.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0000_001005b4_sensors_sensitivity_register.jsonl
 
@@ -40,7 +40,7 @@ Funcao stock: sensor_create_sysfs_interfaces
 Entrada Ghidra: 00100944
 Tamanho stock: 252 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:sensor_create_sysfs_interfaces
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0001_00100944_sensor_create_sysfs_interfaces.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0001_00100944_sensor_create_sysfs_interfaces.jsonl
 
@@ -69,7 +69,7 @@ Funcao stock: sensors_sensitivity_unregister
 Entrada Ghidra: 00100a44
 Tamanho stock: 180 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:sensors_sensitivity_unregister
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0002_00100a44_sensors_sensitivity_unregister.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0002_00100a44_sensors_sensitivity_unregister.jsonl
 
@@ -98,7 +98,7 @@ Funcao stock: accel_enable_show
 Entrada Ghidra: 00100afc
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_enable_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0003_00100afc_accel_enable_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0003_00100afc_accel_enable_show.jsonl
 
@@ -127,7 +127,7 @@ Funcao stock: accel_enable_store
 Entrada Ghidra: 00100b80
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_enable_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0004_00100b80_accel_enable_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0004_00100b80_accel_enable_store.jsonl
 
@@ -156,7 +156,7 @@ Funcao stock: accel_x_axial_show
 Entrada Ghidra: 00100c74
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_x_axial_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0005_00100c74_accel_x_axial_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0005_00100c74_accel_x_axial_show.jsonl
 
@@ -185,7 +185,7 @@ Funcao stock: accel_x_axial_store
 Entrada Ghidra: 00100cf8
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_x_axial_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0006_00100cf8_accel_x_axial_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0006_00100cf8_accel_x_axial_store.jsonl
 
@@ -214,7 +214,7 @@ Funcao stock: accel_y_axial_show
 Entrada Ghidra: 00100de8
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_y_axial_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0007_00100de8_accel_y_axial_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0007_00100de8_accel_y_axial_show.jsonl
 
@@ -243,7 +243,7 @@ Funcao stock: accel_y_axial_store
 Entrada Ghidra: 00100e6c
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_y_axial_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0008_00100e6c_accel_y_axial_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0008_00100e6c_accel_y_axial_store.jsonl
 
@@ -272,7 +272,7 @@ Funcao stock: accel_z_axial_show
 Entrada Ghidra: 00100f5c
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_z_axial_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0009_00100f5c_accel_z_axial_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0009_00100f5c_accel_z_axial_show.jsonl
 
@@ -301,7 +301,7 @@ Funcao stock: accel_z_axial_store
 Entrada Ghidra: 00100fe0
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:accel_z_axial_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0010_00100fe0_accel_z_axial_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0010_00100fe0_accel_z_axial_store.jsonl
 
@@ -330,7 +330,7 @@ Funcao stock: gyro_enable_show
 Entrada Ghidra: 001010d0
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_enable_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0011_001010d0_gyro_enable_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0011_001010d0_gyro_enable_show.jsonl
 
@@ -359,7 +359,7 @@ Funcao stock: gyro_enable_store
 Entrada Ghidra: 00101154
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_enable_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0012_00101154_gyro_enable_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0012_00101154_gyro_enable_store.jsonl
 
@@ -388,7 +388,7 @@ Funcao stock: gyro_x_axial_show
 Entrada Ghidra: 00101248
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_x_axial_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0013_00101248_gyro_x_axial_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0013_00101248_gyro_x_axial_show.jsonl
 
@@ -417,7 +417,7 @@ Funcao stock: gyro_x_axial_store
 Entrada Ghidra: 001012cc
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_x_axial_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0014_001012cc_gyro_x_axial_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0014_001012cc_gyro_x_axial_store.jsonl
 
@@ -446,7 +446,7 @@ Funcao stock: gyro_y_axial_show
 Entrada Ghidra: 001013bc
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_y_axial_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0015_001013bc_gyro_y_axial_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0015_001013bc_gyro_y_axial_show.jsonl
 
@@ -475,7 +475,7 @@ Funcao stock: gyro_y_axial_store
 Entrada Ghidra: 00101440
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_y_axial_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0016_00101440_gyro_y_axial_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0016_00101440_gyro_y_axial_store.jsonl
 
@@ -504,7 +504,7 @@ Funcao stock: gyro_z_axial_show
 Entrada Ghidra: 00101530
 Tamanho stock: 128 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_z_axial_show
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0017_00101530_gyro_z_axial_show.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0017_00101530_gyro_z_axial_show.jsonl
 
@@ -533,7 +533,7 @@ Funcao stock: gyro_z_axial_store
 Entrada Ghidra: 001015b4
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:gyro_z_axial_store
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0018_001015b4_gyro_z_axial_store.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0018_001015b4_gyro_z_axial_store.jsonl
 
@@ -562,7 +562,7 @@ Funcao stock: init_module
 Entrada Ghidra: 001016a4
 Tamanho stock: 84 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:init_module
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0019_001016a4_init_module.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0019_001016a4_init_module.jsonl
 
@@ -591,7 +591,7 @@ Funcao stock: cleanup_module
 Entrada Ghidra: 001016fc
 Tamanho stock: 28 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_sensor_sensitivity.c:cleanup_module
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\decompiled\0020_001016fc_cleanup_module.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_sensor_sensitivity.ko\pcode\0020_001016fc_cleanup_module.jsonl
 

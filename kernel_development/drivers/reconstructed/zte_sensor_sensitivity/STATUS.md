@@ -1,23 +1,13 @@
 # Status de reconstrucao do `zte_sensor_sensitivity`
 
-## Estado atual
+O driver concluiu os gates estaticos 0 a 7: stock rastreado, 21 funcoes reconstruidas e mapeadas, imports/aliases exatos, build reproduzivel, KCFI 18/18, comparacao Ghidra 21/21, harness comportamental reproduzivel e 21 microtarefas atestadas.
 
-Reconstrucao estatica em andamento. Nao e permitido declarar 100% concluido.
+O `.ko` de SHA-256 `f3dddeecac42f78adaa2dffa58f4030c1e53ba161f0649bb14c01afaa0a6871e` foi promovido somente como candidato estatico validado em `curated`.
 
-Comprovado nesta etapa:
+Nao e permitido declarar 100% concluido. Faltam revisao independente, validacao supervisionada no hardware e promocao final (gates 8 a 10).
 
-- stock SHA-256 `1f1340bea19dddf3aa5d5b48028c47611f8a222f025b43dde883950573c64032`;
-- mapa Ghidra das 21 funcoes criado e revisado;
-- imports e aliases do candidato iguais ao stock;
-- build limpo e reproduzivel para o kernel alvo;
-- KCFI 18/18 nos callbacks sysfs e lifecycle;
-- inventario e multiplicidade de chamadas Ghidra 21/21 em paridade.
+- Stock: `1f1340bea19dddf3aa5d5b48028c47611f8a222f025b43dde883950573c64032`.
+- Restricao: nao carregar ao lado do modulo stock nem executar `insmod`, unbind ou unload automaticamente.
+- Rollback: testar apenas em kernel RAM descartavel, com logs continuos e reinicializacao de recuperacao disponivel.
 
-Ainda falta:
-
-- harness comportamental reproduzivel cobrindo limites, parse, mutex dos enables, criacao parcial de sysfs e todos os rollbacks;
-- atestacao das 21 microtarefas;
-- fechamento formal dos gates 0 a 7;
-- revisao independente, hardware supervisionado e promocao final (gates 8 a 10).
-
-O `.ko` atual nao foi promovido nesta etapa e nao deve ser carregado no aparelho.
+Estado autoritativo: `engenharia/validation/zte_sensor_sensitivity/CYCLE_VALIDATION.md`.

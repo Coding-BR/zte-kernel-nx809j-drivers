@@ -6,6 +6,9 @@
  * extracted from NX809J (Red Magic 11 Pro) production firmware.
  */
 
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#include "tests/host_stubs.h"
+#else
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -16,6 +19,7 @@
 #include <linux/sysfs.h>
 #include <linux/ctype.h>
 #include <linux/string.h>
+#endif
 
 #define DRIVER_NAME "zte_sensor_sensitivity"
 #define NUBIA_SENSORS_LOG_TAG "NUBIA_SENSORS_SENS"
@@ -51,24 +55,18 @@ static struct sensors_sens_data *sensors_sens_data_ptr = NULL;
 
 static ssize_t accel_enable_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 105);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->accel_enable);
 }
 
 static ssize_t accel_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -88,24 +86,18 @@ static ssize_t accel_enable_store(struct device *dev, struct device_attribute *a
 
 static ssize_t accel_x_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 134);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->accel_x_axial);
 }
 
 static ssize_t accel_x_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -113,7 +105,7 @@ static ssize_t accel_x_axial_store(struct device *dev, struct device_attribute *
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d, val=%d\n", NUBIA_SENSORS_LOG_TAG, __func__, 120, val);
 
-	if (val >= 201) {
+	if ((unsigned int)val >= 201) {
 		pr_err("%s [%s]: line %d, out of range (%d >= 201)\n", NUBIA_SENSORS_LOG_TAG, __func__, 122, val);
 		return -EINVAL;
 	}
@@ -125,24 +117,18 @@ static ssize_t accel_x_axial_store(struct device *dev, struct device_attribute *
 
 static ssize_t accel_y_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 134);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->accel_y_axial);
 }
 
 static ssize_t accel_y_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -150,7 +136,7 @@ static ssize_t accel_y_axial_store(struct device *dev, struct device_attribute *
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d, val=%d\n", NUBIA_SENSORS_LOG_TAG, __func__, 120, val);
 
-	if (val >= 201) {
+	if ((unsigned int)val >= 201) {
 		pr_err("[%s] [%s:%d] accel y sensitivity value illegal\n",
 			NUBIA_SENSORS_LOG_TAG, __func__, 165);
 		return -EINVAL;
@@ -163,24 +149,18 @@ static ssize_t accel_y_axial_store(struct device *dev, struct device_attribute *
 
 static ssize_t accel_z_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 134);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->accel_z_axial);
 }
 
 static ssize_t accel_z_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -188,7 +168,7 @@ static ssize_t accel_z_axial_store(struct device *dev, struct device_attribute *
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d, val=%d\n", NUBIA_SENSORS_LOG_TAG, __func__, 120, val);
 
-	if (val >= 201) {
+	if ((unsigned int)val >= 201) {
 		pr_err("[%s] [%s:%d] accel z sensitivity value illegal\n",
 			NUBIA_SENSORS_LOG_TAG, __func__, 210);
 		return -EINVAL;
@@ -205,24 +185,18 @@ static ssize_t accel_z_axial_store(struct device *dev, struct device_attribute *
 
 static ssize_t gyro_enable_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 105);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->gyro_enable);
 }
 
 static ssize_t gyro_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -242,24 +216,18 @@ static ssize_t gyro_enable_store(struct device *dev, struct device_attribute *at
 
 static ssize_t gyro_x_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 134);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->gyro_x_axial);
 }
 
 static ssize_t gyro_x_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -267,7 +235,7 @@ static ssize_t gyro_x_axial_store(struct device *dev, struct device_attribute *a
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d, val=%d\n", NUBIA_SENSORS_LOG_TAG, __func__, 120, val);
 
-	if (val >= 201) {
+	if ((unsigned int)val >= 201) {
 		pr_err("[%s] [%s:%d] gyro x sensitivity value illegal\n",
 			NUBIA_SENSORS_LOG_TAG, __func__, 268);
 		return -EINVAL;
@@ -280,24 +248,18 @@ static ssize_t gyro_x_axial_store(struct device *dev, struct device_attribute *a
 
 static ssize_t gyro_y_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 134);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->gyro_y_axial);
 }
 
 static ssize_t gyro_y_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -305,7 +267,7 @@ static ssize_t gyro_y_axial_store(struct device *dev, struct device_attribute *a
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d, val=%d\n", NUBIA_SENSORS_LOG_TAG, __func__, 120, val);
 
-	if (val >= 201) {
+	if ((unsigned int)val >= 201) {
 		pr_err("[%s] [%s:%d] gyro y sensitivity value illegal\n",
 			NUBIA_SENSORS_LOG_TAG, __func__, 313);
 		return -EINVAL;
@@ -318,24 +280,18 @@ static ssize_t gyro_y_axial_store(struct device *dev, struct device_attribute *a
 
 static ssize_t gyro_z_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 134);
-
-	if (!data)
-		return -EINVAL;
 
 	return sprintf(buf, "%d\n", data->gyro_z_axial);
 }
 
 static ssize_t gyro_z_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	struct sensors_sens_data *data = sensors_sens_data_ptr;
+	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
-
-	if (!data)
-		return -EINVAL;
 
 	if (kstrtoint(buf, 0, &val))
 		return -EINVAL;
@@ -343,7 +299,7 @@ static ssize_t gyro_z_axial_store(struct device *dev, struct device_attribute *a
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d, val=%d\n", NUBIA_SENSORS_LOG_TAG, __func__, 120, val);
 
-	if (val >= 201) {
+	if ((unsigned int)val >= 201) {
 		pr_err("[%s] [%s:%d] gyro z sensitivity value illegal\n",
 			NUBIA_SENSORS_LOG_TAG, __func__, 358);
 		return -EINVAL;
@@ -435,28 +391,24 @@ int sensors_sensitivity_register(void)
 	sensors_sens_class = class_create("sensors_sensitivity");
 
 	/* Register Accelerometer device region and node */
-	ret = alloc_chrdev_region(&sensors_accel_dev_t, 0, 1, "accel");
-	if (ret)
-		goto err_destroy_class;
+	alloc_chrdev_region(&sensors_accel_dev_t, 0, 1, "accel");
 
 	data->accel_dev = device_create(sensors_sens_class, NULL, sensors_accel_dev_t, NULL, "accel");
 	if (IS_ERR(data->accel_dev)) {
 		pr_err("%s [%s]: line %d, failed to create accel device\n", NUBIA_SENSORS_LOG_TAG, __func__, 368);
 		ret = 0;
-		goto err_unregister_accel_region;
+		goto err_destroy_accel_device;
 	}
 	dev_set_drvdata(data->accel_dev, data);
 
 	/* Register Gyroscope device region and node */
-	ret = alloc_chrdev_region(&sensors_gyro_dev_t, 0, 1, "gyro");
-	if (ret)
-		goto err_destroy_accel_device;
+	alloc_chrdev_region(&sensors_gyro_dev_t, 0, 1, "gyro");
 
 	data->gyro_dev = device_create(sensors_sens_class, NULL, sensors_gyro_dev_t, NULL, "gyro");
 	if (IS_ERR(data->gyro_dev)) {
 		pr_err("%s [%s]: line %d, failed to create gyro device\n", NUBIA_SENSORS_LOG_TAG, __func__, 377);
 		ret = 0;
-		goto err_unregister_gyro_region;
+		goto err_destroy_gyro_device;
 	}
 	dev_set_drvdata(data->gyro_dev, data);
 
@@ -483,13 +435,12 @@ int sensors_sensitivity_register(void)
 err_remove_accel_sysfs:
 	sensor_remove_sysfs_interfaces(data->accel_dev, accel_attrs);
 err_destroy_gyro_device:
+	data->gyro_dev = NULL;
 	device_destroy(sensors_sens_class, sensors_gyro_dev_t);
-class_destroy(sensors_sens_class);
-err_unregister_gyro_region:
+	class_destroy(sensors_sens_class);
 err_destroy_accel_device:
+	data->accel_dev = NULL;
 	device_destroy(sensors_sens_class, sensors_accel_dev_t);
-err_unregister_accel_region:
-err_destroy_class:
 	class_destroy(sensors_sens_class);
 	return ret;
 }
@@ -498,12 +449,10 @@ void sensors_sensitivity_unregister(void)
 {
 	struct sensors_sens_data *data = sensors_sens_data_ptr;
 
-	if (data) {
-		sensor_remove_sysfs_interfaces(data->accel_dev, accel_attrs);
-		sensor_remove_sysfs_interfaces(data->gyro_dev, gyro_attrs);
+	sensor_remove_sysfs_interfaces(data->accel_dev, accel_attrs);
+	sensor_remove_sysfs_interfaces(data->gyro_dev, gyro_attrs);
 
-		kfree(data);
-	}
+	kfree(data);
 }
 
 static int __init sensors_sensitivity_init(void)
@@ -511,7 +460,8 @@ static int __init sensors_sensitivity_init(void)
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 424);
 
-	return sensors_sensitivity_register();
+	sensors_sensitivity_register();
+	return 0;
 }
 
 static void __exit sensors_sensitivity_exit(void)

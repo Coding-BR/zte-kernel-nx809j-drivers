@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "HIGH: the module owns writable sensor calibration sysfs nodes and duplicates stock class/device names.",
+  "dependencies": [
+    "sensors_sensitivity class",
+    "accel and gyro character-device regions",
+    "eight writable sysfs attributes"
+  ],
+  "rollback": "Never load beside the stock module. Hardware validation requires a disposable RAM kernel, controlled stock-driver removal or boot exclusion, continuous logs, and an immediate reboot rollback path.",
+  "stop_conditions": [
+    "kernel Oops",
+    "CFI failure",
+    "duplicate class or device collision",
+    "sensor service regression",
+    "ADB loss",
+    "rollback unavailable"
+  ],
+  "automatic_hardware_test_allowed": false
+}
