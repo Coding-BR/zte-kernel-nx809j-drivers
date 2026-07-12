@@ -8,6 +8,9 @@
  * extracted from NX809J (Red Magic 11 Pro) production firmware.
  */
 
+#ifdef ZTE_FINGERPRINT_HOST_TEST
+#include "tests/host_stubs.h"
+#else
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -33,6 +36,7 @@
 #include <net/net_namespace.h>
 #include <drm/drm_panel.h>
 #include <linux/soc/qcom/panel_event_notifier.h>
+#endif
 
 #define DRIVER_NAME "goodix_fp"
 #define GF_NETLINK_PROTO 25
@@ -134,6 +138,7 @@ static void nl_data_ready(struct sk_buff *skb)
 	skb_get(skb);
 	if (skb->len >= nlmsg_total_size(0)) {
 		nlh = nlmsg_hdr(skb);
+		(void)nlh;
 		pid = NETLINK_CB(skb).portid;
 		pr_info("%s: received message from userspace, registered pid=%d\n", __func__, pid);
 	}

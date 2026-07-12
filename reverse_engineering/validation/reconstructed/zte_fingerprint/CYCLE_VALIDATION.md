@@ -7,11 +7,11 @@ Driver: zte_fingerprint
 | 0 - Segurança | PASS |  |
 | 1 - Stock | PASS |  |
 | 2 - Ghidra | PASS |  |
-| 3 - Mapa | INCOMPLETO | missing reconstruction_map.json |
-| 4 - ABI | INCOMPLETO | missing field: document<br>missing field: header_probe |
-| 5 - Microtarefas | INCOMPLETO | microtask audit is not passed<br>microtask validation does not reference the current audit<br>missing field: audit<br>missing field: kcfi<br>missing field: tests<br>status is not PASS |
-| 6 - Build/KMI | INCOMPLETO | current independent audit is not static_verified |
-| 7 - Paridade | INCOMPLETO | status is not PASS |
+| 3 - Mapa | PASS |  |
+| 4 - ABI | PASS |  |
+| 5 - Microtarefas | PASS |  |
+| 6 - Build/KMI | PASS |  |
+| 7 - Paridade | PASS |  |
 | 8 - Revisão | INCOMPLETO | missing: independent_review.json |
 | 9 - Hardware | INCOMPLETO | missing: hardware_validation.json |
 | 10 - Promoção | INCOMPLETO | missing: promotion_manifest.json |
