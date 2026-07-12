@@ -2,12 +2,12 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-07-12T21:32:26.842730+00:00`
+- Gerado em: `2026-07-12T22:00:00.729568+00:00`
 - Run de evidência: `C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z`
 - Rebuild limpo: `True`
 
 | Driver | Resultado estático | Hardware | Evidência que falta |
 |---|---|---|---|
-| `zte_fingerprint` | `incomplete_or_failed` | `não executado` | module parity check failed: candidate_matches_fresh<br>reconstruction_map.json is missing |
+| `zte_fingerprint` | `incomplete_or_failed` | `não executado` | current reconstructed .ko is missing<br>module parity check failed: candidate_matches_fresh<br>reconstruction_map.json is missing |
 
 `static_verified` exige cadeia de evidência, build reproduzível, paridade ELF/modinfo/KMI e mapa completo de funções Ghidra para o fonte. `hardware_verified` exige um teste controlado específico do driver, com rollback e logs. Nenhum dos dois, isoladamente, autoriza afirmar equivalência funcional absoluta.

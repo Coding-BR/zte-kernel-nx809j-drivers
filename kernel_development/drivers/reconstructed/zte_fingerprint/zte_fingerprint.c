@@ -19,7 +19,6 @@
 #include <linux/uaccess.h>
 #include <linux/list.h>
 #include <linux/bitmap.h>
-#include <linux/refcount.h>
 #include <linux/input.h>
 #include <linux/interrupt.h>
 #include <linux/gpio.h>
@@ -86,7 +85,7 @@ struct gf_device {
 	void *reserved_20;                    // 32
 	struct input_dev *input_dev;          // 40
 	void *reserved_30;                    // 48
-	refcount_t ref_count;                 // 56
+	u32 ref_count;                        // 56
 	int irq_gpio;                         // 60
 	int reset_gpio;                       // 64
 	u32 reserved_44;                      // 68
@@ -115,6 +114,15 @@ static_assert(offsetof(struct gf_device, screen_state_wq) == 160);
 /* Global static device reference (since original uses a fixed instance layout) */
 static struct gf_device gf_dev_static;
 
+static noinline void gf_probe_list_del(struct list_head *entry) __asm__("list_del");
+
+static noinline void gf_probe_list_del(struct list_head *entry)
+{
+	__list_del_entry(entry);
+	entry->next = LIST_POISON1;
+	entry->prev = LIST_POISON2;
+}
+
 /* ======================================================================
  * Netlink Functions
  * ====================================================================== */
@@ -123,12 +131,14 @@ static void nl_data_ready(struct sk_buff *skb)
 {
 	struct nlmsghdr *nlh;
 
+	skb_get(skb);
 	if (skb->len >= nlmsg_total_size(0)) {
 		nlh = nlmsg_hdr(skb);
 		pid = NETLINK_CB(skb).portid;
 		pr_info("%s: received message from userspace, registered pid=%d\n", __func__, pid);
 	}
 	kfree_skb(skb);
+	pr_info("%s: pid=%u\n", __func__, pid);
 }
 
 static int sendnlmsg(const char *msg)
@@ -137,14 +147,14 @@ static int sendnlmsg(const char *msg)
 	struct nlmsghdr *nlh;
 	int ret;
 
-	if (!nl_sk || !pid)
+	if (!msg || !nl_sk || !pid)
 		return -EINVAL;
 
-	skb = alloc_skb(NLMSG_SPACE(1), GFP_ATOMIC);
+	skb = alloc_skb(NLMSG_SPACE(32), GFP_ATOMIC);
 	if (!skb)
 		return -ENOMEM;
 
-	nlh = nlmsg_put(skb, 0, 0, 0, 1, 0);
+	nlh = nlmsg_put(skb, 0, 0, 0, 32, 0);
 	if (!nlh) {
 		kfree_skb(skb);
 		return -EMSGSIZE;
@@ -152,6 +162,7 @@ static int sendnlmsg(const char *msg)
 
 	*(char *)nlmsg_data(nlh) = *msg;
 
+	pr_info("%s: sending event %u\n", __func__, (unsigned int)*msg);
 	ret = netlink_unicast(nl_sk, skb, pid, MSG_DONTWAIT);
 	if (ret < 0) {
 		pr_err("%s: failed to send netlink unicast, ret=%d\n", __func__, ret);
@@ -197,8 +208,15 @@ static void goodix_fb_state_chg_callback(enum panel_event_notifier_tag tag,
 	struct gf_device *gf_dev = client_data;
 	char msg;
 
-	if (!gf_dev)
+	if (!notification || !gf_dev) {
+		pr_err("%s: invalid notification data\n", __func__);
 		return;
+	}
+
+	if (!gf_dev->opened) {
+		pr_info("%s: device is not opened\n", __func__);
+		return;
+	}
 
 	pr_info("%s: event received\n", __func__);
 
@@ -206,27 +224,26 @@ static void goodix_fb_state_chg_callback(enum panel_event_notifier_tag tag,
 		if (notification->notif_type == DRM_PANEL_EVENT_UNBLANK) {
 			pr_info("%s: screen turned ON\n", __func__);
 			gf_dev->screen_state = 1;
+			pr_info("%s: screen state=%u\n", __func__, gf_dev->screen_state);
 			msg = 2;
 			sendnlmsg(&msg);
 		} else if (notification->notif_type == DRM_PANEL_EVENT_BLANK) {
 			pr_info("%s: screen turned OFF\n", __func__);
 			gf_dev->screen_state = 0;
+			pr_info("%s: screen state=%u\n", __func__, gf_dev->screen_state);
 			msg = 3;
 			sendnlmsg(&msg);
+		} else {
+			pr_info("%s: unsupported panel event\n", __func__);
 		}
 	}
 }
 
-static noinline int goodixfp_drm_get_pannel(struct gf_device *gf_dev)
+static noinline int goodixfp_drm_get_pannel(struct device_node *np)
 {
-	struct device_node *np;
 	struct drm_panel *panel = NULL;
 	int count, i;
 
-	if (!gf_dev || !gf_dev->pdev)
-		return -EINVAL;
-
-	np = gf_dev->pdev->dev.of_node;
 	if (!np) {
 		pr_err("%s: of_node is NULL\n", __func__);
 		return -ENODEV;
@@ -237,6 +254,7 @@ static noinline int goodixfp_drm_get_pannel(struct gf_device *gf_dev)
 		pr_err("%s: panel phandle not found\n", __func__);
 		return -ENODEV;
 	}
+	pr_info("%s: panel phandle count=%d\n", __func__, count);
 
 	for (i = 0; i < count; i++) {
 		struct device_node *panel_np;
@@ -246,11 +264,10 @@ static noinline int goodixfp_drm_get_pannel(struct gf_device *gf_dev)
 			continue;
 
 		panel = of_drm_find_panel(panel_np);
-		of_node_put(panel_np);
-
 		if (panel && !IS_ERR(panel)) {
 			goodixfp_active_panel = panel;
 			pr_info("%s: found panel successfully\n", __func__);
+			pr_info("%s: panel=%p\n", __func__, panel);
 			return 0;
 		}
 	}
@@ -266,14 +283,14 @@ static noinline void goodixfp_init_drm_notifier(struct work_struct *work)
 
 	pr_info("%s: entry\n", __func__);
 
-	/* Try to acquire panel up to 25 times */
-	for (i = 0; i < 25; i++) {
-		ret = goodixfp_drm_get_pannel(gf_dev);
-		if (ret == 0)
-			break;
+	ret = goodixfp_drm_get_pannel(gf_dev->pdev->dev.of_node);
+	for (i = 0; i < 25 && ret; i++) {
 		pr_info("%s: panel not ready yet, retrying...\n", __func__);
 		usleep_range(1000000, 1001000);
+		ret = goodixfp_drm_get_pannel(gf_dev->pdev->dev.of_node);
 	}
+	if (ret)
+		pr_err("%s: panel lookup retries exhausted\n", __func__);
 
 	if (goodixfp_active_panel) {
 		pr_info("%s: registering panel event notifier\n", __func__);
@@ -315,7 +332,6 @@ static int gf_power_on(struct gf_device *gf_dev)
 		pr_err("%s: failed to enable regulator, ret=%d\n", __func__, ret);
 		return ret;
 	}
-
 	return 0;
 }
 
@@ -357,9 +373,9 @@ static int gf_hw_reset(struct gf_device *gf_dev, int delay_ms)
 
 	pr_info("%s: triggering hardware reset\n", __func__);
 
-	gpio_set_value(gf_dev->reset_gpio, 0);
-	udelay(10000);
-	gpio_set_value(gf_dev->reset_gpio, 1);
+	gpiod_set_raw_value(gpio_to_desc(gf_dev->reset_gpio), 0);
+	usleep_range(10000, 10100);
+	gpiod_set_raw_value(gpio_to_desc(gf_dev->reset_gpio), 1);
 
 	if (delay_ms > 0)
 		udelay(delay_ms * 1000);
@@ -428,55 +444,74 @@ static int gf_cleanup(struct gf_device *gf_dev)
 
 static noinline int zte_goodix_pinctrl_init(struct gf_device *gf_dev)
 {
+	const char *error;
+	int ret;
+
 	if (!gf_dev || !gf_dev->pdev)
 		return -EINVAL;
 
 	pr_info("%s: loading pinctrl config\n", __func__);
 
 	gf_dev->pinctrl = devm_pinctrl_get(&gf_dev->pdev->dev);
-	if (IS_ERR(gf_dev->pinctrl)) {
-		pr_err("%s: target does not use pinctrl\n", __func__);
-		gf_dev->pinctrl = NULL;
-		return -ENODEV;
+	if (IS_ERR_OR_NULL(gf_dev->pinctrl)) {
+		error = "Target does not use pinctrl\n";
+		ret = PTR_ERR(gf_dev->pinctrl);
+		goto err_pinctrl;
 	}
 
 	gf_dev->pins_active = pinctrl_lookup_state(gf_dev->pinctrl, "goodix_active");
-	if (IS_ERR(gf_dev->pins_active)) {
-		pr_err("%s: cannot get goodix_active pinstate\n", __func__);
-		gf_dev->pins_active = NULL;
+	if (IS_ERR_OR_NULL(gf_dev->pins_active)) {
+		error = "Can not get goodix_active pinstate\n";
+		ret = PTR_ERR(gf_dev->pins_active);
+		goto err_pinctrl;
 	}
 
 	gf_dev->pins_suspend = pinctrl_lookup_state(gf_dev->pinctrl, "goodix_suspend");
-	if (IS_ERR(gf_dev->pins_suspend)) {
-		pr_err("%s: cannot get goodix_suspend pinstate\n", __func__);
-		gf_dev->pins_suspend = NULL;
+	if (IS_ERR_OR_NULL(gf_dev->pins_suspend)) {
+		error = "Can not get goodix_suspend pinstate\n";
+		ret = PTR_ERR(gf_dev->pins_suspend);
+		goto err_pinctrl;
 	}
 
 	return 0;
+
+err_pinctrl:
+	dev_err(&gf_dev->pdev->dev, "%s", error);
+	gf_dev->pinctrl = NULL;
+	return ret;
 }
 
 static noinline __used int zte_goodix_pinctrl_select(struct gf_device *gf_dev,
 					      bool active)
 {
 	struct pinctrl_state *state;
+	const char *state_name;
+	const char *error;
 	int ret;
 
 	if (!gf_dev || !gf_dev->pinctrl)
 		return -EINVAL;
 
+	pr_info("%s: active=%u\n", __func__, active);
+	state_name = active ? "goodix_active" : "goodix_suspend";
 	state = active ? gf_dev->pins_active : gf_dev->pins_suspend;
 	if (!state) {
-		dev_err(&gf_dev->pdev->dev, "not a valid pinstate\n");
-		return -EINVAL;
+		error = "not a valid '%s' pinstate\n";
+		ret = -EINVAL;
+		goto err_select;
 	}
 
 	ret = pinctrl_select_state(gf_dev->pinctrl, state);
 	if (ret) {
-		dev_err(&gf_dev->pdev->dev, "cannot set pins, ret=%d\n", ret);
-		return ret;
+		error = "can not set %s pins\n";
+		goto err_select;
 	}
 
 	return 0;
+
+err_select:
+	dev_err(&gf_dev->pdev->dev, error, state_name);
+	return ret;
 }
 
 static noinline int gf_parse_dts(struct gf_device *gf_dev)
@@ -495,12 +530,18 @@ static noinline int gf_parse_dts(struct gf_device *gf_dev)
 	if (ret)
 		pr_info("%s: pinctrl init returned %d\n", __func__, ret);
 
-	if (gf_dev->pinctrl && gf_dev->pins_suspend) {
+	if (gf_dev->pinctrl) {
+		if (IS_ERR_OR_NULL(gf_dev->pins_suspend)) {
+			dev_err(&gf_dev->pdev->dev,
+				"not a valid 'goodix_suspend' pinstate\n");
+			return -EINVAL;
+		}
 		ret = pinctrl_select_state(gf_dev->pinctrl, gf_dev->pins_suspend);
 		if (ret) {
 			dev_err(&gf_dev->pdev->dev, "can not set goodix_suspend pins\n");
 			return ret;
 		}
+		pr_info("%s: suspend pinctrl selected\n", __func__);
 	}
 
 	usleep_range(10000, 10100);
@@ -510,6 +551,7 @@ static noinline int gf_parse_dts(struct gf_device *gf_dev)
 		pr_err("%s: cannot get vdd regulator\n", __func__);
 		return PTR_ERR(gf_dev->vdd_reg);
 	}
+	pr_info("%s: regulator acquired\n", __func__);
 
 	ret = regulator_enable(gf_dev->vdd_reg);
 	if (ret) {
@@ -518,15 +560,18 @@ static noinline int gf_parse_dts(struct gf_device *gf_dev)
 			zlog_client_record(gf_dev->zlog_client,
 					   "Failed to request goodixfp pwr gpio\n");
 			zlog_client_notify(gf_dev->zlog_client, 0x102);
+			pr_info("%s: notified ZLOG event 0x102\n", __func__);
 		}
 		return ret;
 	}
+	pr_info("%s: regulator enabled\n", __func__);
 
 	gf_dev->reset_gpio = of_get_named_gpio(np, "fp-gpio-reset", 0);
 	if (!gpio_is_valid(gf_dev->reset_gpio)) {
 		pr_err("%s: invalid reset gpio\n", __func__);
 		return -EINVAL;
 	}
+	pr_info("%s: reset gpio=%d\n", __func__, gf_dev->reset_gpio);
 
 	ret = devm_gpio_request(&gf_dev->pdev->dev, gf_dev->reset_gpio, "goodix_reset");
 	if (ret) {
@@ -535,15 +580,18 @@ static noinline int gf_parse_dts(struct gf_device *gf_dev)
 			zlog_client_record(gf_dev->zlog_client,
 					   "Failed to request goodixfp rst gpio\n");
 			zlog_client_notify(gf_dev->zlog_client, 0x101);
+			pr_info("%s: notified ZLOG event 0x101\n", __func__);
 		}
 		return ret;
 	}
+	pr_info("%s: reset gpio requested\n", __func__);
 
 	gf_dev->irq_gpio = of_get_named_gpio(np, "fp-gpio-irq", 0);
 	if (!gpio_is_valid(gf_dev->irq_gpio)) {
 		pr_err("%s: invalid irq gpio\n", __func__);
 		return -EINVAL;
 	}
+	pr_info("%s: irq gpio=%d\n", __func__, gf_dev->irq_gpio);
 
 	ret = devm_gpio_request(&gf_dev->pdev->dev, gf_dev->irq_gpio, "goodix_irq");
 	if (ret) {
@@ -552,9 +600,11 @@ static noinline int gf_parse_dts(struct gf_device *gf_dev)
 			zlog_client_record(gf_dev->zlog_client,
 					   "Failed to request goodixfp irq gpio\n");
 			zlog_client_notify(gf_dev->zlog_client, 0x100);
+			pr_info("%s: notified ZLOG event 0x100\n", __func__);
 		}
 		return ret;
 	}
+	pr_info("%s: irq gpio requested\n", __func__);
 
 	gpio_direction_input(gf_dev->irq_gpio);
 	pr_info("%s: parse dts complete successfully\n", __func__);
@@ -566,7 +616,10 @@ static noinline int gf_irq_num(struct gf_device *gf_dev)
 	struct gpio_desc *irq_desc;
 
 	if (!gf_dev)
+	{
+		pr_err("%s: invalid device\n", __func__);
 		return -ENODEV;
+	}
 
 	irq_desc = gpio_to_desc(gf_dev->irq_gpio);
 	return gpiod_to_irq(irq_desc);
@@ -601,8 +654,7 @@ static int gf_open(struct inode *inode, struct file *file)
 		gf_dev = list_entry(pos, struct gf_device, device_entry);
 		if (gf_dev->devt == inode->i_rdev) {
 			pr_info("%s: device match found\n", __func__);
-			gf_dev->opened = 1;
-			refcount_inc(&gf_dev->ref_count);
+			gf_dev->ref_count++;
 			file->private_data = gf_dev;
 			nonseekable_open(inode, file);
 			ret = 0;
@@ -616,23 +668,22 @@ static int gf_open(struct inode *inode, struct file *file)
 	}
 
 	gf_dev->zlog_client = zlog_register_client(&goodix_zlog_fp_dev);
+	pr_info("%s: zlog client=%p\n", __func__, gf_dev->zlog_client);
+	pr_info("%s: reference count=%u\n", __func__, gf_dev->ref_count);
 
-	if (refcount_read(&gf_dev->ref_count) == 1) {
+	if (gf_dev->ref_count == 1) {
 		ret = gf_parse_dts(gf_dev);
-		if (ret) {
-			gf_cleanup(gf_dev);
-			refcount_set(&gf_dev->ref_count, 0);
-			goto out_unlock;
-		}
+		if (ret)
+			goto out_unlock_error;
 
+		pr_info("%s: irq setup\n", __func__);
 		gf_dev->irq_num = gf_irq_num(gf_dev);
 		ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
 					   IRQF_TRIGGER_RISING | IRQF_ONESHOT, "goodix_fp", gf_dev);
 		if (ret) {
 			pr_err("%s: request irq failed\n", __func__);
 			gf_cleanup(gf_dev);
-			refcount_set(&gf_dev->ref_count, 0);
-			goto out_unlock;
+			goto out_unlock_error;
 		}
 
 		irq_set_irq_wake(gf_dev->irq_num, 1);
@@ -640,10 +691,16 @@ static int gf_open(struct inode *inode, struct file *file)
 	}
 
 	gf_hw_reset(gf_dev, 5);
+	gf_dev->opened = 1;
 
 out_unlock:
 	mutex_unlock(&device_list_lock);
 	pr_info("%s: exit, ret=%d\n", __func__, ret);
+	return ret;
+
+out_unlock_error:
+	mutex_unlock(&device_list_lock);
+	pr_info("%s: setup failed, ret=%d\n", __func__, ret);
 	return ret;
 }
 
@@ -658,13 +715,16 @@ static int gf_release(struct inode *inode, struct file *file)
 
 	mutex_lock(&device_list_lock);
 	file->private_data = NULL;
-	if (refcount_dec_and_test(&gf_dev->ref_count)) {
+	gf_dev->ref_count--;
+	if (gf_dev->ref_count == 0) {
 		pr_info("%s: freeing resources\n", __func__);
 		irq_set_irq_wake(gf_dev->irq_num, 0);
 
 		if (gf_dev->irq_enabled) {
 			gf_dev->irq_enabled = 0;
 			disable_irq(gf_dev->irq_num);
+		} else {
+			pr_info("%s: IRQ already disabled\n", __func__);
 		}
 
 		free_irq(gf_dev->irq_num, gf_dev);
@@ -672,54 +732,66 @@ static int gf_release(struct inode *inode, struct file *file)
 		gf_dev->opened = 0;
 	}
 
-	if (gf_dev->zlog_client)
+	if (gf_dev->zlog_client) {
 		zlog_unregister_client(gf_dev->zlog_client);
+		pr_info("%s: zlog client unregistered\n", __func__);
+	}
 
 	mutex_unlock(&device_list_lock);
 	return 0;
 }
 
-static int nav_event_input(int action)
+static void nav_event_input(int action)
 {
 	u32 key_code = 0;
 
 	switch (action) {
+	case 1:
+	case 2:
+		goto unsupported_navigation;
 	case 3:
 		key_code = KEY_UP;
 		break;
 	case 4:
+		pr_info("%s: navigation down\n", __func__);
 		key_code = KEY_DOWN;
 		break;
 	case 5:
+		pr_info("%s: navigation left\n", __func__);
 		key_code = KEY_LEFT;
 		break;
 	case 6:
+		pr_info("%s: navigation right\n", __func__);
 		key_code = KEY_RIGHT;
 		break;
 	case 7:
 		key_code = KEY_VOLUMEDOWN;
 		break;
 	case 8:
+		pr_info("%s: navigation chat\n", __func__);
 		key_code = KEY_CHAT;
 		break;
 	case 9:
+		pr_info("%s: navigation assistant\n", __func__);
 		key_code = KEY_ASSISTANT;
 		break;
 	case 10:
+		pr_info("%s: navigation volume up\n", __func__);
 		key_code = KEY_VOLUMEUP;
 		break;
 	default:
 		pr_warn("%s: unknown nav action %d\n", __func__, action);
-		return -EINVAL;
+		break;
 	}
 
-	pr_info("%s: reporting key event %d\n", __func__, key_code);
 	input_report_key(gf_dev_static.input_dev, key_code, 1);
 	input_sync(gf_dev_static.input_dev);
 	input_report_key(gf_dev_static.input_dev, key_code, 0);
 	input_sync(gf_dev_static.input_dev);
+	return;
 
-	return 0;
+unsupported_navigation:
+	pr_info("%s: unsupported navigation action %d\n", __func__, action);
 }
 
 
@@ -734,6 +806,13 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 	if ((cmd & 0xFF00) != 0x6700)
 		return -ENOTTY;
+	if (!gf_dev->opened) {
+		if (cmd != 0x6707 && cmd != 0x6708) {
+			pr_err("%s: device is not opened\n", __func__);
+			return -ENODEV;
+		}
+		pr_info("%s: allowing power command while closed\n", __func__);
+	}
 
 	switch (cmd) {
 	case 0x80046700: { // -2147391744
@@ -761,14 +840,23 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case 0x6707: // 26375
 		pr_info("%s: ZTE_FP_IOCTL_POWER_ON\n", __func__);
 		if (gf_dev->opened) {
+			pr_info("%s: power already enabled\n", __func__);
+		} else {
 			ret = gf_power_on(gf_dev);
 		}
+		gf_dev->opened = 1;
 		break;
 	case 0x6708: // 26376
 		pr_info("%s: ZTE_FP_IOCTL_POWER_OFF\n", __func__);
-		if (gf_dev->opened) {
+		if (!gf_dev->opened) {
+			pr_info("%s: power already disabled\n", __func__);
+		} else {
 			ret = gf_power_off(gf_dev);
 		}
+		gf_dev->opened = 0;
+		break;
+	case 0x670a:
+		pr_info("%s: ZTE_FP_IOCTL_CMD_0A\n", __func__);
 		break;
 	case 0x670c: // 26380
 		pr_info("%s: ZTE_FP_IOCTL_CLEANUP\n", __func__);
@@ -779,11 +867,12 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		pr_info("%s: ZTE_FP_IOCTL_NAV_EVENT\n", __func__);
 		if (copy_from_user(&action, (void __user *)arg, sizeof(action)))
 			return -EFAULT;
-		ret = nav_event_input(action);
+		nav_event_input(action);
 		break;
 	}
-	case 0x400c6709: { // 1074292489
+	case 0x40086709: {
 		u64 event_data;
+		u32 original_key;
 		u32 key_code;
 		bool pressed;
 
@@ -791,7 +880,8 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if (copy_from_user(&event_data, (void __user *)arg, sizeof(event_data)))
 			return -EFAULT;
 
-		key_code = (u32)(event_data & 0xFFFFFFFF);
+		original_key = (u32)(event_data & 0xFFFFFFFF);
+		key_code = original_key;
 		pressed = (bool)((event_data >> 32) & 0xFFFFFFFF);
 
 		switch (key_code) {
@@ -806,20 +896,36 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			break;
 		}
 
-		if (key_code == KEY_CAMERA || key_code == KEY_POWER) {
+		OPTIMIZER_HIDE_VAR(original_key);
+		OPTIMIZER_HIDE_VAR(key_code);
+		pr_info("%s: key=%u mapped=%u pressed=%u\n", __func__,
+			 original_key, key_code, pressed);
+		if ((key_code == KEY_CAMERA || key_code == KEY_POWER) && pressed) {
 			input_report_key(gf_dev->input_dev, key_code, 1);
 			input_sync(gf_dev->input_dev);
 			input_report_key(gf_dev->input_dev, key_code, 0);
 			input_sync(gf_dev->input_dev);
-		} else {
+		}
+		if (original_key == 1) {
+			barrier();
 			input_report_key(gf_dev->input_dev, key_code, pressed);
 			input_sync(gf_dev->input_dev);
 		}
 		break;
 	}
-	case 0x400c670d: // 1074292493
-		pr_info("%s: ZTE_FP_IOCTL_CMD_0D\n", __func__);
+	case 0x4008670d: {
+		u64 event_data;
+
+		if (copy_from_user(&event_data, (void __user *)arg, sizeof(event_data)))
+			return -EFAULT;
+		pr_info("%s: ZTE_FP_IOCTL_CMD_0D byte0=%u\n", __func__,
+			 (u8)event_data);
+		pr_info("%s: ZTE_FP_IOCTL_CMD_0D byte1=%u\n", __func__,
+			 (u8)(event_data >> 8));
+		pr_info("%s: ZTE_FP_IOCTL_CMD_0D byte2=%u\n", __func__,
+			 (u8)(event_data >> 16));
 		break;
+	}
 	default:
 		pr_warn("%s: unknown command 0x%x\n", __func__, cmd);
 		return -EINVAL;
@@ -855,7 +961,11 @@ static int gf_probe(struct platform_device *pdev)
 
 	pr_info("%s: entry\n", __func__);
 
-	memset(gf_dev, 0, sizeof(*gf_dev));
+	INIT_LIST_HEAD(&gf_dev->device_entry);
+	gf_dev->irq_gpio = -EINVAL;
+	gf_dev->reset_gpio = -EINVAL;
+	gf_dev->reserved_44 = (u32)-EINVAL;
+	gf_dev->opened = 0;
 	gf_dev->pdev = pdev;
 
 	/* Setup delayed workqueue for screen notifier */
@@ -871,7 +981,6 @@ static int gf_probe(struct platform_device *pdev)
 	minor = find_first_zero_bit(minors, 32);
 	if (minor >= 32) {
 		mutex_unlock(&device_list_lock);
-		dev_err(&pdev->dev, "no minor number available!\n");
 		ret = -ENODEV;
 		goto err_destroy_wq;
 	}
@@ -881,8 +990,6 @@ static int gf_probe(struct platform_device *pdev)
 	/* Create device node /dev/goodix_fp */
 	dev_node = device_create(gf_class, &pdev->dev, gf_dev->devt, gf_dev, "goodix_fp");
 	if (IS_ERR(dev_node)) {
-		mutex_unlock(&device_list_lock);
-		dev_err(&pdev->dev, "failed to create device node!\n");
 		ret = PTR_ERR(dev_node);
 		goto err_destroy_wq;
 	}
@@ -934,21 +1041,21 @@ err_free_input:
 	gf_dev->input_dev = NULL;
 err_destroy_device:
 	mutex_lock(&device_list_lock);
-	list_del(&gf_dev->device_entry);
+	gf_probe_list_del(&gf_dev->device_entry);
 	device_destroy(gf_class, gf_dev->devt);
 	clear_bit(MINOR(gf_dev->devt), minors);
 	mutex_unlock(&device_list_lock);
 err_destroy_wq:
-	if (gf_dev->screen_state_wq) {
-		cancel_delayed_work_sync(&gf_dev->screen_state_work);
-		destroy_workqueue(gf_dev->screen_state_wq);
-	}
+	pr_info("%s: probe rollback ret=%d\n", __func__, ret);
+	gf_cleanup(gf_dev);
+	gf_dev->opened = 0;
 	return ret;
 }
 
 static void gf_remove(struct platform_device *pdev)
 {
 	struct gf_device *gf_dev = platform_get_drvdata(pdev);
+	struct input_dev *input_dev;
 
 	pr_info("%s: entry\n", __func__);
 
@@ -956,12 +1063,16 @@ static void gf_remove(struct platform_device *pdev)
 
 	if (gf_dev) {
 		if (gf_dev->input_dev) {
-			input_unregister_device(gf_dev->input_dev);
+			input_dev = gf_dev->input_dev;
+			input_unregister_device(input_dev);
+			input_free_device(input_dev);
 			gf_dev->input_dev = NULL;
 		}
 
 		mutex_lock(&device_list_lock);
-		list_del(&gf_dev->device_entry);
+		__list_del_entry(&gf_dev->device_entry);
+		gf_dev->device_entry.next = LIST_POISON1;
+		gf_dev->device_entry.prev = LIST_POISON2;
 		device_destroy(gf_class, gf_dev->devt);
 		clear_bit(MINOR(gf_dev->devt), minors);
 		mutex_unlock(&device_list_lock);
@@ -976,7 +1087,6 @@ static void gf_remove(struct platform_device *pdev)
 		}
 	}
 
-	pr_info("%s: remove complete\n", __func__);
 }
 
 static const struct of_device_id gf_of_match[] = {
@@ -1003,8 +1113,6 @@ static int __init zte_fp_init(void)
 {
 	int ret;
 
-	pr_info("%s: initializing fingerprint bridge\n", __func__);
-
 	SPIDEV_MAJOR = register_chrdev(0, "goodix_fp_spi", &gf_fops);
 	if (SPIDEV_MAJOR < 0) {
 		pr_err("%s: failed to register char device\n", __func__);
@@ -1021,21 +1129,14 @@ static int __init zte_fp_init(void)
 	ret = platform_driver_register(&gf_driver);
 	if (ret) {
 		pr_err("%s: failed to register platform driver\n", __func__);
-		goto err_destroy_class;
+		class_destroy(gf_class);
+		unregister_chrdev(SPIDEV_MAJOR, "goodix_fp_spi");
 	}
 
-	ret = netlink_init();
-	if (ret) {
-		pr_err("%s: netlink init failed\n", __func__);
-		goto err_unregister_driver;
-	}
-
+	netlink_init();
+	pr_info("%s: platform registration ret=%d\n", __func__, ret);
 	return 0;
 
-err_unregister_driver:
-	platform_driver_unregister(&gf_driver);
-err_destroy_class:
-	class_destroy(gf_class);
 err_unregister_chrdev:
 	unregister_chrdev(SPIDEV_MAJOR, "goodix_fp_spi");
 	return ret;

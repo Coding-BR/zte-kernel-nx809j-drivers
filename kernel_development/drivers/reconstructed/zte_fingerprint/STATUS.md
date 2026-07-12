@@ -8,9 +8,11 @@ Estado atual:
 - estrutura privada de 272 bytes e wakeup source de 192 bytes comprovados por ELF/Ghidra;
 - imports, aliases e namespaces agora coincidem com o stock;
 - build limpo e reproduzivel para o kernel alvo;
-- inventario Ghidra melhorou de 21/30 para 29/30; ainda falta materializar `list_del`;
-- somente 12/30 grafos de chamada coincidem; 18 funcoes ainda exigem correcao;
-- mapa revisado, KCFI, testes host, microtarefas e paridade final ainda nao passaram;
+- inventario e multiplicidade de chamadas Ghidra agora passam em 30/30 funcoes;
+- KCFI passa em 12/12 callbacks indiretos;
+- ABI ioctl corrigida para `0x40086709` e `0x4008670d`, com tres copias de usuario comprovadas;
+- candidato fresco reproduzivel: SHA-256 `78fe8d69dcf13fc3dd31863c15e6f3a327da85a4cf889317d83ce63b6211d7b9`;
+- mapa revisado, testes host, atestacao das 30 microtarefas e paridade comportamental final ainda nao passaram;
 - nenhum resultado de hardware anterior sera reutilizado como PASS;
 - `insmod`, unbind e unload automaticos permanecem proibidos.
 
