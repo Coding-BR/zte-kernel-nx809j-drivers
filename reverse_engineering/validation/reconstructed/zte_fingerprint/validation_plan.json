@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "CRITICAL: fingerprint IRQ, regulator, GPIO, input, Netlink, display notifier and character-device ownership are shared with Android biometric services.",
+  "dependencies": [
+    "zlog_common",
+    "panel_event_notifier hooks",
+    "Goodix GPIO and regulator resources",
+    "userspace Netlink protocol 25",
+    "goodix_fp character device and input device"
+  ],
+  "rollback": "Do not unload or replace the stock fingerprint module automatically. Hardware validation requires a disposable RAM kernel, biometric-service stop, continuous logs and immediate reboot rollback.",
+  "stop_conditions": [
+    "kernel Oops",
+    "CFI failure",
+    "IRQ storm",
+    "regulator or GPIO ownership conflict",
+    "biometric service crash",
+    "ADB loss",
+    "rollback unavailable"
+  ],
+  "automatic_hardware_test_allowed": false
+}

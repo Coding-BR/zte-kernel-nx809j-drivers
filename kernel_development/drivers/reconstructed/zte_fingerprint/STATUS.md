@@ -1,58 +1,17 @@
-# Status de Reconstrução e Validação do Driver `zte_fingerprint`
+# Status de reconstrucao do `zte_fingerprint`
 
-Este documento registra o status e os testes de validação do driver **`zte_fingerprint`** do RedMagic 10 Pro (NX809J).
+Reconstrucao estatica em andamento. O texto legado que declarava 100% e validacao em hardware foi removido porque nao possuia cadeia de evidencia hashada suficiente para satisfazer o protocolo obrigatorio.
 
----
+Estado atual:
 
-## Informações Gerais do Driver
-* **Função:** Leitor biométrico de impressões digitais óptico/ultrassônico sob a tela.
-* **Tipo:** SPI client com daemon de biometria (Keystore HAL).
-* **Código-Fonte:** 1 arquivo(s) C (~610 linhas totais).
-* **Status de Reconstrução:** 100% COMPLETO. A lógica completa em C baseada em offsets de engenharia reversa foi preservada e compilada.
-* **Build:** COMPILADO - `zte_fingerprint.ko` presente em `artifacts/20260711-174917/`.
+- stock rastreado: SHA-256 `4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675`;
+- estrutura privada de 272 bytes e wakeup source de 192 bytes comprovados por ELF/Ghidra;
+- imports, aliases e namespaces agora coincidem com o stock;
+- build limpo e reproduzivel para o kernel alvo;
+- inventario Ghidra melhorou de 21/30 para 29/30; ainda falta materializar `list_del`;
+- somente 12/30 grafos de chamada coincidem; 18 funcoes ainda exigem correcao;
+- mapa revisado, KCFI, testes host, microtarefas e paridade final ainda nao passaram;
+- nenhum resultado de hardware anterior sera reutilizado como PASS;
+- `insmod`, unbind e unload automaticos permanecem proibidos.
 
----
-
-## Detalhes da Validação no Hardware Real
-
-O driver `zte_fingerprint.ko` reconstruído foi validado dinamicamente no dispositivo real rodando o kernel customizado `curator@build-host`.
-
-### Comando de Validação
-```powershell
-# 1. Enviar o driver reconstruído para o telefone
-adb push artifacts/20260711-174917/zte_fingerprint.ko /data/local/tmp/zte_fingerprint_custom.ko
-
-# 2. Descarregar o módulo original do vendor (se presente)
-adb shell "su root rmmod comp_zte_fingerprint_ko"
-adb shell "su root rmmod zte_fingerprint"
-
-# 3. Carregar o nosso módulo customizado
-adb shell "su root insmod /data/local/tmp/zte_fingerprint_custom.ko"
-
-# 4. Verificar se o módulo está ativo em memória
-adb shell "su root lsmod | grep zte_fingerprint"
-
-# 5. Auditar os logs de inicialização no dmesg
-adb shell "su root dmesg | grep -i zte_fingerprint"
-```
-
-### Evidência de Sucesso (Log de Execução)
-```
-artifacts/20260711-174917/zte_fingerprint.ko: 1 file pushed, 0 skipped.
-zte_fingerprint               <size>  0
-[    1.x] ... zte_fingerprint loaded successfully ...
-Linux version 6.12.23-android16-5-gf1bdb13583da-ab13761046-4k (curator@build-host)
-```
-
-### Análise do Log
-1. **`module_layout` Compatível:** O driver foi aceito sem erros de compatibilidade de assinatura de kernel, confirmando a higienização da ABI e o merge dos pré-requisitos no Kconfig.
-2. **Registro de Hardware:** O probe do driver foi disparado com sucesso e o hardware físico respondeu aos comandos de inicialização do kernel.
-
----
-
-## Organização dos Arquivos Locais
-Os arquivos deste driver estão organizados localmente na pasta:
-`c:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\curated\zte_fingerprint\`
-* `zte_fingerprint.c` — Código-fonte reconstruído do driver (~610 linhas)
-* `Makefile` — Instruções do Kbuild para compilação como módulo `obj-m`
-* `STATUS.md` — Este relatório técnico
+Somente os gates registrados em `engenharia/validation/zte_fingerprint/CYCLE_VALIDATION.md` podem alterar este estado.
