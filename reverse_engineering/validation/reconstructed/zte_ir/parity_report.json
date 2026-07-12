@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "status": "INCOMPLETO",
+  "driver": "zte_ir",
+  "comparisons": [
+    {
+      "area": "callback ABI and KCFI",
+      "status": "PASS",
+      "evidence": "integrated_kcfi_validation.json has eight stock callback matches"
+    },
+    {
+      "area": "write lifetime and bounds",
+      "status": "PENDING",
+      "difference": "The reconstructed write path rejects invalid count and capacity, protects removed devices and holds an SPI reference."
+    },
+    {
+      "area": "ioctl carrier validation",
+      "status": "PENDING",
+      "difference": "The reconstructed ioctl rejects nonpositive carrier and values above the DTS-derived maximum."
+    },
+    {
+      "area": "open/release/remove lifetime",
+      "status": "PENDING",
+      "difference": "The reconstructed driver maintains users and defers freeing a removed runtime until the final release."
+    },
+    {
+      "area": "module metadata and runtime behavior",
+      "status": "PENDING",
+      "difference": "The reconstructed module has a separate module name and requires controlled bind, node and rollback validation."
+    }
+  ],
+  "blockers": [
+    "No controlled hardware session has proven the hardening deltas preserve the required user-visible behavior.",
+    "No independent reviewer has approved the parity rationale."
+  ]
+}

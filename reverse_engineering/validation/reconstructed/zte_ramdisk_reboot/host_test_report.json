@@ -1,0 +1,122 @@
+{
+  "binaries": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_ramdisk_reboot\\host\\host_test_a",
+      "sha256": "3385d58127bdcba042aeee5a1f87d499fe60c742f58d27059f38405d85210feb",
+      "size": 19784
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_ramdisk_reboot\\host\\host_test_b",
+      "sha256": "3385d58127bdcba042aeee5a1f87d499fe60c742f58d27059f38405d85210feb",
+      "size": 19784
+    }
+  ],
+  "compile_reports": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ramdisk_reboot:/source:ro",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_ramdisk_reboot\\host:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "/source/tests/host_test.c",
+        "-o",
+        "/output/host_test_a"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ramdisk_reboot:/source:ro",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_ramdisk_reboot\\host:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "/source/tests/host_test.c",
+        "-o",
+        "/output/host_test_b"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "covered_functions": [
+    "zte_ramdisk_reboot_write",
+    "zte_check_xbl_log_lines",
+    "extract_ocp_info",
+    "extract_sn_info",
+    "zte_ramdisk_reboot_probe",
+    "zte_ramdisk_reboot_remove",
+    "zte_get_xbl_log_memory_region",
+    "attr_show",
+    "attr_store",
+    "ramdisk_nvmem_show",
+    "ramdisk_nvmem_store",
+    "init_module",
+    "cleanup_module"
+  ],
+  "driver": "zte_ramdisk_reboot",
+  "generated_utc": "2026-07-12T11:22:36.357421+00:00",
+  "passed": true,
+  "reproducible": true,
+  "run_reports": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_ramdisk_reboot\\host:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_a"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS zte_ramdisk_reboot host tests\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_ramdisk_reboot\\host:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_b"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS zte_ramdisk_reboot host tests\n"
+    }
+  ],
+  "schema_version": "1.0",
+  "source": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ramdisk_reboot\\zte_ramdisk_reboot.c",
+  "test_source": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_ramdisk_reboot\\tests\\host_test.c"
+}

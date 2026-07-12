@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "comparisons": [
+    {"surface": "ELF", "result": "PASS", "detail": "AArch64 ET_REL and reproducible build"},
+    {"surface": "imports and aliases", "result": "PASS", "detail": "exact stock/candidate match"},
+    {"surface": "functions", "result": "PASS", "detail": "13/13 stock functions mapped and directly covered"},
+    {"surface": "KCFI", "result": "PASS", "detail": "9/9 indirect/exported type IDs match"},
+    {"surface": "NVMEM/sysfs/DTS", "result": "PASS", "detail": "names, callbacks, compatible and return semantics match"},
+    {"surface": "host behavior", "result": "PASS", "detail": "success, failure, bounds, probe and lifecycle paths pass reproducibly"}
+  ],
+  "justified_differences": [
+    {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel and Module.symvers recorded in engenharia/config/target_kernel.json"},
+    {"difference": "zte_check_xbl_log_lines is 4 bytes larger and probe is 12 bytes smaller", "justification": "one pointer-increment codegen difference and fortified strlen layout; direct boundary/error tests, imports and callback KCFI pass"}
+  ],
+  "evidence": [
+    "engenharia/validation/zte_ramdisk_reboot/driver_audit_current.json",
+    "engenharia/validation/zte_ramdisk_reboot/host_test_report.json",
+    "engenharia/validation/zte_ramdisk_reboot/kcfi_callback_surface.json"
+  ],
+  "blockers": []
+}

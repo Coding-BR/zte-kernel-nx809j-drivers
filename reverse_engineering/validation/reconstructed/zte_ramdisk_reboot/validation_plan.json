@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "CRITICAL: reboot/watchdog NVMEM flag and reserved-memory XBL log parser.",
+  "dependencies": ["vendor_ramdisk_zlog NVMEM cell", "zte,reboot-ramdisk-ext DTS node", "XBL reserved memory", "watchdog consumer"],
+  "rollback": "Never replace the active stock module in-place. Validate only with a disposable RAM-booted kernel during a supervised session; stop all writes, reboot to stock immediately on any watchdog, memory, CFI, Oops or ADB anomaly.",
+  "stop_conditions": ["unexpected reboot", "watchdog trigger", "memory corruption", "CFI failure", "kernel Oops or panic", "ADB loss", "rollback unavailable"],
+  "automatic_hardware_test_allowed": false
+}

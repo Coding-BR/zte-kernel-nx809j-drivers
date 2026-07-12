@@ -1,0 +1,8 @@
+{
+  "schema_version":"1.0","status":"PASS",
+  "risk":"CRITICAL: panic notifier, kretprobe and persistent NVMEM writes execute during fatal kernel paths.",
+  "dependencies":["qcom_q6v5:get_ss_panic_buf_byte","panic_notifier_list","kretprobe","four vendor NVMEM cells","bootreason sysfs"],
+  "rollback":"Never unload or replace the stock module automatically. Hardware validation requires a disposable RAM kernel, pre-captured logs, supervised reboot recovery and no destructive panic trigger.",
+  "stop_conditions":["kernel Oops","CFI failure","panic recursion","NVMEM anomaly","ADB loss","rollback unavailable"],
+  "automatic_hardware_test_allowed":false
+}

@@ -1,0 +1,517 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-12T20:39:26.329101+00:00",
+  "driver": "zte_reboot_ext",
+  "status": "PASS",
+  "stock": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\01_acquisition\\modules\\zte_reboot_ext.ko",
+    "sha256": "1e5b8e9e91f304236802d52a316570f6649b8f504b58558b28909d48c62d910f"
+  },
+  "ghidra_export": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko",
+  "tasks": [
+    {
+      "id": "001_fill_nvmem_buf",
+      "stock_function": "fill_nvmem_buf",
+      "stock_entry": "00100554",
+      "stock_body_bytes": 252,
+      "category": "core_logic",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "fill_nvmem_buf",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0000_00100554_fill_nvmem_buf.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0000_00100554_fill_nvmem_buf.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: fill_nvmem_buf\nEntrada Ghidra: 00100554\nTamanho stock: 252 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:fill_nvmem_buf\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0000_00100554_fill_nvmem_buf.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0000_00100554_fill_nvmem_buf.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\001_fill_nvmem_buf\\compile.json",
+          "role": "compile",
+          "sha256": "0249e4cfcb7fe8bd05b717562be321485d04b8fb7263dc985585ae17474beafc"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\001_fill_nvmem_buf\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "d308ac7c291a737b94a9add0baacffc9d6434a9cec03dfcd43ec76fa1b310a00"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\001_fill_nvmem_buf\\test.json",
+          "role": "test",
+          "sha256": "8033d7f6aec6b884ea84878f3cd8980e3e2bc771595ac7c8c0879deb71adaf37"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "002_count_format_args",
+      "stock_function": "count_format_args",
+      "stock_entry": "00100654",
+      "stock_body_bytes": 228,
+      "category": "core_logic",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "count_format_args",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0001_00100654_count_format_args.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0001_00100654_count_format_args.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: count_format_args\nEntrada Ghidra: 00100654\nTamanho stock: 228 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:count_format_args\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0001_00100654_count_format_args.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0001_00100654_count_format_args.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\002_count_format_args\\compile.json",
+          "role": "compile",
+          "sha256": "ea1492c1e2f602e11aa1ff127338cffcf7c47b412ffd172dcdc94999367e6921"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\002_count_format_args\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "db2debf545d3ada37339e23ed76a333ade09cd7459c24be7635e858866aad19b"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\002_count_format_args\\test.json",
+          "role": "test",
+          "sha256": "ffd48f195ef3983a53ca2b63a69b971d0007479a4603048ab1edcc90a43eb68a"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "003_entry_panic",
+      "stock_function": "entry_panic",
+      "stock_entry": "0010073c",
+      "stock_body_bytes": 908,
+      "category": "core_logic",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "entry_panic",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0002_0010073c_entry_panic.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0002_0010073c_entry_panic.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: entry_panic\nEntrada Ghidra: 0010073c\nTamanho stock: 908 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:entry_panic\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0002_0010073c_entry_panic.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0002_0010073c_entry_panic.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\003_entry_panic\\compile.json",
+          "role": "compile",
+          "sha256": "e9fa53ed1ea9893424c563f4baeb1428976f0994929f7512caf0a91f53d4ad4d"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\003_entry_panic\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "e22c432905334729329e47ca42cf8e45f83c481bf8298da0a91fc7fb01ed63f2"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\003_entry_panic\\test.json",
+          "role": "test",
+          "sha256": "821d8edbface1801a553dc4ab9ff3acddef3e858ab81bc564bd386e15d6b7039"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "004_zte_reboot_ext_probe",
+      "stock_function": "zte_reboot_ext_probe",
+      "stock_entry": "00100acc",
+      "stock_body_bytes": 984,
+      "category": "binding",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "zte_reboot_ext_probe",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0003_00100acc_zte_reboot_ext_probe.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0003_00100acc_zte_reboot_ext_probe.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: zte_reboot_ext_probe\nEntrada Ghidra: 00100acc\nTamanho stock: 984 bytes\nCategoria: binding\nAlvo no fonte: zte_reboot_ext.c:zte_reboot_ext_probe\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0003_00100acc_zte_reboot_ext_probe.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0003_00100acc_zte_reboot_ext_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\004_zte_reboot_ext_probe\\compile.json",
+          "role": "compile",
+          "sha256": "f841208c4d1aa1b84922a81e8cac53cd67890bfd156892f96ccc6e5ab5af6ea4"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\004_zte_reboot_ext_probe\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "d1e301e0f0ee05efc693c84d5e53ff6734c3d877b2ba725bd8bf94e3108e8128"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\004_zte_reboot_ext_probe\\test.json",
+          "role": "test",
+          "sha256": "4abcb0499bed2e1f692e6d0b744728687f0d4ab8840b49e7b756917c6a73efa2"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "005_zte_reboot_ext_remove",
+      "stock_function": "zte_reboot_ext_remove",
+      "stock_entry": "00100ea8",
+      "stock_body_bytes": 68,
+      "category": "binding",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "zte_reboot_ext_remove",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0004_00100ea8_zte_reboot_ext_remove.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0004_00100ea8_zte_reboot_ext_remove.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: zte_reboot_ext_remove\nEntrada Ghidra: 00100ea8\nTamanho stock: 68 bytes\nCategoria: binding\nAlvo no fonte: zte_reboot_ext.c:zte_reboot_ext_remove\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0004_00100ea8_zte_reboot_ext_remove.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0004_00100ea8_zte_reboot_ext_remove.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\005_zte_reboot_ext_remove\\compile.json",
+          "role": "compile",
+          "sha256": "1207be4c929995e61e87038576810a2a2a000b9034b3feb30728fb04324f3fe5"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\005_zte_reboot_ext_remove\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "f3c3bb02c0957016d99fc0222e1b5d0d540826b1065828f87afd144e4ae7aead"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\005_zte_reboot_ext_remove\\test.json",
+          "role": "test",
+          "sha256": "2d61f2fb9b6a61c0ddbd55fc013bbec4b896d95a645bcaaa7e4af98c012349e0"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "006_save_panic_buf_data_to_nvmem",
+      "stock_function": "save_panic_buf_data_to_nvmem",
+      "stock_entry": "00100eec",
+      "stock_body_bytes": 368,
+      "category": "core_logic",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "save_panic_buf_data_to_nvmem",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0005_00100eec_save_panic_buf_data_to_nvmem.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0005_00100eec_save_panic_buf_data_to_nvmem.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: save_panic_buf_data_to_nvmem\nEntrada Ghidra: 00100eec\nTamanho stock: 368 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:save_panic_buf_data_to_nvmem\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0005_00100eec_save_panic_buf_data_to_nvmem.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0005_00100eec_save_panic_buf_data_to_nvmem.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\006_save_panic_buf_data_to_nvmem\\compile.json",
+          "role": "compile",
+          "sha256": "ecf6f6dcade71a7263ad078a3a5b535ca0ccd39cf52d57b1b74159f46ee16fdf"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\006_save_panic_buf_data_to_nvmem\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "036afcb67519ee96198d2a7a4529a4b98e121d40611eb7eb82862e3b785485b6"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\006_save_panic_buf_data_to_nvmem\\test.json",
+          "role": "test",
+          "sha256": "4d9cacac6d33565de373be8560eeeec0b8aef2324a319c33d8be0db7691586bc"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "007_register_panic_hook",
+      "stock_function": "register_panic_hook",
+      "stock_entry": "0010105c",
+      "stock_body_bytes": 92,
+      "category": "core_logic",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "register_panic_hook",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0006_0010105c_register_panic_hook.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0006_0010105c_register_panic_hook.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: register_panic_hook\nEntrada Ghidra: 0010105c\nTamanho stock: 92 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:register_panic_hook\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0006_0010105c_register_panic_hook.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0006_0010105c_register_panic_hook.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\007_register_panic_hook\\compile.json",
+          "role": "compile",
+          "sha256": "a173070c8f141f5187c575e1db5cc695668b964a43d43c3a4991deb2e754254e"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\007_register_panic_hook\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "699f01486d1a15cb1756fd0d456d9d1ecfe7a021729a7c4b60c4312f2a1d94a0"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\007_register_panic_hook\\test.json",
+          "role": "test",
+          "sha256": "442dacc1caf834b9a90205f4aae2e9dd3697748e05336db93d81ef96f906a1ae"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "008_zte_reboot_ext_panic",
+      "stock_function": "zte_reboot_ext_panic",
+      "stock_entry": "001010bc",
+      "stock_body_bytes": 60,
+      "category": "core_logic",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "zte_reboot_ext_panic",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0007_001010bc_zte_reboot_ext_panic.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0007_001010bc_zte_reboot_ext_panic.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: zte_reboot_ext_panic\nEntrada Ghidra: 001010bc\nTamanho stock: 60 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:zte_reboot_ext_panic\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0007_001010bc_zte_reboot_ext_panic.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0007_001010bc_zte_reboot_ext_panic.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\008_zte_reboot_ext_panic\\compile.json",
+          "role": "compile",
+          "sha256": "eba859e7fc3db49abb86f0964f1190a9419f7c0e4048b3ed195cf418b6fcad61"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\008_zte_reboot_ext_panic\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "77a74572774c26ffc43f8ee3622ce527fc88301fc7ccc83aed2d55ca50a48850"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\008_zte_reboot_ext_panic\\test.json",
+          "role": "test",
+          "sha256": "b28b92e391b26063658ccfc95dfb46eb8bd73036671199f87c1cf5ac735a8712"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "009_attr_show",
+      "stock_function": "attr_show",
+      "stock_entry": "001010fc",
+      "stock_body_bytes": 68,
+      "category": "user_abi",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "attr_show",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0008_001010fc_attr_show.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0008_001010fc_attr_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: attr_show\nEntrada Ghidra: 001010fc\nTamanho stock: 68 bytes\nCategoria: user_abi\nAlvo no fonte: zte_reboot_ext.c:attr_show\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0008_001010fc_attr_show.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0008_001010fc_attr_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\009_attr_show\\compile.json",
+          "role": "compile",
+          "sha256": "779a88ef6b8c6d8bdf9d1711dd5a7c557ff65406bb38639ca06338e80c529f04"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\009_attr_show\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "1af2e1d2e1f4234c7112109177cd8191f495935383f430b64f3495e22bab6ed2"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\009_attr_show\\test.json",
+          "role": "test",
+          "sha256": "aea3344f8c72ad024feaecccf51613ad0aa08fd5513559a7fea4b9461884d857"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "010_attr_store",
+      "stock_function": "attr_store",
+      "stock_entry": "00101144",
+      "stock_body_bytes": 68,
+      "category": "user_abi",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "attr_store",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0009_00101144_attr_store.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0009_00101144_attr_store.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: attr_store\nEntrada Ghidra: 00101144\nTamanho stock: 68 bytes\nCategoria: user_abi\nAlvo no fonte: zte_reboot_ext.c:attr_store\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0009_00101144_attr_store.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0009_00101144_attr_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\010_attr_store\\compile.json",
+          "role": "compile",
+          "sha256": "b368e7c20ce3e6ce2b6b05df5f38123674f714664a6a08cac21838e6d49dc6b5"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\010_attr_store\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "648f4e2a4550dd556353b184257abd7eea3e97c036287812803e15a1992288bc"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\010_attr_store\\test.json",
+          "role": "test",
+          "sha256": "6ed34600bfd3774f4cc438ae1103e039539df94f32186df0feb69e2e4f59ea82"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "011_boot_nvmem_show",
+      "stock_function": "boot_nvmem_show",
+      "stock_entry": "0010118c",
+      "stock_body_bytes": 396,
+      "category": "user_abi",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "boot_nvmem_show",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0010_0010118c_boot_nvmem_show.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0010_0010118c_boot_nvmem_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: boot_nvmem_show\nEntrada Ghidra: 0010118c\nTamanho stock: 396 bytes\nCategoria: user_abi\nAlvo no fonte: zte_reboot_ext.c:boot_nvmem_show\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0010_0010118c_boot_nvmem_show.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0010_0010118c_boot_nvmem_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\011_boot_nvmem_show\\compile.json",
+          "role": "compile",
+          "sha256": "1a959fa9afae653dbc43c60b89753cd87bbd86229e5484e949f05eef7a124693"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\011_boot_nvmem_show\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "4c0cc41e244e251a3bee346d8c6d41ca611b8433eca0065f148819b3489fdadd"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\011_boot_nvmem_show\\test.json",
+          "role": "test",
+          "sha256": "ec28d586ad4dfd3e8b92b205e47c90e469dc08b82d4e68e2c706ad40c889a868"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "012_boot_nvmem_store",
+      "stock_function": "boot_nvmem_store",
+      "stock_entry": "0010131c",
+      "stock_body_bytes": 40,
+      "category": "user_abi",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "boot_nvmem_store",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0011_0010131c_boot_nvmem_store.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0011_0010131c_boot_nvmem_store.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: boot_nvmem_store\nEntrada Ghidra: 0010131c\nTamanho stock: 40 bytes\nCategoria: user_abi\nAlvo no fonte: zte_reboot_ext.c:boot_nvmem_store\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0011_0010131c_boot_nvmem_store.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0011_0010131c_boot_nvmem_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\012_boot_nvmem_store\\compile.json",
+          "role": "compile",
+          "sha256": "d836b70cb10a3f1cd88d93a7b5c3e4eb96117edab9ced7fb2b5006184a4292c7"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\012_boot_nvmem_store\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "7d55097c159fa1b2a7c9bef4a3c284511612a15ee84d4dddfcc364aa6dde7b8f"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\012_boot_nvmem_store\\test.json",
+          "role": "test",
+          "sha256": "e184bdb6d0d2be2fc6868893e3ae5a9ee60d67caa3e0ed652784339187a7fc44"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "013_init_module",
+      "stock_function": "init_module",
+      "stock_entry": "00101348",
+      "stock_body_bytes": 44,
+      "category": "lifecycle",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "init_module",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0012_00101348_init_module.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0012_00101348_init_module.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: init_module\nEntrada Ghidra: 00101348\nTamanho stock: 44 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_reboot_ext.c:init_module\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0012_00101348_init_module.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0012_00101348_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\013_init_module\\compile.json",
+          "role": "compile",
+          "sha256": "22f3645673dddf796c4067260ef9a0c1f8b6af709883e8f16527b0cebad556a7"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\013_init_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "e2582a2ccb26f4f467f3f53b6b0955f4fc0e1f4decb5bb785293ffe3ea0289b7"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\013_init_module\\test.json",
+          "role": "test",
+          "sha256": "fe816a74e57be0ef7f1fe72445b9e8a131e5215d24089b35cba1cb50e7ab8c32"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    },
+    {
+      "id": "014_cleanup_module",
+      "stock_function": "cleanup_module",
+      "stock_entry": "00101378",
+      "stock_body_bytes": 36,
+      "category": "lifecycle",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "cleanup_module",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0013_00101378_cleanup_module.c",
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0013_00101378_cleanup_module.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: cleanup_module\nEntrada Ghidra: 00101378\nTamanho stock: 36 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_reboot_ext.c:cleanup_module\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0013_00101378_cleanup_module.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0013_00101378_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\014_cleanup_module\\compile.json",
+          "role": "compile",
+          "sha256": "a86711819322b112c7367c770d4ae0f1893928f3107cf5929c94858e2a73a84d"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\014_cleanup_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "96e707718cd925b4d2f5765eba5d890f53aa805f22a89489da029a42e097a83e"
+        },
+        {
+          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\014_cleanup_module\\test.json",
+          "role": "test",
+          "sha256": "ed4115201e91c418c33fe1b20879312c3327d17de7d79ec70594192b8d40f35b"
+        }
+      ],
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+    }
+  ]
+}

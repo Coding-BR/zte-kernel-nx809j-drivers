@@ -1,0 +1,127 @@
+{
+  "binaries": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_misc\\host\\host_test_a",
+      "sha256": "79a23ae774d661e8a26a271ad4c1184a4b98c766dccbb0092e3b3a47b7ce5eda",
+      "size": 28512
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_misc\\host\\host_test_b",
+      "sha256": "79a23ae774d661e8a26a271ad4c1184a4b98c766dccbb0092e3b3a47b7ce5eda",
+      "size": 28512
+    }
+  ],
+  "compile_reports": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_misc:/source:ro",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_misc\\host:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-Wno-sign-compare",
+        "/source/tests/host_test.c",
+        "-o",
+        "/output/host_test_a"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_misc:/source:ro",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_misc\\host:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-Wno-sign-compare",
+        "/source/tests/host_test.c",
+        "-o",
+        "/output/host_test_b"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "covered_functions": [
+    "get_sysnumber_byname",
+    "zte_poweroff_charging_status",
+    "zte_misc_register_callback",
+    "zte_misc_get_node_val",
+    "battery_module_pack_vendor_get",
+    "zte_misc_get_design_capacity",
+    "zte_misc_common_callback_set",
+    "zte_misc_common_callback_get",
+    "zte_misc_probe",
+    "zte_misc_remove",
+    "zte_timezone_setup",
+    "zte_poweroff_charging_handle",
+    "init_module",
+    "cleanup_module"
+  ],
+  "driver": "zte_misc",
+  "generated_utc": "2026-07-12T19:59:18.156404+00:00",
+  "passed": true,
+  "reproducible": true,
+  "run_reports": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_misc\\host:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_a"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS zte_misc host tests\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_misc\\host:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_b"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS zte_misc host tests\n"
+    }
+  ],
+  "schema_version": "1.0",
+  "source": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_misc\\zte_misc.c",
+  "test_source": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_misc\\tests\\host_test.c"
+}

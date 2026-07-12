@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "comparisons": [
+    {"surface": "ELF", "result": "PASS", "detail": "AArch64 ET_REL and reproducible build"},
+    {"surface": "imports", "result": "PASS", "detail": "43 stock imports equal candidate imports"},
+    {"surface": "modinfo", "result": "PASS", "detail": "license, description, built_with, dependencies and aliases match"},
+    {"surface": "Generic Netlink", "result": "PASS", "detail": "ZTE_TASKSTATS, two genl_ops, policies, commands and 0x160 payload reconstructed"},
+    {"surface": "functions", "result": "PASS", "detail": "Ghidra stock and candidate each export exactly 8 functions"},
+    {"surface": "KCFI", "result": "PASS", "detail": "3/3 indirect or entry-point type IDs match"},
+    {"surface": "host behavior", "result": "PASS", "detail": "8/8 functions directly covered; harness reproducible"}
+  ],
+  "justified_differences": [
+    {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel release recorded in engenharia/config/target_kernel.json and was modposted with its Module.symvers"},
+    {"difference": "zte_taskstats_user_cmd has one merged zte_add_del_listener callsite and one merged RCU cleanup", "justification": "candidate Ghidra shows both register/deregister branches selecting the third argument before the shared call; host tests cover both paths"},
+    {"difference": "three symbol sizes differ while five are exact", "justification": "candidate Ghidra preserves the 8-function inventory, field offsets and effects; KCFI, imports, ABI probe and direct behavioral tests pass"}
+  ],
+  "evidence": [
+    "engenharia/validation/zte_stats_info/driver_audit_current.json",
+    "engenharia/validation/zte_stats_info/ghidra_stock_candidate_comparison.json",
+    "engenharia/validation/zte_stats_info/host_test_report.json",
+    "engenharia/validation/zte_stats_info/kcfi_callback_surface.json",
+    "engenharia/validation/zte_stats_info/abi_probe_report.json"
+  ],
+  "blockers": []
+}

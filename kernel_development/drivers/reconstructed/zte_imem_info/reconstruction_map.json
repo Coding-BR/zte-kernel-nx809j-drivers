@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_imem_info",
+  "stock_sha256": "6a0fff182e40e9676a321e6c55796ed94d382faf3ec1e1999a53e5076ffd3e65",
+  "scope": "Traceability map for the six stock functions. Inlined source helpers remain subject to object-code parity review.",
+  "reviewed_by": "Codex static Ghidra/source review",
+  "mappings": [
+    {
+      "stock_function": "request_board_id",
+      "stock_entry": "00100194",
+      "source_file": "zte_imem_info.c",
+      "source_function": "request_board_id",
+      "evidence": [
+        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0000_00100194_request_board_id.c"
+      ],
+      "review_notes": "Maps the board-id DT lookup and -1 failure value through the reconstructed helper. Stock KCFI proves the exported signature is int request_board_id(void).",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "ddr_id_proc_open",
+      "stock_entry": "0010022c",
+      "source_file": "zte_imem_info.c",
+      "source_function": "ddr_id_proc_open",
+      "evidence": [
+        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0001_0010022c_ddr_id_proc_open.c"
+      ],
+      "review_notes": "Maps the single_open callback for the DDR proc entry.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "ddr_id_read_proc",
+      "stock_entry": "0010025c",
+      "source_file": "zte_imem_info.c",
+      "source_function": "ddr_id_read_proc",
+      "evidence": [
+        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0002_0010025c_ddr_id_read_proc.c",
+        "runs/NX809J-20260711T011653Z/02_normalized/modules/zte_imem_info.ko/readelf.txt"
+      ],
+      "review_notes": "Maps DDR manufacturer, type and size reporting. The exact stock DDR type table was restored from the .rela.rodata pointer array.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "board_id_proc_open",
+      "stock_entry": "001004fc",
+      "source_file": "zte_imem_info.c",
+      "source_function": "board_id_proc_open",
+      "evidence": [
+        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0003_001004fc_board_id_proc_open.c"
+      ],
+      "review_notes": "Maps the single_open callback for the board-id proc entry.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "board_id_read_proc",
+      "stock_entry": "0010052c",
+      "source_file": "zte_imem_info.c",
+      "source_function": "board_id_read_proc",
+      "evidence": [
+        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0004_0010052c_board_id_read_proc.c"
+      ],
+      "review_notes": "Maps board-id DT lookup and decimal seq_printf output.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "001005f0",
+      "source_file": "zte_imem_info.c",
+      "source_function": "zte_imem_info_init",
+      "evidence": [
+        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0005_001005f0_init_module.c",
+        "runs/NX809J-20260711T011653Z/02_normalized/modules/zte_imem_info.ko/readelf.txt"
+      ],
+      "review_notes": "module_init expands to init_module. The proc creation and failure cleanup sequence match the stock control flow, and no cleanup_module is emitted.",
+      "status": "reviewed"
+    }
+  ],
+  "extra_source_functions": [
+    {
+      "source_function": "imem_read_u32",
+      "reason": "Refactoring helper for repeated DT lookup and IMEM read. It is fully inlined; the rebuilt function set has no extra symbol."
+    },
+    {
+      "source_function": "ddr_manufacturer_name",
+      "reason": "Refactoring helper for the stock switch table. It is fully inlined; the rebuilt function set has no extra symbol."
+    }
+  ]
+}

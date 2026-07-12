@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_ir",
+  "risk": "medium: SPI infrared transmitter. The first hardware session must not issue write() or physical IR transmission.",
+  "dependencies": [
+    "spi15.0",
+    "zte_ir stock module",
+    "zte_ir character device",
+    "SPI core"
+  ],
+  "rollback": "Follow GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md: copy and hash stock module, unbind only after refcount is zero, restore stock module and bind spi15.0.",
+  "stop_conditions": [
+    "unexpected kernel log",
+    "ADB instability",
+    "bind failure",
+    "module refcount is nonzero",
+    "any KASAN, KCSAN, CFI, BUG, Oops or panic"
+  ],
+  "hardware_authorized": false,
+  "evidence": [
+    "curated/zte_ir/GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md",
+    "validation/zte_ir/cycle_validation.json"
+  ]
+}

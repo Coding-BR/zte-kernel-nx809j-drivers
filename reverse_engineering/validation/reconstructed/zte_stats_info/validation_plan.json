@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "HIGH: Generic Netlink telemetry reads task_struct, signal_struct, mm_struct and per-CPU listener state.",
+  "dependencies": ["CONFIG_CFI_CLANG", "CONFIG_MODVERSIONS", "Generic Netlink", "root PID namespace"],
+  "rollback": "Do not unload or replace the stock module automatically. Hardware validation must boot a disposable RAM kernel, use a distinct controlled session, capture dmesg, and restore the stock boot path by reboot on any CFI, Oops, family-registration or ADB failure.",
+  "stop_conditions": ["CFI failure", "kernel Oops or panic", "KASAN/KCSAN report", "ADB loss", "unexpected Netlink family conflict", "rollback unavailable"],
+  "automatic_hardware_test_allowed": false
+}

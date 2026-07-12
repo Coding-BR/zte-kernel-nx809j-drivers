@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_ramdisk_reboot",
+  "stock_sha256": "598d5862b03a7f1fdc60318ca53fb6837716662c591991390e6f946aafb2d740",
+  "scope": "Traceability for all 13 stock functions extracted from the active vendor_boot_a ramdisk. Functional parity remains gated by KCFI, tests and hardware.",
+  "reviewed_by": "Codex direct Ghidra/source review",
+  "mappings": [
+    {
+      "stock_function": "zte_ramdisk_reboot_write",
+      "stock_entry": "00100464",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_ramdisk_reboot_write",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0000_00100464_zte_ramdisk_reboot_write.c"],
+      "review_notes": "Exported NVMEM write API mapped; return behavior and vendor_ramdisk_zlog cell name aligned to stock. Function-size parity remains pending.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "zte_check_xbl_log_lines",
+      "stock_entry": "001004fc",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_check_xbl_log_lines",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0001_001004fc_zte_check_xbl_log_lines.c"],
+      "review_notes": "XBL line scanner mapped; exact KCFI and instruction-size parity remain pending.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "extract_ocp_info",
+      "stock_entry": "001006b8",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "extract_ocp_info",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0002_001006b8_extract_ocp_info.c"],
+      "review_notes": "OCP parser and exact stock strings mapped; KCFI type parity remains pending.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "extract_sn_info",
+      "stock_entry": "001007ac",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "extract_sn_info",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0003_001007ac_extract_sn_info.c"],
+      "review_notes": "Serial-number parser and exact stock strings mapped; KCFI type parity remains pending.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "zte_ramdisk_reboot_probe",
+      "stock_entry": "00100894",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_ramdisk_reboot_probe",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0004_00100894_zte_ramdisk_reboot_probe.c"],
+      "review_notes": "Probe order, kobject/sysfs, NVMEM read and temporary XBL mapping aligned to stock; size parity remains pending.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "zte_ramdisk_reboot_remove",
+      "stock_entry": "00100bd8",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_ramdisk_reboot_remove",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0005_00100bd8_zte_ramdisk_reboot_remove.c"],
+      "review_notes": "No-op remove callback now matches the four-byte stock function and KCFI type.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "zte_get_xbl_log_memory_region",
+      "stock_entry": "00100bdc",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_get_xbl_log_memory_region",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0006_00100bdc_zte_get_xbl_log_memory_region.c"],
+      "review_notes": "memory-region lookup, reserved-memory offsets and WC mapping mapped; KCFI matches and size differs by four bytes.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "attr_show",
+      "stock_entry": "00100cec",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "attr_show",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0007_00100cec_attr_show.c"],
+      "review_notes": "sysfs show trampoline matches stock KCFI and symbol size.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "attr_store",
+      "stock_entry": "00100d34",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "attr_store",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0008_00100d34_attr_store.c"],
+      "review_notes": "sysfs store trampoline matches stock KCFI and symbol size.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "ramdisk_nvmem_show",
+      "stock_entry": "00100d7c",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "ramdisk_nvmem_show",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0009_00100d7c_ramdisk_nvmem_show.c"],
+      "review_notes": "sysfs payload callback now matches stock callback type, KCFI and symbol size.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "ramdisk_nvmem_store",
+      "stock_entry": "00100db8",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "ramdisk_nvmem_store",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0010_00100db8_ramdisk_nvmem_store.c"],
+      "review_notes": "read-only sysfs store callback matches stock message, return, KCFI and symbol size.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "00100de4",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "init_module (module_platform_driver expansion)",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0011_00100de4_init_module.c"],
+      "review_notes": "module_platform_driver expands to the stock platform-driver registration wrapper.",
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "cleanup_module",
+      "stock_entry": "00100e14",
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "cleanup_module (module_platform_driver expansion)",
+      "evidence": ["runs/NX809J-20260712T105314Z/03_ghidra/exports/zte_ramdisk_reboot.ko/decompiled/0012_00100e14_cleanup_module.c"],
+      "review_notes": "module_platform_driver expands to the stock platform-driver unregister wrapper.",
+      "status": "reviewed"
+    }
+  ],
+  "extra_source_functions": []
+}

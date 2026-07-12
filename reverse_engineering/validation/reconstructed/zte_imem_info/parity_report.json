@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "comparisons": [
+    {"surface": "ELF/KMI", "result": "PASS", "detail": "AArch64 ET_REL, exact imports and reproducible target build"},
+    {"surface": "functions", "result": "PASS", "detail": "6/6 names, sizes and Ghidra mappings match"},
+    {"surface": "KCFI", "result": "PASS", "detail": "6/6 type IDs match"},
+    {"surface": "procfs ABI", "result": "PASS", "detail": "paths, modes, proc_ops and output formats covered"},
+    {"surface": "IMEM behavior", "result": "PASS", "detail": "success, missing node, map failure, unknown IDs and all init rollback paths tested"}
+  ],
+  "justified_differences": [
+    {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel and Module.symvers in engenharia/config/target_kernel.json"}
+  ],
+  "evidence": [
+    "engenharia/validation/zte_imem_info/driver_audit_current.json",
+    "engenharia/validation/zte_imem_info/kcfi_parity.json",
+    "engenharia/validation/zte_imem_info/host_test_report.json"
+  ],
+  "blockers": []
+}

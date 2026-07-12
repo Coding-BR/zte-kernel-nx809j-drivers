@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "HIGH: central OEM callback registry, module parameters, power-supply access and Device Tree GPIO translation can affect charging and platform behavior.",
+  "dependencies": ["power_supply class", "Device Tree chosen node", "zte-misc platform device", "OEM callback clients"],
+  "rollback": "Do not replace or unload the stock module automatically. Validate only in a supervised disposable RAM-kernel session; preserve the stock module, capture dmesg before changes and recover by reboot on any callback, GPIO, power-supply or ADB anomaly.",
+  "stop_conditions": ["kernel Oops", "KASAN/KCSAN report", "CFI failure", "charging state anomaly", "unexpected GPIO state", "ADB loss", "rollback unavailable"],
+  "automatic_hardware_test_allowed": false
+}
