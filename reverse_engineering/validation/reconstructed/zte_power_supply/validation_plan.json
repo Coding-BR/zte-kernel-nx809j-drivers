@@ -1,0 +1,20 @@
+{
+    "schema_version":  "1.0",
+    "status":  "PASS",
+    "risk":  "CRITICAL: power-supply class wrapper controls battery metadata, sysfs events, supplier relationships and callbacks used by charging drivers.",
+    "dependencies":  [
+                         "Android GKI 6.12.23 power_supply ABI",
+                         "Device Tree monitored-battery and power-supplies relationships",
+                         "consumer charger and battery modules using exported ZTE symbols"
+                     ],
+    "rollback":  "Do not unload or replace the stock energy stack automatically. Hardware validation requires power and thermal monitoring, persistent logs, ADB recovery and reboot rollback.",
+    "stop_conditions":  [
+                            "kernel Oops or CFI failure",
+                            "unexpected charging or battery state",
+                            "thermal anomaly",
+                            "notifier or uevent loop",
+                            "ADB loss",
+                            "rollback unavailable"
+                        ],
+    "automatic_hardware_test_allowed":  false
+}

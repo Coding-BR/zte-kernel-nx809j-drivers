@@ -5,6 +5,9 @@
  * Reconstructed for Red Magic 11 Pro (NX809J) GKI.
  */
 
+#ifdef ZTE_POWER_SUPPLY_HOST_TEST
+#include "tests/host_stubs.h"
+#else
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
@@ -17,21 +20,32 @@
 #include <linux/mutex.h>
 #include <linux/power_supply.h>
 #include <linux/notifier.h>
+#include <linux/ctype.h>
+#include <linux/ratelimit.h>
+#include <linux/sysfs.h>
+#endif
 
 #define ZTE_POWER_SUPPLY_CLASS_NAME "zte_power_supply"
 
 struct zte_power_supply;
 
+enum zte_power_supply_property {
+	ZTE_POWER_SUPPLY_PROP_STATUS = POWER_SUPPLY_PROP_STATUS,
+	ZTE_POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX =
+		POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX,
+	ZTE_POWER_SUPPLY_PROP_TYPE = POWER_SUPPLY_PROP_TYPE,
+};
+
 struct zte_power_supply_desc {
 	const char *name;
 	enum power_supply_type type;
-	const char **supplied_from;
+	char **supplied_to;
 	size_t num_supplicants;
-	const enum power_supply_property *properties;
+	const enum zte_power_supply_property *properties;
 	size_t num_properties;
-	int (*get_property)(struct zte_power_supply *psy, enum power_supply_property psp, union power_supply_propval *val);
-	int (*set_property)(struct zte_power_supply *psy, enum power_supply_property psp, const union power_supply_propval *val);
-	int (*property_is_writeable)(struct zte_power_supply *psy, enum power_supply_property psp);
+	int (*get_property)(struct zte_power_supply *psy, enum zte_power_supply_property psp, union power_supply_propval *val);
+	int (*set_property)(struct zte_power_supply *psy, enum zte_power_supply_property psp, const union power_supply_propval *val);
+	int (*property_is_writeable)(struct zte_power_supply *psy, enum zte_power_supply_property psp);
 	void (*external_power_changed)(struct zte_power_supply *psy);
 	void (*set_charged)(struct zte_power_supply *psy);
 	bool no_thermal;
@@ -40,18 +54,35 @@ struct zte_power_supply_desc {
 
 struct zte_power_supply {
 	const struct zte_power_supply_desc *desc;
-	int num_supplicants;
+	char **supplied_to;
+	size_t num_supplicants;
 	const char **supplied_from;
-	struct fwnode_handle *fwnode;
+	size_t num_supplies;
+	struct device_node *of_node;
 	void *drvdata;
 	struct device dev;
 	struct work_struct changed_work;
 	struct delayed_work deferred_register_work;
 	spinlock_t lock;
 	bool event_pending;
-	bool changed;
+	bool initialized;
+	bool removing;
 	atomic_t use_cnt;
+	struct power_supply_battery_info *battery_info;
+	u8 reserved[0x58];
 };
+
+static_assert(sizeof(struct zte_power_supply) == 0x4c0);
+static_assert(offsetof(struct zte_power_supply, of_node) == 0x28);
+static_assert(offsetof(struct zte_power_supply, drvdata) == 0x30);
+static_assert(offsetof(struct zte_power_supply, dev) == 0x38);
+static_assert(offsetof(struct zte_power_supply, changed_work) == 0x3c8);
+static_assert(offsetof(struct zte_power_supply, deferred_register_work) == 0x3e8);
+static_assert(offsetof(struct zte_power_supply, lock) == 0x450);
+static_assert(offsetof(struct zte_power_supply, event_pending) == 0x454);
+static_assert(offsetof(struct zte_power_supply, initialized) == 0x455);
+static_assert(offsetof(struct zte_power_supply, removing) == 0x456);
+static_assert(offsetof(struct zte_power_supply, use_cnt) == 0x458);
 
 #define to_zte_power_supply(d) container_of(d, struct zte_power_supply, dev)
 
@@ -61,134 +92,106 @@ static ATOMIC_NOTIFIER_HEAD(zte_power_supply_notifier);
 
 struct power_supply_attr {
 	const char *prop_name;
-	int prop;
+	char attr_name[32];
 	struct device_attribute dev_attr;
+	const char *const *text_values;
+	int text_values_len;
 };
 
-#define PSY_ATTR(_name, _prop) \
-	{ \
+static_assert(sizeof(struct power_supply_attr) == 0x58);
+static_assert(offsetof(struct power_supply_attr, dev_attr) == 0x28);
+static_assert(offsetof(struct power_supply_attr, text_values) == 0x48);
+
+#define _ZTE_PSY_ATTR(_name, _text, _len) \
+	[POWER_SUPPLY_PROP_ ## _name] = { \
 		.prop_name = #_name, \
-		.prop = _prop, \
-		.dev_attr = __ATTR(_name, 0444, zte_power_supply_show, zte_power_supply_store) \
+		.attr_name = #_name, \
+		.text_values = _text, \
+		.text_values_len = _len, \
 	}
 
-static ssize_t zte_power_supply_show(struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t zte_power_supply_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#define ZTE_PSY_ATTR(_name) _ZTE_PSY_ATTR(_name, NULL, 0)
+#define ZTE_PSY_ENUM_ATTR(_name, _text) \
+	_ZTE_PSY_ATTR(_name, _text, ARRAY_SIZE(_text))
+
+static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf);
+static ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
 
 /* Array estático de atributos mapeando as 19 principais propriedades */
-static struct power_supply_attr zte_power_supply_attrs[] = {
-	PSY_ATTR(status, POWER_SUPPLY_PROP_STATUS),
-	PSY_ATTR(charge_type, POWER_SUPPLY_PROP_CHARGE_TYPE),
-	PSY_ATTR(health, POWER_SUPPLY_PROP_HEALTH),
-	PSY_ATTR(present, POWER_SUPPLY_PROP_PRESENT),
-	PSY_ATTR(online, POWER_SUPPLY_PROP_ONLINE),
-	PSY_ATTR(authentic, POWER_SUPPLY_PROP_AUTHENTIC),
-	PSY_ATTR(technology, POWER_SUPPLY_PROP_TECHNOLOGY),
-	PSY_ATTR(cycle_count, POWER_SUPPLY_PROP_CYCLE_COUNT),
-	PSY_ATTR(voltage_max, POWER_SUPPLY_PROP_VOLTAGE_MAX),
-	PSY_ATTR(voltage_min, POWER_SUPPLY_PROP_VOLTAGE_MIN),
-	PSY_ATTR(voltage_max_design, POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN),
-	PSY_ATTR(voltage_min_design, POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN),
-	PSY_ATTR(voltage_now, POWER_SUPPLY_PROP_VOLTAGE_NOW),
-	PSY_ATTR(voltage_avg, POWER_SUPPLY_PROP_VOLTAGE_AVG),
-	PSY_ATTR(voltage_ocv, POWER_SUPPLY_PROP_VOLTAGE_OCV),
-	PSY_ATTR(voltage_boot, POWER_SUPPLY_PROP_VOLTAGE_BOOT),
-	PSY_ATTR(current_max, POWER_SUPPLY_PROP_CURRENT_MAX),
-	PSY_ATTR(current_now, POWER_SUPPLY_PROP_CURRENT_NOW),
-	PSY_ATTR(current_avg, POWER_SUPPLY_PROP_CURRENT_AVG),
-};
-
-#define MAX_PSY_ATTRS ARRAY_SIZE(zte_power_supply_attrs)
-
 /* Mapeamento de strings para enums do sysfs */
 static const char *const status_text[] = {
 	"Unknown", "Charging", "Discharging", "Not charging", "Full"
 };
 
 static const char *const charge_type_text[] = {
-	"Unknown", "None", "Trickle", "Fast", "Standard",
-	"Adaptive", "Custom", "Long Life", "Bypass"
+	"Unknown", "N/A", "Trickle", "Fast", "Standard",
+	"Adaptive", "Custom", "Long Life", "Bypass", "Taper"
 };
 
 static const char *const health_text[] = {
-	"Unknown", "Good", "Overheat", "Dead", "Overvoltage",
+	"Unknown", "Good", "Overheat", "Dead", "Over voltage",
 	"Unspecified failure", "Cold", "Watchdog timer expire",
-	"Safety timer expire", "Overcurrent", "Calibration required",
-	"Warm", "Cool", "Hot", "No Battery"
+	"Safety timer expire", "Over current", "Calibration required",
+	"Warm", "Cool", "Hot", "No battery"
 };
 
 static const char *const technology_text[] = {
 	"Unknown", "NiMH", "Li-ion", "Li-poly", "LiFe", "NiCd", "LiMn"
 };
 
-static const char *const capacity_level_text[] = {
-	"Unknown", "Critical", "Low", "Normal", "High", "Full"
+static struct power_supply_attr zte_power_supply_attrs[] = {
+	ZTE_PSY_ENUM_ATTR(STATUS, status_text),
+	ZTE_PSY_ENUM_ATTR(CHARGE_TYPE, charge_type_text),
+	ZTE_PSY_ENUM_ATTR(HEALTH, health_text),
+	ZTE_PSY_ATTR(PRESENT),
+	ZTE_PSY_ATTR(ONLINE),
+	ZTE_PSY_ATTR(AUTHENTIC),
+	ZTE_PSY_ENUM_ATTR(TECHNOLOGY, technology_text),
+	ZTE_PSY_ATTR(CYCLE_COUNT),
+	ZTE_PSY_ATTR(VOLTAGE_MAX),
+	ZTE_PSY_ATTR(VOLTAGE_MIN),
+	ZTE_PSY_ATTR(VOLTAGE_MAX_DESIGN),
+	ZTE_PSY_ATTR(VOLTAGE_MIN_DESIGN),
+	ZTE_PSY_ATTR(VOLTAGE_NOW),
+	ZTE_PSY_ATTR(VOLTAGE_AVG),
+	ZTE_PSY_ATTR(VOLTAGE_OCV),
+	ZTE_PSY_ATTR(VOLTAGE_BOOT),
+	ZTE_PSY_ATTR(CURRENT_MAX),
+	ZTE_PSY_ATTR(CURRENT_NOW),
+	ZTE_PSY_ATTR(CURRENT_AVG),
 };
 
-static const char *const scope_text[] = {
-	"Unknown", "System", "Device"
-};
+#define MAX_PSY_ATTRS ((int)ARRAY_SIZE(zte_power_supply_attrs))
 
 /* Procura propriedade no array do driver */
-static bool zte_power_supply_has_property(const struct zte_power_supply_desc *desc, enum power_supply_property psp)
-{
-	int i;
-	if (!desc || !desc->properties)
-		return false;
-	for (i = 0; i < desc->num_properties; i++) {
-		if (desc->properties[i] == psp)
-			return true;
-	}
-	return false;
-}
-
 /* Callbacks de get/set/writeable com hooks removidos e CFI cleans */
-int zte_power_supply_get_property(struct zte_power_supply *psy, enum power_supply_property psp, union power_supply_propval *val)
+noinline int zte_power_supply_get_property(struct zte_power_supply *psy, enum zte_power_supply_property psp, union power_supply_propval *val)
 {
-	if (!psy || !psy->desc)
-		return -EINVAL;
-
 	if (atomic_read(&psy->use_cnt) <= 0) {
-		if (psy->changed)
+		if (!psy->initialized)
 			return -EAGAIN;
-		else
-			return -ENODEV;
+		return -ENODEV;
 	}
 
-	if (psy->desc->get_property)
-		return psy->desc->get_property(psy, psp, val);
-
-	return -ENOSYS;
+	return psy->desc->get_property(psy, psp, val);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_get_property);
 
-int zte_power_supply_set_property(struct zte_power_supply *psy, enum power_supply_property psp, const union power_supply_propval *val)
+noinline int zte_power_supply_set_property(struct zte_power_supply *psy, enum zte_power_supply_property psp, const union power_supply_propval *val)
 {
-	if (!psy || !psy->desc)
-		return -EINVAL;
+	if (atomic_read(&psy->use_cnt) <= 0 || !psy->desc->set_property)
+		return -ENODEV;
 
-	if (atomic_read(&psy->use_cnt) <= 0)
-		return -EAGAIN;
-
-	if (psy->desc->set_property)
-		return psy->desc->set_property(psy, psp, val);
-
-	return -ENOSYS;
+	return psy->desc->set_property(psy, psp, val);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_set_property);
 
-int zte_power_supply_property_is_writeable(struct zte_power_supply *psy, enum power_supply_property psp)
+int zte_power_supply_property_is_writeable(struct zte_power_supply *psy, enum zte_power_supply_property psp)
 {
-	if (!psy || !psy->desc)
-		return -EINVAL;
+	if (atomic_read(&psy->use_cnt) <= 0 || !psy->desc->property_is_writeable)
+		return -ENODEV;
 
-	if (atomic_read(&psy->use_cnt) <= 0)
-		return -EAGAIN;
-
-	if (psy->desc->property_is_writeable)
-		return psy->desc->property_is_writeable(psy, psp);
-
-	return -ENOSYS;
+	return psy->desc->property_is_writeable(psy, psp);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_property_is_writeable);
 
@@ -198,76 +201,55 @@ static struct power_supply_attr *to_psy_attr(struct device_attribute *attr)
 	return container_of(attr, struct power_supply_attr, dev_attr);
 }
 
-static ssize_t zte_power_supply_show(struct device *dev, struct device_attribute *attr, char *buf)
+static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	struct power_supply_attr *psy_attr = to_psy_attr(attr);
+	enum zte_power_supply_property psp = psy_attr - zte_power_supply_attrs;
 	union power_supply_propval val;
-	int ret;
+	ssize_t ret;
 
-	if (psy_attr->prop == POWER_SUPPLY_PROP_TYPE) {
+	if (psp == ZTE_POWER_SUPPLY_PROP_TYPE) {
 		val.intval = psy->desc->type;
-		goto format_val;
-	}
-
-	ret = zte_power_supply_get_property(psy, psy_attr->prop, &val);
-	if (ret < 0) {
-		if (ret != -ENODEV && ret != -EAGAIN) {
-			dev_err(dev, "driver failed to report `%s' property: %d\n",
-				psy_attr->prop_name, ret);
+	} else {
+		ret = zte_power_supply_get_property(psy, psp, &val);
+		if (ret < 0) {
+			if (ret != -ENODATA && ret != -ENODEV && ret != -EAGAIN)
+				dev_err_ratelimited(dev,
+					"driver failed to report `%s' property: %zd\n",
+					psy_attr->prop_name, ret);
+			return ret;
 		}
-		return ret;
 	}
 
-format_val:
-	if (psy_attr->prop == POWER_SUPPLY_PROP_STATUS)
-		return sprintf(buf, "%s\n", status_text[val.intval]);
-	else if (psy_attr->prop == POWER_SUPPLY_PROP_CHARGE_TYPE)
-		return sprintf(buf, "%s\n", charge_type_text[val.intval]);
-	else if (psy_attr->prop == POWER_SUPPLY_PROP_HEALTH)
-		return sprintf(buf, "%s\n", health_text[val.intval]);
-	else if (psy_attr->prop == POWER_SUPPLY_PROP_TECHNOLOGY)
-		return sprintf(buf, "%s\n", technology_text[val.intval]);
-	else if (psy_attr->prop == POWER_SUPPLY_PROP_CAPACITY_LEVEL)
-		return sprintf(buf, "%s\n", capacity_level_text[val.intval]);
-	else if (psy_attr->prop == POWER_SUPPLY_PROP_SCOPE)
-		return sprintf(buf, "%s\n", scope_text[val.intval]);
-	else if (psy_attr->prop == POWER_SUPPLY_PROP_MODEL_NAME ||
-		 psy_attr->prop == POWER_SUPPLY_PROP_MANUFACTURER ||
-		 psy_attr->prop == POWER_SUPPLY_PROP_SERIAL_NUMBER)
-		return sprintf(buf, "%s\n", val.strval ? val.strval : "");
-
+	if (psy_attr->text_values_len > 0 && val.intval >= 0 &&
+	    val.intval < psy_attr->text_values_len)
+		return sprintf(buf, "%s\n", psy_attr->text_values[val.intval]);
 	return sprintf(buf, "%d\n", val.intval);
 }
 
-static ssize_t zte_power_supply_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+static ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	struct power_supply_attr *psy_attr = to_psy_attr(attr);
+	enum zte_power_supply_property psp = psy_attr - zte_power_supply_attrs;
 	union power_supply_propval val;
 	long long lval;
 	int ret;
 
-	/* Se a propriedade mapeia strings, tenta dar match */
-	if (psy_attr->prop == POWER_SUPPLY_PROP_STATUS) {
-		ret = sysfs_match_string(status_text, buf);
-		if (ret < 0) return ret;
-		val.intval = ret;
-	} else if (psy_attr->prop == POWER_SUPPLY_PROP_CHARGE_TYPE) {
-		ret = sysfs_match_string(charge_type_text, buf);
-		if (ret < 0) return ret;
-		val.intval = ret;
-	} else if (psy_attr->prop == POWER_SUPPLY_PROP_HEALTH) {
-		ret = sysfs_match_string(health_text, buf);
-		if (ret < 0) return ret;
-		val.intval = ret;
-	} else {
+	ret = -EINVAL;
+	if (psy_attr->text_values_len > 0)
+		ret = __sysfs_match_string(psy_attr->text_values,
+					   psy_attr->text_values_len, buf);
+	if (ret < 0) {
 		ret = kstrtoll(buf, 10, &lval);
-		if (ret < 0) return ret;
-		val.intval = (int)lval;
+		if (ret < 0)
+			return ret;
+		ret = lval;
 	}
 
-	ret = zte_power_supply_set_property(psy, psy_attr->prop, &val);
+	val.intval = ret;
+	ret = zte_power_supply_set_property(psy, psp, &val);
 	if (ret < 0)
 		return ret;
 
@@ -275,30 +257,33 @@ static ssize_t zte_power_supply_store(struct device *dev, struct device_attribut
 }
 
 /* Visibility Callback */
-static umode_t zte_power_supply_attr_is_visible(struct kobject *kobj, struct attribute *attr, int attrno)
+static umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribute *attr, int attrno)
 {
 	struct device *dev = kobj_to_dev(kobj);
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
-	struct power_supply_attr *psy_attr;
+	int i;
 
-	if (attrno >= MAX_PSY_ATTRS)
+	BUG_ON(attrno >= MAX_PSY_ATTRS);
+	if (!zte_power_supply_attrs[attrno].prop_name)
 		return 0;
 
-	psy_attr = &zte_power_supply_attrs[attrno];
-	if (!zte_power_supply_has_property(psy->desc, psy_attr->prop))
-		return 0;
+	for (i = 0; i < psy->desc->num_properties; i++) {
+		int property = psy->desc->properties[i];
 
-	if (zte_power_supply_property_is_writeable(psy, psy_attr->prop) > 0)
-		return 0644;
-
-	return 0444;
+		if (property == attrno) {
+			if (zte_power_supply_property_is_writeable(psy, property) > 0)
+				return 0644;
+			return 0444;
+		}
+	}
+	return 0;
 }
 
 static struct attribute *zte_power_supply_dev_attrs[MAX_PSY_ATTRS + 1];
 
 static const struct attribute_group zte_power_supply_attr_group = {
 	.attrs = zte_power_supply_dev_attrs,
-	.is_visible = zte_power_supply_attr_is_visible,
+	.is_visible = power_supply_attr_is_visible,
 };
 
 static const struct attribute_group *zte_power_supply_groups[] = {
@@ -315,9 +300,36 @@ static void zte_power_supply_dev_release(struct device *dev)
 
 static struct device_type zte_power_supply_dev_type = {
 	.name = "zte_power_supply",
-	.groups = zte_power_supply_groups,
 	.release = zte_power_supply_dev_release,
 };
+
+noinline void zte_power_supply_init_attrs(struct device_type *dev_type)
+{
+	int i;
+
+	dev_type->groups = zte_power_supply_groups;
+	pr_info("zte_power_supply: initializing %zu attributes\n",
+		ARRAY_SIZE(zte_power_supply_attrs));
+
+	for (i = 0; i < ARRAY_SIZE(zte_power_supply_attrs); i++) {
+		struct device_attribute *attr;
+		char *name;
+
+		if (!zte_power_supply_attrs[i].prop_name) {
+			pr_warn("%s: property %d has no attribute name\n", __func__, i);
+			sprintf(zte_power_supply_attrs[i].attr_name, "_err_%d", i);
+		} else {
+			for (name = zte_power_supply_attrs[i].attr_name; *name; name++)
+				*name = tolower(*name);
+		}
+
+		attr = &zte_power_supply_attrs[i].dev_attr;
+		attr->attr.name = zte_power_supply_attrs[i].attr_name;
+		attr->show = zte_power_supply_show_property;
+		attr->store = zte_power_supply_store_property;
+		zte_power_supply_dev_attrs[i] = &attr->attr;
+	}
+}
 
 /* Notifier registration */
 int zte_power_supply_reg_notifier(struct notifier_block *nb)
@@ -333,25 +345,32 @@ void zte_power_supply_unreg_notifier(struct notifier_block *nb)
 EXPORT_SYMBOL_GPL(zte_power_supply_unreg_notifier);
 
 /* Changed Work e Notificações de Eventos */
-static int _zte_power_supply_changed_work(struct device *dev, void *data)
+static int __zte_power_supply_changed_work(struct device *dev, void *data)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	struct zte_power_supply *changed_psy = data;
 	int i;
 
-	if (!psy || !changed_psy)
+	if (!psy->supplied_from) {
+		if (!changed_psy->supplied_to || !changed_psy->num_supplicants ||
+		    !psy->desc->name)
+			return 0;
+		for (i = 0; i < changed_psy->num_supplicants; i++)
+			if (!strcmp(changed_psy->supplied_to[i], psy->desc->name))
+				goto changed;
 		return 0;
-
-	/* Se temos uma lista de fornecedores, verifica se mudou algum de quem dependemos */
-	if (psy->supplied_from) {
-		for (i = 0; i < psy->num_supplicants; i++) {
-			if (psy->supplied_from[i] && strcmp(changed_psy->desc->name, psy->supplied_from[i]) == 0) {
-				if (psy->desc->external_power_changed)
-					psy->desc->external_power_changed(psy);
-				break;
-			}
-		}
 	}
+
+	if (!changed_psy->desc->name || !psy->num_supplies)
+		return 0;
+	for (i = 0; i < psy->num_supplies; i++)
+		if (!strcmp(changed_psy->desc->name, psy->supplied_from[i]))
+			goto changed;
+	return 0;
+
+changed:
+	if (psy->desc->external_power_changed)
+		psy->desc->external_power_changed(psy);
 	return 0;
 }
 
@@ -367,7 +386,7 @@ static void zte_power_supply_changed_work(struct work_struct *work)
 		psy->event_pending = false;
 		spin_unlock_irqrestore(&psy->lock, flags);
 
-		class_for_each_device(zte_power_supply_class, NULL, psy, _zte_power_supply_changed_work);
+		class_for_each_device(zte_power_supply_class, NULL, psy, __zte_power_supply_changed_work);
 		atomic_notifier_call_chain(&zte_power_supply_notifier, PSY_EVENT_PROP_CHANGED, psy);
 		kobject_uevent(&psy->dev.kobj, KOBJ_CHANGE);
 
@@ -378,12 +397,9 @@ static void zte_power_supply_changed_work(struct work_struct *work)
 	spin_unlock_irqrestore(&psy->lock, flags);
 }
 
-int zte_power_supply_changed(struct zte_power_supply *psy)
+void zte_power_supply_changed(struct zte_power_supply *psy)
 {
 	unsigned long flags;
-
-	if (!psy)
-		return -EINVAL;
 
 	spin_lock_irqsave(&psy->lock, flags);
 	psy->event_pending = true;
@@ -391,71 +407,80 @@ int zte_power_supply_changed(struct zte_power_supply *psy)
 	spin_unlock_irqrestore(&psy->lock, flags);
 
 	queue_work(system_wq, &psy->changed_work);
-	return 0;
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_changed);
 
 /* Deferred probe e Check supplies */
-static int _zte_power_supply_find_supply_from_node(struct device *dev, void *data)
+static int __zte_power_supply_find_supply_from_node(struct device *dev, void *data)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
-	return (psy && psy->fwnode == data);
+	return psy->of_node == data;
 }
 
-static int _zte_power_supply_populate_supplied_from(struct device *dev, void *data)
+static int __zte_power_supply_populate_supplied_from(struct device *dev, void *data)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	struct zte_power_supply *target = data;
-	struct device_node *np = to_of_node(target->fwnode);
 	struct of_phandle_args args;
-	int index = 0;
+	int index = -1;
 
-	if (!psy || !target || !np)
-		return 0;
-
-	while (of_parse_phandle_with_args(np, "power-supplies", NULL, index, &args) == 0) {
-		if (args.np == to_of_node(psy->fwnode)) {
-			dev_info(&target->dev, "Found supply : %s\n", psy->desc->name);
-			target->supplied_from[index] = psy->desc->name;
-			target->num_supplicants++;
-			of_node_put(args.np);
-			break;
-		}
-		of_node_put(args.np);
+	do {
 		index++;
-	}
-	return 0;
+		if (of_parse_phandle_with_args(target->of_node, "power-supplies",
+					       NULL, index, &args) || !args.np)
+			return 0;
+		if (args.np == psy->of_node) {
+			dev_info(&target->dev, "%s: Found supply : %s\n",
+				 target->desc->name, psy->desc->name);
+			target->supplied_from[index] = psy->desc->name;
+			target->num_supplies++;
+			return 0;
+		}
+	} while (true);
 }
 
-static int zte_power_supply_check_supplies(struct zte_power_supply *psy)
+static noinline int zte_power_supply_check_supplies(struct zte_power_supply *psy)
 {
-	struct device_node *np = to_of_node(psy->fwnode);
 	struct of_phandle_args args;
-	int count = 0;
-	int ret;
+	int count = 0, ret;
 
-	if (!np)
+	if ((psy->supplied_from && psy->num_supplies) || !psy->of_node)
 		return 0;
 
-	while (of_parse_phandle_with_args(np, "power-supplies", NULL, count, &args) == 0) {
-		ret = class_for_each_device(zte_power_supply_class, NULL, args.np,
-					    _zte_power_supply_find_supply_from_node);
-		of_node_put(args.np);
-		if (!ret) {
-			dev_info(&psy->dev, "Failed to find supply!\n");
-			return -EPROBE_DEFER;
-		}
+	do {
+		ret = of_parse_phandle_with_args(psy->of_node, "power-supplies",
+						  NULL, count, &args);
+		if (ret || !args.np)
+			break;
 		count++;
-	}
+		ret = class_for_each_device(zte_power_supply_class, NULL, args.np,
+					    __zte_power_supply_find_supply_from_node);
+		if (ret == 1)
+			ret = 0;
+		else if (!ret)
+			ret = -EPROBE_DEFER;
+		if (ret) {
+			dev_info(&psy->dev, "Failed to find supply!\n");
+			return ret;
+		}
+	} while (true);
 
 	if (count == 0)
 		return 0;
 
-	psy->supplied_from = devm_kmalloc_array(&psy->dev, count, sizeof(char *), GFP_KERNEL);
+	psy->supplied_from = devm_kzalloc(&psy->dev,
+					  sizeof(*psy->supplied_from), GFP_KERNEL);
 	if (!psy->supplied_from)
 		return -ENOMEM;
+	psy->supplied_from[0] = devm_kcalloc(&psy->dev, count,
+					    sizeof(*psy->supplied_from), GFP_KERNEL);
+	if (!psy->supplied_from[0])
+		return -ENOMEM;
 
-	class_for_each_device(zte_power_supply_class, NULL, psy, _zte_power_supply_populate_supplied_from);
+	ret = class_for_each_device(zte_power_supply_class, NULL, psy,
+				    __zte_power_supply_populate_supplied_from);
+	dev_info(&psy->dev, "%s %d\n",
+		 "zte_power_supply_populate_supplied_from", ret);
 	return 0;
 }
 
@@ -463,45 +488,41 @@ static void zte_power_supply_deferred_register_work(struct work_struct *work)
 {
 	struct zte_power_supply *psy = container_of(work, struct zte_power_supply, deferred_register_work.work);
 	struct device *parent = psy->dev.parent;
-	unsigned long flags;
 
 	if (parent) {
-		/* Aguarda o lock do parent liberar */
 		while (!device_trylock(parent)) {
-			if (psy->changed) /* Se removendo */
+			if (psy->removing)
 				return;
 			msleep(10);
+			parent = psy->dev.parent;
 		}
 	}
 
-	spin_lock_irqsave(&psy->lock, flags);
-	psy->event_pending = true;
-	pm_stay_awake(&psy->dev);
-	spin_unlock_irqrestore(&psy->lock, flags);
-
-	queue_work(system_wq, &psy->changed_work);
-
-	if (parent)
-		device_unlock(parent);
+	zte_power_supply_changed(psy);
+	if (psy->dev.parent)
+		device_unlock(psy->dev.parent);
 }
 
 /* Registro de power supplies */
-struct zte_power_supply *
-_zte_power_supply_register(struct device *parent, const struct zte_power_supply_desc *desc,
+static struct zte_power_supply *
+__zte_power_supply_register(struct device *parent, const struct zte_power_supply_desc *desc,
 			   const struct power_supply_config *cfg, bool wakeup)
 {
 	struct zte_power_supply *psy;
 	int ret, i;
+
+	if (!parent)
+		pr_warn("%s: Expected proper parent device for '%s'\n",
+			__func__, desc ? desc->name : NULL);
 
 	if (!desc || !desc->name || !desc->properties || desc->num_properties == 0)
 		return ERR_PTR(-EINVAL);
 
 	/* Validação da propriedade 65 (charge control limit max) */
 	for (i = 0; i < desc->num_properties; i++) {
-		if (desc->properties[i] == POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX) {
-			if (!desc->supplied_from || desc->num_supplicants == 0) {
+		if (desc->properties[i] == ZTE_POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX) {
+			if (!desc->supplied_to || desc->num_supplicants == 0)
 				return ERR_PTR(-EINVAL);
-			}
 		}
 	}
 
@@ -509,48 +530,61 @@ _zte_power_supply_register(struct device *parent, const struct zte_power_supply_
 	if (!psy)
 		return ERR_PTR(-ENOMEM);
 
-	psy->desc = desc;
-	psy->fwnode = cfg ? cfg->fwnode : NULL;
-	psy->drvdata = cfg ? cfg->drv_data : NULL;
-
 	device_initialize(&psy->dev);
 	psy->dev.class = zte_power_supply_class;
 	psy->dev.type = &zte_power_supply_dev_type;
 	psy->dev.parent = parent;
-	dev_set_name(&psy->dev, "%s", desc->name);
 	dev_set_drvdata(&psy->dev, psy);
+	psy->desc = desc;
+
+	if (cfg) {
+		psy->dev.groups = cfg->attr_grp;
+		psy->drvdata = cfg->drv_data;
+		psy->of_node = cfg->of_node;
+		if (cfg->fwnode && is_of_node(cfg->fwnode))
+			psy->of_node = to_of_node(cfg->fwnode);
+		psy->supplied_to = cfg->supplied_to;
+		psy->num_supplicants = cfg->num_supplicants;
+	}
+
+	ret = dev_set_name(&psy->dev, "%s", desc->name);
+	if (ret)
+		goto put_device;
 
 	INIT_WORK(&psy->changed_work, zte_power_supply_changed_work);
 	INIT_DELAYED_WORK(&psy->deferred_register_work, zte_power_supply_deferred_register_work);
-	spin_lock_init(&psy->lock);
-	atomic_set(&psy->use_cnt, 1);
-
 	ret = zte_power_supply_check_supplies(psy);
 	if (ret) {
 		dev_info(&psy->dev, "Not all required supplies found, defer probe\n");
-		put_device(&psy->dev);
-		return ERR_PTR(ret);
+		goto put_device;
 	}
 
+	spin_lock_init(&psy->lock);
 	ret = device_add(&psy->dev);
-	if (ret) {
-		put_device(&psy->dev);
-		return ERR_PTR(ret);
-	}
+	if (ret)
+		goto put_device;
 
-	device_init_wakeup(&psy->dev, wakeup);
-	psy->changed = false;
+	ret = device_init_wakeup(&psy->dev, wakeup);
+	if (ret)
+		goto put_device;
 
-	queue_delayed_work(system_power_efficient_wq, &psy->deferred_register_work, msecs_to_jiffies(30));
+	atomic_inc(&psy->use_cnt);
+	psy->initialized = true;
+	queue_delayed_work(system_power_efficient_wq,
+			   &psy->deferred_register_work, 3);
 
 	return psy;
+
+put_device:
+	put_device(&psy->dev);
+	return ERR_PTR(ret);
 }
 
 struct zte_power_supply *
 zte_power_supply_register(struct device *parent, const struct zte_power_supply_desc *desc,
 			  const struct power_supply_config *cfg)
 {
-	return _zte_power_supply_register(parent, desc, cfg, true);
+	return __zte_power_supply_register(parent, desc, cfg, true);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_register);
 
@@ -558,22 +592,22 @@ struct zte_power_supply *
 zte_power_supply_register_no_ws(struct device *parent, const struct zte_power_supply_desc *desc,
 				 const struct power_supply_config *cfg)
 {
-	return _zte_power_supply_register(parent, desc, cfg, false);
+	return __zte_power_supply_register(parent, desc, cfg, false);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_register_no_ws);
 
 void zte_power_supply_unregister(struct zte_power_supply *psy)
 {
-	if (!psy)
-		return;
+	WARN_ON(atomic_dec_return(&psy->use_cnt));
 
-	psy->changed = true; /* Flag de remoção */
-	cancel_delayed_work_sync(&psy->deferred_register_work);
+	psy->removing = true;
 	cancel_work_sync(&psy->changed_work);
+	cancel_delayed_work_sync(&psy->deferred_register_work);
 
-	device_init_wakeup(&psy->dev, false);
-	device_del(&psy->dev);
-	put_device(&psy->dev);
+	sysfs_remove_link(&psy->dev.kobj, "powers");
+	device_wakeup_disable(&psy->dev);
+	device_set_wakeup_capable(&psy->dev, false);
+	device_unregister(&psy->dev);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_unregister);
 
@@ -636,18 +670,6 @@ zte_devm_power_supply_register_no_ws(struct device *parent, const struct zte_pow
 }
 EXPORT_SYMBOL_GPL(zte_devm_power_supply_register_no_ws);
 
-static int devm_zte_power_supply_match(struct device *dev, void *res, void *data)
-{
-	struct zte_devres *devres = res;
-	return devres->psy == data;
-}
-
-void zte_devm_power_supply_put(struct device *parent, struct zte_power_supply *psy)
-{
-	devres_release(parent, zte_devm_power_supply_release, devm_zte_power_supply_match, psy);
-}
-EXPORT_SYMBOL_GPL(zte_devm_power_supply_put);
-
 /* Lookup / get por nome ou phandle */
 static int zte_power_supply_match_device_by_name(struct device *dev, const void *data)
 {
@@ -662,9 +684,7 @@ struct zte_power_supply *zte_power_supply_get_by_name(const char *name)
 	dev = class_find_device(zte_power_supply_class, NULL, name, zte_power_supply_match_device_by_name);
 	if (dev) {
 		psy = dev_get_drvdata(dev);
-		if (psy)
-			atomic_inc(&psy->use_cnt);
-		put_device(dev);
+		atomic_inc(&psy->use_cnt);
 	}
 	return psy;
 }
@@ -672,17 +692,14 @@ EXPORT_SYMBOL_GPL(zte_power_supply_get_by_name);
 
 void zte_power_supply_put(struct zte_power_supply *psy)
 {
-	if (psy) {
-		atomic_dec(&psy->use_cnt);
-		put_device(&psy->dev);
-	}
+	atomic_dec(&psy->use_cnt);
+	put_device(&psy->dev);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_put);
 
 static int zte_power_supply_match_device_node(struct device *dev, const void *data)
 {
-	struct zte_power_supply *psy = dev_get_drvdata(dev);
-	return (psy && psy->fwnode == data);
+	return dev->parent && dev->parent->of_node == data;
 }
 
 struct zte_power_supply *zte_power_supply_get_by_phandle(struct device_node *np, const char *property)
@@ -692,62 +709,79 @@ struct zte_power_supply *zte_power_supply_get_by_phandle(struct device_node *np,
 	struct zte_power_supply *psy = NULL;
 
 	target_np = of_parse_phandle(np, property, 0);
-	if (target_np) {
-		dev = class_find_device(zte_power_supply_class, NULL, target_np, zte_power_supply_match_device_node);
-		if (dev) {
-			psy = dev_get_drvdata(dev);
-			if (psy)
-				atomic_inc(&psy->use_cnt);
-			put_device(dev);
-		}
-		of_node_put(target_np);
+	if (!target_np)
+		return ERR_PTR(-ENODEV);
+
+	dev = class_find_device(zte_power_supply_class, NULL, target_np,
+				zte_power_supply_match_device_node);
+	of_node_put(target_np);
+	if (dev) {
+		psy = dev_get_drvdata(dev);
+		atomic_inc(&psy->use_cnt);
 	}
 	return psy;
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_get_by_phandle);
 
-int zte_power_supply_get_by_phandle_array(struct device_node *np, const char *property,
-					  struct zte_power_supply **psy_array, int size)
+struct zte_match_device_node_array_param {
+	struct device_node *parent_of_node;
+	struct zte_power_supply **psy;
+	ssize_t psy_size;
+	ssize_t psy_count;
+};
+
+static int zte_power_supply_match_device_node_array(struct device *dev,
+						     void *data)
 {
-	struct of_phandle_args args;
-	int index = 0;
-	int count = 0;
+	struct zte_match_device_node_array_param *param = data;
 
-	while (of_parse_phandle_with_args(np, property, NULL, count, &args) == 0) {
-		if (index >= size) {
-			of_node_put(args.np);
-			break;
-		}
+	if (!dev->parent || dev->parent->of_node != param->parent_of_node)
+		return 0;
+	if (param->psy_count >= param->psy_size)
+		return -EOVERFLOW;
 
-		struct device *dev = class_find_device(zte_power_supply_class, NULL, args.np,
-						       zte_power_supply_match_device_node);
-		if (dev) {
-			struct zte_power_supply *psy = dev_get_drvdata(dev);
-			if (psy) {
-				atomic_inc(&psy->use_cnt);
-				psy_array[index++] = psy;
-			}
-			put_device(dev);
-		}
-		of_node_put(args.np);
-		count++;
-	}
-	return index;
+	param->psy[param->psy_count] = dev_get_drvdata(dev);
+	atomic_inc(&param->psy[param->psy_count]->use_cnt);
+	param->psy_count++;
+	return 0;
+}
+
+int zte_power_supply_get_by_phandle_array(struct device_node *np, const char *property,
+					  struct zte_power_supply **psy_array, ssize_t size)
+{
+	struct zte_match_device_node_array_param param;
+	struct device_node *target_np;
+
+	if (!psy_array || !size)
+		return -EINVAL;
+
+	target_np = of_parse_phandle(np, property, 0);
+	if (!target_np)
+		return -ENODEV;
+
+	param.parent_of_node = target_np;
+	param.psy = psy_array;
+	param.psy_size = size;
+	param.psy_count = 0;
+	class_for_each_device(zte_power_supply_class, NULL, &param,
+			      zte_power_supply_match_device_node_array);
+	of_node_put(target_np);
+	return param.psy_count;
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_get_by_phandle_array);
 
 void *zte_power_supply_get_drvdata(struct zte_power_supply *psy)
 {
-	return psy ? psy->drvdata : NULL;
+	return psy->drvdata;
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_get_drvdata);
 
 /* Uevent Callback */
-static int zte_power_supply_uevent(const struct device *dev, struct kobj_uevent_env *env)
+int zte_power_supply_uevent(const struct device *dev, struct kobj_uevent_env *env)
 {
 	struct zte_power_supply *psy = dev_get_drvdata((struct device *)dev);
 	char *prop_buf;
-	int i, ret = 0;
+	int i, ret;
 
 	if (!psy || !psy->desc)
 		return 0;
@@ -761,41 +795,27 @@ static int zte_power_supply_uevent(const struct device *dev, struct kobj_uevent_
 		return -ENOMEM;
 
 	for (i = 0; i < psy->desc->num_properties; i++) {
-		enum power_supply_property psp = psy->desc->properties[i];
-		struct power_supply_attr *psy_attr = NULL;
-		int j;
+		enum zte_power_supply_property psp = psy->desc->properties[i];
+		char *end;
 
-		/* Procura o atributo correspondente */
-		for (j = 0; j < MAX_PSY_ATTRS; j++) {
-			if (zte_power_supply_attrs[j].prop == psp) {
-				psy_attr = &zte_power_supply_attrs[j];
-				break;
-			}
-		}
-
-		if (!psy_attr)
+		BUG_ON(psp >= MAX_PSY_ATTRS);
+		ret = zte_power_supply_show_property((struct device *)dev,
+				&zte_power_supply_attrs[psp].dev_attr, prop_buf);
+		if (ret == -ENODATA || ret == -ENODEV)
 			continue;
+		if (ret < 0)
+			goto out;
 
-		ret = zte_power_supply_show((struct device *)dev, &psy_attr->dev_attr, prop_buf);
-		if (ret > 0) {
-			/* Remove newline character */
-			char *end = strchr(prop_buf, '\n');
-			if (end)
-				*end = '\0';
-
-			/* Converte nome para maiúsculo na variável do uevent */
-			char uppercase_name[64];
-			snprintf(uppercase_name, sizeof(uppercase_name), "%s", psy_attr->prop_name);
-			for (char *p = uppercase_name; *p; ++p) {
-				if (*p >= 'a' && *p <= 'z')
-					*p -= 32;
-			}
-
-			ret = add_uevent_var(env, "POWER_SUPPLY_%s=%s", uppercase_name, prop_buf);
-			if (ret)
-				goto out;
-		}
+		end = strchr(prop_buf, '\n');
+		if (end)
+			*end = '\0';
+		ret = add_uevent_var(env, "POWER_SUPPLY_%s=%s",
+				     zte_power_supply_attrs[psp].prop_name,
+				     prop_buf);
+		if (ret)
+			goto out;
 	}
+	ret = 0;
 
 out:
 	free_page((unsigned long)prop_buf);
@@ -805,24 +825,16 @@ out:
 /* Additional exported API functions discovered via dynamic validation */
 void zte_power_supply_external_power_changed(struct zte_power_supply *psy)
 {
-	if (!psy || !psy->desc)
-		return;
-	if (atomic_read(&psy->use_cnt) <= 0)
-		return;
-	if (psy->desc->external_power_changed)
+	if (atomic_read(&psy->use_cnt) > 0 && psy->desc->external_power_changed)
 		psy->desc->external_power_changed(psy);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_external_power_changed);
 
 int zte_power_supply_set_battery_charged(struct zte_power_supply *psy)
 {
-	if (!psy || !psy->desc)
-		return -EINVAL;
-	if (atomic_read(&psy->use_cnt) < 0)
-		return -EINVAL;
-	if (psy->desc->type != POWER_SUPPLY_TYPE_BATTERY)
-		return -EINVAL;
-	if (psy->desc->set_charged) {
+	if (atomic_read(&psy->use_cnt) >= 0 &&
+	    psy->desc->type == POWER_SUPPLY_TYPE_BATTERY &&
+	    psy->desc->set_charged) {
 		psy->desc->set_charged(psy);
 		return 0;
 	}
@@ -854,8 +866,8 @@ int zte_power_supply_ocv2cap_simple(struct power_supply_battery_ocv_table *table
 		int dv = table[i - 1].ocv - table[i].ocv;
 		int dc = table[i - 1].capacity - table[i].capacity;
 
-		if (dv)
-			return table[i].capacity + (ocv - table[i].ocv) * dc / dv;
+		return table[i].capacity +
+			(dv ? (ocv - table[i].ocv) * dc / dv : 0);
 	}
 
 	if (i == 0)
@@ -882,8 +894,8 @@ int zte_power_supply_temp2resist_simple(struct power_supply_resistance_temp_tabl
 		int dt = table[i - 1].temp - table[i].temp;
 		int dr = table[i - 1].resistance - table[i].resistance;
 
-		if (dt)
-			return table[i].resistance + (temp - table[i].temp) * dr / dt;
+		return table[i].resistance +
+			(dt ? (temp - table[i].temp) * dr / dt : 0);
 	}
 
 	if (i == 0)
@@ -898,9 +910,6 @@ void zte_power_supply_put_battery_info(struct zte_power_supply *psy,
 {
 	int i;
 
-	if (!info)
-		return;
-
 	for (i = 0; i < POWER_SUPPLY_OCV_TEMP_MAX; i++) {
 		if (info->ocv_table[i])
 			devm_kfree(&psy->dev, info->ocv_table[i]);
@@ -911,41 +920,175 @@ void zte_power_supply_put_battery_info(struct zte_power_supply *psy,
 EXPORT_SYMBOL_GPL(zte_power_supply_put_battery_info);
 
 int zte_power_supply_get_battery_info(struct zte_power_supply *psy,
-				      struct power_supply_battery_info **info_out)
+				      struct power_supply_battery_info *info)
 {
-	/* Stub: battery info is parsed from DTS by the upstream kernel.
-	 * The ZTE implementation mirrors power_supply_get_battery_info()
-	 * but uses the zte_power_supply device. Since the DTS parsing
-	 * logic is >200 lines of boilerplate, we delegate to the upstream
-	 * kernel function if available, or return -ENODEV otherwise. */
-	return -ENODEV;
-}
-EXPORT_SYMBOL_GPL(zte_power_supply_get_battery_info);
+	struct power_supply_resistance_temp_table *resist_table;
+	struct device_node *battery_np;
+	const __be32 *list;
+	const char *value;
+	int err, len, index;
 
-int zte_power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
-					int temp,
-					struct power_supply_battery_ocv_table **table)
-{
-	int i, best_delta = INT_MAX, best_idx = -1;
+	info->energy_full_design_uwh = -EINVAL;
+	info->charge_full_design_uah = -EINVAL;
+	info->voltage_min_design_uv = -EINVAL;
+	info->voltage_max_design_uv = -EINVAL;
+	info->precharge_current_ua = -EINVAL;
+	info->charge_term_current_ua = -EINVAL;
+	info->constant_charge_current_max_ua = -EINVAL;
+	info->constant_charge_voltage_max_uv = -EINVAL;
+	info->factory_internal_resistance_uohm = -EINVAL;
+	info->resist_table = NULL;
 
-	if (!info || !table)
-		return -EINVAL;
+	for (index = 0; index < POWER_SUPPLY_OCV_TEMP_MAX; index++) {
+		info->ocv_temp[index] = -EINVAL;
+		info->ocv_table[index] = NULL;
+		info->ocv_table_size[index] = -EINVAL;
+	}
 
-	for (i = 0; i < POWER_SUPPLY_OCV_TEMP_MAX; i++) {
-		if (info->ocv_table[i]) {
-			int delta = abs(temp - info->ocv_temp[i]);
-			if (delta < best_delta) {
-				best_delta = delta;
-				best_idx = i;
-			}
+	if (!psy->of_node) {
+		dev_warn(&psy->dev, "%s currently only supports devicetree\n",
+			 __func__);
+		return -ENXIO;
+	}
+
+	battery_np = of_parse_phandle(psy->of_node, "monitored-battery", 0);
+	if (!battery_np)
+		return -ENODEV;
+
+	err = of_property_read_string(battery_np, "compatible", &value);
+	if (err)
+		goto out_put_node;
+	if (strcmp("simple-battery", value)) {
+		err = -ENODEV;
+		goto out_put_node;
+	}
+
+	of_property_read_u32(battery_np, "energy-full-design-microwatt-hours",
+			     &info->energy_full_design_uwh);
+	of_property_read_u32(battery_np, "charge-full-design-microamp-hours",
+			     &info->charge_full_design_uah);
+	of_property_read_u32(battery_np, "voltage-min-design-microvolt",
+			     &info->voltage_min_design_uv);
+	of_property_read_u32(battery_np, "voltage-max-design-microvolt",
+			     &info->voltage_max_design_uv);
+	of_property_read_u32(battery_np, "precharge-current-microamp",
+			     &info->precharge_current_ua);
+	of_property_read_u32(battery_np, "charge-term-current-microamp",
+			     &info->charge_term_current_ua);
+	of_property_read_u32(battery_np, "constant-charge-current-max-microamp",
+			     &info->constant_charge_current_max_ua);
+	of_property_read_u32(battery_np, "constant-charge-voltage-max-microvolt",
+			     &info->constant_charge_voltage_max_uv);
+	of_property_read_u32(battery_np, "factory-internal-resistance-micro-ohms",
+			     &info->factory_internal_resistance_uohm);
+
+	len = of_property_count_u32_elems(battery_np, "ocv-capacity-celsius");
+	if (len < 0 && len != -EINVAL) {
+		err = len;
+		goto out_put_node;
+	}
+	if (len > POWER_SUPPLY_OCV_TEMP_MAX) {
+		dev_err(&psy->dev, "Too many temperature values\n");
+		err = -EINVAL;
+		goto out_put_node;
+	}
+	if (len > 0)
+		of_property_read_u32_array(battery_np, "ocv-capacity-celsius",
+					   info->ocv_temp, len);
+
+	for (index = 0; index < len; index++) {
+		struct power_supply_battery_ocv_table *table;
+		char *propname;
+		int i, size;
+
+		propname = kasprintf(GFP_KERNEL, "ocv-capacity-table-%d", index);
+		if (!propname)
+			goto out_nomem_ocv;
+		list = of_get_property(battery_np, propname, &size);
+		if (!list || !size) {
+			dev_err(&psy->dev, "failed to get %s\n", propname);
+			kfree(propname);
+			goto out_bad_ocv;
+		}
+		kfree(propname);
+
+		info->ocv_table_size[index] = size / (2 * sizeof(__be32));
+		table = devm_kcalloc(&psy->dev, info->ocv_table_size[index],
+				      sizeof(*table), GFP_KERNEL);
+		info->ocv_table[index] = table;
+		if (!table)
+			goto out_nomem_ocv;
+
+		for (i = 0; i < info->ocv_table_size[index]; i++) {
+			table[i].ocv = be32_to_cpu(*list++);
+			table[i].capacity = be32_to_cpu(*list++);
 		}
 	}
 
-	if (best_idx < 0)
-		return -EINVAL;
+	list = of_get_property(battery_np, "resistance-temp-table", &len);
+	err = 0;
+	if (!list || !len)
+		goto out_put_node;
 
-	*table = info->ocv_table[best_idx];
-	return info->ocv_table_size[best_idx];
+	info->resist_table_size = len / (2 * sizeof(__be32));
+	resist_table = devm_kcalloc(&psy->dev, info->resist_table_size,
+				    sizeof(*resist_table), GFP_KERNEL);
+	info->resist_table = resist_table;
+	if (!resist_table) {
+		zte_power_supply_put_battery_info(psy, info);
+		err = -ENOMEM;
+		goto out_put_node;
+	}
+
+	for (index = 0; index < info->resist_table_size; index++) {
+		resist_table[index].temp = be32_to_cpu(*list++);
+		resist_table[index].resistance = be32_to_cpu(*list++);
+	}
+	goto out_put_node;
+
+out_bad_ocv:
+	for (index = 0; index < POWER_SUPPLY_OCV_TEMP_MAX; index++)
+		if (info->ocv_table[index])
+			devm_kfree(&psy->dev, info->ocv_table[index]);
+	err = -EINVAL;
+	goto out_free_resist;
+
+out_nomem_ocv:
+	info->ocv_table[index] = NULL;
+	for (index = 0; index < POWER_SUPPLY_OCV_TEMP_MAX; index++)
+		if (info->ocv_table[index])
+			devm_kfree(&psy->dev, info->ocv_table[index]);
+	err = -ENOMEM;
+
+out_free_resist:
+	if (info->resist_table)
+		devm_kfree(&psy->dev, info->resist_table);
+out_put_node:
+	of_node_put(battery_np);
+	return err;
+}
+EXPORT_SYMBOL_GPL(zte_power_supply_get_battery_info);
+
+struct power_supply_battery_ocv_table *
+zte_power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
+				    int temp, int *table_len)
+{
+	int i, best_delta = INT_MAX, best_idx = 0;
+
+	if (!info->ocv_table[0])
+		return NULL;
+
+	for (i = 0; i < POWER_SUPPLY_OCV_TEMP_MAX; i++) {
+		int delta = abs(temp - info->ocv_temp[i]);
+
+		if (delta < best_delta) {
+			best_delta = delta;
+			best_idx = i;
+		}
+	}
+
+	*table_len = info->ocv_table_size[best_idx];
+	return info->ocv_table[best_idx];
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_find_ocv2cap_table);
 
@@ -955,16 +1098,16 @@ int zte_power_supply_batinfo_ocv2cap(struct power_supply_battery_info *info,
 	struct power_supply_battery_ocv_table *table;
 	int table_len;
 
-	table_len = zte_power_supply_find_ocv2cap_table(info, temp, &table);
-	if (table_len < 0)
-		return table_len;
+	table = zte_power_supply_find_ocv2cap_table(info, temp, &table_len);
+	if (!table)
+		return -EINVAL;
 
 	return zte_power_supply_ocv2cap_simple(table, table_len, ocv);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_batinfo_ocv2cap);
 
 /* Devres get_by_phandle */
-static void zte_devm_psy_put_release(struct device *dev, void *res)
+static void zte_devm_power_supply_put(struct device *dev, void *res)
 {
 	struct zte_power_supply **psy_ptr = res;
 	zte_power_supply_put(*psy_ptr);
@@ -980,14 +1123,14 @@ zte_devm_power_supply_get_by_phandle(struct device *dev, const char *property)
 	if (!np)
 		return ERR_PTR(-ENODEV);
 
-	devres_ptr = devres_alloc(zte_devm_psy_put_release, sizeof(*devres_ptr), GFP_KERNEL);
+	devres_ptr = devres_alloc(zte_devm_power_supply_put, sizeof(*devres_ptr), GFP_KERNEL);
 	if (!devres_ptr)
 		return ERR_PTR(-ENOMEM);
 
 	psy = zte_power_supply_get_by_phandle(np, property);
-	if (!psy) {
+	if (IS_ERR_OR_NULL(psy)) {
 		devres_free(devres_ptr);
-		return ERR_PTR(-ENODEV);
+		return psy;
 	}
 
 	*devres_ptr = psy;
@@ -1000,19 +1143,12 @@ EXPORT_SYMBOL_GPL(zte_devm_power_supply_get_by_phandle);
 /* Modulo Init / Exit */
 static int __init zte_power_supply_init(void)
 {
-	int i;
-
 	zte_power_supply_class = class_create(ZTE_POWER_SUPPLY_CLASS_NAME);
 	if (IS_ERR(zte_power_supply_class))
 		return PTR_ERR(zte_power_supply_class);
 
 	zte_power_supply_class->dev_uevent = zte_power_supply_uevent;
-
-	/* Popula array de atributos */
-	for (i = 0; i < MAX_PSY_ATTRS; i++) {
-		zte_power_supply_dev_attrs[i] = &zte_power_supply_attrs[i].dev_attr.attr;
-	}
-	zte_power_supply_dev_attrs[MAX_PSY_ATTRS] = NULL;
+	zte_power_supply_init_attrs(&zte_power_supply_dev_type);
 
 	return 0;
 }
@@ -1027,4 +1163,4 @@ module_exit(zte_power_supply_exit);
 
 MODULE_AUTHOR("ZTE Corporation / Nubia");
 MODULE_DESCRIPTION("Nubia/ZTE Power Supply Control Wrapper Subsystem");
-MODULE_LICENSE("GPL v2");
+MODULE_LICENSE("GPL");

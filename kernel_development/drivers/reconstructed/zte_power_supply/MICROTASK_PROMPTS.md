@@ -1,7 +1,5 @@
 # Prompts Atomicos: zte_power_supply
 
-Copie somente um prompt por vez. A microtarefa nao pode receber PASS sem evidencia hashada de compile, KCFI e teste.
-
 ## 001_zte_power_supply_changed - zte_power_supply_changed
 
 ```text
@@ -11,7 +9,7 @@ Funcao stock: zte_power_supply_changed
 Entrada Ghidra: 00101234
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_changed
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0000_00101234_zte_power_supply_changed.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0000_00101234_zte_power_supply_changed.jsonl
 
@@ -40,7 +38,7 @@ Funcao stock: zte_power_supply_set_battery_charged
 Entrada Ghidra: 00101298
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_set_battery_charged
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0001_00101298_zte_power_supply_set_battery_charged.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0001_00101298_zte_power_supply_set_battery_charged.jsonl
 
@@ -69,7 +67,7 @@ Funcao stock: zte_power_supply_get_by_name
 Entrada Ghidra: 001012fc
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_get_by_name
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0002_001012fc_zte_power_supply_get_by_name.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0002_001012fc_zte_power_supply_get_by_name.jsonl
 
@@ -98,7 +96,7 @@ Funcao stock: zte_power_supply_match_device_by_name
 Entrada Ghidra: 0010136c
 Tamanho stock: 48 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_match_device_by_name
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0003_0010136c_zte_power_supply_match_device_by_name.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0003_0010136c_zte_power_supply_match_device_by_name.jsonl
 
@@ -127,7 +125,7 @@ Funcao stock: zte_power_supply_put
 Entrada Ghidra: 001013a0
 Tamanho stock: 68 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_put
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0004_001013a0_zte_power_supply_put.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0004_001013a0_zte_power_supply_put.jsonl
 
@@ -156,7 +154,7 @@ Funcao stock: zte_power_supply_get_by_phandle
 Entrada Ghidra: 001013f4
 Tamanho stock: 192 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_get_by_phandle
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0005_001013f4_zte_power_supply_get_by_phandle.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0005_001013f4_zte_power_supply_get_by_phandle.jsonl
 
@@ -185,7 +183,7 @@ Funcao stock: zte_power_supply_match_device_node
 Entrada Ghidra: 001014c4
 Tamanho stock: 32 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_match_device_node
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0006_001014c4_zte_power_supply_match_device_node.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0006_001014c4_zte_power_supply_match_device_node.jsonl
 
@@ -214,7 +212,7 @@ Funcao stock: zte_power_supply_get_by_phandle_array
 Entrada Ghidra: 001014e8
 Tamanho stock: 204 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_get_by_phandle_array
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0007_001014e8_zte_power_supply_get_by_phandle_array.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0007_001014e8_zte_power_supply_get_by_phandle_array.jsonl
 
@@ -243,7 +241,7 @@ Funcao stock: zte_power_supply_match_device_node_array
 Entrada Ghidra: 001015b8
 Tamanho stock: 124 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_match_device_node_array
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0008_001015b8_zte_power_supply_match_device_node_array.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0008_001015b8_zte_power_supply_match_device_node_array.jsonl
 
@@ -272,7 +270,7 @@ Funcao stock: zte_devm_power_supply_get_by_phandle
 Entrada Ghidra: 00101644
 Tamanho stock: 332 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_devm_power_supply_get_by_phandle
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0009_00101644_zte_devm_power_supply_get_by_phandle.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0009_00101644_zte_devm_power_supply_get_by_phandle.jsonl
 
@@ -301,7 +299,7 @@ Funcao stock: zte_devm_power_supply_put
 Entrada Ghidra: 001017a4
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_devm_power_supply_put
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0010_001017a4_zte_devm_power_supply_put.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0010_001017a4_zte_devm_power_supply_put.jsonl
 
@@ -330,7 +328,7 @@ Funcao stock: zte_power_supply_get_battery_info
 Entrada Ghidra: 001017fc
 Tamanho stock: 1588 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_get_battery_info
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0011_001017fc_zte_power_supply_get_battery_info.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0011_001017fc_zte_power_supply_get_battery_info.jsonl
 
@@ -359,7 +357,7 @@ Funcao stock: zte_power_supply_put_battery_info
 Entrada Ghidra: 00101e34
 Tamanho stock: 108 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_put_battery_info
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0012_00101e34_zte_power_supply_put_battery_info.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0012_00101e34_zte_power_supply_put_battery_info.jsonl
 
@@ -388,7 +386,7 @@ Funcao stock: zte_power_supply_temp2resist_simple
 Entrada Ghidra: 00101ea4
 Tamanho stock: 104 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_temp2resist_simple
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0013_00101ea4_zte_power_supply_temp2resist_simple.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0013_00101ea4_zte_power_supply_temp2resist_simple.jsonl
 
@@ -417,7 +415,7 @@ Funcao stock: zte_power_supply_ocv2cap_simple
 Entrada Ghidra: 00101f10
 Tamanho stock: 104 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_ocv2cap_simple
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0014_00101f10_zte_power_supply_ocv2cap_simple.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0014_00101f10_zte_power_supply_ocv2cap_simple.jsonl
 
@@ -446,7 +444,7 @@ Funcao stock: zte_power_supply_find_ocv2cap_table
 Entrada Ghidra: 00101f7c
 Tamanho stock: 112 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_find_ocv2cap_table
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0015_00101f7c_zte_power_supply_find_ocv2cap_table.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0015_00101f7c_zte_power_supply_find_ocv2cap_table.jsonl
 
@@ -475,7 +473,7 @@ Funcao stock: zte_power_supply_batinfo_ocv2cap
 Entrada Ghidra: 00101ff0
 Tamanho stock: 208 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_batinfo_ocv2cap
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0016_00101ff0_zte_power_supply_batinfo_ocv2cap.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0016_00101ff0_zte_power_supply_batinfo_ocv2cap.jsonl
 
@@ -504,7 +502,7 @@ Funcao stock: zte_power_supply_get_property
 Entrada Ghidra: 001020c4
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_get_property
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0017_001020c4_zte_power_supply_get_property.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0017_001020c4_zte_power_supply_get_property.jsonl
 
@@ -533,7 +531,7 @@ Funcao stock: zte_power_supply_set_property
 Entrada Ghidra: 00102128
 Tamanho stock: 84 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_set_property
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0018_00102128_zte_power_supply_set_property.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0018_00102128_zte_power_supply_set_property.jsonl
 
@@ -562,7 +560,7 @@ Funcao stock: zte_power_supply_property_is_writeable
 Entrada Ghidra: 00102180
 Tamanho stock: 84 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_property_is_writeable
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0019_00102180_zte_power_supply_property_is_writeable.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0019_00102180_zte_power_supply_property_is_writeable.jsonl
 
@@ -591,7 +589,7 @@ Funcao stock: zte_power_supply_external_power_changed
 Entrada Ghidra: 001021d8
 Tamanho stock: 76 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_external_power_changed
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0020_001021d8_zte_power_supply_external_power_changed.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0020_001021d8_zte_power_supply_external_power_changed.jsonl
 
@@ -620,7 +618,7 @@ Funcao stock: zte_power_supply_powers
 Entrada Ghidra: 00102228
 Tamanho stock: 40 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_powers
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0021_00102228_zte_power_supply_powers.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0021_00102228_zte_power_supply_powers.jsonl
 
@@ -649,7 +647,7 @@ Funcao stock: zte_power_supply_reg_notifier
 Entrada Ghidra: 00102254
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_reg_notifier
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0022_00102254_zte_power_supply_reg_notifier.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0022_00102254_zte_power_supply_reg_notifier.jsonl
 
@@ -678,7 +676,7 @@ Funcao stock: zte_power_supply_unreg_notifier
 Entrada Ghidra: 00102280
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_unreg_notifier
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0023_00102280_zte_power_supply_unreg_notifier.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0023_00102280_zte_power_supply_unreg_notifier.jsonl
 
@@ -707,7 +705,7 @@ Funcao stock: zte_power_supply_register
 Entrada Ghidra: 001022ac
 Tamanho stock: 32 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_register
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0024_001022ac_zte_power_supply_register.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0024_001022ac_zte_power_supply_register.jsonl
 
@@ -736,7 +734,7 @@ Funcao stock: __zte_power_supply_register
 Entrada Ghidra: 001022cc
 Tamanho stock: 696 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:__zte_power_supply_register
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0025_001022cc___zte_power_supply_register.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0025_001022cc___zte_power_supply_register.jsonl
 
@@ -765,7 +763,7 @@ Funcao stock: zte_power_supply_register_no_ws
 Entrada Ghidra: 001025c4
 Tamanho stock: 32 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_register_no_ws
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0026_001025c4_zte_power_supply_register_no_ws.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0026_001025c4_zte_power_supply_register_no_ws.jsonl
 
@@ -794,7 +792,7 @@ Funcao stock: zte_devm_power_supply_register
 Entrada Ghidra: 001025e8
 Tamanho stock: 164 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_devm_power_supply_register
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0027_001025e8_zte_devm_power_supply_register.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0027_001025e8_zte_devm_power_supply_register.jsonl
 
@@ -823,7 +821,7 @@ Funcao stock: zte_devm_power_supply_release
 Entrada Ghidra: 00102690
 Tamanho stock: 32 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_devm_power_supply_release
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0028_00102690_zte_devm_power_supply_release.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0028_00102690_zte_devm_power_supply_release.jsonl
 
@@ -852,7 +850,7 @@ Funcao stock: zte_devm_power_supply_register_no_ws
 Entrada Ghidra: 001026b4
 Tamanho stock: 164 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_devm_power_supply_register_no_ws
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0029_001026b4_zte_devm_power_supply_register_no_ws.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0029_001026b4_zte_devm_power_supply_register_no_ws.jsonl
 
@@ -881,7 +879,7 @@ Funcao stock: zte_power_supply_unregister
 Entrada Ghidra: 0010275c
 Tamanho stock: 148 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_unregister
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0030_0010275c_zte_power_supply_unregister.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0030_0010275c_zte_power_supply_unregister.jsonl
 
@@ -910,7 +908,7 @@ Funcao stock: device_init_wakeup
 Entrada Ghidra: 00102808
 Tamanho stock: 80 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:__zte_power_supply_register
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0031_00102808_device_init_wakeup.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0031_00102808_device_init_wakeup.jsonl
 
@@ -939,7 +937,7 @@ Funcao stock: zte_power_supply_get_drvdata
 Entrada Ghidra: 0010285c
 Tamanho stock: 8 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_get_drvdata
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0032_0010285c_zte_power_supply_get_drvdata.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0032_0010285c_zte_power_supply_get_drvdata.jsonl
 
@@ -968,7 +966,7 @@ Funcao stock: zte_power_supply_dev_release
 Entrada Ghidra: 00102868
 Tamanho stock: 32 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_dev_release
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0033_00102868_zte_power_supply_dev_release.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0033_00102868_zte_power_supply_dev_release.jsonl
 
@@ -997,7 +995,7 @@ Funcao stock: zte_power_supply_changed_work
 Entrada Ghidra: 0010288c
 Tamanho stock: 188 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_changed_work
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0034_0010288c_zte_power_supply_changed_work.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0034_0010288c_zte_power_supply_changed_work.jsonl
 
@@ -1026,7 +1024,7 @@ Funcao stock: zte_power_supply_deferred_register_work
 Entrada Ghidra: 0010294c
 Tamanho stock: 168 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_deferred_register_work
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0035_0010294c_zte_power_supply_deferred_register_work.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0035_0010294c_zte_power_supply_deferred_register_work.jsonl
 
@@ -1055,7 +1053,7 @@ Funcao stock: zte_power_supply_check_supplies
 Entrada Ghidra: 001029f4
 Tamanho stock: 428 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_check_supplies
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0036_001029f4_zte_power_supply_check_supplies.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0036_001029f4_zte_power_supply_check_supplies.jsonl
 
@@ -1084,7 +1082,7 @@ Funcao stock: __zte_power_supply_changed_work
 Entrada Ghidra: 00102ba4
 Tamanho stock: 244 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:__zte_power_supply_changed_work
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0037_00102ba4___zte_power_supply_changed_work.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0037_00102ba4___zte_power_supply_changed_work.jsonl
 
@@ -1113,7 +1111,7 @@ Funcao stock: __zte_power_supply_find_supply_from_node
 Entrada Ghidra: 00102c9c
 Tamanho stock: 20 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:__zte_power_supply_find_supply_from_node
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0038_00102c9c___zte_power_supply_find_supply_from_node.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0038_00102c9c___zte_power_supply_find_supply_from_node.jsonl
 
@@ -1142,7 +1140,7 @@ Funcao stock: __zte_power_supply_populate_supplied_from
 Entrada Ghidra: 00102cb4
 Tamanho stock: 244 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:__zte_power_supply_populate_supplied_from
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0039_00102cb4___zte_power_supply_populate_supplied_from.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0039_00102cb4___zte_power_supply_populate_supplied_from.jsonl
 
@@ -1171,7 +1169,7 @@ Funcao stock: zte_power_supply_init_attrs
 Entrada Ghidra: 00102dac
 Tamanho stock: 320 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_init_attrs
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0040_00102dac_zte_power_supply_init_attrs.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0040_00102dac_zte_power_supply_init_attrs.jsonl
 
@@ -1200,7 +1198,7 @@ Funcao stock: zte_power_supply_show_property
 Entrada Ghidra: 00102ef0
 Tamanho stock: 360 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_show_property
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0041_00102ef0_zte_power_supply_show_property.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0041_00102ef0_zte_power_supply_show_property.jsonl
 
@@ -1229,7 +1227,7 @@ Funcao stock: zte_power_supply_store_property
 Entrada Ghidra: 0010305c
 Tamanho stock: 236 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_store_property
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0042_0010305c_zte_power_supply_store_property.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0042_0010305c_zte_power_supply_store_property.jsonl
 
@@ -1258,7 +1256,7 @@ Funcao stock: zte_power_supply_uevent
 Entrada Ghidra: 0010314c
 Tamanho stock: 356 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_uevent
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0043_0010314c_zte_power_supply_uevent.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0043_0010314c_zte_power_supply_uevent.jsonl
 
@@ -1287,7 +1285,7 @@ Funcao stock: power_supply_attr_is_visible
 Entrada Ghidra: 001032dc
 Tamanho stock: 188 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:power_supply_attr_is_visible
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0044_001032dc_power_supply_attr_is_visible.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0044_001032dc_power_supply_attr_is_visible.jsonl
 
@@ -1316,7 +1314,7 @@ Funcao stock: init_module
 Entrada Ghidra: 001033e8
 Tamanho stock: 80 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_init
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0045_001033e8_init_module.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0045_001033e8_init_module.jsonl
 
@@ -1345,7 +1343,7 @@ Funcao stock: cleanup_module
 Entrada Ghidra: 0010343c
 Tamanho stock: 36 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: zte_power_supply.c:zte_power_supply_exit
 Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\decompiled\0046_0010343c_cleanup_module.c
 P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_power_supply.ko\pcode\0046_0010343c_cleanup_module.jsonl
 

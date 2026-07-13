@@ -1,0 +1,145 @@
+{
+  "build": {
+    "commands": {
+      "build_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_power_supply",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zte_power_supply/zte_power_supply.o\n  MODPOST /work/validation/zte_power_supply/Module.symvers\n  CC [M]  /work/validation/zte_power_supply/zte_power_supply.mod.o\n  CC [M]  /work/validation/zte_power_supply/.module-common.o\n  LD [M]  /work/validation/zte_power_supply/zte_power_supply.ko\n  BTF [M] /work/validation/zte_power_supply/zte_power_supply.ko\n"
+      },
+      "build_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_power_supply",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zte_power_supply/zte_power_supply.o\n  MODPOST /work/validation/zte_power_supply/Module.symvers\n  CC [M]  /work/validation/zte_power_supply/zte_power_supply.mod.o\n  CC [M]  /work/validation/zte_power_supply/.module-common.o\n  LD [M]  /work/validation/zte_power_supply/zte_power_supply.ko\n  BTF [M] /work/validation/zte_power_supply/zte_power_supply.ko\n"
+      },
+      "clean_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_power_supply",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "clean_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_power_supply",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CLEAN   /work/validation/zte_power_supply/Module.symvers\n"
+      }
+    },
+    "first_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_power_supply\\zte_power_supply.ko",
+      "sha256": "459a676278f794ab85b790d942f892c4281ec5575989b602f4712609c4b6408a",
+      "size": 298248
+    },
+    "passed": true,
+    "reproducible": true,
+    "second_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_power_supply\\zte_power_supply.ko",
+      "sha256": "459a676278f794ab85b790d942f892c4281ec5575989b602f4712609c4b6408a",
+      "size": 298248
+    },
+    "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_power_supply"
+  },
+  "checks": {
+    "aarch64_rel": true,
+    "alias_match": true,
+    "build_passed": true,
+    "function_traceability": true,
+    "namespace_match": true,
+    "reproducible_build": true,
+    "undefined_symbols_match": true
+  },
+  "driver": "zte_power_supply",
+  "function": "zte_power_supply_set_battery_charged",
+  "generated_utc": "2026-07-13T00:08:49.816167+00:00",
+  "passed": true,
+  "schema_version": "1.0",
+  "source_report": "engenharia\\validation\\zte_power_supply\\driver_audit_final.json",
+  "source_report_sha256": "31bbfd520313c9391ea6f6806fe68c314a4195f75dce0e683c4cbff31be877c0"
+}
