@@ -1,0 +1,95 @@
+{
+  "attestation": {
+    "executed_locally": true,
+    "notes_en": "Bilingual PayPal buttons, FUNDING.yml, and the absolute GitHub Actions build prohibition were validated locally.",
+    "notes_pt": "Botões bilíngues do PayPal, FUNDING.yml e bloqueio absoluto de compilação no GitHub Actions validados localmente.",
+    "reviewer_rerun_required": true
+  },
+  "base_commit": "c7df346de1c57e6632d1db4c553effffb48143bc",
+  "changed_files": [
+    {
+      "change": "A",
+      "path": ".github/FUNDING.yml",
+      "sha256": "011503a09256fb3502c3ad45b67f230528bc4fe93e350a78afb15985ef02e7af"
+    },
+    {
+      "change": "M",
+      "path": "CONTRIBUTING.md",
+      "sha256": "6f32e73a72c035ac787e5e71b655922af2381d5cc1bb93d709d5af5c0e36ac4d"
+    },
+    {
+      "change": "M",
+      "path": "README.md",
+      "sha256": "90835e31b32e4c76fd4c856753c05cc98f382b7c68870f2965055759f9a80526"
+    },
+    {
+      "change": "M",
+      "path": "workspace_tools/reconstruction_pipeline/tests/test_validate_contribution.py",
+      "sha256": "c2cd44be1ae85368590de408d06cc653e593b0531ae0c79c89f296def3ffab92"
+    },
+    {
+      "change": "M",
+      "path": "workspace_tools/reconstruction_pipeline/validate_contribution.py",
+      "sha256": "ce065ad89a0f5fa38c9aa4a6d7e14b0bfa2bc9e8d6cf9677fe23bf4d2a71248a"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python workspace_tools/reconstruction_pipeline/manage_reference_modules.py verify",
+      "exit_code": 0,
+      "id": "reference_modules",
+      "log": {
+        "path": "contributions/20260715-paypal-bilingual-readme/reports/reference_modules.log",
+        "sha256": "af014cbb752f3d8bca74e4300d10b86b347b7a85432166de66feee60d5b36562"
+      },
+      "status": "PASS"
+    },
+    {
+      "command": "python reproducible_environment/verify_environment.py --mode static --report contributions/20260715-paypal-bilingual-readme/reports/environment_static.json",
+      "exit_code": 0,
+      "id": "environment_static",
+      "log": {
+        "path": "contributions/20260715-paypal-bilingual-readme/reports/environment_static.log",
+        "sha256": "f1724829d473263a9dcba7bfc48187493efb5b5b5b220d04a2076fe6fbb2176d"
+      },
+      "report": {
+        "path": "contributions/20260715-paypal-bilingual-readme/reports/environment_static.json",
+        "sha256": "f1724829d473263a9dcba7bfc48187493efb5b5b5b220d04a2076fe6fbb2176d"
+      },
+      "status": "PASS"
+    },
+    {
+      "command": "python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution -v",
+      "exit_code": 0,
+      "id": "validator_tests",
+      "log": {
+        "path": "contributions/20260715-paypal-bilingual-readme/reports/validator_tests.log",
+        "sha256": "58a0875d4c7ab74c8c8c5a5843ef1007320cb413da6efd0025db46168627d8fc"
+      },
+      "status": "PASS"
+    }
+  ],
+  "claims": {
+    "hardware_status": "DEFERRED",
+    "static_status": "INCOMPLETE"
+  },
+  "drivers": [],
+  "environment_lock_sha256": "1bc8617704a1ba377fdb2089faf0d42d356e77c63883ba63307d687b28b3f8ca",
+  "intent": "incremental",
+  "reproduction_scripts": [
+    {
+      "path": "contributions/20260715-paypal-bilingual-readme/reproduce.ps1",
+      "sha256": "bfd1f5b3450b0fd0197f369d06dffe7c6b6d961ef7e34c242150740595351ca4"
+    },
+    {
+      "path": "contributions/20260715-paypal-bilingual-readme/reproduce.sh",
+      "sha256": "30200c37220347136734a5d2b4d6ea2731ac8d515a2c97b3833727ec77b78f7e"
+    }
+  ],
+  "schema_version": "1.0",
+  "scopes": [
+    "documentation",
+    "pipeline"
+  ],
+  "submission_id": "20260715-paypal-bilingual-readme"
+}
