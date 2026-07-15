@@ -14,6 +14,19 @@ mantenedor repetir a mesma esteira local.
 O gate do GitHub valida integridade e completude, mas não executa scripts da PR
 nem compila o kernel. A aprovação final exige reprodução local pelo mantenedor.
 
+### Limite absoluto do GitHub Actions
+
+GitHub Actions é usado exclusivamente para ler o diff, validar o manifest e
+recalcular vínculos SHA-256. É proibido executar no GitHub qualquer compilação
+de kernel ou módulo, Docker de build, toolchain, ADB, fastboot, `insmod`,
+`rmmod`, assinatura ou empacotamento de imagem. A compilação e os testes que
+dependem do ambiente fixado acontecem somente na máquina local e seus relatórios
+são enviados como evidência.
+
+Pull Requests não podem adicionar nem modificar `.github/workflows/`. O
+validador carregado da branch-base compara os blobs dos workflows e rejeita
+qualquer divergência antes do merge.
+
 ### Fluxo obrigatório
 
 1. Sincronize sua branch com o `main` atual.
@@ -85,6 +98,18 @@ the maintainer to replay the same local pipeline.
 The GitHub gate validates integrity and completeness, but it neither executes
 PR scripts nor compiles the kernel. Final approval requires a local maintainer
 rerun.
+
+### Absolute GitHub Actions boundary
+
+GitHub Actions is used only to read the diff, validate the manifest, and
+recalculate SHA-256 bindings. Kernel or module compilation, Docker builds,
+toolchains, ADB, fastboot, `insmod`, `rmmod`, image signing, and image packaging
+are forbidden on GitHub. Builds and environment-dependent tests run only on the
+local machine, and their reports are submitted as evidence.
+
+Pull Requests cannot add or modify `.github/workflows/`. The validator loaded
+from the base branch compares workflow blobs and rejects any difference before
+merge.
 
 ### Mandatory flow
 

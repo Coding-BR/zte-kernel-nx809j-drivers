@@ -18,6 +18,27 @@ SUBMISSION_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{2,63}$")
 DRIVER_RE = re.compile(r"^zte_[a-z0-9_]+$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+EXPECTED_WORKFLOWS = {".github/workflows/contribution-gate.yml"}
+REQUIRED_WORKFLOW_MARKERS = (
+    "pull_request_target:",
+    "contents: read",
+    "persist-credentials: false",
+    "github.event.pull_request.base.sha",
+    "validate_contribution.py",
+)
+FORBIDDEN_WORKFLOW_PATTERNS = {
+    "kernel build tool": re.compile(r"\b(?:make|bazel|ninja|kleaf)\b", re.IGNORECASE),
+    "container build or execution": re.compile(
+        r"\bdocker\s+(?:build|buildx|compose|run)\b", re.IGNORECASE
+    ),
+    "compiler invocation": re.compile(r"\b(?:clang|gcc|ld\.lld)\b", re.IGNORECASE),
+    "device or module operation": re.compile(
+        r"\b(?:adb|fastboot|insmod|rmmod|modprobe)\b", re.IGNORECASE
+    ),
+    "kernel build wrapper": re.compile(
+        r"(?:build_kernel|build-kernel|build\.ps1|build_kernel\.sh)", re.IGNORECASE
+    ),
+}
 
 CHECK_MARKERS = {
     "reference_modules": ("manage_reference_modules.py", "verify"),
@@ -109,6 +130,49 @@ def parse_json_blob(repo: Path, head: str, path: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValidationError(f"{path}: top-level JSON value must be an object")
     return value
+
+
+def workflow_blobs(repo: Path, commit: str) -> dict[str, bytes]:
+    output = str(
+        git(repo, "ls-tree", "-r", "--name-only", commit, "--", ".github/workflows")
+    )
+    paths = {
+        line.strip()
+        for line in output.splitlines()
+        if line.strip().endswith((".yml", ".yaml"))
+    }
+    return {path: read_blob(repo, commit, path) for path in sorted(paths)}
+
+
+def forbidden_workflow_operations(text: str) -> list[str]:
+    return [
+        name
+        for name, pattern in FORBIDDEN_WORKFLOW_PATTERNS.items()
+        if pattern.search(text)
+    ]
+
+
+def validate_workflow_policy(repo: Path, base: str, head: str) -> list[str]:
+    base_blobs = workflow_blobs(repo, base)
+    head_blobs = workflow_blobs(repo, head)
+    if set(head_blobs) != EXPECTED_WORKFLOWS:
+        raise ValidationError(
+            "GitHub Actions policy permits only .github/workflows/contribution-gate.yml"
+        )
+    if base_blobs != head_blobs:
+        raise ValidationError("Pull Requests may not add, delete, or modify GitHub workflows")
+    path = next(iter(EXPECTED_WORKFLOWS))
+    try:
+        text = head_blobs[path].decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValidationError(f"{path}: workflow must be UTF-8") from error
+    missing = [marker for marker in REQUIRED_WORKFLOW_MARKERS if marker not in text]
+    if missing:
+        raise ValidationError(f"{path}: missing safety markers {missing}")
+    forbidden = forbidden_workflow_operations(text)
+    if forbidden:
+        raise ValidationError(f"{path}: forbidden GitHub Actions operations {forbidden}")
+    return sorted(head_blobs)
 
 
 def require_hash(value: Any, *, field: str) -> str:
@@ -362,6 +426,7 @@ def validate(repo: Path, base_value: str, head_value: str) -> dict[str, Any]:
     )
     if ancestor.returncode != 0:
         raise ValidationError("base commit is not an ancestor of head")
+    workflow_paths = validate_workflow_policy(repo, base, head)
     changes = diff_entries(repo, base, head)
     if not changes:
         raise ValidationError("empty contribution")
@@ -412,6 +477,11 @@ def validate(repo: Path, base_value: str, head_value: str) -> dict[str, Any]:
         "head": head,
         "manifests": manifest_paths,
         "covered_files": len(all_covered),
+        "github_actions": {
+            "status": "METADATA_ONLY",
+            "workflows": workflow_paths,
+            "kernel_build": "FORBIDDEN",
+        },
         "policy": "nx809j-contribution-v1",
     }
 

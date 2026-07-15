@@ -15,18 +15,30 @@ reconstrução em C e validação dos módulos vendor do NX809J. O `.ko` stock
 extraído localmente é a fonte de verdade. Código publicado para aparelhos
 semelhantes não é aceito como prova do comportamento deste dispositivo.
 
-### ROM userdebug, comunidade e apoio
+### ROM userdebug e comunidade
 
 A ROM userdebug usada no projeto é necessária para reproduzir a coleta de logs,
 comparar o comportamento do kernel e executar futuramente a validação dinâmica:
 
 - [ROM userdebug do NX809J](https://drive.google.com/file/d/1csCT9Fakets_ApsiDB7-apQmIZrgR75Y/view?usp=sharing)
 - [Comunidade e contato no Telegram](https://t.me/redmagic11PR0)
-- **Doações via PayPal:** `adrianojr59@gmail.com`
 
 Antes de usar a ROM, confirme o modelo, preserve backups das partições e
 registre o SHA-256 do arquivo. A ROM não substitui os `.ko` stock, Device Tree
 ou evidências registradas.
+
+### Apoie o projeto
+
+As doações ajudam a manter armazenamento, ferramentas, builds locais e o
+trabalho independente de reconstrução do NX809J.
+
+<p align="center">
+  <a href="https://www.paypal.com/donate/?business=adrianojr59%40gmail.com&amp;no_recurring=0&amp;item_name=NX809J%20Kernel%20Driver%20Reconstruction&amp;currency_code=USD">
+    <img src="https://img.shields.io/badge/DOAR%20COM%20PAYPAL-0070BA?style=for-the-badge&amp;logo=paypal&amp;logoColor=white" height="44" alt="Doar com PayPal">
+  </a>
+</p>
+
+<p align="center"><strong>Conta PayPal:</strong> adrianojr59@gmail.com</p>
 
 ### Estados aceitos
 
@@ -67,8 +79,10 @@ chegar por Pull Request com:
 4. manifest `contributions/<id>/manifest.json` preso ao commit-base;
 5. gate automático aprovado e revisão do mantenedor após reprodução local.
 
-O GitHub **não compila o kernel**. Ele verifica o contrato, os hashes e os
-relatórios enviados usando o validador da branch protegida. Consulte o
+O GitHub Actions **nunca compila o kernel ou os módulos**. Ele verifica somente
+o contrato, os hashes e os relatórios enviados usando o validador da branch
+protegida. Workflows de compilação são proibidos e rejeitados pela política.
+Consulte o
 [guia bilíngue de contribuição](./CONTRIBUTING.md).
 
 ### Estrutura
@@ -92,18 +106,30 @@ and validation chain for NX809J vendor modules. The locally acquired stock
 `.ko` is the source of truth. Internet code for similar devices is not accepted
 as evidence of this device's behavior.
 
-### Userdebug ROM, community, and support
+### Userdebug ROM and community
 
 The userdebug ROM used by this project is required to reproduce log capture,
 compare kernel behavior, and eventually perform dynamic validation:
 
 - [NX809J userdebug ROM](https://drive.google.com/file/d/1csCT9Fakets_ApsiDB7-apQmIZrgR75Y/view?usp=sharing)
 - [Telegram community and contact](https://t.me/redmagic11PR0)
-- **PayPal donations:** `adrianojr59@gmail.com`
 
 Before using the ROM, confirm the model, preserve partition backups, and record
 the file SHA-256. The ROM does not replace the stock `.ko` files, Device Tree,
 or recorded evidence.
+
+### Support the project
+
+Donations help cover storage, tooling, local builds, and the independent NX809J
+reconstruction effort.
+
+<p align="center">
+  <a href="https://www.paypal.com/donate/?business=adrianojr59%40gmail.com&amp;no_recurring=0&amp;item_name=NX809J%20Kernel%20Driver%20Reconstruction&amp;currency_code=USD">
+    <img src="https://img.shields.io/badge/DONATE%20WITH%20PAYPAL-0070BA?style=for-the-badge&amp;logo=paypal&amp;logoColor=white" height="44" alt="Donate with PayPal">
+  </a>
+</p>
+
+<p align="center"><strong>PayPal account:</strong> adrianojr59@gmail.com</p>
 
 ### Accepted states
 
@@ -144,8 +170,9 @@ must arrive through a Pull Request containing:
 4. a `contributions/<id>/manifest.json` bound to the base commit;
 5. a passing automated gate and maintainer review after a local rerun.
 
-GitHub **does not compile the kernel**. It validates the submitted contract,
-hashes, and reports with the protected branch's validator. Read the
+GitHub Actions **never compiles the kernel or modules**. It validates only the
+submitted contract, hashes, and reports with the protected branch's validator.
+Build workflows are forbidden and rejected by policy. Read the
 [bilingual contribution guide](./CONTRIBUTING.md).
 
 ### Layout

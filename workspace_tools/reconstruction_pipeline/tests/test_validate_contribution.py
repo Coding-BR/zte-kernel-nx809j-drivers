@@ -77,6 +77,14 @@ class ContributionGateTests(unittest.TestCase):
             {"pipeline"},
         )
 
+    def test_cloud_build_commands_are_rejected(self) -> None:
+        self.assertEqual(MODULE.forbidden_workflow_operations("run: make LLVM=1"), ["kernel build tool"])
+        self.assertEqual(
+            MODULE.forbidden_workflow_operations("run: docker build -t kernel ."),
+            ["container build or execution"],
+        )
+        self.assertEqual(MODULE.forbidden_workflow_operations("run: python validate.py"), [])
+
     def test_sha256_is_stable(self) -> None:
         self.assertEqual(
             MODULE.sha256_bytes(b"NX809J"),
@@ -90,6 +98,13 @@ class ContributionGateTests(unittest.TestCase):
             self.git(repo, "config", "user.name", "NX809J Test")
             self.git(repo, "config", "user.email", "nx809j-test@example.invalid")
             (repo / ".gitattributes").write_text("* text=auto eol=lf\n", encoding="utf-8")
+            workflow = repo / ".github" / "workflows" / "contribution-gate.yml"
+            workflow.parent.mkdir(parents=True)
+            workflow.write_text(
+                "pull_request_target:\ncontents: read\npersist-credentials: false\n"
+                "github.event.pull_request.base.sha\nvalidate_contribution.py\n",
+                encoding="utf-8",
+            )
             (repo / "reproducible_environment").mkdir()
             lock = repo / "reproducible_environment" / "environment.lock.json"
             lock.write_text('{"version":1}\n', encoding="utf-8")
@@ -201,6 +216,13 @@ class ContributionGateTests(unittest.TestCase):
             self.git(repo, "config", "user.name", "NX809J Test")
             self.git(repo, "config", "user.email", "nx809j-test@example.invalid")
             (repo / ".gitattributes").write_text("* text=auto eol=lf\n", encoding="utf-8")
+            workflow = repo / ".github" / "workflows" / "contribution-gate.yml"
+            workflow.parent.mkdir(parents=True)
+            workflow.write_text(
+                "pull_request_target:\ncontents: read\npersist-credentials: false\n"
+                "github.event.pull_request.base.sha\nvalidate_contribution.py\n",
+                encoding="utf-8",
+            )
             (repo / "reproducible_environment").mkdir()
             (repo / "reproducible_environment" / "environment.lock.json").write_text(
                 "{}\n", encoding="utf-8"
