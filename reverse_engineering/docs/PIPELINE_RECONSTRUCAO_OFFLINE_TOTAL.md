@@ -383,6 +383,21 @@ O publicador apaga e recria somente os subdiretorios derivados
 `offline_static/ghidra_stock` e `offline_static/stock_assembly`, depois gera um
 `EVIDENCE_MANIFEST.json` com SHA-256 de cada arquivo publicado.
 
+### 6.7 Indexar a decomposicao por funcao
+
+Depois da publicacao, gere o crosswalk deterministico entre inventario Ghidra,
+pseudocodigo C, P-Code e Assembly AArch64:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py --write
+python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py --check
+```
+
+O primeiro comando materializa os indices hashados. O segundo recalcula todas as
+identidades e falha se qualquer camada nao estiver em relacao 1:1. O contrato
+completo esta em
+`reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md`.
+
 ## 7. Regra de invalidacao
 
 Uma alteracao invalida automaticamente as evidencias dependentes:
@@ -395,6 +410,7 @@ Uma alteracao invalida automaticamente as evidencias dependentes:
 | `.config`, Clang, Docker ou `Module.symvers` | O8 a O10 |
 | `.ko` stock ou run de aquisicao | todos os gates |
 | Script Ghidra ou versao do Ghidra | O3 a O10 |
+| Pseudocodigo, P-Code, Assembly ou indice de decomposicao | O2, O3 e O5 a O10 |
 | DTB/DTBO/firmware | O4 a O10 |
 | Harness | O7 a O10 |
 

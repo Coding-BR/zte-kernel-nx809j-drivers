@@ -77,6 +77,19 @@ class ContributionGateTests(unittest.TestCase):
             {"pipeline"},
         )
 
+    def test_driver_names_include_zte_and_zlog_modules(self) -> None:
+        self.assertIsNotNone(MODULE.DRIVER_RE.fullmatch("zte_ir"))
+        self.assertIsNotNone(MODULE.DRIVER_RE.fullmatch("zlog_common"))
+        self.assertIsNone(MODULE.DRIVER_RE.fullmatch("qcom_ir"))
+
+    def test_module_decomposition_is_a_strict_driver_check(self) -> None:
+        self.assertIn("module_decomposition", MODULE.DRIVER_CHECKS)
+        self.assertIn("module_decomposition", MODULE.STRICT_DRIVER_CHECKS)
+        self.assertEqual(
+            MODULE.CHECK_MARKERS["module_decomposition"],
+            ("validate_module_decomposition.py", "--check"),
+        )
+
     def test_cloud_build_commands_are_rejected(self) -> None:
         self.assertEqual(MODULE.forbidden_workflow_operations("run: make LLVM=1"), ["kernel build tool"])
         self.assertEqual(
@@ -122,6 +135,7 @@ class ContributionGateTests(unittest.TestCase):
                     "manage_reference_modules.py verify",
                     "verify_environment.py --mode static",
                     "test_validate_contribution.py",
+                    "test_validate_module_decomposition.py",
                 )
             ) + "\n"
             scripts = []
@@ -184,7 +198,10 @@ class ContributionGateTests(unittest.TestCase):
                     },
                     {
                         "id": "validator_tests",
-                        "command": "test_validate_contribution.py",
+                        "command": (
+                            "test_validate_contribution.py "
+                            "test_validate_module_decomposition.py"
+                        ),
                         "exit_code": 0,
                         "status": "PASS",
                         "log": evidence("validator_tests.log"),

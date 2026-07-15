@@ -15,7 +15,7 @@ from typing import Any
 
 SCHEMA_VERSION = "1.0"
 SUBMISSION_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{2,63}$")
-DRIVER_RE = re.compile(r"^zte_[a-z0-9_]+$")
+DRIVER_RE = re.compile(r"^(?:zte|zlog)_[a-z0-9_]+$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 EXPECTED_WORKFLOWS = {".github/workflows/contribution-gate.yml"}
@@ -43,13 +43,23 @@ FORBIDDEN_WORKFLOW_PATTERNS = {
 CHECK_MARKERS = {
     "reference_modules": ("manage_reference_modules.py", "verify"),
     "environment_static": ("verify_environment.py", "--mode", "static"),
-    "validator_tests": ("test_validate_contribution",),
+    "validator_tests": (
+        "test_validate_contribution",
+        "test_validate_module_decomposition",
+    ),
     "offline_audit": ("audit_offline_reconstruction.py",),
+    "module_decomposition": ("validate_module_decomposition.py", "--check"),
     "double_clean_rebuild": ("validate_reconstructed_drivers.py", "--rebuild"),
     "llm_cycle": ("verify_llm_reconstruction_cycle.py",),
 }
 BASE_CHECKS = {"reference_modules", "environment_static", "validator_tests"}
-DRIVER_CHECKS = {"offline_audit", "double_clean_rebuild", "llm_cycle"}
+DRIVER_CHECKS = {
+    "offline_audit",
+    "module_decomposition",
+    "double_clean_rebuild",
+    "llm_cycle",
+}
+STRICT_DRIVER_CHECKS = {"module_decomposition"}
 
 
 class ValidationError(ValueError):
@@ -253,7 +263,9 @@ def validate_check(
         raise ValidationError(f"checks[{check_id}].exit_code: expected a non-negative integer")
     if status not in {"PASS", "INCOMPLETE", "FAIL"}:
         raise ValidationError(f"checks[{check_id}].status: invalid status")
-    if check_id in BASE_CHECKS and (exit_code != 0 or status != "PASS"):
+    if check_id in BASE_CHECKS | STRICT_DRIVER_CHECKS and (
+        exit_code != 0 or status != "PASS"
+    ):
         raise ValidationError(f"checks[{check_id}]: foundational check must PASS with exit code 0")
     if intent == "promotion" and (exit_code != 0 or status != "PASS"):
         raise ValidationError(f"checks[{check_id}]: promotion requires PASS with exit code 0")
@@ -278,6 +290,8 @@ def validate_check(
             raise ValidationError(f"checks[{check_id}].report: expected a JSON object")
         if check_id == "environment_static" and report_value.get("status") != "PASS":
             raise ValidationError("environment_static report does not declare PASS")
+        if check_id == "module_decomposition" and report_value.get("status") != "PASS":
+            raise ValidationError("module_decomposition report does not declare PASS")
     return str(check_id)
 
 

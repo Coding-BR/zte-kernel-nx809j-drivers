@@ -61,6 +61,7 @@ Toda PR exige `reference_modules`, `environment_static` e `validator_tests` com
 `PASS` e código zero. Alterações de driver também exigem:
 
 - auditoria offline por driver;
+- decomposicao 1:1 de cada funcao em pseudocodigo C, P-Code e Assembly;
 - duas compilações limpas no Docker fixado;
 - verificação KMI/KCFI e paridade registrada no relatório;
 - ciclo obrigatório de reconstrução por função/microtarefa;
@@ -145,6 +146,7 @@ Every PR requires `reference_modules`, `environment_static`, and
 `validator_tests` with `PASS` and exit code zero. Driver changes also require:
 
 - a per-driver offline audit;
+- a 1:1 per-function decomposition into C pseudocode, P-Code, and assembly;
 - two clean builds in the pinned Docker environment;
 - KMI/KCFI checks and parity recorded in the report;
 - the mandatory per-function/microtask reconstruction cycle;

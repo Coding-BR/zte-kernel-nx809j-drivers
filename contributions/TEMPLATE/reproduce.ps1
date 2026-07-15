@@ -23,13 +23,17 @@ try {
     $EnvironmentOutput = @(python .\reproducible_environment\verify_environment.py --mode static `
         --report (Join-Path $Reports "environment_static.json") 2>&1)
     Write-Utf8Log (Join-Path $Reports "environment_static.log") $EnvironmentOutput
-    $TestsOutput = @(cmd.exe /d /c "python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution -v 2>&1")
+    $TestsOutput = @(cmd.exe /d /c "python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution workspace_tools.reconstruction_pipeline.tests.test_validate_module_decomposition -v 2>&1")
     Write-Utf8Log (Join-Path $Reports "validator_tests.log") $TestsOutput
     $OfflineOutput = @(python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
         --engineering-root $EngineeringRoot --driver $Driver --allow-incomplete `
         --output (Join-Path $Reports "offline_audit.json") `
         --markdown (Join-Path $Reports "offline_audit.md") 2>&1)
     Write-Utf8Log (Join-Path $Reports "offline_audit.log") $OfflineOutput
+    $DecompositionOutput = @(python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py `
+        --check --driver $Driver `
+        --output (Join-Path $Reports "module_decomposition.json") 2>&1)
+    Write-Utf8Log (Join-Path $Reports "module_decomposition.log") $DecompositionOutput
     $BuildOutput = @(python .\workspace_tools\reconstruction_pipeline\validate_reconstructed_drivers.py `
         --curated-root (Join-Path $EngineeringRoot "curated") --driver $Driver --rebuild `
         --output (Join-Path $Reports "double_clean_rebuild.json") `

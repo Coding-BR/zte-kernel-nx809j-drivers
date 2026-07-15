@@ -62,12 +62,14 @@ reconstrução funcional completa. Os candidatos publicados continuam
 - [Ambiente Docker, kernel, toolchains e Ghidra fixados](./reproducible_environment/README.md)
 - [Requisitos compartilhados e procedimento de setup](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Esteira completa de reconstrução offline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
+- [Decomposição por função: pseudocódigo C, P-Code e Assembly](./reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md)
 - [Dossiê reverso de hardware](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
 
 Validação inicial após o clone:
 
 ```powershell
 python .\workspace_tools\reconstruction_pipeline\manage_reference_modules.py verify
+python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py --check
 python .\reproducible_environment\verify_environment.py --mode static
 ```
 
@@ -156,12 +158,14 @@ applicable gates are demonstrated.
 - [Pinned Docker environment, kernel, toolchains, and Ghidra](./reproducible_environment/README.md)
 - [Shared requirements and setup procedure](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Complete offline reconstruction pipeline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
+- [Per-function decomposition: C pseudocode, P-Code, and assembly](./reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md)
 - [Reverse hardware dossier](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
 
 Initial validation after cloning:
 
 ```powershell
 python .\workspace_tools\reconstruction_pipeline\manage_reference_modules.py verify
+python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py --check
 python .\reproducible_environment\verify_environment.py --mode static
 ```
 

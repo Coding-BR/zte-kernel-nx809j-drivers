@@ -14,6 +14,9 @@ from typing import Any
 import audit_offline_reconstruction as audit
 
 
+PRIMARY_EVIDENCE_TREES = {"ghidra_stock", "stock_assembly"}
+
+
 def ensure_within(path: Path, root: Path) -> None:
     resolved = path.resolve()
     root = root.resolve()
@@ -33,7 +36,8 @@ def replace_tree(source: Path, target: Path, repo_root: Path) -> None:
 def evidence_records(root: Path) -> list[dict[str, Any]]:
     records = []
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
-        if path.name == "EVIDENCE_MANIFEST.json" and path.parent == root:
+        relative = path.relative_to(root)
+        if relative.parts[0] not in PRIMARY_EVIDENCE_TREES:
             continue
         if path.suffix == ".ko":
             raise ValueError(f"stock/candidate module must not enter evidence package: {path}")
