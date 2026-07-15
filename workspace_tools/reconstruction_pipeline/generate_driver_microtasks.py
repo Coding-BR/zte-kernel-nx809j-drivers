@@ -389,7 +389,9 @@ def main() -> int:
         drivers = sorted(
             path.name
             for path in curated_root.iterdir()
-            if path.is_dir() and path.name.startswith("zte_") and (path / "STATUS.md").is_file()
+            if path.is_dir()
+            and path.name.startswith(("zte_", "zlog_"))
+            and (path / "STATUS.md").is_file()
         )
         if not args.include_zte_ir:
             drivers = [driver for driver in drivers if driver != "zte_ir"]

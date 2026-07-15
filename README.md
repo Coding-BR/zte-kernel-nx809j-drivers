@@ -55,7 +55,7 @@ reconstrução funcional completa. Os candidatos publicados continuam
 
 ### Ambiente e módulos publicados
 
-- [12 módulos stock, 12 candidatos e snapshot completo com 335 módulos](./reference_modules/README.md)
+- [12 candidatos ZTE gerenciados, o candidato-base `zlog_exception` e o snapshot stock completo com 335 módulos](./reference_modules/README.md)
 - [Ambiente Docker, kernel, toolchains e Ghidra fixados](./reproducible_environment/README.md)
 - [Requisitos compartilhados e procedimento de setup](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Esteira completa de reconstrução offline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
@@ -146,7 +146,7 @@ applicable gates are demonstrated.
 
 ### Published environment and modules
 
-- [12 stock modules, 12 candidates, and a complete 335-module snapshot](./reference_modules/README.md)
+- [12 managed ZTE candidates, the `zlog_exception` foundation candidate, and a complete 335-module stock snapshot](./reference_modules/README.md)
 - [Pinned Docker environment, kernel, toolchains, and Ghidra](./reproducible_environment/README.md)
 - [Shared requirements and setup procedure](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Complete offline reconstruction pipeline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)

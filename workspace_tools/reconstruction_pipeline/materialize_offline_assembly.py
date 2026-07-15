@@ -189,7 +189,7 @@ def main() -> int:
         drivers = sorted(
             path.name
             for path in (engineering_root / "curated").iterdir()
-            if path.is_dir() and path.name.startswith("zte_")
+            if path.is_dir() and path.name.startswith(("zte_", "zlog_"))
         )
     else:
         drivers = sorted(set(args.drivers or []))

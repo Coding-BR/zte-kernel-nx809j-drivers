@@ -1,0 +1,374 @@
+{
+  "attestation_tool": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\tools\\attest_driver_microtasks.py",
+  "driver": "zlog_exception",
+  "generated_utc": "2026-07-15T18:04:38.325013+00:00",
+  "ghidra_export": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko",
+  "schema_version": "1.0",
+  "status": "PASS",
+  "stock": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\01_acquisition\\modules\\zlog_exception.ko",
+    "sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372"
+  },
+  "tasks": [
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\001_zlog_write_internal\\compile.json",
+          "role": "compile",
+          "sha256": "a54a8734235661a40b6fced5aa8f1a04e7c95bc2099fdf8ac0bfe506a28e6320"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\001_zlog_write_internal\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "4e5e9d9b53fc8d9f745edb8139b27f954b99c2435d56b9de34eebae5a9c444de"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\001_zlog_write_internal\\test.json",
+          "role": "test",
+          "sha256": "d5b093eeb9b07b91f42f8e2982136512f6ab6090b56b674c58579e67d44197f8"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0000_00100364_zlog_write_internal.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0000_00100364_zlog_write_internal.c",
+      "id": "001_zlog_write_internal",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_write_internal\nEntrada Ghidra: 00100364\nTamanho stock: 468 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_exception.c:zlog_write_internal\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0000_00100364_zlog_write_internal.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0000_00100364_zlog_write_internal.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_write_internal",
+      "status": "PASS",
+      "stock_body_bytes": 468,
+      "stock_entry": "00100364",
+      "stock_function": "zlog_write_internal"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\002_zlog_read\\compile.json",
+          "role": "compile",
+          "sha256": "2dceea438294395324fea7284f7931b9c580ca13656468d633310021de578733"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\002_zlog_read\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "80cfd61c8a24c83f9ea6d271c4ae55786d30b016b0d59366c60a79a56db76c79"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\002_zlog_read\\test.json",
+          "role": "test",
+          "sha256": "d8421201a829d6bb17cd564d9ef48f645c32dcdee4996396daed2240f9f5630d"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0001_0010056c_zlog_read.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0001_0010056c_zlog_read.c",
+      "id": "002_zlog_read",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_read\nEntrada Ghidra: 0010056c\nTamanho stock: 676 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_exception.c:zlog_read\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0001_0010056c_zlog_read.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0001_0010056c_zlog_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_read",
+      "status": "PASS",
+      "stock_body_bytes": 676,
+      "stock_entry": "0010056c",
+      "stock_function": "zlog_read"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\003_zlog_write\\compile.json",
+          "role": "compile",
+          "sha256": "e2d3ae22231a8b7049bde2bd6e1d1720f76ab30e12b962992ed4dc1c847c443a"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\003_zlog_write\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "f587a3ee958fb8b1d6684f7cd046f8805ab21b538633a3a19f6f426c54d532dc"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\003_zlog_write\\test.json",
+          "role": "test",
+          "sha256": "ada4c515d5e263b14b76aac98599f7742b58fcedfa160ff72e80fcf79177093b"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0002_00100814_zlog_write.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0002_00100814_zlog_write.c",
+      "id": "003_zlog_write",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_write\nEntrada Ghidra: 00100814\nTamanho stock: 696 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_exception.c:zlog_write\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0002_00100814_zlog_write.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0002_00100814_zlog_write.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_write",
+      "status": "PASS",
+      "stock_body_bytes": 696,
+      "stock_entry": "00100814",
+      "stock_function": "zlog_write"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\004_zlog_poll\\compile.json",
+          "role": "compile",
+          "sha256": "638313e576a9c343a9f29eb4b62453c7ce6be55ee93e1277aa454ec9fecbe2b2"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\004_zlog_poll\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "a236352ffe425ea9330b7a754e6d6af6240e75f54e029da58f22646578953044"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\004_zlog_poll\\test.json",
+          "role": "test",
+          "sha256": "4bd0c8d58d6ab0f35fdbdfd06c3cdf7d30ebc073e496e49184f52b30a7723333"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0003_00100b08_zlog_poll.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0003_00100b08_zlog_poll.c",
+      "id": "004_zlog_poll",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_poll\nEntrada Ghidra: 00100b08\nTamanho stock: 152 bytes\nCategoria: core_logic\nAlvo no fonte: zlog_exception.c:zlog_poll\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0003_00100b08_zlog_poll.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0003_00100b08_zlog_poll.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_poll",
+      "status": "PASS",
+      "stock_body_bytes": 152,
+      "stock_entry": "00100b08",
+      "stock_function": "zlog_poll"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\005_zlog_ioctl\\compile.json",
+          "role": "compile",
+          "sha256": "62df14fb745e866ef3ff0d09f92058ea6de8e55296c972d234d8e50d6d07db36"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\005_zlog_ioctl\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "b865c483a186c84decbb6450e0326b12e1056578f9b25624da8f4c6244528519"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\005_zlog_ioctl\\test.json",
+          "role": "test",
+          "sha256": "fd376d1fbb48956e3e73648c4bda9617c53a33bf4484773c2541003602000539"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0004_00100ba4_zlog_ioctl.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0004_00100ba4_zlog_ioctl.c",
+      "id": "005_zlog_ioctl",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_ioctl\nEntrada Ghidra: 00100ba4\nTamanho stock: 8 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_exception.c:zlog_ioctl\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0004_00100ba4_zlog_ioctl.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0004_00100ba4_zlog_ioctl.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_ioctl",
+      "status": "PASS",
+      "stock_body_bytes": 8,
+      "stock_entry": "00100ba4",
+      "stock_function": "zlog_ioctl"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\006_zlog_open\\compile.json",
+          "role": "compile",
+          "sha256": "b86a39852bf82f89c406bee080ced9eda02abeda4031b1f2cbb408c976562c2c"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\006_zlog_open\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "8f145116320d2bb70b462181819fc2a2bec4fbdac7558a971a94714120c29686"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\006_zlog_open\\test.json",
+          "role": "test",
+          "sha256": "69eab5ce33c1dd3882443308d84980f6747f12466147fd7fce63f001ae8ed664"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0005_00100bb0_zlog_open.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0005_00100bb0_zlog_open.c",
+      "id": "006_zlog_open",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_open\nEntrada Ghidra: 00100bb0\nTamanho stock: 92 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_exception.c:zlog_open\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0005_00100bb0_zlog_open.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0005_00100bb0_zlog_open.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_open",
+      "status": "PASS",
+      "stock_body_bytes": 92,
+      "stock_entry": "00100bb0",
+      "stock_function": "zlog_open"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\007_zlog_release\\compile.json",
+          "role": "compile",
+          "sha256": "155fe516b448db42cc2161d1cc3326025f9536f548715a15f5f8bf46052677d3"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\007_zlog_release\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "f67e2c77225383e4e88f51d2954361b598d4feebfc9f7aba78052832ed5ec432"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\007_zlog_release\\test.json",
+          "role": "test",
+          "sha256": "94ced72d3d128dc0c956a4773e92498d8c61c906627485bc745765bed15b2058"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0006_00100c20_zlog_release.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0006_00100c20_zlog_release.c",
+      "id": "007_zlog_release",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_release\nEntrada Ghidra: 00100c20\nTamanho stock: 96 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_exception.c:zlog_release\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0006_00100c20_zlog_release.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0006_00100c20_zlog_release.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_release",
+      "status": "PASS",
+      "stock_body_bytes": 96,
+      "stock_entry": "00100c20",
+      "stock_function": "zlog_release"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\008_init_module\\compile.json",
+          "role": "compile",
+          "sha256": "d54e4a53b2da4974eb1e8702979d5a2247d0a0f4f340afc13ef5e904bc541876"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\008_init_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "d9204c993678a06bf5a8d53dfd857d58a16137c29fa0d4c9898031d72fab5177"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\008_init_module\\test.json",
+          "role": "test",
+          "sha256": "df2bca9424b21b3e0139b4d5e600f192eb3f6435eff2f77eff137f28c959056e"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0007_00100ca4_init_module.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0007_00100ca4_init_module.c",
+      "id": "008_init_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: init_module\nEntrada Ghidra: 00100ca4\nTamanho stock: 152 bytes\nCategoria: lifecycle\nAlvo no fonte: zlog_exception.c:zlog_init\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0007_00100ca4_init_module.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0007_00100ca4_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_init",
+      "status": "PASS",
+      "stock_body_bytes": 152,
+      "stock_entry": "00100ca4",
+      "stock_function": "init_module"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\009_zlog_create_log_dev\\compile.json",
+          "role": "compile",
+          "sha256": "7fae86ad27f3047ad2ecb7eb90465434a9acdfaec2795bf9c2abecccacc11a12"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\009_zlog_create_log_dev\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "ed6b568424e9b3080c84e6927e7f249b9e63b2721ea4e43f10fd10ffba9cb760"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\009_zlog_create_log_dev\\test.json",
+          "role": "test",
+          "sha256": "3e81be3bd03cec21d1d261424e66a5baa76bc896dd8626b16114355598c055b0"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0008_00100d3c_zlog_create_log_dev.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0008_00100d3c_zlog_create_log_dev.c",
+      "id": "009_zlog_create_log_dev",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: zlog_create_log_dev\nEntrada Ghidra: 00100d3c\nTamanho stock: 176 bytes\nCategoria: core_logic\nAlvo no fonte: zlog_exception.c:zlog_create_log_dev\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0008_00100d3c_zlog_create_log_dev.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0008_00100d3c_zlog_create_log_dev.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_create_log_dev",
+      "status": "PASS",
+      "stock_body_bytes": 176,
+      "stock_entry": "00100d3c",
+      "stock_function": "zlog_create_log_dev"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\010_cleanup_module\\compile.json",
+          "role": "compile",
+          "sha256": "8270927267cfe90a852c4362682f9dd052dba176daf6924440c0a26265fd76b6"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\010_cleanup_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "e99833993ea99a7b608708f49cf70ab495f7e2f21295871ba3185b27355f5a29"
+        },
+        {
+          "path": "engenharia\\validation\\zlog_exception\\microtasks\\010_cleanup_module\\test.json",
+          "role": "test",
+          "sha256": "f160176051b09a804e34996d45261e6f513b5a26c50849fcd428925bbc3294d8"
+        }
+      ],
+      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0009_00100df0_cleanup_module.jsonl",
+      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0009_00100df0_cleanup_module.c",
+      "id": "010_cleanup_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_exception\nFuncao stock: cleanup_module\nEntrada Ghidra: 00100df0\nTamanho stock: 44 bytes\nCategoria: lifecycle\nAlvo no fonte: zlog_exception.c:zlog_exit\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\decompiled\\0009_00100df0_cleanup_module.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T173511Z-zlog-exception-offline\\03_ghidra\\exports\\zlog_exception.ko\\pcode\\0009_00100df0_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_exception.c",
+      "source_function": "zlog_exit",
+      "status": "PASS",
+      "stock_body_bytes": 44,
+      "stock_entry": "00100df0",
+      "stock_function": "cleanup_module"
+    }
+  ]
+}

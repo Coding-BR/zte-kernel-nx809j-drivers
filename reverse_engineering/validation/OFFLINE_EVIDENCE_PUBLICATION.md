@@ -4,6 +4,7 @@ Os pacotes contem somente analise derivada. Os modulos `.ko` stock nao foram pub
 
 | Driver | Estado | Ghidra | Assembly | Arquivos derivados |
 |---|---|---:|---:|---:|
+| `zlog_exception` | `PASS` | 10 | 10 | 40 |
 | `zte_charger_policy` | `PASS` | 38 | 38 | 124 |
 | `zte_fingerprint` | `PASS` | 30 | 30 | 100 |
 | `zte_imem_info` | `PASS` | 6 | 6 | 28 |

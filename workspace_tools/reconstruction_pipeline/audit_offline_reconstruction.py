@@ -705,7 +705,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engineering-root", type=Path)
     parser.add_argument("--driver", action="append", dest="drivers")
-    parser.add_argument("--all", action="store_true", help="audit every curated zte_* driver")
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="audit every curated zte_* and zlog_* driver",
+    )
     parser.add_argument(
         "--output",
         type=Path,
@@ -732,7 +736,7 @@ def main() -> int:
         drivers = sorted(
             path.name
             for path in (engineering_root / "curated").iterdir()
-            if path.is_dir() and path.name.startswith("zte_")
+            if path.is_dir() and path.name.startswith(("zte_", "zlog_"))
         )
     else:
         drivers = sorted(set(args.drivers or []))

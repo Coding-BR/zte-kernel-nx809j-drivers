@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_exception",
+  "stock_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
+  "candidate_sha256": "d09fde7f894d85c41b09edd8607311321264759a4994c967b506281be069844d",
+  "comparisons": [
+    {
+      "surface": "ELF/KMI",
+      "result": "PASS",
+      "detail": "AArch64 ET_REL, imports, exported zlog_write_internal, aliases and namespaces match stock"
+    },
+    {
+      "surface": "layout",
+      "result": "PASS",
+      "detail": "32-byte fragment and 184-byte global state match every recovered AArch64 offset"
+    },
+    {
+      "surface": "Ghidra",
+      "result": "PASS",
+      "detail": "10/10 function inventory and per-function call multiplicity match"
+    },
+    {
+      "surface": "KCFI",
+      "result": "PASS",
+      "detail": "9/9 applicable functions match type ID, section and exact symbol size; one direct-call function documented N/A"
+    },
+    {
+      "surface": "behavior",
+      "result": "PASS",
+      "detail": "10-function host harness passed twice with reproducible binary hash"
+    },
+    {
+      "surface": "microtasks",
+      "result": "PASS",
+      "detail": "10/10 tasks attested with hash-backed compile, KCFI decision and direct test evidence"
+    },
+    {
+      "surface": "hardware",
+      "result": "INCOMPLETO",
+      "detail": "no supervised load/unload and userspace ABI test for this exact candidate"
+    }
+  ],
+  "blockers": [
+    "independent reviewer distinct from the implementer",
+    "controlled hardware validation with rollback"
+  ]
+}

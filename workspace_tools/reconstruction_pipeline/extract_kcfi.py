@@ -2,8 +2,9 @@
 """Extract KCFI type preambles from little-endian ELF64 objects.
 
 Linux/Android arm64 places a 32-bit KCFI type identifier immediately before
-each instrumented function. This tool resolves function symbols through the
-ELF section and symbol tables and emits a reproducible JSON evidence file.
+each instrumented function. Local direct-call-only functions may have no KCFI
+preamble. This tool rejects a candidate preamble when its four bytes overlap
+another function body, avoiding instruction bytes being reported as type IDs.
 """
 
 from __future__ import annotations
@@ -185,6 +186,32 @@ class Elf64:
             "type_id": f"0x{int.from_bytes(preamble, 'little'):08x}",
         }
 
+    def kcfi_exclusion_reason(
+        self, symbol: Symbol, function_symbols: Iterable[Symbol]
+    ) -> str | None:
+        section = self.sections[symbol.section_index]
+        symbol_offset = (
+            symbol.value if self.elf_type == ET_REL else symbol.value - section.address
+        )
+        preamble_offset = symbol_offset - 4
+        if preamble_offset < 0:
+            return "function has no four-byte space before its entry"
+
+        for other in function_symbols:
+            if other is symbol or other.section_index != symbol.section_index:
+                continue
+            other_offset = (
+                other.value
+                if self.elf_type == ET_REL
+                else other.value - section.address
+            )
+            if other_offset <= preamble_offset < other_offset + other.size:
+                return (
+                    "candidate preamble overlaps function body: "
+                    f"{other.name}+0x{preamble_offset - other_offset:x}"
+                )
+        return None
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -217,8 +244,24 @@ def main() -> int:
             key=lambda symbol: (symbol.section_index, symbol.value, symbol.name),
         )
 
+    all_function_symbols = [
+        symbol
+        for symbol in elf.symbols
+        if symbol.symbol_type == STT_FUNC
+        and symbol.section_index != SHN_UNDEF
+        and symbol.section_index < SHN_LORESERVE
+    ]
+    records = []
+    excluded = []
+    for symbol in symbols:
+        reason = elf.kcfi_exclusion_reason(symbol, all_function_symbols)
+        if reason:
+            excluded.append({"function": symbol.name, "reason": reason})
+        else:
+            records.append(elf.kcfi_record(symbol))
+
     payload = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "source": {
             "path": str(args.elf),
@@ -227,7 +270,8 @@ def main() -> int:
             "elf_type": elf.elf_type,
             "machine": elf.machine,
         },
-        "records": [elf.kcfi_record(symbol) for symbol in symbols],
+        "records": records,
+        "excluded": excluded,
     }
     rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     if args.output:

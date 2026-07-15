@@ -623,7 +623,9 @@ def main() -> int:
     drivers = args.drivers or sorted(
         path.name
         for path in curated_root.iterdir()
-        if path.is_dir() and path.name.startswith("zte_") and (path / "STATUS.md").is_file()
+        if path.is_dir()
+        and path.name.startswith(("zte_", "zlog_"))
+        and (path / "STATUS.md").is_file()
     )
     run_root = (args.run_root or find_run(engineering_root, drivers)).resolve()
     target_kernel = None

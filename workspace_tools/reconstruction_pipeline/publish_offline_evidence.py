@@ -78,6 +78,13 @@ def publish_driver(
         / "offline_static"
     )
     destination.mkdir(parents=True, exist_ok=True)
+    previous_manifest: dict[str, Any] = {}
+    previous_manifest_path = destination / "EVIDENCE_MANIFEST.json"
+    if previous_manifest_path.is_file():
+        try:
+            previous_manifest = audit.read_json(previous_manifest_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            previous_manifest = {}
     replace_tree(ghidra_source, destination / "ghidra_stock", repo_root)
     replace_tree(assembly_source, destination / "stock_assembly", repo_root)
     records = evidence_records(destination)
@@ -100,6 +107,14 @@ def publish_driver(
         "derived_file_count": len(records),
         "derived_files": records,
     }
+    previous_without_time = {
+        key: value for key, value in previous_manifest.items() if key != "generated_utc"
+    }
+    current_without_time = {
+        key: value for key, value in manifest.items() if key != "generated_utc"
+    }
+    if previous_without_time == current_without_time and previous_manifest.get("generated_utc"):
+        manifest["generated_utc"] = previous_manifest["generated_utc"]
     manifest_path = destination / "EVIDENCE_MANIFEST.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
@@ -165,7 +180,7 @@ def main() -> int:
         drivers = sorted(
             path.name
             for path in (engineering_root / "curated").iterdir()
-            if path.is_dir() and path.name.startswith("zte_")
+            if path.is_dir() and path.name.startswith(("zte_", "zlog_"))
         )
     else:
         drivers = sorted(set(args.drivers or []))

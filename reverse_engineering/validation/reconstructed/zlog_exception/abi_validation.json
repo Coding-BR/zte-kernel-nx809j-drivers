@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_exception",
+  "stock_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
+  "candidate_sha256": "d09fde7f894d85c41b09edd8607311321264759a4994c967b506281be069844d",
+  "document": "engenharia/runs/NX809J-20260715T173511Z-zlog-exception-offline/04_documents/zlog_exception.ko/DOCUMENTO_TRANSICAO.md",
+  "header_probe": "engenharia/validation/zlog_exception/layout_evidence.json",
+  "checks": [
+    "zlog_fragment is exactly 32 bytes with stock offsets",
+    "g_zlog_info is exactly 184 bytes with stock offsets",
+    "zlog_fops member relocations match the 6.12.23 file_operations layout",
+    "9/9 applicable KCFI boundaries match type ID, section and exact symbol size",
+    "zlog_create_log_dev is proven direct-call-only and has no KCFI preamble",
+    "undefined imports, exported symbol, alias and namespace surfaces match stock"
+  ],
+  "evidence": [
+    "engenharia/validation/zlog_exception/layout_evidence.json",
+    "engenharia/validation/zlog_exception/kcfi_comparison_exact.json",
+    "engenharia/validation/zlog_exception/ghidra_stock_candidate_comparison.json",
+    "engenharia/validation/zlog_exception/driver_build_audit.json",
+    "engenharia/curated/zlog_exception/reconstruction_map.json"
+  ]
+}
