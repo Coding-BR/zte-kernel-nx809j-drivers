@@ -1,6 +1,9 @@
 {
   "schema_version": "1.0",
   "status": "PASS",
+  "driver": "zte_stats_info",
+  "stock_sha256": "20f5f60ddbdc5412de08a5ec0a62d34bfe3dd8cebba0cb54cda6ffc7bdb64d96",
+  "candidate_sha256": "a0c4186a89a5917c12d598d2e1833729de043242b0988816167853ecb740df34",
   "comparisons": [
     {"surface": "ELF", "result": "PASS", "detail": "AArch64 ET_REL and reproducible build"},
     {"surface": "imports", "result": "PASS", "detail": "43 stock imports equal candidate imports"},
@@ -8,7 +11,8 @@
     {"surface": "Generic Netlink", "result": "PASS", "detail": "ZTE_TASKSTATS, two genl_ops, policies, commands and 0x160 payload reconstructed"},
     {"surface": "functions", "result": "PASS", "detail": "Ghidra stock and candidate each export exactly 8 functions"},
     {"surface": "KCFI", "result": "PASS", "detail": "3/3 indirect or entry-point type IDs match"},
-    {"surface": "host behavior", "result": "PASS", "detail": "8/8 functions directly covered; harness reproducible"}
+    {"surface": "host behavior", "result": "PASS", "detail": "8/8 functions directly covered; harness reproducible"},
+    {"surface": "hardware", "result": "INCOMPLETO", "detail": "Generic Netlink interaction with real tasks and userspace remains deferred"}
   ],
   "justified_differences": [
     {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel release recorded in engenharia/config/target_kernel.json and was modposted with its Module.symvers"},
@@ -22,5 +26,8 @@
     "engenharia/validation/zte_stats_info/kcfi_callback_surface.json",
     "engenharia/validation/zte_stats_info/abi_probe_report.json"
   ],
-  "blockers": []
+  "blockers": [
+    "independent reviewer distinct from the implementer",
+    "controlled hardware validation of ZTE_TASKSTATS Netlink behavior"
+  ]
 }

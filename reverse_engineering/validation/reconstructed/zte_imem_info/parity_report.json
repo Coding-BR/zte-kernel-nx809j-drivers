@@ -1,12 +1,16 @@
 {
   "schema_version": "1.0",
   "status": "PASS",
+  "driver": "zte_imem_info",
+  "stock_sha256": "6a0fff182e40e9676a321e6c55796ed94d382faf3ec1e1999a53e5076ffd3e65",
+  "candidate_sha256": "3662e2d25db9069b16b5903d7bed5bac548d44241e9a786975ad18bcd1cf7c91",
   "comparisons": [
     {"surface": "ELF/KMI", "result": "PASS", "detail": "AArch64 ET_REL, exact imports and reproducible target build"},
     {"surface": "functions", "result": "PASS", "detail": "6/6 names, sizes and Ghidra mappings match"},
     {"surface": "KCFI", "result": "PASS", "detail": "6/6 type IDs match"},
     {"surface": "procfs ABI", "result": "PASS", "detail": "paths, modes, proc_ops and output formats covered"},
-    {"surface": "IMEM behavior", "result": "PASS", "detail": "success, missing node, map failure, unknown IDs and all init rollback paths tested"}
+    {"surface": "IMEM behavior", "result": "PASS", "detail": "success, missing node, map failure, unknown IDs and all init rollback paths tested in the host harness"},
+    {"surface": "hardware", "result": "INCOMPLETO", "detail": "physical IMEM reads and procfs collision behavior remain deferred"}
   ],
   "justified_differences": [
     {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel and Module.symvers in engenharia/config/target_kernel.json"}
@@ -16,5 +20,8 @@
     "engenharia/validation/zte_imem_info/kcfi_parity.json",
     "engenharia/validation/zte_imem_info/host_test_report.json"
   ],
-  "blockers": []
+  "blockers": [
+    "independent reviewer distinct from the implementer",
+    "controlled hardware validation of physical IMEM values and procfs collisions"
+  ]
 }

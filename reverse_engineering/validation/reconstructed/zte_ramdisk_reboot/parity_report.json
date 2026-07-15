@@ -1,13 +1,17 @@
 {
   "schema_version": "1.0",
   "status": "PASS",
+  "driver": "zte_ramdisk_reboot",
+  "stock_sha256": "598d5862b03a7f1fdc60318ca53fb6837716662c591991390e6f946aafb2d740",
+  "candidate_sha256": "299fc9776b31c692df523b60792151865608c37d44245950b5bddd606a79716c",
   "comparisons": [
     {"surface": "ELF", "result": "PASS", "detail": "AArch64 ET_REL and reproducible build"},
     {"surface": "imports and aliases", "result": "PASS", "detail": "exact stock/candidate match"},
     {"surface": "functions", "result": "PASS", "detail": "13/13 stock functions mapped and directly covered"},
     {"surface": "KCFI", "result": "PASS", "detail": "9/9 indirect/exported type IDs match"},
     {"surface": "NVMEM/sysfs/DTS", "result": "PASS", "detail": "names, callbacks, compatible and return semantics match"},
-    {"surface": "host behavior", "result": "PASS", "detail": "success, failure, bounds, probe and lifecycle paths pass reproducibly"}
+    {"surface": "host behavior", "result": "PASS", "detail": "success, failure, bounds, probe and lifecycle paths pass reproducibly"},
+    {"surface": "hardware", "result": "INCOMPLETO", "detail": "NVMEM cells, reboot-reason propagation and sysfs behavior remain deferred"}
   ],
   "justified_differences": [
     {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel and Module.symvers recorded in engenharia/config/target_kernel.json"},
@@ -18,5 +22,8 @@
     "engenharia/validation/zte_ramdisk_reboot/host_test_report.json",
     "engenharia/validation/zte_ramdisk_reboot/kcfi_callback_surface.json"
   ],
-  "blockers": []
+  "blockers": [
+    "independent reviewer distinct from the implementer",
+    "controlled hardware validation of NVMEM and reboot behavior"
+  ]
 }
