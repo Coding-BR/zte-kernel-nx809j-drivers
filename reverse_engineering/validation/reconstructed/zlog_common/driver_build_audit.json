@@ -1,0 +1,341 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_common",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_common/vendor.Module.symvers",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "  CC [M]  /work/validation/zlog_common/zlog_common.o\n  MODPOST /work/validation/zlog_common/Module.symvers\n  CC [M]  /work/validation/zlog_common/zlog_common.mod.o\n  CC [M]  /work/validation/zlog_common/.module-common.o\n  LD [M]  /work/validation/zlog_common/zlog_common.ko\n  BTF [M] /work/validation/zlog_common/zlog_common.ko\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_common",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_common/vendor.Module.symvers",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "make[2]: Warning: File '/work/validation/zlog_common/zlog_common.mod.c' has modification time 0.0094 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n",
+            "stdout": "  CC [M]  /work/validation/zlog_common/zlog_common.o\n  MODPOST /work/validation/zlog_common/Module.symvers\n  CC [M]  /work/validation/zlog_common/zlog_common.mod.o\n  CC [M]  /work/validation/zlog_common/.module-common.o\n  LD [M]  /work/validation/zlog_common/zlog_common.ko\n  BTF [M] /work/validation/zlog_common/zlog_common.ko\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_common",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_common/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_common",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_common/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "  CLEAN   /work/validation/zlog_common/Module.symvers\n"
+          }
+        },
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_common\\zlog_common.ko",
+          "sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+          "size": 246320
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_common\\zlog_common.ko",
+          "sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+          "size": 246320
+        },
+        "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_common"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zlog_common\\zlog_common.ko",
+        "sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+        "size": 246320
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_matches_fresh": true,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "makefile": true,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 2,
+        "undefined_symbols_match": true,
+        "vermagic_accepted": true
+      },
+      "driver": "zlog_common",
+      "errors": [],
+      "ghidra": {
+        "document": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T181940Z-zlog-common-offline\\04_documents\\zlog_common.ko\\DOCUMENTO_TRANSICAO.md",
+        "export": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T181940Z-zlog-common-offline\\03_ghidra\\exports\\zlog_common.ko",
+        "function_count": 13,
+        "function_names": [
+          "init_module",
+          "zlog_client_notify",
+          "zlog_client_record",
+          "zlog_comm_create_ctrl_dev",
+          "zlog_comm_ioctl",
+          "zlog_comm_open",
+          "zlog_comm_read",
+          "zlog_comm_release",
+          "zlog_comm_write",
+          "zlog_handle_work",
+          "zlog_register_client",
+          "zlog_reset_client",
+          "zlog_unregister_client"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "c1661863902ae9ca60deccdfcba91f20",
+          "function_count": 13,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000c3f",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "zlog_common.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_matches_fresh": true,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__arch_copy_from_user",
+              "__fortify_panic",
+              "__kmalloc_cache_noprof",
+              "__kmalloc_noprof",
+              "__mutex_init",
+              "__stack_chk_fail",
+              "_printk",
+              "alloc_workqueue",
+              "alt_cb_patch_nops",
+              "cancel_delayed_work",
+              "delayed_work_timer_fn",
+              "init_timer_key",
+              "kfree",
+              "kmalloc_caches",
+              "kstrdup",
+              "ktime_get_real_ts64",
+              "mem_alloc_profiling_key",
+              "memcpy",
+              "memset",
+              "misc_register",
+              "mutex_lock",
+              "mutex_unlock",
+              "queue_delayed_work_on",
+              "rtc_time64_to_tm",
+              "snprintf",
+              "sprintf",
+              "strncmp",
+              "strncpy",
+              "sys_tz",
+              "vsnprintf",
+              "zlog_write_internal"
+            ]
+          },
+          "modinfo": {
+            "depends": [
+              "zlog_exception"
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": true,
+        "missing_imports": [],
+        "namespace_match": true,
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__arch_copy_from_user",
+              "__fortify_panic",
+              "__kmalloc_cache_noprof",
+              "__kmalloc_noprof",
+              "__mutex_init",
+              "__stack_chk_fail",
+              "_printk",
+              "alloc_workqueue",
+              "alt_cb_patch_nops",
+              "cancel_delayed_work",
+              "delayed_work_timer_fn",
+              "init_timer_key",
+              "kfree",
+              "kmalloc_caches",
+              "kstrdup",
+              "ktime_get_real_ts64",
+              "mem_alloc_profiling_key",
+              "memcpy",
+              "memset",
+              "misc_register",
+              "mutex_lock",
+              "mutex_unlock",
+              "queue_delayed_work_on",
+              "rtc_time64_to_tm",
+              "snprintf",
+              "sprintf",
+              "strncmp",
+              "strncpy",
+              "sys_tz",
+              "vsnprintf",
+              "zlog_write_internal"
+            ]
+          },
+          "modinfo": {
+            "depends": [
+              "zlog_exception"
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": true,
+        "undefined_symbols_match": true,
+        "unexpected_imports": [],
+        "vermagic_accepted": true,
+        "vermagic_match": false
+      },
+      "status": "static_verified",
+      "stock": {
+        "exists": true,
+        "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T181940Z-zlog-common-offline\\01_acquisition\\modules\\zlog_common.ko",
+        "sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+        "size": 34712
+      },
+      "traceability": {
+        "exists": true,
+        "mapped_functions": 13,
+        "passed": true,
+        "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zlog_common\\reconstruction_map.json",
+        "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+        "unmapped_functions": []
+      },
+      "warnings": []
+    }
+  ],
+  "generated_utc": "2026-07-15T18:53:56.758873+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": true,
+  "rebuild_requested": true,
+  "run_root": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260715T181940Z-zlog-common-offline",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "zlog_common"
+    ],
+    "static_verified": [
+      "zlog_common"
+    ]
+  },
+  "target_kernel_manifest": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\config\\target_kernel.json"
+}

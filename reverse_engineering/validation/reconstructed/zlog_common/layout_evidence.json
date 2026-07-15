@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_common",
+  "source": "stock ELF symbols/relocations, Ghidra pseudocode/P-Code, AArch64 assembly and compile-time assertions",
+  "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "candidate_sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+  "structures": {
+    "zlog_client_ops": {
+      "size": 16,
+      "offsets": {"reserved_00": 0, "notify": 8}
+    },
+    "zlog_mod_info": {
+      "size": 48,
+      "offsets": {"module_no": 0, "client_name": 8, "device_name": 16, "ic_name": 24, "module_name": 32, "ops": 40}
+    },
+    "zlog_client": {
+      "size": 288,
+      "offsets": {"client_id": 0, "client_name": 4, "device_name": 36, "ic_name": 68, "module_name": 132, "ops": 168, "client_lock": 176, "module_no": 224, "event_no": 228, "flags": 232, "record_length": 248, "record_capacity": 256, "record_buffer": 264, "registered": 280}
+    },
+    "zlog_server": {
+      "size": 9416,
+      "offsets": {"clients": 0, "workqueue": 9216, "report_work": 9224, "miscdev": 9328, "use_count": 9408, "init_finished": 9412}
+    },
+    "zlog_command": {
+      "size": 16,
+      "offsets": {"module_no": 0, "reserved_04": 4}
+    }
+  },
+  "header_probe": {
+    "source": "engenharia/curated/zlog_common/zlog_common.h",
+    "method": "28 static_assert/offsetof checks compiled by two clean AArch64 Kbuild runs",
+    "build_report": "engenharia/validation/zlog_common/driver_build_audit.json",
+    "result": "PASS"
+  }
+}

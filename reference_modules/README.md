@@ -12,6 +12,12 @@ do **NX809J, REDMAGIC 11 Pro+**.
 - `full_vendor_boot/`: snapshot integral com 335 modulos, `modules.dep`,
   `modules.alias`, listas de carga, blocklist e soft dependencies.
 
+As bases reconstruidas `zlog_exception` e `zlog_common` ficam em
+`kernel_development/drivers/reconstructed/`, junto com seus candidatos, testes e
+microtarefas. Seus ELFs stock continuam somente em `full_vendor_boot/`; as
+evidencias derivadas publicaveis ficam em
+`reverse_engineering/validation/reconstructed/`.
+
 Os nomes iguais nas duas pastas sao intencionais. Nunca copie as duas classes
 para o mesmo diretorio e nunca carregue um arquivo apenas pelo nome. Use sempre
 classe, caminho e SHA-256.

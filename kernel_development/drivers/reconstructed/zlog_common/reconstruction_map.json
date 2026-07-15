@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "driver": "zlog_common",
+  "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "candidate_sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+  "review_scope": "Primary function-by-function review using local stock Ghidra, P-Code, AArch64 assembly, KCFI and host tests",
+  "independent_review": "pending; tracked separately by gate O10",
+  "mappings": [
+    {
+      "stock_function": "zlog_client_notify",
+      "stock_entry": "001003e4",
+      "stock_pseudocode": "decompiled/0000_001003e4_zlog_client_notify.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_client_notify",
+      "status": "reviewed",
+      "evidence": ["exact 196-byte symbol", "KCFI 0x441dde05", "host notify scheduling paths"]
+    },
+    {
+      "stock_function": "zlog_client_record",
+      "stock_entry": "001004ac",
+      "stock_pseudocode": "decompiled/0001_001004ac_zlog_client_record.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_client_record",
+      "status": "reviewed",
+      "evidence": ["exact 404-byte symbol", "KCFI 0xa9602e21", "host format, overflow and failure paths"]
+    },
+    {
+      "stock_function": "zlog_register_client",
+      "stock_entry": "00100644",
+      "stock_pseudocode": "decompiled/0002_00100644_zlog_register_client.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_register_client",
+      "status": "reviewed",
+      "evidence": ["KCFI 0x09fbc74f", "same external call multiplicity", "candidate 816 bytes versus stock 828", "host duplicate, allocation and 32-slot limit paths"]
+    },
+    {
+      "stock_function": "zlog_unregister_client",
+      "stock_entry": "00100984",
+      "stock_pseudocode": "decompiled/0003_00100984_zlog_unregister_client.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_unregister_client",
+      "status": "reviewed",
+      "evidence": ["exact 312-byte symbol", "KCFI 0xd56e2c54", "stock dangling-buffer and duplicate-clear behavior retained"]
+    },
+    {
+      "stock_function": "zlog_reset_client",
+      "stock_entry": "00100ac0",
+      "stock_pseudocode": "decompiled/0004_00100ac0_zlog_reset_client.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_reset_client",
+      "status": "reviewed",
+      "evidence": ["exact 188-byte symbol", "KCFI 0xd56e2c54", "host reset after reporting"]
+    },
+    {
+      "stock_function": "zlog_handle_work",
+      "stock_entry": "00100b80",
+      "stock_pseudocode": "decompiled/0005_00100b80_zlog_handle_work.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_handle_work",
+      "status": "reviewed",
+      "evidence": ["exact 1036-byte symbol", "KCFI 0xa607748c", "host serialized event and allocation failure paths"]
+    },
+    {
+      "stock_function": "zlog_comm_read",
+      "stock_entry": "00100f90",
+      "stock_pseudocode": "decompiled/0006_00100f90_zlog_comm_read.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_comm_read",
+      "status": "reviewed",
+      "evidence": ["exact 8-byte symbol", "KCFI 0xf4e9d97c", "host count passthrough"]
+    },
+    {
+      "stock_function": "zlog_comm_write",
+      "stock_entry": "00100f9c",
+      "stock_pseudocode": "decompiled/0007_00100f9c_zlog_comm_write.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_comm_write",
+      "status": "reviewed",
+      "evidence": ["exact 464-byte symbol", "KCFI 0xc3d43b4d", "callback KCFI 0xc2a6c845 resolved as int (void *, int)", "host count, copy and callback paths"]
+    },
+    {
+      "stock_function": "zlog_comm_ioctl",
+      "stock_entry": "00101170",
+      "stock_pseudocode": "decompiled/0008_00101170_zlog_comm_ioctl.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_comm_ioctl",
+      "status": "reviewed",
+      "evidence": ["exact 8-byte symbol", "KCFI 0x2af6cdbb", "host zero return"]
+    },
+    {
+      "stock_function": "zlog_comm_open",
+      "stock_entry": "0010117c",
+      "stock_pseudocode": "decompiled/0009_0010117c_zlog_comm_open.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_comm_open",
+      "status": "reviewed",
+      "evidence": ["exact 108-byte symbol", "KCFI 0x9829071d", "host use-count increment"]
+    },
+    {
+      "stock_function": "zlog_comm_release",
+      "stock_entry": "001011ec",
+      "stock_pseudocode": "decompiled/0010_001011ec_zlog_comm_release.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_comm_release",
+      "status": "reviewed",
+      "evidence": ["exact 112-byte symbol", "KCFI 0x9829071d", "host use-count decrement"]
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "00101268",
+      "stock_pseudocode": "decompiled/0011_00101268_init_module.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_common_init",
+      "status": "reviewed",
+      "evidence": ["exact 260-byte symbol", "KCFI 0x6fbb3035", "host 32 mutexes, misc device, workqueue and delayed work"]
+    },
+    {
+      "stock_function": "zlog_comm_create_ctrl_dev",
+      "stock_entry": "0010136c",
+      "stock_pseudocode": "decompiled/0012_0010136c_zlog_comm_create_ctrl_dev.c",
+      "source_file": "zlog_common.c",
+      "source_function": "zlog_comm_create_ctrl_dev",
+      "status": "reviewed",
+      "evidence": ["exact 140-byte direct-call symbol", "no KCFI preamble", "host misc registration success and failure"]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_common",
+  "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "candidate_sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+  "document": "engenharia/runs/NX809J-20260715T181940Z-zlog-common-offline/04_documents/zlog_common.ko/DOCUMENTO_TRANSICAO.md",
+  "header_probe": "engenharia/validation/zlog_common/layout_evidence.json",
+  "checks": [
+    "five recovered AArch64 data structures match all proven stock offsets and sizes",
+    "file_operations callbacks use canonical Linux 6.12.23 prototypes",
+    "12/12 applicable KCFI boundaries match type ID and section",
+    "zlog_comm_create_ctrl_dev is direct-call-only and has no independent KCFI preamble",
+    "undefined imports, five exported symbols, dependency, aliases and namespaces match stock",
+    "zlog_client_ops.notify indirect callback matches int (void *, int), KCFI ID 0xc2a6c845"
+  ],
+  "non_gating_difference": {
+    "function": "zlog_register_client",
+    "stock_symbol_size": 828,
+    "candidate_symbol_size": 816,
+    "reason": "symbol byte size is a compiler-shape heuristic, not an ABI type; KCFI, call multiplicity, layout and host behavior match",
+    "policy": "retain as residual evidence; do not add artificial padding"
+  },
+  "evidence": [
+    "engenharia/validation/zlog_common/layout_evidence.json",
+    "engenharia/validation/zlog_common/kcfi_type_comparison.json",
+    "engenharia/validation/zlog_common/kcfi_comparison_exact.json",
+    "engenharia/validation/zlog_common/ghidra_stock_candidate_comparison.json",
+    "engenharia/validation/zlog_common/driver_build_audit.json",
+    "engenharia/curated/zlog_common/reconstruction_map.json"
+  ]
+}

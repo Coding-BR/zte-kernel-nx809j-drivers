@@ -19,7 +19,10 @@ typedef signed char s8;
 typedef unsigned short u16;
 typedef signed short s16;
 typedef unsigned int u32;
+typedef signed int s32;
 typedef unsigned long size_t;
+typedef signed long ssize_t;
+typedef unsigned long long u64;
 struct syna_tcm;
 struct syna_tcm_dev;
 struct syna_tcm_device;
@@ -43,6 +46,8 @@ struct touchpanel_operations;
 struct zte_tp_data;
 struct zte_tp_device;
 struct tpd_data;
+struct zlog_client;
+struct zlog_mod_info;
 #define PROBE __attribute__((__noinline__, __used__))
 """
 
@@ -127,6 +132,21 @@ def string_signatures() -> list[str]:
     return signatures
 
 
+def zlog_signatures() -> list[str]:
+    signatures: list[str] = []
+    for return_type, client, event in itertools.product(
+        ("void", "int", "long", "ssize_t", "u32", "size_t"),
+        (
+            "struct zlog_client *", "const struct zlog_client *",
+            "struct zlog_mod_info *", "void *", "const void *",
+            "long", "unsigned long",
+        ),
+        ("int", "s32", "u32", "long", "unsigned long", "size_t", "u64"),
+    ):
+        signatures.append(f"{return_type} ({client}, {event})")
+    return signatures
+
+
 def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
     lines = [TYPE_PREAMBLE]
     mapping: dict[str, str] = {}
@@ -147,7 +167,7 @@ def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("family", choices=("touch", "game", "string"))
+    parser.add_argument("family", choices=("touch", "game", "string", "zlog"))
     parser.add_argument("target_type_id", help="KCFI hash such as 0xeb35dc7c")
     parser.add_argument("--engineering-root", type=Path,
                         default=Path(__file__).resolve().parents[1])
@@ -170,8 +190,10 @@ def main() -> int:
         signatures = touch_signatures()
     elif args.family == "game":
         signatures = game_signatures()
-    else:
+    elif args.family == "string":
         signatures = string_signatures()
+    else:
+        signatures = zlog_signatures()
     source, mapping = render_probe(signatures)
     source_path.write_text(source, encoding="ascii")
     (work_dir / "Makefile").write_text(

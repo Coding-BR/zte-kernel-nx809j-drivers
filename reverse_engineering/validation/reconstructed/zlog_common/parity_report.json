@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_common",
+  "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "candidate_sha256": "76a042cd1e30bc92e83e8cbe171fc634c0f1e937b1308fcf9931ba838ccbda2c",
+  "comparisons": [
+    {"surface": "ELF/KMI", "result": "PASS", "detail": "AArch64 ET_REL, 31 imports, five exports, dependency, aliases and namespace surfaces match stock"},
+    {"surface": "layout", "result": "PASS", "detail": "five recovered layouts match all proven AArch64 sizes and offsets"},
+    {"surface": "Ghidra", "result": "PASS", "detail": "13/13 function inventory and per-function call multiplicity match"},
+    {"surface": "KCFI", "result": "PASS", "detail": "12/12 applicable functions match type ID and section; 11/12 also match exact symbol size; one direct-call function is documented N/A"},
+    {"surface": "behavior", "result": "PASS", "detail": "13-function host harness passed twice with a reproducible binary hash"},
+    {"surface": "microtasks", "result": "PASS", "detail": "13/13 tasks are hash-backed by compile, KCFI decision and direct host coverage"},
+    {"surface": "hardware", "result": "INCOMPLETO", "detail": "no supervised userspace ABI and worker test for this exact candidate"}
+  ],
+  "residuals": [
+    "zlog_register_client candidate symbol is 12 bytes smaller than stock; no artificial padding was introduced"
+  ],
+  "blockers": [
+    "independent reviewer distinct from the implementer",
+    "controlled hardware validation with rollback"
+  ]
+}
