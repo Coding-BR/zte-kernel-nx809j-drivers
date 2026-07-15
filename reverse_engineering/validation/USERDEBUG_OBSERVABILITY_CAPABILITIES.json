@@ -60,6 +60,13 @@
         "CONFIG_FTRACE"
       ],
       "id": "function_tracing",
+      "implementation": {
+        "activation": "Habilitar CONFIG_FUNCTION_TRACER e recompilar o Image; function graph e dynamic ftrace sao resolvidos por olddefconfig.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "kernel/trace/ftrace.c"
+        ]
+      },
       "intrusiveness": "medium",
       "missing_requirements": [
         "CONFIG_FUNCTION_TRACER",
@@ -144,6 +151,13 @@
     {
       "configured_requirements": [],
       "id": "dynamic_debug",
+      "implementation": {
+        "activation": "Habilitar CONFIG_DYNAMIC_DEBUG e recompilar o Image. CONFIG_DYNAMIC_DEBUG_CORE sozinho so atende modulos preparados e nao cria callsites ausentes no stock.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "lib/dynamic_debug.c"
+        ]
+      },
       "intrusiveness": "low",
       "missing_requirements": [
         "CONFIG_DYNAMIC_DEBUG"
@@ -222,6 +236,14 @@
         "CONFIG_PSTORE_RAM"
       ],
       "id": "persistent_ftrace",
+      "implementation": {
+        "activation": "Habilitar primeiro CONFIG_FUNCTION_TRACER, depois CONFIG_PSTORE_FTRACE; recompilar o Image e fornecer uma reserva ramoops valida.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "fs/pstore/ftrace.c",
+          "kernel/trace/ftrace.c"
+        ]
+      },
       "intrusiveness": "medium",
       "missing_requirements": [
         "CONFIG_PSTORE_FTRACE",
@@ -299,6 +321,13 @@
     {
       "configured_requirements": [],
       "id": "kcov",
+      "implementation": {
+        "activation": "Habilitar CONFIG_KCOV e recompilar todo o kernel de laboratorio para instrumentar por cobertura o codigo desejado.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "kernel/kcov.c"
+        ]
+      },
       "intrusiveness": "high",
       "missing_requirements": [
         "CONFIG_KCOV"
@@ -315,6 +344,13 @@
     {
       "configured_requirements": [],
       "id": "lockdep",
+      "implementation": {
+        "activation": "Habilitar CONFIG_PROVE_LOCKING, nao o simbolo oculto CONFIG_LOCKDEP diretamente, e recompilar o Image.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "kernel/locking/lockdep.c"
+        ]
+      },
       "intrusiveness": "high",
       "missing_requirements": [
         "CONFIG_PROVE_LOCKING"
@@ -331,6 +367,13 @@
     {
       "configured_requirements": [],
       "id": "fault_injection",
+      "implementation": {
+        "activation": "Habilitar CONFIG_FAULT_INJECTION e somente os subrecursos necessarios; recompilar o Image antes de usar controles debugfs em sessao descartavel.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "lib/fault-inject.c"
+        ]
+      },
       "intrusiveness": "high",
       "missing_requirements": [
         "CONFIG_FAULT_INJECTION"
@@ -347,6 +390,13 @@
     {
       "configured_requirements": [],
       "id": "kgdb",
+      "implementation": {
+        "activation": "Habilitar CONFIG_KGDB e um transporte auditado para a placa, depois recompilar o Image. Uma opcao de compilador nao fornece transporte utilizavel.",
+        "delivery": "kernel_builtin",
+        "source_paths": [
+          "kernel/debug/debug_core.c"
+        ]
+      },
       "intrusiveness": "high",
       "missing_requirements": [
         "CONFIG_KGDB"
@@ -400,6 +450,14 @@
     {
       "configured_requirements": [],
       "id": "mmiotrace",
+      "implementation": {
+        "activation": "Nao forcar esta opcao em arm64. CONFIG_HAVE_MMIOTRACE_SUPPORT esta ausente no NX809J, portanto Kconfig normal nao consegue habilita-la.",
+        "delivery": "kernel_builtin_arch_specific",
+        "source_paths": [
+          "arch/x86/mm/kmmio.c",
+          "arch/x86/mm/mmio-mod.c"
+        ]
+      },
       "intrusiveness": "unsupported_on_target",
       "missing_requirements": [
         "CONFIG_MMIOTRACE"

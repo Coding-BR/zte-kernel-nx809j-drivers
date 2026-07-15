@@ -499,3 +499,166 @@ O melhor caminho profissional e:
 4. documentar o hardware apenas por comportamento observado;
 5. manter todo resultado preso a hashes e nunca promover um `PASS` alem do que
    o gate realmente mediu.
+
+## 10. Opcoes desativadas: codigo ausente ou apenas configuracao?
+
+Foi feita uma leitura direta da arvore de fonte fixada no commit
+`e1ea0289c329945af9422e58256a37f7603fa098`, usado pelo ambiente Docker. A
+conclusao e objetiva: as funcoes abaixo possuem codigo fonte na arvore. Elas nao
+correspondem a arquivos `.ko` ausentes que poderiam ser adicionados ao boot
+stock; sao opcoes `bool` integradas ao `Image` do kernel.
+
+| Recurso | Codigo presente | Estado no NX809J stock | Pode ser ativado no AArch64? | Forma correta |
+|---|---|---|---|---|
+| Function tracer / dynamic ftrace | `kernel/trace/ftrace.c` | `FUNCTION_TRACER=n` | Sim | novo `Image`; `olddefconfig` resolve function graph e dynamic ftrace |
+| Dynamic debug | `lib/dynamic_debug.c` | `DYNAMIC_DEBUG=n`, `DYNAMIC_DEBUG_CORE=y` | Sim | novo `Image`; `CORE` nao cria callsites ausentes no stock |
+| Persistent ftrace | `fs/pstore/ftrace.c` | `PSTORE_FTRACE=n` | Sim, apos function tracer | novo `Image` e ramoops valido no DT/boot |
+| KCOV | `kernel/kcov.c` | `KCOV=n` | Sim | novo `Image` integralmente instrumentado |
+| Lockdep | `kernel/locking/lockdep.c` | `PROVE_LOCKING=n` | Sim | habilitar a opcao publica `PROVE_LOCKING`, nao `LOCKDEP` oculto |
+| Fault injection | `lib/fault-inject.c` | `FAULT_INJECTION=n` | Sim | novo `Image` e apenas os subrecursos necessarios |
+| KGDB | `kernel/debug/debug_core.c` | `KGDB=n` | Codigo sim; transporte precisa ser comprovado | novo `Image` mais transporte seguro para a placa |
+| mmiotrace | `arch/x86/mm/kmmio.c` | indisponivel | Nao | `HAVE_MMIOTRACE_SUPPORT` esta ausente em arm64; nao forcar |
+
+As dependencias para os sete primeiros ja existem no snapshot: `DEBUG_KERNEL`,
+`DEBUG_FS`, `PROC_FS`, `HAVE_FUNCTION_TRACER`, `HAVE_DYNAMIC_FTRACE`,
+`ARCH_HAS_KCOV`, `CC_HAS_SANCOV_TRACE_PC`, `LOCK_DEBUGGING_SUPPORT`,
+`HAVE_FUNCTION_ERROR_INJECTION`, `KPROBES` e `HAVE_ARCH_KGDB` estao ativos.
+Isso mostra que foram escolhas de configuracao, nao uma falta de fonte ou de
+suporte basico de arquitetura.
+
+`mmiotrace` e a excecao. Alem de o `CONFIG_MMIOTRACE` depender de
+`HAVE_MMIOTRACE_SUPPORT`, a documentacao do kernel 6.12 limita o mecanismo a
+x86/x86_64. Ele nao se torna seguro no Snapdragon/AArch64 por forcar um simbolo
+na `.config`. Fonte: [mmiotrace no Linux 6.12](https://docs.kernel.org/6.12/trace/mmiotrace.html).
+
+O relatorio gerado agora mostra esses arquivos, a forma de entrega e a acao de
+ativacao:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\audit_userdebug_observability.py --write
+python .\workspace_tools\reconstruction_pipeline\audit_userdebug_observability.py --check
+```
+
+## 11. Clang 19, Clang 20 e AnyKernel
+
+### 11.1 O que esta fixado hoje
+
+O stock e toda a evidencia de candidato atual usam Android Clang `r536225`,
+LLVM `19.0.1`. A configuracao extraida registra tambem:
+
+```text
+CONFIG_CLANG_VERSION=190001
+CONFIG_AS_VERSION=190001
+CONFIG_LTO_NONE=y
+CONFIG_CFI_CLANG=y
+CONFIG_CFI_ICALL_NORMALIZE_INTEGERS=y
+CONFIG_SHADOW_CALL_STACK=y
+CONFIG_MODVERSIONS=y
+CONFIG_MODULE_SIG_ALL=y
+```
+
+Esses valores explicam por que substituir o compilador no mesmo ambiente seria
+uma mudanca de alvo, nao uma atualizacao neutra.
+
+O Linux 6.12 suporta compilacao LLVM e lista Clang/LLVM 13.0.1 como minimo. Em
+termos de capacidade generica, Clang 20 pode compilar kernel 6.12. O AOSP tambem
+publica `clang-r536225` e `clang-r547379`; este ultimo se identifica como
+Clang 20.0.0. Isso nao significa equivalencia binaria nem compatibilidade
+automatica com o kernel stock do NX809J.
+
+Fontes: [build LLVM do Linux 6.12](https://docs.kernel.org/6.12/kbuild/llvm.html),
+[requisitos minimos do Linux 6.12](https://docs.kernel.org/6.12/process/changes.html),
+[prebuilts Android da linha main-kernel-2025](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/refs/heads/main-kernel-2025/) e
+[identidade oficial do r547379](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/refs/heads/main-kernel-2025/clang-r547379/AndroidVersion.txt).
+
+### 11.2 AnyKernel nao exige compilador
+
+O AnyKernel3 oficial recebe o produto ja compilado, por exemplo `Image.gz-dtb`,
+na raiz do ZIP e o aplica/reempacota para o aparelho. Ele nao compila fonte C,
+nao escolhe Clang e nao conhece a versao do compilador. Portanto, AnyKernel3
+pode empacotar uma imagem gerada pelo Clang 19 fixado.
+
+Nao existe arquivo ou diretorio AnyKernel na arvore fonte local auditada. Se um
+processo seu exige Clang 20, ele e um wrapper de build ou release externo ao
+AnyKernel3 e deve ser identificado separadamente, com script e hash.
+
+Fonte: [README oficial do AnyKernel3](https://github.com/osm0sis/AnyKernel3).
+
+### 11.3 Onde Clang 20 influencia a reconstrucao
+
+| Superficie | Consequencia de Clang 19 -> 20 | Regra |
+|---|---|---|
+| Fonte, Ghidra, Assembly e P-Code stock | nenhuma | continuam vinculados ao `.ko` stock, nao ao compilador novo |
+| Layout C e headers | pode revelar warnings ou mudancas de ABI | repetir `static_assert`, `offsetof`, Sparse e probes |
+| Codigo gerado, inlining e ordem de secoes | muda legitimamente | nunca usar igualdade byte a byte com o stock como criterio |
+| KCFI | risco critico de type IDs ou instrumentacao divergentes | repetir comparacao KCFI para toda superficie indireta |
+| Modversions/KMI | CRCs dependem do `Module.symvers` e da configuracao alvo | rebuild e comparar imports, namespaces e CRCs |
+| Assinatura de modulos | novo kernel pode ter outra chave e politica | registrar chave, assinatura e resultado do loader |
+| Relatorios anteriores | candidato hash muda | invalidar build, KCFI, ABI, paridade e harnesses dependentes; manter somente evidencia stock |
+
+KCFI existe especificamente para validar chamadas por ponteiro de funcao em
+software de baixo nivel. A documentacao nao promete compatibilidade de type IDs
+entre releases de compilador. Por isso nao se deve inferir que Clang 20 podera
+substituir Clang 19 em um modulo destinado ao kernel 19 sem compilar e comparar
+o artefato real. Fonte: [KCFI no Clang](https://clang.llvm.org/docs/ControlFlowIntegrity.html#fsanitize-kcfi).
+
+### 11.4 Politica obrigatoria de dois perfis
+
+Manter dois alvos separados:
+
+| Perfil | Compilador | `.config` | Uso permitido |
+|---|---|---|---|
+| `parity-clang19` | `clang-r536225` fixado | snapshot stock sem alteracao | reconstruir, comparar e testar candidatos destinados ao kernel stock/custom atual |
+| `observability-lab-clang20` | Clang 20 fixado por nome, commit e SHA-256 | fragmento de laboratorio | tracing, KCOV, lockdep, fault injection e experimentos descartaveis |
+
+O perfil de laboratorio recebe seu proprio `environment.lock`, `.config`,
+`Module.symvers`, chave de modulo, diretorio de saida e relatorios. Nenhum
+artefato dele pode substituir silenciosamente o candidato do perfil de paridade.
+
+No script atual, trocar apenas `CLANG_VERSION` nao basta: `bootstrap.sh` tambem
+fixa `CLANG_REPO_COMMIT` e sincroniza exatamente o diretorio selecionado. Um
+perfil Clang 20 so pode existir depois de registrar um commit de prebuilt que
+contenha `clang-r547379` e sua identidade completa. Nao usar uma branch movel.
+
+### 11.5 Conjunto recomendado para o laboratorio
+
+Ativar por etapas, nunca todas de uma vez:
+
+```text
+# Etapa A: observacao de baixo impacto relativo
+CONFIG_FUNCTION_TRACER=y
+CONFIG_PSTORE_FTRACE=y
+CONFIG_DYNAMIC_DEBUG=y
+
+# Etapa B: validacao de erro e concorrencia; imagem descartavel
+CONFIG_KCOV=y
+CONFIG_KCOV_ENABLE_COMPARISONS=y
+CONFIG_PROVE_LOCKING=y
+CONFIG_FAULT_INJECTION=y
+CONFIG_FAULT_INJECTION_DEBUG_FS=y
+CONFIG_FAILSLAB=y
+CONFIG_FAIL_PAGE_ALLOC=y
+CONFIG_FUNCTION_ERROR_INJECTION=y
+CONFIG_FAIL_FUNCTION=y
+```
+
+Executar `olddefconfig` depois do fragmento e registrar o resultado; opcoes
+ocultas como `LOCKDEP` sao selecionadas por Kconfig. `CONFIG_KGDB=y` fica fora
+da primeira imagem de laboratorio ate que um transporte seguro da placa seja
+provado. `CONFIG_MMIOTRACE` fica permanentemente fora do perfil arm64.
+
+Cada etapa modifica tamanho, memoria, timing e caminhos de erro. Ela aumenta
+fortemente nossa capacidade de observar e validar a reconstrucao, mas nao
+melhora por si so a fidelidade do C reconstruido. A fonte de verdade continua
+sendo o stock; o laboratorio e um oraculo auxiliar de comportamento.
+
+## 12. Recomendacao
+
+Nao trocar o perfil atual para Clang 20 e nao habilitar essas opcoes no kernel de
+paridade. A decisao correta e preservar Clang 19 e a `.config` stock para todo
+candidato que pretenda carregar no kernel equivalente ao stock, e criar depois
+um perfil Clang 20 isolado para instrumentacao.
+
+Isso nos da as capacidades extras sem contaminar a reconstrucao: quando um
+resultado do laboratorio apontar um erro, ele volta para a esteira de paridade e
+e confirmado novamente com Clang 19, KCFI, KMI e os hashes do alvo correto.

@@ -170,6 +170,23 @@ SHA-256: `30d08440e1e926507c2d2d2d9cec5d6f5b84fd3286f917447cc79b4b93a10582`
 - Uso: Rastrear acessos MMIO em arquiteturas suportadas.
 - Gate de runtime: O mecanismo oficial nao oferece suporte a AArch64.
 
+## Codigo presente e forma de ativacao
+
+Estas entradas descrevem codigo presente na arvore fixada. Elas nao sao
+modulos `.ko` que possam ser carregados no boot stock; a ativacao exige
+recompilar o `Image` do perfil de laboratorio.
+
+| Capacidade | Forma | Arquivos de origem | Acao |
+|---|---|---|---|
+| ftrace de funcoes/function graph | `kernel_builtin` | `kernel/trace/ftrace.c` | Habilitar CONFIG_FUNCTION_TRACER e recompilar o Image; function graph e dynamic ftrace sao resolvidos por olddefconfig. |
+| dynamic debug para pr_debug/dev_dbg | `kernel_builtin` | `lib/dynamic_debug.c` | Habilitar CONFIG_DYNAMIC_DEBUG e recompilar o Image. CONFIG_DYNAMIC_DEBUG_CORE sozinho so atende modulos preparados e nao cria callsites ausentes no stock. |
+| ftrace persistente em ramoops | `kernel_builtin` | `fs/pstore/ftrace.c`, `kernel/trace/ftrace.c` | Habilitar primeiro CONFIG_FUNCTION_TRACER, depois CONFIG_PSTORE_FTRACE; recompilar o Image e fornecer uma reserva ramoops valida. |
+| KCOV para fuzzing guiado por cobertura | `kernel_builtin` | `kernel/kcov.c` | Habilitar CONFIG_KCOV e recompilar todo o kernel de laboratorio para instrumentar por cobertura o codigo desejado. |
+| Lockdep/PROVE_LOCKING | `kernel_builtin` | `kernel/locking/lockdep.c` | Habilitar CONFIG_PROVE_LOCKING, nao o simbolo oculto CONFIG_LOCKDEP diretamente, e recompilar o Image. |
+| Infraestrutura de fault injection | `kernel_builtin` | `lib/fault-inject.c` | Habilitar CONFIG_FAULT_INJECTION e somente os subrecursos necessarios; recompilar o Image antes de usar controles debugfs em sessao descartavel. |
+| KGDB/KDB | `kernel_builtin` | `kernel/debug/debug_core.c` | Habilitar CONFIG_KGDB e um transporte auditado para a placa, depois recompilar o Image. Uma opcao de compilador nao fornece transporte utilizavel. |
+| mmiotrace generico | `kernel_builtin_arch_specific` | `arch/x86/mm/kmmio.c`, `arch/x86/mm/mmio-mod.c` | Nao forcar esta opcao em arm64. CONFIG_HAVE_MMIOTRACE_SUPPORT esta ausente no NX809J, portanto Kconfig normal nao consegue habilita-la. |
+
 ## Leitura correta
 
 - `CONFIGURED` significa que os simbolos de configuracao exigidos estao ativos.

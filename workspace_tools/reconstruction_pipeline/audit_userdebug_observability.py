@@ -236,6 +236,52 @@ CAPABILITIES: tuple[dict[str, Any], ...] = (
     },
 )
 
+# These paths are relative to kernel_platform/common in the pinned source tree.
+# They document delivery form, not runtime availability. The configuration audit
+# remains deliberately device-free.
+IMPLEMENTATION_DETAILS: dict[str, dict[str, Any]] = {
+    "function_tracing": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("kernel/trace/ftrace.c",),
+        "activation": "Habilitar CONFIG_FUNCTION_TRACER e recompilar o Image; function graph e dynamic ftrace sao resolvidos por olddefconfig.",
+    },
+    "dynamic_debug": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("lib/dynamic_debug.c",),
+        "activation": "Habilitar CONFIG_DYNAMIC_DEBUG e recompilar o Image. CONFIG_DYNAMIC_DEBUG_CORE sozinho so atende modulos preparados e nao cria callsites ausentes no stock.",
+    },
+    "persistent_ftrace": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("fs/pstore/ftrace.c", "kernel/trace/ftrace.c"),
+        "activation": "Habilitar primeiro CONFIG_FUNCTION_TRACER, depois CONFIG_PSTORE_FTRACE; recompilar o Image e fornecer uma reserva ramoops valida.",
+    },
+    "kcov": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("kernel/kcov.c",),
+        "activation": "Habilitar CONFIG_KCOV e recompilar todo o kernel de laboratorio para instrumentar por cobertura o codigo desejado.",
+    },
+    "lockdep": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("kernel/locking/lockdep.c",),
+        "activation": "Habilitar CONFIG_PROVE_LOCKING, nao o simbolo oculto CONFIG_LOCKDEP diretamente, e recompilar o Image.",
+    },
+    "fault_injection": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("lib/fault-inject.c",),
+        "activation": "Habilitar CONFIG_FAULT_INJECTION e somente os subrecursos necessarios; recompilar o Image antes de usar controles debugfs em sessao descartavel.",
+    },
+    "kgdb": {
+        "delivery": "kernel_builtin",
+        "source_paths": ("kernel/debug/debug_core.c",),
+        "activation": "Habilitar CONFIG_KGDB e um transporte auditado para a placa, depois recompilar o Image. Uma opcao de compilador nao fornece transporte utilizavel.",
+    },
+    "mmiotrace": {
+        "delivery": "kernel_builtin_arch_specific",
+        "source_paths": ("arch/x86/mm/kmmio.c", "arch/x86/mm/mmio-mod.c"),
+        "activation": "Nao forcar esta opcao em arm64. CONFIG_HAVE_MMIOTRACE_SUPPORT esta ausente no NX809J, portanto Kconfig normal nao consegue habilita-la.",
+    },
+}
+
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -315,7 +361,7 @@ def evaluate_capability(
         status = "PARTIAL"
     else:
         status = "NOT_CONFIGURED"
-    return {
+    result = {
         "configured_requirements": configured,
         "id": capability["id"],
         "intrusiveness": capability["intrusiveness"],
@@ -327,6 +373,10 @@ def evaluate_capability(
         "status": status,
         "use": capability["use"],
     }
+    implementation = IMPLEMENTATION_DETAILS.get(capability["id"])
+    if implementation:
+        result["implementation"] = implementation
+    return result
 
 
 def build_report(repo: Path, config_path: Path, lock_path: Path) -> dict[str, Any]:
@@ -417,8 +467,33 @@ def markdown_text(report: dict[str, Any]) -> str:
                 "",
             )
         )
+    disabled = [
+        item
+        for item in report["capabilities"]
+        if item["id"] in IMPLEMENTATION_DETAILS
+    ]
     lines.extend(
         (
+            "## Codigo presente e forma de ativacao",
+            "",
+            "Estas entradas descrevem codigo presente na arvore fixada. Elas nao sao",
+            "modulos `.ko` que possam ser carregados no boot stock; a ativacao exige",
+            "recompilar o `Image` do perfil de laboratorio.",
+            "",
+            "| Capacidade | Forma | Arquivos de origem | Acao |",
+            "|---|---|---|---|",
+        )
+    )
+    for item in disabled:
+        implementation = item["implementation"]
+        sources = ", ".join(f"`{path}`" for path in implementation["source_paths"])
+        lines.append(
+            f"| {item['name']} | `{implementation['delivery']}` | {sources} | "
+            f"{implementation['activation']} |"
+        )
+    lines.extend(
+        (
+            "",
             "## Leitura correta",
             "",
             "- `CONFIGURED` significa que os simbolos de configuracao exigidos estao ativos.",

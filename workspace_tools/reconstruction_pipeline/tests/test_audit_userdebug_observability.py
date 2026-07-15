@@ -77,6 +77,9 @@ class UserdebugObservabilityTests(unittest.TestCase):
         self.assertEqual(capabilities["function_tracing"]["status"], "PARTIAL")
         self.assertEqual(capabilities["kunit"]["status"], "CONFIGURED_AS_MODULE")
         self.assertEqual(
+            capabilities["kcov"]["implementation"]["delivery"], "kernel_builtin"
+        )
+        self.assertEqual(
             capabilities["mmiotrace"]["status"], "UNSUPPORTED_ARCHITECTURE"
         )
 
