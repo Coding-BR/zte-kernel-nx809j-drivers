@@ -398,6 +398,23 @@ identidades e falha se qualquer camada nao estiver em relacao 1:1. O contrato
 completo esta em
 `reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md`.
 
+### 6.8 Auditar observabilidade da ROM userdebug
+
+Antes de planejar qualquer trace dinamico, derive as tecnicas realmente
+compiladas no kernel fixado. Nao trate `userdebug` ou root como prova de que um
+recurso do kernel existe:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\audit_userdebug_observability.py --write
+python .\workspace_tools\reconstruction_pipeline\audit_userdebug_observability.py --check
+```
+
+O relatorio separa suporte na `.config` de disponibilidade em runtime. SELinux,
+BPF LSM, mounts, parametros de boot, politica de assinatura e o proprio artefato
+continuam sendo gates independentes. O metodo e as limitacoes estao documentados
+em
+`reverse_engineering/docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md`.
+
 ## 7. Regra de invalidacao
 
 Uma alteracao invalida automaticamente as evidencias dependentes:
@@ -407,7 +424,7 @@ Uma alteracao invalida automaticamente as evidencias dependentes:
 | Fonte C/header/Makefile | O6 a O10 |
 | Assinatura ou callback | O5 a O10, incluindo KCFI |
 | Layout/offset/lock | O5 a O10 |
-| `.config`, Clang, Docker ou `Module.symvers` | O8 a O10 |
+| `.config`, Clang, Docker ou `Module.symvers` | auditoria de observabilidade, O8 a O10 |
 | `.ko` stock ou run de aquisicao | todos os gates |
 | Script Ghidra ou versao do Ghidra | O3 a O10 |
 | Pseudocodigo, P-Code, Assembly ou indice de decomposicao | O2, O3 e O5 a O10 |

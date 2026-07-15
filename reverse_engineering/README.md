@@ -12,6 +12,7 @@ Este diretório armazena o ecossistema de análise estática e engenharia revers
   - `zte_stats_info`: Monitoramento e telemetria.
 - **`tools/`**: Ferramentas em Python para rodar e gerenciar o fluxo do Ghidra (`ghidra_runner.py`), realizar parsing e mapear offsets.
 - **`docs/`**: Documentação técnica da metodologia e instruções para o pipeline de análise.
+- **`docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md`**: pesquisa oficial, matriz de observabilidade userdebug e melhorias priorizadas.
 
 ## 🚀 Como Executar a Análise
 

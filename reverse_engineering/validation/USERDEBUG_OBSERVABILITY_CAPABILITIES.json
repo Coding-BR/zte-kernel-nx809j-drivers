@@ -1,0 +1,440 @@
+{
+  "architecture": "arm64",
+  "capabilities": [
+    {
+      "configured_requirements": [
+        "CONFIG_IKCONFIG",
+        "CONFIG_IKCONFIG_PROC"
+      ],
+      "id": "runtime_config_identity",
+      "intrusiveness": "read_only",
+      "missing_requirements": [],
+      "name": "Identidade da configuracao em /proc/config.gz",
+      "observed": {
+        "CONFIG_IKCONFIG": "y",
+        "CONFIG_IKCONFIG_PROC": "y"
+      },
+      "optional": {},
+      "runtime_gate": "O arquivo /proc/config.gz precisa existir e ser legivel.",
+      "status": "CONFIGURED",
+      "use": "Comparar a configuracao em execucao com o snapshot fixado."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_DEBUG_FS"
+      ],
+      "id": "debugfs",
+      "intrusiveness": "read_only_until_controls_are_written",
+      "missing_requirements": [],
+      "name": "debugfs",
+      "observed": {
+        "CONFIG_DEBUG_FS": "y"
+      },
+      "optional": {
+        "CONFIG_DEBUG_FS_ALLOW_ALL": "y"
+      },
+      "runtime_gate": "debugfs precisa estar montado e permitido por SELinux.",
+      "status": "CONFIGURED",
+      "use": "Acessar interfaces de diagnostico disponibilizadas pelo kernel."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_TRACING",
+        "CONFIG_TRACEPOINTS"
+      ],
+      "id": "trace_events",
+      "intrusiveness": "low",
+      "missing_requirements": [],
+      "name": "tracefs e tracepoints",
+      "observed": {
+        "CONFIG_TRACEPOINTS": "y",
+        "CONFIG_TRACING": "y"
+      },
+      "optional": {},
+      "runtime_gate": "tracefs precisa estar montado e os eventos relevantes precisam existir.",
+      "status": "CONFIGURED",
+      "use": "Capturar eventos estaticos, latencia e sequencias de subsistemas."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_FTRACE"
+      ],
+      "id": "function_tracing",
+      "intrusiveness": "medium",
+      "missing_requirements": [
+        "CONFIG_FUNCTION_TRACER",
+        "CONFIG_DYNAMIC_FTRACE"
+      ],
+      "name": "ftrace de funcoes/function graph",
+      "observed": {
+        "CONFIG_DYNAMIC_FTRACE": "absent",
+        "CONFIG_FTRACE": "y",
+        "CONFIG_FUNCTION_TRACER": "n"
+      },
+      "optional": {},
+      "runtime_gate": "As funcoes precisam aparecer em available_filter_functions.",
+      "status": "PARTIAL",
+      "use": "Comparar grafos temporais de chamadas entre stock e candidato."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_KPROBES",
+        "CONFIG_KRETPROBES",
+        "CONFIG_KPROBE_EVENTS"
+      ],
+      "id": "kprobe_events",
+      "intrusiveness": "medium",
+      "missing_requirements": [],
+      "name": "Kprobes e kretprobes",
+      "observed": {
+        "CONFIG_KPROBES": "y",
+        "CONFIG_KPROBE_EVENTS": "y",
+        "CONFIG_KRETPROBES": "y"
+      },
+      "optional": {},
+      "runtime_gate": "O simbolo nao pode estar em blacklist e deve ser resolvivel no kernel em execucao.",
+      "status": "CONFIGURED",
+      "use": "Observar argumentos, retornos e ordem de chamadas em pontos selecionados."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_BPF",
+        "CONFIG_BPF_SYSCALL",
+        "CONFIG_BPF_JIT",
+        "CONFIG_BPF_EVENTS",
+        "CONFIG_DEBUG_INFO_BTF"
+      ],
+      "id": "bpf_btf_tracing",
+      "intrusiveness": "medium",
+      "missing_requirements": [],
+      "name": "BPF com BTF para tracing tipado",
+      "observed": {
+        "CONFIG_BPF": "y",
+        "CONFIG_BPF_EVENTS": "y",
+        "CONFIG_BPF_JIT": "y",
+        "CONFIG_BPF_SYSCALL": "y",
+        "CONFIG_DEBUG_INFO_BTF": "y"
+      },
+      "optional": {
+        "CONFIG_BPF_JIT_ALWAYS_ON": "y",
+        "CONFIG_DEBUG_INFO_BTF_MODULES": "y"
+      },
+      "runtime_gate": "BPF LSM, SELinux, lockdown, token/capabilities e tipos BTF expostos ainda podem bloquear a carga.",
+      "status": "CONFIGURED",
+      "use": "Construir probes tipados e comparar contratos observaveis com menor acoplamento a offsets."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_DEBUG_INFO_BTF",
+        "CONFIG_DEBUG_INFO_BTF_MODULES"
+      ],
+      "id": "module_btf",
+      "intrusiveness": "read_only",
+      "missing_requirements": [],
+      "name": "BTF de modulos",
+      "observed": {
+        "CONFIG_DEBUG_INFO_BTF": "y",
+        "CONFIG_DEBUG_INFO_BTF_MODULES": "y"
+      },
+      "optional": {},
+      "runtime_gate": "Cada .ko deve ser inspecionado; a configuracao nao garante que o artefato stock reteve a secao.",
+      "status": "CONFIGURED",
+      "use": "Recuperar tipos preservados nos modulos que efetivamente contenham .BTF."
+    },
+    {
+      "configured_requirements": [],
+      "id": "dynamic_debug",
+      "intrusiveness": "low",
+      "missing_requirements": [
+        "CONFIG_DYNAMIC_DEBUG"
+      ],
+      "name": "dynamic debug para pr_debug/dev_dbg",
+      "observed": {
+        "CONFIG_DYNAMIC_DEBUG": "n"
+      },
+      "optional": {
+        "CONFIG_DYNAMIC_DEBUG_CORE": "y"
+      },
+      "runtime_gate": "/proc/dynamic_debug/control precisa existir e conter os callsites desejados.",
+      "status": "PARTIAL",
+      "use": "Ativar callsites de debug ja compilados sem reconstruir o modulo."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_PERF_EVENTS",
+        "CONFIG_TRACEPOINTS"
+      ],
+      "id": "perf_tracepoints",
+      "intrusiveness": "low",
+      "missing_requirements": [],
+      "name": "perf sobre tracepoints",
+      "observed": {
+        "CONFIG_PERF_EVENTS": "y",
+        "CONFIG_TRACEPOINTS": "y"
+      },
+      "optional": {},
+      "runtime_gate": "perf_event_paranoid e SELinux precisam permitir a coleta.",
+      "status": "CONFIGURED",
+      "use": "Medir frequencia, latencia e correlacao de eventos sem alterar o driver."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_KALLSYMS",
+        "CONFIG_KALLSYMS_ALL"
+      ],
+      "id": "kallsyms",
+      "intrusiveness": "read_only",
+      "missing_requirements": [],
+      "name": "kallsyms completo",
+      "observed": {
+        "CONFIG_KALLSYMS": "y",
+        "CONFIG_KALLSYMS_ALL": "y"
+      },
+      "optional": {},
+      "runtime_gate": "kptr_restrict e as credenciais do processo controlam a visibilidade de enderecos.",
+      "status": "CONFIGURED",
+      "use": "Resolver enderecos e nomes para correlacao de traces e panics."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_PSTORE",
+        "CONFIG_PSTORE_RAM"
+      ],
+      "id": "pstore_ramoops",
+      "intrusiveness": "read_only_for_collection",
+      "missing_requirements": [],
+      "name": "pstore/ramoops",
+      "observed": {
+        "CONFIG_PSTORE": "y",
+        "CONFIG_PSTORE_RAM": "y"
+      },
+      "optional": {
+        "CONFIG_PSTORE_CONSOLE": "y",
+        "CONFIG_PSTORE_PMSG": "y"
+      },
+      "runtime_gate": "O Device Tree precisa reservar uma regiao ramoops e pstore precisa estar montado.",
+      "status": "CONFIGURED",
+      "use": "Preservar Oops, panic e console atraves de reinicializacao."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_PSTORE",
+        "CONFIG_PSTORE_RAM"
+      ],
+      "id": "persistent_ftrace",
+      "intrusiveness": "medium",
+      "missing_requirements": [
+        "CONFIG_PSTORE_FTRACE",
+        "CONFIG_FUNCTION_TRACER"
+      ],
+      "name": "ftrace persistente em ramoops",
+      "observed": {
+        "CONFIG_FUNCTION_TRACER": "n",
+        "CONFIG_PSTORE": "y",
+        "CONFIG_PSTORE_FTRACE": "absent",
+        "CONFIG_PSTORE_RAM": "y"
+      },
+      "optional": {},
+      "runtime_gate": "Requer regiao ramoops e configuracao de tracing persistente.",
+      "status": "PARTIAL",
+      "use": "Preservar uma trilha de chamadas anterior a um hang ou reset."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_KASAN",
+        "CONFIG_KASAN_HW_TAGS"
+      ],
+      "id": "kasan_hw_tags",
+      "intrusiveness": "high",
+      "missing_requirements": [],
+      "name": "KASAN HW_TAGS",
+      "observed": {
+        "CONFIG_KASAN": "y",
+        "CONFIG_KASAN_HW_TAGS": "y"
+      },
+      "optional": {
+        "CONFIG_KASAN_VMALLOC": "y"
+      },
+      "runtime_gate": "O modo de boot, o hardware MTE e os parametros kasan precisam ativa-lo de fato.",
+      "status": "CONFIGURED",
+      "use": "Detectar acessos fora de limites e use-after-free no AArch64 com MTE."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_UBSAN"
+      ],
+      "id": "ubsan",
+      "intrusiveness": "medium",
+      "missing_requirements": [],
+      "name": "UBSAN",
+      "observed": {
+        "CONFIG_UBSAN": "y"
+      },
+      "optional": {
+        "CONFIG_UBSAN_BOUNDS": "y",
+        "CONFIG_UBSAN_TRAP": "y"
+      },
+      "runtime_gate": "Somente codigo compilado com a instrumentacao aplicavel e coberto pelo estimulo sera observado.",
+      "status": "CONFIGURED",
+      "use": "Detectar comportamento indefinido instrumentado pelo compilador."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_KUNIT"
+      ],
+      "id": "kunit",
+      "intrusiveness": "medium",
+      "missing_requirements": [],
+      "name": "KUnit",
+      "observed": {
+        "CONFIG_KUNIT": "m"
+      },
+      "optional": {
+        "CONFIG_KUNIT_DEBUGFS": "y"
+      },
+      "runtime_gate": "A suite reconstruida precisa compilar e o modulo KUnit precisa poder ser carregado.",
+      "status": "CONFIGURED_AS_MODULE",
+      "use": "Executar testes atomicos de logica e contratos dentro do kernel."
+    },
+    {
+      "configured_requirements": [],
+      "id": "kcov",
+      "intrusiveness": "high",
+      "missing_requirements": [
+        "CONFIG_KCOV"
+      ],
+      "name": "KCOV para fuzzing guiado por cobertura",
+      "observed": {
+        "CONFIG_KCOV": "n"
+      },
+      "optional": {},
+      "runtime_gate": "debugfs e a interface alvo precisam estar disponiveis no ambiente isolado.",
+      "status": "NOT_CONFIGURED",
+      "use": "Medir cobertura de interfaces durante fuzzing direcionado."
+    },
+    {
+      "configured_requirements": [],
+      "id": "lockdep",
+      "intrusiveness": "high",
+      "missing_requirements": [
+        "CONFIG_PROVE_LOCKING"
+      ],
+      "name": "Lockdep/PROVE_LOCKING",
+      "observed": {
+        "CONFIG_PROVE_LOCKING": "n"
+      },
+      "optional": {},
+      "runtime_gate": "O candidato e suas dependencias precisam executar os caminhos concorrentes relevantes.",
+      "status": "NOT_CONFIGURED",
+      "use": "Detectar inversoes de lock e dependencias de travamento."
+    },
+    {
+      "configured_requirements": [],
+      "id": "fault_injection",
+      "intrusiveness": "high",
+      "missing_requirements": [
+        "CONFIG_FAULT_INJECTION"
+      ],
+      "name": "Infraestrutura de fault injection",
+      "observed": {
+        "CONFIG_FAULT_INJECTION": "n"
+      },
+      "optional": {},
+      "runtime_gate": "O ponto deve suportar a classe de falha e o teste deve rodar fora do aparelho de uso diario.",
+      "status": "NOT_CONFIGURED",
+      "use": "Forcar falhas de alocacao e retornos de erro para validar rollback."
+    },
+    {
+      "configured_requirements": [],
+      "id": "kgdb",
+      "intrusiveness": "high",
+      "missing_requirements": [
+        "CONFIG_KGDB"
+      ],
+      "name": "KGDB/KDB",
+      "observed": {
+        "CONFIG_KGDB": "n"
+      },
+      "optional": {},
+      "runtime_gate": "Requer transporte, console e configuracao de boot compativeis.",
+      "status": "NOT_CONFIGURED",
+      "use": "Depurar o kernel em nivel de registradores com transporte apropriado."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_CFI_CLANG",
+        "CONFIG_CFI_PERMISSIVE"
+      ],
+      "id": "kcfi",
+      "intrusiveness": "enforcement",
+      "missing_requirements": [],
+      "name": "KCFI estrito",
+      "observed": {
+        "CONFIG_CFI_CLANG": "y",
+        "CONFIG_CFI_PERMISSIVE": "n"
+      },
+      "optional": {},
+      "runtime_gate": "O candidato deve ser compilado com o mesmo contrato KCFI e type IDs compativeis.",
+      "status": "CONFIGURED",
+      "use": "Forcar compatibilidade exata das assinaturas de callbacks indiretos."
+    },
+    {
+      "configured_requirements": [
+        "CONFIG_MODULE_SIG"
+      ],
+      "id": "module_signature_policy",
+      "intrusiveness": "enforcement",
+      "missing_requirements": [],
+      "name": "Assinatura e politica vendor de modulos",
+      "observed": {
+        "CONFIG_MODULE_SIG": "y"
+      },
+      "optional": {
+        "CONFIG_MODULE_SIG_FORCE": "n",
+        "CONFIG_MODULE_SIG_PROTECT": "y"
+      },
+      "runtime_gate": "Verificar chaves aceitas, lista protegida, assinatura do .ko e logs do loader.",
+      "status": "CONFIGURED",
+      "use": "Explicar rejeicoes de carga que root, isoladamente, nao remove."
+    },
+    {
+      "configured_requirements": [],
+      "id": "mmiotrace",
+      "intrusiveness": "unsupported_on_target",
+      "missing_requirements": [
+        "CONFIG_MMIOTRACE"
+      ],
+      "name": "mmiotrace generico",
+      "observed": {
+        "CONFIG_MMIOTRACE": "absent"
+      },
+      "optional": {},
+      "runtime_gate": "O mecanismo oficial nao oferece suporte a AArch64.",
+      "status": "UNSUPPORTED_ARCHITECTURE",
+      "use": "Rastrear acessos MMIO em arquiteturas suportadas."
+    }
+  ],
+  "claims": {
+    "device_accessed": false,
+    "runtime_availability": "NOT_PROVEN",
+    "static_config_support_only": true,
+    "userdebug_policy_bypass": "NOT_ASSUMED"
+  },
+  "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+  "schema_version": "1.0",
+  "source": {
+    "config_path": "reproducible_environment/inputs/nx809j_kernel.config",
+    "config_sha256": "30d08440e1e926507c2d2d2d9cec5d6f5b84fd3286f917447cc79b4b93a10582",
+    "environment_lock_path": "reproducible_environment/environment.lock.json",
+    "environment_lock_sha256": "53f19fd060fc20f9fedb6c712c5785a2d0d2b48b787ccf1af3434323ff111026",
+    "locked_config_sha256": "30d08440e1e926507c2d2d2d9cec5d6f5b84fd3286f917447cc79b4b93a10582"
+  },
+  "status": "PASS",
+  "summary": {
+    "CONFIGURED": 13,
+    "CONFIGURED_AS_MODULE": 1,
+    "NOT_CONFIGURED": 4,
+    "PARTIAL": 3,
+    "UNSUPPORTED_ARCHITECTURE": 1
+  }
+}

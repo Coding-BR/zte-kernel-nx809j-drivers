@@ -63,6 +63,7 @@ reconstrução funcional completa. Os candidatos publicados continuam
 - [Requisitos compartilhados e procedimento de setup](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Esteira completa de reconstrução offline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
 - [Decomposição por função: pseudocódigo C, P-Code e Assembly](./reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md)
+- [Tecnicas avancadas e observabilidade real do GKI 6.12/userdebug](./reverse_engineering/docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md)
 - [Dossiê reverso de hardware](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
 
 Validação inicial após o clone:
@@ -70,6 +71,7 @@ Validação inicial após o clone:
 ```powershell
 python .\workspace_tools\reconstruction_pipeline\manage_reference_modules.py verify
 python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py --check
+python .\workspace_tools\reconstruction_pipeline\audit_userdebug_observability.py --check
 python .\reproducible_environment\verify_environment.py --mode static
 ```
 
@@ -159,6 +161,7 @@ applicable gates are demonstrated.
 - [Shared requirements and setup procedure](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Complete offline reconstruction pipeline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
 - [Per-function decomposition: C pseudocode, P-Code, and assembly](./reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md)
+- [Advanced methods and actual GKI 6.12/userdebug observability](./reverse_engineering/docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md)
 - [Reverse hardware dossier](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
 
 Initial validation after cloning:
@@ -166,6 +169,7 @@ Initial validation after cloning:
 ```powershell
 python .\workspace_tools\reconstruction_pipeline\manage_reference_modules.py verify
 python .\workspace_tools\reconstruction_pipeline\validate_module_decomposition.py --check
+python .\workspace_tools\reconstruction_pipeline\audit_userdebug_observability.py --check
 python .\reproducible_environment\verify_environment.py --mode static
 ```
 
