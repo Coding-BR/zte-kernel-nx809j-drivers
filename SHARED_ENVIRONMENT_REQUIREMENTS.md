@@ -1,100 +1,89 @@
-# Requisitos para Novos Desenvolvedores no Projeto
+# Ambiente Compartilhado do NX809J
 
-Como as fontes principais agora estão divididas de forma limpa, aqui está a lista exata do que outros desenvolvedores precisam para clonar, configurar e começar a ajudar na reconstrução e validação dos drivers.
+Este documento define o setup verificavel para novos colaboradores do projeto
+de drivers do **NX809J, REDMAGIC 11 Pro+**.
 
----
+## Resposta objetiva
 
-## 1. O que já está no GitHub (Clonar e Sincronizar)
+Um clone antigo deste repositorio nao recriava o nosso ambiente: os wrappers
+apontavam para pastas Docker ausentes, o kernel seguia a branch `main`, os
+toolchains seguiam revisoes moveis e os `.ko` stock nao eram publicados.
 
-Os outros desenvolvedores precisam clonar **dois repositórios**:
+O pacote atual corrige esses pontos. Um colaborador autorizado recebe:
 
-### Repositório A: Árvore do Kernel
-* **URL:** `https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube`
-* **O que contém:** O código-fonte principal do kernel comum Android GKI com a nossa pasta de drivers `drivers/soc/qcom/zte/zte_ir/` já integrada.
+- os 335 modulos do `vendor_boot`, com listas de dependencia e carga;
+- os 12 modulos stock usados como fonte de verdade;
+- os 12 candidatos atuais, todos explicitamente `INCOMPLETE`;
+- configuracao extraida, Device Tree e `Module.symvers`;
+- commit exato do kernel e commits dos prebuilts Clang/Rust;
+- versao e SHA-256 do Ghidra;
+- Dockerfile, lock de 280 pacotes e verificadores automaticos.
 
-### Repositório B: Workspace de Engenharia Reversa e Drivers
-* **URL:** `https://github.com/Coding-BR/zte-kernel-nx809j-drivers`
-* **O que contém:**
-  * Os códigos `.c` descompilados pelo Ghidra para todos os drivers da ZTE (Fingerprint, LED, Touchscreen, Stats, etc.) em `/reverse_engineering/decompiled_raw/`.
-  * Os scripts utilitários do Ghidra e pipelines de reversão em `/reverse_engineering/tools/`.
-  * A nossa implementação open-source documentada em `/kernel_development/drivers/zte_ir/`.
-  * A infraestrutura Docker e scripts de automação de compilação em `/kernel_development/build_scripts/`.
-  * O arquivo `Module.symvers` de referência.
+Isso torna as entradas estaticas autocontidas. A imagem exata tambem esta no
+GHCR e numa release privada do repositorio, ambas identificadas no lock. O
+Dockerfile permanece como fallback compativel e nao substitui a prova do digest
+ou do SHA-256 do asset.
 
----
+## Requisitos do host
 
-## 2. Necessidade do Ghidra (Depende do Objetivo)
+- Windows 11 com PowerShell 7 ou Linux com adaptacao equivalente;
+- Docker Desktop com containers Linux;
+- Git;
+- Python 3.11 ou mais recente;
+- Java 26 build `26+35-2893` para identidade com o runtime observado. Java 21+
+  pode executar o Ghidra, mas sera classificado apenas como compativel;
+- GitHub CLI apenas para repositorios privados e publicacao de releases.
 
-A necessidade de instalar o **Ghidra** depende do que o outro desenvolvedor for fazer no projeto:
+ADB, fastboot e acesso ao smartphone nao sao exigidos para a etapa offline.
 
-* **NÃO precisa de Ghidra se o objetivo for:**
-  * Apenas recompilar o kernel.
-  * Ajudar a escrever, refatorar ou corrigir o código do driver reconstruído (`zte_ir.c`).
-  * Estudar a lógica dos outros drivers proprietários. 
-  * *Motivo:* Nós já descompilamos os drivers originais e exportamos todos os códigos `.c` brutos diretamente na pasta `/reverse_engineering/decompiled_raw/` do repositório no GitHub. Qualquer editor de texto (como o VS Code) é suficiente para ler e trabalhar nesses arquivos.
-  
-* **PRECISA de Ghidra se o objetivo for:**
-  * Extrair um **novo driver** proprietário (um novo `.ko` que ainda não foi analisado).
-  * Analisar uma nova versão de driver vinda de uma atualização de ROM da ZTE.
-  * Rodar o pipeline de análise estática automática (`run_pipeline.py`).
-  * *Requisitos nesse caso:* JDK 21+ instalado no host e o Ghidra (versão 11.x recomendada).
+## Clonagem
 
----
+```powershell
+git clone https://github.com/Coding-BR/zte-kernel-nx809j-drivers.git
+cd zte-kernel-nx809j-drivers
+python .\reproducible_environment\verify_environment.py --mode static
+```
 
-## 3. O que os Scripts Baixam Automaticamente (Zero Setup)
+O kernel e clonado automaticamente no commit fixado. Nao clone uma branch
+diferente por conta propria para produzir relatorios comparaveis.
 
-Ao rodar o comando inicial de bootstrap (`./kernel_development/build_scripts/bootstrap.ps1`), o script baixa e configura de forma transparente os seguintes pacotes grandes:
+## Instalacao completa
 
-1. **Android Clang Toolchain (r536225):** O compilador oficial LLVM do Google para o Android 16.
-2. **Rust Toolchain (1.82.0):** Compilador necessário para as dependências de Rust integradas ao kernel GKI moderno.
-3. **Android GKI Kernel Prebuilts:** A estrutura do kernel Android GKI necessária para montar e empacotar a build.
+```powershell
+.\reproducible_environment\bootstrap.ps1 -InstallGhidra
+python .\reproducible_environment\verify_environment.py --mode runtime `
+  --ghidra-home .\reproducible_environment\.tools\ghidra_12.1.2_PUBLIC
+```
 
----
+O segundo comando deve terminar com `PASS`. Um `FAIL` invalida a comparacao
+ate a identidade divergente ser corrigida.
 
-## 3. O que os Desenvolvedores precisam obter manualmente (Stock Dumps)
+## Compilacao local
 
-> [!IMPORTANT]  
-> Estes arquivos são específicos da ROM oficial e protegidos por copyright, por isso **não podem** ser incluídos diretamente nos repositórios do GitHub. Eles devem ser extraídos do próprio smartphone ou do pacote de firmware oficial da ZTE (via descompactação do `payload.bin` da ROM oficial):
+```powershell
+.\reproducible_environment\build.ps1 -NoPublishRelease
+```
 
-1. **`stock_boot_current.img` (100.6 MB):**
-   * **O que é:** A partição de boot original de fábrica.
-   * **Como conseguir:**
-     * Extraindo da ROM stock oficial descompactando o `payload.bin`.
-     * Ou via root no aparelho: `su -c dd if=/dev/block/bootdevice/by-name/boot of=/data/local/tmp/stock_boot.img` e puxando via `adb pull`.
-   * **Onde colocar:** Deve ser salvo na raiz da pasta `artifacts/` local com o nome `stock_boot_current.img`.
-2. **`dtb.img` (20.1 MB):**
-   * **O que é:** O bloco de Device Tree Binário do REDMAGIC 11 Pro+ (NX809J).
-   * **Como conseguir:** Extraindo do próprio `stock_boot_current.img` usando ferramentas de descompactação de boot (como `unpack_bootimg` do AOSP).
-   * **Onde colocar:** Deve ser salvo na raiz do repositório local do kernel com o nome `dtb.img`.
+Sem `-NoPublishRelease`, o script usa a autenticacao local do GitHub para
+publicar o resultado no repositorio do kernel. Tokens nunca devem ser gravados
+em URLs de remotes, manifests, logs ou arquivos versionados.
 
----
+## Modulos de referencia
 
-## 🚀 Guia de Setup Rápido para um Novo Colaborador
+Consulte `reference_modules/README.md`. As classes `stock/` e `candidates/`
+devem permanecer separadas. Sempre identifique um modulo por caminho, classe,
+tamanho e SHA-256.
 
-Se você quiser passar as instruções de início rápido para alguém, envie este bloco:
+O snapshot completo existe para reproducao estatica e resolucao de imports. Ele
+nao autoriza carregamento em outro aparelho, e os candidatos nao se tornam
+validados apenas porque podem ser baixados.
 
-1. **Clonar os repositórios:**
-   ```bash
-   # Clone o kernel e mude para a pasta padrão do build container
-   git clone https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git kernel
-   
-   # Clone o workspace de drivers e reversão
-   git clone https://github.com/Coding-BR/zte-kernel-nx809j-drivers.git
-   ```
-2. **Extrair e colocar as dependências proprietárias:**
-   * Coloque a sua imagem stock extraída em `kernel/artifacts/stock_boot_current.img`.
-   * Coloque a Device Tree extraída em `kernel/dtb.img`.
-3. **Iniciar o Docker e Baixar Compiladores:**
-   * Entre no diretório do workspace de drivers e execute:
-     ```powershell
-     ./kernel_development/build_scripts/bootstrap.ps1
-     ```
-4. **Compilar e Testar:**
-   * Compile o kernel:
-     ```powershell
-     ./kernel_development/build_scripts/build.ps1 -NoPublishRelease
-     ```
-   * Reinicie o telefone em bootloader e execute a validação:
-     ```powershell
-     python ./kernel_development/build_scripts/validate_zte_ir.py
-     ```
+## O que continua fora do alcance offline
+
+- resposta eletrica de MMIO, SPI, I2C e GPIO;
+- temporizacao real de IRQ, clocks, regulators e suspend/resume;
+- interacao com firmware de perifero;
+- validacao de boot e rollback no aparelho;
+- equivalencia funcional de 100%.
+
+Esses itens pertencem ao gate de hardware documentado na esteira principal.

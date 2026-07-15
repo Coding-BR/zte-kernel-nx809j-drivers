@@ -59,6 +59,26 @@ O pacote derivado publicado atualmente contem 624/624 funcoes com pseudocodigo,
 P-Code e assembly integral. Consulte o
 [manifesto de publicacao](./reverse_engineering/validation/OFFLINE_EVIDENCE_PUBLICATION.md).
 
+## Ambiente reproduzivel e modulos
+
+O repositorio inclui agora os binarios exatos e os inputs necessarios para que
+outro colaborador autorizado repita a analise sem o smartphone:
+
+- [12 stock, 12 candidatos e snapshot completo com 335 modulos](./reference_modules/README.md);
+- [ambiente Docker, kernel, toolchains e Ghidra fixados](./reproducible_environment/README.md);
+- [requisitos compartilhados e procedimento de setup](./SHARED_ENVIRONMENT_REQUIREMENTS.md).
+
+Valide os arquivos imediatamente depois do clone:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\manage_reference_modules.py verify
+python .\reproducible_environment\verify_environment.py --mode static
+```
+
+Os `.ko` em `candidates/` sao snapshots de teste e continuam `INCOMPLETE`.
+Publicar o binario nao equivale a promover o driver nem prova comportamento em
+hardware.
+
 Para materializar antes todo o assembly stock por identidade
 `nome@endereco`:
 

@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-15T16:27:53Z",
+  "device": {
+    "codename": "NX809J",
+    "product": "REDMAGIC 11 Pro+",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k"
+  },
+  "docker": {
+    "local_tag": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "created_utc": "2026-07-10T18:35:21.290983928Z",
+    "architecture": "amd64",
+    "base": "ubuntu:24.04@sha256:786a8b558f7be160c6c8c4a54f9a57274f3b4fb1491cf65146521ae77ff1dc54",
+    "oci_repository": "ghcr.io/coding-br/nubia-sm8850-kernel-builder",
+    "oci_reference": "ghcr.io/coding-br/nubia-sm8850-kernel-builder@sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "published": true,
+    "release_fallback": {
+      "repository": "Coding-BR/zte-kernel-nx809j-drivers",
+      "tag": "environment-nx809j-20260710",
+      "asset": "nx809j-builder-sha256-25e32953.tar",
+      "size": 545417216,
+      "sha256": "e9c22c70783689a6d91cd8b86773e5d83ac3529e1d797314f49dac9d46ebbc26"
+    },
+    "package_lock": {
+      "path": "reproducible_environment/docker/dpkg-packages.lock",
+      "sha256": "f4d3dff011c91e79ae686c2be1b7333d66115662831b9a335fb6ebb12b35924b",
+      "entries": 280
+    }
+  },
+  "kernel": {
+    "repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git",
+    "commit": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "checkout": "detached",
+    "volume": "nubia_sm8850_kernel_src"
+  },
+  "toolchains": {
+    "volume": "nubia_sm8850_kernel_toolchains",
+    "clang": {
+      "directory": "clang-r536225",
+      "version": "Android clang 19.0.1 based on r536225",
+      "llvm_revision": "b3a530ec6537146650e42be89f1089e9a3588460",
+      "prebuilts_repository": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86",
+      "prebuilts_commit": "70a12c4fe88940ab2b0e6d763492dffa2f07e15a"
+    },
+    "rust": {
+      "directory": "rust-1.82.0",
+      "version": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+      "prebuilts_repository": "https://android.googlesource.com/platform/prebuilts/rust",
+      "prebuilts_commit": "b9c747ff3d3c30c2014b6f94f8599415010ac37f"
+    },
+    "bindgen_cli": "0.69.5"
+  },
+  "ghidra": {
+    "version": "12.1.2",
+    "release": "PUBLIC",
+    "asset": "ghidra_12.1.2_PUBLIC_20260605.zip",
+    "download_url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.2_build/ghidra_12.1.2_PUBLIC_20260605.zip",
+    "sha256": "b62e81a0390618466c019c60d8c2f796ced2509c4c1aea4a37644a77272cf99d",
+    "java_observed": "java version 26 build 26+35-2893"
+  },
+  "inputs": {
+    "kernel_config": {
+      "path": "reproducible_environment/inputs/nx809j_kernel.config",
+      "sha256": "30d08440e1e926507c2d2d2d9cec5d6f5b84fd3286f917447cc79b4b93a10582"
+    },
+    "device_tree_snapshot": {
+      "path": "reproducible_environment/inputs/nx809j_device-tree.tar.gz",
+      "sha256": "0defd61c47aa52814c0571a9936ef30da0c131319ce8d721461cb09439ec0a83"
+    },
+    "module_symvers": {
+      "path": "kernel_development/Module.symvers",
+      "sha256": "6586e0dd011eb03b5f04ee8df29f0e177de50159ce1a2c42990ef18b7547d23a",
+      "lines": 7729
+    },
+    "target_module_manifest": {
+      "path": "reference_modules/MANIFEST.json",
+      "sha256": "4bc3a3af0df5549746f6d8996ab549790c0b544dbb56b7bd311678de80c75a89"
+    },
+    "full_vendor_boot_manifest": {
+      "path": "reference_modules/FULL_VENDOR_BOOT_MANIFEST.json",
+      "sha256": "5e969df71d989f10876b20a593abd17a1d427e72fdca0bf79eced70b772b5ab9"
+    }
+  },
+  "claims": {
+    "static_analysis_inputs_self_contained": true,
+    "build_input_identities_complete": true,
+    "build_inputs_self_contained": false,
+    "build_inputs_note": "Kernel and toolchain bytes are fetched from their pinned repositories.",
+    "exact_oci_image_publication": "PUBLISHED_PRIVATE_GHCR_AND_PRIVATE_RELEASE",
+    "hardware_equivalence": "NOT_CLAIMED"
+  }
+}

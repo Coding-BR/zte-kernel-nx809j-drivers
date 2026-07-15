@@ -4,7 +4,17 @@
 *.o binary
 *.bin binary
 *.img binary
+*.tar.gz binary
 *.symvers whitespace=-blank-at-eol
 
 # Preserve byte-for-byte hashes of generated Ghidra and disassembly evidence.
 reverse_engineering/validation/reconstructed/**/offline_static/** -text whitespace=-blank-at-eol,-blank-at-eof
+
+# These files participate in SHA-256 manifests and must survive a clone byte for byte.
+reference_modules/full_vendor_boot/** -text whitespace=-blank-at-eol,-blank-at-eof
+reference_modules/MANIFEST.json -text whitespace=-blank-at-eol,-blank-at-eof
+reference_modules/FULL_VENDOR_BOOT_MANIFEST.json -text whitespace=-blank-at-eol,-blank-at-eof
+reference_modules/SHA256SUMS -text whitespace=-blank-at-eol,-blank-at-eof
+reference_modules/FULL_VENDOR_BOOT_SHA256SUMS -text whitespace=-blank-at-eol,-blank-at-eof
+reproducible_environment/docker/dpkg-packages.lock -text whitespace=-blank-at-eol,-blank-at-eof
+reproducible_environment/inputs/nx809j_kernel.config -text whitespace=-blank-at-eol,-blank-at-eof

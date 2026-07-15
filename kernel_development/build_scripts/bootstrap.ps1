@@ -1,19 +1,12 @@
 param(
-    [string]$Image = "nubia-sm8850-kernel-builder:latest"
+    [string]$Image = "",
+    [switch]$RebuildImage,
+    [switch]$InstallGhidra
 )
 
 $ErrorActionPreference = "Stop"
-$Root = Split-Path -Parent $PSScriptRoot
-
-docker build -t $Image -f (Join-Path $Root "docker/Dockerfile") $Root
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-docker run --rm `
-    --name nubia-sm8850-kernel-bootstrap `
-    -v nubia_sm8850_kernel_src:/work/src `
-    -v nubia_sm8850_kernel_toolchains:/work/toolchains `
-    -v nubia_sm8850_kernel_cache:/work/cache `
-    -v "${Root}/scripts:/work/scripts:ro" `
-    -v "${Root}/artifacts:/work/artifacts" `
-    $Image /bin/bash /work/scripts/bootstrap.sh
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
+if ($Image) { Write-Warning "Custom image names are ignored by the locked environment." }
+& (Join-Path $RepoRoot "reproducible_environment\bootstrap.ps1") `
+    -RebuildImage:$RebuildImage -InstallGhidra:$InstallGhidra
+exit $LASTEXITCODE
