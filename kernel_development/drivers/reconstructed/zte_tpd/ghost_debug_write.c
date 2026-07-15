@@ -39,7 +39,7 @@ __int64 __fastcall ghost_debug_write(__int64 a1, __int64 a2, __int64 a3)
   v23 = 0;
   v24 = 0;
   v22 = 0;
-  if ( a2 && (_check_object_size(v27, v4, 0), inline_copy_from_user((__int64)v27, a2, v4)) )
+  if ( a2 && copy_from_user(v27, (const void __user *)a2, v4) )
   {
     printk(unk_31DF8);
     v4 = -22;

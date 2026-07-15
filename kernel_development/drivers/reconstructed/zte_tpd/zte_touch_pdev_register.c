@@ -7,8 +7,7 @@ __int64 __fastcall zte_touch_pdev_register(__int64 a1, __int64 a2, __int64 a3)
   __int64 result; // x0
   __int64 (__fastcall *v8)(); // x8
   unsigned int v9; // w19
-  __int64 v10; // x8
-  void (__fastcall *v11)(_QWORD); // x9
+  struct platform_device *v10; // x8
 
   v3 = tpd_cdev;
   printk(unk_37BB9, "zte_touch_pdev_register", a3);
@@ -21,8 +20,8 @@ __int64 __fastcall zte_touch_pdev_register(__int64 a1, __int64 a2, __int64 a3)
     {
       v9 = v6;
       printk(unk_3AF12, "zte_touch_pdev_register", v6);
-      v10 = *(_QWORD *)(v3 + 3096);
-      platform_device_put((struct platform_device *)v10);
+      v10 = (struct platform_device *)*(_QWORD *)(v3 + 3096);
+      v10->dev.release(&v10->dev);
       result = v9;
       v8 = NULL;
     }

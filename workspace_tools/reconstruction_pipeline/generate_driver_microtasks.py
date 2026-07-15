@@ -8,7 +8,7 @@ import datetime as dt
 import hashlib
 import json
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 
@@ -91,6 +91,10 @@ def task_id(index: int, name: str) -> str:
     return f"{index:03d}_{normalized}"
 
 
+def function_id(name: str, entry: Any) -> str:
+    return f"{name}@{entry}" if isinstance(entry, str) and entry else name
+
+
 def load_mapping(path: Path) -> dict[str, dict[str, Any]]:
     if not path.is_file():
         return {}
@@ -101,11 +105,22 @@ def load_mapping(path: Path) -> dict[str, dict[str, Any]]:
     mappings = payload.get("mappings")
     if not isinstance(mappings, list):
         return {}
-    return {
-        item["stock_function"]: item
+    by_identity: dict[str, dict[str, Any]] = {}
+    name_counts: dict[str, int] = {}
+    valid = [
+        item
         for item in mappings
         if isinstance(item, dict) and isinstance(item.get("stock_function"), str)
-    }
+    ]
+    for item in valid:
+        name = item["stock_function"]
+        name_counts[name] = name_counts.get(name, 0) + 1
+        by_identity[function_id(name, item.get("stock_entry"))] = item
+    for item in valid:
+        name = item["stock_function"]
+        if name_counts[name] == 1:
+            by_identity[name] = item
+    return by_identity
 
 
 def implementation_prompt(
@@ -117,8 +132,8 @@ def implementation_prompt(
     category: str,
     source_file: str,
     source_function: str,
-    pseudocode: Path,
-    pcode: Path,
+    pseudocode: str,
+    pcode: str,
 ) -> str:
     source_target = (
         source_file + ":" + source_function
@@ -267,13 +282,21 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
         return {"driver": driver, "status": "BLOCKED", "tasks": 0, "path": str(output_json)}
 
     stock_sha256 = sha256_file(stock)
+    published_export = (
+        PurePosixPath("reverse_engineering")
+        / "validation"
+        / "reconstructed"
+        / driver
+        / "offline_static"
+        / "ghidra_stock"
+    )
     previous_tasks: dict[str, dict[str, Any]] = {}
     if output_json.is_file():
         try:
             previous = read_json(output_json)
             if previous.get("stock", {}).get("sha256") == stock_sha256:
                 previous_tasks = {
-                    item.get("stock_function"): item
+                    function_id(item.get("stock_function"), item.get("stock_entry")): item
                     for item in previous.get("tasks", [])
                     if isinstance(item, dict) and isinstance(item.get("stock_function"), str)
                 }
@@ -284,12 +307,17 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
     tasks = []
     for index, function in enumerate(read_functions(function_path), 1):
         name = function["name"]
-        mapping = mappings.get(name, {})
+        identity = function_id(name, function.get("entry"))
+        mapping = mappings.get(identity, mappings.get(name, {}))
         source_file = mapping.get("source_file", "") if mapping.get("status") == "reviewed" else ""
         source_function = mapping.get("source_function", "") if source_file else ""
         status = "READY_FOR_IMPLEMENTATION" if source_file else "WAITING_FOR_SOURCE_MAP"
-        pseudocode = export / function.get("decompiled_file", "")
-        pcode = export / function.get("pcode_file", "")
+        pseudocode_source = export / function.get("decompiled_file", "")
+        pcode_source = export / function.get("pcode_file", "")
+        if not pseudocode_source.is_file() or not pcode_source.is_file():
+            raise ValueError(f"missing Ghidra function evidence for {identity}")
+        pseudocode = (published_export / function.get("decompiled_file", "")).as_posix()
+        pcode = (published_export / function.get("pcode_file", "")).as_posix()
         category = classify(name)
         task = {
                 "id": task_id(index, name),
@@ -316,7 +344,7 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
                 "status": status,
                 "evidence": [],
             }
-        previous_task = previous_tasks.get(name, {})
+        previous_task = previous_tasks.get(identity, {})
         immutable_fields = (
             "stock_entry",
             "stock_body_bytes",
@@ -337,8 +365,12 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "driver": driver,
         "status": "PASS" if tasks and all(task["status"] == "PASS" for task in tasks) else "INCOMPLETO",
-        "stock": {"path": str(stock), "sha256": stock_sha256},
-        "ghidra_export": str(export),
+        "stock": {
+            "path": f"private_acquisition/{driver}.ko",
+            "sha256": stock_sha256,
+            "published": False,
+        },
+        "ghidra_export": published_export.as_posix(),
         "tasks": tasks,
     }
     write_json(output_json, payload)

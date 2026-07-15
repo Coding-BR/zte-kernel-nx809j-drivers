@@ -950,15 +950,13 @@ static void wrap_syna_spi_remove(struct spi_device *spi) {
 }
 
 // Platform Device Definition
-void platform_device_release_noop(struct device *dev) {
-    // No-op release to avoid warning
-}
+extern void syna_spi_release(struct device *dev);
 
 struct platform_device syna_spi_device = {
     .name = "syna_dev_platform",
     .id = -1,
     .dev = {
-        .release = platform_device_release_noop,
+        .release = syna_spi_release,
     }
 };
 

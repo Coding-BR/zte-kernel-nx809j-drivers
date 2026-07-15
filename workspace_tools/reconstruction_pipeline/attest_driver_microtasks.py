@@ -72,6 +72,12 @@ def relative_path(path: Path, workspace_root: Path) -> str:
     return str(path.resolve().relative_to(workspace_root.resolve()))
 
 
+def function_id(name: Any, entry: Any) -> str:
+    if not isinstance(name, str) or not name:
+        raise ValueError("microtask or mapping has no stock function name")
+    return f"{name}@{entry}" if isinstance(entry, str) and entry else name
+
+
 def parse_args() -> argparse.Namespace:
     engineering_root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
@@ -142,9 +148,11 @@ def main() -> int:
     if kcfi_report.get("passed") is not True:
         raise ValueError("KCFI report did not pass")
     kcfi_comparisons = {
-        item.get("function"): item
+        function_id(item.get("function"), item.get("stock_entry")): item
         for item in kcfi_report.get("comparisons", [])
-        if isinstance(item, dict) and item.get("passed") is True
+        if isinstance(item, dict)
+        and isinstance(item.get("function"), str)
+        and item.get("passed") is True
     }
     kcfi_not_applicable = set(args.kcfi_not_applicable)
     overlap = set(kcfi_comparisons) & kcfi_not_applicable
@@ -154,17 +162,42 @@ def main() -> int:
     tasks = manifest.get("tasks")
     if not isinstance(tasks, list) or not tasks:
         raise ValueError("microtask manifest has no tasks")
-    functions = {task.get("stock_function") for task in tasks}
-    mappings = {
-        item.get("stock_function"): item
-        for item in reconstruction_map.get("mappings", [])
-        if isinstance(item, dict) and item.get("status") == "reviewed"
-    }
+    name_counts: dict[str, int] = {}
+    for task in tasks:
+        name = task.get("stock_function")
+        if not isinstance(name, str) or not name:
+            raise ValueError("microtask has no stock_function")
+        name_counts[name] = name_counts.get(name, 0) + 1
+
+    def task_key(item: dict[str, Any]) -> str:
+        name = item.get("stock_function")
+        if name_counts.get(name, 0) > 1:
+            return function_id(name, item.get("stock_entry"))
+        return function_id(name, None)
+
+    functions = {task_key(task) for task in tasks}
+    mappings: dict[str, dict[str, Any]] = {}
+    for item in reconstruction_map.get("mappings", []):
+        if not isinstance(item, dict) or item.get("status") != "reviewed":
+            continue
+        name = item.get("stock_function")
+        key = function_id(name, item.get("stock_entry")) if name_counts.get(name, 0) > 1 else function_id(name, None)
+        if key in mappings:
+            raise ValueError(f"duplicate reviewed mapping identity: {key}")
+        mappings[key] = item
     missing_mappings = functions - set(mappings)
     if missing_mappings:
         raise ValueError("functions missing reviewed source mapping: " + ", ".join(sorted(missing_mappings)))
     missing_tests = functions - covered
-    missing_kcfi = functions - set(kcfi_comparisons) - kcfi_not_applicable
+    comparison_keys = {
+        function_id(name, None) if name_counts.get(name.split("@", 1)[0], 0) == 1 else name
+        for name in kcfi_comparisons
+    }
+    normalized_comparisons = {
+        function_id(key, None) if name_counts.get(key.split("@", 1)[0], 0) == 1 else key: value
+        for key, value in kcfi_comparisons.items()
+    }
+    missing_kcfi = functions - comparison_keys - kcfi_not_applicable
     unknown_na = kcfi_not_applicable - functions
     if missing_tests:
         raise ValueError("functions missing direct host coverage: " + ", ".join(sorted(missing_tests)))
@@ -183,7 +216,8 @@ def main() -> int:
     for task in tasks:
         task_id = str(task["id"])
         function = str(task["stock_function"])
-        mapping = mappings[function]
+        identity = task_key(task)
+        mapping = mappings[identity]
         evidence_dir = validation_root / "microtasks" / task_id
         compile_path = evidence_dir / "compile.json"
         test_path = evidence_dir / "test.json"
@@ -195,7 +229,9 @@ def main() -> int:
                 "schema_version": "1.0",
                 "generated_utc": generated_utc,
                 "driver": args.driver,
-                "function": function,
+                "function": identity,
+                "stock_function": function,
+                "stock_entry": task.get("stock_entry"),
                 "passed": True,
                 "source_report": relative_path(args.build_report, workspace_root),
                 "source_report_sha256": source_hashes["build_report"],
@@ -208,7 +244,9 @@ def main() -> int:
                 "schema_version": "1.0",
                 "generated_utc": generated_utc,
                 "driver": args.driver,
-                "function": function,
+                "function": identity,
+                "stock_function": function,
+                "stock_entry": task.get("stock_entry"),
                 "passed": True,
                 "directly_covered": True,
                 "source_report": relative_path(args.test_report, workspace_root),
@@ -216,14 +254,16 @@ def main() -> int:
                 "test_source": test_report.get("test_source"),
             },
         )
-        comparison = kcfi_comparisons.get(function)
+        comparison = normalized_comparisons.get(identity)
         write_json(
             kcfi_path,
             {
                 "schema_version": "1.0",
                 "generated_utc": generated_utc,
                 "driver": args.driver,
-                "function": function,
+                "function": identity,
+                "stock_function": function,
+                "stock_entry": task.get("stock_entry"),
                 "passed": True,
                 "applicable": comparison is not None,
                 "decision": comparison or {

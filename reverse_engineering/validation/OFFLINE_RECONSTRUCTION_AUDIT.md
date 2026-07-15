@@ -4,7 +4,7 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-15T19:51:02.898491+00:00`
+Gerado em: `2026-07-15T21:18:10.130197+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
@@ -21,7 +21,7 @@ Gerado em: `2026-07-15T19:51:02.898491+00:00`
 | `zte_reboot_ext` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_sensor_sensitivity` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_stats_info` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_tpd` | `INCOMPLETE` | 5/10 | 367 Ghidra functions are not mapped<br>reconstruction_map.json is missing<br>missing abi_validation.json<br>report status is not PASS |
+| `zte_tpd` | `INCOMPLETE` | 8/10 | report status is not PASS<br>missing independent_review.json<br>review targets another candidate SHA-256 |
 
 ## Regra de leitura
 

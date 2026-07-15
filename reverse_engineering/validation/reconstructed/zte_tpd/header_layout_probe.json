@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "generated_utc": "2026-07-15T21:27:05.228215+00:00",
+  "mode": "offline_compile_time_probe",
+  "compiler": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+  "kernel": "Android 16 / GKI 6.12.23 / AArch64",
+  "source": {
+    "path": "curated/zte_tpd/probes/layout_probe.c",
+    "sha256": "8e6e7f3de21a2f64519e4861894defc2f2e5ea504c2994e7a3702ab918c68686"
+  },
+  "overlay_header": {
+    "path": "curated/zte_tpd/zte_tpd_tcm_layout.h",
+    "sha256": "db8573a6e32895ec84c7fd4ba2822ffcc1bb8b004551a89e98a0bf2d9796ffdf"
+  },
+  "stock": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "layout_evidence": {
+      "syna_spi_device": {
+        "elf_value": "0x368",
+        "elf_size": 1008,
+        "expected_size": 1008
+      },
+      "syna_spi_release": {
+        "elf_value": "0x11c8c",
+        "elf_size": 44
+      },
+      "release_relocation": {
+        "data_offset": "0x6a0",
+        "field_offset_from_syna_spi_device": "0x338",
+        "expected_field_offset": "0x338"
+      },
+      "passed": true
+    }
+  },
+  "assertions": {
+    "aarch64_pointer_size": 8,
+    "platform_device_size": "0x3f0",
+    "platform_device_dev_offset": "0x10",
+    "device_release_offset": "0x328",
+    "platform_device_release_offset": "0x338",
+    "tcm_transport_flags_offset": "0x14",
+    "tcm_transport_overlay_size": "0x15",
+    "tcm_dev_size": "0x3a0",
+    "tcm_dev_firmware_mode_offset": "0x09",
+    "tcm_dev_transport_offset": "0x48",
+    "tcm_dev_command_delay_ms_offset": "0x20c",
+    "tcm_dev_write_message_offset": "0x398"
+  },
+  "artifacts": {
+    "object_sha256": "17339c8351dfa2ccdfe7c0d12329c772b60338df5d2bc8d0f18bcdf41b7c3d76",
+    "module_sha256": "e2be9fbcfe28c97a25daed86f507b253e5d4dc5248334dcbe54e9576a64f6689"
+  },
+  "commands": {
+    "clean": {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "nubia_sm8850_kernel_src:/work/src:ro",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/engineering",
+        "-e",
+        "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "-w",
+        "/work/src/kernel/kernel_platform/common",
+        "nubia-sm8850-kernel-builder:latest",
+        "make",
+        "ARCH=arm64",
+        "LLVM=1",
+        "LLVM_IAS=1",
+        "M=/work/engineering/validation/work/zte_tpd_layout_probe",
+        "clean"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "build": {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "nubia_sm8850_kernel_src:/work/src:ro",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/engineering",
+        "-e",
+        "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "-w",
+        "/work/src/kernel/kernel_platform/common",
+        "nubia-sm8850-kernel-builder:latest",
+        "make",
+        "ARCH=arm64",
+        "LLVM=1",
+        "LLVM_IAS=1",
+        "M=/work/engineering/validation/work/zte_tpd_layout_probe",
+        "modules"
+      ],
+      "returncode": 0,
+      "stdout": "  CC [M]  /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.o\n  MODPOST /work/engineering/validation/work/zte_tpd_layout_probe/Module.symvers\n  CC [M]  /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.mod.o\n  CC [M]  /work/engineering/validation/work/zte_tpd_layout_probe/.module-common.o\n  LD [M]  /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.ko\n  BTF [M] /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.ko\n",
+      "stderr": "make[2]: Warning: File '/work/engineering/validation/work/zte_tpd_layout_probe/modules.order' has modification time 0.093 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\nmake[2]: Warning: File '/work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.mod.c' has modification time 0.16 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n"
+    }
+  },
+  "limitations": [
+    "Compilation proves header and overlay layout consistency, not device behavior.",
+    "The partial TCM overlay contains only offsets tied to local stock evidence.",
+    "No module was loaded and no smartphone operation was performed."
+  ]
+}

@@ -11,9 +11,9 @@ Funcao stock: tpd_zlog_register
 Entrada Ghidra: 0010688c
 Tamanho stock: 224 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0000_0010688c_tpd_zlog_register.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0000_0010688c_tpd_zlog_register.jsonl
+Alvo no fonte: tpd_zlog_register.c:tpd_zlog_register
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0000_0010688c_tpd_zlog_register.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0000_0010688c_tpd_zlog_register.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -40,9 +40,9 @@ Funcao stock: tpd_zlog_record_notify
 Entrada Ghidra: 00106998
 Tamanho stock: 3452 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0001_00106998_tpd_zlog_record_notify.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0001_00106998_tpd_zlog_record_notify.jsonl
+Alvo no fonte: tpd_zlog_record_notify.c:tpd_zlog_record_notify
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0001_00106998_tpd_zlog_record_notify.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0001_00106998_tpd_zlog_record_notify.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -69,9 +69,9 @@ Funcao stock: tpd_zlog_check
 Entrada Ghidra: 00107718
 Tamanho stock: 172 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0002_00107718_tpd_zlog_check.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0002_00107718_tpd_zlog_check.jsonl
+Alvo no fonte: tpd_zlog_check.c:tpd_zlog_check
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0002_00107718_tpd_zlog_check.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0002_00107718_tpd_zlog_check.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -98,9 +98,9 @@ Funcao stock: zlog_register_work_init
 Entrada Ghidra: 001077c8
 Tamanho stock: 120 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0003_001077c8_zlog_register_work_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0003_001077c8_zlog_register_work_init.jsonl
+Alvo no fonte: zlog_register_work_init.c:zlog_register_work_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0003_001077c8_zlog_register_work_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0003_001077c8_zlog_register_work_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -127,9 +127,9 @@ Funcao stock: zlog_register_work
 Entrada Ghidra: 00107844
 Tamanho stock: 44 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0004_00107844_zlog_register_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0004_00107844_zlog_register_work.jsonl
+Alvo no fonte: zlog_register_work.c:zlog_register_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0004_00107844_zlog_register_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0004_00107844_zlog_register_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -156,9 +156,9 @@ Funcao stock: zlog_register_work_deinit
 Entrada Ghidra: 00107874
 Tamanho stock: 80 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0005_00107874_zlog_register_work_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0005_00107874_zlog_register_work_deinit.jsonl
+Alvo no fonte: zlog_register_work_deinit.c:zlog_register_work_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0005_00107874_zlog_register_work_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0005_00107874_zlog_register_work_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -185,9 +185,9 @@ Funcao stock: tpd_zlog_init
 Entrada Ghidra: 001078c8
 Tamanho stock: 184 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0006_001078c8_tpd_zlog_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0006_001078c8_tpd_zlog_init.jsonl
+Alvo no fonte: tpd_zlog_init.c:tpd_zlog_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0006_001078c8_tpd_zlog_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0006_001078c8_tpd_zlog_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -214,9 +214,9 @@ Funcao stock: get_tp_algo_item_id
 Entrada Ghidra: 00107984
 Tamanho stock: 356 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0007_00107984_get_tp_algo_item_id.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0007_00107984_get_tp_algo_item_id.jsonl
+Alvo no fonte: get_tp_algo_item_id.c:get_tp_algo_item_id
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0007_00107984_get_tp_algo_item_id.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0007_00107984_get_tp_algo_item_id.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -243,9 +243,9 @@ Funcao stock: get_tp_chip_id
 Entrada Ghidra: 00107aec
 Tamanho stock: 496 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0008_00107aec_get_tp_chip_id.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0008_00107aec_get_tp_chip_id.jsonl
+Alvo no fonte: get_tp_chip_id.c:get_tp_chip_id
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0008_00107aec_get_tp_chip_id.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0008_00107aec_get_tp_chip_id.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -272,9 +272,9 @@ Funcao stock: get_lcd_panel_name
 Entrada Ghidra: 00107ce0
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0009_00107ce0_get_lcd_panel_name.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0009_00107ce0_get_lcd_panel_name.jsonl
+Alvo no fonte: get_lcd_panel_name.c:get_lcd_panel_name
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0009_00107ce0_get_lcd_panel_name.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0009_00107ce0_get_lcd_panel_name.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -301,9 +301,9 @@ Funcao stock: tp_free_tp_firmware_data
 Entrada Ghidra: 00107cf0
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0010_00107cf0_tp_free_tp_firmware_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0010_00107cf0_tp_free_tp_firmware_data.jsonl
+Alvo no fonte: tp_free_tp_firmware_data.c:tp_free_tp_firmware_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0010_00107cf0_tp_free_tp_firmware_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0010_00107cf0_tp_free_tp_firmware_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -330,9 +330,9 @@ Funcao stock: tp_alloc_tp_firmware_data
 Entrada Ghidra: 00107d54
 Tamanho stock: 260 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0011_00107d54_tp_alloc_tp_firmware_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0011_00107d54_tp_alloc_tp_firmware_data.jsonl
+Alvo no fonte: tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0011_00107d54_tp_alloc_tp_firmware_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0011_00107d54_tp_alloc_tp_firmware_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -359,9 +359,9 @@ Funcao stock: tpd_copy_to_tp_firmware_data
 Entrada Ghidra: 00107eb8
 Tamanho stock: 200 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0012_00107eb8_tpd_copy_to_tp_firmware_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0012_00107eb8_tpd_copy_to_tp_firmware_data.jsonl
+Alvo no fonte: tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0012_00107eb8_tpd_copy_to_tp_firmware_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0012_00107eb8_tpd_copy_to_tp_firmware_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -388,9 +388,9 @@ Funcao stock: tpd_reset_fw_data_pos_and_size
 Entrada Ghidra: 00107f84
 Tamanho stock: 28 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0013_00107f84_tpd_reset_fw_data_pos_and_size.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0013_00107f84_tpd_reset_fw_data_pos_and_size.jsonl
+Alvo no fonte: tpd_reset_fw_data_pos_and_size.c:tpd_reset_fw_data_pos_and_size
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0013_00107f84_tpd_reset_fw_data_pos_and_size.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0013_00107f84_tpd_reset_fw_data_pos_and_size.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -417,9 +417,9 @@ Funcao stock: tpd_proc_deinit
 Entrada Ghidra: 00107fa4
 Tamanho stock: 544 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0014_00107fa4_tpd_proc_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0014_00107fa4_tpd_proc_deinit.jsonl
+Alvo no fonte: tpd_proc_deinit.c:tpd_proc_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0014_00107fa4_tpd_proc_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0014_00107fa4_tpd_proc_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -446,9 +446,9 @@ Funcao stock: zte_touch_pdev_register
 Entrada Ghidra: 001081c8
 Tamanho stock: 224 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0015_001081c8_zte_touch_pdev_register.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0015_001081c8_zte_touch_pdev_register.jsonl
+Alvo no fonte: zte_touch_pdev_register.c:zte_touch_pdev_register
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0015_001081c8_zte_touch_pdev_register.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0015_001081c8_zte_touch_pdev_register.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -475,9 +475,9 @@ Funcao stock: tpd_report_uevent
 Entrada Ghidra: 001082ac
 Tamanho stock: 260 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0016_001082ac_tpd_report_uevent.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0016_001082ac_tpd_report_uevent.jsonl
+Alvo no fonte: tpd_report_uevent.c:tpd_report_uevent
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0016_001082ac_tpd_report_uevent.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0016_001082ac_tpd_report_uevent.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -504,9 +504,9 @@ Funcao stock: zte_touch_pdev_unregister
 Entrada Ghidra: 001083b4
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0017_001083b4_zte_touch_pdev_unregister.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0017_001083b4_zte_touch_pdev_unregister.jsonl
+Alvo no fonte: zte_touch_pdev_unregister.c:zte_touch_pdev_unregister
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0017_001083b4_zte_touch_pdev_unregister.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0017_001083b4_zte_touch_pdev_unregister.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -533,9 +533,9 @@ Funcao stock: tpd_probe_work_init
 Entrada Ghidra: 00108418
 Tamanho stock: 120 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0018_00108418_tpd_probe_work_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0018_00108418_tpd_probe_work_init.jsonl
+Alvo no fonte: tpd_probe_work_init.c:tpd_probe_work_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0018_00108418_tpd_probe_work_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0018_00108418_tpd_probe_work_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -562,9 +562,9 @@ Funcao stock: ztp_probe_work
 Entrada Ghidra: 00108494
 Tamanho stock: 40 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0019_00108494_ztp_probe_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0019_00108494_ztp_probe_work.jsonl
+Alvo no fonte: ztp_probe_work.c:ztp_probe_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0019_00108494_ztp_probe_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0019_00108494_ztp_probe_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -591,9 +591,9 @@ Funcao stock: tpd_probe_work_deinit
 Entrada Ghidra: 001084c0
 Tamanho stock: 68 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0020_001084c0_tpd_probe_work_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0020_001084c0_tpd_probe_work_deinit.jsonl
+Alvo no fonte: tpd_probe_work_deinit.c:tpd_probe_work_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0020_001084c0_tpd_probe_work_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0020_001084c0_tpd_probe_work_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -620,9 +620,9 @@ Funcao stock: tpd_workqueue_init
 Entrada Ghidra: 00108508
 Tamanho stock: 388 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0021_00108508_tpd_workqueue_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0021_00108508_tpd_workqueue_init.jsonl
+Alvo no fonte: tpd_workqueue_init.c:tpd_workqueue_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0021_00108508_tpd_workqueue_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0021_00108508_tpd_workqueue_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -649,9 +649,9 @@ Funcao stock: tp_ghost_check_work
 Entrada Ghidra: 00108690
 Tamanho stock: 176 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0022_00108690_tp_ghost_check_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0022_00108690_tp_ghost_check_work.jsonl
+Alvo no fonte: tp_ghost_check_work.c:tp_ghost_check_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0022_00108690_tp_ghost_check_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0022_00108690_tp_ghost_check_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -678,9 +678,9 @@ Funcao stock: tpd_workqueue_deinit
 Entrada Ghidra: 00108744
 Tamanho stock: 156 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0023_00108744_tpd_workqueue_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0023_00108744_tpd_workqueue_deinit.jsonl
+Alvo no fonte: tpd_workqueue_deinit.c:tpd_workqueue_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0023_00108744_tpd_workqueue_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0023_00108744_tpd_workqueue_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -707,9 +707,9 @@ Funcao stock: zte_touch_probe
 Entrada Ghidra: 001087e4
 Tamanho stock: 3712 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0024_001087e4_zte_touch_probe.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0024_001087e4_zte_touch_probe.jsonl
+Alvo no fonte: zte_touch_probe.c:zte_touch_probe
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0024_001087e4_zte_touch_probe.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0024_001087e4_zte_touch_probe.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -736,9 +736,9 @@ Funcao stock: zte_touch_remove
 Entrada Ghidra: 00109668
 Tamanho stock: 52 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0025_00109668_zte_touch_remove.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0025_00109668_zte_touch_remove.jsonl
+Alvo no fonte: zte_touch_remove.c:zte_touch_remove
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0025_00109668_zte_touch_remove.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0025_00109668_zte_touch_remove.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -765,9 +765,9 @@ Funcao stock: zte_touch_shutdown
 Entrada Ghidra: 001096a0
 Tamanho stock: 224 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0026_001096a0_zte_touch_shutdown.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0026_001096a0_zte_touch_shutdown.jsonl
+Alvo no fonte: zte_touch_shutdown.c:zte_touch_shutdown
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0026_001096a0_zte_touch_shutdown.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0026_001096a0_zte_touch_shutdown.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -794,9 +794,9 @@ Funcao stock: tp_module_info_read
 Entrada Ghidra: 00109784
 Tamanho stock: 672 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0027_00109784_tp_module_info_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0027_00109784_tp_module_info_read.jsonl
+Alvo no fonte: tp_module_info_read.c:tp_module_info_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0027_00109784_tp_module_info_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0027_00109784_tp_module_info_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -823,9 +823,9 @@ Funcao stock: tp_wake_gesture_read
 Entrada Ghidra: 00109a28
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0028_00109a28_tp_wake_gesture_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0028_00109a28_tp_wake_gesture_read.jsonl
+Alvo no fonte: tp_wake_gesture_read.c:tp_wake_gesture_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0028_00109a28_tp_wake_gesture_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0028_00109a28_tp_wake_gesture_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -852,9 +852,9 @@ Funcao stock: tp_wake_gesture_write
 Entrada Ghidra: 00109b1c
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0029_00109b1c_tp_wake_gesture_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0029_00109b1c_tp_wake_gesture_write.jsonl
+Alvo no fonte: tp_wake_gesture_write.c:tp_wake_gesture_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0029_00109b1c_tp_wake_gesture_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0029_00109b1c_tp_wake_gesture_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -881,9 +881,9 @@ Funcao stock: tp_smart_cover_read
 Entrada Ghidra: 00109bf0
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0030_00109bf0_tp_smart_cover_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0030_00109bf0_tp_smart_cover_read.jsonl
+Alvo no fonte: tp_smart_cover_read.c:tp_smart_cover_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0030_00109bf0_tp_smart_cover_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0030_00109bf0_tp_smart_cover_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -910,9 +910,9 @@ Funcao stock: tp_smart_cover_write
 Entrada Ghidra: 00109ce4
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0031_00109ce4_tp_smart_cover_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0031_00109ce4_tp_smart_cover_write.jsonl
+Alvo no fonte: tp_smart_cover_write.c:tp_smart_cover_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0031_00109ce4_tp_smart_cover_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0031_00109ce4_tp_smart_cover_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -939,9 +939,9 @@ Funcao stock: tp_glove_read
 Entrada Ghidra: 00109db8
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0032_00109db8_tp_glove_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0032_00109db8_tp_glove_read.jsonl
+Alvo no fonte: tp_glove_read.c:tp_glove_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0032_00109db8_tp_glove_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0032_00109db8_tp_glove_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -968,9 +968,9 @@ Funcao stock: tp_glove_write
 Entrada Ghidra: 00109eac
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0033_00109eac_tp_glove_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0033_00109eac_tp_glove_write.jsonl
+Alvo no fonte: tp_glove_write.c:tp_glove_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0033_00109eac_tp_glove_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0033_00109eac_tp_glove_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -997,9 +997,9 @@ Funcao stock: tpfwupgrade_store
 Entrada Ghidra: 00109f80
 Tamanho stock: 468 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0034_00109f80_tpfwupgrade_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0034_00109f80_tpfwupgrade_store.jsonl
+Alvo no fonte: tpfwupgrade_store.c:tpfwupgrade_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0034_00109f80_tpfwupgrade_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0034_00109f80_tpfwupgrade_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1026,9 +1026,9 @@ Funcao stock: suspend_show
 Entrada Ghidra: 0010a1b4
 Tamanho stock: 244 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0035_0010a1b4_suspend_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0035_0010a1b4_suspend_show.jsonl
+Alvo no fonte: suspend_show.c:suspend_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0035_0010a1b4_suspend_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0035_0010a1b4_suspend_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1055,9 +1055,9 @@ Funcao stock: suspend_store
 Entrada Ghidra: 0010a2ac
 Tamanho stock: 276 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0036_0010a2ac_suspend_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0036_0010a2ac_suspend_store.jsonl
+Alvo no fonte: suspend_store.c:suspend_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0036_0010a2ac_suspend_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0036_0010a2ac_suspend_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1084,9 +1084,9 @@ Funcao stock: headset_state_show
 Entrada Ghidra: 0010a3c4
 Tamanho stock: 244 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0037_0010a3c4_headset_state_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0037_0010a3c4_headset_state_show.jsonl
+Alvo no fonte: headset_state_show.c:headset_state_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0037_0010a3c4_headset_state_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0037_0010a3c4_headset_state_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1113,9 +1113,9 @@ Funcao stock: headset_state_store
 Entrada Ghidra: 0010a4bc
 Tamanho stock: 268 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0038_0010a4bc_headset_state_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0038_0010a4bc_headset_state_store.jsonl
+Alvo no fonte: headset_state_store.c:headset_state_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0038_0010a4bc_headset_state_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0038_0010a4bc_headset_state_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1142,9 +1142,9 @@ Funcao stock: _inline_copy_from_user
 Entrada Ghidra: 0010a5c8
 Tamanho stock: 244 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0039_0010a5c8__inline_copy_from_user.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0039_0010a5c8__inline_copy_from_user.jsonl
+Alvo no fonte: ghost_debug_write.c:copy_from_user
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0039_0010a5c8__inline_copy_from_user.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0039_0010a5c8__inline_copy_from_user.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1171,9 +1171,9 @@ Funcao stock: get_rotation_limit_level
 Entrada Ghidra: 0010a6c0
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0040_0010a6c0_get_rotation_limit_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0040_0010a6c0_get_rotation_limit_level.jsonl
+Alvo no fonte: get_rotation_limit_level.c:get_rotation_limit_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0040_0010a6c0_get_rotation_limit_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0040_0010a6c0_get_rotation_limit_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1200,9 +1200,9 @@ Funcao stock: set_rotation_limit_level
 Entrada Ghidra: 0010a7b4
 Tamanho stock: 196 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0041_0010a7b4_set_rotation_limit_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0041_0010a7b4_set_rotation_limit_level.jsonl
+Alvo no fonte: set_rotation_limit_level.c:set_rotation_limit_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0041_0010a7b4_set_rotation_limit_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0041_0010a7b4_set_rotation_limit_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1229,9 +1229,9 @@ Funcao stock: display_rotation_show
 Entrada Ghidra: 0010a87c
 Tamanho stock: 212 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0042_0010a87c_display_rotation_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0042_0010a87c_display_rotation_show.jsonl
+Alvo no fonte: display_rotation_show.c:display_rotation_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0042_0010a87c_display_rotation_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0042_0010a87c_display_rotation_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1258,9 +1258,9 @@ Funcao stock: set_display_rotation
 Entrada Ghidra: 0010a954
 Tamanho stock: 260 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0043_0010a954_set_display_rotation.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0043_0010a954_set_display_rotation.jsonl
+Alvo no fonte: set_display_rotation.c:set_display_rotation
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0043_0010a954_set_display_rotation.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0043_0010a954_set_display_rotation.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1287,9 +1287,9 @@ Funcao stock: tp_single_tap_read
 Entrada Ghidra: 0010aa5c
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0044_0010aa5c_tp_single_tap_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0044_0010aa5c_tp_single_tap_read.jsonl
+Alvo no fonte: tp_single_tap_read.c:tp_single_tap_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0044_0010aa5c_tp_single_tap_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0044_0010aa5c_tp_single_tap_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1316,9 +1316,9 @@ Funcao stock: tp_single_tap_write
 Entrada Ghidra: 0010ab50
 Tamanho stock: 212 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0045_0010ab50_tp_single_tap_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0045_0010ab50_tp_single_tap_write.jsonl
+Alvo no fonte: tp_single_tap_write.c:tp_single_tap_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0045_0010ab50_tp_single_tap_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0045_0010ab50_tp_single_tap_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1345,9 +1345,9 @@ Funcao stock: tp_single_aod_read
 Entrada Ghidra: 0010ac28
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0046_0010ac28_tp_single_aod_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0046_0010ac28_tp_single_aod_read.jsonl
+Alvo no fonte: tp_single_aod_read.c:tp_single_aod_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0046_0010ac28_tp_single_aod_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0046_0010ac28_tp_single_aod_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1374,9 +1374,9 @@ Funcao stock: tp_single_aod_write
 Entrada Ghidra: 0010ad1c
 Tamanho stock: 212 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0047_0010ad1c_tp_single_aod_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0047_0010ad1c_tp_single_aod_write.jsonl
+Alvo no fonte: tp_single_aod_write.c:tp_single_aod_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0047_0010ad1c_tp_single_aod_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0047_0010ad1c_tp_single_aod_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1403,9 +1403,9 @@ Funcao stock: tp_single_game_read
 Entrada Ghidra: 0010adf4
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0048_0010adf4_tp_single_game_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0048_0010adf4_tp_single_game_read.jsonl
+Alvo no fonte: tp_single_game_read.c:tp_single_game_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0048_0010adf4_tp_single_game_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0048_0010adf4_tp_single_game_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1432,9 +1432,9 @@ Funcao stock: tp_single_game_write
 Entrada Ghidra: 0010aee8
 Tamanho stock: 212 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0049_0010aee8_tp_single_game_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0049_0010aee8_tp_single_game_write.jsonl
+Alvo no fonte: tp_single_game_write.c:tp_single_game_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0049_0010aee8_tp_single_game_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0049_0010aee8_tp_single_game_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1461,9 +1461,9 @@ Funcao stock: get_tp_noise_show
 Entrada Ghidra: 0010afc0
 Tamanho stock: 280 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0050_0010afc0_get_tp_noise_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0050_0010afc0_get_tp_noise_show.jsonl
+Alvo no fonte: get_tp_noise_show.c:get_tp_noise_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0050_0010afc0_get_tp_noise_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0050_0010afc0_get_tp_noise_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1490,9 +1490,9 @@ Funcao stock: get_tp_noise_store
 Entrada Ghidra: 0010b0dc
 Tamanho stock: 112 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0051_0010b0dc_get_tp_noise_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0051_0010b0dc_get_tp_noise_store.jsonl
+Alvo no fonte: get_tp_noise_store.c:get_tp_noise_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0051_0010b0dc_get_tp_noise_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0051_0010b0dc_get_tp_noise_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1519,9 +1519,9 @@ Funcao stock: tp_edge_report_limit_read
 Entrada Ghidra: 0010b150
 Tamanho stock: 1288 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0052_0010b150_tp_edge_report_limit_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0052_0010b150_tp_edge_report_limit_read.jsonl
+Alvo no fonte: tp_edge_report_limit_read.c:tp_edge_report_limit_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0052_0010b150_tp_edge_report_limit_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0052_0010b150_tp_edge_report_limit_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1548,9 +1548,9 @@ Funcao stock: tp_edge_report_limit_write
 Entrada Ghidra: 0010b690
 Tamanho stock: 952 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0053_0010b690_tp_edge_report_limit_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0053_0010b690_tp_edge_report_limit_write.jsonl
+Alvo no fonte: tp_edge_report_limit_write.c:tp_edge_report_limit_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0053_0010b690_tp_edge_report_limit_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0053_0010b690_tp_edge_report_limit_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1577,9 +1577,9 @@ Funcao stock: get_one_key
 Entrada Ghidra: 0010ba4c
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0054_0010ba4c_get_one_key.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0054_0010ba4c_get_one_key.jsonl
+Alvo no fonte: get_one_key.c:get_one_key
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0054_0010ba4c_get_one_key.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0054_0010ba4c_get_one_key.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1606,9 +1606,9 @@ Funcao stock: set_one_key
 Entrada Ghidra: 0010bb40
 Tamanho stock: 208 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0055_0010bb40_set_one_key.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0055_0010bb40_set_one_key.jsonl
+Alvo no fonte: set_one_key.c:set_one_key
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0055_0010bb40_set_one_key.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0055_0010bb40_set_one_key.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1635,9 +1635,9 @@ Funcao stock: get_play_game
 Entrada Ghidra: 0010bc14
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0056_0010bc14_get_play_game.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0056_0010bc14_get_play_game.jsonl
+Alvo no fonte: get_play_game.c:get_play_game
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0056_0010bc14_get_play_game.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0056_0010bc14_get_play_game.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1664,9 +1664,9 @@ Funcao stock: set_play_game
 Entrada Ghidra: 0010bd08
 Tamanho stock: 196 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0057_0010bd08_set_play_game.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0057_0010bd08_set_play_game.jsonl
+Alvo no fonte: set_play_game.c:set_play_game
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0057_0010bd08_set_play_game.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0057_0010bd08_set_play_game.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1693,9 +1693,9 @@ Funcao stock: get_tp_report_rate
 Entrada Ghidra: 0010bdd0
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0058_0010bdd0_get_tp_report_rate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0058_0010bdd0_get_tp_report_rate.jsonl
+Alvo no fonte: get_tp_report_rate.c:get_tp_report_rate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0058_0010bdd0_get_tp_report_rate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0058_0010bdd0_get_tp_report_rate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1722,9 +1722,9 @@ Funcao stock: set_tp_report_rate
 Entrada Ghidra: 0010bec4
 Tamanho stock: 196 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0059_0010bec4_set_tp_report_rate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0059_0010bec4_set_tp_report_rate.jsonl
+Alvo no fonte: set_tp_report_rate.c:set_tp_report_rate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0059_0010bec4_set_tp_report_rate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0059_0010bec4_set_tp_report_rate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1751,9 +1751,9 @@ Funcao stock: get_follow_hand_level
 Entrada Ghidra: 0010bf8c
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0060_0010bf8c_get_follow_hand_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0060_0010bf8c_get_follow_hand_level.jsonl
+Alvo no fonte: get_follow_hand_level.c:get_follow_hand_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0060_0010bf8c_get_follow_hand_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0060_0010bf8c_get_follow_hand_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1780,9 +1780,9 @@ Funcao stock: set_follow_hand_level
 Entrada Ghidra: 0010c080
 Tamanho stock: 196 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0061_0010c080_set_follow_hand_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0061_0010c080_set_follow_hand_level.jsonl
+Alvo no fonte: set_follow_hand_level.c:set_follow_hand_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0061_0010c080_set_follow_hand_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0061_0010c080_set_follow_hand_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1809,9 +1809,9 @@ Funcao stock: get_stability_level
 Entrada Ghidra: 0010c148
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0062_0010c148_get_stability_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0062_0010c148_get_stability_level.jsonl
+Alvo no fonte: get_stability_level.c:get_stability_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0062_0010c148_get_stability_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0062_0010c148_get_stability_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1838,9 +1838,9 @@ Funcao stock: set_stability_level
 Entrada Ghidra: 0010c23c
 Tamanho stock: 196 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0063_0010c23c_set_stability_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0063_0010c23c_set_stability_level.jsonl
+Alvo no fonte: set_stability_level.c:set_stability_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0063_0010c23c_set_stability_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0063_0010c23c_set_stability_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1867,9 +1867,9 @@ Funcao stock: tp_sensibility_level_read
 Entrada Ghidra: 0010c304
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0064_0010c304_tp_sensibility_level_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0064_0010c304_tp_sensibility_level_read.jsonl
+Alvo no fonte: tp_sensibility_level_read.c:tp_sensibility_level_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0064_0010c304_tp_sensibility_level_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0064_0010c304_tp_sensibility_level_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1896,9 +1896,9 @@ Funcao stock: tp_sensibility_level_write
 Entrada Ghidra: 0010c3f8
 Tamanho stock: 264 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0065_0010c3f8_tp_sensibility_level_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0065_0010c3f8_tp_sensibility_level_write.jsonl
+Alvo no fonte: tp_sensibility_level_write.c:tp_sensibility_level_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0065_0010c3f8_tp_sensibility_level_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0065_0010c3f8_tp_sensibility_level_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1925,9 +1925,9 @@ Funcao stock: tp_game_partition_read
 Entrada Ghidra: 0010c504
 Tamanho stock: 216 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0066_0010c504_tp_game_partition_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0066_0010c504_tp_game_partition_read.jsonl
+Alvo no fonte: tp_game_partition_read.c:tp_game_partition_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0066_0010c504_tp_game_partition_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0066_0010c504_tp_game_partition_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1954,9 +1954,9 @@ Funcao stock: tp_game_partition_write
 Entrada Ghidra: 0010c5e0
 Tamanho stock: 320 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0067_0010c5e0_tp_game_partition_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0067_0010c5e0_tp_game_partition_write.jsonl
+Alvo no fonte: tp_game_partition_write.c:tp_game_partition_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0067_0010c5e0_tp_game_partition_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0067_0010c5e0_tp_game_partition_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -1983,9 +1983,9 @@ Funcao stock: tp_pen_only_read
 Entrada Ghidra: 0010c724
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0068_0010c724_tp_pen_only_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0068_0010c724_tp_pen_only_read.jsonl
+Alvo no fonte: tp_pen_only_read.c:tp_pen_only_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0068_0010c724_tp_pen_only_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0068_0010c724_tp_pen_only_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2012,9 +2012,9 @@ Funcao stock: tp_pen_only_write
 Entrada Ghidra: 0010c818
 Tamanho stock: 272 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0069_0010c818_tp_pen_only_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0069_0010c818_tp_pen_only_write.jsonl
+Alvo no fonte: tp_pen_only_write.c:tp_pen_only_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0069_0010c818_tp_pen_only_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0069_0010c818_tp_pen_only_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2041,9 +2041,9 @@ Funcao stock: get_finger_lock_flag
 Entrada Ghidra: 0010c92c
 Tamanho stock: 208 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0070_0010c92c_get_finger_lock_flag.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0070_0010c92c_get_finger_lock_flag.jsonl
+Alvo no fonte: get_finger_lock_flag.c:get_finger_lock_flag
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0070_0010c92c_get_finger_lock_flag.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0070_0010c92c_get_finger_lock_flag.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2070,9 +2070,9 @@ Funcao stock: set_finger_lock_flag
 Entrada Ghidra: 0010ca00
 Tamanho stock: 228 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0071_0010ca00_set_finger_lock_flag.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0071_0010ca00_set_finger_lock_flag.jsonl
+Alvo no fonte: set_finger_lock_flag.c:set_finger_lock_flag
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0071_0010ca00_set_finger_lock_flag.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0071_0010ca00_set_finger_lock_flag.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2099,9 +2099,9 @@ Funcao stock: tp_self_test_read
 Entrada Ghidra: 0010cae8
 Tamanho stock: 304 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0072_0010cae8_tp_self_test_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0072_0010cae8_tp_self_test_read.jsonl
+Alvo no fonte: tp_self_test_read.c:tp_self_test_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0072_0010cae8_tp_self_test_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0072_0010cae8_tp_self_test_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2128,9 +2128,9 @@ Funcao stock: tp_self_test_write
 Entrada Ghidra: 0010cc50
 Tamanho stock: 148 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0073_0010cc50_tp_self_test_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0073_0010cc50_tp_self_test_write.jsonl
+Alvo no fonte: tp_self_test_write.c:tp_self_test_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0073_0010cc50_tp_self_test_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0073_0010cc50_tp_self_test_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2157,9 +2157,9 @@ Funcao stock: tp_palm_mode_read
 Entrada Ghidra: 0010cce8
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0074_0010cce8_tp_palm_mode_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0074_0010cce8_tp_palm_mode_read.jsonl
+Alvo no fonte: tp_palm_mode_read.c:tp_palm_mode_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0074_0010cce8_tp_palm_mode_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0074_0010cce8_tp_palm_mode_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2186,9 +2186,9 @@ Funcao stock: tp_palm_mode_write
 Entrada Ghidra: 0010cddc
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0075_0010cddc_tp_palm_mode_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0075_0010cddc_tp_palm_mode_write.jsonl
+Alvo no fonte: tp_palm_mode_write.c:tp_palm_mode_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0075_0010cddc_tp_palm_mode_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0075_0010cddc_tp_palm_mode_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2215,9 +2215,9 @@ Funcao stock: tp_fold_state_read
 Entrada Ghidra: 0010ceb0
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0076_0010ceb0_tp_fold_state_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0076_0010ceb0_tp_fold_state_read.jsonl
+Alvo no fonte: tp_fold_state_read.c:tp_fold_state_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0076_0010ceb0_tp_fold_state_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0076_0010ceb0_tp_fold_state_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2244,9 +2244,9 @@ Funcao stock: tp_fold_state_write
 Entrada Ghidra: 0010cfa4
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0077_0010cfa4_tp_fold_state_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0077_0010cfa4_tp_fold_state_write.jsonl
+Alvo no fonte: tp_fold_state_write.c:tp_fold_state_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0077_0010cfa4_tp_fold_state_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0077_0010cfa4_tp_fold_state_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2273,9 +2273,9 @@ Funcao stock: get_fake_sleep
 Entrada Ghidra: 0010d078
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0078_0010d078_get_fake_sleep.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0078_0010d078_get_fake_sleep.jsonl
+Alvo no fonte: get_fake_sleep.c:get_fake_sleep
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0078_0010d078_get_fake_sleep.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0078_0010d078_get_fake_sleep.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2302,9 +2302,9 @@ Funcao stock: set_fake_sleep
 Entrada Ghidra: 0010d16c
 Tamanho stock: 208 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0079_0010d16c_set_fake_sleep.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0079_0010d16c_set_fake_sleep.jsonl
+Alvo no fonte: set_fake_sleep.c:set_fake_sleep
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0079_0010d16c_set_fake_sleep.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0079_0010d16c_set_fake_sleep.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2331,9 +2331,9 @@ Funcao stock: get_screen_off_awake
 Entrada Ghidra: 0010d240
 Tamanho stock: 240 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0080_0010d240_get_screen_off_awake.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0080_0010d240_get_screen_off_awake.jsonl
+Alvo no fonte: get_screen_off_awake.c:get_screen_off_awake
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0080_0010d240_get_screen_off_awake.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0080_0010d240_get_screen_off_awake.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2360,9 +2360,9 @@ Funcao stock: set_screen_off_awake
 Entrada Ghidra: 0010d334
 Tamanho stock: 208 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0081_0010d334_set_screen_off_awake.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0081_0010d334_set_screen_off_awake.jsonl
+Alvo no fonte: set_screen_off_awake.c:set_screen_off_awake
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0081_0010d334_set_screen_off_awake.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0081_0010d334_set_screen_off_awake.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2389,9 +2389,9 @@ Funcao stock: tp_zlog_debug_read
 Entrada Ghidra: 0010d408
 Tamanho stock: 156 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0082_0010d408_tp_zlog_debug_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0082_0010d408_tp_zlog_debug_read.jsonl
+Alvo no fonte: tp_zlog_debug_read.c:tp_zlog_debug_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0082_0010d408_tp_zlog_debug_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0082_0010d408_tp_zlog_debug_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2418,9 +2418,9 @@ Funcao stock: tp_zlog_debug_write
 Entrada Ghidra: 0010d4a8
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0083_0010d4a8_tp_zlog_debug_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0083_0010d4a8_tp_zlog_debug_write.jsonl
+Alvo no fonte: tp_zlog_debug_write.c:tp_zlog_debug_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0083_0010d4a8_tp_zlog_debug_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0083_0010d4a8_tp_zlog_debug_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2447,9 +2447,9 @@ Funcao stock: ghost_debug_read
 Entrada Ghidra: 0010d57c
 Tamanho stock: 800 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0084_0010d57c_ghost_debug_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0084_0010d57c_ghost_debug_read.jsonl
+Alvo no fonte: ghost_debug_read.c:ghost_debug_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0084_0010d57c_ghost_debug_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0084_0010d57c_ghost_debug_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2476,9 +2476,9 @@ Funcao stock: ghost_debug_write
 Entrada Ghidra: 0010d8d0
 Tamanho stock: 444 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0085_0010d8d0_ghost_debug_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0085_0010d8d0_ghost_debug_write.jsonl
+Alvo no fonte: ghost_debug_write.c:ghost_debug_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0085_0010d8d0_ghost_debug_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0085_0010d8d0_ghost_debug_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2505,9 +2505,9 @@ Funcao stock: tp_BBAT_test_read
 Entrada Ghidra: 0010da90
 Tamanho stock: 260 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0086_0010da90_tp_BBAT_test_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0086_0010da90_tp_BBAT_test_read.jsonl
+Alvo no fonte: tp_BBAT_test_read.c:tp_BBAT_test_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0086_0010da90_tp_BBAT_test_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0086_0010da90_tp_BBAT_test_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2534,9 +2534,9 @@ Funcao stock: tp_BBAT_test_write
 Entrada Ghidra: 0010db98
 Tamanho stock: 52 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0087_0010db98_tp_BBAT_test_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0087_0010db98_tp_BBAT_test_write.jsonl
+Alvo no fonte: tp_BBAT_test_write.c:tp_BBAT_test_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0087_0010db98_tp_BBAT_test_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0087_0010db98_tp_BBAT_test_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2563,9 +2563,9 @@ Funcao stock: tp_test_read
 Entrada Ghidra: 0010dbd0
 Tamanho stock: 264 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0088_0010dbd0_tp_test_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0088_0010dbd0_tp_test_read.jsonl
+Alvo no fonte: tp_test_read.c:tp_test_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0088_0010dbd0_tp_test_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0088_0010dbd0_tp_test_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2592,9 +2592,9 @@ Funcao stock: tp_test_write
 Entrada Ghidra: 0010dcdc
 Tamanho stock: 52 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0089_0010dcdc_tp_test_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0089_0010dcdc_tp_test_write.jsonl
+Alvo no fonte: tp_test_write.c:tp_test_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0089_0010dcdc_tp_test_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0089_0010dcdc_tp_test_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2621,9 +2621,9 @@ Funcao stock: tp_frame_data_read
 Entrada Ghidra: 0010dd14
 Tamanho stock: 240 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0090_0010dd14_tp_frame_data_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0090_0010dd14_tp_frame_data_read.jsonl
+Alvo no fonte: tp_frame_data_read.c:tp_frame_data_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0090_0010dd14_tp_frame_data_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0090_0010dd14_tp_frame_data_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2650,9 +2650,9 @@ Funcao stock: tp_frame_data_write
 Entrada Ghidra: 0010de08
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0091_0010de08_tp_frame_data_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0091_0010de08_tp_frame_data_write.jsonl
+Alvo no fonte: tp_frame_data_write.c:tp_frame_data_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0091_0010de08_tp_frame_data_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0091_0010de08_tp_frame_data_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2679,9 +2679,9 @@ Funcao stock: tpd_sysfs_fwimage_show
 Entrada Ghidra: 0010dedc
 Tamanho stock: 272 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0092_0010dedc_tpd_sysfs_fwimage_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0092_0010dedc_tpd_sysfs_fwimage_show.jsonl
+Alvo no fonte: tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0092_0010dedc_tpd_sysfs_fwimage_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0092_0010dedc_tpd_sysfs_fwimage_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2708,9 +2708,9 @@ Funcao stock: tpd_sysfs_fwimage_store
 Entrada Ghidra: 0010dff0
 Tamanho stock: 224 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0093_0010dff0_tpd_sysfs_fwimage_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0093_0010dff0_tpd_sysfs_fwimage_store.jsonl
+Alvo no fonte: tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0093_0010dff0_tpd_sysfs_fwimage_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0093_0010dff0_tpd_sysfs_fwimage_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2737,9 +2737,9 @@ Funcao stock: zte_touch_deinit
 Entrada Ghidra: 0010e0d0
 Tamanho stock: 376 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0094_0010e0d0_zte_touch_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0094_0010e0d0_zte_touch_deinit.jsonl
+Alvo no fonte: zte_touch_deinit.c:zte_touch_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2766,9 +2766,9 @@ Funcao stock: tpd_touch_press
 Entrada Ghidra: 0010e254
 Tamanho stock: 2116 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0095_0010e254_tpd_touch_press.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0095_0010e254_tpd_touch_press.jsonl
+Alvo no fonte: tpd_touch_press.c:tpd_touch_press
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0095_0010e254_tpd_touch_press.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0095_0010e254_tpd_touch_press.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2795,9 +2795,9 @@ Funcao stock: point_report_reset
 Entrada Ghidra: 0010ea98
 Tamanho stock: 216 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0096_0010ea98_point_report_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0096_0010ea98_point_report_reset.jsonl
+Alvo no fonte: point_report_reset.c:point_report_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0096_0010ea98_point_report_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0096_0010ea98_point_report_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2824,9 +2824,9 @@ Funcao stock: tpd_touch_report
 Entrada Ghidra: 0010eb70
 Tamanho stock: 252 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0097_0010eb70_tpd_touch_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0097_0010eb70_tpd_touch_report.jsonl
+Alvo no fonte: tpd_touch_report.c:tpd_touch_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0097_0010eb70_tpd_touch_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0097_0010eb70_tpd_touch_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2853,9 +2853,9 @@ Funcao stock: tpd_touch_release
 Entrada Ghidra: 0010ec70
 Tamanho stock: 1596 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0098_0010ec70_tpd_touch_release.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0098_0010ec70_tpd_touch_release.jsonl
+Alvo no fonte: tpd_touch_release.c:tpd_touch_release
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0098_0010ec70_tpd_touch_release.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0098_0010ec70_tpd_touch_release.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2882,9 +2882,9 @@ Funcao stock: ghost_check_area
 Entrada Ghidra: 0010f2ac
 Tamanho stock: 336 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0099_0010f2ac_ghost_check_area.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0099_0010f2ac_ghost_check_area.jsonl
+Alvo no fonte: ghost_check_area.c:ghost_check_area
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0099_0010f2ac_ghost_check_area.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0099_0010f2ac_ghost_check_area.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2911,9 +2911,9 @@ Funcao stock: tp_ghost_check
 Entrada Ghidra: 0010f400
 Tamanho stock: 1272 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0100_0010f400_tp_ghost_check.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0100_0010f400_tp_ghost_check.jsonl
+Alvo no fonte: tp_ghost_check.c:tp_ghost_check
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0100_0010f400_tp_ghost_check.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0100_0010f400_tp_ghost_check.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2940,9 +2940,9 @@ Funcao stock: ghost_check_reset
 Entrada Ghidra: 0010f924
 Tamanho stock: 52 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0101_0010f924_ghost_check_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0101_0010f924_ghost_check_reset.jsonl
+Alvo no fonte: ghost_check_reset.c:ghost_check_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0101_0010f924_ghost_check_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0101_0010f924_ghost_check_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2969,9 +2969,9 @@ Funcao stock: tpd_clean_all_event
 Entrada Ghidra: 0010f95c
 Tamanho stock: 164 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0102_0010f95c_tpd_clean_all_event.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0102_0010f95c_tpd_clean_all_event.jsonl
+Alvo no fonte: tpd_clean_all_event.c:tpd_clean_all_event
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0102_0010f95c_tpd_clean_all_event.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0102_0010f95c_tpd_clean_all_event.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -2998,9 +2998,9 @@ Funcao stock: tpd_report_work_init
 Entrada Ghidra: 0010fa04
 Tamanho stock: 672 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0103_0010fa04_tpd_report_work_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0103_0010fa04_tpd_report_work_init.jsonl
+Alvo no fonte: tpd_report_work_init.c:tpd_report_work_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0103_0010fa04_tpd_report_work_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0103_0010fa04_tpd_report_work_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3027,9 +3027,9 @@ Funcao stock: tpd_id0_report_work
 Entrada Ghidra: 0010fca8
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0104_0010fca8_tpd_id0_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0104_0010fca8_tpd_id0_report_work.jsonl
+Alvo no fonte: tpd_id0_report_work.c:tpd_id0_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0104_0010fca8_tpd_id0_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0104_0010fca8_tpd_id0_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3056,9 +3056,9 @@ Funcao stock: tpd_id1_report_work
 Entrada Ghidra: 0010fcd4
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0105_0010fcd4_tpd_id1_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0105_0010fcd4_tpd_id1_report_work.jsonl
+Alvo no fonte: tpd_id1_report_work.c:tpd_id1_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0105_0010fcd4_tpd_id1_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0105_0010fcd4_tpd_id1_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3085,9 +3085,9 @@ Funcao stock: tpd_id2_report_work
 Entrada Ghidra: 0010fd00
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0106_0010fd00_tpd_id2_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0106_0010fd00_tpd_id2_report_work.jsonl
+Alvo no fonte: tpd_id2_report_work.c:tpd_id2_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0106_0010fd00_tpd_id2_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0106_0010fd00_tpd_id2_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3114,9 +3114,9 @@ Funcao stock: tpd_id3_report_work
 Entrada Ghidra: 0010fd2c
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0107_0010fd2c_tpd_id3_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0107_0010fd2c_tpd_id3_report_work.jsonl
+Alvo no fonte: tpd_id3_report_work.c:tpd_id3_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0107_0010fd2c_tpd_id3_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0107_0010fd2c_tpd_id3_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3143,9 +3143,9 @@ Funcao stock: tpd_id4_report_work
 Entrada Ghidra: 0010fd58
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0108_0010fd58_tpd_id4_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0108_0010fd58_tpd_id4_report_work.jsonl
+Alvo no fonte: tpd_id4_report_work.c:tpd_id4_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0108_0010fd58_tpd_id4_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0108_0010fd58_tpd_id4_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3172,9 +3172,9 @@ Funcao stock: tpd_id5_report_work
 Entrada Ghidra: 0010fd84
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0109_0010fd84_tpd_id5_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0109_0010fd84_tpd_id5_report_work.jsonl
+Alvo no fonte: tpd_id5_report_work.c:tpd_id5_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0109_0010fd84_tpd_id5_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0109_0010fd84_tpd_id5_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3201,9 +3201,9 @@ Funcao stock: tpd_id6_report_work
 Entrada Ghidra: 0010fdb0
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0110_0010fdb0_tpd_id6_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0110_0010fdb0_tpd_id6_report_work.jsonl
+Alvo no fonte: tpd_id6_report_work.c:tpd_id6_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0110_0010fdb0_tpd_id6_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0110_0010fdb0_tpd_id6_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3230,9 +3230,9 @@ Funcao stock: tpd_id7_report_work
 Entrada Ghidra: 0010fddc
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0111_0010fddc_tpd_id7_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0111_0010fddc_tpd_id7_report_work.jsonl
+Alvo no fonte: tpd_id7_report_work.c:tpd_id7_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0111_0010fddc_tpd_id7_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0111_0010fddc_tpd_id7_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3259,9 +3259,9 @@ Funcao stock: tpd_id8_report_work
 Entrada Ghidra: 0010fe08
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0112_0010fe08_tpd_id8_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0112_0010fe08_tpd_id8_report_work.jsonl
+Alvo no fonte: tpd_id8_report_work.c:tpd_id8_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0112_0010fe08_tpd_id8_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0112_0010fe08_tpd_id8_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3288,9 +3288,9 @@ Funcao stock: tpd_id9_report_work
 Entrada Ghidra: 0010fe34
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0113_0010fe34_tpd_id9_report_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0113_0010fe34_tpd_id9_report_work.jsonl
+Alvo no fonte: tpd_id9_report_work.c:tpd_id9_report_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0113_0010fe34_tpd_id9_report_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0113_0010fe34_tpd_id9_report_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3317,9 +3317,9 @@ Funcao stock: tpd_report_work_deinit
 Entrada Ghidra: 0010fe60
 Tamanho stock: 140 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0114_0010fe60_tpd_report_work_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0114_0010fe60_tpd_report_work_deinit.jsonl
+Alvo no fonte: tpd_report_work_deinit.c:tpd_report_work_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0114_0010fe60_tpd_report_work_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0114_0010fe60_tpd_report_work_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3346,9 +3346,9 @@ Funcao stock: point_is_in_limit_area
 Entrada Ghidra: 0010feec
 Tamanho stock: 448 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0115_0010feec_point_is_in_limit_area.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0115_0010feec_point_is_in_limit_area.jsonl
+Alvo no fonte: point_is_in_limit_area.c:point_is_in_limit_area
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0115_0010feec_point_is_in_limit_area.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0115_0010feec_point_is_in_limit_area.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3375,9 +3375,9 @@ Funcao stock: edge_long_press_up
 Entrada Ghidra: 001100ac
 Tamanho stock: 624 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0116_001100ac_edge_long_press_up.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0116_001100ac_edge_long_press_up.jsonl
+Alvo no fonte: edge_long_press_up.c:edge_long_press_up
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0116_001100ac_edge_long_press_up.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0116_001100ac_edge_long_press_up.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3404,9 +3404,9 @@ Funcao stock: change_tp_state
 Entrada Ghidra: 00110320
 Tamanho stock: 376 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0117_00110320_change_tp_state.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0117_00110320_change_tp_state.jsonl
+Alvo no fonte: change_tp_state.c:change_tp_state
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0117_00110320_change_tp_state.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0117_00110320_change_tp_state.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3433,9 +3433,9 @@ Funcao stock: suspend_tp_need_awake
 Entrada Ghidra: 0011049c
 Tamanho stock: 80 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0118_0011049c_suspend_tp_need_awake.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0118_0011049c_suspend_tp_need_awake.jsonl
+Alvo no fonte: suspend_tp_need_awake.c:suspend_tp_need_awake
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0118_0011049c_suspend_tp_need_awake.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0118_0011049c_suspend_tp_need_awake.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3462,9 +3462,9 @@ Funcao stock: tp_esd_check
 Entrada Ghidra: 001104f0
 Tamanho stock: 80 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0119_001104f0_tp_esd_check.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0119_001104f0_tp_esd_check.jsonl
+Alvo no fonte: tp_esd_check.c:tp_esd_check
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0119_001104f0_tp_esd_check.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0119_001104f0_tp_esd_check.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3491,9 +3491,9 @@ Funcao stock: set_lcd_reset_processing
 Entrada Ghidra: 00110544
 Tamanho stock: 56 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0120_00110544_set_lcd_reset_processing.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0120_00110544_set_lcd_reset_processing.jsonl
+Alvo no fonte: set_lcd_reset_processing.c:set_lcd_reset_processing
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0120_00110544_set_lcd_reset_processing.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0120_00110544_set_lcd_reset_processing.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3520,9 +3520,9 @@ Funcao stock: set_gpio_mode
 Entrada Ghidra: 00110580
 Tamanho stock: 84 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0121_00110580_set_gpio_mode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0121_00110580_set_gpio_mode.jsonl
+Alvo no fonte: set_gpio_mode.c:set_gpio_mode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0121_00110580_set_gpio_mode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0121_00110580_set_gpio_mode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3549,9 +3549,9 @@ Funcao stock: tpd_reset_gpio_output
 Entrada Ghidra: 001105d8
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0122_001105d8_tpd_reset_gpio_output.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0122_001105d8_tpd_reset_gpio_output.jsonl
+Alvo no fonte: tpd_reset_gpio_output.c:tpd_reset_gpio_output
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0122_001105d8_tpd_reset_gpio_output.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0122_001105d8_tpd_reset_gpio_output.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3578,9 +3578,9 @@ Funcao stock: ufp_report_lcd_state_delayed_work
 Entrada Ghidra: 00110624
 Tamanho stock: 68 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0123_00110624_ufp_report_lcd_state_delayed_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0123_00110624_ufp_report_lcd_state_delayed_work.jsonl
+Alvo no fonte: ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0123_00110624_ufp_report_lcd_state_delayed_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0123_00110624_ufp_report_lcd_state_delayed_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3607,9 +3607,9 @@ Funcao stock: cancel_report_lcd_state_delayed_work
 Entrada Ghidra: 0011066c
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0124_0011066c_cancel_report_lcd_state_delayed_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0124_0011066c_cancel_report_lcd_state_delayed_work.jsonl
+Alvo no fonte: cancel_report_lcd_state_delayed_work.c:cancel_report_lcd_state_delayed_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0124_0011066c_cancel_report_lcd_state_delayed_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0124_0011066c_cancel_report_lcd_state_delayed_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3636,9 +3636,9 @@ Funcao stock: tpd_resume_work_init
 Entrada Ghidra: 00110698
 Tamanho stock: 176 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0125_00110698_tpd_resume_work_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0125_00110698_tpd_resume_work_init.jsonl
+Alvo no fonte: tpd_resume_work_init.c:tpd_resume_work_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0125_00110698_tpd_resume_work_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0125_00110698_tpd_resume_work_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3665,9 +3665,9 @@ Funcao stock: tpd_resume_work
 Entrada Ghidra: 0011074c
 Tamanho stock: 84 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0126_0011074c_tpd_resume_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0126_0011074c_tpd_resume_work.jsonl
+Alvo no fonte: tpd_resume_work.c:tpd_resume_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0126_0011074c_tpd_resume_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0126_0011074c_tpd_resume_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3694,9 +3694,9 @@ Funcao stock: tpd_suspend_work
 Entrada Ghidra: 001107a4
 Tamanho stock: 72 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0127_001107a4_tpd_suspend_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0127_001107a4_tpd_suspend_work.jsonl
+Alvo no fonte: tpd_suspend_work.c:tpd_suspend_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0127_001107a4_tpd_suspend_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0127_001107a4_tpd_suspend_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3723,9 +3723,9 @@ Funcao stock: ufp_report_lcd_state_work
 Entrada Ghidra: 001107f0
 Tamanho stock: 28 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0128_001107f0_ufp_report_lcd_state_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0128_001107f0_ufp_report_lcd_state_work.jsonl
+Alvo no fonte: ufp_report_lcd_state_work.c:ufp_report_lcd_state_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0128_001107f0_ufp_report_lcd_state_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0128_001107f0_ufp_report_lcd_state_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3752,9 +3752,9 @@ Funcao stock: tpd_resume_work_deinit
 Entrada Ghidra: 00110810
 Tamanho stock: 84 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0129_00110810_tpd_resume_work_deinit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0129_00110810_tpd_resume_work_deinit.jsonl
+Alvo no fonte: tpd_resume_work_deinit.c:tpd_resume_work_deinit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0129_00110810_tpd_resume_work_deinit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0129_00110810_tpd_resume_work_deinit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3781,9 +3781,9 @@ Funcao stock: ufp_get_lcdstate
 Entrada Ghidra: 00110868
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0130_00110868_ufp_get_lcdstate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0130_00110868_ufp_get_lcdstate.jsonl
+Alvo no fonte: ufp_get_lcdstate.c:ufp_get_lcdstate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0130_00110868_ufp_get_lcdstate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0130_00110868_ufp_get_lcdstate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3810,9 +3810,9 @@ Funcao stock: ufp_report_gesture_uevent
 Entrada Ghidra: 00110878
 Tamanho stock: 228 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0131_00110878_ufp_report_gesture_uevent.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0131_00110878_ufp_report_gesture_uevent.jsonl
+Alvo no fonte: ufp_report_gesture_uevent.c:ufp_report_gesture_uevent
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0131_00110878_ufp_report_gesture_uevent.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0131_00110878_ufp_report_gesture_uevent.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3839,9 +3839,9 @@ Funcao stock: report_ufp_uevent
 Entrada Ghidra: 00110960
 Tamanho stock: 644 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0132_00110960_report_ufp_uevent.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0132_00110960_report_ufp_uevent.jsonl
+Alvo no fonte: report_ufp_uevent.c:report_ufp_uevent
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0132_00110960_report_ufp_uevent.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0132_00110960_report_ufp_uevent.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3868,9 +3868,9 @@ Funcao stock: one_key_report
 Entrada Ghidra: 00110be8
 Tamanho stock: 316 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0133_00110be8_one_key_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0133_00110be8_one_key_report.jsonl
+Alvo no fonte: one_key_report.c:one_key_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0133_00110be8_one_key_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0133_00110be8_one_key_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3897,9 +3897,9 @@ Funcao stock: uf_touch_report
 Entrada Ghidra: 00110d28
 Tamanho stock: 436 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0134_00110d28_uf_touch_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0134_00110d28_uf_touch_report.jsonl
+Alvo no fonte: uf_touch_report.c:uf_touch_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0134_00110d28_uf_touch_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0134_00110d28_uf_touch_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3926,9 +3926,9 @@ Funcao stock: ufp_report_lcd_state
 Entrada Ghidra: 00110ee0
 Tamanho stock: 160 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0135_00110ee0_ufp_report_lcd_state.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0135_00110ee0_ufp_report_lcd_state.jsonl
+Alvo no fonte: ufp_report_lcd_state.c:ufp_report_lcd_state
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0135_00110ee0_ufp_report_lcd_state.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0135_00110ee0_ufp_report_lcd_state.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3955,9 +3955,9 @@ Funcao stock: ufp_notifier_cb
 Entrada Ghidra: 00110f84
 Tamanho stock: 40 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0136_00110f84_ufp_notifier_cb.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0136_00110f84_ufp_notifier_cb.jsonl
+Alvo no fonte: ufp_notifier_cb.c:ufp_notifier_cb
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0136_00110f84_ufp_notifier_cb.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0136_00110f84_ufp_notifier_cb.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -3984,9 +3984,9 @@ Funcao stock: ufp_mac_init
 Entrada Ghidra: 00110fb0
 Tamanho stock: 216 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0137_00110fb0_ufp_mac_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0137_00110fb0_ufp_mac_init.jsonl
+Alvo no fonte: ufp_mac_init.c:ufp_mac_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0137_00110fb0_ufp_mac_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0137_00110fb0_ufp_mac_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4013,9 +4013,9 @@ Funcao stock: ufp_single_tap_work
 Entrada Ghidra: 0011108c
 Tamanho stock: 12 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0138_0011108c_ufp_single_tap_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0138_0011108c_ufp_single_tap_work.jsonl
+Alvo no fonte: ufp_single_tap_work.c:ufp_single_tap_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0138_0011108c_ufp_single_tap_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0138_0011108c_ufp_single_tap_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4042,9 +4042,9 @@ Funcao stock: ufp_mac_exit
 Entrada Ghidra: 0011109c
 Tamanho stock: 80 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0139_0011109c_ufp_mac_exit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0139_0011109c_ufp_mac_exit.jsonl
+Alvo no fonte: ufp_mac_exit.c:ufp_mac_exit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0139_0011109c_ufp_mac_exit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0139_0011109c_ufp_mac_exit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4071,9 +4071,9 @@ Funcao stock: syna_dev_free_input_events
 Entrada Ghidra: 001110f0
 Tamanho stock: 280 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0140_001110f0_syna_dev_free_input_events.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0140_001110f0_syna_dev_free_input_events.jsonl
+Alvo no fonte: syna_dev_free_input_events.c:syna_dev_free_input_events
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0140_001110f0_syna_dev_free_input_events.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0140_001110f0_syna_dev_free_input_events.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4100,9 +4100,9 @@ Funcao stock: syna_dev_set_screen_on_fp_mode
 Entrada Ghidra: 0011120c
 Tamanho stock: 136 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0141_0011120c_syna_dev_set_screen_on_fp_mode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0141_0011120c_syna_dev_set_screen_on_fp_mode.jsonl
+Alvo no fonte: syna_dev_set_screen_on_fp_mode.c:syna_dev_set_screen_on_fp_mode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0141_0011120c_syna_dev_set_screen_on_fp_mode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0141_0011120c_syna_dev_set_screen_on_fp_mode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4129,9 +4129,9 @@ Funcao stock: syna_dev_set_tp_report_rate
 Entrada Ghidra: 00111298
 Tamanho stock: 352 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0142_00111298_syna_dev_set_tp_report_rate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0142_00111298_syna_dev_set_tp_report_rate.jsonl
+Alvo no fonte: syna_dev_set_tp_report_rate.c:syna_dev_set_tp_report_rate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0142_00111298_syna_dev_set_tp_report_rate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0142_00111298_syna_dev_set_tp_report_rate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4158,9 +4158,9 @@ Funcao stock: syna_dev_do_reflash
 Entrada Ghidra: 001113fc
 Tamanho stock: 260 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0143_001113fc_syna_dev_do_reflash.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0143_001113fc_syna_dev_do_reflash.jsonl
+Alvo no fonte: syna_dev_do_reflash.c:syna_dev_do_reflash
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0143_001113fc_syna_dev_do_reflash.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0143_001113fc_syna_dev_do_reflash.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4187,9 +4187,9 @@ Funcao stock: syna_dev_set_charger_mode
 Entrada Ghidra: 00111504
 Tamanho stock: 112 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0144_00111504_syna_dev_set_charger_mode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0144_00111504_syna_dev_set_charger_mode.jsonl
+Alvo no fonte: syna_dev_set_charger_mode.c:syna_dev_set_charger_mode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0144_00111504_syna_dev_set_charger_mode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0144_00111504_syna_dev_set_charger_mode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4216,9 +4216,9 @@ Funcao stock: syna_dev_set_sensibility_level
 Entrada Ghidra: 00111578
 Tamanho stock: 412 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0145_00111578_syna_dev_set_sensibility_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0145_00111578_syna_dev_set_sensibility_level.jsonl
+Alvo no fonte: syna_dev_set_sensibility_level.c:syna_dev_set_sensibility_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0145_00111578_syna_dev_set_sensibility_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0145_00111578_syna_dev_set_sensibility_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4245,9 +4245,9 @@ Funcao stock: syna_dev_set_follow_hand_level
 Entrada Ghidra: 00111718
 Tamanho stock: 392 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0146_00111718_syna_dev_set_follow_hand_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0146_00111718_syna_dev_set_follow_hand_level.jsonl
+Alvo no fonte: syna_dev_set_follow_hand_level.c:syna_dev_set_follow_hand_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0146_00111718_syna_dev_set_follow_hand_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0146_00111718_syna_dev_set_follow_hand_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4274,9 +4274,9 @@ Funcao stock: syna_dev_set_stability_level
 Entrada Ghidra: 001118a4
 Tamanho stock: 392 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0147_001118a4_syna_dev_set_stability_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0147_001118a4_syna_dev_set_stability_level.jsonl
+Alvo no fonte: syna_dev_set_stability_level.c:syna_dev_set_stability_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0147_001118a4_syna_dev_set_stability_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0147_001118a4_syna_dev_set_stability_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4303,9 +4303,9 @@ Funcao stock: syna_dev_set_display_rotation
 Entrada Ghidra: 00111a30
 Tamanho stock: 260 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0148_00111a30_syna_dev_set_display_rotation.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0148_00111a30_syna_dev_set_display_rotation.jsonl
+Alvo no fonte: syna_dev_set_display_rotation.c:syna_dev_set_display_rotation
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0148_00111a30_syna_dev_set_display_rotation.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0148_00111a30_syna_dev_set_display_rotation.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4332,9 +4332,9 @@ Funcao stock: syna_dev_set_play_game
 Entrada Ghidra: 00111b38
 Tamanho stock: 112 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0149_00111b38_syna_dev_set_play_game.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0149_00111b38_syna_dev_set_play_game.jsonl
+Alvo no fonte: syna_dev_set_play_game.c:syna_dev_set_play_game
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0149_00111b38_syna_dev_set_play_game.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0149_00111b38_syna_dev_set_play_game.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4361,9 +4361,9 @@ Funcao stock: syna_recovery_game_mode_after_reset
 Entrada Ghidra: 00111bac
 Tamanho stock: 408 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0150_00111bac_syna_recovery_game_mode_after_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0150_00111bac_syna_recovery_game_mode_after_reset.jsonl
+Alvo no fonte: syna_recovery_game_mode_after_reset.c:syna_recovery_game_mode_after_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0150_00111bac_syna_recovery_game_mode_after_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0150_00111bac_syna_recovery_game_mode_after_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4390,9 +4390,9 @@ Funcao stock: syna_dev_get_frame_data
 Entrada Ghidra: 00111d48
 Tamanho stock: 120 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0151_00111d48_syna_dev_get_frame_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0151_00111d48_syna_dev_get_frame_data.jsonl
+Alvo no fonte: syna_dev_get_frame_data.c:syna_dev_get_frame_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0151_00111d48_syna_dev_get_frame_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0151_00111d48_syna_dev_get_frame_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4419,9 +4419,9 @@ Funcao stock: syna_ts_check_dt
 Entrada Ghidra: 00111dc4
 Tamanho stock: 412 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0152_00111dc4_syna_ts_check_dt.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0152_00111dc4_syna_ts_check_dt.jsonl
+Alvo no fonte: syna_ts_check_dt.c:syna_ts_check_dt
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0152_00111dc4_syna_ts_check_dt.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0152_00111dc4_syna_ts_check_dt.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4448,9 +4448,9 @@ Funcao stock: zte_reset_frame_list
 Entrada Ghidra: 00111f64
 Tamanho stock: 100 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0153_00111f64_zte_reset_frame_list.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0153_00111f64_zte_reset_frame_list.jsonl
+Alvo no fonte: zte_reset_frame_list.c:zte_reset_frame_list
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0153_00111f64_zte_reset_frame_list.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0153_00111f64_zte_reset_frame_list.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4477,9 +4477,9 @@ Funcao stock: syna_dev_module_init
 Entrada Ghidra: 00111fcc
 Tamanho stock: 60 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0154_00111fcc_syna_dev_module_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0154_00111fcc_syna_dev_module_init.jsonl
+Alvo no fonte: syna_dev_module_init.c:syna_dev_module_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0154_00111fcc_syna_dev_module_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0154_00111fcc_syna_dev_module_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4506,9 +4506,9 @@ Funcao stock: syna_dev_module_exit
 Entrada Ghidra: 0011200c
 Tamanho stock: 40 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0155_0011200c_syna_dev_module_exit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0155_0011200c_syna_dev_module_exit.jsonl
+Alvo no fonte: syna_dev_module_exit.c:syna_dev_module_exit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0155_0011200c_syna_dev_module_exit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0155_0011200c_syna_dev_module_exit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4535,9 +4535,9 @@ Funcao stock: syna_dev_probe
 Entrada Ghidra: 00112038
 Tamanho stock: 1364 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0156_00112038_syna_dev_probe.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0156_00112038_syna_dev_probe.jsonl
+Alvo no fonte: syna_dev_probe.c:syna_dev_probe
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0156_00112038_syna_dev_probe.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0156_00112038_syna_dev_probe.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4564,9 +4564,9 @@ Funcao stock: syna_dev_remove
 Entrada Ghidra: 001125bc
 Tamanho stock: 308 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0157_001125bc_syna_dev_remove.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0157_001125bc_syna_dev_remove.jsonl
+Alvo no fonte: syna_dev_remove.c:syna_dev_remove
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0157_001125bc_syna_dev_remove.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4593,9 +4593,9 @@ Funcao stock: syna_dev_shutdown
 Entrada Ghidra: 001126f4
 Tamanho stock: 28 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0158_001126f4_syna_dev_shutdown.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0158_001126f4_syna_dev_shutdown.jsonl
+Alvo no fonte: syna_dev_shutdown.c:syna_dev_shutdown
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0158_001126f4_syna_dev_shutdown.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0158_001126f4_syna_dev_shutdown.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4622,9 +4622,9 @@ Funcao stock: syna_dev_connect
 Entrada Ghidra: 00112714
 Tamanho stock: 1004 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0159_00112714_syna_dev_connect.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0159_00112714_syna_dev_connect.jsonl
+Alvo no fonte: syna_dev_connect.c:syna_dev_connect
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0159_00112714_syna_dev_connect.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0159_00112714_syna_dev_connect.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4651,9 +4651,9 @@ Funcao stock: syna_dev_disconnect
 Entrada Ghidra: 00112b04
 Tamanho stock: 392 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0160_00112b04_syna_dev_disconnect.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0160_00112b04_syna_dev_disconnect.jsonl
+Alvo no fonte: syna_dev_disconnect.c:syna_dev_disconnect
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0160_00112b04_syna_dev_disconnect.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4680,9 +4680,9 @@ Funcao stock: syna_dev_set_up_app_fw
 Entrada Ghidra: 00112c90
 Tamanho stock: 216 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0161_00112c90_syna_dev_set_up_app_fw.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0161_00112c90_syna_dev_set_up_app_fw.jsonl
+Alvo no fonte: syna_dev_set_up_app_fw.c:syna_dev_set_up_app_fw
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0161_00112c90_syna_dev_set_up_app_fw.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0161_00112c90_syna_dev_set_up_app_fw.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4709,9 +4709,9 @@ Funcao stock: syna_dev_resume
 Entrada Ghidra: 00112d6c
 Tamanho stock: 1548 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0162_00112d6c_syna_dev_resume.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0162_00112d6c_syna_dev_resume.jsonl
+Alvo no fonte: syna_dev_resume.c:syna_dev_resume
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0162_00112d6c_syna_dev_resume.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0162_00112d6c_syna_dev_resume.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4738,9 +4738,9 @@ Funcao stock: syna_dev_suspend
 Entrada Ghidra: 0011337c
 Tamanho stock: 392 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0163_0011337c_syna_dev_suspend.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0163_0011337c_syna_dev_suspend.jsonl
+Alvo no fonte: syna_dev_suspend.c:syna_dev_suspend
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0163_0011337c_syna_dev_suspend.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0163_0011337c_syna_dev_suspend.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4767,9 +4767,9 @@ Funcao stock: syna_ts_register_for_panel_events
 Entrada Ghidra: 00113504
 Tamanho stock: 136 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0164_00113504_syna_ts_register_for_panel_events.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0164_00113504_syna_ts_register_for_panel_events.jsonl
+Alvo no fonte: syna_ts_register_for_panel_events.c:syna_ts_register_for_panel_events
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0164_00113504_syna_ts_register_for_panel_events.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0164_00113504_syna_ts_register_for_panel_events.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4796,9 +4796,9 @@ Funcao stock: syna_dev_helper_work
 Entrada Ghidra: 00113590
 Tamanho stock: 308 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0165_00113590_syna_dev_helper_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0165_00113590_syna_dev_helper_work.jsonl
+Alvo no fonte: syna_dev_helper_work.c:syna_dev_helper_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0165_00113590_syna_dev_helper_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0165_00113590_syna_dev_helper_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4825,9 +4825,9 @@ Funcao stock: syna_dev_set_up_input_device
 Entrada Ghidra: 001136c4
 Tamanho stock: 896 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0166_001136c4_syna_dev_set_up_input_device.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0166_001136c4_syna_dev_set_up_input_device.jsonl
+Alvo no fonte: syna_dev_set_up_input_device.c:syna_dev_set_up_input_device
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0166_001136c4_syna_dev_set_up_input_device.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0166_001136c4_syna_dev_set_up_input_device.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4854,9 +4854,9 @@ Funcao stock: syna_dev_process_unexpected_reset
 Entrada Ghidra: 00113a9c
 Tamanho stock: 160 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0167_00113a9c_syna_dev_process_unexpected_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0167_00113a9c_syna_dev_process_unexpected_reset.jsonl
+Alvo no fonte: syna_dev_process_unexpected_reset.c:syna_dev_process_unexpected_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0167_00113a9c_syna_dev_process_unexpected_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0167_00113a9c_syna_dev_process_unexpected_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4883,9 +4883,9 @@ Funcao stock: syna_dev_reflash_startup_work
 Entrada Ghidra: 00113b40
 Tamanho stock: 304 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0168_00113b40_syna_dev_reflash_startup_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0168_00113b40_syna_dev_reflash_startup_work.jsonl
+Alvo no fonte: syna_dev_reflash_startup_work.c:syna_dev_reflash_startup_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0168_00113b40_syna_dev_reflash_startup_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0168_00113b40_syna_dev_reflash_startup_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4912,9 +4912,9 @@ Funcao stock: syna_dev_process_touch_report
 Entrada Ghidra: 00113c74
 Tamanho stock: 1340 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0169_00113c74_syna_dev_process_touch_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0169_00113c74_syna_dev_process_touch_report.jsonl
+Alvo no fonte: syna_dev_process_touch_report.c:syna_dev_process_touch_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0169_00113c74_syna_dev_process_touch_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0169_00113c74_syna_dev_process_touch_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4941,9 +4941,9 @@ Funcao stock: syna_dev_isr
 Entrada Ghidra: 001141b4
 Tamanho stock: 224 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0170_001141b4_syna_dev_isr.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0170_001141b4_syna_dev_isr.jsonl
+Alvo no fonte: syna_dev_isr.c:syna_dev_isr
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0170_001141b4_syna_dev_isr.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0170_001141b4_syna_dev_isr.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4970,9 +4970,9 @@ Funcao stock: syna_dev_enter_normal_sensing
 Entrada Ghidra: 00114294
 Tamanho stock: 180 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0171_00114294_syna_dev_enter_normal_sensing.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0171_00114294_syna_dev_enter_normal_sensing.jsonl
+Alvo no fonte: syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0171_00114294_syna_dev_enter_normal_sensing.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0171_00114294_syna_dev_enter_normal_sensing.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -4999,9 +4999,9 @@ Funcao stock: syna_dev_enable_lowpwr_gesture
 Entrada Ghidra: 00114348
 Tamanho stock: 452 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0172_00114348_syna_dev_enable_lowpwr_gesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0172_00114348_syna_dev_enable_lowpwr_gesture.jsonl
+Alvo no fonte: syna_dev_enable_lowpwr_gesture.c:syna_dev_enable_lowpwr_gesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0172_00114348_syna_dev_enable_lowpwr_gesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0172_00114348_syna_dev_enable_lowpwr_gesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5028,9 +5028,9 @@ Funcao stock: syna_poll
 Entrada Ghidra: 00114510
 Tamanho stock: 108 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0173_00114510_syna_poll.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0173_00114510_syna_poll.jsonl
+Alvo no fonte: syna_poll.c:syna_poll
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0173_00114510_syna_poll.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0173_00114510_syna_poll.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5057,9 +5057,9 @@ Funcao stock: syna_ioctl
 Entrada Ghidra: 00114580
 Tamanho stock: 616 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0174_00114580_syna_ioctl.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0174_00114580_syna_ioctl.jsonl
+Alvo no fonte: syna_ioctl.c:syna_ioctl
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0174_00114580_syna_ioctl.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0174_00114580_syna_ioctl.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5086,9 +5086,9 @@ Funcao stock: syna_mmap
 Entrada Ghidra: 001147ec
 Tamanho stock: 176 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0175_001147ec_syna_mmap.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0175_001147ec_syna_mmap.jsonl
+Alvo no fonte: syna_mmap.c:syna_mmap
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0175_001147ec_syna_mmap.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0175_001147ec_syna_mmap.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5115,9 +5115,9 @@ Funcao stock: syna_open
 Entrada Ghidra: 001148a0
 Tamanho stock: 60 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0176_001148a0_syna_open.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0176_001148a0_syna_open.jsonl
+Alvo no fonte: syna_open.c:syna_open
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0176_001148a0_syna_open.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0176_001148a0_syna_open.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5144,9 +5144,9 @@ Funcao stock: syna_release
 Entrada Ghidra: 001148e0
 Tamanho stock: 48 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0177_001148e0_syna_release.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0177_001148e0_syna_release.jsonl
+Alvo no fonte: syna_release.c:syna_release
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0177_001148e0_syna_release.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0177_001148e0_syna_release.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5173,9 +5173,9 @@ Funcao stock: syna_ts_panel_notifier_callback
 Entrada Ghidra: 00114914
 Tamanho stock: 300 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0178_00114914_syna_ts_panel_notifier_callback.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0178_00114914_syna_ts_panel_notifier_callback.jsonl
+Alvo no fonte: syna_ts_panel_notifier_callback.c:syna_ts_panel_notifier_callback
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0178_00114914_syna_ts_panel_notifier_callback.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0178_00114914_syna_ts_panel_notifier_callback.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5202,9 +5202,9 @@ Funcao stock: tpd_goodix_ts_resume
 Entrada Ghidra: 00114a44
 Tamanho stock: 36 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0179_00114a44_tpd_goodix_ts_resume.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0179_00114a44_tpd_goodix_ts_resume.jsonl
+Alvo no fonte: tpd_goodix_ts_resume.c:tpd_goodix_ts_resume
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0179_00114a44_tpd_goodix_ts_resume.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0179_00114a44_tpd_goodix_ts_resume.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5231,9 +5231,9 @@ Funcao stock: tpd_goodix_ts_suspend
 Entrada Ghidra: 00114a6c
 Tamanho stock: 36 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0180_00114a6c_tpd_goodix_ts_suspend.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0180_00114a6c_tpd_goodix_ts_suspend.jsonl
+Alvo no fonte: tpd_goodix_ts_suspend.c:tpd_goodix_ts_suspend
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0180_00114a6c_tpd_goodix_ts_suspend.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0180_00114a6c_tpd_goodix_ts_suspend.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5260,9 +5260,9 @@ Funcao stock: syna_pm_suspend
 Entrada Ghidra: 00114a94
 Tamanho stock: 72 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0181_00114a94_syna_pm_suspend.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0181_00114a94_syna_pm_suspend.jsonl
+Alvo no fonte: syna_pm_suspend.c:syna_pm_suspend
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0181_00114a94_syna_pm_suspend.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0181_00114a94_syna_pm_suspend.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5289,9 +5289,9 @@ Funcao stock: syna_pm_resume
 Entrada Ghidra: 00114ae0
 Tamanho stock: 72 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0182_00114ae0_syna_pm_resume.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0182_00114ae0_syna_pm_resume.jsonl
+Alvo no fonte: syna_pm_resume.c:syna_pm_resume
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0182_00114ae0_syna_pm_resume.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0182_00114ae0_syna_pm_resume.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5318,9 +5318,9 @@ Funcao stock: syna_cdev_create
 Entrada Ghidra: 00114b3c
 Tamanho stock: 632 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0183_00114b3c_syna_cdev_create.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0183_00114b3c_syna_cdev_create.jsonl
+Alvo no fonte: syna_cdev_create.c:syna_cdev_create
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0183_00114b3c_syna_cdev_create.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0183_00114b3c_syna_cdev_create.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5347,9 +5347,9 @@ Funcao stock: syna_cdev_devnode
 Entrada Ghidra: 00114db8
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0184_00114db8_syna_cdev_devnode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0184_00114db8_syna_cdev_devnode.jsonl
+Alvo no fonte: syna_cdev_devnode.c:syna_cdev_devnode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0184_00114db8_syna_cdev_devnode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0184_00114db8_syna_cdev_devnode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5376,9 +5376,9 @@ Funcao stock: syna_cdev_remove
 Entrada Ghidra: 00114e04
 Tamanho stock: 400 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0185_00114e04_syna_cdev_remove.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0185_00114e04_syna_cdev_remove.jsonl
+Alvo no fonte: syna_cdev_remove.c:syna_cdev_remove
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0185_00114e04_syna_cdev_remove.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5405,9 +5405,9 @@ Funcao stock: syna_cdev_llseek
 Entrada Ghidra: 00114f98
 Tamanho stock: 8 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0186_00114f98_syna_cdev_llseek.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0186_00114f98_syna_cdev_llseek.jsonl
+Alvo no fonte: syna_cdev_llseek.c:syna_cdev_llseek
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0186_00114f98_syna_cdev_llseek.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0186_00114f98_syna_cdev_llseek.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5434,9 +5434,9 @@ Funcao stock: syna_cdev_read
 Entrada Ghidra: 00114fa4
 Tamanho stock: 160 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0187_00114fa4_syna_cdev_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0187_00114fa4_syna_cdev_read.jsonl
+Alvo no fonte: syna_cdev_read.c:syna_cdev_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0187_00114fa4_syna_cdev_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0187_00114fa4_syna_cdev_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5463,9 +5463,9 @@ Funcao stock: syna_cdev_write
 Entrada Ghidra: 00115048
 Tamanho stock: 160 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0188_00115048_syna_cdev_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0188_00115048_syna_cdev_write.jsonl
+Alvo no fonte: syna_cdev_write.c:syna_cdev_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0188_00115048_syna_cdev_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0188_00115048_syna_cdev_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5492,9 +5492,9 @@ Funcao stock: syna_cdev_ioctls
 Entrada Ghidra: 001150ec
 Tamanho stock: 8572 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0189_001150ec_syna_cdev_ioctls.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0189_001150ec_syna_cdev_ioctls.jsonl
+Alvo no fonte: syna_cdev_ioctls.c:syna_cdev_ioctls
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0189_001150ec_syna_cdev_ioctls.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0189_001150ec_syna_cdev_ioctls.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5521,9 +5521,9 @@ Funcao stock: syna_cdev_open
 Entrada Ghidra: 00117278
 Tamanho stock: 356 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0190_00117278_syna_cdev_open.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0190_00117278_syna_cdev_open.jsonl
+Alvo no fonte: syna_cdev_open.c:syna_cdev_open
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0190_00117278_syna_cdev_open.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0190_00117278_syna_cdev_open.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5550,9 +5550,9 @@ Funcao stock: syna_cdev_release
 Entrada Ghidra: 001173e0
 Tamanho stock: 376 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0191_001173e0_syna_cdev_release.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0191_001173e0_syna_cdev_release.jsonl
+Alvo no fonte: syna_cdev_release.c:syna_cdev_release
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0191_001173e0_syna_cdev_release.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0191_001173e0_syna_cdev_release.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5579,9 +5579,9 @@ Funcao stock: syna_cdev_ioctl_raw_read
 Entrada Ghidra: 00117558
 Tamanho stock: 892 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0192_00117558_syna_cdev_ioctl_raw_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0192_00117558_syna_cdev_ioctl_raw_read.jsonl
+Alvo no fonte: syna_cdev_ioctl_raw_read.c:syna_cdev_ioctl_raw_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0192_00117558_syna_cdev_ioctl_raw_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0192_00117558_syna_cdev_ioctl_raw_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5608,9 +5608,9 @@ Funcao stock: syna_cdev_ioctl_raw_write
 Entrada Ghidra: 001178d8
 Tamanho stock: 940 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0193_001178d8_syna_cdev_ioctl_raw_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0193_001178d8_syna_cdev_ioctl_raw_write.jsonl
+Alvo no fonte: syna_cdev_ioctl_raw_write.c:syna_cdev_ioctl_raw_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0193_001178d8_syna_cdev_ioctl_raw_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0193_001178d8_syna_cdev_ioctl_raw_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5637,9 +5637,9 @@ Funcao stock: syna_cdev_process_reports
 Entrada Ghidra: 00117c90
 Tamanho stock: 1520 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0194_00117c90_syna_cdev_process_reports.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0194_00117c90_syna_cdev_process_reports.jsonl
+Alvo no fonte: syna_cdev_process_reports.c:syna_cdev_process_reports
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0194_00117c90_syna_cdev_process_reports.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0194_00117c90_syna_cdev_process_reports.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5666,9 +5666,9 @@ Funcao stock: syna_request_managed_device
 Entrada Ghidra: 00118364
 Tamanho stock: 28 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0195_00118364_syna_request_managed_device.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0195_00118364_syna_request_managed_device.jsonl
+Alvo no fonte: syna_request_managed_device.c:syna_request_managed_device
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0195_00118364_syna_request_managed_device.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0195_00118364_syna_request_managed_device.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5695,9 +5695,9 @@ Funcao stock: syna_spi_hw_reset
 Entrada Ghidra: 00118384
 Tamanho stock: 144 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0196_00118384_syna_spi_hw_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0196_00118384_syna_spi_hw_reset.jsonl
+Alvo no fonte: syna_spi_hw_reset.c:syna_spi_hw_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0196_00118384_syna_spi_hw_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0196_00118384_syna_spi_hw_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5724,9 +5724,9 @@ Funcao stock: syna_hw_interface_init
 Entrada Ghidra: 00118418
 Tamanho stock: 196 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0197_00118418_syna_hw_interface_init.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0197_00118418_syna_hw_interface_init.jsonl
+Alvo no fonte: syna_hw_interface_init.c:syna_hw_interface_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0197_00118418_syna_hw_interface_init.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0197_00118418_syna_hw_interface_init.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5753,9 +5753,9 @@ Funcao stock: syna_hw_interface_exit
 Entrada Ghidra: 001184e0
 Tamanho stock: 48 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0198_001184e0_syna_hw_interface_exit.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0198_001184e0_syna_hw_interface_exit.jsonl
+Alvo no fonte: syna_hw_interface_exit.c:syna_hw_interface_exit
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0198_001184e0_syna_hw_interface_exit.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0198_001184e0_syna_hw_interface_exit.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5782,9 +5782,9 @@ Funcao stock: syna_spi_release
 Entrada Ghidra: 00118514
 Tamanho stock: 44 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0199_00118514_syna_spi_release.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0199_00118514_syna_spi_release.jsonl
+Alvo no fonte: syna_spi_release.c:syna_spi_release
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0199_00118514_syna_spi_release.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0199_00118514_syna_spi_release.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5811,9 +5811,9 @@ Funcao stock: syna_spi_probe
 Entrada Ghidra: 00118544
 Tamanho stock: 4344 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0200_00118544_syna_spi_probe.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0200_00118544_syna_spi_probe.jsonl
+Alvo no fonte: syna_spi_probe.c:syna_spi_probe
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0200_00118544_syna_spi_probe.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0200_00118544_syna_spi_probe.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5840,9 +5840,9 @@ Funcao stock: syna_spi_remove
 Entrada Ghidra: 00119670
 Tamanho stock: 396 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0201_00119670_syna_spi_remove.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0201_00119670_syna_spi_remove.jsonl
+Alvo no fonte: syna_spi_remove.c:syna_spi_remove
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0201_00119670_syna_spi_remove.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0201_00119670_syna_spi_remove.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5869,9 +5869,9 @@ Funcao stock: syna_spi_read
 Entrada Ghidra: 00119800
 Tamanho stock: 736 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0202_00119800_syna_spi_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0202_00119800_syna_spi_read.jsonl
+Alvo no fonte: syna_spi_read.c:syna_spi_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0202_00119800_syna_spi_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0202_00119800_syna_spi_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5898,9 +5898,9 @@ Funcao stock: syna_spi_write
 Entrada Ghidra: 00119ae4
 Tamanho stock: 696 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0203_00119ae4_syna_spi_write.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0203_00119ae4_syna_spi_write.jsonl
+Alvo no fonte: syna_spi_write.c:syna_spi_write
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0203_00119ae4_syna_spi_write.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0203_00119ae4_syna_spi_write.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5927,9 +5927,9 @@ Funcao stock: syna_spi_enable_irq
 Entrada Ghidra: 00119da0
 Tamanho stock: 216 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0204_00119da0_syna_spi_enable_irq.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0204_00119da0_syna_spi_enable_irq.jsonl
+Alvo no fonte: syna_spi_enable_irq.c:syna_spi_enable_irq
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0204_00119da0_syna_spi_enable_irq.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0204_00119da0_syna_spi_enable_irq.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5956,9 +5956,9 @@ Funcao stock: syna_spi_power_on
 Entrada Ghidra: 00119e7c
 Tamanho stock: 616 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0205_00119e7c_syna_spi_power_on.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0205_00119e7c_syna_spi_power_on.jsonl
+Alvo no fonte: syna_spi_power_on.c:syna_spi_power_on
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0205_00119e7c_syna_spi_power_on.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0205_00119e7c_syna_spi_power_on.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -5985,9 +5985,9 @@ Funcao stock: syna_spi_alloc_mem
 Entrada Ghidra: 0011a0e4
 Tamanho stock: 632 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0206_0011a0e4_syna_spi_alloc_mem.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0206_0011a0e4_syna_spi_alloc_mem.jsonl
+Alvo no fonte: syna_spi_alloc_mem.c:syna_spi_alloc_mem
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0206_0011a0e4_syna_spi_alloc_mem.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0206_0011a0e4_syna_spi_alloc_mem.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6014,9 +6014,9 @@ Funcao stock: syna_spi_get_gpio
 Entrada Ghidra: 0011a35c
 Tamanho stock: 224 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0207_0011a35c_syna_spi_get_gpio.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0207_0011a35c_syna_spi_get_gpio.jsonl
+Alvo no fonte: syna_spi_get_gpio.c:syna_spi_get_gpio
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0207_0011a35c_syna_spi_get_gpio.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0207_0011a35c_syna_spi_get_gpio.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6043,9 +6043,9 @@ Funcao stock: syna_sysfs_create_dir
 Entrada Ghidra: 0011a440
 Tamanho stock: 212 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0208_0011a440_syna_sysfs_create_dir.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0208_0011a440_syna_sysfs_create_dir.jsonl
+Alvo no fonte: syna_sysfs_create_dir.c:syna_sysfs_create_dir
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0208_0011a440_syna_sysfs_create_dir.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0208_0011a440_syna_sysfs_create_dir.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6072,9 +6072,9 @@ Funcao stock: syna_sysfs_remove_dir
 Entrada Ghidra: 0011a518
 Tamanho stock: 132 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0209_0011a518_syna_sysfs_remove_dir.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0209_0011a518_syna_sysfs_remove_dir.jsonl
+Alvo no fonte: syna_sysfs_remove_dir.c:syna_sysfs_remove_dir
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0209_0011a518_syna_sysfs_remove_dir.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0209_0011a518_syna_sysfs_remove_dir.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6101,9 +6101,9 @@ Funcao stock: syna_sysfs_info_show
 Entrada Ghidra: 0011a5a0
 Tamanho stock: 1020 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0210_0011a5a0_syna_sysfs_info_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0210_0011a5a0_syna_sysfs_info_show.jsonl
+Alvo no fonte: syna_sysfs_info_show.c:syna_sysfs_info_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0210_0011a5a0_syna_sysfs_info_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0210_0011a5a0_syna_sysfs_info_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6130,9 +6130,9 @@ Funcao stock: syna_sysfs_debug_store
 Entrada Ghidra: 0011a9a0
 Tamanho stock: 312 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0211_0011a9a0_syna_sysfs_debug_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0211_0011a9a0_syna_sysfs_debug_store.jsonl
+Alvo no fonte: syna_sysfs_debug_store.c:syna_sysfs_debug_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0211_0011a9a0_syna_sysfs_debug_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0211_0011a9a0_syna_sysfs_debug_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6159,9 +6159,9 @@ Funcao stock: syna_sysfs_get_delta_show
 Entrada Ghidra: 0011aadc
 Tamanho stock: 1224 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0212_0011aadc_syna_sysfs_get_delta_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0212_0011aadc_syna_sysfs_get_delta_show.jsonl
+Alvo no fonte: syna_sysfs_get_delta_show.c:syna_sysfs_get_delta_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0212_0011aadc_syna_sysfs_get_delta_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0212_0011aadc_syna_sysfs_get_delta_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6188,9 +6188,9 @@ Funcao stock: syna_sysfs_reset_store
 Entrada Ghidra: 0011afa8
 Tamanho stock: 384 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0213_0011afa8_syna_sysfs_reset_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0213_0011afa8_syna_sysfs_reset_store.jsonl
+Alvo no fonte: syna_sysfs_reset_store.c:syna_sysfs_reset_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0213_0011afa8_syna_sysfs_reset_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0213_0011afa8_syna_sysfs_reset_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6217,9 +6217,9 @@ Funcao stock: syna_sysfs_irq_en_store
 Entrada Ghidra: 0011b12c
 Tamanho stock: 404 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0214_0011b12c_syna_sysfs_irq_en_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0214_0011b12c_syna_sysfs_irq_en_store.jsonl
+Alvo no fonte: syna_sysfs_irq_en_store.c:syna_sysfs_irq_en_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0214_0011b12c_syna_sysfs_irq_en_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0214_0011b12c_syna_sysfs_irq_en_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6246,9 +6246,9 @@ Funcao stock: syna_sysfs_pwr_store
 Entrada Ghidra: 0011b2c4
 Tamanho stock: 232 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0215_0011b2c4_syna_sysfs_pwr_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0215_0011b2c4_syna_sysfs_pwr_store.jsonl
+Alvo no fonte: syna_sysfs_pwr_store.c:syna_sysfs_pwr_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0215_0011b2c4_syna_sysfs_pwr_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0215_0011b2c4_syna_sysfs_pwr_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6275,9 +6275,9 @@ Funcao stock: syna_sysfs_fw_update_store
 Entrada Ghidra: 0011b3b0
 Tamanho stock: 268 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0216_0011b3b0_syna_sysfs_fw_update_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0216_0011b3b0_syna_sysfs_fw_update_store.jsonl
+Alvo no fonte: syna_sysfs_fw_update_store.c:syna_sysfs_fw_update_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0216_0011b3b0_syna_sysfs_fw_update_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0216_0011b3b0_syna_sysfs_fw_update_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6304,9 +6304,9 @@ Funcao stock: syna_testing_pt0a_zte
 Entrada Ghidra: 0011b4c0
 Tamanho stock: 800 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0217_0011b4c0_syna_testing_pt0a_zte.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0217_0011b4c0_syna_testing_pt0a_zte.jsonl
+Alvo no fonte: syna_testing_pt0a_zte.c:syna_testing_pt0a_zte
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0217_0011b4c0_syna_testing_pt0a_zte.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0217_0011b4c0_syna_testing_pt0a_zte.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6333,9 +6333,9 @@ Funcao stock: syna_testing_pt05_zte
 Entrada Ghidra: 0011b818
 Tamanho stock: 800 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0218_0011b818_syna_testing_pt05_zte.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0218_0011b818_syna_testing_pt05_zte.jsonl
+Alvo no fonte: syna_testing_pt05_zte.c:syna_testing_pt05_zte
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0218_0011b818_syna_testing_pt05_zte.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0218_0011b818_syna_testing_pt05_zte.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6362,9 +6362,9 @@ Funcao stock: syna_testing_pt01_zte
 Entrada Ghidra: 0011bb70
 Tamanho stock: 640 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0219_0011bb70_syna_testing_pt01_zte.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0219_0011bb70_syna_testing_pt01_zte.jsonl
+Alvo no fonte: syna_testing_pt01_zte.c:syna_testing_pt01_zte
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0219_0011bb70_syna_testing_pt01_zte.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0219_0011bb70_syna_testing_pt01_zte.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6391,9 +6391,9 @@ Funcao stock: syna_testing_create_dir
 Entrada Ghidra: 0011be28
 Tamanho stock: 152 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0220_0011be28_syna_testing_create_dir.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0220_0011be28_syna_testing_create_dir.jsonl
+Alvo no fonte: syna_testing_create_dir.c:syna_testing_create_dir
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0220_0011be28_syna_testing_create_dir.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0220_0011be28_syna_testing_create_dir.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6420,9 +6420,9 @@ Funcao stock: syna_testing_remove_dir
 Entrada Ghidra: 0011bec4
 Tamanho stock: 64 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0221_0011bec4_syna_testing_remove_dir.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0221_0011bec4_syna_testing_remove_dir.jsonl
+Alvo no fonte: syna_testing_remove_dir.c:syna_testing_remove_dir
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0221_0011bec4_syna_testing_remove_dir.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0221_0011bec4_syna_testing_remove_dir.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6449,9 +6449,9 @@ Funcao stock: syna_testing_check_dev_id_show
 Entrada Ghidra: 0011bf08
 Tamanho stock: 744 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0222_0011bf08_syna_testing_check_dev_id_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0222_0011bf08_syna_testing_check_dev_id_show.jsonl
+Alvo no fonte: syna_testing_check_dev_id_show.c:syna_testing_check_dev_id_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0222_0011bf08_syna_testing_check_dev_id_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0222_0011bf08_syna_testing_check_dev_id_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6478,9 +6478,9 @@ Funcao stock: syna_testing_check_config_id_show
 Entrada Ghidra: 0011c1f4
 Tamanho stock: 536 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0223_0011c1f4_syna_testing_check_config_id_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0223_0011c1f4_syna_testing_check_config_id_show.jsonl
+Alvo no fonte: syna_testing_check_config_id_show.c:syna_testing_check_config_id_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0223_0011c1f4_syna_testing_check_config_id_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0223_0011c1f4_syna_testing_check_config_id_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6507,9 +6507,9 @@ Funcao stock: syna_testing_pt01_show
 Entrada Ghidra: 0011c410
 Tamanho stock: 600 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0224_0011c410_syna_testing_pt01_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0224_0011c410_syna_testing_pt01_show.jsonl
+Alvo no fonte: syna_testing_pt01_show.c:syna_testing_pt01_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0224_0011c410_syna_testing_pt01_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0224_0011c410_syna_testing_pt01_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6536,9 +6536,9 @@ Funcao stock: syna_testing_pt05_show
 Entrada Ghidra: 0011c66c
 Tamanho stock: 724 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0225_0011c66c_syna_testing_pt05_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0225_0011c66c_syna_testing_pt05_show.jsonl
+Alvo no fonte: syna_testing_pt05_show.c:syna_testing_pt05_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0225_0011c66c_syna_testing_pt05_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0225_0011c66c_syna_testing_pt05_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6565,9 +6565,9 @@ Funcao stock: syna_testing_pt0a_show
 Entrada Ghidra: 0011c944
 Tamanho stock: 724 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0226_0011c944_syna_testing_pt0a_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0226_0011c944_syna_testing_pt0a_show.jsonl
+Alvo no fonte: syna_testing_pt0a_show.c:syna_testing_pt0a_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0226_0011c944_syna_testing_pt0a_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0226_0011c944_syna_testing_pt0a_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6594,9 +6594,9 @@ Funcao stock: syna_tcm_get_testing_0A00
 Entrada Ghidra: 0011cc1c
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0227_0011cc1c_syna_tcm_get_testing_0A00.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0227_0011cc1c_syna_tcm_get_testing_0A00.jsonl
+Alvo no fonte: syna_tcm_get_testing_0A00.c:syna_tcm_get_testing_0A00
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0227_0011cc1c_syna_tcm_get_testing_0A00.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0227_0011cc1c_syna_tcm_get_testing_0A00.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6623,9 +6623,9 @@ Funcao stock: syna_tcm_testing_noise
 Entrada Ghidra: 0011cc2c
 Tamanho stock: 576 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0228_0011cc2c_syna_tcm_testing_noise.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0228_0011cc2c_syna_tcm_testing_noise.jsonl
+Alvo no fonte: syna_tcm_testing_noise.c:syna_tcm_testing_noise
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0228_0011cc2c_syna_tcm_testing_noise.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0228_0011cc2c_syna_tcm_testing_noise.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6652,9 +6652,9 @@ Funcao stock: syna_tcm_buf_copy
 Entrada Ghidra: 0011ce6c
 Tamanho stock: 640 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0229_0011ce6c_syna_tcm_buf_copy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0229_0011ce6c_syna_tcm_buf_copy.jsonl
+Alvo no fonte: syna_tcm_buf_copy.c:syna_tcm_buf_copy
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0229_0011ce6c_syna_tcm_buf_copy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0229_0011ce6c_syna_tcm_buf_copy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6681,9 +6681,9 @@ Funcao stock: syna_tcm_testing_check_frame_data
 Entrada Ghidra: 0011d0ec
 Tamanho stock: 364 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0230_0011d0ec_syna_tcm_testing_check_frame_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0230_0011d0ec_syna_tcm_testing_check_frame_data.jsonl
+Alvo no fonte: syna_tcm_testing_check_frame_data.c:syna_tcm_testing_check_frame_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0230_0011d0ec_syna_tcm_testing_check_frame_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0230_0011d0ec_syna_tcm_testing_check_frame_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6710,9 +6710,9 @@ Funcao stock: syna_tcm_testing_0A00_check_upper_bound
 Entrada Ghidra: 0011d25c
 Tamanho stock: 100 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0231_0011d25c_syna_tcm_testing_0A00_check_upper_bound.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0231_0011d25c_syna_tcm_testing_0A00_check_upper_bound.jsonl
+Alvo no fonte: syna_tcm_testing_0A00_check_upper_bound.c:syna_tcm_testing_0A00_check_upper_bound
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0231_0011d25c_syna_tcm_testing_0A00_check_upper_bound.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0231_0011d25c_syna_tcm_testing_0A00_check_upper_bound.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6739,9 +6739,9 @@ Funcao stock: syna_tcm_testing_0A00_check_lower_bound
 Entrada Ghidra: 0011d2c4
 Tamanho stock: 100 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0232_0011d2c4_syna_tcm_testing_0A00_check_lower_bound.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0232_0011d2c4_syna_tcm_testing_0A00_check_lower_bound.jsonl
+Alvo no fonte: syna_tcm_testing_0A00_check_lower_bound.c:syna_tcm_testing_0A00_check_lower_bound
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0232_0011d2c4_syna_tcm_testing_0A00_check_lower_bound.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0232_0011d2c4_syna_tcm_testing_0A00_check_lower_bound.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6768,9 +6768,9 @@ Funcao stock: syna_tcm_get_testing_0001
 Entrada Ghidra: 0011d32c
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0233_0011d32c_syna_tcm_get_testing_0001.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0233_0011d32c_syna_tcm_get_testing_0001.jsonl
+Alvo no fonte: syna_tcm_get_testing_0001.c:syna_tcm_get_testing_0001
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0233_0011d32c_syna_tcm_get_testing_0001.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0233_0011d32c_syna_tcm_get_testing_0001.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6797,9 +6797,9 @@ Funcao stock: syna_tcm_testing_build_id
 Entrada Ghidra: 0011d33c
 Tamanho stock: 600 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0234_0011d33c_syna_tcm_testing_build_id.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0234_0011d33c_syna_tcm_testing_build_id.jsonl
+Alvo no fonte: syna_tcm_testing_build_id.c:syna_tcm_testing_build_id
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0234_0011d33c_syna_tcm_testing_build_id.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0234_0011d33c_syna_tcm_testing_build_id.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6826,9 +6826,9 @@ Funcao stock: syna_tcm_buf_alloc
 Entrada Ghidra: 0011d594
 Tamanho stock: 232 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0235_0011d594_syna_tcm_buf_alloc.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0235_0011d594_syna_tcm_buf_alloc.jsonl
+Alvo no fonte: syna_tcm_buf_alloc.c:syna_tcm_buf_alloc
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0235_0011d594_syna_tcm_buf_alloc.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0235_0011d594_syna_tcm_buf_alloc.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6855,9 +6855,9 @@ Funcao stock: syna_pal_mem_cpy
 Entrada Ghidra: 0011d67c
 Tamanho stock: 104 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0236_0011d67c_syna_pal_mem_cpy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0236_0011d67c_syna_pal_mem_cpy.jsonl
+Alvo no fonte: syna_pal_mem_cpy.c:syna_pal_mem_cpy
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0236_0011d67c_syna_pal_mem_cpy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0236_0011d67c_syna_pal_mem_cpy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6884,9 +6884,9 @@ Funcao stock: syna_tcm_testing_0001_check_device_id
 Entrada Ghidra: 0011d6e4
 Tamanho stock: 180 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0237_0011d6e4_syna_tcm_testing_0001_check_device_id.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0237_0011d6e4_syna_tcm_testing_0001_check_device_id.jsonl
+Alvo no fonte: syna_tcm_testing_0001_check_device_id.c:syna_tcm_testing_0001_check_device_id
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0237_0011d6e4_syna_tcm_testing_0001_check_device_id.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0237_0011d6e4_syna_tcm_testing_0001_check_device_id.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6913,9 +6913,9 @@ Funcao stock: syna_tcm_get_testing_0002
 Entrada Ghidra: 0011d79c
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0238_0011d79c_syna_tcm_get_testing_0002.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0238_0011d79c_syna_tcm_get_testing_0002.jsonl
+Alvo no fonte: syna_tcm_get_testing_0002.c:syna_tcm_get_testing_0002
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0238_0011d79c_syna_tcm_get_testing_0002.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0238_0011d79c_syna_tcm_get_testing_0002.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6942,9 +6942,9 @@ Funcao stock: syna_tcm_testing_config_id
 Entrada Ghidra: 0011d7ac
 Tamanho stock: 404 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0239_0011d7ac_syna_tcm_testing_config_id.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0239_0011d7ac_syna_tcm_testing_config_id.jsonl
+Alvo no fonte: syna_tcm_testing_config_id.c:syna_tcm_testing_config_id
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0239_0011d7ac_syna_tcm_testing_config_id.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0239_0011d7ac_syna_tcm_testing_config_id.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -6971,9 +6971,9 @@ Funcao stock: syna_tcm_buf_alloc
 Entrada Ghidra: 0011d940
 Tamanho stock: 220 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0240_0011d940_syna_tcm_buf_alloc.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0240_0011d940_syna_tcm_buf_alloc.jsonl
+Alvo no fonte: syna_tcm_buf_alloc_0.c:syna_tcm_buf_alloc_0
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0240_0011d940_syna_tcm_buf_alloc.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0240_0011d940_syna_tcm_buf_alloc.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7000,9 +7000,9 @@ Funcao stock: syna_pal_mem_cpy
 Entrada Ghidra: 0011da1c
 Tamanho stock: 84 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0241_0011da1c_syna_pal_mem_cpy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0241_0011da1c_syna_pal_mem_cpy.jsonl
+Alvo no fonte: syna_pal_mem_cpy_0.c:syna_pal_mem_cpy_0
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0241_0011da1c_syna_pal_mem_cpy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0241_0011da1c_syna_pal_mem_cpy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7029,9 +7029,9 @@ Funcao stock: syna_tcm_testing_0002_check_config_id
 Entrada Ghidra: 0011da70
 Tamanho stock: 120 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0242_0011da70_syna_tcm_testing_0002_check_config_id.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0242_0011da70_syna_tcm_testing_0002_check_config_id.jsonl
+Alvo no fonte: syna_tcm_testing_0002_check_config_id.c:syna_tcm_testing_0002_check_config_id
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0242_0011da70_syna_tcm_testing_0002_check_config_id.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0242_0011da70_syna_tcm_testing_0002_check_config_id.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7058,9 +7058,9 @@ Funcao stock: syna_tcm_get_testing_0100
 Entrada Ghidra: 0011daec
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0243_0011daec_syna_tcm_get_testing_0100.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0243_0011daec_syna_tcm_get_testing_0100.jsonl
+Alvo no fonte: syna_tcm_get_testing_0100.c:syna_tcm_get_testing_0100
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0243_0011daec_syna_tcm_get_testing_0100.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0243_0011daec_syna_tcm_get_testing_0100.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7087,9 +7087,9 @@ Funcao stock: syna_tcm_testing_trx_trx_short
 Entrada Ghidra: 0011dafc
 Tamanho stock: 488 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0244_0011dafc_syna_tcm_testing_trx_trx_short.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0244_0011dafc_syna_tcm_testing_trx_trx_short.jsonl
+Alvo no fonte: syna_tcm_testing_trx_trx_short.c:syna_tcm_testing_trx_trx_short
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0244_0011dafc_syna_tcm_testing_trx_trx_short.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0244_0011dafc_syna_tcm_testing_trx_trx_short.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7116,9 +7116,9 @@ Funcao stock: syna_tcm_buf_copy
 Entrada Ghidra: 0011dce4
 Tamanho stock: 640 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0245_0011dce4_syna_tcm_buf_copy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0245_0011dce4_syna_tcm_buf_copy.jsonl
+Alvo no fonte: syna_tcm_buf_copy_0.c:syna_tcm_buf_copy_0
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0245_0011dce4_syna_tcm_buf_copy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0245_0011dce4_syna_tcm_buf_copy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7145,9 +7145,9 @@ Funcao stock: syna_tcm_testing_check_array_data
 Entrada Ghidra: 0011df64
 Tamanho stock: 180 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0246_0011df64_syna_tcm_testing_check_array_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0246_0011df64_syna_tcm_testing_check_array_data.jsonl
+Alvo no fonte: syna_tcm_testing_check_array_data.c:syna_tcm_testing_check_array_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0246_0011df64_syna_tcm_testing_check_array_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0246_0011df64_syna_tcm_testing_check_array_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7174,9 +7174,9 @@ Funcao stock: syna_tcm_testing_0100_check_data
 Entrada Ghidra: 0011e01c
 Tamanho stock: 484 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0247_0011e01c_syna_tcm_testing_0100_check_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0247_0011e01c_syna_tcm_testing_0100_check_data.jsonl
+Alvo no fonte: syna_tcm_testing_0100_check_data.c:syna_tcm_testing_0100_check_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0247_0011e01c_syna_tcm_testing_0100_check_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0247_0011e01c_syna_tcm_testing_0100_check_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7203,9 +7203,9 @@ Funcao stock: syna_tcm_get_testing_0500
 Entrada Ghidra: 0011e204
 Tamanho stock: 12 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0248_0011e204_syna_tcm_get_testing_0500.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0248_0011e204_syna_tcm_get_testing_0500.jsonl
+Alvo no fonte: syna_tcm_get_testing_0500.c:syna_tcm_get_testing_0500
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0248_0011e204_syna_tcm_get_testing_0500.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0248_0011e204_syna_tcm_get_testing_0500.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7232,9 +7232,9 @@ Funcao stock: syna_tcm_testing_full_raw
 Entrada Ghidra: 0011e214
 Tamanho stock: 576 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0249_0011e214_syna_tcm_testing_full_raw.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0249_0011e214_syna_tcm_testing_full_raw.jsonl
+Alvo no fonte: syna_tcm_testing_full_raw.c:syna_tcm_testing_full_raw
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0249_0011e214_syna_tcm_testing_full_raw.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0249_0011e214_syna_tcm_testing_full_raw.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7261,9 +7261,9 @@ Funcao stock: syna_tcm_buf_copy
 Entrada Ghidra: 0011e454
 Tamanho stock: 640 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0250_0011e454_syna_tcm_buf_copy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0250_0011e454_syna_tcm_buf_copy.jsonl
+Alvo no fonte: syna_tcm_buf_copy_1.c:syna_tcm_buf_copy_1
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0250_0011e454_syna_tcm_buf_copy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0250_0011e454_syna_tcm_buf_copy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7290,9 +7290,9 @@ Funcao stock: syna_tcm_testing_check_frame_data
 Entrada Ghidra: 0011e6d4
 Tamanho stock: 364 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0251_0011e6d4_syna_tcm_testing_check_frame_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0251_0011e6d4_syna_tcm_testing_check_frame_data.jsonl
+Alvo no fonte: syna_tcm_testing_check_frame_data_0.c:syna_tcm_testing_check_frame_data_0
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0251_0011e6d4_syna_tcm_testing_check_frame_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0251_0011e6d4_syna_tcm_testing_check_frame_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7319,9 +7319,9 @@ Funcao stock: syna_tcm_testing_0500_check_upper_bound
 Entrada Ghidra: 0011e844
 Tamanho stock: 100 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0252_0011e844_syna_tcm_testing_0500_check_upper_bound.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0252_0011e844_syna_tcm_testing_0500_check_upper_bound.jsonl
+Alvo no fonte: syna_tcm_testing_0500_check_upper_bound.c:syna_tcm_testing_0500_check_upper_bound
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0252_0011e844_syna_tcm_testing_0500_check_upper_bound.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0252_0011e844_syna_tcm_testing_0500_check_upper_bound.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7348,9 +7348,9 @@ Funcao stock: syna_tcm_testing_0500_check_lower_bound
 Entrada Ghidra: 0011e8ac
 Tamanho stock: 100 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0253_0011e8ac_syna_tcm_testing_0500_check_lower_bound.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0253_0011e8ac_syna_tcm_testing_0500_check_lower_bound.jsonl
+Alvo no fonte: syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0253_0011e8ac_syna_tcm_testing_0500_check_lower_bound.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0253_0011e8ac_syna_tcm_testing_0500_check_lower_bound.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7377,9 +7377,9 @@ Funcao stock: syna_tcm_v1_detect
 Entrada Ghidra: 0011e914
 Tamanho stock: 1236 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0254_0011e914_syna_tcm_v1_detect.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0254_0011e914_syna_tcm_v1_detect.jsonl
+Alvo no fonte: syna_tcm_v1_detect.c:syna_tcm_v1_detect
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0254_0011e914_syna_tcm_v1_detect.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0254_0011e914_syna_tcm_v1_detect.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7406,9 +7406,9 @@ Funcao stock: syna_tcm_buf_lock
 Entrada Ghidra: 0011ede8
 Tamanho stock: 88 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0255_0011ede8_syna_tcm_buf_lock.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0255_0011ede8_syna_tcm_buf_lock.jsonl
+Alvo no fonte: syna_tcm_buf_lock.c:syna_tcm_buf_lock
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0255_0011ede8_syna_tcm_buf_lock.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0255_0011ede8_syna_tcm_buf_lock.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7435,9 +7435,9 @@ Funcao stock: syna_tcm_buf_unlock
 Entrada Ghidra: 0011ee40
 Tamanho stock: 104 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0256_0011ee40_syna_tcm_buf_unlock.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0256_0011ee40_syna_tcm_buf_unlock.jsonl
+Alvo no fonte: syna_tcm_buf_unlock.c:syna_tcm_buf_unlock
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0256_0011ee40_syna_tcm_buf_unlock.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0256_0011ee40_syna_tcm_buf_unlock.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7464,9 +7464,9 @@ Funcao stock: syna_tcm_v1_write_message
 Entrada Ghidra: 0011eeac
 Tamanho stock: 2084 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0257_0011eeac_syna_tcm_v1_write_message.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0257_0011eeac_syna_tcm_v1_write_message.jsonl
+Alvo no fonte: syna_tcm_v1_write_message.c:syna_tcm_v1_write_message
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0257_0011eeac_syna_tcm_v1_write_message.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0257_0011eeac_syna_tcm_v1_write_message.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7493,9 +7493,9 @@ Funcao stock: syna_tcm_v1_parse_idinfo
 Entrada Ghidra: 0011f6d0
 Tamanho stock: 188 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0258_0011f6d0_syna_tcm_v1_parse_idinfo.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0258_0011f6d0_syna_tcm_v1_parse_idinfo.jsonl
+Alvo no fonte: syna_tcm_v1_parse_idinfo.c:syna_tcm_v1_parse_idinfo
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0258_0011f6d0_syna_tcm_v1_parse_idinfo.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0258_0011f6d0_syna_tcm_v1_parse_idinfo.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7522,9 +7522,9 @@ Funcao stock: syna_tcm_v1_check_max_rw_size
 Entrada Ghidra: 0011f790
 Tamanho stock: 164 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0259_0011f790_syna_tcm_v1_check_max_rw_size.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0259_0011f790_syna_tcm_v1_check_max_rw_size.jsonl
+Alvo no fonte: syna_tcm_v1_check_max_rw_size.c:syna_tcm_v1_check_max_rw_size
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0259_0011f790_syna_tcm_v1_check_max_rw_size.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0259_0011f790_syna_tcm_v1_check_max_rw_size.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7551,9 +7551,9 @@ Funcao stock: syna_tcm_v1_read_message
 Entrada Ghidra: 0011f838
 Tamanho stock: 5484 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0260_0011f838_syna_tcm_v1_read_message.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0260_0011f838_syna_tcm_v1_read_message.jsonl
+Alvo no fonte: syna_tcm_v1_read_message.c:syna_tcm_v1_read_message
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0260_0011f838_syna_tcm_v1_read_message.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0260_0011f838_syna_tcm_v1_read_message.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7580,9 +7580,9 @@ Funcao stock: syna_tcm_v1_set_up_max_rw_size
 Entrada Ghidra: 00120da8
 Tamanho stock: 184 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0261_00120da8_syna_tcm_v1_set_up_max_rw_size.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0261_00120da8_syna_tcm_v1_set_up_max_rw_size.jsonl
+Alvo no fonte: syna_tcm_v1_set_up_max_rw_size.c:syna_tcm_v1_set_up_max_rw_size
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0261_00120da8_syna_tcm_v1_set_up_max_rw_size.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0261_00120da8_syna_tcm_v1_set_up_max_rw_size.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7609,9 +7609,9 @@ Funcao stock: syna_tcm_v1_terminate
 Entrada Ghidra: 00120e64
 Tamanho stock: 136 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0262_00120e64_syna_tcm_v1_terminate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0262_00120e64_syna_tcm_v1_terminate.jsonl
+Alvo no fonte: syna_tcm_v1_terminate.c:syna_tcm_v1_terminate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0262_00120e64_syna_tcm_v1_terminate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0262_00120e64_syna_tcm_v1_terminate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7638,9 +7638,9 @@ Funcao stock: syna_tcm_v1_read
 Entrada Ghidra: 00120eec
 Tamanho stock: 324 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0263_00120eec_syna_tcm_v1_read.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0263_00120eec_syna_tcm_v1_read.jsonl
+Alvo no fonte: syna_tcm_v1_read.c:syna_tcm_v1_read
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0263_00120eec_syna_tcm_v1_read.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0263_00120eec_syna_tcm_v1_read.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7667,9 +7667,9 @@ Funcao stock: syna_tcm_config_timings
 Entrada Ghidra: 00121034
 Tamanho stock: 236 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0264_00121034_syna_tcm_config_timings.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0264_00121034_syna_tcm_config_timings.jsonl
+Alvo no fonte: syna_tcm_config_timings.c:syna_tcm_config_timings
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0264_00121034_syna_tcm_config_timings.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0264_00121034_syna_tcm_config_timings.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7696,9 +7696,9 @@ Funcao stock: syna_tcm_allocate_device
 Entrada Ghidra: 00121124
 Tamanho stock: 1448 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0265_00121124_syna_tcm_allocate_device.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0265_00121124_syna_tcm_allocate_device.jsonl
+Alvo no fonte: syna_tcm_allocate_device.c:syna_tcm_allocate_device
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0265_00121124_syna_tcm_allocate_device.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0265_00121124_syna_tcm_allocate_device.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7725,9 +7725,9 @@ Funcao stock: syna_tcm_remove_device
 Entrada Ghidra: 001216d0
 Tamanho stock: 624 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0266_001216d0_syna_tcm_remove_device.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0266_001216d0_syna_tcm_remove_device.jsonl
+Alvo no fonte: syna_tcm_remove_device.c:syna_tcm_remove_device
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0266_001216d0_syna_tcm_remove_device.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0266_001216d0_syna_tcm_remove_device.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7754,9 +7754,9 @@ Funcao stock: syna_tcm_detect_device
 Entrada Ghidra: 00121944
 Tamanho stock: 396 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0267_00121944_syna_tcm_detect_device.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0267_00121944_syna_tcm_detect_device.jsonl
+Alvo no fonte: syna_tcm_detect_device.c:syna_tcm_detect_device
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0267_00121944_syna_tcm_detect_device.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0267_00121944_syna_tcm_detect_device.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7783,9 +7783,9 @@ Funcao stock: syna_tcm_get_event_data
 Entrada Ghidra: 00121ad4
 Tamanho stock: 316 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0268_00121ad4_syna_tcm_get_event_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0268_00121ad4_syna_tcm_get_event_data.jsonl
+Alvo no fonte: syna_tcm_get_event_data.c:syna_tcm_get_event_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0268_00121ad4_syna_tcm_get_event_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0268_00121ad4_syna_tcm_get_event_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7812,9 +7812,9 @@ Funcao stock: syna_tcm_buf_copy
 Entrada Ghidra: 00121c10
 Tamanho stock: 832 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0269_00121c10_syna_tcm_buf_copy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0269_00121c10_syna_tcm_buf_copy.jsonl
+Alvo no fonte: syna_tcm_buf_copy_2.c:syna_tcm_buf_copy_2
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0269_00121c10_syna_tcm_buf_copy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0269_00121c10_syna_tcm_buf_copy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7841,9 +7841,9 @@ Funcao stock: syna_tcm_identify
 Entrada Ghidra: 00121f54
 Tamanho stock: 492 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0270_00121f54_syna_tcm_identify.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0270_00121f54_syna_tcm_identify.jsonl
+Alvo no fonte: syna_tcm_identify.c:syna_tcm_identify
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0270_00121f54_syna_tcm_identify.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0270_00121f54_syna_tcm_identify.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7870,9 +7870,9 @@ Funcao stock: syna_tcm_buf_unlock
 Entrada Ghidra: 00122140
 Tamanho stock: 104 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0271_00122140_syna_tcm_buf_unlock.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0271_00122140_syna_tcm_buf_unlock.jsonl
+Alvo no fonte: syna_tcm_buf_unlock_0.c:syna_tcm_buf_unlock_0
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0271_00122140_syna_tcm_buf_unlock.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0271_00122140_syna_tcm_buf_unlock.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7899,9 +7899,9 @@ Funcao stock: syna_tcm_reset
 Entrada Ghidra: 001221ac
 Tamanho stock: 364 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0272_001221ac_syna_tcm_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0272_001221ac_syna_tcm_reset.jsonl
+Alvo no fonte: syna_tcm_reset.c:syna_tcm_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0272_001221ac_syna_tcm_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0272_001221ac_syna_tcm_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7928,9 +7928,9 @@ Funcao stock: syna_tcm_enable_report
 Entrada Ghidra: 0012231c
 Tamanho stock: 364 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0273_0012231c_syna_tcm_enable_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0273_0012231c_syna_tcm_enable_report.jsonl
+Alvo no fonte: syna_tcm_enable_report.c:syna_tcm_enable_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0273_0012231c_syna_tcm_enable_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0273_0012231c_syna_tcm_enable_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7957,9 +7957,9 @@ Funcao stock: syna_tcm_wait_for_report
 Entrada Ghidra: 0012248c
 Tamanho stock: 604 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0274_0012248c_syna_tcm_wait_for_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0274_0012248c_syna_tcm_wait_for_report.jsonl
+Alvo no fonte: syna_tcm_wait_for_report.c:syna_tcm_wait_for_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0274_0012248c_syna_tcm_wait_for_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0274_0012248c_syna_tcm_wait_for_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -7986,9 +7986,9 @@ Funcao stock: syna_tcm_switch_fw_mode
 Entrada Ghidra: 001226ec
 Tamanho stock: 728 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0275_001226ec_syna_tcm_switch_fw_mode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0275_001226ec_syna_tcm_switch_fw_mode.jsonl
+Alvo no fonte: syna_tcm_switch_fw_mode.c:syna_tcm_switch_fw_mode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0275_001226ec_syna_tcm_switch_fw_mode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0275_001226ec_syna_tcm_switch_fw_mode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8015,9 +8015,9 @@ Funcao stock: syna_tcm_get_boot_info
 Entrada Ghidra: 001229c8
 Tamanho stock: 572 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0276_001229c8_syna_tcm_get_boot_info.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0276_001229c8_syna_tcm_get_boot_info.jsonl
+Alvo no fonte: syna_tcm_get_boot_info.c:syna_tcm_get_boot_info
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0276_001229c8_syna_tcm_get_boot_info.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0276_001229c8_syna_tcm_get_boot_info.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8044,9 +8044,9 @@ Funcao stock: syna_tcm_get_app_info
 Entrada Ghidra: 00122c08
 Tamanho stock: 672 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0277_00122c08_syna_tcm_get_app_info.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0277_00122c08_syna_tcm_get_app_info.jsonl
+Alvo no fonte: syna_tcm_get_app_info.c:syna_tcm_get_app_info
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0277_00122c08_syna_tcm_get_app_info.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0277_00122c08_syna_tcm_get_app_info.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8073,9 +8073,9 @@ Funcao stock: syna_tcm_get_static_config
 Entrada Ghidra: 00122eac
 Tamanho stock: 556 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0278_00122eac_syna_tcm_get_static_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0278_00122eac_syna_tcm_get_static_config.jsonl
+Alvo no fonte: syna_tcm_get_static_config.c:syna_tcm_get_static_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0278_00122eac_syna_tcm_get_static_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0278_00122eac_syna_tcm_get_static_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8102,9 +8102,9 @@ Funcao stock: syna_tcm_set_static_config
 Entrada Ghidra: 001230dc
 Tamanho stock: 328 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0279_001230dc_syna_tcm_set_static_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0279_001230dc_syna_tcm_set_static_config.jsonl
+Alvo no fonte: syna_tcm_set_static_config.c:syna_tcm_set_static_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0279_001230dc_syna_tcm_set_static_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0279_001230dc_syna_tcm_set_static_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8131,9 +8131,9 @@ Funcao stock: syna_tcm_get_dynamic_config
 Entrada Ghidra: 00123228
 Tamanho stock: 392 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0280_00123228_syna_tcm_get_dynamic_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0280_00123228_syna_tcm_get_dynamic_config.jsonl
+Alvo no fonte: syna_tcm_get_dynamic_config.c:syna_tcm_get_dynamic_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0280_00123228_syna_tcm_get_dynamic_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0280_00123228_syna_tcm_get_dynamic_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8160,9 +8160,9 @@ Funcao stock: syna_tcm_set_dynamic_config
 Entrada Ghidra: 001233b4
 Tamanho stock: 352 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0281_001233b4_syna_tcm_set_dynamic_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0281_001233b4_syna_tcm_set_dynamic_config.jsonl
+Alvo no fonte: syna_tcm_set_dynamic_config.c:syna_tcm_set_dynamic_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0281_001233b4_syna_tcm_set_dynamic_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0281_001233b4_syna_tcm_set_dynamic_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8189,9 +8189,9 @@ Funcao stock: syna_tcm_set_game_partition_config
 Entrada Ghidra: 00123518
 Tamanho stock: 616 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0282_00123518_syna_tcm_set_game_partition_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0282_00123518_syna_tcm_set_game_partition_config.jsonl
+Alvo no fonte: syna_tcm_set_game_partition_config.c:syna_tcm_set_game_partition_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0282_00123518_syna_tcm_set_game_partition_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0282_00123518_syna_tcm_set_game_partition_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8218,9 +8218,9 @@ Funcao stock: syna_tcm_rezero
 Entrada Ghidra: 001237ec
 Tamanho stock: 268 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0283_001237ec_syna_tcm_rezero.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0283_001237ec_syna_tcm_rezero.jsonl
+Alvo no fonte: syna_tcm_rezero.c:syna_tcm_rezero
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0283_001237ec_syna_tcm_rezero.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0283_001237ec_syna_tcm_rezero.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8247,9 +8247,9 @@ Funcao stock: syna_tcm_sleep
 Entrada Ghidra: 001238fc
 Tamanho stock: 264 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0284_001238fc_syna_tcm_sleep.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0284_001238fc_syna_tcm_sleep.jsonl
+Alvo no fonte: syna_tcm_sleep.c:syna_tcm_sleep
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0284_001238fc_syna_tcm_sleep.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0284_001238fc_syna_tcm_sleep.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8276,9 +8276,9 @@ Funcao stock: syna_tcm_get_features
 Entrada Ghidra: 00123a08
 Tamanho stock: 552 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0285_00123a08_syna_tcm_get_features.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0285_00123a08_syna_tcm_get_features.jsonl
+Alvo no fonte: syna_tcm_get_features.c:syna_tcm_get_features
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0285_00123a08_syna_tcm_get_features.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0285_00123a08_syna_tcm_get_features.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8305,9 +8305,9 @@ Funcao stock: syna_tcm_run_production_test
 Entrada Ghidra: 00123c34
 Tamanho stock: 392 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0286_00123c34_syna_tcm_run_production_test.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0286_00123c34_syna_tcm_run_production_test.jsonl
+Alvo no fonte: syna_tcm_run_production_test.c:syna_tcm_run_production_test
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0286_00123c34_syna_tcm_run_production_test.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0286_00123c34_syna_tcm_run_production_test.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8334,9 +8334,9 @@ Funcao stock: syna_tcm_send_command
 Entrada Ghidra: 00123dc0
 Tamanho stock: 476 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0287_00123dc0_syna_tcm_send_command.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0287_00123dc0_syna_tcm_send_command.jsonl
+Alvo no fonte: syna_tcm_send_command.c:syna_tcm_send_command
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0287_00123dc0_syna_tcm_send_command.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0287_00123dc0_syna_tcm_send_command.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8363,9 +8363,9 @@ Funcao stock: syna_tcm_enable_predict_reading
 Entrada Ghidra: 00123fa0
 Tamanho stock: 112 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0288_00123fa0_syna_tcm_enable_predict_reading.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0288_00123fa0_syna_tcm_enable_predict_reading.jsonl
+Alvo no fonte: syna_tcm_enable_predict_reading.c:syna_tcm_enable_predict_reading
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0288_00123fa0_syna_tcm_enable_predict_reading.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0288_00123fa0_syna_tcm_enable_predict_reading.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8392,9 +8392,9 @@ Funcao stock: syna_tcm_set_report_dispatcher
 Entrada Ghidra: 00124014
 Tamanho stock: 188 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0289_00124014_syna_tcm_set_report_dispatcher.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0289_00124014_syna_tcm_set_report_dispatcher.jsonl
+Alvo no fonte: syna_tcm_set_report_dispatcher.c:syna_tcm_set_report_dispatcher
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0289_00124014_syna_tcm_set_report_dispatcher.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0289_00124014_syna_tcm_set_report_dispatcher.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8421,9 +8421,9 @@ Funcao stock: syna_tcm_set_data_duplicator
 Entrada Ghidra: 001240d4
 Tamanho stock: 76 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0290_001240d4_syna_tcm_set_data_duplicator.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0290_001240d4_syna_tcm_set_data_duplicator.jsonl
+Alvo no fonte: syna_tcm_set_data_duplicator.c:syna_tcm_set_data_duplicator
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0290_001240d4_syna_tcm_set_data_duplicator.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0290_001240d4_syna_tcm_set_data_duplicator.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8450,9 +8450,9 @@ Funcao stock: syna_tcm_clear_data_duplicator
 Entrada Ghidra: 00124124
 Tamanho stock: 80 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0291_00124124_syna_tcm_clear_data_duplicator.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0291_00124124_syna_tcm_clear_data_duplicator.jsonl
+Alvo no fonte: syna_tcm_clear_data_duplicator.c:syna_tcm_clear_data_duplicator
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0291_00124124_syna_tcm_clear_data_duplicator.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0291_00124124_syna_tcm_clear_data_duplicator.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8479,9 +8479,9 @@ Funcao stock: syna_tcm_clear_command_processing
 Entrada Ghidra: 00124178
 Tamanho stock: 64 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0292_00124178_syna_tcm_clear_command_processing.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0292_00124178_syna_tcm_clear_command_processing.jsonl
+Alvo no fonte: syna_tcm_clear_command_processing.c:syna_tcm_clear_command_processing
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0292_00124178_syna_tcm_clear_command_processing.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0292_00124178_syna_tcm_clear_command_processing.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8508,9 +8508,9 @@ Funcao stock: syna_tcm_set_post_reset_callback
 Entrada Ghidra: 001241bc
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0293_001241bc_syna_tcm_set_post_reset_callback.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0293_001241bc_syna_tcm_set_post_reset_callback.jsonl
+Alvo no fonte: syna_tcm_set_post_reset_callback.c:syna_tcm_set_post_reset_callback
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0293_001241bc_syna_tcm_set_post_reset_callback.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0293_001241bc_syna_tcm_set_post_reset_callback.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8537,9 +8537,9 @@ Funcao stock: syna_tcm_read_flash_address
 Entrada Ghidra: 00124208
 Tamanho stock: 732 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0294_00124208_syna_tcm_read_flash_address.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0294_00124208_syna_tcm_read_flash_address.jsonl
+Alvo no fonte: syna_tcm_read_flash_address.c:syna_tcm_read_flash_address
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0294_00124208_syna_tcm_read_flash_address.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0294_00124208_syna_tcm_read_flash_address.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8566,9 +8566,9 @@ Funcao stock: syna_tcm_set_up_flash_access
 Entrada Ghidra: 001244e4
 Tamanho stock: 740 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0295_001244e4_syna_tcm_set_up_flash_access.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0295_001244e4_syna_tcm_set_up_flash_access.jsonl
+Alvo no fonte: syna_tcm_set_up_flash_access.c:syna_tcm_set_up_flash_access
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0295_001244e4_syna_tcm_set_up_flash_access.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0295_001244e4_syna_tcm_set_up_flash_access.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8595,9 +8595,9 @@ Funcao stock: syna_tcm_read_flash
 Entrada Ghidra: 001247c8
 Tamanho stock: 744 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0296_001247c8_syna_tcm_read_flash.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0296_001247c8_syna_tcm_read_flash.jsonl
+Alvo no fonte: syna_tcm_read_flash.c:syna_tcm_read_flash
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0296_001247c8_syna_tcm_read_flash.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0296_001247c8_syna_tcm_read_flash.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8624,9 +8624,9 @@ Funcao stock: syna_tcm_read_flash_area
 Entrada Ghidra: 00124ab4
 Tamanho stock: 2012 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0297_00124ab4_syna_tcm_read_flash_area.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0297_00124ab4_syna_tcm_read_flash_area.jsonl
+Alvo no fonte: syna_tcm_read_flash_area.c:syna_tcm_read_flash_area
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0297_00124ab4_syna_tcm_read_flash_area.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0297_00124ab4_syna_tcm_read_flash_area.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8653,9 +8653,9 @@ Funcao stock: syna_tcm_read_flash_boot_config
 Entrada Ghidra: 00125290
 Tamanho stock: 556 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0298_00125290_syna_tcm_read_flash_boot_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0298_00125290_syna_tcm_read_flash_boot_config.jsonl
+Alvo no fonte: syna_tcm_read_flash_boot_config.c:syna_tcm_read_flash_boot_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0298_00125290_syna_tcm_read_flash_boot_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0298_00125290_syna_tcm_read_flash_boot_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8682,9 +8682,9 @@ Funcao stock: syna_tcm_read_flash_boot_cs_config
 Entrada Ghidra: 001254bc
 Tamanho stock: 1372 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0299_001254bc_syna_tcm_read_flash_boot_cs_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0299_001254bc_syna_tcm_read_flash_boot_cs_config.jsonl
+Alvo no fonte: syna_tcm_read_flash_boot_cs_config.c:syna_tcm_read_flash_boot_cs_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0299_001254bc_syna_tcm_read_flash_boot_cs_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0299_001254bc_syna_tcm_read_flash_boot_cs_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8711,9 +8711,9 @@ Funcao stock: syna_tcm_read_flash_mtp_config
 Entrada Ghidra: 00125a18
 Tamanho stock: 508 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0300_00125a18_syna_tcm_read_flash_mtp_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0300_00125a18_syna_tcm_read_flash_mtp_config.jsonl
+Alvo no fonte: syna_tcm_read_flash_mtp_config.c:syna_tcm_read_flash_mtp_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0300_00125a18_syna_tcm_read_flash_mtp_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0300_00125a18_syna_tcm_read_flash_mtp_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8740,9 +8740,9 @@ Funcao stock: syna_tcm_do_fw_update_ex
 Entrada Ghidra: 00125c18
 Tamanho stock: 800 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0301_00125c18_syna_tcm_do_fw_update_ex.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0301_00125c18_syna_tcm_do_fw_update_ex.jsonl
+Alvo no fonte: syna_tcm_do_fw_update_ex.c:syna_tcm_do_fw_update_ex
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0301_00125c18_syna_tcm_do_fw_update_ex.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0301_00125c18_syna_tcm_do_fw_update_ex.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8769,9 +8769,9 @@ Funcao stock: syna_tcm_update_flash_block
 Entrada Ghidra: 00125f38
 Tamanho stock: 2164 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0302_00125f38_syna_tcm_update_flash_block.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0302_00125f38_syna_tcm_update_flash_block.jsonl
+Alvo no fonte: syna_tcm_update_flash_block.c:syna_tcm_update_flash_block
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0302_00125f38_syna_tcm_update_flash_block.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0302_00125f38_syna_tcm_update_flash_block.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8798,9 +8798,9 @@ Funcao stock: syna_tcm_do_fw_update
 Entrada Ghidra: 001267b0
 Tamanho stock: 824 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0303_001267b0_syna_tcm_do_fw_update.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0303_001267b0_syna_tcm_do_fw_update.jsonl
+Alvo no fonte: syna_tcm_do_fw_update.c:syna_tcm_do_fw_update
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0303_001267b0_syna_tcm_do_fw_update.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0303_001267b0_syna_tcm_do_fw_update.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8827,9 +8827,9 @@ Funcao stock: syna_tcm_update_lockdown_config
 Entrada Ghidra: 00126aec
 Tamanho stock: 900 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0304_00126aec_syna_tcm_update_lockdown_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0304_00126aec_syna_tcm_update_lockdown_config.jsonl
+Alvo no fonte: syna_tcm_update_lockdown_config.c:syna_tcm_update_lockdown_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0304_00126aec_syna_tcm_update_lockdown_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0304_00126aec_syna_tcm_update_lockdown_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8856,9 +8856,9 @@ Funcao stock: syna_tcm_check_flash_block
 Entrada Ghidra: 00126e70
 Tamanho stock: 476 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0305_00126e70_syna_tcm_check_flash_block.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0305_00126e70_syna_tcm_check_flash_block.jsonl
+Alvo no fonte: syna_tcm_check_flash_block.c:syna_tcm_check_flash_block
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0305_00126e70_syna_tcm_check_flash_block.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0305_00126e70_syna_tcm_check_flash_block.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8885,9 +8885,9 @@ Funcao stock: syna_tcm_write_flash
 Entrada Ghidra: 0012704c
 Tamanho stock: 964 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0306_0012704c_syna_tcm_write_flash.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0306_0012704c_syna_tcm_write_flash.jsonl
+Alvo no fonte: syna_tcm_write_flash.c:syna_tcm_write_flash
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0306_0012704c_syna_tcm_write_flash.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0306_0012704c_syna_tcm_write_flash.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8914,9 +8914,9 @@ Funcao stock: syna_tcm_update_cs_config
 Entrada Ghidra: 00127414
 Tamanho stock: 996 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0307_00127414_syna_tcm_update_cs_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0307_00127414_syna_tcm_update_cs_config.jsonl
+Alvo no fonte: syna_tcm_update_cs_config.c:syna_tcm_update_cs_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0307_00127414_syna_tcm_update_cs_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0307_00127414_syna_tcm_update_cs_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8943,9 +8943,9 @@ Funcao stock: syna_tcm_read_cs_data
 Entrada Ghidra: 001277fc
 Tamanho stock: 788 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0308_001277fc_syna_tcm_read_cs_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0308_001277fc_syna_tcm_read_cs_data.jsonl
+Alvo no fonte: syna_tcm_read_cs_data.c:syna_tcm_read_cs_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0308_001277fc_syna_tcm_read_cs_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0308_001277fc_syna_tcm_read_cs_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -8972,9 +8972,9 @@ Funcao stock: syna_tcm_update_mtp_data
 Entrada Ghidra: 00127b14
 Tamanho stock: 772 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0309_00127b14_syna_tcm_update_mtp_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0309_00127b14_syna_tcm_update_mtp_data.jsonl
+Alvo no fonte: syna_tcm_update_mtp_data.c:syna_tcm_update_mtp_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0309_00127b14_syna_tcm_update_mtp_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0309_00127b14_syna_tcm_update_mtp_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9001,9 +9001,9 @@ Funcao stock: syna_pal_mem_alloc
 Entrada Ghidra: 00127e18
 Tamanho stock: 104 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0310_00127e18_syna_pal_mem_alloc.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0310_00127e18_syna_pal_mem_alloc.jsonl
+Alvo no fonte: syna_pal_mem_alloc.c:syna_pal_mem_alloc
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0310_00127e18_syna_pal_mem_alloc.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0310_00127e18_syna_pal_mem_alloc.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9030,9 +9030,9 @@ Funcao stock: syna_tcm_read_mtp_data
 Entrada Ghidra: 00127e84
 Tamanho stock: 832 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0311_00127e84_syna_tcm_read_mtp_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0311_00127e84_syna_tcm_read_mtp_data.jsonl
+Alvo no fonte: syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0311_00127e84_syna_tcm_read_mtp_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0311_00127e84_syna_tcm_read_mtp_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9059,9 +9059,9 @@ Funcao stock: syna_tcm_erase_mtp_data
 Entrada Ghidra: 001281c8
 Tamanho stock: 760 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0312_001281c8_syna_tcm_erase_mtp_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0312_001281c8_syna_tcm_erase_mtp_data.jsonl
+Alvo no fonte: syna_tcm_erase_mtp_data.c:syna_tcm_erase_mtp_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0312_001281c8_syna_tcm_erase_mtp_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0312_001281c8_syna_tcm_erase_mtp_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9088,9 +9088,9 @@ Funcao stock: syna_pal_mem_free
 Entrada Ghidra: 001284c0
 Tamanho stock: 80 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0313_001284c0_syna_pal_mem_free.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0313_001284c0_syna_pal_mem_free.jsonl
+Alvo no fonte: syna_pal_mem_free.c:syna_pal_mem_free
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0313_001284c0_syna_pal_mem_free.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0313_001284c0_syna_pal_mem_free.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9117,9 +9117,9 @@ Funcao stock: syna_tcm_get_touch_data
 Entrada Ghidra: 00128514
 Tamanho stock: 244 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0314_00128514_syna_tcm_get_touch_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0314_00128514_syna_tcm_get_touch_data.jsonl
+Alvo no fonte: syna_tcm_get_touch_data.c:syna_tcm_get_touch_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0314_00128514_syna_tcm_get_touch_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0314_00128514_syna_tcm_get_touch_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9146,9 +9146,9 @@ Funcao stock: syna_tcm_parse_touch_report
 Entrada Ghidra: 0012860c
 Tamanho stock: 7252 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0315_0012860c_syna_tcm_parse_touch_report.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0315_0012860c_syna_tcm_parse_touch_report.jsonl
+Alvo no fonte: syna_tcm_parse_touch_report.c:syna_tcm_parse_touch_report
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0315_0012860c_syna_tcm_parse_touch_report.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0315_0012860c_syna_tcm_parse_touch_report.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9175,9 +9175,9 @@ Funcao stock: syna_tcm_set_touch_report_config
 Entrada Ghidra: 0012a264
 Tamanho stock: 532 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0316_0012a264_syna_tcm_set_touch_report_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0316_0012a264_syna_tcm_set_touch_report_config.jsonl
+Alvo no fonte: syna_tcm_set_touch_report_config.c:syna_tcm_set_touch_report_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0316_0012a264_syna_tcm_set_touch_report_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0316_0012a264_syna_tcm_set_touch_report_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9204,9 +9204,9 @@ Funcao stock: syna_pal_mem_cpy
 Entrada Ghidra: 0012a478
 Tamanho stock: 116 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0317_0012a478_syna_pal_mem_cpy.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0317_0012a478_syna_pal_mem_cpy.jsonl
+Alvo no fonte: syna_pal_mem_cpy_1.c:syna_pal_mem_cpy_1
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0317_0012a478_syna_pal_mem_cpy.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0317_0012a478_syna_pal_mem_cpy.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9233,9 +9233,9 @@ Funcao stock: syna_pal_mem_free
 Entrada Ghidra: 0012a4ec
 Tamanho stock: 76 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0318_0012a4ec_syna_pal_mem_free.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0318_0012a4ec_syna_pal_mem_free.jsonl
+Alvo no fonte: syna_pal_mem_free_0.c:syna_pal_mem_free_0
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0318_0012a4ec_syna_pal_mem_free.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0318_0012a4ec_syna_pal_mem_free.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9262,9 +9262,9 @@ Funcao stock: syna_tcm_preserve_touch_report_config
 Entrada Ghidra: 0012a53c
 Tamanho stock: 1384 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0319_0012a53c_syna_tcm_preserve_touch_report_config.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0319_0012a53c_syna_tcm_preserve_touch_report_config.jsonl
+Alvo no fonte: syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0319_0012a53c_syna_tcm_preserve_touch_report_config.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0319_0012a53c_syna_tcm_preserve_touch_report_config.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9291,9 +9291,9 @@ Funcao stock: syna_tcm_set_custom_touch_entity_callback
 Entrada Ghidra: 0012aaa8
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0320_0012aaa8_syna_tcm_set_custom_touch_entity_callback.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0320_0012aaa8_syna_tcm_set_custom_touch_entity_callback.jsonl
+Alvo no fonte: syna_tcm_set_custom_touch_entity_callback.c:syna_tcm_set_custom_touch_entity_callback
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0320_0012aaa8_syna_tcm_set_custom_touch_entity_callback.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0320_0012aaa8_syna_tcm_set_custom_touch_entity_callback.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9320,9 +9320,9 @@ Funcao stock: syna_tcm_set_custom_gesture_callback
 Entrada Ghidra: 0012aaf4
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0321_0012aaf4_syna_tcm_set_custom_gesture_callback.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0321_0012aaf4_syna_tcm_set_custom_gesture_callback.jsonl
+Alvo no fonte: syna_tcm_set_custom_gesture_callback.c:syna_tcm_set_custom_gesture_callback
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0321_0012aaf4_syna_tcm_set_custom_gesture_callback.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0321_0012aaf4_syna_tcm_set_custom_gesture_callback.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9349,9 +9349,9 @@ Funcao stock: syna_tcm_get_partition_id_string
 Entrada Ghidra: 0012ab40
 Tamanho stock: 40 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0322_0012ab40_syna_tcm_get_partition_id_string.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0322_0012ab40_syna_tcm_get_partition_id_string.jsonl
+Alvo no fonte: syna_tcm_get_partition_id_string.c:syna_tcm_get_partition_id_string
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0322_0012ab40_syna_tcm_get_partition_id_string.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0322_0012ab40_syna_tcm_get_partition_id_string.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9378,9 +9378,9 @@ Funcao stock: syna_tcm_parse_fw_image
 Entrada Ghidra: 0012ab6c
 Tamanho stock: 860 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0323_0012ab6c_syna_tcm_parse_fw_image.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0323_0012ab6c_syna_tcm_parse_fw_image.jsonl
+Alvo no fonte: syna_tcm_parse_fw_image.c:syna_tcm_parse_fw_image
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0323_0012ab6c_syna_tcm_parse_fw_image.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0323_0012ab6c_syna_tcm_parse_fw_image.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9407,9 +9407,9 @@ Funcao stock: string_change
 Entrada Ghidra: 0012aecc
 Tamanho stock: 1404 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0324_0012aecc_string_change.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0324_0012aecc_string_change.jsonl
+Alvo no fonte: string_change.c:string_change
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0324_0012aecc_string_change.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0324_0012aecc_string_change.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9436,9 +9436,9 @@ Funcao stock: trim
 Entrada Ghidra: 0012b4dc
 Tamanho stock: 124 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0325_0012b4dc_trim.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0325_0012b4dc_trim.jsonl
+Alvo no fonte: trim.c:trim
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0325_0012b4dc_trim.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0325_0012b4dc_trim.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9465,9 +9465,9 @@ Funcao stock: syna_tpd_register_fw_class
 Entrada Ghidra: 0012b55c
 Tamanho stock: 880 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0326_0012b55c_syna_tpd_register_fw_class.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0326_0012b55c_syna_tpd_register_fw_class.jsonl
+Alvo no fonte: syna_tpd_register_fw_class.c:syna_tpd_register_fw_class
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0326_0012b55c_syna_tpd_register_fw_class.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9494,9 +9494,9 @@ Funcao stock: syna_work_charger_detect_work
 Entrada Ghidra: 0012b8d0
 Tamanho stock: 472 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0327_0012b8d0_syna_work_charger_detect_work.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0327_0012b8d0_syna_work_charger_detect_work.jsonl
+Alvo no fonte: syna_work_charger_detect_work.c:syna_work_charger_detect_work
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0327_0012b8d0_syna_work_charger_detect_work.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0327_0012b8d0_syna_work_charger_detect_work.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9523,9 +9523,9 @@ Funcao stock: tpd_init_tpinfo
 Entrada Ghidra: 0012baac
 Tamanho stock: 128 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0328_0012baac_tpd_init_tpinfo.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0328_0012baac_tpd_init_tpinfo.jsonl
+Alvo no fonte: tpd_init_tpinfo.c:tpd_init_tpinfo
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0328_0012baac_tpd_init_tpinfo.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0328_0012baac_tpd_init_tpinfo.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9552,9 +9552,9 @@ Funcao stock: tpd_get_wakegesture
 Entrada Ghidra: 0012bb30
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0329_0012bb30_tpd_get_wakegesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0329_0012bb30_tpd_get_wakegesture.jsonl
+Alvo no fonte: tpd_get_wakegesture.c:tpd_get_wakegesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0329_0012bb30_tpd_get_wakegesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0329_0012bb30_tpd_get_wakegesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9581,9 +9581,9 @@ Funcao stock: tpd_enable_wakegesture
 Entrada Ghidra: 0012bb4c
 Tamanho stock: 76 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0330_0012bb4c_tpd_enable_wakegesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0330_0012bb4c_tpd_enable_wakegesture.jsonl
+Alvo no fonte: tpd_enable_wakegesture.c:tpd_enable_wakegesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0330_0012bb4c_tpd_enable_wakegesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0330_0012bb4c_tpd_enable_wakegesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9610,9 +9610,9 @@ Funcao stock: tpd_get_singlegamegesture
 Entrada Ghidra: 0012bb9c
 Tamanho stock: 100 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0331_0012bb9c_tpd_get_singlegamegesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0331_0012bb9c_tpd_get_singlegamegesture.jsonl
+Alvo no fonte: tpd_get_singlegamegesture.c:tpd_get_singlegamegesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0331_0012bb9c_tpd_get_singlegamegesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0331_0012bb9c_tpd_get_singlegamegesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9639,9 +9639,9 @@ Funcao stock: tpd_set_singlegamegesture
 Entrada Ghidra: 0012bc04
 Tamanho stock: 196 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0332_0012bc04_tpd_set_singlegamegesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0332_0012bc04_tpd_set_singlegamegesture.jsonl
+Alvo no fonte: tpd_set_singlegamegesture.c:tpd_set_singlegamegesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0332_0012bc04_tpd_set_singlegamegesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0332_0012bc04_tpd_set_singlegamegesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9668,9 +9668,9 @@ Funcao stock: tpd_get_singleaodgesture
 Entrada Ghidra: 0012bccc
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0333_0012bccc_tpd_get_singleaodgesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0333_0012bccc_tpd_get_singleaodgesture.jsonl
+Alvo no fonte: tpd_get_singleaodgesture.c:tpd_get_singleaodgesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0333_0012bccc_tpd_get_singleaodgesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0333_0012bccc_tpd_get_singleaodgesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9697,9 +9697,9 @@ Funcao stock: tpd_set_singleaodgesture
 Entrada Ghidra: 0012bd30
 Tamanho stock: 176 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0334_0012bd30_tpd_set_singleaodgesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0334_0012bd30_tpd_set_singleaodgesture.jsonl
+Alvo no fonte: tpd_set_singleaodgesture.c:tpd_set_singleaodgesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0334_0012bd30_tpd_set_singleaodgesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0334_0012bd30_tpd_set_singleaodgesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9726,9 +9726,9 @@ Funcao stock: tpd_get_singlefpgesture
 Entrada Ghidra: 0012bde4
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0335_0012bde4_tpd_get_singlefpgesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0335_0012bde4_tpd_get_singlefpgesture.jsonl
+Alvo no fonte: tpd_get_singlefpgesture.c:tpd_get_singlefpgesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0335_0012bde4_tpd_get_singlefpgesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0335_0012bde4_tpd_get_singlefpgesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9755,9 +9755,9 @@ Funcao stock: tpd_set_singlefpgesture
 Entrada Ghidra: 0012be48
 Tamanho stock: 176 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0336_0012be48_tpd_set_singlefpgesture.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0336_0012be48_tpd_set_singlefpgesture.jsonl
+Alvo no fonte: tpd_set_singlefpgesture.c:tpd_set_singlefpgesture
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0336_0012be48_tpd_set_singlefpgesture.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0336_0012be48_tpd_set_singlefpgesture.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9784,9 +9784,9 @@ Funcao stock: tpd_set_one_key
 Entrada Ghidra: 0012befc
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0337_0012befc_tpd_set_one_key.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0337_0012befc_tpd_set_one_key.jsonl
+Alvo no fonte: tpd_set_one_key.c:tpd_set_one_key
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0337_0012befc_tpd_set_one_key.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0337_0012befc_tpd_set_one_key.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9813,9 +9813,9 @@ Funcao stock: tpd_get_one_key
 Entrada Ghidra: 0012bf60
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0338_0012bf60_tpd_get_one_key.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0338_0012bf60_tpd_get_one_key.jsonl
+Alvo no fonte: tpd_get_one_key.c:tpd_get_one_key
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0338_0012bf60_tpd_get_one_key.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0338_0012bf60_tpd_get_one_key.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9842,9 +9842,9 @@ Funcao stock: tpd_test_cmd_store
 Entrada Ghidra: 0012bf7c
 Tamanho stock: 208 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0339_0012bf7c_tpd_test_cmd_store.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0339_0012bf7c_tpd_test_cmd_store.jsonl
+Alvo no fonte: tpd_test_cmd_store.c:tpd_test_cmd_store
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0339_0012bf7c_tpd_test_cmd_store.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0339_0012bf7c_tpd_test_cmd_store.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9871,9 +9871,9 @@ Funcao stock: tpd_test_cmd_show
 Entrada Ghidra: 0012c050
 Tamanho stock: 92 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0340_0012c050_tpd_test_cmd_show.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0340_0012c050_tpd_test_cmd_show.jsonl
+Alvo no fonte: tpd_test_cmd_show.c:tpd_test_cmd_show
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0340_0012c050_tpd_test_cmd_show.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0340_0012c050_tpd_test_cmd_show.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9900,9 +9900,9 @@ Funcao stock: tpd_get_tp_report_rate
 Entrada Ghidra: 0012c0b0
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0341_0012c0b0_tpd_get_tp_report_rate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0341_0012c0b0_tpd_get_tp_report_rate.jsonl
+Alvo no fonte: tpd_get_tp_report_rate.c:tpd_get_tp_report_rate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0341_0012c0b0_tpd_get_tp_report_rate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0341_0012c0b0_tpd_get_tp_report_rate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9929,9 +9929,9 @@ Funcao stock: tpd_set_tp_report_rate
 Entrada Ghidra: 0012c0cc
 Tamanho stock: 188 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0342_0012c0cc_tpd_set_tp_report_rate.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0342_0012c0cc_tpd_set_tp_report_rate.jsonl
+Alvo no fonte: tpd_set_tp_report_rate.c:tpd_set_tp_report_rate
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0342_0012c0cc_tpd_set_tp_report_rate.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0342_0012c0cc_tpd_set_tp_report_rate.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9958,9 +9958,9 @@ Funcao stock: tpd_get_sensibility_level
 Entrada Ghidra: 0012c18c
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0343_0012c18c_tpd_get_sensibility_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0343_0012c18c_tpd_get_sensibility_level.jsonl
+Alvo no fonte: tpd_get_sensibility_level.c:tpd_get_sensibility_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0343_0012c18c_tpd_get_sensibility_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0343_0012c18c_tpd_get_sensibility_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -9987,9 +9987,9 @@ Funcao stock: tpd_set_sensibility_level
 Entrada Ghidra: 0012c1a8
 Tamanho stock: 192 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0344_0012c1a8_tpd_set_sensibility_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0344_0012c1a8_tpd_set_sensibility_level.jsonl
+Alvo no fonte: tpd_set_sensibility_level.c:tpd_set_sensibility_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0344_0012c1a8_tpd_set_sensibility_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0344_0012c1a8_tpd_set_sensibility_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10016,9 +10016,9 @@ Funcao stock: tpd_get_follow_hand_level
 Entrada Ghidra: 0012c26c
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0345_0012c26c_tpd_get_follow_hand_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0345_0012c26c_tpd_get_follow_hand_level.jsonl
+Alvo no fonte: tpd_get_follow_hand_level.c:tpd_get_follow_hand_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0345_0012c26c_tpd_get_follow_hand_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0345_0012c26c_tpd_get_follow_hand_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10045,9 +10045,9 @@ Funcao stock: tpd_set_follow_hand_level
 Entrada Ghidra: 0012c288
 Tamanho stock: 188 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0346_0012c288_tpd_set_follow_hand_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0346_0012c288_tpd_set_follow_hand_level.jsonl
+Alvo no fonte: tpd_set_follow_hand_level.c:tpd_set_follow_hand_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0346_0012c288_tpd_set_follow_hand_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0346_0012c288_tpd_set_follow_hand_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10074,9 +10074,9 @@ Funcao stock: tpd_get_stability_level
 Entrada Ghidra: 0012c348
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0347_0012c348_tpd_get_stability_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0347_0012c348_tpd_get_stability_level.jsonl
+Alvo no fonte: tpd_get_stability_level.c:tpd_get_stability_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0347_0012c348_tpd_get_stability_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0347_0012c348_tpd_get_stability_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10103,9 +10103,9 @@ Funcao stock: tpd_set_stability_level
 Entrada Ghidra: 0012c364
 Tamanho stock: 188 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0348_0012c364_tpd_set_stability_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0348_0012c364_tpd_set_stability_level.jsonl
+Alvo no fonte: tpd_set_stability_level.c:tpd_set_stability_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0348_0012c364_tpd_set_stability_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0348_0012c364_tpd_set_stability_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10132,9 +10132,9 @@ Funcao stock: tpd_get_rotation_limit_level
 Entrada Ghidra: 0012c424
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0349_0012c424_tpd_get_rotation_limit_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0349_0012c424_tpd_get_rotation_limit_level.jsonl
+Alvo no fonte: tpd_get_rotation_limit_level.c:tpd_get_rotation_limit_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0349_0012c424_tpd_get_rotation_limit_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0349_0012c424_tpd_get_rotation_limit_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10161,9 +10161,9 @@ Funcao stock: tpd_set_rotation_limit_level
 Entrada Ghidra: 0012c440
 Tamanho stock: 200 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0350_0012c440_tpd_set_rotation_limit_level.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0350_0012c440_tpd_set_rotation_limit_level.jsonl
+Alvo no fonte: tpd_set_rotation_limit_level.c:tpd_set_rotation_limit_level
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0350_0012c440_tpd_set_rotation_limit_level.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0350_0012c440_tpd_set_rotation_limit_level.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10190,9 +10190,9 @@ Funcao stock: tpd_set_display_rotation
 Entrada Ghidra: 0012c50c
 Tamanho stock: 444 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0351_0012c50c_tpd_set_display_rotation.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0351_0012c50c_tpd_set_display_rotation.jsonl
+Alvo no fonte: tpd_set_display_rotation.c:tpd_set_display_rotation
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0351_0012c50c_tpd_set_display_rotation.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0351_0012c50c_tpd_set_display_rotation.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10219,9 +10219,9 @@ Funcao stock: tpd_get_play_game
 Entrada Ghidra: 0012c6cc
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0352_0012c6cc_tpd_get_play_game.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0352_0012c6cc_tpd_get_play_game.jsonl
+Alvo no fonte: tpd_get_play_game.c:tpd_get_play_game
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0352_0012c6cc_tpd_get_play_game.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0352_0012c6cc_tpd_get_play_game.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10248,9 +10248,9 @@ Funcao stock: tpd_set_play_game
 Entrada Ghidra: 0012c6e8
 Tamanho stock: 216 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0353_0012c6e8_tpd_set_play_game.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0353_0012c6e8_tpd_set_play_game.jsonl
+Alvo no fonte: tpd_set_play_game.c:tpd_set_play_game
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0353_0012c6e8_tpd_set_play_game.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0353_0012c6e8_tpd_set_play_game.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10277,9 +10277,9 @@ Funcao stock: tpd_set_game_partition
 Entrada Ghidra: 0012c7c4
 Tamanho stock: 52 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0354_0012c7c4_tpd_set_game_partition.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0354_0012c7c4_tpd_set_game_partition.jsonl
+Alvo no fonte: tpd_set_game_partition.c:tpd_set_game_partition
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0354_0012c7c4_tpd_set_game_partition.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0354_0012c7c4_tpd_set_game_partition.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10306,9 +10306,9 @@ Funcao stock: tpd_get_frame_data
 Entrada Ghidra: 0012c7fc
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0355_0012c7fc_tpd_get_frame_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0355_0012c7fc_tpd_get_frame_data.jsonl
+Alvo no fonte: tpd_get_frame_data.c:tpd_get_frame_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0355_0012c7fc_tpd_get_frame_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0355_0012c7fc_tpd_get_frame_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10335,9 +10335,9 @@ Funcao stock: tpd_set_frame_data
 Entrada Ghidra: 0012c818
 Tamanho stock: 200 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0356_0012c818_tpd_set_frame_data.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0356_0012c818_tpd_set_frame_data.jsonl
+Alvo no fonte: tpd_set_frame_data.c:tpd_set_frame_data
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0356_0012c818_tpd_set_frame_data.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0356_0012c818_tpd_set_frame_data.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10364,9 +10364,9 @@ Funcao stock: tpd_get_palm_mode
 Entrada Ghidra: 0012c8e4
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0357_0012c8e4_tpd_get_palm_mode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0357_0012c8e4_tpd_get_palm_mode.jsonl
+Alvo no fonte: tpd_get_palm_mode.c:tpd_get_palm_mode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0357_0012c8e4_tpd_get_palm_mode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0357_0012c8e4_tpd_get_palm_mode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10393,9 +10393,9 @@ Funcao stock: tpd_set_palm_mode
 Entrada Ghidra: 0012c900
 Tamanho stock: 60 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0358_0012c900_tpd_set_palm_mode.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0358_0012c900_tpd_set_palm_mode.jsonl
+Alvo no fonte: tpd_set_palm_mode.c:tpd_set_palm_mode
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0358_0012c900_tpd_set_palm_mode.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0358_0012c900_tpd_set_palm_mode.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10422,9 +10422,9 @@ Funcao stock: syna_ghost_check_reset
 Entrada Ghidra: 0012c940
 Tamanho stock: 96 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0359_0012c940_syna_ghost_check_reset.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0359_0012c940_syna_ghost_check_reset.jsonl
+Alvo no fonte: syna_ghost_check_reset.c:syna_ghost_check_reset
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0359_0012c940_syna_ghost_check_reset.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0359_0012c940_syna_ghost_check_reset.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10451,9 +10451,9 @@ Funcao stock: tpd_set_fake_sleep
 Entrada Ghidra: 0012c9a4
 Tamanho stock: 88 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0360_0012c9a4_tpd_set_fake_sleep.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0360_0012c9a4_tpd_set_fake_sleep.jsonl
+Alvo no fonte: tpd_set_fake_sleep.c:tpd_set_fake_sleep
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0360_0012c9a4_tpd_set_fake_sleep.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0360_0012c9a4_tpd_set_fake_sleep.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10480,9 +10480,9 @@ Funcao stock: tpd_get_fake_sleep
 Entrada Ghidra: 0012ca00
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0361_0012ca00_tpd_get_fake_sleep.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0361_0012ca00_tpd_get_fake_sleep.jsonl
+Alvo no fonte: tpd_get_fake_sleep.c:tpd_get_fake_sleep
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0361_0012ca00_tpd_get_fake_sleep.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0361_0012ca00_tpd_get_fake_sleep.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10509,9 +10509,9 @@ Funcao stock: tpd_set_screen_off_awake
 Entrada Ghidra: 0012ca1c
 Tamanho stock: 88 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0362_0012ca1c_tpd_set_screen_off_awake.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0362_0012ca1c_tpd_set_screen_off_awake.jsonl
+Alvo no fonte: tpd_set_screen_off_awake.c:tpd_set_screen_off_awake
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0362_0012ca1c_tpd_set_screen_off_awake.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0362_0012ca1c_tpd_set_screen_off_awake.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10538,9 +10538,9 @@ Funcao stock: tpd_get_screen_off_awake
 Entrada Ghidra: 0012ca78
 Tamanho stock: 24 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0363_0012ca78_tpd_get_screen_off_awake.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0363_0012ca78_tpd_get_screen_off_awake.jsonl
+Alvo no fonte: tpd_get_screen_off_awake.c:tpd_get_screen_off_awake
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0363_0012ca78_tpd_get_screen_off_awake.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0363_0012ca78_tpd_get_screen_off_awake.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10567,9 +10567,9 @@ Funcao stock: syna_charger_notify_call
 Entrada Ghidra: 0012ca94
 Tamanho stock: 132 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0364_0012ca94_syna_charger_notify_call.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0364_0012ca94_syna_charger_notify_call.jsonl
+Alvo no fonte: syna_charger_notify_call.c:syna_charger_notify_call
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0364_0012ca94_syna_charger_notify_call.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0364_0012ca94_syna_charger_notify_call.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10596,9 +10596,9 @@ Funcao stock: init_module
 Entrada Ghidra: 0013159c
 Tamanho stock: 64 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0365_0013159c_init_module.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0365_0013159c_init_module.jsonl
+Alvo no fonte: zte_touch_init.c:zte_touch_init
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0365_0013159c_init_module.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0365_0013159c_init_module.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.
@@ -10625,9 +10625,9 @@ Funcao stock: cleanup_module
 Entrada Ghidra: 001315e0
 Tamanho stock: 44 bytes
 Categoria: lifecycle
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
-Pseudocodigo Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\decompiled\0366_001315e0_cleanup_module.c
-P-Code Ghidra: C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z\03_ghidra\exports\zte_tpd.ko\pcode\0366_001315e0_cleanup_module.jsonl
+Alvo no fonte: cleanup_module.c:cleanup_module
+Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0366_001315e0_cleanup_module.c
+P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0366_001315e0_cleanup_module.jsonl
 
 Regras obrigatorias:
 1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.

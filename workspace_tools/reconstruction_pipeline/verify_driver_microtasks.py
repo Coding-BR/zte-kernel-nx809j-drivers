@@ -28,12 +28,26 @@ def read_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def discover_layout() -> tuple[Path, Path]:
+    script = Path(__file__).resolve()
+    for root in script.parents:
+        engineering_curated = root / "curated"
+        engineering_validation = root / "validation"
+        if engineering_curated.is_dir() and engineering_validation.is_dir():
+            return engineering_curated, engineering_validation
+        repository_curated = root / "kernel_development" / "drivers" / "reconstructed"
+        repository_validation = root / "reverse_engineering" / "validation" / "reconstructed"
+        if repository_curated.is_dir() and repository_validation.is_dir():
+            return repository_curated, repository_validation
+    raise ValueError("could not discover engineering or repository reconstruction layout")
+
+
 def parse_args() -> argparse.Namespace:
-    engineering_root = Path(__file__).resolve().parents[1]
+    curated_root, evidence_root = discover_layout()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--driver", required=True)
-    parser.add_argument("--curated-root", type=Path, default=engineering_root / "curated")
-    parser.add_argument("--evidence-root", type=Path, default=engineering_root / "validation")
+    parser.add_argument("--curated-root", type=Path, default=curated_root)
+    parser.add_argument("--evidence-root", type=Path, default=evidence_root)
     return parser.parse_args()
 
 

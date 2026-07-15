@@ -168,7 +168,6 @@ typedef unsigned char _BYTE;
 #define input_sync(dev) input_sync((struct input_dev *)(dev))
 
 // Custom copy_from_user wrapper declaration
-extern size_t inline_copy_from_user(__int64 a1, unsigned __int64 a2, size_t n);
 
 // kfree and vfree casting wrappers
 #undef kfree

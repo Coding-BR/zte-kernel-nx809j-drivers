@@ -4,6 +4,8 @@
 src-files := $(wildcard $(src)/*.c)
 src-files := $(filter-out $(src)/offset_test.c, $(src-files))
 src-files := $(filter-out $(src)/globals.c, $(src-files))
+src-files := $(filter-out $(src)/trim.c, $(src-files))
+src-files := $(filter-out $(src)/_inline_copy_from_user.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 

@@ -20,7 +20,7 @@ LABEL_8:
   }
   memset(s, 0, sizeof(s));
   _check_object_size(s, a3, 0);
-  if ( inline_copy_from_user((__int64)s, a2, a3) )
+  if ( copy_from_user(s, (const void __user *)a2, a3) )
   {
     v7 = unk_35311;
     goto LABEL_8;

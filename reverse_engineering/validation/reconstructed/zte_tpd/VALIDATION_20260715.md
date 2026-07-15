@@ -2,58 +2,47 @@
 
 ## Resultado
 
-Estado: `INCOMPLETO`, sem afirmacao de reconstrucao 100%.
+- Build/ELF: `static_verified`.
+- Protocolo offline completo: `INCOMPLETE`, com `8/10` gates PASS.
+- Hardware: `DEFERRED`.
+- Nenhuma afirmacao de reconstrucao `100%`.
 
-O modulo stock, Ghidra local, P-Code, assembly, relocacoes, strings e KCFI foram
-as unicas fontes usadas para comportamento especifico do NX809J. Nenhum driver
-ou kernel publicado na Internet foi usado como referencia de implementacao.
-
-## Evidencia positiva
+## Artefatos Vinculados
 
 - Stock: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`.
-- Candidato limpo: `bb483f11592f4d3acff7192e0d3b90324c6478c78c843e23158251ac7577ff6d`.
+- Candidato: `87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8`.
+- Tamanho do candidato: `12769952` bytes.
+
+## Evidencia Positiva
+
 - Build limpo duplo reproduzivel: PASS.
-- Promocao do mesmo artefato limpo para `curated`: PASS por SHA-256 e tamanho.
-- Aliases: PASS.
+- Candidato canonico igual ao segundo build fresco: PASS.
+- Imports KMI exatos: `152/152`.
+- Aliases, namespaces, vermagic e AArch64 ET_REL: PASS.
+- Mapa estrutural: `367/367` identidades Ghidra.
 - Simbolos stock presentes: `359/359`.
-- KCFI da superficie restaurada: `13/13`.
-- Harnesses diretos: `17/17`.
+- KCFI verificado: `14/14`.
+- Probe de layout GKI/TCM: PASS.
+- Harnesses do subconjunto direto: `17/17`.
 
-## Correcoes comprovadas pelo binario stock
+## Pendencias Reais
 
-- `msecs_to_jiffies()` restaurou o import `__msecs_to_jiffies`.
-- `set_bit()` e o bit explicito `KEY_WAKEUP` restauraram a semantica atomica LSE
-  e o import `alt_cb_patch_nops`.
-- `MODULE_DEVICE_TABLE` restaurou os tres aliases stock na ordem correta.
-- `trim` voltou a ser helper local da unidade de `string_change`; o import
-  artificial `strim` foi eliminado.
-- Chamadas reais de `__fortify_panic` e `__copy_overflow` substituem stubs WARN.
-- A conversao PFN usa `memstart_addr`, como o assembly stock, eliminando o import
-  artificial `kimage_voffset`.
+- O6: somente 17 funcoes possuem harness direto; as 367 microtarefas ainda nao
+  possuem o trio individual de compile, KCFI e teste.
+- O10: revisao independente ausente.
+- Validacao controlada no NX809J ausente para este SHA.
 
-## Pendencias
+## Relatorios Principais
 
-- 236 simbolos extras.
-- Um import stock ausente e dois imports adicionais devido ao desvio de seguranca
-  do platform device.
-- KCFI de `string_change` divergente.
-- Mapa revisado de todas as funcoes ausente.
-- Teste em hardware deste SHA-256 ausente.
+- `driver_audit_static_final.json`
+- `offline_reconstruction_audit.json`
+- `header_layout_probe.json`
+- `abi_validation.json`
+- `kcfi_kmi_exact_final_comparison.json`
+- `symbol_inventory_kmi_exact_final.json`
+- `parity_report.json`
+- `microtask_audit.json`
 
-Consulte `driver_audit_20260715_local_truth.json` e
-`symbol_inventory_20260715_local_truth.json` para dados estruturados.
-
-## Repeticao no clone
-
-```powershell
-python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_zlog_harness.py
-python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_remaining_harness.py
-python .\workspace_tools\reconstruction_pipeline\verify_promoted_candidate.py `
-  --audit .\reverse_engineering\validation\reconstructed\zte_tpd\driver_audit_20260715_local_truth.json `
-  --candidate .\kernel_development\drivers\reconstructed\zte_tpd\zte_tpd.ko `
-  --output .\reverse_engineering\validation\reconstructed\zte_tpd\candidate_promotion_20260715.json
-```
-
-Os dois harnesses exigem Docker, a imagem local
-`nubia-sm8850-kernel-builder:latest` e o volume
-`nubia_sm8850_kernel_toolchains`. A verificacao de promocao usa somente Python.
+O stock local, Ghidra, P-Code, assembly, relocacoes e headers configurados sao a
+fonte da verdade desta revisao. Nenhum ADB, fastboot, `insmod`, `rmmod`, SPI ou
+escrita de particao foi executado.

@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "scope": "Offline static parity for the canonical out-of-tree candidate; untested functions, scheduler timing and electrical behavior are excluded",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "candidate_sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
+  "comparisons": [
+    {
+      "surface": "ELF, modinfo and KMI",
+      "result": "PASS",
+      "evidence": "driver_audit_static_final.json records two clean reproducible builds, exact 152/152 imports, matching aliases and namespaces, accepted vermagic and a fresh candidate hash match"
+    },
+    {
+      "surface": "AArch64 ABI and recovered layouts",
+      "result": "PASS",
+      "evidence": "header_layout_probe.json compiles the platform_device and partial TCM static assertions with clang-r536225 against GKI 6.12.23",
+      "note": "The stock ELF independently records syna_spi_device size 0x3f0 and its release relocation at +0x338"
+    },
+    {
+      "surface": "verified callback KCFI",
+      "result": "PASS",
+      "evidence": "kcfi_kmi_exact_final_comparison.json matches section and type ID for 14/14 selected indirect-call boundaries",
+      "note": "Function size is non-gating because the OEM LTO pipeline is unavailable"
+    },
+    {
+      "surface": "stock function structural traceability",
+      "result": "PASS",
+      "evidence": "reconstruction_map.json maps 367/367 Ghidra identities, including duplicate names by stock entry, to hash-bound source, P-Code, pseudocode and assembly",
+      "note": "Reviewed means structural identity only; semantic equivalence remains unproven per function"
+    },
+    {
+      "surface": "stock text and import surface",
+      "result": "PASS",
+      "evidence": "symbol_inventory_kmi_exact_final.json records all 359 stock non-KCFI text symbols present and no missing or unexpected imports",
+      "note": "The 234 additional candidate symbols are classified as 131 decompiler subroutines, 84 signature wrappers, 9 renamed duplicates and 10 other helpers; their presence is documented and non-gating"
+    },
+    {
+      "surface": "direct host-tested subset",
+      "result": "PASS",
+      "evidence": "zlog_harness_report.json and remaining_harness_report.json pass 17/17 tests over 17 directly exercised reconstructed functions",
+      "note": "This comparison attests only the tested subset. The 367-function microtask gate remains INCOMPLETE and is not implied by this PASS"
+    },
+    {
+      "surface": "hardware",
+      "result": "DEFERRED",
+      "evidence": "No ADB, fastboot, insmod, rmmod, SPI, IRQ or partition operation was performed in this offline cycle",
+      "note": "Controlled NX809J hardware validation remains a separate gate"
+    }
+  ],
+  "blockers": [
+    "O6 has 367 mapped microtasks but only 17 reconstructed functions have direct host-harness coverage",
+    "O10 independent review is pending",
+    "Controlled NX809J hardware validation is deferred"
+  ],
+  "semantic_equivalence": "PARTIAL_TESTED_SUBSET_ONLY"
+}

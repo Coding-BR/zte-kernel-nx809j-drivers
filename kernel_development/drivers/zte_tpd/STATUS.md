@@ -2,52 +2,72 @@
 
 ## Estado Atual - 2026-07-15
 
-- **Classificacao:** `legacy_artifact_not_verified`
+- **Classificacao do build:** `static_verified`
+- **Veredito do protocolo offline:** `INCOMPLETE` (`8/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `bb483f11592f4d3acff7192e0d3b90324c6478c78c843e23158251ac7577ff6d`
-- **Candidato:** `12216472` bytes
+- **Candidato SHA-256:** `87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8`
+- **Candidato:** `12769952` bytes
 - **Teste em hardware desta revisao:** nao executado
 
-O candidato nao e `100%`, `static_verified` nem `hardware_verified`.
+`static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
+significa equivalencia funcional integral nem validacao de hardware.
 
-## Gates Confirmados
+## Gates Offline
 
-- Dois builds completamente limpos: PASS, mesmo SHA-256 e tamanho.
-- Aliases SPI/Device Tree: PASS, lista e ordem iguais ao stock.
-- Vermagic do kernel alvo: PASS.
-- Todos os 359 simbolos de texto stock existem no candidato.
-- KCFI da superficie restaurada: PASS `13/13`.
-- Harness zlog: PASS `10/10`.
-- Harness one-key, UF e game partition: PASS `7/7`.
-- Assembly local extraido com cobertura integral para as funcoes analisadas.
+PASS:
 
-## Bloqueadores Medidos
+- O0 identidade e escopo;
+- O1 ELF stock local;
+- O2 assembly stock integral;
+- O3 exports Ghidra, pseudocodigo e P-Code;
+- O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
+- O5 ABI/layout com probe compilado no Clang `r536225`;
+- O8 KCFI da superficie verificada `14/14`;
+- O8/O9 build duplo, KMI e paridade estatica.
 
-- O candidato ainda possui 236 simbolos de texto extras: 131 `sub_*`, 84
-  `wrap_*`, 9 duplicatas renomeadas e 12 outros.
-- Imports diferem somente no desvio de seguranca do platform device: stock usa
-  `platform_device_register`; candidato usa `platform_device_register_full` e
-  `platform_device_put` por meio de `platform_device_register_simple`.
-- O desvio acima foi mantido porque a evidencia local historica registra corrupcao
-  do platform bus na reconstrucao estatica. Ele exige nova validacao controlada.
-- `string_change` ainda nao possui KCFI igual ao stock. Duas buscas locais, com
-  880 e 4576 assinaturas, nao encontraram correspondencia.
-- `reconstruction_map.json` revisado ainda nao existe. O rascunho confirma 366
-  nomes por arquivo, mas `_inline_copy_from_user` e `init_module` continuam sem
-  rastreabilidade automatica completa.
-- Nao existe teste controlado no aparelho para este SHA-256 candidato.
+INCOMPLETE:
+
+- O6: as `367` microtarefas estao mapeadas, mas somente 17 funcoes possuem
+  cobertura direta nos harnesses locais;
+- O10: revisao independente ainda nao foi realizada.
+
+Hardware permanece `DEFERRED`.
+
+## Resultados Medidos
+
+- Dois builds completamente limpos produziram o mesmo SHA-256 e tamanho.
+- Imports KMI: `152/152`, sem ausentes ou inesperados.
+- Aliases, namespaces, vermagic e arquitetura AArch64 ET_REL: PASS.
+- Todos os `359` simbolos de texto stock existem no candidato.
+- O candidato possui `234` simbolos de texto adicionais documentados: 131
+  subrotinas do decompilador, 84 wrappers de assinatura, 9 duplicatas renomeadas
+  e 10 helpers diversos.
+- Harnesses diretos: `17/17` testes PASS sobre o subconjunto exercitado.
+
+## Correcao do Platform Device
+
+A leitura do ELF e assembly stock refutou a solucao historica baseada em
+`platform_device_register_simple()` e `platform_device_put()`:
+
+- o stock registra a estrutura estatica `syna_spi_device` com
+  `platform_device_register()`;
+- `sizeof(syna_spi_device)` no ELF stock e `0x3f0`;
+- o callback `dev.release` fica em `syna_spi_device + 0x338`;
+- a falha de `platform_device_add()` chama o callback tipado com KCFI
+  `0x6c81b8c8` e argumento `&pdev->dev`;
+- o candidato atual reproduz esse fluxo e remove os dois imports artificiais.
 
 ## Evidencia Autoritativa
 
-- `../../../NX809J_LOCAL_SOURCE_OF_TRUTH.md`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_20260715_local_truth.json`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/candidate_promotion_20260715.json`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/symbol_inventory_20260715_local_truth.json`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_20260715_restored_surface_comparison.json`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_bruteforce/string/match_report.json`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/zlog_harness_report.json`
-- `../../../reverse_engineering/validation/reconstructed/zte_tpd/remaining_harness_report.json`
+- `../../validation/zte_tpd/driver_audit_static_final.json`
+- `../../validation/zte_tpd/offline_reconstruction_audit.json`
+- `../../validation/zte_tpd/header_layout_probe.json`
+- `../../validation/zte_tpd/abi_validation.json`
+- `../../validation/zte_tpd/kcfi_kmi_exact_final_comparison.json`
+- `../../validation/zte_tpd/parity_report.json`
+- `reconstruction_map.json`
+- `MICROTASKS.json`
 
-`reconstruction_map.draft.json` e rascunho automatizado, nao atestacao. Nenhum
-comando ADB, fastboot, `insmod` ou `rmmod` foi executado nesta revisao.
+Nenhum comando ADB, fastboot, `insmod`, `rmmod` ou escrita de particao foi
+executado nesta revisao.

@@ -20,7 +20,7 @@ __int64 __fastcall set_display_rotation(__int64 a1, __int64 a2, __int64 a3)
   v12 = 0;
   v11 = 0;
   _check_object_size(&v11, v5, 0);
-  if ( (unsigned int)inline_copy_from_user((__int64)&v11, a2, v5) || (unsigned int)kstrtouint(&v11, 0, &v10) )
+  if ( copy_from_user(&v11, (const void __user *)a2, v5) || (unsigned int)kstrtouint(&v11, 0, &v10) )
   {
     v5 = -22;
   }
