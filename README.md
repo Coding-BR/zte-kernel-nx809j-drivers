@@ -4,6 +4,21 @@ Este repositorio preserva a cadeia de engenharia reversa, reconstrucao em C e
 validacao dos modulos vendor do **ZTE NX809J, REDMAGIC 11 Pro+**, para Android
 16 e Kernel GKI 6.12.23.
 
+## ROM userdebug, comunidade e apoio
+
+A ROM userdebug usada neste projeto e um artefato de referencia necessario para
+reproduzir a coleta de logs, comparar o comportamento do kernel e continuar a
+reconstrucao completa dos drivers do NX809J:
+
+- [ROM userdebug do NX809J no Google Drive](https://drive.google.com/file/d/1csCT9Fakets_ApsiDB7-apQmIZrgR75Y/view?usp=sharing)
+- [Comunidade e contato no Telegram](https://t.me/redmagic11PR0)
+- **Doacoes via PayPal:** `adrianojr59@gmail.com`
+
+Antes de usar a ROM, confirme a identidade do modelo, preserve backups das
+particoes e registre o hash SHA-256 do arquivo baixado. A ROM e evidencia e
+ambiente de teste; ela nao substitui os `.ko` stock, o Device Tree nem as
+validacoes registradas neste repositorio.
+
 ## Estado e limite da afirmacao
 
 O arquivo `.ko` stock adquirido localmente e a fonte de verdade do NX809J.
