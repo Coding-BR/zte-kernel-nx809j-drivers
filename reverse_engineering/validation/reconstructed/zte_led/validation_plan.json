@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "risk": "CRITICAL: the I2C RGB controller owns reset and IRQ GPIOs, firmware flashing, LED class callbacks, sysfs controls and a watchdog recovery path.",
+  "dependencies": [
+    "Android GKI 6.12.23 I2C, LED, GPIO, pinctrl, firmware and hrtimer APIs",
+    "zlog_common vendor module",
+    "Awinic AW22118 or AW22127 controller",
+    "Device Tree reset-gpio, irq-gpio and aw22xxx LED child properties"
+  ],
+  "rollback": "Do not unbind or unload the stock LED driver automatically. Hardware validation requires a RAM-booted kernel, continuous dmesg capture, saved stock binding data and immediate reboot rollback.",
+  "stop_conditions": [
+    "kernel Oops or KCFI failure",
+    "I2C timeout or repeated reset loop",
+    "IRQ storm",
+    "unexpected firmware update path",
+    "LED controller overheating",
+    "ADB loss",
+    "rollback unavailable"
+  ],
+  "automatic_hardware_test_allowed": false
+}
