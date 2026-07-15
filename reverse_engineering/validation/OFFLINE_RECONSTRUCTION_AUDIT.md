@@ -4,7 +4,7 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-15T19:22:26.047111+00:00`
+Gerado em: `2026-07-15T19:30:29.628300+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
@@ -18,8 +18,8 @@ Gerado em: `2026-07-15T19:22:26.047111+00:00`
 | `zte_misc` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_power_supply` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_ramdisk_reboot` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_reboot_ext` | `INCOMPLETE` | 7/10 | mapping has no evidence: attr_show<br>mapping has no evidence: attr_store<br>mapping has no evidence: boot_nvmem_show<br>mapping has no evidence: boot_nvmem_store |
-| `zte_sensor_sensitivity` | `INCOMPLETE` | 7/10 | mapping has no evidence: accel_enable_show<br>mapping has no evidence: accel_enable_store<br>mapping has no evidence: accel_x_axial_show<br>mapping has no evidence: accel_x_axial_store |
+| `zte_reboot_ext` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
+| `zte_sensor_sensitivity` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_stats_info` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_tpd` | `INCOMPLETE` | 5/10 | 367 Ghidra functions are not mapped<br>reconstruction_map.json is missing<br>missing abi_validation.json<br>report status is not PASS |
 

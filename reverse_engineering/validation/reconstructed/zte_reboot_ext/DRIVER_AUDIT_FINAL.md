@@ -2,12 +2,12 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-07-15T19:28:22.377957+00:00`
+- Gerado em: `2026-07-15T19:28:10.794018+00:00`
 - Run de evidência: `C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z`
 - Rebuild limpo: `True`
 
 | Driver | Resultado estático | Hardware | Evidência que falta |
 |---|---|---|---|
-| `zte_sensor_sensitivity` | `static_verified` | `não executado` | nenhuma |
+| `zte_reboot_ext` | `static_verified` | `não executado` | nenhuma |
 
 `static_verified` exige cadeia de evidência, build reproduzível, paridade ELF/modinfo/KMI e mapa completo de funções Ghidra para o fonte. `hardware_verified` exige um teste controlado específico do driver, com rollback e logs. Nenhum dos dois, isoladamente, autoriza afirmar equivalência funcional absoluta.
