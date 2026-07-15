@@ -1,5 +1,8 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
+#ifdef ZTE_IR_HOST_TEST
+#include "tests/host_stubs.h"
+#else
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 #include <linux/slab.h>
@@ -15,6 +18,8 @@
 #include <linux/build_bug.h>
 #include <linux/spinlock.h>
 #include <linux/overflow.h>
+#include <linux/bitops.h>
+#endif
 
 #define ZTE_IR_DRIVER_NAME             "zte_ir"
 #define ZTE_IR_CLASS_NAME              "zte_ir_class"
@@ -31,6 +36,7 @@
 #define ZTE_IR_TX_WORD_CAPACITY        40000U
 #define ZTE_IR_TX_BUFFER_BYTES         0x13880U
 #define ZTE_IR_PRIVATE_DATA_SIZE       0x138e8U
+#define ZTE_IR_UNREGISTER_MINOR_COUNT  256U
 
 struct zte_ir_recovered_device {
 	dev_t devt;                              /* 0x00000, size 0x4 */
@@ -62,10 +68,9 @@ static LIST_HEAD(device_list);
 static DEFINE_MUTEX(device_list_lock);
 static int spidev_major;
 static struct class *zte_ir_class;
-static unsigned long device_in_use;
+static unsigned long minors;
 
 /* Forward declarations */
-static struct spi_device *zte_ir_spi_get(struct zte_ir_runtime *runtime);
 static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
 				const u32 *pulses,
 				size_t pulse_count,
@@ -139,24 +144,6 @@ static int zte_ir_release(struct inode *inode, struct file *file)
 		kfree(runtime);
 
 	return 0;
-}
-
-static struct spi_device *zte_ir_spi_get(struct zte_ir_runtime *runtime)
-{
-	struct spi_device *spi;
-	unsigned long flags;
-
-	if (!runtime)
-		return NULL;
-
-	spin_lock_irqsave(&runtime->stock.spi_lock, flags);
-	spi = spi_dev_get(runtime->stock.spi);
-	spin_unlock_irqrestore(&runtime->stock.spi_lock, flags);
-
-	if (!spi)
-		pr_debug("zte_ir: SPI device unavailable\n");
-
-	return spi;
 }
 
 static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
@@ -238,13 +225,13 @@ static ssize_t zte_ir_write(struct file *file, const char __user *buffer,
 	}
 
 	if (count == 0 || (count % sizeof(u32)) != 0) {
-		dev_dbg(&runtime->stock.spi->dev, "zte_ir: write size %zu unaligned\n", count);
+		pr_debug("zte_ir: write size %zu unaligned\n", count);
 		return -EINVAL;
 	}
 
 	pulse_count = count / sizeof(u32);
 	if (pulse_count > ZTE_IR_TX_WORD_CAPACITY) {
-		dev_dbg(&runtime->stock.spi->dev, "zte_ir: pulse count %zu exceeds capacity\n", pulse_count);
+		pr_debug("zte_ir: pulse count %zu exceeds capacity\n", pulse_count);
 		return -E2BIG;
 	}
 
@@ -259,7 +246,7 @@ static ssize_t zte_ir_write(struct file *file, const char __user *buffer,
 		goto unlock_buf;
 	}
 
-	spi = zte_ir_spi_get(runtime);
+	spi = runtime->stock.spi;
 	if (!spi) {
 		ret = -ENODEV;
 		goto unlock_buf;
@@ -267,7 +254,7 @@ static ssize_t zte_ir_write(struct file *file, const char __user *buffer,
 
 	ret = zte_ir_encode_pulses(runtime, pulses, pulse_count, runtime->stock.speed_hz, &word_count);
 	if (ret)
-		goto put_spi;
+		goto unlock_buf;
 
 	if (word_count > 0) {
 		memset(&transfer, 0, sizeof(transfer));
@@ -280,16 +267,15 @@ static ssize_t zte_ir_write(struct file *file, const char __user *buffer,
 
 		ret = spi_sync(spi, &message);
 		if (ret) {
-			dev_dbg(&spi->dev, "zte_ir: SPI sync failed (err=%d)\n", (int)ret);
-			goto put_spi;
+			dev_err(&spi->dev, "unable to deliver the signal,ret = %d\n",
+				(int)ret);
+			goto unlock_buf;
 		}
 	}
 
-	dev_dbg(&spi->dev, "zte_ir: successfully transmitted %zu words\n", word_count);
+	pr_debug("zte_ir: successfully transmitted %zu words\n", word_count);
 	ret = count;
 
-put_spi:
-	spi_dev_put(spi);
 unlock_buf:
 	mutex_unlock(&runtime->stock.buf_lock);
 	kfree(pulses);
@@ -345,7 +331,7 @@ static const struct file_operations zte_ir_fops = {
 	.release = zte_ir_release,
 	.write = zte_ir_write,
 	.unlocked_ioctl = zte_ir_ioctl,
-	.compat_ioctl = compat_ptr_ioctl,
+	.compat_ioctl = zte_ir_ioctl,
 	.llseek = noop_llseek,
 };
 
@@ -375,31 +361,30 @@ static int zte_ir_probe(struct spi_device *spi)
 
 	mutex_lock(&device_list_lock);
 
-	if (device_in_use) {
+	if (test_bit(0, &minors)) {
 		pr_debug("zte_ir: minor 0 is already in use\n");
 		mutex_unlock(&device_list_lock);
 		ret = -ENODEV;
 		goto free_runtime;
 	}
-	device_in_use = 1;
-
 	devt = MKDEV(spidev_major, 0);
 	dev = device_create(zte_ir_class, &spi->dev, devt, runtime, "zte_ir");
 	ret = PTR_ERR_OR_ZERO(dev);
 	if (ret) {
 		dev_dbg(&spi->dev, "zte_ir: device_create failed (err=%d)\n", ret);
-		device_in_use = 0;
 		mutex_unlock(&device_list_lock);
 		goto free_runtime;
 	}
 
 	runtime->stock.devt = devt;
+	set_bit(0, &minors);
 	list_add(&runtime->stock.device_entry, &device_list);
 
 	mutex_unlock(&device_list_lock);
 
 	spi_set_drvdata(spi, runtime);
-	dev_dbg(&spi->dev, "zte_ir: probe successful, speed_hz=%u\n", runtime->stock.speed_hz);
+	dev_printk(KERN_INFO, &spi->dev, "zte_ir->speed_hz=%d\n",
+		   runtime->stock.speed_hz);
 
 	return 0;
 
@@ -411,7 +396,6 @@ free_runtime:
 static void zte_ir_remove(struct spi_device *spi)
 {
 	struct zte_ir_runtime *runtime = spi_get_drvdata(spi);
-	unsigned long flags;
 	bool free_structure = false;
 
 	if (!runtime)
@@ -419,22 +403,23 @@ static void zte_ir_remove(struct spi_device *spi)
 
 	dev_dbg(&spi->dev, "zte_ir: remove starting\n");
 
+	mutex_lock(&runtime->stock.buf_lock);
 	mutex_lock(&device_list_lock);
 
 	/* Prevent new opens */
 	runtime->removed = true;
 
 	/* Invalidate SPI reference under spi_lock spinlock */
-	spin_lock_irqsave(&runtime->stock.spi_lock, flags);
+	spin_lock_irq(&runtime->stock.spi_lock);
 	runtime->stock.spi = NULL;
-	spin_unlock_irqrestore(&runtime->stock.spi_lock, flags);
+	spin_unlock_irq(&runtime->stock.spi_lock);
 
 	/* Remove from tracking list and destroy device file node */
 	list_del(&runtime->stock.device_entry);
 	device_destroy(zte_ir_class, runtime->stock.devt);
 
 	/* Release minor 0 registration */
-	device_in_use = 0;
+	clear_bit(0, &minors);
 
 	spi_set_drvdata(spi, NULL);
 
@@ -446,6 +431,7 @@ static void zte_ir_remove(struct spi_device *spi)
 	}
 
 	mutex_unlock(&device_list_lock);
+	mutex_unlock(&runtime->stock.buf_lock);
 
 	if (free_structure)
 		kfree(runtime);
@@ -496,7 +482,8 @@ static int __init zte_ir_init(void)
 destroy_class:
 	class_destroy(zte_ir_class);
 unregister_chrdev:
-	__unregister_chrdev(spidev_major, 0, 1, ZTE_IR_DRIVER_NAME);
+	__unregister_chrdev(spidev_major, 0, ZTE_IR_UNREGISTER_MINOR_COUNT,
+			    ZTE_IR_DRIVER_NAME);
 	return ret;
 }
 
@@ -504,13 +491,14 @@ static void __exit zte_ir_exit(void)
 {
 	spi_unregister_driver(&zte_ir_spi_driver);
 	class_destroy(zte_ir_class);
-	__unregister_chrdev(spidev_major, 0, 1, ZTE_IR_DRIVER_NAME);
+	__unregister_chrdev(spidev_major, 0, ZTE_IR_UNREGISTER_MINOR_COUNT,
+			    ZTE_IR_DRIVER_NAME);
 	pr_debug("zte_ir: exit completed\n");
 }
 
 module_init(zte_ir_init);
 module_exit(zte_ir_exit);
 
-MODULE_AUTHOR("ZTE Curation Team");
-MODULE_DESCRIPTION("Hardened GKI-compliant ZTE Infrared SPI Driver");
-MODULE_LICENSE("GPL v2");
+MODULE_AUTHOR("xu min<xu.min4@zte.com>");
+MODULE_DESCRIPTION("PWM IR Transmitter");
+MODULE_LICENSE("GPL");

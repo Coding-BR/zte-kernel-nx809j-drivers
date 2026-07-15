@@ -4,7 +4,7 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-15T19:30:29.628300+00:00`
+Gerado em: `2026-07-15T19:51:02.898491+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
@@ -13,7 +13,7 @@ Gerado em: `2026-07-15T19:30:29.628300+00:00`
 | `zte_charger_policy` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_fingerprint` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_imem_info` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_ir` | `INCOMPLETE` | 6/10 | candidate_sha256 is missing or targets another artifact<br>stock_sha256 is missing or targets another artifact<br>no KCFI extraction is tied to the current stock SHA-256<br>no passing per-function KCFI comparison for the current candidate |
+| `zte_ir` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_led` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_misc` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
 | `zte_power_supply` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |

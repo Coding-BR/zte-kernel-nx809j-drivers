@@ -1,58 +1,49 @@
-# Status de Reconstrução e Validação do Driver `zte_ir`
+# Status do driver `zte_ir`
 
-Este documento registra o status e os testes de validação do driver **`zte_ir`** do REDMAGIC 11 Pro+ (NX809J).
+Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
----
+Kernel alvo: **Android 16 GKI 6.12.23**
 
-## Informações Gerais do Driver
-* **Função:** Sensor Infravermelho para controle remoto e emissão de pulsos IR (protocolo SPI).
-* **Tipo:** SPI client (irda_zte).
-* **Código-Fonte:** 1 arquivo(s) C (~480 linhas totais).
-* **Status de Reconstrução:** 100% COMPLETO. A lógica completa em C baseada em offsets de engenharia reversa foi preservada e compilada.
-* **Build:** COMPILADO - `zte_ir.ko` presente em `artifacts/20260711-174917/`.
+Modo de trabalho: **offline; sem ADB, fastboot ou carregamento de módulo neste ciclo**
 
----
+## Identidade dos artefatos
 
-## Detalhes da Validação no Hardware Real
+| Artefato | SHA-256 |
+|---|---|
+| Stock `zte_ir.ko` | `b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1` |
+| Candidato canônico `zte_ir.ko` | `1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc` |
 
-O driver `zte_ir.ko` reconstruído foi validado dinamicamente no dispositivo real rodando o kernel customizado `curator@build-host`.
+O fonte canônico é `zte_ir.c`. O diretório `implementation/` conserva
+microtarefas e evidências históricas; seu `.ko` integrado não é o candidato
+atual e não deve ser usado para atestar este hash.
 
-### Comando de Validação
-```powershell
-# 1. Enviar o driver reconstruído para o telefone
-adb push artifacts/20260711-174917/zte_ir.ko /data/local/tmp/zte_ir_custom.ko
+## Resultado verificável
 
-# 2. Descarregar o módulo original do vendor (se presente)
-adb shell "su root rmmod comp_zte_ir_ko"
-adb shell "su root rmmod zte_ir"
+- O0–O9: `PASS` na auditoria offline.
+- O10: `INCOMPLETE`, aguardando revisor independente diferente do implementador.
+- Hardware: `DEFERRED`, aguardando teste controlado no NX809J.
+- Veredito correto: **candidato alinhado estaticamente, ainda não comprovado no hardware**.
 
-# 3. Carregar o nosso módulo customizado
-adb shell "su root insmod /data/local/tmp/zte_ir_custom.ko"
+Não é permitido afirmar “100% reconstruído” ou “validado no aparelho” com o
+estado atual.
 
-# 4. Verificar se o módulo está ativo em memória
-adb shell "su root lsmod | grep zte_ir"
+## Evidências principais
 
-# 5. Auditar os logs de inicialização no dmesg
-adb shell "su root dmesg | grep -i zte_ir"
-```
+- `validation/zte_ir/driver_audit_final.json`: duas compilações limpas e
+  reproduzíveis, com SHA-256 igual ao candidato.
+- `validation/zte_ir/kcfi_current_surface.json`: 8/8 callbacks com KCFI e seção
+  ELF iguais ao stock.
+- `validation/zte_ir/host_test_report.json`: 8/8 funções stock e o helper de
+  codificação exercitados em dois binários host idênticos.
+- `validation/zte_ir/ghidra_stock_candidate_comparison.json`: inventário e
+  multiplicidade de chamadas, incluindo diferenças de helpers e inlining.
+- `validation/zte_ir/offline_reconstruction_audit.json`: nove gates offline
+  aprovados; somente O10 permanece incompleto.
+- `GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md`: procedimento de teste e rollback.
 
-### Evidência de Sucesso (Log de Execução)
-```
-artifacts/20260711-174917/zte_ir.ko: 1 file pushed, 0 skipped.
-zte_ir               <size>  0
-[    1.x] ... zte_ir loaded successfully ...
-Linux version 6.12.23-android16-5-gf1bdb13583da-ab13761046-4k (curator@build-host)
-```
+## Diferenças deliberadas
 
-### Análise do Log
-1. **`module_layout` Compatível:** O driver foi aceito sem erros de compatibilidade de assinatura de kernel, confirmando a higienização da ABI e o merge dos pré-requisitos no Kconfig.
-2. **Registro de Hardware:** O probe do driver foi disparado com sucesso e o hardware físico respondeu aos comandos de inicialização do kernel.
-
----
-
-## Organização dos Arquivos Locais
-Os arquivos deste driver estão organizados localmente na pasta:
-`c:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\curated\zte_ir\`
-* `zte_ir.c` — Código-fonte reconstruído do driver (~480 linhas)
-* `Makefile` — Instruções do Kbuild para compilação como módulo `obj-m`
-* `STATUS.md` — Este relatório técnico
+O candidato mantém o contrato válido de transmissão e controle, mas adiciona
+checagens de tamanho, overflow, carrier, dispositivo removido e limpeza de
+falhas. Essas diferenças estão registradas no relatório de paridade e não são
+tratadas como equivalência binária com o módulo OEM.

@@ -1,36 +1,52 @@
 {
   "schema_version": "1.0",
-  "status": "INCOMPLETO",
+  "status": "PASS",
   "driver": "zte_ir",
+  "scope": "Offline static parity for the canonical out-of-tree candidate; electrical behavior is excluded",
+  "stock_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_sha256": "1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc",
   "comparisons": [
     {
-      "area": "callback ABI and KCFI",
-      "status": "PASS",
-      "evidence": "integrated_kcfi_validation.json has eight stock callback matches"
+      "surface": "ELF, modinfo and KMI",
+      "result": "PASS",
+      "evidence": "driver_audit_final.json records reproducible double-clean builds, exact imports, aliases and namespaces"
     },
     {
-      "area": "write lifetime and bounds",
-      "status": "PENDING",
-      "difference": "The reconstructed write path rejects invalid count and capacity, protects removed devices and holds an SPI reference."
+      "surface": "callback ABI and KCFI",
+      "result": "PASS",
+      "evidence": "kcfi_current_surface.json matches type IDs and ELF sections for 8/8 stock callbacks"
     },
     {
-      "area": "ioctl carrier validation",
-      "status": "PENDING",
-      "difference": "The reconstructed ioctl rejects nonpositive carrier and values above the DTS-derived maximum."
+      "surface": "stock function traceability",
+      "result": "PASS",
+      "evidence": "reconstruction_map.json maps all 8 stock Ghidra functions to canonical zte_ir.c"
     },
     {
-      "area": "open/release/remove lifetime",
-      "status": "PENDING",
-      "difference": "The reconstructed driver maintains users and defers freeing a removed runtime until the final release."
+      "surface": "valid transmit and control paths",
+      "result": "PASS",
+      "evidence": "host_test_report.json directly covers write, ioctl, open, release, probe, remove, init and exit twice"
     },
     {
-      "area": "module metadata and runtime behavior",
-      "status": "PENDING",
-      "difference": "The reconstructed module has a separate module name and requires controlled bind, node and rollback validation."
+      "surface": "intentional hardening deltas",
+      "result": "PASS",
+      "evidence": "host_test_report.json covers bounds, removed-device lifetime, cleanup rollback and SPI failure paths",
+      "note": "The candidate preserves the stock valid-input contract while rejecting invalid sizes, carrier overflow and removed-device access"
+    },
+    {
+      "surface": "Ghidra candidate inventory",
+      "result": "PASS",
+      "evidence": "ghidra_stock_candidate_comparison.json records 8/8 stock callbacks plus four compiler-visible out-of-tree helpers",
+      "note": "Function-size and helper-inlining differences are non-gating because the OEM LTO pipeline is unavailable"
+    },
+    {
+      "surface": "hardware",
+      "result": "DEFERRED",
+      "evidence": "GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md",
+      "note": "No insmod, unbind, SPI transmission or device write was performed in this offline cycle"
     }
   ],
   "blockers": [
-    "No controlled hardware session has proven the hardening deltas preserve the required user-visible behavior.",
-    "No independent reviewer has approved the parity rationale."
+    "O10 independent review is pending",
+    "Controlled NX809J hardware validation is deferred"
   ]
 }

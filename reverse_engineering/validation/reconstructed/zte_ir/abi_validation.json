@@ -2,17 +2,24 @@
   "schema_version": "1.0",
   "status": "PASS",
   "driver": "zte_ir",
+  "stock_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_sha256": "1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc",
   "document": "engenharia/curated/zte_ir/DOCUMENTO_TRANSICAO.md",
   "header_probe": "engenharia/curated/zte_ir/reports/header_validation.json",
   "checks": [
     "header probe compiled with clang-r536225 against the configured kernel tree",
     "spinlock layout size is 4",
     "mutex layout size is 48",
-    "eight KCFI callback type identifiers match stock"
+    "eight KCFI callback type identifiers match stock",
+    "canonical candidate has the exact stock undefined-symbol, alias and namespace surface"
   ],
   "evidence": [
     "engenharia/curated/zte_ir/reports/header_validation.json",
-    "engenharia/curated/zte_ir/reports/integrated_kcfi_validation.json",
-    "engenharia/curated/zte_ir/evidence/kernel_type_layouts.json"
-  ]
+    "engenharia/validation/zte_ir/kcfi_current_surface.json",
+    "engenharia/curated/zte_ir/evidence/kernel_type_layouts.json",
+    "engenharia/validation/zte_ir/driver_audit_final.json",
+    "engenharia/validation/zte_ir/host_test_report.json"
+  ],
+  "hardware_status": "INCOMPLETO",
+  "hardware_blocker": "Requires the documented controlled unbind/load/rollback test on NX809J"
 }

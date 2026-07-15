@@ -1,141 +1,68 @@
 #!/usr/bin/env python3
-"""
-Validation script for the zte_ir built-in driver.
-1. Waits for fastboot device
-2. Boots custom kernel image
-3. Waits for ADB
-4. Immediately captures dmesg, uname, /dev/zte_ir, lsmod, modinfo
-"""
-import subprocess
-import sys
-import time
-import os
-import glob
+"""Validate the published zte_ir evidence without touching a device."""
 
-# Find the latest build folder dynamically
-artifacts_dir = "artifacts"
-build_folders = sorted(glob.glob(os.path.join(artifacts_dir, "2026*")), reverse=True)
-IMG = None
-for folder in build_folders:
-    candidate = os.path.join(folder, "dev_reverse_nodtb_stockcmd.img")
-    if os.path.exists(candidate):
-        IMG = candidate
-        print(f"Using dynamically discovered boot image: {IMG}")
-        break
+from __future__ import annotations
 
-if not IMG:
-    print("ERROR: No dev_reverse_nodtb_stockcmd.img found in any build folder in artifacts/")
-    sys.exit(1)
+import hashlib
+import json
+from pathlib import Path
 
-print("[1/4] Waiting for fastboot device...")
-for _ in range(60):
-    r = subprocess.run(["fastboot", "devices"], capture_output=True, text=True)
-    if r.stdout.strip():
-        print(f"  => {r.stdout.strip()}")
-        break
-    time.sleep(0.5)
-else:
-    print("ERROR: No fastboot device found after 30s")
-    sys.exit(1)
 
-print(f"[2/4] Booting {IMG} ...")
-r = subprocess.run(["fastboot", "boot", IMG], capture_output=True, text=True)
-print(r.stdout.strip())
-if r.returncode != 0:
-    print(f"ERROR: fastboot boot failed: {r.stderr}")
-    sys.exit(1)
+ROOT = Path(__file__).resolve().parents[1]
+DRIVER = ROOT / "kernel_development" / "drivers" / "zte_ir"
+EVIDENCE = ROOT / "reverse_engineering" / "validation" / "reconstructed" / "zte_ir"
+CANDIDATE_SHA256 = "1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc"
 
-print("[3/4] Waiting for ADB device...")
-for _ in range(120):
-    r = subprocess.run(["adb", "devices"], capture_output=True, text=True)
-    lines = [l for l in r.stdout.splitlines() if "device" in l and not "List" in l]
-    if lines:
-        print(f"  => {lines[0]}")
-        break
-    time.sleep(0.5)
-else:
-    print("ERROR: ADB device not found after 60s")
-    sys.exit(1)
 
-# Locate the compiled module dynamically
-KO_FILE = os.path.join(os.path.dirname(IMG), "zte_ir.ko")
-if not os.path.exists(KO_FILE):
-    print(f"ERROR: Could not find compiled module zte_ir.ko at {KO_FILE}")
-    sys.exit(1)
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
-print("[4/4] Capturing kernel info and custom zte_ir state...")
-time.sleep(2)
 
-# === STEP A: Check which kernel is running ===
-print("\n=== KERNEL VERSION ===")
-r = subprocess.run(["adb", "shell", "cat /proc/version"], capture_output=True)
-stdout = r.stdout.decode('utf-8', errors='replace')
-print(stdout.strip())
-running_our_kernel = "curator" in stdout  # our kernel build user is curator
+def load(name: str) -> dict:
+    return json.loads((EVIDENCE / name).read_text(encoding="utf-8"))
 
-if not running_our_kernel:
-    print("\nWARNING: Device is NOT running our custom kernel (Stock kernel detected).")
-    print("Cannot perform custom module load check due to symbol mismatch on stock kernel.")
-    print("==> RETEST NEEDED: Ensure fastboot boot loaded our kernel successfully.")
-    sys.exit(1)
 
-# === STEP B: Automated custom driver push and load ===
-print(f"\n=== PUSHING AND LOADING CUSTOM MODULE: {KO_FILE} ===")
-r_push = subprocess.run(["adb", "push", KO_FILE, "/data/local/tmp/zte_ir_custom.ko"], capture_output=True)
-print(r_push.stdout.decode('utf-8', errors='replace').strip())
+def main() -> int:
+    candidate = DRIVER / "zte_ir.ko"
+    audit = load("offline_reconstruction_audit.json")["drivers"][0]
+    build = load("driver_audit_final.json")["drivers"][0]
+    host = load("host_test_report.json")
+    kcfi = load("kcfi_current_surface.json")
+    pass_gates = [gate["name"] for gate in audit["gates"] if gate["status"] == "PASS"]
+    incomplete = [gate["name"] for gate in audit["gates"] if gate["status"] == "INCOMPLETE"]
+    deferred = [gate["name"] for gate in audit["gates"] if gate["status"] == "DEFERRED"]
+    checks = {
+        "candidate_exists": candidate.is_file(),
+        "candidate_sha256": candidate.is_file() and sha256(candidate) == CANDIDATE_SHA256,
+        "nine_offline_gates_pass": len(pass_gates) == 9,
+        "only_o10_incomplete": incomplete == ["O10 Independent review"],
+        "hardware_deferred": deferred == ["Hardware"],
+        "double_clean_build": (
+            build.get("status") == "static_verified"
+            and build.get("build", {}).get("reproducible") is True
+            and build.get("build", {}).get("first_build", {}).get("sha256") == CANDIDATE_SHA256
+            and build.get("build", {}).get("second_build", {}).get("sha256") == CANDIDATE_SHA256
+        ),
+        "exact_kmi_surface": build.get("checks", {}).get("undefined_symbols_match") is True,
+        "host_harness": host.get("passed") is True and host.get("reproducible") is True,
+        "kcfi_8_of_8": kcfi.get("passed") is True and len(kcfi.get("comparisons", [])) == 8,
+    }
+    passed = all(checks.values())
+    print(json.dumps({
+        "driver": "zte_ir",
+        "mode": "offline_only",
+        "status": "O0_O9_PASS_O10_PENDING" if passed else "FAILED",
+        "candidate_sha256": CANDIDATE_SHA256,
+        "checks": checks,
+        "hardware_validation": "DEFERRED",
+        "hardware_runbook": str(DRIVER / "GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md"),
+    }, indent=2, sort_keys=True))
+    return 0 if passed else 1
 
-# Unload stock module
-print("Unloading stock zte_ir module...")
-subprocess.run(["adb", "shell", "su root rmmod zte_ir"], capture_output=True)
 
-# Load custom module
-print("Loading custom zte_ir_custom.ko...")
-r_insmod = subprocess.run(["adb", "shell", "su root insmod /data/local/tmp/zte_ir_custom.ko"], capture_output=True)
-insmod_err = r_insmod.stderr.decode('utf-8', errors='replace').strip()
-if insmod_err:
-    print(f"  insmod error: {insmod_err}")
-
-# === STEP C: Check dmesg for zte_ir messages ===
-print("\n=== dmesg | zte_ir ===")
-r = subprocess.run(["adb", "shell", "dmesg"], capture_output=True, timeout=30)
-stdout_dmesg = r.stdout.decode('utf-8', errors='replace')
-zte_ir_lines = [l for l in stdout_dmesg.splitlines() if "zte_ir" in l.lower()]
-if zte_ir_lines:
-    for l in zte_ir_lines:
-        print(l)
-else:
-    print("  (no zte_ir messages in dmesg)")
-
-# === STEP D: Check /dev/zte_ir ===
-print("\n=== /dev/zte_ir ===")
-r = subprocess.run(["adb", "shell", "ls", "-la", "/dev/zte_ir"], capture_output=True)
-stdout_ls = r.stdout.decode('utf-8', errors='replace')
-stderr_ls = r.stderr.decode('utf-8', errors='replace')
-print(stdout_ls.strip() or stderr_ls.strip())
-
-# === STEP E: lsmod ===
-print("\n=== lsmod | zte_ir ===")
-r = subprocess.run(["adb", "shell", "lsmod"], capture_output=True)
-stdout_lsmod = r.stdout.decode('utf-8', errors='replace')
-for l in stdout_lsmod.splitlines():
-    if "zte_ir" in l:
-        print(l)
-
-# === STEP F: modinfo zte_ir ===
-print("\n=== modinfo custom zte_ir ===")
-r = subprocess.run(["adb", "shell", "su root modinfo /data/local/tmp/zte_ir_custom.ko"], capture_output=True)
-stdout_modinfo = r.stdout.decode('utf-8', errors='replace')
-print(stdout_modinfo.strip() or "(modinfo failed)")
-
-# === FINAL VERDICT ===
-print("\n" + "="*50)
-print("KERNEL: Our custom kernel IS running!")
-custom_loaded = any("module loaded successfully" in l for l in zte_ir_lines)
-if custom_loaded:
-    print("DRIVER: Custom zte_ir driver loaded and initialized successfully!")
-    for l in zte_ir_lines:
-        if "module loaded successfully" in l:
-            print(f"  dmesg: {l}")
-    print("==> FULL SUCCESS: Custom kernel + loaded custom driver validated!")
-else:
-    print("==> FAILED: Custom kernel booted, but custom driver failed to initialize (see dmesg above).")
+if __name__ == "__main__":
+    raise SystemExit(main())

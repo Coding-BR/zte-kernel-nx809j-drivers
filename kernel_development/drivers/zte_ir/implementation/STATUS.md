@@ -1,5 +1,10 @@
 # Microtask execution status
 
+> **LEGACY MICROTASK EVIDENCE:** this directory preserves the historical
+> `zte_ir_reconstructed.ko` build and atomic-function reports. It is not the
+> canonical candidate. Use `../zte_ir.c` and `../zte_ir.ko` with SHA-256
+> `1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc`.
+
 | ID | Function | Status | Validation |
 |---|---|---|---|
 | 01 | `zte_ir_spi_get()` | complete | Kernel 6.12 headers, Clang r536225, KCFI, GKI symbols and namespaces |

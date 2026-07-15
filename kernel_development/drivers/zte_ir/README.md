@@ -1,33 +1,49 @@
-# zte_ir curated analysis
+# `zte_ir` — pacote curado
 
-Pacote curado e reproduzível para a reconstrução do driver SPI IR do NX809J.
+Reconstrução offline do transmissor infravermelho SPI do **REDMAGIC 11 Pro+
+(NX809J)** para Android 16 GKI 6.12.23.
 
-- `DOCUMENTO_TRANSICAO.md`: documento autoritativo com exatamente as três seções solicitadas.
-- `GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md`: runbook seguro para troca temporária do módulo, validação e rollback em outro ambiente.
-- `headers/`: ABI, prefixo stock byte a byte e extensão de lifetime separada.
-- `tools/`: captura ADB, extração/comparação KCFI e validações de layout.
-- `implementation/`: funções atômicas, harnesses e status de execução.
-- `evidence/`: evidência gerada, sem modificar a execução oficial do Ghidra.
-- `reports/`: resultados das validações automatizadas.
+## Fonte e binário canônicos
 
-O documento automático em `../../runs/NX809J-20260711T011653Z/04_documents/zte_ir.ko/` permanece como saída bruta da pipeline. Para implementação, este pacote curado o substitui: a heurística genérica confundiu offsets de estruturas do kernel com offsets da estrutura privada do driver.
+- Fonte: `zte_ir.c`
+- Kbuild: `Makefile`
+- Candidato: `zte_ir.ko`
+- SHA-256: `1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc`
+- Módulo Linux: `zte_ir`
+- OF compatible: `zte,zte_ir`
 
-Execução completa, com o smartphone conectado:
+`implementation/final/zte_ir_reconstructed.ko` é um artefato histórico das
+microtarefas. Ele possui outro hash e não participa da atestação atual.
 
-```powershell
-python .\tools\run_curated_analysis.py --serial 9125319102E9
-```
+## Organização
 
-O comando recompila o probe KCFI, captura runtime/DT via ADB, consulta layouts no `vmlinux`, compila os headers contra a árvore real e atualiza `MANIFEST.json` somente quando todas as validações passam.
+- `DOCUMENTO_TRANSICAO.md`: arquitetura, ABI e microtarefas originais.
+- `reconstruction_map.json`: 8/8 funções stock ligadas ao fonte canônico.
+- `tests/`: harness que inclui diretamente `zte_ir.c`.
+- `headers/`, `implementation/`, `evidence/` e `reports/`: histórico técnico e
+  provas intermediárias, sem substituir a identidade do candidato canônico.
+- `GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md`: teste no aparelho com rollback.
 
-O módulo integrado é gerado em
-`implementation/final/zte_ir_reconstructed.ko`. A pipeline exige duas
-compilações limpas com SHA-256 idêntico, `modpost` sem símbolo ausente, todos
-os namespaces resolvidos e os oito callbacks KCFI iguais ao módulo stock.
-Esse artefato não é carregado automaticamente no aparelho.
-
-Verificação posterior da cadeia de hashes, sem recapturar o aparelho:
+## Validação offline
 
 ```powershell
-python .\tools\verify_manifest.py
+python .\tools\validate_reconstructed_drivers.py `
+  --curated-root .\curated `
+  --run-root .\runs\NX809J-20260711T011653Z `
+  --driver zte_ir --rebuild `
+  --work-root .\validation\work `
+  --output .\validation\zte_ir\driver_audit_final.json `
+  --markdown .\validation\zte_ir\DRIVER_AUDIT_FINAL.md `
+  --target-kernel-manifest .\config\target_kernel.json
+
+python .\curated\zte_ir\tests\run_host_tests.py
+
+python .\tools\audit_offline_reconstruction.py `
+  --engineering-root . --driver zte_ir `
+  --output .\validation\zte_ir\offline_reconstruction_audit.json `
+  --markdown .\validation\zte_ir\OFFLINE_RECONSTRUCTION_AUDIT.md `
+  --allow-incomplete
 ```
+
+Resultado atual: O0–O9 `PASS`; O10 pendente; hardware `DEFERRED`. Isso não
+autoriza uma declaração de reconstrução funcional de 100%.

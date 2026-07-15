@@ -42,7 +42,6 @@ REQUIRED_GHIDRA_FILES = (
     "pseudocode.c",
 )
 MODINFO_KEYS = {"license", "vermagic", "alias", "depends", "import_ns"}
-SPECIAL_DRIVER = "zte_ir"
 
 
 def sha256_file(path: Path) -> str:
@@ -171,7 +170,7 @@ def command_record(command: list[str], *, timeout: int = 900) -> dict[str, Any]:
 
 
 def find_run(engineering_root: Path, drivers: list[str]) -> Path:
-    required = [driver for driver in drivers if driver != SPECIAL_DRIVER]
+    required = drivers
     candidates = sorted(
         (path for path in (engineering_root / "runs").glob("*") if path.is_dir()),
         key=lambda path: path.stat().st_mtime,
@@ -526,37 +525,6 @@ def validate_regular_driver(
     }
 
 
-def validate_zte_ir(curated_root: Path) -> dict[str, Any]:
-    root = curated_root / SPECIAL_DRIVER
-    manifest_path = root / "MANIFEST.json"
-    build_path = root / "reports" / "integrated_module_build.json"
-    kcfi_path = root / "reports" / "integrated_kcfi_validation.json"
-    manifest = read_json(manifest_path) if manifest_path.is_file() else {}
-    build = read_json(build_path) if build_path.is_file() else {}
-    kcfi = read_json(kcfi_path) if kcfi_path.is_file() else {}
-    checks = {
-        "manifest": bool(manifest.get("overall_passed")),
-        "integrated_reproducible_build": bool(build.get("passed")),
-        "integrated_kcfi": bool(kcfi.get("passed")),
-        "eight_kcfi_callbacks": len(kcfi.get("comparisons", [])) == 8,
-        "hardware_verified": False,
-    }
-    errors = [key for key, value in checks.items() if key != "hardware_verified" and not value]
-    return {
-        "driver": SPECIAL_DRIVER,
-        "status": "static_verified_hardware_pending" if not errors else "incomplete_or_failed",
-        "hardware_verified": False,
-        "checks": checks,
-        "errors": errors,
-        "warnings": [
-            "The controlled unbind/unload/rollback test has not been run by this offline audit."
-        ],
-        "manifest": str(manifest_path),
-        "build_report": str(build_path),
-        "kcfi_report": str(kcfi_path),
-    }
-
-
 def render_markdown(payload: dict[str, Any]) -> str:
     lines = [
         "# Auditoria Independente de Reconstrução de Drivers",
@@ -633,9 +601,6 @@ def main() -> int:
         target_kernel = read_json(args.target_kernel_manifest.resolve())
     results: list[dict[str, Any]] = []
     for driver in drivers:
-        if driver == SPECIAL_DRIVER:
-            results.append(validate_zte_ir(curated_root))
-            continue
         results.append(
             validate_regular_driver(
                 driver=driver,
