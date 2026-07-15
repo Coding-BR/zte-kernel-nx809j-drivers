@@ -1,0 +1,299 @@
+#define _GNU_SOURCE
+
+#include <errno.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef uint8_t u8;
+typedef int8_t s8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+
+#ifndef __always_inline
+#define __always_inline inline __attribute__((always_inline))
+#endif
+#define static_assert(condition, ...) _Static_assert(condition, #condition)
+#define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
+#define BIT(bit) (1U << (bit))
+#define KOBJ_CHANGE 2
+#define GFP_KERNEL 0
+#define pr_debug(...) ((void)0)
+#define pr_err(...) ((void)0)
+
+struct kobject { int unused; };
+struct device { struct kobject kobj; };
+struct platform_device { int unused; struct device dev; };
+struct ufp_tp_ops_struct { struct platform_device *pdev; };
+
+unsigned long tpd_cdev;
+struct ufp_tp_ops_struct ufp_tp_ops;
+int current_lcd_state;
+
+#include "zte_tpd_tcm_layout.h"
+
+static bool fail_kmalloc;
+static unsigned int kfree_calls;
+static unsigned int uevent_calls;
+static unsigned int callback_calls;
+static char last_env0[64];
+static char last_env1[64];
+static u8 last_command;
+static u8 last_payload[64];
+static u32 last_payload_length;
+static u32 last_delay;
+static int callback_result;
+
+static void *kmalloc(size_t size, int flags)
+{
+	(void)flags;
+	return fail_kmalloc ? NULL : malloc(size);
+}
+
+static void kfree(const void *pointer)
+{
+	if (pointer) {
+		kfree_calls++;
+		free((void *)pointer);
+	}
+}
+
+static int kobject_uevent_env(struct kobject *kobject, int action, char **envp)
+{
+	(void)kobject;
+	if (action != KOBJ_CHANGE)
+		abort();
+	uevent_calls++;
+	snprintf(last_env0, sizeof(last_env0), "%s", envp[0]);
+	snprintf(last_env1, sizeof(last_env1), "%s", envp[1]);
+	return 0;
+}
+
+#include "one_key_report.c"
+#include "uf_touch_report.c"
+#include "syna_tcm_set_game_partition_config.c"
+
+#define REQUIRE(condition) do { \
+	if (!(condition)) { \
+		fprintf(stderr, "assertion failed at %s:%d: %s\n", \
+			__FILE__, __LINE__, #condition); \
+		return false; \
+	} \
+} while (0)
+
+static struct platform_device pdev;
+static u8 cdev_storage[0x100];
+
+static void reset_state(void)
+{
+	memset(cdev_storage, 0, sizeof(cdev_storage));
+	*(u16 *)(cdev_storage + 0x1e) = 100;
+	*(u16 *)(cdev_storage + 0x20) = 200;
+	*(u16 *)(cdev_storage + 0x22) = 20;
+	tpd_cdev = (unsigned long)cdev_storage;
+	ufp_tp_ops.pdev = &pdev;
+	current_lcd_state = 0;
+	memset(one_key_finger, 0, sizeof(one_key_finger));
+	one_key_down = false;
+	memset(fp_finger, 0, sizeof(fp_finger));
+	area_meet_down = false;
+	fail_kmalloc = false;
+	kfree_calls = 0;
+	uevent_calls = 0;
+	callback_calls = 0;
+	last_env0[0] = '\0';
+	last_env1[0] = '\0';
+	last_command = 0;
+	memset(last_payload, 0, sizeof(last_payload));
+	last_payload_length = 0;
+	last_delay = 0;
+	callback_result = 0;
+}
+
+static bool test_one_key_geometry_and_state(void)
+{
+	reset_state();
+	one_key_report(1, 100, 200, 2);
+	REQUIRE(uevent_calls == 1);
+	REQUIRE(strcmp(last_env0, "fp_gesture_down=true") == 0);
+	REQUIRE(strcmp(last_env1, "finger_id=2") == 0);
+	one_key_report(1, 100, 200, 2);
+	REQUIRE(uevent_calls == 1);
+	one_key_report(1, 80, 200, 3);
+	REQUIRE(uevent_calls == 1);
+	one_key_report(0, -1, -1, 2);
+	REQUIRE(uevent_calls == 2);
+	REQUIRE(strcmp(last_env0, "fp_gesture_up=true") == 0);
+	one_key_report(0, -1, -1, 2);
+	one_key_report(1, 100, 200, 10);
+	REQUIRE(uevent_calls == 2);
+	return true;
+}
+
+static bool test_one_key_missing_device(void)
+{
+	reset_state();
+	ufp_tp_ops.pdev = NULL;
+	one_key_report(1, 100, 200, 0);
+	REQUIRE(uevent_calls == 0);
+	REQUIRE(one_key_finger[0] == 1);
+	return true;
+}
+
+static bool test_uf_touch_events_and_power_states(void)
+{
+	static const char *const expected_power[] = {
+		"TP_POWER_STATUS=2", "TP_POWER_STATUS=1", "TP_POWER_STATUS=3",
+	};
+	int state;
+
+	for (state = 0; state < 3; state++) {
+		reset_state();
+		current_lcd_state = state;
+		uf_touch_report(1, 100, 200, state);
+		REQUIRE(uevent_calls == 1);
+		REQUIRE(strcmp(last_env0, "areameet_down=true") == 0);
+		REQUIRE(strcmp(last_env1, expected_power[state]) == 0);
+		uf_touch_report(1, 100, 200, state);
+		REQUIRE(uevent_calls == 1);
+		uf_touch_report(0, -1, -1, state);
+		REQUIRE(uevent_calls == 2);
+		REQUIRE(strcmp(last_env0, "areameet_up=true") == 0);
+	}
+	return true;
+}
+
+static bool test_uf_touch_rejections(void)
+{
+	reset_state();
+	uf_touch_report(1, 120, 200, 0);
+	REQUIRE(uevent_calls == 0);
+	uf_touch_report(1, 100, 200, 10);
+	REQUIRE(uevent_calls == 0);
+	current_lcd_state = 3;
+	uf_touch_report(1, 100, 200, 0);
+	REQUIRE(uevent_calls == 0);
+	REQUIRE(fp_finger[0] == 1);
+	return true;
+}
+
+static int test_write_message(struct tcm_dev *tcm, u8 command, u8 *payload,
+			      u32 length, u8 *response_code, u32 delay_ms)
+{
+	(void)tcm;
+	(void)response_code;
+	callback_calls++;
+	last_command = command;
+	last_payload_length = length;
+	last_delay = delay_ms;
+	if (length > sizeof(last_payload))
+		abort();
+	memcpy(last_payload, payload, length);
+	return callback_result;
+}
+
+static void setup_tcm(struct tcm_dev *tcm,
+		      struct tcm_transport_overlay *transport)
+{
+	memset(tcm, 0, sizeof(*tcm));
+	memset(transport, 0, sizeof(*transport));
+	tcm->firmware_mode = 1;
+	tcm->transport = transport;
+	tcm->command_delay_ms = 77;
+	tcm->write_message = test_write_message;
+}
+
+static bool test_game_partition_payload_and_default_delay(void)
+{
+	struct tcm_transport_overlay transport;
+	struct tcm_dev tcm;
+	u8 data[] = { 0x11, 0x22, 0x33 };
+
+	reset_state();
+	setup_tcm(&tcm, &transport);
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 0x5a, 3, data, 0) == 0);
+	REQUIRE(callback_calls == 1);
+	REQUIRE(last_command == 0xc7);
+	REQUIRE(last_payload_length == 4);
+	REQUIRE(memcmp(last_payload, "\x5a\x11\x22\x33", 4) == 0);
+	REQUIRE(last_delay == 77);
+	REQUIRE(kfree_calls == 1);
+	return true;
+}
+
+static bool test_game_partition_delay_modes(void)
+{
+	struct tcm_transport_overlay transport;
+	struct tcm_dev tcm;
+	u8 data = 0xaa;
+
+	reset_state();
+	setup_tcm(&tcm, &transport);
+	transport.flags = BIT(0);
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, 1, &data, 0) == 0);
+	REQUIRE(last_delay == 0);
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 2, 1, &data, 123) == 0);
+	REQUIRE(last_delay == 123);
+	REQUIRE(kfree_calls == 2);
+	return true;
+}
+
+static bool test_game_partition_errors_and_cleanup(void)
+{
+	struct tcm_transport_overlay transport;
+	struct tcm_dev tcm;
+	u8 data = 0xaa;
+
+	reset_state();
+	REQUIRE(syna_tcm_set_game_partition_config(NULL, 1, 1, &data, 0) == -241);
+	setup_tcm(&tcm, &transport);
+	tcm.firmware_mode = 0;
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, 1, &data, 0) == -241);
+	tcm.firmware_mode = 1;
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, -1, &data, 0) == -EINVAL);
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, 1, NULL, 0) == -EINVAL);
+	tcm.write_message = NULL;
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, 1, &data, 0) == -EOPNOTSUPP);
+	tcm.write_message = test_write_message;
+	fail_kmalloc = true;
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, 1, &data, 0) == -ENOMEM);
+	REQUIRE(kfree_calls == 0);
+	fail_kmalloc = false;
+	callback_result = -EIO;
+	REQUIRE(syna_tcm_set_game_partition_config(&tcm, 1, 1, &data, 0) == -EIO);
+	REQUIRE(kfree_calls == 1);
+	return true;
+}
+
+static int run_test(const char *name, bool (*test)(void))
+{
+	if (!test()) {
+		printf("FAIL %s\n", name);
+		return 1;
+	}
+	printf("PASS %s\n", name);
+	return 0;
+}
+
+int main(void)
+{
+	int failures = 0;
+	int total = 0;
+
+#define RUN(test) do { total++; failures += run_test(#test, test); } while (0)
+	RUN(test_one_key_geometry_and_state);
+	RUN(test_one_key_missing_device);
+	RUN(test_uf_touch_events_and_power_states);
+	RUN(test_uf_touch_rejections);
+	RUN(test_game_partition_payload_and_default_delay);
+	RUN(test_game_partition_delay_modes);
+	RUN(test_game_partition_errors_and_cleanup);
+#undef RUN
+
+	printf("SUMMARY total=%d passed=%d failed=%d\n",
+	       total, total - failures, failures);
+	return failures ? EXIT_FAILURE : EXIT_SUCCESS;
+}

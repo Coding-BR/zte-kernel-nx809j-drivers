@@ -1,16 +1,16 @@
 #include <linux/ctype.h>
 
-const char *__fastcall trim(__int64 a1)
+static char *trim(char *input)
 {
-  const char *v1; // x19
+  char *v1; // x19
   unsigned int v2; // w8
   unsigned int v3; // t1
   size_t v4; // x9
   unsigned __int8 *v5; // x8
 
-  if ( !a1 )
+  if ( !input )
     return NULL;
-  v1 = (const char *)(a1 - 1);
+  v1 = input - 1;
   do
   {
     v3 = *(unsigned __int8 *)++v1;

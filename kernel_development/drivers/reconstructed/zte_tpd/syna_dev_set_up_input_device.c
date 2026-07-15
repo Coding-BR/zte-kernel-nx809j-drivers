@@ -76,14 +76,15 @@ __int64 __fastcall syna_dev_set_up_input_device(__int64 a1)
       input_dev->dev.parent = parent_dev;
       input_set_drvdata(input_dev, (void *)a1);
 
-      __set_bit(INPUT_PROP_DIRECT, input_dev->propbit);
+      set_bit(INPUT_PROP_DIRECT, input_dev->propbit);
 
-      __set_bit(EV_SYN, input_dev->evbit);
-      __set_bit(EV_KEY, input_dev->evbit);
-      __set_bit(EV_ABS, input_dev->evbit);
+      set_bit(EV_SYN, input_dev->evbit);
+      set_bit(EV_KEY, input_dev->evbit);
+      set_bit(EV_ABS, input_dev->evbit);
 
-      __set_bit(BTN_TOUCH, input_dev->keybit);
-      __set_bit(BTN_TOOL_FINGER, input_dev->keybit);
+      set_bit(BTN_TOUCH, input_dev->keybit);
+      set_bit(BTN_TOOL_FINGER, input_dev->keybit);
+      set_bit(KEY_WAKEUP, input_dev->keybit);
 
       input_set_capability(input_dev, EV_KEY, KEY_WAKEUP);
       input_set_abs_params(input_dev, 53, 0, v7[4], 0, 0);

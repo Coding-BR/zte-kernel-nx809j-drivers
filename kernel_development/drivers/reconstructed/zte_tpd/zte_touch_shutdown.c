@@ -24,5 +24,6 @@ __int64 zte_touch_shutdown()
   v6 = tpd_cdev;
   printk(unk_322AA, "tpd_probe_work_deinit", v7);
   cancel_delayed_work_sync(v6 + 2256);
+  zlog_register_work_deinit();
   return cancel_delayed_work_sync(v3 + 2360);
 }

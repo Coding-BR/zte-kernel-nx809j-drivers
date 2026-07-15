@@ -18,6 +18,7 @@ __int64 __fastcall zte_touch_deinit(__int64 a1, __int64 a2, __int64 a3)
   if ( !tpd_cdev || zte_touch_deinit_ztp_release == 1 )
     return printk(unk_323A0, a2, a3);
   v5 = ufp_mac_exit();
+  zlog_register_work_deinit();
   tpd_proc_deinit(v5, v6, v7);
   v8 = tpd_cdev;
   v10 = printk(unk_322AA, "tpd_workqueue_deinit", v9);
@@ -26,6 +27,7 @@ __int64 __fastcall zte_touch_deinit(__int64 a1, __int64 a2, __int64 a3)
   v12 = tpd_cdev;
   printk(unk_322AA, "tpd_probe_work_deinit", v13);
   cancel_delayed_work_sync(v12 + 2256);
+  zlog_register_work_deinit();
   cancel_delayed_work_sync(v8 + 2360);
   if ( !*(_QWORD *)(v3 + 1200) )
     destroy_workqueue(0);

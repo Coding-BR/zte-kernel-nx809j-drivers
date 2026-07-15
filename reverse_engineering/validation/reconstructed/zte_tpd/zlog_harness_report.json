@@ -1,0 +1,103 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -I/work/workspace/kernel_development/drivers/reconstructed/zte_tpd zlog_harness.c -o build/zlog_harness && ./build/zlog_harness"
+  ],
+  "generated_utc": "2026-07-15T14:54:22.736474+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\zlog_harness.c",
+      "sha256": "02e50502031b8c62a94e182f28acd753d755a17326077cdf27f760f5dc73fca2",
+      "size": 11737
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_tpd_zlog.h",
+      "sha256": "e13dd10b4485399a4eb305750589abded4cc323d68de28adbc90c98ccf97452d",
+      "size": 3477
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_zlog_register.c",
+      "sha256": "dc46a1f2b146eebdbcd3c0f20e09b6a3279a67e1f7a44d149b3da74520b76258",
+      "size": 1024
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_zlog_check.c",
+      "sha256": "18ad4427bcad2634b10ff64b9d8c6628a1bc7d19a91cd1e43783903b64cbd0f5",
+      "size": 568
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_zlog_record_notify.c",
+      "sha256": "b78b46ab1f0594544dbf44c925492e6eb1eb60fa18aaba2d98a79afe0c247b55",
+      "size": 7957
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zlog_register_work_init.c",
+      "sha256": "8c7162901c6e9df397642c02042f66c7fa275936d25e225ddf656174b1809bd8",
+      "size": 257
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zlog_register_work.c",
+      "sha256": "18a3a0cc0bce8f66bdafdfd6eb3cdc5a5cadeb4bf095249590633d8708266acf",
+      "size": 223
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zlog_register_work_deinit.c",
+      "sha256": "f5a2b32bf586a126cd07d8de0bfc228a0a972110d07d016fb450a6e3d384e681",
+      "size": 310
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_zlog_init.c",
+      "sha256": "1edc92eb0e9c1e9eb39a7875b981a1cdfeb42ece51bdf3f9a05b053dccd5bd46",
+      "size": 324
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_zlog_debug_read.c",
+      "sha256": "a29154b4dc59a2f7b85dd4f7da694e5ca1401fe03cb1f36dc5b32f935318a3c1",
+      "size": 359
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_zlog_debug_write.c",
+      "sha256": "b598a46fcd8446e1a991befa588554f4cfee7ad843c7ee5a19a7563119355c38",
+      "size": 766
+    }
+  ],
+  "limitations": [
+    "Host stubs validate reconstructed control flow, not Android scheduler timing.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, or partition operation is performed.",
+    "Hardware validation remains a separate controlled gate."
+  ],
+  "mode": "offline_direct_source_host_harness",
+  "passed": true,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "stderr": "",
+  "stdout": "PASS test_layout_and_init\nPASS test_register_paths\nPASS test_throttle_check\nPASS test_all_notify_mappings\nPASS test_tenth_error_escalation\nPASS test_notify_gates\nPASS test_debug_read\nPASS test_debug_write_mask_and_errors\nPASS test_work_lifecycle\nPASS test_unregistered_notify\nSUMMARY total=10 passed=10 failed=0\n",
+  "tests": {
+    "expected": 10,
+    "failed": [],
+    "passed": [
+      "test_layout_and_init",
+      "test_register_paths",
+      "test_throttle_check",
+      "test_all_notify_mappings",
+      "test_tenth_error_escalation",
+      "test_notify_gates",
+      "test_debug_read",
+      "test_debug_write_mask_and_errors",
+      "test_work_lifecycle",
+      "test_unregistered_notify"
+    ],
+    "summary": "SUMMARY total=10 passed=10 failed=0"
+  }
+}

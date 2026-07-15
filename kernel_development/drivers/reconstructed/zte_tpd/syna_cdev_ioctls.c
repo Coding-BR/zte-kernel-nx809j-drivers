@@ -697,7 +697,7 @@ LABEL_192:
           v90 = v5 + 159;
           if ( (_QWORD *)v5[159] == v5 + 159 )
           {
-            v91 = _msecs_to_jiffies(v284);
+            v91 = msecs_to_jiffies(v284);
             v92 = *((_DWORD *)v5 + 316);
             if ( v91 )
               v93 = 1;
@@ -712,7 +712,7 @@ LABEL_192:
               n = 0;
               v287 = 0;
               src = nullptr;
-              v94 = _msecs_to_jiffies(v89);
+              v94 = msecs_to_jiffies(v89);
               init_wait_entry((struct wait_queue_entry *)&u_src, 0);
               v91 = prepare_to_wait_event(v5 + 161, (struct wait_queue_entry *)&u_src, 1);
               v95 = *((_DWORD *)v5 + 316);
@@ -1272,7 +1272,7 @@ LABEL_400:
           v46 = v284;
           if ( (_QWORD *)v5[159] == v5 + 159 )
           {
-            v47 = _msecs_to_jiffies(v284);
+            v47 = msecs_to_jiffies(v284);
             v48 = *((_DWORD *)v5 + 316);
             if ( v47 )
               _ZF = 1;
@@ -1287,7 +1287,7 @@ LABEL_400:
               n = 0;
               v287 = 0;
               src = nullptr;
-              v50 = _msecs_to_jiffies(v46);
+              v50 = msecs_to_jiffies(v46);
               init_wait_entry((struct wait_queue_entry *)&u_src, 0);
               v47 = prepare_to_wait_event(v5 + 161, (struct wait_queue_entry *)&u_src, 1);
               v51 = *((_DWORD *)v5 + 316);
@@ -1492,8 +1492,7 @@ LABEL_420:
         goto LABEL_360;
       }
 LABEL_466:
-      v281 = _fortify_panic(15, v182, v5);
-      return syna_cdev_open();
+      _fortify_panic(15, v182, v5);
     case 10:
       v137 = *((_BYTE *)v5 + 1410);
       BYTE4(src) = 0;

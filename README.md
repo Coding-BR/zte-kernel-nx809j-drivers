@@ -2,6 +2,17 @@
 
 Este repositório contém a infraestrutura completa de engenharia reversa e recompilação do kernel para o dispositivo **ZTE NX809J (RedMagic 10 Pro)** baseado na arquitetura GKI 6.12 e Android 16.
 
+## Fonte da Verdade do NX809J
+
+Dados publicados na Internet não são usados como prova de comportamento do
+NX809J. Toda reconstrução deve seguir a
+[política de fonte local](./NX809J_LOCAL_SOURCE_OF_TRUTH.md) e o
+[ciclo obrigatório para LLMs](./workspace_tools/reconstruction_pipeline/LLM_MANDATORY_RECONSTRUCTION_CYCLE.md).
+
+O `zte_tpd` compila de forma reproduzível e possui uma superfície restaurada
+validada, mas ainda está classificado como
+[`legacy_artifact_not_verified`](./kernel_development/drivers/reconstructed/zte_tpd/STATUS.md).
+
 O ambiente está estruturado em dois ecossistemas independentes e complementares:
 
 ## 📁 Estrutura do Repositório

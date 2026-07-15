@@ -172,7 +172,7 @@ LABEL_18:
           else
             v27 = *(v19 - 1);
           tpd_touch_press(v10, v22, v25, v16, v27, 0);
-          ((void (__fastcall *)(__int64, _QWORD, _QWORD, _QWORD))one_key_report)(1, v22, v25, (unsigned int)v16);
+          one_key_report(1, v22, v25, v16);
         }
         else
         {
@@ -208,11 +208,7 @@ LABEL_45:
         else
         {
           tpd_touch_release(v10, v16, v26);
-          ((void (__fastcall *)(_QWORD, __int64, __int64, _QWORD))one_key_report)(
-            0,
-            0xFFFFFFFFLL,
-            0xFFFFFFFFLL,
-            (unsigned int)v16);
+          one_key_report(0, -1, -1, v16);
         }
       }
     }

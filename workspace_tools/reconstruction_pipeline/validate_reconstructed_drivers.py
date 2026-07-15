@@ -170,7 +170,8 @@ def command_record(command: list[str], *, timeout: int = 900) -> dict[str, Any]:
     }
 
 
-def find_run(engineering_root: Path) -> Path:
+def find_run(engineering_root: Path, drivers: list[str]) -> Path:
+    required = [driver for driver in drivers if driver != SPECIAL_DRIVER]
     candidates = sorted(
         (path for path in (engineering_root / "runs").glob("*") if path.is_dir()),
         key=lambda path: path.stat().st_mtime,
@@ -178,9 +179,25 @@ def find_run(engineering_root: Path) -> Path:
     )
     for candidate in candidates:
         validation = candidate / "00_manifest" / "validation.json"
-        if validation.is_file():
+        if not validation.is_file():
+            continue
+        if all(
+            (candidate / "01_acquisition" / "modules" / f"{driver}.ko").is_file()
+            and (
+                candidate
+                / "03_ghidra"
+                / "exports"
+                / f"{driver}.ko"
+                / "functions.jsonl"
+            ).is_file()
+            for driver in required
+        ):
             return candidate
-    raise ValueError("no engineering run with 00_manifest/validation.json was found")
+    requested = ", ".join(required) or "no regular drivers"
+    raise ValueError(
+        "no engineering run contains stock and Ghidra evidence for all requested "
+        f"drivers ({requested}); pass --run-root explicitly"
+    )
 
 
 def ghidra_check(run_root: Path, module_name: str) -> tuple[dict[str, Any], list[str]]:
@@ -603,15 +620,15 @@ def main() -> int:
     args = parse_args()
     curated_root = args.curated_root.resolve()
     engineering_root = curated_root.parent
-    run_root = (args.run_root or find_run(engineering_root)).resolve()
-    target_kernel = None
-    if args.target_kernel_manifest and args.target_kernel_manifest.resolve().is_file():
-        target_kernel = read_json(args.target_kernel_manifest.resolve())
     drivers = args.drivers or sorted(
         path.name
         for path in curated_root.iterdir()
         if path.is_dir() and path.name.startswith("zte_") and (path / "STATUS.md").is_file()
     )
+    run_root = (args.run_root or find_run(engineering_root, drivers)).resolve()
+    target_kernel = None
+    if args.target_kernel_manifest and args.target_kernel_manifest.resolve().is_file():
+        target_kernel = read_json(args.target_kernel_manifest.resolve())
     results: list[dict[str, Any]] = []
     for driver in drivers:
         if driver == SPECIAL_DRIVER:

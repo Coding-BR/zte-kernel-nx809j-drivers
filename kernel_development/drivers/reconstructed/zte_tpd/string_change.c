@@ -1,9 +1,10 @@
 #include "defs.h"
+#include "trim.c"
 
 #define nullptr NULL
 
 // Reconstructed string_change function
-unsigned char *string_change(__int64 a1, char *s, unsigned int *a3)
+unsigned char *string_change(long a1, char *s, int *a3)
 {
   size_t len;
   char *s_copy;
@@ -63,7 +64,7 @@ unsigned char *string_change(__int64 a1, char *s, unsigned int *a3)
   {
     while ((token = strsep(&part1_ptr, ",")) != NULL)
     {
-      char *trimmed = strim(token);
+      char *trimmed = trim(token);
       if (*trimmed)
       {
         unsigned char val = (unsigned char)simple_strtoul(trimmed, NULL, 16);
@@ -94,7 +95,7 @@ unsigned char *string_change(__int64 a1, char *s, unsigned int *a3)
 
     while ((segment = strsep(&part2_ptr, ".")) != NULL)
     {
-      char *trimmed_seg = strim(segment);
+      char *trimmed_seg = trim(segment);
       if (!*trimmed_seg)
         continue;
 
@@ -117,7 +118,7 @@ unsigned char *string_change(__int64 a1, char *s, unsigned int *a3)
       if (seg_colon)
       {
         *seg_colon = 0;
-        char *seg_prefix = strim(trimmed_seg);
+        char *seg_prefix = trim(trimmed_seg);
         coords_str = seg_colon + 1;
         if (*seg_prefix)
         {
@@ -131,7 +132,7 @@ unsigned char *string_change(__int64 a1, char *s, unsigned int *a3)
         }
       }
 
-      char *coords_trimmed = strim(coords_str);
+      char *coords_trimmed = trim(coords_str);
       char *c1 = strsep(&coords_trimmed, ",");
       char *c2 = strsep(&coords_trimmed, ",");
       char *c3 = strsep(&coords_trimmed, ",");
@@ -139,10 +140,10 @@ unsigned char *string_change(__int64 a1, char *s, unsigned int *a3)
 
       if (c1 && c2 && c3 && c4)
       {
-        char *t1 = strim(c1);
-        char *t2 = strim(c2);
-        char *t3 = strim(c3);
-        char *t4 = strim(c4);
+        char *t1 = trim(c1);
+        char *t2 = trim(c2);
+        char *t3 = trim(c3);
+        char *t4 = trim(c4);
 
         unsigned int x1 = simple_strtoul(t1, NULL, 10);
         unsigned int y1 = simple_strtoul(t2, NULL, 10);

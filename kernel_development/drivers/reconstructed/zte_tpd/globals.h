@@ -966,6 +966,7 @@ extern const struct proc_ops proc_ops_palm_mode;
 extern const struct proc_ops proc_ops_fold_state;
 extern const struct proc_ops proc_ops_fake_sleep;
 extern const struct proc_ops proc_ops_screen_off_awake;
+extern const struct proc_ops proc_ops_zlog_debug;
 extern const struct proc_ops proc_ops_ghost_debug;
 extern const struct proc_ops proc_ops_BBAT_test;
 extern const struct proc_ops proc_ops_tp_test;

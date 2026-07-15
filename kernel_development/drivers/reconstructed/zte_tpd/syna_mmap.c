@@ -1,6 +1,7 @@
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include <linux/slab.h>
+#include <asm/memory.h>
 #include "defs.h"
 
 int syna_mmap(struct file *file, struct vm_area_struct *vma)
@@ -22,7 +23,10 @@ int syna_mmap(struct file *file, struct vm_area_struct *vma)
   if ( !buffer )
     return -22;
 
-  if ( remap_pfn_range(vma, vma->vm_start, virt_to_pfn(buffer) + vma->vm_pgoff, size, vma->vm_page_prot) )
+  if ( remap_pfn_range(vma, vma->vm_start,
+                       (((unsigned long)buffer - PAGE_OFFSET + memstart_addr) >> PAGE_SHIFT) +
+                       vma->vm_pgoff,
+                       size, vma->vm_page_prot) )
   {
     return -11;
   }

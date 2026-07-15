@@ -1,11 +1,12 @@
-__int64 __fastcall syna_tcm_v1_write_message(
-        __int64 a1,
-        unsigned __int8 a2,
-        unsigned __int8 *a3,
-        unsigned int a4,
-        _BYTE *a5,
-        int a6)
+int syna_tcm_v1_write_message(
+        struct tcm_dev *tcm,
+        u8 a2,
+        u8 *a3,
+        u32 a4,
+        u8 *a5,
+        u32 a6)
 {
+  __int64 a1 = (__int64)tcm;
   __int64 v10; // x2
   __int64 v11; // x20
   _DWORD *v12; // x8
@@ -435,7 +436,7 @@ LABEL_112:
         }
         else
         {
-          v77 = _msecs_to_jiffies(v75);
+          v77 = msecs_to_jiffies(v75);
           wait_for_completion_timeout(a1 + 544, v77);
         }
       }

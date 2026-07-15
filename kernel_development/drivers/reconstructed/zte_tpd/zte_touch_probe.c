@@ -355,6 +355,8 @@ __int64 __fastcall zte_touch_probe(__int64 a1)
         printk(unk_38C7B, v94, v95);
       if ( !proc_create("screen_off_awake", 436, tpd_proc_dir, &proc_ops_screen_off_awake) )
         printk(unk_386A6, v96, v97);
+      if ( !proc_create("zlog_debug", 436, tpd_proc_dir, &proc_ops_zlog_debug) )
+        printk("3proc_create zlog_debug failed!\n");
       if ( !proc_create("ghost_debug", 436, tpd_proc_dir, &proc_ops_ghost_debug) )
         printk(unk_3A104, v98, v99);
       if ( !proc_create("BBAT_test", 436, tpd_proc_dir, &proc_ops_BBAT_test) )
@@ -398,12 +400,14 @@ __int64 __fastcall zte_touch_probe(__int64 a1)
     if ( !(unsigned int)tpd_workqueue_init(v115, v116, v117) )
     {
       queue_delayed_work_on(32, *(_QWORD *)(v5 + 1200), v5 + 2256, 375);
+      tpd_zlog_init();
+      queue_delayed_work_on(32, *(_QWORD *)(v5 + 1208), v5 + 2640, 1250);
       *(_BYTE *)(v5 + 29) = 0;
-      *(_BYTE *)(v5 + 2632) = -1;
+      *(_BYTE *)(v5 + 3072) = -1;
       *(_DWORD *)(v5 + 1192) = 0;
-      *(_DWORD *)(v5 + 3112) = 0;
-      _init_swait_queue_head(v5 + 3120, "&x->wait", &init_completion___key);
-      *(_BYTE *)(v5 + 3145) = 0;
+      *(_DWORD *)(v5 + 3552) = 0;
+      _init_swait_queue_head(v5 + 3560, "&x->wait", &init_completion___key);
+      *(_BYTE *)(v5 + 3585) = 0;
       printk(unk_38656, "zte_touch_probe", 2897);
       result = 0;
       goto LABEL_119;

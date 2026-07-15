@@ -152,7 +152,7 @@ LABEL_29:
                 if ( v23 >= (unsigned int)v24 )
                   goto LABEL_24;
               }
-              v27 = _fortify_panic(2, -1, 0);
+              _fortify_panic(2, -1, 0);
 LABEL_67:
               _fortify_panic(2, 6, v27 + 1);
 LABEL_68:

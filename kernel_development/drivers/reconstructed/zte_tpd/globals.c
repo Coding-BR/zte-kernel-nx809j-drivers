@@ -999,9 +999,17 @@ static const struct of_device_id syna_spi_of_match[] = {
     { }
 };
 
+static const struct spi_device_id syna_spi_id_table[] = {
+    { "synaptics_tcm_spi", 0 },
+    { }
+};
+MODULE_DEVICE_TABLE(spi, syna_spi_id_table);
+MODULE_DEVICE_TABLE(of, syna_spi_of_match);
+
 struct spi_driver syna_spi_driver = {
     .probe = wrap_syna_spi_probe,
     .remove = wrap_syna_spi_remove,
+    .id_table = syna_spi_id_table,
     .driver = {
         .name = "synaptics_tcm_spi",
         .of_match_table = syna_spi_of_match,
@@ -1247,7 +1255,6 @@ unsigned long tp_alloc_tp_firmware_data__alloc_tag_28 = 0;
 unsigned long dummy_task_struct[256] = {0};
 __int64 g_cdev_data = 0;
 int syna_cdev_push_data_to_fifo_pre_remaining_frames = 0;
-__int64 one_key_report = 0;
 int _ZF = 0;
 
 struct lock_class_key dummy_lock_key;
@@ -2223,6 +2230,7 @@ const struct proc_ops proc_ops_palm_mode = { .proc_read = wrap_tp_palm_mode_read
 const struct proc_ops proc_ops_fold_state = { .proc_read = wrap_tp_fold_state_read, .proc_write = wrap_tp_fold_state_write, };
 const struct proc_ops proc_ops_fake_sleep = { .proc_read = wrap_get_fake_sleep, .proc_write = wrap_set_fake_sleep, };
 const struct proc_ops proc_ops_screen_off_awake = { .proc_read = wrap_get_screen_off_awake, .proc_write = wrap_set_screen_off_awake, };
+const struct proc_ops proc_ops_zlog_debug = { .proc_read = tp_zlog_debug_read, .proc_write = tp_zlog_debug_write, };
 const struct proc_ops proc_ops_ghost_debug = { .proc_read = wrap_ghost_debug_read, .proc_write = wrap_ghost_debug_write, };
 const struct proc_ops proc_ops_BBAT_test = { .proc_read = wrap_tp_BBAT_test_read, .proc_write = wrap_tp_BBAT_test_write, };
 const struct proc_ops proc_ops_tp_test = { .proc_read = wrap_tp_test_read, .proc_write = wrap_tp_test_write, };
@@ -2249,4 +2257,3 @@ struct file_operations zte_fops = {
 struct drm_panel *active_panel = NULL;
 
 MODULE_LICENSE("GPL");
-

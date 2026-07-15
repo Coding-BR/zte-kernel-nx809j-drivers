@@ -16,7 +16,7 @@ __int64 __fastcall syna_dev_free_input_events(__int64 result)
       input_event(v1, 3, 47, i);
       input_mt_report_slot_state(v1, 0, 0);
       tpd_touch_release(v1, i, v4);
-      ((void (__fastcall *)(_QWORD, __int64, __int64, _QWORD))one_key_report)(0, 0xFFFFFFFFLL, 0xFFFFFFFFLL, i);
+      one_key_report(0, -1, -1, i);
     }
     input_event(v1, 1, 330, 0);
     input_event(v1, 1, 325, 0);

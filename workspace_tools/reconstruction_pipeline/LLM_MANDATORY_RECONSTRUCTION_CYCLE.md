@@ -2,6 +2,12 @@
 
 Este documento é normativo para toda LLM que trabalhe em um driver do NX809J. A LLM deve seguir todas as fases, preservar as evidências e recusar a promoção do driver quando qualquer gate estiver incompleto.
 
+Toda LLM deve seguir também `NX809J_LOCAL_SOURCE_OF_TRUTH.md`. Pesquisa publica,
+repositorios externos e drivers de aparelhos parecidos nao podem provar nenhum
+offset, assinatura, hardware ou comportamento do NX809J. Lacunas devem ser
+resolvidas com o `.ko` stock local, assembly, relocacoes, KCFI, Ghidra/P-Code,
+DTS extraido e evidencia runtime do aparelho.
+
 "100%" significa 100% dos requisitos observáveis, exports Ghidra e validações definidos aqui possuem evidência reproduzível. Não significa equivalência matemática de comportamento que não foi observado.
 
 ## Regra de Ouro

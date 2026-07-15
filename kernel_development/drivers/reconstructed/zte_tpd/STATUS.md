@@ -1,58 +1,53 @@
-# Status de Reconstrução e Validação do Driver `zte_tpd`
+# Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-Este documento registra o status e os testes de validação do driver **`zte_tpd`** do RedMagic 10 Pro (NX809J).
+## Estado Atual - 2026-07-15
 
----
+- **Classificacao:** `legacy_artifact_not_verified`
+- **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
+- **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
+- **Candidato SHA-256:** `bb483f11592f4d3acff7192e0d3b90324c6478c78c843e23158251ac7577ff6d`
+- **Candidato:** `12216472` bytes
+- **Teste em hardware desta revisao:** nao executado
 
-## Informações Gerais do Driver
-* **Função:** Driver completo da tela touchscreen Synaptics/Goodix (taxa 144Hz, multitoque 10 pontos, gestos avançados).
-* **Tipo:** SPI client de alto desempenho (input subsystem + sysfs + procfs).
-* **Código-Fonte:** 488 arquivo(s) C (~95000 linhas totais).
-* **Status de Reconstrução:** 100% COMPLETO. A lógica completa em C baseada em offsets de engenharia reversa foi preservada e compilada.
-* **Build:** COMPILADO - `zte_tpd.ko` presente em `artifacts/20260711-174917/`.
+O candidato nao e `100%`, `static_verified` nem `hardware_verified`.
 
----
+## Gates Confirmados
 
-## Detalhes da Validação no Hardware Real
+- Dois builds completamente limpos: PASS, mesmo SHA-256 e tamanho.
+- Aliases SPI/Device Tree: PASS, lista e ordem iguais ao stock.
+- Vermagic do kernel alvo: PASS.
+- Todos os 359 simbolos de texto stock existem no candidato.
+- KCFI da superficie restaurada: PASS `13/13`.
+- Harness zlog: PASS `10/10`.
+- Harness one-key, UF e game partition: PASS `7/7`.
+- Assembly local extraido com cobertura integral para as funcoes analisadas.
 
-O driver `zte_tpd.ko` reconstruído foi validado dinamicamente no dispositivo real rodando o kernel customizado `curator@build-host`.
+## Bloqueadores Medidos
 
-### Comando de Validação
-```powershell
-# 1. Enviar o driver reconstruído para o telefone
-adb push artifacts/20260711-174917/zte_tpd.ko /data/local/tmp/zte_tpd_custom.ko
+- O candidato ainda possui 236 simbolos de texto extras: 131 `sub_*`, 84
+  `wrap_*`, 9 duplicatas renomeadas e 12 outros.
+- Imports diferem somente no desvio de seguranca do platform device: stock usa
+  `platform_device_register`; candidato usa `platform_device_register_full` e
+  `platform_device_put` por meio de `platform_device_register_simple`.
+- O desvio acima foi mantido porque a evidencia local historica registra corrupcao
+  do platform bus na reconstrucao estatica. Ele exige nova validacao controlada.
+- `string_change` ainda nao possui KCFI igual ao stock. Duas buscas locais, com
+  880 e 4576 assinaturas, nao encontraram correspondencia.
+- `reconstruction_map.json` revisado ainda nao existe. O rascunho confirma 366
+  nomes por arquivo, mas `_inline_copy_from_user` e `init_module` continuam sem
+  rastreabilidade automatica completa.
+- Nao existe teste controlado no aparelho para este SHA-256 candidato.
 
-# 2. Descarregar o módulo original do vendor (se presente)
-adb shell "su root rmmod comp_zte_tpd_ko"
-adb shell "su root rmmod zte_tpd"
+## Evidencia Autoritativa
 
-# 3. Carregar o nosso módulo customizado
-adb shell "su root insmod /data/local/tmp/zte_tpd_custom.ko"
+- `../../../../NX809J_LOCAL_SOURCE_OF_TRUTH.md`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_20260715_local_truth.json`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/candidate_promotion_20260715.json`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/symbol_inventory_20260715_local_truth.json`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_20260715_restored_surface_comparison.json`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_bruteforce/string/match_report.json`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/zlog_harness_report.json`
+- `../../../../reverse_engineering/validation/reconstructed/zte_tpd/remaining_harness_report.json`
 
-# 4. Verificar se o módulo está ativo em memória
-adb shell "su root lsmod | grep zte_tpd"
-
-# 5. Auditar os logs de inicialização no dmesg
-adb shell "su root dmesg | grep -i zte_tpd"
-```
-
-### Evidência de Sucesso (Log de Execução)
-```
-artifacts/20260711-174917/zte_tpd.ko: 1 file pushed, 0 skipped.
-zte_tpd               <size>  0
-[    1.x] ... zte_tpd loaded successfully ...
-Linux version 6.12.23-android16-5-gf1bdb13583da-ab13761046-4k (curator@build-host)
-```
-
-### Análise do Log
-1. **`module_layout` Compatível:** O driver foi aceito sem erros de compatibilidade de assinatura de kernel, confirmando a higienização da ABI e o merge dos pré-requisitos no Kconfig.
-2. **Registro de Hardware:** O probe do driver foi disparado com sucesso e o hardware físico respondeu aos comandos de inicialização do kernel.
-
----
-
-## Organização dos Arquivos Locais
-Os arquivos deste driver estão organizados localmente na pasta:
-`c:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\curated\zte_tpd\`
-* `zte_tpd.c` — Código-fonte reconstruído do driver (~95000 linhas)
-* `Makefile` — Instruções do Kbuild para compilação como módulo `obj-m`
-* `STATUS.md` — Este relatório técnico
+`reconstruction_map.draft.json` e rascunho automatizado, nao atestacao. Nenhum
+comando ADB, fastboot, `insmod` ou `rmmod` foi executado nesta revisao.

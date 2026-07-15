@@ -156,6 +156,5 @@ LABEL_19:
     memcpy(v19, a2, v6);
     goto LABEL_19;
   }
-  v30 = _fortify_panic(17, v16, v6);
-  return syna_pal_mem_alloc(v30);
+  _fortify_panic(17, v16, v6);
 }

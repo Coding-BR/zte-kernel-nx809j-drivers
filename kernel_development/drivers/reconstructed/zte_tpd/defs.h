@@ -28,6 +28,8 @@
 #include <linux/timekeeping.h>
 #include <linux/pm_wakeup.h>
 
+#include "zte_tpd_tcm_layout.h"
+
 
 
 // IDA / Ghidra Decompilation Types
@@ -183,6 +185,7 @@ extern struct platform_driver zte_touch_device_driver;
 extern struct platform_driver syna_dev_driver;
 extern struct spi_driver syna_spi_driver;
 extern struct platform_device syna_spi_device;
+extern __int64 zte_get_boot_mode(void);
 extern void report_ufp_uevent(unsigned int val);
 
 #define syna_pal_mutex_alloc___key dummy_lock_key
@@ -260,9 +263,9 @@ static inline unsigned long read_sp_el0(void) {
 // Signed HIDWORD extraction (used by process_reports)
 #define SHIDWORD(x) ((int)(*((int*)&(x)+1)))
 
-// Decompiler internal function stubs (must return value for expression context)
-#define _fortify_panic(a, b, c) ({ WARN_ONCE(1, "fortify panic"); 0LL; })
-#define _copy_overflow(a, b) ({ WARN_ONCE(1, "copy overflow"); 0LL; })
+// Ghidra drops one leading underscore from these exported fortify helpers.
+#define _fortify_panic(a, b, c) __fortify_panic((a), (b), (c))
+#define _copy_overflow(a, b) __copy_overflow((a), (b))
 
 // Kernel function name mapping (single vs double underscore)
 #define _init_waitqueue_head __init_waitqueue_head
@@ -303,7 +306,8 @@ static inline int wrap_gpio_free(unsigned int gpio) {
 
 // Missing global variables
 extern int syna_cdev_push_data_to_fifo_pre_remaining_frames;
-extern __int64 one_key_report;
+extern void one_key_report(int active, int x, int y, int finger_id);
+extern void uf_touch_report(int active, int x, int y, int finger_id);
 extern __int64 syna_get_charger_status_batt_psy;
 extern char DEVICE_NODE_NAME[100];
 
@@ -368,7 +372,9 @@ extern __int64 syna_dev_disconnect(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_dev_resume(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_dev_suspend(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_tcm_v1_read_message(__int64 a1, _BYTE *a2, __int64 a3);
-extern __int64 syna_tcm_v1_write_message(__int64 a1, unsigned __int8 a2, unsigned __int8 *a3, unsigned int a4, _BYTE *a5, int a6);
+extern int syna_tcm_v1_write_message(struct tcm_dev *tcm, u8 command,
+				      u8 *payload, u32 length,
+				      u8 *response_code, u32 delay_ms);
 extern __int64 syna_tcm_v1_set_up_max_rw_size(__int64 a1, unsigned int a2, __int64 a3);
 extern __int64 syna_tcm_v1_check_max_rw_size(__int64 a1);
 extern __int64 syna_tcm_v1_terminate(__int64 result, __int64 a2, __int64 a3);
@@ -441,5 +447,6 @@ extern __int64 __fastcall tpd_report_uevent(unsigned __int8 a1, __int64 a2, __in
 
 // Injected globals
 #include "globals.h"
+#include "zte_tpd_zlog.h"
 
 #endif // _DEFS_H
