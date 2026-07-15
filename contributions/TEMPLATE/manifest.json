@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "submission_id": "replace-with-unique-id",
+  "base_commit": "0000000000000000000000000000000000000000",
+  "environment_lock_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "intent": "incremental",
+  "scopes": ["driver"],
+  "drivers": ["zte_replace_me"],
+  "attestation": {
+    "executed_locally": true,
+    "reviewer_rerun_required": true,
+    "notes_pt": "Descreva exatamente o que foi executado e o que ainda falta.",
+    "notes_en": "Describe exactly what was executed and what remains unproven."
+  },
+  "claims": {
+    "static_status": "INCOMPLETE",
+    "hardware_status": "DEFERRED"
+  },
+  "reproduction_scripts": [
+    {
+      "path": "contributions/replace-with-unique-id/reproduce.ps1",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "path": "contributions/replace-with-unique-id/reproduce.sh",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "checks": [
+    {
+      "id": "reference_modules",
+      "command": "python workspace_tools/reconstruction_pipeline/manage_reference_modules.py verify",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": {
+        "path": "contributions/replace-with-unique-id/reports/reference_modules.log",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "environment_static",
+      "command": "python reproducible_environment/verify_environment.py --mode static --report contributions/replace-with-unique-id/reports/environment_static.json",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": {
+        "path": "contributions/replace-with-unique-id/reports/environment_static.log",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "report": {
+        "path": "contributions/replace-with-unique-id/reports/environment_static.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "validator_tests",
+      "command": "python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution -v",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": {
+        "path": "contributions/replace-with-unique-id/reports/validator_tests.log",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "offline_audit",
+      "command": "python workspace_tools/reconstruction_pipeline/audit_offline_reconstruction.py --engineering-root ENGINEERING_ROOT --driver zte_replace_me --allow-incomplete --output contributions/replace-with-unique-id/reports/offline_audit.json --markdown contributions/replace-with-unique-id/reports/offline_audit.md",
+      "exit_code": 0,
+      "status": "INCOMPLETE",
+      "log": {
+        "path": "contributions/replace-with-unique-id/reports/offline_audit.log",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "report": {
+        "path": "contributions/replace-with-unique-id/reports/offline_audit.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "double_clean_rebuild",
+      "command": "python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py --curated-root ENGINEERING_ROOT/curated --driver zte_replace_me --rebuild --output contributions/replace-with-unique-id/reports/double_clean_rebuild.json --markdown contributions/replace-with-unique-id/reports/double_clean_rebuild.md",
+      "exit_code": 0,
+      "status": "INCOMPLETE",
+      "log": {
+        "path": "contributions/replace-with-unique-id/reports/double_clean_rebuild.log",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "report": {
+        "path": "contributions/replace-with-unique-id/reports/double_clean_rebuild.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "id": "llm_cycle",
+      "command": "python workspace_tools/reconstruction_pipeline/verify_llm_reconstruction_cycle.py --driver zte_replace_me --curated-root ENGINEERING_ROOT/curated --evidence-root ENGINEERING_ROOT/validation --audit contributions/replace-with-unique-id/reports/double_clean_rebuild.json",
+      "exit_code": 1,
+      "status": "INCOMPLETE",
+      "log": {
+        "path": "contributions/replace-with-unique-id/reports/llm_cycle.log",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "report": {
+        "path": "contributions/replace-with-unique-id/reports/llm_cycle.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_replace_me/driver.c",
+      "change": "M",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

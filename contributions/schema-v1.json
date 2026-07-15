@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Coding-BR/zte-kernel-nx809j-drivers/blob/main/contributions/schema-v1.json",
+  "title": "NX809J contribution evidence / Evidência de contribuição NX809J",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "submission_id",
+    "base_commit",
+    "environment_lock_sha256",
+    "intent",
+    "scopes",
+    "drivers",
+    "attestation",
+    "claims",
+    "reproduction_scripts",
+    "checks",
+    "changed_files"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "submission_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$" },
+    "base_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "environment_lock_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "intent": { "enum": ["incremental", "promotion"] },
+    "scopes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["documentation", "driver", "pipeline"] }
+    },
+    "drivers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^zte_[a-z0-9_]+$" }
+    },
+    "attestation": {
+      "type": "object",
+      "required": ["executed_locally", "reviewer_rerun_required", "notes_pt", "notes_en"],
+      "properties": {
+        "executed_locally": { "const": true },
+        "reviewer_rerun_required": { "const": true },
+        "notes_pt": { "type": "string", "minLength": 1 },
+        "notes_en": { "type": "string", "minLength": 1 }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "required": ["static_status", "hardware_status"],
+      "properties": {
+        "static_status": { "enum": ["INCOMPLETE", "STATIC_ALIGNED_CANDIDATE"] },
+        "hardware_status": { "const": "DEFERRED" }
+      }
+    },
+    "reproduction_scripts": { "type": "array", "minItems": 2 },
+    "checks": { "type": "array", "minItems": 3 },
+    "changed_files": { "type": "array", "minItems": 1 }
+  }
+}

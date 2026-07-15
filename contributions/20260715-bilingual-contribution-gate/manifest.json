@@ -1,0 +1,140 @@
+{
+  "attestation": {
+    "executed_locally": true,
+    "notes_en": "The bilingual entry points and gate were tested locally, including one valid and one invalid synthetic PR.",
+    "notes_pt": "A apresentação bilíngue e o gate foram testados localmente, incluindo uma PR sintética válida e uma inválida.",
+    "reviewer_rerun_required": true
+  },
+  "base_commit": "e8da696b842da5f5e9144e58a399831c330447d1",
+  "changed_files": [
+    {
+      "change": "A",
+      "path": ".github/CODEOWNERS",
+      "sha256": "46c9d4c0b3f361f08a5f502163dc452ede49eb9b51fb28e660def85eeb16bfe2"
+    },
+    {
+      "change": "A",
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "sha256": "c4e620ef70dc59724a4736512d977cb7c01ca4938b3ea8064196fdef6bdf96b5"
+    },
+    {
+      "change": "A",
+      "path": ".github/workflows/contribution-gate.yml",
+      "sha256": "4c0527715f403691a84c32cb6a70e8ebafc28ae1e8b2b3bf195668d9bd1317ba"
+    },
+    {
+      "change": "A",
+      "path": "CONTRIBUTING.md",
+      "sha256": "3f4793e1dbfab4a361baaf2a14e3d876c73075e1c9f96f5377ccc971ad4f5c55"
+    },
+    {
+      "change": "M",
+      "path": "README.md",
+      "sha256": "84737ae9e176b395703e80f5e75f4ad20d6dc18d4f1f0262b24e435b1431e887"
+    },
+    {
+      "change": "A",
+      "path": "contributions/README.md",
+      "sha256": "ca1a4bad2a43044cbd1b07e9fa83cf0493bdf158e9e68187ca3cd17417b2c4d1"
+    },
+    {
+      "change": "A",
+      "path": "contributions/TEMPLATE/manifest.json",
+      "sha256": "62a5483e8fac5f125d083ebbc2cd723134134900b881bc1966870fd75020c959"
+    },
+    {
+      "change": "A",
+      "path": "contributions/TEMPLATE/reports/README.md",
+      "sha256": "1c38f37d74d62c8b8df2b00ad864d5526934542eeab906e9d00472d68eff08aa"
+    },
+    {
+      "change": "A",
+      "path": "contributions/TEMPLATE/reproduce.ps1",
+      "sha256": "194462b2b7abf86dc97bbd4ce5d7341e929e1bf11f0f18fca4be23331c53a040"
+    },
+    {
+      "change": "A",
+      "path": "contributions/TEMPLATE/reproduce.sh",
+      "sha256": "8d7fca9da2cca0567128bff4632327a90da43fbff88fdd35bbded433bdce9d8b"
+    },
+    {
+      "change": "A",
+      "path": "contributions/schema-v1.json",
+      "sha256": "ad1d5a016ee7406d611fac2ed6ca77333659efe4011671972b11594d704e26d5"
+    },
+    {
+      "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/prepare_contribution_bundle.py",
+      "sha256": "9a533ec566571506c7c628c6bdc283fa8a516ebdf14e122f20cd67e0943d3684"
+    },
+    {
+      "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/tests/test_validate_contribution.py",
+      "sha256": "d27f80374b0d1c8fbf538724259a350c39909611ac98ea1c8540d0d6fc785867"
+    },
+    {
+      "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/validate_contribution.py",
+      "sha256": "05c490fea4d158506b5da3e310cb530dad3e64f3614b7dc51b132aede0485302"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python workspace_tools/reconstruction_pipeline/manage_reference_modules.py verify",
+      "exit_code": 0,
+      "id": "reference_modules",
+      "log": {
+        "path": "contributions/20260715-bilingual-contribution-gate/reports/reference_modules.log",
+        "sha256": "af014cbb752f3d8bca74e4300d10b86b347b7a85432166de66feee60d5b36562"
+      },
+      "status": "PASS"
+    },
+    {
+      "command": "python reproducible_environment/verify_environment.py --mode static --report contributions/20260715-bilingual-contribution-gate/reports/environment_static.json",
+      "exit_code": 0,
+      "id": "environment_static",
+      "log": {
+        "path": "contributions/20260715-bilingual-contribution-gate/reports/environment_static.log",
+        "sha256": "f1724829d473263a9dcba7bfc48187493efb5b5b5b220d04a2076fe6fbb2176d"
+      },
+      "report": {
+        "path": "contributions/20260715-bilingual-contribution-gate/reports/environment_static.json",
+        "sha256": "f1724829d473263a9dcba7bfc48187493efb5b5b5b220d04a2076fe6fbb2176d"
+      },
+      "status": "PASS"
+    },
+    {
+      "command": "python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution -v",
+      "exit_code": 0,
+      "id": "validator_tests",
+      "log": {
+        "path": "contributions/20260715-bilingual-contribution-gate/reports/validator_tests.log",
+        "sha256": "9f79240cc508aa9eb48f43e4ab8b553ccfecaaa528cb1fd81351919f99770651"
+      },
+      "status": "PASS"
+    }
+  ],
+  "claims": {
+    "hardware_status": "DEFERRED",
+    "static_status": "INCOMPLETE"
+  },
+  "drivers": [],
+  "environment_lock_sha256": "1bc8617704a1ba377fdb2089faf0d42d356e77c63883ba63307d687b28b3f8ca",
+  "intent": "incremental",
+  "reproduction_scripts": [
+    {
+      "path": "contributions/20260715-bilingual-contribution-gate/reproduce.ps1",
+      "sha256": "bfd1f5b3450b0fd0197f369d06dffe7c6b6d961ef7e34c242150740595351ca4"
+    },
+    {
+      "path": "contributions/20260715-bilingual-contribution-gate/reproduce.sh",
+      "sha256": "30200c37220347136734a5d2b4d6ea2731ac8d515a2c97b3833727ec77b78f7e"
+    }
+  ],
+  "schema_version": "1.0",
+  "scopes": [
+    "documentation",
+    "pipeline"
+  ],
+  "submission_id": "20260715-bilingual-contribution-gate"
+}
