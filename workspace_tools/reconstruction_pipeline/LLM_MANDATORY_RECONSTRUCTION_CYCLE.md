@@ -1,4 +1,4 @@
-# Contrato Obrigatório para Reconstrução de Drivers por LLM
+# Contrato Obrigatorio para Reconstrucao de Drivers por LLM
 
 Este documento é normativo para toda LLM que trabalhe em um driver do NX809J. A LLM deve seguir todas as fases, preservar as evidências e recusar a promoção do driver quando qualquer gate estiver incompleto.
 
@@ -7,6 +7,11 @@ repositorios externos e drivers de aparelhos parecidos nao podem provar nenhum
 offset, assinatura, hardware ou comportamento do NX809J. Lacunas devem ser
 resolvidas com o `.ko` stock local, assembly, relocacoes, KCFI, Ghidra/P-Code,
 DTS extraido e evidencia runtime do aparelho.
+
+Para trabalho sem smartphone, siga tambem
+`reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md` e
+`reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md`. Evidencia runtime
+fica `DEFERRED`; ela nao pode ser substituida por inferencia estatica.
 
 "100%" significa 100% dos requisitos observáveis, exports Ghidra e validações definidos aqui possuem evidência reproduzível. Não significa equivalência matemática de comportamento que não foi observado.
 
@@ -34,7 +39,8 @@ Antes de escrever ou alterar C, a LLM deve confirmar que possui:
 - Módulo stock .ko adquirido do aparelho, com SHA-256, tamanho, origem e data.
 - Kernel alvo, .config, Module.symvers, toolchain e vermagic alvo.
 - Export Ghidra completo: pseudocódigo, P-Code, símbolos, calls e strings.
-- Contexto DTS/DTBO e evidência de runtime do hardware relevante.
+- Contexto DTS/DTBO extraido de imagem local. Evidencia runtime e obrigatoria
+  para validacao fisica, mas pode ficar `DEFERRED` durante a fase offline.
 - Pasta exclusiva para o driver em engenharia/curated/<driver>/.
 
 Se qualquer entrada estiver ausente, a LLM deve parar e adquirir a evidência. Ela não pode inventar offsets, structs, aliases, imports ou comportamento.
@@ -65,8 +71,12 @@ Evidência: stock_manifest.json e binário stock em aquisição imutável. SHA d
 2. Exija function_count igual ao número de registros em functions.jsonl, P-Code e pseudocódigo decompilado.
 3. SCRIPT ERROR, função sem export ou P-Code ausente reprova este gate.
 4. Conecte cada função aos calls, externals, strings e offsets observados.
+5. Extraia tambem o assembly AArch64 integral de toda funcao ELF/Ghidra, por
+   endereco e tamanho. Assembly truncado ou funcao sem cobertura reprova o gate.
 
-Evidência: 03_ghidra/exports/<driver>.ko/ íntegro. Nunca use somente texto copiado de pseudocódigo em conversa como fonte de verdade.
+Evidencia: `03_ghidra/exports/<driver>.ko/` integro e manifesto de assembly com
+`complete=true` para toda a superficie. Nunca use somente texto copiado de
+pseudocodigo em conversa como fonte de verdade.
 
 ### Gate 3: Mapa Completo Ghidra para Fonte
 
@@ -192,6 +202,10 @@ Só use o estado "100% dos requisitos observáveis comprovados" quando todos os 
 - Manifesto final com hash de fonte, binário, relatórios e evidências.
 
 A release deve conter .ko, fonte, mapa, Documento de Transição, relatórios e manifest. Nunca apenas o binário.
+
+Quando somente os gates offline estiverem aprovados, use exatamente
+`STATIC_ALIGNED_CANDIDATE` e mantenha Gate 9 como `DEFERRED`. Nao publique esse
+estado como `100%`, `hardware_verified` ou `release_eligible`.
 
 ## Verificador Executável
 

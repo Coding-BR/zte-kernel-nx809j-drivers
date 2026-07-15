@@ -63,7 +63,7 @@ Ao rodar o comando inicial de bootstrap (`./kernel_development/build_scripts/boo
      * Ou via root no aparelho: `su -c dd if=/dev/block/bootdevice/by-name/boot of=/data/local/tmp/stock_boot.img` e puxando via `adb pull`.
    * **Onde colocar:** Deve ser salvo na raiz da pasta `artifacts/` local com o nome `stock_boot_current.img`.
 2. **`dtb.img` (20.1 MB):**
-   * **O que é:** O bloco de Device Tree Binário do RedMagic 10 Pro.
+   * **O que é:** O bloco de Device Tree Binário do REDMAGIC 11 Pro+ (NX809J).
    * **Como conseguir:** Extraindo do próprio `stock_boot_current.img` usando ferramentas de descompactação de boot (como `unpack_bootimg` do AOSP).
    * **Onde colocar:** Deve ser salvo na raiz do repositório local do kernel com o nome `dtb.img`.
 

@@ -1,6 +1,6 @@
 # Protocolo de Validação de Drivers ZTE - Margem de Erro Zero
 
-Este documento estabelece o protocolo de teste e validação funcional de hardware para os 12 drivers proprietários da ZTE no RedMagic 10 Pro (NX809J). O objetivo é garantir que os drivers reconstruídos não apenas carreguem na memória do kernel, mas executem suas funções físicas com 100% de estabilidade e desempenho, sem vazamentos de memória ou travamentos.
+Este documento estabelece o protocolo de teste e validação funcional de hardware para os 12 drivers proprietários da ZTE no REDMAGIC 11 Pro+ (NX809J). O objetivo é garantir que os drivers reconstruídos não apenas carreguem na memória do kernel, mas executem suas funções físicas com estabilidade e desempenho mensuráveis, sem vazamentos de memória ou travamentos.
 
 ---
 

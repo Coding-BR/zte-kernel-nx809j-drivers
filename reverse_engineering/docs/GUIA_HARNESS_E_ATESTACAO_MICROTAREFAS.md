@@ -26,9 +26,11 @@ O `zte_fingerprint.ko` passou pelo seguinte ciclo:
 | Inventario Ghidra | `30/30` funcoes |
 | Fronteiras KCFI | `12/12` |
 | Microtarefas | `30/30` |
-| Estado correto | `static_verified` |
+| Estado deste subconjunto | `microtasks_verified` |
 
-Esse estado nao significa "100% validado em hardware". Os gates de revisao independente, teste supervisionado no aparelho e promocao final continuam separados.
+Esse resultado cobre build, KCFI, harness e microtarefas. Pela esteira atual ele
+nao basta para `STATIC_ALIGNED_CANDIDATE`: assembly integral, mapa por identidade
+`nome@endereco` e revisao independente tambem precisam passar.
 
 ## 2. Por que o harness existe
 
@@ -81,11 +83,17 @@ No `zte_fingerprint`, 12 funcoes possuem fronteira indireta KCFI real. As outras
 | 9 | Validacao supervisionada no hardware. |
 | 10 | Promocao final e registro de release. |
 
-Os gates 0 a 7 permitem `static_verified`. A afirmacao "100% reconstruido" somente e permitida quando os gates 0 a 10 possuem evidencias aprovadas.
+Os gates 0 a 7 deste guia formam um subconjunto historico. O veredito offline
+atual e emitido somente pela
+`PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md`, apos assembly integral e revisao
+independente. Hardware continua um gate separado.
 
 ## 5. Esse processo e sempre necessario?
 
-Neste projeto, sim: todo driver vendor reconstruido ou out-of-tree precisa passar por esse ciclo antes de receber `static_verified`. Em outros projetos, as ferramentas podem mudar, mas as garantias equivalentes continuam necessarias.
+Neste projeto, sim: todo driver vendor reconstruido ou out-of-tree precisa
+passar por esse ciclo e pela auditoria offline total antes de receber
+`STATIC_ALIGNED_CANDIDATE`. Em outros projetos, as ferramentas podem mudar, mas
+as garantias equivalentes continuam necessarias.
 
 O tamanho do trabalho acompanha o driver. Um modulo pequeno gera menos microtarefas e um harness menor; IRQ, DMA, concorrencia ou acesso a hardware exigem testes mais profundos. "Driver simples" nao e justificativa para pular rastreabilidade, build reproduzivel ou caminhos de erro.
 
@@ -222,8 +230,8 @@ flowchart TD
     H -- Nao --> C
     H -- Sim --> I[Atestar microtarefas]
     I --> J[Recalcular hashes]
-    J --> K[static_verified gates 0-7]
-    K --> L[Revisao gate 8]
+    J --> K[Subconjunto de microtarefas aprovado]
+    K --> L[Assembly mapa e revisao offline]
     L --> M[Smartphone gate 9]
     M --> N[Promocao gate 10]
 ```

@@ -1,4 +1,4 @@
-# NX809J: Politica de Fonte Local da Verdade
+# NX809J (REDMAGIC 11 Pro+): Politica de Fonte Local da Verdade
 
 ## Regra obrigatoria
 
@@ -23,6 +23,11 @@ NX809J:
 Documentacao generica do GKI pode explicar uma API do Kernel 6.12, mas nunca
 pode provar offsets, hardware, sequencia de inicializacao ou logica do NX809J.
 
+O procedimento offline completo esta em
+`reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md`. O registro de
+hardware inferido e desconhecido esta em
+`reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md`.
+
 ## Ciclo de engenharia reversa
 
 1. Verifique o SHA-256 do `.ko` stock antes de qualquer analise.
@@ -44,6 +49,10 @@ pode provar offsets, hardware, sequencia de inicializacao ou logica do NX809J.
 Os termos `100%`, `static_verified` e `hardware_verified` sao proibidos enquanto
 qualquer gate estiver pendente. Compilacao, boot ou `insmod` isolados nao provam
 equivalencia funcional. Cada afirmacao deve citar o artefato local e seu hash.
+
+Sem smartphone, o estado maximo permitido e `STATIC_ALIGNED_CANDIDATE`: todos
+os gates offline passaram, mas a equivalencia fisica continua explicitamente
+pendente. Esse estado nao autoriza o uso isolado da palavra `100%`.
 
 Para o `zte_tpd`, a fonte stock atual e:
 

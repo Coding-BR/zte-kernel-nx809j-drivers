@@ -1,41 +1,90 @@
-# Workspace de Reconstrução de Drivers ZTE - NX809J (RedMagic 10 Pro)
+# Reconstrucao de Drivers do NX809J (REDMAGIC 11 Pro+)
 
-Este repositório contém a infraestrutura completa de engenharia reversa e recompilação do kernel para o dispositivo **ZTE NX809J (RedMagic 10 Pro)** baseado na arquitetura GKI 6.12 e Android 16.
+Este repositorio preserva a cadeia de engenharia reversa, reconstrucao em C e
+validacao dos modulos vendor do **ZTE NX809J, REDMAGIC 11 Pro+**, para Android
+16 e Kernel GKI 6.12.23.
 
-## Fonte da Verdade do NX809J
+## Estado e limite da afirmacao
 
-Dados publicados na Internet não são usados como prova de comportamento do
-NX809J. Toda reconstrução deve seguir a
-[política de fonte local](./NX809J_LOCAL_SOURCE_OF_TRUTH.md) e o
-[ciclo obrigatório para LLMs](./workspace_tools/reconstruction_pipeline/LLM_MANDATORY_RECONSTRUCTION_CYCLE.md).
+O arquivo `.ko` stock adquirido localmente e a fonte de verdade do NX809J.
+Codigo publicado na Internet, drivers de aparelhos semelhantes e nomes
+inferidos nao sao aceitos como prova de comportamento deste dispositivo.
 
-O `zte_tpd` compila de forma reproduzível e possui uma superfície restaurada
-validada, mas ainda está classificado como
+Uma compilacao bem-sucedida, paridade de simbolos ou um `insmod` isolado nao
+significam reconstrucao funcional completa. O projeto separa estes estados:
+
+- `INCOMPLETE`: existem funcoes, tipos, caminhos ou evidencias pendentes.
+- `STATIC_ALIGNED_CANDIDATE`: todos os gates offline passaram, mas o hardware
+  ainda nao foi validado.
+- `HARDWARE_VALIDATED`: o candidato exato passou pelo protocolo controlado no
+  aparelho, com logs e rollback.
+- `RELEASE_ELIGIBLE`: revisao independente e manifestos finais tambem passaram.
+
+O `zte_tpd` ainda esta classificado como
 [`legacy_artifact_not_verified`](./kernel_development/drivers/reconstructed/zte_tpd/STATUS.md).
+Nenhum driver deve ser descrito como `100%` apenas com evidencia estatica.
 
-O ambiente está estruturado em dois ecossistemas independentes e complementares:
+## Fonte da verdade
 
-## 📁 Estrutura do Repositório
+Leia estes documentos antes de alterar qualquer driver:
 
-### 1. [`/reverse_engineering/`](./reverse_engineering/)
-Ambiente dedicado à análise estática, descompilação e extração de comportamentos dos drivers proprietários da ZTE.
-- **`decompiled_raw/`**: Cópias diretas dos arquivos `.c` extraídos e descompilados via Ghidra a partir do binário `zte_ir.ko`, `zte_fingerprint`, `zte_led`, `zte_misc`, `zte_sensor_sensitivity` e `zte_stats_info`.
-- **`tools/`**: Scripts em Python e utilitários para automação do pipeline de análise Ghidra e processamento de dependências.
-- **`docs/`**: Metodologias e prompts estruturados de tradução GKI utilizados.
+- [Politica local do NX809J](./NX809J_LOCAL_SOURCE_OF_TRUTH.md)
+- [Esteira completa de reconstrucao offline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
+- [Dossie reverso de hardware](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
+- [Ciclo obrigatorio para LLMs](./workspace_tools/reconstruction_pipeline/LLM_MANDATORY_RECONSTRUCTION_CYCLE.md)
+- [Guia de harness e microtarefas](./reverse_engineering/docs/GUIA_HARNESS_E_ATESTACAO_MICROTAREFAS.md)
 
-### 2. [`/kernel_development/`](./kernel_development/)
-Infraestrutura de compilação de kernel e código-fonte reconstruído pronto para deploy em hardware real.
-- **`drivers/zte_ir/`**: A implementação limpa, unificada e GKI-compliant do driver de infravermelho (`zte_ir.c`), estruturada em 10 microtarefas documentadas individualmente com manifesto de integridade SHA256.
-- **`build_scripts/`**: Scripts de bootstrap, Dockerfile e automação para compilação do kernel comum GKI dentro de containers isolados.
-- **`Module.symvers`**: Mapa de assinaturas de símbolos e CRCs extraídos da build original para evitar erros de `module_layout` no carregamento.
+Documentacao oficial do Linux, Android GKI e LLVM pode explicar contratos
+genericos do Kernel 6.12. Ela nao substitui ELF, assembly, relocacoes, KCFI,
+Ghidra/P-Code e DTB/DTBO extraidos dos nossos artefatos locais.
 
----
+## Auditoria offline
 
-## 🛠️ Como Contribuir e Usar
+O auditor nao usa ADB, fastboot, `insmod`, `rmmod` ou escrita de particoes. Ele
+mede a completude da evidencia por driver e retorna codigo diferente de zero
+enquanto houver lacunas:
 
-Consulte o README interno de cada pasta para instruções específicas:
-- [Guia de Engenharia Reversa](./reverse_engineering/README.md)
-- [Guia de Desenvolvimento e Build do Kernel](./kernel_development/README.md)
+```powershell
+python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
+  --engineering-root C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia `
+  --all
+```
 
----
-**Licença**: GPL-2.0
+O relatorio padrao e gravado em
+`reverse_engineering/validation/OFFLINE_RECONSTRUCTION_AUDIT.json`, acompanhado
+de uma versao Markdown. O veredito offline maximo e
+`STATIC_ALIGNED_CANDIDATE`; a ferramenta nunca declara equivalencia fisica.
+
+O pacote derivado publicado atualmente contem 624/624 funcoes com pseudocodigo,
+P-Code e assembly integral. Consulte o
+[manifesto de publicacao](./reverse_engineering/validation/OFFLINE_EVIDENCE_PUBLICATION.md).
+
+Para materializar antes todo o assembly stock por identidade
+`nome@endereco`:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\materialize_offline_assembly.py `
+  --engineering-root C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia `
+  --all
+```
+
+## Estrutura
+
+- [`reverse_engineering/`](./reverse_engineering/): aquisicao preservada,
+  exports Ghidra, P-Code, assembly, documentos de transicao e evidencias.
+- [`kernel_development/`](./kernel_development/): fontes reconstruidas,
+  Kconfig/Makefile, builds e modulos candidatos.
+- [`workspace_tools/reconstruction_pipeline/`](./workspace_tools/reconstruction_pipeline/):
+  extratores, comparadores, harnesses e verificadores executaveis.
+
+## Regras de contribuicao
+
+1. Identifique cada entrada por caminho, tamanho e SHA-256.
+2. Mapeie toda funcao stock para fonte, assembly, pseudocodigo, P-Code e teste.
+3. Nao invente tipos, offsets, registradores, locks ou semantica de bits.
+4. Registre divergencias intencionais; nao esconda diferencas para obter um
+   numero de paridade artificial.
+5. Reexecute os gates afetados sempre que fonte, toolchain, `.config`,
+   `Module.symvers`, DTB/DTBO ou script de analise mudar.
+
+Licenca: GPL-2.0.

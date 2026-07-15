@@ -1,6 +1,6 @@
 # Status de Reconstrução e Validação do Driver `zte_sensor_sensitivity`
 
-Este documento registra o status e os testes de validação do driver **`zte_sensor_sensitivity`** do RedMagic 10 Pro (NX809J).
+Este documento registra o status e os testes de validação do driver **`zte_sensor_sensitivity`** do REDMAGIC 11 Pro+ (NX809J).
 
 ---
 

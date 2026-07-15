@@ -1,4 +1,9 @@
-# Relatório Completo de Validação dos Drivers ZTE
+# Relatorio Historico de Carga dos Drivers ZTE
+
+> Registro historico, substituido para fins de atestacao por
+> `reverse_engineering/validation/OFFLINE_RECONSTRUCTION_AUDIT.md`. A carga
+> dinamica abaixo nao estava vinculada ao hash de todas as evidencias e nao
+> autoriza afirmar reconstrucao completa.
 
 **Data de Execução:** 2026-07-11 14:43:29
 **Kernel Base:** `Linux version 6.12.23-android16-5-gf1bdb13583da-ab13761046-4k (curator@build-host) (Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460), LLD 19.0.1) #1 SMP PREEMPT Wed Jul  9 10:22:53 UTC 2025`
