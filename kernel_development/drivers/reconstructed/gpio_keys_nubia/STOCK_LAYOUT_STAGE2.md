@@ -1,6 +1,6 @@
 # `gpio_keys_nubia`: mapa estrutural stock para o stage 2
 
-Estado: **OFFSETS COMPROVADOS, IMPLEMENTACAO AINDA PENDENTE**.
+Estado: **OFFSETS E IMPLEMENTACAO AARCH64 COMPROVADOS NO STAGE 2**.
 
 Este mapa foi derivado do P-Code, pseudocodigo e Assembly AArch64 do modulo
 stock com SHA-256
@@ -48,10 +48,10 @@ Tamanho fixo antes de `data[]`: **`0x48` bytes**.
 
 Tamanho/stride comprovado: **`0x110` bytes**.
 
-## Diferencas que bloqueiam a troca imediata
+## Implementacao atual
 
-O scaffold GKI atual tem stride `0x128` porque usa dois `hrtimer` e nao possui
-os campos Nubia `gpios`, `gpion` e `report_lock`. O stock:
+O candidato agora reproduz o stride `0x110` e possui `static_assert` para cada
+offset critico. Assim como o stock, ele:
 
 - usa `timer_list` para o release de botoes IRQ-only;
 - usa somente `delayed_work` para o debounce GPIO;
@@ -59,20 +59,23 @@ os campos Nubia `gpios`, `gpion` e `report_lock`. O stock:
 - serializa a leitura combinada de `gpios/gpion` com `report_lock`;
 - desabilita/habilita os dois IRQs nos helpers sysfs.
 
-Por isso os dois helpers de bitmap nao podem receber `PASS` antes de a estrutura
-e os caminhos timer/IRQ serem migrados juntos. Compilar apenas uma estrutura
-com padding artificial preservaria offsets, mas nao preservaria comportamento.
+Os callbacks de timer, workqueue, IRQ, quiesce, PM, helpers sysfs e
+`GamekeyStatus` possuem paridade estatica por funcao. O `pahole` do objeto
+AArch64 confirmou tamanho `0x110` e todos os offsets desta tabela.
 
-## Gates para aplicar este layout
+## Gates executados
 
-1. Substituir `release_timer` por `timer_list` e remover `debounce_timer` e
-   `debounce_use_hrtimer` somente no mesmo patch que migra seus callbacks.
-2. Adicionar `irq_secondary`, `gpios`, `gpion` e `report_lock` com
-   `static_assert(offsetof(...))` para cada offset acima.
-3. Exigir `sizeof(struct gpio_button_data) == 0x110` no build AArch64.
-4. Recompilar e comparar `gpio_keys_quiesce_key`, ambos os helpers, work/ISR e
-   `probe` contra o Assembly stock.
-5. Nao promover `.ko` enquanto imports, KCFI e 24/24 microtarefas nao passarem.
+1. `release_timer` migrado para `timer_list`; debounce GPIO usa apenas
+   `delayed_work`.
+2. `irq_secondary`, `gpios`, `gpion` e `report_lock` posicionados com
+   `static_assert(offsetof(...))`.
+3. `sizeof(struct gpio_button_data) == 0x110` exigido pelo build AArch64.
+4. Helpers, work/ISR, timer e quiesce comparados contra o Assembly stock.
+5. Dois builds limpos reproduziveis e harness stage 2 com 18/18 testes.
+
+Ainda nao e permitido promover o `.ko`: `gpio_keys_gpio_report_event` e
+`gpio_keys_probe` nao possuem Assembly exato, a superficie de imports diverge e
+nao houve validacao controlada no hardware.
 
 ## Evidencias de origem
 

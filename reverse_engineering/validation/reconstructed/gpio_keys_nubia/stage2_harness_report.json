@@ -1,0 +1,77 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\gpio_keys_nubia\\harness\\stage2_harness.c:/work/stage2_harness.c:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/tmp",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -Wall -Wextra -Werror /work/stage2_harness.c -o stage2_harness && ./stage2_harness"
+  ],
+  "covered_functions": [
+    "gpio_keys_attr_store_helper",
+    "gpio_keys_gpio_work_func",
+    "gpio_keys_gpio_isr",
+    "gpio_keys_irq_timer",
+    "gpio_keys_irq_isr",
+    "gpio_keys_quiesce_key",
+    "gpio_keys_show_GamekeyStatus"
+  ],
+  "generated_utc": "2026-07-16T01:19:17.695840+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\gpio_keys_nubia\\harness\\stage2_harness.c",
+      "sha256": "e83ee2fc658c4857ed25c21e183e8e061753907ad926d64e84b395e0ea148aeb",
+      "size": 12015
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\gpio_keys_nubia\\gpio_keys_nubia.c",
+      "sha256": "a24add33773737c34ac5f01f671644c4c3758befec9a71127b3348d42750503b",
+      "size": 31491
+    }
+  ],
+  "limitations": [
+    "The harness isolates branch semantics and does not execute kernel code directly.",
+    "Assembly and KCFI reports separately bind the modeled functions to the candidate object.",
+    "gpio_keys_probe and gpio_keys_gpio_report_event are deliberately outside this PASS.",
+    "No ADB, fastboot, insmod, rmmod, GPIO, IRQ, timer, MMIO, or smartphone operation is performed.",
+    "This report is not evidence of complete module or hardware parity."
+  ],
+  "mode": "offline_isolated_stage2_semantic_harness",
+  "passed": true,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "stderr": "",
+  "stdout": "PASS bitmap_key_subset\nPASS bitmap_switch_tail_mask\nPASS quiesce_timer\nPASS quiesce_work\nPASS disable_enable_dual_irq\nPASS work_lock_report_relax\nPASS gpio_isr_primary\nPASS gpio_isr_secondary_suspended\nPASS gpio_isr_rejects_unrelated_irq\nPASS irq_timer_idle\nPASS irq_timer_release\nPASS irq_isr_zero_delay\nPASS irq_isr_delayed_press\nPASS irq_isr_rearms_pressed_key\nPASS irq_isr_rejects_unrelated_irq\nPASS gamekey_open\nPASS gamekey_closed\nPASS gamekey_missing\nSUMMARY 18/18\n",
+  "tests": {
+    "expected": 18,
+    "failed": [],
+    "passed": [
+      "bitmap_key_subset",
+      "bitmap_switch_tail_mask",
+      "quiesce_timer",
+      "quiesce_work",
+      "disable_enable_dual_irq",
+      "work_lock_report_relax",
+      "gpio_isr_primary",
+      "gpio_isr_secondary_suspended",
+      "gpio_isr_rejects_unrelated_irq",
+      "irq_timer_idle",
+      "irq_timer_release",
+      "irq_isr_zero_delay",
+      "irq_isr_delayed_press",
+      "irq_isr_rearms_pressed_key",
+      "irq_isr_rejects_unrelated_irq",
+      "gamekey_open",
+      "gamekey_closed",
+      "gamekey_missing"
+    ],
+    "summary": "SUMMARY 18/18"
+  }
+}

@@ -1,67 +1,61 @@
 # Status: `gpio_keys_nubia`
 
-Estado: **STAGE1_STATIC_VALIDATED - modulo completo INCOMPLETO**.
+Estado: **STAGE2_STATIC_PARTIAL - 22/24 funcoes exatas; modulo completo INCOMPLETO**.
 
-Este diretorio contem um scaffold compilavel baseado no `gpio_keys.c` do mesmo
-GKI 6.12.23. Ele ainda nao e um candidato seguro para `insmod` ou substituicao
-do modulo OEM.
+O fonte foi reconstruido a partir do `.ko` stock, pseudocodigo, P-Code e
+Assembly Ghidra. Ele compila no GKI 6.12.23 com Clang `clang-r536225`, mas ainda
+nao e candidato seguro para `insmod` ou substituicao do modulo OEM.
 
 | Item | Estado | Evidencia/Bloqueador |
 |---|---|---|
 | Stock | IDENTIFICADO | SHA-256 `8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3`; 24 funcoes Ghidra |
-| Fonte scaffold | PRESENTE | `gpio_keys_nubia.c`; artefatos de build removidos do diretorio canonico |
-| Build limpo | PASS | duas compilacoes reproduziveis; SHA-256 `e1a872ba5d4c3875ed2b92ef6ee949abf1e7bc08ba4c549bc8f228a8bf9f45f8` |
-| Mapa stock -> fonte | PARCIAL | 8/24 revisadas; 16/24 ainda `unmapped` |
-| KCFI stage 1 | PASS | 8/8 type IDs, secoes e tamanhos iguais ao stock |
-| Assembly stage 1 | PASS | 8/8 sequencias AArch64 e relocacoes iguais; `B/BL` local vinculado pelo simbolo resolvido |
-| Harness stage 1 | PASS | 11/11 testes offline dos wrappers sysfs e lifecycle |
-| Superficie de imports | FAIL | imports stock e scaffold ainda divergem |
+| Layout por botao | PASS ESTATICO | stride `0x110` e offsets AArch64 comprovados por `pahole`, Assembly e `static_assert` |
+| Build limpo | PASS | duas compilacoes isoladas reproduziveis; SHA-256 `749c54aa3f6ab530ef68f2cb2f71b39f8cdc5b3d9b81989663c66fb8ade28b85` |
+| Mapa stock -> fonte | PARCIAL | 22/24 `reviewed`; 2/24 `mapped_not_exact`; zero funcoes sem alvo no fonte |
+| KCFI stage 2 | PASS PARCIAL | 20/20 funcoes elegiveis exatas; os dois helpers diretos de bitmap nao possuem preambulo KCFI proprio |
+| Assembly stage 2 | PASS PARCIAL | 22/24 com secao, tamanho, instrucoes e relocacoes exatas |
+| Harness stage 1 | PASS | 11/11 testes offline de wrappers sysfs e lifecycle |
+| Harness stage 2 | PASS | 18/18 testes offline de bitmap, IRQ, timer, quiesce, workqueue e `GamekeyStatus` |
+| Superficie de imports | FAIL | `gpio_keys_probe` ainda usa uma superficie moderna diferente da stock |
 | Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou IRQ executado neste ciclo |
 
-## Funcoes validadas no stage 1
+## Superficie exata no stage 2
 
-- `init_module` -> `gpio_keys_init`
-- `cleanup_module` -> `gpio_keys_exit`
-- `gpio_keys_show_keys`
-- `gpio_keys_show_switches`
-- `gpio_keys_show_disabled_keys`
-- `gpio_keys_store_disabled_keys`
-- `gpio_keys_show_disabled_switches`
-- `gpio_keys_store_disabled_switches`
+- Lifecycle e PM: `init_module`, `cleanup_module`, `gpio_keys_shutdown`,
+  `gpio_keys_open`, `gpio_keys_close`, `gpio_keys_suspend`, `gpio_keys_resume`.
+- IRQ e debounce: `gpio_keys_gpio_work_func`, `gpio_keys_gpio_isr`,
+  `gpio_keys_irq_timer`, `gpio_keys_irq_isr`, `gpio_keys_quiesce_key`.
+- Sysfs: os oito wrappers do stage 1, `gpio_keys_attr_show_helper`,
+  `gpio_keys_attr_store_helper`, `gpio_keys_show_GamekeyStatus` e
+  `gpio_keys_store_GamekeyStatus`.
 
-As microtarefas permanecem `READY_FOR_IMPLEMENTATION`, e nao `PASS`, porque o
-atestador atual promove somente a superficie completa do driver. A separacao e
-intencional: evidencia parcial nao autoriza declarar o modulo reconstruido.
+Paridade estatica por funcao nao promove automaticamente as microtarefas nem o
+modulo inteiro. Testes em hardware e todos os gates continuam obrigatorios.
 
-## Bloqueadores para um modulo carregavel
+## Duas funcoes restantes
 
-- O layout stock por botao tem stride observado de `0x110`; o layout completo
-  ainda precisa ser reconstruido e comprovado por offsets.
-- `GamekeyStatus` e o GPIO secundario `gpion` ainda nao foram implementados.
-- Os caminhos stock usam `timer_delete_sync`, `mod_timer`,
-  `gpiod_get_raw_value` e APIs OF que ainda divergem do scaffold moderno.
-- `probe`, IRQ, debounce, wakeup, suspend/resume e teardown ainda precisam de
-  equivalencia por funcao e testes de falha.
-- A superficie de simbolos importados precisa coincidir antes de qualquer
-  promocao de `.ko`.
+- `gpio_keys_gpio_report_event`: comportamento e tamanho stock de `0x194` bytes
+  reconstruidos, mas a ordem dos blocos AArch64 e relocacoes ainda diverge.
+- `gpio_keys_probe`: layout `0x110` mapeado, mas o candidato tem 3524 bytes
+  contra 3600 no stock e ainda difere na leitura OF, pedidos GPIO/IRQ, logs e
+  tratamento de erro. A superficie de imports tambem nao coincide.
 
 ## Proxima ordem de trabalho
 
-1. Reconstruir `gpio_keys_attr_show_helper` e
-   `gpio_keys_attr_store_helper`, com bitmaps e limites testados.
-2. Implementar `gpio_keys_show_GamekeyStatus` e
-   `gpio_keys_store_GamekeyStatus`, incluindo `gpion`.
-3. Alinhar timer, workqueue, IRQ e `gpio_keys_quiesce_key`.
-4. Fechar suspend/resume, open/close, shutdown e `probe`.
-5. Repetir build reproduzivel, KCFI, Assembly, imports e harness para 24/24.
+1. Fechar a arvore de blocos de `gpio_keys_gpio_report_event` sem alterar a
+   semantica ja comprovada.
+2. Reconstruir `gpio_keys_probe` por sub-blocos: parser DT, GPIO primario,
+   `gpion`, debounce, IRQ primaria/secundaria e rollback.
+3. Repetir imports, KCFI, Assembly, dois builds limpos e harness para 24/24.
+4. Somente depois preparar um teste controlado no hardware com rollback.
 
 Evidencias principais:
 
 - `kernel_development/drivers/reconstructed/gpio_keys_nubia/STOCK_LAYOUT_STAGE2.md`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/driver_audit.json`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage1_kcfi_comparison.json`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage1_assembly_comparison.json`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage1_harness_report.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_kcfi_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_harness_report.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_driver_audit.json`
 
 Nao e permitido instalar, publicar como candidato final ou declarar paridade
 100% enquanto as 24 microtarefas e os gates completos nao estiverem em `PASS`.

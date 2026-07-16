@@ -40,7 +40,7 @@ Funcao stock: gpio_keys_shutdown
 Entrada Ghidra: 00101530
 Tamanho stock: 68 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_shutdown
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0001_00101530_gpio_keys_shutdown.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0001_00101530_gpio_keys_shutdown.jsonl
 
@@ -69,7 +69,7 @@ Funcao stock: gpio_keys_open
 Entrada Ghidra: 00101578
 Tamanho stock: 192 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_open
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0002_00101578_gpio_keys_open.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0002_00101578_gpio_keys_open.jsonl
 
@@ -98,7 +98,7 @@ Funcao stock: gpio_keys_close
 Entrada Ghidra: 0010163c
 Tamanho stock: 72 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_close
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0003_0010163c_gpio_keys_close.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0003_0010163c_gpio_keys_close.jsonl
 
@@ -156,7 +156,7 @@ Funcao stock: gpio_keys_gpio_work_func
 Entrada Ghidra: 0010181c
 Tamanho stock: 88 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_gpio_work_func
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0005_0010181c_gpio_keys_gpio_work_func.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0005_0010181c_gpio_keys_gpio_work_func.jsonl
 
@@ -185,7 +185,7 @@ Funcao stock: gpio_keys_gpio_isr
 Entrada Ghidra: 00101878
 Tamanho stock: 172 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_gpio_isr
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0006_00101878_gpio_keys_gpio_isr.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0006_00101878_gpio_keys_gpio_isr.jsonl
 
@@ -214,7 +214,7 @@ Funcao stock: gpio_keys_irq_timer
 Entrada Ghidra: 00101928
 Tamanho stock: 132 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_irq_timer
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0007_00101928_gpio_keys_irq_timer.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0007_00101928_gpio_keys_irq_timer.jsonl
 
@@ -243,7 +243,7 @@ Funcao stock: gpio_keys_irq_isr
 Entrada Ghidra: 001019b0
 Tamanho stock: 280 bytes
 Categoria: async_or_irq
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_irq_isr
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0008_001019b0_gpio_keys_irq_isr.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0008_001019b0_gpio_keys_irq_isr.jsonl
 
@@ -272,7 +272,7 @@ Funcao stock: gpio_keys_quiesce_key
 Entrada Ghidra: 00101acc
 Tamanho stock: 52 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_quiesce_key
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0009_00101acc_gpio_keys_quiesce_key.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0009_00101acc_gpio_keys_quiesce_key.jsonl
 
@@ -301,7 +301,7 @@ Funcao stock: gpio_keys_suspend
 Entrada Ghidra: 00101b04
 Tamanho stock: 528 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_suspend
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0010_00101b04_gpio_keys_suspend.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0010_00101b04_gpio_keys_suspend.jsonl
 
@@ -359,7 +359,7 @@ Funcao stock: gpio_keys_attr_show_helper
 Entrada Ghidra: 00101d44
 Tamanho stock: 320 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_attr_show_helper
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0012_00101d44_gpio_keys_attr_show_helper.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0012_00101d44_gpio_keys_attr_show_helper.jsonl
 
@@ -475,7 +475,7 @@ Funcao stock: gpio_keys_attr_store_helper
 Entrada Ghidra: 00101f24
 Tamanho stock: 800 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_attr_store_helper
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0016_00101f24_gpio_keys_attr_store_helper.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0016_00101f24_gpio_keys_attr_store_helper.jsonl
 
@@ -562,7 +562,7 @@ Funcao stock: gpio_keys_show_GamekeyStatus
 Entrada Ghidra: 001022b8
 Tamanho stock: 204 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_show_GamekeyStatus
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0019_001022b8_gpio_keys_show_GamekeyStatus.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0019_001022b8_gpio_keys_show_GamekeyStatus.jsonl
 
@@ -591,7 +591,7 @@ Funcao stock: gpio_keys_store_GamekeyStatus
 Entrada Ghidra: 00102388
 Tamanho stock: 52 bytes
 Categoria: user_abi
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_store_GamekeyStatus
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0020_00102388_gpio_keys_store_GamekeyStatus.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0020_00102388_gpio_keys_store_GamekeyStatus.jsonl
 
@@ -620,7 +620,7 @@ Funcao stock: gpio_keys_resume
 Entrada Ghidra: 001023c0
 Tamanho stock: 560 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_resume
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0021_001023c0_gpio_keys_resume.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0021_001023c0_gpio_keys_resume.jsonl
 
