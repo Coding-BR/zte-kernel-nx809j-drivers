@@ -1,13 +1,40 @@
-# Auditoria Independente de Reconstrução de Drivers
+# Auditoria offline Stage 4: `gpio_keys_nubia`
 
-Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
+Esta auditoria nao executa ADB, fastboot, `insmod`, `rmmod` nem escrita de
+particoes.
 
 - Gerado em: `2026-07-16T14:13:46.952500+00:00`
-- Run de evidência: `C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z`
-- Rebuild limpo: `True`
+- Run de evidencia: `NX809J-20260711T011653Z`
+- Rebuild limpo: `PASS`
+- Resultado correto: `static_partial_23_of_24`
+- Hardware: `DEFERRED`
 
-| Driver | Resultado estático | Hardware | Evidência que falta |
-|---|---|---|---|
-| `gpio_keys_nubia` | `static_verified` | `não executado` | nenhuma |
+## Gates fechados
 
-`static_verified` exige cadeia de evidência, build reproduzível, paridade ELF/modinfo/KMI e mapa completo de funções Ghidra para o fonte. `hardware_verified` exige um teste controlado específico do driver, com rollback e logs. Nenhum dos dois, isoladamente, autoriza afirmar equivalência funcional absoluta.
+- cadeia de proveniencia do `.ko` stock;
+- duas compilacoes limpas e reproduziveis do candidato;
+- paridade de inventario ELF, imports, `modinfo` e KCFI;
+- mapa estrutural Ghidra/P-Code/Assembly para 24/24 funcoes;
+- Assembly exato para 23/24 funcoes;
+- dois harnesses offline aprovados.
+
+## Gate aberto
+
+`gpio_keys_probe` ainda nao possui igualdade ordenada de opcodes e relocacoes.
+Stock e candidato coincidem em `3600` bytes, `900` instrucoes, `164`
+relocacoes, `228` blocos, `387` arestas e `67` chamadas, mas igualdade
+agregada nao prova identidade da funcao.
+
+O status generico `static_verified` do relatorio automatizado deve ser lido
+somente como aprovacao dos gates estruturais implementados por aquela versao
+do auditor. Ele nao substitui o comparador Assembly por funcao e nao autoriza
+classificar este driver como 100% reconstruido.
+
+## Evidencia faltante
+
+- paridade Assembly ordenada de `gpio_keys_probe`; ou
+- nova evidencia independente que explique a forma C original do parser DT e
+  das saidas frias.
+
+O candidato permanece autorizado apenas para analise offline. A validacao de
+hardware continua separada e dependera de um plano controlado com rollback.
