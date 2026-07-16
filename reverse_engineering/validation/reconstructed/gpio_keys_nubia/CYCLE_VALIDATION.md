@@ -7,13 +7,13 @@ Driver: gpio_keys_nubia
 | 0 - Segurança | PASS |  |
 | 1 - Stock | PASS |  |
 | 2 - Ghidra | PASS |  |
-| 3 - Mapa | INCOMPLETO | mapping source file is missing<br>unreviewed mapping |
-| 4 - ABI | INCOMPLETO | missing: abi_validation.json |
+| 3 - Mapa | PASS |  |
+| 4 - ABI | PASS |  |
 | 5 - Microtarefas | INCOMPLETO | microtask audit is not passed<br>status is not PASS |
-| 6 - Build/KMI | INCOMPLETO | current independent audit is not static_verified |
-| 7 - Paridade | INCOMPLETO | missing: parity_report.json |
-| 8 - Revisão | INCOMPLETO | missing: independent_review.json |
-| 9 - Hardware | INCOMPLETO | missing: hardware_validation.json |
-| 10 - Promoção | INCOMPLETO | missing: promotion_manifest.json |
+| 6 - Build/KMI | PASS |  |
+| 7 - Paridade | INCOMPLETO | status is not PASS |
+| 8 - Revisão | INCOMPLETO | status is not PASS |
+| 9 - Hardware | INCOMPLETO | status is not PASS<br>rollback_status is not PASS |
+| 10 - Promoção | INCOMPLETO | status is not PASS |
 
 Veredito: INCOMPLETO: não autorizado a declarar 100%

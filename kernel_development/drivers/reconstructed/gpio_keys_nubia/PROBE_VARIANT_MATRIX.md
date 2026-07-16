@@ -1,6 +1,6 @@
 # Matriz de variantes do `gpio_keys_probe`
 
-Data do ciclo: 2026-07-15 (America/Sao_Paulo).
+Ultima atualizacao: 2026-07-16 (America/Sao_Paulo).
 
 ## Escopo
 
@@ -29,20 +29,23 @@ Referencia stock:
 | Atribuicao pontual de `label = NULL` | 3612 | 903 | 164 | nao | nao | 94,9529% | rejeitado: tres instrucoes adicionais |
 | `label` pontual mais trigger aritmetico | 3600 | 900 | 164 | nao | sim | 94,6667% | rejeitado: igualdade agregada sem paridade de fluxo |
 | Variante anterior mais parser `if/else` | 3600 | 900 | 164 | nao | sim | 94,4444% | rejeitado: similaridade menor |
+| `bool active_low` | 3600 | 900 | 164 | nao | nao | 95,1111% | evidenciou a tipagem stock; faltava restaurar limites de helpers |
+| `bool` + `nb_setup_secondary` | 3600 | 900 | 164 | nao | sim | 95,2222% | recuperou lock class e melhorou CFG; helper de estado ainda global |
+| Stage 4: dois helpers inline + `bool` | 3600 | 900 | 164 | nao | sim | 95,2222% | promovido: fonte mais fiel, ainda nao exato |
 
 ## Interpretacao
 
 Igualar apenas tamanho, numero de instrucoes ou quantidade de relocacoes nao e
-atestacao. As duas variantes `3600/900/164` alteraram o bloco de
-`wakeup_trigger_type`: o stock usa `cmp`, `mov` e `cinc`, enquanto o candidato
-usou `add` ou carga de pilha. Elas tambem mantiveram 21 posicoes de relocacao em
-ordem diferente. Promove-las seria ajustar o resultado numerico sem reconstruir
-o grafo real.
+atestacao. As primeiras variantes `3600/900/164` alteraram o bloco de
+`wakeup_trigger_type` e foram rejeitadas apesar da coincidencia agregada.
 
-O baseline Stage 3 continua sendo o fonte canonico porque preserva a expressao
-C semanticamente sustentada pelo pseudocodigo, os 63 imports stock e as 23
-funcoes ja exatas. Nenhuma variante deste ciclo autoriza `insmod`, substituicao
-OEM ou declaracao de 100%.
+O Stage 4 foi promovido por motivos adicionais e verificaveis: `active_low`
+booleano removeu spills observados apenas no candidato;
+`nb_setup_secondary.__key` e `nb_key_is_need_report.stat_rec` voltaram a
+coincidir com os simbolos locais OEM; `gpio_keys_gpio_report_event` permaneceu
+exata; e os totais CFG do `probe` coincidem em `228/387/67`. Ainda ha 21
+posicoes de relocation em ordem diferente, portanto a promocao melhora a
+fidelidade do fonte sem autorizar uma declaracao de 100%.
 
 ## Regras para o proximo ciclo
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-16T02:41:38.8307025Z",
+  "generated_utc": "2026-07-16T14:08:39.8036052Z",
   "driver": "gpio_keys_nubia",
   "function": "gpio_keys_probe",
   "stock": {
@@ -9,7 +9,7 @@
     "instruction_count": 900,
     "relocation_count": 164
   },
-  "method": "two isolated Docker builds followed by per-function AArch64 extraction and ordered opcode/relocation comparison",
+  "method": "isolated Docker variant builds followed by per-function AArch64 extraction; the promoted candidate was rebuilt twice and checked with ordered opcode/relocation comparison",
   "variants": [
     {
       "id": "stage3_baseline",
@@ -102,9 +102,44 @@
       "ordered_relocation_mismatch_count": 21,
       "mnemonic_similarity_percent": 94.4444,
       "decision": "rejected_lower_similarity"
+    },
+    {
+      "id": "bool_active_v4",
+      "symbol_size": 3600,
+      "instruction_count": 900,
+      "relocation_count": 164,
+      "ordered_relocations_match": false,
+      "relocation_multiset_match": false,
+      "mnemonic_similarity_percent": 95.1111,
+      "decision": "superseded_missing_inline_helper_boundaries"
+    },
+    {
+      "id": "bool_nb_setup_secondary_v5",
+      "symbol_size": 3600,
+      "instruction_count": 900,
+      "relocation_count": 164,
+      "ordered_relocations_match": false,
+      "relocation_multiset_match": true,
+      "ordered_relocation_mismatch_count": 21,
+      "mnemonic_similarity_percent": 95.2222,
+      "decision": "superseded_stat_rec_still_global"
+    },
+    {
+      "id": "stage4_inline_helpers_bool",
+      "symbol_size": 3600,
+      "instruction_count": 900,
+      "relocation_count": 164,
+      "basic_block_count": 228,
+      "cfg_edge_count": 387,
+      "call_count": 67,
+      "ordered_relocations_match": false,
+      "relocation_multiset_match": true,
+      "ordered_relocation_mismatch_count": 21,
+      "mnemonic_similarity_percent": 95.2222,
+      "decision": "promoted_stage4_partial_not_exact"
     }
   ],
-  "canonical_source_changed": false,
+  "canonical_source_changed": true,
   "hardware_operations_performed": false,
   "complete_reconstruction_claim": false
 }

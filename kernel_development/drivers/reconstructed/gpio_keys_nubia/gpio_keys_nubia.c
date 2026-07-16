@@ -458,7 +458,31 @@ static struct attribute *gpio_keys_nubia_attrs[] = {
 };
 ATTRIBUTE_GROUPS(gpio_keys_nubia);
 
-static int nb_key_is_need_report_stat_rec;
+static __always_inline bool
+nb_key_is_need_report(struct gpio_button_data *bdata)
+{
+	static int stat_rec;
+	unsigned int previous_state;
+	unsigned int report_state;
+	int gpios_state;
+	int gpion_state;
+
+	gpios_state = !gpiod_get_raw_value(gpio_to_desc(bdata->gpios));
+	gpion_state = !gpiod_get_raw_value(gpio_to_desc(bdata->gpion));
+	if (gpios_state == gpion_state) {
+		pr_err("[gpio-keys_nubia] %s Key Open/Close half, gpios-state:%d.",
+		       __func__, gpios_state);
+		return false;
+	}
+
+	previous_state = stat_rec;
+	report_state = (gpios_state << 1) | gpion_state;
+	if (previous_state == report_state)
+		return false;
+
+	stat_rec = report_state;
+	return true;
+}
 
 static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 {
@@ -469,25 +493,8 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	unsigned short code;
 	int state;
 
-	if (bdata->gpion >= 0) {
-		int gpios_state;
-		int gpion_state;
-
-		gpios_state = !gpiod_get_raw_value(gpio_to_desc(bdata->gpios));
-		gpion_state = !gpiod_get_raw_value(gpio_to_desc(bdata->gpion));
-		if (gpios_state == gpion_state) {
-			pr_err("[gpio-keys_nubia] %s Key Open/Close half, gpios-state:%d.",
-			       "nb_key_is_need_report", gpios_state);
-			return;
-		}
-
-		unsigned int previous_state = nb_key_is_need_report_stat_rec;
-		unsigned int report_state = (gpios_state << 1) | gpion_state;
-
-		if (previous_state == report_state)
-			return;
-		nb_key_is_need_report_stat_rec = report_state;
-	}
+	if (bdata->gpion >= 0 && !nb_key_is_need_report(bdata))
+		return;
 
 	code = *bdata->code;
 	state = gpiod_get_value_cansleep(bdata->gpiod);
@@ -603,6 +610,25 @@ out:
 	return IRQ_HANDLED;
 }
 
+static __always_inline void
+nb_setup_secondary(struct device *dev, struct gpio_button_data *bdata)
+{
+	struct device_node *node;
+
+	for_each_child_of_node(dev->of_node, node) {
+		bdata->gpios = of_get_named_gpio(node, "gpios", 0);
+		bdata->gpion = of_get_named_gpio(node, "gpion", 0);
+	}
+
+	if (bdata->gpion)
+		bdata->wakeirq = gpiod_to_irq(gpio_to_desc(bdata->gpion));
+
+	mutex_init(&bdata->report_lock);
+
+	pr_err("[gpio-keys_nubia]%s gpio find done, gpios:%d gpion:%d.",
+	       __func__, bdata->gpios, bdata->gpion);
+}
+
 static int gpio_keys_setup_key(struct platform_device *pdev,
 				struct input_dev *input,
 				struct gpio_keys_drvdata *ddata,
@@ -617,7 +643,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 	unsigned long irqflags;
 	struct device_node *node;
 	const char *label = NULL;
-	int active_low = 0;
+	bool active_low = false;
 	int irq = -1;
 	int error;
 
@@ -668,7 +694,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 
 			of_get_named_gpio(node, "gpios", 0);
 			if (!strcmp(label, button->desc)) {
-				active_low = 1;
+				active_low = true;
 				break;
 			}
 		}
@@ -784,18 +810,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 		return error;
 	}
 
-	for_each_child_of_node(dev->of_node, node) {
-		bdata->gpios = of_get_named_gpio(node, "gpios", 0);
-		bdata->gpion = of_get_named_gpio(node, "gpion", 0);
-	}
-
-	if (bdata->gpion)
-		bdata->wakeirq = gpiod_to_irq(gpio_to_desc(bdata->gpion));
-
-	mutex_init(&bdata->report_lock);
-
-	pr_err("[gpio-keys_nubia]%s gpio find done, gpios:%d gpion:%d.",
-	       "nb_setup_secondary", bdata->gpios, bdata->gpion);
+	nb_setup_secondary(dev, bdata);
 
 	if (bdata->wakeirq) {
 		error = devm_request_any_context_irq(dev, bdata->wakeirq, isr,

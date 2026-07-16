@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "status": "INCOMPLETO",
+  "driver": "gpio_keys_nubia",
+  "scope": "offline static parity; electrical GPIO and runtime IRQ behavior are excluded",
+  "stock_sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+  "candidate_sha256": "0ab95b270bcafbf5095d1effb73458c55574449866dbd9ee386d0974ffdbd0c2",
+  "comparisons": [
+    {
+      "surface": "ELF, modinfo, KMI and reproducible build",
+      "result": "PASS",
+      "evidence": "driver_audit.json"
+    },
+    {
+      "surface": "KCFI",
+      "result": "PASS",
+      "evidence": "stage4_kcfi_comparison.json records 21/21 eligible functions"
+    },
+    {
+      "surface": "AArch64 function identity",
+      "result": "INCOMPLETO",
+      "evidence": "stage4_assembly_comparison.json records 23/24 exact functions",
+      "blockers": [
+        "gpio_keys_probe"
+      ]
+    },
+    {
+      "surface": "gpio_keys_probe aggregate structure",
+      "result": "PASS_PARTIAL",
+      "evidence": "3600 bytes, 900 instructions, 164 relocations, 228 blocks, 387 edges and 67 calls on both sides"
+    },
+    {
+      "surface": "host behavior",
+      "result": "INCOMPLETO",
+      "evidence": "stage4 harnesses cover 15 of 24 stock functions"
+    },
+    {
+      "surface": "hardware",
+      "result": "DEFERRED",
+      "evidence": "hardware_validation.json"
+    }
+  ],
+  "blockers": [
+    "gpio_keys_probe is not opcode-identical and has 21 ordered relocation mismatches",
+    "nine microtasks lack direct isolated harness coverage",
+    "independent review is pending",
+    "controlled NX809J hardware validation is deferred"
+  ]
+}

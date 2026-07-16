@@ -44,6 +44,26 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertEqual(result, "R_AARCH64_ADR_PREL_PG_HI21 .rodata")
 
+    def test_defined_symbol_keeps_identity_across_section_layouts(self) -> None:
+        result = MODULE.normalized_relocation(
+            "R_AARCH64_ADR_PREL_PG_HI21",
+            "client_1",
+            {},
+            {"client_1": (".bss", 0x8)},
+        )
+
+        self.assertEqual(result, "R_AARCH64_ADR_PREL_PG_HI21 client_1")
+
+    def test_section_offset_resolves_to_defined_symbol(self) -> None:
+        result = MODULE.normalized_relocation(
+            "R_AARCH64_LDST32_ABS_LO12_NC",
+            ".bss+0x18",
+            {},
+            {"debug_value": (".bss", 0x18)},
+        )
+
+        self.assertEqual(result, "R_AARCH64_LDST32_ABS_LO12_NC debug_value")
+
 
 if __name__ == "__main__":
     unittest.main()
