@@ -315,7 +315,7 @@ def markdown(document: dict[str, Any]) -> str:
     candidate = document["candidate"]
     comparison = document["comparison"]
     lines = [
-        "# gpio_keys_probe Basic-Block Audit",
+        f"# {stock['function']} Basic-Block Audit",
         "",
         "> Static CFG segmentation narrows reconstruction differences; it does not prove semantic or runtime equivalence.",
         "",

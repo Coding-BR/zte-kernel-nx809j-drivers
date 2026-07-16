@@ -1,0 +1,375 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-16T03:48:05.745100+00:00",
+  "driver": "nubia_hw_version",
+  "status": "INCOMPLETO",
+  "stock": {
+    "path": "private_acquisition/nubia_hw_version.ko",
+    "sha256": "b24e66e189267f240d637d826169d1bcb28abda390260a88cf52124dbbabfc6c",
+    "published": false
+  },
+  "ghidra_export": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock",
+  "tasks": [
+    {
+      "id": "001_nubia_gpio_ctrl1",
+      "stock_function": "nubia_gpio_ctrl1",
+      "stock_entry": "001005a4",
+      "stock_body_bytes": 92,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_gpio_ctrl1",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0000_001005a4_nubia_gpio_ctrl1.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0000_001005a4_nubia_gpio_ctrl1.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_gpio_ctrl1\nEntrada Ghidra: 001005a4\nTamanho stock: 92 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_gpio_ctrl1\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0000_001005a4_nubia_gpio_ctrl1.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0000_001005a4_nubia_gpio_ctrl1.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "002_nubia_gpio_ctrl",
+      "stock_function": "nubia_gpio_ctrl",
+      "stock_entry": "00100604",
+      "stock_body_bytes": 288,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_gpio_ctrl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0001_00100604_nubia_gpio_ctrl.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0001_00100604_nubia_gpio_ctrl.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_gpio_ctrl\nEntrada Ghidra: 00100604\nTamanho stock: 288 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_gpio_ctrl\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0001_00100604_nubia_gpio_ctrl.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0001_00100604_nubia_gpio_ctrl.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "003_nubia_get_pcb_table_item_by_gpio",
+      "stock_function": "nubia_get_pcb_table_item_by_gpio",
+      "stock_entry": "00100728",
+      "stock_body_bytes": 88,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_get_pcb_table_item_by_gpio",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0002_00100728_nubia_get_pcb_table_item_by_gpio.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0002_00100728_nubia_get_pcb_table_item_by_gpio.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_get_pcb_table_item_by_gpio\nEntrada Ghidra: 00100728\nTamanho stock: 88 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_get_pcb_table_item_by_gpio\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0002_00100728_nubia_get_pcb_table_item_by_gpio.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0002_00100728_nubia_get_pcb_table_item_by_gpio.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "004_nubia_get_hw_id",
+      "stock_function": "nubia_get_hw_id",
+      "stock_entry": "00100784",
+      "stock_body_bytes": 208,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_get_hw_id",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0003_00100784_nubia_get_hw_id.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0003_00100784_nubia_get_hw_id.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_get_hw_id\nEntrada Ghidra: 00100784\nTamanho stock: 208 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_get_hw_id\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0003_00100784_nubia_get_hw_id.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0003_00100784_nubia_get_hw_id.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "005_nubia_get_hw_pcb_version",
+      "stock_function": "nubia_get_hw_pcb_version",
+      "stock_entry": "00100858",
+      "stock_body_bytes": 284,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_get_hw_pcb_version",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0004_00100858_nubia_get_hw_pcb_version.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0004_00100858_nubia_get_hw_pcb_version.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_get_hw_pcb_version\nEntrada Ghidra: 00100858\nTamanho stock: 284 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_get_hw_pcb_version\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0004_00100858_nubia_get_hw_pcb_version.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0004_00100858_nubia_get_hw_pcb_version.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "006_charger_100w",
+      "stock_function": "charger_100W",
+      "stock_entry": "00100978",
+      "stock_body_bytes": 20,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "charger_100W",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0005_00100978_charger_100W.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0005_00100978_charger_100W.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: charger_100W\nEntrada Ghidra: 00100978\nTamanho stock: 20 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:charger_100W\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0005_00100978_charger_100W.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0005_00100978_charger_100W.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "007_charger_80w",
+      "stock_function": "charger_80W",
+      "stock_entry": "00100990",
+      "stock_body_bytes": 20,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "charger_80W",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0006_00100990_charger_80W.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0006_00100990_charger_80W.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: charger_80W\nEntrada Ghidra: 00100990\nTamanho stock: 20 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:charger_80W\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0006_00100990_charger_80W.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0006_00100990_charger_80W.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "008_nubia_get_rf_band_by_gpio",
+      "stock_function": "nubia_get_rf_band_by_gpio",
+      "stock_entry": "001009a8",
+      "stock_body_bytes": 104,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_get_rf_band_by_gpio",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0007_001009a8_nubia_get_rf_band_by_gpio.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0007_001009a8_nubia_get_rf_band_by_gpio.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_get_rf_band_by_gpio\nEntrada Ghidra: 001009a8\nTamanho stock: 104 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_get_rf_band_by_gpio\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0007_001009a8_nubia_get_rf_band_by_gpio.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0007_001009a8_nubia_get_rf_band_by_gpio.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "009_nubia_hw_ver_probe",
+      "stock_function": "nubia_hw_ver_probe",
+      "stock_entry": "00100a14",
+      "stock_body_bytes": 1520,
+      "category": "binding",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_hw_ver_probe",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0008_00100a14_nubia_hw_ver_probe.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0008_00100a14_nubia_hw_ver_probe.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_hw_ver_probe\nEntrada Ghidra: 00100a14\nTamanho stock: 1520 bytes\nCategoria: binding\nAlvo no fonte: nubia_hw_version.c:nubia_hw_ver_probe\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0008_00100a14_nubia_hw_ver_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0008_00100a14_nubia_hw_ver_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "010_nubia_hw_ver_remove",
+      "stock_function": "nubia_hw_ver_remove",
+      "stock_entry": "00101008",
+      "stock_body_bytes": 68,
+      "category": "binding",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_hw_ver_remove",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0009_00101008_nubia_hw_ver_remove.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0009_00101008_nubia_hw_ver_remove.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_hw_ver_remove\nEntrada Ghidra: 00101008\nTamanho stock: 68 bytes\nCategoria: binding\nAlvo no fonte: nubia_hw_version.c:nubia_hw_ver_remove\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0009_00101008_nubia_hw_ver_remove.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0009_00101008_nubia_hw_ver_remove.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "011_nubia_get_gpio_status",
+      "stock_function": "nubia_get_gpio_status",
+      "stock_entry": "0010104c",
+      "stock_body_bytes": 112,
+      "category": "core_logic",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_get_gpio_status",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0010_0010104c_nubia_get_gpio_status.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0010_0010104c_nubia_get_gpio_status.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_get_gpio_status\nEntrada Ghidra: 0010104c\nTamanho stock: 112 bytes\nCategoria: core_logic\nAlvo no fonte: nubia_hw_version.c:nubia_get_gpio_status\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0010_0010104c_nubia_get_gpio_status.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0010_0010104c_nubia_get_gpio_status.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "012_debug_value_show",
+      "stock_function": "debug_value_show",
+      "stock_entry": "001010c0",
+      "stock_body_bytes": 56,
+      "category": "user_abi",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "debug_value_show",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0011_001010c0_debug_value_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0011_001010c0_debug_value_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: debug_value_show\nEntrada Ghidra: 001010c0\nTamanho stock: 56 bytes\nCategoria: user_abi\nAlvo no fonte: nubia_hw_version.c:debug_value_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0011_001010c0_debug_value_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0011_001010c0_debug_value_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "013_debug_value_store",
+      "stock_function": "debug_value_store",
+      "stock_entry": "001010fc",
+      "stock_body_bytes": 64,
+      "category": "user_abi",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "debug_value_store",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0012_001010fc_debug_value_store.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0012_001010fc_debug_value_store.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: debug_value_store\nEntrada Ghidra: 001010fc\nTamanho stock: 64 bytes\nCategoria: user_abi\nAlvo no fonte: nubia_hw_version.c:debug_value_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0012_001010fc_debug_value_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0012_001010fc_debug_value_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "014_nubia_hw_pcb_version_show",
+      "stock_function": "nubia_hw_pcb_version_show",
+      "stock_entry": "00101140",
+      "stock_body_bytes": 120,
+      "category": "user_abi",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_hw_pcb_version_show",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0013_00101140_nubia_hw_pcb_version_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0013_00101140_nubia_hw_pcb_version_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_hw_pcb_version_show\nEntrada Ghidra: 00101140\nTamanho stock: 120 bytes\nCategoria: user_abi\nAlvo no fonte: nubia_hw_version.c:nubia_hw_pcb_version_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0013_00101140_nubia_hw_pcb_version_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0013_00101140_nubia_hw_pcb_version_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "015_nubia_hw_rf_band_show",
+      "stock_function": "nubia_hw_rf_band_show",
+      "stock_entry": "001011bc",
+      "stock_body_bytes": 244,
+      "category": "user_abi",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_hw_rf_band_show",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0014_001011bc_nubia_hw_rf_band_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0014_001011bc_nubia_hw_rf_band_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_hw_rf_band_show\nEntrada Ghidra: 001011bc\nTamanho stock: 244 bytes\nCategoria: user_abi\nAlvo no fonte: nubia_hw_version.c:nubia_hw_rf_band_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0014_001011bc_nubia_hw_rf_band_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0014_001011bc_nubia_hw_rf_band_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "016_nubia_charge_version_show",
+      "stock_function": "nubia_charge_version_show",
+      "stock_entry": "001012b4",
+      "stock_body_bytes": 152,
+      "category": "user_abi",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_charge_version_show",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0015_001012b4_nubia_charge_version_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0015_001012b4_nubia_charge_version_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: nubia_charge_version_show\nEntrada Ghidra: 001012b4\nTamanho stock: 152 bytes\nCategoria: user_abi\nAlvo no fonte: nubia_hw_version.c:nubia_charge_version_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0015_001012b4_nubia_charge_version_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0015_001012b4_nubia_charge_version_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "017_hml_config_version_show",
+      "stock_function": "hml_config_version_show",
+      "stock_entry": "00101350",
+      "stock_body_bytes": 160,
+      "category": "user_abi",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "hml_config_version_show",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0016_00101350_hml_config_version_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0016_00101350_hml_config_version_show.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: hml_config_version_show\nEntrada Ghidra: 00101350\nTamanho stock: 160 bytes\nCategoria: user_abi\nAlvo no fonte: nubia_hw_version.c:hml_config_version_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0016_00101350_hml_config_version_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0016_00101350_hml_config_version_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "018_init_module",
+      "stock_function": "init_module",
+      "stock_entry": "001013f4",
+      "stock_body_bytes": 216,
+      "category": "lifecycle",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_hw_version_init",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0017_001013f4_init_module.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0017_001013f4_init_module.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: init_module\nEntrada Ghidra: 001013f4\nTamanho stock: 216 bytes\nCategoria: lifecycle\nAlvo no fonte: nubia_hw_version.c:nubia_hw_version_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0017_001013f4_init_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0017_001013f4_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    },
+    {
+      "id": "019_cleanup_module",
+      "stock_function": "cleanup_module",
+      "stock_entry": "001014d0",
+      "stock_body_bytes": 60,
+      "category": "lifecycle",
+      "source_file": "nubia_hw_version.c",
+      "source_function": "nubia_hw_version_exit",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0018_001014d0_cleanup_module.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0018_001014d0_cleanup_module.jsonl",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: nubia_hw_version\nFuncao stock: cleanup_module\nEntrada Ghidra: 001014d0\nTamanho stock: 60 bytes\nCategoria: lifecycle\nAlvo no fonte: nubia_hw_version.c:nubia_hw_version_exit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/decompiled/0018_001014d0_cleanup_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock/pcode/0018_001014d0_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "MAPPED_NOT_EXACT",
+      "evidence": []
+    }
+  ]
+}

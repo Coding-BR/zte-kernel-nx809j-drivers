@@ -57,6 +57,24 @@ class SegmentationTests(unittest.TestCase):
         self.assertEqual(result["basic_block_count"], 2)
         self.assertEqual(result["blocks"][0]["successors"], [])
 
+    def test_markdown_uses_analyzed_function_name(self) -> None:
+        function = self.parse(
+            """
+            0000000000000000 <target_probe>:
+                   0: d65f03c0      ret
+            """
+        )
+        segmented = MODULE.segment(function)
+        document = {
+            "stock": segmented,
+            "candidate": segmented,
+            "comparison": MODULE.compare(segmented, segmented),
+        }
+
+        report = MODULE.markdown(document)
+
+        self.assertTrue(report.startswith("# target_probe Basic-Block Audit\n"))
+
 
 if __name__ == "__main__":
     unittest.main()
