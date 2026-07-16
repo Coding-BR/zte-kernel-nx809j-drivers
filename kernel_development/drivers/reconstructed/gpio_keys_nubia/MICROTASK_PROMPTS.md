@@ -11,7 +11,7 @@ Funcao stock: gpio_keys_probe
 Entrada Ghidra: 0010071c
 Tamanho stock: 3600 bytes
 Categoria: binding
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_probe
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0000_0010071c_gpio_keys_probe.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0000_0010071c_gpio_keys_probe.jsonl
 
@@ -127,7 +127,7 @@ Funcao stock: gpio_keys_gpio_report_event
 Entrada Ghidra: 00101684
 Tamanho stock: 404 bytes
 Categoria: core_logic
-Alvo no fonte: PENDENTE: crie e revise o mapeamento stock -> fonte antes de editar C
+Alvo no fonte: gpio_keys_nubia.c:gpio_keys_gpio_report_event
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0004_00101684_gpio_keys_gpio_report_event.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0004_00101684_gpio_keys_gpio_report_event.jsonl
 

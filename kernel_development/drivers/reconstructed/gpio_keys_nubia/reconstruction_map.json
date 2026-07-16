@@ -3,7 +3,7 @@
     "driver":  "gpio_keys_nubia",
     "stock_sha256":  "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
     "ghidra_export":  "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock",
-    "status":  "INCOMPLETO_STAGE2_22_OF_24_STATIC_EXACT",
+    "status":  "INCOMPLETO_STAGE3_23_OF_24_STATIC_EXACT",
     "mappings":  [
                      {
                          "stock_function":  "gpio_keys_probe",
@@ -13,10 +13,11 @@
                          "evidence":  [
                                           "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0000_0010071c_gpio_keys_probe.c",
                                           "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0000_0010071c_gpio_keys_probe.jsonl",
-                                          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_assembly_comparison.json"
+                                          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_assembly_comparison.json",
+                                          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_symbol_inventory.json"
                                       ],
                          "status":  "mapped_not_exact",
-                         "review_notes":  "Source target and 0x110 button layout are mapped, but candidate is 3524 bytes versus stock 3600 and the import/control-flow surface still differs. Not promoted."
+                         "review_notes":  "The 0x110 layout, stock API surface and all 164 relocations are mapped. Candidate is 3608 bytes/902 instructions versus stock 3600 bytes/900 instructions because two cold error exits still compile differently. Not promoted."
                      },
                      {
                          "stock_function":  "gpio_keys_shutdown",
@@ -68,10 +69,11 @@
                          "evidence":  [
                                           "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0004_00101684_gpio_keys_gpio_report_event.c",
                                           "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0004_00101684_gpio_keys_gpio_report_event.jsonl",
-                                          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_assembly_comparison.json"
+                                          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_assembly_comparison.json",
+                                          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_kcfi_comparison.json"
                                       ],
-                         "status":  "mapped_not_exact",
-                         "review_notes":  "Behavior and 0x194-byte stock size are reconstructed, but normalized AArch64 instruction order and relocations still differ. Not promoted."
+                         "status":  "reviewed",
+                         "review_notes":  "Stock and candidate match in section, 404-byte symbol size, normalized AArch64 instructions and relocations. KCFI has no standalone preamble because the candidate preamble overlaps the preceding direct-call body. Hardware validation remains deferred."
                      },
                      {
                          "stock_function":  "gpio_keys_gpio_work_func",

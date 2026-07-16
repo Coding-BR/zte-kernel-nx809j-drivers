@@ -1,61 +1,59 @@
 # Status: `gpio_keys_nubia`
 
-Estado: **STAGE2_STATIC_PARTIAL - 22/24 funcoes exatas; modulo completo INCOMPLETO**.
+Estado: **STAGE3_STATIC_PARTIAL - 23/24 funcoes exatas; modulo completo INCOMPLETO**.
 
-O fonte foi reconstruido a partir do `.ko` stock, pseudocodigo, P-Code e
-Assembly Ghidra. Ele compila no GKI 6.12.23 com Clang `clang-r536225`, mas ainda
-nao e candidato seguro para `insmod` ou substituicao do modulo OEM.
+O fonte foi reconstruido exclusivamente a partir do `.ko` stock, pseudocodigo,
+P-Code e Assembly AArch64 locais. Ele compila no GKI 6.12.23 com
+`clang-r536225`. Nao e candidato autorizado para `insmod` ou substituicao do
+modulo OEM enquanto `gpio_keys_probe` e os gates de hardware nao fecharem.
 
 | Item | Estado | Evidencia/Bloqueador |
 |---|---|---|
 | Stock | IDENTIFICADO | SHA-256 `8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3`; 24 funcoes Ghidra |
-| Layout por botao | PASS ESTATICO | stride `0x110` e offsets AArch64 comprovados por `pahole`, Assembly e `static_assert` |
-| Build limpo | PASS | duas compilacoes isoladas reproduziveis; SHA-256 `749c54aa3f6ab530ef68f2cb2f71b39f8cdc5b3d9b81989663c66fb8ade28b85` |
-| Mapa stock -> fonte | PARCIAL | 22/24 `reviewed`; 2/24 `mapped_not_exact`; zero funcoes sem alvo no fonte |
-| KCFI stage 2 | PASS PARCIAL | 20/20 funcoes elegiveis exatas; os dois helpers diretos de bitmap nao possuem preambulo KCFI proprio |
-| Assembly stage 2 | PASS PARCIAL | 22/24 com secao, tamanho, instrucoes e relocacoes exatas |
+| Layout por botao | PASS ESTATICO | stride `0x110` e offsets comprovados por P-Code, Assembly, `pahole` e `static_assert` |
+| Build limpo | PASS | duas compilacoes isoladas reproduziveis; SHA-256 `977ed4b75b5d86ca4a363ad9c6d8cd9144765fb2ca2c71b390731d39704eb143` |
+| Mapa stock -> fonte | PASS DE RASTREABILIDADE | 24/24 funcoes mapeadas para tokens do fonte; 23 `reviewed`, 1 `mapped_not_exact` |
+| KCFI stage 3 | PASS | 21/21 funcoes elegiveis com tipo e secao exatos; 3 helpers diretos nao possuem preambulo independente |
+| Assembly stage 3 | PASS PARCIAL | 23/24 com secao, tamanho, instrucoes e relocacoes exatas |
 | Harness stage 1 | PASS | 11/11 testes offline de wrappers sysfs e lifecycle |
 | Harness stage 2 | PASS | 18/18 testes offline de bitmap, IRQ, timer, quiesce, workqueue e `GamekeyStatus` |
-| Superficie de imports | FAIL | `gpio_keys_probe` ainda usa uma superficie moderna diferente da stock |
+| Simbolos ELF | PASS | 24/24 simbolos de texto presentes, nenhum extra e imports indefinidos 63/63 exatos |
 | Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou IRQ executado neste ciclo |
 
-## Superficie exata no stage 2
+## Avanco do stage 3
 
-- Lifecycle e PM: `init_module`, `cleanup_module`, `gpio_keys_shutdown`,
-  `gpio_keys_open`, `gpio_keys_close`, `gpio_keys_suspend`, `gpio_keys_resume`.
-- IRQ e debounce: `gpio_keys_gpio_work_func`, `gpio_keys_gpio_isr`,
-  `gpio_keys_irq_timer`, `gpio_keys_irq_isr`, `gpio_keys_quiesce_key`.
-- Sysfs: os oito wrappers do stage 1, `gpio_keys_attr_show_helper`,
-  `gpio_keys_attr_store_helper`, `gpio_keys_show_GamekeyStatus` e
-  `gpio_keys_store_GamekeyStatus`.
+- `gpio_keys_gpio_report_event` agora possui os mesmos 404 bytes, 101
+  instrucoes normalizadas e relocacoes do stock.
+- O parser DT voltou a superficie stock: sem `linux,input-value`,
+  `of_irq_get_byname`, `gpiod_is_active_low` ou `dev_err_probe`.
+- A busca Nubia por `label`, `gpios` e `gpion`, os dois pedidos de IRQ, a ordem
+  de `report_lock` e as mensagens stock foram reconstruidos no caminho inlined.
+- A lista completa de 63 imports indefinidos agora coincide com o modulo OEM.
 
-Paridade estatica por funcao nao promove automaticamente as microtarefas nem o
-modulo inteiro. Testes em hardware e todos os gates continuam obrigatorios.
+## Unica funcao restante
 
-## Duas funcoes restantes
-
-- `gpio_keys_gpio_report_event`: comportamento e tamanho stock de `0x194` bytes
-  reconstruidos, mas a ordem dos blocos AArch64 e relocacoes ainda diverge.
-- `gpio_keys_probe`: layout `0x110` mapeado, mas o candidato tem 3524 bytes
-  contra 3600 no stock e ainda difere na leitura OF, pedidos GPIO/IRQ, logs e
-  tratamento de erro. A superficie de imports tambem nao coincide.
+`gpio_keys_probe` permanece **mapped_not_exact**. A semantica observada e toda a
+superficie de 164 relocacoes estao presentes, mas o candidato mede 3608 bytes e
+902 instrucoes contra 3600 bytes e 900 instrucoes no stock. A diferenca atual e
+de especializacao/inlining nas duas saidas frias de erro do descritor GPIO; nao
+sera escondida com padding, Assembly manual ou declaracao prematura de 100%.
 
 ## Proxima ordem de trabalho
 
-1. Fechar a arvore de blocos de `gpio_keys_gpio_report_event` sem alterar a
-   semantica ja comprovada.
-2. Reconstruir `gpio_keys_probe` por sub-blocos: parser DT, GPIO primario,
-   `gpion`, debounce, IRQ primaria/secundaria e rollback.
-3. Repetir imports, KCFI, Assembly, dois builds limpos e harness para 24/24.
-4. Somente depois preparar um teste controlado no hardware com rollback.
+1. Reproduzir as duas saidas frias do `probe` sem estado artificial na pilha.
+2. Reexecutar Assembly 24/24, KCFI, imports, 31 testes Python e ambos harnesses.
+3. Repetir dois builds limpos e atualizar a atestacao somente se todos os gates
+   estaticos permanecerem verdes.
+4. Planejar validacao controlada em hardware separadamente, com rollback.
 
 Evidencias principais:
 
-- `kernel_development/drivers/reconstructed/gpio_keys_nubia/STOCK_LAYOUT_STAGE2.md`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_assembly_comparison.json`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_kcfi_comparison.json`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_harness_report.json`
-- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage2_driver_audit.json`
+- `kernel_development/drivers/reconstructed/gpio_keys_nubia/STOCK_LAYOUT_STAGE3.md`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_kcfi_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_symbol_inventory.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_harness_report.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_driver_audit.json`
 
 Nao e permitido instalar, publicar como candidato final ou declarar paridade
 100% enquanto as 24 microtarefas e os gates completos nao estiverem em `PASS`.

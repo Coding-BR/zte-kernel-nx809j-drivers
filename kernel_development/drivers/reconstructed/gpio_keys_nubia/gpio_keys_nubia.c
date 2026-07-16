@@ -464,7 +464,8 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 {
 	const struct gpio_keys_button *button = bdata->button;
 	struct input_dev *input = bdata->input;
-	unsigned int type = button->type ?: EV_KEY;
+	unsigned int button_type = button->type;
+	unsigned int type = button_type ?: EV_KEY;
 	unsigned short code;
 	int state;
 
@@ -490,26 +491,32 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 
 	code = *bdata->code;
 	state = gpiod_get_value_cansleep(bdata->gpiod);
-	if (code == 0xf && button->type == EV_SW) {
+	if (code == 0xf && button_type == EV_SW) {
 		state = !state;
-	} else if (state < 0) {
+		goto report_state;
+	}
+
+	if (state < 0) {
 		dev_err(input->dev.parent,
 			"failed to get gpio state: %d\n", state);
 		return;
 	}
 
-	if (type == EV_ABS) {
-		if (state) {
-			input_event(input, type, button->code, button->value);
-			pr_err("[gpio-keys_nubia] GPIO_KEY, type:%d, input:code=%d, value=%d\n",
-			       type, button->code, button->value);
-		}
-	} else {
-		input_event(input, type, *bdata->code, state);
-		pr_err("[gpio-keys_nubia] GPIO_KEY, type:%d, input:code=%d, state=%d\n",
-		       type, button->code, state);
-	}
+	if (button_type != EV_ABS)
+		goto report_state;
+	if (!state)
+		goto sync;
 
+	input_event(input, EV_ABS, button->code, button->value);
+	pr_err("[gpio-keys_nubia] GPIO_KEY, type:%d, input:code=%d, value=%d\n",
+	       EV_ABS, button->code, button->value);
+	goto sync;
+
+report_state:
+	input_event(input, type, *bdata->code, state);
+	pr_err("[gpio-keys_nubia] GPIO_KEY, type:%d, input:code=%d, state=%d\n",
+	       type, button->code, state);
+sync:
 	input_sync(input);
 }
 
@@ -603,34 +610,34 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 				int idx,
 				struct fwnode_handle *child)
 {
-	const char *desc = button->desc ? button->desc : "gpio_keys";
+	const char *desc = button->desc ? button->desc : "gpio_keys_nubia";
 	struct device *dev = &pdev->dev;
 	struct gpio_button_data *bdata = &ddata->data[idx];
 	irq_handler_t isr;
 	unsigned long irqflags;
 	struct device_node *node;
-	int irq;
+	const char *label = NULL;
+	int active_low = 0;
+	int irq = -1;
 	int error;
 
 	bdata->input = input;
 	bdata->button = button;
 	spin_lock_init(&bdata->lock);
-	mutex_init(&bdata->report_lock);
 
 	if (child) {
 		bdata->gpiod = devm_fwnode_gpiod_get(dev, child,
 						     NULL, GPIOD_IN, desc);
 		if (IS_ERR(bdata->gpiod)) {
 			error = PTR_ERR(bdata->gpiod);
-			if (error != -ENOENT)
-				return dev_err_probe(dev, error,
-						     "failed to get gpio\n");
-
-			/*
-			 * GPIO is optional, we may be dealing with
-			 * purely interrupt-driven setup.
-			 */
-			bdata->gpiod = NULL;
+			if (error == -ENOENT) {
+				bdata->gpiod = NULL;
+			} else {
+				if (error != -EPROBE_DEFER)
+					dev_err(dev, "failed to get gpio: %d\n",
+						error);
+				return error;
+			}
 		}
 	} else if (gpio_is_valid(button->gpio)) {
 		/*
@@ -655,7 +662,16 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 	}
 
 	if (bdata->gpiod) {
-		bool active_low = gpiod_is_active_low(bdata->gpiod);
+		for_each_child_of_node(dev->of_node, node) {
+			if (of_property_read_string(node, "label", &label) < 0)
+				break;
+
+			of_get_named_gpio(node, "gpios", 0);
+			if (!strcmp(label, button->desc)) {
+				active_low = 1;
+				break;
+			}
+		}
 
 		if (button->debounce_interval) {
 			error = gpiod_set_debounce(bdata->gpiod,
@@ -680,15 +696,18 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 			irq = gpiod_to_irq(bdata->gpiod);
 			if (irq < 0) {
 				error = irq;
-				dev_err_probe(dev, error,
-					      "Unable to get irq number for GPIO %d\n",
-					      button->gpio);
+				dev_err(dev,
+					"Unable to get irq number for GPIO %d, error %d\n",
+					button->gpio, error);
 				return error;
 			}
 			bdata->irq = irq;
 		}
 
 		INIT_DELAYED_WORK(&bdata->work, gpio_keys_gpio_work_func);
+		pr_err("[gpio-keys_nubia] setup() irq:%d, bdata->irq_s:%d, bdata->irq_n:%d,, button->irq:%d, active_low:%d",
+		       irq, bdata->irq, bdata->wakeirq, button->irq,
+		       active_low);
 
 		isr = gpio_keys_gpio_isr;
 		irqflags = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING;
@@ -773,14 +792,16 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 	if (bdata->gpion)
 		bdata->wakeirq = gpiod_to_irq(gpio_to_desc(bdata->gpion));
 
-	pr_err("[gpio-keys_nubia]%s gpio find done, gpios:%d gpion:%d\n",
+	mutex_init(&bdata->report_lock);
+
+	pr_err("[gpio-keys_nubia]%s gpio find done, gpios:%d gpion:%d.",
 	       "nb_setup_secondary", bdata->gpios, bdata->gpion);
 
 	if (bdata->wakeirq) {
 		error = devm_request_any_context_irq(dev, bdata->wakeirq, isr,
 						     irqflags, desc, bdata);
 		if (error < 0)
-			pr_err("[gpio-keys_nubia] %s bdata->irq_n request failed, but it is not necessary\n",
+			pr_err("[gpio-keys_nubia] %s bdata->irq_n request failed, but it is not necessary.",
 			       "gpio_keys_setup_key");
 	}
 
@@ -839,7 +860,7 @@ gpio_keys_get_devtree_pdata(struct device *dev)
 {
 	struct gpio_keys_platform_data *pdata;
 	struct gpio_keys_button *button;
-	int nbuttons, irq;
+	int nbuttons;
 
 	nbuttons = device_get_child_node_count(dev);
 	if (nbuttons == 0)
@@ -861,19 +882,8 @@ gpio_keys_get_devtree_pdata(struct device *dev)
 	device_property_read_string(dev, "label", &pdata->name);
 
 	device_for_each_child_node_scoped(dev, child) {
-		if (is_of_node(child)) {
-			irq = of_irq_get_byname(to_of_node(child), "irq");
-			if (irq > 0)
-				button->irq = irq;
-
-			irq = of_irq_get_byname(to_of_node(child), "wakeup");
-			if (irq > 0)
-				button->wakeirq = irq;
-
-			if (!button->irq && !button->wakeirq)
-				button->irq =
-					irq_of_parse_and_map(to_of_node(child), 0);
-		}
+		if (is_of_node(child))
+			button->irq = irq_of_parse_and_map(to_of_node(child), 0);
 
 		if (fwnode_property_read_u32(child, "linux,code",
 					     &button->code)) {
@@ -886,9 +896,6 @@ gpio_keys_get_devtree_pdata(struct device *dev)
 		if (fwnode_property_read_u32(child, "linux,input-type",
 					     &button->type))
 			button->type = EV_KEY;
-
-		fwnode_property_read_u32(child, "linux,input-value",
-					 (u32 *)&button->value);
 
 		button->wakeup =
 			fwnode_property_read_bool(child, "wakeup-source") ||
@@ -994,7 +1001,14 @@ static int gpio_keys_probe(struct platform_device *pdev)
 		error = gpio_keys_setup_key(pdev, input, ddata,
 					    button, i, child);
 		if (error) {
-			fwnode_handle_put(child);
+			if (child) {
+				pr_err("%s: failed to gpio_keys_setup_key!\n",
+				       __func__);
+				fwnode_handle_put(child);
+				return error;
+			}
+
+			pr_err("%s: failed to gpio_keys_setup_key!\n", __func__);
 			return error;
 		}
 

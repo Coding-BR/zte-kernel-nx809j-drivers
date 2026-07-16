@@ -103,11 +103,51 @@ def classify_extra_symbol(name: str) -> str:
 
 def source_has_function(path: Path, function_name: str) -> bool:
     text = path.read_text(encoding="utf-8", errors="replace")
-    return re.search(rf"\b{re.escape(function_name)}\s*\(", text) is not None
+    lexical_noise = re.compile(
+        r'//[^\r\n]*|/\*.*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'',
+        re.DOTALL,
+    )
+    code_only = lexical_noise.sub(" ", text)
+    return re.search(rf"\b{re.escape(function_name)}\b", code_only) is not None
+
+
+def read_reconstruction_map(path: Path) -> dict[str, dict[str, Any]]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    mappings = value.get("mappings") if isinstance(value, dict) else None
+    if not isinstance(mappings, list):
+        raise ValueError(f"{path}: expected an object with a mappings array")
+
+    by_function: dict[str, dict[str, Any]] = {}
+    for index, mapping in enumerate(mappings):
+        if not isinstance(mapping, dict):
+            raise ValueError(f"{path}: mappings[{index}] must be an object")
+        stock_function = mapping.get("stock_function")
+        if not isinstance(stock_function, str) or not stock_function:
+            raise ValueError(f"{path}: mappings[{index}] lacks stock_function")
+        if stock_function in by_function:
+            raise ValueError(f"{path}: duplicate mapping for {stock_function}")
+        by_function[stock_function] = mapping
+    return by_function
+
+
+def mapped_source_path(source_dir: Path, source_file: object) -> Path | None:
+    if not isinstance(source_file, str) or not source_file:
+        return None
+    relative = Path(source_file)
+    if relative.is_absolute() or ".." in relative.parts:
+        return None
+    candidate = (source_dir / relative).resolve()
+    try:
+        candidate.relative_to(source_dir.resolve())
+    except ValueError:
+        return None
+    return candidate if candidate.is_file() and candidate.suffix == ".c" else None
 
 
 def source_coverage(
-    source_dir: Path, ghidra_rows: list[dict[str, Any]]
+    source_dir: Path,
+    ghidra_rows: list[dict[str, Any]],
+    reviewed_mappings: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     source_files = {
         path.stem: path
@@ -120,12 +160,38 @@ def source_coverage(
     missing: list[dict[str, Any]] = []
     exact_count = 0
     token_count = 0
+    reconstruction_mapping_count = 0
+    reviewed_mapping_count = 0
+    mapped_not_exact_count = 0
+    mapped_source_units: set[str] = set()
 
     for row in ghidra_rows:
         name = str(row.get("name", ""))
-        source = source_files.get(name)
-        token_found = bool(source and source_has_function(source, name))
-        exact_count += int(source is not None)
+        mapping = (reviewed_mappings or {}).get(name)
+        exact_filename_match = False
+        if mapping:
+            source = mapped_source_path(source_dir, mapping.get("source_file"))
+            source_function = mapping.get("source_function")
+            source_function = source_function if isinstance(source_function, str) else ""
+            mapping_matches = source is not None and bool(source_function)
+            if source is not None:
+                mapped_source_units.add(source.stem)
+            reconstruction_mapping_count += int(mapping_matches)
+            reviewed_mapping_count += int(
+                mapping_matches and mapping.get("status") == "reviewed"
+            )
+            mapped_not_exact_count += int(
+                mapping_matches and mapping.get("status") == "mapped_not_exact"
+            )
+        else:
+            source = source_files.get(name)
+            source_function = name if source else ""
+            exact_filename_match = source is not None
+
+        token_found = bool(
+            source and source_function and source_has_function(source, source_function)
+        )
+        exact_count += int(exact_filename_match)
         token_count += int(token_found)
         record = {
             "stock_entry": row.get("entry"),
@@ -133,12 +199,14 @@ def source_coverage(
             "stock_body_bytes": row.get("body_bytes"),
             "stock_pseudocode": row.get("decompiled_file"),
             "source_file": source.name if source else "",
-            "source_function": name if source else "",
+            "source_function": source_function if source else "",
             "function_token_found": token_found,
-            "status": "todo",
-            "evidence": [
-                "automated filename/token match only; independent pseudocode and P-Code review required"
-            ] if source else [],
+            "status": mapping.get("status", "todo") if mapping else "todo",
+            "evidence": mapping.get("evidence", []) if mapping else (
+                [
+                    "automated filename/token match only; independent pseudocode and P-Code review required"
+                ] if source else []
+            ),
         }
         mappings.append(record)
         if not source or not token_found:
@@ -149,12 +217,15 @@ def source_coverage(
         for name, count in sorted(Counter(ghidra_names).items())
         if count > 1
     ]
-    extras = sorted(set(source_files) - ghidra_name_set)
+    extras = sorted(set(source_files) - ghidra_name_set - mapped_source_units)
     coverage = {
         "ghidra_function_rows": len(ghidra_rows),
         "ghidra_unique_function_names": len(ghidra_name_set),
         "source_units": len(source_files),
         "exact_filename_matches": exact_count,
+        "reconstruction_mapping_matches": reconstruction_mapping_count,
+        "reviewed_mapping_matches": reviewed_mapping_count,
+        "mapped_not_exact_matches": mapped_not_exact_count,
         "function_token_matches": token_count,
         "missing_or_unconfirmed": missing,
         "duplicate_ghidra_names": duplicates,
@@ -170,6 +241,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--ghidra-functions", type=Path, required=True)
     parser.add_argument("--source-dir", type=Path, required=True)
+    parser.add_argument(
+        "--reconstruction-map",
+        type=Path,
+        help="reviewed reconstruction_map.json used as read-only source traceability",
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--draft-map", type=Path)
     parser.add_argument("--driver")
@@ -186,7 +262,10 @@ def main() -> int:
     candidate = args.candidate.resolve()
     source_dir = args.source_dir.resolve()
     ghidra_path = args.ghidra_functions.resolve()
-    for path in (stock, candidate, ghidra_path, source_dir):
+    required_paths = [stock, candidate, ghidra_path, source_dir]
+    if args.reconstruction_map:
+        required_paths.append(args.reconstruction_map.resolve())
+    for path in required_paths:
         if not path.exists():
             raise FileNotFoundError(path)
 
@@ -211,7 +290,12 @@ def main() -> int:
     extra_classes = Counter(classify_extra_symbol(name) for name in extra_text)
 
     ghidra_rows = read_jsonl(ghidra_path)
-    coverage, mappings = source_coverage(source_dir, ghidra_rows)
+    reviewed_mappings = (
+        read_reconstruction_map(args.reconstruction_map.resolve())
+        if args.reconstruction_map
+        else None
+    )
+    coverage, mappings = source_coverage(source_dir, ghidra_rows, reviewed_mappings)
     checks = {
         "stock_text_symbols_present": not missing_text,
         "no_extra_text_symbols": not extra_text,

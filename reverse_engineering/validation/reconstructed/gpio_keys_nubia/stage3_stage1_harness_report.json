@@ -1,0 +1,70 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers:/work/workspace:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/tmp",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "cp /work/workspace/reverse_engineering/validation/reconstructed/gpio_keys_nubia/harness/stage1_harness.c . && /work/toolchains/clang-r536225/bin/clang -std=gnu11 -Wall -Wextra -Werror stage1_harness.c -o stage1_harness && ./stage1_harness"
+  ],
+  "covered_functions": [
+    "init_module",
+    "cleanup_module",
+    "gpio_keys_show_keys",
+    "gpio_keys_show_switches",
+    "gpio_keys_show_disabled_keys",
+    "gpio_keys_store_disabled_keys",
+    "gpio_keys_show_disabled_switches",
+    "gpio_keys_store_disabled_switches"
+  ],
+  "generated_utc": "2026-07-16T01:45:04.410869+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\gpio_keys_nubia\\harness\\stage1_harness.c",
+      "sha256": "4e1efbc5e8b5c6b1cf658f9c66b8ed345dd55d79bc23e95379b497c1d097c406",
+      "size": 8568
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\gpio_keys_nubia\\gpio_keys_nubia.c",
+      "sha256": "3bb640321e0b659bb855f4fe145a2dcf17fe7ab3d718776f856f8e3005f0d42f",
+      "size": 31812
+    }
+  ],
+  "limitations": [
+    "The harness models only the eight stage-one lifecycle and sysfs wrappers.",
+    "The actual candidate object is validated separately by KCFI and AArch64 assembly comparison.",
+    "No ADB, fastboot, insmod, rmmod, GPIO, IRQ, timer, MMIO, or smartphone operation is performed.",
+    "This report is not evidence of complete module or hardware parity."
+  ],
+  "mode": "offline_isolated_semantic_harness",
+  "passed": true,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "stderr": "",
+  "stdout": "PASS init_success\nPASS init_error_passthrough\nPASS exit_unregisters_driver\nPASS show_keys\nPASS show_switches\nPASS show_disabled_keys\nPASS show_disabled_switches\nPASS store_disabled_keys_success\nPASS store_disabled_keys_error\nPASS store_disabled_switches_success\nPASS store_disabled_switches_error\nSUMMARY 11/11\n",
+  "tests": {
+    "expected": 11,
+    "failed": [],
+    "passed": [
+      "init_success",
+      "init_error_passthrough",
+      "exit_unregisters_driver",
+      "show_keys",
+      "show_switches",
+      "show_disabled_keys",
+      "show_disabled_switches",
+      "store_disabled_keys_success",
+      "store_disabled_keys_error",
+      "store_disabled_switches_success",
+      "store_disabled_switches_error"
+    ],
+    "summary": "SUMMARY 11/11"
+  }
+}

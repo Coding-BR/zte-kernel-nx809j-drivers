@@ -123,6 +123,23 @@ def load_mapping(path: Path) -> dict[str, dict[str, Any]]:
     return by_identity
 
 
+def mapping_source_state(mapping: dict[str, Any]) -> tuple[str, str, str]:
+    mapping_status = mapping.get("status")
+    source_file = (
+        mapping.get("source_file", "")
+        if mapping_status in {"reviewed", "mapped_not_exact"}
+        else ""
+    )
+    source_function = mapping.get("source_function", "") if source_file else ""
+    if mapping_status == "reviewed" and source_file and source_function:
+        task_status = "READY_FOR_IMPLEMENTATION"
+    elif mapping_status == "mapped_not_exact" and source_file and source_function:
+        task_status = "MAPPED_NOT_EXACT"
+    else:
+        task_status = "WAITING_FOR_SOURCE_MAP"
+    return source_file, source_function, task_status
+
+
 def implementation_prompt(
     *,
     driver: str,
@@ -388,9 +405,7 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
         name = function["name"]
         identity = function_id(name, function.get("entry"))
         mapping = mappings.get(identity, mappings.get(name, {}))
-        source_file = mapping.get("source_file", "") if mapping.get("status") == "reviewed" else ""
-        source_function = mapping.get("source_function", "") if source_file else ""
-        status = "READY_FOR_IMPLEMENTATION" if source_file else "WAITING_FOR_SOURCE_MAP"
+        source_file, source_function, status = mapping_source_state(mapping)
         pseudocode_source = export / function.get("decompiled_file", "")
         pcode_source = export / function.get("pcode_file", "")
         if not pseudocode_source.is_file() or not pcode_source.is_file():
