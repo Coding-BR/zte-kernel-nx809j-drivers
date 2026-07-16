@@ -151,14 +151,14 @@ static int callback_set_value;
 static int callback_get_value;
 static int callback_result;
 
-static int test_set(const char *value, void *priv)
+static int test_set(const char *value, const void *priv)
 {
 	EXPECT(priv == &callback_set_value);
 	callback_set_value = atoi(value);
 	return callback_result;
 }
 
-static int test_get(char *buffer, void *priv)
+static int test_get(char *buffer, const void *priv)
 {
 	EXPECT(priv == &callback_set_value);
 	callback_get_value++;
@@ -166,10 +166,10 @@ static int test_get(char *buffer, void *priv)
 	return callback_result;
 }
 
-static int test_show(char *buffer, void *priv)
+static int test_show(char *buffer, const void *priv)
 { (void)buffer; (void)priv; return 0; }
 
-static struct zte_node_ops callback = {
+static struct zte_misc_ops callback = {
 	.name = "screen_on",
 	.set = test_set,
 	.get = test_get,
@@ -187,7 +187,7 @@ static void register_test_callback(void)
 
 static void test_registry_and_values(void)
 {
-	struct zte_node_ops unknown = { .name = "missing" };
+	struct zte_misc_ops unknown = { .name = "missing" };
 	char value[64];
 	struct kernel_param parameter = { .name = "screen_on" };
 
@@ -195,7 +195,7 @@ static void test_registry_and_values(void)
 	EXPECT(zte_misc_register_callback(NULL, NULL) == -EINVAL);
 	EXPECT(zte_misc_register_callback(&unknown, NULL) == -EINVAL);
 	register_test_callback();
-	EXPECT(zte_misc_register_callback(&callback, NULL) == -EBUSY);
+	EXPECT(zte_misc_register_callback(&callback, NULL) == -EFAULT);
 	EXPECT(zte_misc_get_node_val("screen_on") == 12);
 	EXPECT(zte_misc_get_node_val("") == -EINVAL);
 	EXPECT(zte_misc_get_node_val("missing") == -EINVAL);

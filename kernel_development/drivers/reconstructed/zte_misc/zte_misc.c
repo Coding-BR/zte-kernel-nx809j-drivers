@@ -34,11 +34,11 @@
  * Structures and Globals
  * ====================================================================== */
 
-struct zte_node_ops {
+struct zte_misc_ops {
 	const char *name;
-	int (*set)(const char *buf, void *priv);
-	int (*get)(char *buf, void *priv);
-	int (*show)(char *buf, void *priv);
+	int (*set)(const char *buf, const void *priv);
+	int (*get)(char *buf, const void *priv);
+	int (*show)(char *buf, const void *priv);
 	void *priv;
 };
 
@@ -48,14 +48,17 @@ struct zte_gpio_entry {
 };
 
 /* 16 entries max per probe logic limits */
-static struct zte_gpio_entry zte_gpios[16];
+struct zte_gpio_entry zte_gpios[16];
 
-static unsigned int zte_poweroff_charging;
+int zte_timezone;
+unsigned int zte_poweroff_charging;
 static bool zte_poweroff_charging_param;
-static int zte_timezone;
 
-/* Static table of ZTE node properties (callbacks registered dynamically) */
-static struct zte_node_ops node_ops_list[] = {
+int battery_vendor_id[] = { 2, 3, 4, 17, 10, 12, 15, 20, 20 };
+int resistance_kohm[] = { 10, 20, 33, 82, 180, 240, 330, 430, 470 };
+
+/* ZTE node property table populated by callbacks from peer vendor modules. */
+struct zte_misc_ops node_ops_list[] = {
 	{ "enable_to_shutdown" },
 	{ "enable_to_dump_reg" },
 	{ "demo_charging_policy" },
@@ -100,47 +103,50 @@ static struct zte_node_ops node_ops_list[] = {
  * Registered Callbacks & Node Values API
  * ====================================================================== */
 
-int zte_misc_register_callback(const void *cb_struct, void *priv)
+int zte_misc_register_callback(struct zte_misc_ops *callback, void *priv)
 {
 	const char *name;
+	int ret = 0;
 	int i;
 
-	if (!cb_struct)
+	if (!callback)
 		return -EINVAL;
 
-	name = *(const char **)cb_struct;
+	name = callback->name;
 	if (!name)
 		return -EINVAL;
 
 	for (i = 0; i < NODE_OPS_COUNT; i++) {
 		if (strncmp(node_ops_list[i].name, name, strlen(name)) == 0) {
-			if (strlen(node_ops_list[i].name) == strlen(name))
+			if (strlen(node_ops_list[i].name) == strlen(name)) {
+				pr_info("%s: name[%d]: %s\n", __func__, i,
+					node_ops_list[i].name);
+
+				if (node_ops_list[i].get || node_ops_list[i].set ||
+				    node_ops_list[i].show || node_ops_list[i].priv) {
+					pr_info("%s: register name[%d]: %s failed!!!\n",
+						__func__, i, node_ops_list[i].name);
+					ret = -EFAULT;
+				} else {
+					node_ops_list[i].get = callback->get;
+					node_ops_list[i].set = callback->set;
+					node_ops_list[i].show = callback->show;
+					node_ops_list[i].priv = priv ? priv :
+						callback->priv;
+				}
 				break;
+			}
 		}
 	}
 
-	if (i == NODE_OPS_COUNT)
+	if (i >= NODE_OPS_COUNT)
 		return -EINVAL;
 
-	pr_info("%s: name[%d]: %s\n", __func__, i, name);
-
-	/* Check if already registered */
-	if (node_ops_list[i].set || node_ops_list[i].get || node_ops_list[i].show) {
-		pr_info("%s: register name[%d]: %s failed!!!\n", __func__, i,
-			name);
-		return -EBUSY;
-	}
-
-	node_ops_list[i].set = *(int (**)(const char *, void *))((char *)cb_struct + 8);
-	node_ops_list[i].get = *(int (**)(char *, void *))((char *)cb_struct + 16);
-	node_ops_list[i].show = *(int (**)(char *, void *))((char *)cb_struct + 24);
-	node_ops_list[i].priv = priv ? priv : *(void **)((char *)cb_struct + 32);
-
-	return 0;
+	return ret;
 }
 EXPORT_SYMBOL(zte_misc_register_callback);
 
-long long zte_misc_get_node_val(const char *name)
+int zte_misc_get_node_val(const char *name)
 {
 	char buf[64];
 	size_t len;
@@ -191,7 +197,7 @@ int zte_misc_common_callback_get(char *buffer, const struct kernel_param *kp)
 	memset(name_buf, 0, sizeof(name_buf));
 	ret = sscanf(kp->name, "%s", name_buf);
 	if (ret != 1) {
-		pr_err("%s: sscanf failed\n", __func__);
+		pr_info("sscanf node_name failed\n");
 		return -EINVAL;
 	}
 
@@ -218,7 +224,7 @@ int zte_misc_common_callback_set(const char *value,
 	memset(name_buf, 0, sizeof(name_buf));
 	ret = sscanf(kp->name, "%s", name_buf);
 	if (ret != 1) {
-		pr_err("sscanf node_name failed\n");
+		pr_info("sscanf node_name failed\n");
 		return -EINVAL;
 	}
 
@@ -239,41 +245,51 @@ int zte_misc_common_callback_set(const char *value,
  * Battery Capacity & OEM Pack Helpers
  * ====================================================================== */
 
-int battery_vendor_id[] = { 2, 3, 4, 17, 10, 12, 15, 20, 20 };
-int resistance_kohm[] = { 10, 20, 33, 82, 180, 240, 330, 430, 470 };
-
 int battery_module_pack_vendor_get(char *buf, const struct kernel_param *kp)
 {
-	char resistance[10] = { 0 };
 	int temp_resistance;
-	int vendor = 0;
-	int i;
+	char resistance[10] = { 0 };
+	int vendor;
+	int i = 0;
 
 	if (kstrtoint(resistance, 10, &temp_resistance))
 		return -1;
 	pr_info("resistance_id: %d", temp_resistance);
 	temp_resistance /= 1000;
-	if (temp_resistance < resistance_kohm[0] * 91 / 100 ||
-	    temp_resistance > resistance_kohm[ARRAY_SIZE(resistance_kohm) - 1] * 109 / 100) {
+	if (temp_resistance >
+		    resistance_kohm[ARRAY_SIZE(resistance_kohm) - 1] * 109 / 100 ||
+	    temp_resistance < resistance_kohm[0] * 91 / 100) {
 		pr_err("resistance is out of range, %dkohm\n", temp_resistance);
 		return -1;
 	}
-	for (i = 0; i < ARRAY_SIZE(resistance_kohm) - 1; i++) {
-		if (temp_resistance > resistance_kohm[i] * 91 / 100 &&
-		    temp_resistance < resistance_kohm[i] * 109 / 100) {
-			vendor = battery_vendor_id[i];
-			break;
-		}
-	}
+
+	if (temp_resistance >= resistance_kohm[0] * 109 / 100 ||
+	    temp_resistance <= resistance_kohm[0] * 91 / 100)
+		goto check_remaining;
+
+matched:
+	vendor = battery_vendor_id[i];
+
+output:
 	pr_info("battery resistance is %dkohm, battery_vendor_id = %2d\n",
 		temp_resistance, vendor);
 	return snprintf(buf, PAGE_SIZE, "%2d", vendor);
+
+check_remaining:
+	for (i = 1; i < ARRAY_SIZE(resistance_kohm) - 1; i++) {
+		if (temp_resistance < resistance_kohm[i] * 109 / 100 &&
+		    temp_resistance > resistance_kohm[i] * 91 / 100)
+			goto matched;
+	}
+	vendor = 0;
+	goto output;
 }
 
 int zte_misc_get_design_capacity(char *buf, const struct kernel_param *kp)
 {
 	struct power_supply *psy;
 	union power_supply_propval val = { 0 };
+	int capacity = 0;
 	int ret;
 
 	psy = power_supply_get_by_name("battery");
@@ -283,21 +299,20 @@ int zte_misc_get_design_capacity(char *buf, const struct kernel_param *kp)
 			pr_err("failed to battery design capacity, error:%d.\n", ret);
 		power_supply_put(psy);
 
-		if (val.intval > 999999)
-			val.intval /= 1000;
+		capacity = val.intval > 999999 ? val.intval / 1000 : val.intval;
 	} else {
 		pr_err("bms_psy is NULL.\n");
 	}
 
-	pr_info("battery design capacity = %dmAh\n", val.intval);
-	return snprintf(buf, PAGE_SIZE, "%d", val.intval);
+	pr_info("battery design capacity = %dmAh\n", capacity);
+	return snprintf(buf, PAGE_SIZE, "%d", capacity);
 }
 
 /* ======================================================================
  * Timezone, Power-off Charging and GPIO Helpers
  * ====================================================================== */
 
-int zte_timezone_setup(const char *val)
+int __init zte_timezone_setup(const char *val)
 {
 	long long tz = 0;
 	int ret;
@@ -310,7 +325,7 @@ int zte_timezone_setup(const char *val)
 	return ret;
 }
 
-int zte_poweroff_charging_handle(const char *val)
+int __init zte_poweroff_charging_handle(const char *val)
 {
 	zte_poweroff_charging = (strncmp(val, "charger", 7) == 0);
 	pr_info("zte_misc: setup mode, %s[%d]\n", val,
@@ -356,7 +371,7 @@ static const struct kernel_param_ops design_capacity_param_ops = {
 module_param_cb(design_capacity, &design_capacity_param_ops, NULL, 0444);
 
 /* Remaining parameters mapped to the node_ops get/set mechanisms */
-struct kernel_param_ops zte_misc_common_callback = {
+static struct kernel_param_ops zte_misc_common_callback = {
 	.set = zte_misc_common_callback_set,
 	.get = zte_misc_common_callback_get,
 };
@@ -408,43 +423,57 @@ DEFINE_NODE_PARAM(zlog_enable_test);
 
 static int zte_misc_probe(struct platform_device *pdev)
 {
-	struct device_node *np = pdev->dev.of_node;
+	pr_info("%s into\n", __func__);
+
+	/* Preserve the stock ordering of the entry trace and scratch setup. */
+	struct device_node *np;
 	struct device_node *child;
 	struct device_node *chosen;
+	struct zte_gpio_entry *gpio_base;
+	struct zte_gpio_entry *entry;
 	const char *bootargs = NULL;
+	const char *p;
 	char mode_buf[128] = { 0 };
-	int gpio_idx = -1;
-
-	pr_info("%s into\n", __func__);
+	unsigned int gpio_idx = -1;
 
 	/* Parse kmparam.mode from chosen node bootargs */
 	chosen = of_find_node_opts_by_path("/chosen", NULL);
-	if (chosen) {
-		if (of_property_read_string(chosen, "bootargs", &bootargs) == 0) {
-			const char *p = strstr(bootargs, "kmparam.mode=");
-			if (p) {
-				sscanf(p, "kmparam.mode=%s", mode_buf);
-				zte_poweroff_charging_param =
-					!strcmp(mode_buf, "charger");
-				pr_info("zte_misc: poweroff_charging_param: %d, val_buf=%s\n",
-					zte_poweroff_charging_param, mode_buf);
-			} else {
-				pr_err("zte_misc: can't find kmparam.mode\n");
-			}
-		} else {
-			pr_err("zte_misc: %s get bootargs failed!\n",
-			       "zte_poweroff_charging_handle_init");
-		}
-	} else {
+	if (!chosen) {
 		pr_err("zte_misc: %s find chosen failed!\n",
 		       "zte_poweroff_charging_handle_init");
+		goto bootargs_done;
 	}
 
+	if (of_property_read_string(chosen, "bootargs", &bootargs) < 0) {
+		pr_err("zte_misc: %s get bootargs failed!\n",
+		       "zte_poweroff_charging_handle_init");
+		goto bootargs_done;
+	}
+	goto parse_bootargs;
+
+bootargs_done:
 	pr_info("zte_misc: translate hardware pin to system pin\n");
+	np = pdev->dev.of_node;
 	if (!np)
 		return -ENODEV;
+	goto parse_gpios;
+
+parse_bootargs:
+	p = strstr(bootargs, "kmparam.mode=");
+	if (p) {
+		sscanf(p, "kmparam.mode=%s", mode_buf);
+		zte_poweroff_charging_param =
+			!strncmp(mode_buf, "charger", 7);
+		pr_info("zte_misc: poweroff_charging_param: %d, val_buf=%s\n",
+			zte_poweroff_charging_param, mode_buf);
+	} else {
+		pr_err("zte_misc: can't find kmparam.mode\n");
+	}
+	goto bootargs_done;
 
 	/* Parse child nodes for GPIO mappings */
+parse_gpios:
+	gpio_base = zte_gpios;
 	for_each_child_of_node(np, child) {
 		const char *label;
 		int gpio;
@@ -461,11 +490,12 @@ static int zte_misc_probe(struct platform_device *pdev)
 
 		gpio_idx++;
 		label = of_get_property(child, "label", NULL);
-		zte_gpios[gpio_idx].label = kstrdup(label, GFP_KERNEL);
+		entry = gpio_base + gpio_idx;
+		entry->label = kstrdup(label, GFP_KERNEL);
 		gpio = of_get_named_gpio(child, "zte-misc", 0);
-		zte_gpios[gpio_idx].gpio = gpio;
+		entry->gpio = gpio;
 		pr_info("zte_misc: sys_number=%d name=%s\n", gpio,
-			zte_gpios[gpio_idx].label);
+			entry->label);
 	}
 
 	pr_info("%s end\n", __func__);
@@ -491,9 +521,9 @@ static struct platform_driver zte_misc_device_driver = {
 	},
 };
 
-static int __init zte_misc_init(void)
+int __init zte_misc_init(void)
 {
-	pr_info("%s\n", __func__);
+	pr_info("%s into\n", __func__);
 	return platform_driver_register(&zte_misc_device_driver);
 }
 
