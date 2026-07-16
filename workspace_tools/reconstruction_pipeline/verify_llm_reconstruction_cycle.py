@@ -220,8 +220,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     curated_root = args.curated_root.resolve()
-    engineering_root = curated_root.parent
-    workspace_root = engineering_root.parent
+    if curated_root.name == "reconstructed" and curated_root.parent.name == "drivers":
+        workspace_root = curated_root.parents[2]
+        engineering_root = workspace_root
+    else:
+        engineering_root = curated_root.parent
+        workspace_root = engineering_root.parent
     run_root = (args.run_root or find_run(engineering_root)).resolve()
     driver_root = curated_root / args.driver
     evidence_root = args.evidence_root.resolve() / args.driver

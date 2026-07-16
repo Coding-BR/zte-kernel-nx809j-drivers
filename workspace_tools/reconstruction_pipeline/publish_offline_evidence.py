@@ -63,6 +63,9 @@ def publish_driver(
         }
     stock = run_root / "01_acquisition" / "modules" / f"{driver}.ko"
     ghidra_source = run_root / "03_ghidra" / "exports" / f"{driver}.ko"
+    transition_source = (
+        run_root / "04_documents" / f"{driver}.ko" / "DOCUMENTO_TRANSICAO.md"
+    )
     assembly_source = (
         engineering_root / "validation" / driver / "offline_static" / "stock_assembly"
     )
@@ -91,6 +94,19 @@ def publish_driver(
             previous_manifest = {}
     replace_tree(ghidra_source, destination / "ghidra_stock", repo_root)
     replace_tree(assembly_source, destination / "stock_assembly", repo_root)
+    transition_target = (
+        repo_root
+        / "kernel_development"
+        / "drivers"
+        / "reconstructed"
+        / driver
+        / "DOCUMENTO_TRANSICAO.md"
+    )
+    ensure_within(transition_target, repo_root)
+    if not transition_source.is_file():
+        raise ValueError(f"transition document is missing: {transition_source}")
+    transition_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(transition_source, transition_target)
     records = evidence_records(destination)
     ghidra_functions = audit.read_jsonl(destination / "ghidra_stock" / "functions.jsonl")
     assembly_records = audit.read_json(
@@ -108,7 +124,11 @@ def publish_driver(
         },
         "ghidra_function_count": len(ghidra_functions),
         "assembly_function_count": len(assembly_records),
-        "derived_file_count": len(records),
+        "derived_file_count": len(records) + 1,
+        "transition_document": {
+            "path": transition_target.relative_to(repo_root).as_posix(),
+            "sha256": audit.sha256_file(transition_target),
+        },
         "derived_files": records,
     }
     previous_without_time = {
@@ -132,7 +152,8 @@ def publish_driver(
         "stock_sha256": manifest["stock"]["sha256"],
         "ghidra_function_count": len(ghidra_functions),
         "assembly_function_count": len(assembly_records),
-        "derived_file_count": len(records) + 1,
+        "derived_file_count": len(records) + 2,
+        "transition_document": str(transition_target),
     }
 
 

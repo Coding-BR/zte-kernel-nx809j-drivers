@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "gpio_keys_nubia",
+  "mode": "offline_only",
+  "risk": [
+    "The source scaffold is incomplete and must not replace the stock module.",
+    "Incorrect gpio_button_data offsets can corrupt kernel memory.",
+    "GPIO, IRQ and timer behavior cannot be certified by static evidence alone."
+  ],
+  "rollback": [
+    "No device or partition operation is permitted during offline stages.",
+    "Build outputs remain outside the canonical source directory.",
+    "A future hardware test must preserve the stock module and define unbind, unload and reboot recovery before execution."
+  ],
+  "prohibited_operations": [
+    "adb",
+    "fastboot",
+    "insmod",
+    "rmmod",
+    "partition writes"
+  ],
+  "promotion_rule": "Require all 24 microtasks, KCFI, Assembly, imports, ABI, independent review and controlled hardware validation to pass."
+}

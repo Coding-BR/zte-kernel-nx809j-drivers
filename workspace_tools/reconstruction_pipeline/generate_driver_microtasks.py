@@ -239,6 +239,76 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
 
 
+def seed_reconstruction_map(
+    driver_root: Path,
+    driver: str,
+    stock_sha256: str,
+    published_export: PurePosixPath,
+    functions: list[dict[str, Any]],
+) -> None:
+    """Create an explicit unmapped baseline without inventing source parity."""
+    path = driver_root / "reconstruction_map.json"
+    if path.exists():
+        return
+    mappings = []
+    for function in functions:
+        mappings.append(
+            {
+                "stock_function": function["name"],
+                "stock_entry": function.get("entry"),
+                "source_file": "",
+                "source_function": "",
+                "evidence": [
+                    (published_export / function.get("decompiled_file", "")).as_posix(),
+                    (published_export / function.get("pcode_file", "")).as_posix(),
+                ],
+                "status": "unmapped",
+            }
+        )
+    write_json(
+        path,
+        {
+            "schema_version": "1.0",
+            "driver": driver,
+            "stock_sha256": stock_sha256,
+            "ghidra_export": published_export.as_posix(),
+            "status": "INCOMPLETO",
+            "mappings": mappings,
+        },
+    )
+
+
+def seed_status(
+    driver_root: Path,
+    driver: str,
+    stock_sha256: str,
+    function_count: int,
+) -> None:
+    """Document the evidence-only stage without overwriting later status work."""
+    path = driver_root / "STATUS.md"
+    if path.exists():
+        return
+    lines = [
+        "# Status: `" + driver + "`",
+        "",
+        "Estado: **EVIDENCE_READY - reconstrucao de fonte ainda nao iniciada**.",
+        "",
+        "| Item | Estado | Evidencia/Bloqueador |",
+        "|---|---|---|",
+        "| Stock | IDENTIFICADO | SHA-256 `" + stock_sha256 + "`; binario OEM nao publicado |",
+        "| Ghidra | PASS | " + str(function_count) + " funcoes com pseudocodigo e P-Code |",
+        "| Assembly AArch64 | PASS | " + str(function_count) + " funcoes materializadas |",
+        "| Mapa stock -> fonte | INCOMPLETO | todas as funcoes permanecem `unmapped` |",
+        "| Fonte candidato | AUSENTE | nenhum `.c` foi promovido |",
+        "| Build/KMI/KCFI/testes | BLOQUEADO | depende do fonte candidato e do mapa revisado |",
+        "| Hardware | DEFERRED | fora deste ciclo offline |",
+        "",
+        "Nao e permitido declarar este driver reconstruido ou validado enquanto as microtarefas nao tiverem evidencia hashada de compilacao, KCFI e teste.",
+        "",
+    ]
+    path.write_text(chr(10).join(lines), encoding="utf-8")
+
+
 def make_blocked(driver: str, reason: str) -> dict[str, Any]:
     return {
         "schema_version": "1.0",
@@ -303,9 +373,18 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
         except (OSError, ValueError, json.JSONDecodeError):
             previous_tasks = {}
 
+    functions = read_functions(function_path)
+    seed_reconstruction_map(
+        driver_root,
+        driver,
+        stock_sha256,
+        published_export,
+        functions,
+    )
+    seed_status(driver_root, driver, stock_sha256, len(functions))
     mappings = load_mapping(driver_root / "reconstruction_map.json")
     tasks = []
-    for index, function in enumerate(read_functions(function_path), 1):
+    for index, function in enumerate(functions, 1):
         name = function["name"]
         identity = function_id(name, function.get("entry"))
         mapping = mappings.get(identity, mappings.get(name, {}))
