@@ -1,10 +1,11 @@
-__int64 __fastcall tpd_init_tpinfo(__int64 a1, __int64 a2, __int64 a3)
+int tpd_init_tpinfo(struct ztp_device *cdev)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v4; // x20
   int v6; // w8
 
   v4 = *(_QWORD *)(a1 + 3072);
-  printk(unk_34878, "tpd_init_tpinfo", a3);
+  printk(unk_34878, "tpd_init_tpinfo");
   *(_DWORD *)(a1 + 2872) = 1;
   strcpy((char *)(a1 + 2912), "synaptics_3910V");
   v6 = *(_DWORD *)(*(_QWORD *)v4 + 12LL);

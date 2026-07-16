@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_get_singleaodgesture(__int64 a1)
+int tpd_get_singleaodgesture(struct ztp_device *cdev)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v2; // x2
 
   v2 = *(unsigned int *)(*(_QWORD *)(a1 + 3072) + 1460LL);

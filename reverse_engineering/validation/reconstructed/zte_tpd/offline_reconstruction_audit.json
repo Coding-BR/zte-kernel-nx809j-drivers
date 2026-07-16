@@ -5,7 +5,7 @@
   },
   "drivers": [
     {
-      "candidate_sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
+      "candidate_sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
       "driver": "zte_tpd",
       "gates": [
         {
@@ -14,8 +14,8 @@
             "candidate": {
               "exists": true,
               "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
-              "sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
-              "size": 12769952
+              "sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
+              "size": 12854712
             }
           },
           "evidence": [
@@ -77,7 +77,7 @@
         {
           "blockers": [],
           "details": {
-            "candidate_sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
+            "candidate_sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
             "checks": [
               "compile-time AArch64 layout assertions passed with clang-r536225 against the configured GKI tree",
               "stock syna_spi_device ELF size is 0x3f0",
@@ -85,18 +85,20 @@
               "platform_device.dev and device.release offsets reproduce the stock +0x338 access",
               "partial Synaptics TCM overlay offsets compile without implicit packing"
             ],
-            "document": "curated/zte_tpd/DOCUMENTO_TRANSICAO.md",
+            "document": "kernel_development/drivers/reconstructed/zte_tpd/DOCUMENTO_TRANSICAO.md",
             "driver": "zte_tpd",
             "evidence": [
-              "validation/zte_tpd/header_layout_probe.json",
-              "curated/zte_tpd/zte_tpd_tcm_layout.h",
-              "validation/zte_tpd/kcfi_kmi_exact_final_comparison.json",
-              "validation/zte_tpd/driver_audit_static_final.json"
+              "reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json",
+              "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_tcm_layout.h",
+              "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
+              "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_static_final.json"
             ],
             "hardware_blocker": "Controlled NX809J validation is intentionally outside this offline cycle",
             "hardware_status": "DEFERRED",
-            "header_probe": "validation/zte_tpd/header_layout_probe.json",
+            "header_probe": "reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json",
             "independent_review": "NOT_PERFORMED",
+            "local_document": "curated/zte_tpd/DOCUMENTO_TRANSICAO.md",
+            "local_header_probe": "validation/zte_tpd/header_layout_probe.json",
             "schema_version": "1.0",
             "semantic_equivalence": "UNPROVEN",
             "status": "PASS",
@@ -116,13 +118,6 @@
             "checked_tasks": 367,
             "driver": "zte_tpd",
             "failures": [
-              "001_tpd_zlog_register: status is not PASS",
-              "002_tpd_zlog_record_notify: status is not PASS",
-              "003_tpd_zlog_check: status is not PASS",
-              "004_zlog_register_work_init: status is not PASS",
-              "005_zlog_register_work: status is not PASS",
-              "006_zlog_register_work_deinit: status is not PASS",
-              "007_tpd_zlog_init: status is not PASS",
               "008_get_tp_algo_item_id: status is not PASS",
               "009_get_tp_chip_id: status is not PASS",
               "010_get_lcd_panel_name: status is not PASS",
@@ -198,8 +193,6 @@
               "080_set_fake_sleep: status is not PASS",
               "081_get_screen_off_awake: status is not PASS",
               "082_set_screen_off_awake: status is not PASS",
-              "083_tp_zlog_debug_read: status is not PASS",
-              "084_tp_zlog_debug_write: status is not PASS",
               "085_ghost_debug_read: status is not PASS",
               "086_ghost_debug_write: status is not PASS",
               "087_tp_bbat_test_read: status is not PASS",
@@ -249,8 +242,6 @@
               "131_ufp_get_lcdstate: status is not PASS",
               "132_ufp_report_gesture_uevent: status is not PASS",
               "133_report_ufp_uevent: status is not PASS",
-              "134_one_key_report: status is not PASS",
-              "135_uf_touch_report: status is not PASS",
               "136_ufp_report_lcd_state: status is not PASS",
               "137_ufp_notifier_cb: status is not PASS",
               "138_ufp_mac_init: status is not PASS",
@@ -398,7 +389,6 @@
               "280_syna_tcm_set_static_config: status is not PASS",
               "281_syna_tcm_get_dynamic_config: status is not PASS",
               "282_syna_tcm_set_dynamic_config: status is not PASS",
-              "283_syna_tcm_set_game_partition_config: status is not PASS",
               "284_syna_tcm_rezero: status is not PASS",
               "285_syna_tcm_sleep: status is not PASS",
               "286_syna_tcm_get_features: status is not PASS",
@@ -445,46 +435,20 @@
               "327_syna_tpd_register_fw_class: status is not PASS",
               "328_syna_work_charger_detect_work: status is not PASS",
               "329_tpd_init_tpinfo: status is not PASS",
-              "330_tpd_get_wakegesture: status is not PASS",
-              "331_tpd_enable_wakegesture: status is not PASS",
-              "332_tpd_get_singlegamegesture: status is not PASS",
-              "333_tpd_set_singlegamegesture: status is not PASS",
-              "334_tpd_get_singleaodgesture: status is not PASS",
-              "335_tpd_set_singleaodgesture: status is not PASS",
-              "336_tpd_get_singlefpgesture: status is not PASS",
-              "337_tpd_set_singlefpgesture: status is not PASS",
-              "338_tpd_set_one_key: status is not PASS",
-              "339_tpd_get_one_key: status is not PASS",
               "340_tpd_test_cmd_store: status is not PASS",
-              "341_tpd_test_cmd_show: status is not PASS",
-              "342_tpd_get_tp_report_rate: status is not PASS",
               "343_tpd_set_tp_report_rate: status is not PASS",
-              "344_tpd_get_sensibility_level: status is not PASS",
-              "345_tpd_set_sensibility_level: status is not PASS",
-              "346_tpd_get_follow_hand_level: status is not PASS",
               "347_tpd_set_follow_hand_level: status is not PASS",
-              "348_tpd_get_stability_level: status is not PASS",
               "349_tpd_set_stability_level: status is not PASS",
-              "350_tpd_get_rotation_limit_level: status is not PASS",
               "351_tpd_set_rotation_limit_level: status is not PASS",
               "352_tpd_set_display_rotation: status is not PASS",
-              "353_tpd_get_play_game: status is not PASS",
               "354_tpd_set_play_game: status is not PASS",
-              "355_tpd_set_game_partition: status is not PASS",
-              "356_tpd_get_frame_data: status is not PASS",
               "357_tpd_set_frame_data: status is not PASS",
-              "358_tpd_get_palm_mode: status is not PASS",
-              "359_tpd_set_palm_mode: status is not PASS",
               "360_syna_ghost_check_reset: status is not PASS",
-              "361_tpd_set_fake_sleep: status is not PASS",
-              "362_tpd_get_fake_sleep: status is not PASS",
-              "363_tpd_set_screen_off_awake: status is not PASS",
-              "364_tpd_get_screen_off_awake: status is not PASS",
               "365_syna_charger_notify_call: status is not PASS",
               "366_init_module: status is not PASS",
               "367_cleanup_module: status is not PASS"
             ],
-            "manifest": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\MICROTASKS.json",
+            "manifest": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\MICROTASKS.json",
             "passed": false,
             "schema_version": "1.0"
           },
@@ -502,7 +466,7 @@
           },
           "evidence": [
             "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_stock_kmi_exact_final.json",
-            "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_kmi_exact_final_comparison.json"
+            "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_direct_surface_final_comparison.json"
           ],
           "name": "O8 KCFI",
           "status": "PASS"
@@ -566,7 +530,7 @@
                       "modules"
                     ],
                     "returncode": 0,
-                    "stderr": "make[2]: Warning: File '/work/validation/zte_tpd/zte_tpd.mod.c' has modification time 0.091 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n",
+                    "stderr": "make[2]: Warning: File '/work/validation/zte_tpd/modules.order' has modification time 0.13 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\nmake[2]: Warning: File '/work/validation/zte_tpd/zte_tpd.mod.c' has modification time 0.2 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n",
                     "stdout": "tion/zte_tpd/tp_wake_gesture_read.o\n  CC [M]  /work/validation/zte_tpd/tp_wake_gesture_write.o\n  CC [M]  /work/validation/zte_tpd/tp_zlog_debug_read.o\n  CC [M]  /work/validation/zte_tpd/tp_zlog_debug_write.o\n  CC [M]  /work/validation/zte_tpd/tpd_clean_all_event.o\n  CC [M]  /work/validation/zte_tpd/tpd_copy_to_tp_firmware_data.o\n  CC [M]  /work/validation/zte_tpd/tpd_enable_wakegesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_fake_sleep.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_follow_hand_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_frame_data.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_one_key.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_palm_mode.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_play_game.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_rotation_limit_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_screen_off_awake.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_sensibility_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_singleaodgesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_singlefpgesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_singlegamegesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_stability_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_tp_report_rate.o\n  CC [M]  /work/validation/zte_tpd/tpd_get_wakegesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_goodix_ts_resume.o\n  CC [M]  /work/validation/zte_tpd/tpd_goodix_ts_suspend.o\n  CC [M]  /work/validation/zte_tpd/tpd_id0_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id1_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id2_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id3_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id4_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id5_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id6_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id7_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id8_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_id9_report_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_init_tpinfo.o\n  CC [M]  /work/validation/zte_tpd/tpd_probe_work_deinit.o\n  CC [M]  /work/validation/zte_tpd/tpd_probe_work_init.o\n  CC [M]  /work/validation/zte_tpd/tpd_proc_deinit.o\n  CC [M]  /work/validation/zte_tpd/tpd_report_uevent.o\n  CC [M]  /work/validation/zte_tpd/tpd_report_work_deinit.o\n  CC [M]  /work/validation/zte_tpd/tpd_report_work_init.o\n  CC [M]  /work/validation/zte_tpd/tpd_reset_fw_data_pos_and_size.o\n  CC [M]  /work/validation/zte_tpd/tpd_reset_gpio_output.o\n  CC [M]  /work/validation/zte_tpd/tpd_resume_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_resume_work_deinit.o\n  CC [M]  /work/validation/zte_tpd/tpd_resume_work_init.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_display_rotation.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_fake_sleep.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_follow_hand_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_frame_data.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_game_partition.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_one_key.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_palm_mode.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_play_game.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_rotation_limit_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_screen_off_awake.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_sensibility_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_singleaodgesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_singlefpgesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_singlegamegesture.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_stability_level.o\n  CC [M]  /work/validation/zte_tpd/tpd_set_tp_report_rate.o\n  CC [M]  /work/validation/zte_tpd/tpd_suspend_work.o\n  CC [M]  /work/validation/zte_tpd/tpd_sysfs_fwimage_show.o\n  CC [M]  /work/validation/zte_tpd/tpd_sysfs_fwimage_store.o\n  CC [M]  /work/validation/zte_tpd/tpd_test_cmd_show.o\n  CC [M]  /work/validation/zte_tpd/tpd_test_cmd_store.o\n  CC [M]  /work/validation/zte_tpd/tpd_touch_press.o\n  CC [M]  /work/validation/zte_tpd/tpd_touch_release.o\n  CC [M]  /work/validation/zte_tpd/tpd_touch_report.o\n  CC [M]  /work/validation/zte_tpd/tpd_workqueue_deinit.o\n  CC [M]  /work/validation/zte_tpd/tpd_workqueue_init.o\n  CC [M]  /work/validation/zte_tpd/tpd_zlog_check.o\n  CC [M]  /work/validation/zte_tpd/tpd_zlog_init.o\n  CC [M]  /work/validation/zte_tpd/tpd_zlog_record_notify.o\n  CC [M]  /work/validation/zte_tpd/tpd_zlog_register.o\n  CC [M]  /work/validation/zte_tpd/tpfwupgrade_store.o\n  CC [M]  /work/validation/zte_tpd/uf_touch_report.o\n  CC [M]  /work/validation/zte_tpd/ufp_get_lcdstate.o\n  CC [M]  /work/validation/zte_tpd/ufp_mac_exit.o\n  CC [M]  /work/validation/zte_tpd/ufp_mac_init.o\n  CC [M]  /work/validation/zte_tpd/ufp_notifier_cb.o\n  CC [M]  /work/validation/zte_tpd/ufp_report_gesture_uevent.o\n  CC [M]  /work/validation/zte_tpd/ufp_report_lcd_state.o\n  CC [M]  /work/validation/zte_tpd/ufp_report_lcd_state_delayed_work.o\n  CC [M]  /work/validation/zte_tpd/ufp_report_lcd_state_work.o\n  CC [M]  /work/validation/zte_tpd/ufp_single_tap_work.o\n  CC [M]  /work/validation/zte_tpd/zlog_register_work.o\n  CC [M]  /work/validation/zte_tpd/zlog_register_work_deinit.o\n  CC [M]  /work/validation/zte_tpd/zlog_register_work_init.o\n  CC [M]  /work/validation/zte_tpd/zte_reset_frame_list.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_deinit.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_init.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_pdev_register.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_pdev_unregister.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_probe.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_remove.o\n  CC [M]  /work/validation/zte_tpd/zte_touch_shutdown.o\n  CC [M]  /work/validation/zte_tpd/ztp_probe_work.o\n  LD [M]  /work/validation/zte_tpd/zte_tpd.o\n  MODPOST /work/validation/zte_tpd/Module.symvers\n  CC [M]  /work/validation/zte_tpd/zte_tpd.mod.o\n  CC [M]  /work/validation/zte_tpd/.module-common.o\n  LD [M]  /work/validation/zte_tpd/zte_tpd.ko\n  BTF [M] /work/validation/zte_tpd/zte_tpd.ko\n"
                   },
                   "clean_first": {
@@ -629,24 +593,24 @@
                 "first_build": {
                   "exists": true,
                   "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_tpd\\zte_tpd.ko",
-                  "sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
-                  "size": 12769952
+                  "sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
+                  "size": 12854712
                 },
                 "passed": true,
                 "reproducible": true,
                 "second_build": {
                   "exists": true,
                   "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_tpd\\zte_tpd.ko",
-                  "sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
-                  "size": 12769952
+                  "sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
+                  "size": 12854712
                 },
                 "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_tpd"
               },
               "candidate": {
                 "exists": true,
-                "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
-                "sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
-                "size": 12769952
+                "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_tpd.ko",
+                "sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
+                "size": 12854712
               },
               "checks": {
                 "aarch64_rel": true,
@@ -1431,7 +1395,7 @@
                 "exists": true,
                 "mapped_functions": 358,
                 "passed": true,
-                "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\reconstruction_map.json",
+                "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\reconstruction_map.json",
                 "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
                 "unmapped_functions": []
               },
@@ -1447,8 +1411,7 @@
         },
         {
           "blockers": [
-            "missing independent_review.json",
-            "review targets another candidate SHA-256"
+            "missing independent_review.json"
           ],
           "details": {},
           "evidence": [
@@ -1476,7 +1439,7 @@
     }
   ],
   "engineering_root": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia",
-  "generated_utc": "2026-07-15T21:16:49.942006+00:00",
+  "generated_utc": "2026-07-16T22:59:46.308449+00:00",
   "mode": "offline_read_only",
   "schema_version": "1.0",
   "summary": {

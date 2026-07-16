@@ -1,0 +1,66 @@
+{
+  "build": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\work:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/ztp_probe_work",
+      "kcfi_batch.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC      /work/probe/ztp_probe_work/kcfi_batch.o\n"
+  },
+  "candidate_count": 25,
+  "config": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\work_callback_kcfi_candidates.json",
+  "config_sha256": "0fb8bc32a5b14aa56bca32af0158b50186e92514e52c220d29479e8bd20a38fa",
+  "generated_utc": "2026-07-16T22:37:51.625080+00:00",
+  "matches": [
+    {
+      "candidate": {
+        "label": "void (struct work_struct * work)",
+        "parameters": [
+          {
+            "name": "work",
+            "type": "struct work_struct *"
+          }
+        ],
+        "return_type": "void",
+        "touch_struct_members": false
+      },
+      "index": 0,
+      "kcfi": "0xa607748c",
+      "kcfi_match": true,
+      "label": "void (struct work_struct * work)"
+    }
+  ],
+  "mode": "offline_kcfi_batch_oracle",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\work\\ztp_probe_work\\kcfi_batch.o",
+    "sha256": "431f3427d6062d086bef3492c72d41838b5c1b2bdc9fb408049d7e4dc3c27207",
+    "size": 9232
+  },
+  "passed": true,
+  "schema_version": "1.0",
+  "source": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\work\\ztp_probe_work\\kcfi_batch.c",
+    "sha256": "47da22f4257a38aa923a398c9af3941f37b9b6ab410abe90758490f599049ba3"
+  },
+  "symbol": "ztp_probe_work",
+  "target_kcfi": "0xa607748c"
+}

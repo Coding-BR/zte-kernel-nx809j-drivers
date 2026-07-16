@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_set_rotation_limit_level(__int64 a1, int a2, __int64 a3)
+int tpd_set_rotation_limit_level(struct ztp_device *cdev, int a2)
 {
+  unsigned long a1 = (unsigned long)cdev;
   _QWORD *v4; // x19
   __int64 v6; // x9
   __int64 v7; // x2
@@ -9,9 +10,9 @@ __int64 __fastcall tpd_set_rotation_limit_level(__int64 a1, int a2, __int64 a3)
   void *v11; // x0
 
   v4 = *(_QWORD **)(a1 + 3072);
-  printk(unk_34878, "tpd_set_rotation_limit_level", a3);
+  printk(unk_34878, "tpd_set_rotation_limit_level");
   if ( !v4 )
-    return 4294967274LL;
+    return -22;
   v6 = v4[78];
   if ( *(_DWORD *)(v6 + 184) && (*(_BYTE *)(v6 + 188) & 1) != 0 )
     v7 = 0;

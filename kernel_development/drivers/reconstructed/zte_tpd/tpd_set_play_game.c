@@ -1,12 +1,13 @@
-__int64 __fastcall tpd_set_play_game(__int64 a1, unsigned int a2, __int64 a3)
+int tpd_set_play_game(struct ztp_device *cdev, int a2)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v4; // x20
   __int64 v6; // x9
   __int64 v7; // x2
   void *v9; // x0
 
   v4 = *(_QWORD *)(a1 + 3072);
-  printk(unk_34878, "tpd_set_play_game", a3);
+  printk(unk_34878, "tpd_set_play_game");
   if ( v4 )
   {
     v6 = *(_QWORD *)(v4 + 624);
@@ -35,5 +36,5 @@ __int64 __fastcall tpd_set_play_game(__int64 a1, unsigned int a2, __int64 a3)
     printk(v9, "tpd_set_play_game", v7);
     return *(unsigned int *)(a1 + 16);
   }
-  return 4294967274LL;
+  return -22;
 }

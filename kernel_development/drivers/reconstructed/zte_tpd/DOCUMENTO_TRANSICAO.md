@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8`
+Candidato vinculado: `24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -140,5 +140,6 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual e `READY_FOR_IMPLEMENTATION` para 367 tarefas. Somente 17 funcoes
-possuem harness direto; logo, nenhuma promocao global para `100%` e permitida.
+O estado atual possui 38 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+329 tarefas `READY_FOR_IMPLEMENTATION`. Existem 38 funcoes com harness direto;
+logo, nenhuma promocao global para `100%` e permitida.

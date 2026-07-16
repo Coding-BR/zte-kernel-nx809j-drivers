@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_get_tp_report_rate(__int64 a1)
+int tpd_get_tp_report_rate(struct ztp_device *cdev)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v1; // x9
 
   v1 = *(_QWORD *)(a1 + 3072);

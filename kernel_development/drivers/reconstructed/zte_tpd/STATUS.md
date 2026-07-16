@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-15
+## Estado Atual - 2026-07-16
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE` (`8/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8`
-- **Candidato:** `12769952` bytes
+- **Candidato SHA-256:** `24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6`
+- **Candidato:** `12854712` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
@@ -23,13 +23,12 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie verificada `14/14`;
+- O8 KCFI da superficie selecionada `50/50`;
 - O8/O9 build duplo, KMI e paridade estatica.
 
 INCOMPLETE:
 
-- O6: as `367` microtarefas estao mapeadas, mas somente 17 funcoes possuem
-  cobertura direta nos harnesses locais;
+- O6: `38/367` microtarefas possuem build, KCFI e teste direto atestados;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -43,7 +42,10 @@ Hardware permanece `DEFERRED`.
 - O candidato possui `234` simbolos de texto adicionais documentados: 131
   subrotinas do decompilador, 84 wrappers de assinatura, 9 duplicatas renomeadas
   e 10 helpers diversos.
-- Harnesses diretos: `17/17` testes PASS sobre o subconjunto exercitado.
+- Harnesses diretos: `27/27` testes PASS sobre 38 funcoes distintas.
+- Callbacks de firmware/estado: quatro familias KCFI completas, `36/36`.
+- Proximo lote preparado por oraculo: proc read/write, workqueue e `void(void)`;
+  essas familias ainda permanecem incompletas no candidato.
 
 ## Correcao do Platform Device
 
@@ -64,7 +66,10 @@ A leitura do ELF e assembly stock refutou a solucao historica baseada em
 - `../../validation/zte_tpd/offline_reconstruction_audit.json`
 - `../../validation/zte_tpd/header_layout_probe.json`
 - `../../validation/zte_tpd/abi_validation.json`
-- `../../validation/zte_tpd/kcfi_kmi_exact_final_comparison.json`
+- `../../validation/zte_tpd/kcfi_direct_surface_final_comparison.json`
+- `../../validation/zte_tpd/kcfi_callback_families.json`
+- `../../validation/zte_tpd/microtask_progress.json`
+- `../../validation/zte_tpd/fw_callbacks_harness_report.json`
 - `../../validation/zte_tpd/parity_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`

@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_enable_wakegesture(__int64 a1, int a2, __int64 a3)
+int tpd_enable_wakegesture(struct ztp_device *cdev, int a2)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v3; // x8
 
   v3 = *(_QWORD *)(a1 + 3072);
@@ -10,7 +11,7 @@ __int64 __fastcall tpd_enable_wakegesture(__int64 a1, int a2, __int64 a3)
   }
   else
   {
-    printk(unk_3B5E0, "tpd_enable_wakegesture", a3);
+    printk(unk_3B5E0, "tpd_enable_wakegesture");
     return 0;
   }
 }

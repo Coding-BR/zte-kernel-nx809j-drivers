@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_set_follow_hand_level(__int64 a1, int a2, __int64 a3)
+int tpd_set_follow_hand_level(struct ztp_device *cdev, int a2)
 {
+  unsigned long a1 = (unsigned long)cdev;
   _QWORD *v3; // x19
   __int64 v5; // x9
   __int64 v6; // x2
@@ -8,7 +9,7 @@ __int64 __fastcall tpd_set_follow_hand_level(__int64 a1, int a2, __int64 a3)
   void *v10; // x0
 
   v3 = *(_QWORD **)(a1 + 3072);
-  printk(unk_34878, "tpd_set_follow_hand_level", a3);
+  printk(unk_34878, "tpd_set_follow_hand_level");
   if ( v3 )
   {
     v5 = v3[78];
@@ -35,5 +36,5 @@ __int64 __fastcall tpd_set_follow_hand_level(__int64 a1, int a2, __int64 a3)
     printk(v10, "tpd_set_follow_hand_level", v6);
     return 0;
   }
-  return 4294967274LL;
+  return -22;
 }

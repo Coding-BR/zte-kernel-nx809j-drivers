@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_set_singlegamegesture(__int64 a1, int a2, __int64 a3)
+int tpd_set_singlegamegesture(struct ztp_device *cdev, int a2)
 {
+  unsigned long a1 = (unsigned long)cdev;
   _DWORD *v3; // x20
   int v4; // w8
   __int64 v5; // x2
@@ -16,7 +17,7 @@ __int64 __fastcall tpd_set_singlegamegesture(__int64 a1, int a2, __int64 a3)
   }
   else
   {
-    printk(unk_3B5E0, "tpd_set_singlegamegesture", a3);
+    printk(unk_3B5E0, "tpd_set_singlegamegesture");
     v5 = (unsigned int)v3[366];
   }
   printk(unk_3526D, "tpd_set_singlegamegesture", v5);

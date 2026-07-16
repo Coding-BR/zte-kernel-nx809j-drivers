@@ -1,5 +1,6 @@
-__int64 __fastcall syna_ghost_check_reset(__int64 a1)
+int syna_ghost_check_reset(struct ztp_device *cdev)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v1; // x19
   __int64 v2; // x2
   __int64 v3; // x2

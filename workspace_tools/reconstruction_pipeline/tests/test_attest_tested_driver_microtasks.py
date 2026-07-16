@@ -1,0 +1,95 @@
+from __future__ import annotations
+
+import importlib.util
+import tempfile
+import unittest
+from pathlib import Path
+
+
+SCRIPT = Path(__file__).resolve().parents[1] / "attest_tested_driver_microtasks.py"
+SPEC = importlib.util.spec_from_file_location("attest_tested_driver_microtasks", SCRIPT)
+assert SPEC and SPEC.loader
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+
+
+class AttestTestedDriverMicrotasksTests(unittest.TestCase):
+    def test_build_requires_static_verified_reproducible_result(self) -> None:
+        payload = {
+            "drivers": [
+                {
+                    "status": "static_verified",
+                    "build": {"passed": True, "reproducible": True},
+                }
+            ]
+        }
+        self.assertTrue(MODULE.build_passed(payload))
+        payload["drivers"][0]["build"]["reproducible"] = False
+        self.assertFalse(MODULE.build_passed(payload))
+
+    def test_kcfi_index_accepts_only_passing_comparisons(self) -> None:
+        report = Path("kcfi.json")
+        indexed = MODULE.kcfi_functions(
+            [
+                (
+                    report,
+                    {
+                        "passed": True,
+                        "comparisons": [
+                            {"function": "good", "passed": True},
+                            {"function": "bad", "passed": False},
+                        ],
+                    },
+                )
+            ]
+        )
+        self.assertEqual(indexed, {"good": report})
+
+    def test_test_index_requires_current_source_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source_dir = Path(temporary)
+            current = source_dir / "current.c"
+            stale = source_dir / "stale.c"
+            current.write_text("int current(void) { return 0; }\n", encoding="ascii")
+            stale.write_text("int stale(void) { return 0; }\n", encoding="ascii")
+            report = Path("test.json")
+            indexed = MODULE.direct_tested_sources(
+                source_dir,
+                [
+                    (
+                        report,
+                        {
+                            "passed": True,
+                            "inputs": [
+                                {
+                                    "path": "/old/current.c",
+                                    "sha256": MODULE.sha256_file(current),
+                                },
+                                {
+                                    "path": "/old/stale.c",
+                                    "sha256": "0" * 64,
+                                },
+                            ],
+                        },
+                    )
+                ],
+            )
+            self.assertEqual(indexed, {"current.c": report})
+
+    def test_reset_is_fail_closed_for_previous_pass(self) -> None:
+        tasks = [
+            {"id": "old", "status": "PASS", "evidence": [{"role": "test"}]},
+            {"id": "open", "status": "READY_FOR_IMPLEMENTATION", "evidence": []},
+        ]
+
+        normalized, previous = MODULE.reset_microtask_attestations(tasks)
+
+        self.assertEqual(previous, {"old"})
+        self.assertTrue(
+            all(task["status"] == "READY_FOR_IMPLEMENTATION" for task in normalized)
+        )
+        self.assertTrue(all(task["evidence"] == [] for task in normalized))
+
+
+if __name__ == "__main__":
+    unittest.main()

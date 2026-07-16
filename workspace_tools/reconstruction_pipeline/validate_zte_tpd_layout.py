@@ -20,7 +20,7 @@ from typing import Any
 
 
 STOCK_SHA256 = "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
-CANDIDATE_SHA256 = "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8"
+CANDIDATE_SHA256 = "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6"
 RUN_ID = "NX809J-20260711T011653Z"
 
 
@@ -279,7 +279,7 @@ def main() -> int:
         "evidence": [
             "reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json",
             "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_tcm_layout.h",
-            "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_kmi_exact_final_comparison.json",
+            "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
             "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_static_final.json",
         ],
         "semantic_equivalence": "UNPROVEN",

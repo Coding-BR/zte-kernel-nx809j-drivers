@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_test_cmd_store(__int64 a1, __int64 a2, __int64 a3)
+int tpd_test_cmd_store(struct ztp_device *cdev)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v3; // x19
   unsigned int v4; // w0
   unsigned int v5; // w20
@@ -10,7 +11,7 @@ __int64 __fastcall tpd_test_cmd_store(__int64 a1, __int64 a2, __int64 a3)
   v3 = *(_QWORD *)(a1 + 3072);
   if ( *(_DWORD *)(v3 + 1404) == 1 )
   {
-    printk(unk_34878, "tpd_test_cmd_store", a3);
+    printk(unk_34878, "tpd_test_cmd_store");
     v4 = syna_testing_pt01_zte((__int64 *)v3);
     if ( (v4 & 0x80000000) != 0 )
     {
@@ -39,7 +40,7 @@ __int64 __fastcall tpd_test_cmd_store(__int64 a1, __int64 a2, __int64 a3)
     v5 = 0;
     v6 = unk_3B5E0;
   }
-  printk(v6, "tpd_test_cmd_store", a3);
+  printk(v6, "tpd_test_cmd_store");
 LABEL_6:
   syna_spi_hw_reset(*(_QWORD *)(v3 + 624));
   printk(unk_38B8E, "tpd_test_cmd_store", v7);

@@ -124,9 +124,14 @@ def read_reconstruction_map(path: Path) -> dict[str, dict[str, Any]]:
         stock_function = mapping.get("stock_function")
         if not isinstance(stock_function, str) or not stock_function:
             raise ValueError(f"{path}: mappings[{index}] lacks stock_function")
-        if stock_function in by_function:
-            raise ValueError(f"{path}: duplicate mapping for {stock_function}")
-        by_function[stock_function] = mapping
+        stock_entry = mapping.get("stock_entry")
+        if isinstance(stock_entry, str) and stock_entry:
+            key = f"{stock_function}@{stock_entry.lower()}"
+        else:
+            key = stock_function
+        if key in by_function:
+            raise ValueError(f"{path}: duplicate mapping for {key}")
+        by_function[key] = mapping
     return by_function
 
 
@@ -167,7 +172,10 @@ def source_coverage(
 
     for row in ghidra_rows:
         name = str(row.get("name", ""))
-        mapping = (reviewed_mappings or {}).get(name)
+        entry = str(row.get("entry", "")).lower()
+        mapping = (reviewed_mappings or {}).get(f"{name}@{entry}")
+        if mapping is None:
+            mapping = (reviewed_mappings or {}).get(name)
         exact_filename_match = False
         if mapping:
             source = mapped_source_path(source_dir, mapping.get("source_file"))

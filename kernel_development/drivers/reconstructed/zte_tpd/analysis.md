@@ -19,8 +19,8 @@ equivalencia funcional muito mais exigente que a simples compilacao do `.ko`.
 - Os `359` simbolos de texto stock estao presentes no candidato.
 - Os imports KMI sao exatamente `152/152`.
 - Dois builds limpos produziram o candidato canonico
-  `87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8`.
-- Quatorze fronteiras indiretas selecionadas possuem o mesmo type ID KCFI do
+  `24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6`.
+- Cinquenta fronteiras indiretas selecionadas possuem o mesmo type ID KCFI do
   stock.
 
 O mapa e classificado como `structural_identity_only`. Ele nao converte
@@ -64,14 +64,21 @@ headers configurados, mas nao comportamento eletrico.
 
 ## Cobertura Dinamica Offline
 
-Os harnesses locais exercitam diretamente 17 funcoes e registram 17 testes PASS
-nos caminhos zlog, one-key, UF e game partition. Eles usam stubs controlados e
-nao reproduzem IRQ real, temporizacao do scheduler, SPI fisico, energia, display
-ou transicoes de suspend/resume do aparelho.
+Os tres harnesses locais exercitam diretamente 38 funcoes distintas e registram
+27 testes PASS. O lote atual acrescenta 26 callbacks de firmware/estado e usa
+ASan/UBSan para verificar offsets, limites, ramos ativo/inativo e retornos. Os
+harnesses usam stubs controlados e nao reproduzem IRQ real, temporizacao do
+scheduler, SPI fisico, energia, display ou suspend/resume do aparelho.
 
-As demais funcoes continuam com estado `READY_FOR_IMPLEMENTATION` no manifesto
-de microtarefas ate receberem, individualmente, evidencia de compilacao, decisao
-KCFI e teste direto. Por isso o driver nao pode ser chamado de `100%`.
+A superficie KCFI diretamente verificada cresceu de 14 para 50 funcoes. Quatro
+familias foram integralmente corrigidas: 18 getters, 15 setters inteiros, o
+setter `u8` de sensibilidade e duas callbacks de texto. Os oraculos das familias
+proc read/write, workqueue e `void(void)` ja foram resolvidos, mas seus corpos
+ainda nao foram promovidos neste checkpoint.
+
+O manifesto agora possui 38 microtarefas `PASS`, cada uma com hashes de build,
+KCFI e teste, e 329 tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao
+pode ser chamado de `100%`.
 
 ## Registros Historicos de Hardware
 

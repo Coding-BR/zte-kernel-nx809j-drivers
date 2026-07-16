@@ -49,6 +49,8 @@ typedef unsigned char _BYTE;
 #define _BOOL8 unsigned char
 #define _BOOL4 int
 
+struct ztp_device;
+
 #define BYTEn(x, n)   (*((unsigned char*)&(x)+(n)))
 #define BYTE0(x)   BYTEn(x,  0)
 #define BYTE1(x)   BYTEn(x,  1)
@@ -381,42 +383,42 @@ extern __int64 syna_tcm_v1_terminate(__int64 result, __int64 a2, __int64 a3);
 // Charger & TPD callback functions
 extern __int64 syna_work_charger_detect_work(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_charger_notify_call(__int64 a1, __int64 a2, __int64 **a3);
-extern __int64 tpd_init_tpinfo(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 tpd_get_wakegesture(__int64 a1);
-extern __int64 tpd_enable_wakegesture(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_singlegamegesture(__int64 a1);
-extern __int64 tpd_set_singlegamegesture(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_singleaodgesture(__int64 a1);
-extern __int64 tpd_set_singleaodgesture(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_singlefpgesture(__int64 a1);
-extern __int64 tpd_set_singlefpgesture(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_set_one_key(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_one_key(__int64 a1);
-extern __int64 tpd_test_cmd_store(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 tpd_test_cmd_show(__int64 a1, char *a2, __int64 a3);
-extern __int64 tpd_get_tp_report_rate(__int64 a1);
-extern __int64 tpd_set_tp_report_rate(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_sensibility_level(__int64 a1);
-extern __int64 tpd_set_sensibility_level(__int64 a1, unsigned __int8 a2, __int64 a3);
-extern __int64 tpd_get_follow_hand_level(__int64 a1);
-extern __int64 tpd_set_follow_hand_level(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_stability_level(__int64 a1);
-extern __int64 tpd_set_stability_level(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_rotation_limit_level(__int64 a1);
-extern __int64 tpd_set_rotation_limit_level(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_set_display_rotation(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_play_game(__int64 a1);
-extern __int64 tpd_set_play_game(__int64 a1, unsigned int a2, __int64 a3);
-extern __int64 tpd_set_game_partition(void);
-extern __int64 tpd_get_frame_data(__int64 a1);
-extern __int64 tpd_set_frame_data(__int64 a1, unsigned int a2, __int64 a3);
-extern __int64 tpd_set_fake_sleep(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_fake_sleep(__int64 a1);
-extern __int64 tpd_set_screen_off_awake(__int64 a1, int a2, __int64 a3);
-extern __int64 tpd_get_screen_off_awake(__int64 a1);
-extern __int64 tpd_get_palm_mode(__int64 a1);
-extern __int64 tpd_set_palm_mode(__int64 a1, unsigned int a2);
-extern __int64 syna_ghost_check_reset(__int64 a1);
+extern int tpd_init_tpinfo(struct ztp_device *cdev);
+extern int tpd_get_wakegesture(struct ztp_device *cdev);
+extern int tpd_enable_wakegesture(struct ztp_device *cdev, int value);
+extern int tpd_get_singlegamegesture(struct ztp_device *cdev);
+extern int tpd_set_singlegamegesture(struct ztp_device *cdev, int value);
+extern int tpd_get_singleaodgesture(struct ztp_device *cdev);
+extern int tpd_set_singleaodgesture(struct ztp_device *cdev, int value);
+extern int tpd_get_singlefpgesture(struct ztp_device *cdev);
+extern int tpd_set_singlefpgesture(struct ztp_device *cdev, int value);
+extern int tpd_set_one_key(struct ztp_device *cdev, int value);
+extern int tpd_get_one_key(struct ztp_device *cdev);
+extern int tpd_test_cmd_store(struct ztp_device *cdev);
+extern int tpd_test_cmd_show(struct ztp_device *cdev, char *buffer);
+extern int tpd_get_tp_report_rate(struct ztp_device *cdev);
+extern int tpd_set_tp_report_rate(struct ztp_device *cdev, int value);
+extern int tpd_get_sensibility_level(struct ztp_device *cdev);
+extern int tpd_set_sensibility_level(struct ztp_device *cdev, unsigned char value);
+extern int tpd_get_follow_hand_level(struct ztp_device *cdev);
+extern int tpd_set_follow_hand_level(struct ztp_device *cdev, int value);
+extern int tpd_get_stability_level(struct ztp_device *cdev);
+extern int tpd_set_stability_level(struct ztp_device *cdev, int value);
+extern int tpd_get_rotation_limit_level(struct ztp_device *cdev);
+extern int tpd_set_rotation_limit_level(struct ztp_device *cdev, int value);
+extern int tpd_set_display_rotation(struct ztp_device *cdev, int value);
+extern int tpd_get_play_game(struct ztp_device *cdev);
+extern int tpd_set_play_game(struct ztp_device *cdev, int value);
+extern int tpd_set_game_partition(struct ztp_device *cdev, char *buffer);
+extern int tpd_get_frame_data(struct ztp_device *cdev);
+extern int tpd_set_frame_data(struct ztp_device *cdev, int value);
+extern int tpd_set_fake_sleep(struct ztp_device *cdev, int value);
+extern int tpd_get_fake_sleep(struct ztp_device *cdev);
+extern int tpd_set_screen_off_awake(struct ztp_device *cdev, int value);
+extern int tpd_get_screen_off_awake(struct ztp_device *cdev);
+extern int tpd_get_palm_mode(struct ztp_device *cdev);
+extern int tpd_set_palm_mode(struct ztp_device *cdev, int value);
+extern int syna_ghost_check_reset(struct ztp_device *cdev);
 
 // Testing check and helper functions
 bool syna_tcm_testing_0500_check_upper_bound(unsigned short *a1, unsigned short *a2, __int64 a3, unsigned int a4);

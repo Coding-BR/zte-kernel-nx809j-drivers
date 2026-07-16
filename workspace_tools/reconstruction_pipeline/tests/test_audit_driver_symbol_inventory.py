@@ -61,6 +61,53 @@ class AuditDriverSymbolInventoryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate mapping"):
                 read_reconstruction_map(path)
 
+    def test_reconstruction_map_accepts_duplicate_names_at_distinct_entries(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            path = root / "map.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "mappings": [
+                            {
+                                "stock_function": "same",
+                                "stock_entry": "00100000",
+                                "source_file": "same.c",
+                                "source_function": "same",
+                                "status": "reviewed",
+                            },
+                            {
+                                "stock_function": "same",
+                                "stock_entry": "00100010",
+                                "source_file": "same_0.c",
+                                "source_function": "same_0",
+                                "status": "reviewed",
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "same.c").write_text("int same(void) { return 0; }\n", encoding="ascii")
+            (root / "same_0.c").write_text("int same_0(void) { return 0; }\n", encoding="ascii")
+
+            mappings = read_reconstruction_map(path)
+            coverage, generated = source_coverage(
+                root,
+                [
+                    {"name": "same", "entry": "00100000"},
+                    {"name": "same", "entry": "00100010"},
+                ],
+                mappings,
+            )
+
+            self.assertTrue(coverage["complete"])
+            self.assertEqual(coverage["reviewed_mapping_matches"], 2)
+            self.assertEqual(
+                [record["source_function"] for record in generated],
+                ["same", "same_0"],
+            )
+
     def test_reviewed_map_accepts_macro_generated_function_token(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

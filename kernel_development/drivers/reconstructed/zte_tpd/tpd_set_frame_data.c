@@ -1,5 +1,6 @@
-__int64 __fastcall tpd_set_frame_data(__int64 a1, unsigned int a2, __int64 a3)
+int tpd_set_frame_data(struct ztp_device *cdev, int a2)
 {
+  unsigned long a1 = (unsigned long)cdev;
   __int64 v3; // x19
   __int64 v5; // x2
   __int64 v6; // x9
@@ -7,7 +8,7 @@ __int64 __fastcall tpd_set_frame_data(__int64 a1, unsigned int a2, __int64 a3)
   void *v9; // x0
 
   v3 = *(_QWORD *)(a1 + 3072);
-  printk(unk_34878, "tpd_set_frame_data", a3);
+  printk(unk_34878, "tpd_set_frame_data");
   if ( v3 )
   {
     v6 = *(_QWORD *)(v3 + 624);
@@ -30,5 +31,5 @@ __int64 __fastcall tpd_set_frame_data(__int64 a1, unsigned int a2, __int64 a3)
     printk(v9, "tpd_set_frame_data", v5);
     return 0;
   }
-  return 4294967274LL;
+  return -22;
 }

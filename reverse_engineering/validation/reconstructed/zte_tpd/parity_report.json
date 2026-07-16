@@ -4,7 +4,7 @@
   "driver": "zte_tpd",
   "scope": "Offline static parity for the canonical out-of-tree candidate; untested functions, scheduler timing and electrical behavior are excluded",
   "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
-  "candidate_sha256": "87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8",
+  "candidate_sha256": "24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6",
   "comparisons": [
     {
       "surface": "ELF, modinfo and KMI",
@@ -20,7 +20,7 @@
     {
       "surface": "verified callback KCFI",
       "result": "PASS",
-      "evidence": "kcfi_kmi_exact_final_comparison.json matches section and type ID for 14/14 selected indirect-call boundaries",
+      "evidence": "kcfi_direct_surface_final_comparison.json matches section and type ID for 50/50 selected indirect-call boundaries",
       "note": "Function size is non-gating because the OEM LTO pipeline is unavailable"
     },
     {
@@ -38,7 +38,7 @@
     {
       "surface": "direct host-tested subset",
       "result": "PASS",
-      "evidence": "zlog_harness_report.json and remaining_harness_report.json pass 17/17 tests over 17 directly exercised reconstructed functions",
+      "evidence": "zlog_harness_report.json, remaining_harness_report.json and fw_callbacks_harness_report.json pass 27/27 tests over 38 distinct directly exercised reconstructed functions",
       "note": "This comparison attests only the tested subset. The 367-function microtask gate remains INCOMPLETE and is not implied by this PASS"
     },
     {
@@ -49,7 +49,7 @@
     }
   ],
   "blockers": [
-    "O6 has 367 mapped microtasks but only 17 reconstructed functions have direct host-harness coverage",
+    "O6 has 38 hash-attested PASS microtasks and 329 tasks still requiring direct evidence",
     "O10 independent review is pending",
     "Controlled NX809J hardware validation is deferred"
   ],
