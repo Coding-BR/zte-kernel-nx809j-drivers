@@ -99,7 +99,7 @@ zte_lock_task_sighand_inline(struct task_struct *task, unsigned long *flags)
 	rcu_read_lock();
 	for (;;) {
 		sighand = rcu_dereference(task->sighand);
-		if (!sighand)
+		if (unlikely(!sighand))
 			break;
 		spin_lock_irqsave(&sighand->siglock, *flags);
 		if (likely(sighand == rcu_access_pointer(task->sighand)))
@@ -138,21 +138,21 @@ static int zte_parse(struct nlattr *attribute, unsigned long *mask)
 	return ret;
 }
 
-static int zte_add_del_listener(pid_t pid, const unsigned long *mask, int is_del)
+static int zte_add_del_listener(pid_t pid, const u32 *mask, int is_del)
 {
 	struct zte_listener_cpu *listeners;
 	struct zte_listener *listener, *next, *existing;
 	unsigned int cpu;
 	int ret = 0;
 
-	if ((*mask & ~(*cpumask_bits(cpu_possible_mask))) != 0)
+	if ((*mask & ~*(const u32 *)cpumask_bits(cpu_possible_mask)) != 0)
 		return -EINVAL;
 	if (task_active_pid_ns(current) != &init_pid_ns)
 		return -EINVAL;
 
 	if (!is_del) {
-		for_each_cpu(cpu, to_cpumask(mask)) {
-			listener = kmalloc_node(sizeof(*listener), GFP_KERNEL, cpu);
+		for_each_cpu(cpu, to_cpumask((unsigned long *)mask)) {
+			listener = kmalloc_node(sizeof(*listener), GFP_KERNEL, 0);
 			if (!listener) {
 				ret = -ENOMEM;
 				goto cleanup;
@@ -176,7 +176,7 @@ exists:
 	}
 
 cleanup:
-	for_each_cpu(cpu, to_cpumask(mask)) {
+	for_each_cpu(cpu, to_cpumask((unsigned long *)mask)) {
 		listeners = per_cpu_ptr(&zte_listener_array, cpu);
 		down_write(&listeners->sem);
 		list_for_each_entry_safe(listener, next, &listeners->list, list) {
@@ -200,18 +200,20 @@ zte_prepare_reply(struct genl_info *info, struct sk_buff **reply_skb,
 	u32 portid;
 	u32 sequence;
 
-	skb = genlmsg_new(payload_size, GFP_KERNEL);
+	/* Stock clamps both alignment steps to the low 12-bit skb envelope. */
+	skb = __alloc_skb(((((unsigned int)payload_size + 7U) & 0xffcU) +
+			   0x13U) & 0xffcU, GFP_KERNEL, 0, -1);
 	if (!skb)
 		return -ENOMEM;
 	if (info) {
-		portid = info->snd_portid;
-		sequence = info->snd_seq;
+		reply = genlmsg_put(skb, info->snd_portid, info->snd_seq,
+				    &zte_family, 0, TASKSTATS_CMD_NEW);
 	} else {
 		portid = 0;
 		sequence = this_cpu_inc_return(zte_taskstats_seqnum) - 1;
+		reply = genlmsg_put(skb, portid, sequence, &zte_family, 0,
+				    TASKSTATS_CMD_NEW);
 	}
-	reply = genlmsg_put(skb, portid, sequence, &zte_family, 0,
-			    TASKSTATS_CMD_NEW);
 	if (!reply) {
 		nlmsg_free(skb);
 		return -EINVAL;
@@ -257,48 +259,82 @@ static __always_inline int zte_send_reply(struct sk_buff *skb,
 	return genlmsg_unicast(genl_info_net(info), skb, info->snd_portid);
 }
 
+static __always_inline void
+zte_delayacct_add_tsk(struct zte_taskstats_v10 *stats,
+			      struct task_struct *task)
+{
+	u64 utime, stime, utimescaled, stimescaled;
+	unsigned long long run_delay, run_virtual;
+	unsigned long run_count;
+	s64 total;
+
+	task_cputime(task, &utime, &stime);
+	total = (s64)stats->cpu_run_real_total;
+	total += utime + stime;
+	stats->cpu_run_real_total =
+		(total < (s64)stats->cpu_run_real_total) ? 0 : total;
+
+	task_cputime_scaled(task, &utimescaled, &stimescaled);
+	total = (s64)stats->cpu_scaled_run_real_total;
+	total += utimescaled + stimescaled;
+	stats->cpu_scaled_run_real_total =
+		(total < (s64)stats->cpu_scaled_run_real_total) ? 0 : total;
+
+	run_count = task->sched_info.pcount;
+	run_delay = task->sched_info.run_delay;
+	run_virtual = task->se.sum_exec_runtime;
+	stats->cpu_count += run_count;
+	total = (s64)stats->cpu_delay_total + run_delay;
+	stats->cpu_delay_total =
+		(total < (s64)stats->cpu_delay_total) ? 0 : total;
+	total = (s64)stats->cpu_run_virtual_total + run_virtual;
+	stats->cpu_run_virtual_total =
+		(total < (s64)stats->cpu_run_virtual_total) ? 0 : total;
+}
+
 static int zte_taskstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 {
 	struct zte_taskstats_v10 *stats;
-	struct sk_buff *reply_skb;
 	struct task_struct *task;
 	struct pid_namespace *pid_ns;
 	struct mm_struct *mm;
 	const struct cred *cred;
-	unsigned long cpu_mask;
 	unsigned long flags;
-	u64 total_time;
-	u64 elapsed;
-	time64_t begin_time;
 	u32 id;
 	int ret;
 
 	if (info->attrs[TASKSTATS_CMD_ATTR_REGISTER_CPUMASK]) {
-		cpu_mask = 0;
+		unsigned long cpu_mask = 0;
+
 		ret = zte_parse(info->attrs[TASKSTATS_CMD_ATTR_REGISTER_CPUMASK],
 				&cpu_mask);
 		if (ret >= 0)
-			ret = zte_add_del_listener(info->snd_portid, &cpu_mask, 0);
+			ret = zte_add_del_listener(info->snd_portid,
+						   (const u32 *)&cpu_mask, 0);
 		return ret;
 	}
 	if (info->attrs[TASKSTATS_CMD_ATTR_DEREGISTER_CPUMASK]) {
-		cpu_mask = 0;
+		unsigned long cpu_mask = 0;
+
 		ret = zte_parse(info->attrs[TASKSTATS_CMD_ATTR_DEREGISTER_CPUMASK],
 				&cpu_mask);
 		if (ret >= 0)
-			ret = zte_add_del_listener(info->snd_portid, &cpu_mask, 1);
+			ret = zte_add_del_listener(info->snd_portid,
+						   (const u32 *)&cpu_mask, 1);
 		return ret;
 	}
 
 	if (info->attrs[TASKSTATS_CMD_ATTR_PID]) {
-		id = nla_get_u32(info->attrs[TASKSTATS_CMD_ATTR_PID]);
+		struct sk_buff *reply_skb;
+
 		ret = zte_prepare_reply(info, &reply_skb, 0x170);
 		if (ret < 0)
 			return ret;
+		id = nla_get_u32(info->attrs[TASKSTATS_CMD_ATTR_PID]);
 		stats = zte_mk_reply(reply_skb, TASKSTATS_TYPE_PID, id);
 		if (!stats) {
 			ret = -EINVAL;
-			goto free_reply;
+			goto free_pid_reply;
 		}
 
 		rcu_read_lock();
@@ -306,29 +342,28 @@ static int zte_taskstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 		if (!task) {
 			rcu_read_unlock();
 			ret = -ESRCH;
-			goto free_reply;
+			goto free_pid_reply;
 		}
 		get_task_struct(task);
 		rcu_read_unlock();
 
 		pid_ns = task_active_pid_ns(current);
 		memset(stats, 0, sizeof(*stats));
-		total_time = task->utime + task->stime;
-		stats->cpu_run_real_total = max_t(s64, total_time, 0);
-		stats->cpu_scaled_run_real_total = max_t(s64, total_time, 0);
-		stats->cpu_count = task->sched_info.pcount;
-		stats->cpu_delay_total = task->sched_info.run_delay;
-		stats->cpu_run_virtual_total =
-			max_t(s64, task->se.sum_exec_runtime, 0);
+		zte_delayacct_add_tsk(stats, task);
 		stats->version = 10;
 		stats->nvcsw = task->nvcsw;
 		stats->nivcsw = task->nivcsw;
-		elapsed = ktime_get_ns() - task->start_time;
-		stats->ac_etime = div_u64(elapsed, NSEC_PER_USEC);
-		begin_time = ktime_get_real_seconds() -
-			div_u64(stats->ac_etime, USEC_PER_SEC);
-		stats->ac_btime64 = begin_time;
-		stats->ac_btime = clamp_t(time64_t, begin_time, 0, U32_MAX);
+		{
+			u64 elapsed = ktime_get() - task->start_time;
+			time64_t begin_time;
+
+			stats->ac_etime = div_u64(elapsed, NSEC_PER_USEC);
+			begin_time = ktime_get_real_seconds() -
+				div_u64(elapsed, NSEC_PER_SEC);
+			stats->ac_btime = clamp_t(time64_t, begin_time, 0,
+							 U32_MAX);
+			stats->ac_btime64 = begin_time;
+		}
 		if (task->flags & PF_EXITING)
 			stats->ac_exitcode = task->exit_code;
 		if (thread_group_leader(task) && (task->flags & PF_FORKNOEXEC))
@@ -349,10 +384,18 @@ static int zte_taskstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 		stats->ac_ppid = pid_alive(task) ?
 			task_tgid_nr_ns(rcu_dereference(task->real_parent), pid_ns) : 0;
 		rcu_read_unlock();
-		stats->ac_utime = div_u64(task->utime, NSEC_PER_USEC);
-		stats->ac_stime = div_u64(task->stime, NSEC_PER_USEC);
-		stats->ac_utimescaled = stats->ac_utime;
-		stats->ac_stimescaled = stats->ac_stime;
+		{
+			u64 utime, stime, utimescaled, stimescaled;
+
+			task_cputime(task, &utime, &stime);
+			stats->ac_utime = div_u64(utime, NSEC_PER_USEC);
+			stats->ac_stime = div_u64(stime, NSEC_PER_USEC);
+			task_cputime_scaled(task, &utimescaled, &stimescaled);
+			stats->ac_utimescaled =
+				div_u64(utimescaled, NSEC_PER_USEC);
+			stats->ac_stimescaled =
+				div_u64(stimescaled, NSEC_PER_USEC);
+		}
 		stats->ac_minflt = task->min_flt;
 		stats->ac_majflt = task->maj_flt;
 		strncpy(stats->ac_comm, task->comm, sizeof(stats->ac_comm));
@@ -379,70 +422,65 @@ static int zte_taskstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 			task->ioac.cancelled_write_bytes & ZTE_KB_MASK;
 		put_task_struct(task);
 		return zte_send_reply(reply_skb, info);
+
+free_pid_reply:
+		nlmsg_free(reply_skb);
+		return ret;
 	}
 
 	if (info->attrs[TASKSTATS_CMD_ATTR_TGID]) {
-		id = nla_get_u32(info->attrs[TASKSTATS_CMD_ATTR_TGID]);
+		struct sk_buff *reply_skb;
+
 		ret = zte_prepare_reply(info, &reply_skb, 0x170);
 		if (ret < 0)
 			return ret;
+		id = nla_get_u32(info->attrs[TASKSTATS_CMD_ATTR_TGID]);
 		stats = zte_mk_reply(reply_skb, TASKSTATS_TYPE_TGID, id);
 		if (!stats) {
 			ret = -EINVAL;
-			goto free_reply;
+			goto free_tgid_reply;
 		}
 
 		rcu_read_lock();
 		task = find_task_by_vpid(id);
 		if (task && zte_lock_task_sighand_inline(task, &flags)) {
 			struct task_struct *thread;
-			u64 now;
+			u64 now, delta, utime, stime;
 
 			if (task->signal->stats)
 				memcpy(stats, task->signal->stats, sizeof(*stats));
 			else
 				memset(stats, 0, sizeof(*stats));
 			now = ktime_get_ns();
-			for_each_thread(task, thread) {
+			thread = task;
+			do {
 				if (thread->exit_state)
 					continue;
-				stats->cpu_count += thread->sched_info.pcount;
-				stats->cpu_delay_total += thread->sched_info.run_delay;
-				total_time = thread->utime + thread->stime +
-					stats->cpu_run_real_total;
-				stats->cpu_run_real_total =
-					max_t(s64, total_time, 0);
-				total_time = thread->utime + thread->stime +
-					stats->cpu_scaled_run_real_total;
-				stats->cpu_scaled_run_real_total =
-					max_t(s64, total_time, 0);
-				total_time = thread->se.sum_exec_runtime +
-					stats->cpu_run_virtual_total;
-				stats->cpu_run_virtual_total =
-					max_t(s64, total_time, 0);
-				stats->ac_etime += div_u64(now - thread->start_time,
-							 NSEC_PER_USEC);
-				stats->ac_utime += div_u64(thread->utime,
-							 NSEC_PER_USEC);
-				stats->ac_stime += div_u64(thread->stime,
-							 NSEC_PER_USEC);
+				zte_delayacct_add_tsk(stats, thread);
+				delta = now - thread->start_time;
+				do_div(delta, NSEC_PER_USEC);
+				stats->ac_etime += delta;
+				task_cputime(thread, &utime, &stime);
+				stats->ac_utime += div_u64(utime, NSEC_PER_USEC);
+				stats->ac_stime += div_u64(stime, NSEC_PER_USEC);
 				stats->nvcsw += thread->nvcsw;
 				stats->nivcsw += thread->nivcsw;
-			}
+			} while_each_thread(task, thread);
 			spin_unlock_irqrestore(&task->sighand->siglock, flags);
 			rcu_read_unlock();
 			stats->version = 10;
 			return zte_send_reply(reply_skb, info);
 		}
 		rcu_read_unlock();
+		stats->version = 10;
 		ret = -ESRCH;
-		goto free_reply;
+		goto free_tgid_reply;
+
+free_tgid_reply:
+		nlmsg_free(reply_skb);
+		return ret;
 	}
 	return -EINVAL;
-
-free_reply:
-	nlmsg_free(reply_skb);
-	return ret;
 }
 
 static int zte_cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
@@ -452,15 +490,12 @@ static int zte_cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 
 static int __init zte_taskstats_init_early(void)
 {
-	unsigned int cpu;
+	unsigned int i;
 	int ret;
 
-	for_each_possible_cpu(cpu) {
-		struct zte_listener_cpu *listeners =
-			per_cpu_ptr(&zte_listener_array, cpu);
-
-		INIT_LIST_HEAD(&listeners->list);
-		init_rwsem(&listeners->sem);
+	for_each_possible_cpu(i) {
+		INIT_LIST_HEAD(&per_cpu(zte_listener_array, i).list);
+		init_rwsem(&(per_cpu(zte_listener_array, i).sem));
 	}
 	ret = genl_register_family(&zte_family);
 	if (!ret)

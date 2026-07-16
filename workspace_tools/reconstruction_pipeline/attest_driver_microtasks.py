@@ -72,6 +72,52 @@ def relative_path(path: Path, workspace_root: Path) -> str:
     return str(path.resolve().relative_to(workspace_root.resolve()))
 
 
+def make_repository_manifest_portable(
+    manifest: dict[str, Any],
+    driver: str,
+    curated_root: Path,
+) -> None:
+    if curated_root.name != "reconstructed" or curated_root.parent.name != "drivers":
+        return
+
+    ghidra_root = (
+        f"reverse_engineering/validation/reconstructed/{driver}/"
+        "offline_static/ghidra_stock"
+    )
+    stock = manifest.get("stock")
+    if isinstance(stock, dict):
+        stock["path"] = f"reference_modules/stock/{driver}.ko"
+    manifest["ghidra_export"] = ghidra_root
+
+    for task in manifest.get("tasks", []):
+        if not isinstance(task, dict):
+            continue
+        replacements: dict[str, str] = {}
+        for field, directory in (
+            ("ghidra_pseudocode", "decompiled"),
+            ("ghidra_pcode", "pcode"),
+        ):
+            source = task.get(field)
+            if not isinstance(source, str) or not source:
+                continue
+            filename = source.replace("\\", "/").rsplit("/", 1)[-1]
+            portable = f"{ghidra_root}/{directory}/{filename}"
+            task[field] = portable
+            replacements[field] = portable
+
+        prompt_lines = []
+        for line in str(task.get("implementation_prompt", "")).splitlines():
+            if (
+                line.startswith("Pseudocodigo Ghidra:")
+                and "ghidra_pseudocode" in replacements
+            ):
+                line = "Pseudocodigo Ghidra: " + replacements["ghidra_pseudocode"]
+            elif line.startswith("P-Code Ghidra:") and "ghidra_pcode" in replacements:
+                line = "P-Code Ghidra: " + replacements["ghidra_pcode"]
+            prompt_lines.append(line)
+        task["implementation_prompt"] = "\n".join(prompt_lines)
+
+
 def function_id(name: Any, entry: Any) -> str:
     if not isinstance(name, str) or not name:
         raise ValueError("microtask or mapping has no stock function name")
@@ -327,7 +373,11 @@ def main() -> int:
 
     manifest["generated_utc"] = generated_utc
     manifest["status"] = "PASS"
-    manifest["attestation_tool"] = str(Path(__file__).resolve())
+    if curated_root.name == "reconstructed" and curated_root.parent.name == "drivers":
+        manifest["attestation_tool"] = relative_path(Path(__file__), workspace_root)
+    else:
+        manifest["attestation_tool"] = str(Path(__file__).resolve())
+    make_repository_manifest_portable(manifest, args.driver, curated_root)
     write_json(manifest_path, manifest)
     write_markdown(driver_root / "MICROTASKS.md", args.driver, tasks)
     write_prompts(driver_root / "MICROTASK_PROMPTS.md", args.driver, tasks)

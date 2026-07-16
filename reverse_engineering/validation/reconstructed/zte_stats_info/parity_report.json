@@ -3,21 +3,21 @@
   "status": "PASS",
   "driver": "zte_stats_info",
   "stock_sha256": "20f5f60ddbdc5412de08a5ec0a62d34bfe3dd8cebba0cb54cda6ffc7bdb64d96",
-  "candidate_sha256": "a0c4186a89a5917c12d598d2e1833729de043242b0988816167853ecb740df34",
+  "candidate_sha256": "22f93083062922e5a2932e387d91db714e123896818e13a2ef853948308349e7",
   "comparisons": [
-    {"surface": "ELF", "result": "PASS", "detail": "AArch64 ET_REL and reproducible build"},
+    {"surface": "ELF", "result": "PASS", "detail": "AArch64 ET_REL; two clean builds reproduce candidate SHA-256 22f93083062922e5a2932e387d91db714e123896818e13a2ef853948308349e7"},
     {"surface": "imports", "result": "PASS", "detail": "43 stock imports equal candidate imports"},
     {"surface": "modinfo", "result": "PASS", "detail": "license, description, built_with, dependencies and aliases match"},
     {"surface": "Generic Netlink", "result": "PASS", "detail": "ZTE_TASKSTATS, two genl_ops, policies, commands and 0x160 payload reconstructed"},
-    {"surface": "functions", "result": "PASS", "detail": "Ghidra stock and candidate each export exactly 8 functions"},
-    {"surface": "KCFI", "result": "PASS", "detail": "3/3 indirect or entry-point type IDs match"},
-    {"surface": "host behavior", "result": "PASS", "detail": "8/8 functions directly covered; harness reproducible"},
-    {"surface": "hardware", "result": "INCOMPLETO", "detail": "Generic Netlink interaction with real tasks and userspace remains deferred"}
+    {"surface": "functions", "result": "PASS", "detail": "Ghidra stock and candidate each export exactly 8 functions; call multiplicities and body sizes match; host harness covers all 8"},
+    {"surface": "AArch64 assembly", "result": "PASS", "detail": "8/8 functions match normalized instructions, relocations, section and symbol size; zte_taskstats_user_cmd is 473 instructions and 1892 bytes on both sides"},
+    {"surface": "KCFI", "result": "PASS", "detail": "3/3 indirect or entry-point type IDs, sections and symbol sizes match"},
+    {"surface": "host behavior", "result": "PASS", "detail": "8/8 functions directly covered; two test binaries are reproducible at SHA-256 7d58b5c976699c4997f7301020bd60d51cbf46728f3d0ab94d4c801b5af246e4"},
+    {"surface": "hardware", "result": "DEFERRED", "detail": "Generic Netlink interaction with real tasks and userspace requires a separate controlled session"}
   ],
   "justified_differences": [
-    {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the connected kernel release recorded in engenharia/config/target_kernel.json and was modposted with its Module.symvers"},
-    {"difference": "zte_taskstats_user_cmd has one merged zte_add_del_listener callsite and one merged RCU cleanup", "justification": "candidate Ghidra shows both register/deregister branches selecting the third argument before the shared call; host tests cover both paths"},
-    {"difference": "three symbol sizes differ while five are exact", "justification": "candidate Ghidra preserves the 8-function inventory, field offsets and effects; KCFI, imports, ABI probe and direct behavioral tests pass"}
+    {"difference": "OEM vermagic is maybe-dirty-4k", "justification": "candidate targets the kernel release recorded in engenharia/config/target_kernel.json and was modposted with its Module.symvers"},
+    {"difference": "whole-ELF SHA-256 differs from stock", "justification": "candidate contains build-environment vermagic, BTF/debug and reconstructed metadata; parity is established only on the explicitly measured static surfaces"}
   ],
   "evidence": [
     "engenharia/validation/zte_stats_info/driver_audit_current.json",

@@ -1,8 +1,8 @@
-# Microtarefas Obrigatórias: zte_stats_info
+# Microtarefas Obrigatorias: zte_stats_info
 
-Cada linha representa uma única função stock. Nenhuma função pode ser promovida sem mapeamento, compilação, KCFI e teste com hash verificável.
+Cada linha representa uma funcao stock com fonte revisado e evidencias de compilacao, KCFI e teste.
 
-| ID | Função stock | Entrada | Categoria | Fonte mapeada | Estado |
+| ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |
 |---|---|---|---|---|---|
 | 001_zte_lock_task_sighand | __zte_lock_task_sighand | 001002bc | core_logic | zte_stats_info.c:__zte_lock_task_sighand | PASS |
 | 002_zte_taskstats_user_cmd | zte_taskstats_user_cmd | 00100344 | core_logic | zte_stats_info.c:zte_taskstats_user_cmd | PASS |
@@ -12,5 +12,3 @@ Cada linha representa uma única função stock. Nenhuma função pode ser promo
 | 006_zte_prepare_reply | zte_prepare_reply | 00100e20 | core_logic | zte_stats_info.c:zte_prepare_reply | PASS |
 | 007_zte_mk_reply | zte_mk_reply | 00100f2c | core_logic | zte_stats_info.c:zte_mk_reply | PASS |
 | 008_init_module | init_module | 00101060 | lifecycle | zte_stats_info.c:init_module | PASS |
-
-Para cada microtarefa, implemente ou valide somente a função indicada. Use o pseudocódigo e P-Code stock, preserve a ABI/KCFI e anexe evidência hashada de compile, KCFI e teste. Não marque PASS por inspeção visual.

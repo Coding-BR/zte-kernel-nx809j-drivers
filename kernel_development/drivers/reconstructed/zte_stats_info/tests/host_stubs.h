@@ -35,6 +35,7 @@ typedef u64 __u64;
 #define GFP_KERNEL 0x0cc0u
 #define PAGE_SIZE 4096u
 #define NSEC_PER_USEC 1000u
+#define NSEC_PER_SEC 1000000000ULL
 #define USEC_PER_SEC 1000000u
 #define U32_MAX UINT32_MAX
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
@@ -45,6 +46,7 @@ typedef u64 __u64;
 #define div_u64(value, divisor) ((u64)(value) / (u64)(divisor))
 #define do_div(value, divisor) ((value) /= (divisor))
 #define likely(value) (value)
+#define unlikely(value) (value)
 
 #define container_of(pointer, type, member) \
 	((type *)((char *)(pointer) - offsetof(type, member)))
@@ -91,6 +93,7 @@ extern unsigned int nr_cpu_ids;
 		if ((mask)->bits[0] & (1UL << (cpu)))
 #define for_each_possible_cpu(cpu) for ((cpu) = 0; (cpu) < nr_cpu_ids; (cpu)++)
 #define DEFINE_PER_CPU(type, name) type name[ZTE_FAKE_CPUS]
+#define per_cpu(name, cpu) ((name)[(cpu)])
 #define per_cpu_ptr(pointer, cpu) (&(*(pointer))[(cpu)])
 #define this_cpu_inc_return(name) (++(name)[0])
 
@@ -159,6 +162,14 @@ extern struct task_struct *current;
 #define rcu_access_pointer(pointer) (pointer)
 #define for_each_thread(leader, thread) \
 	for ((thread) = (leader); (thread) != NULL; (thread) = (thread)->thread_group_next)
+#define while_each_thread(leader, thread) \
+	while (((thread) = (thread)->thread_group_next) != NULL && (thread) != (leader))
+
+static inline void task_cputime(struct task_struct *task, u64 *utime, u64 *stime)
+{ *utime = task->utime; *stime = task->stime; }
+static inline void task_cputime_scaled(struct task_struct *task,
+				       u64 *utime, u64 *stime)
+{ *utime = task->utime; *stime = task->stime; }
 
 void rcu_read_lock(void);
 void rcu_read_unlock(void);
@@ -175,6 +186,7 @@ static inline pid_t task_pid_nr_ns(struct task_struct *task, struct pid_namespac
 static inline pid_t task_tgid_nr_ns(struct task_struct *task, struct pid_namespace *ns)
 { (void)ns; return task->tgid; }
 u64 ktime_get_ns(void);
+u64 ktime_get(void);
 time64_t ktime_get_real_seconds(void);
 struct mm_struct *get_task_mm(struct task_struct *task);
 void mmput(struct mm_struct *mm);
@@ -252,6 +264,8 @@ struct genl_family {
 #define THIS_MODULE ((void *)1)
 
 struct sk_buff *genlmsg_new(size_t payload, unsigned int flags);
+struct sk_buff *__alloc_skb(unsigned int size, unsigned int flags,
+				unsigned int type, int node);
 void *genlmsg_put(struct sk_buff *skb, u32 portid, u32 sequence,
 		  const struct genl_family *family, int flags, u8 command);
 void nlmsg_free(struct sk_buff *skb);

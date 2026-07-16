@@ -91,6 +91,7 @@ struct task_struct *find_task_by_vpid(pid_t pid)
 void get_task_struct(struct task_struct *task) { task->usage++; }
 void put_task_struct(struct task_struct *task) { task->usage--; fake.put_task_calls++; }
 u64 ktime_get_ns(void) { return fake.monotonic_ns; }
+u64 ktime_get(void) { return fake.monotonic_ns; }
 time64_t ktime_get_real_seconds(void) { return fake.realtime_seconds; }
 struct mm_struct *get_task_mm(struct task_struct *task) { return task->mm; }
 void mmput(struct mm_struct *mm) { (void)mm; fake.mmput_calls++; }
@@ -146,6 +147,15 @@ struct sk_buff *genlmsg_new(size_t payload, unsigned int flags)
 		return NULL;
 	fake.last_skb = calloc(1, sizeof(*fake.last_skb));
 	return fake.last_skb;
+}
+
+struct sk_buff *__alloc_skb(unsigned int size, unsigned int flags,
+				    unsigned int type, int node)
+{
+	(void)size;
+	(void)type;
+	(void)node;
+	return genlmsg_new(size, flags);
 }
 
 void *genlmsg_put(struct sk_buff *skb, u32 portid, u32 sequence,
@@ -286,8 +296,8 @@ static void test_parse(void)
 
 static void test_listener_registry(void)
 {
-	unsigned long mask = 3;
-	unsigned long invalid_mask = 1UL << 8;
+	u32 mask = 3;
+	u32 invalid_mask = 1U << 8;
 
 	reset_fake();
 	EXPECT(init_module() == 0);
@@ -407,6 +417,7 @@ static void test_taskstats_commands(void)
 	EXPECT(stats->version == 10 && stats->ac_pid == 77);
 	EXPECT(stats->cpu_count == 3 && stats->cpu_delay_total == 11);
 	EXPECT(stats->ac_utime == 3 && stats->ac_stime == 2);
+	EXPECT(stats->ac_etime == 8000000 && stats->ac_btime64 == 1992);
 	EXPECT(stats->ac_uid == 1000 && stats->ac_gid == 1001);
 	EXPECT(fake.put_task_calls == 1 && fake.unicast_calls == 1);
 	EXPECT(fake.rcu_depth == 0);
@@ -429,6 +440,13 @@ static void test_taskstats_commands(void)
 	EXPECT(stats->cpu_run_real_total == 5000);
 	EXPECT(fake.spin_locks == 1 && fake.spin_unlocks == 1);
 	EXPECT(fake.rcu_depth == 0);
+
+	reset_fake();
+	attrs[TASKSTATS_CMD_ATTR_TGID] = &pid_attribute;
+	EXPECT(zte_taskstats_user_cmd(NULL, &info) == -ESRCH);
+	stats = (struct zte_taskstats_v10 *)fake.last_reserved->data;
+	EXPECT(stats->version == 10 && fake.unicast_calls == 0);
+	EXPECT(fake.last_skb->freed == 1 && fake.rcu_depth == 0);
 
 	reset_fake();
 	attrs[TASKSTATS_CMD_ATTR_TGID] = NULL;

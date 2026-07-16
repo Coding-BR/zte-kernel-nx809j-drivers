@@ -4,11 +4,11 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-15T19:21:56.138396+00:00`
+Gerado em: `2026-07-16T19:02:52.629284+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
-| `zte_stats_info` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
+| `zte_stats_info` | `INCOMPLETE` | 9/10 | missing independent_review.json |
 
 ## Regra de leitura
 
