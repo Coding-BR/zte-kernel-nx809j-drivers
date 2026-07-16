@@ -481,7 +481,14 @@ def build_report(
                 }
             )
         else:
-            results.append(analysis)
+            results.append(
+                {
+                    "driver": analysis.get("driver", "unknown"),
+                    "errors": list(analysis.get("errors", [])),
+                    "role": analysis.get("role", "unknown"),
+                    "status": "FAIL",
+                }
+            )
     failures = scope_errors + [
         f"{item.get('driver', 'unknown')}: {error}"
         for item in results

@@ -98,6 +98,37 @@ class ModuleDecompositionTests(unittest.TestCase):
         self.assertEqual(first["manifest_data"], second["manifest_data"])
         self.assertEqual(first["manifest"]["coverage"]["functions"], 8)
 
+    def test_zlog_test_analysis_is_deterministic(self) -> None:
+        targets = MODULE.load_targets(REPO)
+        target = next(
+            item for item in targets["targets"] if item["driver"] == "zlog_test"
+        )
+        first = MODULE.analyze_target(REPO, target)
+        second = MODULE.analyze_target(REPO, target)
+        self.assertEqual(first["status"], "PASS")
+        self.assertEqual(first["index_data"], second["index_data"])
+        self.assertEqual(first["manifest_data"], second["manifest_data"])
+        self.assertEqual(first["manifest"]["coverage"]["functions"], 11)
+
+    def test_failed_analysis_report_is_json_serializable(self) -> None:
+        report = MODULE.build_report(
+            repo=REPO,
+            targets={"future_targets": []},
+            analyses=[
+                {
+                    "driver": "zlog_test",
+                    "errors": ["stale canonical output"],
+                    "index_data": b"internal bytes",
+                    "manifest_path": REPO / "internal-path",
+                    "role": "primary_reconstruction",
+                    "status": "FAIL",
+                }
+            ],
+            scope_errors=[],
+        )
+        MODULE.json_bytes(report)
+        self.assertNotIn("index_data", report["drivers"][0])
+
 
 if __name__ == "__main__":
     unittest.main()
