@@ -1,0 +1,1095 @@
+{
+  "attestation_tool": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\attest_driver_microtasks.py",
+  "driver": "fp_goodix",
+  "generated_utc": "2026-07-16T13:30:30.690604+00:00",
+  "ghidra_export": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock",
+  "schema_version": "1.0",
+  "status": "PASS",
+  "stock": {
+    "path": "private_acquisition/fp_goodix.ko",
+    "published": false,
+    "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  },
+  "tasks": [
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\001_gf_ioctl\\compile.json",
+          "role": "compile",
+          "sha256": "ef503b7d0b987eff5bd00edc0e5aaa1f929cdc1915f7b55b7f5daa7f569ebdaa"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\001_gf_ioctl\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "bdbdeb441425321c18c984398b44b6b4c22977d35fef87b1985b356c88a60d26"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\001_gf_ioctl\\test.json",
+          "role": "test",
+          "sha256": "b3bb4dc07a1ae1b1c6e3daee8dfe3370c3d6cb5a624e2105f3018edcd1ada912"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0000_00100824_gf_ioctl.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0000_00100824_gf_ioctl.c",
+      "id": "001_gf_ioctl",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_ioctl\nEntrada Ghidra: 00100824\nTamanho stock: 1436 bytes\nCategoria: user_abi\nAlvo no fonte: fp_goodix_core.c:gf_ioctl\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0000_00100824_gf_ioctl.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0000_00100824_gf_ioctl.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_ioctl",
+      "status": "PASS",
+      "stock_body_bytes": 1436,
+      "stock_entry": "00100824",
+      "stock_function": "gf_ioctl"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\002_gf_compat_ioctl\\compile.json",
+          "role": "compile",
+          "sha256": "bb3a4af73b493d13c87c9f087261d84f37f7febd8975547a9e85ae4d10700cd6"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\002_gf_compat_ioctl\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "c979c396ee91123ba32c2eccf4608dfcaef19a882154c7317088146da878e61d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\002_gf_compat_ioctl\\test.json",
+          "role": "test",
+          "sha256": "4249f2cc8965c2f1220eb70a9201774d4efc8c8379dc9852272ee8fb6b079348"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0001_00100dc4_gf_compat_ioctl.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0001_00100dc4_gf_compat_ioctl.c",
+      "id": "002_gf_compat_ioctl",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_compat_ioctl\nEntrada Ghidra: 00100dc4\nTamanho stock: 32 bytes\nCategoria: user_abi\nAlvo no fonte: fp_goodix_core.c:gf_compat_ioctl\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0001_00100dc4_gf_compat_ioctl.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0001_00100dc4_gf_compat_ioctl.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_compat_ioctl",
+      "status": "PASS",
+      "stock_body_bytes": 32,
+      "stock_entry": "00100dc4",
+      "stock_function": "gf_compat_ioctl"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\003_gf_open\\compile.json",
+          "role": "compile",
+          "sha256": "3f1e9082dff0079c0aa349faee24a159975a7d62bbb8f4fab07ceec685fb24e0"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\003_gf_open\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "9d684d0f36ce835a1a6e221157f6132f8d579cb5a5ac0d8d385717d8b333aee2"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\003_gf_open\\test.json",
+          "role": "test",
+          "sha256": "2796de51c50f2ff103f371e4e2259d301f71aa74bf1bbe7944cb373c9f6bbc31"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0002_00100de8_gf_open.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0002_00100de8_gf_open.c",
+      "id": "003_gf_open",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_open\nEntrada Ghidra: 00100de8\nTamanho stock: 508 bytes\nCategoria: user_abi\nAlvo no fonte: fp_goodix_core.c:gf_open\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0002_00100de8_gf_open.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0002_00100de8_gf_open.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_open",
+      "status": "PASS",
+      "stock_body_bytes": 508,
+      "stock_entry": "00100de8",
+      "stock_function": "gf_open"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\004_gf_release\\compile.json",
+          "role": "compile",
+          "sha256": "1268313c1110ffb4252cc95f9fe1575a63875c619dee4fa2d4f83283a67e70ef"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\004_gf_release\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "ecd37e88d403181e3be885be9841ee55a3b9f5bd45160b8e81ef6df767aa0fe1"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\004_gf_release\\test.json",
+          "role": "test",
+          "sha256": "5ace89b7c5845a7ecebf8214d53847c85e741962a3257e265f9e5fbcd8db898a"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0003_00100fe8_gf_release.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0003_00100fe8_gf_release.c",
+      "id": "004_gf_release",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_release\nEntrada Ghidra: 00100fe8\nTamanho stock: 240 bytes\nCategoria: user_abi\nAlvo no fonte: fp_goodix_core.c:gf_release\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0003_00100fe8_gf_release.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0003_00100fe8_gf_release.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_release",
+      "status": "PASS",
+      "stock_body_bytes": 240,
+      "stock_entry": "00100fe8",
+      "stock_function": "gf_release"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "async_or_irq",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\005_gf_disable_irq\\compile.json",
+          "role": "compile",
+          "sha256": "051304ead5ac34fb97794cd7b290907ec285df2efbe07a8be17c10bbe882d3e4"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\005_gf_disable_irq\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "babe4e9cef1d4327955d9a6b67f2aa18b8f459ccd65584a2146f42e8d2dd068b"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\005_gf_disable_irq\\test.json",
+          "role": "test",
+          "sha256": "ecbf182a998da87a7ab6d63b21fc7f3511c5f114b4c4c7a802c4dfc666c9190d"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0004_001010d8_gf_disable_irq.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0004_001010d8_gf_disable_irq.c",
+      "id": "005_gf_disable_irq",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_disable_irq\nEntrada Ghidra: 001010d8\nTamanho stock: 64 bytes\nCategoria: async_or_irq\nAlvo no fonte: fp_goodix_core.c:gf_disable_irq\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0004_001010d8_gf_disable_irq.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0004_001010d8_gf_disable_irq.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_disable_irq",
+      "status": "PASS",
+      "stock_body_bytes": 64,
+      "stock_entry": "001010d8",
+      "stock_function": "gf_disable_irq"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "async_or_irq",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\006_gf_enable_irq\\compile.json",
+          "role": "compile",
+          "sha256": "782543fce5c7b558a32067b99ca7b723c261f0e825eee57efd0e499a5594b8ed"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\006_gf_enable_irq\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "872d7fa482bee08725b14fd29c0d2d92fcbf6a9321e5052829bda111148dea5d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\006_gf_enable_irq\\test.json",
+          "role": "test",
+          "sha256": "461c3ef67a02de49fa3c745962db1b4d4db4bcda5a4236b2de682309737ea7af"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0005_00101118_gf_enable_irq.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0005_00101118_gf_enable_irq.c",
+      "id": "006_gf_enable_irq",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_enable_irq\nEntrada Ghidra: 00101118\nTamanho stock: 84 bytes\nCategoria: async_or_irq\nAlvo no fonte: fp_goodix_core.c:gf_enable_irq\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0005_00101118_gf_enable_irq.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0005_00101118_gf_enable_irq.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_enable_irq",
+      "status": "PASS",
+      "stock_body_bytes": 84,
+      "stock_entry": "00101118",
+      "stock_function": "gf_enable_irq"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\007_nav_event_input\\compile.json",
+          "role": "compile",
+          "sha256": "367162c4a5c6d5151b1a041186689fa501f5c164b275e43d100552315f3efde2"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\007_nav_event_input\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "323d2689da7f77e9c2d531bd06666e9298a335abc41d37ea71ea750525dd5263"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\007_nav_event_input\\test.json",
+          "role": "test",
+          "sha256": "78e6d9e4eb206a898a3c75ab7972a972c658a681ac0df41d9ccbce15f6d80651"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0006_0010116c_nav_event_input.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0006_0010116c_nav_event_input.c",
+      "id": "007_nav_event_input",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: nav_event_input\nEntrada Ghidra: 0010116c\nTamanho stock: 464 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:nav_event_input\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0006_0010116c_nav_event_input.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0006_0010116c_nav_event_input.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "nav_event_input",
+      "status": "PASS",
+      "stock_body_bytes": 464,
+      "stock_entry": "0010116c",
+      "stock_function": "nav_event_input"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\008_inline_copy_to_user\\compile.json",
+          "role": "compile",
+          "sha256": "046a5fb3ca50ae312661db89c57ff79e2e0524c4330b7199e7bcbf33fb50e7b1"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\008_inline_copy_to_user\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "aacc2abc96347f18167cf902527cc6c0913c6a1ae3912e4263a328292bc8ea14"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\008_inline_copy_to_user\\test.json",
+          "role": "test",
+          "sha256": "23fdc089545b95d12cc5c9e5f44b0df3a94d6dc9a73be894b38a7ebd9e6b0eeb"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0007_0010133c__inline_copy_to_user.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0007_0010133c__inline_copy_to_user.c",
+      "id": "008_inline_copy_to_user",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: _inline_copy_to_user\nEntrada Ghidra: 0010133c\nTamanho stock: 172 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:gf_ioctl\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0007_0010133c__inline_copy_to_user.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0007_0010133c__inline_copy_to_user.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_ioctl",
+      "status": "PASS",
+      "stock_body_bytes": 172,
+      "stock_entry": "0010133c",
+      "stock_function": "_inline_copy_to_user"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\009_inline_copy_from_user\\compile.json",
+          "role": "compile",
+          "sha256": "b622ec9e647b90ea4850dce8d2181e017cf96150f13bfa940221679ebab3f150"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\009_inline_copy_from_user\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "53912905729d39e7e023ce4cc5eed8fbfcdead453cc8d5404a16384b03110dc5"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\009_inline_copy_from_user\\test.json",
+          "role": "test",
+          "sha256": "c9c39e9b28b0d4b10447460f41ef5bfd3f2a86a16e8dde09b337b669e1a0c3c3"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0008_001013e8__inline_copy_from_user.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0008_001013e8__inline_copy_from_user.c",
+      "id": "009_inline_copy_from_user",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: _inline_copy_from_user\nEntrada Ghidra: 001013e8\nTamanho stock: 236 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:gf_ioctl\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0008_001013e8__inline_copy_from_user.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0008_001013e8__inline_copy_from_user.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_ioctl",
+      "status": "PASS",
+      "stock_body_bytes": 236,
+      "stock_entry": "001013e8",
+      "stock_function": "_inline_copy_from_user"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "async_or_irq",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\010_gf_irq\\compile.json",
+          "role": "compile",
+          "sha256": "4c451cfee28a5fd022de8871c91cb3f98972beea04eb6863655800a6462c8b20"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\010_gf_irq\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "b63135a1738c41bdccff824d846b0d627894c153b2370df33a697ab758e69a15"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\010_gf_irq\\test.json",
+          "role": "test",
+          "sha256": "3385cf02c579822e9a415165b963f55625bde8b6c64fec8acee866531b76fbb8"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0009_001014d8_gf_irq.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0009_001014d8_gf_irq.c",
+      "id": "010_gf_irq",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_irq\nEntrada Ghidra: 001014d8\nTamanho stock: 120 bytes\nCategoria: async_or_irq\nAlvo no fonte: fp_goodix_core.c:gf_irq\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0009_001014d8_gf_irq.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0009_001014d8_gf_irq.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_irq",
+      "status": "PASS",
+      "stock_body_bytes": 120,
+      "stock_entry": "001014d8",
+      "stock_function": "gf_irq"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "binding",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\011_gf_probe\\compile.json",
+          "role": "compile",
+          "sha256": "8bc381fb3e92659bd7478f7719981c0ba215e09bb710e765c931c35dc6f2b2e5"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\011_gf_probe\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "04d6914129c870f50179f0bd085c46ef03421ec0b27b0fc18c203273acf8331d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\011_gf_probe\\test.json",
+          "role": "test",
+          "sha256": "983d7075c8757958bff227b2be6e0e26802c368c5addeec86df2328ddf1a3a96"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0010_00101554_gf_probe.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0010_00101554_gf_probe.c",
+      "id": "011_gf_probe",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_probe\nEntrada Ghidra: 00101554\nTamanho stock: 1012 bytes\nCategoria: binding\nAlvo no fonte: fp_goodix_core.c:gf_probe\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0010_00101554_gf_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0010_00101554_gf_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_probe",
+      "status": "PASS",
+      "stock_body_bytes": 1012,
+      "stock_entry": "00101554",
+      "stock_function": "gf_probe"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "binding",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\012_gf_remove\\compile.json",
+          "role": "compile",
+          "sha256": "9a4d229d089bbb2666290bbfa18ff35bd8a9a640199cef971ad9a9fe5feeb510"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\012_gf_remove\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "9f3541dffb29a65dccfaafff8a1f70ed53feddf452c0dbeb45fa7c1baed56477"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\012_gf_remove\\test.json",
+          "role": "test",
+          "sha256": "913952ea6f4e90f6c86cdc819445105cf9baacb2a72e44ebd545e0066a64d0b0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0011_00101968_gf_remove.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0011_00101968_gf_remove.c",
+      "id": "012_gf_remove",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_remove\nEntrada Ghidra: 00101968\nTamanho stock: 324 bytes\nCategoria: binding\nAlvo no fonte: fp_goodix_core.c:gf_remove\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0011_00101968_gf_remove.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0011_00101968_gf_remove.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_remove",
+      "status": "PASS",
+      "stock_body_bytes": 324,
+      "stock_entry": "00101968",
+      "stock_function": "gf_remove"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\013_goodixfp_init_drm_notifier\\compile.json",
+          "role": "compile",
+          "sha256": "05dc0b3a6c2f8ad5e31aaf5bd722236e82827d04b6ceec5293349d3fe5f33cdd"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\013_goodixfp_init_drm_notifier\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "eb241c3548196747e416c3a284dc0c870c15228a02f7879439235e4c12b00a1b"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\013_goodixfp_init_drm_notifier\\test.json",
+          "role": "test",
+          "sha256": "c53d2a3a0bb2b5f6abf14bd52da2a52549edfc0e6ef856a9cc85229ef659fd83"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0012_00101ac0_goodixfp_init_drm_notifier.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0012_00101ac0_goodixfp_init_drm_notifier.c",
+      "id": "013_goodixfp_init_drm_notifier",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: goodixfp_init_drm_notifier\nEntrada Ghidra: 00101ac0\nTamanho stock: 312 bytes\nCategoria: lifecycle\nAlvo no fonte: fp_goodix_core.c:goodixfp_init_drm_notifier\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0012_00101ac0_goodixfp_init_drm_notifier.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0012_00101ac0_goodixfp_init_drm_notifier.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "goodixfp_init_drm_notifier",
+      "status": "PASS",
+      "stock_body_bytes": 312,
+      "stock_entry": "00101ac0",
+      "stock_function": "goodixfp_init_drm_notifier"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\014_list_del\\compile.json",
+          "role": "compile",
+          "sha256": "2bda20675843b90cac910f97eecbb6800f771444caa335fea96c5d25cffb5997"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\014_list_del\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "74db87888597c3d2638bde93d04dd5ec60f2a202985370647b96449d965d55c7"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\014_list_del\\test.json",
+          "role": "test",
+          "sha256": "03ddd21f72efdfa420e097540ef3feffcecc8c020aad2f0b78c3484fedac2355"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0013_00101bf8_list_del.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0013_00101bf8_list_del.c",
+      "id": "014_list_del",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: list_del\nEntrada Ghidra: 00101bf8\nTamanho stock: 108 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:gf_probe_list_del\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0013_00101bf8_list_del.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0013_00101bf8_list_del.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "gf_probe_list_del",
+      "status": "PASS",
+      "stock_body_bytes": 108,
+      "stock_entry": "00101bf8",
+      "stock_function": "list_del"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\015_goodixfp_drm_get_pannel\\compile.json",
+          "role": "compile",
+          "sha256": "be6ac5e6ffef86fce39b6f384e907a5a6a037c51bccb4e0e20584f4e797673b6"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\015_goodixfp_drm_get_pannel\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "2c449ec4c5c63e6427977f4fc7eb492b8a25c0e0e25998a9c1172d5ce750b235"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\015_goodixfp_drm_get_pannel\\test.json",
+          "role": "test",
+          "sha256": "159a424ac4123a6720eab06bb45d097e10d366dc0b0ba9e0bb3d32f8a3b66f0c"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0014_00101c64_goodixfp_drm_get_pannel.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0014_00101c64_goodixfp_drm_get_pannel.c",
+      "id": "015_goodixfp_drm_get_pannel",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: goodixfp_drm_get_pannel\nEntrada Ghidra: 00101c64\nTamanho stock: 336 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:goodixfp_drm_get_pannel\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0014_00101c64_goodixfp_drm_get_pannel.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0014_00101c64_goodixfp_drm_get_pannel.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "goodixfp_drm_get_pannel",
+      "status": "PASS",
+      "stock_body_bytes": 336,
+      "stock_entry": "00101c64",
+      "stock_function": "goodixfp_drm_get_pannel"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\016_goodix_fb_state_chg_callback\\compile.json",
+          "role": "compile",
+          "sha256": "8f47837e9ccecd4904c52f86a8d3ff016ef0a53024d2809c82535cf38f9b178a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\016_goodix_fb_state_chg_callback\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "bda41fde94451f49fc0f563dbedd43ae9aed16dbc5fc9ffd7d1a12b88f2848d0"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\016_goodix_fb_state_chg_callback\\test.json",
+          "role": "test",
+          "sha256": "1e5b8f4ea3bcca64ed0c1d6dbde5fe1a5943158921da4cd3d9343774143bc7f7"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0015_00101db8_goodix_fb_state_chg_callback.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0015_00101db8_goodix_fb_state_chg_callback.c",
+      "id": "016_goodix_fb_state_chg_callback",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: goodix_fb_state_chg_callback\nEntrada Ghidra: 00101db8\nTamanho stock: 336 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:goodix_fb_state_chg_callback\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0015_00101db8_goodix_fb_state_chg_callback.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0015_00101db8_goodix_fb_state_chg_callback.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "goodix_fb_state_chg_callback",
+      "status": "PASS",
+      "stock_body_bytes": 336,
+      "stock_entry": "00101db8",
+      "stock_function": "goodix_fb_state_chg_callback"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\017_sendnlmsg\\compile.json",
+          "role": "compile",
+          "sha256": "23f029090724d93642959ca65c9522a5c254ba0f6501a1445d48452f99760072"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\017_sendnlmsg\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "65dcfa41608dee99d3bc7493da5eb63474855003f70be9008838cc2941136072"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\017_sendnlmsg\\test.json",
+          "role": "test",
+          "sha256": "17918fa863405bf3cb437d1247d2245f98dae3ecdf5f4de14d302deee3aa6060"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0016_00101f1c_sendnlmsg.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0016_00101f1c_sendnlmsg.c",
+      "id": "017_sendnlmsg",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: sendnlmsg\nEntrada Ghidra: 00101f1c\nTamanho stock: 268 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_netlink.c:sendnlmsg\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0016_00101f1c_sendnlmsg.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0016_00101f1c_sendnlmsg.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_netlink.c",
+      "source_function": "sendnlmsg",
+      "status": "PASS",
+      "stock_body_bytes": 268,
+      "stock_entry": "00101f1c",
+      "stock_function": "sendnlmsg"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\018_netlink_init\\compile.json",
+          "role": "compile",
+          "sha256": "623e6d702e9fec9c4791ac656d5c9ac9b94e681962144dd5f5677ba12991d488"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\018_netlink_init\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "fce615925eb87448cff6bb2fa6432077851eb1cbcf3300271bfaf19d90247994"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\018_netlink_init\\test.json",
+          "role": "test",
+          "sha256": "1d77b21bc138a79bcbb7036cb2d5243dc4d198133c6d1017fa9298f49eb56e18"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0017_0010202c_netlink_init.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0017_0010202c_netlink_init.c",
+      "id": "018_netlink_init",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: netlink_init\nEntrada Ghidra: 0010202c\nTamanho stock: 152 bytes\nCategoria: lifecycle\nAlvo no fonte: fp_goodix_netlink.c:netlink_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0017_0010202c_netlink_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0017_0010202c_netlink_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_netlink.c",
+      "source_function": "netlink_init",
+      "status": "PASS",
+      "stock_body_bytes": 152,
+      "stock_entry": "0010202c",
+      "stock_function": "netlink_init"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\019_nl_data_ready\\compile.json",
+          "role": "compile",
+          "sha256": "fad032d3e2f2dce015321fd9c75972e9a38633765236627b5775f5b367e505e6"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\019_nl_data_ready\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "c9044c9a3646a394c229d04e52c5800d6ddd04ffe1502ea7b633c4d611c20943"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\019_nl_data_ready\\test.json",
+          "role": "test",
+          "sha256": "b0cf3de0fe94fd5d7e6d4aa82ce0fbf789e5967978fc33626ecd636886b29d07"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0018_001020c8_nl_data_ready.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0018_001020c8_nl_data_ready.c",
+      "id": "019_nl_data_ready",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: nl_data_ready\nEntrada Ghidra: 001020c8\nTamanho stock: 208 bytes\nCategoria: user_abi\nAlvo no fonte: fp_goodix_netlink.c:nl_data_ready\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0018_001020c8_nl_data_ready.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0018_001020c8_nl_data_ready.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_netlink.c",
+      "source_function": "nl_data_ready",
+      "status": "PASS",
+      "stock_body_bytes": 208,
+      "stock_entry": "001020c8",
+      "stock_function": "nl_data_ready"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\020_netlink_exit\\compile.json",
+          "role": "compile",
+          "sha256": "d6a9ce4a67260ed480694f53e60c6e3da5770c43b3ef73093c52bfdf5ea1fc16"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\020_netlink_exit\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "8c4465b9ccd5b3dc783398e4a187c39db0f380dc70d2d1ea1fa17742f1916ed1"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\020_netlink_exit\\test.json",
+          "role": "test",
+          "sha256": "eaddd273e0efe1d3708350c4cd166a7af90d2bb2b7fdd941369b24e21797b1cf"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0019_001021a8_netlink_exit.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0019_001021a8_netlink_exit.c",
+      "id": "020_netlink_exit",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: netlink_exit\nEntrada Ghidra: 001021a8\nTamanho stock: 64 bytes\nCategoria: lifecycle\nAlvo no fonte: fp_goodix_netlink.c:netlink_exit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0019_001021a8_netlink_exit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0019_001021a8_netlink_exit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_netlink.c",
+      "source_function": "netlink_exit",
+      "status": "PASS",
+      "stock_body_bytes": 64,
+      "stock_entry": "001021a8",
+      "stock_function": "netlink_exit"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\021_zte_goodix_pinctrl_init\\compile.json",
+          "role": "compile",
+          "sha256": "29b7fe4cffa37295e90ae3006d835664e3a66faf53ac6d27b03de4704da13b3a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\021_zte_goodix_pinctrl_init\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "2ecfb16361e1ad53c98e31314b48a95fac872152eb0fa3dae4d233384087f451"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\021_zte_goodix_pinctrl_init\\test.json",
+          "role": "test",
+          "sha256": "aa938fb045160a24896b8400ec5802866eef03580601ad26b0d10fc1b9d123b2"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0020_001021ec_zte_goodix_pinctrl_init.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0020_001021ec_zte_goodix_pinctrl_init.c",
+      "id": "021_zte_goodix_pinctrl_init",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: zte_goodix_pinctrl_init\nEntrada Ghidra: 001021ec\nTamanho stock: 208 bytes\nCategoria: lifecycle\nAlvo no fonte: fp_goodix_platform.c:zte_goodix_pinctrl_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0020_001021ec_zte_goodix_pinctrl_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0020_001021ec_zte_goodix_pinctrl_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "zte_goodix_pinctrl_init",
+      "status": "PASS",
+      "stock_body_bytes": 208,
+      "stock_entry": "001021ec",
+      "stock_function": "zte_goodix_pinctrl_init"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\022_zte_goodix_pinctrl_select\\compile.json",
+          "role": "compile",
+          "sha256": "9afcfc032dab206bc2cda5a5750482135ff38834f8b1c1d3d09784a24028ee67"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\022_zte_goodix_pinctrl_select\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "6d78bcd1d79be74ce474c0668d88a1c18b8a29be5cfbe885fb2aa107c8b785a8"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\022_zte_goodix_pinctrl_select\\test.json",
+          "role": "test",
+          "sha256": "74bef19cd0bfb5e187571d4e5cbcec1486c4a13dfea84a742cb80986731640c2"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0021_001022c0_zte_goodix_pinctrl_select.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0021_001022c0_zte_goodix_pinctrl_select.c",
+      "id": "022_zte_goodix_pinctrl_select",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: zte_goodix_pinctrl_select\nEntrada Ghidra: 001022c0\nTamanho stock: 184 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_platform.c:zte_goodix_pinctrl_select\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0021_001022c0_zte_goodix_pinctrl_select.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0021_001022c0_zte_goodix_pinctrl_select.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "zte_goodix_pinctrl_select",
+      "status": "PASS",
+      "stock_body_bytes": 184,
+      "stock_entry": "001022c0",
+      "stock_function": "zte_goodix_pinctrl_select"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\023_gf_parse_dts\\compile.json",
+          "role": "compile",
+          "sha256": "b8cdc36a9fedce6b39b3184336485535ba9e729b63639245901c8eda0653f493"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\023_gf_parse_dts\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "5498504c6d1620a250aa39c2e67e26c9a9583d3c898435ce3218ea0186f00e3a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\023_gf_parse_dts\\test.json",
+          "role": "test",
+          "sha256": "af015e7c97c5356a4a8d7b1dc8ffc9ee2f215be3fb0d0375ba1a69a9c7bfd26b"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0022_0010237c_gf_parse_dts.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0022_0010237c_gf_parse_dts.c",
+      "id": "023_gf_parse_dts",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_parse_dts\nEntrada Ghidra: 0010237c\nTamanho stock: 828 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_platform.c:gf_parse_dts\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0022_0010237c_gf_parse_dts.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0022_0010237c_gf_parse_dts.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "gf_parse_dts",
+      "status": "PASS",
+      "stock_body_bytes": 828,
+      "stock_entry": "0010237c",
+      "stock_function": "gf_parse_dts"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\024_gf_cleanup\\compile.json",
+          "role": "compile",
+          "sha256": "9ff3f2930f8e929aed43d3e3a2db9725f1d6004752e8e0ae112967609af097aa"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\024_gf_cleanup\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "85a59bd44ad0f153c2cc41bea98bf2013c7083d99b855b439cc3cb7ed0a8b4d3"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\024_gf_cleanup\\test.json",
+          "role": "test",
+          "sha256": "873bf0f51fa120ea6283d3540a3fe6cd65175916cc16cb821d10b2d2b629e4eb"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0023_001026bc_gf_cleanup.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0023_001026bc_gf_cleanup.c",
+      "id": "024_gf_cleanup",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_cleanup\nEntrada Ghidra: 001026bc\nTamanho stock: 172 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_platform.c:gf_cleanup\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0023_001026bc_gf_cleanup.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0023_001026bc_gf_cleanup.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "gf_cleanup",
+      "status": "PASS",
+      "stock_body_bytes": 172,
+      "stock_entry": "001026bc",
+      "stock_function": "gf_cleanup"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\025_gf_power_on\\compile.json",
+          "role": "compile",
+          "sha256": "7dd1ba46239ba500706bb479f76747e282b827a431f0cab9521b96d4b004f7c4"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\025_gf_power_on\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "607fb6961a56aae11ddc1426a8b13ae16e0e2927132c9865065056ce34d8f46a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\025_gf_power_on\\test.json",
+          "role": "test",
+          "sha256": "19f5d3cf189c9cbc007230dc329ce68dfa8079e9d2335402fdfe09383253c9f5"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0024_0010276c_gf_power_on.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0024_0010276c_gf_power_on.c",
+      "id": "025_gf_power_on",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_power_on\nEntrada Ghidra: 0010276c\nTamanho stock: 160 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_platform.c:gf_power_on\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0024_0010276c_gf_power_on.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0024_0010276c_gf_power_on.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "gf_power_on",
+      "status": "PASS",
+      "stock_body_bytes": 160,
+      "stock_entry": "0010276c",
+      "stock_function": "gf_power_on"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\026_gf_power_off\\compile.json",
+          "role": "compile",
+          "sha256": "a64779836e7a32762c2be9260a29c98f914bb031a78a764080bec350973915bb"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\026_gf_power_off\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "556676856d90c272b1fe0860b98ca31ac63142b2e9817b6bc96684e8a40478a3"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\026_gf_power_off\\test.json",
+          "role": "test",
+          "sha256": "f342725027ea108ffafbd9cce3ab623a19518642cf9de6edf07b584cca595108"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0025_00102810_gf_power_off.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0025_00102810_gf_power_off.c",
+      "id": "026_gf_power_off",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_power_off\nEntrada Ghidra: 00102810\nTamanho stock: 160 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_platform.c:gf_power_off\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0025_00102810_gf_power_off.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0025_00102810_gf_power_off.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "gf_power_off",
+      "status": "PASS",
+      "stock_body_bytes": 160,
+      "stock_entry": "00102810",
+      "stock_function": "gf_power_off"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\027_gf_hw_reset\\compile.json",
+          "role": "compile",
+          "sha256": "980e0aebadcb1e4df7105381792168d38c8fd8e297a0b0f6062826d795c74032"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\027_gf_hw_reset\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "ba88ea7eadf4bc495e412fb87eab36cd933cf7c633c274356968e038a875f3f9"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\027_gf_hw_reset\\test.json",
+          "role": "test",
+          "sha256": "7909df9435a8fbb8d68e954c0b9b82374bf66a8b59383918d9cc2431c11acab4"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0026_001028b4_gf_hw_reset.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0026_001028b4_gf_hw_reset.c",
+      "id": "027_gf_hw_reset",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_hw_reset\nEntrada Ghidra: 001028b4\nTamanho stock: 184 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_platform.c:gf_hw_reset\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0026_001028b4_gf_hw_reset.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0026_001028b4_gf_hw_reset.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "gf_hw_reset",
+      "status": "PASS",
+      "stock_body_bytes": 184,
+      "stock_entry": "001028b4",
+      "stock_function": "gf_hw_reset"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "async_or_irq",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\028_gf_irq_num\\compile.json",
+          "role": "compile",
+          "sha256": "aa2916c226b2d8be430f303b3df938cb89295f232eec8bf6efc23681f07c5c30"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\028_gf_irq_num\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "7ac401911d4dc4d03fc7795747eb0f2909618795a842c16b8d9e00cb440b423a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\028_gf_irq_num\\test.json",
+          "role": "test",
+          "sha256": "9c100096a45b23d4d467454383125e9e532efc33282af8ddff54c38c31263eca"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0027_00102970_gf_irq_num.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0027_00102970_gf_irq_num.c",
+      "id": "028_gf_irq_num",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: gf_irq_num\nEntrada Ghidra: 00102970\nTamanho stock: 60 bytes\nCategoria: async_or_irq\nAlvo no fonte: fp_goodix_platform.c:gf_irq_num\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0027_00102970_gf_irq_num.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0027_00102970_gf_irq_num.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_platform.c",
+      "source_function": "gf_irq_num",
+      "status": "PASS",
+      "stock_body_bytes": 60,
+      "stock_entry": "00102970",
+      "stock_function": "gf_irq_num"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\029_init_module\\compile.json",
+          "role": "compile",
+          "sha256": "817b70700417a462c454dfabcecc4dc9333d0b0fbd6ec25033835c5cabf9156d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\029_init_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "e0cfca1ff6aea54533a9e8dc9f95f8df295dc5295ecdb227d9ebed8c8aa6ef91"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\029_init_module\\test.json",
+          "role": "test",
+          "sha256": "24a18c542f6802169402e1efa1abc5712bf4b3aaf281ddc260bf8b986d0303f7"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0028_001029b0_init_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0028_001029b0_init_module.c",
+      "id": "029_init_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: init_module\nEntrada Ghidra: 001029b0\nTamanho stock: 276 bytes\nCategoria: lifecycle\nAlvo no fonte: fp_goodix_core.c:zte_fp_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0028_001029b0_init_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0028_001029b0_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "zte_fp_init",
+      "status": "PASS",
+      "stock_body_bytes": 276,
+      "stock_entry": "001029b0",
+      "stock_function": "init_module"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\030_cleanup_module\\compile.json",
+          "role": "compile",
+          "sha256": "4eb7b347bdba57b5ff6816c3db596f7d0dbe8de05d5dcb9eb5945a714f54729e"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\030_cleanup_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "4b70e9682a5b7f4648bc285eb5cb492c52ec62f104232926bf2ac0fc040cb463"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\fp_goodix\\microtasks\\030_cleanup_module\\test.json",
+          "role": "test",
+          "sha256": "afb8d4a2ad67ba6bcc8a1f4ae177023da9a10c8946e1ef3412f0cc909540ff88"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0029_00102ac8_cleanup_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0029_00102ac8_cleanup_module.c",
+      "id": "030_cleanup_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: cleanup_module\nEntrada Ghidra: 00102ac8\nTamanho stock: 88 bytes\nCategoria: lifecycle\nAlvo no fonte: fp_goodix_core.c:zte_fp_exit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0029_00102ac8_cleanup_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0029_00102ac8_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "fp_goodix_core.c",
+      "source_function": "zte_fp_exit",
+      "status": "PASS",
+      "stock_body_bytes": 88,
+      "stock_entry": "00102ac8",
+      "stock_function": "cleanup_module"
+    }
+  ]
+}

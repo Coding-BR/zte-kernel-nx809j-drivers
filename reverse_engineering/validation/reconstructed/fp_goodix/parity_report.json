@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "status": "INCOMPLETO",
+  "driver": "fp_goodix",
+  "scope": "offline static parity; electrical and runtime behavior are excluded",
+  "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "candidate_sha256": "d114e25b29fc39831c4d0ea565a1a30fba526d118031942be5d2e10f797f7e81",
+  "comparisons": [
+    {
+      "surface": "ELF, modinfo, KMI and reproducible build",
+      "result": "PASS",
+      "evidence": "driver_audit.json"
+    },
+    {
+      "surface": "KCFI",
+      "result": "PASS",
+      "evidence": "kcfi_comparison.json records 23/23 instrumented functions"
+    },
+    {
+      "surface": "call graph",
+      "result": "PASS",
+      "evidence": "FP_GOODIX_ZTE_FINGERPRINT_CALLGRAPH_COMPARISON.json records 30/30 functions"
+    },
+    {
+      "surface": "AArch64 function identity",
+      "result": "INCOMPLETO",
+      "evidence": "assembly_comparison.json records 26/30 exact functions",
+      "blockers": ["gf_ioctl", "gf_open", "gf_parse_dts", "gf_probe"]
+    },
+    {
+      "surface": "host behavior",
+      "result": "PASS",
+      "evidence": "microtask_audit.json verifies 30/30 hash-backed microtasks"
+    },
+    {
+      "surface": "hardware",
+      "result": "DEFERRED",
+      "evidence": "hardware_validation.json"
+    }
+  ],
+  "blockers": [
+    "four functions are not yet opcode-identical",
+    "independent review is pending",
+    "controlled NX809J hardware validation is deferred"
+  ]
+}

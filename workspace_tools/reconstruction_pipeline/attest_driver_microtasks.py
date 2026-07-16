@@ -92,7 +92,36 @@ def parse_args() -> argparse.Namespace:
         help="direct-call function without an indirect KCFI boundary; repeat as needed",
     )
     parser.add_argument("--engineering-root", type=Path, default=engineering_root)
+    parser.add_argument(
+        "--curated-root",
+        type=Path,
+        help="driver source root; supports the public repository layout",
+    )
+    parser.add_argument(
+        "--validation-root",
+        type=Path,
+        help="per-driver evidence root; supports the public repository layout",
+    )
     return parser.parse_args()
+
+
+def resolve_layout(args: argparse.Namespace) -> tuple[Path, Path, Path]:
+    engineering_root = args.engineering_root.resolve()
+    curated_root = (
+        args.curated_root.resolve()
+        if args.curated_root
+        else engineering_root / "curated"
+    )
+    validation_base = (
+        args.validation_root.resolve()
+        if args.validation_root
+        else engineering_root / "validation"
+    )
+    if curated_root.name == "reconstructed" and curated_root.parent.name == "drivers":
+        workspace_root = curated_root.parents[2]
+    else:
+        workspace_root = engineering_root.parent
+    return curated_root, validation_base, workspace_root
 
 
 def require_build(report: dict[str, Any], driver: str) -> dict[str, Any]:
@@ -121,10 +150,9 @@ def require_build(report: dict[str, Any], driver: str) -> dict[str, Any]:
 
 def main() -> int:
     args = parse_args()
-    engineering_root = args.engineering_root.resolve()
-    workspace_root = engineering_root.parent
-    driver_root = engineering_root / "curated" / args.driver
-    validation_root = engineering_root / "validation" / args.driver
+    curated_root, validation_base, workspace_root = resolve_layout(args)
+    driver_root = curated_root / args.driver
+    validation_root = validation_base / args.driver
     manifest_path = driver_root / "MICROTASKS.json"
     map_path = driver_root / "reconstruction_map.json"
 

@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "fp_goodix",
+  "mode": "offline_read_only",
+  "risk": "high: fingerprint IRQ, input, regulator, GPIO, DRM notifier and Netlink paths can affect boot stability and biometric input",
+  "rollback": "No device operation is authorized in this cycle. A future session must capture the stock module and hashes, stop userspace consumers, unload or unbind in dependency order, load the candidate, collect logs, then restore the stock module on any deviation.",
+  "stop_conditions": [
+    "ADB instability or unexpected reboot",
+    "module reference count is nonzero before unload",
+    "KASAN, KCSAN, CFI, BUG, Oops or panic",
+    "fingerprint input, regulator, IRQ or DRM notifier regression",
+    "stock rollback cannot be proven before the first mutation"
+  ],
+  "hardware_authorized": false,
+  "evidence": [
+    "kernel_development/drivers/reconstructed/fp_goodix/STATUS.md",
+    "kernel_development/drivers/reconstructed/fp_goodix/ASSEMBLY_STATUS.md"
+  ]
+}
