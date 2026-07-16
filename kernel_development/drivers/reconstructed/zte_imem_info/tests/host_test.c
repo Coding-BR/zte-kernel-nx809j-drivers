@@ -134,18 +134,44 @@ static void test_board_id(void)
 
 static void test_ddr_id(void)
 {
+	static const struct {
+		u32 id;
+		const char *name;
+	} type_cases[] = {
+		{ 0, "LPDDR1" },
+		{ 1, "UNKNOWN" },
+		{ 2, "LPDDR2" },
+		{ 3, "PCDDR3" },
+		{ 4, "PCDDR4" },
+		{ 5, "LPDDR3" },
+		{ 6, "LPDDR4" },
+		{ 7, "LPDDR4X" },
+		{ 8, "LPDDR5" },
+		{ 9, "LPDDR5X" },
+		{ 10, "UNKNOWN" },
+		{ ~0U, "UNKNOWN" },
+	};
 	struct device_node nodes[] = {
 		{ .compatible = "qcom,msm-imem-ddr_memory_manufacture", .value = 1 },
 		{ .compatible = "qcom,msm-imem-ddr_memory_type", .value = 8 },
 		{ .compatible = "qcom,msm-imem-ddr_memory_size", .value = 16384 },
 	};
 	struct seq_file seq = { 0 };
+	char expected[64];
+	size_t index;
 
 	reset_fake();
 	fake_nodes = nodes;
 	fake_node_count = ARRAY_SIZE(nodes);
-	EXPECT(ddr_id_read_proc(&seq, NULL) == 0);
-	EXPECT(!strcmp(seq.buffer, "SAMSUNG-NA-NA-16GB-LPDDR5\n"));
+	for (index = 0; index < ARRAY_SIZE(type_cases); index++) {
+		nodes[1].value = type_cases[index].id;
+		memset(&seq, 0, sizeof(seq));
+		EXPECT(ddr_id_read_proc(&seq, NULL) == 0);
+		snprintf(expected, sizeof(expected), "SAMSUNG-NA-NA-16GB-%s\n",
+			 type_cases[index].name);
+		EXPECT(!strcmp(seq.buffer, expected));
+	}
+
 	nodes[0].value = 99;
 	nodes[1].value = 99;
 	memset(&seq, 0, sizeof(seq));

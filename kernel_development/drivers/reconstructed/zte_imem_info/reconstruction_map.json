@@ -34,9 +34,11 @@
       "source_function": "ddr_id_read_proc",
       "evidence": [
         "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0002_0010025c_ddr_id_read_proc.c",
-        "runs/NX809J-20260711T011653Z/02_normalized/modules/zte_imem_info.ko/readelf.txt"
+        "runs/NX809J-20260711T011653Z/02_normalized/modules/zte_imem_info.ko/readelf.txt",
+        "reverse_engineering/validation/reconstructed/zte_imem_info/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/zte_imem_info/ddr_id_read_proc_semantic_equivalence.json"
       ],
-      "review_notes": "Maps DDR manufacturer, type and size reporting. The exact stock DDR type table was restored from the .rela.rodata pointer array.",
+      "review_notes": "Maps DDR manufacturer, type and size reporting. A sparse switch for values 0 and 2..9 reproduces the stock anonymous pointer table at .rodata+0xf8. Strict comparison retains one two-opcode codegen delta; the separate semantic report proves the unsigned predicates equivalent without claiming binary identity.",
       "status": "reviewed"
     },
     {

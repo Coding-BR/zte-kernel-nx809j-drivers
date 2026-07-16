@@ -70,25 +70,6 @@ static const char *ddr_manufacturer_name(unsigned int id)
 }
 
 /*
- * DDR type ID to string mapping.
- * Index into type name array (valid range 0-9).
- */
-static const char * const ddr_type_names[] = {
-	"LPDDR1",     /* 0 */
-	"UNKNOWN",    /* 1 */
-	"LPDDR2",     /* 2 */
-	"PCDDR3",     /* 3 */
-	"PCDDR4",     /* 4 */
-	"LPDDR3",     /* 5 */
-	"LPDDR4",     /* 6 */
-	"LPDDR4X",    /* 7 */
-	"LPDDR5",     /* 8 */
-	"LPDDR5X",    /* 9 */
-};
-
-#define DDR_TYPE_COUNT ARRAY_SIZE(ddr_type_names)
-
-/*
  * Helper: find a compatible DT node, iomap it, and return the u32 value.
  * Returns 0 on failure and logs the error.
  */
@@ -133,8 +114,38 @@ static int ddr_id_read_proc(struct seq_file *m, void *v)
 
 	/* DDR Type */
 	if (imem_read_u32("qcom,msm-imem-ddr_memory_type", &type_id) == 0) {
-		if (type_id < DDR_TYPE_COUNT)
-			type_name = ddr_type_names[type_id];
+		switch (type_id) {
+		case 0:
+			type_name = "LPDDR1";
+			break;
+		case 2:
+			type_name = "LPDDR2";
+			break;
+		case 3:
+			type_name = "PCDDR3";
+			break;
+		case 4:
+			type_name = "PCDDR4";
+			break;
+		case 5:
+			type_name = "LPDDR3";
+			break;
+		case 6:
+			type_name = "LPDDR4";
+			break;
+		case 7:
+			type_name = "LPDDR4X";
+			break;
+		case 8:
+			type_name = "LPDDR5";
+			break;
+		case 9:
+			type_name = "LPDDR5X";
+			break;
+		default:
+			type_name = "UNKNOWN";
+			break;
+		}
 	}
 
 	/* DDR Size (value in MB from IMEM, converted to GB) */
