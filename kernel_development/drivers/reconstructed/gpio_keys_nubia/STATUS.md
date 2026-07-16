@@ -38,18 +38,27 @@ superficie de 164 relocacoes estao presentes, mas o candidato mede 3608 bytes e
 de especializacao/inlining nas duas saidas frias de erro do descritor GPIO; nao
 sera escondida com padding, Assembly manual ou declaracao prematura de 100%.
 
+Oito formas C alternativas foram compiladas e rejeitadas de maneira controlada.
+Duas igualaram os totais `3600/900/164`, mas falharam em opcodes e na ordem das
+relocacoes; a matriz impede que coincidencia de contagem seja tratada como
+paridade.
+
 ## Proxima ordem de trabalho
 
 1. Reproduzir as duas saidas frias do `probe` sem estado artificial na pilha.
-2. Reexecutar Assembly 24/24, KCFI, imports, 31 testes Python e ambos harnesses.
-3. Repetir dois builds limpos e atualizar a atestacao somente se todos os gates
+2. Segmentar os helpers inlined por limites de chamada e comparar seus blocos
+   basicos antes de testar novas formas C.
+3. Reexecutar Assembly 24/24, KCFI, imports, 31 testes Python e ambos harnesses.
+4. Repetir dois builds limpos e atualizar a atestacao somente se todos os gates
    estaticos permanecerem verdes.
-4. Planejar validacao controlada em hardware separadamente, com rollback.
+5. Planejar validacao controlada em hardware separadamente, com rollback.
 
 Evidencias principais:
 
 - `kernel_development/drivers/reconstructed/gpio_keys_nubia/STOCK_LAYOUT_STAGE3.md`
+- `kernel_development/drivers/reconstructed/gpio_keys_nubia/PROBE_VARIANT_MATRIX.md`
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/probe_variant_matrix.json`
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_kcfi_comparison.json`
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_symbol_inventory.json`
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage3_harness_report.json`
