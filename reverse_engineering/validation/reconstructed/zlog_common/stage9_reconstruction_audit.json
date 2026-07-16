@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "driver": "zlog_common",
+  "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "candidate_sha256": "7fc5eb558f7b893e10a8901ed2d774823aac1780052b8997883e9f4a37ed7173",
+  "source_sha256": "d3931f63cc79b01cee1cd889cf6a07c685a9b060d05779a3d285aa5a99318215",
+  "verdict": "INCOMPLETE",
+  "policy": {
+    "source_of_truth": "local ROM ELF plus local Ghidra P-Code, pseudocode and AArch64 assembly",
+    "static_verified_is_not_equivalence": true,
+    "hardware_verified": false,
+    "independent_review": "PENDING"
+  },
+  "gates": {
+    "stock_corpus": "PASS",
+    "source_map": "PASS",
+    "reproducible_build": "PASS",
+    "elf_kmi": "PASS",
+    "kcfi": "PASS",
+    "host_harness": "PASS",
+    "microtasks": "PASS",
+    "strict_assembly": "PARTIAL",
+    "independent_review": "PENDING",
+    "hardware": "DEFERRED"
+  },
+  "counts": {
+    "functions": 13,
+    "strict_assembly_matches": 9,
+    "section_matches": 13,
+    "symbol_size_matches": 12,
+    "relocation_matches": 11,
+    "kcfi_applicable": 12,
+    "kcfi_matches": 12,
+    "undefined_imports_stock": 31,
+    "undefined_imports_candidate": 31,
+    "microtasks_attested": 13
+  },
+  "strict_matches": [
+    "init_module",
+    "zlog_client_notify",
+    "zlog_comm_create_ctrl_dev",
+    "zlog_comm_ioctl",
+    "zlog_comm_open",
+    "zlog_comm_read",
+    "zlog_comm_release",
+    "zlog_comm_write",
+    "zlog_reset_client"
+  ],
+  "residuals": [
+    {"function": "zlog_client_record", "stock_size": 404, "candidate_size": 404, "stock_blocks": 20, "candidate_blocks": 20, "stock_calls": 7, "candidate_calls": 7, "mnemonic_ratio": 0.9405940594059405},
+    {"function": "zlog_handle_work", "stock_size": 1036, "candidate_size": 1036, "stock_blocks": 26, "candidate_blocks": 26, "stock_calls": 32, "candidate_calls": 32, "mnemonic_ratio": 0.9806949806949807},
+    {"function": "zlog_register_client", "stock_size": 828, "candidate_size": 816, "stock_blocks": 38, "candidate_blocks": 34, "stock_calls": 26, "candidate_calls": 26, "mnemonic_ratio": 0.8759124087591241},
+    {"function": "zlog_unregister_client", "stock_size": 312, "candidate_size": 312, "stock_blocks": 14, "candidate_blocks": 14, "stock_calls": 5, "candidate_calls": 5, "mnemonic_ratio": 0.8974358974358975}
+  ],
+  "evidence": {
+    "assembly": "reverse_engineering/validation/reconstructed/zlog_common/assembly_comparison.json",
+    "candidate_assembly": "reverse_engineering/validation/reconstructed/zlog_common/candidate_assembly/manifest.json",
+    "build": "reverse_engineering/validation/reconstructed/zlog_common/driver_build_audit.json",
+    "cfg": "reverse_engineering/validation/reconstructed/zlog_common/cfg",
+    "host": "reverse_engineering/validation/reconstructed/zlog_common/host_test_report.json",
+    "kcfi": "reverse_engineering/validation/reconstructed/zlog_common/kcfi_type_comparison.json",
+    "microtasks": "reverse_engineering/validation/reconstructed/zlog_common/microtask_audit.json",
+    "symbols": "reverse_engineering/validation/reconstructed/zlog_common/symbol_inventory.json"
+  }
+}

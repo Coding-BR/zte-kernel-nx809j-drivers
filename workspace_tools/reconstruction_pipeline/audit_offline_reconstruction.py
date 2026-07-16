@@ -521,8 +521,13 @@ def kcfi_gate(validation_dir: Path, stock_sha: str | None, candidate_sha: str | 
 
 def find_build_result(validation_dir: Path, driver: str, candidate_sha: str | None) -> tuple[Path | None, dict[str, Any] | None]:
     preferred = validation_dir / "offline_static" / "build_audit.json"
+    discovered = {
+        path
+        for pattern in ("driver_audit*.json", "driver_build_audit*.json")
+        for path in validation_dir.glob(pattern)
+    }
     candidates = [preferred] + sorted(
-        validation_dir.glob("driver_audit*.json"),
+        discovered,
         key=lambda path: path.stat().st_mtime,
         reverse=True,
     )
@@ -591,7 +596,7 @@ def independent_review_gate(validation_dir: Path, candidate_sha: str | None) -> 
     payload = result["details"]
     if payload.get("implementer") and payload.get("implementer") == payload.get("reviewer"):
         result["blockers"].append("reviewer equals implementer")
-    if payload.get("candidate_sha256") != candidate_sha:
+    if path.is_file() and payload.get("candidate_sha256") != candidate_sha:
         result["blockers"].append("review targets another candidate SHA-256")
     result["blockers"] = sorted(set(result["blockers"]))
     result["status"] = "PASS" if not result["blockers"] else "INCOMPLETE"

@@ -106,7 +106,7 @@ static bool test_init_and_control_device(void)
 	REQUIRE(g_zlog_server.miscdev.fops == &zlog_comm_fops);
 	REQUIRE(host_misc_calls == 1);
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++)
-		REQUIRE(g_zlog_server.clients[i].client_lock.initialized == 1);
+		REQUIRE(g_zlog_server.client_list[i].client_lock.initialized == 1);
 
 	reset_host();
 	host_fail_misc = 1;
@@ -127,7 +127,7 @@ static bool test_register_record_notify_and_worker(void)
 	REQUIRE(zlog_common_init() == 0);
 	REQUIRE(zlog_register_client(NULL) == NULL);
 	client = zlog_register_client(&module);
-	REQUIRE(client == &g_zlog_server.clients[0]);
+	REQUIRE(client == &g_zlog_server.client_list[0]);
 	REQUIRE(client->registered == 1);
 	REQUIRE(client->client_id == 0);
 	REQUIRE(client->module_no == 7);
@@ -201,7 +201,7 @@ static bool test_registration_limits_and_allocation(void)
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++) {
 		snprintf(names[i], sizeof(names[i]), "client-%u", i);
 		modules[i] = module_info(1000 + i, names[i]);
-		REQUIRE(zlog_register_client(&modules[i]) == &g_zlog_server.clients[i]);
+		REQUIRE(zlog_register_client(&modules[i]) == &g_zlog_server.client_list[i]);
 	}
 	modules[ZLOG_CLIENT_MAX] = module_info(5000, "overflow");
 	REQUIRE(zlog_register_client(&modules[ZLOG_CLIENT_MAX]) == NULL);

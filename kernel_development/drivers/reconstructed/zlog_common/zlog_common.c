@@ -25,7 +25,7 @@ extern ssize_t zlog_write_internal(const char *buffer, size_t count);
 static struct zlog_server g_zlog_server;
 
 static void zlog_handle_work(struct work_struct *work);
-static noinline void zlog_comm_create_ctrl_dev(void);
+static noinline void __init zlog_comm_create_ctrl_dev(void);
 
 void zlog_client_notify(struct zlog_client *client, int event)
 {
@@ -112,7 +112,7 @@ zlog_get_already_registered_client(struct zlog_mod_info *module)
 	int client_id = -1;
 
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++) {
-		client = &g_zlog_server.clients[i];
+		client = &g_zlog_server.client_list[i];
 		mutex_lock(&client->client_lock);
 		if (zlog_same_client(client, module)) {
 			mutex_unlock(&client->client_lock);
@@ -135,7 +135,7 @@ static __always_inline int zlog_get_unused_client(void)
 	int client_id = -1;
 
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++) {
-		client = &g_zlog_server.clients[i];
+		client = &g_zlog_server.client_list[i];
 		mutex_lock(&client->client_lock);
 		if (!client->registered) {
 			mutex_unlock(&client->client_lock);
@@ -164,7 +164,7 @@ struct zlog_client *zlog_register_client(struct zlog_mod_info *module)
 
 	client_id = zlog_get_already_registered_client(module);
 	if (client_id >= 0 && client_id < ZLOG_CLIENT_MAX) {
-		client = &g_zlog_server.clients[client_id];
+		client = &g_zlog_server.client_list[client_id];
 		pr_info("ZLOG_COMM: %s: %s client client_id:%d already registered, return the registered client.\n",
 			__func__, client->client_name, client->client_id);
 		return client;
@@ -179,7 +179,7 @@ struct zlog_client *zlog_register_client(struct zlog_mod_info *module)
 		return NULL;
 	}
 
-	client = &g_zlog_server.clients[client_id];
+	client = &g_zlog_server.client_list[client_id];
 	mutex_lock(&client->client_lock);
 	client->record_buffer = kzalloc(ZLOG_RECORD_SIZE, GFP_KERNEL);
 	if (!client->record_buffer) {
@@ -275,6 +275,11 @@ void zlog_reset_client(struct zlog_client *client)
 }
 EXPORT_SYMBOL(zlog_reset_client);
 
+static __always_inline char *zlog_create_event(size_t capacity)
+{
+	return kzalloc(capacity, GFP_KERNEL);
+}
+
 static void zlog_handle_work(struct work_struct *work)
 {
 	struct zlog_client *client;
@@ -290,7 +295,7 @@ static void zlog_handle_work(struct work_struct *work)
 
 	pr_info("ZLOG_COMM: %s: %s enter\n", __func__, __func__);
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++) {
-		client = &g_zlog_server.clients[i];
+		client = &g_zlog_server.client_list[i];
 		if (!client->registered)
 			continue;
 
@@ -305,7 +310,7 @@ static void zlog_handle_work(struct work_struct *work)
 		mutex_lock(&client->client_lock);
 		event_capacity = client->record_length + ZLOG_EVENT_OVERHEAD;
 		mutex_unlock(&client->client_lock);
-		event_buffer = kzalloc(event_capacity, GFP_KERNEL);
+		event_buffer = zlog_create_event(event_capacity);
 		if (!event_buffer) {
 			pr_err("ZLOG_COMM: %s: kmalloc event_buff failed\n",
 			       "zlog_create_event");
@@ -397,7 +402,7 @@ static ssize_t zlog_comm_write(struct file *file, const char __user *buffer,
 	module_no = command.module_no;
 
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++) {
-		client = &g_zlog_server.clients[i];
+		client = &g_zlog_server.client_list[i];
 		if (client->registered && client->module_no == module_no &&
 		    client->ops && client->ops->notify)
 			client->ops->notify(client, module_no);
@@ -437,7 +442,7 @@ static const struct file_operations zlog_comm_fops = {
 	.release = zlog_comm_release,
 };
 
-static noinline void zlog_comm_create_ctrl_dev(void)
+static noinline void __init zlog_comm_create_ctrl_dev(void)
 {
 	int ret;
 
@@ -462,13 +467,13 @@ static int __init zlog_common_init(void)
 
 	memset(&g_zlog_server, 0, sizeof(g_zlog_server));
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++)
-		mutex_init(&g_zlog_server.clients[i].client_lock);
+		mutex_init(&g_zlog_server.client_list[i].client_lock);
 	zlog_comm_create_ctrl_dev();
 	g_zlog_server.workqueue = alloc_workqueue("%s", 0x6000a, 1,
 						  "zlog_handle_service");
 	INIT_DELAYED_WORK(&g_zlog_server.report_work, zlog_handle_work);
 	atomic_set(&g_zlog_server.use_count, 0);
-	g_zlog_server.init_finished = true;
+	g_zlog_server.init_flags = 1;
 	pr_info("ZLOG_COMM: %s: %s called\n", __func__, __func__);
 	return 0;
 }

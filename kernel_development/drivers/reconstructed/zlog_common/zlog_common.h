@@ -56,12 +56,18 @@ struct zlog_client {
 };
 
 struct zlog_server {
-	struct zlog_client clients[ZLOG_CLIENT_MAX];
+	struct zlog_client client_list[ZLOG_CLIENT_MAX];
 	struct workqueue_struct *workqueue;
 	struct delayed_work report_work;
 	struct miscdevice miscdev;
 	atomic_t use_count;
-	u8 init_finished;
+	union {
+		struct {
+			u8 init_finished : 1;
+			u8 reserved_24c4_bits : 7;
+		};
+		u8 init_flags;
+	};
 	u8 reserved_24c5[3];
 };
 
@@ -93,12 +99,12 @@ static_assert(offsetof(struct zlog_client, reserved_110) == 0x110);
 static_assert(offsetof(struct zlog_client, registered) == 0x118);
 static_assert(sizeof(struct zlog_client) == 0x120);
 
-static_assert(offsetof(struct zlog_server, clients) == 0x0000);
+static_assert(offsetof(struct zlog_server, client_list) == 0x0000);
 static_assert(offsetof(struct zlog_server, workqueue) == 0x2400);
 static_assert(offsetof(struct zlog_server, report_work) == 0x2408);
 static_assert(offsetof(struct zlog_server, miscdev) == 0x2470);
 static_assert(offsetof(struct zlog_server, use_count) == 0x24c0);
-static_assert(offsetof(struct zlog_server, init_finished) == 0x24c4);
+static_assert(offsetof(struct zlog_server, init_flags) == 0x24c4);
 static_assert(sizeof(struct zlog_server) == 0x24c8);
 static_assert(sizeof(struct zlog_command) == 0x10);
 #endif

@@ -4,11 +4,11 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-15T18:59:50.220064+00:00`
+Gerado em: `2026-07-16T15:26:15.528972+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
-| `zlog_common` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
+| `zlog_common` | `INCOMPLETE` | 8/10 | offline parity failed: assembly<br>parity report status is not PASS<br>missing independent_review.json |
 
 ## Regra de leitura
 
