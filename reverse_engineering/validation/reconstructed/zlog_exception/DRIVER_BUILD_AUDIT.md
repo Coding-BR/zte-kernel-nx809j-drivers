@@ -2,7 +2,7 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-07-15T18:03:37.048886+00:00`
+- Gerado em: `2026-07-16T15:43:03.536213+00:00`
 - Run de evidência: `C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260715T173511Z-zlog-exception-offline`
 - Rebuild limpo: `True`
 

@@ -120,35 +120,32 @@ static ssize_t zlog_write(struct file *file, const char __user *buffer,
 			  size_t count, loff_t *position)
 {
 	struct zlog_fragment *fragment;
-	const char *error_message;
 	ssize_t ret;
 
-	if (g_zlog_info.fragment_count > ZLOG_FRAGMENT_LIMIT) {
-		error_message = KERN_ERR
-			"ZLOG_EXCEPTION: %s: zlog cache is full\n";
-		goto allocation_error;
+	if (unlikely(g_zlog_info.fragment_count >= ZLOG_FRAGMENT_LIMIT + 1)) {
+		pr_err("ZLOG_EXCEPTION: %s: zlog cache is full\n", __func__);
+		return -ENOMEM;
 	}
 
 	fragment = kzalloc(sizeof(*fragment), GFP_KERNEL);
 	if (!fragment) {
-		error_message = KERN_ERR
-			"ZLOG_EXCEPTION: %s: falied to kzalloc fragment info\n";
-		goto allocation_error;
+		pr_err("ZLOG_EXCEPTION: %s: falied to kzalloc fragment info\n",
+		       __func__);
+		return -ENOMEM;
 	}
 
 	fragment->length = count + 1;
 	fragment->data = kzalloc(fragment->length, GFP_KERNEL);
 	if (!fragment->data) {
-		error_message = KERN_ERR
-			"ZLOG_EXCEPTION: %s: falied to vzalloc fragment info\n";
 		ret = 0;
+		pr_err("ZLOG_EXCEPTION: %s: falied to vzalloc fragment info\n",
+		       __func__);
 		goto fragment_error;
 	}
 
 	if (copy_from_user(fragment->data, buffer, count)) {
-		error_message = KERN_ERR
-			"ZLOG_EXCEPTION: %s: copy from user failed\n";
 		ret = -ENOMEM;
+		pr_err("ZLOG_EXCEPTION: %s: copy from user failed\n", __func__);
 		goto fragment_error;
 	}
 	fragment->data[count] = '\0';
@@ -163,15 +160,10 @@ static ssize_t zlog_write(struct file *file, const char __user *buffer,
 	return count;
 
 fragment_error:
-	printk(error_message, __func__);
 	if (fragment->data)
 		kfree(fragment->data);
 	kfree(fragment);
 	return ret;
-
-allocation_error:
-	printk(error_message, __func__);
-	return -ENOMEM;
 }
 
 static __poll_t zlog_poll(struct file *file, struct poll_table_struct *wait)
@@ -235,15 +227,17 @@ static int __init zlog_create_log_dev(void)
 	g_zlog_info.miscdev.fops = &zlog_fops;
 	g_zlog_info.miscdev.parent = NULL;
 	ret = misc_register(&g_zlog_info.miscdev);
-	if (ret) {
-		pr_err("ZLOG_EXCEPTION: %s: failed to register misc device for log '%s'!\n",
-		       __func__, g_zlog_info.miscdev.name);
-		return ret;
-	}
+	if (unlikely(ret))
+		goto register_failed;
 
 	pr_info("ZLOG_EXCEPTION: %s: created zlog '%s', ret =%d\n",
 		__func__, g_zlog_info.miscdev.name, 0);
 	return 0;
+
+register_failed:
+	pr_err("ZLOG_EXCEPTION: %s: failed to register misc device for log '%s'!\n",
+	       __func__, g_zlog_info.miscdev.name);
+	return ret;
 }
 
 static int __init zlog_init(void)
@@ -251,18 +245,19 @@ static int __init zlog_init(void)
 	int ret;
 
 	ret = zlog_create_log_dev();
-	if (ret) {
-		pr_err("ZLOG_EXCEPTION: %s: failed to create misc device for zlog !\n",
-		       __func__);
-	} else {
-		init_waitqueue_head(&g_zlog_info.poll_wq);
-		mutex_init(&g_zlog_info.list_mutex);
-		INIT_LIST_HEAD(&g_zlog_info.fragments);
-		atomic_set(&g_zlog_info.use_count, 0);
-		pr_info("ZLOG_EXCEPTION: %s: zlog_init driver finished\n",
-			__func__);
-	}
+	if (unlikely(ret))
+		goto create_failed;
 
+	init_waitqueue_head(&g_zlog_info.poll_wq);
+	mutex_init(&g_zlog_info.list_mutex);
+	INIT_LIST_HEAD(&g_zlog_info.fragments);
+	atomic_set(&g_zlog_info.use_count, 0);
+	pr_info("ZLOG_EXCEPTION: %s: zlog_init driver finished\n", __func__);
+	return ret;
+
+create_failed:
+	pr_err("ZLOG_EXCEPTION: %s: failed to create misc device for zlog !\n",
+	       __func__);
 	return ret;
 }
 module_init(zlog_init);

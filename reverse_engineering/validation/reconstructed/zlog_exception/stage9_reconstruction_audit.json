@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "driver": "zlog_exception",
+  "stock_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
+  "candidate_sha256": "756a1fc43fa10beac9311a11d184870aae2f446710c33fb956e8d829a9a6d587",
+  "source_sha256": "0aabf5ee8ae768c72a4935c209f5c1096a7e331c30dad2837fadf4faafeb5da5",
+  "verdict": "INCOMPLETE",
+  "policy": {
+    "source_of_truth": "local ROM ELF plus local Ghidra P-Code, pseudocode and AArch64 assembly",
+    "static_verified_is_not_equivalence": true,
+    "hardware_verified": false,
+    "independent_review": "PENDING"
+  },
+  "gates": {
+    "stock_corpus": "PASS",
+    "source_map": "PASS",
+    "reproducible_build": "PASS",
+    "elf_kmi": "PASS",
+    "ghidra_comparison": "PASS",
+    "kcfi": "PASS",
+    "host_harness": "PASS",
+    "microtasks": "PASS",
+    "strict_assembly": "PARTIAL",
+    "independent_review": "PENDING",
+    "hardware": "DEFERRED"
+  },
+  "counts": {
+    "functions": 10,
+    "strict_assembly_matches": 9,
+    "instruction_matches": 10,
+    "section_matches": 10,
+    "symbol_size_matches": 10,
+    "relocation_matches": 9,
+    "kcfi_applicable": 9,
+    "kcfi_matches": 9,
+    "undefined_imports_stock": 27,
+    "undefined_imports_candidate": 27,
+    "microtasks_attested": 10
+  },
+  "strict_matches": [
+    "cleanup_module",
+    "zlog_create_log_dev",
+    "zlog_ioctl",
+    "zlog_open",
+    "zlog_poll",
+    "zlog_read",
+    "zlog_release",
+    "zlog_write",
+    "zlog_write_internal"
+  ],
+  "residuals": [
+    {
+      "function": "init_module",
+      "stock_size": 152,
+      "candidate_size": 152,
+      "stock_blocks": 4,
+      "candidate_blocks": 4,
+      "stock_calls": 4,
+      "candidate_calls": 4,
+      "mnemonic_ratio": 1.0,
+      "instruction_stream_match": true,
+      "remaining_class": "compiler-local lockdep key suffix: .11 stock versus .10 candidate"
+    }
+  ],
+  "evidence": {
+    "assembly": "reverse_engineering/validation/reconstructed/zlog_exception/assembly_comparison.json",
+    "candidate_assembly": "reverse_engineering/validation/reconstructed/zlog_exception/candidate_assembly/manifest.json",
+    "build": "reverse_engineering/validation/reconstructed/zlog_exception/driver_build_audit.json",
+    "cfg": "reverse_engineering/validation/reconstructed/zlog_exception/cfg/init_module.json",
+    "ghidra": "reverse_engineering/validation/reconstructed/zlog_exception/ghidra_stock_candidate_comparison.json",
+    "host": "reverse_engineering/validation/reconstructed/zlog_exception/host_test_report.json",
+    "kcfi": "reverse_engineering/validation/reconstructed/zlog_exception/kcfi_comparison_exact.json",
+    "microtasks": "reverse_engineering/validation/reconstructed/zlog_exception/microtask_audit.json",
+    "symbols": "reverse_engineering/validation/reconstructed/zlog_exception/symbol_inventory.json"
+  }
+}

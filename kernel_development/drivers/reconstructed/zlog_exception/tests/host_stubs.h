@@ -18,6 +18,8 @@ typedef unsigned int __poll_t;
 #define __user
 #define __init
 #define __exit
+#define likely(value) __builtin_expect(!!(value), 1)
+#define unlikely(value) __builtin_expect(!!(value), 0)
 #define GFP_KERNEL 0
 #define MISC_DYNAMIC_MINOR 255
 #define FMODE_READ 0x1

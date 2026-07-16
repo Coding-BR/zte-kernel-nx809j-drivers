@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "status": "PASS",
+  "status": "INCOMPLETE",
   "driver": "zlog_exception",
   "stock_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
-  "candidate_sha256": "d09fde7f894d85c41b09edd8607311321264759a4994c967b506281be069844d",
+  "candidate_sha256": "756a1fc43fa10beac9311a11d184870aae2f446710c33fb956e8d829a9a6d587",
   "comparisons": [
     {
       "surface": "ELF/KMI",
@@ -36,12 +36,18 @@
       "detail": "10/10 tasks attested with hash-backed compile, KCFI decision and direct test evidence"
     },
     {
+      "surface": "strict assembly",
+      "result": "PARTIAL",
+      "detail": "10/10 instruction streams, sections and symbol sizes match; 9/10 relocations match, with only the compiler-local lockdep key suffix differing in init_module"
+    },
+    {
       "surface": "hardware",
       "result": "INCOMPLETO",
       "detail": "no supervised load/unload and userspace ABI test for this exact candidate"
     }
   ],
   "blockers": [
+    "strict relocation identity for the compiler-local init_module lockdep key",
     "independent reviewer distinct from the implementer",
     "controlled hardware validation with rollback"
   ]
