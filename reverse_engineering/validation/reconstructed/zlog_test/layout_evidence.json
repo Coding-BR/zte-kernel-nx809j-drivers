@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_test",
+  "source": "stock/candidate ELF symbols and relocations plus compile-time assertions in zlog_test.h",
+  "stock_sha256": "e595c91cb5ef517c620d362c82eb05bca98cd5726757b9a6cb7cb96a788747e1",
+  "candidate_sha256": "d1a19d632dd9039fa1b6c63e1d453d552a8dca95cec2143735e5f98ebe3e6fb9",
+  "structures": {
+    "zlog_client_ops": {
+      "size": 16,
+      "offsets": {"poll": 0, "notify": 8}
+    },
+    "zlog_mod_info": {
+      "size": 48,
+      "offsets": {
+        "module_no": 0,
+        "reserved_04": 4,
+        "client_name": 8,
+        "device_name": 16,
+        "ic_name": 24,
+        "module_name": 32,
+        "ops": 40
+      }
+    },
+    "zte_misc_ops": {
+      "size": 40,
+      "offsets": {"name": 0, "set": 8, "get": 16, "show": 24, "priv": 32}
+    },
+    "zlog_client_prefix": {
+      "size": 36,
+      "offsets": {"client_id": 0, "client_name": 4}
+    }
+  },
+  "elf_layout": {
+    "data": {
+      "zlog_enable_test_node": {"offset": 0, "size": 40},
+      "ops": {"offset": 40, "size": 16},
+      "test_dev_1": {"offset": 56, "size": 48},
+      "test_dev_2": {"offset": 104, "size": 48},
+      "test_dev_3": {"offset": 152, "size": 48},
+      "test_dev_4": {"offset": 200, "size": 48},
+      "test_dev_5": {"offset": 248, "size": 48}
+    },
+    "bss": {
+      "zlog_enable_test_flag": {"offset": 0, "size": 4},
+      "client_1": {"offset": 8, "size": 8},
+      "client_2": {"offset": 16, "size": 8},
+      "client_3": {"offset": 24, "size": 8},
+      "client_4": {"offset": 32, "size": 8},
+      "client_5": {"offset": 40, "size": 8},
+      "zlog_test1_workqueue": {"offset": 48, "size": 8},
+      "zlog_test1_work": {"offset": 56, "size": 104},
+      "zlog_test2_workqueue": {"offset": 160, "size": 8},
+      "zlog_test2_work": {"offset": 168, "size": 104},
+      "zlog_test3_workqueue": {"offset": 272, "size": 8},
+      "zlog_test3_work": {"offset": 280, "size": 104},
+      "zlog_test4_workqueue": {"offset": 384, "size": 8},
+      "zlog_test4_work": {"offset": 392, "size": 104},
+      "zlog_test5_workqueue": {"offset": 496, "size": 8},
+      "zlog_test5_work": {"offset": 504, "size": 104}
+    },
+    "result": "Every listed stock and candidate symbol has the same section-relative offset and size; binding-case differences only reflect local versus global visibility."
+  },
+  "header_probe": {
+    "source": "kernel_development/drivers/reconstructed/zlog_test/zlog_test.h",
+    "method": "11 static_assert/offsetof checks compiled by two clean AArch64 Kbuild runs",
+    "build_report": "reverse_engineering/validation/reconstructed/zlog_test/driver_build_audit.json",
+    "result": "PASS"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zlog_test",
+  "scope": "offline reconstruction and validation only",
+  "risk": {
+    "level": "high for eventual device loading",
+    "current_stage": "no device access, no module loading and no partition write",
+    "known_surfaces": [
+      "workqueue lifetime and concurrency",
+      "zlog_common vendor callback ABI",
+      "zte_misc callback registration",
+      "five asynchronous client registrations"
+    ]
+  },
+  "rollback": {
+    "offline": "discard candidate artifacts and retain the immutable stock corpus",
+    "hardware": "must be approved and documented before any future controlled load",
+    "status": "DEFINED_NOT_EXECUTED"
+  }
+}

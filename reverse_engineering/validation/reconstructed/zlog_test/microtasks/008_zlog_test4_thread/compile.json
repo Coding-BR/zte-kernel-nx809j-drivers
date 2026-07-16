@@ -1,0 +1,151 @@
+{
+  "build": {
+    "commands": {
+      "build_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zlog_test",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_test/vendor.Module.symvers",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zlog_test/zlog_test_main.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc1.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc2.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc3.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc4.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc5.o\n  CC [M]  /work/validation/zlog_test/zlog_test_state.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq1.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work1.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq2.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work2.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq3.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work3.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq4.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work4.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq5.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work5.o\n  LD [M]  /work/validation/zlog_test/zlog_test.o\n  MODPOST /work/validation/zlog_test/Module.symvers\n  CC [M]  /work/validation/zlog_test/zlog_test.mod.o\n  CC [M]  /work/validation/zlog_test/.module-common.o\n  LD [M]  /work/validation/zlog_test/zlog_test.ko\n  BTF [M] /work/validation/zlog_test/zlog_test.ko\n"
+      },
+      "build_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zlog_test",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_test/vendor.Module.symvers",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zlog_test/zlog_test_main.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc1.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc2.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc3.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc4.o\n  CC [M]  /work/validation/zlog_test/zlog_test_desc5.o\n  CC [M]  /work/validation/zlog_test/zlog_test_state.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq1.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work1.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq2.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work2.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq3.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work3.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq4.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work4.o\n  CC [M]  /work/validation/zlog_test/zlog_test_wq5.o\n  CC [M]  /work/validation/zlog_test/zlog_test_work5.o\n  LD [M]  /work/validation/zlog_test/zlog_test.o\n  MODPOST /work/validation/zlog_test/Module.symvers\n  CC [M]  /work/validation/zlog_test/zlog_test.mod.o\n  CC [M]  /work/validation/zlog_test/.module-common.o\n  LD [M]  /work/validation/zlog_test/zlog_test.ko\n  BTF [M] /work/validation/zlog_test/zlog_test.ko\n"
+      },
+      "clean_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zlog_test",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_test/vendor.Module.symvers",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "clean_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zlog_test",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zlog_test/vendor.Module.symvers",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CLEAN   /work/validation/zlog_test/Module.symvers\n"
+      }
+    },
+    "first_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final\\zlog_test\\zlog_test.ko",
+      "sha256": "d1a19d632dd9039fa1b6c63e1d453d552a8dca95cec2143735e5f98ebe3e6fb9",
+      "size": 160448
+    },
+    "passed": true,
+    "reproducible": true,
+    "second_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final\\zlog_test\\zlog_test.ko",
+      "sha256": "d1a19d632dd9039fa1b6c63e1d453d552a8dca95cec2143735e5f98ebe3e6fb9",
+      "size": 160448
+    },
+    "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zlog_test-final\\zlog_test"
+  },
+  "checks": {
+    "aarch64_rel": true,
+    "alias_match": true,
+    "build_passed": true,
+    "function_traceability": true,
+    "namespace_match": true,
+    "reproducible_build": true,
+    "undefined_symbols_match": true
+  },
+  "driver": "zlog_test",
+  "function": "zlog_test4_thread",
+  "generated_utc": "2026-07-16T16:24:17.120066+00:00",
+  "passed": true,
+  "schema_version": "1.0",
+  "source_report": "reverse_engineering\\validation\\reconstructed\\zlog_test\\driver_build_audit.json",
+  "source_report_sha256": "d7a648e7b68a2f31ab47ac423f3e0e4a6089dcff8f462a05d1fb88149d3a117c",
+  "stock_entry": "00100ad0",
+  "stock_function": "zlog_test4_thread"
+}
