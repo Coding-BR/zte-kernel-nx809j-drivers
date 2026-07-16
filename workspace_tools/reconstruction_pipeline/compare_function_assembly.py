@@ -27,6 +27,11 @@ RODATA_TARGET_RE = re.compile(
 SECTION_TARGET_RE = re.compile(
     r"^(?P<section>\.[A-Za-z0-9_.-]+)(?:\+0x(?P<offset>[0-9a-fA-F]+))?$"
 )
+AARCH64_RELOCATION_NAMES = {
+    257: "R_AARCH64_ABS64",
+    258: "R_AARCH64_ABS32",
+    259: "R_AARCH64_ABS16",
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -114,8 +119,8 @@ def elf_sections(path: Path | None) -> dict[str, bytes]:
     return sections
 
 
-def elf_symbol_locations(path: Path | None) -> dict[str, tuple[str, int]]:
-    """Return defined ELF symbols as ``name -> (section, section_offset)``."""
+def elf_symbol_ranges(path: Path | None) -> dict[str, tuple[str, int, int]]:
+    """Return defined ELF symbols as ``name -> (section, offset, size)``."""
     if path is None or not path.is_file():
         return {}
 
@@ -159,7 +164,7 @@ def elf_symbol_locations(path: Path | None) -> dict[str, tuple[str, int]]:
         return section_names_blob[name_offset:end].decode("ascii", errors="replace")
 
     names = [section_name(index) for index in range(section_count)]
-    locations: dict[str, tuple[str, int]] = {}
+    ranges: dict[str, tuple[str, int, int]] = {}
     for _, section_type, file_offset, size, linked_index in headers:
         if section_type not in (2, 11):  # SHT_SYMTAB / SHT_DYNSYM
             continue
@@ -174,7 +179,7 @@ def elf_symbol_locations(path: Path | None) -> dict[str, tuple[str, int]]:
             entry_offset = file_offset + index * entry_size
             if entry_offset + entry_size > len(data):
                 break
-            name_offset, _, _, shndx, value, _ = struct.unpack_from(
+            name_offset, _, _, shndx, value, symbol_size = struct.unpack_from(
                 "<IBBHQQ", data, entry_offset
             )
             if not name_offset or shndx == 0 or shndx >= section_count:
@@ -188,8 +193,232 @@ def elf_symbol_locations(path: Path | None) -> dict[str, tuple[str, int]]:
                 continue
             # Prefer the first defined symbol. Duplicate dynamic/local entries
             # should resolve to the same section-relative address in a module.
-            locations.setdefault(name, (section, value))
-    return locations
+            ranges.setdefault(name, (section, value, symbol_size))
+    return ranges
+
+
+def elf_symbol_locations(path: Path | None) -> dict[str, tuple[str, int]]:
+    """Return defined ELF symbols as ``name -> (section, section_offset)``."""
+    return {
+        name: (section, offset)
+        for name, (section, offset, _size) in elf_symbol_ranges(path).items()
+    }
+
+
+def elf_relocation_sites(
+    path: Path | None,
+) -> dict[tuple[str, int], tuple[str, str]]:
+    """Return section-relative relocation sites and their pointer targets."""
+    if path is None or not path.is_file():
+        return {}
+
+    data = path.read_bytes()
+    if len(data) < 64 or data[:4] != b"\x7fELF":
+        raise ValueError(f"not an ELF file: {path}")
+    if data[4] != 2 or data[5] != 1:
+        raise ValueError(f"expected little-endian ELF64: {path}")
+
+    section_offset = struct.unpack_from("<Q", data, 0x28)[0]
+    section_entry_size = struct.unpack_from("<H", data, 0x3A)[0]
+    section_count = struct.unpack_from("<H", data, 0x3C)[0]
+    names_index = struct.unpack_from("<H", data, 0x3E)[0]
+    if not section_offset or section_entry_size < 64 or names_index >= section_count:
+        raise ValueError(f"unsupported ELF section table: {path}")
+
+    headers: list[dict[str, int]] = []
+    for index in range(section_count):
+        offset = section_offset + index * section_entry_size
+        if offset + 64 > len(data):
+            raise ValueError(f"truncated ELF section table: {path}")
+        (
+            name_offset,
+            section_type,
+            _flags,
+            _address,
+            file_offset,
+            size,
+            link,
+            info,
+            _alignment,
+            entry_size,
+        ) = struct.unpack_from("<IIQQQQIIQQ", data, offset)
+        if file_offset + size > len(data):
+            raise ValueError(f"truncated ELF section payload: {path}")
+        headers.append(
+            {
+                "name_offset": name_offset,
+                "type": section_type,
+                "offset": file_offset,
+                "size": size,
+                "link": link,
+                "info": info,
+                "entry_size": entry_size,
+            }
+        )
+
+    names_header = headers[names_index]
+    if names_header["type"] != 3:
+        raise ValueError(f"ELF section names are not a string table: {path}")
+    names_blob = data[
+        names_header["offset"] : names_header["offset"] + names_header["size"]
+    ]
+
+    def read_string(blob: bytes, offset: int) -> str:
+        if offset < 0 or offset >= len(blob):
+            return ""
+        end = blob.find(b"\0", offset)
+        if end < 0:
+            return ""
+        return blob[offset:end].decode("utf-8", errors="replace")
+
+    names = [read_string(names_blob, header["name_offset"]) for header in headers]
+    sites: dict[tuple[str, int], tuple[str, str]] = {}
+    for relocation_header in headers:
+        if relocation_header["type"] != 4:  # SHT_RELA
+            continue
+        target_index = relocation_header["info"]
+        symbols_index = relocation_header["link"]
+        if target_index >= section_count or symbols_index >= section_count:
+            continue
+        target_section = names[target_index]
+        symbols_header = headers[symbols_index]
+        strings_index = symbols_header["link"]
+        if not target_section or symbols_header["type"] not in (2, 11):
+            continue
+        if strings_index >= section_count:
+            continue
+        strings_header = headers[strings_index]
+        strings = data[
+            strings_header["offset"] : strings_header["offset"] + strings_header["size"]
+        ]
+        symbol_entry_size = symbols_header["entry_size"] or 24
+        relocation_entry_size = relocation_header["entry_size"] or 24
+        if symbol_entry_size < 24 or relocation_entry_size < 24:
+            continue
+
+        def relocation_target(symbol_index: int, addend: int) -> str:
+            symbol_offset = symbols_header["offset"] + symbol_index * symbol_entry_size
+            if symbol_offset + 24 > symbols_header["offset"] + symbols_header["size"]:
+                return f"symbol#{symbol_index}{addend:+#x}"
+            name_offset, _info, _other, shndx, value, _size = struct.unpack_from(
+                "<IBBHQQ", data, symbol_offset
+            )
+            name = read_string(strings, name_offset)
+            if name:
+                base = name
+                target_offset = addend
+            elif 0 < shndx < section_count and names[shndx]:
+                base = names[shndx]
+                target_offset = value + addend
+            else:
+                return f"symbol#{symbol_index}{addend:+#x}"
+            if target_offset == 0:
+                return base
+            sign = "+" if target_offset > 0 else "-"
+            return f"{base}{sign}0x{abs(target_offset):x}"
+
+        count = relocation_header["size"] // relocation_entry_size
+        for index in range(count):
+            entry_offset = relocation_header["offset"] + index * relocation_entry_size
+            relocation_offset, relocation_info, addend = struct.unpack_from(
+                "<QQq", data, entry_offset
+            )
+            relocation_type_id = relocation_info & 0xFFFFFFFF
+            symbol_index = relocation_info >> 32
+            relocation_type = AARCH64_RELOCATION_NAMES.get(
+                relocation_type_id, f"R_AARCH64_{relocation_type_id}"
+            )
+            sites[(target_section, relocation_offset)] = (
+                relocation_type,
+                relocation_target(symbol_index, addend),
+            )
+    return sites
+
+
+def matched_rodata_blob_aliases(
+    stock_sections: dict[str, bytes],
+    candidate_sections: dict[str, bytes],
+    stock_symbols: dict[str, tuple[str, int, int]],
+    candidate_symbols: dict[str, tuple[str, int, int]],
+    stock_relocation_sites: dict[tuple[str, int], tuple[str, str]],
+    candidate_relocation_sites: dict[tuple[str, int], tuple[str, str]],
+) -> tuple[dict[tuple[str, int], str], dict[tuple[str, int], str]]:
+    """Pair unique, relocation-free constant blobs across two ELF layouts."""
+    stock_aliases: dict[tuple[str, int], str] = {}
+    candidate_aliases: dict[tuple[str, int], str] = {}
+
+    def occurrences(payload: bytes, blob: bytes) -> list[int]:
+        result: list[int] = []
+        start = 0
+        while True:
+            found = payload.find(blob, start)
+            if found < 0:
+                return result
+            result.append(found)
+            start = found + 1
+
+    def has_relocation(
+        sites: dict[tuple[str, int], tuple[str, str]],
+        section: str,
+        offset: int,
+        size: int,
+    ) -> bool:
+        return any(
+            site_section == section and offset <= site_offset < offset + size
+            for site_section, site_offset in sites
+        )
+
+    def bind(
+        source_sections: dict[str, bytes],
+        target_sections: dict[str, bytes],
+        source_symbols: dict[str, tuple[str, int, int]],
+        source_sites: dict[tuple[str, int], tuple[str, str]],
+        target_sites: dict[tuple[str, int], tuple[str, str]],
+        source_aliases: dict[tuple[str, int], str],
+        target_aliases: dict[tuple[str, int], str],
+    ) -> None:
+        for section, offset, size in source_symbols.values():
+            if not section.startswith(".rodata") or size <= 0 or size > 4096:
+                continue
+            source = source_sections.get(section)
+            target = target_sections.get(section)
+            if source is None or target is None or offset + size > len(source):
+                continue
+            if has_relocation(source_sites, section, offset, size):
+                continue
+            blob = source[offset : offset + size]
+            matches = occurrences(target, blob)
+            if len(matches) != 1:
+                continue
+            target_offset = matches[0]
+            if has_relocation(target_sites, section, target_offset, size):
+                continue
+            identity = (
+                f"{section}:blob:size={size}:sha256="
+                f"{hashlib.sha256(blob).hexdigest()}"
+            )
+            source_aliases[(section, offset)] = identity
+            target_aliases[(section, target_offset)] = identity
+
+    bind(
+        stock_sections,
+        candidate_sections,
+        stock_symbols,
+        stock_relocation_sites,
+        candidate_relocation_sites,
+        stock_aliases,
+        candidate_aliases,
+    )
+    bind(
+        candidate_sections,
+        stock_sections,
+        candidate_symbols,
+        candidate_relocation_sites,
+        stock_relocation_sites,
+        candidate_aliases,
+        stock_aliases,
+    )
+    return stock_aliases, candidate_aliases
 
 
 def normalized_symbol_target(
@@ -228,23 +457,59 @@ def normalized_symbol_target(
     return section if offset == 0 else f"{section}+0x{offset:x}"
 
 
+def resolved_section_target(
+    target: str, symbol_locations: dict[str, tuple[str, int]] | None
+) -> tuple[str, int] | None:
+    section_match = SECTION_TARGET_RE.fullmatch(target)
+    if section_match:
+        return (
+            section_match.group("section"),
+            int(section_match.group("offset") or "0", 16),
+        )
+    if not symbol_locations:
+        return None
+    symbol_match = re.fullmatch(
+        r"(?P<name>[^+]+?)(?:\+0x(?P<addend>[0-9a-fA-F]+))?", target
+    )
+    if not symbol_match:
+        return None
+    location = symbol_locations.get(symbol_match.group("name"))
+    if location is None:
+        return None
+    return location[0], location[1] + int(symbol_match.group("addend") or "0", 16)
+
+
 def normalized_relocation(
     relocation_type: str,
     target: str,
     sections: dict[str, bytes],
     symbol_locations: dict[str, tuple[str, int]] | None = None,
+    relocation_sites: dict[tuple[str, int], tuple[str, str]] | None = None,
+    rodata_blob_aliases: dict[tuple[str, int], str] | None = None,
 ) -> str:
-    match = RODATA_TARGET_RE.match(target)
-    if not match:
+    resolved = resolved_section_target(target, symbol_locations)
+    if resolved is None or not resolved[0].startswith(".rodata"):
         return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
 
-    section_name = match.group("section")
+    section_name, offset = resolved
     section = sections.get(section_name)
     if section is None:
         return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
-    offset = int(match.group("offset") or "0", 16)
     if offset >= len(section):
         return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+
+    blob_alias = (rodata_blob_aliases or {}).get((section_name, offset))
+    if blob_alias is not None:
+        return f"{relocation_type} {blob_alias}"
+
+    pointer = (relocation_sites or {}).get((section_name, offset))
+    if pointer is not None:
+        pointer_type, pointer_target = pointer
+        normalized_pointer = normalized_symbol_target(pointer_target, symbol_locations)
+        return (
+            f"{relocation_type} {section_name}:pointer="
+            f"{pointer_type}->{normalized_pointer}"
+        )
 
     end = section.find(b"\0", offset, min(len(section), offset + 4096))
     if end < 0:
@@ -264,6 +529,8 @@ def normalized_assembly(
     path: Path,
     sections: dict[str, bytes],
     symbol_locations: dict[str, tuple[str, int]] | None = None,
+    relocation_sites: dict[tuple[str, int], tuple[str, str]] | None = None,
+    rodata_blob_aliases: dict[tuple[str, int], str] | None = None,
 ) -> tuple[list[str], list[str], list[str]]:
     instructions: list[str] = []
     raw_relocations: list[str] = []
@@ -290,7 +557,12 @@ def normalized_assembly(
             raw_relocations.append(relocation.group(0))
             normalized_relocations.append(
                 normalized_relocation(
-                    relocation_type, target, sections, symbol_locations
+                    relocation_type,
+                    target,
+                    sections,
+                    symbol_locations,
+                    relocation_sites,
+                    rodata_blob_aliases,
                 )
             )
     if not instructions:
@@ -316,8 +588,26 @@ def main() -> int:
     candidate_source = manifest_source_path(candidate_manifest, candidate_root)
     stock_sections = elf_sections(stock_source)
     candidate_sections = elf_sections(candidate_source)
-    stock_symbols = elf_symbol_locations(stock_source)
-    candidate_symbols = elf_symbol_locations(candidate_source)
+    stock_symbol_ranges = elf_symbol_ranges(stock_source)
+    candidate_symbol_ranges = elf_symbol_ranges(candidate_source)
+    stock_symbols = {
+        name: (section, offset)
+        for name, (section, offset, _size) in stock_symbol_ranges.items()
+    }
+    candidate_symbols = {
+        name: (section, offset)
+        for name, (section, offset, _size) in candidate_symbol_ranges.items()
+    }
+    stock_relocation_sites = elf_relocation_sites(stock_source)
+    candidate_relocation_sites = elf_relocation_sites(candidate_source)
+    stock_blob_aliases, candidate_blob_aliases = matched_rodata_blob_aliases(
+        stock_sections,
+        candidate_sections,
+        stock_symbol_ranges,
+        candidate_symbol_ranges,
+        stock_relocation_sites,
+        candidate_relocation_sites,
+    )
     functions = args.functions or sorted(set(stock_records) & set(candidate_records))
     results = []
     failures = []
@@ -333,10 +623,20 @@ def main() -> int:
             failures.append(function + ": missing assembly file")
             continue
         stock_instructions, stock_raw_relocations, stock_relocations = normalized_assembly(
-            stock_path, stock_sections, stock_symbols
+            stock_path,
+            stock_sections,
+            stock_symbols,
+            stock_relocation_sites,
+            stock_blob_aliases,
         )
         candidate_instructions, candidate_raw_relocations, candidate_relocations = (
-            normalized_assembly(candidate_path, candidate_sections, candidate_symbols)
+            normalized_assembly(
+                candidate_path,
+                candidate_sections,
+                candidate_symbols,
+                candidate_relocation_sites,
+                candidate_blob_aliases,
+            )
         )
         checks = {
             "section": stock_record.get("section") == candidate_record.get("section"),
@@ -377,7 +677,10 @@ def main() -> int:
     payload = {
         "schema_version": "1.0",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "mode": "aarch64_opcode_relocation_resolved_branch_rodata_and_elf_symbol_comparison",
+        "mode": (
+            "aarch64_opcode_relocation_resolved_branch_rodata_pointer_"
+            "and_elf_symbol_comparison"
+        ),
         "passed": not failures and len(results) == len(functions),
         "requested_functions": functions,
         "checked_functions": len(results),

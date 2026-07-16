@@ -4,32 +4,37 @@
   "driver": "nubia_hw_version",
   "scope": "offline static parity; electrical GPIO, pinctrl and runtime sysfs behavior are excluded",
   "stock_sha256": "b24e66e189267f240d637d826169d1bcb28abda390260a88cf52124dbbabfc6c",
-  "candidate_sha256": "7d3fb492fd1f8452d454aa6ce2cc24c0cc6709338339a85b48c89e3bdfd9983e",
+  "candidate_sha256": "625f31a3adc4a72ffd05a562550235d1c2c0453b54c5d51b3a15f619f9ad9031",
   "comparisons": [
     {
       "surface": "ELF, modinfo, KMI and reproducible build",
       "result": "PASS",
-      "evidence": "driver_audit.json"
+      "evidence": "stage3_driver_audit.json"
     },
     {
       "surface": "KCFI",
       "result": "INCOMPLETO",
-      "evidence": "stage2_kcfi_comparison.json records 17/19 exact type identifiers"
+      "evidence": "stage3_kcfi_comparison.json records 17/19 exact type identifiers"
     },
     {
       "surface": "AArch64 strict function identity",
       "result": "INCOMPLETO",
-      "evidence": "stage2_assembly_comparison.json records 14/19 strict exact functions and 17/19 instruction-exact functions"
+      "evidence": "stage3_assembly_comparison.json records 17/19 strict exact functions and 18/19 instruction-exact functions"
     },
     {
-      "surface": "nubia_hw_ver_probe aggregate CFG",
+      "surface": "nubia_hw_ver_probe",
+      "result": "PASS",
+      "evidence": "380 instructions, 74 blocks, 111 edges and 66 ordered calls are exact"
+    },
+    {
+      "surface": "nubia_hw_rf_band_show",
       "result": "PASS_PARTIAL",
-      "evidence": "74 blocks, 111 edges and 66 ordered calls on both sides; candidate has 370 versus 380 instructions"
+      "evidence": "17 blocks, 23 edges and ordered calls match; candidate has 63 versus 61 instructions"
     },
     {
       "surface": "host behavior",
-      "result": "PASS_PARTIAL",
-      "evidence": "stage2 semantic harness passes 26/26 over 11 directly modeled functions"
+      "result": "PASS",
+      "evidence": "stage3 complete harness passes 50/50 over all 19 modeled functions"
     },
     {
       "surface": "hardware",
@@ -39,9 +44,8 @@
   ],
   "blockers": [
     "two nominal KCFI signatures remain unresolved",
-    "nubia_hw_rf_band_show and nubia_hw_ver_probe are not instruction-identical",
-    "three instruction-identical functions still reference anonymous rodata at different linked offsets",
-    "eight microtasks lack direct isolated harness coverage",
+    "nubia_hw_rf_band_show is not instruction-identical",
+    "hml_config_version_show has byte-equivalent but non-unique anonymous rodata identity",
     "independent review and controlled hardware validation are pending"
   ]
 }

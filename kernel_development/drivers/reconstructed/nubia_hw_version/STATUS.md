@@ -1,64 +1,59 @@
 # Status: `nubia_hw_version`
 
-Estado: **STAGE2_STATIC_PARTIAL - candidato offline reproduzivel; modulo completo INCOMPLETO**.
+Estado: **STAGE3_STATIC_PARTIAL - build/KMI e cobertura host completos; modulo
+OEM equivalente ainda INCOMPLETO**.
 
-O fonte foi reconstruido somente a partir do `.ko` stock local, exports do
-Ghidra, P-Code, pseudocodigo e Assembly AArch64 da ROM userdebug NX809J. O
-candidato compila no GKI 6.12.23 com `clang-r536225`, mas nao esta autorizado
-para `insmod` nem pode ser chamado de equivalente ao OEM.
+O fonte foi reconstruido exclusivamente do `.ko` stock local, Ghidra, P-Code,
+pseudocodigo e Assembly AArch64 da ROM userdebug NX809J. Nenhum dado de driver
+NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 
 | Item | Estado | Evidencia/Bloqueador |
 |---|---|---|
 | Stock | PASS | SHA-256 `b24e66e189267f240d637d826169d1bcb28abda390260a88cf52124dbbabfc6c`; 19 funcoes |
-| Layouts AArch64 | PASS ESTATICO | tres estruturas protegidas por `static_assert`; strides PCB `0x18` e RF `0x14` |
-| Build limpo | PASS | dois builds identicos; candidato `7d3fb492fd1f8452d454aa6ce2cc24c0cc6709338339a85b48c89e3bdfd9983e`, 244984 bytes |
-| Mapa stock -> fonte | PASS ESTRUTURAL | 19/19 identidades com hashes; escopo `structural_identity_only`, sem equivalencia semantica |
-| Simbolos/KMI | PASS | 19/19 simbolos de texto e 24/24 imports indefinidos; nenhum extra |
-| KCFI | INCOMPLETO | 17/19 exatos; helpers PCB e RF mantem tipos nominais nao recuperados |
-| Assembly estrito | INCOMPLETO | 14/19 exatos; 17/19 possuem instrucoes exatas |
-| `nubia_hw_rf_band_show` | PARCIAL | 256 bytes candidato contra 244 stock; logica pura passa no harness |
-| `nubia_hw_ver_probe` | PASS ESTRUTURAL, NAO EXATO | 74 blocos, 111 arestas e 66 chamadas em ambos; 1480/370 contra 1520/380 bytes/instrucoes |
-| Harness offline | PASS PARCIAL | 26/26 testes sobre 11 funcoes deterministicas |
+| Build limpo | PASS | dois builds identicos; candidato `625f31a3adc4a72ffd05a562550235d1c2c0453b54c5d51b3a15f619f9ad9031`, 245472 bytes |
+| Layouts AArch64 | PASS ESTATICO | strides PCB `0x18`, RF `0x14` e campo RF no offset `0x8` |
+| Simbolos/KMI | PASS | 19/19 simbolos de texto e 24/24 imports; nenhum extra |
+| KCFI | INCOMPLETO | 17/19 exatos; os dois helpers exportados mantem tipos nominais nao recuperados |
+| Assembly estrito | PARCIAL | 17/19 exatos |
+| Instrucoes | PARCIAL | 18/19 exatas |
+| `nubia_hw_ver_probe` | PASS EXATO | 1520 bytes, 380 instrucoes, 74 blocos, 111 arestas e 66 chamadas em ambos |
+| `nubia_hw_rf_band_show` | PARCIAL | mesma regra, 17 blocos, 23 arestas e duas chamadas; candidato 63 contra stock 61 instrucoes |
+| `hml_config_version_show` | PASS DE CONTEUDO | instrucoes exatas; blob `{0,2,1}` identico, mas alias nominal ambiguo |
+| Harness offline | PASS | 50/50 testes com ASan/UBSan; 19/19 funcoes modeladas no host |
 | Revisao independente | PENDENTE | outro revisor ainda nao repetiu a esteira |
-| Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou pinctrl executado neste ciclo |
+| Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou pinctrl neste ciclo |
 
-## Avanco do Stage 2
+## Avanco do Stage 3
 
-- O acesso RF foi refeito com carga assinada local de GPIO2, mantendo o global
-  `u8` exigido pelos demais caminhos e pelo helper exportado.
-- A ordem observada no P-Code do `probe` foi restaurada: captura de `of_node`,
-  log de debug e verificacao nula.
-- O `probe` agora coincide em contagens de CFG e na ordem completa das 66
-  chamadas. Similaridade de mnemonicos: `92,2667%`; opcodes: `81,3333%`.
-- O oraculo local testou 1680 prototipos RF adicionais sem encontrar o KCFI
-  OEM. Esse resultado e um bloqueio documentado, nao permissao para forcar um
-  hash.
-- O ciclo obrigatorio permanece com veredito `INCOMPLETO: nao autorizado a
-  declarar 100%`.
+- O `probe` deixou de ser apenas estruturalmente semelhante e agora possui
+  igualdade completa de opcodes, relocacoes, contagens e chamadas.
+- A tabela RF recuperou o acesso tipado de 20 bytes observado no stock.
+- O comparador passou a resolver tabelas de ponteiros em `.rodata` por
+  relocacoes ELF, sem aceitar aliases ambiguos.
+- O oraculo KCFI acumulado testou 155.520 assinaturas sem encontrar os dois
+  tipos OEM; nenhum hash foi forjado.
+- Dois harnesses isolados com ASan/UBSan exercitam as 19 funcoes em 50
+  cenarios.
 
 ## Bloqueios atuais
 
 1. Recuperar os tipos nominais originais de
    `nubia_get_pcb_table_item_by_gpio` e `nubia_get_rf_band_by_gpio`.
-2. Fechar as tres instrucoes agregadas restantes em
-   `nubia_hw_rf_band_show` sem hints artificiais, `volatile`, Assembly manual
-   ou caminhos `brk` ausentes no stock.
-3. Explicar as dez instrucoes restantes de `nubia_hw_ver_probe` por regioes de
-   P-Code e Assembly, mantendo 74/111/66.
-4. Criar harnesses isolados para as oito funcoes ainda nao exercitadas.
-5. Obter revisao independente e planejar hardware/rollback separadamente.
+2. Explicar ou eliminar as duas instrucoes de materializacao/layout restantes
+   em `nubia_hw_rf_band_show` sem hints artificiais, `volatile` ou Assembly.
+3. Obter revisao independente.
+4. Executar validacao de hardware separada, autorizada e com rollback.
 
 ## Evidencias principais
 
-- `kernel_development/drivers/reconstructed/nubia_hw_version/STAGE2_RECONSTRUCTION_AUDIT.md`
-- `kernel_development/drivers/reconstructed/nubia_hw_version/PROBE_CFG_STAGE2.md`
-- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage2_assembly_comparison.json`
-- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage2_kcfi_comparison.json`
-- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage2_symbol_inventory.json`
-- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage2_semantic_harness_report.json`
-- `reverse_engineering/validation/reconstructed/nubia_hw_version/cycle_validation.json`
+- `kernel_development/drivers/reconstructed/nubia_hw_version/STAGE3_RECONSTRUCTION_AUDIT.md`
+- `kernel_development/drivers/reconstructed/nubia_hw_version/PROBE_CFG_STAGE3.md`
+- `kernel_development/drivers/reconstructed/nubia_hw_version/RF_BAND_CFG_STAGE3.md`
+- `kernel_development/drivers/reconstructed/nubia_hw_version/HML_RODATA_STAGE3.md`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_driver_audit.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_kcfi_comparison.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_complete_harness_report.json`
 
-O `.ko` curado e um **candidato parcial para analise offline**. A palavra
-`static_verified` no relatorio de build significa somente que a cadeia de
-evidencia, KMI, build reproduzivel e mapa estrutural passaram; nao substitui
-os gates de KCFI, paridade, revisao ou hardware.
+O `.ko` curado e um **candidato Stage 3 para analise offline**. Nao esta
+autorizado declarar reconstrucao 100% nem substituir o modulo OEM.

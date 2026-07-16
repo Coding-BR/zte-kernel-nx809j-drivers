@@ -64,6 +64,93 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertEqual(result, "R_AARCH64_LDST32_ABS_LO12_NC debug_value")
 
+    def test_rodata_pointer_slot_uses_relocation_fingerprint(self) -> None:
+        result = MODULE.normalized_relocation(
+            "R_AARCH64_ADR_PREL_PG_HI21",
+            ".rodata+0x40",
+            {".rodata": bytes(0x80)},
+            {},
+            {
+                (".rodata", 0x40): (
+                    "R_AARCH64_ABS64",
+                    ".rodata+0x10",
+                )
+            },
+        )
+
+        self.assertEqual(
+            result,
+            (
+                "R_AARCH64_ADR_PREL_PG_HI21 "
+                ".rodata:pointer=R_AARCH64_ABS64->.rodata+0x10"
+            ),
+        )
+
+    def test_relocated_pointer_arrays_match_after_section_reordering(self) -> None:
+        stock = MODULE.normalized_relocation(
+            "R_AARCH64_ADD_ABS_LO12_NC",
+            ".rodata+0x310",
+            {".rodata": bytes(0x400)},
+            {},
+            {
+                (".rodata", 0x310): (
+                    "R_AARCH64_ABS64",
+                    ".rodata+0x90",
+                )
+            },
+        )
+        candidate = MODULE.normalized_relocation(
+            "R_AARCH64_ADD_ABS_LO12_NC",
+            ".rodata+0x380",
+            {".rodata": bytes(0x470)},
+            {},
+            {
+                (".rodata", 0x380): (
+                    "R_AARCH64_ABS64",
+                    ".rodata+0x90",
+                )
+            },
+        )
+
+        self.assertEqual(stock, candidate)
+
+    def test_unique_relocation_free_rodata_blob_gets_shared_alias(self) -> None:
+        blob = b"\0\0\0\0\2\0\0\0\1\0\0\0"
+        stock_aliases, candidate_aliases = MODULE.matched_rodata_blob_aliases(
+            {".rodata": b"prefix" + blob},
+            {".rodata": b"padding-padding" + blob + b"tail"},
+            {},
+            {"hml_config_version": (".rodata", 15, len(blob))},
+            {},
+            {},
+        )
+
+        self.assertEqual(
+            stock_aliases[(".rodata", 6)],
+            candidate_aliases[(".rodata", 15)],
+        )
+
+    def test_rodata_blob_alias_normalizes_named_and_raw_targets(self) -> None:
+        identity = ".rodata:blob:size=12:sha256=example"
+        stock = MODULE.normalized_relocation(
+            "R_AARCH64_ADR_PREL_PG_HI21",
+            ".rodata+0x394",
+            {".rodata": bytes(0x400)},
+            {},
+            {},
+            {(".rodata", 0x394): identity},
+        )
+        candidate = MODULE.normalized_relocation(
+            "R_AARCH64_ADR_PREL_PG_HI21",
+            "hml_config_version",
+            {".rodata": bytes(0x400)},
+            {"hml_config_version": (".rodata", 0x370)},
+            {},
+            {(".rodata", 0x370): identity},
+        )
+
+        self.assertEqual(stock, candidate)
+
 
 if __name__ == "__main__":
     unittest.main()

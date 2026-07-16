@@ -71,6 +71,7 @@ class Elf64:
     def __init__(self, path: Path) -> None:
         self.path = path
         self.data = path.read_bytes()
+        self._section_bytes_cache: dict[int, bytes] = {}
         if len(self.data) < ELF_HEADER.size:
             raise ValueError("file is smaller than an ELF64 header")
 
@@ -124,12 +125,25 @@ class Elf64:
             for section in sections
         ]
         self.symbols = list(self._read_symbols())
+        self._defined_functions_by_name: dict[str, list[Symbol]] = {}
+        for symbol in self.symbols:
+            if (
+                symbol.symbol_type == STT_FUNC
+                and symbol.section_index != SHN_UNDEF
+                and symbol.section_index < SHN_LORESERVE
+            ):
+                self._defined_functions_by_name.setdefault(symbol.name, []).append(symbol)
 
     def section_bytes(self, section: Section) -> bytes:
+        cached = self._section_bytes_cache.get(section.index)
+        if cached is not None:
+            return cached
         end = section.offset + section.size
         if section.offset < 0 or end > len(self.data):
             raise ValueError(f"section {section.index} exceeds file size")
-        return self.data[section.offset:end]
+        data = self.data[section.offset:end]
+        self._section_bytes_cache[section.index] = data
+        return data
 
     def _read_symbols(self) -> Iterable[Symbol]:
         for section in self.sections:
@@ -155,14 +169,7 @@ class Elf64:
                 )
 
     def function(self, name: str) -> Symbol:
-        matches = [
-            symbol
-            for symbol in self.symbols
-            if symbol.name == name
-            and symbol.symbol_type == STT_FUNC
-            and symbol.section_index != SHN_UNDEF
-            and symbol.section_index < SHN_LORESERVE
-        ]
+        matches = self._defined_functions_by_name.get(name, [])
         if len(matches) != 1:
             raise ValueError(f"expected one defined function named {name!r}, got {len(matches)}")
         return matches[0]

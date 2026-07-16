@@ -1,0 +1,188 @@
+{
+  "covered_functions": [
+    "charger_100W",
+    "charger_80W",
+    "cleanup_module",
+    "debug_value_show",
+    "debug_value_store",
+    "hml_config_version_show",
+    "init_module",
+    "nubia_charge_version_show",
+    "nubia_get_gpio_status",
+    "nubia_get_hw_id",
+    "nubia_get_hw_pcb_version",
+    "nubia_get_pcb_table_item_by_gpio",
+    "nubia_get_rf_band_by_gpio",
+    "nubia_gpio_ctrl",
+    "nubia_gpio_ctrl1",
+    "nubia_hw_pcb_version_show",
+    "nubia_hw_rf_band_show",
+    "nubia_hw_ver_probe",
+    "nubia_hw_ver_remove"
+  ],
+  "driver": "nubia_hw_version",
+  "function_count": 19,
+  "generated_utc": "2026-07-16T21:16:31.624077+00:00",
+  "harnesses": [
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers:/work/workspace:ro",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+        "-w",
+        "/tmp",
+        "nubia-sm8850-kernel-builder:latest",
+        "sh",
+        "-lc",
+        "cp /work/workspace/reverse_engineering/validation/reconstructed/nubia_hw_version/harness/stage2_semantic_harness.c . && /work/toolchains/clang-r536225/bin/clang -std=gnu11 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer stage2_semantic_harness.c -o stage2_semantic_harness && ./stage2_semantic_harness"
+      ],
+      "covered_functions": [
+        "nubia_get_pcb_table_item_by_gpio",
+        "nubia_get_hw_id",
+        "nubia_get_hw_pcb_version",
+        "charger_100W",
+        "charger_80W",
+        "nubia_get_rf_band_by_gpio",
+        "debug_value_show",
+        "debug_value_store",
+        "nubia_hw_rf_band_show",
+        "nubia_charge_version_show",
+        "hml_config_version_show"
+      ],
+      "harness": "stage2_semantic_harness.c",
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS pcb_null_table\nPASS pcb_zero_count\nPASS pcb_lookup_all\nPASS pcb_missing\nPASS hw_id_match\nPASS hw_id_unknown\nPASS pcb_version_match\nPASS pcb_version_unknown\nPASS pcb_version_null\nPASS charger_100w_true\nPASS charger_100w_false\nPASS charger_80w_true\nPASS charger_80w_false\nPASS rf_null_table\nPASS rf_zero_count\nPASS rf_lookup_all\nPASS rf_missing\nPASS rf_show_zero_map\nPASS rf_show_two_map\nPASS rf_show_one_map\nPASS rf_show_invalid\nPASS debug_store_show\nPASS charge_versions\nPASS charge_version_invalid\nPASS hml_versions\nPASS hml_version_invalid\nSUMMARY 26/26\n",
+      "tests": {
+        "expected": 26,
+        "failed": [],
+        "passed": [
+          "pcb_null_table",
+          "pcb_zero_count",
+          "pcb_lookup_all",
+          "pcb_missing",
+          "hw_id_match",
+          "hw_id_unknown",
+          "pcb_version_match",
+          "pcb_version_unknown",
+          "pcb_version_null",
+          "charger_100w_true",
+          "charger_100w_false",
+          "charger_80w_true",
+          "charger_80w_false",
+          "rf_null_table",
+          "rf_zero_count",
+          "rf_lookup_all",
+          "rf_missing",
+          "rf_show_zero_map",
+          "rf_show_two_map",
+          "rf_show_one_map",
+          "rf_show_invalid",
+          "debug_store_show",
+          "charge_versions",
+          "charge_version_invalid",
+          "hml_versions",
+          "hml_version_invalid"
+        ],
+        "summary": "SUMMARY 26/26"
+      }
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers:/work/workspace:ro",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+        "-w",
+        "/tmp",
+        "nubia-sm8850-kernel-builder:latest",
+        "sh",
+        "-lc",
+        "cp /work/workspace/reverse_engineering/validation/reconstructed/nubia_hw_version/harness/stage3_control_flow_harness.c . && /work/toolchains/clang-r536225/bin/clang -std=gnu11 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer stage3_control_flow_harness.c -o stage3_control_flow_harness && ./stage3_control_flow_harness"
+      ],
+      "covered_functions": [
+        "nubia_gpio_ctrl1",
+        "nubia_gpio_ctrl",
+        "nubia_hw_ver_probe",
+        "nubia_hw_ver_remove",
+        "nubia_get_gpio_status",
+        "nubia_hw_pcb_version_show",
+        "init_module",
+        "cleanup_module"
+      ],
+      "harness": "stage3_control_flow_harness.c",
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS ctrl1_no_info\nPASS ctrl1_no_pull_down\nPASS ctrl1_select_result\nPASS ctrl_alloc_failure\nPASS ctrl_pinctrl_failure\nPASS ctrl_pull_up_failure\nPASS ctrl_pull_down_failure\nPASS ctrl_select_failure_nonfatal\nPASS gpio_status_sequence\nPASS pcb_show_null\nPASS pcb_show_value\nPASS probe_pcb1_missing\nPASS probe_pcb2_missing_skips_pcb3\nPASS probe_rf1_missing\nPASS probe_rf2_missing\nPASS probe_ctrl_failure\nPASS probe_ctrl1_failure\nPASS probe_success_accumulates\nPASS remove_with_info\nPASS remove_without_info\nPASS init_no_kobject\nPASS init_sysfs_error\nPASS init_success\nPASS exit_cleanup\nSUMMARY 24/24\n",
+      "tests": {
+        "expected": 24,
+        "failed": [],
+        "passed": [
+          "ctrl1_no_info",
+          "ctrl1_no_pull_down",
+          "ctrl1_select_result",
+          "ctrl_alloc_failure",
+          "ctrl_pinctrl_failure",
+          "ctrl_pull_up_failure",
+          "ctrl_pull_down_failure",
+          "ctrl_select_failure_nonfatal",
+          "gpio_status_sequence",
+          "pcb_show_null",
+          "pcb_show_value",
+          "probe_pcb1_missing",
+          "probe_pcb2_missing_skips_pcb3",
+          "probe_rf1_missing",
+          "probe_rf2_missing",
+          "probe_ctrl_failure",
+          "probe_ctrl1_failure",
+          "probe_success_accumulates",
+          "remove_with_info",
+          "remove_without_info",
+          "init_no_kobject",
+          "init_sysfs_error",
+          "init_success",
+          "exit_cleanup"
+        ],
+        "summary": "SUMMARY 24/24"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\nubia_hw_version\\nubia_hw_version.c",
+      "sha256": "bb9a57f9875c4fa6b7409d6493ecb4d5831246fa2a2625e62dc2e63160eaf8fe",
+      "size": 14213
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\nubia_hw_version\\harness\\stage2_semantic_harness.c",
+      "sha256": "bd85e6bce2376f0d4ef44b8781be6fdb6d87ab4018b3858e3a1c7961bbe6cf53",
+      "size": 11454
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\nubia_hw_version\\harness\\stage3_control_flow_harness.c",
+      "sha256": "db33b32c43b34c557abf8dd679b10cc258b46a6ed72331c47268c8292cbda6e5",
+      "size": 18022
+    }
+  ],
+  "limitations": [
+    "The harnesses model source-level behavior with deterministic host mocks.",
+    "ASan and UBSan validate the host models, not the kernel module runtime.",
+    "They do not link or execute the kernel module object.",
+    "No GPIO controller, pinctrl provider, sysfs kernel object or MMIO is exercised.",
+    "No ADB, fastboot, insmod, rmmod or smartphone operation is performed.",
+    "A passing report closes host harness coverage, not hardware parity."
+  ],
+  "mode": "offline_isolated_complete_function_harness",
+  "passed": true,
+  "schema_version": "1.0",
+  "total_tests": 50
+}

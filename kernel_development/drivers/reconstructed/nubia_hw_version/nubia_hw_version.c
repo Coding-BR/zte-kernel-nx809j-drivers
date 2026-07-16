@@ -220,9 +220,12 @@ static int nubia_hw_ver_probe(struct platform_device *pdev)
 	struct nubia_pcb_gpio_map *pcb_item;
 	int pcb_gpio1;
 	int pcb_gpio2 = 0;
+	int pcb_gpio3_value;
+	int gpio;
 	int rf_gpio1;
 	int rf_gpio2;
 	int ret;
+	u8 raw_value;
 
 	node = pdev->dev.of_node;
 
@@ -243,31 +246,37 @@ static int nubia_hw_ver_probe(struct platform_device *pdev)
 	}
 	ret = gpio_request(pcb_gpio1, "NUBIA_HW_PCB_GPIO1");
 	if (ret < 0)
-		pr_err("Failed to request GPIO:%d, ERRNO:%d", pcb_gpio1,
+		printk("Failed to request GPIO:%d, ERRNO:%d", pcb_gpio1,
 		       ret);
 
-	pcb_gpio2 = of_get_named_gpio(node, "qcom,pcb-gpio2", 0);
-	if (pcb_gpio2 < 0) {
-		if (debug_value == 1)
-			pr_info("[nubia_hw_version]TLMM pcb gpio2 not found\n");
-		pcb_gpio2 = 0;
-	} else {
-		ret = gpio_request(pcb_gpio2, "NUBIA_HW_PCB_GPIO2");
-		if (ret < 0)
-			pr_err("Failed to request GPIO:%d, ERRNO:%d\n",
-			       pcb_gpio2, ret);
+	gpio = of_get_named_gpio(node, "qcom,pcb-gpio2", 0);
+	if (gpio < 0)
+		goto pcb_gpio2_missing;
 
-		pcb_gpio3 = of_get_named_gpio(node, "qcom,pcb-gpio3", 0);
-		if (pcb_gpio3 < 0) {
-			if (debug_value == 1)
-				pr_info("[nubia_hw_version]TLMM pcb gpio3 not found\n");
-		} else {
-			ret = gpio_request(pcb_gpio3, "NUBIA_HW_PCB_GPIO3");
-			if (ret < 0)
-				pr_err("Failed to request GPIO:%d, ERRNO:%d\n",
-				       pcb_gpio3, ret);
-		}
+	pcb_gpio2 = gpio;
+	ret = gpio_request(pcb_gpio2, "NUBIA_HW_PCB_GPIO2");
+	if (ret < 0)
+		printk("Failed to request GPIO:%d, ERRNO:%d\n",
+		       pcb_gpio2, ret);
+
+	pcb_gpio3 = of_get_named_gpio(node, "qcom,pcb-gpio3", 0);
+	if (pcb_gpio3 < 0) {
+		if (debug_value == 1)
+			pr_info("[nubia_hw_version]TLMM pcb gpio3 not found\n");
+	} else {
+		ret = gpio_request(pcb_gpio3, "NUBIA_HW_PCB_GPIO3");
+		if (ret < 0)
+			printk("Failed to request GPIO:%d, ERRNO:%d\n",
+			       pcb_gpio3, ret);
 	}
+	goto pcb_gpio2_ready;
+
+pcb_gpio2_missing:
+	if (debug_value == 1)
+		pr_info("[nubia_hw_version]TLMM pcb gpio2 not found\n");
+	pcb_gpio2 = 0;
+
+pcb_gpio2_ready:
 
 	rf_gpio1 = of_get_named_gpio(node, "qcom,rf-gpio1", 0);
 	if (rf_gpio1 < 0) {
@@ -284,10 +293,10 @@ static int nubia_hw_ver_probe(struct platform_device *pdev)
 
 	ret = gpio_request(rf_gpio1, "NUBIA_RF_PCB_GPIO1");
 	if (ret < 0)
-		pr_err("Failed to request GPIO:%d, ERRNO:%d", rf_gpio1, ret);
+		printk("Failed to request GPIO:%d, ERRNO:%d", rf_gpio1, ret);
 	ret = gpio_request(rf_gpio2, "NUBIA_HW_RF_GPIO2");
 	if (ret < 0)
-		pr_err("Failed to request GPIO:%d, ERRNO:%d\n", rf_gpio2,
+		printk("Failed to request GPIO:%d, ERRNO:%d\n", rf_gpio2,
 		       ret);
 
 	ret = nubia_gpio_ctrl(pdev);
@@ -297,37 +306,43 @@ static int nubia_hw_ver_probe(struct platform_device *pdev)
 	desc = gpio_to_desc(pcb_gpio1);
 	gpiod_direction_input(desc);
 	msleep(1);
-	nubia_pcb_gpio1_v = gpiod_get_raw_value(gpio_to_desc(pcb_gpio1));
+	raw_value = gpiod_get_raw_value(gpio_to_desc(pcb_gpio1));
 	if (debug_value == 1)
-		pr_info("[nubia_hw_version]read_gpio=%x\n", nubia_pcb_gpio1_v);
+		pr_info("[nubia_hw_version]read_gpio=%x\n", raw_value);
+	nubia_pcb_gpio1_v = raw_value;
 
 	desc = gpio_to_desc(pcb_gpio2);
 	gpiod_direction_input(desc);
 	msleep(1);
-	nubia_pcb_gpio2_v = gpiod_get_raw_value(gpio_to_desc(pcb_gpio2));
+	raw_value = gpiod_get_raw_value(gpio_to_desc(pcb_gpio2));
 	if (debug_value == 1)
-		pr_info("[nubia_hw_version]read_gpio=%x\n", nubia_pcb_gpio2_v);
+		pr_info("[nubia_hw_version]read_gpio=%x\n", raw_value);
+	nubia_pcb_gpio2_v = raw_value;
 
-	desc = gpio_to_desc(pcb_gpio3);
+	pcb_gpio3_value = pcb_gpio3;
+	desc = gpio_to_desc(pcb_gpio3_value);
 	gpiod_direction_input(desc);
 	msleep(1);
-	nubia_pcb_gpio3_v = gpiod_get_raw_value(gpio_to_desc(pcb_gpio3));
+	raw_value = gpiod_get_raw_value(gpio_to_desc(pcb_gpio3_value));
 	if (debug_value == 1)
-		pr_info("[nubia_hw_version]read_gpio=%x\n", nubia_pcb_gpio3_v);
+		pr_info("[nubia_hw_version]read_gpio=%x\n", raw_value);
+	nubia_pcb_gpio3_v = raw_value;
 
 	desc = gpio_to_desc(rf_gpio1);
 	gpiod_direction_input(desc);
 	msleep(1);
-	nubia_rf_gpio1_v = gpiod_get_raw_value(gpio_to_desc(rf_gpio1));
+	raw_value = gpiod_get_raw_value(gpio_to_desc(rf_gpio1));
 	if (debug_value == 1)
-		pr_info("[nubia_hw_version]read_gpio=%x\n", nubia_rf_gpio1_v);
+		pr_info("[nubia_hw_version]read_gpio=%x\n", raw_value);
+	nubia_rf_gpio1_v = raw_value;
 
 	desc = gpio_to_desc(rf_gpio2);
 	gpiod_direction_input(desc);
 	msleep(1);
-	nubia_rf_gpio2_v = gpiod_get_raw_value(gpio_to_desc(rf_gpio2));
+	raw_value = gpiod_get_raw_value(gpio_to_desc(rf_gpio2));
 	if (debug_value == 1)
-		pr_info("[nubia_hw_version]read_gpio=%x\n", nubia_rf_gpio2_v);
+		pr_info("[nubia_hw_version]read_gpio=%x\n", raw_value);
+	nubia_rf_gpio2_v = raw_value;
 
 	msleep(20);
 	ret = nubia_gpio_ctrl1(pdev);
@@ -403,6 +418,7 @@ static ssize_t nubia_hw_rf_band_show(struct kobject *kobj,
 				     struct kobj_attribute *attr, char *buf)
 {
 	const char *band;
+	const struct nubia_rf_band_gpio_map *table;
 	u8 gpio1;
 	long gpio2;
 	long index;
@@ -440,9 +456,8 @@ unknown:
 	goto report;
 
 selected:
-	band = (const char *)hw_rf_band_gpio_map +
-		index * sizeof(hw_rf_band_gpio_map[0]) +
-		offsetof(struct nubia_rf_band_gpio_map, rf_band);
+	table = hw_rf_band_gpio_map;
+	band = table[index].rf_band;
 
 report:
 	if (debug_value == 1)
