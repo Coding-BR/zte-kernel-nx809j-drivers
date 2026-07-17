@@ -28,8 +28,8 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `91/367` microtarefas possuem build, KCFI e teste direto vinculados por
-  hash; `276` ainda precisam de evidencia comportamental;
+- O6: `109/367` microtarefas possuem build, KCFI e teste direto vinculados por
+  hash; `258` ainda precisam de evidencia comportamental;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -43,7 +43,7 @@ Hardware permanece `DEFERRED`.
 - O candidato possui `173` simbolos de texto adicionais documentados: 131
   subrotinas do decompilador, 22 wrappers de assinatura, 9 duplicatas renomeadas
   e 11 helpers diversos.
-- Cinco relatorios de harness promovem `91` microtarefas atuais, sem PASS
+- Seis relatorios de harness promovem `109` microtarefas atuais, sem PASS
   obsoleto e sem falha de ASan ou UBSan.
 
 ## Correcao de Usercopy e Proc
@@ -57,6 +57,9 @@ Hardware permanece `DEFERRED`.
   compactada explicita de 10 bytes, com copia limitada a 9 bytes.
 - O harness proc executa duas repeticoes independentes, `7/7` cenarios PASS,
   sobre 24 funcoes e inclui sucesso, EOF, parse invalido e falha de usercopy.
+- O harness proc de recursos executa duas repeticoes independentes, `7/7`
+  cenarios PASS, e atesta mais 18 wrappers de `wake`, `smart_cover`, `glove`,
+  `single_*`, `palm`, `fold` e `frame_data`.
 
 ## Correcao do Platform Device
 
