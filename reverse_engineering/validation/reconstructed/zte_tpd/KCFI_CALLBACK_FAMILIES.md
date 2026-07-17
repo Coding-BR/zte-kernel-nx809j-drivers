@@ -8,10 +8,10 @@ This report is generated exclusively from the local stock module, the local cand
 | `firmware_setter` | `0x6af8b499` | `int (struct ztp_device *, int)` | 15 | 15 | `MATCH` |
 | `sensibility_setter` | `0xe1d63dc1` | `int (struct ztp_device *, u8)` | 1 | 1 | `MATCH` |
 | `text_callback` | `0x64f25fb2` | `int (struct ztp_device *, char *)` | 2 | 2 | `MATCH` |
-| `proc_read` | `0xf4e9d97c` | `ssize_t (struct file *, char *, size_t, loff_t *)` | 33 | 1 | `MISMATCH` |
-| `proc_write` | `0xc3d43b4d` | `ssize_t (struct file *, const char *, size_t, loff_t *)` | 33 | 1 | `MISMATCH` |
-| `work_callback` | `0xa607748c` | `void (struct work_struct *)` | 20 | 3 | `MISMATCH` |
-| `void_noarg` | `0xe5c47d60` | `void (void)` | 21 | 6 | `MISMATCH` |
+| `proc_read` | `0xf4e9d97c` | `ssize_t (struct file *, char *, size_t, loff_t *)` | 33 | 33 | `MATCH` |
+| `proc_write` | `0xc3d43b4d` | `ssize_t (struct file *, const char *, size_t, loff_t *)` | 33 | 33 | `MATCH` |
+| `work_callback` | `0xa607748c` | `void (struct work_struct *)` | 20 | 20 | `MATCH` |
+| `void_noarg` | `0xe5c47d60` | `void (void)` | 21 | 21 | `MATCH` |
 
 ## Gate Meaning
 

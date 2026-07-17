@@ -1,4 +1,4 @@
-void tpd_clean_all_event()
+void tpd_clean_all_event(void)
 {
   unk_31008 = 0;
   dword_3100F = 0;

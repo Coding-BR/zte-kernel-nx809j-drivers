@@ -381,7 +381,7 @@ extern __int64 syna_tcm_v1_check_max_rw_size(__int64 a1);
 extern __int64 syna_tcm_v1_terminate(__int64 result, __int64 a2, __int64 a3);
 
 // Charger & TPD callback functions
-extern __int64 syna_work_charger_detect_work(__int64 a1, __int64 a2, __int64 a3);
+extern void syna_work_charger_detect_work(struct work_struct *work);
 extern __int64 syna_charger_notify_call(__int64 a1, __int64 a2, __int64 **a3);
 extern int tpd_init_tpinfo(struct ztp_device *cdev);
 extern int tpd_get_wakegesture(struct ztp_device *cdev);
@@ -428,23 +428,41 @@ bool syna_tcm_testing_0A00_check_lower_bound(short *a1, short *a2, __int64 a3, u
 __int64 syna_tcm_testing_check_frame_data(__int64 a1, unsigned __int64 a2, __int64 a3, int a4, _DWORD *a5, __int64 a6, unsigned __int64 a7);
 __int64 syna_tcm_testing_check_frame_data_0(__int64 a1, unsigned __int64 a2, __int64 a3, int a4, _DWORD *a5, __int64 a6, unsigned __int64 a7);
 
-extern __int64 tpd_id0_report_work(void);
-extern __int64 tpd_id1_report_work(void);
-extern __int64 tpd_id2_report_work(void);
-extern __int64 tpd_id3_report_work(void);
-extern __int64 tpd_id4_report_work(void);
-extern __int64 tpd_id5_report_work(void);
-extern __int64 tpd_id6_report_work(void);
-extern __int64 tpd_id7_report_work(void);
-extern __int64 tpd_id8_report_work(void);
-extern __int64 tpd_id9_report_work(void);
-extern __int64 ztp_probe_work(__int64 a1, __int64 a2, __int64 a3);
-extern void tpd_resume_work(void);
-extern void tpd_suspend_work(void);
-extern __int64 ufp_report_lcd_state_work(void);
-extern __int64 tp_ghost_check_work(void);
-extern void ufp_single_tap_work(void);
+extern void tpd_id0_report_work(struct work_struct *work);
+extern void tpd_id1_report_work(struct work_struct *work);
+extern void tpd_id2_report_work(struct work_struct *work);
+extern void tpd_id3_report_work(struct work_struct *work);
+extern void tpd_id4_report_work(struct work_struct *work);
+extern void tpd_id5_report_work(struct work_struct *work);
+extern void tpd_id6_report_work(struct work_struct *work);
+extern void tpd_id7_report_work(struct work_struct *work);
+extern void tpd_id8_report_work(struct work_struct *work);
+extern void tpd_id9_report_work(struct work_struct *work);
+extern void ztp_probe_work(struct work_struct *work);
+extern void tpd_resume_work(struct work_struct *work);
+extern void tpd_suspend_work(struct work_struct *work);
+extern void ufp_report_lcd_state_work(struct work_struct *work);
+extern void tp_ghost_check_work(struct work_struct *work);
+extern void ufp_single_tap_work(struct work_struct *work);
 extern __int64 __fastcall tpd_report_uevent(unsigned __int8 a1, __int64 a2, __int64 a3);
+
+
+// Stock void(void) callback family recovered from KCFI.
+extern void cancel_report_lcd_state_delayed_work(void);
+extern void syna_dev_module_exit(void);
+extern void syna_hw_interface_exit(void);
+extern void tp_free_tp_firmware_data(void);
+extern void tpd_clean_all_event(void);
+extern void tpd_probe_work_deinit(void);
+extern void tpd_probe_work_init(void);
+extern void tpd_proc_deinit(void);
+extern void tpd_report_work_deinit(void);
+extern void tpd_reset_fw_data_pos_and_size(void);
+extern void tpd_resume_work_deinit(void);
+extern void tpd_resume_work_init(void);
+extern void tpd_workqueue_deinit(void);
+extern void ufp_mac_exit(void);
+extern void ufp_report_lcd_state(void);
 
 // Injected globals
 #include "globals.h"

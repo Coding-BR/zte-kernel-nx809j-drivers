@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE` (`8/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6`
-- **Candidato:** `12854712` bytes
+- **Candidato SHA-256:** `190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d`
+- **Candidato:** `16245104` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
@@ -23,7 +23,8 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `50/50`;
+- O8 KCFI da superficie selecionada `151/151`, incluindo as oito familias
+  recuperadas `143/143`;
 - O8/O9 build duplo, KMI e paridade estatica.
 
 INCOMPLETE:
@@ -39,13 +40,16 @@ Hardware permanece `DEFERRED`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
-- O candidato possui `234` simbolos de texto adicionais documentados: 131
-  subrotinas do decompilador, 84 wrappers de assinatura, 9 duplicatas renomeadas
+- O candidato possui `172` simbolos de texto adicionais documentados: 131
+  subrotinas do decompilador, 22 wrappers de assinatura, 9 duplicatas renomeadas
   e 10 helpers diversos.
 - Harnesses diretos: `27/27` testes PASS sobre 38 funcoes distintas.
-- Callbacks de firmware/estado: quatro familias KCFI completas, `36/36`.
-- Proximo lote preparado por oraculo: proc read/write, workqueue e `void(void)`;
-  essas familias ainda permanecem incompletas no candidato.
+- Oito familias KCFI completas: firmware/estado, proc read/write, workqueue e
+  `void(void)`, totalizando `143/143` callbacks.
+- Os 63 wrappers artificiais de proc foram removidos; as tabelas `proc_ops`
+  apontam diretamente para os handlers com ABI stock.
+- As 96 funcoes do novo lote ainda aguardam harness comportamental e, por isso,
+  nao foram promovidas para `PASS` nas microtarefas.
 
 ## Correcao do Platform Device
 

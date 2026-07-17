@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `24513b1187c4b7ad60411a66552a1905ac15408350407f595fde9a41d127f5e6`
+Candidato vinculado: `190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -44,11 +44,11 @@ static const struct spi_driver syna_spi_driver;
 static const struct file_operations zte_fops;
 ```
 
-O candidato ainda usa wrappers tipados em varias fronteiras porque as unidades
-decompiladas conservam assinaturas sinteticas `__int64`. Esses wrappers sao uma
-etapa de compatibilidade CFI, nao prova de assinatura interna. Cada wrapper so
-pode ser removido depois da microtarefa da funcao alvo comparar P-Code,
-assembly, KCFI e todos os call sites.
+Os 63 wrappers de proc foram removidos depois da comparacao de P-Code, assembly,
+KCFI e call sites. Os handlers usam diretamente as assinaturas nativas
+`proc_read`/`proc_write`. Restam 22 wrappers em outras fronteiras; cada um so
+pode ser removido depois da microtarefa da funcao alvo comprovar o ABI e os
+efeitos observaveis.
 
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.

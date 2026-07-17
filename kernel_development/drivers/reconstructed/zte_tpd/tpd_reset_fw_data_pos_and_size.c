@@ -1,4 +1,4 @@
-void tpd_reset_fw_data_pos_and_size()
+void tpd_reset_fw_data_pos_and_size(void)
 {
   __int64 v0; // x8
 

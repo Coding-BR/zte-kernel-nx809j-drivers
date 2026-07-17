@@ -1,5 +1,6 @@
-void tpd_resume_work()
+void tpd_resume_work(struct work_struct *work)
 {
+  (void)work;
   __int64 v0; // x19
   void (__fastcall *v1)(_QWORD); // x8
   __int64 v2; // x0

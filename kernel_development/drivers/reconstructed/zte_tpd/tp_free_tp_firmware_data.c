@@ -1,4 +1,4 @@
-__int64 tp_free_tp_firmware_data()
+void tp_free_tp_firmware_data(void)
 {
   __int64 v0; // x19
   __int64 result; // x0
@@ -18,5 +18,4 @@ __int64 tp_free_tp_firmware_data()
     *(_QWORD *)(v0 + 2720) = 0;
   }
   *(_DWORD *)(v0 + 1096) = 0;
-  return result;
 }

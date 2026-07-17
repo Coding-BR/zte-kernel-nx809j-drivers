@@ -1,7 +1,10 @@
-__int64 __fastcall tpd_proc_deinit(__int64 a1, __int64 a2, __int64 a3)
+void tpd_proc_deinit(void)
 {
   if ( !tpd_proc_dir )
-    return printk(unk_3CE70, "tpd_proc_deinit", a3);
+  {
+    printk(unk_3CE70, "tpd_proc_deinit");
+    return;
+  }
   remove_proc_entry("ts_information", tpd_proc_dir);
   remove_proc_entry("wake_gesture", tpd_proc_dir);
   remove_proc_entry("smart_cover", tpd_proc_dir);
@@ -32,5 +35,4 @@ __int64 __fastcall tpd_proc_deinit(__int64 a1, __int64 a2, __int64 a3)
   remove_proc_entry("frame_data", tpd_proc_dir);
   remove_proc_entry("ghost_debug", tpd_proc_dir);
   remove_proc_entry("touchscreen", NULL);
-  return 0;
 }

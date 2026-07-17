@@ -1,5 +1,6 @@
-void tpd_suspend_work()
+void tpd_suspend_work(struct work_struct *work)
 {
+  (void)work;
   void (__fastcall *v0)(_QWORD); // x8
   __int64 v1; // x0
 

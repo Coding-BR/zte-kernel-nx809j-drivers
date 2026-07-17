@@ -1,5 +1,6 @@
-__int64 __fastcall syna_work_charger_detect_work(__int64 result, __int64 a2, __int64 a3)
+void syna_work_charger_detect_work(struct work_struct *work)
 {
+  __int64 result = (__int64)work;
   _QWORD *v3; // x19
   __int64 v4; // x9
   __int64 v5; // x23
@@ -24,7 +25,7 @@ __int64 __fastcall syna_work_charger_detect_work(__int64 result, __int64 a2, __i
     v6 = *(_DWORD *)(*v3 + 524LL);
     v5 = result;
   }
-  printk(unk_35219, "syna_work_charger_detect_work", a3);
+  printk(unk_35219, "syna_work_charger_detect_work");
   v7 = syna_get_charger_status_batt_psy;
   if ( syna_get_charger_status_batt_psy
     || (v7 = power_supply_get_by_name("battery"), (syna_get_charger_status_batt_psy = v7) != 0) )
@@ -57,5 +58,5 @@ LABEL_16:
     goto LABEL_16;
 LABEL_2:
   _ReadStatusReg(SP_EL0);
-  return result;
+  return;
 }

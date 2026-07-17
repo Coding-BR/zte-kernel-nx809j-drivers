@@ -54,7 +54,7 @@ void __fastcall syna_ts_panel_notifier_callback(enum panel_event_notifier_tag ta
   {
     panel_enter_low_power = 1;
     ufp_notifier_cb(1);
-    ufp_report_lcd_state(0, 0, 0);
+    ufp_report_lcd_state();
     return;
   }
   printk(unk_3C4D0, v3, client_data);

@@ -1,5 +1,10 @@
-__int64 __fastcall set_play_game(__int64 a1, __int64 a2, __int64 a3)
+ssize_t set_play_game(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
+  __int64 a2 = (__int64)buffer;
+  __int64 a3 = (__int64)count;
+
+  (void)file;
+  (void)offset;
   __int64 v3; // x19
   __int64 v4; // x20
   void (__fastcall *v6)(__int64, __int64); // x8

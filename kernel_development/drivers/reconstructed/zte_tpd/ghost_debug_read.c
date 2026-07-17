@@ -1,7 +1,12 @@
 #include "defs.h"
 
-__int64 __fastcall ghost_debug_read(__int64 a1, __int64 a2, __int64 a3, __int64 *a4)
+ssize_t ghost_debug_read(struct file *file, char __user *buffer, size_t count, loff_t *offset)
 {
+  __int64 a2 = (__int64)buffer;
+  __int64 a3 = (__int64)count;
+  __int64 *a4 = (__int64 *)offset;
+
+  (void)file;
   __int64 v7; // x23
   __int64 v9; // x0
   char *v12; // x22

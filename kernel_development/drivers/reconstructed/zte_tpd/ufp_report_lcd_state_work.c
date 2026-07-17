@@ -1,4 +1,5 @@
-__int64 ufp_report_lcd_state_work()
+void ufp_report_lcd_state_work(struct work_struct *work)
 {
-  return ufp_report_lcd_state();
+  (void)work;
+  ufp_report_lcd_state();
 }

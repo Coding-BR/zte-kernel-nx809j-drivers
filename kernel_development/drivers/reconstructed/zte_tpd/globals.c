@@ -2133,106 +2133,40 @@ int syna_usb_detect_flag = 0;
 __int64 syna_get_charger_status_batt_psy = 0;
 char DEVICE_NODE_NAME[100] = {0};
 
-// Wrapper read functions
-static ssize_t wrap_tp_module_info_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_module_info_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_wake_gesture_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_wake_gesture_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_smart_cover_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_smart_cover_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_glove_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_glove_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_suspend_show(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return suspend_show((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_headset_state_show(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return headset_state_show((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_rotation_limit_level(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_rotation_limit_level((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_display_rotation_show(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return display_rotation_show((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_single_tap_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_single_tap_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_single_aod_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_single_aod_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_single_game_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_single_game_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_tp_noise_show(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_tp_noise_show((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_edge_report_limit_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_edge_report_limit_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_one_key(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_one_key((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_play_game(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_play_game((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_tp_report_rate(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_tp_report_rate((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_follow_hand_level(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_follow_hand_level((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_stability_level(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_stability_level((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_sensibility_level_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_sensibility_level_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_game_partition_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_game_partition_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_pen_only_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_pen_only_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_finger_lock_flag(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_finger_lock_flag((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_self_test_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_self_test_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_palm_mode_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_palm_mode_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_fold_state_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_fold_state_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_fake_sleep(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_fake_sleep((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_get_screen_off_awake(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return get_screen_off_awake((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_ghost_debug_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return ghost_debug_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_BBAT_test_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_BBAT_test_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_test_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_test_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-static ssize_t wrap_tp_frame_data_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) { return tp_frame_data_read((__int64)file, (__int64)buf, (__int64)count, (__int64 *)ppos); }
-
-// Wrapper write functions
-static ssize_t wrap_tp_wake_gesture_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_wake_gesture_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_smart_cover_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_smart_cover_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_glove_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_glove_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tpfwupgrade_store(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tpfwupgrade_store((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_suspend_store(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return suspend_store((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_headset_state_store(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return headset_state_store((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_rotation_limit_level(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_rotation_limit_level((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_display_rotation(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_display_rotation((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_single_tap_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_single_tap_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_single_aod_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_single_aod_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_single_game_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_single_game_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_get_tp_noise_store(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return get_tp_noise_store((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_edge_report_limit_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_edge_report_limit_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_one_key(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_one_key((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_play_game(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_play_game((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_tp_report_rate(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_tp_report_rate((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_follow_hand_level(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_follow_hand_level((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_stability_level(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_stability_level((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_sensibility_level_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_sensibility_level_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_game_partition_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_game_partition_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_pen_only_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_pen_only_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_finger_lock_flag(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_finger_lock_flag((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_self_test_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_self_test_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_palm_mode_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_palm_mode_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_fold_state_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_fold_state_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_fake_sleep(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_fake_sleep((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_set_screen_off_awake(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return set_screen_off_awake((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_ghost_debug_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return ghost_debug_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_BBAT_test_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_BBAT_test_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_test_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_test_write((__int64)file, (__int64)buf, (__int64)count); }
-static ssize_t wrap_tp_frame_data_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos) { return tp_frame_data_write((__int64)file, (__int64)buf, (__int64)count); }
-
 // proc_ops structures definition
-const struct proc_ops proc_ops_tp_module_Info = { .proc_read = wrap_tp_module_info_read, };
-const struct proc_ops proc_ops_wake_gesture = { .proc_read = wrap_tp_wake_gesture_read, .proc_write = wrap_tp_wake_gesture_write, };
-const struct proc_ops proc_ops_smart_cover = { .proc_read = wrap_tp_smart_cover_read, .proc_write = wrap_tp_smart_cover_write, };
-const struct proc_ops proc_ops_glove = { .proc_read = wrap_tp_glove_read, .proc_write = wrap_tp_glove_write, };
-const struct proc_ops proc_ops_tpfwupgrade = { .proc_write = wrap_tpfwupgrade_store, };
-const struct proc_ops proc_ops_suspend = { .proc_read = wrap_suspend_show, .proc_write = wrap_suspend_store, };
-const struct proc_ops proc_ops_headset_state = { .proc_read = wrap_headset_state_show, .proc_write = wrap_headset_state_store, };
-const struct proc_ops proc_ops_rotation_limit_level = { .proc_read = wrap_get_rotation_limit_level, .proc_write = wrap_set_rotation_limit_level, };
-const struct proc_ops proc_ops_mrotation = { .proc_read = wrap_display_rotation_show, .proc_write = wrap_set_display_rotation, };
-const struct proc_ops proc_ops_single_tap = { .proc_read = wrap_tp_single_tap_read, .proc_write = wrap_tp_single_tap_write, };
-const struct proc_ops proc_ops_single_aod = { .proc_read = wrap_tp_single_aod_read, .proc_write = wrap_tp_single_aod_write, };
-const struct proc_ops proc_ops_single_game = { .proc_read = wrap_tp_single_game_read, .proc_write = wrap_tp_single_game_write, };
-const struct proc_ops proc_ops_get_noise = { .proc_read = wrap_get_tp_noise_show, .proc_write = wrap_get_tp_noise_store, };
-const struct proc_ops proc_ops_edge_report_limit = { .proc_read = wrap_tp_edge_report_limit_read, .proc_write = wrap_tp_edge_report_limit_write, };
-const struct proc_ops proc_ops_onekey = { .proc_read = wrap_get_one_key, .proc_write = wrap_set_one_key, };
-const struct proc_ops proc_ops_playgame = { .proc_read = wrap_get_play_game, .proc_write = wrap_set_play_game, };
-const struct proc_ops proc_ops_tp_report_rate = { .proc_read = wrap_get_tp_report_rate, .proc_write = wrap_set_tp_report_rate, };
-const struct proc_ops proc_ops_follow_hand_level = { .proc_read = wrap_get_follow_hand_level, .proc_write = wrap_set_follow_hand_level, };
-const struct proc_ops proc_ops_stability_level = { .proc_read = wrap_get_stability_level, .proc_write = wrap_set_stability_level, };
-const struct proc_ops proc_ops_sensibility_level = { .proc_read = wrap_tp_sensibility_level_read, .proc_write = wrap_tp_sensibility_level_write, };
-const struct proc_ops proc_ops_game_partition = { .proc_read = wrap_tp_game_partition_read, .proc_write = wrap_tp_game_partition_write, };
-const struct proc_ops proc_ops_pen_only = { .proc_read = wrap_tp_pen_only_read, .proc_write = wrap_tp_pen_only_write, };
-const struct proc_ops proc_ops_finger_lock_flag = { .proc_read = wrap_get_finger_lock_flag, .proc_write = wrap_set_finger_lock_flag, };
-const struct proc_ops proc_ops_tp_self_test = { .proc_read = wrap_tp_self_test_read, .proc_write = wrap_tp_self_test_write, };
-const struct proc_ops proc_ops_palm_mode = { .proc_read = wrap_tp_palm_mode_read, .proc_write = wrap_tp_palm_mode_write, };
-const struct proc_ops proc_ops_fold_state = { .proc_read = wrap_tp_fold_state_read, .proc_write = wrap_tp_fold_state_write, };
-const struct proc_ops proc_ops_fake_sleep = { .proc_read = wrap_get_fake_sleep, .proc_write = wrap_set_fake_sleep, };
-const struct proc_ops proc_ops_screen_off_awake = { .proc_read = wrap_get_screen_off_awake, .proc_write = wrap_set_screen_off_awake, };
+const struct proc_ops proc_ops_tp_module_Info = { .proc_read = tp_module_info_read, };
+const struct proc_ops proc_ops_wake_gesture = { .proc_read = tp_wake_gesture_read, .proc_write = tp_wake_gesture_write, };
+const struct proc_ops proc_ops_smart_cover = { .proc_read = tp_smart_cover_read, .proc_write = tp_smart_cover_write, };
+const struct proc_ops proc_ops_glove = { .proc_read = tp_glove_read, .proc_write = tp_glove_write, };
+const struct proc_ops proc_ops_tpfwupgrade = { .proc_write = tpfwupgrade_store, };
+const struct proc_ops proc_ops_suspend = { .proc_read = suspend_show, .proc_write = suspend_store, };
+const struct proc_ops proc_ops_headset_state = { .proc_read = headset_state_show, .proc_write = headset_state_store, };
+const struct proc_ops proc_ops_rotation_limit_level = { .proc_read = get_rotation_limit_level, .proc_write = set_rotation_limit_level, };
+const struct proc_ops proc_ops_mrotation = { .proc_read = display_rotation_show, .proc_write = set_display_rotation, };
+const struct proc_ops proc_ops_single_tap = { .proc_read = tp_single_tap_read, .proc_write = tp_single_tap_write, };
+const struct proc_ops proc_ops_single_aod = { .proc_read = tp_single_aod_read, .proc_write = tp_single_aod_write, };
+const struct proc_ops proc_ops_single_game = { .proc_read = tp_single_game_read, .proc_write = tp_single_game_write, };
+const struct proc_ops proc_ops_get_noise = { .proc_read = get_tp_noise_show, .proc_write = get_tp_noise_store, };
+const struct proc_ops proc_ops_edge_report_limit = { .proc_read = tp_edge_report_limit_read, .proc_write = tp_edge_report_limit_write, };
+const struct proc_ops proc_ops_onekey = { .proc_read = get_one_key, .proc_write = set_one_key, };
+const struct proc_ops proc_ops_playgame = { .proc_read = get_play_game, .proc_write = set_play_game, };
+const struct proc_ops proc_ops_tp_report_rate = { .proc_read = get_tp_report_rate, .proc_write = set_tp_report_rate, };
+const struct proc_ops proc_ops_follow_hand_level = { .proc_read = get_follow_hand_level, .proc_write = set_follow_hand_level, };
+const struct proc_ops proc_ops_stability_level = { .proc_read = get_stability_level, .proc_write = set_stability_level, };
+const struct proc_ops proc_ops_sensibility_level = { .proc_read = tp_sensibility_level_read, .proc_write = tp_sensibility_level_write, };
+const struct proc_ops proc_ops_game_partition = { .proc_read = tp_game_partition_read, .proc_write = tp_game_partition_write, };
+const struct proc_ops proc_ops_pen_only = { .proc_read = tp_pen_only_read, .proc_write = tp_pen_only_write, };
+const struct proc_ops proc_ops_finger_lock_flag = { .proc_read = get_finger_lock_flag, .proc_write = set_finger_lock_flag, };
+const struct proc_ops proc_ops_tp_self_test = { .proc_read = tp_self_test_read, .proc_write = tp_self_test_write, };
+const struct proc_ops proc_ops_palm_mode = { .proc_read = tp_palm_mode_read, .proc_write = tp_palm_mode_write, };
+const struct proc_ops proc_ops_fold_state = { .proc_read = tp_fold_state_read, .proc_write = tp_fold_state_write, };
+const struct proc_ops proc_ops_fake_sleep = { .proc_read = get_fake_sleep, .proc_write = set_fake_sleep, };
+const struct proc_ops proc_ops_screen_off_awake = { .proc_read = get_screen_off_awake, .proc_write = set_screen_off_awake, };
 const struct proc_ops proc_ops_zlog_debug = { .proc_read = tp_zlog_debug_read, .proc_write = tp_zlog_debug_write, };
-const struct proc_ops proc_ops_ghost_debug = { .proc_read = wrap_ghost_debug_read, .proc_write = wrap_ghost_debug_write, };
-const struct proc_ops proc_ops_BBAT_test = { .proc_read = wrap_tp_BBAT_test_read, .proc_write = wrap_tp_BBAT_test_write, };
-const struct proc_ops proc_ops_tp_test = { .proc_read = wrap_tp_test_read, .proc_write = wrap_tp_test_write, };
-const struct proc_ops proc_ops_frame_data = { .proc_read = wrap_tp_frame_data_read, .proc_write = wrap_tp_frame_data_write, };
+const struct proc_ops proc_ops_ghost_debug = { .proc_read = ghost_debug_read, .proc_write = ghost_debug_write, };
+const struct proc_ops proc_ops_BBAT_test = { .proc_read = tp_BBAT_test_read, .proc_write = tp_BBAT_test_write, };
+const struct proc_ops proc_ops_tp_test = { .proc_read = tp_test_read, .proc_write = tp_test_write, };
+const struct proc_ops proc_ops_frame_data = { .proc_read = tp_frame_data_read, .proc_write = tp_frame_data_write, };
 
 // Declare prototypes of functions used in zte_fops
 extern __int64 syna_poll(__int64 a1, void (**a2)(void));

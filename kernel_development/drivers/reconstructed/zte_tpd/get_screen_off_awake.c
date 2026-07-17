@@ -1,5 +1,10 @@
-__int64 __fastcall get_screen_off_awake(__int64 a1, __int64 a2, __int64 a3, __int64 *a4)
+ssize_t get_screen_off_awake(struct file *file, char __user *buffer, size_t count, loff_t *offset)
 {
+  __int64 a2 = (__int64)buffer;
+  __int64 a3 = (__int64)count;
+  __int64 *a4 = (__int64 *)offset;
+
+  (void)file;
   __int64 result; // x0
   __int64 v5; // x8
   __int64 v8; // x22

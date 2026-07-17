@@ -1,9 +1,9 @@
-__int64 tp_ghost_check_work()
+void tp_ghost_check_work(struct work_struct *work)
 {
+  (void)work;
   __int64 v0; // x19
   __int64 v1; // x1
   __int64 v2; // x2
-  __int64 result; // x0
   __int64 v4; // x1
   __int64 v5; // x2
   int v6; // w8
@@ -32,7 +32,6 @@ __int64 tp_ghost_check_work()
       *(_DWORD *)(v0 + 1192) = v6 + 1;
     }
   }
-  result = ghost_check_reset();
+  ghost_check_reset();
   *(_BYTE *)(v0 + 1160) = 0;
-  return result;
 }

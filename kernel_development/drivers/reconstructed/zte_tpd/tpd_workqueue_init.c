@@ -27,7 +27,7 @@ LABEL_2:
   v7[284] = v7 + 283;
   v7[285] = ztp_probe_work;
   init_timer_key(v7 + 286, &delayed_work_timer_fn, 0x200000, 0, 0);
-  tpd_resume_work_init(0, 0, 0);
+  tpd_resume_work_init();
   zlog_register_work_init();
   v3[295] = 0xFFFFFFFE00000LL;
   v3[296] = v3 + 296;

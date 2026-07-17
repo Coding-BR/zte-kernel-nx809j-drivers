@@ -394,10 +394,10 @@ __int64 __fastcall zte_touch_probe(__int64 a1)
     {
       printk(unk_36F15, v104, v105);
     }
-    v113 = tpd_clean_all_event();
-    v114 = ghost_check_reset(v113);
-    v115 = ufp_mac_init(v114);
-    if ( !(unsigned int)tpd_workqueue_init(v115, v116, v117) )
+    tpd_clean_all_event();
+    ghost_check_reset();
+    v115 = ufp_mac_init();
+    if ( !(unsigned int)tpd_workqueue_init() )
     {
       queue_delayed_work_on(32, *(_QWORD *)(v5 + 1200), v5 + 2256, 375);
       tpd_zlog_init();

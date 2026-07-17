@@ -1,5 +1,10 @@
-__int64 __fastcall suspend_store(__int64 a1, __int64 a2, __int64 a3)
+ssize_t suspend_store(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
+  __int64 a2 = (__int64)buffer;
+  __int64 a3 = (__int64)count;
+
+  (void)file;
+  (void)offset;
   __int64 v3; // x19
   __int64 v4; // x20
   _BOOL8 v6; // x2

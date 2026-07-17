@@ -1,5 +1,10 @@
-__int64 __fastcall tp_self_test_write(__int64 a1, __int64 a2, __int64 a3)
+ssize_t tp_self_test_write(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
+  __int64 a2 = (__int64)buffer;
+  __int64 a3 = (__int64)count;
+
+  (void)file;
+  (void)offset;
   __int64 v4; // x20
   __int64 v5; // x1
   __int64 v6; // x2
