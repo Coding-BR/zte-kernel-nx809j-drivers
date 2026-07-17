@@ -16,12 +16,12 @@
 | verified callback KCFI | `PASS` | KCFI section and type IDs match for 151/151 selected functions, including 143/143 callbacks in 8 recovered families Note: Function size is non-gating because the OEM LTO pipeline is unavailable |
 | stock function structural traceability | `PASS` | reconstruction_map.json and module_decomposition_audit.json bind all 367/367 stock identities to source, pseudocode, P-Code and AArch64 assembly Note: Structural identity is not semantic equivalence |
 | stock text and import surface | `PASS` | symbol_inventory_kmi_exact_final.json records no missing stock text symbol and no missing or unexpected import Note: 173 candidate-only text symbols are classified and non-gating (decompiler_subroutine=131, duplicate_renamed=9, other=11, signature_wrapper=22) |
-| hash-attested direct-test subset | `PASS` | microtask_progress.json promotes 109/367 current-source tasks from 6 sanitizer-backed host reports with zero stale PASS demotions Note: This PASS covers only the attested subset; 258 functions remain unvalidated |
+| hash-attested direct-test subset | `PASS` | microtask_progress.json promotes 123/367 current-source tasks from 7 sanitizer-backed host reports with zero stale PASS demotions Note: This PASS covers only the attested subset; 244 functions remain unvalidated |
 | hardware | `DEFERRED` | No ADB, fastboot, insmod, rmmod, SPI, IRQ or partition operation was performed Note: Controlled NX809J hardware validation remains a separate gate |
 
 ## Remaining Gates
 
-- O6 has 109 hash-attested PASS microtasks and 258 tasks still requiring direct evidence
+- O6 has 123 hash-attested PASS microtasks and 244 tasks still requiring direct evidence
 - O10 independent review is pending
 - Controlled NX809J hardware validation is deferred
 
