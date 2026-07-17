@@ -47,6 +47,17 @@ def valid_inputs() -> dict:
                 "matching_candidate_functions": 2,
             }
         },
+        "kcfi_full": {
+            "status": "PASS",
+            "stock": {"sha256": STOCK},
+            "candidate": {"sha256": SHA},
+            "summary": {
+                "stock_records": 2,
+                "matched": 2,
+                "mismatched": 0,
+                "stock_excluded": 0,
+            },
+        },
         "mapping": {
             "candidate_sha256": SHA,
             "stock_sha256": STOCK,
@@ -104,6 +115,18 @@ class ValidateInputsTests(unittest.TestCase):
         inputs["microtasks"]["summary"]["demoted_stale_pass"] = 1
         with self.assertRaisesRegex(ValueError, "stale microtask PASS"):
             MODULE.validate_inputs(inputs, SHA)
+
+    def test_marks_full_kcfi_mismatches_incomplete(self) -> None:
+        inputs = valid_inputs()
+        inputs["kcfi_full"]["status"] = "INCOMPLETE"
+        inputs["kcfi_full"]["summary"].update({"matched": 1, "mismatched": 1})
+        report = MODULE.build_report(MODULE.validate_inputs(inputs, SHA))
+        self.assertEqual(report["status"], "INCOMPLETE")
+        comparison = next(
+            item for item in report["comparisons"]
+            if item["surface"] == "complete recoverable KCFI surface"
+        )
+        self.assertEqual(comparison["result"], "INCOMPLETE")
 
 
 if __name__ == "__main__":

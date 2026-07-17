@@ -1,8 +1,8 @@
 {
   "schema_version": "2.0",
-  "status": "PASS",
+  "status": "INCOMPLETE",
   "driver": "zte_tpd",
-  "generated_utc": "2026-07-17T10:05:19.290966+00:00",
+  "generated_utc": "2026-07-17T10:16:22.130256+00:00",
   "scope": "Hash-bound offline parity for the canonical out-of-tree candidate; untested semantics, scheduler timing and electrical behavior are excluded",
   "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
   "candidate_sha256": "8bf17b48fd905e75504754ab13db24dbbe98ae6141953bc646a7b823d8bee29f",
@@ -23,6 +23,12 @@
       "result": "PASS",
       "evidence": "KCFI section and type IDs match for 151/151 selected functions, including 143/143 callbacks in 8 recovered families",
       "note": "Function size is non-gating because the OEM LTO pipeline is unavailable"
+    },
+    {
+      "surface": "complete recoverable KCFI surface",
+      "result": "INCOMPLETE",
+      "evidence": "kcfi_full_surface.json matches 154/322 stock functions with recoverable preambles",
+      "note": "168 signatures differ and 46 stock functions require separate preamble review"
     },
     {
       "surface": "stock function structural traceability",
@@ -50,6 +56,7 @@
     }
   ],
   "blockers": [
+    "Full KCFI surface has 168 mismatched function signatures",
     "O6 has 123 hash-attested PASS microtasks and 244 tasks still requiring direct evidence",
     "O10 independent review is pending",
     "Controlled NX809J hardware validation is deferred"

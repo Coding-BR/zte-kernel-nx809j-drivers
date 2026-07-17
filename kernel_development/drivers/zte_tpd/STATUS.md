@@ -3,7 +3,7 @@
 ## Estado Atual - 2026-07-17
 
 - **Classificacao do build:** `static_verified`
-- **Veredito do protocolo offline:** `INCOMPLETE` (`8/10` gates PASS)
+- **Veredito do protocolo offline:** `INCOMPLETE` (`7/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
 - **Candidato SHA-256:** `8bf17b48fd905e75504754ab13db24dbbe98ae6141953bc646a7b823d8bee29f`
@@ -23,13 +23,14 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O7 KCFI da superficie verificada `151/151`, incluindo `143/143` callbacks;
-- O8/O9 build duplo, KMI e paridade estatica.
+- O8 KCFI da superficie selecionada `151/151`, incluindo `143/143` callbacks.
 
 INCOMPLETE:
 
 - O6: `123/367` microtarefas possuem build, KCFI e teste direto vinculados por
   hash; `244` ainda precisam de evidencia comportamental;
+- O8/O9: a paridade integral esta incompleta porque `168/322` funcoes com
+  preambulo KCFI stock recuperavel ainda possuem type ID divergente;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -45,6 +46,9 @@ Hardware permanece `DEFERRED`.
   e 11 helpers diversos.
 - Sete relatorios de harness promovem `123` microtarefas atuais, sem PASS
   obsoleto e sem falha de ASan ou UBSan.
+- A superficie KCFI integral possui `154/322` matches (`47,83%`), zero simbolos
+  candidatos ausentes, `168` assinaturas divergentes e `46` funcoes stock cujo
+  preambulo precisa de revisao separada.
 
 ## Correcao de Usercopy e Proc
 
@@ -84,6 +88,7 @@ A leitura do ELF e assembly stock refutou a solucao historica baseada em
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/abi_validation.json`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_full_surface.json`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/parity_report.json`
 - `../../../kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json`
 - `../../../kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json`

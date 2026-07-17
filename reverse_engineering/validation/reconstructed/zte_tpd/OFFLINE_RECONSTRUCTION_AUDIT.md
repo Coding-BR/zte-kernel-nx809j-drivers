@@ -4,11 +4,11 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-17T10:05:53.004022+00:00`
+Gerado em: `2026-07-17T10:16:25.316500+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
-| `zte_tpd` | `INCOMPLETE` | 8/10 | report status is not PASS<br>missing independent_review.json |
+| `zte_tpd` | `INCOMPLETE` | 7/10 | report status is not PASS<br>offline parity failed: complete recoverable KCFI surface<br>parity report status is not PASS<br>missing independent_review.json |
 
 ## Regra de leitura
 

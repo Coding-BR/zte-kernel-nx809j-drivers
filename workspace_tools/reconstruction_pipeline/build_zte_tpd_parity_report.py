@@ -55,6 +55,7 @@ def load_inputs(
         "layout": validation_root / "header_layout_probe.json",
         "kcfi_direct": validation_root / "kcfi_direct_surface_final_comparison.json",
         "kcfi_families": validation_root / "kcfi_callback_families.json",
+        "kcfi_full": validation_root / "kcfi_full_surface.json",
         "symbols": validation_root / "symbol_inventory_kmi_exact_final.json",
         "decomposition": validation_root / "module_decomposition_audit.json",
         "microtasks": validation_root / "microtask_progress.json",
@@ -120,6 +121,22 @@ def validate_inputs(
         "callback KCFI function coverage is incomplete",
     )
 
+    kcfi_full = inputs["kcfi_full"]
+    full_summary = kcfi_full.get("summary", {})
+    require(
+        kcfi_full.get("candidate", {}).get("sha256") == candidate_sha,
+        "full KCFI report is stale",
+    )
+    require(
+        kcfi_full.get("stock", {}).get("sha256") == stock_sha,
+        "full KCFI report targets another stock module",
+    )
+    require(
+        full_summary.get("matched", 0) + full_summary.get("mismatched", 0)
+        == full_summary.get("stock_records", -1),
+        "full KCFI totals are inconsistent",
+    )
+
     mapping = inputs["mapping"]
     mapping_count = mapping.get("function_count")
     require(mapping.get("candidate_sha256") == candidate_sha, "traceability map is stale")
@@ -177,6 +194,10 @@ def validate_inputs(
         "kcfi_count": len(comparisons),
         "family_count": family_summary["family_count"],
         "family_function_count": family_summary["stock_functions"],
+        "full_kcfi_records": full_summary["stock_records"],
+        "full_kcfi_matched": full_summary["matched"],
+        "full_kcfi_mismatched": full_summary["mismatched"],
+        "full_kcfi_excluded": full_summary["stock_excluded"],
         "extra_text_count": len(symbols.get("text_symbol_delta", {}).get("extra", [])),
         "extra_text_classes": symbols.get("text_symbol_delta", {}).get("extra_class_counts", {}),
         "microtasks_pass": summary["promoted_pass"],
@@ -192,9 +213,10 @@ def build_report(metrics: dict[str, Any]) -> dict[str, Any]:
     extra_classes = ", ".join(
         f"{name}={count}" for name, count in sorted(metrics["extra_text_classes"].items())
     )
+    full_kcfi_passed = metrics["full_kcfi_mismatched"] == 0
     return {
         "schema_version": "2.0",
-        "status": "PASS",
+        "status": "PASS" if full_kcfi_passed else "INCOMPLETE",
         "driver": DRIVER,
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "scope": (
@@ -231,6 +253,18 @@ def build_report(metrics: dict[str, Any]) -> dict[str, Any]:
                     f"callbacks in {metrics['family_count']} recovered families"
                 ),
                 "note": "Function size is non-gating because the OEM LTO pipeline is unavailable",
+            },
+            {
+                "surface": "complete recoverable KCFI surface",
+                "result": "PASS" if full_kcfi_passed else "INCOMPLETE",
+                "evidence": (
+                    f"kcfi_full_surface.json matches {metrics['full_kcfi_matched']}/"
+                    f"{metrics['full_kcfi_records']} stock functions with recoverable preambles"
+                ),
+                "note": (
+                    f"{metrics['full_kcfi_mismatched']} signatures differ and "
+                    f"{metrics['full_kcfi_excluded']} stock functions require separate preamble review"
+                ),
             },
             {
                 "surface": "stock function structural traceability",
@@ -270,6 +304,13 @@ def build_report(metrics: dict[str, Any]) -> dict[str, Any]:
             },
         ],
         "blockers": [
+            *(
+                [
+                    f"Full KCFI surface has {metrics['full_kcfi_mismatched']} mismatched function signatures"
+                ]
+                if not full_kcfi_passed
+                else []
+            ),
             f"O6 has {passed} hash-attested PASS microtasks and {remaining} tasks still requiring direct evidence",
             "O10 independent review is pending",
             "Controlled NX809J hardware validation is deferred",
@@ -306,8 +347,8 @@ def render_markdown(report: dict[str, Any]) -> str:
     rows.extend(
         [
             "",
-            "A `PASS` here means the current offline evidence is internally consistent. It does not mean",
-            "that the complete driver is behaviorally equivalent to the OEM module.",
+            "A `PASS` result applies only to its named surface. It does not mean that the",
+            "complete driver is behaviorally equivalent to the OEM module.",
             "",
         ]
     )
