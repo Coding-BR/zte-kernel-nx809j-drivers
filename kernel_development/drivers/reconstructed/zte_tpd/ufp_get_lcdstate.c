@@ -1,4 +1,4 @@
-__int64 ufp_get_lcdstate()
+int ufp_get_lcdstate(void)
 {
   return (unsigned int)current_lcd_state;
 }

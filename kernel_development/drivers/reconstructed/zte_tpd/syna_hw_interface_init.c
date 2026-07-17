@@ -1,4 +1,4 @@
-__int64 syna_hw_interface_init(void)
+int syna_hw_interface_init(void)
 {
   int result;
 

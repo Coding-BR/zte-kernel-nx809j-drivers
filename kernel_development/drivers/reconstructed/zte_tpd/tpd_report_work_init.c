@@ -1,11 +1,11 @@
-__int64 __fastcall tpd_report_work_init(__int64 a1, __int64 a2, __int64 a3)
+int tpd_report_work_init(void)
 {
   _QWORD *v3; // x20
   __int64 v4; // x0
   __int64 v5; // x2
 
   v3 = (_QWORD *)tpd_cdev;
-  printk(unk_322AA, "tpd_report_work_init", a3);
+  printk(unk_322AA, "tpd_report_work_init");
   v4 = alloc_workqueue(unk_364AC, 393226, 1, "tpd_report_wq");
   v3[151] = v4;
   if ( v4 )
@@ -64,7 +64,7 @@ __int64 __fastcall tpd_report_work_init(__int64 a1, __int64 a2, __int64 a3)
   }
   else
   {
-    printk(unk_334E1, "tpd_report_work_init", v5);
-    return 4294967284LL;
+    printk(unk_334E1, "tpd_report_work_init");
+    return -ENOMEM;
   }
 }

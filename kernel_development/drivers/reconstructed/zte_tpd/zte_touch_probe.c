@@ -153,7 +153,7 @@ __int64 __fastcall zte_touch_probe(__int64 a1)
     *(_QWORD *)(v2 + 3088) = a1;
     tpd_cdev = v2;
     *(_QWORD *)(a1 + 168) = v2;
-    zte_touch_pdev_register(v2, v3, v4);
+    zte_touch_pdev_register();
     v6 = *(_QWORD *)(a1 + 760);
     v129 = 0;
     property = of_find_property(v6, "zte,tp_algo", 0);

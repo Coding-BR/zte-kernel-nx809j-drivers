@@ -13,6 +13,7 @@ from pathlib import Path
 
 SOURCE_FILES = (
     "zte_tpd_zlog.h",
+    "_inline_copy_from_user.c",
     "tpd_zlog_register.c",
     "tpd_zlog_check.c",
     "tpd_zlog_record_notify.c",

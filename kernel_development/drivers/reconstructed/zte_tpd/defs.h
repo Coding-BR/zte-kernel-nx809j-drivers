@@ -56,6 +56,17 @@ typedef unsigned char _BYTE;
 
 struct ztp_device;
 
+int get_tp_chip_id(void);
+int suspend_tp_need_awake(void);
+int syna_dev_module_init(void);
+int syna_hw_interface_init(void);
+int tpd_report_work_init(void);
+int tpd_workqueue_init(void);
+int ufp_get_lcdstate(void);
+int ufp_mac_init(void);
+int zte_touch_init(void);
+int zte_touch_pdev_register(void);
+
 #define BYTEn(x, n)   (*((unsigned char*)&(x)+(n)))
 #define BYTE0(x)   BYTEn(x,  0)
 #define BYTE1(x)   BYTEn(x,  1)

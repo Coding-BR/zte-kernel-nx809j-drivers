@@ -1,4 +1,4 @@
-__int64 ufp_mac_init()
+int ufp_mac_init(void)
 {
   __int64 v0; // x0
 

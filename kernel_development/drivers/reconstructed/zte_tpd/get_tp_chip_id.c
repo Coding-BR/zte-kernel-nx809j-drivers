@@ -1,11 +1,11 @@
-__int64 __fastcall get_tp_chip_id(__int64 a1, __int64 a2, __int64 a3)
+int get_tp_chip_id(void)
 {
   __int64 v3; // x21
   char *v4; // x19
   __int64 v6; // x2
 
   v3 = tpd_cdev;
-  printk(unk_3806D, "get_tp_chip_id", a3);
+  printk(unk_3806D, "get_tp_chip_id");
   *(_BYTE *)(v3 + 1094) = -1;
   printk(unk_3C91E, "get_tp_chip_id", "Unknown_lcd");
   v4 = &tp_ic_vendor_info_l;
@@ -40,7 +40,7 @@ __int64 __fastcall get_tp_chip_id(__int64 a1, __int64 a2, __int64 a3)
                     {
                       v4 = &byte_480;
                       if ( !strnstr("Unknown_lcd", off_488, 11) )
-                        return 4294967291LL;
+                        return -EIO;
                     }
                   }
                 }

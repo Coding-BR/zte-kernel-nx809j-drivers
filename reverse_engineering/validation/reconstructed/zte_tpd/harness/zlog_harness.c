@@ -84,6 +84,22 @@ static size_t copy_from_user(void *to, const void *from, size_t count)
 	return 0;
 }
 
+#define _DEFS_H
+#define might_fault() ((void)0)
+#define should_fail_usercopy() (fail_copy_from_user)
+#define can_do_masked_user_access() (false)
+#define mask_user_address(from) (from)
+#define access_ok(from, count) ((void)(from), (void)(count), true)
+#define barrier_nospec() ((void)0)
+#define instrument_copy_from_user_before(to, from, count) \
+	((void)(to), (void)(from), (void)(count))
+#define instrument_copy_from_user_after(to, from, count, left) \
+	((void)(to), (void)(from), (void)(count), (void)(left))
+#define raw_copy_from_user(to, from, count) copy_from_user((to), (from), (count))
+#define likely(condition) (condition)
+
+#include "_inline_copy_from_user.c"
+
 static int kstrtouint(const char *text, unsigned int base, unsigned int *value)
 {
 	char *end;

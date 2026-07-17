@@ -1,4 +1,4 @@
-__int64 __fastcall zte_touch_pdev_register(__int64 a1, __int64 a2, __int64 a3)
+int zte_touch_pdev_register(void)
 {
   __int64 v3; // x20
   __int64 v4; // x0
@@ -10,7 +10,7 @@ __int64 __fastcall zte_touch_pdev_register(__int64 a1, __int64 a2, __int64 a3)
   struct platform_device *v10; // x8
 
   v3 = tpd_cdev;
-  printk(unk_37BB9, "zte_touch_pdev_register", a3);
+  printk(unk_37BB9, "zte_touch_pdev_register");
   v4 = platform_device_alloc("zte_touch", 0xFFFFFFFFLL);
   *(_QWORD *)(v3 + 3096) = v4;
   if ( v4 )
@@ -33,9 +33,9 @@ __int64 __fastcall zte_touch_pdev_register(__int64 a1, __int64 a2, __int64 a3)
   }
   else
   {
-    printk(unk_3227D, "zte_touch_pdev_register", v5);
+    printk(unk_3227D, "zte_touch_pdev_register");
     v8 = NULL;
-    result = 4294967284LL;
+    result = -ENOMEM;
   }
   *(_QWORD *)(v3 + 3304) = v8;
   return result;

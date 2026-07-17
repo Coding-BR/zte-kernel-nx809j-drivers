@@ -6,7 +6,7 @@
 - **Veredito do protocolo offline:** `INCOMPLETE` (`7/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `8bf17b48fd905e75504754ab13db24dbbe98ae6141953bc646a7b823d8bee29f`
+- **Candidato SHA-256:** `6d3d95ef0aa1c3968698d1d5ffb98b4c46cb964472817e49f5f6f99f52c24f46`
 - **Candidato:** `16298224` bytes
 - **Teste em hardware desta revisao:** nao executado
 
@@ -29,7 +29,7 @@ INCOMPLETE:
 
 - O6: `123/367` microtarefas possuem build, KCFI e teste direto vinculados por
   hash; `244` ainda precisam de evidencia comportamental;
-- O8/O9: a paridade integral esta incompleta porque `168/322` funcoes com
+- O8/O9: a paridade integral esta incompleta porque `157/322` funcoes com
   preambulo KCFI stock recuperavel ainda possuem type ID divergente;
 - O10: revisao independente ainda nao foi realizada.
 
@@ -46,9 +46,12 @@ Hardware permanece `DEFERRED`.
   e 11 helpers diversos.
 - Sete relatorios de harness promovem `123` microtarefas atuais, sem PASS
   obsoleto e sem falha de ASan ou UBSan.
-- A superficie KCFI integral possui `154/322` matches (`47,83%`), zero simbolos
-  candidatos ausentes, `168` assinaturas divergentes e `46` funcoes stock cujo
+- A superficie KCFI integral possui `165/322` matches (`51,24%`), zero simbolos
+  candidatos ausentes, `157` assinaturas divergentes e `46` funcoes stock cujo
   preambulo precisa de revisao separada.
+- A familia stock `0x6fbb3035` foi corrigida integralmente: `11/11` funcoes
+  agora possuem assinatura `int (void)` e secao correspondente, sem regressao
+  nas 151 funcoes da superficie KCFI selecionada.
 
 ## Correcao de Usercopy e Proc
 
