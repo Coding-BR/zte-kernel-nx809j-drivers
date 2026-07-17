@@ -140,6 +140,6 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 38 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-329 tarefas `READY_FOR_IMPLEMENTATION`. Existem 38 funcoes com harness direto;
+O estado atual possui 68 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+299 tarefas `READY_FOR_IMPLEMENTATION`. Existem 68 funcoes com harness direto;
 logo, nenhuma promocao global para `100%` e permitida.

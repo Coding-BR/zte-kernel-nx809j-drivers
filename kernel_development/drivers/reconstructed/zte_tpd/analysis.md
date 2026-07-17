@@ -64,21 +64,23 @@ headers configurados, mas nao comportamento eletrico.
 
 ## Cobertura Dinamica Offline
 
-Os tres harnesses locais exercitam diretamente 38 funcoes distintas e registram
-27 testes PASS. O lote atual acrescenta 26 callbacks de firmware/estado e usa
-ASan/UBSan para verificar offsets, limites, ramos ativo/inativo e retornos. Os
-harnesses usam stubs controlados e nao reproduzem IRQ real, temporizacao do
-scheduler, SPI fisico, energia, display ou suspend/resume do aparelho.
+Os quatro harnesses locais exercitam diretamente 68 funcoes distintas e
+registram 37 testes PASS. O lote `work/void` acrescenta 30 funcoes e valida
+dispatch de eventos, offsets, ordem de cancelamento/cleanup, inicializacao de
+workqueues, buffers de firmware e teardown. Duas execucoes consecutivas passaram
+com ASan/UBSan. Os harnesses usam stubs controlados e nao reproduzem IRQ real,
+temporizacao do scheduler, SPI fisico, energia, display ou suspend/resume do
+aparelho.
 
 A superficie KCFI verificada cresceu de 50 para 151 funcoes. As quatro familias
 de firmware/estado continuam exatas, e as familias proc read/write, workqueue e
 `void(void)` agora tambem coincidem integralmente. Os handlers proc usam sua ABI
 nativa e 63 wrappers artificiais foram removidos. Essa verificacao prova tipo e
-secao ELF; as 96 funcoes novas ainda precisam de harness comportamental antes de
-receber atestacao de microtarefa.
+secao ELF. Restam sete callbacks `work_struct` complexos para um fixture
+CFI-aware e 64 handlers proc para harnesses de entrada/saida dedicados.
 
-O manifesto agora possui 38 microtarefas `PASS`, cada uma com hashes de build,
-KCFI e teste, e 329 tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao
+O manifesto agora possui 68 microtarefas `PASS`, cada uma com hashes de build,
+KCFI e teste, e 299 tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao
 pode ser chamado de `100%`.
 
 ## Registros Historicos de Hardware

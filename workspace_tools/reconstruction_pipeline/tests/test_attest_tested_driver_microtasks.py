@@ -90,6 +90,27 @@ class AttestTestedDriverMicrotasksTests(unittest.TestCase):
         )
         self.assertTrue(all(task["evidence"] == [] for task in normalized))
 
+    def test_markdown_uses_the_attested_task_state(self) -> None:
+        payload = {
+            "driver": "sample",
+            "tasks": [
+                {
+                    "id": "001_callback",
+                    "stock_function": "callback",
+                    "stock_entry": "00100000",
+                    "category": "async_or_irq",
+                    "source_file": "callback.c",
+                    "source_function": "callback",
+                    "status": "PASS",
+                }
+            ],
+        }
+
+        markdown = MODULE.render_manifest_markdown(payload)
+
+        self.assertIn("callback.c:callback | PASS |", markdown)
+        self.assertNotIn("READY_FOR_IMPLEMENTATION", markdown)
+
 
 if __name__ == "__main__":
     unittest.main()

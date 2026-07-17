@@ -16,17 +16,21 @@
   familias recuperadas.
 - Proc read/write, workqueue e `void(void)` agora coincidem com o stock; 63
   wrappers artificiais de proc foram removidos.
-- Harnesses: `27/27` testes PASS sobre 38 funcoes distintas.
+- Harnesses: `37/37` testes PASS sobre 68 funcoes distintas.
 - Sanitizadores do novo harness: ASan e UBSan habilitados, sem falhas.
-- Microtarefas: `38/367` PASS com hashes de compile/KCFI/test; 329 pendentes.
+- Harness `work/void`: duas execucoes consecutivas `10/10` PASS sobre 30
+  funcoes, com offsets, ordem de cleanup e efeitos observaveis verificados.
+- Microtarefas: `68/367` PASS com hashes de compile/KCFI/test; 299 pendentes.
+- Integridade das 68 tarefas PASS: zero hashes ausentes, divergentes ou fora do
+  workspace, tanto no layout do repositorio quanto no espelho `engenharia`.
 - Hardware: `DEFERRED` neste ciclo offline.
 
 ## Proximo Gate Comprovado
 
 Os oraculos locais e o ELF final comprovam as assinaturas das familias proc
-read, proc write, workqueue e `void(void)`. O proximo gate e comportamental: as
-96 funcoes alteradas ainda nao possuem harness direto vinculado aos hashes de
-fonte e permanecem fora do conjunto `PASS` de microtarefas.
+read, proc write, workqueue e `void(void)`. O proximo gate e comportamental: os
+sete callbacks `work_struct` complexos precisam de fixture CFI-aware e os 64
+handlers proc precisam de harnesses dedicados de entrada/saida.
 
 ## Evidencia Autoritativa
 
@@ -37,6 +41,7 @@ fonte e permanecem fora do conjunto `PASS` de microtarefas.
 - `zlog_harness_report.json`
 - `remaining_harness_report.json`
 - `fw_callbacks_harness_report.json`
+- `work_void_harness_report.json`
 - `parity_report.json`
 
 Nenhum ADB, fastboot, `insmod`, `rmmod`, SPI, MMIO ou escrita de particao foi

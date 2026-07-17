@@ -42,6 +42,14 @@ def discover_layout() -> tuple[Path, Path]:
     raise ValueError("could not discover engineering or repository reconstruction layout")
 
 
+def workspace_root_for_curated(curated_root: Path) -> Path:
+    if curated_root.name == "reconstructed" and curated_root.parent.name == "drivers":
+        return curated_root.parents[2]
+    if curated_root.name == "curated":
+        return curated_root.parent
+    raise ValueError(f"unsupported curated layout: {curated_root}")
+
+
 def parse_args() -> argparse.Namespace:
     curated_root, evidence_root = discover_layout()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -54,10 +62,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     curated_root = args.curated_root.resolve()
-    if curated_root.name == "reconstructed" and curated_root.parent.name == "drivers":
-        workspace_root = curated_root.parents[2]
-    else:
-        workspace_root = curated_root.parent.parent
+    workspace_root = workspace_root_for_curated(curated_root)
     manifest_path = curated_root / args.driver / "MICROTASKS.json"
     output = args.evidence_root.resolve() / args.driver / "microtask_audit.json"
     if not manifest_path.is_file():

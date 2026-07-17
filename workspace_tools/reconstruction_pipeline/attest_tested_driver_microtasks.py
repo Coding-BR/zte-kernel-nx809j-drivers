@@ -91,6 +91,41 @@ def reset_microtask_attestations(tasks: object) -> tuple[list[dict[str, Any]], s
     return normalized, previous_pass
 
 
+def render_manifest_markdown(payload: dict[str, Any]) -> str:
+    lines = [
+        f"# Microtarefas Obrigatorias: {payload['driver']}",
+        "",
+        "Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser "
+        "promovida sem mapeamento, compilacao, KCFI e teste com hash verificavel.",
+        "",
+        "| ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |",
+        "|---|---|---|---|---|---|",
+    ]
+    for task in payload.get("tasks", []):
+        source = task.get("source_file", "")
+        if task.get("source_function"):
+            source += ":" + task["source_function"]
+        lines.append(
+            "| {id} | {stock} | {entry} | {category} | {source} | {status} |".format(
+                id=task["id"],
+                stock=task["stock_function"],
+                entry=task.get("stock_entry", ""),
+                category=task["category"],
+                source=source or "PENDENTE",
+                status=task["status"],
+            )
+        )
+    lines.extend(
+        [
+            "",
+            "O estado exibido e gerado do mesmo manifesto JSON pelo atestador. "
+            "PASS exige evidencias hashadas de compile, KCFI e teste direto.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", type=Path, default=Path.cwd())
@@ -157,6 +192,10 @@ def main() -> int:
     if not args.dry_run:
         manifest_path.write_text(
             json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        manifest_path.with_suffix(".md").write_text(
+            render_manifest_markdown(manifest),
             encoding="utf-8",
         )
 

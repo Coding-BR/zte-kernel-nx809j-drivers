@@ -29,7 +29,7 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `38/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O6: `68/367` microtarefas possuem build, KCFI e teste direto atestados;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -43,13 +43,21 @@ Hardware permanece `DEFERRED`.
 - O candidato possui `172` simbolos de texto adicionais documentados: 131
   subrotinas do decompilador, 22 wrappers de assinatura, 9 duplicatas renomeadas
   e 10 helpers diversos.
-- Harnesses diretos: `27/27` testes PASS sobre 38 funcoes distintas.
+- Harnesses diretos: `37/37` testes PASS sobre 68 funcoes distintas.
+- O harness `work/void` passou duas execucoes consecutivas com ASan/UBSan:
+  `10/10` cenarios sobre 30 funcoes, sem erro de memoria ou comportamento
+  indefinido detectado.
+- O verificador das microtarefas reporta zero falhas de hash ou evidencia nas
+  68 tarefas PASS; suas 299 pendencias correspondem apenas ao estado
+  `READY_FOR_IMPLEMENTATION`.
 - Oito familias KCFI completas: firmware/estado, proc read/write, workqueue e
   `void(void)`, totalizando `143/143` callbacks.
 - Os 63 wrappers artificiais de proc foram removidos; as tabelas `proc_ops`
   apontam diretamente para os handlers com ABI stock.
-- As 96 funcoes do novo lote ainda aguardam harness comportamental e, por isso,
-  nao foram promovidas para `PASS` nas microtarefas.
+- O lote `work/void` promoveu 30 funcoes por evidencia cruzada de fonte, build,
+  KCFI e teste. Os sete callbacks `work_struct` complexos permanecem para um
+  fixture CFI-aware; os 64 handlers proc exigem harnesses comportamentais
+  separados antes de qualquer promocao.
 
 ## Correcao do Platform Device
 
@@ -74,6 +82,7 @@ A leitura do ELF e assembly stock refutou a solucao historica baseada em
 - `../../validation/zte_tpd/kcfi_callback_families.json`
 - `../../validation/zte_tpd/microtask_progress.json`
 - `../../validation/zte_tpd/fw_callbacks_harness_report.json`
+- `../../validation/zte_tpd/work_void_harness_report.json`
 - `../../validation/zte_tpd/parity_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
