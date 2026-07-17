@@ -73,7 +73,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
   *(_QWORD *)s = 0;
   v38 = 0;
   v35 = 0;
-  if ( a2 && copy_from_user(s, (const void __user *)a2, v5) )
+  if ( a2 && zte_inline_copy_from_user(s, (const void __user *)a2, v5) )
   {
     printk(unk_33B59, v6, v7);
     result = -22;

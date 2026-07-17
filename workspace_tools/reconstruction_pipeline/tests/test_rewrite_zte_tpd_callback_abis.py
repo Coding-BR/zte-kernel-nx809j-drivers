@@ -19,6 +19,7 @@ def load(name: str):
 
 PROC = load("rewrite_zte_tpd_proc_abis.py")
 WORK = load("rewrite_zte_tpd_work_void_abis.py")
+BUFFER = load("rewrite_zte_tpd_proc_local_buffers.py")
 
 
 class ProcAbiRewriteTests(unittest.TestCase):
@@ -70,6 +71,33 @@ class WorkVoidAbiRewriteTests(unittest.TestCase):
     def test_replace_once_fails_when_neither_state_matches(self) -> None:
         with self.assertRaisesRegex(ValueError, "precondition failed"):
             WORK.replace_once("unrelated", "before", "after", "demo")
+
+
+class ProcLocalBufferRewriteTests(unittest.TestCase):
+    def test_split_stack_locals_become_one_bounded_buffer(self) -> None:
+        source = (
+            "  __int64 v11; // [xsp+8h] [xbp-18h] BYREF\n"
+            "  __int16 v12; // [xsp+10h] [xbp-10h]\n"
+            "  v12 = 0;\n"
+            "  v11 = 0;\n"
+            "  _check_object_size(&v11, v5, 0);\n"
+            "  if ( copy_from_user(&v11, (const void __user *)a2, v5) || "
+            "(unsigned int)kstrtouint(&v11, 0, &v10) )\n"
+        )
+
+        rewritten = BUFFER.transform_content(source, "demo")
+
+        self.assertIn("struct __attribute__((packed))", rewritten)
+        self.assertIn("__int64 low", rewritten)
+        self.assertIn("__int16 high", rewritten)
+        self.assertIn("zte_inline_copy_from_user(&v11", rewritten)
+        self.assertIn("kstrtouint((const char *)&v11", rewritten)
+        self.assertNotIn("memset", rewritten)
+        self.assertEqual(BUFFER.transform_content(rewritten, "demo"), rewritten)
+
+    def test_unrecognized_local_layout_fails_closed(self) -> None:
+        with self.assertRaisesRegex(ValueError, "precondition failed"):
+            BUFFER.transform_content("char other[8];\n", "demo")
 
 
 if __name__ == "__main__":

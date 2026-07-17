@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-15
+## Estado Atual - 2026-07-17
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE` (`8/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `87162be490ca55ca47b64b14c9ce0e75325e6177cfa5c04edac58137b8e4fcf8`
-- **Candidato:** `12769952` bytes
+- **Candidato SHA-256:** `8bf17b48fd905e75504754ab13db24dbbe98ae6141953bc646a7b823d8bee29f`
+- **Candidato:** `16298224` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
@@ -23,13 +23,13 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie verificada `14/14`;
+- O7 KCFI da superficie verificada `151/151`, incluindo `143/143` callbacks;
 - O8/O9 build duplo, KMI e paridade estatica.
 
 INCOMPLETE:
 
-- O6: as `367` microtarefas estao mapeadas, mas somente 17 funcoes possuem
-  cobertura direta nos harnesses locais;
+- O6: `91/367` microtarefas possuem build, KCFI e teste direto vinculados por
+  hash; `276` ainda precisam de evidencia comportamental;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -40,10 +40,23 @@ Hardware permanece `DEFERRED`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
-- O candidato possui `234` simbolos de texto adicionais documentados: 131
-  subrotinas do decompilador, 84 wrappers de assinatura, 9 duplicatas renomeadas
-  e 10 helpers diversos.
-- Harnesses diretos: `17/17` testes PASS sobre o subconjunto exercitado.
+- O candidato possui `173` simbolos de texto adicionais documentados: 131
+  subrotinas do decompilador, 22 wrappers de assinatura, 9 duplicatas renomeadas
+  e 11 helpers diversos.
+- Cinco relatorios de harness promovem `91` microtarefas atuais, sem PASS
+  obsoleto e sem falha de ASan ou UBSan.
+
+## Correcao de Usercopy e Proc
+
+- `_inline_copy_from_user` reproduz exatamente o stock: 61 instrucoes, 244
+  bytes e relocacoes para `__arch_copy_from_user` e `memset`.
+- Oito chamadores stock usam o helper compartilhado no candidato. Eles ainda
+  nao possuem identidade integral de assembly e nao sao apresentados como
+  equivalentes.
+- Quatro buffers locais recuperados dos handlers proc agora usam uma estrutura
+  compactada explicita de 10 bytes, com copia limitada a 9 bytes.
+- O harness proc executa duas repeticoes independentes, `7/7` cenarios PASS,
+  sobre 24 funcoes e inclui sucesso, EOF, parse invalido e falha de usercopy.
 
 ## Correcao do Platform Device
 
@@ -60,14 +73,14 @@ A leitura do ELF e assembly stock refutou a solucao historica baseada em
 
 ## Evidencia Autoritativa
 
-- `../../validation/zte_tpd/driver_audit_static_final.json`
-- `../../validation/zte_tpd/offline_reconstruction_audit.json`
-- `../../validation/zte_tpd/header_layout_probe.json`
-- `../../validation/zte_tpd/abi_validation.json`
-- `../../validation/zte_tpd/kcfi_kmi_exact_final_comparison.json`
-- `../../validation/zte_tpd/parity_report.json`
-- `reconstruction_map.json`
-- `MICROTASKS.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_static_final.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/offline_reconstruction_audit.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/abi_validation.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/parity_report.json`
+- `../../../kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json`
+- `../../../kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json`
 
 Nenhum comando ADB, fastboot, `insmod`, `rmmod` ou escrita de particao foi
 executado nesta revisao.

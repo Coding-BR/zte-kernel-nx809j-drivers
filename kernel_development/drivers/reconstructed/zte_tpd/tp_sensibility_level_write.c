@@ -11,8 +11,10 @@ ssize_t tp_sensibility_level_write(struct file *file, const char __user *buffer,
   void (__fastcall *v8)(__int64, __int64); // x8
   __int64 v9; // x1
   unsigned int v10; // [xsp+4h] [xbp-1Ch] BYREF
-  __int64 v11; // [xsp+8h] [xbp-18h] BYREF
-  __int16 v12; // [xsp+10h] [xbp-10h]
+  struct __attribute__((packed)) {
+    __int64 low;
+    __int16 high;
+  } v11 = { 0 }; // [xsp+8h] [xbp-18h] BYREF
   __int64 v13; // [xsp+18h] [xbp-8h]
 
   v13 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
@@ -22,10 +24,8 @@ ssize_t tp_sensibility_level_write(struct file *file, const char __user *buffer,
     v5 = 9;
   else
     v5 = a3;
-  v12 = 0;
-  v11 = 0;
   _check_object_size(&v11, v5, 0);
-  if ( copy_from_user(&v11, (const void __user *)a2, v5) || (unsigned int)kstrtouint(&v11, 0, &v10) )
+  if ( zte_inline_copy_from_user(&v11, (const void __user *)a2, v5) || (unsigned int)kstrtouint((const char *)&v11, 0, &v10) )
   {
     v5 = -22;
   }

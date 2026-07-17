@@ -19,11 +19,6 @@ from pathlib import Path
 from typing import Any
 
 
-STOCK_SHA256 = "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
-CANDIDATE_SHA256 = "190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d"
-RUN_ID = "NX809J-20260711T011653Z"
-
-
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -118,11 +113,34 @@ def parse_args() -> argparse.Namespace:
     script = Path(__file__).resolve()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engineering-root", type=Path, default=script.parents[1])
+    parser.add_argument(
+        "--run-root",
+        type=Path,
+        help="acquisition run containing 01_acquisition/modules/zte_tpd.ko",
+    )
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
     parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
     return parser.parse_args()
+
+
+def find_run(engineering_root: Path, requested: Path | None) -> Path:
+    if requested is not None:
+        run_root = requested.expanduser().resolve()
+        stock = run_root / "01_acquisition" / "modules" / "zte_tpd.ko"
+        if not stock.is_file():
+            raise FileNotFoundError(f"requested run has no zte_tpd.ko: {run_root}")
+        return run_root
+    candidates = sorted(
+        (path for path in (engineering_root / "runs").iterdir() if path.is_dir()),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    for run_root in candidates:
+        if (run_root / "01_acquisition" / "modules" / "zte_tpd.ko").is_file():
+            return run_root
+    raise FileNotFoundError("no acquisition run contains zte_tpd.ko")
 
 
 def main() -> int:
@@ -131,7 +149,8 @@ def main() -> int:
     curated = root / "curated" / "zte_tpd"
     validation = root / "validation" / "zte_tpd"
     work = root / "validation" / "work" / "zte_tpd_layout_probe"
-    stock = root / "runs" / RUN_ID / "01_acquisition" / "modules" / "zte_tpd.ko"
+    run_root = find_run(root, args.run_root)
+    stock = run_root / "01_acquisition" / "modules" / "zte_tpd.ko"
     candidate = curated / "zte_tpd.ko"
     probe_source = curated / "probes" / "layout_probe.c"
     overlay_header = curated / "zte_tpd_tcm_layout.h"
@@ -140,10 +159,9 @@ def main() -> int:
     missing = [str(path) for path in required if not path.is_file()]
     if missing:
         raise FileNotFoundError("missing required files: " + ", ".join(missing))
-    if sha256_file(stock) != STOCK_SHA256:
-        raise ValueError("stock SHA-256 differs from the acquired source of truth")
-    if sha256_file(candidate) != CANDIDATE_SHA256:
-        raise ValueError("candidate SHA-256 differs from the promoted canonical module")
+    stock_sha256 = sha256_file(stock)
+    candidate_sha256 = sha256_file(candidate)
+    stock_in_container = "/work/engineering/" + stock.relative_to(root).as_posix()
 
     if work.exists():
         shutil.rmtree(work)
@@ -192,7 +210,7 @@ def main() -> int:
             *prefix,
             "llvm-readelf",
             "-sW",
-            f"/work/engineering/runs/{RUN_ID}/01_acquisition/modules/zte_tpd.ko",
+            stock_in_container,
         ],
         capture_limit=None,
     )
@@ -201,13 +219,32 @@ def main() -> int:
             *prefix,
             "llvm-readelf",
             "-rW",
-            f"/work/engineering/runs/{RUN_ID}/01_acquisition/modules/zte_tpd.ko",
+            stock_in_container,
         ],
         capture_limit=None,
     )
-    commands = (clean, build, compiler, stock_symbols, stock_relocations)
-    if any(item["returncode"] != 0 for item in commands):
-        raise RuntimeError("layout validation command failed")
+    commands = {
+        "clean": clean,
+        "build": build,
+        "compiler": compiler,
+        "stock_symbols": stock_symbols,
+        "stock_relocations": stock_relocations,
+    }
+    failed = {
+        name: {
+            "returncode": result["returncode"],
+            "argv": result["argv"],
+            "stdout": result["stdout"],
+            "stderr": result["stderr"],
+        }
+        for name, result in commands.items()
+        if result["returncode"] != 0
+    }
+    if failed:
+        raise RuntimeError(
+            "layout validation commands failed:\n"
+            + json.dumps(failed, indent=2)
+        )
 
     stock_layout = parse_stock_layout(stock_symbols["stdout"], stock_relocations["stdout"])
     module = work / "zte_tpd_layout_probe.ko"
@@ -230,7 +267,11 @@ def main() -> int:
             "path": "curated/zte_tpd/zte_tpd_tcm_layout.h",
             "sha256": sha256_file(overlay_header),
         },
-        "stock": {"sha256": STOCK_SHA256, "layout_evidence": stock_layout},
+        "stock": {
+            "path": stock.relative_to(root).as_posix(),
+            "sha256": stock_sha256,
+            "layout_evidence": stock_layout,
+        },
         "assertions": {
             "aarch64_pointer_size": 8,
             "platform_device_size": "0x3f0",
@@ -263,8 +304,8 @@ def main() -> int:
         "schema_version": "1.0",
         "status": "PASS" if passed else "FAIL",
         "driver": "zte_tpd",
-        "stock_sha256": STOCK_SHA256,
-        "candidate_sha256": CANDIDATE_SHA256,
+        "stock_sha256": stock_sha256,
+        "candidate_sha256": candidate_sha256,
         "document": "kernel_development/drivers/reconstructed/zte_tpd/DOCUMENTO_TRANSICAO.md",
         "header_probe": "reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json",
         "local_document": "curated/zte_tpd/DOCUMENTO_TRANSICAO.md",

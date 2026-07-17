@@ -9,7 +9,7 @@ ssize_t tp_zlog_debug_write(struct file *file, const char __user *buffer,
 	(void)file;
 	(void)offset;
 	len = min(len, sizeof(data) - 1);
-	if (copy_from_user(data, buffer, len))
+	if (zte_inline_copy_from_user(data, buffer, len))
 		return -EINVAL;
 	if (kstrtouint(data, 0, &input))
 		return -EINVAL;

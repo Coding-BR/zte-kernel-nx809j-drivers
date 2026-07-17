@@ -1,6 +1,9 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
+/* Keep the kernel header's static helper distinct from the recovered ELF symbol. */
+#define _inline_copy_from_user zte_kernel_inline_copy_from_user
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/soc/qcom/panel_event_notifier.h>
@@ -29,6 +32,8 @@
 #include <linux/pm_wakeup.h>
 
 #include "zte_tpd_tcm_layout.h"
+
+#undef _inline_copy_from_user
 
 
 
@@ -99,7 +104,8 @@ struct ztp_device;
 #define kstrtouint(s, base, res) kstrtouint((const char *)(s), (unsigned int)(base), (unsigned int *)(res))
 
 #undef _check_object_size
-#define _check_object_size(ptr, n, to_user) ((void)0)
+#define _check_object_size(ptr, n, to_user) \
+    __check_object_size((const void *)(ptr), (n), (to_user))
 
 // WORD and HIWORD/LOWORD extraction macros
 #define WORDn(x, n)   (*((unsigned short*)&(x)+(n)))
@@ -170,6 +176,10 @@ struct ztp_device;
 #define input_sync(dev) input_sync((struct input_dev *)(dev))
 
 // Custom copy_from_user wrapper declaration
+extern unsigned long zte_inline_copy_from_user(void *to,
+                                               const void __user *from,
+                                               unsigned long n)
+    __asm__("_inline_copy_from_user");
 
 // kfree and vfree casting wrappers
 #undef kfree
@@ -255,8 +265,8 @@ static inline unsigned long read_sp_el0(void) {
 #define __isb(x) ((void)0)
 
 // Standard kernel copy wrappers
-#define _arch_copy_from_user(to, from, n) copy_from_user(to, (const void __user *)(from), n)
-#define _arch_copy_to_user(to, from, n) copy_to_user((void __user *)(to), (const void *)(from), n)
+#define _arch_copy_from_user(to, from, n) raw_copy_from_user((void *)(to), (const void __user *)(from), (n))
+#define _arch_copy_to_user(to, from, n) raw_copy_to_user((void __user *)(to), (const void *)(from), (n))
 
 // Ghidra C++ identifier -> C
 #define nullptr NULL

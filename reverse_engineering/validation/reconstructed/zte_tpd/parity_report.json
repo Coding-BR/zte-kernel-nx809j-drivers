@@ -1,57 +1,60 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "status": "PASS",
   "driver": "zte_tpd",
-  "scope": "Offline static parity for the canonical out-of-tree candidate; untested functions, scheduler timing and electrical behavior are excluded",
+  "generated_utc": "2026-07-17T09:31:02.731658+00:00",
+  "scope": "Hash-bound offline parity for the canonical out-of-tree candidate; untested semantics, scheduler timing and electrical behavior are excluded",
   "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
-  "candidate_sha256": "190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d",
+  "candidate_sha256": "8bf17b48fd905e75504754ab13db24dbbe98ae6141953bc646a7b823d8bee29f",
   "comparisons": [
     {
       "surface": "ELF, modinfo and KMI",
       "result": "PASS",
-      "evidence": "driver_audit_static_final.json records two clean reproducible builds, exact 152/152 imports, matching aliases and namespaces, accepted vermagic and a fresh candidate hash match"
+      "evidence": "driver_audit_static_final.json records two clean reproducible builds, an AArch64 REL module, exact imports, aliases and namespaces, and a fresh candidate hash match"
     },
     {
       "surface": "AArch64 ABI and recovered layouts",
       "result": "PASS",
-      "evidence": "header_layout_probe.json compiles the platform_device and partial TCM static assertions with clang-r536225 against GKI 6.12.23",
-      "note": "The stock ELF independently records syna_spi_device size 0x3f0 and its release relocation at +0x338"
+      "evidence": "abi_validation.json and header_layout_probe.json are current and pass Clang compile-time assertions against GKI 6.12.23",
+      "note": "The stock ELF independently fixes syna_spi_device at 0x3f0 bytes and release at +0x338"
     },
     {
       "surface": "verified callback KCFI",
       "result": "PASS",
-      "evidence": "kcfi_direct_surface_final_comparison.json matches section and type ID for 151/151 selected functions, including 143/143 callbacks across all eight recovered families",
+      "evidence": "KCFI section and type IDs match for 151/151 selected functions, including 143/143 callbacks in 8 recovered families",
       "note": "Function size is non-gating because the OEM LTO pipeline is unavailable"
     },
     {
       "surface": "stock function structural traceability",
       "result": "PASS",
-      "evidence": "reconstruction_map.json maps 367/367 Ghidra identities, including duplicate names by stock entry, to hash-bound source, P-Code, pseudocode and assembly",
-      "note": "Reviewed means structural identity only; semantic equivalence remains unproven per function"
+      "evidence": "reconstruction_map.json and module_decomposition_audit.json bind all 367/367 stock identities to source, pseudocode, P-Code and AArch64 assembly",
+      "note": "Structural identity is not semantic equivalence"
     },
     {
       "surface": "stock text and import surface",
       "result": "PASS",
-      "evidence": "symbol_inventory_kmi_exact_final.json records all 359 stock non-KCFI text symbols present and no missing or unexpected imports",
-      "note": "The 172 additional candidate symbols are classified as 131 decompiler subroutines, 22 signature wrappers, 9 renamed duplicates and 10 other helpers; their presence is documented and non-gating"
+      "evidence": "symbol_inventory_kmi_exact_final.json records no missing stock text symbol and no missing or unexpected import",
+      "note": "173 candidate-only text symbols are classified and non-gating (decompiler_subroutine=131, duplicate_renamed=9, other=11, signature_wrapper=22)"
     },
     {
-      "surface": "direct host-tested subset",
+      "surface": "hash-attested direct-test subset",
       "result": "PASS",
-      "evidence": "zlog_harness_report.json, remaining_harness_report.json and fw_callbacks_harness_report.json pass 27/27 tests over 38 distinct directly exercised reconstructed functions",
-      "note": "This comparison attests only the tested subset. The 367-function microtask gate remains INCOMPLETE and is not implied by this PASS"
+      "evidence": "microtask_progress.json promotes 91/367 current-source tasks from 5 sanitizer-backed host reports with zero stale PASS demotions",
+      "note": "This PASS covers only the attested subset; 276 functions remain unvalidated"
     },
     {
       "surface": "hardware",
       "result": "DEFERRED",
-      "evidence": "No ADB, fastboot, insmod, rmmod, SPI, IRQ or partition operation was performed in this offline cycle",
+      "evidence": "No ADB, fastboot, insmod, rmmod, SPI, IRQ or partition operation was performed",
       "note": "Controlled NX809J hardware validation remains a separate gate"
     }
   ],
   "blockers": [
-    "O6 has 38 hash-attested PASS microtasks and 329 tasks still requiring direct evidence",
+    "O6 has 91 hash-attested PASS microtasks and 276 tasks still requiring direct evidence",
     "O10 independent review is pending",
     "Controlled NX809J hardware validation is deferred"
   ],
-  "semantic_equivalence": "PARTIAL_TESTED_SUBSET_ONLY"
+  "semantic_equivalence": "PARTIAL_TESTED_SUBSET_ONLY",
+  "independent_review": "NOT_PERFORMED",
+  "hardware_status": "DEFERRED"
 }
