@@ -1,5 +1,7 @@
-__int64 __fastcall syna_spi_probe(__int64 a1, __int64 a2, __int64 a3)
+int syna_spi_probe(struct spi_device *spi)
 {
+  __int64 a1 = (__int64)spi;
+  __int64 a3 = 0;
   __int64 v4; // x20
   __int64 property; // x0
   __int64 v6; // x0

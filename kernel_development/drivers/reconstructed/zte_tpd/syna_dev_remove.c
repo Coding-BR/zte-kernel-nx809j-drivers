@@ -1,5 +1,7 @@
-__int64 __fastcall syna_dev_remove(__int64 a1, __int64 a2, __int64 a3)
+void syna_dev_remove(struct platform_device *pdev)
 {
+  __int64 a1 = (__int64)pdev;
+  __int64 a3 = 0;
   __int64 v3; // x19
   __int64 v4; // x0
   __int64 v5; // x20
@@ -58,5 +60,5 @@ LABEL_10:
   *(_QWORD *)(v3 + 688) = 0;
   *(_BYTE *)(v3 + 744) = 0;
   kfree(v12);
-  return syna_tcm_remove_device(*(_QWORD *)v3);
+  syna_tcm_remove_device(*(_QWORD *)v3);
 }

@@ -1,5 +1,8 @@
-__int64 __fastcall syna_testing_check_config_id_show(__int64 a1, __int64 a2, __int64 a3)
+ssize_t syna_testing_check_config_id_show(struct kobject *kobj,
+                                          struct kobj_attribute *attr, char *buf)
 {
+  __int64 a1 = (__int64)kobj;
+  __int64 a3 = (__int64)buf;
   __int64 v4; // x8
   __int64 v5; // x8
   __int64 *v6; // x21
@@ -20,6 +23,8 @@ __int64 __fastcall syna_testing_check_config_id_show(__int64 a1, __int64 a2, __i
   _QWORD v21[6]; // [xsp+20h] [xbp-40h] BYREF
   __int64 v22; // [xsp+50h] [xbp-10h]
   __int64 v23; // [xsp+58h] [xbp-8h]
+
+  (void)attr;
 
   v23 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v4 = *(_QWORD *)(a1 + 24);

@@ -1,5 +1,10 @@
-__int64 __fastcall syna_sysfs_debug_store(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
+ssize_t syna_sysfs_debug_store(struct kobject *kobj,
+                               struct kobj_attribute *attr,
+                               const char *buf, size_t count)
 {
+  __int64 a1 = (__int64)kobj;
+  __int64 a3 = (__int64)buf;
+  __int64 a4 = (__int64)count;
   __int64 v5; // x9
   __int64 v6; // x20
   __int64 v8; // x0
@@ -8,6 +13,8 @@ __int64 __fastcall syna_sysfs_debug_store(__int64 a1, __int64 a2, __int64 a3, __
   __int64 v11; // x0
   unsigned int v12; // [xsp+4h] [xbp-Ch] BYREF
   __int64 v13; // [xsp+8h] [xbp-8h]
+
+  (void)attr;
 
   v13 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v5 = *(_QWORD *)(a1 + 24);

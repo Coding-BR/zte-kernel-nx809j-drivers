@@ -1,8 +1,10 @@
 #include "defs.h"
 
-extern __int64 syna_testing_pt05_show(__int64 a1, __int64 a2, __int64 a3);
+extern ssize_t syna_testing_pt05_show(struct kobject *kobj,
+                                      struct kobj_attribute *attr, char *buf);
 
 __int64 sub_20968(__int64 a1, __int64 a2, __int64 a3)
 {
-  return syna_testing_pt05_show(a1, a2, a3);
+  return syna_testing_pt05_show((struct kobject *)a1,
+                                (struct kobj_attribute *)a2, (char *)a3);
 }

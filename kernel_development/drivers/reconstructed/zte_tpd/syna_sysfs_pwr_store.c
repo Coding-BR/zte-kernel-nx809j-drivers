@@ -1,8 +1,15 @@
-__int64 __fastcall syna_sysfs_pwr_store(__int64 a1, int a2, char *s1, __int64 a4)
+ssize_t syna_sysfs_pwr_store(struct kobject *kobj,
+                             struct kobj_attribute *attr,
+                             const char *buf, size_t count)
 {
+  __int64 a1 = (__int64)kobj;
+  char *s1 = (char *)buf;
+  __int64 a4 = (__int64)count;
   __int64 v5; // x20
   __int64 v6; // x22
   void (__fastcall *v8)(_QWORD); // x8
+
+  (void)attr;
 
   v5 = *(_QWORD *)(*(_QWORD *)(a1 + 24) + 24LL);
   v6 = *(_QWORD *)(v5 + 152);

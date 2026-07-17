@@ -902,52 +902,16 @@ char unk_CA0[256] = "zte_tpd_log";
 char unk_D3C[256] = "zte_tpd_log";
 
 // Functions declarations for casting in structures
-extern __int64 __fastcall zte_touch_probe(__int64, __int64, __int64);
-extern __int64 __fastcall zte_touch_remove(__int64, __int64, __int64);
-extern __int64 __fastcall zte_touch_shutdown(__int64, __int64, __int64);
+extern int zte_touch_probe(struct platform_device *pdev);
+extern void zte_touch_remove(struct platform_device *pdev);
+extern void zte_touch_shutdown(struct platform_device *pdev);
 
-extern __int64 __fastcall syna_dev_probe(__int64, __int64, __int64);
-extern __int64 __fastcall syna_dev_remove(__int64, __int64, __int64);
-extern __int64 __fastcall syna_dev_shutdown(__int64, __int64, __int64);
+extern int syna_dev_probe(struct platform_device *pdev);
+extern void syna_dev_remove(struct platform_device *pdev);
+extern void syna_dev_shutdown(struct platform_device *pdev);
 
-extern __int64 __fastcall syna_spi_probe(__int64, __int64, __int64);
-extern __int64 __fastcall syna_spi_remove(__int64, __int64, __int64);
-
-// Wrapper functions for platform and SPI callbacks
-static int wrap_zte_touch_probe(struct platform_device *pdev) {
-    return zte_touch_probe((__int64)pdev, 0, 0);
-}
-static void wrap_zte_touch_remove(struct platform_device *pdev) {
-    if (pdev && pdev->name && strcmp(pdev->name, "zte_touch") == 0) {
-        printk("wrap_zte_touch_remove: ignoring virtual device 'zte_touch' to prevent double-remove\n");
-        return;
-    }
-    zte_touch_remove((__int64)pdev, 0, 0);
-}
-static void wrap_zte_touch_shutdown(struct platform_device *pdev) {
-    if (pdev && pdev->name && strcmp(pdev->name, "zte_touch") == 0) {
-        printk("wrap_zte_touch_shutdown: ignoring virtual device 'zte_touch' to prevent double-shutdown\n");
-        return;
-    }
-    zte_touch_shutdown((__int64)pdev, 0, 0);
-}
-
-static int wrap_syna_dev_probe(struct platform_device *pdev) {
-    return syna_dev_probe((__int64)pdev, 0, 0);
-}
-static void wrap_syna_dev_remove(struct platform_device *pdev) {
-    syna_dev_remove((__int64)pdev, 0, 0);
-}
-static void wrap_syna_dev_shutdown(struct platform_device *pdev) {
-    syna_dev_shutdown((__int64)pdev, 0, 0);
-}
-
-static int wrap_syna_spi_probe(struct spi_device *spi) {
-    return syna_spi_probe((__int64)spi, 0, 0);
-}
-static void wrap_syna_spi_remove(struct spi_device *spi) {
-    syna_spi_remove((__int64)spi, 0, 0);
-}
+extern int syna_spi_probe(struct spi_device *spi);
+extern void syna_spi_remove(struct spi_device *spi);
 
 // Platform Device Definition
 extern void syna_spi_release(struct device *dev);
@@ -967,9 +931,9 @@ static const struct of_device_id zte_touch_of_match[] = {
 };
 
 struct platform_driver zte_touch_device_driver = {
-    .probe = wrap_zte_touch_probe,
-    .remove = wrap_zte_touch_remove,
-    .shutdown = wrap_zte_touch_shutdown,
+    .probe = zte_touch_probe,
+    .remove = zte_touch_remove,
+    .shutdown = zte_touch_shutdown,
     .driver = {
         .name = "zte_touch",
         .of_match_table = zte_touch_of_match,
@@ -982,9 +946,9 @@ static const struct of_device_id syna_dev_of_match[] = {
 };
 
 struct platform_driver syna_dev_driver = {
-    .probe = wrap_syna_dev_probe,
-    .remove = wrap_syna_dev_remove,
-    .shutdown = wrap_syna_dev_shutdown,
+    .probe = syna_dev_probe,
+    .remove = syna_dev_remove,
+    .shutdown = syna_dev_shutdown,
     .driver = {
         .name = "syna_dev_platform",
         .of_match_table = syna_dev_of_match,
@@ -1005,8 +969,8 @@ MODULE_DEVICE_TABLE(spi, syna_spi_id_table);
 MODULE_DEVICE_TABLE(of, syna_spi_of_match);
 
 struct spi_driver syna_spi_driver = {
-    .probe = wrap_syna_spi_probe,
-    .remove = wrap_syna_spi_remove,
+    .probe = syna_spi_probe,
+    .remove = syna_spi_remove,
     .id_table = syna_spi_id_table,
     .driver = {
         .name = "synaptics_tcm_spi",
@@ -1021,107 +985,88 @@ __int64 p_device = 0;
 struct syna_hw_interface_layout syna_spi_hw_if;
 
 // Forward declarations for sysfs functions
-extern __int64 __fastcall syna_sysfs_info_show(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 __fastcall syna_sysfs_debug_store(__int64 a1, __int64 a2, __int64 a3, __int64 a4);
-extern __int64 __fastcall syna_sysfs_get_delta_show(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 __fastcall syna_sysfs_reset_store(__int64 a1, __int64 a2, __int64 a3, __int64 a4);
-extern __int64 __fastcall syna_sysfs_irq_en_store(__int64 a1, __int64 a2, __int64 a3, __int64 a4);
-extern __int64 __fastcall syna_sysfs_pwr_store(__int64 a1, int a2, char *s1, __int64 a4);
-extern __int64 __fastcall syna_sysfs_fw_update_store(__int64 a1, __int64 a2, __int64 a3, __int64 a4);
-extern __int64 __fastcall syna_testing_check_dev_id_show(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 __fastcall syna_testing_check_config_id_show(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 __fastcall syna_testing_pt01_show(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 __fastcall syna_testing_pt05_show(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 __fastcall syna_testing_pt0a_show(__int64 a1, __int64 a2, __int64 a3);
+extern ssize_t syna_sysfs_info_show(struct kobject *kobj,
+                                    struct kobj_attribute *attr, char *buf);
+extern ssize_t syna_sysfs_debug_store(struct kobject *kobj,
+                                      struct kobj_attribute *attr,
+                                      const char *buf, size_t count);
+extern ssize_t syna_sysfs_get_delta_show(struct kobject *kobj,
+                                         struct kobj_attribute *attr, char *buf);
+extern ssize_t syna_sysfs_reset_store(struct kobject *kobj,
+                                      struct kobj_attribute *attr,
+                                      const char *buf, size_t count);
+extern ssize_t syna_sysfs_irq_en_store(struct kobject *kobj,
+                                       struct kobj_attribute *attr,
+                                       const char *buf, size_t count);
+extern ssize_t syna_sysfs_pwr_store(struct kobject *kobj,
+                                    struct kobj_attribute *attr,
+                                    const char *buf, size_t count);
+extern ssize_t syna_sysfs_fw_update_store(struct kobject *kobj,
+                                          struct kobj_attribute *attr,
+                                          const char *buf, size_t count);
+extern ssize_t syna_testing_check_dev_id_show(struct kobject *kobj,
+                                              struct kobj_attribute *attr, char *buf);
+extern ssize_t syna_testing_check_config_id_show(struct kobject *kobj,
+                                                 struct kobj_attribute *attr, char *buf);
+extern ssize_t syna_testing_pt01_show(struct kobject *kobj,
+                                      struct kobj_attribute *attr, char *buf);
+extern ssize_t syna_testing_pt05_show(struct kobject *kobj,
+                                      struct kobj_attribute *attr, char *buf);
+extern ssize_t syna_testing_pt0a_show(struct kobject *kobj,
+                                      struct kobj_attribute *attr, char *buf);
 
 // Wrappers for sysfs callbacks to prevent KCFI panics
-static ssize_t wrap_sysfs_info_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_sysfs_info_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
-static ssize_t wrap_sysfs_debug_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
-    return syna_sysfs_debug_store((__int64)kobj, (__int64)attr, (__int64)buf, (__int64)count);
-}
-static ssize_t wrap_sysfs_get_delta_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_sysfs_get_delta_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
-static ssize_t wrap_sysfs_reset_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
-    return syna_sysfs_reset_store((__int64)kobj, (__int64)attr, (__int64)buf, (__int64)count);
-}
-static ssize_t wrap_sysfs_irq_en_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
-    return syna_sysfs_irq_en_store((__int64)kobj, (__int64)attr, (__int64)buf, (__int64)count);
-}
-static ssize_t wrap_sysfs_pwr_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
-    return syna_sysfs_pwr_store((__int64)kobj, 0, (char *)buf, (__int64)count);
-}
-static ssize_t wrap_sysfs_fw_update_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
-    return syna_sysfs_fw_update_store((__int64)kobj, (__int64)attr, (__int64)buf, (__int64)count);
-}
-static ssize_t wrap_testing_check_dev_id_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_testing_check_dev_id_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
-static ssize_t wrap_testing_check_config_id_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_testing_check_config_id_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
-static ssize_t wrap_testing_pt01_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_testing_pt01_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
-static ssize_t wrap_testing_pt05_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_testing_pt05_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
-static ssize_t wrap_testing_pt0a_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return syna_testing_pt0a_show((__int64)kobj, (__int64)attr, (__int64)buf);
-}
 
 // Attributes definitions
 struct kobj_attribute kobj_attr_info = {
     .attr = { .name = "info", .mode = 0444 },
-    .show = wrap_sysfs_info_show,
+    .show = syna_sysfs_info_show,
 };
 struct kobj_attribute kobj_attr_debug = {
     .attr = { .name = "debug", .mode = 0220 },
-    .store = wrap_sysfs_debug_store,
+    .store = syna_sysfs_debug_store,
 };
 struct kobj_attribute kobj_attr_get_delta = {
     .attr = { .name = "get_delta", .mode = 0444 },
-    .show = wrap_sysfs_get_delta_show,
+    .show = syna_sysfs_get_delta_show,
 };
 
 struct kobj_attribute kobj_attr_reset = {
     .attr = { .name = "reset", .mode = 0220 },
-    .store = wrap_sysfs_reset_store,
+    .store = syna_sysfs_reset_store,
 };
 struct kobj_attribute kobj_attr_irq_en = {
     .attr = { .name = "irq_en", .mode = 0220 },
-    .store = wrap_sysfs_irq_en_store,
+    .store = syna_sysfs_irq_en_store,
 };
 struct kobj_attribute kobj_attr_pwr = {
     .attr = { .name = "power_state", .mode = 0220 },
-    .store = wrap_sysfs_pwr_store,
+    .store = syna_sysfs_pwr_store,
 };
 struct kobj_attribute kobj_attr_fw_update = {
     .attr = { .name = "fw_update", .mode = 0220 },
-    .store = wrap_sysfs_fw_update_store,
+    .store = syna_sysfs_fw_update_store,
 };
 
 struct kobj_attribute kobj_attr_check_dev_id = {
     .attr = { .name = "check_dev_id", .mode = 0444 },
-    .show = wrap_testing_check_dev_id_show,
+    .show = syna_testing_check_dev_id_show,
 };
 struct kobj_attribute kobj_attr_check_config_id = {
     .attr = { .name = "check_config_id", .mode = 0444 },
-    .show = wrap_testing_check_config_id_show,
+    .show = syna_testing_check_config_id_show,
 };
 struct kobj_attribute kobj_attr_pt01 = {
     .attr = { .name = "pt01", .mode = 0444 },
-    .show = wrap_testing_pt01_show,
+    .show = syna_testing_pt01_show,
 };
 struct kobj_attribute kobj_attr_pt05 = {
     .attr = { .name = "pt05", .mode = 0444 },
-    .show = wrap_testing_pt05_show,
+    .show = syna_testing_pt05_show,
 };
 struct kobj_attribute kobj_attr_pt0a = {
     .attr = { .name = "pt0a", .mode = 0444 },
-    .show = wrap_testing_pt0a_show,
+    .show = syna_testing_pt0a_show,
 };
 
 // Attribute pointer arrays

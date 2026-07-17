@@ -1,6 +1,6 @@
-__int64 __fastcall zte_touch_probe(__int64 a1)
+int zte_touch_probe(struct platform_device *pdev)
 {
-  struct platform_device *pdev = (struct platform_device *)a1;
+  __int64 a1 = (__int64)pdev;
   __int64 v2; // x0
   __int64 v3; // x1
   __int64 v4; // x2

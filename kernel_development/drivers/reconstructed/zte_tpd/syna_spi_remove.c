@@ -1,5 +1,8 @@
-__int64 __fastcall syna_spi_remove(__int64 a1, __int64 a2, __int64 a3)
+void syna_spi_remove(struct spi_device *spi)
 {
+  __int64 a1 = (__int64)spi;
+  __int64 a2 = 0;
+  __int64 a3 = 0;
   __int64 result; // x0
   __int64 v4; // x0
   __int64 v5; // x0
@@ -54,13 +57,19 @@ __int64 __fastcall syna_spi_remove(__int64 a1, __int64 a2, __int64 a3)
   {
     result = qword_CF0;
     if ( qword_CF0 )
-      return devm_regulator_put(qword_CF0, v6);
+    {
+      devm_regulator_put(qword_CF0, v6);
+      return;
+    }
   }
   else if ( dword_CE0 >= 1 )
   {
     result = (unsigned int)dword_CF8;
     if ( dword_CF8 >= 1 )
-      return gpio_free((unsigned int)dword_CF8, v6);
+    {
+      gpio_free((unsigned int)dword_CF8, v6);
+      return;
+    }
   }
-  return result;
+  (void)result;
 }

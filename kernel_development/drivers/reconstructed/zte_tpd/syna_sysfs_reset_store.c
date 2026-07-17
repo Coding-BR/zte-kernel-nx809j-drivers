@@ -1,5 +1,10 @@
-__int64 __fastcall syna_sysfs_reset_store(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
+ssize_t syna_sysfs_reset_store(struct kobject *kobj,
+                               struct kobj_attribute *attr,
+                               const char *buf, size_t count)
 {
+  __int64 a1 = (__int64)kobj;
+  __int64 a3 = (__int64)buf;
+  __int64 a4 = (__int64)count;
   __int64 v5; // x9
   _DWORD *v6; // x20
   __int64 v7; // x21
@@ -12,6 +17,8 @@ __int64 __fastcall syna_sysfs_reset_store(__int64 a1, __int64 a2, __int64 a3, __
   _BYTE v16[4]; // [xsp+0h] [xbp-10h] BYREF
   unsigned int v17; // [xsp+4h] [xbp-Ch] BYREF
   __int64 v18; // [xsp+8h] [xbp-8h]
+
+  (void)attr;
 
   v18 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v5 = *(_QWORD *)(a1 + 24);

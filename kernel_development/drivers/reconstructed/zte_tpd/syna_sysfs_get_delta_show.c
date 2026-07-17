@@ -1,5 +1,8 @@
-__int64 __fastcall syna_sysfs_get_delta_show(__int64 a1, __int64 a2, __int64 a3)
+ssize_t syna_sysfs_get_delta_show(struct kobject *kobj,
+                                  struct kobj_attribute *attr, char *buf)
 {
+  __int64 a1 = (__int64)kobj;
+  __int64 a3 = (__int64)buf;
   __int64 v4; // x8
   _QWORD *v5; // x22
   __int64 v6; // x20
@@ -45,6 +48,8 @@ __int64 __fastcall syna_sysfs_get_delta_show(__int64 a1, __int64 a2, __int64 a3)
   _QWORD v46[6]; // [xsp+30h] [xbp-40h] BYREF
   __int64 v47; // [xsp+60h] [xbp-10h]
   __int64 v48; // [xsp+68h] [xbp-8h]
+
+  (void)attr;
 
   v48 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v4 = *(_QWORD *)(a1 + 24);

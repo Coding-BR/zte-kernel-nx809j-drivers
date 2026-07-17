@@ -1,5 +1,7 @@
-__int64 __fastcall syna_dev_probe(__int64 a1, __int64 a2, __int64 a3)
+int syna_dev_probe(struct platform_device *pdev)
 {
+  __int64 a1 = (__int64)pdev;
+  __int64 a3 = 0;
   __int64 v4; // x0
   __int64 v5; // x2
   __int64 v6; // x21

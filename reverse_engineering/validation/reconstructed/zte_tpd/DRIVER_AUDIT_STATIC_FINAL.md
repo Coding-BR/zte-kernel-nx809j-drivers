@@ -2,7 +2,7 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-07-17T10:35:15.019313+00:00`
+- Gerado em: `2026-07-17T11:06:47.581660+00:00`
 - Run de evidência: `C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z`
 - Rebuild limpo: `True`
 

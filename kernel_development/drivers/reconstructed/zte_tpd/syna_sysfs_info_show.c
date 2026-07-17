@@ -1,5 +1,8 @@
-__int64 __fastcall syna_sysfs_info_show(__int64 a1, __int64 a2, __int64 a3)
+ssize_t syna_sysfs_info_show(struct kobject *kobj,
+                             struct kobj_attribute *attr, char *buf)
 {
+  __int64 a1 = (__int64)kobj;
+  __int64 a3 = (__int64)buf;
   __int64 *v4; // x23
   __int64 v5; // x22
   unsigned int v6; // w19
@@ -42,6 +45,8 @@ __int64 __fastcall syna_sysfs_info_show(__int64 a1, __int64 a2, __int64 a3)
   __int64 v43; // x19
   int v44; // w0
   int v45; // w8
+
+  (void)attr;
 
   v4 = *(__int64 **)(*(_QWORD *)(a1 + 24) + 152LL);
   v5 = *v4;
