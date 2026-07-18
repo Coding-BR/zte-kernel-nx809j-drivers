@@ -16,6 +16,11 @@ SOURCE_FILES = (
     "one_key_report.c",
     "uf_touch_report.c",
     "syna_tcm_set_game_partition_config.c",
+    "syna_tcm_testing_0100_check_data.c",
+    "syna_tcm_testing_0500_check_lower_bound.c",
+    "syna_tcm_testing_0500_check_upper_bound.c",
+    "syna_tcm_testing_0A00_check_lower_bound.c",
+    "syna_tcm_testing_0A00_check_upper_bound.c",
 )
 
 
@@ -86,7 +91,7 @@ def main() -> int:
     pass_lines = [line[5:] for line in completed.stdout.splitlines() if line.startswith("PASS ")]
     fail_lines = [line[5:] for line in completed.stdout.splitlines() if line.startswith("FAIL ")]
     summaries = [line for line in completed.stdout.splitlines() if line.startswith("SUMMARY ")]
-    passed = completed.returncode == 0 and len(pass_lines) == 7 and not fail_lines and bool(summaries)
+    passed = completed.returncode == 0 and len(pass_lines) == 14 and not fail_lines and bool(summaries)
 
     report = {
         "schema_version": "1.0",
@@ -98,7 +103,7 @@ def main() -> int:
         "stdout": completed.stdout,
         "stderr": completed.stderr,
         "tests": {
-            "expected": 7,
+            "expected": 14,
             "passed": pass_lines,
             "failed": fail_lines,
             "summary": summaries[-1] if summaries else None,

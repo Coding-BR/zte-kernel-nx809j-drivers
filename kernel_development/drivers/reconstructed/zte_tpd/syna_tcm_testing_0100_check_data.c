@@ -1,13 +1,17 @@
-bool __fastcall syna_tcm_testing_0100_check_data(unsigned __int8 *a1, unsigned __int8 *a2, int a3)
+bool __fastcall syna_tcm_testing_0100_check_data(void *data, void *limit,
+                                                int column, int row)
 {
+  unsigned __int8 *a1 = data;
+  unsigned __int8 *a2 = limit;
   unsigned int v3; // w21
   unsigned int v4; // w8
   unsigned int v5; // w19
   _BOOL8 result; // x0
 
+  (void)row;
   v3 = *a1;
   v4 = *a2;
-  v5 = 8 * a3;
+  v5 = 8 * column;
   result = (v3 & 1) == (v4 & 1);
   if ( (v3 & 1) != (v4 & 1) )
   {

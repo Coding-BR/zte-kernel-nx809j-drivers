@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `d61b2892ad748d3c91b31b88c5363aca70699d51ed99a6441561e0107122da18`
+Candidato vinculado: `bd3c4ea07621254483410d37760017d5b1ef3b00d087cb9e0240b8d64b979f46`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -258,7 +258,8 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 123 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-244 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
-subconjunto testado. A superficie KCFI integral esta em `226/322`; portanto,
+O estado atual possui 128 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+239 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
+subconjunto testado com 67 casos. A superficie KCFI integral esta em `231/322`;
+portanto,
 nenhuma promocao global para `100%` e permitida.

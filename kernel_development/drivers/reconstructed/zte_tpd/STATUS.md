@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `d61b2892ad748d3c91b31b88c5363aca70699d51ed99a6441561e0107122da18`
-- **Candidato:** `19146232` bytes
+- **Candidato SHA-256:** `bd3c4ea07621254483410d37760017d5b1ef3b00d087cb9e0240b8d64b979f46`
+- **Candidato:** `19146280` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -24,13 +24,13 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `151/151`, incluindo as oito familias
-  anteriores `143/143`.
+- O8 KCFI da superficie selecionada `156/156`, incluindo as oito familias
+  anteriores `143/143` e os cinco validadores de producao deste lote.
 
 INCOMPLETE:
 
-- O6: `123/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `226/322`;
+- O6: `128/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `231/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -131,22 +131,45 @@ e ao `of_node` em `+0x2e8`. As relocacoes stock tambem revelaram uma tabela
 `.suspend`/`.resume` em `+0x10/+0x18`, e `syna_dev_driver + 0xa0` agora aponta
 para a tabela. A comparacao KCFI registrou cinco melhorias e zero regressao.
 
+## Checkpoint Validadores de Producao
+
+O quinto lote recuperou a assinatura comum dos validadores de dados e limites:
+
+```c
+bool syna_testing_bound_fn(void *data, void *limit, int column, int row);
+```
+
+O type ID stock e candidato agora e `0xa33285f2` para:
+
+- `syna_tcm_testing_0100_check_data`;
+- `syna_tcm_testing_0500_check_lower_bound`;
+- `syna_tcm_testing_0500_check_upper_bound`;
+- `syna_tcm_testing_0A00_check_lower_bound`;
+- `syna_tcm_testing_0A00_check_upper_bound`.
+
+O oracle compilou 770 candidatos e reduziu o resultado a duas grafias
+equivalentes (`int`/`s32`). O callsite indireto stock verifica esse mesmo type
+ID antes de `blr` e passa ponteiros, coluna e linha em `x0`, `x1`, `w2` e `w3`.
+Os quatro diagnosticos de limite tambem voltaram a encaminhar linha, coluna,
+valor e limite ao `printk`, como observado no assembly. A comparacao entre
+checkpoints detectou exatamente cinco mudancas KCFI e zero regressao.
+
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `d61b2892ad748d3c91b31b88c5363aca70699d51ed99a6441561e0107122da18`.
+  `bd3c4ea07621254483410d37760017d5b1ef3b00d087cb9e0240b8d64b979f46`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `226/322` matches, `96` divergencias, zero registro
+- Superficie KCFI integral: `231/322` matches, `91` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
-- Sete harnesses ASAN/UBSAN: todos PASS, totalizando 60 casos nominais.
-- Microtarefas: `123 PASS`, `244 READY`, zero promocao nova e zero PASS obsoleto.
+- Sete harnesses ASAN/UBSAN: todos PASS, totalizando 67 casos nominais.
+- Microtarefas: `128 PASS`, `239 READY`, cinco promocoes novas e zero PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
-- Suite focal dos validadores: `28/28 PASS`.
+- Suite focal dos validadores e gates: `52/52 PASS`.
 - Suite global: `105/106 PASS`; a unica falha e externa a este lote e registra
   divergencia entre o config userdebug e `environment.lock.json`.
 
@@ -157,6 +180,7 @@ para a tabela. A comparacao KCFI registrou cinco melhorias e zero regressao.
 - `../../validation/zte_tpd/driver_audit_kcfi_syna_context.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_syna_void_context.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_device_pm.json`
+- `../../validation/zte_tpd/driver_audit_kcfi_testing_bound.json`
 - `../../validation/zte_tpd/offline_reconstruction_audit.json`
 - `../../validation/zte_tpd/header_layout_probe.json`
 - `../../validation/zte_tpd/abi_validation.json`
@@ -171,6 +195,7 @@ para a tabela. A comparacao KCFI registrou cinco melhorias e zero regressao.
 - `../../validation/zte_tpd/signature_oracles/syna_void_context_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/syna_device_pm_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/syna_device_pm_relocation_audit.json`
+- `../../validation/zte_tpd/signature_oracles/testing_bound_callback_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
 

@@ -27,7 +27,7 @@ __int64 __fastcall syna_tcm_testing_check_array_data(__int64 a1, unsigned __int6
         else
           v13 = 0;
         ++v8;
-        v10 &= syna_tcm_testing_0100_check_data(v11, a3 + v13, v12);
+        v10 &= syna_tcm_testing_0100_check_data(v11, a3 + v13, v12, 0);
       }
       while ( v9 != v8 );
     }

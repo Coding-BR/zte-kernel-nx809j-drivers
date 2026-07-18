@@ -439,10 +439,16 @@ extern int tpd_set_palm_mode(struct ztp_device *cdev, int value);
 extern int syna_ghost_check_reset(struct ztp_device *cdev);
 
 // Testing check and helper functions
-bool syna_tcm_testing_0500_check_upper_bound(unsigned short *a1, unsigned short *a2, __int64 a3, unsigned int a4);
-bool syna_tcm_testing_0500_check_lower_bound(unsigned short *a1, unsigned short *a2, __int64 a3, unsigned int a4);
-bool syna_tcm_testing_0A00_check_upper_bound(short *a1, short *a2, __int64 a3, unsigned int a4);
-bool syna_tcm_testing_0A00_check_lower_bound(short *a1, short *a2, __int64 a3, unsigned int a4);
+bool syna_tcm_testing_0100_check_data(void *data, void *limit,
+                                      int column, int row);
+bool syna_tcm_testing_0500_check_upper_bound(void *data, void *limit,
+                                             int column, int row);
+bool syna_tcm_testing_0500_check_lower_bound(void *data, void *limit,
+                                             int column, int row);
+bool syna_tcm_testing_0A00_check_upper_bound(void *data, void *limit,
+                                             int column, int row);
+bool syna_tcm_testing_0A00_check_lower_bound(void *data, void *limit,
+                                             int column, int row);
 __int64 syna_tcm_testing_check_frame_data(__int64 a1, unsigned __int64 a2, __int64 a3, int a4, _DWORD *a5, __int64 a6, unsigned __int64 a7);
 __int64 syna_tcm_testing_check_frame_data_0(__int64 a1, unsigned __int64 a2, __int64 a3, int a4, _DWORD *a5, __int64 a6, unsigned __int64 a7);
 

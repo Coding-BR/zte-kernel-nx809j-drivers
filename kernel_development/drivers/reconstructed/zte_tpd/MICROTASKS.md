@@ -235,8 +235,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 229_syna_tcm_testing_noise | syna_tcm_testing_noise | 0011cc2c | core_logic | syna_tcm_testing_noise.c:syna_tcm_testing_noise | READY_FOR_IMPLEMENTATION |
 | 230_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011ce6c | core_logic | syna_tcm_buf_copy.c:syna_tcm_buf_copy | READY_FOR_IMPLEMENTATION |
 | 231_syna_tcm_testing_check_frame_data | syna_tcm_testing_check_frame_data | 0011d0ec | core_logic | syna_tcm_testing_check_frame_data.c:syna_tcm_testing_check_frame_data | READY_FOR_IMPLEMENTATION |
-| 232_syna_tcm_testing_0a00_check_upper_bound | syna_tcm_testing_0A00_check_upper_bound | 0011d25c | core_logic | syna_tcm_testing_0A00_check_upper_bound.c:syna_tcm_testing_0A00_check_upper_bound | READY_FOR_IMPLEMENTATION |
-| 233_syna_tcm_testing_0a00_check_lower_bound | syna_tcm_testing_0A00_check_lower_bound | 0011d2c4 | core_logic | syna_tcm_testing_0A00_check_lower_bound.c:syna_tcm_testing_0A00_check_lower_bound | READY_FOR_IMPLEMENTATION |
+| 232_syna_tcm_testing_0a00_check_upper_bound | syna_tcm_testing_0A00_check_upper_bound | 0011d25c | core_logic | syna_tcm_testing_0A00_check_upper_bound.c:syna_tcm_testing_0A00_check_upper_bound | PASS |
+| 233_syna_tcm_testing_0a00_check_lower_bound | syna_tcm_testing_0A00_check_lower_bound | 0011d2c4 | core_logic | syna_tcm_testing_0A00_check_lower_bound.c:syna_tcm_testing_0A00_check_lower_bound | PASS |
 | 234_syna_tcm_get_testing_0001 | syna_tcm_get_testing_0001 | 0011d32c | core_logic | syna_tcm_get_testing_0001.c:syna_tcm_get_testing_0001 | READY_FOR_IMPLEMENTATION |
 | 235_syna_tcm_testing_build_id | syna_tcm_testing_build_id | 0011d33c | core_logic | syna_tcm_testing_build_id.c:syna_tcm_testing_build_id | READY_FOR_IMPLEMENTATION |
 | 236_syna_tcm_buf_alloc | syna_tcm_buf_alloc | 0011d594 | core_logic | syna_tcm_buf_alloc.c:syna_tcm_buf_alloc | READY_FOR_IMPLEMENTATION |
@@ -251,13 +251,13 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 245_syna_tcm_testing_trx_trx_short | syna_tcm_testing_trx_trx_short | 0011dafc | core_logic | syna_tcm_testing_trx_trx_short.c:syna_tcm_testing_trx_trx_short | READY_FOR_IMPLEMENTATION |
 | 246_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011dce4 | core_logic | syna_tcm_buf_copy_0.c:syna_tcm_buf_copy_0 | READY_FOR_IMPLEMENTATION |
 | 247_syna_tcm_testing_check_array_data | syna_tcm_testing_check_array_data | 0011df64 | core_logic | syna_tcm_testing_check_array_data.c:syna_tcm_testing_check_array_data | READY_FOR_IMPLEMENTATION |
-| 248_syna_tcm_testing_0100_check_data | syna_tcm_testing_0100_check_data | 0011e01c | core_logic | syna_tcm_testing_0100_check_data.c:syna_tcm_testing_0100_check_data | READY_FOR_IMPLEMENTATION |
+| 248_syna_tcm_testing_0100_check_data | syna_tcm_testing_0100_check_data | 0011e01c | core_logic | syna_tcm_testing_0100_check_data.c:syna_tcm_testing_0100_check_data | PASS |
 | 249_syna_tcm_get_testing_0500 | syna_tcm_get_testing_0500 | 0011e204 | core_logic | syna_tcm_get_testing_0500.c:syna_tcm_get_testing_0500 | READY_FOR_IMPLEMENTATION |
 | 250_syna_tcm_testing_full_raw | syna_tcm_testing_full_raw | 0011e214 | core_logic | syna_tcm_testing_full_raw.c:syna_tcm_testing_full_raw | READY_FOR_IMPLEMENTATION |
 | 251_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011e454 | core_logic | syna_tcm_buf_copy_1.c:syna_tcm_buf_copy_1 | READY_FOR_IMPLEMENTATION |
 | 252_syna_tcm_testing_check_frame_data | syna_tcm_testing_check_frame_data | 0011e6d4 | core_logic | syna_tcm_testing_check_frame_data_0.c:syna_tcm_testing_check_frame_data_0 | READY_FOR_IMPLEMENTATION |
-| 253_syna_tcm_testing_0500_check_upper_bound | syna_tcm_testing_0500_check_upper_bound | 0011e844 | core_logic | syna_tcm_testing_0500_check_upper_bound.c:syna_tcm_testing_0500_check_upper_bound | READY_FOR_IMPLEMENTATION |
-| 254_syna_tcm_testing_0500_check_lower_bound | syna_tcm_testing_0500_check_lower_bound | 0011e8ac | core_logic | syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound | READY_FOR_IMPLEMENTATION |
+| 253_syna_tcm_testing_0500_check_upper_bound | syna_tcm_testing_0500_check_upper_bound | 0011e844 | core_logic | syna_tcm_testing_0500_check_upper_bound.c:syna_tcm_testing_0500_check_upper_bound | PASS |
+| 254_syna_tcm_testing_0500_check_lower_bound | syna_tcm_testing_0500_check_lower_bound | 0011e8ac | core_logic | syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound | PASS |
 | 255_syna_tcm_v1_detect | syna_tcm_v1_detect | 0011e914 | core_logic | syna_tcm_v1_detect.c:syna_tcm_v1_detect | READY_FOR_IMPLEMENTATION |
 | 256_syna_tcm_buf_lock | syna_tcm_buf_lock | 0011ede8 | core_logic | syna_tcm_buf_lock.c:syna_tcm_buf_lock | READY_FOR_IMPLEMENTATION |
 | 257_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 0011ee40 | core_logic | syna_tcm_buf_unlock.c:syna_tcm_buf_unlock | READY_FOR_IMPLEMENTATION |
