@@ -219,7 +219,7 @@ int syna_spi_probe(struct spi_device *spi)
   printk(unk_36260, "syna_spi_parse_dt", (unsigned int)qword_BF4);
   printk(unk_394A5, "syna_spi_parse_dt", (unsigned int)dword_D38);
   printk(unk_3D259, "syna_spi_parse_dt", (unsigned int)qword_D50);
-  syna_ts_check_dt(a1);
+  syna_ts_check_dt(&spi->dev);
   syna_spi_hw_if = a1;
   qword_BE8 = (__int64)&syna_spi_hw_if;
   v37 = p_device;

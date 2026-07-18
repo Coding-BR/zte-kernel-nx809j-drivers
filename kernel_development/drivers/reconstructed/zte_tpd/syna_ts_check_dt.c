@@ -1,5 +1,6 @@
-__int64 __fastcall syna_ts_check_dt(__int64 a1)
+int syna_ts_check_dt(struct device *dev)
 {
+  __int64 a1 = (__int64)dev;
   int v2; // w0
   int v3; // w21
   unsigned int v4; // w22

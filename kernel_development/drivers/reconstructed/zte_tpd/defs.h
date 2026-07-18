@@ -390,8 +390,6 @@ extern __int64 edge_long_press_up(struct input_dev *input, int index);
 
 extern int large_area_ignore_count;
 extern int large_area_uevent_count;
-extern __int64 syna_dev_resume(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 syna_dev_suspend(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_tcm_v1_read_message(__int64 a1, _BYTE *a2, __int64 a3);
 extern int syna_tcm_v1_write_message(struct tcm_dev *tcm, u8 command,
 				      u8 *payload, u32 length,

@@ -2,7 +2,14 @@
 #ifndef _ZTE_TPD_SYNA_DEVICE_API_H
 #define _ZTE_TPD_SYNA_DEVICE_API_H
 
+struct device;
 struct syna_tcm;
+
+int syna_dev_resume(struct device *dev);
+int syna_dev_suspend(struct device *dev);
+int syna_pm_resume(struct device *dev);
+int syna_pm_suspend(struct device *dev);
+int syna_ts_check_dt(struct device *dev);
 
 void syna_cdev_remove(struct syna_tcm *tcm);
 void syna_dev_free_input_events(struct syna_tcm *tcm);

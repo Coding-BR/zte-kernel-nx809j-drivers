@@ -945,6 +945,11 @@ static const struct of_device_id syna_dev_of_match[] = {
     { }
 };
 
+static const struct dev_pm_ops syna_dev_pm_ops = {
+    .suspend = syna_pm_suspend,
+    .resume = syna_pm_resume,
+};
+
 struct platform_driver syna_dev_driver = {
     .probe = syna_dev_probe,
     .remove = syna_dev_remove,
@@ -952,6 +957,7 @@ struct platform_driver syna_dev_driver = {
     .driver = {
         .name = "syna_dev_platform",
         .of_match_table = syna_dev_of_match,
+        .pm = &syna_dev_pm_ops,
     }
 };
 

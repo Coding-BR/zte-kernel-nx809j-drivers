@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `8033a82a6008b9d198842f50d6b246cb828cc93762f675e4e4e69e1eacc8020c`
+Candidato vinculado: `d61b2892ad748d3c91b31b88c5363aca70699d51ed99a6441561e0107122da18`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -54,6 +54,12 @@ void syna_sysfs_remove_dir(struct syna_tcm *tcm);
 void syna_testing_remove_dir(struct syna_tcm *tcm);
 void syna_tpd_register_fw_class(struct syna_tcm *tcm);
 void zte_reset_frame_list(struct syna_tcm *tcm);
+
+int syna_dev_resume(struct device *dev);
+int syna_dev_suspend(struct device *dev);
+int syna_pm_resume(struct device *dev);
+int syna_pm_suspend(struct device *dev);
+int syna_ts_check_dt(struct device *dev);
 
 int syna_dev_get_frame_data(struct syna_tcm *tcm, int value,
                             unsigned int delay_ms);
@@ -108,6 +114,24 @@ wrappers `sub_*` que possuem contrato proprio continuam retornando zero depois
 da chamada tipada. O assembly stock tambem prova que seis chamadas `printk`
 preparam somente os argumentos reais, permitindo remover varargs fantasmas sem
 alterar o fluxo observado.
+
+As cinco rotinas de dispositivo compartilham o KCFI stock `0x2a703c0b`. O
+oraculo local testou 140 declaracoes e recuperou unicamente
+`int (struct device *)`. A evidencia nao se limita ao hash: assembly e P-Code
+usam `driver_data` em `struct device + 0x98`, enquanto `syna_ts_check_dt` usa
+`of_node` em `+0x2e8`. As relocacoes do stock fixam ainda o seguinte contrato:
+
+```c
+static const struct dev_pm_ops syna_dev_pm_ops = {
+        .suspend = syna_pm_suspend,
+        .resume = syna_pm_resume,
+};
+```
+
+`syna_dev_driver.driver.pm` deve apontar para essa tabela. No stock o ponteiro
+esta em `syna_dev_driver + 0xa0 -> .rodata+0xf00`; no candidato atual esta em
+`syna_dev_driver + 0xa0 -> .rodata+0x320`. Em ambas as tabelas, suspend e resume
+ocupam `+0x10` e `+0x18`. Nao remova a tabela como dado aparentemente ocioso.
 
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.
@@ -236,5 +260,5 @@ Ordem de prioridade recomendada para os proximos lotes:
 
 O estado atual possui 123 tarefas `PASS`, com build, KCFI e teste hash-bound, e
 244 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
-subconjunto testado. A superficie KCFI integral esta em `221/322`; portanto,
+subconjunto testado. A superficie KCFI integral esta em `226/322`; portanto,
 nenhuma promocao global para `100%` e permitida.

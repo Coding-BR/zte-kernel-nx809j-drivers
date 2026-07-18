@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "mode": "offline_local_elf_relocation_audit",
+  "driver": "zte_tpd",
+  "passed": true,
+  "stock": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "syna_dev_driver": {
+      "section": ".data",
+      "offset": "0x270",
+      "pm_member_offset": "0xa0",
+      "pm_relocation": ".rodata+0xf00"
+    },
+    "syna_dev_pm_ops": {
+      "section": ".rodata",
+      "offset": "0xf00",
+      "size": 192,
+      "suspend": {
+        "member_offset": "0x10",
+        "target": ".text+0xe20c",
+        "symbol": "syna_pm_suspend"
+      },
+      "resume": {
+        "member_offset": "0x18",
+        "target": ".text+0xe258",
+        "symbol": "syna_pm_resume"
+      }
+    }
+  },
+  "candidate": {
+    "sha256": "d61b2892ad748d3c91b31b88c5363aca70699d51ed99a6441561e0107122da18",
+    "syna_dev_driver": {
+      "section": ".data",
+      "offset": "0x2f5e0",
+      "pm_member_offset": "0xa0",
+      "pm_relocation": ".rodata+0x320"
+    },
+    "syna_dev_pm_ops": {
+      "section": ".rodata",
+      "offset": "0x320",
+      "size": 192,
+      "suspend": {
+        "member_offset": "0x10",
+        "relocation_offset": "0x330",
+        "target": "syna_pm_suspend"
+      },
+      "resume": {
+        "member_offset": "0x18",
+        "relocation_offset": "0x338",
+        "target": "syna_pm_resume"
+      }
+    }
+  },
+  "checks": {
+    "platform_driver_pm_member_matches": true,
+    "dev_pm_ops_size_matches": true,
+    "suspend_member_offset_matches": true,
+    "resume_member_offset_matches": true,
+    "candidate_targets_typed_functions": true
+  },
+  "tools": [
+    "llvm-readelf -S -s -r",
+    "extract_kcfi.py",
+    "resolve_signature_oracle.py --kcfi-only"
+  ],
+  "limitations": [
+    "Relocations prove static registration topology, not runtime PM ordering.",
+    "No device, ADB, fastboot, module-loading, SPI, IRQ, MMIO, or partition operation was performed."
+  ]
+}
