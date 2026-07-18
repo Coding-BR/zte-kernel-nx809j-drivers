@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`
+Candidato vinculado: `9c3756977d3a2096f546d97845564607110e213cbb9024511140af5efc22104e`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -104,6 +104,10 @@ int syna_tcm_set_static_config(struct tcm_dev *tcm, char *config,
 int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
                                       unsigned int length,
                                       unsigned int delay_ms);
+
+void syna_tcm_clear_command_processing(struct tcm_dev *tcm);
+void syna_tcm_remove_device(struct tcm_dev *tcm);
+void syna_tcm_v1_terminate(struct tcm_dev *tcm);
 ```
 
 Os registros correspondentes devem manter os tipos nativos:
@@ -160,6 +164,13 @@ esta em `syna_dev_driver + 0xa0 -> .rodata+0xf00`; no candidato atual esta em
 `syna_dev_driver + 0xa0 -> .rodata+0x320`. Em ambas as tabelas, suspend e resume
 ocupam `+0x10` e `+0x18`. Nao remova a tabela como dado aparentemente ocioso.
 
+As tres funcoes de ciclo de vida TCM compartilham o KCFI stock `0x9b7e2760` e
+foram confirmadas pelo oraculo como `void (struct tcm_dev *)`. O campo
+`tcm_dev + 0x3a0` recebe `syna_tcm_v1_terminate` e deve usar o mesmo typedef;
+`syna_tcm_clear_command_processing` chama esse callback com somente `tcm`.
+`syna_tcm_remove_device` e `syna_tcm_v1_terminate` tambem nao retornam valor.
+O harness `tcm_lifecycle_harness_report.json` cobre esses contratos offline.
+
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.
 
@@ -175,6 +186,8 @@ supostos e nao use `__packed`.
 #define _ZTE_TPD_TCM_LAYOUT_H
 
 struct tcm_dev;
+
+typedef void (*tcm_lifecycle_fn)(struct tcm_dev *tcm);
 
 typedef int (*tcm_write_message_fn)(struct tcm_dev *tcm, u8 command,
                                     u8 *payload, u32 length,
@@ -194,13 +207,23 @@ struct tcm_dev {
         u32 command_delay_ms;
         u8 reserved_0210[0x188];
         tcm_write_message_fn write_message;
+        tcm_lifecycle_fn terminate;   /* 0x3a0 */
+        u8 reserved_03a8[0x08];
+        void *reset_callback;         /* 0x3b0 */
+        u8 reserved_03b8[0x2020];
+        void *post_reset_context;     /* 0x23d8 */
+        void *post_reset_callback;    /* 0x23e0 */
 };
 
 static_assert(offsetof(struct tcm_dev, firmware_mode) == 0x09);
 static_assert(offsetof(struct tcm_dev, transport) == 0x48);
 static_assert(offsetof(struct tcm_dev, command_delay_ms) == 0x20c);
 static_assert(offsetof(struct tcm_dev, write_message) == 0x398);
-static_assert(sizeof(struct tcm_dev) == 0x3a0);
+static_assert(offsetof(struct tcm_dev, terminate) == 0x3a0);
+static_assert(offsetof(struct tcm_dev, reset_callback) == 0x3b0);
+static_assert(offsetof(struct tcm_dev, post_reset_context) == 0x23d8);
+static_assert(offsetof(struct tcm_dev, post_reset_callback) == 0x23e0);
+static_assert(sizeof(struct tcm_dev) == 0x23e8);
 
 #endif
 ```
@@ -285,8 +308,8 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 139 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-228 tarefas `READY_FOR_IMPLEMENTATION`. Dez relatorios de harness sustentam o
-subconjunto testado com 106 casos. A superficie KCFI integral esta em `242/322`;
+O estado atual possui 142 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+225 tarefas `READY_FOR_IMPLEMENTATION`. Onze relatorios de harness sustentam o
+subconjunto testado com 117 casos. A superficie KCFI integral esta em `245/322`;
 portanto,
 nenhuma promocao global para `100%` e permitida.

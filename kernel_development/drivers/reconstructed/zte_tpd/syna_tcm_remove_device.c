@@ -1,5 +1,6 @@
-__int64 __fastcall syna_tcm_remove_device(__int64 a1, __int64 a2, __int64 a3)
+void syna_tcm_remove_device(struct tcm_dev *tcm)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
   void *v3; // x0
   __int64 v5; // x20
   __int64 v6; // x0
@@ -137,5 +138,5 @@ __int64 __fastcall syna_tcm_remove_device(__int64 a1, __int64 a2, __int64 a3)
   {
     v3 = unk_3365A;
   }
-  return printk(v3, "syna_tcm_remove_device", a3);
+  printk(v3, "syna_tcm_remove_device");
 }

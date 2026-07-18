@@ -2,9 +2,9 @@
 
 - Status: `INCOMPLETE`
 - Stock SHA-256: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- Candidate SHA-256: `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`
-- Matched: `242/322` (75.16%)
-- Mismatched: `80`
+- Candidate SHA-256: `9c3756977d3a2096f546d97845564607110e213cbb9024511140af5efc22104e`
+- Matched: `245/322` (76.09%)
+- Mismatched: `77`
 - Missing candidate records: `0`
 - Stock records excluded by preamble recovery: `46`
 
@@ -15,7 +15,6 @@ is the authoritative inventory for the complete recoverable stock KCFI surface.
 
 | Stock type ID | Functions |
 | --- | ---: |
-| `0x9b7e2760` | 3 |
 | `0x9f93c40a` | 3 |
 | `0xa2fce979` | 3 |
 | `0x1e333d0b` | 2 |
@@ -45,6 +44,7 @@ is the authoritative inventory for the complete recoverable stock KCFI surface.
 | `0x38633085` | 1 |
 | `0x39266119` | 1 |
 | `0x454a91cb` | 1 |
+| `0x4b2750f2` | 1 |
 
 ## Rule
 

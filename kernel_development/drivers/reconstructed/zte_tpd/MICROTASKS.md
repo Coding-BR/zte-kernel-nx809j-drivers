@@ -266,11 +266,11 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 260_syna_tcm_v1_check_max_rw_size | syna_tcm_v1_check_max_rw_size | 0011f790 | core_logic | syna_tcm_v1_check_max_rw_size.c:syna_tcm_v1_check_max_rw_size | READY_FOR_IMPLEMENTATION |
 | 261_syna_tcm_v1_read_message | syna_tcm_v1_read_message | 0011f838 | user_abi | syna_tcm_v1_read_message.c:syna_tcm_v1_read_message | READY_FOR_IMPLEMENTATION |
 | 262_syna_tcm_v1_set_up_max_rw_size | syna_tcm_v1_set_up_max_rw_size | 00120da8 | core_logic | syna_tcm_v1_set_up_max_rw_size.c:syna_tcm_v1_set_up_max_rw_size | READY_FOR_IMPLEMENTATION |
-| 263_syna_tcm_v1_terminate | syna_tcm_v1_terminate | 00120e64 | core_logic | syna_tcm_v1_terminate.c:syna_tcm_v1_terminate | READY_FOR_IMPLEMENTATION |
+| 263_syna_tcm_v1_terminate | syna_tcm_v1_terminate | 00120e64 | core_logic | syna_tcm_v1_terminate.c:syna_tcm_v1_terminate | PASS |
 | 264_syna_tcm_v1_read | syna_tcm_v1_read | 00120eec | user_abi | syna_tcm_v1_read.c:syna_tcm_v1_read | READY_FOR_IMPLEMENTATION |
 | 265_syna_tcm_config_timings | syna_tcm_config_timings | 00121034 | core_logic | syna_tcm_config_timings.c:syna_tcm_config_timings | READY_FOR_IMPLEMENTATION |
 | 266_syna_tcm_allocate_device | syna_tcm_allocate_device | 00121124 | core_logic | syna_tcm_allocate_device.c:syna_tcm_allocate_device | READY_FOR_IMPLEMENTATION |
-| 267_syna_tcm_remove_device | syna_tcm_remove_device | 001216d0 | binding | syna_tcm_remove_device.c:syna_tcm_remove_device | READY_FOR_IMPLEMENTATION |
+| 267_syna_tcm_remove_device | syna_tcm_remove_device | 001216d0 | binding | syna_tcm_remove_device.c:syna_tcm_remove_device | PASS |
 | 268_syna_tcm_detect_device | syna_tcm_detect_device | 00121944 | core_logic | syna_tcm_detect_device.c:syna_tcm_detect_device | READY_FOR_IMPLEMENTATION |
 | 269_syna_tcm_get_event_data | syna_tcm_get_event_data | 00121ad4 | core_logic | syna_tcm_get_event_data.c:syna_tcm_get_event_data | READY_FOR_IMPLEMENTATION |
 | 270_syna_tcm_buf_copy | syna_tcm_buf_copy | 00121c10 | core_logic | syna_tcm_buf_copy_2.c:syna_tcm_buf_copy_2 | READY_FOR_IMPLEMENTATION |
@@ -296,7 +296,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 290_syna_tcm_set_report_dispatcher | syna_tcm_set_report_dispatcher | 00124014 | core_logic | syna_tcm_set_report_dispatcher.c:syna_tcm_set_report_dispatcher | READY_FOR_IMPLEMENTATION |
 | 291_syna_tcm_set_data_duplicator | syna_tcm_set_data_duplicator | 001240d4 | core_logic | syna_tcm_set_data_duplicator.c:syna_tcm_set_data_duplicator | READY_FOR_IMPLEMENTATION |
 | 292_syna_tcm_clear_data_duplicator | syna_tcm_clear_data_duplicator | 00124124 | core_logic | syna_tcm_clear_data_duplicator.c:syna_tcm_clear_data_duplicator | READY_FOR_IMPLEMENTATION |
-| 293_syna_tcm_clear_command_processing | syna_tcm_clear_command_processing | 00124178 | core_logic | syna_tcm_clear_command_processing.c:syna_tcm_clear_command_processing | READY_FOR_IMPLEMENTATION |
+| 293_syna_tcm_clear_command_processing | syna_tcm_clear_command_processing | 00124178 | core_logic | syna_tcm_clear_command_processing.c:syna_tcm_clear_command_processing | PASS |
 | 294_syna_tcm_set_post_reset_callback | syna_tcm_set_post_reset_callback | 001241bc | core_logic | syna_tcm_set_post_reset_callback.c:syna_tcm_set_post_reset_callback | READY_FOR_IMPLEMENTATION |
 | 295_syna_tcm_read_flash_address | syna_tcm_read_flash_address | 00124208 | user_abi | syna_tcm_read_flash_address.c:syna_tcm_read_flash_address | READY_FOR_IMPLEMENTATION |
 | 296_syna_tcm_set_up_flash_access | syna_tcm_set_up_flash_access | 001244e4 | core_logic | syna_tcm_set_up_flash_access.c:syna_tcm_set_up_flash_access | READY_FOR_IMPLEMENTATION |

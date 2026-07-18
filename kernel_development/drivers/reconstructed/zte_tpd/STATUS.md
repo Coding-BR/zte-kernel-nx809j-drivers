@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`
-- **Candidato:** `19173552` bytes
+- **Candidato SHA-256:** `9c3756977d3a2096f546d97845564607110e213cbb9024511140af5efc22104e`
+- **Candidato:** `19179432` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -24,13 +24,13 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `167/167`, incluindo as oito familias
+- O8 KCFI da superficie selecionada `170/170`, incluindo as oito familias
   recuperadas `143/143`.
 
 INCOMPLETE:
 
-- O6: `139/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `242/322`;
+- O6: `142/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `245/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -215,20 +215,40 @@ funcional no candidato anterior: `syna_tcm_set_static_config` chamava
 `0x22`, buffer, comprimento, resposta nula e delay, e restaura o delay padrao
 de `tcm + 0x20c`. O harness dedicado passou `20/20` contratos offline.
 
+## Checkpoint TCM Ciclo de Vida
+
+O lote seguinte recuperou a assinatura comum de tres funcoes e do callback
+armazenado em `struct tcm_dev + 0x3a0`:
+
+```c
+void syna_tcm_lifecycle_fn(struct tcm_dev *tcm);
+```
+
+O Type ID stock e candidato e `0x9b7e2760` para:
+
+- `syna_tcm_clear_command_processing`;
+- `syna_tcm_remove_device`;
+- `syna_tcm_v1_terminate`.
+
+O oraculo compilou `30` candidatos e encontrou somente
+`void (struct tcm_dev *)`. A correcao removeu dois argumentos residuais das
+entradas, tipou o callback de `0x3a0` e passou um unico contexto ao `blr`. O
+harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
+
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`.
+  `9c3756977d3a2096f546d97845564607110e213cbb9024511140af5efc22104e`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `242/322` matches, `80` divergencias, zero registro
+- Superficie KCFI integral: `245/322` matches, `77` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
-- Dez harnesses host: todos PASS, totalizando 106 casos nominais.
-- Microtarefas: `139 PASS`, `228 READY`, tres promocoes novas e zero PASS obsoleto.
+- Onze harnesses host: todos PASS, totalizando 117 casos nominais.
+- Microtarefas: `142 PASS`, `225 READY`, tres promocoes novas e zero PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
 - Suite focal dos gates afetados: `39/39 PASS`.
 - Suite global: `105/106 PASS`; a unica falha e externa a este lote e registra
@@ -245,6 +265,7 @@ de `tcm + 0x20c`. O harness dedicado passou `20/20` contratos offline.
 - `../../validation/zte_tpd/driver_audit_kcfi_tcm_delay.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_tcm_flash_data.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_tcm_static_config.json`
+- `../../validation/zte_tpd/driver_audit_kcfi_tcm_lifecycle.json`
 - `../../validation/zte_tpd/offline_reconstruction_audit.json`
 - `../../validation/zte_tpd/header_layout_probe.json`
 - `../../validation/zte_tpd/abi_validation.json`
@@ -263,6 +284,7 @@ de `tcm + 0x20c`. O harness dedicado passou `20/20` contratos offline.
 - `../../validation/zte_tpd/signature_oracles/tcm_delay_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/tcm_flash_data_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/tcm_static_config_kcfi_report.json`
+- `../../validation/zte_tpd/signature_oracles/tcm_lifecycle_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
 

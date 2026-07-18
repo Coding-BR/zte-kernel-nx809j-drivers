@@ -4,6 +4,8 @@
 
 struct tcm_dev;
 
+typedef void (*tcm_lifecycle_fn)(struct tcm_dev *tcm);
+
 typedef int (*tcm_write_message_fn)(struct tcm_dev *tcm, u8 command,
 				    u8 *payload, u32 length,
 				    u8 *response_code, u32 delay_ms);
@@ -23,7 +25,8 @@ struct tcm_dev {
 	u32 command_delay_ms;
 	u8 reserved_0210[0x188];
 	tcm_write_message_fn write_message;
-	u8 reserved_03a0[0x10];
+	tcm_lifecycle_fn terminate;
+	u8 reserved_03a8[0x08];
 	void *reset_callback;
 	u8 reserved_03b8[0x2020];
 	void *post_reset_context;
@@ -34,6 +37,7 @@ static_assert(offsetof(struct tcm_dev, firmware_mode) == 0x09);
 static_assert(offsetof(struct tcm_dev, transport) == 0x48);
 static_assert(offsetof(struct tcm_dev, command_delay_ms) == 0x20c);
 static_assert(offsetof(struct tcm_dev, write_message) == 0x398);
+static_assert(offsetof(struct tcm_dev, terminate) == 0x3a0);
 static_assert(offsetof(struct tcm_dev, reset_callback) == 0x3b0);
 static_assert(offsetof(struct tcm_dev, post_reset_context) == 0x23d8);
 static_assert(offsetof(struct tcm_dev, post_reset_callback) == 0x23e0);

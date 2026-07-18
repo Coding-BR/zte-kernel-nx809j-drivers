@@ -1,20 +1,19 @@
-__int64 __fastcall syna_tcm_v1_terminate(__int64 result, __int64 a2, __int64 a3)
+void syna_tcm_v1_terminate(struct tcm_dev *tcm)
 {
-  __int64 v3; // x19
+  __int64 raw = (__int64)(unsigned long)tcm;
 
-  if ( !result )
-    return printk(unk_3365A, "syna_tcm_v1_terminate", a3);
-  if ( *(_DWORD *)(result + 504) == 1 )
+  if ( !tcm )
   {
-    v3 = result;
-    printk(unk_3B33C, "syna_tcm_v1_terminate", *(unsigned __int8 *)(result + 508));
-    *(_DWORD *)(v3 + 504) = 2;
-    result = completion_done(v3 + 544);
-    if ( (result & 1) == 0 )
-    {
-      complete(v3 + 544);
-      return 0;
-    }
+    printk(unk_3365A, "syna_tcm_v1_terminate");
+    return;
   }
-  return result;
+
+  if ( *(_DWORD *)(raw + 504) != 1 )
+    return;
+
+  printk(unk_3B33C, "syna_tcm_v1_terminate",
+         *(unsigned __int8 *)(raw + 508));
+  *(_DWORD *)(raw + 504) = 2;
+  if ( !completion_done(raw + 544) )
+    complete(raw + 544);
 }

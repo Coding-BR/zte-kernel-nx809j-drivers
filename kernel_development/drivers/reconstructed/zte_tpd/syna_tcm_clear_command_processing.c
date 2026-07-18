@@ -1,16 +1,15 @@
-__int64 __fastcall syna_tcm_clear_command_processing(__int64 result)
+void syna_tcm_clear_command_processing(struct tcm_dev *tcm)
 {
-  __int64 (*v1)(__int64, __int64, __int64); // x8
+  tcm_lifecycle_fn terminate;
 
-  if ( result )
-  {
-    v1 = *(__int64 (**)(__int64, __int64, __int64))(result + 928);
-    if ( v1 )
-    {
-      if ( *((_DWORD *)v1 - 1) != -1686231200 )
-        __break(0x8228u);
-      return v1(result, 0, 0);
-    }
-  }
-  return result;
+  if ( !tcm )
+    return;
+
+  terminate = tcm->terminate;
+  if ( !terminate )
+    return;
+
+  if ( *(_DWORD *)((char *)terminate - 4) != -1686231200 )
+    __break(0x8228u);
+  terminate(tcm);
 }
