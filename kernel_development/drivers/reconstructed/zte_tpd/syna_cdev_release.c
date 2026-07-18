@@ -1,4 +1,4 @@
-__int64 syna_cdev_release(void)
+int syna_cdev_release(struct inode *inode, struct file *filp)
 {
   __int64 *v0; // x21
   __int64 v1; // x2
@@ -8,6 +8,9 @@ __int64 syna_cdev_release(void)
   __int64 v5; // x8
   __int64 v9; // x0
   int v10; // w8
+
+  (void)inode;
+  (void)filp;
 
   v0 = *(__int64 **)(g_cdev_data + 168);
   v1 = *((unsigned int *)v0 + 225);

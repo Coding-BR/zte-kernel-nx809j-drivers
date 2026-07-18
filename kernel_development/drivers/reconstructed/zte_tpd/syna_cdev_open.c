@@ -1,4 +1,4 @@
-__int64 syna_cdev_open(void)
+int syna_cdev_open(struct inode *inode, struct file *filp)
 {
   unsigned int *v0; // x20
   __int64 v1; // x2
@@ -8,6 +8,9 @@ __int64 syna_cdev_open(void)
   __int64 v5 = 0; // x2
   __int64 v9; // x0
   unsigned int v10; // w8
+
+  (void)inode;
+  (void)filp;
 
   v0 = *(unsigned int **)(g_cdev_data + 168);
   mutex_lock(&qword_316A0);

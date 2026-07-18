@@ -3,8 +3,6 @@
 
 static int syna_cdev_create_cdev_major_num = 0;
 
-extern __int64 syna_cdev_open(void);
-extern __int64 syna_cdev_release(void);
 extern __int64 syna_cdev_read(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_cdev_write(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_cdev_llseek(void);
@@ -12,16 +10,6 @@ extern __int64 syna_cdev_ioctls(__int64 a1, unsigned char a2, unsigned __int64 a
 extern __int64 syna_poll(__int64 a1, void (**a2)(void));
 extern int syna_mmap(struct file *filp, struct vm_area_struct *vma);
 extern __int64 syna_cdev_devnode(__int64 a1, unsigned int *a2);
-
-static int device_open(struct inode *inode, struct file *filp)
-{
-    return (int)syna_cdev_open();
-}
-
-static int device_release(struct inode *inode, struct file *filp)
-{
-    return (int)syna_cdev_release();
-}
 
 static ssize_t device_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
 {
@@ -55,8 +43,8 @@ static int device_mmap(struct file *filp, struct vm_area_struct *vma)
 
 static const struct file_operations device_fops = {
     .owner = THIS_MODULE,
-    .open = device_open,
-    .release = device_release,
+    .open = syna_cdev_open,
+    .release = syna_cdev_release,
     .read = device_read,
     .write = device_write,
     .llseek = device_llseek,

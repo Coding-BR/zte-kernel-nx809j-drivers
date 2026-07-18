@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-17
+## Estado Atual - 2026-07-18
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE` (`7/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `8a887193ada1f644a7ca9937be2846dc2c56832c1dd51b80cf4adccd4d4b6eac`
-- **Candidato:** `16298224` bytes
+- **Candidato SHA-256:** `2a70c7f1e88c4091812538d6d2187cec18597919c9d8acc0b60a9769d5b09589`
+- **Candidato:** `18260072` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
@@ -29,7 +29,7 @@ INCOMPLETE:
 
 - O6: `123/367` microtarefas possuem build, KCFI e teste direto vinculados por
   hash; `244` ainda precisam de evidencia comportamental;
-- O8/O9: a paridade integral esta incompleta porque `137/322` funcoes com
+- O8/O9: a paridade integral esta incompleta porque `133/322` funcoes com
   preambulo KCFI stock recuperavel ainda possuem type ID divergente;
 - O10: revisao independente ainda nao foi realizada.
 
@@ -41,19 +41,22 @@ Hardware permanece `DEFERRED`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
-- O candidato possui `173` simbolos de texto adicionais documentados: 131
-  subrotinas do decompilador, 22 wrappers de assinatura, 9 duplicatas renomeadas
-  e 11 helpers diversos.
+- O candidato possui `151` simbolos de texto adicionais documentados: 131
+  subrotinas do decompilador, 2 wrappers de assinatura, 9 duplicatas renomeadas
+  e 9 helpers diversos.
 - Sete relatorios de harness promovem `123` microtarefas atuais, sem PASS
   obsoleto e sem falha de ASan ou UBSan.
-- A superficie KCFI integral possui `185/322` matches (`57,45%`), zero simbolos
-  candidatos ausentes, `137` assinaturas divergentes e `46` funcoes stock cujo
+- A superficie KCFI integral possui `189/322` matches (`58,70%`), zero simbolos
+  candidatos ausentes, `133` assinaturas divergentes e `46` funcoes stock cujo
   preambulo precisa de revisao separada.
 - A familia stock `0x6fbb3035` foi corrigida integralmente: `11/11` funcoes
   agora possuem assinatura `int (void)` e secao correspondente, sem regressao
   nas 151 funcoes da superficie KCFI selecionada.
 - Os callbacks sysfs e de plataforma/SPI somam mais `20/20` matches KCFI;
   os wrappers de assinatura candidatos cairam de `22` para `2`.
+- As quatro operacoes de arquivo `syna_cdev_open`, `syna_cdev_release`,
+  `syna_open` e `syna_release` agora possuem o type ID stock `0x9829071d` e
+  estao ligadas diretamente as respectivas tabelas `file_operations`.
 
 ## Correcao de Usercopy e Proc
 

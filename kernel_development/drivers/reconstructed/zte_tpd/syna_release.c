@@ -1,5 +1,7 @@
-__int64 __fastcall syna_release(__int64 a1, __int64 a2, __int64 a3)
+int syna_release(struct inode *inode, struct file *filp)
 {
-  printk(unk_3A388, "syna_release", a3);
+  (void)inode;
+  (void)filp;
+  printk(unk_3A388, "syna_release", 0LL);
   return 0;
 }

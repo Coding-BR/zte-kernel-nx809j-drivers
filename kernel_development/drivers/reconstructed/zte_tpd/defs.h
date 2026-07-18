@@ -336,7 +336,8 @@ extern char DEVICE_NODE_NAME[100];
 // Missing function forward declarations
 extern __int64 syna_tcm_set_data_duplicator(__int64 a1, int a2, void *a3, __int64 a4);
 extern __int64 syna_cdev_process_reports(__int64 a1, _QWORD *a2, __int64 a3, __int64 *a4);
-extern __int64 syna_cdev_open(void);
+extern int syna_cdev_open(struct inode *inode, struct file *filp);
+extern int syna_cdev_release(struct inode *inode, struct file *filp);
 extern __int64 syna_tcm_get_event_data(__int64 a1, unsigned __int8 *a2, __int64 a3);
 extern __int64 syna_tcm_enable_predict_reading(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_tcm_sleep(__int64 a1, char a2, __int64 a3);

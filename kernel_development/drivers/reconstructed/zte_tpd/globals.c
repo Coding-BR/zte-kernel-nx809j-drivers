@@ -2117,8 +2117,8 @@ const struct proc_ops proc_ops_frame_data = { .proc_read = tp_frame_data_read, .
 extern __int64 syna_poll(__int64 a1, void (**a2)(void));
 extern __int64 syna_ioctl(__int64 a1, int a2, unsigned __int64 a3);
 extern int syna_mmap(struct file *file, struct vm_area_struct *vma);
-extern __int64 syna_open(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 syna_release(__int64 a1, __int64 a2, __int64 a3);
+extern int syna_open(struct inode *inode, struct file *filp);
+extern int syna_release(struct inode *inode, struct file *filp);
 
 // Define zte_fops
 struct file_operations zte_fops = {
@@ -2126,8 +2126,8 @@ struct file_operations zte_fops = {
     .poll           = (void *)syna_poll,
     .unlocked_ioctl = (void *)syna_ioctl,
     .mmap           = syna_mmap,
-    .open           = (void *)syna_open,
-    .release        = (void *)syna_release,
+    .open           = syna_open,
+    .release        = syna_release,
 };
 
 // Define active_panel
