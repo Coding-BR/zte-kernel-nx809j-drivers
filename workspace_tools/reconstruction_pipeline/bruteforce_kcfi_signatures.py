@@ -147,6 +147,25 @@ def zlog_signatures() -> list[str]:
     return signatures
 
 
+def control_signatures() -> list[str]:
+    return [
+        f"void ({parameter})"
+        for parameter in (
+            "bool",
+            "char",
+            "signed char",
+            "unsigned char",
+            "u8",
+            "int",
+            "signed int",
+            "unsigned int",
+            "u32",
+            "long",
+            "unsigned long",
+        )
+    ]
+
+
 def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
     lines = [TYPE_PREAMBLE]
     mapping: dict[str, str] = {}
@@ -167,7 +186,9 @@ def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("family", choices=("touch", "game", "string", "zlog"))
+    parser.add_argument(
+        "family", choices=("touch", "game", "string", "zlog", "control")
+    )
     parser.add_argument("target_type_id", help="KCFI hash such as 0xeb35dc7c")
     parser.add_argument("--engineering-root", type=Path,
                         default=Path(__file__).resolve().parents[1])
@@ -192,8 +213,10 @@ def main() -> int:
         signatures = game_signatures()
     elif args.family == "string":
         signatures = string_signatures()
-    else:
+    elif args.family == "zlog":
         signatures = zlog_signatures()
+    else:
+        signatures = control_signatures()
     source, mapping = render_probe(signatures)
     source_path.write_text(source, encoding="ascii")
     (work_dir / "Makefile").write_text(

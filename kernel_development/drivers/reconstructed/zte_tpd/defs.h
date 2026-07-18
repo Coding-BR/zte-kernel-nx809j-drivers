@@ -504,7 +504,9 @@ extern void tpd_suspend_work(struct work_struct *work);
 extern void ufp_report_lcd_state_work(struct work_struct *work);
 extern void tp_ghost_check_work(struct work_struct *work);
 extern void ufp_single_tap_work(struct work_struct *work);
-extern __int64 __fastcall tpd_report_uevent(unsigned __int8 a1, __int64 a2, __int64 a3);
+extern void set_lcd_reset_processing(unsigned char value);
+extern void tpd_report_uevent(unsigned char value);
+extern void tpd_reset_gpio_output(unsigned char value);
 
 
 // Stock void(void) callback family recovered from KCFI.

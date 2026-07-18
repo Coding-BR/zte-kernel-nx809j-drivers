@@ -2,22 +2,19 @@
 
 - Status: `INCOMPLETE`
 - Stock SHA-256: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- Candidate SHA-256: `8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`
-- Matched: `248/322` (77.02%)
-- Mismatched: `74`
+- Candidate SHA-256: `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`
+- Matched: `251/322` (77.95%)
+- Mismatched: `71`
 - Missing candidate records: `0`
 - Stock records excluded by preamble recovery: `46`
 
-The current 173-function direct report is a selected surface. This report is the
-authoritative inventory for the complete recoverable stock KCFI surface. The
-selected surface passes `173/173`; the eight recovered callback families pass
-`143/143`.
+The existing 151-function direct report is a selected callback surface. This report
+is the authoritative inventory for the complete recoverable stock KCFI surface.
 
 ## Largest Mismatch Families
 
 | Stock type ID | Functions |
 | --- | ---: |
-| `0xa2fce979` | 3 |
 | `0x1e333d0b` | 2 |
 | `0x28a4201f` | 2 |
 | `0x2af6cdbb` | 2 |
@@ -47,6 +44,7 @@ selected surface passes `173/173`; the eight recovered callback families pass
 | `0x454a91cb` | 1 |
 | `0x4b2750f2` | 1 |
 | `0x56ccd541` | 1 |
+| `0x5f30282b` | 1 |
 
 ## Rule
 

@@ -1,15 +1,14 @@
-__int64 __fastcall tpd_reset_gpio_output(__int64 result)
-{
-  __int64 (__fastcall *v1)(_QWORD); // x8
-  __int64 v2; // x0
+typedef void (*tpd_gpio_output_fn)(unsigned char value);
 
-  v1 = *(__int64 (__fastcall **)(_QWORD))(tpd_cdev + 3320);
-  if ( v1 )
+void tpd_reset_gpio_output(unsigned char value)
+{
+  tpd_gpio_output_fn callback; // x8
+
+  callback = *(tpd_gpio_output_fn *)(tpd_cdev + 3320);
+  if ( callback )
   {
-    v2 = result & 1;
-    if ( *((_DWORD *)v1 - 1) != -1560483463 )
+    if ( *((_DWORD *)callback - 1) != (unsigned int)-1560483463 )
       __break(0x8228u);
-    return v1(v2);
+    callback(value & 1);
   }
-  return result;
 }

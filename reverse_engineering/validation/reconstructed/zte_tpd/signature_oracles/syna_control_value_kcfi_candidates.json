@@ -1,0 +1,76 @@
+{
+  "build": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_bruteforce:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/control",
+      "control_probe.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC [M]  /work/probe/control/control_probe.o\n"
+  },
+  "candidate_count": 11,
+  "extract": {
+    "command": [
+      "python",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\tools\\extract_kcfi.py",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_bruteforce\\control\\control_probe.o",
+      "--output",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_bruteforce\\control\\control_probe.kcfi.json"
+    ],
+    "report": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_bruteforce\\control\\control_probe.kcfi.json",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "family": "control",
+  "generated_utc": "2026-07-18T22:40:10.974812+00:00",
+  "matches": [
+    {
+      "function": "probe_0000",
+      "signature": "void (bool)",
+      "type_id": "0xa2fce979"
+    },
+    {
+      "function": "probe_0001",
+      "signature": "void (char)",
+      "type_id": "0xa2fce979"
+    },
+    {
+      "function": "probe_0003",
+      "signature": "void (unsigned char)",
+      "type_id": "0xa2fce979"
+    },
+    {
+      "function": "probe_0004",
+      "signature": "void (u8)",
+      "type_id": "0xa2fce979"
+    }
+  ],
+  "mode": "offline_kbuild_kcfi_signature_search",
+  "passed": true,
+  "probe_source": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\kcfi_bruteforce\\control\\control_probe.c",
+    "sha256": "6ea24c06cf247df72a99796404d2024eb5bfe1af6d43cac0d531a97dbe7a3dcb",
+    "size": 1474
+  },
+  "schema_version": "1.0",
+  "target_type_id": "0xa2fce979"
+}

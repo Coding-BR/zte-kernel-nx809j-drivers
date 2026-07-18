@@ -1,0 +1,112 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-int-conversion -Wno-pointer-to-int-cast -fsanitize=address,undefined -fno-omit-frame-pointer -I/work/workspace/curated/zte_tpd control_value_harness.c -o build/control_value_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/control_value_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 3,
+    "hardware_paths_exercised": false,
+    "source_files": [
+      "set_lcd_reset_processing.c",
+      "tpd_report_uevent.c",
+      "tpd_reset_gpio_output.c"
+    ]
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_set_lcd_reset_processing\nPASS test_report_single_tap\nPASS test_report_double_tap\nPASS test_report_pen_low_battery\nPASS test_report_unknown_is_log_only\nPASS test_reset_gpio_null_callback\nSUMMARY total=7 passed=7 failed=0\n",
+      "summary": "SUMMARY total=7 passed=7 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_set_lcd_reset_processing",
+        "test_report_single_tap",
+        "test_report_double_tap",
+        "test_report_pen_low_battery",
+        "test_report_unknown_is_log_only",
+        "test_reset_gpio_null_callback"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_set_lcd_reset_processing\nPASS test_report_single_tap\nPASS test_report_double_tap\nPASS test_report_pen_low_battery\nPASS test_report_unknown_is_log_only\nPASS test_reset_gpio_null_callback\nSUMMARY total=7 passed=7 failed=0\n",
+      "summary": "SUMMARY total=7 passed=7 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_set_lcd_reset_processing",
+        "test_report_single_tap",
+        "test_report_double_tap",
+        "test_report_pen_low_battery",
+        "test_report_unknown_is_log_only",
+        "test_reset_gpio_null_callback"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-18T23:25:53.501328+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\control_value_harness.c",
+      "sha256": "ad86b66bcbfa314bcbcde343aa07ef22c79a8855a3b48839239f5dee78e99a11",
+      "size": 4901
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\set_lcd_reset_processing.c",
+      "sha256": "726395e315fe7220ed9565215df38a2e1796c03e5a541fec469abaf056733200",
+      "size": 124
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_report_uevent.c",
+      "sha256": "7429d327f573f68585e21bb1d74837c844ebc2ccbc8beccfd303093316878a2a",
+      "size": 744
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_reset_gpio_output.c",
+      "sha256": "497f6ffca113e7e1f366a8a781a1e2b4c5bc230512b86babd101a305574224ec",
+      "size": 344
+    }
+  ],
+  "limitations": [
+    "The cdev storage, printk, stack-status register and kobject uevent are deterministic host stubs.",
+    "The reset GPIO harness covers the null-callback safety branch; the non-null KCFI callback requires an AArch64 execution context.",
+    "The harness validates recovered offsets, value masks and event selection, not electrical hardware.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or partition operation is performed."
+  ],
+  "mode": "offline_direct_source_control_value_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 7,
+    "failed": [],
+    "passed": [
+      "test_signature_contract",
+      "test_set_lcd_reset_processing",
+      "test_report_single_tap",
+      "test_report_double_tap",
+      "test_report_pen_low_battery",
+      "test_report_unknown_is_log_only",
+      "test_reset_gpio_null_callback"
+    ],
+    "summary": "SUMMARY total=7 passed=7 failed=0"
+  }
+}

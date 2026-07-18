@@ -20,7 +20,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 014_tpd_reset_fw_data_pos_and_size | tpd_reset_fw_data_pos_and_size | 00107f84 | core_logic | tpd_reset_fw_data_pos_and_size.c:tpd_reset_fw_data_pos_and_size | PASS |
 | 015_tpd_proc_deinit | tpd_proc_deinit | 00107fa4 | lifecycle | tpd_proc_deinit.c:tpd_proc_deinit | PASS |
 | 016_zte_touch_pdev_register | zte_touch_pdev_register | 001081c8 | core_logic | zte_touch_pdev_register.c:zte_touch_pdev_register | READY_FOR_IMPLEMENTATION |
-| 017_tpd_report_uevent | tpd_report_uevent | 001082ac | core_logic | tpd_report_uevent.c:tpd_report_uevent | READY_FOR_IMPLEMENTATION |
+| 017_tpd_report_uevent | tpd_report_uevent | 001082ac | core_logic | tpd_report_uevent.c:tpd_report_uevent | PASS |
 | 018_zte_touch_pdev_unregister | zte_touch_pdev_unregister | 001083b4 | core_logic | zte_touch_pdev_unregister.c:zte_touch_pdev_unregister | PASS |
 | 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PASS |
 | 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | READY_FOR_IMPLEMENTATION |
@@ -124,9 +124,9 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state.c:change_tp_state | READY_FOR_IMPLEMENTATION |
 | 119_suspend_tp_need_awake | suspend_tp_need_awake | 0011049c | binding | suspend_tp_need_awake.c:suspend_tp_need_awake | READY_FOR_IMPLEMENTATION |
 | 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | READY_FOR_IMPLEMENTATION |
-| 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing.c:set_lcd_reset_processing | READY_FOR_IMPLEMENTATION |
+| 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing.c:set_lcd_reset_processing | PASS |
 | 122_set_gpio_mode | set_gpio_mode | 00110580 | core_logic | set_gpio_mode.c:set_gpio_mode | READY_FOR_IMPLEMENTATION |
-| 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | READY_FOR_IMPLEMENTATION |
+| 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PASS |
 | 124_ufp_report_lcd_state_delayed_work | ufp_report_lcd_state_delayed_work | 00110624 | async_or_irq | ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work | READY_FOR_IMPLEMENTATION |
 | 125_cancel_report_lcd_state_delayed_work | cancel_report_lcd_state_delayed_work | 0011066c | async_or_irq | cancel_report_lcd_state_delayed_work.c:cancel_report_lcd_state_delayed_work | PASS |
 | 126_tpd_resume_work_init | tpd_resume_work_init | 00110698 | lifecycle | tpd_resume_work_init.c:tpd_resume_work_init | PASS |

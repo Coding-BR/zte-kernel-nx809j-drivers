@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`
-- **Candidato:** `19180232` bytes
+- **Candidato SHA-256:** `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`
+- **Candidato:** `19178960` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -24,13 +24,13 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `173/173`, incluindo as oito familias
+- O8 KCFI da superficie selecionada `176/176`, incluindo as oito familias
   recuperadas `143/143`.
 
 INCOMPLETE:
 
-- O6: `143/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `248/322`;
+- O6: `146/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `251/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -50,6 +50,22 @@ ASAN/UBSAN; apenas essa microtarefa foi promovida. `syna_cdev_process_reports` e
 `syna_dev_process_touch_report` permanecem `READY_FOR_IMPLEMENTATION` ate haver
 um teste direto do payload/parser. A comparacao de assembly estrita e
 `0/3`, documentando divergencia de corpo recompilado e nao equivalencia.
+
+## Checkpoint Control-Value
+
+O lote adicionou `set_lcd_reset_processing`, `tpd_report_uevent` e
+`tpd_reset_gpio_output`. O oraculo KCFI encontrou `void (unsigned char)` para
+as tres funcoes, com type ID `0xa2fce979` para o callback GPIO. O novo
+`control_value_harness_report.json` passou `7/7` casos em duas execucoes
+ASAN/UBSAN, cobrindo offset `tpd_cdev + 0x18`, os quatro valores de uevent e o
+caminho de callback nulo.
+
+Depois da correcao de tipagem do marcador KCFI, dois builds limpos produziram
+o SHA-256 `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`.
+A comparacao de assembly estrita permanece `0/3`: `tpd_report_uevent` foi
+otimizada pelo compilador para uma tabela de saltos, e o shim local de
+`__break` preserva um aviso seguro em vez do breakpoint stock. Esses pontos
+continuam abertos para revisão de fidelidade.
 
 ## Checkpoint Synaptics Config
 
@@ -254,17 +270,17 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`.
+  `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `248/322` matches, `74` divergencias, zero registro
+- Superficie KCFI integral: `251/322` matches, `71` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
-- Doze harnesses host: todos PASS, totalizando 123 casos nominais.
-- Microtarefas: `143 PASS`, `224 READY`, uma promocao nova neste checkpoint e zero
+- Treze harnesses host: todos PASS, totalizando 130 casos nominais.
+- Microtarefas: `146 PASS`, `221 READY`, tres promocoes novas neste checkpoint e zero
   PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
 - Suite focal dos gates afetados: `39/39 PASS`.
@@ -291,6 +307,10 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 - `../../validation/zte_tpd/kcfi_callback_families.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_syna_report_dispatch.json`
 - `../../validation/zte_tpd/report_dispatch_harness_report.json`
+- `../../validation/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json`
+- `../../validation/zte_tpd/control_value_harness_report.json`
+- `../../validation/zte_tpd/assembly_comparison_syna_control_value_final.json`
+- `../../validation/zte_tpd/signature_oracles/syna_control_value_kcfi_candidates.json`
 - `../../validation/zte_tpd/microtask_progress.json`
 - `../../validation/zte_tpd/module_decomposition_audit.json`
 - `../../validation/zte_tpd/parity_report.json`

@@ -19,11 +19,11 @@ equivalencia funcional muito mais exigente que a simples compilacao do `.ko`.
 - Os `359` simbolos de texto stock estao presentes no candidato.
 - Os imports KMI sao exatamente `152/152`.
 - Dois builds limpos produziram o candidato canonico
-  `8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`.
-- A superficie selecionada possui `173/173` funcoes com o mesmo type ID KCFI e
+  `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`.
+- A superficie selecionada possui `176/176` funcoes com o mesmo type ID KCFI e
   secao ELF do stock; nela, as oito familias recuperadas somam `143/143`.
-- Na superficie integral recuperavel, `248/322` funcoes possuem o mesmo Type ID
-  KCFI; restam `74` assinaturas divergentes e nenhuma funcao candidata ausente.
+- Na superficie integral recuperavel, `251/322` funcoes possuem o mesmo Type ID
+  KCFI; restam `71` assinaturas divergentes e nenhuma funcao candidata ausente.
 
 O mapa e classificado como `structural_identity_only`. Ele nao converte
 automaticamente rastreabilidade em equivalencia semantica.
@@ -70,7 +70,7 @@ headers configurados, mas nao comportamento eletrico.
 
 ## Cobertura Dinamica Offline
 
-Os doze harnesses locais registram `123` casos PASS. Eles cobrem callbacks de
+Os treze harnesses locais registram `130` casos PASS. Eles cobrem callbacks de
 firmware, proc feature/scalar/special, work/void, zlog, validadores restantes e
 as rotinas TCM de reset/delay, dados CS/MTP e configuracao estatica. O harness
 mais recente verifica a ABI comum
@@ -90,10 +90,15 @@ ausencia de workqueue, enfileiramento unico e idempotencia. Os callbacks
 fixture direto de payload/parser; seus type IDs KCFI estao corretos, mas isso nao
 substitui um teste comportamental.
 
+O harness `control_value_harness_report.json` verifica as tres funcoes de valor,
+os offsets de `tpd_cdev`, a selecao dos quatro uevents e o callback GPIO nulo.
+O caminho nao nulo do callback continua exigindo execucao AArch64 para validar
+o preambulo KCFI sem depender de um fixture host artificial.
+
 Os harnesses usam stubs controlados e nao reproduzem IRQ real, temporizacao do
 scheduler, SPI fisico, energia, display ou suspend/resume do aparelho. O
-manifesto possui `143` microtarefas `PASS`, cada uma com hashes de build, KCFI e
-teste, e `224` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
+manifesto possui `146` microtarefas `PASS`, cada uma com hashes de build, KCFI e
+teste, e `221` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
 chamado de `100%`.
 
 ## Registros Historicos de Hardware
@@ -107,6 +112,6 @@ janela temporal, logs completos e rollback controlado.
 ## Conclusao Atual
 
 O `zte_tpd` e um candidato estaticamente verificavel, reprodutivel e alinhado na
-superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 224
-microtarefas com teste direto, 74 assinaturas KCFI, revisao independente e a
+superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 221
+microtarefas com teste direto, 71 assinaturas KCFI, revisao independente e a
 validacao controlada em hardware.
