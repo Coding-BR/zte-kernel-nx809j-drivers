@@ -19,11 +19,11 @@ equivalencia funcional muito mais exigente que a simples compilacao do `.ko`.
 - Os `359` simbolos de texto stock estao presentes no candidato.
 - Os imports KMI sao exatamente `152/152`.
 - Dois builds limpos produziram o candidato canonico
-  `2befd21fc877b1083eb805e709c49690266cf5f483154dc535af36a02839fdc9`.
-- A superficie selecionada possui `164/164` funcoes com o mesmo type ID KCFI e
+  `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`.
+- A superficie selecionada possui `167/167` funcoes com o mesmo type ID KCFI e
   secao ELF do stock; nela, as oito familias recuperadas somam `143/143`.
-- Na superficie integral recuperavel, `239/322` funcoes possuem o mesmo Type ID
-  KCFI; restam `83` assinaturas divergentes e nenhuma funcao candidata ausente.
+- Na superficie integral recuperavel, `242/322` funcoes possuem o mesmo Type ID
+  KCFI; restam `80` assinaturas divergentes e nenhuma funcao candidata ausente.
 
 O mapa e classificado como `structural_identity_only`. Ele nao converte
 automaticamente rastreabilidade em equivalencia semantica.
@@ -69,19 +69,19 @@ headers configurados, mas nao comportamento eletrico.
 
 ## Cobertura Dinamica Offline
 
-Os nove harnesses locais registram `86` casos PASS. Eles cobrem callbacks de
+Os dez harnesses locais registram `106` casos PASS. Eles cobrem callbacks de
 firmware, proc feature/scalar/special, work/void, zlog, validadores restantes e
-as rotinas TCM de reset/delay e dados CS/MTP. O harness CS/MTP verifica em
-compile time a ABI comum
-`int (struct tcm_dev *, char *, unsigned int, unsigned int, unsigned int)` e
-exercita contratos de entrada, propagacao de falha de setup, selecao de delay,
-limpeza do estado ocupado e retorno ao modo de firmware. Os caminhos de sucesso
-de leitura e gravacao de flash permanecem fora do teste host.
+as rotinas TCM de reset/delay, dados CS/MTP e configuracao estatica. O harness
+mais recente verifica a ABI comum
+`int (struct tcm_dev *, char *, unsigned int, unsigned int)` e exercita os seis
+argumentos de `write_message`, delays explicito/default/suprimido, copia de
+resposta, limites, alocacao, falhas e cleanup. Transporte SPI e resposta real do
+firmware permanecem fora do teste host.
 
 Os harnesses usam stubs controlados e nao reproduzem IRQ real, temporizacao do
 scheduler, SPI fisico, energia, display ou suspend/resume do aparelho. O
-manifesto possui `136` microtarefas `PASS`, cada uma com hashes de build, KCFI e
-teste, e `231` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
+manifesto possui `139` microtarefas `PASS`, cada uma com hashes de build, KCFI e
+teste, e `228` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
 chamado de `100%`.
 
 ## Registros Historicos de Hardware
@@ -95,6 +95,6 @@ janela temporal, logs completos e rollback controlado.
 ## Conclusao Atual
 
 O `zte_tpd` e um candidato estaticamente verificavel, reprodutivel e alinhado na
-superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 231
-microtarefas com teste direto, 83 assinaturas KCFI, revisao independente e a
+superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 228
+microtarefas com teste direto, 80 assinaturas KCFI, revisao independente e a
 validacao controlada em hardware.

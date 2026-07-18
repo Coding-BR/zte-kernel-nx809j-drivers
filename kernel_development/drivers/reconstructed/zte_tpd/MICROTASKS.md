@@ -282,8 +282,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 276_syna_tcm_switch_fw_mode | syna_tcm_switch_fw_mode | 001226ec | core_logic | syna_tcm_switch_fw_mode.c:syna_tcm_switch_fw_mode | READY_FOR_IMPLEMENTATION |
 | 277_syna_tcm_get_boot_info | syna_tcm_get_boot_info | 001229c8 | core_logic | syna_tcm_get_boot_info.c:syna_tcm_get_boot_info | READY_FOR_IMPLEMENTATION |
 | 278_syna_tcm_get_app_info | syna_tcm_get_app_info | 00122c08 | core_logic | syna_tcm_get_app_info.c:syna_tcm_get_app_info | READY_FOR_IMPLEMENTATION |
-| 279_syna_tcm_get_static_config | syna_tcm_get_static_config | 00122eac | core_logic | syna_tcm_get_static_config.c:syna_tcm_get_static_config | READY_FOR_IMPLEMENTATION |
-| 280_syna_tcm_set_static_config | syna_tcm_set_static_config | 001230dc | core_logic | syna_tcm_set_static_config.c:syna_tcm_set_static_config | READY_FOR_IMPLEMENTATION |
+| 279_syna_tcm_get_static_config | syna_tcm_get_static_config | 00122eac | core_logic | syna_tcm_get_static_config.c:syna_tcm_get_static_config | PASS |
+| 280_syna_tcm_set_static_config | syna_tcm_set_static_config | 001230dc | core_logic | syna_tcm_set_static_config.c:syna_tcm_set_static_config | PASS |
 | 281_syna_tcm_get_dynamic_config | syna_tcm_get_dynamic_config | 00123228 | core_logic | syna_tcm_get_dynamic_config.c:syna_tcm_get_dynamic_config | READY_FOR_IMPLEMENTATION |
 | 282_syna_tcm_set_dynamic_config | syna_tcm_set_dynamic_config | 001233b4 | core_logic | syna_tcm_set_dynamic_config.c:syna_tcm_set_dynamic_config | READY_FOR_IMPLEMENTATION |
 | 283_syna_tcm_set_game_partition_config | syna_tcm_set_game_partition_config | 00123518 | core_logic | syna_tcm_set_game_partition_config.c:syna_tcm_set_game_partition_config | PASS |
@@ -320,7 +320,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 314_syna_pal_mem_free | syna_pal_mem_free | 001284c0 | core_logic | syna_pal_mem_free.c:syna_pal_mem_free | READY_FOR_IMPLEMENTATION |
 | 315_syna_tcm_get_touch_data | syna_tcm_get_touch_data | 00128514 | core_logic | syna_tcm_get_touch_data.c:syna_tcm_get_touch_data | READY_FOR_IMPLEMENTATION |
 | 316_syna_tcm_parse_touch_report | syna_tcm_parse_touch_report | 0012860c | core_logic | syna_tcm_parse_touch_report.c:syna_tcm_parse_touch_report | READY_FOR_IMPLEMENTATION |
-| 317_syna_tcm_set_touch_report_config | syna_tcm_set_touch_report_config | 0012a264 | core_logic | syna_tcm_set_touch_report_config.c:syna_tcm_set_touch_report_config | READY_FOR_IMPLEMENTATION |
+| 317_syna_tcm_set_touch_report_config | syna_tcm_set_touch_report_config | 0012a264 | core_logic | syna_tcm_set_touch_report_config.c:syna_tcm_set_touch_report_config | PASS |
 | 318_syna_pal_mem_cpy | syna_pal_mem_cpy | 0012a478 | core_logic | syna_pal_mem_cpy_1.c:syna_pal_mem_cpy_1 | READY_FOR_IMPLEMENTATION |
 | 319_syna_pal_mem_free | syna_pal_mem_free | 0012a4ec | core_logic | syna_pal_mem_free_0.c:syna_pal_mem_free_0 | READY_FOR_IMPLEMENTATION |
 | 320_syna_tcm_preserve_touch_report_config | syna_tcm_preserve_touch_report_config | 0012a53c | core_logic | syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config | PASS |

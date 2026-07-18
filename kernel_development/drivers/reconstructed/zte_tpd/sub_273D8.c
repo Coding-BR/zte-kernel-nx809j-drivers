@@ -1,8 +1,7 @@
 #include "defs.h"
 
-extern __int64 syna_tcm_set_static_config(__int64 a1, __int64 a2, __int64 a3, int a4);
-
-__int64 sub_273D8(__int64 a1, __int64 a2, __int64 a3, int a4)
+int sub_273D8(struct tcm_dev *tcm, char *config, unsigned int length,
+             unsigned int delay_ms)
 {
-  return syna_tcm_set_static_config(a1, a2, a3, a4);
+  return syna_tcm_set_static_config(tcm, config, length, delay_ms);
 }

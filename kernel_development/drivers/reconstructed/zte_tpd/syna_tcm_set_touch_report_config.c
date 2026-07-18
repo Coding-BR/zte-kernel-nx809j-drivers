@@ -1,5 +1,11 @@
-__int64 __fastcall syna_tcm_set_touch_report_config(__int64 a1, void *a2, __int64 a3, unsigned int a4)
+int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
+                                     unsigned int length,
+                                     unsigned int delay_ms)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
+  char *a2 = config;
+  unsigned int a3 = length;
+  unsigned int a4 = delay_ms;
   void *v4; // x0
   unsigned int v6; // w22
   __int64 v7; // x19
@@ -19,14 +25,14 @@ __int64 __fastcall syna_tcm_set_touch_report_config(__int64 a1, void *a2, __int6
   __int64 v21; // x2
   int v22; // w20
   void *v23; // x0
-  _DWORD *v24; // x8
+  tcm_write_message_fn v24; // x8
 
   if ( !a1 )
   {
     v4 = unk_3365A;
 LABEL_12:
-    printk(v4, "syna_tcm_set_touch_report_config", a3);
-    return 4294967055LL;
+    printk(v4, "syna_tcm_set_touch_report_config");
+    return -241;
   }
   if ( !a2 || !(_DWORD)a3 )
   {
@@ -36,7 +42,7 @@ LABEL_12:
   if ( *(_BYTE *)(a1 + 9) != 1 )
   {
     printk(unk_36DD4, "syna_tcm_set_touch_report_config", *(unsigned __int8 *)(a1 + 9));
-    return 4294967055LL;
+    return -241;
   }
   if ( !a4 )
   {
@@ -67,8 +73,8 @@ LABEL_17:
   v10 = *(unsigned __int16 *)(a1 + 188);
   if ( (unsigned int)v10 < (unsigned int)a3 )
   {
-    printk(unk_332E4, "syna_tcm_set_touch_report_config", a3);
-    return 4294967055LL;
+    printk(unk_332E4, "syna_tcm_set_touch_report_config", a3, v10);
+    return -241;
   }
   v11 = a2;
   v12 = a3;
@@ -77,10 +83,10 @@ LABEL_17:
   v15 = syna_request_managed_device();
   if ( !v15 )
   {
-    printk(unk_3BE43, "syna_pal_mem_alloc", v16);
+    printk(unk_3BE43, "syna_pal_mem_alloc");
 LABEL_22:
-    printk(unk_351D9, "syna_tcm_set_touch_report_config", v17);
-    return 4294967053LL;
+    printk(unk_351D9, "syna_tcm_set_touch_report_config");
+    return -243;
   }
   v18 = devm_kmalloc(v15, v10, 3520);
   if ( !v18 )
@@ -94,22 +100,16 @@ LABEL_22:
   }
   else
   {
-    v24 = *(_DWORD **)(v14 + 920);
-    if ( *(v24 - 1) != 606091918 )
+    v24 = tcm->write_message;
+    if ( *(_DWORD *)((char *)v24 - 4) != 606091918 )
       __break(0x8228u);
-    v22 = ((__int64 (__fastcall *)(__int64, __int64, __int64, _QWORD, _QWORD, _QWORD))v24)(
-            v14,
-            38,
-            v19,
-            (unsigned int)v10,
-            0,
-            v13);
+    v22 = v24(tcm, 38, (u8 *)v19, (unsigned int)v10, NULL, v13);
     if ( v22 >= 0 )
       v23 = unk_3A63C;
     else
       v23 = unk_373B9;
   }
-  printk(v23, "syna_tcm_set_touch_report_config", v21);
+  printk(v23, "syna_tcm_set_touch_report_config");
   syna_pal_mem_free_0(v19);
-  return (unsigned int)v22;
+  return v22;
 }

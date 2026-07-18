@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `2befd21fc877b1083eb805e709c49690266cf5f483154dc535af36a02839fdc9`
-- **Candidato:** `19167344` bytes
+- **Candidato SHA-256:** `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`
+- **Candidato:** `19173552` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -24,13 +24,13 @@ PASS:
 - O3 exports Ghidra, pseudocodigo e P-Code;
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `164/164`, incluindo as oito familias
+- O8 KCFI da superficie selecionada `167/167`, incluindo as oito familias
   recuperadas `143/143`.
 
 INCOMPLETE:
 
-- O6: `136/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `239/322`;
+- O6: `139/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `242/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -192,20 +192,43 @@ essas quatro mudancas; os quatro wrappers auxiliares `sub_*`, ausentes do stock,
 tambem receberam a ABI correta. O harness direto passou `9/9` contratos, mas os
 caminhos de sucesso de leitura e gravacao da flash permanecem nao exercitados.
 
+## Checkpoint TCM Configuracao Estatica
+
+O lote atual recuperou a ABI comum de tres rotinas de configuracao:
+
+```c
+int syna_tcm_static_config_fn(struct tcm_dev *tcm, char *config,
+                              unsigned int length,
+                              unsigned int delay_ms);
+```
+
+O type ID stock e candidato e `0x135bb445` para:
+
+- `syna_tcm_get_static_config`;
+- `syna_tcm_set_static_config`;
+- `syna_tcm_set_touch_report_config`.
+
+O oraculo compilou `800` candidatos e encontrou 12 grafias equivalentes por
+aliases `char`/`u8` e `unsigned int`/`u32`. O assembly revelou uma perda
+funcional no candidato anterior: `syna_tcm_set_static_config` chamava
+`write_message` sem argumentos. A chamada agora encaminha `tcm`, comando
+`0x22`, buffer, comprimento, resposta nula e delay, e restaura o delay padrao
+de `tcm + 0x20c`. O harness dedicado passou `20/20` contratos offline.
+
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `2befd21fc877b1083eb805e709c49690266cf5f483154dc535af36a02839fdc9`.
+  `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `239/322` matches, `83` divergencias, zero registro
+- Superficie KCFI integral: `242/322` matches, `80` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
-- Nove harnesses host: todos PASS, totalizando 86 casos nominais.
-- Microtarefas: `136 PASS`, `231 READY`, quatro promocoes novas e zero PASS obsoleto.
+- Dez harnesses host: todos PASS, totalizando 106 casos nominais.
+- Microtarefas: `139 PASS`, `228 READY`, tres promocoes novas e zero PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
 - Suite focal dos gates afetados: `39/39 PASS`.
 - Suite global: `105/106 PASS`; a unica falha e externa a este lote e registra
@@ -221,6 +244,7 @@ caminhos de sucesso de leitura e gravacao da flash permanecem nao exercitados.
 - `../../validation/zte_tpd/driver_audit_kcfi_testing_bound.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_tcm_delay.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_tcm_flash_data.json`
+- `../../validation/zte_tpd/driver_audit_kcfi_tcm_static_config.json`
 - `../../validation/zte_tpd/offline_reconstruction_audit.json`
 - `../../validation/zte_tpd/header_layout_probe.json`
 - `../../validation/zte_tpd/abi_validation.json`
@@ -238,6 +262,7 @@ caminhos de sucesso de leitura e gravacao da flash permanecem nao exercitados.
 - `../../validation/zte_tpd/signature_oracles/testing_bound_callback_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/tcm_delay_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/tcm_flash_data_kcfi_report.json`
+- `../../validation/zte_tpd/signature_oracles/tcm_static_config_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
 

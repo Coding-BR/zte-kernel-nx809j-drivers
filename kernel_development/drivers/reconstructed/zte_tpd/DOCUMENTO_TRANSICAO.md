@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `2befd21fc877b1083eb805e709c49690266cf5f483154dc535af36a02839fdc9`
+Candidato vinculado: `34877123f6b30268189d3bbaf3e849cc78311941ceb558ce64b5737e425183bd`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -96,6 +96,14 @@ int syna_tcm_update_cs_config(struct tcm_dev *tcm, char *data,
 int syna_tcm_update_mtp_data(struct tcm_dev *tcm, char *data,
                              unsigned int length, unsigned int offset,
                              unsigned int delay_mode);
+
+int syna_tcm_get_static_config(struct tcm_dev *tcm, char *config,
+                               unsigned int length, unsigned int delay_ms);
+int syna_tcm_set_static_config(struct tcm_dev *tcm, char *config,
+                               unsigned int length, unsigned int delay_ms);
+int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
+                                      unsigned int length,
+                                      unsigned int delay_ms);
 ```
 
 Os registros correspondentes devem manter os tipos nativos:
@@ -277,8 +285,8 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 136 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-231 tarefas `READY_FOR_IMPLEMENTATION`. Nove relatorios de harness sustentam o
-subconjunto testado com 86 casos. A superficie KCFI integral esta em `239/322`;
+O estado atual possui 139 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+228 tarefas `READY_FOR_IMPLEMENTATION`. Dez relatorios de harness sustentam o
+subconjunto testado com 106 casos. A superficie KCFI integral esta em `242/322`;
 portanto,
 nenhuma promocao global para `100%` e permitida.
