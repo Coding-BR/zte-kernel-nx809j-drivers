@@ -46,7 +46,8 @@ int tpd_set_display_rotation(struct ztp_device *cdev, int a2)
       }
     }
   }
-  if ( (syna_dev_set_display_rotation(v4, *(_DWORD *)(a1 + 16), v8) & 0x80000000) != 0 )
+  if ( (syna_dev_set_display_rotation((struct syna_tcm *)v4,
+                                      *(_DWORD *)(a1 + 16), v8) & 0x80000000) != 0 )
     printk(unk_36936, "tpd_set_display_rotation", v9);
   return *(unsigned int *)(a1 + 16);
 }

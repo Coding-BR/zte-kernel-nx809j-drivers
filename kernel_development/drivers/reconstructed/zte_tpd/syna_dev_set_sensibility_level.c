@@ -1,11 +1,15 @@
-__int64 __fastcall syna_dev_set_sensibility_level(_QWORD *a1, int a2, unsigned int a3)
+int syna_dev_set_sensibility_level(struct syna_tcm *tcm, int value,
+                                    unsigned int delay_ms)
 {
+  _QWORD *a1 = (_QWORD *)tcm;
+  int a2 = value;
+  unsigned int a3 = delay_ms;
   void *v6; // x0
   __int64 result; // x0
 
   printk(unk_3A85B, "syna_dev_set_sensibility_level", "syna_dev_set_sensibility_level");
   if ( !a1 )
-    return 4294967274LL;
+    return -22;
   v6 = unk_3BDBF;
   if ( a2 <= 1 )
   {

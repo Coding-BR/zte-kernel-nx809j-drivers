@@ -45,7 +45,7 @@ void syna_work_charger_detect_work(struct work_struct *work)
   v9 = *(_DWORD *)(v5 - 164);
   if ( v9 == 1 && (syna_work_charger_detect_work_status & 1) != 0 )
   {
-    result = syna_dev_set_charger_mode(v3, 0, v6);
+    result = syna_dev_set_charger_mode((struct syna_tcm *)v3, 0, v6);
 LABEL_16:
     syna_work_charger_detect_work_status = 0;
     goto LABEL_2;

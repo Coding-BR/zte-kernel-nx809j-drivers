@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `cb57baecee9543e164fa44945e3c3d318c7fbbde805c19b73732b5044d2d4b5c`
+Candidato vinculado: `d0c263c5a8340801818433e2499592a56945903fdcb1c1926980532445f4e1a9`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -38,6 +38,23 @@ struct testing_item *syna_tcm_get_testing_0001(void);
 int syna_tcm_testing_build_id(struct tcm_dev *tcm,
                               struct testing_item *item,
                               bool dual_firmware);
+
+int syna_dev_get_frame_data(struct syna_tcm *tcm, int value,
+                            unsigned int delay_ms);
+int syna_dev_set_charger_mode(struct syna_tcm *tcm, int value,
+                              unsigned int delay_ms);
+int syna_dev_set_display_rotation(struct syna_tcm *tcm, int value,
+                                  unsigned int delay_ms);
+int syna_dev_set_follow_hand_level(struct syna_tcm *tcm, int value,
+                                   unsigned int delay_ms);
+int syna_dev_set_play_game(struct syna_tcm *tcm, int value,
+                           unsigned int delay_ms);
+int syna_dev_set_sensibility_level(struct syna_tcm *tcm, int value,
+                                   unsigned int delay_ms);
+int syna_dev_set_stability_level(struct syna_tcm *tcm, int value,
+                                 unsigned int delay_ms);
+int syna_dev_set_tp_report_rate(struct syna_tcm *tcm, int value,
+                                unsigned int delay_ms);
 ```
 
 Os registros correspondentes devem manter os tipos nativos:
@@ -54,6 +71,12 @@ KCFI e call sites. Os handlers usam diretamente as assinaturas nativas
 `proc_read`/`proc_write`. Restam 2 wrappers de assinatura; cada um so
 pode ser removido depois da microtarefa da funcao alvo comprovar o ABI e os
 efeitos observaveis.
+
+As oito funcoes `syna_dev_*` acima compartilham o KCFI stock `0x1eb3b73d`.
+Um oraculo local compilou 768 candidatos e recuperou a forma normalizada
+`int (struct syna_tcm *, int, unsigned int)`. O header
+`zte_tpd_syna_device_api.h` e a unica declaracao publica local desse contrato;
+nao reintroduza prototipos decompilados `_QWORD *` ou retorno `__int64`.
 
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.
@@ -182,5 +205,5 @@ Ordem de prioridade recomendada para os proximos lotes:
 
 O estado atual possui 123 tarefas `PASS`, com build, KCFI e teste hash-bound, e
 244 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
-subconjunto testado;
-logo, nenhuma promocao global para `100%` e permitida.
+subconjunto testado. A superficie KCFI integral esta em `207/322`; portanto,
+nenhuma promocao global para `100%` e permitida.

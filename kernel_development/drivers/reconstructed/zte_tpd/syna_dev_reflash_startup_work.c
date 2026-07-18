@@ -28,7 +28,8 @@ void syna_dev_reflash_startup_work(struct work_struct *work)
         syna_tpd_register_fw_class(a1 - 968);
         v7 = syna_dev_set_screen_on_fp_mode((_QWORD *)(a1 - 968), 0, v6);
         printk(unk_3BEE4, "syna_dev_reflash_startup_work", v7);
-        syna_dev_set_tp_report_rate((_QWORD *)(a1 - 968), *(_DWORD *)(a1 + 560), 0);
+        syna_dev_set_tp_report_rate((struct syna_tcm *)(a1 - 968),
+                                    *(_DWORD *)(a1 + 560), 0);
         printk(unk_3A2DA, "syna_dev_reflash_startup_work", *(unsigned int *)(a1 + 560));
         pm_relax(*(_QWORD *)(a1 - 960) + 16LL);
         return;

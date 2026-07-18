@@ -1,5 +1,9 @@
-__int64 __fastcall syna_dev_set_display_rotation(_QWORD *a1, unsigned int a2, unsigned int a3)
+int syna_dev_set_display_rotation(struct syna_tcm *tcm, int value,
+                                  unsigned int delay_ms)
 {
+  _QWORD *a1 = (_QWORD *)tcm;
+  unsigned int a2 = (unsigned int)value;
+  unsigned int a3 = delay_ms;
   unsigned int v6; // w22
   unsigned int v7; // w23
   __int64 result; // x0
@@ -7,7 +11,7 @@ __int64 __fastcall syna_dev_set_display_rotation(_QWORD *a1, unsigned int a2, un
   v6 = *((_DWORD *)a1 + 387);
   printk(unk_38188, "syna_dev_set_display_rotation", a2);
   if ( !a1 )
-    return 4294967274LL;
+    return -22;
   if ( v6 )
     v7 = 3;
   else

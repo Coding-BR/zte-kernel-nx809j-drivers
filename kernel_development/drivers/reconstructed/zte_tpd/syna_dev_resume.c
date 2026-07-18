@@ -184,21 +184,28 @@ LABEL_44:
     printk(unk_3B058, "syna_dev_set_screen_on_fp_mode", v17);
     printk(unk_354E1, "syna_dev_resume", v18);
   }
-  if ( syna_usb_detect_flag == 1 && (unsigned int)syna_dev_set_charger_mode(v3, 1u, v5) )
+  if ( syna_usb_detect_flag == 1 &&
+       (unsigned int)syna_dev_set_charger_mode((struct syna_tcm *)v3, 1u, v5) )
     printk(unk_3D102, "syna_dev_resume", v19);
-  syna_dev_set_display_rotation(v3, *((_DWORD *)v3 + 386), v5);
+  syna_dev_set_display_rotation((struct syna_tcm *)v3,
+                                *((_DWORD *)v3 + 386), v5);
   if ( *((_DWORD *)v3 + 375) )
   {
-    if ( (unsigned int)syna_dev_set_play_game(v3, 1u, v5) )
+    if ( (unsigned int)syna_dev_set_play_game((struct syna_tcm *)v3, 1u, v5) )
       printk(unk_34708, "syna_dev_resume", v21);
-    syna_dev_set_tp_report_rate(v3, *((_DWORD *)v3 + 382), v5);
-    syna_dev_set_sensibility_level(v3, *((_DWORD *)v3 + 383), v5);
-    syna_dev_set_follow_hand_level(v3, *((_DWORD *)v3 + 384), v5);
-    v20 = syna_dev_set_stability_level(v3, *((_DWORD *)v3 + 385), v5);
+    syna_dev_set_tp_report_rate((struct syna_tcm *)v3,
+                                *((_DWORD *)v3 + 382), v5);
+    syna_dev_set_sensibility_level((struct syna_tcm *)v3,
+                                   *((_DWORD *)v3 + 383), v5);
+    syna_dev_set_follow_hand_level((struct syna_tcm *)v3,
+                                  *((_DWORD *)v3 + 384), v5);
+    v20 = syna_dev_set_stability_level((struct syna_tcm *)v3,
+                                       *((_DWORD *)v3 + 385), v5);
   }
   else
   {
-    v20 = syna_dev_set_tp_report_rate(v3, *((_DWORD *)v3 + 382), v5);
+    v20 = syna_dev_set_tp_report_rate((struct syna_tcm *)v3,
+                                      *((_DWORD *)v3 + 382), v5);
   }
   v22 = *((_DWORD *)v3 + 381);
   v23 = *((unsigned int *)v3 + 364);

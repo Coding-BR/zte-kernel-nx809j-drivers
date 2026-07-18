@@ -24,7 +24,8 @@ int tpd_set_play_game(struct ztp_device *cdev, int a2)
       else
       {
         *(_DWORD *)(v4 + 1500) = a2;
-        if ( (syna_dev_set_play_game((_QWORD *)v4, a2, v7) & 0x80000000) == 0 )
+        if ( (syna_dev_set_play_game((struct syna_tcm *)v4,
+                                     a2, v7) & 0x80000000) == 0 )
           return *(unsigned int *)(a1 + 16);
         v9 = unk_34BC7;
       }

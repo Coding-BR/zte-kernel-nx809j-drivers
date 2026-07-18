@@ -33,6 +33,7 @@
 
 #include "zte_tpd_tcm_layout.h"
 #include "zte_tpd_testing_layout.h"
+#include "zte_tpd_syna_device_api.h"
 
 #undef _inline_copy_from_user
 

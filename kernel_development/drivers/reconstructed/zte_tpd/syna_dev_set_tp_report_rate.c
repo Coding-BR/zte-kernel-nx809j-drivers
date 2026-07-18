@@ -1,12 +1,16 @@
-__int64 __fastcall syna_dev_set_tp_report_rate(_QWORD *a1, int a2, unsigned int a3)
+int syna_dev_set_tp_report_rate(struct syna_tcm *tcm, int value,
+                                unsigned int delay_ms)
 {
+  _QWORD *a1 = (_QWORD *)tcm;
+  int a2 = value;
+  unsigned int a3 = delay_ms;
   __int64 result; // x0
   __int64 v7; // x2
   void *v8; // x0
 
   printk(unk_3A85B, "syna_dev_set_tp_report_rate", "syna_dev_set_tp_report_rate");
   if ( !a1 )
-    return 4294967274LL;
+    return -22;
   if ( a2 <= 1 )
   {
     if ( !a2 )

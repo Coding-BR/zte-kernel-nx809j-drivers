@@ -25,7 +25,8 @@ int tpd_set_follow_hand_level(struct ztp_device *cdev, int a2)
     *((_DWORD *)v3 + 384) = v8;
     if ( v7 == 1 )
     {
-      if ( (syna_dev_set_follow_hand_level(v3, v8, v6) & 0x80000000) == 0 )
+      if ( (syna_dev_set_follow_hand_level((struct syna_tcm *)v3,
+                                           v8, v6) & 0x80000000) == 0 )
         return 0;
       v10 = unk_3585A;
     }

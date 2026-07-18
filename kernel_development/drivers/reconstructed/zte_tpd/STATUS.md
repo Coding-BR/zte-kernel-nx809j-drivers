@@ -1,17 +1,18 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-16
+## Estado Atual - 2026-07-18
 
 - **Classificacao do build:** `static_verified`
-- **Veredito do protocolo offline:** `INCOMPLETE` (`8/10` gates PASS)
+- **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d`
-- **Candidato:** `16245104` bytes
+- **Candidato SHA-256:** `d0c263c5a8340801818433e2499592a56945903fdcb1c1926980532445f4e1a9`
+- **Candidato:** `18287672` bytes
 - **Teste em hardware desta revisao:** nao executado
 
-`static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
-significa equivalencia funcional integral nem validacao de hardware.
+`static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
+estrutural. Nao significa equivalencia semantica integral nem validacao de
+hardware.
 
 ## Gates Offline
 
@@ -24,66 +25,74 @@ PASS:
 - O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
 - O5 ABI/layout com probe compilado no Clang `r536225`;
 - O8 KCFI da superficie selecionada `151/151`, incluindo as oito familias
-  recuperadas `143/143`;
-- O8/O9 build duplo, KMI e paridade estatica.
+  anteriores `143/143`.
 
 INCOMPLETE:
 
-- O6: `68/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O6: `123/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `207/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
 
+## Checkpoint Synaptics Config
+
+O lote atual recuperou no Clang/KCFI a assinatura comum de oito funcoes:
+
+```c
+int syna_dev_*(struct syna_tcm *tcm, int value,
+               unsigned int delay_ms);
+```
+
+O type ID stock e candidato agora e `0x1eb3b73d` para:
+
+- `syna_dev_get_frame_data`;
+- `syna_dev_set_charger_mode`;
+- `syna_dev_set_display_rotation`;
+- `syna_dev_set_follow_hand_level`;
+- `syna_dev_set_play_game`;
+- `syna_dev_set_sensibility_level`;
+- `syna_dev_set_stability_level`;
+- `syna_dev_set_tp_report_rate`.
+
+O oraculo compilou `768` candidatos e encontrou quatro grafias equivalentes
+por typedef, todas normalizadas para a assinatura acima. P-Code, assembly e
+call sites confirmam tres argumentos. A comparacao entre checkpoints detectou
+exatamente oito mudancas KCFI, todas `MISMATCH -> MATCH`, sem regressao.
+
 ## Resultados Medidos
 
-- Dois builds completamente limpos produziram o mesmo SHA-256 e tamanho.
+- Dois builds completamente limpos produziram o mesmo SHA-256
+  `d0c263c5a8340801818433e2499592a56945903fdcb1c1926980532445f4e1a9`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
-- Aliases, namespaces, vermagic e arquitetura AArch64 ET_REL: PASS.
+- Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
-- O candidato possui `172` simbolos de texto adicionais documentados: 131
-  subrotinas do decompilador, 22 wrappers de assinatura, 9 duplicatas renomeadas
-  e 10 helpers diversos.
-- Harnesses diretos: `37/37` testes PASS sobre 68 funcoes distintas.
-- O harness `work/void` passou duas execucoes consecutivas com ASan/UBSan:
-  `10/10` cenarios sobre 30 funcoes, sem erro de memoria ou comportamento
-  indefinido detectado.
-- O verificador das microtarefas reporta zero falhas de hash ou evidencia nas
-  68 tarefas PASS; suas 299 pendencias correspondem apenas ao estado
-  `READY_FOR_IMPLEMENTATION`.
-- Oito familias KCFI completas: firmware/estado, proc read/write, workqueue e
-  `void(void)`, totalizando `143/143` callbacks.
-- Os 63 wrappers artificiais de proc foram removidos; as tabelas `proc_ops`
-  apontam diretamente para os handlers com ABI stock.
-- O lote `work/void` promoveu 30 funcoes por evidencia cruzada de fonte, build,
-  KCFI e teste. Os sete callbacks `work_struct` complexos permanecem para um
-  fixture CFI-aware; os 64 handlers proc exigem harnesses comportamentais
-  separados antes de qualquer promocao.
-
-## Correcao do Platform Device
-
-A leitura do ELF e assembly stock refutou a solucao historica baseada em
-`platform_device_register_simple()` e `platform_device_put()`:
-
-- o stock registra a estrutura estatica `syna_spi_device` com
-  `platform_device_register()`;
-- `sizeof(syna_spi_device)` no ELF stock e `0x3f0`;
-- o callback `dev.release` fica em `syna_spi_device + 0x338`;
-- a falha de `platform_device_add()` chama o callback tipado com KCFI
-  `0x6c81b8c8` e argumento `&pdev->dev`;
-- o candidato atual reproduz esse fluxo e remove os dois imports artificiais.
+- O candidato possui `151` simbolos de texto adicionais classificados: 131
+  subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
+  e 9 helpers diversos.
+- Superficie KCFI integral: `207/322` matches, `115` divergencias, zero registro
+  candidato ausente e `46` preambulos stock excluidos para revisao separada.
+- Sete harnesses ASAN/UBSAN: todos PASS, totalizando 60 casos nominais.
+- Microtarefas: `123 PASS`, `244 READY`, zero promocao nova e zero PASS obsoleto.
+- Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
+- Suite focal dos validadores: `28/28 PASS`.
+- Suite global: `105/106 PASS`; a unica falha e externa a este lote e registra
+  divergencia entre o config userdebug e `environment.lock.json`.
 
 ## Evidencia Autoritativa
 
 - `../../validation/zte_tpd/driver_audit_static_final.json`
+- `../../validation/zte_tpd/driver_audit_kcfi_syna_dev_config.json`
 - `../../validation/zte_tpd/offline_reconstruction_audit.json`
 - `../../validation/zte_tpd/header_layout_probe.json`
 - `../../validation/zte_tpd/abi_validation.json`
 - `../../validation/zte_tpd/kcfi_direct_surface_final_comparison.json`
+- `../../validation/zte_tpd/kcfi_full_surface.json`
 - `../../validation/zte_tpd/kcfi_callback_families.json`
 - `../../validation/zte_tpd/microtask_progress.json`
-- `../../validation/zte_tpd/fw_callbacks_harness_report.json`
-- `../../validation/zte_tpd/work_void_harness_report.json`
+- `../../validation/zte_tpd/module_decomposition_audit.json`
 - `../../validation/zte_tpd/parity_report.json`
+- `../../validation/zte_tpd/signature_oracles/syna_dev_config_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
 

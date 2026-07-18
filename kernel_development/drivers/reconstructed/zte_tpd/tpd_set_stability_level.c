@@ -25,7 +25,8 @@ int tpd_set_stability_level(struct ztp_device *cdev, int a2)
     *((_DWORD *)v3 + 385) = v8;
     if ( v7 == 1 )
     {
-      if ( (syna_dev_set_stability_level(v3, v8, v6) & 0x80000000) == 0 )
+      if ( (syna_dev_set_stability_level((struct syna_tcm *)v3,
+                                          v8, v6) & 0x80000000) == 0 )
         return 0;
       v10 = unk_3C8D6;
     }

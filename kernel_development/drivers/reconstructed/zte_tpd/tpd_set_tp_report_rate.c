@@ -25,7 +25,8 @@ int tpd_set_tp_report_rate(struct ztp_device *cdev, int a2)
     *((_DWORD *)v3 + 382) = v8;
     if ( v7 == 1 )
     {
-      if ( (syna_dev_set_tp_report_rate(v3, v8, v6) & 0x80000000) == 0 )
+      if ( (syna_dev_set_tp_report_rate((struct syna_tcm *)v3,
+                                         v8, v6) & 0x80000000) == 0 )
         return 0;
       v10 = unk_37B12;
     }

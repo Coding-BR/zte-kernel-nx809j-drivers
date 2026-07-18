@@ -20,7 +20,8 @@ int tpd_set_frame_data(struct ztp_device *cdev, int a2)
     {
       *(_DWORD *)(v3 + 1504) = a2;
       zte_reset_frame_list(v3);
-      if ( (syna_dev_get_frame_data((_QWORD *)v3, a2, v7) & 0x80000000) == 0 )
+      if ( (syna_dev_get_frame_data((struct syna_tcm *)v3,
+                                    a2, v7) & 0x80000000) == 0 )
         return 0;
       v9 = unk_345B2;
     }

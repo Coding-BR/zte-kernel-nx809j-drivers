@@ -14,6 +14,8 @@ struct ztp_device {
 	_Alignas(8) uint8_t storage[0x1008];
 };
 
+struct syna_tcm;
+
 #define printk(...) ((void)0)
 
 int is_fake_sleep_mode;
@@ -26,8 +28,8 @@ static int sensibility_value;
 static unsigned int sensibility_config_id;
 static int sensibility_result;
 
-static __int64 syna_dev_set_sensibility_level(_QWORD *device, int value,
-					       unsigned int config_id)
+static int syna_dev_set_sensibility_level(struct syna_tcm *device, int value,
+					  unsigned int config_id)
 {
 	(void)device;
 	sensibility_calls++;

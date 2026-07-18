@@ -29,7 +29,8 @@ int tpd_set_rotation_limit_level(struct ztp_device *cdev, int a2)
     v11 = unk_3B5E0;
     goto LABEL_15;
   }
-  result = syna_dev_set_display_rotation(v4, *(_DWORD *)(a1 + 16), v7);
+  result = syna_dev_set_display_rotation((struct syna_tcm *)v4,
+                                         *(_DWORD *)(a1 + 16), v7);
   if ( (_DWORD)result )
   {
     v11 = unk_3220D;
