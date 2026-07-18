@@ -1,16 +1,15 @@
-__int64 __fastcall syna_tpd_register_fw_class(__int64 a1, __int64 a2, __int64 a3)
+void syna_tpd_register_fw_class(struct syna_tcm *tcm)
 {
+  __int64 a1 = (__int64)tcm;
   __int64 v4; // x0
   __int64 v5; // x2
-  __int64 v6; // x2
   __int64 v7; // x0
   void (*v8)(void); // x8
   __int64 v9; // x2
   __int64 v10; // x8
-  __int64 result; // x0
 
   _ReadStatusReg(SP_EL0);
-  printk(unk_390F2, "syna_tpd_register_fw_class", a3);
+  printk(unk_390F2, "syna_tpd_register_fw_class");
   v4 = alloc_workqueue(unk_364AC, 393226, 1, "syna_charger_detect");
   *(_QWORD *)(a1 + 1672) = v4;
   if ( v4 )
@@ -79,7 +78,6 @@ __int64 __fastcall syna_tpd_register_fw_class(__int64 a1, __int64 a2, __int64 a3
   *(_QWORD *)(v10 + 3616) = tpd_get_screen_off_awake;
   *(_WORD *)(v10 + 1090) = *(_DWORD *)(a1 + 952);
   *(_WORD *)(v10 + 1092) = *(_DWORD *)(a1 + 956);
-  result = printk(unk_3AECC, "syna_tpd_register_fw_class", v6);
+  printk(unk_3AECC, "syna_tpd_register_fw_class");
   _ReadStatusReg(SP_EL0);
-  return result;
 }

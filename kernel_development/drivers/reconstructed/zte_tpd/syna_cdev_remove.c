@@ -1,5 +1,6 @@
-__int64 __fastcall syna_cdev_remove(__int64 a1, __int64 a2, __int64 a3)
+void syna_cdev_remove(struct syna_tcm *tcm)
 {
+  __int64 a1 = (__int64)tcm;
   _QWORD *v4; // x20
   _QWORD **v5; // x21
   _QWORD *v6; // x8
@@ -13,7 +14,10 @@ __int64 __fastcall syna_cdev_remove(__int64 a1, __int64 a2, __int64 a3)
   __int64 v14; // x2
 
   if ( !a1 )
-    return printk(unk_31F53, "syna_cdev_remove", a3);
+  {
+    printk(unk_31F53, "syna_cdev_remove");
+    return;
+  }
   mutex_lock(&qword_316D0);
   v4 = *(_QWORD **)(a1 + 1272);
   v5 = (_QWORD **)(a1 + 1272);
@@ -71,5 +75,4 @@ __int64 __fastcall syna_cdev_remove(__int64 a1, __int64 a2, __int64 a3)
   LOBYTE(qword_31698) = 0;
   *(_QWORD *)(a1 + 912) = 0;
   g_cdev_data = 0;
-  return result;
 }

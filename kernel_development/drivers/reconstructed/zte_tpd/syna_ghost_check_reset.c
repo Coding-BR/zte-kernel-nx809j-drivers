@@ -6,7 +6,7 @@ int syna_ghost_check_reset(struct ztp_device *cdev)
   __int64 v3; // x2
 
   v1 = *(_QWORD *)(a1 + 3072);
-  syna_dev_free_input_events(v1);
+  syna_dev_free_input_events((struct syna_tcm *)v1);
   syna_spi_hw_reset(*(_QWORD *)(v1 + 624));
   syna_recovery_game_mode_after_reset((struct syna_tcm *)v1);
   syna_dev_set_screen_on_fp_mode((_QWORD *)v1, 0, v2);

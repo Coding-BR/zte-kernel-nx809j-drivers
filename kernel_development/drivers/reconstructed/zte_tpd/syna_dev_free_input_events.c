@@ -1,10 +1,10 @@
-__int64 __fastcall syna_dev_free_input_events(__int64 result)
+void syna_dev_free_input_events(struct syna_tcm *tcm)
 {
+  __int64 result = (__int64)tcm;
   __int64 v1; // x20
   __int64 v2; // x19
   unsigned int i; // w21
   int v4; // w8
-  __int64 v5; // x2
 
   v1 = *(_QWORD *)(result + 944);
   if ( v1 )
@@ -23,11 +23,10 @@ __int64 __fastcall syna_dev_free_input_events(__int64 result)
     if ( HIBYTE(word_314C0) | (unsigned __int8)word_314C0 )
     {
       byte_314C2 = 1;
-      printk(unk_3A18D, "syna_dev_free_input_events", v5);
+      printk(unk_3A18D, "syna_dev_free_input_events");
     }
     report_ufp_uevent(0);
     input_event(v1, 0, 0, 0);
-    return mutex_unlock(v2 + 632);
+    mutex_unlock(v2 + 632);
   }
-  return result;
 }

@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `7ce58003fccbd4cbd528fb612ce02afefcb9762cf509dd193619df98be3aec96`
+Candidato vinculado: `8033a82a6008b9d198842f50d6b246cb828cc93762f675e4e4e69e1eacc8020c`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -48,6 +48,13 @@ int syna_testing_pt01_zte(struct syna_tcm *tcm);
 int syna_testing_pt05_zte(struct syna_tcm *tcm);
 int syna_testing_pt0a_zte(struct syna_tcm *tcm);
 
+void syna_cdev_remove(struct syna_tcm *tcm);
+void syna_dev_free_input_events(struct syna_tcm *tcm);
+void syna_sysfs_remove_dir(struct syna_tcm *tcm);
+void syna_testing_remove_dir(struct syna_tcm *tcm);
+void syna_tpd_register_fw_class(struct syna_tcm *tcm);
+void zte_reset_frame_list(struct syna_tcm *tcm);
+
 int syna_dev_get_frame_data(struct syna_tcm *tcm, int value,
                             unsigned int delay_ms);
 int syna_dev_set_charger_mode(struct syna_tcm *tcm, int value,
@@ -93,6 +100,14 @@ oraculo local testou 140 declaracoes e encontrou somente
 efeito de prototipos perdidos, nao parametros reais. Dois `printk` tambem
 recebiam um terceiro argumento fantasma; o assembly stock prepara apenas `x0`
 e `x1`, e o candidato agora reproduz esse contrato.
+
+As seis rotinas sem retorno compartilham o KCFI stock `0x3175607e`. O oraculo
+local compilou 140 declaracoes e recuperou unicamente
+`void (struct syna_tcm *)`. Os retornos decompilados eram artefatos de assinatura;
+wrappers `sub_*` que possuem contrato proprio continuam retornando zero depois
+da chamada tipada. O assembly stock tambem prova que seis chamadas `printk`
+preparam somente os argumentos reais, permitindo remover varargs fantasmas sem
+alterar o fluxo observado.
 
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.
@@ -221,5 +236,5 @@ Ordem de prioridade recomendada para os proximos lotes:
 
 O estado atual possui 123 tarefas `PASS`, com build, KCFI e teste hash-bound, e
 244 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
-subconjunto testado. A superficie KCFI integral esta em `215/322`; portanto,
+subconjunto testado. A superficie KCFI integral esta em `221/322`; portanto,
 nenhuma promocao global para `100%` e permitida.

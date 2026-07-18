@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `7ce58003fccbd4cbd528fb612ce02afefcb9762cf509dd193619df98be3aec96`
-- **Candidato:** `18289216` bytes
+- **Candidato SHA-256:** `8033a82a6008b9d198842f50d6b246cb828cc93762f675e4e4e69e1eacc8020c`
+- **Candidato:** `18290144` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -30,7 +30,7 @@ PASS:
 INCOMPLETE:
 
 - O6: `123/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `215/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `221/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
@@ -84,17 +84,41 @@ tambem provou que dois `printk` usam somente formato e nome da funcao; os
 argumentos extras inferidos pelo decompilador foram removidos. A comparacao
 detectou exatamente oito mudancas KCFI, todas `MISMATCH -> MATCH`, sem regressao.
 
+## Checkpoint Synaptics Void Context
+
+O terceiro lote recuperou a assinatura sem retorno de seis rotinas de contexto:
+
+```c
+void syna_void_context_fn(struct syna_tcm *tcm);
+```
+
+O type ID stock e candidato agora e `0x3175607e` para:
+
+- `syna_cdev_remove`;
+- `syna_dev_free_input_events`;
+- `syna_sysfs_remove_dir`;
+- `syna_testing_remove_dir`;
+- `syna_tpd_register_fw_class`;
+- `zte_reset_frame_list`.
+
+O oraculo compilou 140 candidatos e encontrou uma unica assinatura. Retornos
+inferidos pelo decompilador foram removidos dos corpos reais; os wrappers
+`sub_*` preservam sua ABI decompilada e retornam zero depois da chamada tipada.
+O assembly stock tambem eliminou seis argumentos varargs fantasmas em chamadas
+`printk`. A comparacao entre checkpoints registrou exatamente seis mudancas
+KCFI, todas `MISMATCH -> MATCH`, sem regressao.
+
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `7ce58003fccbd4cbd528fb612ce02afefcb9762cf509dd193619df98be3aec96`.
+  `8033a82a6008b9d198842f50d6b246cb828cc93762f675e4e4e69e1eacc8020c`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `215/322` matches, `107` divergencias, zero registro
+- Superficie KCFI integral: `221/322` matches, `101` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
 - Sete harnesses ASAN/UBSAN: todos PASS, totalizando 60 casos nominais.
 - Microtarefas: `123 PASS`, `244 READY`, zero promocao nova e zero PASS obsoleto.
@@ -108,6 +132,7 @@ detectou exatamente oito mudancas KCFI, todas `MISMATCH -> MATCH`, sem regressao
 - `../../validation/zte_tpd/driver_audit_static_final.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_syna_dev_config.json`
 - `../../validation/zte_tpd/driver_audit_kcfi_syna_context.json`
+- `../../validation/zte_tpd/driver_audit_kcfi_syna_void_context.json`
 - `../../validation/zte_tpd/offline_reconstruction_audit.json`
 - `../../validation/zte_tpd/header_layout_probe.json`
 - `../../validation/zte_tpd/abi_validation.json`
@@ -119,6 +144,7 @@ detectou exatamente oito mudancas KCFI, todas `MISMATCH -> MATCH`, sem regressao
 - `../../validation/zte_tpd/parity_report.json`
 - `../../validation/zte_tpd/signature_oracles/syna_dev_config_kcfi_report.json`
 - `../../validation/zte_tpd/signature_oracles/syna_context_kcfi_report.json`
+- `../../validation/zte_tpd/signature_oracles/syna_void_context_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
 

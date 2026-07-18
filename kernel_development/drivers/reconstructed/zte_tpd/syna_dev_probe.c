@@ -182,7 +182,7 @@ LABEL_22:
   if ( (syna_sysfs_create_dir(v12, a1) & 0x80000000) != 0 )
   {
     printk(unk_31EAB, "syna_dev_probe", v32);
-    syna_cdev_remove(v12);
+    syna_cdev_remove((struct syna_tcm *)v12);
     v24 = -20;
     goto LABEL_22;
   }

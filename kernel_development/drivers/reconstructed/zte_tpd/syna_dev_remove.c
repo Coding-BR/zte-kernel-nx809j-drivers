@@ -22,8 +22,8 @@ void syna_dev_remove(struct platform_device *pdev)
   destroy_workqueue(*(_QWORD *)(v3 + 1352));
   if ( active_panel && *(_QWORD *)(v3 + 1360) )
     panel_event_notifier_unregister((void *)*(_QWORD *)(v3 + 1360));
-  syna_sysfs_remove_dir(v3);
-  syna_cdev_remove(v3);
+  syna_sysfs_remove_dir((struct syna_tcm *)v3);
+  syna_cdev_remove((struct syna_tcm *)v3);
   v4 = syna_dev_disconnect((struct syna_tcm *)v3);
   v5 = *(_QWORD *)(v3 + 1448);
   if ( v5 )

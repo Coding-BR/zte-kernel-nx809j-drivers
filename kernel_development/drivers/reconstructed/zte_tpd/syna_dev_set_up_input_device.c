@@ -31,7 +31,7 @@ __int64 __fastcall syna_dev_set_up_input_device(__int64 a1)
     printk(unk_32EDC, "syna_dev_set_up_input_device", v1);
     return 0;
   }
-  syna_dev_free_input_events(a1);
+  syna_dev_free_input_events((struct syna_tcm *)a1);
   v3 = *(_QWORD *)a1;
   v4 = *(_DWORD *)(*(_QWORD *)a1 + 16LL);
   if ( !v4 && !*(_DWORD *)(v3 + 20) )

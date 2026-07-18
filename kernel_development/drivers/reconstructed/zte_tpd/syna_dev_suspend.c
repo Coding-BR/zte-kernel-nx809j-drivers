@@ -55,7 +55,7 @@ LABEL_15:
     msleep(100);
 LABEL_18:
     *(_DWORD *)(v3 + 1404) = 2;
-    syna_dev_free_input_events(v3);
+    syna_dev_free_input_events((struct syna_tcm *)v3);
     syna_tcm_clear_command_processing(*(_QWORD *)v3);
     if ( (*(_BYTE *)(v3 + 1409) & 1) == 0 )
     {

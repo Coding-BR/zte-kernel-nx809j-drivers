@@ -237,7 +237,6 @@ extern __int64 syna_cdev_ioctl_raw_write(__int64 a1, unsigned __int64 a2, __int6
 extern __int64 syna_tcm_clear_data_duplicator(__int64 a1);
 extern __int64 syna_request_managed_device();
 extern __int64 syna_tcm_reset(__int64 a1, unsigned int a2, __int64 a3);
-extern __int64 syna_dev_free_input_events(__int64 a1);
 extern __int64 syna_tcm_set_report_dispatcher(__int64 a1, int a2, void *a3, __int64 a4);
 extern __int64 syna_dev_process_touch_report(unsigned __int8 a1, const void *a2, __int64 a3, __int64 a4);
 extern void syna_dev_reflash_startup_work(struct work_struct *work);

@@ -4,6 +4,13 @@
 
 struct syna_tcm;
 
+void syna_cdev_remove(struct syna_tcm *tcm);
+void syna_dev_free_input_events(struct syna_tcm *tcm);
+void syna_sysfs_remove_dir(struct syna_tcm *tcm);
+void syna_testing_remove_dir(struct syna_tcm *tcm);
+void syna_tpd_register_fw_class(struct syna_tcm *tcm);
+void zte_reset_frame_list(struct syna_tcm *tcm);
+
 int syna_dev_connect(struct syna_tcm *tcm);
 int syna_dev_disconnect(struct syna_tcm *tcm);
 int syna_dev_set_up_app_fw(struct syna_tcm *tcm);

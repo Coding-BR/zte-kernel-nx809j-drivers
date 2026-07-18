@@ -1,0 +1,66 @@
+{
+  "build": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle\\syna_void_context:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/syna_void_context_probe",
+      "kcfi_batch.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC      /work/probe/syna_void_context_probe/kcfi_batch.o\n"
+  },
+  "candidate_count": 140,
+  "config": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\syna_void_context_kcfi_candidates.json",
+  "config_sha256": "4720c5f1982b51ab9a6c75dde5ec48282803ccc538b025d6b38df08845299650",
+  "generated_utc": "2026-07-18T16:14:09.167456+00:00",
+  "matches": [
+    {
+      "candidate": {
+        "label": "void (struct syna_tcm * tcm)",
+        "parameters": [
+          {
+            "name": "tcm",
+            "type": "struct syna_tcm *"
+          }
+        ],
+        "return_type": "void",
+        "touch_struct_members": false
+      },
+      "index": 133,
+      "kcfi": "0x3175607e",
+      "kcfi_match": true,
+      "label": "void (struct syna_tcm * tcm)"
+    }
+  ],
+  "mode": "offline_kcfi_batch_oracle",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle\\syna_void_context\\syna_void_context_probe\\kcfi_batch.o",
+    "sha256": "ab4c77951d48600e8ef5b9efdfb6cb9755509ec413344e16ead67f9fad81063e",
+    "size": 33736
+  },
+  "passed": true,
+  "schema_version": "1.0",
+  "source": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle\\syna_void_context\\syna_void_context_probe\\kcfi_batch.c",
+    "sha256": "c7f44da7420c736f1ff22a0230fedb64f772774683d823dc4d0f9079360093d9"
+  },
+  "symbol": "syna_void_context_probe",
+  "target_kcfi": "0x3175607e"
+}
