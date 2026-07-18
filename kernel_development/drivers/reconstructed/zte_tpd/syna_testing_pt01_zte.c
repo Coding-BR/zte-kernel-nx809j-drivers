@@ -1,5 +1,6 @@
-__int64 __fastcall syna_testing_pt01_zte(__int64 *a1)
+int syna_testing_pt01_zte(struct syna_tcm *tcm)
 {
+  __int64 *a1 = (__int64 *)tcm;
   __int64 v2; // x2
   const char *v3; // x19
   struct testing_item *testing_0100; // x0

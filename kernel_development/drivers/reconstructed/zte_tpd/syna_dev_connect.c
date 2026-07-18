@@ -1,5 +1,6 @@
-__int64 __fastcall syna_dev_connect(__int64 *a1, __int64 a2, __int64 a3)
+int syna_dev_connect(struct syna_tcm *tcm)
 {
+  __int64 *a1 = (__int64 *)tcm;
   __int64 v3; // x20
   __int64 v5; // x21
   __int64 (__fastcall *v6)(__int64, __int64); // x8
@@ -34,8 +35,8 @@ __int64 __fastcall syna_dev_connect(__int64 *a1, __int64 a2, __int64 a3)
   v3 = *a1;
   if ( !*a1 )
   {
-    printk(unk_32430, "syna_dev_connect", a3);
-    return 4294967274LL;
+    printk(unk_32430, "syna_dev_connect");
+    return -22;
   }
   if ( *((_BYTE *)a1 + 1410) == 1 )
   {
@@ -49,7 +50,7 @@ __int64 __fastcall syna_dev_connect(__int64 *a1, __int64 a2, __int64 a3)
     v7 = a1[78];
     /* CFI check removed */
     if ( (v6(v7, 1) & 0x80000000) != 0 )
-      return 4294967277LL;
+      return -19;
     v10 = *(unsigned int *)(v5 + 340);
     if ( (int)v10 >= 1 )
       msleep(v10);
@@ -72,7 +73,7 @@ LABEL_20:
   v16 = *(unsigned __int8 *)(v3 + 9);
   if ( (_DWORD)v16 == 1 )
   {
-    if ( (syna_dev_set_up_app_fw(a1) & 0x80000000) != 0 )
+    if ( (syna_dev_set_up_app_fw(tcm) & 0x80000000) != 0 )
     {
       printk(unk_392F3, "syna_dev_connect", v17);
       printk(unk_3CB1F, "syna_dev_connect", v18);

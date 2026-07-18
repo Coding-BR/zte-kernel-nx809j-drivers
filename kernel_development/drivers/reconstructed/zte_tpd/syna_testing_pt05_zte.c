@@ -1,5 +1,6 @@
-__int64 __fastcall syna_testing_pt05_zte(_BYTE *a1)
+int syna_testing_pt05_zte(struct syna_tcm *tcm)
 {
+  _BYTE *a1 = (_BYTE *)tcm;
   __int64 v2; // x0
   __int64 v3; // x2
   const char *v4; // x19

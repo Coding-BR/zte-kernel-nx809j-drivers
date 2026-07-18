@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `d0c263c5a8340801818433e2499592a56945903fdcb1c1926980532445f4e1a9`
+Candidato vinculado: `7ce58003fccbd4cbd528fb612ce02afefcb9762cf509dd193619df98be3aec96`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -38,6 +38,15 @@ struct testing_item *syna_tcm_get_testing_0001(void);
 int syna_tcm_testing_build_id(struct tcm_dev *tcm,
                               struct testing_item *item,
                               bool dual_firmware);
+
+int syna_dev_connect(struct syna_tcm *tcm);
+int syna_dev_disconnect(struct syna_tcm *tcm);
+int syna_dev_set_up_app_fw(struct syna_tcm *tcm);
+int syna_recovery_game_mode_after_reset(struct syna_tcm *tcm);
+int syna_testing_create_dir(struct syna_tcm *tcm);
+int syna_testing_pt01_zte(struct syna_tcm *tcm);
+int syna_testing_pt05_zte(struct syna_tcm *tcm);
+int syna_testing_pt0a_zte(struct syna_tcm *tcm);
 
 int syna_dev_get_frame_data(struct syna_tcm *tcm, int value,
                             unsigned int delay_ms);
@@ -77,6 +86,13 @@ Um oraculo local compilou 768 candidatos e recuperou a forma normalizada
 `int (struct syna_tcm *, int, unsigned int)`. O header
 `zte_tpd_syna_device_api.h` e a unica declaracao publica local desse contrato;
 nao reintroduza prototipos decompilados `_QWORD *` ou retorno `__int64`.
+
+As oito rotinas de contexto compartilham o KCFI stock `0xae20471c`. Um segundo
+oraculo local testou 140 declaracoes e encontrou somente
+`int (struct syna_tcm *)`. Chamadas antigas com dois zeros adicionais eram
+efeito de prototipos perdidos, nao parametros reais. Dois `printk` tambem
+recebiam um terceiro argumento fantasma; o assembly stock prepara apenas `x0`
+e `x1`, e o candidato agora reproduz esse contrato.
 
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.
@@ -205,5 +221,5 @@ Ordem de prioridade recomendada para os proximos lotes:
 
 O estado atual possui 123 tarefas `PASS`, com build, KCFI e teste hash-bound, e
 244 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
-subconjunto testado. A superficie KCFI integral esta em `207/322`; portanto,
+subconjunto testado. A superficie KCFI integral esta em `215/322`; portanto,
 nenhuma promocao global para `100%` e permitida.

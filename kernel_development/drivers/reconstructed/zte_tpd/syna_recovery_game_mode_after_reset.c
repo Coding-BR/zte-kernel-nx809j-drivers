@@ -1,5 +1,6 @@
-__int64 __fastcall syna_recovery_game_mode_after_reset(int *a1)
+int syna_recovery_game_mode_after_reset(struct syna_tcm *tcm)
 {
+  int *a1 = (int *)tcm;
   __int64 v2; // x9
   unsigned int v3; // w19
   int v4; // w0
@@ -13,7 +14,7 @@ __int64 __fastcall syna_recovery_game_mode_after_reset(int *a1)
   int v13; // w0
 
   if ( !a1 )
-    return 4294967274LL;
+    return -22;
   v2 = *((_QWORD *)a1 + 78);
   if ( v2 != -168 && *(_DWORD *)(v2 + 184) && (*(_BYTE *)(v2 + 188) & 1) != 0 )
     v3 = 0;

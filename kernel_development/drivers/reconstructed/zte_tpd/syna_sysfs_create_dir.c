@@ -24,7 +24,7 @@ LABEL_9:
     kobject_put(*(_QWORD *)(a1 + 920));
     return v10;
   }
-  dir = syna_testing_create_dir(a1);
+  dir = syna_testing_create_dir((struct syna_tcm *)a1);
   if ( (dir & 0x80000000) != 0 )
   {
     v10 = dir;

@@ -245,7 +245,6 @@ extern __int64 syna_tcm_set_dynamic_config(__int64 a1, int a2, int a3, int a4);
 extern __int64 syna_tcm_do_fw_update(__int64 a1, __int64 a2, __int64 a3, unsigned int a4, char a5);
 extern __int64 syna_tcm_detect_device(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
-extern __int64 syna_dev_set_up_app_fw(_QWORD *a1);
 extern __int64 syna_tcm_switch_fw_mode(__int64 a1, int a2, unsigned int a3);
 extern __int64 syna_dev_set_up_input_device(__int64 a1);
 extern __int64 syna_tcm_get_boot_info(__int64 a1, void *a2, __int64 a3);
@@ -392,8 +391,6 @@ extern __int64 edge_long_press_up(struct input_dev *input, int index);
 
 extern int large_area_ignore_count;
 extern int large_area_uevent_count;
-extern __int64 syna_dev_connect(__int64 *a1, __int64 a2, __int64 a3);
-extern __int64 syna_dev_disconnect(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_dev_resume(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_dev_suspend(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_tcm_v1_read_message(__int64 a1, _BYTE *a2, __int64 a3);

@@ -1,5 +1,6 @@
-__int64 __fastcall syna_dev_disconnect(__int64 a1, __int64 a2, __int64 a3)
+int syna_dev_disconnect(struct syna_tcm *tcm)
 {
+  __int64 a1 = (__int64)tcm;
   void *v3; // x0
   __int64 v4; // x20
   __int64 v5; // x19
@@ -17,7 +18,7 @@ __int64 __fastcall syna_dev_disconnect(__int64 a1, __int64 a2, __int64 a3)
     v5 = a1;
     if ( *(_DWORD *)(a1 + 1404) == 3 )
     {
-      printk(unk_398C3, "syna_dev_disconnect", a3);
+      printk(unk_398C3, "syna_dev_disconnect");
       v6 = *(_DWORD **)(v4 + 384);
       if ( !v6 )
       {

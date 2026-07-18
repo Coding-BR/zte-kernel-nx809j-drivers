@@ -1,5 +1,6 @@
-__int64 __fastcall syna_testing_create_dir(__int64 a1)
+int syna_testing_create_dir(struct syna_tcm *tcm)
 {
+  __int64 a1 = (__int64)tcm;
   __int64 v2; // x0
   __int64 v3; // x2
   unsigned int group; // w0
@@ -26,6 +27,6 @@ __int64 __fastcall syna_testing_create_dir(__int64 a1)
   else
   {
     printk(unk_389E1, "syna_testing_create_dir", v3);
-    return 4294967274LL;
+    return -22;
   }
 }

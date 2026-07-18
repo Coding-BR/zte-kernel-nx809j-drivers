@@ -154,7 +154,7 @@ LABEL_31:
   }
 LABEL_35:
   printk(unk_31EEA, "syna_dev_resume", v12);
-  if ( (syna_dev_set_up_app_fw(v3) & 0x80000000) != 0 )
+  if ( (syna_dev_set_up_app_fw((struct syna_tcm *)v3) & 0x80000000) != 0 )
   {
     v13 = unk_37007;
 LABEL_37:

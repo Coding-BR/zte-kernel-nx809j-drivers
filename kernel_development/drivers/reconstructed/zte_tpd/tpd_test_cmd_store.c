@@ -12,7 +12,7 @@ int tpd_test_cmd_store(struct ztp_device *cdev)
   if ( *(_DWORD *)(v3 + 1404) == 1 )
   {
     printk(unk_34878, "tpd_test_cmd_store");
-    v4 = syna_testing_pt01_zte((__int64 *)v3);
+    v4 = syna_testing_pt01_zte((struct syna_tcm *)v3);
     if ( (v4 & 0x80000000) != 0 )
     {
       v5 = v4;
@@ -20,7 +20,7 @@ int tpd_test_cmd_store(struct ztp_device *cdev)
     }
     else
     {
-      v9 = syna_testing_pt05_zte((_BYTE *)v3);
+      v9 = syna_testing_pt05_zte((struct syna_tcm *)v3);
       if ( (v9 & 0x80000000) != 0 )
       {
         v5 = v9;
@@ -28,7 +28,7 @@ int tpd_test_cmd_store(struct ztp_device *cdev)
       }
       else
       {
-        v5 = syna_testing_pt0a_zte((_BYTE *)v3);
+        v5 = syna_testing_pt0a_zte((struct syna_tcm *)v3);
         if ( (v5 & 0x80000000) == 0 )
           goto LABEL_6;
         v6 = unk_3A6C6;

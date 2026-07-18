@@ -146,7 +146,7 @@ LABEL_29:
   *(_QWORD *)(a1 + 168) = v12;
   device_set_wakeup_capable(a1 + 16, 1);
   device_wakeup_enable(a1 + 16);
-  v28 = syna_dev_connect(v12, 0, 0);
+  v28 = syna_dev_connect((struct syna_tcm *)v12);
   if ( (v28 & 0x80000000) != 0 )
   {
     v24 = v28;
@@ -176,7 +176,7 @@ LABEL_23:
     v24 = v30;
     printk(unk_31E7C, "syna_dev_probe", v31);
 LABEL_22:
-    syna_dev_disconnect(v12, 0, 0);
+    syna_dev_disconnect((struct syna_tcm *)v12);
     goto LABEL_23;
   }
   if ( (syna_sysfs_create_dir(v12, a1) & 0x80000000) != 0 )

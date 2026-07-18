@@ -1,5 +1,6 @@
-__int64 __fastcall syna_dev_set_up_app_fw(_QWORD *a1)
+int syna_dev_set_up_app_fw(struct syna_tcm *tcm)
 {
+  _QWORD *a1 = (_QWORD *)tcm;
   __int64 v1; // x8
   __int64 v2; // x19
   unsigned int v3; // w20
@@ -10,7 +11,7 @@ __int64 __fastcall syna_dev_set_up_app_fw(_QWORD *a1)
   unsigned int v9; // w19
 
   if ( !a1 )
-    return 4294967274LL;
+    return -22;
   v1 = a1[78];
   v2 = *a1;
   if ( v1 != -168 && *(_DWORD *)(v1 + 184) && (*(_BYTE *)(v1 + 188) & 1) != 0 )
@@ -21,7 +22,7 @@ __int64 __fastcall syna_dev_set_up_app_fw(_QWORD *a1)
   if ( (_DWORD)v4 != 1 )
   {
     printk(unk_32EDC, "syna_dev_set_up_app_fw", v4);
-    return 4294967274LL;
+    return -22;
   }
   app_info = syna_tcm_get_app_info(*a1, v2 + 176, v3);
   if ( (app_info & 0x80000000) != 0 )
