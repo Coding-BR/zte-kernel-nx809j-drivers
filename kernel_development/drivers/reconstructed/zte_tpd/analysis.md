@@ -19,11 +19,11 @@ equivalencia funcional muito mais exigente que a simples compilacao do `.ko`.
 - Os `359` simbolos de texto stock estao presentes no candidato.
 - Os imports KMI sao exatamente `152/152`.
 - Dois builds limpos produziram o candidato canonico
-  `9c3756977d3a2096f546d97845564607110e213cbb9024511140af5efc22104e`.
-- A superficie selecionada possui `170/170` funcoes com o mesmo type ID KCFI e
+  `8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`.
+- A superficie selecionada possui `173/173` funcoes com o mesmo type ID KCFI e
   secao ELF do stock; nela, as oito familias recuperadas somam `143/143`.
-- Na superficie integral recuperavel, `245/322` funcoes possuem o mesmo Type ID
-  KCFI; restam `77` assinaturas divergentes e nenhuma funcao candidata ausente.
+- Na superficie integral recuperavel, `248/322` funcoes possuem o mesmo Type ID
+  KCFI; restam `74` assinaturas divergentes e nenhuma funcao candidata ausente.
 
 O mapa e classificado como `structural_identity_only`. Ele nao converte
 automaticamente rastreabilidade em equivalencia semantica.
@@ -70,7 +70,7 @@ headers configurados, mas nao comportamento eletrico.
 
 ## Cobertura Dinamica Offline
 
-Os onze harnesses locais registram `117` casos PASS. Eles cobrem callbacks de
+Os doze harnesses locais registram `123` casos PASS. Eles cobrem callbacks de
 firmware, proc feature/scalar/special, work/void, zlog, validadores restantes e
 as rotinas TCM de reset/delay, dados CS/MTP e configuracao estatica. O harness
 mais recente verifica a ABI comum
@@ -83,10 +83,17 @@ O novo harness de ciclo de vida verifica callback nulo/presente, estado de
 terminacao, `completion_done`, `complete`, liberacao dos seis buffers e falha do
 dispositivo gerenciado. Ele passou `11/11`.
 
+O harness de despacho de reports passou `6/6` em duas execucoes ASAN/UBSAN para
+`syna_dev_process_unexpected_reset`, incluindo assinatura, offsets de estado,
+ausencia de workqueue, enfileiramento unico e idempotencia. Os callbacks
+`syna_cdev_process_reports` e `syna_dev_process_touch_report` ainda aguardam um
+fixture direto de payload/parser; seus type IDs KCFI estao corretos, mas isso nao
+substitui um teste comportamental.
+
 Os harnesses usam stubs controlados e nao reproduzem IRQ real, temporizacao do
 scheduler, SPI fisico, energia, display ou suspend/resume do aparelho. O
-manifesto possui `142` microtarefas `PASS`, cada uma com hashes de build, KCFI e
-teste, e `225` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
+manifesto possui `143` microtarefas `PASS`, cada uma com hashes de build, KCFI e
+teste, e `224` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
 chamado de `100%`.
 
 ## Registros Historicos de Hardware
@@ -100,6 +107,6 @@ janela temporal, logs completos e rollback controlado.
 ## Conclusao Atual
 
 O `zte_tpd` e um candidato estaticamente verificavel, reprodutivel e alinhado na
-superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 225
-microtarefas com teste direto, 77 assinaturas KCFI, revisao independente e a
+superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 224
+microtarefas com teste direto, 74 assinaturas KCFI, revisao independente e a
 validacao controlada em hardware.

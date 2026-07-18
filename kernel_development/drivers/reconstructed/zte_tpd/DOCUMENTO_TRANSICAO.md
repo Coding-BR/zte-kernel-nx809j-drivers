@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `9c3756977d3a2096f546d97845564607110e213cbb9024511140af5efc22104e`
+Candidato vinculado: `8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -276,6 +276,37 @@ compilacao. Estruturas compartilhadas por IRQ/workqueue devem usar os locks
 observados e tipos de callback exatos; nao introduza casts de funcao, acesso sem
 lock ou anotacoes `__rcu` sem um padrao de publicacao/leitura comprovado.
 
+## Checkpoint Report Dispatch
+
+O lote atual recuperou uma assinatura unica para os tres callbacks de despacho de
+relatorios, confirmada por chamada indireta stock, P-Code, assembly e oraculo
+Clang/KCFI:
+
+```c
+int syna_report_dispatch_fn(unsigned char report_code,
+                            const u8 *payload,
+                            unsigned int length,
+                            void *context);
+```
+
+O type ID stock e candidato e `0x9f93c40a` para:
+
+- `syna_cdev_process_reports`;
+- `syna_dev_process_touch_report`;
+- `syna_dev_process_unexpected_reset`.
+
+Durante a comparacao dos callsites, foram removidos argumentos varargs que o
+decompilador inventou e restaurados os limites comprovados nos logs de
+alocacao/copia. A compilacao dupla limpa passou com o SHA-256
+`8e48658fd32194a08d59aa7a9e2dc61526e2952db366727e9af89aac41c8021a`.
+
+O harness direto de `syna_dev_process_unexpected_reset` passou `6/6` em duas
+execucoes ASAN/UBSAN e promoveu somente essa funcao. Os callbacks de payload
+continuam `READY_FOR_IMPLEMENTATION` porque ainda nao existe fixture direta para
+exercitar com honestidade o parser de toque e a fila de reports. A comparacao de
+assembly estrita permanece aberta em `0/3`; isso registra divergencia de corpo
+recompilado, nao uma falha escondida nem prova de equivalencia.
+
 ## 3. Prompts de Execucao Isolada (Micro-Tarefas)
 
 O manifesto `MICROTASKS.json` e o documento `MICROTASK_PROMPTS.md` contem uma
@@ -308,8 +339,8 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 142 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-225 tarefas `READY_FOR_IMPLEMENTATION`. Onze relatorios de harness sustentam o
-subconjunto testado com 117 casos. A superficie KCFI integral esta em `245/322`;
-portanto,
-nenhuma promocao global para `100%` e permitida.
+O estado atual possui 143 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+224 tarefas `READY_FOR_IMPLEMENTATION`. Doze relatorios de harness sustentam o
+subconjunto testado com 123 casos. A superficie KCFI integral esta em `248/322`
+(173/173 na superficie direta selecionada e 143/143 nas oito familias de
+callbacks); portanto, nenhuma promocao global para `100%` e permitida.

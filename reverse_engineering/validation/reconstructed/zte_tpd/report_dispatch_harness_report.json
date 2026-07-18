@@ -1,0 +1,102 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-int-conversion -Wno-pointer-to-int-cast -fsanitize=address,undefined -fno-omit-frame-pointer -I/work/workspace/curated/zte_tpd report_dispatch_unexpected_reset_harness.c -o build/report_dispatch_unexpected_reset_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/report_dispatch_unexpected_reset_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 1,
+    "hardware_paths_exercised": false,
+    "source_files": [
+      "syna_dev_process_unexpected_reset.c"
+    ]
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_null_context\nPASS test_inactive_context\nPASS test_active_without_workqueue\nPASS test_active_queues_once\nPASS test_active_already_queued\nSUMMARY total=6 passed=6 failed=0\n",
+      "summary": "SUMMARY total=6 passed=6 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_null_context",
+        "test_inactive_context",
+        "test_active_without_workqueue",
+        "test_active_queues_once",
+        "test_active_already_queued"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_null_context\nPASS test_inactive_context\nPASS test_active_without_workqueue\nPASS test_active_queues_once\nPASS test_active_already_queued\nSUMMARY total=6 passed=6 failed=0\n",
+      "summary": "SUMMARY total=6 passed=6 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_null_context",
+        "test_inactive_context",
+        "test_active_without_workqueue",
+        "test_active_queues_once",
+        "test_active_already_queued"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-18T22:24:57.823613+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\report_dispatch_unexpected_reset_harness.c",
+      "sha256": "315c1558ae9c0de498364c7d10897ed9b6f3ef27334c9bb56712cac5288c853f",
+      "size": 4545
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_dev_process_unexpected_reset.c",
+      "sha256": "1e06ce01d7af8cee9f64a5e6c67dce983f091c941f03bce1d1afce0841a733ac",
+      "size": 777
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd_syna_device_api.h",
+      "sha256": "1ca131df7f6a0455e0657aa4ad05399bf51fb8889e973afa267ab71efdf833b6",
+      "size": 2442
+    }
+  ],
+  "limitations": [
+    "The workqueue, logging and context memory are deterministic host stubs.",
+    "The harness validates recovered offsets, state branches and queue-once behavior, not electrical hardware.",
+    "The cdev payload and touch-report parser callbacks remain READY for a dedicated parser fixture.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or partition operation is performed."
+  ],
+  "mode": "offline_direct_source_report_dispatch_unexpected_reset_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 6,
+    "failed": [],
+    "passed": [
+      "test_signature_contract",
+      "test_null_context",
+      "test_inactive_context",
+      "test_active_without_workqueue",
+      "test_active_queues_once",
+      "test_active_already_queued"
+    ],
+    "summary": "SUMMARY total=6 passed=6 failed=0"
+  }
+}

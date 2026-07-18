@@ -269,7 +269,9 @@ extern void syna_tcm_clear_command_processing(struct tcm_dev *tcm);
 extern void syna_tcm_remove_device(struct tcm_dev *tcm);
 extern void syna_tcm_v1_terminate(struct tcm_dev *tcm);
 extern __int64 syna_tcm_set_report_dispatcher(__int64 a1, int a2, void *a3, __int64 a4);
-extern __int64 syna_dev_process_touch_report(unsigned __int8 a1, const void *a2, __int64 a3, __int64 a4);
+extern int syna_dev_process_touch_report(unsigned char report_code,
+                                         const unsigned char *payload,
+                                         unsigned int length, void *context);
 extern void syna_dev_reflash_startup_work(struct work_struct *work);
 extern __int64 syna_tcm_set_dynamic_config(__int64 a1, int a2, int a3, int a4);
 extern __int64 syna_tcm_do_fw_update(__int64 a1, __int64 a2, __int64 a3, unsigned int a4, char a5);
@@ -278,7 +280,9 @@ extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
 extern __int64 syna_tcm_switch_fw_mode(__int64 a1, int a2, unsigned int a3);
 extern __int64 syna_dev_set_up_input_device(__int64 a1);
 extern __int64 syna_tcm_get_boot_info(__int64 a1, void *a2, __int64 a3);
-extern __int64 syna_dev_process_unexpected_reset(__int64 a1, __int64 a2, __int64 a3, __int64 a4);
+extern int syna_dev_process_unexpected_reset(unsigned char report_code,
+                                             const unsigned char *payload,
+                                             unsigned int length, void *context);
 extern __int64 syna_dev_isr(__int64 a1, __int64 *a2);
 
 extern int syna_usb_detect_flag;
@@ -366,7 +370,9 @@ extern char DEVICE_NODE_NAME[100];
 
 // Missing function forward declarations
 extern __int64 syna_tcm_set_data_duplicator(__int64 a1, int a2, void *a3, __int64 a4);
-extern __int64 syna_cdev_process_reports(__int64 a1, _QWORD *a2, __int64 a3, __int64 *a4);
+extern int syna_cdev_process_reports(unsigned char report_code,
+                                     const unsigned char *payload,
+                                     unsigned int length, void *context);
 extern int syna_cdev_open(struct inode *inode, struct file *filp);
 extern int syna_cdev_release(struct inode *inode, struct file *filp);
 extern __int64 syna_tcm_get_event_data(__int64 a1, unsigned __int8 *a2, __int64 a3);

@@ -1,14 +1,13 @@
-__int64 __fastcall syna_dev_process_touch_report(unsigned __int8 a1, const void *a2, __int64 a3, __int64 a4)
+int syna_dev_process_touch_report(unsigned char a1, const unsigned char *a2,
+                                  unsigned int a3, void *context)
 {
+  __int64 a4 = (__int64)(unsigned long)context;
   unsigned int v5; // w22
   const void *v6; // x20
   size_t v7; // x21
   unsigned int v8; // w0
-  __int64 v9; // x2
   __int64 v10; // x20
   __int64 v11; // x25
-  __int64 v12; // x1
-  __int64 v13; // x2
   int v14; // w8
   __int64 v15; // x0
   __int64 v16; // x21
@@ -25,8 +24,6 @@ __int64 __fastcall syna_dev_process_touch_report(unsigned __int8 a1, const void 
   unsigned int v27; // w4
   __int64 v28; // x3
   unsigned int v29; // w25
-  __int64 v30; // x1
-  __int64 v31; // x2
   __int64 result; // x0
   unsigned int v33; // w19
   __int64 v34; // x2
@@ -37,7 +34,7 @@ __int64 __fastcall syna_dev_process_touch_report(unsigned __int8 a1, const void 
   v37[2] = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   if ( !a4 )
   {
-    printk(unk_3411A, "syna_dev_process_touch_report", a3);
+    printk(unk_3411A, "syna_dev_process_touch_report");
     result = 4294967274LL;
     goto LABEL_60;
   }
@@ -68,7 +65,7 @@ __int64 __fastcall syna_dev_process_touch_report(unsigned __int8 a1, const void 
   if ( (v8 & 0x80000000) != 0 )
   {
     v33 = v8;
-    printk(unk_3A914, "syna_dev_process_touch_report", v9);
+    printk(unk_3A914, "syna_dev_process_touch_report");
     result = v33;
     goto LABEL_60;
   }
@@ -84,17 +81,17 @@ __int64 __fastcall syna_dev_process_touch_report(unsigned __int8 a1, const void 
     v34 = *(unsigned int *)(a4 + 544);
     if ( (_DWORD)v34 == 1 )
     {
-      printk(unk_35FFC, "syna_dev_report_input_events", v34);
+      printk(unk_35FFC, "syna_dev_report_input_events");
       ufp_report_gesture_uevent("double_tap=true");
     }
     else if ( (_DWORD)v34 == 16 )
     {
-      printk(unk_3354D, "syna_dev_report_input_events", v34);
+      printk(unk_3354D, "syna_dev_report_input_events");
       ufp_report_gesture_uevent("single_tap=true");
     }
     else
     {
-      printk(unk_37625, "syna_dev_report_input_events", v34);
+      printk(unk_37625, "syna_dev_report_input_events");
     }
   }
   v14 = *(_DWORD *)(a4 + 544);
@@ -132,19 +129,19 @@ LABEL_18:
             v37[0] = "large_area=true";
             v37[1] = 0;
             kobject_uevent_env(&ufp_tp_ops.pdev->dev.kobj, 2, v37);
-            printk(unk_32F20, v30, v31);
+            printk(unk_32F20);
             ++large_area_uevent_count;
           }
         }
         else
         {
           --large_area_ignore_count;
-          printk(unk_3475B, (unsigned int)(v21 - 1), v13);
+          printk(unk_3475B);
         }
       }
       else
       {
-        printk(unk_33C0B, v12, v13);
+        printk(unk_33C0B);
       }
     }
     if ( v16 == 10 )

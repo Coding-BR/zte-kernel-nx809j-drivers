@@ -5,6 +5,11 @@
 struct device;
 struct syna_tcm;
 
+typedef int (*syna_report_dispatch_fn)(unsigned char report_code,
+					      const unsigned char *payload,
+					      unsigned int length,
+					      void *context);
+
 int syna_dev_resume(struct device *dev);
 int syna_dev_suspend(struct device *dev);
 int syna_pm_resume(struct device *dev);
@@ -43,5 +48,15 @@ int syna_dev_set_stability_level(struct syna_tcm *tcm, int value,
 				  unsigned int delay_ms);
 int syna_dev_set_tp_report_rate(struct syna_tcm *tcm, int value,
 				unsigned int delay_ms);
+
+int syna_cdev_process_reports(unsigned char report_code,
+				      const unsigned char *payload,
+				      unsigned int length, void *context);
+int syna_dev_process_touch_report(unsigned char report_code,
+					 const unsigned char *payload,
+					 unsigned int length, void *context);
+int syna_dev_process_unexpected_reset(unsigned char report_code,
+					      const unsigned char *payload,
+					      unsigned int length, void *context);
 
 #endif
