@@ -1,5 +1,7 @@
-__int64 __fastcall syna_tcm_reset(__int64 a1, unsigned int a2, __int64 a3)
+int syna_tcm_reset(struct tcm_dev *tcm, unsigned int delay_ms)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
+  unsigned int a2 = delay_ms;
   unsigned int v4; // w8
   __int64 v5; // x5
   _DWORD *v6; // x8
@@ -8,7 +10,6 @@ __int64 __fastcall syna_tcm_reset(__int64 a1, unsigned int a2, __int64 a3)
   __int64 (__fastcall *v9)(_QWORD); // x8
   __int64 v10; // x0
   unsigned int v11; // w0
-  __int64 v12; // x2
   unsigned int v14; // w19
   unsigned int v15; // w20
 
@@ -16,7 +17,7 @@ __int64 __fastcall syna_tcm_reset(__int64 a1, unsigned int a2, __int64 a3)
   {
     if ( a2
       || (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) == 0
-      && (v15 = *(_DWORD *)(a1 + 492), printk(unk_3BA3F, "syna_tcm_reset", a3), (a2 = v15) != 0) )
+      && (v15 = *(_DWORD *)(a1 + 492), printk(unk_3BA3F, "syna_tcm_reset"), (a2 = v15) != 0) )
     {
       v4 = *(_DWORD *)(a1 + 492);
       if ( v4 <= a2 )
@@ -57,13 +58,13 @@ __int64 __fastcall syna_tcm_reset(__int64 a1, unsigned int a2, __int64 a3)
       if ( (v11 & 0x80000000) == 0 )
         return 0;
       v14 = v11;
-      printk(unk_32B5F, "syna_tcm_reset", v12);
+      printk(unk_32B5F, "syna_tcm_reset");
     }
     return v14;
   }
   else
   {
-    printk(unk_3365A, "syna_tcm_reset", a3);
-    return 4294967055LL;
+    printk(unk_3365A, "syna_tcm_reset");
+    return -241;
   }
 }

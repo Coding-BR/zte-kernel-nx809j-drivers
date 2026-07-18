@@ -137,7 +137,7 @@ LABEL_31:
           msleep(50);
       }
     }
-    else if ( (syna_tcm_reset(*v3, v5, 0LL) & 0x80000000) != 0 )
+    else if ( (syna_tcm_reset((struct tcm_dev *)*v3, v5) & 0x80000000) != 0 )
     {
       v13 = unk_3A94B;
       goto LABEL_37;

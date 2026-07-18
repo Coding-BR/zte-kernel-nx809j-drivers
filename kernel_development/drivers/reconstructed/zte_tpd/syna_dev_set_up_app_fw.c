@@ -33,7 +33,7 @@ LABEL_16:
     printk(v8, "syna_dev_set_up_app_fw", v6);
     return v9;
   }
-  app_info = syna_tcm_preserve_touch_report_config(v2, v3);
+  app_info = syna_tcm_preserve_touch_report_config((struct tcm_dev *)v2, v3);
   if ( (app_info & 0x80000000) != 0 )
   {
     v8 = unk_3609B;

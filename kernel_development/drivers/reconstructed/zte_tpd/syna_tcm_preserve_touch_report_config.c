@@ -1,5 +1,8 @@
-__int64 __fastcall syna_tcm_preserve_touch_report_config(__int64 a1, unsigned int a2, __int64 a3)
+int syna_tcm_preserve_touch_report_config(struct tcm_dev *tcm,
+                                         unsigned int delay_ms)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
+  unsigned int a2 = delay_ms;
   __int64 v3; // x2
   unsigned int v5; // w20
   _DWORD *v6; // x8
@@ -31,7 +34,7 @@ __int64 __fastcall syna_tcm_preserve_touch_report_config(__int64 a1, unsigned in
   __int64 v32; // x14
   int v33; // w17
   unsigned int v34; // w15
-  __int64 result; // x0
+  int result; // w0
   void *v36; // x0
   unsigned int v37; // w20
   __int64 v38; // x2
@@ -45,8 +48,8 @@ __int64 __fastcall syna_tcm_preserve_touch_report_config(__int64 a1, unsigned in
 
   if ( !a1 )
   {
-    printk(unk_3365A, "syna_tcm_preserve_touch_report_config", a3);
-    return 4294967055LL;
+    printk(unk_3365A, "syna_tcm_preserve_touch_report_config");
+    return -241;
   }
   v3 = *(unsigned __int8 *)(a1 + 9);
   if ( (_DWORD)v3 == 1 )
@@ -61,7 +64,7 @@ __int64 __fastcall syna_tcm_preserve_touch_report_config(__int64 a1, unsigned in
       else
       {
         v5 = *(_DWORD *)(a1 + 524);
-        printk(unk_3BA3F, "syna_tcm_preserve_touch_report_config", v3);
+        printk(unk_3BA3F, "syna_tcm_preserve_touch_report_config");
       }
     }
     v6 = *(_DWORD **)(a1 + 920);
@@ -71,7 +74,7 @@ __int64 __fastcall syna_tcm_preserve_touch_report_config(__int64 a1, unsigned in
     if ( (v7 & 0x80000000) != 0 )
     {
       v37 = v7;
-      printk(unk_339F8, "syna_tcm_preserve_touch_report_config", v8);
+      printk(unk_339F8, "syna_tcm_preserve_touch_report_config");
       result = v37;
       goto LABEL_58;
     }
@@ -81,12 +84,12 @@ __int64 __fastcall syna_tcm_preserve_touch_report_config(__int64 a1, unsigned in
       if ( (_DWORD)v3 )
       {
         if ( *(_BYTE *)(a1 + 392) )
-          printk(unk_38244, "syna_tcm_buf_lock", *(unsigned __int8 *)(a1 + 392));
+          printk(unk_38244, "syna_tcm_buf_lock");
         mutex_lock(a1 + 344);
         v9 = *(unsigned __int8 *)(a1 + 464);
         ++*(_BYTE *)(a1 + 392);
         if ( (_DWORD)v9 )
-          printk(unk_38244, "syna_tcm_buf_lock", v9);
+          printk(unk_38244, "syna_tcm_buf_lock");
         mutex_lock(a1 + 416);
         ++*(_BYTE *)(a1 + 464);
         *(_DWORD *)(a1 + 908) = 1;
@@ -118,7 +121,7 @@ LABEL_23:
                   }
                   else
                   {
-                    printk(unk_38244, "syna_tcm_buf_unlock", v20);
+                    printk(unk_38244, "syna_tcm_buf_unlock");
                     v21 = *(_BYTE *)(a1 + 464) - 1;
                   }
                   *(_BYTE *)(a1 + 464) = v21;
@@ -130,7 +133,7 @@ LABEL_23:
                   }
                   else
                   {
-                    printk(unk_38244, "syna_tcm_buf_unlock", v22);
+                    printk(unk_38244, "syna_tcm_buf_unlock");
                     v23 = *(_BYTE *)(a1 + 392) - 1;
                   }
                   *(_BYTE *)(a1 + 392) = v23;
@@ -225,9 +228,10 @@ LABEL_57:
                   *(_DWORD *)(a1 + 484) = v26;
                   goto LABEL_58;
                 }
-                printk(unk_3944E, "syna_pal_mem_cpy", v3);
+                printk(unk_3944E, "syna_pal_mem_cpy", (unsigned int)v3,
+                       *(_DWORD *)(a1 + 408), (unsigned int)v10);
               }
-              printk(unk_35DBE, "syna_tcm_preserve_touch_report_config", v3);
+              printk(unk_35DBE, "syna_tcm_preserve_touch_report_config");
               v38 = *(unsigned __int8 *)(a1 + 464);
               if ( (_DWORD)v38 == 1 )
               {
@@ -235,7 +239,7 @@ LABEL_57:
               }
               else
               {
-                printk(unk_38244, "syna_tcm_buf_unlock", v38);
+                printk(unk_38244, "syna_tcm_buf_unlock");
                 v39 = *(_BYTE *)(a1 + 464) - 1;
               }
               *(_BYTE *)(a1 + 464) = v39;
@@ -247,12 +251,12 @@ LABEL_57:
               }
               else
               {
-                printk(unk_38244, "syna_tcm_buf_unlock", v40);
+                printk(unk_38244, "syna_tcm_buf_unlock");
                 v41 = *(_BYTE *)(a1 + 392) - 1;
               }
               *(_BYTE *)(a1 + 392) = v41;
               mutex_unlock(a1 + 344);
-              result = 4294967274LL;
+              result = -22;
 LABEL_58:
               *(_DWORD *)(a1 + 908) = 0;
               return result;
@@ -272,7 +276,7 @@ LABEL_58:
           v14 = syna_request_managed_device();
           if ( !v14 )
           {
-            printk(unk_3BE43, "syna_pal_mem_free", v15);
+            printk(unk_3BE43, "syna_pal_mem_free");
             v16 = syna_request_managed_device();
             if ( v16 )
               goto LABEL_20;
@@ -297,7 +301,7 @@ LABEL_20:
 LABEL_80:
             printk(unk_3703C, "syna_tcm_buf_alloc", (unsigned int)v10);
             *(_QWORD *)(a1 + 408) = 0;
-            printk(unk_357BB, "syna_tcm_preserve_touch_report_config", v43);
+            printk(unk_357BB, "syna_tcm_preserve_touch_report_config");
             v44 = *(unsigned __int8 *)(a1 + 392);
             if ( (_DWORD)v44 == 1 )
             {
@@ -305,17 +309,17 @@ LABEL_80:
             }
             else
             {
-              printk(unk_38244, "syna_tcm_buf_unlock", v44);
+              printk(unk_38244, "syna_tcm_buf_unlock");
               v45 = *(_BYTE *)(a1 + 392) - 1;
             }
             *(_BYTE *)(a1 + 392) = v45;
             mutex_unlock(a1 + 344);
-            result = 4294967053LL;
+            result = -243;
             goto LABEL_58;
           }
           v42 = unk_38286;
 LABEL_79:
-          printk(v42, "syna_pal_mem_alloc", v17);
+          printk(v42, "syna_pal_mem_alloc");
           *(_QWORD *)(a1 + 400) = 0;
           goto LABEL_80;
         }
@@ -337,5 +341,5 @@ LABEL_78:
   }
 LABEL_65:
   printk(v36, "syna_tcm_preserve_touch_report_config", v3);
-  return 4294967055LL;
+  return -241;
 }

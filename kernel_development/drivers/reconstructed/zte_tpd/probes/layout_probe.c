@@ -18,7 +18,10 @@ static_assert(offsetof(struct platform_device, dev) +
 
 static_assert(offsetof(struct tcm_transport_overlay, flags) == 0x14);
 static_assert(sizeof(struct tcm_transport_overlay) == 0x15);
-static_assert(sizeof(struct tcm_dev) == 0x3a0);
+static_assert(sizeof(struct tcm_dev) == 0x23e8);
+static_assert(offsetof(struct tcm_dev, reset_callback) == 0x3b0);
+static_assert(offsetof(struct tcm_dev, post_reset_context) == 0x23d8);
+static_assert(offsetof(struct tcm_dev, post_reset_callback) == 0x23e0);
 
 static_assert(sizeof(struct testing_item) == 0x178);
 static_assert(offsetof(struct testing_item, version) == 0x00);

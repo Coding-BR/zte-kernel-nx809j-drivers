@@ -56,7 +56,8 @@ ssize_t syna_sysfs_reset_store(struct kobject *kobj,
         v14 = -22;
         goto LABEL_17;
       }
-      v12 = syna_tcm_reset(*(_QWORD *)v6, *(unsigned int *)(*(_QWORD *)v6 + 524LL), 0LL);
+      v12 = syna_tcm_reset((struct tcm_dev *)*(_QWORD *)v6,
+                           *(unsigned int *)(*(_QWORD *)v6 + 524LL));
       if ( v12 < 0 )
       {
         v14 = v12;

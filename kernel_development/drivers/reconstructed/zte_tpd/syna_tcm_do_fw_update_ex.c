@@ -153,7 +153,7 @@ LABEL_19:
     {
       printk(unk_32176, "syna_tcm_do_fw_update_ex", v22);
     }
-    v23 = syna_tcm_reset(a1, a6, v27);
+    v23 = syna_tcm_reset((struct tcm_dev *)a1, a6);
     if ( (v23 & 0x80000000) == 0 )
       goto LABEL_37;
     v24 = unk_39948;

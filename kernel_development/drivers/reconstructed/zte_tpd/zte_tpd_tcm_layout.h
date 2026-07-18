@@ -23,11 +23,20 @@ struct tcm_dev {
 	u32 command_delay_ms;
 	u8 reserved_0210[0x188];
 	tcm_write_message_fn write_message;
+	u8 reserved_03a0[0x10];
+	void *reset_callback;
+	u8 reserved_03b8[0x2020];
+	void *post_reset_context;
+	void *post_reset_callback;
 };
 
 static_assert(offsetof(struct tcm_dev, firmware_mode) == 0x09);
 static_assert(offsetof(struct tcm_dev, transport) == 0x48);
 static_assert(offsetof(struct tcm_dev, command_delay_ms) == 0x20c);
 static_assert(offsetof(struct tcm_dev, write_message) == 0x398);
+static_assert(offsetof(struct tcm_dev, reset_callback) == 0x3b0);
+static_assert(offsetof(struct tcm_dev, post_reset_context) == 0x23d8);
+static_assert(offsetof(struct tcm_dev, post_reset_callback) == 0x23e0);
+static_assert(sizeof(struct tcm_dev) == 0x23e8);
 
 #endif

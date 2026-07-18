@@ -19,9 +19,11 @@ equivalencia funcional muito mais exigente que a simples compilacao do `.ko`.
 - Os `359` simbolos de texto stock estao presentes no candidato.
 - Os imports KMI sao exatamente `152/152`.
 - Dois builds limpos produziram o candidato canonico
-  `190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d`.
-- A superficie selecionada possui `151/151` funcoes com o mesmo type ID KCFI e
+  `83e8cd91f60a7bfcae11c02b56f61008649dd9b39ddcd480dbd15def09081806`.
+- A superficie selecionada possui `160/160` funcoes com o mesmo type ID KCFI e
   secao ELF do stock; nela, as oito familias recuperadas somam `143/143`.
+- Na superficie integral recuperavel, `235/322` funcoes possuem o mesmo Type ID
+  KCFI; restam `87` assinaturas divergentes e nenhuma funcao candidata ausente.
 
 O mapa e classificado como `structural_identity_only`. Ele nao converte
 automaticamente rastreabilidade em equivalencia semantica.
@@ -56,7 +58,10 @@ local e usa padding explicito:
 - `transport`: `0x48`;
 - `command_delay_ms`: `0x20c`;
 - `write_message`: `0x398`;
-- tamanho minimo do overlay atual: `0x3a0`.
+- `reset_callback`: `0x3b0`;
+- `post_reset_context`: `0x23d8`;
+- `post_reset_callback`: `0x23e0`;
+- tamanho minimo comprovado do overlay atual: `0x23e8`.
 
 O probe `probes/layout_probe.c` compila esses offsets junto com o layout do
 platform device no Clang Android `r536225`. Isso prova consistencia de ABI com os
@@ -64,24 +69,19 @@ headers configurados, mas nao comportamento eletrico.
 
 ## Cobertura Dinamica Offline
 
-Os quatro harnesses locais exercitam diretamente 68 funcoes distintas e
-registram 37 testes PASS. O lote `work/void` acrescenta 30 funcoes e valida
-dispatch de eventos, offsets, ordem de cancelamento/cleanup, inicializacao de
-workqueues, buffers de firmware e teardown. Duas execucoes consecutivas passaram
-com ASan/UBSan. Os harnesses usam stubs controlados e nao reproduzem IRQ real,
-temporizacao do scheduler, SPI fisico, energia, display ou suspend/resume do
-aparelho.
+Os oito harnesses locais registram `77` casos PASS. Eles cobrem callbacks de
+firmware, proc feature/scalar/special, work/void, zlog, validadores restantes e
+as rotinas TCM de reset/delay. O ultimo harness verifica em compile time a ABI
+comum `int (struct tcm_dev *, unsigned int)` e exercita contratos nulos, delay
+explicito/default/suprimido, propagacao de erros e callbacks de reset. O caminho
+nao nulo de erase permanece fora do teste host por depender da configuracao real
+de flash.
 
-A superficie KCFI verificada cresceu de 50 para 151 funcoes. As quatro familias
-de firmware/estado continuam exatas, e as familias proc read/write, workqueue e
-`void(void)` agora tambem coincidem integralmente. Os handlers proc usam sua ABI
-nativa e 63 wrappers artificiais foram removidos. Essa verificacao prova tipo e
-secao ELF. Restam sete callbacks `work_struct` complexos para um fixture
-CFI-aware e 64 handlers proc para harnesses de entrada/saida dedicados.
-
-O manifesto agora possui 68 microtarefas `PASS`, cada uma com hashes de build,
-KCFI e teste, e 299 tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao
-pode ser chamado de `100%`.
+Os harnesses usam stubs controlados e nao reproduzem IRQ real, temporizacao do
+scheduler, SPI fisico, energia, display ou suspend/resume do aparelho. O
+manifesto possui `132` microtarefas `PASS`, cada uma com hashes de build, KCFI e
+teste, e `235` tarefas `READY_FOR_IMPLEMENTATION`. Por isso o driver nao pode ser
+chamado de `100%`.
 
 ## Registros Historicos de Hardware
 
@@ -94,5 +94,6 @@ janela temporal, logs completos e rollback controlado.
 ## Conclusao Atual
 
 O `zte_tpd` e um candidato estaticamente verificavel, reprodutivel e alinhado na
-superficie KMI observada. O protocolo offline esta em `8/10`: faltam cobertura
-direta das microtarefas e revisao independente. Hardware permanece adiado.
+superficie KMI observada. A auditoria offline permanece `INCOMPLETE`: faltam 235
+microtarefas com teste direto, 87 assinaturas KCFI, revisao independente e a
+validacao controlada em hardware.

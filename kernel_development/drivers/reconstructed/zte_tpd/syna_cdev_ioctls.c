@@ -332,7 +332,8 @@ LABEL_44:
       }
       else
       {
-        LODWORD(v6) = syna_tcm_reset(*v5, *(unsigned int *)(*v5 + 524LL), 0LL);
+        LODWORD(v6) = syna_tcm_reset((struct tcm_dev *)*v5,
+                                    *(unsigned int *)(*v5 + 524LL));
         if ( (v6 & 0x80000000) != 0 )
         {
           v36 = unk_39948;

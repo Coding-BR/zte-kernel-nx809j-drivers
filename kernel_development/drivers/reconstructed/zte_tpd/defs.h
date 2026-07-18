@@ -236,7 +236,12 @@ extern __int64 syna_cdev_ioctl_raw_read(__int64 a1, unsigned __int64 a2, __int64
 extern __int64 syna_cdev_ioctl_raw_write(__int64 a1, unsigned __int64 a2, __int64 a3, unsigned int a4);
 extern __int64 syna_tcm_clear_data_duplicator(__int64 a1);
 extern __int64 syna_request_managed_device();
-extern __int64 syna_tcm_reset(__int64 a1, unsigned int a2, __int64 a3);
+extern int syna_tcm_reset(struct tcm_dev *tcm, unsigned int delay_ms);
+extern int syna_tcm_rezero(struct tcm_dev *tcm, unsigned int delay_ms);
+extern int syna_tcm_erase_mtp_data(struct tcm_dev *tcm,
+                                  unsigned int delay_ms);
+extern int syna_tcm_preserve_touch_report_config(struct tcm_dev *tcm,
+                                                 unsigned int delay_ms);
 extern __int64 syna_tcm_set_report_dispatcher(__int64 a1, int a2, void *a3, __int64 a4);
 extern __int64 syna_dev_process_touch_report(unsigned __int8 a1, const void *a2, __int64 a3, __int64 a4);
 extern void syna_dev_reflash_startup_work(struct work_struct *work);

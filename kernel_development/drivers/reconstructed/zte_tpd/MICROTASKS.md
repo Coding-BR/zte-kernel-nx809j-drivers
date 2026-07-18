@@ -276,7 +276,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 270_syna_tcm_buf_copy | syna_tcm_buf_copy | 00121c10 | core_logic | syna_tcm_buf_copy_2.c:syna_tcm_buf_copy_2 | READY_FOR_IMPLEMENTATION |
 | 271_syna_tcm_identify | syna_tcm_identify | 00121f54 | core_logic | syna_tcm_identify.c:syna_tcm_identify | READY_FOR_IMPLEMENTATION |
 | 272_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 00122140 | core_logic | syna_tcm_buf_unlock_0.c:syna_tcm_buf_unlock_0 | READY_FOR_IMPLEMENTATION |
-| 273_syna_tcm_reset | syna_tcm_reset | 001221ac | core_logic | syna_tcm_reset.c:syna_tcm_reset | READY_FOR_IMPLEMENTATION |
+| 273_syna_tcm_reset | syna_tcm_reset | 001221ac | core_logic | syna_tcm_reset.c:syna_tcm_reset | PASS |
 | 274_syna_tcm_enable_report | syna_tcm_enable_report | 0012231c | core_logic | syna_tcm_enable_report.c:syna_tcm_enable_report | READY_FOR_IMPLEMENTATION |
 | 275_syna_tcm_wait_for_report | syna_tcm_wait_for_report | 0012248c | core_logic | syna_tcm_wait_for_report.c:syna_tcm_wait_for_report | READY_FOR_IMPLEMENTATION |
 | 276_syna_tcm_switch_fw_mode | syna_tcm_switch_fw_mode | 001226ec | core_logic | syna_tcm_switch_fw_mode.c:syna_tcm_switch_fw_mode | READY_FOR_IMPLEMENTATION |
@@ -287,7 +287,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 281_syna_tcm_get_dynamic_config | syna_tcm_get_dynamic_config | 00123228 | core_logic | syna_tcm_get_dynamic_config.c:syna_tcm_get_dynamic_config | READY_FOR_IMPLEMENTATION |
 | 282_syna_tcm_set_dynamic_config | syna_tcm_set_dynamic_config | 001233b4 | core_logic | syna_tcm_set_dynamic_config.c:syna_tcm_set_dynamic_config | READY_FOR_IMPLEMENTATION |
 | 283_syna_tcm_set_game_partition_config | syna_tcm_set_game_partition_config | 00123518 | core_logic | syna_tcm_set_game_partition_config.c:syna_tcm_set_game_partition_config | PASS |
-| 284_syna_tcm_rezero | syna_tcm_rezero | 001237ec | core_logic | syna_tcm_rezero.c:syna_tcm_rezero | READY_FOR_IMPLEMENTATION |
+| 284_syna_tcm_rezero | syna_tcm_rezero | 001237ec | core_logic | syna_tcm_rezero.c:syna_tcm_rezero | PASS |
 | 285_syna_tcm_sleep | syna_tcm_sleep | 001238fc | core_logic | syna_tcm_sleep.c:syna_tcm_sleep | READY_FOR_IMPLEMENTATION |
 | 286_syna_tcm_get_features | syna_tcm_get_features | 00123a08 | core_logic | syna_tcm_get_features.c:syna_tcm_get_features | READY_FOR_IMPLEMENTATION |
 | 287_syna_tcm_run_production_test | syna_tcm_run_production_test | 00123c34 | core_logic | syna_tcm_run_production_test.c:syna_tcm_run_production_test | READY_FOR_IMPLEMENTATION |
@@ -316,14 +316,14 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 310_syna_tcm_update_mtp_data | syna_tcm_update_mtp_data | 00127b14 | core_logic | syna_tcm_update_mtp_data.c:syna_tcm_update_mtp_data | READY_FOR_IMPLEMENTATION |
 | 311_syna_pal_mem_alloc | syna_pal_mem_alloc | 00127e18 | core_logic | syna_pal_mem_alloc.c:syna_pal_mem_alloc | READY_FOR_IMPLEMENTATION |
 | 312_syna_tcm_read_mtp_data | syna_tcm_read_mtp_data | 00127e84 | user_abi | syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data | READY_FOR_IMPLEMENTATION |
-| 313_syna_tcm_erase_mtp_data | syna_tcm_erase_mtp_data | 001281c8 | core_logic | syna_tcm_erase_mtp_data.c:syna_tcm_erase_mtp_data | READY_FOR_IMPLEMENTATION |
+| 313_syna_tcm_erase_mtp_data | syna_tcm_erase_mtp_data | 001281c8 | core_logic | syna_tcm_erase_mtp_data.c:syna_tcm_erase_mtp_data | PASS |
 | 314_syna_pal_mem_free | syna_pal_mem_free | 001284c0 | core_logic | syna_pal_mem_free.c:syna_pal_mem_free | READY_FOR_IMPLEMENTATION |
 | 315_syna_tcm_get_touch_data | syna_tcm_get_touch_data | 00128514 | core_logic | syna_tcm_get_touch_data.c:syna_tcm_get_touch_data | READY_FOR_IMPLEMENTATION |
 | 316_syna_tcm_parse_touch_report | syna_tcm_parse_touch_report | 0012860c | core_logic | syna_tcm_parse_touch_report.c:syna_tcm_parse_touch_report | READY_FOR_IMPLEMENTATION |
 | 317_syna_tcm_set_touch_report_config | syna_tcm_set_touch_report_config | 0012a264 | core_logic | syna_tcm_set_touch_report_config.c:syna_tcm_set_touch_report_config | READY_FOR_IMPLEMENTATION |
 | 318_syna_pal_mem_cpy | syna_pal_mem_cpy | 0012a478 | core_logic | syna_pal_mem_cpy_1.c:syna_pal_mem_cpy_1 | READY_FOR_IMPLEMENTATION |
 | 319_syna_pal_mem_free | syna_pal_mem_free | 0012a4ec | core_logic | syna_pal_mem_free_0.c:syna_pal_mem_free_0 | READY_FOR_IMPLEMENTATION |
-| 320_syna_tcm_preserve_touch_report_config | syna_tcm_preserve_touch_report_config | 0012a53c | core_logic | syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config | READY_FOR_IMPLEMENTATION |
+| 320_syna_tcm_preserve_touch_report_config | syna_tcm_preserve_touch_report_config | 0012a53c | core_logic | syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config | PASS |
 | 321_syna_tcm_set_custom_touch_entity_callback | syna_tcm_set_custom_touch_entity_callback | 0012aaa8 | core_logic | syna_tcm_set_custom_touch_entity_callback.c:syna_tcm_set_custom_touch_entity_callback | READY_FOR_IMPLEMENTATION |
 | 322_syna_tcm_set_custom_gesture_callback | syna_tcm_set_custom_gesture_callback | 0012aaf4 | core_logic | syna_tcm_set_custom_gesture_callback.c:syna_tcm_set_custom_gesture_callback | READY_FOR_IMPLEMENTATION |
 | 323_syna_tcm_get_partition_id_string | syna_tcm_get_partition_id_string | 0012ab40 | core_logic | syna_tcm_get_partition_id_string.c:syna_tcm_get_partition_id_string | READY_FOR_IMPLEMENTATION |
