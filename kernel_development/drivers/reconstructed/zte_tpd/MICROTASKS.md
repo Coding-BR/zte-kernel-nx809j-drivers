@@ -311,11 +311,11 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 305_syna_tcm_update_lockdown_config | syna_tcm_update_lockdown_config | 00126aec | core_logic | syna_tcm_update_lockdown_config.c:syna_tcm_update_lockdown_config | READY_FOR_IMPLEMENTATION |
 | 306_syna_tcm_check_flash_block | syna_tcm_check_flash_block | 00126e70 | core_logic | syna_tcm_check_flash_block.c:syna_tcm_check_flash_block | READY_FOR_IMPLEMENTATION |
 | 307_syna_tcm_write_flash | syna_tcm_write_flash | 0012704c | user_abi | syna_tcm_write_flash.c:syna_tcm_write_flash | READY_FOR_IMPLEMENTATION |
-| 308_syna_tcm_update_cs_config | syna_tcm_update_cs_config | 00127414 | core_logic | syna_tcm_update_cs_config.c:syna_tcm_update_cs_config | READY_FOR_IMPLEMENTATION |
-| 309_syna_tcm_read_cs_data | syna_tcm_read_cs_data | 001277fc | user_abi | syna_tcm_read_cs_data.c:syna_tcm_read_cs_data | READY_FOR_IMPLEMENTATION |
-| 310_syna_tcm_update_mtp_data | syna_tcm_update_mtp_data | 00127b14 | core_logic | syna_tcm_update_mtp_data.c:syna_tcm_update_mtp_data | READY_FOR_IMPLEMENTATION |
+| 308_syna_tcm_update_cs_config | syna_tcm_update_cs_config | 00127414 | core_logic | syna_tcm_update_cs_config.c:syna_tcm_update_cs_config | PASS |
+| 309_syna_tcm_read_cs_data | syna_tcm_read_cs_data | 001277fc | user_abi | syna_tcm_read_cs_data.c:syna_tcm_read_cs_data | PASS |
+| 310_syna_tcm_update_mtp_data | syna_tcm_update_mtp_data | 00127b14 | core_logic | syna_tcm_update_mtp_data.c:syna_tcm_update_mtp_data | PASS |
 | 311_syna_pal_mem_alloc | syna_pal_mem_alloc | 00127e18 | core_logic | syna_pal_mem_alloc.c:syna_pal_mem_alloc | READY_FOR_IMPLEMENTATION |
-| 312_syna_tcm_read_mtp_data | syna_tcm_read_mtp_data | 00127e84 | user_abi | syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data | READY_FOR_IMPLEMENTATION |
+| 312_syna_tcm_read_mtp_data | syna_tcm_read_mtp_data | 00127e84 | user_abi | syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data | PASS |
 | 313_syna_tcm_erase_mtp_data | syna_tcm_erase_mtp_data | 001281c8 | core_logic | syna_tcm_erase_mtp_data.c:syna_tcm_erase_mtp_data | PASS |
 | 314_syna_pal_mem_free | syna_pal_mem_free | 001284c0 | core_logic | syna_pal_mem_free.c:syna_pal_mem_free | READY_FOR_IMPLEMENTATION |
 | 315_syna_tcm_get_touch_data | syna_tcm_get_touch_data | 00128514 | core_logic | syna_tcm_get_touch_data.c:syna_tcm_get_touch_data | READY_FOR_IMPLEMENTATION |

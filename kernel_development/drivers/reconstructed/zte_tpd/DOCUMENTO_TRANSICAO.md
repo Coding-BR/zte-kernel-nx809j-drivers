@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `bd3c4ea07621254483410d37760017d5b1ef3b00d087cb9e0240b8d64b979f46`
+Candidato vinculado: `2befd21fc877b1083eb805e709c49690266cf5f483154dc535af36a02839fdc9`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -77,6 +77,25 @@ int syna_dev_set_stability_level(struct syna_tcm *tcm, int value,
                                  unsigned int delay_ms);
 int syna_dev_set_tp_report_rate(struct syna_tcm *tcm, int value,
                                 unsigned int delay_ms);
+
+int syna_tcm_reset(struct tcm_dev *tcm, unsigned int delay_ms);
+int syna_tcm_rezero(struct tcm_dev *tcm, unsigned int delay_ms);
+int syna_tcm_erase_mtp_data(struct tcm_dev *tcm, unsigned int delay_ms);
+int syna_tcm_preserve_touch_report_config(struct tcm_dev *tcm,
+                                          unsigned int delay_ms);
+
+int syna_tcm_read_cs_data(struct tcm_dev *tcm, char *data,
+                          unsigned int length, unsigned int offset,
+                          unsigned int delay_mode);
+int syna_tcm_read_mtp_data(struct tcm_dev *tcm, char *data,
+                           unsigned int length, unsigned int offset,
+                           unsigned int delay_mode);
+int syna_tcm_update_cs_config(struct tcm_dev *tcm, char *data,
+                              unsigned int length, unsigned int offset,
+                              unsigned int delay_mode);
+int syna_tcm_update_mtp_data(struct tcm_dev *tcm, char *data,
+                             unsigned int length, unsigned int offset,
+                             unsigned int delay_mode);
 ```
 
 Os registros correspondentes devem manter os tipos nativos:
@@ -258,8 +277,8 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 128 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-239 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
-subconjunto testado com 67 casos. A superficie KCFI integral esta em `231/322`;
+O estado atual possui 136 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+231 tarefas `READY_FOR_IMPLEMENTATION`. Nove relatorios de harness sustentam o
+subconjunto testado com 86 casos. A superficie KCFI integral esta em `239/322`;
 portanto,
 nenhuma promocao global para `100%` e permitida.

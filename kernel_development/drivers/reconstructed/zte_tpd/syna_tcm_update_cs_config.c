@@ -1,5 +1,12 @@
-__int64 __fastcall syna_tcm_update_cs_config(__int64 a1, char *a2, __int64 a3, int a4, unsigned int a5)
+int syna_tcm_update_cs_config(struct tcm_dev *tcm, char *data,
+                              unsigned int length, unsigned int offset,
+                              unsigned int delay_mode)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
+  char *a2 = data;
+  unsigned int a3 = length;
+  unsigned int a4 = offset;
+  unsigned int a5 = delay_mode;
   char *v5; // x22
   unsigned int v6; // w23
   unsigned int v10; // w25
@@ -18,7 +25,7 @@ __int64 __fastcall syna_tcm_update_cs_config(__int64 a1, char *a2, __int64 a3, i
   int v23; // w0
   unsigned int v24; // w20
   void *v25; // x0
-  __int64 result; // x0
+  int result; // w0
   void *v27; // x0
   __int64 v28; // x19
   __int64 v29; // x0
@@ -80,7 +87,7 @@ __int64 __fastcall syna_tcm_update_cs_config(__int64 a1, char *a2, __int64 a3, i
     v25 = unk_3365A;
 LABEL_33:
     printk(v25, "syna_tcm_update_cs_config", a3);
-    result = 4294967055LL;
+    result = -241;
     goto LABEL_53;
   }
   v5 = a2;

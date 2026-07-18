@@ -1,10 +1,17 @@
-__int64 __fastcall syna_tcm_update_mtp_data(__int64 a1, const void *a2, __int64 a3, int a4, unsigned int a5)
+int syna_tcm_update_mtp_data(struct tcm_dev *tcm, char *data,
+                             unsigned int length, unsigned int offset,
+                             unsigned int delay_mode)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
+  char *a2 = data;
+  unsigned int a3 = length;
+  unsigned int a4 = offset;
+  unsigned int a5 = delay_mode;
   unsigned int v6; // w22
   unsigned int v10; // w24
   unsigned int v11; // w20
   __int64 v12; // x2
-  unsigned int v13; // w24
+  int v13; // w24
   unsigned int v14; // w26
   unsigned int v15; // w9
   __int64 v16; // x25

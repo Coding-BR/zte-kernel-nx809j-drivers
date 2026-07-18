@@ -242,6 +242,20 @@ extern int syna_tcm_erase_mtp_data(struct tcm_dev *tcm,
                                   unsigned int delay_ms);
 extern int syna_tcm_preserve_touch_report_config(struct tcm_dev *tcm,
                                                  unsigned int delay_ms);
+extern int syna_tcm_read_cs_data(struct tcm_dev *tcm, char *data,
+                                 unsigned int length, unsigned int offset,
+                                 unsigned int delay_mode);
+extern int syna_tcm_read_mtp_data(struct tcm_dev *tcm, char *data,
+                                  unsigned int length, unsigned int offset,
+                                  unsigned int delay_mode);
+extern int syna_tcm_update_cs_config(struct tcm_dev *tcm, char *data,
+                                     unsigned int length,
+                                     unsigned int offset,
+                                     unsigned int delay_mode);
+extern int syna_tcm_update_mtp_data(struct tcm_dev *tcm, char *data,
+                                    unsigned int length,
+                                    unsigned int offset,
+                                    unsigned int delay_mode);
 extern __int64 syna_tcm_set_report_dispatcher(__int64 a1, int a2, void *a3, __int64 a4);
 extern __int64 syna_dev_process_touch_report(unsigned __int8 a1, const void *a2, __int64 a3, __int64 a4);
 extern void syna_dev_reflash_startup_work(struct work_struct *work);

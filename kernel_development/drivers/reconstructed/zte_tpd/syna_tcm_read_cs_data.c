@@ -1,5 +1,12 @@
-__int64 __fastcall syna_tcm_read_cs_data(__int64 a1, void *a2, __int64 a3, int a4, int a5)
+int syna_tcm_read_cs_data(struct tcm_dev *tcm, char *data,
+                          unsigned int length, unsigned int offset,
+                          unsigned int delay_mode)
 {
+  __int64 a1 = (__int64)(unsigned long)tcm;
+  char *a2 = data;
+  unsigned int a3 = length;
+  unsigned int a4 = offset;
+  unsigned int a5 = delay_mode;
   unsigned int v6; // w20
   unsigned int v10; // w25
   unsigned int v11; // w22
@@ -14,7 +21,7 @@ __int64 __fastcall syna_tcm_read_cs_data(__int64 a1, void *a2, __int64 a3, int a
   __int64 v20; // x19
   __int64 v21; // x0
   __int64 v22; // x2
-  __int64 result; // x0
+  int result; // w0
   void *v24; // x0
   void *v25; // x0
   void *src; // [xsp+8h] [xbp-E8h] BYREF
@@ -71,7 +78,7 @@ __int64 __fastcall syna_tcm_read_cs_data(__int64 a1, void *a2, __int64 a3, int a
     v24 = unk_3365A;
 LABEL_31:
     printk(v24, "syna_tcm_read_cs_data", a3);
-    result = 4294967055LL;
+    result = -241;
     goto LABEL_28;
   }
   if ( !a2 || (v6 = a3) == 0 )

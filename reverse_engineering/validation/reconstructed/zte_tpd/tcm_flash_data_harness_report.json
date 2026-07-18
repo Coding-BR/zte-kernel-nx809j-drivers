@@ -1,0 +1,79 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable -Wno-int-conversion -Wno-uninitialized -Wno-sometimes-uninitialized -Wno-logical-op-parentheses -Wno-sign-compare -Wno-incompatible-pointer-types -Wno-incompatible-pointer-types-discards-qualifiers -I/work/workspace/kernel_development/drivers/reconstructed/zte_tpd tcm_flash_data_harness.c -o build/tcm_flash_data_harness && ./build/tcm_flash_data_harness"
+  ],
+  "generated_utc": "2026-07-18T20:00:51.414554+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\tcm_flash_data_harness.c",
+      "sha256": "fdad87d80f3939220c373589fab6e1a9a72afb9778f14482aa639829a66617cb",
+      "size": 8881
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_tpd_tcm_layout.h",
+      "sha256": "9a555f52fb1a877445d928af7cae0a53d3e0d6a80ffc6605305bb72b590b2a5f",
+      "size": 1313
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_read_cs_data.c",
+      "sha256": "88107189542b119530187da9231fc1ce5082846de36f784a7e3660e4b6a50806",
+      "size": 4499
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_read_mtp_data.c",
+      "sha256": "1c4d3412800c48989af6a810edab02070da5b4ea4380a352d7995885b2457915",
+      "size": 4506
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_update_cs_config.c",
+      "sha256": "cc355ddfba9dd39f8c974bdfc6c39d4b47df556f04a164e4fc4c9df7536704f4",
+      "size": 6005
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_update_mtp_data.c",
+      "sha256": "d04405b818c1c52a877a918c177619ae3c78529c8922494dcf94af6e13ae2840",
+      "size": 3854
+    }
+  ],
+  "limitations": [
+    "Flash setup, read/write, allocation, mode-switch, mutex, and logging behavior use deterministic host stubs.",
+    "The executable paths stop at a controlled syna_tcm_set_up_flash_access failure.",
+    "Successful MMIO/SPI flash read and write behavior is not exercised or claimed.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO, or partition operation is performed.",
+    "Hardware validation remains a separate controlled gate."
+  ],
+  "mode": "offline_direct_source_host_harness",
+  "passed": true,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "stderr": "",
+  "stdout": "PASS test_signature_contract\nPASS test_null_tcm_contracts\nPASS test_invalid_buffer_contracts\nPASS test_read_cs_setup_error\nPASS test_read_mtp_setup_error\nPASS test_update_cs_setup_error\nPASS test_update_mtp_setup_error\nPASS test_delay_mode_disabled\nPASS test_firmware_mode_cleanup\nSUMMARY total=9 passed=9 failed=0\n",
+  "tests": {
+    "expected": 9,
+    "failed": [],
+    "passed": [
+      "test_signature_contract",
+      "test_null_tcm_contracts",
+      "test_invalid_buffer_contracts",
+      "test_read_cs_setup_error",
+      "test_read_mtp_setup_error",
+      "test_update_cs_setup_error",
+      "test_update_mtp_setup_error",
+      "test_delay_mode_disabled",
+      "test_firmware_mode_cleanup"
+    ],
+    "summary": "SUMMARY total=9 passed=9 failed=0"
+  }
+}
