@@ -1212,11 +1212,36 @@ uint32_t is_fake_sleep_mode = 0;
 uint32_t is_screen_off_awake_mode = 0;
 struct wakeup_source tp_wakeup;
 
-unsigned char test_0001[376] = {0};
-unsigned char test_0002[376] = {0};
-unsigned char test_0100[376] = {0};
-unsigned char test_0500[376] = {0};
-unsigned char test_0A00[376] = {0};
+struct testing_item test_0001 = {
+    .version = 1,
+    .id = 0x0001,
+    .name = "Firmware/Device ID Test",
+    .run = syna_tcm_testing_build_id,
+};
+struct testing_item test_0002 = {
+    .version = 1,
+    .id = 0x0002,
+    .name = "Configuration ID Test",
+    .run = syna_tcm_testing_config_id,
+};
+struct testing_item test_0100 = {
+    .version = 2,
+    .id = 0x0100,
+    .name = "TRx Short Test",
+    .run = syna_tcm_testing_trx_trx_short,
+};
+struct testing_item test_0500 = {
+    .version = 1,
+    .id = 0x0500,
+    .name = "Full Raw Cap Test",
+    .run = syna_tcm_testing_full_raw,
+};
+struct testing_item test_0A00 = {
+    .version = 1,
+    .id = 0x0A00,
+    .name = "Noise Test",
+    .run = syna_tcm_testing_noise,
+};
 
 unsigned char default_custom_touch_format[21] = {
     0xCA, 0x70, 0x10, 0x08, 0x18, 0x08, 0x01, 0x06, 0x04, 0x07,

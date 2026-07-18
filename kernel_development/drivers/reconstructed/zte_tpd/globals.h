@@ -1075,11 +1075,11 @@ extern __int64 g_cdev_data;
 struct lock_class_key;
 extern struct lock_class_key dummy_lock_key;
 
-extern unsigned char test_0001[376];
-extern unsigned char test_0002[376];
-extern unsigned char test_0100[376];
-extern unsigned char test_0500[376];
-extern unsigned char test_0A00[376];
+extern struct testing_item test_0001;
+extern struct testing_item test_0002;
+extern struct testing_item test_0100;
+extern struct testing_item test_0500;
+extern struct testing_item test_0A00;
 extern unsigned char default_custom_touch_format[21];
 extern unsigned short syna_tcm_crc16_crc16_table[256];
 

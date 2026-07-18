@@ -32,6 +32,7 @@
 #include <linux/pm_wakeup.h>
 
 #include "zte_tpd_tcm_layout.h"
+#include "zte_tpd_testing_layout.h"
 
 #undef _inline_copy_from_user
 

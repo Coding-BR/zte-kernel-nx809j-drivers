@@ -6,9 +6,8 @@ ssize_t syna_testing_check_dev_id_show(struct kobject *kobj,
   __int64 v4; // x8
   __int64 v5; // x8
   __int64 *v6; // x23
-  __int64 testing_0001; // x0
+  struct testing_item *testing_0001; // x0
   __int64 v8; // x20
-  _DWORD *v9; // x8
   __int64 v10; // x0
   const char *v11; // x5
   unsigned int v12; // w20
@@ -57,7 +56,7 @@ LABEL_26:
     LODWORD(result) = scnprintf(a3, 4096, "Invalid testing item id:%d\n", 1);
     goto LABEL_26;
   }
-  v8 = testing_0001;
+  v8 = (__int64)testing_0001;
   LOBYTE(v25) = 0;
   v22 = nullptr;
   v23 = 0;
@@ -72,11 +71,10 @@ LABEL_26:
   LODWORD(v21) = 4;
   *(_QWORD *)(v8 + 56) = 0;
   *(_QWORD *)(v8 + 64) = &v20;
-  v9 = *(_DWORD **)(v8 + 24);
   v10 = *v6;
-  if ( *(v9 - 1) != -2118104430 )
-    __break(0x8228u);
-  if ( (((__int64 (__fastcall *)(__int64, __int64, _QWORD))v9)(v10, v8, 0) & 0x80000000) != 0 )
+  if ( ((struct testing_item *)v8)->run((struct tcm_dev *)v10,
+                                         (struct testing_item *)v8,
+                                         false) < 0 )
   {
     printk(unk_3D2FD, "syna_testing_check_dev_id_show", *(_QWORD *)(v8 + 8));
     v11 = "Fail";

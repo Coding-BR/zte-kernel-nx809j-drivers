@@ -1,4 +1,4 @@
-void *syna_tcm_get_testing_0100()
+struct testing_item *syna_tcm_get_testing_0100(void)
 {
   return &test_0100;
 }

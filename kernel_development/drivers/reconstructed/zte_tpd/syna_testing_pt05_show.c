@@ -6,10 +6,9 @@ ssize_t syna_testing_pt05_show(struct kobject *kobj,
   __int64 v4; // x8
   __int64 v5; // x8
   _BYTE *v6; // x24
-  __int64 testing_0500; // x0
+  struct testing_item *testing_0500; // x0
   __int64 v8; // x20
   __int64 v9; // x8
-  _DWORD *v10; // x8
   __int64 v11; // x0
   const char *v12; // x5
   unsigned int v13; // w21
@@ -54,7 +53,7 @@ LABEL_25:
     LODWORD(result) = scnprintf(a3, 4096, "Invalid testing item id:%d\n", 1280);
     goto LABEL_25;
   }
-  v8 = testing_0500;
+  v8 = (__int64)testing_0500;
   *(_DWORD *)(testing_0500 + 36) = *(_DWORD *)(*(_QWORD *)v6 + 32LL);
   v9 = *(_QWORD *)v6;
   v26 = 0;
@@ -69,11 +68,10 @@ LABEL_25:
   *(_QWORD *)(v8 + 216) = &v26;
   *(_QWORD *)(v8 + 56) = &v24;
   *(_QWORD *)(v8 + 64) = &v22;
-  v10 = *(_DWORD **)(v8 + 24);
   v11 = *(_QWORD *)v6;
-  if ( *(v10 - 1) != -2118104430 )
-    __break(0x8228u);
-  if ( (((__int64 (__fastcall *)(__int64, __int64, _QWORD))v10)(v11, v8, 0) & 0x80000000) != 0 )
+  if ( ((struct testing_item *)v8)->run((struct tcm_dev *)v11,
+                                         (struct testing_item *)v8,
+                                         false) < 0 )
   {
     printk(unk_3D2FD, "syna_testing_pt05_show", *(_QWORD *)(v8 + 8));
     v12 = "Fail";

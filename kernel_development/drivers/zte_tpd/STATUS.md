@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE` (`7/10` gates PASS)
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `2a70c7f1e88c4091812538d6d2187cec18597919c9d8acc0b60a9769d5b09589`
-- **Candidato:** `18260072` bytes
+- **Candidato SHA-256:** `cb57baecee9543e164fa44945e3c3d318c7fbbde805c19b73732b5044d2d4b5c`
+- **Candidato:** `18283136` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve o build, ELF, KMI e a rastreabilidade estrutural. Nao
@@ -29,7 +29,7 @@ INCOMPLETE:
 
 - O6: `123/367` microtarefas possuem build, KCFI e teste direto vinculados por
   hash; `244` ainda precisam de evidencia comportamental;
-- O8/O9: a paridade integral esta incompleta porque `133/322` funcoes com
+- O8/O9: a paridade integral esta incompleta porque `123/322` funcoes com
   preambulo KCFI stock recuperavel ainda possuem type ID divergente;
 - O10: revisao independente ainda nao foi realizada.
 
@@ -46,8 +46,8 @@ Hardware permanece `DEFERRED`.
   e 9 helpers diversos.
 - Sete relatorios de harness promovem `123` microtarefas atuais, sem PASS
   obsoleto e sem falha de ASan ou UBSan.
-- A superficie KCFI integral possui `189/322` matches (`58,70%`), zero simbolos
-  candidatos ausentes, `133` assinaturas divergentes e `46` funcoes stock cujo
+- A superficie KCFI integral possui `199/322` matches (`61,80%`), zero simbolos
+  candidatos ausentes, `123` assinaturas divergentes e `46` funcoes stock cujo
   preambulo precisa de revisao separada.
 - A familia stock `0x6fbb3035` foi corrigida integralmente: `11/11` funcoes
   agora possuem assinatura `int (void)` e secao correspondente, sem regressao
@@ -57,6 +57,13 @@ Hardware permanece `DEFERRED`.
 - As quatro operacoes de arquivo `syna_cdev_open`, `syna_cdev_release`,
   `syna_open` e `syna_release` agora possuem o type ID stock `0x9829071d` e
   estao ligadas diretamente as respectivas tabelas `file_operations`.
+- Os cinco getters `syna_tcm_get_testing_*` agora possuem o type ID stock
+  `0x2b399469`; os cinco callbacks de teste possuem `0x81c04a92`.
+- Os objetos `test_0001`, `test_0002`, `test_0100`, `test_0500` e `test_0A00`
+  deixaram de ser arrays zerados e reproduzem versao, ID, nome e callback
+  comprovados em `.data` e `.rela.data` do ELF stock.
+- `struct testing_item` possui `0x178` bytes e dez offsets verificados por
+  `static_assert` no probe AArch64 compilado contra o GKI configurado.
 
 ## Correcao de Usercopy e Proc
 

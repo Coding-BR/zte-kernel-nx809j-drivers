@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `190fffc9ee04abb2ae198b1ed833704a3890345747a4d593a971e7a03d36eb2d`
+Candidato vinculado: `cb57baecee9543e164fa44945e3c3d318c7fbbde805c19b73732b5044d2d4b5c`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -33,6 +33,11 @@ int syna_release(struct inode *inode, struct file *file);
 __poll_t syna_poll(struct file *file, struct poll_table_struct *wait);
 long syna_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 int syna_mmap(struct file *file, struct vm_area_struct *vma);
+
+struct testing_item *syna_tcm_get_testing_0001(void);
+int syna_tcm_testing_build_id(struct tcm_dev *tcm,
+                              struct testing_item *item,
+                              bool dual_firmware);
 ```
 
 Os registros correspondentes devem manter os tipos nativos:
@@ -46,7 +51,7 @@ static const struct file_operations zte_fops;
 
 Os 63 wrappers de proc foram removidos depois da comparacao de P-Code, assembly,
 KCFI e call sites. Os handlers usam diretamente as assinaturas nativas
-`proc_read`/`proc_write`. Restam 22 wrappers em outras fronteiras; cada um so
+`proc_read`/`proc_write`. Restam 2 wrappers de assinatura; cada um so
 pode ser removido depois da microtarefa da funcao alvo comprovar o ABI e os
 efeitos observaveis.
 
@@ -95,6 +100,41 @@ static_assert(sizeof(struct tcm_dev) == 0x3a0);
 #endif
 ```
 
+O overlay dos itens de teste preserva os `0x178` bytes comprovados e deixa
+padding explicito onde o significado semantico ainda nao foi recuperado:
+
+```c
+typedef int (*testing_run_fn)(struct tcm_dev *tcm,
+                              struct testing_item *item,
+                              bool dual_firmware);
+
+struct testing_item {
+        u32 version;                    /* 0x00 */
+        u32 id;                         /* 0x04 */
+        const char *name;               /* 0x08 */
+        bool result;                    /* 0x10 */
+        u8 reserved_0011[0x07];
+        testing_run_fn run;             /* 0x18 */
+        u8 reserved_0020[0x18];
+        void *limit_primary;            /* 0x38 */
+        void *limit_secondary;          /* 0x40 */
+        u8 reserved_0048[0x90];
+        void *result_data;              /* 0xd8 */
+        void *result_aux;               /* 0xe0 */
+        u8 reserved_00e8[0x90];
+};
+
+static_assert(sizeof(struct testing_item) == 0x178);
+static_assert(offsetof(struct testing_item, run) == 0x18);
+static_assert(offsetof(struct testing_item, result_data) == 0xd8);
+static_assert(offsetof(struct testing_item, result_aux) == 0xe0);
+```
+
+Os cinco objetos stock possuem 376 bytes e foram recuperados a partir dos
+simbolos, bytes de `.data` e relocacoes de `.rela.data`. Seus IDs sao `0x0001`,
+`0x0002`, `0x0100`, `0x0500` e `0x0A00`; o callback fica em `+0x18`. Nao altere
+os paddings restantes sem nova evidencia local do ELF, P-Code ou assembly.
+
 Layout GKI/ELF adicional comprovado:
 
 - `sizeof(struct platform_device) == 0x3f0`;
@@ -140,6 +180,7 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 68 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-299 tarefas `READY_FOR_IMPLEMENTATION`. Existem 68 funcoes com harness direto;
+O estado atual possui 123 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+244 tarefas `READY_FOR_IMPLEMENTATION`. Sete relatorios de harness sustentam o
+subconjunto testado;
 logo, nenhuma promocao global para `100%` e permitida.

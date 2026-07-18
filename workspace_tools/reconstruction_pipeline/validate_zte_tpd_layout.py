@@ -19,6 +19,15 @@ from pathlib import Path
 from typing import Any
 
 
+TESTING_ITEMS = {
+    "test_0001": (1, 0x0001, "Firmware/Device ID Test", "syna_tcm_testing_build_id"),
+    "test_0002": (1, 0x0002, "Configuration ID Test", "syna_tcm_testing_config_id"),
+    "test_0100": (2, 0x0100, "TRx Short Test", "syna_tcm_testing_trx_trx_short"),
+    "test_0500": (1, 0x0500, "Full Raw Cap Test", "syna_tcm_testing_full_raw"),
+    "test_0A00": (1, 0x0A00, "Noise Test", "syna_tcm_testing_noise"),
+}
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -109,6 +118,130 @@ def parse_stock_layout(symbols: str, relocations: str) -> dict[str, Any]:
     }
 
 
+def parse_symbol_table(text: str) -> dict[str, dict[str, Any]]:
+    records: dict[str, dict[str, Any]] = {}
+    pattern = re.compile(
+        r"^\s*\d+:\s+([0-9a-fA-F]+)\s+(\d+)\s+(\S+)\s+"
+        r"(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*$"
+    )
+    for line in text.splitlines():
+        match = pattern.match(line)
+        if not match:
+            continue
+        value, size, kind, binding, visibility, section, name = match.groups()
+        records[name] = {
+            "value": int(value, 16),
+            "size": int(size),
+            "type": kind,
+            "binding": binding,
+            "visibility": visibility,
+            "section": section,
+        }
+    return records
+
+
+def parse_abs64_relocations(text: str, section: str = ".rela.data") -> dict[int, dict[str, Any]]:
+    records: dict[int, dict[str, Any]] = {}
+    current_section: str | None = None
+    header = re.compile(r"^Relocation section '([^']+)'")
+    relocation = re.compile(
+        r"^\s*([0-9a-fA-F]+)\s+\S+\s+R_AARCH64_ABS64\s+"
+        r"[0-9a-fA-F]+\s+(\S+)(?:\s+\+\s+([0-9a-fA-F]+))?\s*$"
+    )
+    for line in text.splitlines():
+        section_match = header.match(line)
+        if section_match:
+            current_section = section_match.group(1)
+            continue
+        if current_section != section:
+            continue
+        match = relocation.match(line)
+        if not match:
+            continue
+        offset, symbol, addend = match.groups()
+        records[int(offset, 16)] = {
+            "symbol": symbol,
+            "addend": int(addend, 16) if addend else 0,
+        }
+    return records
+
+
+def read_c_string(blob: bytes, offset: int) -> str:
+    if offset < 0 or offset >= len(blob):
+        raise ValueError(f"string offset is outside section: 0x{offset:x}")
+    end = blob.find(b"\0", offset)
+    if end < 0:
+        raise ValueError(f"string at 0x{offset:x} has no terminator")
+    return blob[offset:end].decode("utf-8")
+
+
+def validate_testing_items(
+    symbols_text: str,
+    relocations_text: str,
+    data: bytes,
+    strings: bytes,
+) -> dict[str, Any]:
+    symbols = parse_symbol_table(symbols_text)
+    relocations = parse_abs64_relocations(relocations_text)
+    items: dict[str, Any] = {}
+    for object_name, specification in TESTING_ITEMS.items():
+        expected_version, expected_id, expected_name, callback_name = specification
+        obj = symbols.get(object_name)
+        callback = symbols.get(callback_name)
+        if obj is None or obj["type"] != "OBJECT":
+            raise ValueError(f"missing testing object symbol: {object_name}")
+        if callback is None or callback["type"] != "FUNC":
+            raise ValueError(f"missing testing callback symbol: {callback_name}")
+        base = obj["value"]
+        if base + 0x178 > len(data):
+            raise ValueError(f"testing object is outside .data: {object_name}")
+        raw = data[base : base + 0x178]
+        version = int.from_bytes(raw[0:4], "little")
+        item_id = int.from_bytes(raw[4:8], "little")
+        name_relocation = relocations.get(base + 0x08)
+        callback_relocation = relocations.get(base + 0x18)
+        if name_relocation is None or name_relocation["symbol"] != ".rodata.str1.1":
+            raise ValueError(f"invalid name relocation for {object_name}")
+        if callback_relocation is None:
+            raise ValueError(f"missing callback relocation for {object_name}")
+        name = read_c_string(strings, name_relocation["addend"])
+        callback_target_matches = (
+            callback_relocation["symbol"] == callback_name
+            and callback_relocation["addend"] == 0
+        ) or (
+            callback_relocation["symbol"] == ".text"
+            and callback_relocation["addend"] == callback["value"]
+        )
+        checks = {
+            "size": obj["size"] == 0x178,
+            "version": version == expected_version,
+            "id": item_id == expected_id,
+            "name": name == expected_name,
+            "name_relocation_offset": name_relocation is not None,
+            "callback_relocation_offset": callback_relocation is not None,
+            "callback_target": callback_target_matches,
+        }
+        items[object_name] = {
+            "symbol_value": f"0x{base:x}",
+            "symbol_size": obj["size"],
+            "raw_sha256": hashlib.sha256(raw).hexdigest(),
+            "version": version,
+            "id": f"0x{item_id:04x}",
+            "name": name,
+            "name_relocation": f"0x{base + 0x08:x}",
+            "callback": callback_name,
+            "callback_relocation": f"0x{base + 0x18:x}",
+            "checks": checks,
+            "passed": all(checks.values()),
+        }
+    return {
+        "expected_count": len(TESTING_ITEMS),
+        "validated_count": sum(item["passed"] for item in items.values()),
+        "items": items,
+        "passed": all(item["passed"] for item in items.values()),
+    }
+
+
 def parse_args() -> argparse.Namespace:
     script = Path(__file__).resolve()
     parser = argparse.ArgumentParser(description=__doc__)
@@ -154,20 +287,31 @@ def main() -> int:
     candidate = curated / "zte_tpd.ko"
     probe_source = curated / "probes" / "layout_probe.c"
     overlay_header = curated / "zte_tpd_tcm_layout.h"
+    testing_overlay_header = curated / "zte_tpd_testing_layout.h"
     document = curated / "DOCUMENTO_TRANSICAO.md"
-    required = (stock, candidate, probe_source, overlay_header, document)
+    required = (
+        stock,
+        candidate,
+        probe_source,
+        overlay_header,
+        testing_overlay_header,
+        document,
+    )
     missing = [str(path) for path in required if not path.is_file()]
     if missing:
         raise FileNotFoundError("missing required files: " + ", ".join(missing))
     stock_sha256 = sha256_file(stock)
     candidate_sha256 = sha256_file(candidate)
-    stock_in_container = "/work/engineering/" + stock.relative_to(root).as_posix()
+    work_in_container = "/work/engineering/" + work.relative_to(root).as_posix()
 
     if work.exists():
         shutil.rmtree(work)
     work.mkdir(parents=True)
     shutil.copy2(probe_source, work / "zte_tpd_layout_probe.c")
     shutil.copy2(overlay_header, work / "zte_tpd_tcm_layout.h")
+    shutil.copy2(testing_overlay_header, work / "zte_tpd_testing_layout.h")
+    stock_in_container = f"{work_in_container}/stock.input.ko"
+    candidate_in_container = f"{work_in_container}/candidate.input.ko"
     (work / "Makefile").write_text(
         "# SPDX-License-Identifier: GPL-2.0-only\n"
         "obj-m += zte_tpd_layout_probe.o\n",
@@ -204,6 +348,8 @@ def main() -> int:
             "modules",
         ]
     )
+    shutil.copy2(stock, work / "stock.input.ko")
+    shutil.copy2(candidate, work / "candidate.input.ko")
     compiler = run([*prefix, "clang", "--version"])
     stock_symbols = run(
         [
@@ -223,12 +369,61 @@ def main() -> int:
         ],
         capture_limit=None,
     )
+    candidate_symbols = run(
+        [*prefix, "llvm-readelf", "-sW", candidate_in_container],
+        capture_limit=None,
+    )
+    candidate_relocations = run(
+        [*prefix, "llvm-readelf", "-rW", candidate_in_container],
+        capture_limit=None,
+    )
+    section_dumps = {
+        "stock_data": run(
+            [
+                *prefix,
+                "llvm-objcopy",
+                f"--dump-section=.data={work_in_container}/stock.data",
+                stock_in_container,
+                f"{work_in_container}/stock.data.output.ko",
+            ]
+        ),
+        "stock_strings": run(
+            [
+                *prefix,
+                "llvm-objcopy",
+                f"--dump-section=.rodata.str1.1={work_in_container}/stock.rodata.str1.1",
+                stock_in_container,
+                f"{work_in_container}/stock.strings.output.ko",
+            ]
+        ),
+        "candidate_data": run(
+            [
+                *prefix,
+                "llvm-objcopy",
+                f"--dump-section=.data={work_in_container}/candidate.data",
+                candidate_in_container,
+                f"{work_in_container}/candidate.data.output.ko",
+            ]
+        ),
+        "candidate_strings": run(
+            [
+                *prefix,
+                "llvm-objcopy",
+                f"--dump-section=.rodata.str1.1={work_in_container}/candidate.rodata.str1.1",
+                candidate_in_container,
+                f"{work_in_container}/candidate.strings.output.ko",
+            ]
+        ),
+    }
     commands = {
         "clean": clean,
         "build": build,
         "compiler": compiler,
         "stock_symbols": stock_symbols,
         "stock_relocations": stock_relocations,
+        "candidate_symbols": candidate_symbols,
+        "candidate_relocations": candidate_relocations,
+        **section_dumps,
     }
     failed = {
         name: {
@@ -247,9 +442,39 @@ def main() -> int:
         )
 
     stock_layout = parse_stock_layout(stock_symbols["stdout"], stock_relocations["stdout"])
+    stock_testing_items = validate_testing_items(
+        stock_symbols["stdout"],
+        stock_relocations["stdout"],
+        (work / "stock.data").read_bytes(),
+        (work / "stock.rodata.str1.1").read_bytes(),
+    )
+    candidate_testing_items = validate_testing_items(
+        candidate_symbols["stdout"],
+        candidate_relocations["stdout"],
+        (work / "candidate.data").read_bytes(),
+        (work / "candidate.rodata.str1.1").read_bytes(),
+    )
+    testing_item_payloads_match = all(
+        stock_testing_items["items"][name]["raw_sha256"]
+        == candidate_testing_items["items"][name]["raw_sha256"]
+        for name in TESTING_ITEMS
+    )
+    source_hashes_unchanged = (
+        sha256_file(stock) == stock_sha256
+        and sha256_file(candidate) == candidate_sha256
+    )
     module = work / "zte_tpd_layout_probe.ko"
     obj = work / "zte_tpd_layout_probe.o"
-    passed = build["returncode"] == 0 and module.is_file() and obj.is_file() and stock_layout["passed"]
+    passed = (
+        build["returncode"] == 0
+        and module.is_file()
+        and obj.is_file()
+        and stock_layout["passed"]
+        and stock_testing_items["passed"]
+        and candidate_testing_items["passed"]
+        and testing_item_payloads_match
+        and source_hashes_unchanged
+    )
     validation.mkdir(parents=True, exist_ok=True)
     header_report = {
         "schema_version": "1.0",
@@ -267,11 +492,26 @@ def main() -> int:
             "path": "curated/zte_tpd/zte_tpd_tcm_layout.h",
             "sha256": sha256_file(overlay_header),
         },
+        "testing_overlay_header": {
+            "path": "curated/zte_tpd/zte_tpd_testing_layout.h",
+            "sha256": sha256_file(testing_overlay_header),
+        },
         "stock": {
             "path": stock.relative_to(root).as_posix(),
             "sha256": stock_sha256,
             "layout_evidence": stock_layout,
         },
+        "testing_items": {
+            "stock": stock_testing_items,
+            "candidate": candidate_testing_items,
+            "raw_payloads_match": testing_item_payloads_match,
+            "passed": (
+                stock_testing_items["passed"]
+                and candidate_testing_items["passed"]
+                and testing_item_payloads_match
+            ),
+        },
+        "source_hashes_unchanged": source_hashes_unchanged,
         "assertions": {
             "aarch64_pointer_size": 8,
             "platform_device_size": "0x3f0",
@@ -285,6 +525,16 @@ def main() -> int:
             "tcm_dev_transport_offset": "0x48",
             "tcm_dev_command_delay_ms_offset": "0x20c",
             "tcm_dev_write_message_offset": "0x398",
+            "testing_item_size": "0x178",
+            "testing_item_version_offset": "0x00",
+            "testing_item_id_offset": "0x04",
+            "testing_item_name_offset": "0x08",
+            "testing_item_result_offset": "0x10",
+            "testing_item_run_offset": "0x18",
+            "testing_item_limit_primary_offset": "0x38",
+            "testing_item_limit_secondary_offset": "0x40",
+            "testing_item_result_data_offset": "0xd8",
+            "testing_item_result_aux_offset": "0xe0",
         },
         "artifacts": {
             "object_sha256": sha256_file(obj) if obj.is_file() else None,
@@ -294,6 +544,7 @@ def main() -> int:
         "limitations": [
             "Compilation proves header and overlay layout consistency, not device behavior.",
             "The partial TCM overlay contains only offsets tied to local stock evidence.",
+            "The testing-item overlay names only fields whose offsets are tied to local stock ELF evidence.",
             "No module was loaded and no smartphone operation was performed.",
         ],
     }
@@ -316,10 +567,12 @@ def main() -> int:
             "stock release relocation is at syna_spi_device + 0x338",
             "platform_device.dev and device.release offsets reproduce the stock +0x338 access",
             "partial Synaptics TCM overlay offsets compile without implicit packing",
+            "testing_item size and ten recovered field offsets compile without implicit packing",
         ],
         "evidence": [
             "reverse_engineering/validation/reconstructed/zte_tpd/header_layout_probe.json",
             "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_tcm_layout.h",
+            "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_testing_layout.h",
             "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
             "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_static_final.json",
         ],

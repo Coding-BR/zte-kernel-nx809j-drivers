@@ -2,9 +2,8 @@ __int64 __fastcall syna_testing_pt01_zte(__int64 *a1)
 {
   __int64 v2; // x2
   const char *v3; // x19
-  __int64 testing_0100; // x0
+  struct testing_item *testing_0100; // x0
   __int64 v5; // x21
-  _DWORD *v6; // x9
   __int64 v7; // x0
   const char *v8; // x5
   __int64 v9; // x1
@@ -33,20 +32,19 @@ __int64 __fastcall syna_testing_pt01_zte(__int64 *a1)
     testing_0100 = syna_tcm_get_testing_0100();
     if ( testing_0100 )
     {
-      v5 = testing_0100;
+      v5 = (__int64)testing_0100;
       LOBYTE(v23) = 0;
       v20 = 0;
       v21 = 0;
       _mutex_init(v22, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_3);
       *(_QWORD *)(v5 + 216) = &v20;
       *(_QWORD *)(v5 + 56) = &v18;
-      v6 = *(_DWORD **)(v5 + 24);
       v7 = *a1;
       v18 = &pt01_limits;
       LODWORD(v19) = 16;
-      if ( *(v6 - 1) != -2118104430 )
-        __break(0x8229u);
-      if ( (((__int64 (__fastcall *)(__int64, __int64, _QWORD))v6)(v7, v5, 0) & 0x80000000) != 0 )
+      if ( ((struct testing_item *)v5)->run((struct tcm_dev *)v7,
+                                             (struct testing_item *)v5,
+                                             false) < 0 )
       {
         printk(unk_3D2FD, "syna_testing_pt01_zte", *(_QWORD *)(v5 + 8));
         v8 = "Fail";

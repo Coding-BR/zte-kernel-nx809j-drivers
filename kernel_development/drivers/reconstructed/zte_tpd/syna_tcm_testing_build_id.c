@@ -1,5 +1,10 @@
-__int64 __fastcall syna_tcm_testing_build_id(__int64 a1, __int64 a2, char a3)
+int syna_tcm_testing_build_id(struct tcm_dev *tcm,
+                              struct testing_item *item,
+                              bool dual_firmware)
 {
+  __int64 a1 = (__int64)tcm;
+  __int64 a2 = (__int64)item;
+  char a3 = dual_firmware;
   unsigned int v3; // w8
   int v7; // w0
   __int64 v8; // x2
