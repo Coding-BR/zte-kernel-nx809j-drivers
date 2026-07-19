@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T01:20:00Z",
+  "driver": "zte_tpd",
+  "scope": "next2_abi_group",
+  "status": "PASS_SCOPED_ABI_BEHAVIOR_OFFLINE_STATIC_BLOCKER",
+  "global_manifest_updated": false,
+  "tasks": [
+    {
+      "id": "132_report_ufp_uevent",
+      "function": "report_ufp_uevent",
+      "signature": "void (int value)",
+      "kcfi": "0x454a91cb",
+      "direct_test": true,
+      "assembly_strict": false,
+      "semantic_scope": "state_transitions_and_error_paths_covered_offline"
+    },
+    {
+      "id": "185_syna_cdev_devnode",
+      "function": "syna_cdev_devnode",
+      "signature": "char * (const struct device *, umode_t *)",
+      "kcfi": "0x99ec6422",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "offsets_mode_fallback_and_null_mode_covered_offline"
+    },
+    {
+      "id": "187_syna_cdev_llseek",
+      "function": "syna_cdev_llseek",
+      "signature": "loff_t (struct file *, loff_t, int)",
+      "kcfi": "0xd527a0de",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "EINVAL_return_and_callback_abi_covered_offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next2_abi_report.json",
+      "sha256": "0f62a5db7c7cbfcfdaa52f79764dbe1e47d6de98a29c2248ee3c19d1bdc44079"
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next2_abi.json",
+      "sha256": "26a86e2d06a81b3596ccd20290be0b92e9f73c87c6ff2a1707ed3b804483824d"
+    },
+    "test": {
+      "path": "next2_abi_harness_report.json",
+      "sha256": "390f0ae2f3a827959bde19e07a6247f7c84ad3dc108303700ab2a363244dfb36"
+    },
+    "assembly": {
+      "path": "assembly_comparison_next2_abi.json",
+      "sha256": "d7586fb5a2bd5c185fd5ab27cca63774a03bd01556bf1f7f5e953346ef338bfb",
+      "passed": false,
+      "strict_passed_functions": 2,
+      "strict_checked_functions": 3
+    },
+    "traceability": {
+      "path": "reconstruction_map_next2_abi.json",
+      "sha256": "ad11470ee7e0b41fa98d87443b6aad088b670d58b488dbc32381d2861e4928e9",
+      "mapped_functions": 367
+    }
+  },
+  "limitations": [
+    "report_ufp_uevent ainda nao possui equivalencia estrita de assembly.",
+    "O harness e offline e usa stubs; nao prova comportamento em hardware.",
+    "Nenhuma validacao dinamica no smartphone foi executada neste checkpoint.",
+    "A superficie global KCFI permanece incompleta: 257/322 matches."
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -fsanitize=address,undefined -fno-omit-frame-pointer next2_abi_harness.c -o build/next2_abi_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next2_abi_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 3,
+    "hardware_paths_exercised": false,
+    "source_files": [
+      "report_ufp_uevent.c",
+      "syna_cdev_devnode.c",
+      "syna_cdev_llseek.c"
+    ]
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_ufp_screen_off_down_up\nPASS test_ufp_aod_gesture_and_completion\nPASS test_ufp_cdev_flag_path\nPASS test_ufp_cdev_completion_blocked\nPASS test_ufp_null_pdev_error_path\nPASS test_devnode_mode_and_fallback\nPASS test_llseek_error_contract\nSUMMARY total=8 passed=8 failed=0\n",
+      "summary": "SUMMARY total=8 passed=8 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_ufp_screen_off_down_up",
+        "test_ufp_aod_gesture_and_completion",
+        "test_ufp_cdev_flag_path",
+        "test_ufp_cdev_completion_blocked",
+        "test_ufp_null_pdev_error_path",
+        "test_devnode_mode_and_fallback",
+        "test_llseek_error_contract"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_ufp_screen_off_down_up\nPASS test_ufp_aod_gesture_and_completion\nPASS test_ufp_cdev_flag_path\nPASS test_ufp_cdev_completion_blocked\nPASS test_ufp_null_pdev_error_path\nPASS test_devnode_mode_and_fallback\nPASS test_llseek_error_contract\nSUMMARY total=8 passed=8 failed=0\n",
+      "summary": "SUMMARY total=8 passed=8 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_ufp_screen_off_down_up",
+        "test_ufp_aod_gesture_and_completion",
+        "test_ufp_cdev_flag_path",
+        "test_ufp_cdev_completion_blocked",
+        "test_ufp_null_pdev_error_path",
+        "test_devnode_mode_and_fallback",
+        "test_llseek_error_contract"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-19T01:34:01.043159+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next2_abi_harness.c",
+      "sha256": "88602a25efec625fbbc3d938f385cf70debceb0b1d8459a0244e7727bd2a3f82",
+      "size": 7477
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\report_ufp_uevent.c",
+      "sha256": "e67a2faef6bb9afd8019a6d9f6768e1cd66defb0ed5831250786d6a2d61f6e75",
+      "size": 3027
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_cdev_devnode.c",
+      "sha256": "37f90ddc7342c2c4c05e25c56f75ef0abbd23d9bfbfd99f145018010862024e7",
+      "size": 363
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_cdev_llseek.c",
+      "sha256": "91de35ea0d177324eaf66288be8cc0c18156dd69222a7ef5f512c71ab9d018da",
+      "size": 134
+    }
+  ],
+  "limitations": [
+    "UFP kobject, printk, completion, gesture and kasprintf calls are deterministic host stubs.",
+    "The harness validates recovered state transitions, flags, offsets and callback contracts, not hardware behavior.",
+    "The report_ufp_uevent opcode comparison remains separate because compiler layout is not proven equivalent.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or partition operation is performed."
+  ],
+  "mode": "offline_direct_source_next2_abi_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 8,
+    "failed": [],
+    "passed": [
+      "test_signature_contract",
+      "test_ufp_screen_off_down_up",
+      "test_ufp_aod_gesture_and_completion",
+      "test_ufp_cdev_flag_path",
+      "test_ufp_cdev_completion_blocked",
+      "test_ufp_null_pdev_error_path",
+      "test_devnode_mode_and_fallback",
+      "test_llseek_error_contract"
+    ],
+    "summary": "SUMMARY total=8 passed=8 failed=0"
+  }
+}

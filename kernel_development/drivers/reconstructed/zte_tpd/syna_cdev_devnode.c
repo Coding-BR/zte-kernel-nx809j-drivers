@@ -1,12 +1,14 @@
-__int64 __fastcall syna_cdev_devnode(__int64 *a1, _WORD *a2)
+char *syna_cdev_devnode(const struct device *device, umode_t *mode)
 {
-  __int64 v2; // x2
+  const unsigned long *device_words;
+  unsigned long value;
 
-  if ( !a2 )
+  if (!mode)
     return 0;
-  *a2 = 1536;
-  v2 = a1[14];
-  if ( !v2 )
-    v2 = *a1;
-  return kasprintf(3264, unk_364AC, v2);
+  *mode = 0x600;
+  device_words = (const unsigned long *)(const void *)device;
+  value = device_words[14];
+  if (!value)
+    value = device_words[0];
+  return kasprintf(3264, "%s", (const char *)value);
 }

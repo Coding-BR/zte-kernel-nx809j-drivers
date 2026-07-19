@@ -210,7 +210,7 @@ extern struct platform_driver syna_dev_driver;
 extern struct spi_driver syna_spi_driver;
 extern struct platform_device syna_spi_device;
 extern __int64 zte_get_boot_mode(void);
-extern void report_ufp_uevent(unsigned int val);
+extern void report_ufp_uevent(int val);
 
 #define syna_pal_mutex_alloc___key dummy_lock_key
 #define syna_pal_mutex_alloc___key_0 dummy_lock_key

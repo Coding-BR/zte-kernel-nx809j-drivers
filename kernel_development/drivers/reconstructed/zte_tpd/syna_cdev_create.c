@@ -5,11 +5,11 @@ static int syna_cdev_create_cdev_major_num = 0;
 
 extern __int64 syna_cdev_read(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_cdev_write(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 syna_cdev_llseek(void);
+extern loff_t syna_cdev_llseek(struct file *file, loff_t offset, int whence);
 extern __int64 syna_cdev_ioctls(__int64 a1, unsigned char a2, unsigned __int64 a3);
 extern __int64 syna_poll(__int64 a1, void (**a2)(void));
 extern int syna_mmap(struct file *filp, struct vm_area_struct *vma);
-extern __int64 syna_cdev_devnode(__int64 a1, unsigned int *a2);
+extern char *syna_cdev_devnode(const struct device *device, umode_t *mode);
 
 static ssize_t device_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
 {
@@ -23,7 +23,7 @@ static ssize_t device_write(struct file *filp, const char __user *buf, size_t co
 
 static loff_t device_llseek(struct file *filp, loff_t off, int whence)
 {
-    return (loff_t)syna_cdev_llseek();
+    return syna_cdev_llseek(filp, off, whence);
 }
 
 static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
@@ -148,7 +148,7 @@ LABEL_14:
     cdev_del((struct cdev *)(a1 + 760));
     goto LABEL_15;
   }
-  cl->devnode = (void *)syna_cdev_devnode;
+  cl->devnode = syna_cdev_devnode;
   struct device *dev = device_create(cl, NULL, *(unsigned int *)(a1 + 896), NULL, "tcm%d", *(_DWORD *)(a1 + 896) & 0xFFFFF);
   if ( IS_ERR(dev) )
   {
