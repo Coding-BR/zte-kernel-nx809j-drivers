@@ -400,9 +400,19 @@ struct ufp_tp_ops_struct {
 };
 extern struct ufp_tp_ops_struct ufp_tp_ops;
 
+/* KCFI recovered the stock tag as enum lcdchange (0..3). */
+enum lcdchange {
+    LCDCHANGE_EXIT_LP = 0,
+    LCDCHANGE_ENTER_LP = 1,
+    LCDCHANGE_ON = 2,
+    LCDCHANGE_OFF = 3,
+};
+
 extern int current_lcd_state;
 extern char panel_enter_low_power;
-extern void change_tp_state(int state);
+extern int get_tp_algo_item_id(char *name);
+extern void change_tp_state(enum lcdchange state);
+extern int set_gpio_mode(u8 mode);
 extern void syna_ts_panel_notifier_callback(enum panel_event_notifier_tag tag, struct panel_event_notification *notification, void *client_data);
 extern int syna_work_charger_detect_work_status;
 

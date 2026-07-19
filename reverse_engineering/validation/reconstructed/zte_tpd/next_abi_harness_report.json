@@ -1,0 +1,115 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -fsanitize=address,undefined -fno-omit-frame-pointer next_abi_harness.c -o build/next_abi_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next_abi_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 3,
+    "hardware_paths_exercised": false,
+    "source_files": [
+      "get_tp_algo_item_id.c",
+      "set_gpio_mode.c",
+      "change_tp_state.c"
+    ]
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_algo_lookup_order_and_failure\nPASS test_gpio_null_callback\nPASS test_state_screen_in_doze_to_on\nPASS test_state_screen_in_doze_to_off\nPASS test_state_screen_off_transitions\nPASS test_state_screen_on_transitions\nPASS test_state_noop_and_invalid_paths\nSUMMARY total=8 passed=8 failed=0\n",
+      "summary": "SUMMARY total=8 passed=8 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_algo_lookup_order_and_failure",
+        "test_gpio_null_callback",
+        "test_state_screen_in_doze_to_on",
+        "test_state_screen_in_doze_to_off",
+        "test_state_screen_off_transitions",
+        "test_state_screen_on_transitions",
+        "test_state_noop_and_invalid_paths"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS test_signature_contract\nPASS test_algo_lookup_order_and_failure\nPASS test_gpio_null_callback\nPASS test_state_screen_in_doze_to_on\nPASS test_state_screen_in_doze_to_off\nPASS test_state_screen_off_transitions\nPASS test_state_screen_on_transitions\nPASS test_state_noop_and_invalid_paths\nSUMMARY total=8 passed=8 failed=0\n",
+      "summary": "SUMMARY total=8 passed=8 failed=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "test_signature_contract",
+        "test_algo_lookup_order_and_failure",
+        "test_gpio_null_callback",
+        "test_state_screen_in_doze_to_on",
+        "test_state_screen_in_doze_to_off",
+        "test_state_screen_off_transitions",
+        "test_state_screen_on_transitions",
+        "test_state_noop_and_invalid_paths"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-19T00:40:18.038354+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next_abi_harness.c",
+      "sha256": "5d45d2b1accfb3308877db96bc57a11b0185b799fdb554f6d963f2be4945b402",
+      "size": 7074
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\get_tp_algo_item_id.c",
+      "sha256": "cd48ebc8d5fd8b6e99bba99711d09b8039d213ab60637252dbae587a056881f1",
+      "size": 1058
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\set_gpio_mode.c",
+      "sha256": "29fd4a0e5bf3342215d152dea9fb701477b5ea4b7a1d306b29f8fe31c8171969",
+      "size": 371
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\change_tp_state.c",
+      "sha256": "b6cb213b89bab9ece45b46e07aadc2c6c7c01b9239cc13ecc475e52965b2c00f",
+      "size": 3141
+    }
+  ],
+  "limitations": [
+    "Cdev memory, mutex, workqueue, printk and KCFI break paths are deterministic host stubs.",
+    "The non-null set_gpio_mode callback path requires AArch64 execution because stock reads the KCFI word before the callback address.",
+    "The harness validates recovered offsets, state transitions, lookup order and error branches, not hardware behavior.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or partition operation is performed."
+  ],
+  "mode": "offline_direct_source_next_abi_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 8,
+    "failed": [],
+    "passed": [
+      "test_signature_contract",
+      "test_algo_lookup_order_and_failure",
+      "test_gpio_null_callback",
+      "test_state_screen_in_doze_to_on",
+      "test_state_screen_in_doze_to_off",
+      "test_state_screen_off_transitions",
+      "test_state_screen_on_transitions",
+      "test_state_noop_and_invalid_paths"
+    ],
+    "summary": "SUMMARY total=8 passed=8 failed=0"
+  }
+}

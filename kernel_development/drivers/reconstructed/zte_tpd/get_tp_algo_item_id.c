@@ -1,4 +1,4 @@
-__int64 __fastcall get_tp_algo_item_id(const char *a1)
+int get_tp_algo_item_id(char *a1)
 {
   char *v1; // x21
   size_t v3; // x0
@@ -36,13 +36,13 @@ __int64 __fastcall get_tp_algo_item_id(const char *a1)
               v1 = &byte_4F0;
               v9 = strlen(a1);
               if ( !strnstr(a1, off_4F8, v9) )
-                return 4294967291LL;
+                return -EIO;
             }
           }
         }
       }
     }
   }
-  printk(unk_39C9D, "get_tp_algo_item_id", (unsigned __int8)*v1);
-  return (unsigned __int8)*v1;
+  printk(unk_39C9D, "get_tp_algo_item_id", (unsigned char)*v1);
+  return (unsigned char)*v1;
 }

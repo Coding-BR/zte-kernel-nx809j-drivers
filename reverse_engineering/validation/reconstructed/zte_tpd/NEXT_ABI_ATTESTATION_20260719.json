@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T00:44:52.0163454Z",
+  "driver": "zte_tpd",
+  "scope": "next_abi_group",
+  "status": "PASS_SCOPED_ABI_BEHAVIOR_OFFLINE",
+  "global_manifest_updated": false,
+  "tasks": [
+    {
+      "id": "008_get_tp_algo_item_id",
+      "function": "get_tp_algo_item_id",
+      "signature": "int (char * name)",
+      "kcfi": "0x7bff871d",
+      "direct_test": true
+    },
+    {
+      "id": "118_change_tp_state",
+      "function": "change_tp_state",
+      "signature": "void (enum lcdchange state)",
+      "kcfi": "0xf4d9b23e",
+      "direct_test": true
+    },
+    {
+      "id": "122_set_gpio_mode",
+      "function": "set_gpio_mode",
+      "signature": "int (u8 mode)",
+      "callback_signature": "int (struct ztp_device *, u8)",
+      "kcfi": "0x81e1eabd",
+      "callback_kcfi": "0xe1d63dc1",
+      "direct_test": true
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next_abi_report.json",
+      "sha256": "47ad0a885e0cbc55b5d3dc3e73967099606bfed7c82dd58748f66919656827a8"
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next_abi.json",
+      "sha256": "688a94d532c528b1b56e2f8121f17b0c09aa186f04d5ebaa79ef0f3971e6fd3d"
+    },
+    "test": {
+      "path": "next_abi_harness_report.json",
+      "sha256": "c4ddbaeec201ceede583f25309fd8767b99d990d3855390a4d503e0438333644"
+    },
+    "assembly": {
+      "path": "assembly_comparison_next_abi.json",
+      "sha256": "122b25da7ab1366f305d37269f386534cfb805e29a2b7ba0ce16f58772acc91d",
+      "passed": false
+    }
+  },
+  "limitations": [
+    "O callback GPIO nao nulo exige execucao AArch64 para validar o preamble KCFI real.",
+    "O assembly estrito nao casou para as tres funcoes.",
+    "Nenhuma validacao dinamica em smartphone foi executada neste checkpoint."
+  ]
+}
