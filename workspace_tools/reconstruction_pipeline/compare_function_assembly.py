@@ -665,6 +665,69 @@ def canonicalize_commutative_instruction_pairs(
     return stock, candidate, evidence
 
 
+def _register_allocation_mask(word: int) -> tuple[int, str] | None:
+    """Return mutable AArch64 register fields for a guarded instruction class."""
+    if word & 0x3B000000 == 0x39000000:
+        return 0x000003FF, "load/store unsigned-immediate Rt,Rn"
+    if word & 0x1F200000 == 0x0B000000:
+        return 0x001F03FF, "add/sub shifted-register Rd,Rn,Rm"
+    if word & 0x1FE00000 == 0x1A800000:
+        return 0x001F03FF, "conditional-select Rd,Rn,Rm"
+    return None
+
+
+def canonicalize_register_allocation_differences(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+    semantic_proof: dict[str, Any] | None,
+    semantic_report_sha256: str | None,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Accept register-only opcode changes after an independent Ghidra proof."""
+    stock = list(stock_instructions)
+    candidate = list(candidate_instructions)
+    if not semantic_proof or not semantic_proof.get("passed"):
+        return stock, candidate, []
+    if len(stock) != len(candidate):
+        return stock, candidate, []
+
+    pending: list[dict[str, Any]] = []
+    for index, (stock_instruction, candidate_instruction) in enumerate(
+        zip(stock, candidate)
+    ):
+        if stock_instruction == candidate_instruction:
+            continue
+        stock_word = _opcode_word(stock_instruction)
+        candidate_word = _opcode_word(candidate_instruction)
+        if stock_word is None or candidate_word is None:
+            return stock_instructions, candidate_instructions, []
+        stock_mask = _register_allocation_mask(stock_word)
+        candidate_mask = _register_allocation_mask(candidate_word)
+        if stock_mask is None or candidate_mask is None or stock_mask != candidate_mask:
+            return stock_instructions, candidate_instructions, []
+        mask, instruction_class = stock_mask
+        if stock_word & ~mask != candidate_word & ~mask:
+            return stock_instructions, candidate_instructions, []
+        pending.append(
+            {
+                "kind": "ghidra_guarded_register_allocation",
+                "instruction_index": index,
+                "instruction_class": instruction_class,
+                "register_field_mask": f"0x{mask:08x}",
+                "stock_opcode": stock_instruction,
+                "candidate_opcode": candidate_instruction,
+                "semantic_report_sha256": semantic_report_sha256,
+                "semantic_checks": semantic_proof.get("checks"),
+            }
+        )
+
+    if not pending:
+        return stock, candidate, []
+    for item in pending:
+        index = int(item["instruction_index"])
+        candidate[index] = stock[index]
+    return stock, candidate, pending
+
+
 def _ldrh_unsigned_immediate(word: int) -> tuple[int, int, int] | None:
     if word & 0xFFC00000 != 0x79400000:
         return None
@@ -940,6 +1003,7 @@ def main() -> int:
     parser.add_argument("--stock-dir", type=Path, required=True)
     parser.add_argument("--candidate-dir", type=Path, required=True)
     parser.add_argument("--function", action="append", dest="functions")
+    parser.add_argument("--ghidra-semantic-report", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -951,6 +1015,25 @@ def main() -> int:
     candidate_records = records_by_function(candidate_manifest, candidate_root)
     stock_source = manifest_source_path(stock_manifest, stock_root)
     candidate_source = manifest_source_path(candidate_manifest, candidate_root)
+    semantic_report = None
+    semantic_report_sha256 = None
+    semantic_proofs: dict[str, dict[str, Any]] = {}
+    if args.ghidra_semantic_report:
+        semantic_report_path = args.ghidra_semantic_report.resolve()
+        semantic_report = read_json(semantic_report_path)
+        semantic_report_sha256 = sha256_file(semantic_report_path)
+        bound_module = semantic_report.get("candidate_module")
+        if not isinstance(bound_module, dict) or not isinstance(
+            bound_module.get("sha256"), str
+        ):
+            raise ValueError("Ghidra semantic report is not bound to a candidate module")
+        if candidate_source is None or not candidate_source.is_file():
+            raise ValueError("candidate assembly manifest has no readable source module")
+        if bound_module["sha256"] != sha256_file(candidate_source):
+            raise ValueError("Ghidra semantic report candidate hash mismatch")
+        for result in semantic_report.get("results", []):
+            if isinstance(result, dict) and isinstance(result.get("function"), str):
+                semantic_proofs[result["function"]] = result
     stock_sections = elf_sections(stock_source)
     candidate_sections = elf_sections(candidate_source)
     stock_symbol_ranges = elf_symbol_ranges(stock_source)
@@ -1023,6 +1106,17 @@ def main() -> int:
             boolean_reordering_evidence + commutative_evidence
         )
         (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            register_allocation_evidence,
+        ) = canonicalize_register_allocation_differences(
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            semantic_proofs.get(function),
+            semantic_report_sha256,
+        )
+        instruction_equivalences += register_allocation_evidence
+        (
             stock_relocations_compared,
             candidate_relocations_compared,
             relocation_equivalences,
@@ -1090,6 +1184,15 @@ def main() -> int:
         "requested_functions": functions,
         "checked_functions": len(results),
         "failures": failures,
+        "ghidra_semantic_report": (
+            {
+                "path": str(args.ghidra_semantic_report.resolve()),
+                "sha256": semantic_report_sha256,
+                "passed": semantic_report.get("passed"),
+            }
+            if semantic_report is not None
+            else None
+        ),
         "results": results,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

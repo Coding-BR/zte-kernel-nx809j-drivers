@@ -1,51 +1,47 @@
-__int64 __fastcall tpd_sysfs_fwimage_show(__int64 a1, __int64 a2, __int64 a3, void *a4, __int64 a5, size_t a6)
+ssize_t tpd_sysfs_fwimage_show(struct file *file, struct kobject *kobj,
+                               struct bin_attribute *attr, char *buffer,
+                               loff_t offset, size_t count)
 {
-  __int64 v6; // x21
-  _QWORD *v7; // x8
-  _QWORD *v10; // x11
-  unsigned __int64 v11; // x9
-  __int64 v13; // x1
-  __int64 v14; // x2
+  __int64 cdev;
+  struct tpd_firmware_data *fw_data;
+  u32 position;
+  size_t fw_size;
 
-  v6 = tpd_cdev;
-  v7 = *(_QWORD **)(tpd_cdev + 2720);
-  if ( v7 && v7[1] )
+  cdev = tpd_cdev;
+  fw_data = *(struct tpd_firmware_data **)(tpd_cdev + 0xc58);
+  if ( !fw_data || !fw_data->data )
   {
-    if ( *v7 )
-    {
-      mutex_lock(tpd_cdev + 2728);
-      v10 = *(_QWORD **)(v6 + 2720);
-      v11 = *(unsigned int *)(v6 + 1096);
-      if ( *v10 <= v11 )
-      {
-        *(_DWORD *)(v6 + 1096) = 0;
-        vfree(v10[1]);
-        *(_QWORD *)(*(_QWORD *)(v6 + 2720) + 8LL) = 0;
-        kfree(*(_QWORD *)(v6 + 2720));
-        *(_QWORD *)(v6 + 2720) = 0;
-        printk(unk_353A2, v13, v14);
-        mutex_unlock(v6 + 2728);
-        return 0;
-      }
-      else
-      {
-        if ( v11 + a6 > *v10 )
-          a6 = *v10 - v11;
-        memcpy(a4, (const void *)(*(_QWORD *)(*(_QWORD *)(v6 + 2720) + 8LL) + *(unsigned int *)(v6 + 1096)), a6);
-        *(_DWORD *)(v6 + 1096) += a6;
-        mutex_unlock(v6 + 2728);
-      }
-    }
-    else
-    {
-      printk(unk_39CBE, a2, a3);
-      return -22;
-    }
+    printk("\001" "3Need set fw image size first");
+    return -ENOMEM;
   }
-  else
+  if ( !fw_data->size )
   {
-    printk(unk_3BC9C, a2, a3);
-    return -12;
+    printk("\001" "3Invalid firmware size");
+    return -EINVAL;
   }
-  return a6;
+
+  mutex_lock((struct mutex *)(tpd_cdev + 0xc60));
+  fw_data = *(struct tpd_firmware_data **)(cdev + 0xc58);
+  position = *(u32 *)(cdev + 0x448);
+  fw_size = fw_data->size;
+  if ( fw_size <= position )
+  {
+    *(u32 *)(cdev + 0x448) = 0;
+    vfree(fw_data->data);
+    (*(struct tpd_firmware_data **)(cdev + 0xc58))->data = NULL;
+    kfree(*(struct tpd_firmware_data **)(cdev + 0xc58));
+    *(struct tpd_firmware_data **)(cdev + 0xc58) = NULL;
+    printk("\001" "6tpd, tp_firmware free.\n");
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
+    return 0;
+  }
+
+  fw_data = READ_ONCE(*(struct tpd_firmware_data **)(cdev + 0xc58));
+  if ( position + count > fw_size )
+    count = fw_size - position;
+  memcpy(buffer, (u8 *)fw_data->data + *(u32 *)(cdev + 0x448), count);
+  *(u32 *)(cdev + 0x448) += count;
+  mutex_unlock((struct mutex *)(cdev + 0xc60));
+
+  return count;
 }

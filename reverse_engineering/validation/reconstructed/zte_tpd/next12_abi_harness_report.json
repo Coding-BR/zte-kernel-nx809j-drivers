@@ -1,0 +1,140 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer next12_abi_harness.c -o build/next12_abi_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next12_abi_harness"
+  ],
+  "coverage": {
+    "bin_attribute_callback_signatures": true,
+    "direct_source_functions": 2,
+    "exact_diagnostic_strings": true,
+    "firmware_cleanup_order": true,
+    "full_and_truncated_read_write": true,
+    "hardware_paths_exercised": false,
+    "ignored_sysfs_metadata": true,
+    "mutex_pointer_and_order": true,
+    "null_descriptor_and_data_errors": true,
+    "position_update_and_reset": true,
+    "source_files": [
+      "tpd_sysfs_fwimage_show.c",
+      "tpd_sysfs_fwimage_store.c"
+    ],
+    "zero_size_error": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS show_missing_descriptor\nPASS show_missing_data\nPASS show_zero_size\nPASS show_full_copy\nPASS show_truncated_copy\nPASS show_cleanup_at_end\nPASS show_ignores_sysfs_metadata\nPASS store_missing_descriptor\nPASS store_missing_data\nPASS store_zero_size\nPASS store_resets_position_at_end\nPASS store_full_copy\nPASS store_truncated_copy\nPASS store_ignores_sysfs_metadata\nPASS bin_attribute_callback_signatures\nSUMMARY 15/15 passed\n",
+      "summary": "SUMMARY 15/15 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "show_missing_descriptor",
+        "show_missing_data",
+        "show_zero_size",
+        "show_full_copy",
+        "show_truncated_copy",
+        "show_cleanup_at_end",
+        "show_ignores_sysfs_metadata",
+        "store_missing_descriptor",
+        "store_missing_data",
+        "store_zero_size",
+        "store_resets_position_at_end",
+        "store_full_copy",
+        "store_truncated_copy",
+        "store_ignores_sysfs_metadata",
+        "bin_attribute_callback_signatures"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS show_missing_descriptor\nPASS show_missing_data\nPASS show_zero_size\nPASS show_full_copy\nPASS show_truncated_copy\nPASS show_cleanup_at_end\nPASS show_ignores_sysfs_metadata\nPASS store_missing_descriptor\nPASS store_missing_data\nPASS store_zero_size\nPASS store_resets_position_at_end\nPASS store_full_copy\nPASS store_truncated_copy\nPASS store_ignores_sysfs_metadata\nPASS bin_attribute_callback_signatures\nSUMMARY 15/15 passed\n",
+      "summary": "SUMMARY 15/15 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "show_missing_descriptor",
+        "show_missing_data",
+        "show_zero_size",
+        "show_full_copy",
+        "show_truncated_copy",
+        "show_cleanup_at_end",
+        "show_ignores_sysfs_metadata",
+        "store_missing_descriptor",
+        "store_missing_data",
+        "store_zero_size",
+        "store_resets_position_at_end",
+        "store_full_copy",
+        "store_truncated_copy",
+        "store_ignores_sysfs_metadata",
+        "bin_attribute_callback_signatures"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-19T21:01:42.241837+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next12_abi_harness.c",
+      "sha256": "ddb3e8333930e664b83f86aaae864f8ee3013103461d2b6910a18ddf70fe4045",
+      "size": 11301
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_sysfs_fwimage_show.c",
+      "sha256": "340dacbe3da8a35d36ac3a79d6a32083665fcab9e5377d25ab6762da57022e17",
+      "size": 1459
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_sysfs_fwimage_store.c",
+      "sha256": "9774473956928a24df1a4b2f4e5d62782fb04e17f7c66ff01519026bbc34a049",
+      "size": 1201
+    }
+  ],
+  "limitations": [
+    "The harness executes both recovered sources directly with deterministic host data.",
+    "ASAN and UBSAN validate covered memory, alignment and scalar behavior, not physical touch hardware.",
+    "Kernel allocation, mutex, printk and memcpy APIs are deterministic host doubles.",
+    "Assembly, Ghidra P-Code, KCFI and ELF layout comparisons remain independent gates.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or firmware operation is performed."
+  ],
+  "mode": "offline_direct_source_next12_abi_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 15,
+    "failed": [],
+    "passed": [
+      "show_missing_descriptor",
+      "show_missing_data",
+      "show_zero_size",
+      "show_full_copy",
+      "show_truncated_copy",
+      "show_cleanup_at_end",
+      "show_ignores_sysfs_metadata",
+      "store_missing_descriptor",
+      "store_missing_data",
+      "store_zero_size",
+      "store_resets_position_at_end",
+      "store_full_copy",
+      "store_truncated_copy",
+      "store_ignores_sysfs_metadata",
+      "bin_attribute_callback_signatures"
+    ],
+    "summary": "SUMMARY 15/15 passed"
+  }
+}

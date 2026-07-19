@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T21:18:58Z",
+  "driver": "zte_tpd",
+  "scope": "next12_fwimage_bin_attribute_callbacks",
+  "status": "PASS_SCOPED_ABI_LAYOUT_BEHAVIOR_ASSEMBLY_GHIDRA_OFFLINE",
+  "global_manifest_updated": true,
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "candidate_sha256": "0b01c106b929a1c4016f9218cc1a5215692a793fe77c7b6c3a3ee6adbf8dc1a0",
+  "candidate_size": 24073488,
+  "tasks": [
+    {
+      "id": "093_tpd_sysfs_fwimage_show",
+      "function": "tpd_sysfs_fwimage_show",
+      "signature": "ssize_t (struct file *, struct kobject *, struct bin_attribute *, char *, loff_t, size_t)",
+      "kcfi": "0x30c400c0",
+      "source_sha256": "340dacbe3da8a35d36ac3a79d6a32083665fcab9e5377d25ab6762da57022e17",
+      "stock_body_bytes": 272,
+      "stock_instruction_count": 68,
+      "stock_pcode_records": 205,
+      "direct_test": true,
+      "assembly_strict": true,
+      "assembly_register_allocation_equivalences": 11,
+      "ghidra_semantic_comparison": true,
+      "semantic_scope": "error paths, bounded read, position update, end-of-buffer cleanup and bin_attribute invocation covered offline"
+    },
+    {
+      "id": "094_tpd_sysfs_fwimage_store",
+      "function": "tpd_sysfs_fwimage_store",
+      "signature": "ssize_t (struct file *, struct kobject *, struct bin_attribute *, char *, loff_t, size_t)",
+      "kcfi": "0x30c400c0",
+      "source_sha256": "9774473956928a24df1a4b2f4e5d62782fb04e17f7c66ff01519026bbc34a049",
+      "stock_body_bytes": 224,
+      "stock_instruction_count": 56,
+      "stock_pcode_records": 175,
+      "direct_test": true,
+      "assembly_strict": true,
+      "assembly_register_allocation_equivalences": 0,
+      "ghidra_semantic_comparison": true,
+      "semantic_scope": "error paths, bounded write, position reset/update and bin_attribute invocation covered offline"
+    }
+  ],
+  "recovered_layout": {
+    "tpd_cdev_position_offset": "0x448",
+    "tpd_cdev_firmware_pointer_offset": "0xc58",
+    "tpd_cdev_firmware_mutex_offset": "0xc60",
+    "firmware_data_pointer_offset": "0x08",
+    "firmware_descriptor_size": "0x10"
+  },
+  "supporting_source_sha256": {
+    "defs.h": "fa8c0c38d9a48f9af64930e108c4cee40e2a1ab7f9e2747d3d827934b158dce6",
+    "globals.c": "27d2720a67c9fab180fbe55582458b8186835106624c806e102a712bdee87324",
+    "sub_12250.c": "a0d6284770631b06877704d4666bd94b973a75fa78b17d792e367b4c804efbc9",
+    "sub_12364.c": "a62d044a59aaf1daf8eb0b227e03aeeff7907a9f727d9d9b94174434e0636212"
+  },
+  "evidence": {
+    "build": {
+      "path": "build_next12_fwimage_final_report.json",
+      "sha256": "2c23cd9a540e99864bde1b0e512c1dd4f549a795f96b716a9697287986b234ec",
+      "clean_cycles": 2,
+      "reproducible": true,
+      "source_tree_manifest_sha256": "8a975ab3f4a58f424ddbd1b357d48dbfab48b52a9bde0a111d3d116dd2a85e65"
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next12_fwimage_final.json",
+      "sha256": "d02ae4797669fe06e485a06acb3e8dcbc401d338eca3920bf8ce978189518b1f",
+      "scoped_comparison_path": "kcfi_next12_fwimage_exact.json",
+      "scoped_comparison_sha256": "3e771509d78ca78d787200905d7589fd1e8c54d1ee78b2e99f1a372c6e47f3a3",
+      "candidate_oracle_path": "signature_oracles/candidate_next12_fwimage_final_kcfi.json",
+      "candidate_oracle_sha256": "71b683cfd81e8942597e173440d2f08a4018f3fff99733ff6c5c0c02898cf1ee",
+      "matched": 294,
+      "stock_records": 322,
+      "scoped_functions_passed": 2
+    },
+    "test": {
+      "path": "next12_abi_harness_report.json",
+      "sha256": "bc68a16eab4eab64a658aaa6886ef80b9fa017899137fe9335b6f4c1cda2789a",
+      "repetitions": 2,
+      "tests_per_repetition": 15,
+      "sanitizers": ["ASAN", "UBSAN"]
+    },
+    "assembly": {
+      "path": "assembly_comparison_next12_fwimage_final.json",
+      "sha256": "023b3ffc314d9ad950db6d4ef2d5109ab43b44c0f7ac142cf98ba9c49ec402f1",
+      "manifest_path": "candidate_assembly_next12_fwimage_final/manifest.json",
+      "manifest_sha256": "832816c4e64d848099402e95947c1a04ff8ac2768094aad85a279c5378a5567c",
+      "passed": true,
+      "strict_checked_functions": 2,
+      "guarded_register_equivalences": 11
+    },
+    "ghidra": {
+      "path": "ghidra_semantic_comparison_next12_fwimage_final.json",
+      "sha256": "7d6d6df2a504117204b3ebc57ab2d8db013ba4ee28bd6ef20747db6fc573be64",
+      "passed": true,
+      "functions": 2,
+      "normalized_decompiled_c": true,
+      "pcode_operation_shape": true
+    },
+    "callback_linkage": {
+      "path": "fwimage_attr_linkage_next12_final.json",
+      "sha256": "a1e2967d1caab9de0a5ea82f90d154658ae43f1600b88242b3bebc375c8c97b5",
+      "passed": true
+    },
+    "layout": {
+      "header_probe_path": "header_layout_probe_next12_fwimage.json",
+      "header_probe_sha256": "d0c45701dd178b43fb48ffe1f54b71cfbfa68da0f6a47023a0e9c2087e0d4531",
+      "abi_path": "abi_validation_next12_fwimage.json",
+      "abi_sha256": "37da0f2a9d67339b354ddd9b7502865edea22a508a78504387c4712041699b47",
+      "passed": true
+    },
+    "traceability": {
+      "path": "reconstruction_map_next12_fwimage.json",
+      "sha256": "365d84de22dd01d9d1632456dbe570baba2ca7876d3e97680281e0ee00976a18",
+      "mapped_functions": 367
+    },
+    "microtasks": {
+      "path": "microtask_attestation_next12_fwimage.json",
+      "sha256": "573863ec0f142d18d2d6e6e5f3caab88de2f657a7359b4b1154604036990b1f9",
+      "checkpoint_baseline_pass": 148,
+      "current_pass": 150,
+      "selected_pass": 2,
+      "remaining": 217
+    },
+    "validation_document": {
+      "path": "NEXT12_FWIMAGE_VALIDATION_20260719.md",
+      "sha256": "793ac34551a49435045527a34149a88f1ca548ef6b06ec92c4f673a25a58877d"
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 294 of 322 stock records.",
+    "The harness is offline and does not prove physical touch hardware behavior.",
+    "Eleven show opcodes require a hash-bound Ghidra semantic proof because register allocation differs.",
+    "Ghidra reported unsupported compressed or version-zero DWARF metadata, but code analysis and all 511 function exports completed.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global microtask manifest remains INCOMPLETE with 150 PASS and 217 open tasks."
+  ]
+}

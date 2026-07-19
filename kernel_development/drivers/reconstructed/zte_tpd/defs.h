@@ -479,6 +479,14 @@ static_assert(offsetof(struct point_info_struct, up_x) == 0x24);
 static_assert(offsetof(struct point_info_struct, ghost_count) == 0x5c);
 static_assert(offsetof(struct point_info_struct, ghost_active) == 0x5e);
 static_assert(sizeof(struct point_info_struct) == 0x88);
+
+struct tpd_firmware_data {
+    size_t size;
+    void *data;
+};
+
+static_assert(offsetof(struct tpd_firmware_data, data) == 0x08);
+static_assert(sizeof(struct tpd_firmware_data) == 0x10);
 extern __int64 edge_long_press_up(struct input_dev *input, int index);
 
 extern int large_area_ignore_count;
@@ -559,6 +567,12 @@ extern void tpd_suspend_work(struct work_struct *work);
 extern void ufp_report_lcd_state_work(struct work_struct *work);
 extern bool tp_esd_check(void);
 extern bool tp_ghost_check(void);
+extern ssize_t tpd_sysfs_fwimage_show(struct file *file, struct kobject *kobj,
+                                      struct bin_attribute *attr, char *buffer,
+                                      loff_t offset, size_t count);
+extern ssize_t tpd_sysfs_fwimage_store(struct file *file, struct kobject *kobj,
+                                       struct bin_attribute *attr, char *buffer,
+                                       loff_t offset, size_t count);
 extern void tp_ghost_check_work(struct work_struct *work);
 extern void ufp_single_tap_work(struct work_struct *work);
 extern void set_lcd_reset_processing(unsigned char value);

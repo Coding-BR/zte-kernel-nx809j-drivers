@@ -12,6 +12,47 @@ SPEC.loader.exec_module(MODULE)
 
 
 class NormalizedRelocationTests(unittest.TestCase):
+    def test_register_allocation_changes_require_semantic_proof(self) -> None:
+        stock = ["f9462eab", "eb090148", "9a948114"]
+        candidate = ["f9462ea8", "eb0a0169", "9a948134"]
+
+        without_proof = MODULE.canonicalize_register_allocation_differences(
+            stock, candidate, None, None
+        )
+        with_proof = MODULE.canonicalize_register_allocation_differences(
+            stock,
+            candidate,
+            {"passed": True, "checks": {"pcode_operation_shape": True}},
+            "semantic-report-sha256",
+        )
+
+        self.assertNotEqual(without_proof[0], without_proof[1])
+        self.assertEqual(without_proof[2], [])
+        self.assertEqual(with_proof[0], with_proof[1])
+        self.assertEqual(len(with_proof[2]), 3)
+
+    def test_register_allocation_guard_rejects_changed_immediate(self) -> None:
+        stock = ["f9462eab"]
+        candidate = ["f94632a8"]
+
+        compared = MODULE.canonicalize_register_allocation_differences(
+            stock, candidate, {"passed": True}, "semantic-report-sha256"
+        )
+
+        self.assertNotEqual(compared[0], compared[1])
+        self.assertEqual(compared[2], [])
+
+    def test_register_allocation_guard_rejects_unapproved_instruction(self) -> None:
+        stock = ["d503201f"]
+        candidate = ["d503203f"]
+
+        compared = MODULE.canonicalize_register_allocation_differences(
+            stock, candidate, {"passed": True}, "semantic-report-sha256"
+        )
+
+        self.assertNotEqual(compared[0], compared[1])
+        self.assertEqual(compared[2], [])
+
     def test_commutative_add_and_mul_operand_swaps_are_equivalent(self) -> None:
         stock, candidate, evidence = (
             MODULE.canonicalize_commutative_instruction_pairs(

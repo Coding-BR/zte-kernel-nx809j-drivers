@@ -1118,30 +1118,13 @@ void *tx_buf = NULL;
 void *xfer = NULL;
 struct proc_dir_entry *tpd_proc_dir = NULL;
 
-extern __int64 __fastcall tpd_sysfs_fwimage_show(__int64 a1, __int64 a2, __int64 a3, void *a4, __int64 a5, size_t a6);
-extern __int64 __fastcall tpd_sysfs_fwimage_store(__int64 a1, __int64 a2, __int64 a3, void *a4, __int64 a5, size_t a6);
-
-static ssize_t wrap_fwimage_read(struct file *filp, struct kobject *kobj,
-                                 struct bin_attribute *bin_attr,
-                                 char *buf, loff_t off, size_t count) {
-    return tpd_sysfs_fwimage_show((__int64)filp, (__int64)kobj, (__int64)bin_attr,
-                                  buf, off, count);
-}
-
-static ssize_t wrap_fwimage_write(struct file *filp, struct kobject *kobj,
-                                  struct bin_attribute *bin_attr,
-                                  char *buf, loff_t off, size_t count) {
-    return tpd_sysfs_fwimage_store((__int64)filp, (__int64)kobj, (__int64)bin_attr,
-                                   buf, off, count);
-}
-
 struct bin_attribute fwimage_attr = {
     .attr = {
         .name = "fwimage",
         .mode = 0644,
     },
-    .read = wrap_fwimage_read,
-    .write = wrap_fwimage_write,
+    .read = tpd_sysfs_fwimage_show,
+    .write = tpd_sysfs_fwimage_store,
 };
 
 // Panel name matching pointers

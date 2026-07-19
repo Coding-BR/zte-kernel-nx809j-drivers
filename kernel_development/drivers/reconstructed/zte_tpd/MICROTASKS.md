@@ -96,8 +96,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 090_tp_test_write | tp_test_write | 0010dcdc | user_abi | tp_test_write.c:tp_test_write | PASS |
 | 091_tp_frame_data_read | tp_frame_data_read | 0010dd14 | user_abi | tp_frame_data_read.c:tp_frame_data_read | PASS |
 | 092_tp_frame_data_write | tp_frame_data_write | 0010de08 | user_abi | tp_frame_data_write.c:tp_frame_data_write | PASS |
-| 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | READY_FOR_IMPLEMENTATION |
-| 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | READY_FOR_IMPLEMENTATION |
+| 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | PASS |
+| 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | PASS |
 | 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit.c:zte_touch_deinit | READY_FOR_IMPLEMENTATION |
 | 096_tpd_touch_press | tpd_touch_press | 0010e254 | core_logic | tpd_touch_press.c:tpd_touch_press | READY_FOR_IMPLEMENTATION |
 | 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | READY_FOR_IMPLEMENTATION |
