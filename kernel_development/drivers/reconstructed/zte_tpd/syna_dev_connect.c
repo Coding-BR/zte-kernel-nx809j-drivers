@@ -92,7 +92,8 @@ LABEL_20:
   else
   {
     printk(unk_32EDC, "syna_dev_connect", v16);
-    if ( *(_BYTE *)(v3 + 9) == 11 && (syna_tcm_get_boot_info(v3, 0, 20) & 0x80000000) == 0 )
+    if ( *(_BYTE *)(v3 + 9) == 11
+      && (syna_tcm_get_boot_info((struct tcm_dev *)v3, NULL, 20) & 0x80000000) == 0 )
       printk(unk_39879, "syna_dev_connect", *(unsigned __int8 *)(v3 + 225));
   }
   v19 = syna_tcm_set_report_dispatcher(

@@ -42,7 +42,8 @@ int syna_tcm_testing_build_id(struct tcm_dev *tcm,
     v25[0] = 0;
     v25[1] = 0;
     src = 0;
-    v7 = syna_tcm_identify();
+    v7 = syna_tcm_identify(
+        tcm, (struct tcm_identification_info *)v25, 0);
     if ( v7 < 0 )
     {
       printk(unk_32661, "syna_tcm_testing_build_id", v8);

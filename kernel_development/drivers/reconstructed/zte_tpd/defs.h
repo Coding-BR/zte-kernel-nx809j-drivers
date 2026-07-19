@@ -292,6 +292,7 @@ extern int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
 extern void syna_tcm_clear_command_processing(struct tcm_dev *tcm);
 extern void syna_tcm_remove_device(struct tcm_dev *tcm);
 extern void syna_tcm_v1_terminate(struct tcm_dev *tcm);
+extern __int64 syna_tcm_buf_unlock(__int64 buffer);
 extern int syna_dev_process_touch_report(unsigned char report_code,
                                          const unsigned char *payload,
                                          unsigned int length, void *context);
@@ -302,7 +303,18 @@ extern __int64 syna_tcm_detect_device(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
 extern __int64 syna_tcm_switch_fw_mode(__int64 a1, int a2, unsigned int a3);
 extern __int64 syna_dev_set_up_input_device(__int64 a1);
-extern __int64 syna_tcm_get_boot_info(__int64 a1, void *a2, __int64 a3);
+extern int syna_tcm_get_boot_info(struct tcm_dev *tcm,
+                                  struct tcm_boot_info *boot_info,
+                                  unsigned int timeout_ms);
+extern int syna_tcm_get_app_info(struct tcm_dev *tcm,
+                                 struct tcm_application_info *app_info,
+                                 unsigned int timeout_ms);
+extern int syna_tcm_get_features(struct tcm_dev *tcm,
+                                 struct tcm_features_info *features,
+                                 unsigned int timeout_ms);
+extern int syna_tcm_identify(struct tcm_dev *tcm,
+                             struct tcm_identification_info *identify_info,
+                             unsigned int timeout_ms);
 extern int syna_dev_process_unexpected_reset(unsigned char report_code,
                                              const unsigned char *payload,
                                              unsigned int length, void *context);

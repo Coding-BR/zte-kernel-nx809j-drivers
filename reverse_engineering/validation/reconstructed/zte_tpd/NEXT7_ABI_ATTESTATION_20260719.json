@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T15:20:46Z",
+  "driver": "zte_tpd",
+  "scope": "next7_abi_group",
+  "status": "PASS_SCOPED_ABI_LAYOUT_BEHAVIOR_ASSEMBLY_OFFLINE",
+  "global_manifest_updated": false,
+  "candidate_sha256": "1e6cb827166efae177f8c3056ab48770a77dbb5d2423e9a1b74507f52ed611d1",
+  "tasks": [
+    {
+      "id": "277_syna_tcm_get_boot_info",
+      "function": "syna_tcm_get_boot_info",
+      "signature": "int (struct tcm_dev *, struct tcm_boot_info *, unsigned int)",
+      "kcfi": "0x17defb3b",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "bootloader-mode validation, command 0x10, IRQ/polling selection, timeout, response truncation, lock balance and error propagation covered offline"
+    },
+    {
+      "id": "278_syna_tcm_get_app_info",
+      "function": "syna_tcm_get_app_info",
+      "signature": "int (struct tcm_dev *, struct tcm_application_info *, unsigned int)",
+      "kcfi": "0xb5d122f8",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "command 0x20, response status validation, derived application state, customer configuration copy and unaligned access covered offline"
+    },
+    {
+      "id": "279_syna_tcm_get_features",
+      "function": "syna_tcm_get_features",
+      "signature": "int (struct tcm_dev *, struct tcm_features_info *, unsigned int)",
+      "kcfi": "0x39266119",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "command 0x32, null output, response copy, transport failures and lock balance covered offline"
+    },
+    {
+      "id": "280_syna_tcm_identify",
+      "function": "syna_tcm_identify",
+      "signature": "int (struct tcm_dev *, struct tcm_identification_info *, unsigned int)",
+      "kcfi": "0xe19ba5c4",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "command 0x02, reported mode, identification payload copy, IRQ/polling paths and copy/write failures covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next7_abi_report.json",
+      "sha256": "8c2ae6bfc0d53fccef14c003d5b22434b4dc3400be2cc0eee5b090414c40eb23",
+      "clean_cycles": 2,
+      "reproducible": true
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next7_abi_final.json",
+      "sha256": "a3838ef5e00110af61c370796e583013214e850d6cb42916ce325b3d5a29f59f",
+      "candidate_oracle_path": "signature_oracles/candidate_next7_abi_final_kcfi.json",
+      "candidate_oracle_sha256": "62fba43eb5a490b8bb461a85a6a2539a8bd7a827a121220fbe3b1f84ffa1f4d0",
+      "matched": 280,
+      "stock_records": 322,
+      "scoped_functions_passed": 4
+    },
+    "test": {
+      "path": "next7_abi_harness_report.json",
+      "sha256": "fafc984ca1f30079af2269fffe6d8a4b7ef736fe40691698c2d0fb0ed0f1b7ec",
+      "repetitions": 2,
+      "tests_per_repetition": 23,
+      "sanitizers": [
+        "ASAN",
+        "UBSAN"
+      ]
+    },
+    "assembly": {
+      "path": "assembly_comparison_next7_abi_final.json",
+      "sha256": "4a1412fa0973f5e618a8059e44858c6194cd13c062efc50ee2623b2a0fb1db1e",
+      "manifest_path": "candidate_assembly_next7_abi_final/manifest.json",
+      "manifest_sha256": "848c45edde80521aeafe95d0b5a7824298f6d9582b9e4e1562494d33d2244b71",
+      "passed": true,
+      "strict_passed_functions": 4,
+      "strict_checked_functions": 4
+    },
+    "layout": {
+      "header_probe_path": "header_layout_probe_next7_abi.json",
+      "header_probe_sha256": "89d574a18a2c98c200c331c46fb8d0b97ad4e496ae6ee8936b9b51f440e3287d",
+      "abi_path": "abi_validation_next7_abi.json",
+      "abi_sha256": "0caf61d8572d3e55d9404b06c99c5d8a6ec925fe5f73b47c2a3b51e20a2d81fa",
+      "passed": true
+    },
+    "traceability": {
+      "path": "reconstruction_map_next7_abi.json",
+      "sha256": "cad75d8dfb5b22004a4f7cc3dcbd3409b92a2bc414c8a5bf3e744b09b865b7ff",
+      "mapped_functions": 367
+    },
+    "validation_document": {
+      "path": "NEXT7_ABI_VALIDATION_20260719.md",
+      "sha256": "932e00a3eb3c090db956ae7f661d384300974c0c3c5483c094c338a07e799a94"
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 280 of 322 stock records.",
+    "The harness is offline and uses deterministic host data; it does not prove physical touch hardware behavior.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global manifest was not updated because this is a scoped four-function checkpoint."
+  ]
+}

@@ -27,7 +27,8 @@ int syna_tcm_testing_config_id(struct tcm_dev *tcm,
     memset(v19, 0, 32);
     v18[0] = 0;
     v18[1] = 0;
-    app_info = syna_tcm_get_app_info(a1, v18, 0);
+    app_info = syna_tcm_get_app_info(
+        tcm, (struct tcm_application_info *)v18, 0);
     if ( app_info < 0 )
     {
       printk(unk_3298B, "syna_tcm_testing_config_id", v8);

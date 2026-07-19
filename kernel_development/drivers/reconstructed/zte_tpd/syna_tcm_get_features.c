@@ -1,102 +1,95 @@
-__int64 __fastcall syna_tcm_get_features(__int64 a1, void *a2, __int64 a3)
+int syna_tcm_get_features(struct tcm_dev *tcm,
+                          struct tcm_features_info *features,
+                          unsigned int timeout_ms)
 {
-  unsigned int v3; // w21
-  __int64 v4; // x2
-  _DWORD *v7; // x8
-  __int64 result; // x0
-  __int64 v9; // x2
-  unsigned int v10; // w9
-  const void *v11; // x1
-  size_t v12; // x4
-  __int64 v13; // x2
-  __int64 v14; // x2
-  char v15; // w8
-  unsigned int v16; // w19
-  __int64 v17; // x2
-  char v18; // w8
+  const u8 *response_data;
+  unsigned int copy_length;
+  int retval;
 
-  if ( !a1 )
+  if (!tcm)
   {
-    printk(unk_3365A, "syna_tcm_get_features", a3);
-    return 4294967055LL;
+    printk("\x01" "3[error] %s: Invalid tcm device handle\n",
+           "syna_tcm_get_features");
+    return -241;
   }
-  v3 = a3;
-  v4 = *(unsigned __int8 *)(a1 + 9);
-  if ( (_DWORD)v4 != 1 )
+  if (tcm->firmware_mode != 0x01)
   {
-    printk(unk_33E1E, "syna_tcm_get_features", v4);
-    return 4294967055LL;
+    printk("\x01" "3[error] %s: Device is not in application fw mode, mode: %x\n",
+           "syna_tcm_get_features", tcm->firmware_mode);
+    return -241;
   }
-  if ( !v3 )
+
+  if (!timeout_ms)
   {
-    if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) != 0 )
+    if (!(tcm->transport->flags & 0x01))
     {
-      v3 = 0;
+      timeout_ms = tcm->command_delay_ms;
+      printk("\x01" "5[info ] %s: No support of IRQ control, use polling mode instead\n",
+             "syna_tcm_get_features");
     }
     else
     {
-      v3 = *(_DWORD *)(a1 + 524);
-      printk(unk_3BA3F, "syna_tcm_get_features", v4);
+      timeout_ms = 0;
     }
   }
-  v7 = *(_DWORD **)(a1 + 920);
-  if ( *(v7 - 1) != 606091918 )
-    __break(0x8228u);
-  result = ((__int64 (__fastcall *)(__int64, __int64, _QWORD, _QWORD, _QWORD, _QWORD))v7)(a1, 50, 0, 0, 0, v3);
-  if ( (result & 0x80000000) != 0 )
+
+  retval = tcm->write_message(tcm, 0x32, NULL, 0, NULL, timeout_ms);
+  if (retval < 0)
   {
-    v16 = result;
-    printk(unk_39AB7, "syna_tcm_get_features", 50);
-    return v16;
+    printk("\x01" "3[error] %s: Fail to send command 0x%02x\n",
+           "syna_tcm_get_features", 0x32);
+    return retval;
   }
-  if ( a2 )
+  if (!features)
+    return retval;
+
+  if (tcm->response.lock_depth)
+    printk("\x01" "3[error] %s: Buffer access out-of balance, %d\n",
+           "syna_tcm_buf_lock", tcm->response.lock_depth);
+  mutex_lock((struct mutex *)tcm->response.mutex);
+  ++tcm->response.lock_depth;
+  copy_length = tcm->response.data_length < sizeof(*features)
+                    ? tcm->response.data_length
+                    : sizeof(*features);
+  response_data = tcm->response.data;
+
+  if (!response_data)
+    goto copy_error;
+  if (copy_length > tcm->response.buf_size)
   {
-    if ( *(_BYTE *)(a1 + 392) )
-      printk(unk_38244, "syna_tcm_buf_lock", *(unsigned __int8 *)(a1 + 392));
-    mutex_lock(a1 + 344);
-    v10 = *(_DWORD *)(a1 + 340);
-    v11 = *(const void **)(a1 + 328);
-    if ( v10 >= 0x10 )
-      v12 = 16;
-    else
-      v12 = v10;
-    ++*(_BYTE *)(a1 + 392);
-    if ( v11 )
-    {
-      v13 = *(unsigned int *)(a1 + 336);
-      if ( (unsigned int)v12 <= (unsigned int)v13 )
-      {
-        memcpy(a2, v11, v12);
-        v14 = *(unsigned __int8 *)(a1 + 392);
-        if ( (_DWORD)v14 == 1 )
-        {
-          v15 = 0;
-        }
-        else
-        {
-          printk(unk_38244, "syna_tcm_buf_unlock", v14);
-          v15 = *(_BYTE *)(a1 + 392) - 1;
-        }
-        *(_BYTE *)(a1 + 392) = v15;
-        mutex_unlock(a1 + 344);
-        return 0;
-      }
-      printk(unk_3944E, "syna_pal_mem_cpy", v13);
-    }
-    printk(unk_3CDC0, "syna_tcm_get_features", v9);
-    v17 = *(unsigned __int8 *)(a1 + 392);
-    if ( (_DWORD)v17 == 1 )
-    {
-      v18 = 0;
-    }
-    else
-    {
-      printk(unk_38244, "syna_tcm_buf_unlock", v17);
-      v18 = *(_BYTE *)(a1 + 392) - 1;
-    }
-    *(_BYTE *)(a1 + 392) = v18;
-    mutex_unlock(a1 + 344);
-    return 4294967274LL;
+    printk("\x01" "3[error] %s: Invalid size. src:%d, dest:%d, size to copy:%d\n",
+           "syna_pal_mem_cpy", tcm->response.buf_size,
+           (unsigned int)sizeof(*features), copy_length);
+    goto copy_error;
   }
-  return result;
+  memcpy(features, response_data, copy_length);
+
+  if (tcm->response.lock_depth == 1)
+  {
+    tcm->response.lock_depth = 0;
+  }
+  else
+  {
+    printk("\x01" "3[error] %s: Buffer access out-of balance, %d\n",
+           "syna_tcm_buf_unlock", tcm->response.lock_depth);
+    --tcm->response.lock_depth;
+  }
+  mutex_unlock((struct mutex *)tcm->response.mutex);
+  return 0;
+
+copy_error:
+  printk("\x01" "3[error] %s: Fail to copy features_info to caller\n",
+         "syna_tcm_get_features");
+  if (tcm->response.lock_depth == 1)
+  {
+    tcm->response.lock_depth = 0;
+  }
+  else
+  {
+    printk("\x01" "3[error] %s: Buffer access out-of balance, %d\n",
+           "syna_tcm_buf_unlock", tcm->response.lock_depth);
+    --tcm->response.lock_depth;
+  }
+  mutex_unlock((struct mutex *)tcm->response.mutex);
+  return -22;
 }

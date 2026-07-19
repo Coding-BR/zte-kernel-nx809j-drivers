@@ -4,6 +4,9 @@
 
 struct tcm_dev;
 
+typedef u64 tcm_unaligned_u64
+	__attribute__((aligned(1), may_alias));
+
 typedef void (*tcm_lifecycle_fn)(struct tcm_dev *tcm);
 
 typedef int (*tcm_write_message_fn)(struct tcm_dev *tcm, u8 command,
@@ -59,21 +62,96 @@ struct tcm_transport_overlay {
 	u8 flags;
 };
 
+/*
+ * TCM protocol payloads. Multi-byte wire values remain byte arrays because
+ * several fields are unaligned and their byte order is protocol-defined.
+ */
+struct tcm_identification_info {
+	u8 version;
+	u8 mode;
+	u8 part_number[0x10];
+	u8 build_id[0x04];
+	u8 max_write_size[0x02];
+	u8 reserved_18[0x18];
+};
+
+struct tcm_application_info {
+	u8 version[0x02];
+	u8 status[0x02];
+	u8 static_config_size[0x02];
+	u8 dynamic_config_size[0x02];
+	u8 app_config_start_write_block[0x02];
+	u8 app_config_size[0x02];
+	u8 max_touch_report_config_size[0x02];
+	u8 max_touch_report_payload_size[0x02];
+	u8 customer_config_id[0x10];
+	u8 max_x[0x02];
+	u8 max_y[0x02];
+	u8 max_objects[0x02];
+	u8 num_of_buttons[0x02];
+	u8 num_of_image_rows[0x02];
+	u8 num_of_image_cols[0x02];
+	u8 has_hybrid_data[0x02];
+	u8 num_of_force_elecs[0x02];
+};
+
+struct tcm_boot_info {
+	u8 version;
+	u8 reserved_01[0x03];
+	u8 write_block_size_words;
+	u8 erase_page_size_words[0x02];
+	u8 max_write_payload_size[0x02];
+	u8 reserved_09[0x0b];
+	u8 v3_page_size_words;
+	u8 reserved_15[0x0b];
+};
+
+struct tcm_features_info {
+	u8 raw[0x10];
+};
+
+struct tcm_response_buffer {
+	u8 *data;
+	u32 buf_size;
+	u32 data_length;
+	u8 mutex[0x30];
+	u8 lock_depth;
+	u8 reserved_41[0x07];
+};
+
 /* Partial overlay containing only offsets proven by the NX809J stock ELF. */
 struct tcm_dev {
 	u8 reserved_0000[0x09];
 	u8 firmware_mode;
-	u8 reserved_000a[0x2e];
+	u8 reserved_000a[0x02];
+	u32 build_id;
+	u32 max_x;
+	u32 max_y;
+	u32 max_objects;
+	u32 num_of_image_rows;
+	u32 num_of_image_cols;
+	u8 customer_config_id[0x10];
+	u8 reserved_0034[0x04];
 	u32 max_read_size;
 	u32 max_write_size;
 	u32 host_max_read_size;
 	u32 host_max_write_size;
 	struct tcm_transport_overlay *transport;
 	u8 reserved_0050[0x30];
-	u8 protocol_version;
-	u8 reserved_0081[0x15];
-	u16 identify_max_write_size;
-	u8 reserved_0098[0x150];
+	union {
+		struct tcm_identification_info identification_info;
+		struct {
+			u8 protocol_version;
+			u8 reserved_0081[0x15];
+			u16 identify_max_write_size;
+			u8 reserved_0098[0x18];
+		};
+	};
+	struct tcm_application_info application_info;
+	struct tcm_boot_info boot_info;
+	u8 reserved_0100[0x48];
+	struct tcm_response_buffer response;
+	u8 reserved_0190[0x58];
 	u32 timing_01e8;
 	u32 timing_01ec;
 	u8 reserved_01f0[0x18];
@@ -103,6 +181,13 @@ struct tcm_dev {
 };
 
 static_assert(offsetof(struct tcm_dev, firmware_mode) == 0x09);
+static_assert(offsetof(struct tcm_dev, build_id) == 0x0c);
+static_assert(offsetof(struct tcm_dev, max_x) == 0x10);
+static_assert(offsetof(struct tcm_dev, max_y) == 0x14);
+static_assert(offsetof(struct tcm_dev, max_objects) == 0x18);
+static_assert(offsetof(struct tcm_dev, num_of_image_rows) == 0x1c);
+static_assert(offsetof(struct tcm_dev, num_of_image_cols) == 0x20);
+static_assert(offsetof(struct tcm_dev, customer_config_id) == 0x24);
 static_assert(offsetof(struct tcm_dev, max_read_size) == 0x38);
 static_assert(offsetof(struct tcm_dev, max_write_size) == 0x3c);
 static_assert(offsetof(struct tcm_dev, host_max_read_size) == 0x40);
@@ -110,6 +195,15 @@ static_assert(offsetof(struct tcm_dev, host_max_write_size) == 0x44);
 static_assert(offsetof(struct tcm_dev, transport) == 0x48);
 static_assert(offsetof(struct tcm_dev, protocol_version) == 0x80);
 static_assert(offsetof(struct tcm_dev, identify_max_write_size) == 0x96);
+static_assert(offsetof(struct tcm_dev, identification_info) == 0x80);
+static_assert(offsetof(struct tcm_dev, application_info) == 0xb0);
+static_assert(offsetof(struct tcm_dev, boot_info) == 0xe0);
+static_assert(offsetof(struct tcm_dev, response) == 0x148);
+static_assert(offsetof(struct tcm_dev, response.data) == 0x148);
+static_assert(offsetof(struct tcm_dev, response.buf_size) == 0x150);
+static_assert(offsetof(struct tcm_dev, response.data_length) == 0x154);
+static_assert(offsetof(struct tcm_dev, response.mutex) == 0x158);
+static_assert(offsetof(struct tcm_dev, response.lock_depth) == 0x188);
 static_assert(offsetof(struct tcm_dev, timing_01e8) == 0x1e8);
 static_assert(offsetof(struct tcm_dev, timing_01ec) == 0x1ec);
 static_assert(offsetof(struct tcm_dev, timing_0208) == 0x208);
@@ -135,6 +229,23 @@ static_assert(offsetof(struct tcm_dev, data_duplicators) == 0x13d8);
 static_assert(sizeof(struct tcm_data_duplicator_slot) == 0x10);
 static_assert(offsetof(struct tcm_dev, post_reset_context) == 0x23d8);
 static_assert(offsetof(struct tcm_dev, post_reset_callback) == 0x23e0);
+static_assert(sizeof(struct tcm_identification_info) == 0x30);
+static_assert(offsetof(struct tcm_identification_info, mode) == 0x01);
+static_assert(offsetof(struct tcm_identification_info, part_number) == 0x02);
+static_assert(offsetof(struct tcm_identification_info, build_id) == 0x12);
+static_assert(offsetof(struct tcm_identification_info, max_write_size) == 0x16);
+static_assert(sizeof(struct tcm_application_info) == 0x30);
+static_assert(offsetof(struct tcm_application_info, status) == 0x02);
+static_assert(offsetof(struct tcm_application_info, customer_config_id) == 0x10);
+static_assert(offsetof(struct tcm_application_info, max_x) == 0x20);
+static_assert(offsetof(struct tcm_application_info, num_of_image_rows) == 0x28);
+static_assert(sizeof(struct tcm_boot_info) == 0x20);
+static_assert(offsetof(struct tcm_boot_info, write_block_size_words) == 0x04);
+static_assert(offsetof(struct tcm_boot_info, erase_page_size_words) == 0x05);
+static_assert(offsetof(struct tcm_boot_info, max_write_payload_size) == 0x07);
+static_assert(offsetof(struct tcm_boot_info, v3_page_size_words) == 0x14);
+static_assert(sizeof(struct tcm_features_info) == 0x10);
+static_assert(sizeof(struct tcm_response_buffer) == 0x48);
 static_assert(sizeof(struct tcm_dev) == 0x23e8);
 
 #endif

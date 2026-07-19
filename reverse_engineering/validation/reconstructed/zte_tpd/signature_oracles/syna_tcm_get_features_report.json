@@ -1,0 +1,74 @@
+{
+  "build": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next7\\work\\syna_tcm_get_features_v2:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/syna_tcm_get_features",
+      "kcfi_batch.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC      /work/probe/syna_tcm_get_features/kcfi_batch.o\n"
+  },
+  "candidate_count": 720,
+  "config": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next7\\syna_tcm_get_features_config.json",
+  "config_sha256": "b77da4bfc10c0a3090d63457e93a5677f90683db3c8e554bf1741810bac4a50c",
+  "generated_utc": "2026-07-19T13:39:41.806486+00:00",
+  "matches": [
+    {
+      "candidate": {
+        "label": "int (struct tcm_dev * tcm, struct tcm_features_info * features, unsigned int timeout_ms)",
+        "parameters": [
+          {
+            "name": "tcm",
+            "type": "struct tcm_dev *"
+          },
+          {
+            "name": "features",
+            "type": "struct tcm_features_info *"
+          },
+          {
+            "name": "timeout_ms",
+            "type": "unsigned int"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 8,
+      "kcfi": "0x39266119",
+      "kcfi_match": true,
+      "label": "int (struct tcm_dev * tcm, struct tcm_features_info * features, unsigned int timeout_ms)"
+    }
+  ],
+  "mode": "offline_kcfi_batch_oracle",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next7\\work\\syna_tcm_get_features_v2\\syna_tcm_get_features\\kcfi_batch.o",
+    "sha256": "1b9bfd60f4dbe2656e5349c94bea820a01c8c53a7b5497d9ad7ff41d339a0105",
+    "size": 159680
+  },
+  "passed": true,
+  "schema_version": "1.0",
+  "source": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next7\\work\\syna_tcm_get_features_v2\\syna_tcm_get_features\\kcfi_batch.c",
+    "sha256": "9d633820070294ffc90abd580169f5a1fab3a6618a88d10b853775903ad1366b"
+  },
+  "symbol": "syna_tcm_get_features",
+  "target_kcfi": "0x39266119"
+}

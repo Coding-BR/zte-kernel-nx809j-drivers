@@ -24,7 +24,9 @@ int syna_dev_set_up_app_fw(struct syna_tcm *tcm)
     printk(unk_32EDC, "syna_dev_set_up_app_fw", v4);
     return -22;
   }
-  app_info = syna_tcm_get_app_info(*a1, v2 + 176, v3);
+  app_info = syna_tcm_get_app_info(
+      (struct tcm_dev *)*a1,
+      (struct tcm_application_info *)(v2 + 176), v3);
   if ( (app_info & 0x80000000) != 0 )
   {
     v8 = unk_3298B;

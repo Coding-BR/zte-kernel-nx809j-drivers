@@ -1,86 +1,85 @@
-__int64 __fastcall syna_tcm_identify(__int64 a1, void *a2, __int64 a3)
+int syna_tcm_identify(struct tcm_dev *tcm,
+                      struct tcm_identification_info *identify_info,
+                      unsigned int timeout_ms)
 {
-  __int64 result; // x0
-  unsigned int v4; // w21
-  _DWORD *v7; // x8
-  unsigned int v8; // w21
-  __int64 v9; // x2
-  __int64 v10; // x2
-  unsigned int v11; // w9
-  const void *v12; // x1
-  size_t v13; // x4
-  __int64 v14; // x2
-  __int64 v15; // x2
-  char v16; // w8
+  const u8 *response_data;
+  unsigned int copy_length;
+  int retval;
 
-  if ( !a1 )
+  if (!tcm)
   {
-    printk(unk_3365A, "syna_tcm_identify", a3);
-    return 4294967055LL;
+    printk("\x01" "3[error] %s: Invalid tcm device handle\n",
+           "syna_tcm_identify");
+    return -241;
   }
-  v4 = a3;
-  if ( !(_DWORD)a3 )
+
+  if (!timeout_ms)
   {
-    if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) != 0 )
+    if (__builtin_expect_with_probability(tcm->transport->flags & 0x01,
+                                          1, 0.51))
     {
-      v4 = 0;
+      timeout_ms = 0;
     }
     else
     {
-      v4 = *(_DWORD *)(a1 + 524);
-      printk(unk_3BA3F, "syna_tcm_identify", a3);
+      timeout_ms = tcm->command_delay_ms;
+      printk("\x01" "5[info ] %s: No support of IRQ control, use polling mode instead\n",
+             "syna_tcm_identify");
     }
   }
-  v7 = *(_DWORD **)(a1 + 920);
-  if ( *(v7 - 1) != 606091918 )
-    __break(0x8228u);
-  v8 = ((__int64 (__fastcall *)(__int64, __int64, _QWORD, _QWORD, _QWORD, _QWORD))v7)(a1, 2, 0, 0, 0, v4);
-  if ( (v8 & 0x80000000) != 0 )
+
+  retval = tcm->write_message(tcm, 0x02, NULL, 0, NULL, timeout_ms);
+  if (retval < 0)
   {
-    printk(unk_39AB7, "syna_tcm_identify", 2);
-    return v8;
+    printk("\x01" "3[error] %s: Fail to send command 0x%02x\n",
+           "syna_tcm_identify", 0x02);
+    return retval;
   }
-  v9 = *(unsigned __int8 *)(a1 + 129);
-  *(_BYTE *)(a1 + 9) = v9;
-  printk(unk_3C0EA, "syna_tcm_identify", v9);
-  result = v8;
-  if ( a2 )
+
+  tcm->firmware_mode = tcm->identification_info.mode;
+  printk("\x01" "6[info ] %s: TCM Fw mode: 0x%02x, TCM ver.: %d\n",
+         "syna_tcm_identify", tcm->identification_info.mode,
+         tcm->identification_info.version);
+  if (!identify_info)
+    return retval;
+
+  if (tcm->response.lock_depth)
+    printk("\x01" "3[error] %s: Buffer access out-of balance, %d\n",
+           "syna_tcm_buf_lock", tcm->response.lock_depth);
+  mutex_lock((struct mutex *)tcm->response.mutex);
+  ++tcm->response.lock_depth;
+  copy_length = tcm->response.data_length < sizeof(*identify_info)
+                    ? tcm->response.data_length
+                    : sizeof(*identify_info);
+  response_data = tcm->response.data;
+
+  if (!response_data)
+    goto copy_error;
+  if (copy_length > tcm->response.buf_size)
   {
-    if ( *(_BYTE *)(a1 + 392) )
-      printk(unk_38244, "syna_tcm_buf_lock", *(unsigned __int8 *)(a1 + 392));
-    mutex_lock(a1 + 344);
-    v11 = *(_DWORD *)(a1 + 340);
-    v12 = *(const void **)(a1 + 328);
-    if ( v11 >= 0x30 )
-      v13 = 48;
-    else
-      v13 = v11;
-    ++*(_BYTE *)(a1 + 392);
-    if ( v12 )
-    {
-      v14 = *(unsigned int *)(a1 + 336);
-      if ( (unsigned int)v13 <= (unsigned int)v14 )
-      {
-        memcpy(a2, v12, v13);
-        v15 = *(unsigned __int8 *)(a1 + 392);
-        if ( (_DWORD)v15 == 1 )
-        {
-          v16 = 0;
-        }
-        else
-        {
-          printk(unk_38244, "syna_tcm_buf_unlock", v15);
-          v16 = *(_BYTE *)(a1 + 392) - 1;
-        }
-        *(_BYTE *)(a1 + 392) = v16;
-        mutex_unlock(a1 + 344);
-        return 0;
-      }
-      printk(unk_3944E, "syna_pal_mem_cpy", v14);
-    }
-    printk(unk_3ACE0, "syna_tcm_identify", v10);
-    syna_tcm_buf_unlock_0(a1 + 328);
-    return 4294967274LL;
+    printk("\x01" "3[error] %s: Invalid size. src:%d, dest:%d, size to copy:%d\n",
+           "syna_pal_mem_cpy", tcm->response.buf_size,
+           (unsigned int)sizeof(*identify_info), copy_length);
+    goto copy_error;
   }
-  return result;
+  memcpy(identify_info, response_data, copy_length);
+
+  if (tcm->response.lock_depth == 1)
+  {
+    tcm->response.lock_depth = 0;
+  }
+  else
+  {
+    printk("\x01" "3[error] %s: Buffer access out-of balance, %d\n",
+           "syna_tcm_buf_unlock", tcm->response.lock_depth);
+    --tcm->response.lock_depth;
+  }
+  mutex_unlock((struct mutex *)tcm->response.mutex);
+  return 0;
+
+copy_error:
+  printk("\x01" "3[error] %s: Fail to copy identify info to caller\n",
+         "syna_tcm_identify");
+  syna_tcm_buf_unlock((__int64)&tcm->response);
+  return -22;
 }

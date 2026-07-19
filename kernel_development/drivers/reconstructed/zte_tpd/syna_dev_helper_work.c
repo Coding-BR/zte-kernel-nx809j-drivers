@@ -15,7 +15,7 @@ void syna_dev_helper_work(struct work_struct *work)
     v3 = *(unsigned __int8 *)(result + 9);
     if ( v3 == 11 )
     {
-      if ( (syna_tcm_get_boot_info(result, 0, 20) & 0x80000000) == 0 )
+      if ( (syna_tcm_get_boot_info((struct tcm_dev *)result, NULL, 20) & 0x80000000) == 0 )
         printk(unk_35A8D, "syna_dev_helper_work", *(unsigned __int8 *)(*v2 + 225));
       result = *v2;
       v3 = *(unsigned __int8 *)(*v2 + 9);

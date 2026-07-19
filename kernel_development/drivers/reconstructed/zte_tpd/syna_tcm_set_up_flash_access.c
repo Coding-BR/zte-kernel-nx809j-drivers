@@ -30,7 +30,9 @@ __int64 __fastcall syna_tcm_set_up_flash_access(__int64 a1, __int64 a2, __int64 
   }
   v7 = a3;
   printk(unk_38AA0, "syna_tcm_set_up_flash_access", a3);
-  boot_info = syna_tcm_identify(a1, v25, v7);
+  boot_info = syna_tcm_identify(
+      (struct tcm_dev *)a1,
+      (struct tcm_identification_info *)v25, v7);
   if ( (boot_info & 0x80000000) != 0 )
   {
     v11 = unk_3BB0C;
@@ -69,7 +71,9 @@ LABEL_5:
     }
   }
   *(_QWORD *)(a2 + 32) = a1 + 224;
-  boot_info = syna_tcm_get_boot_info(a1, (void *)(a1 + 224), v7);
+  boot_info = syna_tcm_get_boot_info(
+      (struct tcm_dev *)a1,
+      (struct tcm_boot_info *)(a1 + 224), v7);
   if ( (boot_info & 0x80000000) != 0 )
   {
     v11 = unk_363CD;

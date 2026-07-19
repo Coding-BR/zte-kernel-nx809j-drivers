@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T15:20:46Z",
+  "mode": "offline_clean_reproducible_next7_abi",
+  "status": "static_verified_next7_abi_scoped",
+  "driver": "zte_tpd",
+  "stock": {
+    "path": "runs/NX809J-20260711T011653Z/01_acquisition/modules/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate": {
+    "path": "validation/audit_work_kcfi_next7/zte_tpd/zte_tpd.ko",
+    "sha256": "1e6cb827166efae177f8c3056ab48770a77dbb5d2423e9a1b74507f52ed611d1",
+    "size": 19847184
+  },
+  "build": {
+    "passed": true,
+    "reproducible": true,
+    "clean_cycles": 2,
+    "first_build": {
+      "returncode": 0,
+      "sha256": "1e6cb827166efae177f8c3056ab48770a77dbb5d2423e9a1b74507f52ed611d1",
+      "size": 19847184,
+      "duration_seconds": 399.008,
+      "log_sha256": "a6b0b9d9dd866759ffcf1cf7b10029438cbe8136d1b5c26ace3f7381f2973df5"
+    },
+    "second_build": {
+      "returncode": 0,
+      "sha256": "1e6cb827166efae177f8c3056ab48770a77dbb5d2423e9a1b74507f52ed611d1",
+      "size": 19847184,
+      "duration_seconds": 356.891,
+      "log_sha256": "a6b0b9d9dd866759ffcf1cf7b10029438cbe8136d1b5c26ace3f7381f2973df5"
+    },
+    "container": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225 / Clang 19.0.1",
+    "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
+    "environment_warnings": []
+  },
+  "source_sha256": {
+    "zte_tpd_tcm_layout.h": "44ef439f51b2d381415267b13f7c5be8f81979f9713d8a6cb012c26fec8b2b40",
+    "defs.h": "92a0f416b8e2e301be760a572ada1a7f45ae061b50967402c5977e682b5866c5",
+    "syna_tcm_get_boot_info.c": "fea6850fa4d444e28dc3886800bcd8248d5a9dc3aaf343ac64d658a0a629fc78",
+    "syna_tcm_get_app_info.c": "da41d8393c4e8af17f6e1bf0f26785d516bee63288ae15a0f4c4b6ee229b2e8f",
+    "syna_tcm_get_features.c": "7015a135ed65008725c51bac0a30ef9fdd86c9079da77359b2d20a5c7713f602",
+    "syna_tcm_identify.c": "935b181db96ba35ab608b9819460a3889f7563b47aeb9826357a05ca3ffde534",
+    "sub_27D04.c": "a8eaa610060ad42a0772a2d122a6f3b14f6cdd141e6ce1f1c9f1f554a82aef6e",
+    "syna_dev_connect.c": "d2c0bfabd8006859ad056470357ea4829dbc81898c9d21f723b5654e9bbbda3d",
+    "syna_dev_helper_work.c": "2f3837b089e7fd0c8a9dfbe82d0ece7e283aeac13fe69f51e4005b513c1ad3a1",
+    "syna_dev_set_up_app_fw.c": "53c636ee1ee0389dc001aeda361ca0911b207d2b3bb9fad390e13c660deae74c",
+    "syna_tcm_set_up_flash_access.c": "b465ce35546986c8230df2e979ada5bdc80537b393ec0fe05f7ebc5f706634ca",
+    "syna_tcm_testing_build_id.c": "8878ce3aa167781b873fa63548f50e17ab0f801904682246f4e6f9c3f0ed86a5",
+    "syna_tcm_testing_config_id.c": "e99b9d173347fa367df2aead76868d3e8e06b2e294d0c8aac59603fdcf6837fd",
+    "probes/layout_probe.c": "383dae81cccdaf0ea63a8135f47bc95218b8c37628a3a56345f5ebadba88ca50"
+  },
+  "notes": [
+    "Two independent clean module builds returned code 0 and produced the same size and SHA-256.",
+    "The final source copy used for both builds is byte-identical across repository, curated and audit trees for all scoped files.",
+    "defs.h was canonicalized to LF before both clean cycles, so the published Git blob and the compiled input have the same SHA-256.",
+    "Neither canonical clean cycle emitted a clock-skew warning.",
+    "The unaligned customer_config_id load uses an AArch64-safe aligned(1), may_alias type and passes UBSAN without changing stock instructions.",
+    "The identify branch probability annotation constrains Clang basic-block layout only; final opcodes and relocations are identical to stock.",
+    "This report proves compilation and reproducibility only; hardware behavior and total-driver semantic equivalence remain separate gates."
+  ]
+}
