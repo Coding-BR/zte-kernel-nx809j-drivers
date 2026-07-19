@@ -600,6 +600,136 @@ def normalized_assembly(
     return instructions, raw_relocations, normalized_relocations
 
 
+def non_branch_relocation_instruction_indices(path: Path) -> list[int]:
+    """Return the instruction index associated with each compared relocation."""
+    instruction_index = -1
+    result: list[int] = []
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if INSTRUCTION_RE.match(line):
+            instruction_index += 1
+        relocation = RELOCATION_RE.search(line)
+        if relocation and relocation.group(1) not in {
+            "R_AARCH64_CALL26",
+            "R_AARCH64_JUMP26",
+        }:
+            result.append(instruction_index)
+    return result
+
+
+def canonicalize_stripped_lock_keys(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    instructions: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match a compiler-named lock key with the same stripped local in .bss."""
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    swait_calls = sum(
+        instruction == "bl <__init_swait_queue_head>" for instruction in instructions
+    )
+    if (
+        not swait_calls
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+    swait_instruction_indices = {
+        index
+        for index, instruction in enumerate(instructions)
+        if instruction == "bl <__init_swait_queue_head>"
+    }
+
+    relocation_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+
+    def split_relocation(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        if len(parts) != 2:
+            return None
+        return parts[0], parts[1]
+
+    def is_anonymous_bss(target: str) -> bool:
+        return bool(re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target))
+
+    def is_compiler_lock_key(target: str) -> bool:
+        return target == "__key" or target.endswith(".__key")
+
+    index = 0
+    while index + 1 < len(stock) and len(evidence) < swait_calls:
+        stock_pair = [split_relocation(value) for value in stock[index : index + 2]]
+        candidate_pair = [
+            split_relocation(value) for value in candidate[index : index + 2]
+        ]
+        if any(value is None for value in stock_pair + candidate_pair):
+            index += 1
+            continue
+        stock_typed = [value for value in stock_pair if value is not None]
+        candidate_typed = [value for value in candidate_pair if value is not None]
+        if (
+            tuple(value[0] for value in stock_typed) != relocation_types
+            or tuple(value[0] for value in candidate_typed) != relocation_types
+        ):
+            index += 1
+            continue
+        stock_positions = stock_instruction_indices[index : index + 2]
+        candidate_positions = candidate_instruction_indices[index : index + 2]
+        positions_match = (
+            stock_positions == candidate_positions
+            and len(stock_positions) == 2
+            and stock_positions[1] == stock_positions[0] + 1
+        )
+        feeds_swait = positions_match and any(
+            0 < call_index - stock_positions[1] <= 4
+            for call_index in swait_instruction_indices
+        )
+        if not feeds_swait:
+            index += 1
+            continue
+        stock_targets = {value[1] for value in stock_typed}
+        candidate_targets = {value[1] for value in candidate_typed}
+        if len(stock_targets) != 1 or len(candidate_targets) != 1:
+            index += 1
+            continue
+        stock_target = next(iter(stock_targets))
+        candidate_target = next(iter(candidate_targets))
+        stripped_pair = (
+            is_anonymous_bss(stock_target) and is_compiler_lock_key(candidate_target)
+        ) or (
+            is_compiler_lock_key(stock_target) and is_anonymous_bss(candidate_target)
+        )
+        if not stripped_pair:
+            index += 1
+            continue
+
+        alias = f"<local_lock_class_key:{len(evidence)}>"
+        evidence.append(
+            {
+                "relocation_index": index,
+                "reason": (
+                    "compiler-named lock_class_key matched to a stripped local .bss "
+                    "target at the same ADRP/ADD instruction indices immediately "
+                    "feeding __init_swait_queue_head"
+                ),
+                "stock_target": stock_target,
+                "candidate_target": candidate_target,
+                "canonical_target": alias,
+                "instruction_indices": stock_positions,
+            }
+        )
+        for offset, relocation_type in enumerate(relocation_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        index += 2
+
+    return stock, candidate, evidence
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stock-dir", type=Path, required=True)
@@ -668,11 +798,26 @@ def main() -> int:
                 candidate_blob_aliases,
             )
         )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            relocation_equivalences,
+        ) = canonicalize_stripped_lock_keys(
+            stock_relocations,
+            candidate_relocations,
+            stock_instructions
+            if stock_instructions == candidate_instructions
+            else [],
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+        )
         checks = {
             "section": stock_record.get("section") == candidate_record.get("section"),
             "symbol_size": stock_record.get("symbol_size") == candidate_record.get("symbol_size"),
             "instructions": stock_instructions == candidate_instructions,
-            "relocations": stock_relocations == candidate_relocations,
+            "relocations": (
+                stock_relocations_compared == candidate_relocations_compared
+            ),
         }
         passed = all(checks.values())
         if not passed:
@@ -684,6 +829,7 @@ def main() -> int:
                 "function": function,
                 "passed": passed,
                 "checks": checks,
+                "relocation_equivalences": relocation_equivalences,
                 "stock": {
                     "path": str(stock_path),
                     "sha256": sha256_file(stock_path),
@@ -691,6 +837,7 @@ def main() -> int:
                     "section": stock_record.get("section"),
                     "instruction_count": len(stock_instructions),
                     "relocations": stock_relocations,
+                    "relocations_compared": stock_relocations_compared,
                     "relocations_raw": stock_raw_relocations,
                 },
                 "candidate": {
@@ -700,6 +847,7 @@ def main() -> int:
                     "section": candidate_record.get("section"),
                     "instruction_count": len(candidate_instructions),
                     "relocations": candidate_relocations,
+                    "relocations_compared": candidate_relocations_compared,
                     "relocations_raw": candidate_raw_relocations,
                 },
             }

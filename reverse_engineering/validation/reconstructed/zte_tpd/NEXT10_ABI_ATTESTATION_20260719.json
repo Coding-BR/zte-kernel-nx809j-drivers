@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T18:45:30Z",
+  "driver": "zte_tpd",
+  "scope": "next10_abi_group",
+  "status": "PASS_SCOPED_ABI_LAYOUT_BEHAVIOR_ASSEMBLY_OFFLINE",
+  "global_manifest_updated": false,
+  "candidate_sha256": "b8ba45e6ef002801ec2fce87565d8f46e7e34723bd907cb30ed2590bc76e839b",
+  "tasks": [
+    {
+      "id": "138_ufp_mac_init",
+      "function": "ufp_mac_init",
+      "signature": "int (void)",
+      "kcfi": "0x6fbb3035",
+      "direct_test": true,
+      "assembly_strict": true,
+      "assembly_relocation_equivalence": "stripped local .bss lock key matched to init_completion.__key under the guarded __init_swait_queue_head rule",
+      "semantic_scope": "workqueue allocation, delayed-work fields, timer, wakeup, completion, flags, platform-device copy and allocation-failure behavior covered offline"
+    },
+    {
+      "id": "139_ufp_single_tap_work",
+      "function": "ufp_single_tap_work",
+      "signature": "void (struct work_struct *)",
+      "kcfi": "0xa607748c",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "single-tap pending reset covered with ordinary and null work arguments"
+    },
+    {
+      "id": "140_ufp_mac_exit",
+      "function": "ufp_mac_exit",
+      "signature": "void (void)",
+      "kcfi": "0xe5c47d60",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "cancel, flush, destroy, wakeup removal, pdev clear, call order and null-workqueue forwarding covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next10_abi_report.json",
+      "sha256": "f0ee85dc49a5633b6d0db07b2674f40a744fae88624ab2e64d66be0684fa99d2",
+      "clean_cycles": 2,
+      "reproducible": true
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next10_abi_final.json",
+      "sha256": "76dbac65373bca5e7a866e64da11edb4890854794077eded4a6b67ec9ea5a718",
+      "scoped_comparison_path": "kcfi_next10_abi_exact.json",
+      "scoped_comparison_sha256": "90972c87f889afb8b19b188efd7e167ef1e4d1bfb6e551ca540a382953e6c01a",
+      "candidate_oracle_path": "signature_oracles/candidate_next10_abi_kcfi.json",
+      "candidate_oracle_sha256": "691bb8c9b4f1f7b89535e3b73c5cc2b414d1286d97fa15fcd39b4fe8cd2fc2a3",
+      "matched": 290,
+      "stock_records": 322,
+      "scoped_functions_passed": 3
+    },
+    "test": {
+      "path": "next10_abi_harness_report.json",
+      "sha256": "57ebca17a1548a890dc7bfcc6121a51c4972ae12027b0e2008f55ea20223adb7",
+      "repetitions": 2,
+      "tests_per_repetition": 30,
+      "sanitizers": [
+        "ASAN",
+        "UBSAN"
+      ]
+    },
+    "assembly": {
+      "path": "assembly_comparison_next10_abi_final.json",
+      "sha256": "24af8276f1d6be4487ffb3e676d12223fa4bdd365455c85637981490b666ba9c",
+      "manifest_path": "candidate_assembly_next10_abi_final/manifest.json",
+      "manifest_sha256": "c2d15a922e23f9845f168ea2d37201d824cffbfe8aca3a70c39ba0c709621e18",
+      "passed": true,
+      "strict_passed_functions": 3,
+      "strict_checked_functions": 3,
+      "guarded_relocation_equivalences": 1
+    },
+    "layout": {
+      "header_probe_path": "header_layout_probe_next10_abi.json",
+      "header_probe_sha256": "6163a53b8523707146eaf59627594b2c120b77fb99940c55e4801e341125cea5",
+      "abi_path": "abi_validation_next10_abi.json",
+      "abi_sha256": "c3b15e90bea68a97dab5a05cfacb0ede3364c0c0e0888a46eced2c8b9911efef",
+      "passed": true
+    },
+    "traceability": {
+      "path": "reconstruction_map_next10_abi.json",
+      "sha256": "f0572be9d355ffb97bd9cdaacf71c3f2744359c29772e9b8f041cc8afafc99ef",
+      "mapped_functions": 367
+    },
+    "validation_document": {
+      "path": "NEXT10_ABI_VALIDATION_20260719.md",
+      "sha256": "8413b9b2bf5d36baecca094f7a4cd7bdeb791cb6cf45c01ffe42bf07ee0df21f"
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 290 of 322 stock records.",
+    "The harness is offline and uses deterministic host data; it does not prove physical touch hardware behavior.",
+    "The stock lock-class-key symbol was stripped; the assembly report records one guarded semantic relocation equivalence instead of claiming identical symbol names.",
+    "syna_spi_enable_irq remains blocked because no tested nominal signature reproduces stock KCFI 0x342e61b1.",
+    "The broad infrastructure suite has one preexisting environment-lock hash error: 110 of 111 tests pass.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global manifest was not updated because this is a scoped three-function checkpoint."
+  ]
+}

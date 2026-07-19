@@ -42,7 +42,10 @@ struct syna_event_data_buffer {
 };
 
 struct syna_delayed_work_layout {
-	u8 opaque_00[0x68];
+	unsigned long work_data;
+	struct list_head work_entry;
+	work_func_t work_func;
+	u8 timer[0x48];
 	struct workqueue_struct *wq;
 };
 
@@ -119,6 +122,9 @@ static_assert(offsetof(struct syna_tcm, pm_resume_wait_bypass) == 0x57c);
 static_assert(sizeof(struct syna_tcm) == 0x580);
 
 static_assert(offsetof(struct syna_delayed_work_layout, wq) == 0x68);
+static_assert(offsetof(struct syna_delayed_work_layout, work_entry) == 0x08);
+static_assert(offsetof(struct syna_delayed_work_layout, work_func) == 0x18);
+static_assert(offsetof(struct syna_delayed_work_layout, timer) == 0x20);
 static_assert(sizeof(struct syna_delayed_work_layout) == 0x70);
 static_assert(offsetof(struct ufp_tp_ops_struct, pdev) == 0x00);
 static_assert(offsetof(struct ufp_tp_ops_struct, single_tap_pending) == 0x08);

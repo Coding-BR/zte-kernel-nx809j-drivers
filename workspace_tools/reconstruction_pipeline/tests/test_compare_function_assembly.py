@@ -209,6 +209,72 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertEqual(stock[2], candidate[2])
         self.assertEqual(candidate[1], ["R_AARCH64_CALL26 callee"])
 
+    def test_stripped_lock_key_matches_named_key_for_swait_init(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_lock_keys(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x731",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x731",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 init_completion.__key",
+                "R_AARCH64_ADD_ABS_LO12_NC init_completion.__key",
+            ],
+            ["d503201f", "d503201f", "d503201f", "bl <__init_swait_queue_head>"],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["stock_target"], ".bss+0x731")
+        self.assertEqual(
+            evidence[0]["candidate_target"], "init_completion.__key"
+        )
+
+    def test_stripped_lock_key_is_not_aliased_without_swait_init(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_lock_keys(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x731",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x731",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 init_completion.__key",
+                "R_AARCH64_ADD_ABS_LO12_NC init_completion.__key",
+            ],
+            ["bl <unrelated_function>"],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_stripped_lock_key_is_not_aliased_when_not_feeding_swait(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_lock_keys(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x731",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x731",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 init_completion.__key",
+                "R_AARCH64_ADD_ABS_LO12_NC init_completion.__key",
+            ],
+            [
+                "d503201f",
+                "d503201f",
+                "d503201f",
+                "d503201f",
+                "d503201f",
+                "d503201f",
+                "bl <__init_swait_queue_head>",
+            ],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
 
 if __name__ == "__main__":
     unittest.main()
