@@ -127,7 +127,8 @@ LABEL_13:
                   syna_tcm_buf_unlock(a1 + 576),
                   (v34 & 0x80000000) == 0) )
             {
-              if ( (syna_tcm_v1_check_max_rw_size(a1) & 0x80000000) == 0 )
+              if ( (syna_tcm_v1_check_max_rw_size(
+                        (struct tcm_dev *)a1) & 0x80000000) == 0 )
               {
                 printk(unk_31A47, "syna_tcm_v1_detect", v32);
                 if ( (*(_BYTE *)(a1 + 896) & 1) != 0 || (*(_BYTE *)(a1 + 900) & 1) != 0 )

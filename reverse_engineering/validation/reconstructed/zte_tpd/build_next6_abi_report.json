@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T13:23:32Z",
+  "mode": "offline_clean_reproducible_next6_abi",
+  "status": "static_verified_next6_abi_scoped",
+  "driver": "zte_tpd",
+  "stock": {
+    "path": "runs/NX809J-20260711T011653Z/01_acquisition/modules/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate": {
+    "path": "validation/audit_work_kcfi_next6/zte_tpd/zte_tpd.ko",
+    "sha256": "0b1e0c9df86b9a3df791fa6b7ed53f04cde5480a476b69e25f313143e28f78e5",
+    "size": 19723544
+  },
+  "build": {
+    "passed": true,
+    "reproducible": true,
+    "clean_cycles": 2,
+    "first_build": {
+      "returncode": 0,
+      "sha256": "0b1e0c9df86b9a3df791fa6b7ed53f04cde5480a476b69e25f313143e28f78e5",
+      "size": 19723544,
+      "duration_seconds": 294.626,
+      "log_sha256": "6ae3eb08514ce80012f1f36e0828c8d08c3c5c042edb879ede58f410bf554f98"
+    },
+    "second_build": {
+      "returncode": 0,
+      "sha256": "0b1e0c9df86b9a3df791fa6b7ed53f04cde5480a476b69e25f313143e28f78e5",
+      "size": 19723544,
+      "duration_seconds": 297.761,
+      "log_sha256": "53f61800846e37f915455f6fca286fb1111e5dace77bf6a38fbaba0713dca077"
+    },
+    "container": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225 / Clang 19.0.1",
+    "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
+    "environment_warnings": [
+      "Kbuild reported sub-second clock skew on the Windows-mounted module directory.",
+      "Both clean cycles completed successfully and produced byte-identical modules, so the warning did not affect reproducibility."
+    ]
+  },
+  "source_sha256": {
+    "zte_tpd_tcm_layout.h": "2ab0a5ebd02030e80575cd55da7707af1d3a48e732ddbf9ac284b7557fcf9fd9",
+    "defs.h": "8973c9a8405b37e36799c5719e8165db161c2bd2db3189454033ad7220e75e03",
+    "syna_tcm_v1_check_max_rw_size.c": "cdcc49de2180c0e26d38fda6274db46aad8ad827ed373e2e613c481ad359903d",
+    "syna_tcm_v1_set_up_max_rw_size.c": "5681588c211f2e21632eb02406ffc51b70117bc8e0ad26246aa23075222f1b04",
+    "syna_tcm_config_timings.c": "ecc8c030cade8619d8376c95515c1131cf2308ae178a21c4ffdaed198dd1d3d6",
+    "syna_tcm_enable_predict_reading.c": "9434b3c2f64218ee7ffb342a3964acac17fa8526e927774459c08140d776a1d9",
+    "syna_tcm_set_report_dispatcher.c": "028bb5d1b6d0f1e791beaeb37a37dab96fa54a2e2b1d8115afa799ee9c6d0072",
+    "sub_25330.c": "1a8ea6257db2f62d7ec7acd4ba6181c1c9d962f5e54423b5bfa0e731e71e563a",
+    "sub_2829C.c": "c8d92574c10115acc2a0ab91ef473ab6a532db651c7b531f80906abac4af1643",
+    "probes/layout_probe.c": "65391c552b38f4db8e6a7cd92d210be2b7131acce896b80f7fede4986cdc7079",
+    "syna_cdev_ioctls.c": "5e0d09a4ae2cdd432c1789fb423b5414d1e6af1c683ca4b27c97d72ff41ed57a",
+    "syna_dev_probe.c": "a499f12641e99b76e0df5b27889be91f889ff327d502ac9afb410a3bef5f514e",
+    "syna_tcm_v1_detect.c": "53872b742272195026cc19fee6436e9341d6660b8968ed216b09825b410b6157",
+    "syna_dev_connect.c": "6b037067a50de0b06361488e4140e3c8892e773f8655ee49b73c75ec18268a87",
+    "syna_dev_set_up_input_device.c": "470a2a9cc3436d3a51eb0e0658f2ba34f2a4f9a205a01c1bc3d0a470779d2c3b"
+  },
+  "notes": [
+    "Two independent clean module builds returned code 0 and produced the same size and SHA-256.",
+    "The final source copy used for both builds is byte-identical across repository, curated and audit trees for all 15 scoped files.",
+    "The AArch64 cmp/ldr/csel triad in syna_tcm_v1_set_up_max_rw_size is constrained to reproduce the stock instruction order; the host harness executes the equivalent C fallback.",
+    "This report proves compilation and reproducibility only; hardware behavior and total-driver semantic equivalence remain separate gates."
+  ]
+}

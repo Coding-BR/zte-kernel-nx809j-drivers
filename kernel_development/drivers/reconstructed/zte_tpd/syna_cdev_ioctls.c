@@ -1691,7 +1691,8 @@ LABEL_340:
                   else
                     v272 = "disable";
                   printk(unk_3BF86, "syna_cdev_ioctl_set_config", v272);
-                  syna_tcm_enable_predict_reading(v151, v247, 0);
+                  syna_tcm_enable_predict_reading(
+                      (struct tcm_dev *)v151, (bool)v247);
                   v246 = *(unsigned __int16 *)(v193 + 8);
                 }
                 v248 = v246 >> 8;

@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T13:23:32Z",
+  "driver": "zte_tpd",
+  "scope": "next6_abi_group",
+  "status": "PASS_SCOPED_ABI_LAYOUT_BEHAVIOR_ASSEMBLY_OFFLINE",
+  "global_manifest_updated": false,
+  "candidate_sha256": "0b1e0c9df86b9a3df791fa6b7ed53f04cde5480a476b69e25f313143e28f78e5",
+  "tasks": [
+    {
+      "id": "259_syna_tcm_v1_check_max_rw_size",
+      "function": "syna_tcm_v1_check_max_rw_size",
+      "signature": "int (struct tcm_dev *)",
+      "kcfi": "0xd57a6509",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "protocol and identify validation, host read/write caps, no-host behavior and exact stock error logs covered offline"
+    },
+    {
+      "id": "261_syna_tcm_v1_set_up_max_rw_size",
+      "function": "syna_tcm_v1_set_up_max_rw_size",
+      "signature": "int (struct tcm_dev *, u32, u32)",
+      "kcfi": "0x04a0b1dd",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "identify/request/host minima, write cap and invalid-device paths covered; AArch64 cmp/ldr/csel order is explicitly constrained to stock"
+    },
+    {
+      "id": "264_syna_tcm_config_timings",
+      "function": "syna_tcm_config_timings",
+      "signature": "int (struct tcm_dev *, struct tcm_timings *, u32, u32)",
+      "kcfi": "0x4b2750f2",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "six timing groups, masks, defaults, zero suppression and invalid product timing log covered offline"
+    },
+    {
+      "id": "288_syna_tcm_enable_predict_reading",
+      "function": "syna_tcm_enable_predict_reading",
+      "signature": "int (struct tcm_dev *, bool)",
+      "kcfi": "0x38633085",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "enable and disable state, offset reset, info strings and null rejection covered offline"
+    },
+    {
+      "id": "289_syna_tcm_set_report_dispatcher",
+      "function": "syna_tcm_set_report_dispatcher",
+      "signature": "int (struct tcm_dev *, u8, tcm_report_dispatcher_fn, void *)",
+      "kcfi": "0x6f1c1b70",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "all 256 slots, report boundaries 0/15/16/255, warning/info logs, isolated overwrite, callback invocation and null callback covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next6_abi_report.json",
+      "sha256": "5bb9e163091e77027ef8036af5bac464b54d5582bfa9f188bee7563b7c4d5fc3",
+      "clean_cycles": 2,
+      "reproducible": true
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next6_abi_final.json",
+      "sha256": "2b3a3d4371a16883fd165763b9ef292542e549f688dad1af3aaebcce86c99c1d",
+      "matched": 276,
+      "stock_records": 322,
+      "scoped_functions_passed": 5
+    },
+    "test": {
+      "path": "next6_abi_harness_report.json",
+      "sha256": "b9e394ba3fa03b414d6d52ef7d91793b6fa81d2036208888f0120d0df5166717",
+      "repetitions": 2,
+      "tests_per_repetition": 20,
+      "report_dispatcher_slots_checked": 256
+    },
+    "assembly": {
+      "path": "assembly_comparison_next6_abi_final.json",
+      "sha256": "c20aa9b4fa2940583efd7af47cbd5d4eaff77211dd72c340b2b090885a038ff5",
+      "passed": true,
+      "strict_passed_functions": 5,
+      "strict_checked_functions": 5
+    },
+    "traceability": {
+      "path": "reconstruction_map_next6_abi.json",
+      "sha256": "9c997e4e81fb82240f41bcbd0084cf603d6681a461e200e40388ec33a8f88488",
+      "mapped_functions": 367
+    },
+    "validation_document": {
+      "path": "NEXT6_ABI_VALIDATION_20260719.md",
+      "sha256": "ee47a7e7d00d054ee5893ae718a04ca5cea1263372a708fdfb347582a17ee800"
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 276 of 322 stock records.",
+    "The harness is offline and uses deterministic host data; it does not prove physical touch hardware behavior.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global manifest was not updated because this is a scoped five-function checkpoint."
+  ]
+}

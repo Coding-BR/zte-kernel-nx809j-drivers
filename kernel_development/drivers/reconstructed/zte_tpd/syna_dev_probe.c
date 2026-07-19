@@ -104,7 +104,9 @@ LABEL_13:
   v49 = v19;
   v47 = v21;
   v48 = v20;
-  v22 = syna_tcm_config_timings();
+  v22 = syna_tcm_config_timings(
+      (struct tcm_dev *)v41[0], (struct tcm_timings *)&v41[1],
+      0, 0xffff);
   if ( (v22 & 0x80000000) != 0 )
   {
     v24 = v22;

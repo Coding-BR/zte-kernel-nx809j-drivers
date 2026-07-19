@@ -95,7 +95,8 @@ LABEL_20:
     if ( *(_BYTE *)(v3 + 9) == 11 && (syna_tcm_get_boot_info(v3, 0, 20) & 0x80000000) == 0 )
       printk(unk_39879, "syna_dev_connect", *(unsigned __int8 *)(v3 + 225));
   }
-  v19 = syna_tcm_set_report_dispatcher(v3, 16, syna_dev_process_unexpected_reset, a1);
+  v19 = syna_tcm_set_report_dispatcher(
+      (struct tcm_dev *)v3, 16, syna_dev_process_unexpected_reset, a1);
   if ( (v19 & 0x80000000) != 0 )
     v19 = printk(unk_3244F, "syna_dev_connect", v20);
   v21 = a1[78];

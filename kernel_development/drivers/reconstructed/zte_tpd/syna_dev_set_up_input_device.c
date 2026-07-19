@@ -100,7 +100,9 @@ __int64 __fastcall syna_dev_set_up_input_device(__int64 a1)
       {
         v15 = *(unsigned int **)a1;
         *(_QWORD *)(a1 + 944) = v11;
-        if ( (syna_tcm_set_report_dispatcher(v15, 17, syna_dev_process_touch_report, a1) & 0x80000000) != 0 )
+        if ( (syna_tcm_set_report_dispatcher(
+                  (struct tcm_dev *)v15, 17,
+                  syna_dev_process_touch_report, (void *)a1) & 0x80000000) != 0 )
           printk(unk_35F92, "syna_dev_set_up_input_device", v16);
         mutex_unlock(a1 + 632);
         return 0;

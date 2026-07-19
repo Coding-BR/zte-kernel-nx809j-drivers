@@ -248,6 +248,17 @@ extern int syna_tcm_set_post_reset_callback(
 extern int syna_tcm_set_data_duplicator(
     struct tcm_dev *tcm, u8 report_code,
     tcm_data_duplicator_fn callback, void *callback_data);
+extern int syna_tcm_set_report_dispatcher(
+    struct tcm_dev *tcm, u8 report_code,
+    tcm_report_dispatcher_fn callback, void *callback_data);
+extern int syna_tcm_config_timings(
+    struct tcm_dev *tcm, struct tcm_timings *timings,
+    u32 default_value, u32 fields);
+extern int syna_tcm_enable_predict_reading(
+    struct tcm_dev *tcm, bool enable);
+extern int syna_tcm_v1_set_up_max_rw_size(
+    struct tcm_dev *tcm, u32 max_read_size, u32 max_write_size);
+extern int syna_tcm_v1_check_max_rw_size(struct tcm_dev *tcm);
 extern struct device *syna_request_managed_device(void);
 extern int syna_tcm_reset(struct tcm_dev *tcm, unsigned int delay_ms);
 extern int syna_tcm_rezero(struct tcm_dev *tcm, unsigned int delay_ms);
@@ -281,7 +292,6 @@ extern int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
 extern void syna_tcm_clear_command_processing(struct tcm_dev *tcm);
 extern void syna_tcm_remove_device(struct tcm_dev *tcm);
 extern void syna_tcm_v1_terminate(struct tcm_dev *tcm);
-extern __int64 syna_tcm_set_report_dispatcher(__int64 a1, int a2, void *a3, __int64 a4);
 extern int syna_dev_process_touch_report(unsigned char report_code,
                                          const unsigned char *payload,
                                          unsigned int length, void *context);
@@ -390,7 +400,6 @@ extern int syna_cdev_process_reports(unsigned char report_code,
 extern int syna_cdev_open(struct inode *inode, struct file *filp);
 extern int syna_cdev_release(struct inode *inode, struct file *filp);
 extern __int64 syna_tcm_get_event_data(__int64 a1, unsigned __int8 *a2, __int64 a3);
-extern __int64 syna_tcm_enable_predict_reading(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_tcm_sleep(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);
 extern __int64 tpd_touch_release(__int64 result, unsigned __int16 a2, int a3);
@@ -455,8 +464,6 @@ extern __int64 syna_tcm_v1_read_message(__int64 a1, _BYTE *a2, __int64 a3);
 extern int syna_tcm_v1_write_message(struct tcm_dev *tcm, u8 command,
 				      u8 *payload, u32 length,
 				      u8 *response_code, u32 delay_ms);
-extern __int64 syna_tcm_v1_set_up_max_rw_size(__int64 a1, unsigned int a2, __int64 a3);
-extern __int64 syna_tcm_v1_check_max_rw_size(__int64 a1);
 
 // Charger & TPD callback functions
 extern void syna_work_charger_detect_work(struct work_struct *work);

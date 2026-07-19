@@ -1,21 +1,18 @@
-__int64 __fastcall syna_tcm_enable_predict_reading(__int64 a1, char a2, __int64 a3)
+int syna_tcm_enable_predict_reading(struct tcm_dev *tcm, bool enable)
 {
-  const char *v4; // x2
-
-  if ( a1 )
+  if (tcm)
   {
-    *(_BYTE *)(a1 + 890) = a2 & 1;
-    *(_DWORD *)(a1 + 892) = 0;
-    if ( (a2 & 1) != 0 )
-      v4 = "enabled";
-    else
-      v4 = "disabled";
-    printk(unk_356A9, "syna_tcm_enable_predict_reading", v4);
+    tcm->predict_reading_enabled = enable & 1;
+    tcm->predict_reading_offset = 0;
+    printk("\x01" "6[info ] %s: Predicted reading is %s\n",
+           "syna_tcm_enable_predict_reading",
+           enable ? "enabled" : "disabled");
     return 0;
   }
   else
   {
-    printk(unk_3365A, "syna_tcm_enable_predict_reading", a3);
-    return 4294967055LL;
+    printk("\x01" "3[error] %s: Invalid tcm device handle\n",
+           "syna_tcm_enable_predict_reading");
+    return -241;
   }
 }

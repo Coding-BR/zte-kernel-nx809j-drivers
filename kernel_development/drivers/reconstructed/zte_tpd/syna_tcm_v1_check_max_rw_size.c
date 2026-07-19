@@ -1,43 +1,48 @@
-__int64 __fastcall syna_tcm_v1_check_max_rw_size(__int64 a1)
+int syna_tcm_v1_check_max_rw_size(struct tcm_dev *tcm)
 {
-  unsigned int v3; // w9
-  unsigned int v4; // w8
-  unsigned int v5; // w10
-  unsigned int v6; // w8
-  void *v8; // x0
+  u32 identify_max_write_size;
+  u32 host_max_read_size;
+  u32 selected_read_size;
+  const char *error;
+  int retval = 0;
 
-  if ( !a1 )
+  if (!tcm)
   {
-    v8 = unk_3365A;
-LABEL_18:
-    printk(v8, "syna_tcm_v1_check_max_rw_size", 0);
-    return 4294967055LL;
+    error = "\x01" "3[error] %s: Invalid tcm device handle\n";
+    goto error;
   }
-  if ( *(_BYTE *)(a1 + 128) != 1 )
+  if (tcm->protocol_version != 1)
   {
-    v8 = unk_36BFC;
-    goto LABEL_18;
+    error = "\x01" "3[error] %s: Invalid identify report stored\n";
+    goto error;
   }
-  v3 = *(unsigned __int16 *)(a1 + 150);
-  if ( !*(_WORD *)(a1 + 150) )
+  identify_max_write_size = tcm->identify_max_write_size;
+  if (!identify_max_write_size)
   {
-    v8 = unk_371CB;
-    goto LABEL_18;
+    error = "\x01" "3[error] %s: Invalid max write size from identify report\n";
+    goto error;
   }
-  v4 = *(_DWORD *)(a1 + 64);
-  if ( v3 >= v4 )
-    v5 = *(_DWORD *)(a1 + 64);
-  else
-    v5 = *(unsigned __int16 *)(a1 + 150);
-  if ( v4 )
-    v3 = v5;
-  if ( *(_DWORD *)(a1 + 56) != v3 )
-    *(_DWORD *)(a1 + 56) = v3;
-  if ( v4 )
-  {
-    v6 = *(_DWORD *)(a1 + 68);
-    if ( *(_DWORD *)(a1 + 60) > v6 )
-      *(_DWORD *)(a1 + 60) = v6;
-  }
-  return 0;
+
+  host_max_read_size = tcm->host_max_read_size;
+  OPTIMIZER_HIDE_VAR(identify_max_write_size);
+  OPTIMIZER_HIDE_VAR(host_max_read_size);
+  selected_read_size = identify_max_write_size < host_max_read_size
+                           ? identify_max_write_size
+                           : host_max_read_size;
+  if (host_max_read_size)
+    identify_max_write_size = selected_read_size;
+  if (tcm->max_read_size != identify_max_write_size)
+    tcm->max_read_size = identify_max_write_size;
+
+  if (host_max_read_size &&
+      tcm->max_write_size > tcm->host_max_write_size)
+    tcm->max_write_size = tcm->host_max_write_size;
+  goto exit;
+
+error:
+  printk(error, "syna_tcm_v1_check_max_rw_size");
+  retval = -241;
+exit:
+  barrier();
+  return retval;
 }
