@@ -56,9 +56,9 @@ __int64 __fastcall syna_dev_set_up_input_device(__int64 a1)
     *(_QWORD *)(a1 + 944) = 0;
   }
   v7 = *(unsigned int **)a1;
-  if ( syna_request_managed_device(v6) )
+  if ( syna_request_managed_device() )
   {
-    device = devm_input_allocate_device((struct device *)syna_request_managed_device(v6));
+    device = devm_input_allocate_device((struct device *)syna_request_managed_device());
     if ( device )
     {
       struct input_dev *input_dev = (struct input_dev *)device;

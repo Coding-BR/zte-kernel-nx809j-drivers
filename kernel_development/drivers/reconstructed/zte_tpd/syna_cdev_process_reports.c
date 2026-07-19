@@ -59,7 +59,7 @@ int syna_cdev_process_reports(unsigned char a1, const unsigned char *payload,
   v7 = a3 + 3;
   v9 = HIDWORD(qword_31700) & (unsigned int)~(SHIDWORD(qword_31700) >> 31);
   v10 = (unsigned int)(v9 + a3 + 3);
-  v11 = syna_request_managed_device(a1);
+  v11 = syna_request_managed_device();
   if ( !v11 )
   {
     v43 = unk_3BE43;
@@ -90,11 +90,11 @@ LABEL_69:
   }
   else
   {
-    v18 = syna_request_managed_device(v13);
+    v18 = syna_request_managed_device();
     if ( !v18 )
     {
       v44 = printk(unk_3BE43, "syna_pal_mem_alloc");
-      v20 = syna_request_managed_device(v44);
+      v20 = syna_request_managed_device();
       if ( !v20 )
         goto LABEL_10;
       goto LABEL_67;
@@ -102,7 +102,7 @@ LABEL_69:
     src = (_BYTE *)devm_kmalloc(v18, v16, 3520);
     if ( !src )
     {
-      v20 = syna_request_managed_device(0);
+      v20 = syna_request_managed_device();
       if ( !v20 )
       {
 LABEL_10:
@@ -258,12 +258,12 @@ LABEL_48:
             v38 = 0;
 LABEL_54:
             v5 = src;
-            v39 = syna_request_managed_device(v36);
+            v39 = syna_request_managed_device();
             if ( v39 )
               goto LABEL_55;
 LABEL_77:
             v47 = printk(unk_3BE43, "syna_pal_mem_free");
-            v41 = syna_request_managed_device(v47);
+            v41 = syna_request_managed_device();
             if ( v41 )
               goto LABEL_58;
 LABEL_78:
@@ -295,13 +295,13 @@ LABEL_81:
   v46 = printk(unk_377AA, "syna_cdev_update_fifo");
   v38 = -22;
   v37 = 1;
-  v39 = syna_request_managed_device(v46);
+  v39 = syna_request_managed_device();
   if ( !v39 )
     goto LABEL_77;
 LABEL_55:
   if ( v5 )
     v39 = devm_kfree(v39, v5);
-  v41 = syna_request_managed_device(v39);
+  v41 = syna_request_managed_device();
   if ( !v41 )
     goto LABEL_78;
 LABEL_58:

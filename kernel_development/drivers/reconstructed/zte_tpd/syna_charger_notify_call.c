@@ -1,13 +1,18 @@
 #include "defs.h"
 
-__int64 __fastcall syna_charger_notify_call(__int64 a1, __int64 a2, __int64 **a3)
+int syna_charger_notify_call(struct notifier_block *notifier,
+                             unsigned long event, void *data)
 {
-  __int64 v5; // x20
+  const char *name;
 
-  if ( a2 )
+  if (event)
     return 0;
-  v5 = **a3;
-  if ( !strcmp((const char *)v5, "usb") || *(_BYTE *)v5 == 97 && *(_BYTE *)(v5 + 1) == 99 && !*(_BYTE *)(v5 + 2) )
-    queue_delayed_work_on(32, *(_QWORD *)(a1 - 8), a1 - 112, 125);
+  name = *(const char * const *)*(const void * const *)data;
+  if (!strcmp(name, "usb") ||
+      (name[0] == 'a' && name[1] == 'c' && name[2] == '\0'))
+    queue_delayed_work_on(32,
+                          *(struct workqueue_struct **)((char *)notifier - 8),
+                          (struct delayed_work *)((char *)notifier - 112),
+                          125);
   return 0;
 }

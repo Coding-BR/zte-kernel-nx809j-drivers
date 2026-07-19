@@ -44,7 +44,7 @@ LABEL_21:
     if ( *(_DWORD *)(v4 + 184) )
     {
       v7 = *(_QWORD *)(v5 + 624);
-      v8 = syna_request_managed_device(a1);
+      v8 = syna_request_managed_device();
       if ( v8 )
       {
         if ( *(int *)(v7 + 184) < 1 )

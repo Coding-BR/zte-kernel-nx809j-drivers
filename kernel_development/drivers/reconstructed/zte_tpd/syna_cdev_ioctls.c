@@ -1052,7 +1052,7 @@ LABEL_325:
         if ( (_BYTE)v293 )
           v241 = printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v293);
         v242 = src;
-        v243 = syna_request_managed_device(v241);
+        v243 = syna_request_managed_device();
         if ( v243 )
         {
           if ( v242 )
@@ -1067,19 +1067,19 @@ LABEL_325:
       if ( !qword_31658 )
         goto LABEL_99;
       v69 = qword_31658;
-      v70 = syna_request_managed_device(qword_31658);
+      v70 = syna_request_managed_device();
       if ( v70 )
       {
         v67 = (void *)devm_kfree(v70, v69);
 LABEL_99:
-        v72 = syna_request_managed_device(v67);
+        v72 = syna_request_managed_device();
         if ( v72 )
           goto LABEL_100;
       }
       else
       {
         v280 = printk(unk_3BE43, "syna_pal_mem_free", v71);
-        v72 = syna_request_managed_device(v280);
+        v72 = syna_request_managed_device();
         if ( v72 )
         {
 LABEL_100:
@@ -1418,11 +1418,11 @@ LABEL_404:
       v174 = v5[181];
       if ( !v174 )
         goto LABEL_255;
-      v175 = syna_request_managed_device(0);
+      v175 = syna_request_managed_device();
       if ( !v175 )
       {
         v271 = printk(unk_3BE43, "syna_pal_mem_free", v176);
-        v177 = syna_request_managed_device(v271);
+        v177 = syna_request_managed_device();
         if ( v177 )
           goto LABEL_256;
 LABEL_418:
@@ -1431,7 +1431,7 @@ LABEL_418:
       }
       v20 = devm_kfree(v175, v174);
 LABEL_255:
-      v177 = syna_request_managed_device(v20);
+      v177 = syna_request_managed_device();
       if ( !v177 )
         goto LABEL_418;
 LABEL_256:
@@ -1605,12 +1605,12 @@ LABEL_410:
       if ( !qword_31658 )
         goto LABEL_224;
       v154 = qword_31658;
-      v155 = syna_request_managed_device(qword_31658);
+      v155 = syna_request_managed_device();
       if ( v155 )
       {
         v153 = (void *)devm_kfree(v155, v154);
 LABEL_224:
-        v157 = syna_request_managed_device(v153);
+        v157 = syna_request_managed_device();
         if ( v157 )
         {
 LABEL_225:
@@ -1723,7 +1723,7 @@ LABEL_340:
       else
       {
         v279 = printk(unk_3BE43, "syna_pal_mem_free", v156);
-        v157 = syna_request_managed_device(v279);
+        v157 = syna_request_managed_device();
         if ( v157 )
           goto LABEL_225;
       }
@@ -1769,12 +1769,12 @@ LABEL_376:
       if ( !qword_31658 )
         goto LABEL_178;
       v119 = qword_31658;
-      v120 = syna_request_managed_device(qword_31658);
+      v120 = syna_request_managed_device();
       if ( v120 )
       {
         v118 = (void *)devm_kfree(v120, v119);
 LABEL_178:
-        v122 = syna_request_managed_device(v118);
+        v122 = syna_request_managed_device();
         if ( v122 )
         {
 LABEL_179:
@@ -1852,7 +1852,7 @@ LABEL_447:
       else
       {
         v278 = printk(unk_3BE43, "syna_pal_mem_free", v121);
-        v122 = syna_request_managed_device(v278);
+        v122 = syna_request_managed_device();
         if ( v122 )
           goto LABEL_179;
       }

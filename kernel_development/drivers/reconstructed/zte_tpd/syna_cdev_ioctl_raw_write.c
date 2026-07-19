@@ -49,11 +49,11 @@ __int64 __fastcall syna_cdev_ioctl_raw_write(__int64 a1, unsigned __int64 a2, __
     if ( qword_31658 )
     {
       v9 = qword_31658;
-      v10 = syna_request_managed_device(qword_31658);
+      v10 = syna_request_managed_device();
       if ( !v10 )
       {
         v35 = printk(unk_3BE43, "syna_pal_mem_free", v11);
-        v12 = syna_request_managed_device(v35);
+        v12 = syna_request_managed_device();
         if ( v12 )
           goto LABEL_10;
         goto LABEL_37;
@@ -61,7 +61,7 @@ __int64 __fastcall syna_cdev_ioctl_raw_write(__int64 a1, unsigned __int64 a2, __
       devm_kfree(v10, v9);
       v8 = NULL;
     }
-    v12 = syna_request_managed_device(v8);
+    v12 = syna_request_managed_device();
     if ( v12 )
     {
 LABEL_10:

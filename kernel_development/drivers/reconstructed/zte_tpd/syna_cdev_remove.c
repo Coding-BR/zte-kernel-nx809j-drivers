@@ -60,7 +60,7 @@ void syna_cdev_remove(struct syna_tcm *tcm)
   if ( (_BYTE)qword_31698 )
     v10 = printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)qword_31698);
   v12 = qword_31658;
-  result = syna_request_managed_device(v10);
+  result = syna_request_managed_device();
   if ( result )
   {
     if ( v12 )

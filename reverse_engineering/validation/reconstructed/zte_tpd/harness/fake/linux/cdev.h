@@ -1,0 +1,3 @@
+#ifndef ZTE_TPD_HOST_FAKE_LINUX_CDEV_H
+#define ZTE_TPD_HOST_FAKE_LINUX_CDEV_H
+#endif

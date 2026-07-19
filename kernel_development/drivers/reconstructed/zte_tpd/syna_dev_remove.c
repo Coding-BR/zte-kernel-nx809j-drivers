@@ -28,7 +28,7 @@ void syna_dev_remove(struct platform_device *pdev)
   v5 = *(_QWORD *)(v3 + 1448);
   if ( v5 )
   {
-    v6 = syna_request_managed_device(v4);
+    v6 = syna_request_managed_device();
     if ( !v6 )
     {
       v4 = printk(unk_3BE43, "syna_pal_mem_free", v7);
@@ -46,7 +46,7 @@ LABEL_16:
   v4 = printk(unk_34845, "syna_tcm_buf_release", v8);
 LABEL_10:
   v9 = *(_QWORD *)(v3 + 680);
-  v10 = syna_request_managed_device(v4);
+  v10 = syna_request_managed_device();
   if ( v10 )
   {
     if ( v9 )

@@ -54,20 +54,18 @@ static const struct file_operations device_fops = {
     .mmap = device_mmap,
 };
 
-__int64 __fastcall syna_cdev_create(__int64 a1, __int64 a2)
+int syna_cdev_create(struct syna_tcm *tcm, struct platform_device *data)
 {
+  __int64 a1 = (__int64)tcm;
+  __int64 a2 = (__int64)data;
   int v3; // w0
-  __int64 v4; // x2
   unsigned __int64 v5; // x20
   void *v6; // x0
   int v7; // w0
   __int64 v8; // x1
   int v9; // w0
-  __int64 v10; // x2
   unsigned __int64 v11; // x0
-  __int64 v12; // x2
   unsigned __int64 v13; // x0
-  __int64 v14; // x2
 
   g_cdev_data = a2;
   qword_31708 = 0;
@@ -109,9 +107,9 @@ __int64 __fastcall syna_cdev_create(__int64 a1, __int64 a2)
     if ( v3 < 0 )
     {
       LODWORD(v5) = v3;
-      v6 = unk_3A3DA;
+      v6 = "\0013[error] %s: Fail to register char device.\n";
 LABEL_17:
-      printk(v6, "syna_cdev_create", v4);
+      printk(v6, "syna_cdev_create");
       return (unsigned int)v5;
     }
   }
@@ -121,7 +119,7 @@ LABEL_17:
     if ( v7 < 0 )
     {
       LODWORD(v5) = v7;
-      v6 = unk_3362E;
+      v6 = "\0013[error] %s: Fail to allocate char device.\n";
       goto LABEL_17;
     }
     syna_cdev_create_cdev_major_num = *(_DWORD *)(a1 + 896) >> 20;
@@ -133,7 +131,8 @@ LABEL_17:
   if ( v9 < 0 )
   {
     LODWORD(v5) = v9;
-    printk(unk_3A9AC, "syna_cdev_create", v10);
+    printk("\0013[error] %s: Fail to add cdev_add.\n",
+           "syna_cdev_create");
 LABEL_15:
     unregister_chrdev_region(*(unsigned int *)(a1 + 896), 1);
     return (unsigned int)v5;
@@ -143,7 +142,8 @@ LABEL_15:
   if ( IS_ERR(cl) )
   {
     LODWORD(v5) = PTR_ERR(cl);
-    printk(unk_35AC9, "syna_cdev_create", v12);
+    printk("\0013[error] %s: Fail to create device class.\n",
+           "syna_cdev_create");
 LABEL_14:
     cdev_del((struct cdev *)(a1 + 760));
     goto LABEL_15;
@@ -153,7 +153,8 @@ LABEL_14:
   if ( IS_ERR(dev) )
   {
     LODWORD(v5) = PTR_ERR(dev);
-    printk(unk_3B816, "syna_cdev_create", v14);
+    printk("\0013[error] %s: Fail to create character device.\n",
+           "syna_cdev_create");
     class_destroy(cl);
     goto LABEL_14;
   }

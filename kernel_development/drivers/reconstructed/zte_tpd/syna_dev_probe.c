@@ -60,7 +60,7 @@ int syna_dev_probe(struct platform_device *pdev)
     result = 4294967274LL;
     goto LABEL_7;
   }
-  v8 = syna_request_managed_device(v4);
+  v8 = syna_request_managed_device();
   if ( !v8 )
   {
     printk(unk_3BE43, "syna_pal_mem_alloc", v9);
@@ -157,10 +157,10 @@ LABEL_23:
     if ( *(_BYTE *)(v12 + 744) )
       v33 = printk(unk_34845, "syna_tcm_buf_release", *(unsigned __int8 *)(v12 + 744));
     v34 = *(_QWORD *)(v12 + 680);
-    if ( syna_request_managed_device(v33) )
+    if ( syna_request_managed_device() )
     {
       if ( v34 )
-        devm_kfree(syna_request_managed_device(v33), (void *)v34);
+        devm_kfree(syna_request_managed_device(), (void *)v34);
     }
     else
     {

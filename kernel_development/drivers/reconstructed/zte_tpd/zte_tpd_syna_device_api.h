@@ -4,6 +4,7 @@
 
 struct device;
 struct syna_tcm;
+struct platform_device;
 
 typedef int (*syna_report_dispatch_fn)(unsigned char report_code,
 					      const unsigned char *payload,
@@ -17,8 +18,11 @@ int syna_pm_suspend(struct device *dev);
 int syna_ts_check_dt(struct device *dev);
 
 void syna_cdev_remove(struct syna_tcm *tcm);
+int syna_cdev_create(struct syna_tcm *tcm, struct platform_device *data);
 void syna_dev_free_input_events(struct syna_tcm *tcm);
 void syna_sysfs_remove_dir(struct syna_tcm *tcm);
+int syna_sysfs_create_dir(struct syna_tcm *tcm,
+                          struct platform_device *parent);
 void syna_testing_remove_dir(struct syna_tcm *tcm);
 void syna_tpd_register_fw_class(struct syna_tcm *tcm);
 void zte_reset_frame_list(struct syna_tcm *tcm);

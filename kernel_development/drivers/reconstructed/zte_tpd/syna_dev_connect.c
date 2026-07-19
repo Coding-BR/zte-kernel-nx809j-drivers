@@ -99,7 +99,7 @@ LABEL_20:
   if ( (v19 & 0x80000000) != 0 )
     v19 = printk(unk_3244F, "syna_dev_connect", v20);
   v21 = a1[78];
-  v22 = syna_request_managed_device(v19);
+  v22 = syna_request_managed_device();
   if ( v22 )
   {
     v26 = *(_DWORD *)(v21 + 168);

@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T02:40:00Z",
+  "driver": "zte_tpd",
+  "scope": "next3_abi_group",
+  "status": "PASS_SCOPED_ABI_BEHAVIOR_OFFLINE_STATIC_BLOCKER",
+  "global_manifest_updated": false,
+  "tasks": [
+    {
+      "id": "183_syna_cdev_create",
+      "function": "syna_cdev_create",
+      "signature": "int (struct syna_tcm *, struct platform_device *)",
+      "kcfi": "0x720adbbe",
+      "direct_test": true,
+      "assembly_strict": false,
+      "semantic_scope": "cdev allocation registration failure rollback and success offsets covered offline"
+    },
+    {
+      "id": "364_syna_charger_notify_call",
+      "function": "syna_charger_notify_call",
+      "signature": "int (struct notifier_block *, unsigned long, void *)",
+      "kcfi": "0xd5127a3b",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "event filter supply names queue offsets cpu and delay covered offline"
+    },
+    {
+      "id": "195_syna_request_managed_device",
+      "function": "syna_request_managed_device",
+      "signature": "struct device * (void)",
+      "kcfi": "0x1ff8a78c",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "null and p_device plus 0x70 return paths covered offline"
+    },
+    {
+      "id": "208_syna_sysfs_create_dir",
+      "function": "syna_sysfs_create_dir",
+      "signature": "int (struct syna_tcm *, struct platform_device *)",
+      "kcfi": "0x720adbbe",
+      "direct_test": true,
+      "assembly_strict": false,
+      "semantic_scope": "kobject group testing failure cleanup and success paths covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next3_abi_report.json",
+      "sha256": "ee7104ee9a05160e3815cb9dc666b29150d49b7055fc2d1a6d3d03a90f6c7ba4"
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next3_abi.json",
+      "sha256": "1bf433a64eeb387b3d06af9df9190542732e5ab27a5cc6dc6b38a697641f6772"
+    },
+    "test": {
+      "path": "next3_abi_harness_report.json",
+      "sha256": "a5f6b1fa8c603cc903ddf0204d06e100aabdd5e97a16165cebd90e8f638a02cc"
+    },
+    "assembly": {
+      "path": "assembly_comparison_next3_abi.json",
+      "sha256": "9e4e0e83f416279cf038b93e7b79d6897477dfbdf55e36037382276c96691c01",
+      "passed": false,
+      "strict_passed_functions": 2,
+      "strict_checked_functions": 4
+    },
+    "traceability": {
+      "path": "reconstruction_map_next3_abi.json",
+      "sha256": "566e2a9cc5129b1f56cd191c1cefe4cb41f367f912216b9eb6af2ec3efac3ac3",
+      "mapped_functions": 367
+    }
+  },
+  "limitations": [
+    "syna_cdev_create e syna_sysfs_create_dir ainda nao possuem equivalencia estrita de assembly.",
+    "O harness e offline e usa stubs; nao prova comportamento em hardware.",
+    "Nenhuma validacao dinamica no smartphone foi executada neste checkpoint.",
+    "A superficie global KCFI permanece incompleta: 261/322 matches.",
+    "O manifesto global nao foi atualizado porque este e um checkpoint ABI escopado."
+  ]
+}

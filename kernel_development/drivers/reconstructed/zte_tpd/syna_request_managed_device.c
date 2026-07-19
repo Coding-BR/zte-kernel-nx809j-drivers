@@ -1,7 +1,7 @@
-__int64 syna_request_managed_device()
+struct device *syna_request_managed_device(void)
 {
   if ( p_device )
-    return *(_QWORD *)(p_device + 112);
+    return *(struct device **)(p_device + 112);
   else
     return 0;
 }

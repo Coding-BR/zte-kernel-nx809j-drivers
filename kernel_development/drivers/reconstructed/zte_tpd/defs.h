@@ -30,6 +30,7 @@
 #include <linux/fs.h>
 #include <linux/timekeeping.h>
 #include <linux/pm_wakeup.h>
+#include <linux/notifier.h>
 
 #include "zte_tpd_tcm_layout.h"
 #include "zte_tpd_testing_layout.h"
@@ -235,7 +236,7 @@ extern void report_ufp_uevent(int val);
 extern __int64 syna_cdev_ioctl_raw_read(__int64 a1, unsigned __int64 a2, __int64 a3, unsigned int a4);
 extern __int64 syna_cdev_ioctl_raw_write(__int64 a1, unsigned __int64 a2, __int64 a3, unsigned int a4);
 extern __int64 syna_tcm_clear_data_duplicator(__int64 a1);
-extern __int64 syna_request_managed_device();
+extern struct device *syna_request_managed_device(void);
 extern int syna_tcm_reset(struct tcm_dev *tcm, unsigned int delay_ms);
 extern int syna_tcm_rezero(struct tcm_dev *tcm, unsigned int delay_ms);
 extern int syna_tcm_erase_mtp_data(struct tcm_dev *tcm,
@@ -446,7 +447,8 @@ extern __int64 syna_tcm_v1_check_max_rw_size(__int64 a1);
 
 // Charger & TPD callback functions
 extern void syna_work_charger_detect_work(struct work_struct *work);
-extern __int64 syna_charger_notify_call(__int64 a1, __int64 a2, __int64 **a3);
+extern int syna_charger_notify_call(struct notifier_block *notifier,
+                                    unsigned long event, void *data);
 extern int tpd_init_tpinfo(struct ztp_device *cdev);
 extern int tpd_get_wakegesture(struct ztp_device *cdev);
 extern int tpd_enable_wakegesture(struct ztp_device *cdev, int value);
