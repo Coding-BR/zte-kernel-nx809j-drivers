@@ -906,20 +906,8 @@ extern __int64 tpd_cdev;
 extern int zte_touch_deinit_ztp_release;
 extern __int64 p_device;
 
-struct syna_hw_interface_layout {
-    void *spi;
-    void *pad[4];
-    void *read;
-    void *write;
-    void *pad2[1];
-    void *enable_irq;
-    void *pad3[39];
-    void *power_on;
-    void *hw_reset;
-};
-
 #ifdef GLOBALS_C
-extern struct syna_hw_interface_layout syna_spi_hw_if;
+extern struct syna_hw_interface syna_spi_hw_if;
 #else
 extern __int64 syna_spi_hw_if;
 #endif

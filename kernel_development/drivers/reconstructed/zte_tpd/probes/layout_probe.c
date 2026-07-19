@@ -6,6 +6,7 @@
 #include <linux/types.h>
 
 #include "zte_tpd_tcm_layout.h"
+#include "zte_tpd_syna_layout.h"
 #include "zte_tpd_testing_layout.h"
 
 static_assert(sizeof(void *) == 8);
@@ -52,6 +53,27 @@ static_assert(offsetof(struct tcm_dev, write_message) == 0x398);
 static_assert(offsetof(struct tcm_dev, check_max_rw_size) == 0x3b0);
 static_assert(offsetof(struct tcm_dev, post_reset_context) == 0x23d8);
 static_assert(offsetof(struct tcm_dev, post_reset_callback) == 0x23e0);
+
+static_assert(sizeof(struct syna_hw_interface) == 0x190);
+static_assert(offsetof(struct syna_hw_interface, irq_gpio) == 0xa8);
+static_assert(offsetof(struct syna_hw_interface, reset_gpio) == 0xf0);
+static_assert(offsetof(struct syna_hw_interface, reset_active_ms) == 0xfc);
+static_assert(offsetof(struct syna_hw_interface, hw_reset) == 0x188);
+
+static_assert(sizeof(struct syna_tcm) == 0x580);
+static_assert(offsetof(struct syna_tcm, hw_if) == 0x270);
+static_assert(offsetof(struct syna_tcm, event_data) == 0x2a8);
+static_assert(offsetof(struct syna_tcm, frame_wait) == 0x448);
+static_assert(offsetof(struct syna_tcm, frame_available) == 0x468);
+static_assert(offsetof(struct syna_tcm, pm_resume_completion) == 0x558);
+static_assert(offsetof(struct syna_tcm, pm_resume_wait_enabled) == 0x578);
+static_assert(offsetof(struct syna_tcm, pm_resume_wait_bypass) == 0x57c);
+
+static_assert(sizeof(struct ufp_tp_ops_struct) == 0xa8);
+static_assert(offsetof(struct ufp_tp_ops_struct, single_tap_work) == 0x10);
+static_assert(offsetof(struct ufp_tp_ops_struct, single_tap_work.wq) == 0x78);
+static_assert(offsetof(struct ufp_tp_ops_struct, gesture_complete) == 0x80);
+static_assert(offsetof(struct ufp_tp_ops_struct, field_a0) == 0xa0);
 
 static_assert(sizeof(struct testing_item) == 0x178);
 static_assert(offsetof(struct testing_item, version) == 0x00);

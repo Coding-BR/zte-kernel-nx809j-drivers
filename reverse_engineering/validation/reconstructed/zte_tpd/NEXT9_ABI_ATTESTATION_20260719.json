@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T17:34:05Z",
+  "driver": "zte_tpd",
+  "scope": "next9_abi_group",
+  "status": "PASS_SCOPED_ABI_LAYOUT_BEHAVIOR_ASSEMBLY_OFFLINE",
+  "global_manifest_updated": false,
+  "candidate_sha256": "83ba694d71537fbf3fc4514e54ba33d8bbcca32dbfee6246fcdbc56663f25423",
+  "tasks": [
+    {
+      "id": "174_syna_poll",
+      "function": "syna_poll",
+      "signature": "__poll_t (struct file *, struct poll_table_struct *)",
+      "kcfi": "0x0b7841ca",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "poll wait registration and empty/ready frame masks covered offline"
+    },
+    {
+      "id": "197_syna_spi_hw_reset",
+      "function": "syna_spi_hw_reset",
+      "signature": "void (struct syna_hw_interface *)",
+      "kcfi": "0x2b3cba1b",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "missing GPIO, active polarity, active delay, fixed release delay and completion log covered offline"
+    },
+    {
+      "id": "142_syna_dev_set_screen_on_fp_mode",
+      "function": "syna_dev_set_screen_on_fp_mode",
+      "signature": "int (struct syna_tcm *, unsigned int)",
+      "kcfi": "0x82a068af",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "null context and dynamic-config success/failure paths covered offline"
+    },
+    {
+      "id": "132_ufp_report_gesture_uevent",
+      "function": "ufp_report_gesture_uevent",
+      "signature": "void (char *)",
+      "kcfi": "0xcf0d7fba",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "uevent, wakeup, single/double tap scheduling, workqueue arguments and log covered offline"
+    },
+    {
+      "id": "171_syna_dev_isr",
+      "function": "syna_dev_isr",
+      "signature": "irqreturn_t (int, void *)",
+      "kcfi": "0xd2f00be1",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "resume bypass/wait/timeout, active IRQ GPIO, PID, event data and failure paths covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next9_abi_report.json",
+      "sha256": "c552f229c5298c49f066a937071bfc13aa4eb322ea8524af977024fc2b92bc77",
+      "clean_cycles": 2,
+      "reproducible": true
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next9_abi_final.json",
+      "sha256": "7c0062198dcec6c7a3d5fdd5b10cc71a55b6dc9651946230249615020b4889d4",
+      "scoped_comparison_path": "kcfi_next9_abi_exact.json",
+      "scoped_comparison_sha256": "1a9323a65bb8ea16145eb55331445f97767fa0c316a5bec041d0d03c0eb8020e",
+      "candidate_oracle_path": "signature_oracles/candidate_next9_abi_final_kcfi.json",
+      "candidate_oracle_sha256": "7cbfa3ba080ed41100ac9eb95bacf7f52c1da05c01c34ba270956fa32c9e6d05",
+      "matched": 290,
+      "stock_records": 322,
+      "scoped_functions_passed": 5
+    },
+    "test": {
+      "path": "next9_abi_harness_report.json",
+      "sha256": "6c3a95cd2f8391c7affe2964ab3c5a4ed051d9cbdf210ec52bb15bd4e73c4b43",
+      "repetitions": 2,
+      "tests_per_repetition": 31,
+      "sanitizers": [
+        "ASAN",
+        "UBSAN"
+      ]
+    },
+    "assembly": {
+      "path": "assembly_comparison_next9_abi_final.json",
+      "sha256": "158211b61d2413093d94d8e0387a96abcd84667b12d5172ce2be450540cb61a7",
+      "manifest_path": "candidate_assembly_next9_abi_final/manifest.json",
+      "manifest_sha256": "65c7fb60ddcc1c28d6cf25d3cbac446daab78db4be49015517efb01de495e5fc",
+      "passed": true,
+      "strict_passed_functions": 5,
+      "strict_checked_functions": 5
+    },
+    "layout": {
+      "header_probe_path": "header_layout_probe_next9_abi.json",
+      "header_probe_sha256": "912dbb9a901e973a44002c1acf158978f3580cff0ab70fef833a8bc2836f0ff1",
+      "abi_path": "abi_validation_next9_abi.json",
+      "abi_sha256": "51cf1a695d08cb3d91ce51a9474883b76ec2569a7f5c5332c9980a2a895d97df",
+      "passed": true
+    },
+    "traceability": {
+      "path": "reconstruction_map_next9_abi.json",
+      "sha256": "f4c65a040fdc5a2f16c54d7100be6fb010096438c2705522ab7a6638aee12ae0",
+      "mapped_functions": 367
+    },
+    "validation_document": {
+      "path": "NEXT9_ABI_VALIDATION_20260719.md",
+      "sha256": "b5f0657b1e9ac87c5ae5124ca7d7f1ef6875512d7ba9ccef1ca0a4616dff4fbd"
+    },
+    "blocked_callback": {
+      "path": "NEXT9_ENABLE_IRQ_TYPE_BLOCKER_20260719.md",
+      "sha256": "960da9523ae61a9da2d5586618f9781e95c8c6ee91fcac8561fb12d60345d6b7",
+      "target_kcfi": "0x342e61b1",
+      "candidate_signatures_tested": 196,
+      "matches": 0,
+      "status": "BLOCKED_NO_EXACT_NOMINAL_TYPE"
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 290 of 322 stock records.",
+    "The harness is offline and uses deterministic host data; it does not prove physical touch hardware behavior.",
+    "syna_spi_enable_irq remains blocked because no tested nominal signature reproduces stock KCFI 0x342e61b1.",
+    "ufp_mac_init and ufp_mac_exit still require review against the shared ufp_tp_ops overlay.",
+    "The broad infrastructure suite has one preexisting environment-lock hash failure: 107 of 108 tests pass.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global manifest was not updated because this is a scoped five-function checkpoint."
+  ]
+}

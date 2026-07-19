@@ -287,6 +287,7 @@ def main() -> int:
     candidate = curated / "zte_tpd.ko"
     probe_source = curated / "probes" / "layout_probe.c"
     overlay_header = curated / "zte_tpd_tcm_layout.h"
+    syna_overlay_header = curated / "zte_tpd_syna_layout.h"
     testing_overlay_header = curated / "zte_tpd_testing_layout.h"
     document = curated / "DOCUMENTO_TRANSICAO.md"
     required = (
@@ -294,6 +295,7 @@ def main() -> int:
         candidate,
         probe_source,
         overlay_header,
+        syna_overlay_header,
         testing_overlay_header,
         document,
     )
@@ -309,6 +311,7 @@ def main() -> int:
     work.mkdir(parents=True)
     shutil.copy2(probe_source, work / "zte_tpd_layout_probe.c")
     shutil.copy2(overlay_header, work / "zte_tpd_tcm_layout.h")
+    shutil.copy2(syna_overlay_header, work / "zte_tpd_syna_layout.h")
     shutil.copy2(testing_overlay_header, work / "zte_tpd_testing_layout.h")
     stock_in_container = f"{work_in_container}/stock.input.ko"
     candidate_in_container = f"{work_in_container}/candidate.input.ko"
@@ -492,6 +495,10 @@ def main() -> int:
             "path": "curated/zte_tpd/zte_tpd_tcm_layout.h",
             "sha256": sha256_file(overlay_header),
         },
+        "syna_overlay_header": {
+            "path": "curated/zte_tpd/zte_tpd_syna_layout.h",
+            "sha256": sha256_file(syna_overlay_header),
+        },
         "testing_overlay_header": {
             "path": "curated/zte_tpd/zte_tpd_testing_layout.h",
             "sha256": sha256_file(testing_overlay_header),
@@ -520,11 +527,29 @@ def main() -> int:
             "platform_device_release_offset": "0x338",
             "tcm_transport_flags_offset": "0x14",
             "tcm_transport_overlay_size": "0x15",
-            "tcm_dev_size": "0x3a0",
+            "tcm_dev_size": "0x23e8",
             "tcm_dev_firmware_mode_offset": "0x09",
             "tcm_dev_transport_offset": "0x48",
             "tcm_dev_command_delay_ms_offset": "0x20c",
             "tcm_dev_write_message_offset": "0x398",
+            "syna_hw_interface_size": "0x190",
+            "syna_hw_interface_irq_gpio_offset": "0xa8",
+            "syna_hw_interface_reset_gpio_offset": "0xf0",
+            "syna_hw_interface_reset_active_ms_offset": "0xfc",
+            "syna_hw_interface_hw_reset_offset": "0x188",
+            "syna_tcm_size": "0x580",
+            "syna_tcm_hw_if_offset": "0x270",
+            "syna_tcm_event_data_offset": "0x2a8",
+            "syna_tcm_frame_wait_offset": "0x448",
+            "syna_tcm_frame_available_offset": "0x468",
+            "syna_tcm_pm_resume_completion_offset": "0x558",
+            "syna_tcm_pm_resume_wait_enabled_offset": "0x578",
+            "syna_tcm_pm_resume_wait_bypass_offset": "0x57c",
+            "ufp_tp_ops_size": "0xa8",
+            "ufp_tp_ops_single_tap_work_offset": "0x10",
+            "ufp_tp_ops_delayed_work_wq_offset": "0x78",
+            "ufp_tp_ops_gesture_completion_offset": "0x80",
+            "ufp_tp_ops_field_a0_offset": "0xa0",
             "testing_item_size": "0x178",
             "testing_item_version_offset": "0x00",
             "testing_item_id_offset": "0x04",
@@ -544,6 +569,7 @@ def main() -> int:
         "limitations": [
             "Compilation proves header and overlay layout consistency, not device behavior.",
             "The partial TCM overlay contains only offsets tied to local stock evidence.",
+            "The partial Synaptics overlay contains only offsets tied to local stock ELF and disassembly evidence.",
             "The testing-item overlay names only fields whose offsets are tied to local stock ELF evidence.",
             "No module was loaded and no smartphone operation was performed.",
         ],

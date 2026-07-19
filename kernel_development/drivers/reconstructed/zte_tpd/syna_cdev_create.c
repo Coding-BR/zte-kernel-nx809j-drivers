@@ -7,7 +7,6 @@ extern __int64 syna_cdev_read(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_cdev_write(__int64 a1, __int64 a2, __int64 a3);
 extern loff_t syna_cdev_llseek(struct file *file, loff_t offset, int whence);
 extern __int64 syna_cdev_ioctls(__int64 a1, unsigned char a2, unsigned __int64 a3);
-extern __int64 syna_poll(__int64 a1, void (**a2)(void));
 extern int syna_mmap(struct file *filp, struct vm_area_struct *vma);
 extern char *syna_cdev_devnode(const struct device *device, umode_t *mode);
 
@@ -31,11 +30,6 @@ static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
     return (long)syna_cdev_ioctls((__int64)filp, (unsigned char)cmd, (unsigned __int64)arg);
 }
 
-static __poll_t device_poll(struct file *filp, struct poll_table_struct *wait)
-{
-    return (__poll_t)syna_poll((__int64)filp, (void (**)(void))wait);
-}
-
 static int device_mmap(struct file *filp, struct vm_area_struct *vma)
 {
     return syna_mmap(filp, vma);
@@ -50,7 +44,7 @@ static const struct file_operations device_fops = {
     .llseek = device_llseek,
     .unlocked_ioctl = device_ioctl,
     .compat_ioctl = device_ioctl,
-    .poll = device_poll,
+    .poll = syna_poll,
     .mmap = device_mmap,
 };
 

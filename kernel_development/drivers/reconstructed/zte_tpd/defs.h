@@ -28,11 +28,13 @@
 #include <linux/firmware.h>
 #include <linux/cdev.h>
 #include <linux/fs.h>
+#include <linux/poll.h>
 #include <linux/timekeeping.h>
 #include <linux/pm_wakeup.h>
 #include <linux/notifier.h>
 
 #include "zte_tpd_tcm_layout.h"
+#include "zte_tpd_syna_layout.h"
 #include "zte_tpd_testing_layout.h"
 #include "zte_tpd_syna_device_api.h"
 
@@ -324,7 +326,13 @@ extern int syna_tcm_identify(struct tcm_dev *tcm,
 extern int syna_dev_process_unexpected_reset(unsigned char report_code,
                                              const unsigned char *payload,
                                              unsigned int length, void *context);
-extern __int64 syna_dev_isr(__int64 a1, __int64 *a2);
+extern irqreturn_t syna_dev_isr(int irq, void *data);
+extern __poll_t syna_poll(struct file *file,
+			  struct poll_table_struct *wait);
+extern void syna_spi_hw_reset(struct syna_hw_interface *hw_if);
+extern int syna_dev_set_screen_on_fp_mode(struct syna_tcm *tcm,
+					  unsigned int enable);
+extern void ufp_report_gesture_uevent(char *event);
 
 extern int syna_usb_detect_flag;
 struct drm_panel;
@@ -422,24 +430,6 @@ extern int syna_tcm_sleep(struct tcm_dev *tcm, bool enable,
 			  unsigned int delay_ms);
 extern __int64 syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);
 extern __int64 tpd_touch_release(__int64 result, unsigned __int16 a2, int a3);
-struct ufp_tp_ops_struct {
-    union {
-        struct {
-            struct platform_device *pdev;
-            int field_8;
-            int field_c;
-            struct delayed_work single_tap_work;
-        };
-        struct {
-            char pad_to_128[128];
-            struct completion gesture_complete;
-            char field_a0;
-            char field_a1;
-            char field_a2;
-        };
-        char pad[168];
-    };
-};
 extern struct ufp_tp_ops_struct ufp_tp_ops;
 
 /* KCFI recovered the stock tag as enum lcdchange (0..3). */

@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T17:30:32Z",
+  "mode": "offline_clean_reproducible_next9_abi",
+  "status": "static_verified_next9_abi_scoped",
+  "driver": "zte_tpd",
+  "stock": {
+    "path": "runs/NX809J-20260711T011653Z/01_acquisition/modules/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate": {
+    "path": "validation/audit_work_kcfi_next9/zte_tpd/zte_tpd.ko",
+    "sha256": "83ba694d71537fbf3fc4514e54ba33d8bbcca32dbfee6246fcdbc56663f25423",
+    "size": 23705136
+  },
+  "build": {
+    "passed": true,
+    "reproducible": true,
+    "clean_cycles": 2,
+    "parallelism": 8,
+    "first_build": {
+      "returncode": 0,
+      "sha256": "83ba694d71537fbf3fc4514e54ba33d8bbcca32dbfee6246fcdbc56663f25423",
+      "size": 23705136,
+      "duration_seconds": 58.167,
+      "clean_log_sha256": "7bc6a74b8a563f9eaf76e154819cab3b4a3a614126e0e93e09fedafb970ec401",
+      "build_log_sha256": "56c40941901ad255340eb31332993e85e2644b287be5590f0a95edf61ed64d64",
+      "warnings": []
+    },
+    "second_build": {
+      "returncode": 0,
+      "sha256": "83ba694d71537fbf3fc4514e54ba33d8bbcca32dbfee6246fcdbc56663f25423",
+      "size": 23705136,
+      "duration_seconds": 58.598,
+      "clean_log_sha256": "7bc6a74b8a563f9eaf76e154819cab3b4a3a614126e0e93e09fedafb970ec401",
+      "build_log_sha256": "56c40941901ad255340eb31332993e85e2644b287be5590f0a95edf61ed64d64",
+      "warnings": []
+    },
+    "rejected_attempts": [
+      {
+        "accepted": false,
+        "reason": "Kbuild reported modules.order modification time 0.59 s in the future; the attempt was discarded before reproducibility attestation."
+      },
+      {
+        "accepted": false,
+        "reason": "A post-normalization bind-mount build reported 0.4 s clock skew; canonical builds were moved to an internal Linux container filesystem."
+      }
+    ],
+    "container": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225 / Clang 19.0.1",
+    "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
+    "module_path": "/work/engineering/validation/audit_work_kcfi_next9/zte_tpd",
+    "output_filesystem": "ephemeral container Linux filesystem",
+    "environment_warnings": []
+  },
+  "source_sha256": {
+    "defs.h": "08f76566f8a3240793c71ff0290d6f32fad5c80caba19179b0bf8920bc1e6000",
+    "globals.h": "320f439cd3d183e0b168cd7fc46b59caa651039ab5cd607896f1df1802cf44bb",
+    "globals.c": "6bfc2271f549f92c2e2a80472ac1871404c97d724b869985931b4557b52ae744",
+    "zte_tpd_syna_layout.h": "8eabaec99f1209c949c44582ec960870cbf09f05d03de97257bc7d59074f41cc",
+    "probes/layout_probe.c": "2949cac7228d6e89d1ccb7d6ffae053b3297aaaba50111260b64aa74eb9d1829",
+    "syna_poll.c": "eb502ef5c2787139e75cecfeb0502e9ea424c23a4c633ff5154ff46f7c429ca3",
+    "syna_spi_hw_reset.c": "dba4ad8bbf0207808fe2c9528cebc198b74a137876876f5bbdb8fa9aecfe77d0",
+    "syna_dev_set_screen_on_fp_mode.c": "f1c51eaaf5b526c049216cf84d51bae8842c1bf0f343e017557ff35bfae7ef60",
+    "ufp_report_gesture_uevent.c": "05c65d940682081d4d13470f2a82d83183b0dae2017f71b897c3ffd32e09432e",
+    "syna_dev_isr.c": "701d100d776e4157a7913aabd3fa834cb897e19005df48ca2932e706afb730f4",
+    "syna_cdev_create.c": "598e2576197b0c19c42eadde13058eebdcbd007fe23dd27325484aa5e239f08b",
+    "syna_dev_reflash_startup_work.c": "a761e47e799ecad333b8fc8f213ed01cbac5f9e20719ea2d65198218dcca22e6",
+    "syna_ghost_check_reset.c": "b38287d98d4396a5dd9d77f70cb7fffdb2844b01a29b8cb53bec34034cafa3b2",
+    "report_ufp_uevent.c": "3233503c7c3b61ad37628a674e5219813bd7c6a02bb3d68c4bc1dd21eb6ceba6",
+    "sub_184B0.c": "61036d40c54a87b5265a04f2bcd3d71dc1c00f0b40ed19257f5553eab63604be"
+  },
+  "notes": [
+    "Two accepted clean module builds in independent ephemeral containers returned code 0 and produced identical bytes, size, SHA-256 and logs.",
+    "Neither accepted cycle emitted a warning or clock-skew diagnostic.",
+    "The scoped repository, curated and audit-tree source copies were byte-identical before the canonical builds.",
+    "KCFI, strict assembly and layout evidence were regenerated from the final reproducible module hash.",
+    "This report proves compilation and reproducibility only; hardware behavior and total-driver semantic equivalence remain separate gates."
+  ]
+}

@@ -1,25 +1,8 @@
-__int64 __fastcall syna_poll(__int64 a1, void (**a2)(void))
+__poll_t syna_poll(struct file *file, struct poll_table_struct *wait)
 {
-  __int64 v2; // x19
-  void (*v3)(void); // x8
+	struct syna_tcm *tcm = file->private_data;
 
-  v2 = *(_QWORD *)(a1 + 32);
-  if ( a2 )
-  {
-    if ( v2 != -1096 )
-    {
-      v3 = *a2;
-      if ( *a2 )
-      {
-        if ( *((_DWORD *)v3 - 1) != -442429149 )
-          __break(0x8228u);
-        v3();
-        __dmb(0xBu);
-      }
-    }
-  }
-  if ( *(_DWORD *)(v2 + 1128) )
-    return 65;
-  else
-    return 0;
+	poll_wait(file, &tcm->frame_wait, wait);
+
+	return tcm->frame_available ? POLLIN | POLLRDNORM : 0;
 }

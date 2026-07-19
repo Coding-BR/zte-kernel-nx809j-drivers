@@ -1,34 +1,22 @@
-__int64 __fastcall syna_spi_hw_reset(__int64 result)
+void syna_spi_hw_reset(struct syna_hw_interface *hw_if)
 {
-  unsigned int v1; // w8
-  int v2; // w20
-  __int64 v3; // x19
-  __int64 v4; // x0
-  __int64 v5; // x0
-  __int64 v6; // x8
-  _BOOL4 v7; // w19
-  __int64 v8; // x0
-  __int64 v9; // x2
+	int reset_gpio;
+	int reset_off_state;
+	int reset_on_state;
 
-  v1 = *(_DWORD *)(result + 240);
-  if ( v1 )
-  {
-    v2 = *(_DWORD *)(result + 244);
-    v3 = result;
-    v4 = gpio_to_desc(v1);
-    gpiod_set_raw_value(v4, v2 & 1);
-    v5 = *(unsigned int *)(v3 + 252);
-    v6 = v3;
-    if ( (int)v5 >= 1 )
-    {
-      msleep(v5);
-      v6 = v3;
-    }
-    v7 = *(_DWORD *)(v6 + 244) == 0;
-    v8 = gpio_to_desc(*(unsigned int *)(v6 + 240));
-    gpiod_set_raw_value(v8, v7);
-    msleep(80);
-    return printk(unk_38DEF, "syna_spi_hw_reset", v9);
-  }
-  return result;
+	if (!hw_if->reset_gpio)
+		return;
+
+	reset_on_state = hw_if->reset_on_state;
+	gpiod_set_raw_value(gpio_to_desc(hw_if->reset_gpio),
+			    reset_on_state & 1);
+
+	if ((int)hw_if->reset_active_ms > 0)
+		msleep(hw_if->reset_active_ms);
+
+	reset_gpio = hw_if->reset_gpio;
+	reset_off_state = hw_if->reset_on_state == 0;
+	gpiod_set_raw_value(gpio_to_desc(reset_gpio), reset_off_state);
+	msleep(80);
+	printk("\0016[info ] %s: Reset done\n", __func__);
 }

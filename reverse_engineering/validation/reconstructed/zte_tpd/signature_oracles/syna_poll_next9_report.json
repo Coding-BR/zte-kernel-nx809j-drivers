@@ -1,0 +1,1773 @@
+{
+  "build": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next9\\syna_poll:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/syna_poll",
+      "kcfi_batch.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC      /work/probe/syna_poll/kcfi_batch.o\n"
+  },
+  "candidate_count": 80,
+  "config": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\syna_poll_next9_config.json",
+  "config_sha256": "dc3d628498cdbffdab149935d833011d6103f718b725f5cd8a9a49d164183df0",
+  "generated_utc": "2026-07-19T16:41:19.716704+00:00",
+  "matches": [
+    {
+      "candidate": {
+        "label": "__poll_t (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 0,
+      "kcfi": "0x0b7841ca",
+      "kcfi_match": true,
+      "label": "__poll_t (struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 16,
+      "kcfi": "0x0b7841ca",
+      "kcfi_match": true,
+      "label": "unsigned int (struct file * file, struct poll_table_struct * wait)"
+    }
+  ],
+  "mode": "offline_kcfi_batch_oracle",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next9\\syna_poll\\syna_poll\\kcfi_batch.o",
+    "sha256": "577a62abdfe4f74b8b87d858155d3cf642687099a9cb6309c10fd317e54627b9",
+    "size": 20960
+  },
+  "passed": true,
+  "records": [
+    {
+      "candidate": {
+        "label": "__poll_t (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 0,
+      "kcfi": "0x0b7841ca",
+      "kcfi_match": true,
+      "label": "__poll_t (struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 1,
+      "kcfi": "0x43828e0e",
+      "kcfi_match": false,
+      "label": "__poll_t (struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 2,
+      "kcfi": "0xaa74574b",
+      "kcfi_match": false,
+      "label": "__poll_t (struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 3,
+      "kcfi": "0xaa7e7d76",
+      "kcfi_match": false,
+      "label": "__poll_t (struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (const struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 4,
+      "kcfi": "0xec53bf06",
+      "kcfi_match": false,
+      "label": "__poll_t (const struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (const struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 5,
+      "kcfi": "0xd420739c",
+      "kcfi_match": false,
+      "label": "__poll_t (const struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (const struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 6,
+      "kcfi": "0xad97dd98",
+      "kcfi_match": false,
+      "label": "__poll_t (const struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (const struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 7,
+      "kcfi": "0x26f15c1f",
+      "kcfi_match": false,
+      "label": "__poll_t (const struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (void * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 8,
+      "kcfi": "0x3dd6168b",
+      "kcfi_match": false,
+      "label": "__poll_t (void * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (void * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 9,
+      "kcfi": "0xe3ba3e0d",
+      "kcfi_match": false,
+      "label": "__poll_t (void * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (void * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 10,
+      "kcfi": "0x51408205",
+      "kcfi_match": false,
+      "label": "__poll_t (void * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (void * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 11,
+      "kcfi": "0xefdde3ff",
+      "kcfi_match": false,
+      "label": "__poll_t (void * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (long file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 12,
+      "kcfi": "0xa63877b9",
+      "kcfi_match": false,
+      "label": "__poll_t (long file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (long file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 13,
+      "kcfi": "0x19c27637",
+      "kcfi_match": false,
+      "label": "__poll_t (long file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (long file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 14,
+      "kcfi": "0xe4a22964",
+      "kcfi_match": false,
+      "label": "__poll_t (long file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "__poll_t (long file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "__poll_t",
+        "touch_struct_members": false
+      },
+      "index": 15,
+      "kcfi": "0x08b21b30",
+      "kcfi_match": false,
+      "label": "__poll_t (long file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 16,
+      "kcfi": "0x0b7841ca",
+      "kcfi_match": true,
+      "label": "unsigned int (struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 17,
+      "kcfi": "0x43828e0e",
+      "kcfi_match": false,
+      "label": "unsigned int (struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 18,
+      "kcfi": "0xaa74574b",
+      "kcfi_match": false,
+      "label": "unsigned int (struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 19,
+      "kcfi": "0xaa7e7d76",
+      "kcfi_match": false,
+      "label": "unsigned int (struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (const struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 20,
+      "kcfi": "0xec53bf06",
+      "kcfi_match": false,
+      "label": "unsigned int (const struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (const struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 21,
+      "kcfi": "0xd420739c",
+      "kcfi_match": false,
+      "label": "unsigned int (const struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (const struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 22,
+      "kcfi": "0xad97dd98",
+      "kcfi_match": false,
+      "label": "unsigned int (const struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (const struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 23,
+      "kcfi": "0x26f15c1f",
+      "kcfi_match": false,
+      "label": "unsigned int (const struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (void * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 24,
+      "kcfi": "0x3dd6168b",
+      "kcfi_match": false,
+      "label": "unsigned int (void * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (void * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 25,
+      "kcfi": "0xe3ba3e0d",
+      "kcfi_match": false,
+      "label": "unsigned int (void * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (void * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 26,
+      "kcfi": "0x51408205",
+      "kcfi_match": false,
+      "label": "unsigned int (void * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (void * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 27,
+      "kcfi": "0xefdde3ff",
+      "kcfi_match": false,
+      "label": "unsigned int (void * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (long file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 28,
+      "kcfi": "0xa63877b9",
+      "kcfi_match": false,
+      "label": "unsigned int (long file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (long file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 29,
+      "kcfi": "0x19c27637",
+      "kcfi_match": false,
+      "label": "unsigned int (long file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (long file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 30,
+      "kcfi": "0xe4a22964",
+      "kcfi_match": false,
+      "label": "unsigned int (long file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned int (long file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned int",
+        "touch_struct_members": false
+      },
+      "index": 31,
+      "kcfi": "0x08b21b30",
+      "kcfi_match": false,
+      "label": "unsigned int (long file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 32,
+      "kcfi": "0xfda6112e",
+      "kcfi_match": false,
+      "label": "int (struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 33,
+      "kcfi": "0xa84723c1",
+      "kcfi_match": false,
+      "label": "int (struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 34,
+      "kcfi": "0x944446af",
+      "kcfi_match": false,
+      "label": "int (struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 35,
+      "kcfi": "0x4591ca3a",
+      "kcfi_match": false,
+      "label": "int (struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (const struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 36,
+      "kcfi": "0x3417bd08",
+      "kcfi_match": false,
+      "label": "int (const struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (const struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 37,
+      "kcfi": "0x95fc7c60",
+      "kcfi_match": false,
+      "label": "int (const struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (const struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 38,
+      "kcfi": "0x2b55401a",
+      "kcfi_match": false,
+      "label": "int (const struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (const struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 39,
+      "kcfi": "0x17cd3c92",
+      "kcfi_match": false,
+      "label": "int (const struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (void * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 40,
+      "kcfi": "0x51120af1",
+      "kcfi_match": false,
+      "label": "int (void * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (void * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 41,
+      "kcfi": "0x51021198",
+      "kcfi_match": false,
+      "label": "int (void * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (void * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 42,
+      "kcfi": "0x6f19f500",
+      "kcfi_match": false,
+      "label": "int (void * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (void * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 43,
+      "kcfi": "0xc2643ab7",
+      "kcfi_match": false,
+      "label": "int (void * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (long file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 44,
+      "kcfi": "0x5a6128cf",
+      "kcfi_match": false,
+      "label": "int (long file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (long file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 45,
+      "kcfi": "0xa70aa774",
+      "kcfi_match": false,
+      "label": "int (long file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (long file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 46,
+      "kcfi": "0x987ef6eb",
+      "kcfi_match": false,
+      "label": "int (long file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "int (long file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "int",
+        "touch_struct_members": false
+      },
+      "index": 47,
+      "kcfi": "0xb57a299a",
+      "kcfi_match": false,
+      "label": "int (long file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 48,
+      "kcfi": "0xdf6343e1",
+      "kcfi_match": false,
+      "label": "unsigned long (struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 49,
+      "kcfi": "0xfa0501ba",
+      "kcfi_match": false,
+      "label": "unsigned long (struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 50,
+      "kcfi": "0x71f2e6fe",
+      "kcfi_match": false,
+      "label": "unsigned long (struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 51,
+      "kcfi": "0x3fa207d8",
+      "kcfi_match": false,
+      "label": "unsigned long (struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (const struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 52,
+      "kcfi": "0x6566bf9b",
+      "kcfi_match": false,
+      "label": "unsigned long (const struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (const struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 53,
+      "kcfi": "0xbfcfb8d1",
+      "kcfi_match": false,
+      "label": "unsigned long (const struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (const struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 54,
+      "kcfi": "0xb62757e5",
+      "kcfi_match": false,
+      "label": "unsigned long (const struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (const struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 55,
+      "kcfi": "0x59c87a57",
+      "kcfi_match": false,
+      "label": "unsigned long (const struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (void * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 56,
+      "kcfi": "0xc4650815",
+      "kcfi_match": false,
+      "label": "unsigned long (void * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (void * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 57,
+      "kcfi": "0x8408285c",
+      "kcfi_match": false,
+      "label": "unsigned long (void * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (void * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 58,
+      "kcfi": "0x55805c38",
+      "kcfi_match": false,
+      "label": "unsigned long (void * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (void * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 59,
+      "kcfi": "0x443ad1c6",
+      "kcfi_match": false,
+      "label": "unsigned long (void * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (long file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 60,
+      "kcfi": "0xb7201646",
+      "kcfi_match": false,
+      "label": "unsigned long (long file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (long file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 61,
+      "kcfi": "0x9a179bd0",
+      "kcfi_match": false,
+      "label": "unsigned long (long file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (long file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 62,
+      "kcfi": "0xaf9e32c1",
+      "kcfi_match": false,
+      "label": "unsigned long (long file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "unsigned long (long file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "unsigned long",
+        "touch_struct_members": false
+      },
+      "index": 63,
+      "kcfi": "0x8d104465",
+      "kcfi_match": false,
+      "label": "unsigned long (long file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 64,
+      "kcfi": "0x53080d16",
+      "kcfi_match": false,
+      "label": "long (struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 65,
+      "kcfi": "0x2ee25ad5",
+      "kcfi_match": false,
+      "label": "long (struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 66,
+      "kcfi": "0xeb54c7fd",
+      "kcfi_match": false,
+      "label": "long (struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 67,
+      "kcfi": "0xec8da235",
+      "kcfi_match": false,
+      "label": "long (struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (const struct file * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 68,
+      "kcfi": "0x9ade7fcf",
+      "kcfi_match": false,
+      "label": "long (const struct file * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (const struct file * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 69,
+      "kcfi": "0x3f555b99",
+      "kcfi_match": false,
+      "label": "long (const struct file * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (const struct file * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 70,
+      "kcfi": "0x635f2c6a",
+      "kcfi_match": false,
+      "label": "long (const struct file * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (const struct file * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "const struct file *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 71,
+      "kcfi": "0x6788a0e1",
+      "kcfi_match": false,
+      "label": "long (const struct file * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (void * file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 72,
+      "kcfi": "0xe1bb264a",
+      "kcfi_match": false,
+      "label": "long (void * file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (void * file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 73,
+      "kcfi": "0x6c910448",
+      "kcfi_match": false,
+      "label": "long (void * file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (void * file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 74,
+      "kcfi": "0x7bc76a68",
+      "kcfi_match": false,
+      "label": "long (void * file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (void * file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "void *"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 75,
+      "kcfi": "0x86843652",
+      "kcfi_match": false,
+      "label": "long (void * file, syna_poll_wait_fn * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (long file, struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 76,
+      "kcfi": "0x23acedf9",
+      "kcfi_match": false,
+      "label": "long (long file, struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (long file, const struct poll_table_struct * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "const struct poll_table_struct *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 77,
+      "kcfi": "0xc15f5da7",
+      "kcfi_match": false,
+      "label": "long (long file, const struct poll_table_struct * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (long file, void * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "void *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 78,
+      "kcfi": "0x7a632073",
+      "kcfi_match": false,
+      "label": "long (long file, void * wait)"
+    },
+    {
+      "candidate": {
+        "label": "long (long file, syna_poll_wait_fn * wait)",
+        "parameters": [
+          {
+            "name": "file",
+            "type": "long"
+          },
+          {
+            "name": "wait",
+            "type": "syna_poll_wait_fn *"
+          }
+        ],
+        "return_type": "long",
+        "touch_struct_members": false
+      },
+      "index": 79,
+      "kcfi": "0xb28b99f1",
+      "kcfi_match": false,
+      "label": "long (long file, syna_poll_wait_fn * wait)"
+    }
+  ],
+  "schema_version": "1.0",
+  "source": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\signature_oracle_next9\\syna_poll\\syna_poll\\kcfi_batch.c",
+    "sha256": "152bcee8dccd07054957d8d233030bc2ffcacfee18e304eef0a82904a08d43d8"
+  },
+  "symbol": "syna_poll",
+  "target_kcfi": "0x0b7841ca"
+}

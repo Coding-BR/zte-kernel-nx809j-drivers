@@ -6,8 +6,6 @@ static const char *const tppower_to_str[] = {
 
 extern int current_lcd_state;
 extern __int64 tpd_cdev;
-extern __int64 ufp_report_gesture_uevent(const char *a1);
-
 void report_ufp_uevent(int val)
 {
     static char area_meet_down;
