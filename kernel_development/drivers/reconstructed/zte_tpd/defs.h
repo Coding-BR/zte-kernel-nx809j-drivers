@@ -235,7 +235,19 @@ extern void report_ufp_uevent(int val);
 
 extern __int64 syna_cdev_ioctl_raw_read(__int64 a1, unsigned __int64 a2, __int64 a3, unsigned int a4);
 extern __int64 syna_cdev_ioctl_raw_write(__int64 a1, unsigned __int64 a2, __int64 a3, unsigned int a4);
-extern __int64 syna_tcm_clear_data_duplicator(__int64 a1);
+extern int syna_tcm_clear_data_duplicator(struct tcm_dev *tcm);
+extern int syna_tcm_set_custom_touch_entity_callback(
+    struct tcm_dev *tcm, tcm_custom_touch_callback_fn callback,
+    void *callback_data);
+extern int syna_tcm_set_custom_gesture_callback(
+    struct tcm_dev *tcm, tcm_custom_touch_callback_fn callback,
+    void *callback_data);
+extern int syna_tcm_set_post_reset_callback(
+    struct tcm_dev *tcm, tcm_post_reset_callback_fn callback,
+    void *callback_data);
+extern int syna_tcm_set_data_duplicator(
+    struct tcm_dev *tcm, u8 report_code,
+    tcm_data_duplicator_fn callback, void *callback_data);
 extern struct device *syna_request_managed_device(void);
 extern int syna_tcm_reset(struct tcm_dev *tcm, unsigned int delay_ms);
 extern int syna_tcm_rezero(struct tcm_dev *tcm, unsigned int delay_ms);
@@ -372,7 +384,6 @@ extern __int64 syna_get_charger_status_batt_psy;
 extern char DEVICE_NODE_NAME[100];
 
 // Missing function forward declarations
-extern __int64 syna_tcm_set_data_duplicator(__int64 a1, int a2, void *a3, __int64 a4);
 extern int syna_cdev_process_reports(unsigned char report_code,
                                      const unsigned char *payload,
                                      unsigned int length, void *context);

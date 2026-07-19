@@ -1,13 +1,14 @@
-__int64 __fastcall syna_tcm_clear_data_duplicator(__int64 a1)
+int syna_tcm_clear_data_duplicator(struct tcm_dev *tcm)
 {
-  if ( a1 )
+  if (tcm)
   {
-    memset((void *)(a1 + 5080), 0, 0x1000u);
+    memset(tcm->data_duplicators, 0, sizeof(tcm->data_duplicators));
     return 0;
   }
   else
   {
-    printk(unk_3365A, "syna_tcm_clear_data_duplicator", 0LL);
-    return 4294967055LL;
+    printk("\x01" "3[error] %s: Invalid tcm device handle\n",
+           "syna_tcm_clear_data_duplicator");
+    return -241;
   }
 }
