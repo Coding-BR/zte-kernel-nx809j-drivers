@@ -291,8 +291,10 @@ struct drm_panel;
 extern struct drm_panel *active_panel;
 extern struct file_operations zte_fops;
 extern void syna_dev_helper_work(struct work_struct *work);
-extern __int64 tpd_goodix_ts_resume(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 tpd_goodix_ts_suspend(__int64 a1, __int64 a2, __int64 a3);
+extern int tpd_goodix_ts_resume(void *pdev);
+extern int tpd_goodix_ts_suspend(void *pdev);
+enum flash_area { FLASH_AREA_UNKNOWN = 0 };
+extern char *syna_tcm_get_partition_id_string(enum flash_area partition_id);
 
 // _flush_workqueue -> flush_workqueue
 #define _flush_workqueue(wq) flush_workqueue((struct workqueue_struct *)(wq))

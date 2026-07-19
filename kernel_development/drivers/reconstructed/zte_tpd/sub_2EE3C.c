@@ -1,8 +1,8 @@
 #include "defs.h"
 
-extern const char *syna_tcm_get_partition_id_string(int a1);
+extern char *syna_tcm_get_partition_id_string(enum flash_area partition_id);
 
-const char *sub_2EE3C(int a1)
+char *sub_2EE3C(enum flash_area partition_id)
 {
-  return syna_tcm_get_partition_id_string(a1);
+  return syna_tcm_get_partition_id_string(partition_id);
 }

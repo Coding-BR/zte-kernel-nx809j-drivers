@@ -1170,32 +1170,6 @@ uint8_t ztp_algo_info_l = 0;
 
 void *off_338 = (void *)gpio_free;
 
-const char *off_42090[23] = {
-    "Bootloader",
-    "Application",
-    "MTP",
-    "Config",
-    "Display Config",
-    "Flash Config",
-    "Utility",
-    "Guest",
-    "Index",
-    "Properties",
-    "Testing",
-    "Custom",
-    "Unknown1",
-    "Unknown2",
-    "Unknown3",
-    "Unknown4",
-    "Unknown5",
-    "Unknown6",
-    "Unknown7",
-    "Unknown8",
-    "Unknown9",
-    "Unknown10",
-    "Unknown11"
-};
-
 char point_report_info[4096] = {0};
 
 unsigned long syna_dev_probe__alloc_tag = 0;

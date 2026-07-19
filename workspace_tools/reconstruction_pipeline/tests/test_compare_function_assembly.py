@@ -1,4 +1,5 @@
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -86,6 +87,31 @@ class NormalizedRelocationTests(unittest.TestCase):
             ),
         )
 
+    def test_rodata_pointer_to_string_uses_string_content(self) -> None:
+        result = MODULE.normalized_relocation(
+            "R_AARCH64_ADR_PREL_PG_HI21",
+            ".rodata+0x40",
+            {
+                ".rodata": bytes(0x80),
+                ".rodata.str1.1": b"padding\0APP_CODE\0",
+            },
+            {},
+            {
+                (".rodata", 0x40): (
+                    "R_AARCH64_ABS64",
+                    ".rodata.str1.1+0x8",
+                )
+            },
+        )
+
+        self.assertEqual(
+            result,
+            (
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata:pointer="
+                'R_AARCH64_ABS64->.rodata.str1.1:string="APP_CODE"'
+            ),
+        )
+
     def test_relocated_pointer_arrays_match_after_section_reordering(self) -> None:
         stock = MODULE.normalized_relocation(
             "R_AARCH64_ADD_ABS_LO12_NC",
@@ -150,6 +176,38 @@ class NormalizedRelocationTests(unittest.TestCase):
         )
 
         self.assertEqual(stock, candidate)
+
+    def test_relocated_call_matches_resolved_local_branch(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock_path = root / "stock.asm"
+            candidate_path = root / "candidate.asm"
+            stock_path.write_text(
+                "0000: 94000004 bl 0x10 <callee>\n",
+                encoding="utf-8",
+            )
+            candidate_path.write_text(
+                (
+                    "0000: 94000000 bl 0x0 <caller>\n"
+                    "0000: R_AARCH64_CALL26 callee\n"
+                ),
+                encoding="utf-8",
+            )
+
+            stock = MODULE.normalized_assembly(
+                stock_path,
+                {},
+                {"callee": (".text", 0x10)},
+            )
+            candidate = MODULE.normalized_assembly(
+                candidate_path,
+                {},
+                {"callee": (".text", 0x20)},
+            )
+
+        self.assertEqual(stock[0], candidate[0])
+        self.assertEqual(stock[2], candidate[2])
+        self.assertEqual(candidate[1], ["R_AARCH64_CALL26 callee"])
 
 
 if __name__ == "__main__":

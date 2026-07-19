@@ -1,0 +1,134 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -Ifake -fsanitize=address,undefined -fno-omit-frame-pointer next4_abi_harness.c -o build/next4_abi_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next4_abi_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 5,
+    "hardware_paths_exercised": false,
+    "partition_names_checked": 23,
+    "source_files": [
+      "ufp_report_lcd_state_delayed_work.c",
+      "ufp_notifier_cb.c",
+      "tpd_goodix_ts_resume.c",
+      "tpd_goodix_ts_suspend.c",
+      "syna_tcm_get_partition_id_string.c"
+    ]
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS delayed_work_zero\nPASS delayed_work_nonzero\nPASS notifier_zero\nPASS notifier_nonzero\nPASS goodix_resume\nPASS goodix_suspend\nPASS all_partition_names\nPASS partition_lower_bound\nPASS partition_upper_bound\nSUMMARY 10/10 passed\n",
+      "summary": "SUMMARY 10/10 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "delayed_work_zero",
+        "delayed_work_nonzero",
+        "notifier_zero",
+        "notifier_nonzero",
+        "goodix_resume",
+        "goodix_suspend",
+        "all_partition_names",
+        "partition_lower_bound",
+        "partition_upper_bound"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS delayed_work_zero\nPASS delayed_work_nonzero\nPASS notifier_zero\nPASS notifier_nonzero\nPASS goodix_resume\nPASS goodix_suspend\nPASS all_partition_names\nPASS partition_lower_bound\nPASS partition_upper_bound\nSUMMARY 10/10 passed\n",
+      "summary": "SUMMARY 10/10 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "delayed_work_zero",
+        "delayed_work_nonzero",
+        "notifier_zero",
+        "notifier_nonzero",
+        "goodix_resume",
+        "goodix_suspend",
+        "all_partition_names",
+        "partition_lower_bound",
+        "partition_upper_bound"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-19T11:03:44.141627+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next4_abi_harness.c",
+      "sha256": "f2381cae4f91322f2452fc4c890f58cc0e21ff939c2a1b3de77b850622ff80ab",
+      "size": 7451
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\ufp_report_lcd_state_delayed_work.c",
+      "sha256": "cf4a5ea97813c00c48c56c335942c20bf406268e7abf41b66888339a62ad0dba",
+      "size": 252
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\ufp_notifier_cb.c",
+      "sha256": "c9063f450ad88aaed401a231a93e80ddb9f68b2ef110ae9d6bcff06e1a1ebfd1",
+      "size": 72
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_goodix_ts_resume.c",
+      "sha256": "65db00f73af7b302eda492991063dccf971921dfb8e8d36e99cf2d87c2c057ac",
+      "size": 144
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_goodix_ts_suspend.c",
+      "sha256": "d72a0089f5ef9b7d9b1f44926cc8aae21caed7c6f9a8de60b55f97b0a667a148",
+      "size": 146
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_tcm_get_partition_id_string.c",
+      "sha256": "df4f5918ad26d3f1aa1c68915a4687b18f34aebe5d653d00375c85913825d0da",
+      "size": 635
+    }
+  ],
+  "limitations": [
+    "Kernel workqueue, notifier and PM calls are deterministic host stubs.",
+    "The harness validates callback contracts, recovered offsets, return propagation and all 23 stock partition strings.",
+    "Assembly and KCFI comparisons remain independent gates; host success does not prove opcode identity.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or flash operation is performed."
+  ],
+  "mode": "offline_direct_source_next4_abi_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 10,
+    "failed": [],
+    "passed": [
+      "signature_contract",
+      "delayed_work_zero",
+      "delayed_work_nonzero",
+      "notifier_zero",
+      "notifier_nonzero",
+      "goodix_resume",
+      "goodix_suspend",
+      "all_partition_names",
+      "partition_lower_bound",
+      "partition_upper_bound"
+    ],
+    "summary": "SUMMARY 10/10 passed"
+  }
+}

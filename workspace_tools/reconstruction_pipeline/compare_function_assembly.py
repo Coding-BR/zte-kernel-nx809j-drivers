@@ -506,6 +506,20 @@ def normalized_relocation(
     if pointer is not None:
         pointer_type, pointer_target = pointer
         normalized_pointer = normalized_symbol_target(pointer_target, symbol_locations)
+        pointer_location = resolved_section_target(pointer_target, symbol_locations)
+        if pointer_location is not None and ".str" in pointer_location[0]:
+            pointer_section = sections.get(pointer_location[0])
+            pointer_offset = pointer_location[1]
+            if pointer_section is not None and pointer_offset < len(pointer_section):
+                pointer_end = pointer_section.find(b"\0", pointer_offset)
+                if pointer_end >= 0:
+                    pointer_text = pointer_section[pointer_offset:pointer_end].decode(
+                        "utf-8", errors="backslashreplace"
+                    )
+                    normalized_pointer = (
+                        f"{pointer_location[0]}:string="
+                        f"{json.dumps(pointer_text, ensure_ascii=True)}"
+                    )
         return (
             f"{relocation_type} {section_name}:pointer="
             f"{pointer_type}->{normalized_pointer}"
@@ -535,6 +549,7 @@ def normalized_assembly(
     instructions: list[str] = []
     raw_relocations: list[str] = []
     normalized_relocations: list[str] = []
+    pending_branch: tuple[int, str] | None = None
     for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
         instruction = INSTRUCTION_RE.match(line)
         if instruction:
@@ -546,15 +561,30 @@ def normalized_assembly(
             # helper moves, although the generated instruction and destination
             # are otherwise identical. Preserve the opcode for every other
             # instruction and bind direct branches to their resolved symbol.
-            if mnemonic in {"b", "bl"} and target:
-                instructions.append(f"{mnemonic} <{target.group(1)}>")
+            if mnemonic in {"b", "bl"}:
+                if target:
+                    branch_target = normalized_symbol_target(
+                        target.group(1), symbol_locations
+                    )
+                    instructions.append(f"{mnemonic} <{branch_target}>")
+                else:
+                    instructions.append(opcode)
+                pending_branch = (len(instructions) - 1, mnemonic)
             else:
                 instructions.append(opcode)
+                pending_branch = None
         relocation = RELOCATION_RE.search(line)
         if relocation:
             relocation_type = relocation.group(1)
             target = relocation.group(2)
             raw_relocations.append(relocation.group(0))
+            if relocation_type in {"R_AARCH64_CALL26", "R_AARCH64_JUMP26"}:
+                if pending_branch is not None:
+                    instruction_index, mnemonic = pending_branch
+                    branch_target = normalized_symbol_target(target, symbol_locations)
+                    instructions[instruction_index] = f"{mnemonic} <{branch_target}>"
+                pending_branch = None
+                continue
             normalized_relocations.append(
                 normalized_relocation(
                     relocation_type,

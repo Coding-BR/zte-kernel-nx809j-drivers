@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T11:19:01Z",
+  "driver": "zte_tpd",
+  "scope": "next4_abi_group",
+  "status": "PASS_SCOPED_ABI_BEHAVIOR_ASSEMBLY_OFFLINE",
+  "global_manifest_updated": false,
+  "candidate_sha256": "86e8e87d57baf19a06d9bc2537592c1135d3fe862fdb602d720fbcb98535223c",
+  "tasks": [
+    {
+      "id": "124_ufp_report_lcd_state_delayed_work",
+      "function": "ufp_report_lcd_state_delayed_work",
+      "signature": "void (unsigned int)",
+      "kcfi": "0x105d2ee9",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "msecs conversion cpu 32 workqueue offset 1200 and delayed-work offset 2528 covered offline"
+    },
+    {
+      "id": "137_ufp_notifier_cb",
+      "function": "ufp_notifier_cb",
+      "signature": "int (int)",
+      "kcfi": "0xcdde824b",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "zero and nonzero state conversion and return contract covered offline"
+    },
+    {
+      "id": "180_tpd_goodix_ts_resume",
+      "function": "tpd_goodix_ts_resume",
+      "signature": "int (void *)",
+      "kcfi": "0xc069e464",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "pdev plus 8 parent load device plus 16 derivation and return propagation covered offline"
+    },
+    {
+      "id": "181_tpd_goodix_ts_suspend",
+      "function": "tpd_goodix_ts_suspend",
+      "signature": "int (void *)",
+      "kcfi": "0xc069e464",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "pdev plus 8 parent load device plus 16 derivation and return propagation covered offline"
+    },
+    {
+      "id": "323_syna_tcm_get_partition_id_string",
+      "function": "syna_tcm_get_partition_id_string",
+      "signature": "char * (enum flash_area)",
+      "kcfi": "0x11058819",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "all 23 relocation-backed stock strings and invalid lower upper and negative IDs covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next4_abi_report.json",
+      "sha256": "fb79a5389353c739ef1d2a43353e34cd5a3b35c8f63de2001de417f8e69c30df",
+      "clean_cycles": 2,
+      "reproducible": true
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next4_abi_final.json",
+      "sha256": "a501467ff1b9bde0cd1cc7b04b8dd2432e07f71a6bbf98ab1690af3a089be4fe",
+      "matched": 266,
+      "stock_records": 322,
+      "scoped_functions_passed": 5
+    },
+    "test": {
+      "path": "next4_abi_harness_report.json",
+      "sha256": "ec443573f65b815c9beed7cf397185fc24add408f39617fc21d9b63fc531689d",
+      "repetitions": 2,
+      "tests_per_repetition": 10,
+      "partition_names_checked": 23
+    },
+    "assembly": {
+      "path": "assembly_comparison_next4_abi_final.json",
+      "sha256": "67557ad02c9020ef91504393bea200a188991825dc9fe7a11050445c40da249e",
+      "passed": true,
+      "strict_passed_functions": 5,
+      "strict_checked_functions": 5
+    },
+    "traceability": {
+      "path": "reconstruction_map_next4_abi.json",
+      "sha256": "aa58acfc1be02a90eaf0b23ddef6a88c373245d1a0c062dfd4e4edb762e426eb",
+      "mapped_functions": 367
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 266 of 322 stock records.",
+    "The harness is offline and uses deterministic host stubs; it does not prove hardware behavior.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global manifest was not updated because this is a scoped five-function checkpoint."
+  ]
+}

@@ -1063,7 +1063,6 @@ extern uint8_t tp_ic_vendor_info_l;
 extern uint8_t ztp_algo_info_l;
 
 extern void *off_338;
-extern const char *off_42090[23];
 extern char point_report_info[4096];
 
 extern unsigned long syna_dev_probe__alloc_tag;
