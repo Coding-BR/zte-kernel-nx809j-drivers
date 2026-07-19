@@ -2,13 +2,11 @@ int syna_testing_pt01_zte(struct syna_tcm *tcm)
 {
   __int64 *a1 = (__int64 *)tcm;
   __int64 v2; // x2
-  const char *v3; // x19
+  char *v3; // x19
   struct testing_item *testing_0100; // x0
   __int64 v5; // x21
   __int64 v7; // x0
   const char *v8; // x5
-  __int64 v9; // x1
-  __int64 v10; // x2
   __int64 v11; // x20
   unsigned int v12; // w22
   int v13; // w0
@@ -27,7 +25,7 @@ int syna_testing_pt01_zte(struct syna_tcm *tcm)
   v19 = 0;
   v23 = 0;
   memset(v22, 0, sizeof(v22));
-  v3 = (const char *)_kmalloc_cache_noprof(init_timer_key, 3520, 4096);
+  v3 = (char *)_kmalloc_cache_noprof(init_timer_key, 3520, 4096);
   if ( v3 )
   {
     testing_0100 = syna_tcm_get_testing_0100();
@@ -74,7 +72,7 @@ int syna_testing_pt01_zte(struct syna_tcm *tcm)
         while ( v12 < HIDWORD(v21) );
         LODWORD(v11) = scnprintf(&v3[v11], 4096 - v11, "\n") + v11;
       }
-      tpd_copy_to_tp_firmware_data(v3, v9, v10);
+      tpd_copy_to_tp_firmware_data(v3);
       if ( (_BYTE)v23 )
         printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v23);
       v14 = v20;

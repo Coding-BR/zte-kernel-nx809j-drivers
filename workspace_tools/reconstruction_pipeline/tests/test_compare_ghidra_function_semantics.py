@@ -144,6 +144,44 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertFalse(result["checks"]["normalized_decompiled_c"])
 
+    def test_synthetic_breakpoint_context_and_alloc_tag_are_normalized(self) -> None:
+        stock = (
+            "void target(void) { "
+            "__kmalloc_cache_noprof(_platform_device_add, 0xdc0, 0x18); "
+            "SoftwareBreakpoint(0x8228, 0x10a0e4); }"
+        )
+        candidate = (
+            "void target(void) { "
+            "__kmalloc_cache_noprof(___check_object_size, 0xdc0, 0x18); "
+            "SoftwareBreakpoint(0x8228, 0x160c58); }"
+        )
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertEqual(len(stock_artifacts), 2)
+        self.assertEqual(len(candidate_artifacts), 2)
+
+    def test_breakpoint_opcode_and_allocator_size_are_not_normalized(self) -> None:
+        baseline = (
+            "void target(void) { "
+            "__kmalloc_cache_noprof(_platform_device_add, 0xdc0, 0x18); "
+            "SoftwareBreakpoint(0x8228, 0x10a0e4); }"
+        )
+        changed = (
+            "void target(void) { "
+            "__kmalloc_cache_noprof(___check_object_size, 0xdc0, 0x20); "
+            "SoftwareBreakpoint(0x8229, 0x160c58); }"
+        )
+
+        baseline_normalized, _, _ = MODULE.normalize_decompiled(baseline, {})
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed, {})
+
+        self.assertNotEqual(baseline_normalized, changed_normalized)
+
 
 if __name__ == "__main__":
     unittest.main()

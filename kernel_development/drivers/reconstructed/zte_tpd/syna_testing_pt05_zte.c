@@ -3,14 +3,12 @@ int syna_testing_pt05_zte(struct syna_tcm *tcm)
   _BYTE *a1 = (_BYTE *)tcm;
   __int64 v2; // x0
   __int64 v3; // x2
-  const char *v4; // x19
+  char *v4; // x19
   struct testing_item *testing_0500; // x0
   __int64 v6; // x21
   int v7; // w8
   __int64 v9; // x0
   const char *v10; // x5
-  __int64 v11; // x1
-  __int64 v12; // x2
   unsigned int v13; // w22
   __int64 v14; // x26
   unsigned int v15; // w25
@@ -35,7 +33,7 @@ int syna_testing_pt05_zte(struct syna_tcm *tcm)
   v29 = 0;
   memset(v28, 0, sizeof(v28));
   v2 = _kmalloc_cache_noprof(init_timer_key, 3520, 4096);
-  v4 = (const char *)v2;
+  v4 = (char *)v2;
   if ( v2 )
   {
     if ( (a1[1410] & 1) != 0 )
@@ -101,7 +99,7 @@ int syna_testing_pt05_zte(struct syna_tcm *tcm)
           }
           while ( v15 < *(_DWORD *)(v6 + 32) );
         }
-        tpd_copy_to_tp_firmware_data(v4, v11, v12);
+        tpd_copy_to_tp_firmware_data(v4);
         if ( (_BYTE)v29 )
           printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v29);
         v18 = v26;

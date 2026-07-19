@@ -1,0 +1,125 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer next13_firmware_harness.c -o build/next13_firmware_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next13_firmware_harness"
+  ],
+  "coverage": {
+    "allocation_success_and_failures": true,
+    "descriptor_size_and_gfp_flags": true,
+    "direct_source_functions": 2,
+    "exact_diagnostic_strings": true,
+    "full_empty_and_truncated_copy": true,
+    "hardware_paths_exercised": false,
+    "old_buffer_cleanup_order": true,
+    "old_offset_rejected": true,
+    "position_update_and_end_behavior": true,
+    "stock_dangling_slot_on_data_failure": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS alloc_success\nPASS alloc_replaces_existing_buffer\nPASS alloc_descriptor_failure\nPASS alloc_data_failure_preserves_stock_slot\nPASS copy_missing_descriptor\nPASS copy_missing_data\nPASS copy_zero_size\nPASS copy_at_end\nPASS copy_full_string\nPASS copy_truncated_string\nPASS copy_empty_string\nPASS copy_ignores_old_offsets\nSUMMARY 12/12 passed\n",
+      "summary": "SUMMARY 12/12 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "alloc_success",
+        "alloc_replaces_existing_buffer",
+        "alloc_descriptor_failure",
+        "alloc_data_failure_preserves_stock_slot",
+        "copy_missing_descriptor",
+        "copy_missing_data",
+        "copy_zero_size",
+        "copy_at_end",
+        "copy_full_string",
+        "copy_truncated_string",
+        "copy_empty_string",
+        "copy_ignores_old_offsets"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS alloc_success\nPASS alloc_replaces_existing_buffer\nPASS alloc_descriptor_failure\nPASS alloc_data_failure_preserves_stock_slot\nPASS copy_missing_descriptor\nPASS copy_missing_data\nPASS copy_zero_size\nPASS copy_at_end\nPASS copy_full_string\nPASS copy_truncated_string\nPASS copy_empty_string\nPASS copy_ignores_old_offsets\nSUMMARY 12/12 passed\n",
+      "summary": "SUMMARY 12/12 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "alloc_success",
+        "alloc_replaces_existing_buffer",
+        "alloc_descriptor_failure",
+        "alloc_data_failure_preserves_stock_slot",
+        "copy_missing_descriptor",
+        "copy_missing_data",
+        "copy_zero_size",
+        "copy_at_end",
+        "copy_full_string",
+        "copy_truncated_string",
+        "copy_empty_string",
+        "copy_ignores_old_offsets"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-19T22:31:08.584325+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next13_firmware_harness.c",
+      "sha256": "5bf3b009eaffcccb814e24ffad5dc89a3f794c4e8cf32e06d2ea34e574fedd95",
+      "size": 10480
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tp_alloc_tp_firmware_data.c",
+      "sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+      "size": 1271
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tpd_copy_to_tp_firmware_data.c",
+      "sha256": "644fcd8f6b9daa9c4ac56da20ffd718ce6d6e6a290fe299b26f90a276ca474d4",
+      "size": 893
+    }
+  ],
+  "limitations": [
+    "The harness executes the recovered sources with deterministic host pools.",
+    "ASAN and UBSAN validate covered memory and scalar behavior, not physical touch hardware.",
+    "The OEM data-allocation failure path leaves the freed descriptor pointer in the cdev slot; the harness records this behavior without dereferencing it.",
+    "Assembly, Ghidra P-Code, KCFI and integration callers remain independent gates.",
+    "No smartphone, ADB, fastboot, module loading, SPI, IRQ or MMIO operation is performed."
+  ],
+  "mode": "offline_direct_source_next13_firmware_lifecycle_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 12,
+    "failed": [],
+    "passed": [
+      "alloc_success",
+      "alloc_replaces_existing_buffer",
+      "alloc_descriptor_failure",
+      "alloc_data_failure_preserves_stock_slot",
+      "copy_missing_descriptor",
+      "copy_missing_data",
+      "copy_zero_size",
+      "copy_at_end",
+      "copy_full_string",
+      "copy_truncated_string",
+      "copy_empty_string",
+      "copy_ignores_old_offsets"
+    ],
+    "summary": "SUMMARY 12/12 passed"
+  }
+}

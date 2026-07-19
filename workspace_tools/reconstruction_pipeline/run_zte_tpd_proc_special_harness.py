@@ -18,6 +18,9 @@ SOURCE_FILES = (
     "tp_test_write.c",
     "get_tp_noise_show.c",
     "get_tp_noise_store.c",
+    "tp_free_tp_firmware_data.c",
+    "tpd_reset_fw_data_pos_and_size.c",
+    "tpfwupgrade_store.c",
     "tp_self_test_read.c",
     "tp_self_test_write.c",
     "tp_sensibility_level_read.c",
@@ -27,7 +30,7 @@ SOURCE_FILES = (
     "tp_game_partition_read.c",
     "tp_game_partition_write.c",
 )
-EXPECTED_TESTS = 9
+EXPECTED_TESTS = 12
 
 
 def sha256_file(path: Path) -> str:

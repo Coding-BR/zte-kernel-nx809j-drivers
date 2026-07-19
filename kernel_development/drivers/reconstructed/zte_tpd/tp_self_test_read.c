@@ -6,10 +6,8 @@ ssize_t tp_self_test_read(struct file *file, char __user *buffer, size_t count, 
 
   (void)file;
   __int64 v6; // x22
-  __int64 v8; // x1
-  __int64 v9; // x2
   __int64 v10; // x23
-  int (__fastcall *v12)(__int64, __int64); // x8
+  int (__fastcall *v12)(struct ztp_device *, char *); // x8
   __int64 v13; // x22
   __int64 v14; // x19
   __int64 v15; // x0
@@ -20,16 +18,16 @@ ssize_t tp_self_test_read(struct file *file, char __user *buffer, size_t count, 
   v10 = _kmalloc_cache_noprof(init_timer_key, 3520, 4096);
   if ( !v10 )
   {
-    printk(unk_33404, v8, v9);
+    printk("\0015tpd: alloc data_buf failed");
     return -12;
   }
   if ( *a4 )
     return 0;
-  v12 = *(int (__fastcall **)(__int64, __int64))(v6 + 3552);
+  v12 = *(int (__fastcall **)(struct ztp_device *, char *))(v6 + 0xf98);
   if ( v12 )
   {
     /* CFI check removed */
-    v13 = v12(v6, v10);
+    v13 = v12((struct ztp_device *)v6, (char *)v10);
   }
   else
   {
@@ -38,19 +36,19 @@ ssize_t tp_self_test_read(struct file *file, char __user *buffer, size_t count, 
   simple_read_from_buffer(a2, a3, a4, v10, v13);
   kfree(v10);
   v14 = tpd_cdev;
-  v15 = *(_QWORD *)(tpd_cdev + 2720);
+  v15 = *(_QWORD *)(tpd_cdev + 0xc58);
   if ( v15 )
   {
     if ( *(_QWORD *)(v15 + 8) )
     {
       vfree(*(_QWORD *)(v15 + 8));
-      *(_QWORD *)(*(_QWORD *)(v14 + 2720) + 8LL) = 0;
-      **(_QWORD **)(v14 + 2720) = 0;
-      v15 = *(_QWORD *)(v14 + 2720);
+      *(_QWORD *)(*(_QWORD *)(v14 + 0xc58) + 8LL) = 0;
+      **(_QWORD **)(v14 + 0xc58) = 0;
+      v15 = *(_QWORD *)(v14 + 0xc58);
     }
     kfree(v15);
-    *(_QWORD *)(v14 + 2720) = 0;
+    *(_QWORD *)(v14 + 0xc58) = 0;
   }
-  *(_DWORD *)(v14 + 1096) = 0;
+  *(_DWORD *)(v14 + 0x448) = 0;
   return v13;
 }

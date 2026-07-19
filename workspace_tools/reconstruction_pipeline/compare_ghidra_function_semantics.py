@@ -15,6 +15,14 @@ from typing import Any
 
 DAT_RE = re.compile(r"&DAT_([0-9a-fA-F]+)")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
+SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
+    r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
+    r"0x[0-9a-fA-F]+(\s*\))"
+)
+ALLOC_TAG_ARGUMENT_RE = re.compile(
+    r"(__kmalloc_cache_noprof\(\s*)"
+    r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -65,8 +73,11 @@ def string_index(root: Path) -> dict[int, str]:
     return result
 
 
-def normalize_decompiled(text: str, strings: dict[int, str]) -> tuple[str, list[dict[str, Any]]]:
+def normalize_decompiled(
+    text: str, strings: dict[int, str]
+) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
+    artifact_evidence: list[dict[str, Any]] = []
 
     def replace(match: re.Match[str]) -> str:
         address = int(match.group(1), 16)
@@ -87,7 +98,31 @@ def normalize_decompiled(text: str, strings: dict[int, str]) -> tuple[str, list[
         return match.group(0)
 
     replaced = DAT_RE.sub(replace, text.replace("\r\n", "\n"))
-    return re.sub(r"\s+", "", replaced), evidence
+
+    def replace_breakpoint_context(match: re.Match[str]) -> str:
+        artifact_evidence.append(
+            {
+                "kind": "software_breakpoint_context_address",
+                "value": match.group(0),
+            }
+        )
+        return f"{match.group(1)}GHIDRA_FUNCTION_ADDRESS{match.group(2)}"
+
+    replaced = SOFTWARE_BREAKPOINT_CONTEXT_RE.sub(
+        replace_breakpoint_context, replaced
+    )
+
+    def replace_alloc_tag(match: re.Match[str]) -> str:
+        artifact_evidence.append(
+            {
+                "kind": "compiler_allocation_tag_symbol",
+                "value": match.group(2),
+            }
+        )
+        return f"{match.group(1)}GHIDRA_ALLOC_TAG{match.group(3)}"
+
+    replaced = ALLOC_TAG_ARGUMENT_RE.sub(replace_alloc_tag, replaced)
+    return re.sub(r"\s+", "", replaced), evidence, artifact_evidence
 
 
 def pcode_shape(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -140,10 +175,18 @@ def compare_function(
             }
         paths[side] = {"decompiled": decompiled, "pcode": pcode}
 
-    stock_normalized, stock_string_evidence = normalize_decompiled(
+    (
+        stock_normalized,
+        stock_string_evidence,
+        stock_artifact_evidence,
+    ) = normalize_decompiled(
         paths["stock"]["decompiled"].read_text(encoding="utf-8"), stock_strings
     )
-    candidate_normalized, candidate_string_evidence = normalize_decompiled(
+    (
+        candidate_normalized,
+        candidate_string_evidence,
+        candidate_artifact_evidence,
+    ) = normalize_decompiled(
         paths["candidate"]["decompiled"].read_text(encoding="utf-8"),
         candidate_strings,
     )
@@ -174,6 +217,7 @@ def compare_function(
             "pcode_sha256": sha256_file(paths["stock"]["pcode"]),
             "pcode_records": len(stock_shape),
             "resolved_strings": stock_string_evidence,
+            "normalized_ghidra_artifacts": stock_artifact_evidence,
         },
         "candidate": {
             "body_bytes": candidate_record.get("body_bytes"),
@@ -186,6 +230,7 @@ def compare_function(
             "pcode_sha256": sha256_file(paths["candidate"]["pcode"]),
             "pcode_records": len(candidate_shape),
             "resolved_strings": candidate_string_evidence,
+            "normalized_ghidra_artifacts": candidate_artifact_evidence,
         },
     }
 

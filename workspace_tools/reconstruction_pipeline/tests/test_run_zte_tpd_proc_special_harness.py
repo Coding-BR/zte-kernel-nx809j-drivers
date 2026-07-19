@@ -21,9 +21,10 @@ class ProcSpecialHarnessRunnerTests(unittest.TestCase):
         self.assertEqual(summary, "SUMMARY 1/2 tests passed")
 
     def test_source_inventory_is_unique_and_complete(self) -> None:
-        self.assertEqual(len(MODULE.SOURCE_FILES), 14)
-        self.assertEqual(len(set(MODULE.SOURCE_FILES)), 14)
+        self.assertEqual(len(MODULE.SOURCE_FILES), 17)
+        self.assertEqual(len(set(MODULE.SOURCE_FILES)), 17)
         self.assertIn("tp_self_test_read.c", MODULE.SOURCE_FILES)
+        self.assertIn("tpfwupgrade_store.c", MODULE.SOURCE_FILES)
         self.assertIn("tp_game_partition_write.c", MODULE.SOURCE_FILES)
 
 

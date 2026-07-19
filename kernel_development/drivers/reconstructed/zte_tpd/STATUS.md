@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-18
+## Estado Atual - 2026-07-19
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`
-- **Candidato:** `19178960` bytes
+- **Candidato SHA-256:** `328777a498b79f5cb3fb2ce2e4ce7fbe841049d9ac69faa0c66095074d2b863e`
+- **Candidato:** `24076504` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,36 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `146/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `251/322`;
+- O6: `153/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `296/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next13 - Ciclo de Firmware
+
+O Next13 revalidou nove funcoes do ciclo de firmware por assembly AArch64,
+relocations, Ghidra, P-Code, KCFI e dois harnesses diretos. Stock e candidato
+coincidem exatamente nas nove funcoes, somando `533` instrucoes e `1.249`
+registros P-Code. Os harnesses passaram `24/24` casos por repeticao, em duas
+execucoes com ASAN/UBSAN.
+
+O descritor `struct tpd_firmware_data` foi corrigido de `0x10` para `0x18`
+bytes. O campo `data` permanece em `+0x08`, seguido de oito bytes reservados.
+Essa correcao e imposta por `static_assert` e substitui a inferencia publicada
+no Next12. Os offsets canonicos em `tpd_cdev` sao `+0x448`, `+0xc58`,
+`+0xc60`, `+0xe18`, `+0xee8`, `+0xf98` e `+0xfa0`.
+
+Dois builds limpos produziram o mesmo modulo de `24.076.504` bytes e SHA-256
+`328777a498b79f5cb3fb2ce2e4ce7fbe841049d9ac69faa0c66095074d2b863e`.
+O KCFI global chegou a `296/322` (`91,93%`). O manifesto preservou os 150 PASS
+anteriores, promoveu tres novas funcoes e terminou em `153 PASS / 214 READY`.
+Os callers `syna_testing_pt01_zte`, `syna_testing_pt05_zte` e
+`syna_testing_pt0a_zte` permanecem READY: a chamada de copia foi tipada, mas
+os corpos ainda divergem do stock e nao possuem teste direto integral.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT13_FIRMWARE_LIFECYCLE_VALIDATION_20260719.md`.
 
 ## Checkpoint Report Dispatch
 
@@ -270,21 +295,21 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`.
+  `328777a498b79f5cb3fb2ce2e4ce7fbe841049d9ac69faa0c66095074d2b863e`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `251/322` matches, `71` divergencias, zero registro
+- Superficie KCFI integral: `296/322` matches, `26` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
-- Treze harnesses host: todos PASS, totalizando 130 casos nominais.
-- Microtarefas: `146 PASS`, `221 READY`, tres promocoes novas neste checkpoint e zero
-  PASS obsoleto.
+- Harnesses do Next13: `24/24` casos por repeticao, duas repeticoes ASAN/UBSAN.
+- Microtarefas: `153 PASS`, `214 READY`, tres promocoes novas neste checkpoint
+  e zero PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
-- Suite focal dos gates afetados: `39/39 PASS`.
-- Suite global: `105/106 PASS`; a unica falha e externa a este lote e registra
+- Suite focal dos gates afetados: `63/63 PASS`.
+- Suite global: `129/130 PASS`; a unica falha e externa a este lote e registra
   divergencia entre o config userdebug e `environment.lock.json`.
 
 ## Evidencia Autoritativa
@@ -326,6 +351,7 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 - `../../validation/zte_tpd/signature_oracles/tcm_lifecycle_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT13_FIRMWARE_LIFECYCLE_VALIDATION_20260719.md`
 
 Nenhum comando ADB, fastboot, `insmod`, `rmmod` ou escrita de particao foi
 executado nesta revisao.

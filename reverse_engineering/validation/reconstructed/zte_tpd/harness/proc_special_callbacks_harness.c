@@ -11,6 +11,15 @@
 #define __int8 char
 #define __user
 #define SP_EL0 0
+#define barrier() __asm__ __volatile__("" ::: "memory")
+
+#define FW_POSITION_OFFSET 0x448
+#define FW_DESCRIPTOR_OFFSET 0xc58
+#define FW_MUTEX_OFFSET 0xc60
+#define FW_UPGRADE_CALLBACK_OFFSET 0xe18
+#define NOISE_CALLBACK_OFFSET 0xee8
+#define SELF_READ_CALLBACK_OFFSET 0xf98
+#define SELF_WRITE_CALLBACK_OFFSET 0xfa0
 
 typedef int64_t __int64;
 typedef int16_t __int16;
@@ -22,11 +31,13 @@ typedef uint64_t _BOOL8;
 typedef uint32_t _BOOL4;
 
 struct file { int unused; };
+struct ztp_device { int unused; };
 
 static uint8_t status_registers[2048];
 static uint8_t device[4096];
 __int64 tpd_cdev;
 void *init_timer_key;
+void *remove_proc_entry;
 
 #define DECLARE_LOG(name) static const char name[] = ""
 DECLARE_LOG(unk_39D11);
@@ -53,6 +64,7 @@ static unsigned int callback_value;
 static unsigned int callback_result;
 static unsigned int copy_from_user_fail;
 static unsigned int kmalloc_fail;
+static unsigned int vmalloc_fail;
 static unsigned int firmware_alloc_fail;
 static unsigned int kfree_calls;
 static unsigned int vfree_calls;
@@ -60,6 +72,8 @@ static unsigned int mutex_lock_calls;
 static unsigned int mutex_unlock_calls;
 static unsigned int mutex_depth;
 static unsigned int cfi_warning_calls;
+static size_t kmalloc_size;
+static size_t vmalloc_size;
 static char game_partition_payload[1024];
 
 static uintptr_t read_status_register(int reg)
@@ -124,6 +138,13 @@ static int kstrtouint(const char *input, unsigned int base, unsigned int *value)
 	return parse_uint(input, strlen(input), value);
 }
 
+static int kstrtouint_from_user(__int64 input, __int64 count,
+			       unsigned int base, unsigned int *value)
+{
+	(void)base;
+	return parse_uint((const char *)(uintptr_t)input, (size_t)count, value);
+}
+
 static void _check_object_size(const void *object, size_t count, int to_user)
 {
 	(void)object;
@@ -172,13 +193,22 @@ static void vfree(__int64 pointer)
 	}
 }
 
-static __int64 _kmalloc_cache_noprof(void *cache, size_t size, unsigned int flags)
+static __int64 _kmalloc_cache_noprof(void *cache, unsigned int flags, size_t size)
 {
 	(void)cache;
 	(void)flags;
+	kmalloc_size = size;
 	if (kmalloc_fail)
 		return 0;
 	return (__int64)(uintptr_t)calloc(1, size);
+}
+
+static void *vmalloc(size_t size)
+{
+	vmalloc_size = size;
+	if (vmalloc_fail)
+		return NULL;
+	return calloc(1, size);
 }
 
 static void write_pointer(size_t offset, const void *pointer)
@@ -196,7 +226,7 @@ static void *read_pointer(size_t offset)
 
 static uint64_t *allocate_descriptor(uint64_t size, size_t data_size)
 {
-	uint64_t *descriptor = calloc(2, sizeof(*descriptor));
+	uint64_t *descriptor = calloc(1, 24);
 
 	if (!descriptor)
 		abort();
@@ -206,22 +236,22 @@ static uint64_t *allocate_descriptor(uint64_t size, size_t data_size)
 		if (!descriptor[1])
 			abort();
 	}
-	write_pointer(2720, descriptor);
+	write_pointer(FW_DESCRIPTOR_OFFSET, descriptor);
 	return descriptor;
 }
 
 static void discard_descriptor(void)
 {
-	uint64_t *descriptor = read_pointer(2720);
+	uint64_t *descriptor = read_pointer(FW_DESCRIPTOR_OFFSET);
 
 	if (!descriptor)
 		return;
 	free((void *)(uintptr_t)descriptor[1]);
 	free(descriptor);
-	write_pointer(2720, NULL);
+	write_pointer(FW_DESCRIPTOR_OFFSET, NULL);
 }
 
-static unsigned int tp_alloc_tp_firmware_data(unsigned int size)
+static int tp_alloc_tp_firmware_data(int size)
 {
 	(void)size;
 	if (firmware_alloc_fail)
@@ -236,13 +266,14 @@ static __int64 bbat_callback(void)
 	return (__int64)callback_result;
 }
 
-static void noise_callback(_QWORD candidate_device)
+static int noise_callback(struct ztp_device *candidate_device)
 {
 	if ((uintptr_t)candidate_device != (uintptr_t)device)
 		abort();
 	callback_calls++;
 	if (callback_result)
 		allocate_descriptor(callback_result, 16);
+	return 0;
 }
 
 static void getter_u8_callback(_QWORD candidate_device)
@@ -274,25 +305,35 @@ static void game_partition_callback(__int64 candidate_device, char *payload)
 	snprintf(game_partition_payload, sizeof(game_partition_payload), "%s", payload);
 }
 
-static int self_read_callback(__int64 candidate_device, __int64 output)
+static int self_read_callback(struct ztp_device *candidate_device, char *output)
 {
 	static const char result[] = "SELF";
 
 	if ((uintptr_t)candidate_device != (uintptr_t)device)
 		abort();
 	callback_calls++;
-	memcpy((void *)(uintptr_t)output, result, sizeof(result) - 1);
+	memcpy(output, result, sizeof(result) - 1);
 	return (int)(sizeof(result) - 1);
 }
 
-static void self_write_callback(_QWORD candidate_device)
+static int self_write_callback(struct ztp_device *candidate_device)
 {
 	uint32_t value = callback_value;
 
 	if ((uintptr_t)candidate_device != (uintptr_t)device)
 		abort();
 	callback_calls++;
-	memcpy(device + 1096, &value, sizeof(value));
+	memcpy(device + FW_POSITION_OFFSET, &value, sizeof(value));
+	return 0;
+}
+
+static int firmware_upgrade_callback(struct ztp_device *candidate_device,
+			     char *firmware, int force)
+{
+	if ((uintptr_t)candidate_device != (uintptr_t)device || firmware || force)
+		abort();
+	callback_calls++;
+	return 0;
 }
 
 static void install_callback(size_t offset, const void *callback)
@@ -306,6 +347,9 @@ static void install_callback(size_t offset, const void *callback)
 #include "tp_test_write.c"
 #include "get_tp_noise_show.c"
 #include "get_tp_noise_store.c"
+#include "tp_free_tp_firmware_data.c"
+#include "tpd_reset_fw_data_pos_and_size.c"
+#include "tpfwupgrade_store.c"
 #include "tp_self_test_read.c"
 #include "tp_self_test_write.c"
 #include "tp_sensibility_level_read.c"
@@ -333,6 +377,7 @@ static void reset_fixture(void)
 	callback_result = 0;
 	copy_from_user_fail = 0;
 	kmalloc_fail = 0;
+	vmalloc_fail = 0;
 	firmware_alloc_fail = 0;
 	kfree_calls = 0;
 	vfree_calls = 0;
@@ -340,6 +385,8 @@ static void reset_fixture(void)
 	mutex_unlock_calls = 0;
 	mutex_depth = 0;
 	cfi_warning_calls = 0;
+	kmalloc_size = 0;
+	vmalloc_size = 0;
 	memset(game_partition_payload, 0, sizeof(game_partition_payload));
 }
 
@@ -408,24 +455,24 @@ static bool test_tp_test_read_paths(void)
 
 static bool test_noise_show_and_store(void)
 {
-	void (*callback)(_QWORD) = noise_callback;
+	int (*callback)(struct ztp_device *) = noise_callback;
 	char output[32] = { 0 };
 	loff_t offset = 0;
 	uint32_t pending = 9;
 
 	reset_fixture();
 	callback_result = 123;
-	install_callback(3376, callback);
+	install_callback(NOISE_CALLBACK_OFFSET, callback);
 	CHECK(get_tp_noise_show(NULL, output, sizeof(output), &offset) == 4);
 	CHECK(strcmp(output, "123\n") == 0);
 	CHECK(callback_calls == 1);
 	CHECK(mutex_lock_calls == 1 && mutex_unlock_calls == 1 && mutex_depth == 0);
 
-	memcpy(device + 1096, &pending, sizeof(pending));
+	memcpy(device + FW_POSITION_OFFSET, &pending, sizeof(pending));
 	CHECK(get_tp_noise_store(NULL, "x", 1, &offset) == 1);
-	CHECK(read_pointer(2720) == NULL);
+	CHECK(read_pointer(FW_DESCRIPTOR_OFFSET) == NULL);
 	CHECK(vfree_calls == 1 && kfree_calls == 1);
-	memcpy(&pending, device + 1096, sizeof(pending));
+	memcpy(&pending, device + FW_POSITION_OFFSET, sizeof(pending));
 	CHECK(pending == 0);
 	CHECK(mutex_lock_calls == 2 && mutex_unlock_calls == 2 && mutex_depth == 0);
 	return true;
@@ -507,41 +554,41 @@ static bool test_game_partition_paths(void)
 
 static bool test_self_test_write_paths(void)
 {
-	void (*callback)(_QWORD) = self_write_callback;
+	int (*callback)(struct ztp_device *) = self_write_callback;
 	loff_t offset = 0;
 	uint64_t *descriptor;
 
 	reset_fixture();
 	callback_value = 77;
-	install_callback(3560, callback);
+	install_callback(SELF_WRITE_CALLBACK_OFFSET, callback);
 	CHECK(tp_self_test_write(NULL, "x", 1, &offset) == 1);
-	descriptor = read_pointer(2720);
+	descriptor = read_pointer(FW_DESCRIPTOR_OFFSET);
 	CHECK(descriptor != NULL && descriptor[0] == 77);
 	CHECK(callback_calls == 1);
-	CHECK(*(uint32_t *)(device + 1096) == 0);
+	CHECK(*(uint32_t *)(device + FW_POSITION_OFFSET) == 0);
 
 	reset_fixture();
 	firmware_alloc_fail = 1;
-	install_callback(3560, callback);
+	install_callback(SELF_WRITE_CALLBACK_OFFSET, callback);
 	CHECK(tp_self_test_write(NULL, "x", 1, &offset) == -ENOMEM);
-	CHECK(callback_calls == 0 && read_pointer(2720) == NULL);
+	CHECK(callback_calls == 0 && read_pointer(FW_DESCRIPTOR_OFFSET) == NULL);
 	return true;
 }
 
 static bool test_self_test_read_paths(void)
 {
-	int (*callback)(__int64, __int64) = self_read_callback;
+	int (*callback)(struct ztp_device *, char *) = self_read_callback;
 	char output[32] = { 0 };
 	loff_t offset = 0;
 	ssize_t result;
 
 	reset_fixture();
 	allocate_descriptor(8, 16);
-	install_callback(3552, callback);
+	install_callback(SELF_READ_CALLBACK_OFFSET, callback);
 	result = tp_self_test_read(NULL, output, sizeof(output), &offset);
 	CHECK(result == 4 && memcmp(output, "SELF", 4) == 0);
 	CHECK(callback_calls == 1);
-	CHECK(read_pointer(2720) == NULL);
+	CHECK(read_pointer(FW_DESCRIPTOR_OFFSET) == NULL);
 	CHECK(vfree_calls == 1 && kfree_calls == 2);
 
 	reset_fixture();
@@ -549,6 +596,81 @@ static bool test_self_test_read_paths(void)
 	kmalloc_fail = 1;
 	CHECK(tp_self_test_read(NULL, output, sizeof(output), &offset) == -ENOMEM);
 	CHECK(kfree_calls == 0);
+	return true;
+}
+
+static bool test_firmware_free_and_reset(void)
+{
+	uint64_t *descriptor;
+	uint32_t position = 17;
+
+	reset_fixture();
+	descriptor = allocate_descriptor(99, 64);
+	memcpy(device + FW_POSITION_OFFSET, &position, sizeof(position));
+	tpd_reset_fw_data_pos_and_size();
+	CHECK(descriptor[0] == position);
+	CHECK(*(uint32_t *)(device + FW_POSITION_OFFSET) == 0);
+
+	tp_free_tp_firmware_data();
+	CHECK(read_pointer(FW_DESCRIPTOR_OFFSET) == NULL);
+	CHECK(vfree_calls == 1 && kfree_calls == 1);
+	CHECK(*(uint32_t *)(device + FW_POSITION_OFFSET) == 0);
+	return true;
+}
+
+static bool test_tpfwupgrade_success_paths(void)
+{
+	int (*callback)(struct ztp_device *, char *, int) =
+		firmware_upgrade_callback;
+	uint64_t *descriptor;
+	loff_t offset = 0;
+	uint32_t position = 9;
+
+	reset_fixture();
+	allocate_descriptor(64, 88);
+	memcpy(device + FW_POSITION_OFFSET, &position, sizeof(position));
+	install_callback(FW_UPGRADE_CALLBACK_OFFSET, callback);
+	CHECK(tpfwupgrade_store(NULL, "10\n", 3, &offset) == 3);
+	CHECK(callback_calls == 1);
+	CHECK(read_pointer(FW_DESCRIPTOR_OFFSET) == NULL);
+	CHECK(vfree_calls == 1 && kfree_calls == 1);
+	CHECK(*(uint32_t *)(device + FW_POSITION_OFFSET) == 0);
+	CHECK(mutex_lock_calls == 1 && mutex_unlock_calls == 1 && mutex_depth == 0);
+
+	reset_fixture();
+	allocate_descriptor(8, 32);
+	CHECK(tpfwupgrade_store(NULL, "11\n", 3, &offset) == 3);
+	descriptor = read_pointer(FW_DESCRIPTOR_OFFSET);
+	CHECK(descriptor != NULL && descriptor[0] == 11 && descriptor[1] != 0);
+	CHECK(kmalloc_size == 24 && vmalloc_size == 35);
+	CHECK(vfree_calls == 1 && kfree_calls == 1);
+	CHECK(*(uint32_t *)(device + FW_POSITION_OFFSET) == 0);
+	return true;
+}
+
+static bool test_tpfwupgrade_failure_paths(void)
+{
+	loff_t offset = 0;
+	void *dangling;
+
+	reset_fixture();
+	CHECK(tpfwupgrade_store(NULL, "bad", 3, &offset) == -EINVAL);
+	CHECK(mutex_lock_calls == 0 && mutex_unlock_calls == 0);
+
+	reset_fixture();
+	kmalloc_fail = 1;
+	CHECK(tpfwupgrade_store(NULL, "11\n", 3, &offset) == -ENOMEM);
+	CHECK(read_pointer(FW_DESCRIPTOR_OFFSET) == NULL);
+	CHECK(kmalloc_size == 24 && vmalloc_size == 0);
+	CHECK(mutex_lock_calls == 1 && mutex_unlock_calls == 1 && mutex_depth == 0);
+
+	reset_fixture();
+	vmalloc_fail = 1;
+	CHECK(tpfwupgrade_store(NULL, "11\n", 3, &offset) == -ENOMEM);
+	dangling = read_pointer(FW_DESCRIPTOR_OFFSET);
+	CHECK(dangling != NULL);
+	CHECK(kfree_calls == 1 && vmalloc_size == 35);
+	write_pointer(FW_DESCRIPTOR_OFFSET, NULL);
 	return true;
 }
 
@@ -569,6 +691,9 @@ int main(void)
 		{ "game_partition_paths", test_game_partition_paths },
 		{ "self_test_write_paths", test_self_test_write_paths },
 		{ "self_test_read_paths", test_self_test_read_paths },
+		{ "firmware_free_and_reset", test_firmware_free_and_reset },
+		{ "tpfwupgrade_success_paths", test_tpfwupgrade_success_paths },
+		{ "tpfwupgrade_failure_paths", test_tpfwupgrade_failure_paths },
 	};
 	size_t index;
 	size_t passed = 0;

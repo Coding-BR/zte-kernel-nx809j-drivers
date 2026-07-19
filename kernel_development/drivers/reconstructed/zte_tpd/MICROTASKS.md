@@ -15,8 +15,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 009_get_tp_chip_id | get_tp_chip_id | 00107aec | core_logic | get_tp_chip_id.c:get_tp_chip_id | READY_FOR_IMPLEMENTATION |
 | 010_get_lcd_panel_name | get_lcd_panel_name | 00107ce0 | core_logic | get_lcd_panel_name.c:get_lcd_panel_name | READY_FOR_IMPLEMENTATION |
 | 011_tp_free_tp_firmware_data | tp_free_tp_firmware_data | 00107cf0 | core_logic | tp_free_tp_firmware_data.c:tp_free_tp_firmware_data | PASS |
-| 012_tp_alloc_tp_firmware_data | tp_alloc_tp_firmware_data | 00107d54 | core_logic | tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data | READY_FOR_IMPLEMENTATION |
-| 013_tpd_copy_to_tp_firmware_data | tpd_copy_to_tp_firmware_data | 00107eb8 | core_logic | tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data | READY_FOR_IMPLEMENTATION |
+| 012_tp_alloc_tp_firmware_data | tp_alloc_tp_firmware_data | 00107d54 | core_logic | tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data | PASS |
+| 013_tpd_copy_to_tp_firmware_data | tpd_copy_to_tp_firmware_data | 00107eb8 | core_logic | tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data | PASS |
 | 014_tpd_reset_fw_data_pos_and_size | tpd_reset_fw_data_pos_and_size | 00107f84 | core_logic | tpd_reset_fw_data_pos_and_size.c:tpd_reset_fw_data_pos_and_size | PASS |
 | 015_tpd_proc_deinit | tpd_proc_deinit | 00107fa4 | lifecycle | tpd_proc_deinit.c:tpd_proc_deinit | PASS |
 | 016_zte_touch_pdev_register | zte_touch_pdev_register | 001081c8 | core_logic | zte_touch_pdev_register.c:zte_touch_pdev_register | READY_FOR_IMPLEMENTATION |
@@ -38,7 +38,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 032_tp_smart_cover_write | tp_smart_cover_write | 00109ce4 | user_abi | tp_smart_cover_write.c:tp_smart_cover_write | PASS |
 | 033_tp_glove_read | tp_glove_read | 00109db8 | user_abi | tp_glove_read.c:tp_glove_read | PASS |
 | 034_tp_glove_write | tp_glove_write | 00109eac | user_abi | tp_glove_write.c:tp_glove_write | PASS |
-| 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | READY_FOR_IMPLEMENTATION |
+| 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | PASS |
 | 036_suspend_show | suspend_show | 0010a1b4 | binding | suspend_show.c:suspend_show | PASS |
 | 037_suspend_store | suspend_store | 0010a2ac | binding | suspend_store.c:suspend_store | READY_FOR_IMPLEMENTATION |
 | 038_headset_state_show | headset_state_show | 0010a3c4 | user_abi | headset_state_show.c:headset_state_show | PASS |

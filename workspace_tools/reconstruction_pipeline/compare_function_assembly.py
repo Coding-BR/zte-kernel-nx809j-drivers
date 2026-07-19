@@ -32,6 +32,10 @@ AARCH64_RELOCATION_NAMES = {
     258: "R_AARCH64_ABS32",
     259: "R_AARCH64_ABS16",
 }
+ALLOC_TAG_RE = re.compile(
+    r"^(?P<type>R_AARCH64_[A-Z0-9_]+) "
+    r"(?P<owner>[A-Za-z0-9_.$]+)\._alloc_tag(?:\.(?P<suffix>[0-9]+))?$"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -998,6 +1002,87 @@ def canonicalize_stripped_lock_keys(
     return stock, candidate, evidence
 
 
+def canonicalize_compiler_alloc_tags(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Normalize numeric suffixes on matching compiler-generated alloc tags."""
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if not instructions_match or len(stock) != len(candidate):
+        return stock, candidate, evidence
+
+    expected_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+    index = 0
+    while index + 1 < len(stock):
+        stock_pair = [ALLOC_TAG_RE.fullmatch(value) for value in stock[index:index + 2]]
+        candidate_pair = [
+            ALLOC_TAG_RE.fullmatch(value) for value in candidate[index:index + 2]
+        ]
+        if any(match is None for match in stock_pair + candidate_pair):
+            index += 1
+            continue
+        stock_matches = [match for match in stock_pair if match is not None]
+        candidate_matches = [match for match in candidate_pair if match is not None]
+        if tuple(match.group("type") for match in stock_matches) != expected_types:
+            index += 1
+            continue
+        if tuple(match.group("type") for match in candidate_matches) != expected_types:
+            index += 1
+            continue
+        owners = {
+            match.group("owner") for match in stock_matches + candidate_matches
+        }
+        if len(owners) != 1:
+            index += 1
+            continue
+        stock_positions = stock_instruction_indices[index:index + 2]
+        candidate_positions = candidate_instruction_indices[index:index + 2]
+        if not (
+            stock_positions == candidate_positions
+            and len(stock_positions) == 2
+            and stock_positions[1] == stock_positions[0] + 1
+        ):
+            index += 1
+            continue
+        stock_target = stock[index].split(" ", 1)[1]
+        candidate_target = candidate[index].split(" ", 1)[1]
+        if stock_target == candidate_target:
+            index += 2
+            continue
+
+        owner = next(iter(owners))
+        alias = f"<{owner}._alloc_tag:relocation_pair_{index}>"
+        evidence.append(
+            {
+                "relocation_index": index,
+                "kind": "compiler_generated_alloc_tag_suffix",
+                "reason": (
+                    "matching ADRP/ADD pair at identical instruction indices; "
+                    "only the compiler-assigned local numeric suffix differs"
+                ),
+                "owner": owner,
+                "stock_target": stock_target,
+                "candidate_target": candidate_target,
+                "canonical_target": alias,
+                "instruction_indices": stock_positions,
+            }
+        )
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        index += 2
+
+    return stock, candidate, evidence
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stock-dir", type=Path, required=True)
@@ -1129,6 +1214,18 @@ def main() -> int:
             non_branch_relocation_instruction_indices(stock_path),
             non_branch_relocation_instruction_indices(candidate_path),
         )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            alloc_tag_equivalences,
+        ) = canonicalize_compiler_alloc_tags(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += alloc_tag_equivalences
         checks = {
             "section": stock_record.get("section") == candidate_record.get("section"),
             "symbol_size": stock_record.get("symbol_size") == candidate_record.get("symbol_size"),
