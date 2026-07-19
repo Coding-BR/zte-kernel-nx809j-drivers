@@ -1170,7 +1170,7 @@ uint8_t ztp_algo_info_l = 0;
 
 void *off_338 = (void *)gpio_free;
 
-char point_report_info[4096] = {0};
+struct point_info_struct point_report_info[10] = {0};
 
 unsigned long syna_dev_probe__alloc_tag = 0;
 unsigned long tpfwupgrade_store__alloc_tag_195 = 0;

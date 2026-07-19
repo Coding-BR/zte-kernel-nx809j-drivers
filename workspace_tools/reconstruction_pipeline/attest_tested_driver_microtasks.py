@@ -22,6 +22,11 @@ def read_object(path: Path) -> dict[str, Any]:
     return payload
 
 
+def write_text_lf(path: Path, value: str) -> None:
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(value)
+
+
 def relative_evidence_path(workspace: Path, path: Path) -> str:
     resolved = path.resolve()
     try:
@@ -32,13 +37,35 @@ def relative_evidence_path(workspace: Path, path: Path) -> str:
 
 def build_passed(payload: dict[str, Any]) -> bool:
     drivers = payload.get("drivers", [])
-    return bool(
+    aggregate_passed = bool(
         isinstance(drivers, list)
         and len(drivers) == 1
         and drivers[0].get("status", "").startswith("static_verified")
         and drivers[0].get("build", {}).get("passed")
         and drivers[0].get("build", {}).get("reproducible")
     )
+    canonical_passed = bool(
+        payload.get("passed") is True
+        and payload.get("reproducible") is True
+        and isinstance(payload.get("candidate"), dict)
+        and isinstance(payload["candidate"].get("sha256"), str)
+    )
+    return aggregate_passed or canonical_passed
+
+
+def build_candidate_sha256(payload: dict[str, Any]) -> str | None:
+    candidate = payload.get("candidate")
+    if isinstance(candidate, dict) and isinstance(candidate.get("sha256"), str):
+        return candidate["sha256"].lower()
+    drivers = payload.get("drivers")
+    if isinstance(drivers, list) and len(drivers) == 1:
+        build = drivers[0].get("build")
+        if isinstance(build, dict):
+            for key in ("candidate_sha256", "sha256"):
+                value = build.get(key)
+                if isinstance(value, str):
+                    return value.lower()
+    return None
 
 
 def kcfi_functions(reports: list[tuple[Path, dict[str, Any]]]) -> dict[str, Path]:
@@ -74,7 +101,12 @@ def direct_tested_sources(
     return sources
 
 
-def reset_microtask_attestations(tasks: object) -> tuple[list[dict[str, Any]], set[str]]:
+def reset_microtask_attestations(
+    tasks: object,
+    *,
+    selected_functions: set[str] | None = None,
+    preserve_unselected: bool = False,
+) -> tuple[list[dict[str, Any]], set[str]]:
     if not isinstance(tasks, list) or not tasks:
         raise ValueError("manifest has no microtasks")
     normalized: list[dict[str, Any]] = []
@@ -85,6 +117,11 @@ def reset_microtask_attestations(tasks: object) -> tuple[list[dict[str, Any]], s
         task_id = task.get("id")
         if task.get("status") == "PASS" and isinstance(task_id, str):
             previous_pass.add(task_id)
+        source_function = task.get("source_function")
+        selected = not selected_functions or source_function in selected_functions
+        if preserve_unselected and not selected:
+            normalized.append(task)
+            continue
         task["status"] = "READY_FOR_IMPLEMENTATION"
         task["evidence"] = []
         normalized.append(task)
@@ -136,6 +173,22 @@ def main() -> int:
     parser.add_argument("--kcfi-report", action="append", type=Path, required=True)
     parser.add_argument("--test-report", action="append", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--function",
+        action="append",
+        default=[],
+        help="source function to attest; repeat for a scoped checkpoint",
+    )
+    parser.add_argument(
+        "--preserve-unselected",
+        action="store_true",
+        help="leave statuses and evidence outside --function unchanged",
+    )
+    parser.add_argument(
+        "--candidate",
+        type=Path,
+        help="candidate module whose SHA-256 must match the build report",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -146,6 +199,15 @@ def main() -> int:
     build = read_object(build_path)
     if not build_passed(build):
         raise ValueError("build report is not static_verified and reproducible")
+    candidate_sha = build_candidate_sha256(build)
+    if args.candidate:
+        candidate_path = args.candidate.resolve()
+        if not candidate_path.is_file():
+            raise ValueError(f"candidate module is missing: {candidate_path}")
+        if candidate_sha is None:
+            raise ValueError("build report has no candidate SHA-256")
+        if sha256_file(candidate_path) != candidate_sha:
+            raise ValueError("candidate module does not match build report")
 
     kcfi_reports = [(path.resolve(), read_object(path.resolve())) for path in args.kcfi_report]
     test_reports = [(path.resolve(), read_object(path.resolve())) for path in args.test_report]
@@ -154,7 +216,25 @@ def main() -> int:
     manifest = read_object(manifest_path)
     if manifest.get("driver") != args.driver:
         raise ValueError("manifest driver does not match --driver")
-    tasks, previous_pass = reset_microtask_attestations(manifest.get("tasks"))
+    selected_functions = set(args.function)
+    if args.preserve_unselected and not selected_functions:
+        raise ValueError("--preserve-unselected requires at least one --function")
+    tasks, previous_pass = reset_microtask_attestations(
+        manifest.get("tasks"),
+        selected_functions=selected_functions,
+        preserve_unselected=args.preserve_unselected,
+    )
+    known_functions = {
+        task.get("source_function")
+        for task in tasks
+        if isinstance(task.get("source_function"), str)
+    }
+    unknown_functions = selected_functions - known_functions
+    if unknown_functions:
+        raise ValueError(
+            "requested functions are absent from manifest: "
+            + ", ".join(sorted(unknown_functions))
+        )
 
     build_evidence = {
         "role": "compile",
@@ -166,6 +246,8 @@ def main() -> int:
         source_file = task.get("source_file")
         source_function = task.get("source_function")
         if not isinstance(source_file, str) or not isinstance(source_function, str):
+            continue
+        if selected_functions and source_function not in selected_functions:
             continue
         kcfi_path = typed.get(source_function)
         test_path = tested.get(Path(source_file).name)
@@ -188,15 +270,20 @@ def main() -> int:
         promoted.append(task["id"])
 
     manifest["generated_utc"] = datetime.now(timezone.utc).isoformat()
-    manifest["status"] = "INCOMPLETE" if len(promoted) < len(tasks) else "PASS"
+    current_pass = {
+        str(task["id"])
+        for task in tasks
+        if task.get("status") == "PASS" and isinstance(task.get("id"), str)
+    }
+    manifest["status"] = "PASS" if len(current_pass) == len(tasks) else "INCOMPLETE"
     if not args.dry_run:
-        manifest_path.write_text(
+        write_text_lf(
+            manifest_path,
             json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
-            encoding="utf-8",
         )
-        manifest_path.with_suffix(".md").write_text(
+        write_text_lf(
+            manifest_path.with_suffix(".md"),
             render_manifest_markdown(manifest),
-            encoding="utf-8",
         )
 
     payload = {
@@ -208,17 +295,22 @@ def main() -> int:
         "build_report": str(build_path),
         "kcfi_reports": [str(path) for path, _ in kcfi_reports],
         "test_reports": [str(path) for path, _ in test_reports],
+        "candidate": str(args.candidate.resolve()) if args.candidate else None,
+        "candidate_sha256": candidate_sha,
+        "selected_functions": sorted(selected_functions),
+        "preserve_unselected": args.preserve_unselected,
         "summary": {
             "task_count": len(tasks),
             "promoted_pass": len(promoted),
-            "remaining": len(tasks) - len(promoted),
+            "current_pass": len(current_pass),
+            "remaining": len(tasks) - len(current_pass),
             "previous_pass": len(previous_pass),
-            "retained_pass": len(previous_pass.intersection(promoted)),
-            "new_pass": len(set(promoted) - previous_pass),
-            "demoted_stale_pass": len(previous_pass - set(promoted)),
+            "retained_pass": len(previous_pass.intersection(current_pass)),
+            "new_pass": len(current_pass - previous_pass),
+            "demoted_stale_pass": len(previous_pass - current_pass),
         },
         "promoted_tasks": promoted,
-        "gate_passed": len(promoted) == len(tasks) and bool(tasks),
+        "gate_passed": len(current_pass) == len(tasks) and bool(tasks),
         "limitations": [
             "Shared build evidence proves whole-module compilation but does not replace per-function KCFI and direct-test evidence.",
             "Only source files whose current SHA-256 appears in a passing direct-test report are eligible.",
@@ -226,7 +318,7 @@ def main() -> int:
         ],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_text_lf(args.output, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload["summary"], sort_keys=True))
     return 0
 

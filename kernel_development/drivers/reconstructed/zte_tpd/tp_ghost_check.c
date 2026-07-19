@@ -1,8 +1,6 @@
-__int64 tp_ghost_check()
+bool tp_ghost_check(void)
 {
   __int64 v0; // x21
-  __int64 v1; // x1
-  __int64 v2; // x2
   char *v3; // x19
   unsigned int v4; // w3
   unsigned __int8 v5; // w9
@@ -17,57 +15,55 @@ __int64 tp_ghost_check()
   int v15; // w22
   int v16; // w0
   int v17; // w20
-  __int64 v18; // x24
   int v19; // w26
-  _DWORD *v20; // x27
+  struct point_info_struct *v20; // x27
   int v21; // w26
 
   v0 = tpd_cdev;
-  v3 = (char *)vmalloc_noprof(2048);
+  v3 = (char *)vmalloc(2048);
   if ( !v3 )
   {
-    printk(unk_38791, v1, v2);
+    printk("\001" "5tpd: log_buffer malloc fail");
     return 0;
   }
-  v4 = HIWORD(dword_30F04);
-  v5 = HIWORD(dword_30F8C) != 0;
-  if ( HIWORD(dword_30F04) )
-    ++v5;
-  if ( HIWORD(dword_31014) )
+  v4 = point_report_info[0].ghost_active;
+  v5 = point_report_info[1].ghost_active != 0;
+  v5 += point_report_info[0].ghost_active != 0;
+  if ( point_report_info[2].ghost_active )
     ++v5;
   v6 = *(_DWORD *)(v0 + 1176);
-  if ( HIWORD(dword_3109C) )
+  if ( point_report_info[3].ghost_active )
     ++v5;
-  if ( HIWORD(dword_31124) )
+  if ( point_report_info[4].ghost_active )
     ++v5;
-  if ( HIWORD(dword_311AC) )
+  if ( point_report_info[5].ghost_active )
     ++v5;
-  if ( HIWORD(dword_31234) )
+  if ( point_report_info[6].ghost_active )
     ++v5;
-  if ( HIWORD(dword_312BC) )
+  if ( point_report_info[7].ghost_active )
     ++v5;
-  if ( HIWORD(dword_31344) )
+  if ( point_report_info[8].ghost_active )
     ++v5;
-  if ( HIWORD(dword_313CC) )
+  if ( point_report_info[9].ghost_active )
     ++v5;
-  if ( *(_DWORD *)(v0 + 1164) <= (int)v5 )
+  if ( *(int *)(v0 + 1164) <= (int)v5 )
     v7 = v5;
   else
-    v7 = *(_DWORD *)(v0 + 1164);
+    v7 = *(int *)(v0 + 1164);
   v8 = 1171;
   if ( v7 > 2 )
     v8 = 1172;
-  v9 = *(unsigned __int8 *)(v0 + v8);
+  v9 = *((unsigned __int8 *)(unsigned long)v0 + v8);
   v10 = v9 * v5;
   if ( v6 )
   {
-    v11 = (unsigned __int16)dword_30F04;
-    if ( (unsigned __int16)dword_30F04 >= v9 )
+    v11 = point_report_info[0].ghost_count;
+    if ( point_report_info[0].ghost_count >= v9 )
     {
       v13 = 0;
       goto LABEL_90;
     }
-    if ( HIWORD(dword_30F04) && v5 >= 6u && v10 < HIWORD(dword_30F04) )
+    if ( point_report_info[0].ghost_active && v5 >= 6u && v10 < point_report_info[0].ghost_active )
       goto LABEL_98;
     if ( v6 == 1 )
       goto LABEL_38;
@@ -76,15 +72,15 @@ __int64 tp_ghost_check()
   {
     LOWORD(v4) = 0;
   }
-  v11 = (unsigned __int16)dword_30F8C;
-  if ( (unsigned __int16)dword_30F8C >= v9 )
+  v11 = point_report_info[1].ghost_count;
+  if ( point_report_info[1].ghost_count >= v9 )
   {
     v13 = 1;
     goto LABEL_90;
   }
-  if ( HIWORD(dword_30F8C) )
+  if ( point_report_info[1].ghost_active )
   {
-    LOWORD(v4) = HIWORD(dword_30F8C) + v4;
+    LOWORD(v4) = v4 + point_report_info[1].ghost_active;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -94,15 +90,15 @@ __int64 tp_ghost_check()
   if ( v6 == 2 )
   {
 LABEL_43:
-    v11 = (unsigned __int16)dword_3109C;
-    if ( (unsigned __int16)dword_3109C >= v9 )
+    v11 = point_report_info[3].ghost_count;
+    if ( point_report_info[3].ghost_count >= v9 )
     {
       v13 = 3;
       goto LABEL_90;
     }
-    if ( HIWORD(dword_3109C) )
+    if ( point_report_info[3].ghost_active )
     {
-      LOWORD(v4) = HIWORD(dword_3109C) + v4;
+      LOWORD(v4) = v4 + point_report_info[3].ghost_active;
       if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
       {
         v4 = (unsigned __int16)v4;
@@ -114,15 +110,15 @@ LABEL_43:
     goto LABEL_48;
   }
 LABEL_38:
-  v11 = (unsigned __int16)dword_31014;
-  if ( (unsigned __int16)dword_31014 >= v9 )
+  v11 = point_report_info[2].ghost_count;
+  if ( point_report_info[2].ghost_count >= v9 )
   {
     v13 = 2;
     goto LABEL_90;
   }
-  if ( HIWORD(dword_31014) )
+  if ( point_report_info[2].ghost_active )
   {
-    LOWORD(v4) = HIWORD(dword_31014) + v4;
+    LOWORD(v4) = v4 + point_report_info[2].ghost_active;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -132,15 +128,15 @@ LABEL_38:
   if ( v6 != 3 )
     goto LABEL_43;
 LABEL_48:
-  v11 = (unsigned __int16)dword_31124;
-  if ( (unsigned __int16)dword_31124 >= v9 )
+  v11 = point_report_info[4].ghost_count;
+  if ( point_report_info[4].ghost_count >= v9 )
   {
     v13 = 4;
     goto LABEL_90;
   }
-  if ( HIWORD(dword_31124) )
+  if ( point_report_info[4].ghost_active )
   {
-    LOWORD(v4) = HIWORD(dword_31124) + v4;
+    LOWORD(v4) = v4 + point_report_info[4].ghost_active;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -150,15 +146,15 @@ LABEL_48:
   if ( v6 == 5 )
   {
 LABEL_58:
-    v11 = (unsigned __int16)dword_31234;
-    if ( (unsigned __int16)dword_31234 >= v9 )
+    v11 = point_report_info[6].ghost_count;
+    if ( point_report_info[6].ghost_count >= v9 )
     {
       v13 = 6;
       goto LABEL_90;
     }
-    if ( HIWORD(dword_31234) )
+    if ( point_report_info[6].ghost_active )
     {
-      LOWORD(v4) = HIWORD(dword_31234) + v4;
+      LOWORD(v4) = v4 + point_report_info[6].ghost_active;
       if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
       {
         v4 = (unsigned __int16)v4;
@@ -170,15 +166,15 @@ LABEL_58:
     goto LABEL_63;
   }
 LABEL_53:
-  v11 = (unsigned __int16)dword_311AC;
-  if ( (unsigned __int16)dword_311AC >= v9 )
+  v11 = point_report_info[5].ghost_count;
+  if ( point_report_info[5].ghost_count >= v9 )
   {
     v13 = 5;
     goto LABEL_90;
   }
-  if ( HIWORD(dword_311AC) )
+  if ( point_report_info[5].ghost_active )
   {
-    LOWORD(v4) = HIWORD(dword_311AC) + v4;
+    LOWORD(v4) = v4 + point_report_info[5].ghost_active;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -188,15 +184,15 @@ LABEL_53:
   if ( v6 != 6 )
     goto LABEL_58;
 LABEL_63:
-  v11 = (unsigned __int16)dword_312BC;
-  if ( (unsigned __int16)dword_312BC >= v9 )
+  v11 = point_report_info[7].ghost_count;
+  if ( point_report_info[7].ghost_count >= v9 )
   {
     v13 = 7;
     goto LABEL_90;
   }
-  if ( HIWORD(dword_312BC) )
+  if ( point_report_info[7].ghost_active )
   {
-    LOWORD(v4) = HIWORD(dword_312BC) + v4;
+    LOWORD(v4) = v4 + point_report_info[7].ghost_active;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -206,14 +202,14 @@ LABEL_63:
   if ( v6 == 8 )
   {
 LABEL_73:
-    v11 = (unsigned __int16)dword_313CC;
-    if ( (unsigned __int16)dword_313CC < v9 )
+    v11 = point_report_info[9].ghost_count;
+    if ( point_report_info[9].ghost_count < v9 )
     {
-      if ( !HIWORD(dword_313CC) )
+      if ( !point_report_info[9].ghost_active )
         goto LABEL_77;
       if ( v5 < 6u )
         goto LABEL_77;
-      v4 = (unsigned __int16)(HIWORD(dword_313CC) + v4);
+      v4 = (unsigned __int16)(v4 + point_report_info[9].ghost_active);
       if ( v10 >= v4 )
         goto LABEL_77;
       goto LABEL_98;
@@ -224,13 +220,13 @@ LABEL_90:
     goto LABEL_99;
   }
 LABEL_68:
-  v11 = (unsigned __int16)dword_31344;
-  if ( (unsigned __int16)dword_31344 >= v9 )
+  v11 = point_report_info[8].ghost_count;
+  if ( point_report_info[8].ghost_count >= v9 )
   {
     v13 = 8;
     goto LABEL_90;
   }
-  if ( !HIWORD(dword_31344) || (LOWORD(v4) = HIWORD(dword_31344) + v4, v5 < 6u) || v10 >= (unsigned __int16)v4 )
+  if ( !point_report_info[8].ghost_active || (LOWORD(v4) = v4 + point_report_info[8].ghost_active, v5 < 6u) || v10 >= (unsigned __int16)v4 )
   {
     if ( v6 == 9 )
     {
@@ -246,22 +242,20 @@ LABEL_98:
 LABEL_99:
   v15 = v14;
   v16 = snprintf(&v3[v14], 2048 - v14, "point_down_num: %d.", v7);
-  v17 = 0;
-  v18 = -1360;
   v19 = v16 + v15;
-  do
+  for ( v17 = 0; v17 < (int)ARRAY_SIZE(point_report_info); ++v17 )
   {
-    v20 = (_DWORD *)((char *)&point_report_info + v18);
-    if ( *(_WORD *)((char *)&point_report_info + v18 + 1454) )
+    v20 = &point_report_info[v17];
+    if ( v20->ghost_active )
     {
-      v21 = snprintf(&v3[v19], 2048 - v19, " point[%d] down: %d, %d. ", v17, v20[346], v20[347]) + v19;
-      v19 = snprintf(&v3[v21], 2048 - v21, " point[%d] up: %d, %d. ", v17, v20[349], v20[350]) + v21;
+      v21 = snprintf(&v3[v19], 2048 - v19, " point[%d] down: %d, %d. ", v17, v20->down_x, v20->down_y) + v19;
+      v19 = snprintf(&v3[v21], 2048 - v21, " point[%d] up: %d, %d. ", v17, v20->up_x, v20->up_y) + v21;
     }
-    v18 += 136;
-    ++v17;
   }
-  while ( v18 );
-  printk(unk_36F34, "tp_ghost_check", v3);
+  printk("\001" "5tpd: %s:%s", "tp_ghost_check", v3);
+  if ( *(char **)(tpd_cdev + 0xbe8) )
+    snprintf(*(char **)(tpd_cdev + 0xbe8), 0x800u, v3);
+  tpd_zlog_record_notify(0x10);
   vfree(v3);
-  return 1;
+  return true;
 }

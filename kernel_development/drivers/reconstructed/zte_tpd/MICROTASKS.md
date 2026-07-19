@@ -104,7 +104,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | READY_FOR_IMPLEMENTATION |
 | 099_tpd_touch_release | tpd_touch_release | 0010ec70 | user_abi | tpd_touch_release.c:tpd_touch_release | READY_FOR_IMPLEMENTATION |
 | 100_ghost_check_area | ghost_check_area | 0010f2ac | core_logic | ghost_check_area.c:ghost_check_area | READY_FOR_IMPLEMENTATION |
-| 101_tp_ghost_check | tp_ghost_check | 0010f400 | core_logic | tp_ghost_check.c:tp_ghost_check | READY_FOR_IMPLEMENTATION |
+| 101_tp_ghost_check | tp_ghost_check | 0010f400 | core_logic | tp_ghost_check.c:tp_ghost_check | PASS |
 | 102_ghost_check_reset | ghost_check_reset | 0010f924 | core_logic | ghost_check_reset.c:ghost_check_reset | PASS |
 | 103_tpd_clean_all_event | tpd_clean_all_event | 0010f95c | core_logic | tpd_clean_all_event.c:tpd_clean_all_event | PASS |
 | 104_tpd_report_work_init | tpd_report_work_init | 0010fa04 | lifecycle | tpd_report_work_init.c:tpd_report_work_init | READY_FOR_IMPLEMENTATION |
@@ -123,7 +123,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 117_edge_long_press_up | edge_long_press_up | 001100ac | core_logic | edge_long_press_up.c:edge_long_press_up | READY_FOR_IMPLEMENTATION |
 | 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state.c:change_tp_state | READY_FOR_IMPLEMENTATION |
 | 119_suspend_tp_need_awake | suspend_tp_need_awake | 0011049c | binding | suspend_tp_need_awake.c:suspend_tp_need_awake | READY_FOR_IMPLEMENTATION |
-| 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | READY_FOR_IMPLEMENTATION |
+| 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | PASS |
 | 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing.c:set_lcd_reset_processing | PASS |
 | 122_set_gpio_mode | set_gpio_mode | 00110580 | core_logic | set_gpio_mode.c:set_gpio_mode | READY_FOR_IMPLEMENTATION |
 | 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PASS |

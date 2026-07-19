@@ -1,11 +1,12 @@
-__int64 tp_esd_check()
+bool tp_esd_check(void)
 {
-  __int64 (*v0)(void); // x8
+  struct ztp_device *cdev;
+  bool (*check)(struct ztp_device *cdev);
 
-  v0 = *(__int64 (**)(void))(tpd_cdev + 3296);
-  if ( !v0 )
-    return 0;
-  if ( *((_DWORD *)v0 - 1) != -2139014615 )
-    __break(0x8228u);
-  return v0() & 1;
+  cdev = (struct ztp_device *)(unsigned long)tpd_cdev;
+  check = *(bool (**)(struct ztp_device *))((u8 *)cdev + 0xe98);
+  if ( !check )
+    return false;
+
+  return check(cdev);
 }

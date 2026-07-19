@@ -1,7 +1,5 @@
 #include "defs.h"
 
-extern __int64 tp_esd_check(void);
-
 __attribute__((target("arch=armv8.2-a+fp16fml")))
 __int64 sub_147EC(void)
 {

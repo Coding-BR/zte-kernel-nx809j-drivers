@@ -600,6 +600,211 @@ def normalized_assembly(
     return instructions, raw_relocations, normalized_relocations
 
 
+def _opcode_word(instruction: str) -> int | None:
+    if not re.fullmatch(r"[0-9a-f]{8}", instruction):
+        return None
+    return int(instruction, 16)
+
+
+def _canonical_commutative_word(word: int) -> tuple[int, str] | None:
+    fixed = word & 0x7FE0FC00
+    if fixed == 0x0B000000:
+        operation = "ADD shifted-register LSL #0"
+    elif fixed == 0x1B007C00:
+        operation = "MUL alias of MADD with RA=ZR"
+    else:
+        return None
+
+    rn = (word >> 5) & 0x1F
+    rm = (word >> 16) & 0x1F
+    if rn <= rm:
+        return word, operation
+    canonical = word & ~((0x1F << 5) | (0x1F << 16))
+    canonical |= rm << 5
+    canonical |= rn << 16
+    return canonical, operation
+
+
+def canonicalize_commutative_instruction_pairs(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Normalize only register swaps that are mathematically identical."""
+    stock = list(stock_instructions)
+    candidate = list(candidate_instructions)
+    evidence: list[dict[str, Any]] = []
+    for index, (stock_instruction, candidate_instruction) in enumerate(
+        zip(stock, candidate)
+    ):
+        if stock_instruction == candidate_instruction:
+            continue
+        stock_word = _opcode_word(stock_instruction)
+        candidate_word = _opcode_word(candidate_instruction)
+        if stock_word is None or candidate_word is None:
+            continue
+        stock_canonical = _canonical_commutative_word(stock_word)
+        candidate_canonical = _canonical_commutative_word(candidate_word)
+        if stock_canonical is None or candidate_canonical is None:
+            continue
+        if stock_canonical != candidate_canonical:
+            continue
+        canonical_word, operation = stock_canonical
+        canonical = f"{canonical_word:08x}"
+        stock[index] = canonical
+        candidate[index] = canonical
+        evidence.append(
+            {
+                "kind": "commutative_register_operand_swap",
+                "instruction_index": index,
+                "operation": operation,
+                "stock_opcode": stock_instruction,
+                "candidate_opcode": candidate_instruction,
+                "canonical_opcode": canonical,
+            }
+        )
+    return stock, candidate, evidence
+
+
+def _ldrh_unsigned_immediate(word: int) -> tuple[int, int, int] | None:
+    if word & 0xFFC00000 != 0x79400000:
+        return None
+    return word & 0x1F, (word >> 5) & 0x1F, (word >> 10) & 0xFFF
+
+
+def _cmp_w_immediate_zero_register(word: int) -> int | None:
+    if word & 0xFFFFFC1F != 0x7100001F:
+        return None
+    return (word >> 5) & 0x1F
+
+
+def _conditional_select_registers(word: int) -> tuple[int, int, int] | None:
+    if word & 0xFFE0FC00 != 0x1A800400:
+        return None
+    return word & 0x1F, (word >> 5) & 0x1F, (word >> 16) & 0x1F
+
+
+def canonicalize_boolean_count_pair_reordering(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Accept a guarded swap of two independent ``!!u16`` count terms.
+
+    The transformation is allowed only when two adjacent LDRH instructions,
+    their CMP #0 consumers, and the shared CSET/CINC accumulation pattern are
+    all present. Any additional difference inside the guarded window rejects
+    the equivalence.
+    """
+    stock = list(stock_instructions)
+    candidate = list(candidate_instructions)
+    evidence: list[dict[str, Any]] = []
+    limit = min(len(stock), len(candidate))
+    for load_index in range(limit - 1):
+        if not (
+            stock[load_index] == candidate[load_index + 1]
+            and stock[load_index + 1] == candidate[load_index]
+        ):
+            continue
+        first_word = _opcode_word(stock[load_index])
+        second_word = _opcode_word(stock[load_index + 1])
+        if first_word is None or second_word is None:
+            continue
+        first_load = _ldrh_unsigned_immediate(first_word)
+        second_load = _ldrh_unsigned_immediate(second_word)
+        if first_load is None or second_load is None:
+            continue
+        first_register, first_base, first_offset = first_load
+        second_register, second_base, second_offset = second_load
+        if first_base != second_base or first_offset == second_offset:
+            continue
+
+        window_end = min(limit, load_index + 16)
+        matched = False
+        for first_compare in range(load_index + 2, window_end):
+            stock_first_compare = _opcode_word(stock[first_compare])
+            candidate_first_compare = _opcode_word(candidate[first_compare])
+            if stock_first_compare is None or candidate_first_compare is None:
+                continue
+            if _cmp_w_immediate_zero_register(stock_first_compare) != first_register:
+                continue
+            if _cmp_w_immediate_zero_register(candidate_first_compare) != second_register:
+                continue
+            for second_compare in range(first_compare + 1, window_end):
+                if not (
+                    stock[first_compare] == candidate[second_compare]
+                    and stock[second_compare] == candidate[first_compare]
+                ):
+                    continue
+                stock_second_compare = _opcode_word(stock[second_compare])
+                candidate_second_compare = _opcode_word(candidate[second_compare])
+                if stock_second_compare is None or candidate_second_compare is None:
+                    continue
+                if _cmp_w_immediate_zero_register(stock_second_compare) != second_register:
+                    continue
+                if _cmp_w_immediate_zero_register(candidate_second_compare) != first_register:
+                    continue
+                differing = {
+                    index
+                    for index in range(load_index, second_compare + 1)
+                    if stock[index] != candidate[index]
+                }
+                expected = {
+                    load_index,
+                    load_index + 1,
+                    first_compare,
+                    second_compare,
+                }
+                if differing != expected:
+                    continue
+
+                cset_indices = []
+                for index in range(first_compare + 1, second_compare):
+                    word = _opcode_word(stock[index])
+                    registers = (
+                        _conditional_select_registers(word)
+                        if word is not None
+                        else None
+                    )
+                    if registers is not None and registers[1:] == (31, 31):
+                        cset_indices.append((index, registers[0]))
+                if len(cset_indices) != 1:
+                    continue
+                _, count_register = cset_indices[0]
+                cinc_indices = []
+                for index in range(second_compare + 1, min(window_end, second_compare + 4)):
+                    word = _opcode_word(stock[index])
+                    registers = (
+                        _conditional_select_registers(word)
+                        if word is not None
+                        else None
+                    )
+                    if registers == (count_register, count_register, count_register):
+                        cinc_indices.append(index)
+                if len(cinc_indices) != 1:
+                    continue
+
+                for index in expected:
+                    candidate[index] = stock[index]
+                evidence.append(
+                    {
+                        "kind": "boolean_count_pair_reordering",
+                        "load_instruction_indices": [load_index, load_index + 1],
+                        "compare_instruction_indices": [
+                            first_compare,
+                            second_compare,
+                        ],
+                        "cset_instruction_index": cset_indices[0][0],
+                        "cinc_instruction_index": cinc_indices[0],
+                        "base_register": first_base,
+                        "loaded_offsets": [first_offset * 2, second_offset * 2],
+                    }
+                )
+                matched = True
+                break
+            if matched:
+                break
+    return stock, candidate, evidence
+
+
 def non_branch_relocation_instruction_indices(path: Path) -> list[int]:
     """Return the instruction index associated with each compared relocation."""
     instruction_index = -1
@@ -799,14 +1004,33 @@ def main() -> int:
             )
         )
         (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            boolean_reordering_evidence,
+        ) = canonicalize_boolean_count_pair_reordering(
+            stock_instructions,
+            candidate_instructions,
+        )
+        (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            commutative_evidence,
+        ) = canonicalize_commutative_instruction_pairs(
+            stock_instructions_compared,
+            candidate_instructions_compared,
+        )
+        instruction_equivalences = (
+            boolean_reordering_evidence + commutative_evidence
+        )
+        (
             stock_relocations_compared,
             candidate_relocations_compared,
             relocation_equivalences,
         ) = canonicalize_stripped_lock_keys(
             stock_relocations,
             candidate_relocations,
-            stock_instructions
-            if stock_instructions == candidate_instructions
+            stock_instructions_compared
+            if stock_instructions_compared == candidate_instructions_compared
             else [],
             non_branch_relocation_instruction_indices(stock_path),
             non_branch_relocation_instruction_indices(candidate_path),
@@ -814,7 +1038,9 @@ def main() -> int:
         checks = {
             "section": stock_record.get("section") == candidate_record.get("section"),
             "symbol_size": stock_record.get("symbol_size") == candidate_record.get("symbol_size"),
-            "instructions": stock_instructions == candidate_instructions,
+            "instructions": (
+                stock_instructions_compared == candidate_instructions_compared
+            ),
             "relocations": (
                 stock_relocations_compared == candidate_relocations_compared
             ),
@@ -829,6 +1055,7 @@ def main() -> int:
                 "function": function,
                 "passed": passed,
                 "checks": checks,
+                "instruction_equivalences": instruction_equivalences,
                 "relocation_equivalences": relocation_equivalences,
                 "stock": {
                     "path": str(stock_path),

@@ -27,6 +27,18 @@ class AttestTestedDriverMicrotasksTests(unittest.TestCase):
         payload["drivers"][0]["build"]["reproducible"] = False
         self.assertFalse(MODULE.build_passed(payload))
 
+    def test_build_accepts_canonical_reproducible_result(self) -> None:
+        payload = {
+            "passed": True,
+            "reproducible": True,
+            "candidate": {"sha256": "a" * 64},
+        }
+
+        self.assertTrue(MODULE.build_passed(payload))
+        self.assertEqual(MODULE.build_candidate_sha256(payload), "a" * 64)
+        payload["reproducible"] = False
+        self.assertFalse(MODULE.build_passed(payload))
+
     def test_kcfi_index_accepts_only_passing_comparisons(self) -> None:
         report = Path("kcfi.json")
         indexed = MODULE.kcfi_functions(
@@ -89,6 +101,34 @@ class AttestTestedDriverMicrotasksTests(unittest.TestCase):
             all(task["status"] == "READY_FOR_IMPLEMENTATION" for task in normalized)
         )
         self.assertTrue(all(task["evidence"] == [] for task in normalized))
+
+    def test_scoped_reset_preserves_unselected_pass(self) -> None:
+        tasks = [
+            {
+                "id": "old",
+                "source_function": "old_fn",
+                "status": "PASS",
+                "evidence": [{"role": "test"}],
+            },
+            {
+                "id": "target",
+                "source_function": "target_fn",
+                "status": "PASS",
+                "evidence": [{"role": "stale"}],
+            },
+        ]
+
+        normalized, previous = MODULE.reset_microtask_attestations(
+            tasks,
+            selected_functions={"target_fn"},
+            preserve_unselected=True,
+        )
+
+        self.assertEqual(previous, {"old", "target"})
+        self.assertEqual(normalized[0]["status"], "PASS")
+        self.assertEqual(normalized[0]["evidence"], [{"role": "test"}])
+        self.assertEqual(normalized[1]["status"], "READY_FOR_IMPLEMENTATION")
+        self.assertEqual(normalized[1]["evidence"], [])
 
     def test_markdown_uses_the_attested_task_state(self) -> None:
         payload = {

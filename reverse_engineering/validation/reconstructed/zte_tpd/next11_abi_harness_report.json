@@ -1,0 +1,135 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer next11_abi_harness.c -o build/next11_abi_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next11_abi_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 2,
+    "esd_callback_argument": true,
+    "esd_null_true_false_and_exact_offset": true,
+    "ghost_allocation_failure_and_no_detection": true,
+    "ghost_low_and_high_threshold_selectors": true,
+    "ghost_optional_zlog_copy_notify_free_order": true,
+    "ghost_point_detail_formatting": true,
+    "ghost_single_and_multi_detection": true,
+    "hardware_paths_exercised": false,
+    "source_files": [
+      "tp_esd_check.c",
+      "tp_ghost_check.c"
+    ]
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS esd_missing_callback\nPASS esd_true_callback_and_argument\nPASS esd_false_callback\nPASS esd_exact_callback_offset\nPASS ghost_allocation_failure\nPASS ghost_no_detection\nPASS ghost_single_detection\nPASS ghost_low_threshold_selector\nPASS ghost_high_threshold_selector\nPASS ghost_multi_detection\nPASS ghost_zlog_buffer_copy\nPASS ghost_null_zlog_buffer\nPASS ghost_point_detail_output\nPASS ghost_detection_call_order\nSUMMARY 14/14 passed\n",
+      "summary": "SUMMARY 14/14 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "esd_missing_callback",
+        "esd_true_callback_and_argument",
+        "esd_false_callback",
+        "esd_exact_callback_offset",
+        "ghost_allocation_failure",
+        "ghost_no_detection",
+        "ghost_single_detection",
+        "ghost_low_threshold_selector",
+        "ghost_high_threshold_selector",
+        "ghost_multi_detection",
+        "ghost_zlog_buffer_copy",
+        "ghost_null_zlog_buffer",
+        "ghost_point_detail_output",
+        "ghost_detection_call_order"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS esd_missing_callback\nPASS esd_true_callback_and_argument\nPASS esd_false_callback\nPASS esd_exact_callback_offset\nPASS ghost_allocation_failure\nPASS ghost_no_detection\nPASS ghost_single_detection\nPASS ghost_low_threshold_selector\nPASS ghost_high_threshold_selector\nPASS ghost_multi_detection\nPASS ghost_zlog_buffer_copy\nPASS ghost_null_zlog_buffer\nPASS ghost_point_detail_output\nPASS ghost_detection_call_order\nSUMMARY 14/14 passed\n",
+      "summary": "SUMMARY 14/14 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "esd_missing_callback",
+        "esd_true_callback_and_argument",
+        "esd_false_callback",
+        "esd_exact_callback_offset",
+        "ghost_allocation_failure",
+        "ghost_no_detection",
+        "ghost_single_detection",
+        "ghost_low_threshold_selector",
+        "ghost_high_threshold_selector",
+        "ghost_multi_detection",
+        "ghost_zlog_buffer_copy",
+        "ghost_null_zlog_buffer",
+        "ghost_point_detail_output",
+        "ghost_detection_call_order"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-19T19:49:44.881553+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next11_abi_harness.c",
+      "sha256": "da1b689371b45cd4b40a11f53f8c9f13b8895b1f538e387945092033b7f92808",
+      "size": 10405
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tp_esd_check.c",
+      "sha256": "1315ee94b7fb0382ed8393fbba53f03697e246fb2939644e0e0b4706b5e9e493",
+      "size": 275
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\tp_ghost_check.c",
+      "sha256": "04ca69163f9b8d1d1f9559dff4663e3d32438c5a236751bdfc4cfe0759352ffc",
+      "size": 6245
+    }
+  ],
+  "limitations": [
+    "The harness executes both recovered sources directly with deterministic host data.",
+    "ASAN and UBSAN validate covered memory, alignment and scalar behavior, not physical touch hardware.",
+    "vmalloc, vfree, printk and ZLOG are deterministic host doubles; snprintf uses libc formatting.",
+    "Assembly, relocation, KCFI and ELF layout comparisons remain independent gates.",
+    "No ADB, fastboot, insmod, rmmod, SPI, IRQ, MMIO or firmware operation is performed."
+  ],
+  "mode": "offline_direct_source_next11_abi_host_harness_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "returncode": 0,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 14,
+    "failed": [],
+    "passed": [
+      "esd_missing_callback",
+      "esd_true_callback_and_argument",
+      "esd_false_callback",
+      "esd_exact_callback_offset",
+      "ghost_allocation_failure",
+      "ghost_no_detection",
+      "ghost_single_detection",
+      "ghost_low_threshold_selector",
+      "ghost_high_threshold_selector",
+      "ghost_multi_detection",
+      "ghost_zlog_buffer_copy",
+      "ghost_null_zlog_buffer",
+      "ghost_point_detail_output",
+      "ghost_detection_call_order"
+    ],
+    "summary": "SUMMARY 14/14 passed"
+  }
+}

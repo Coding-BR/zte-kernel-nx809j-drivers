@@ -449,22 +449,36 @@ extern void syna_ts_panel_notifier_callback(enum panel_event_notifier_tag tag, s
 extern int syna_work_charger_detect_work_status;
 
 struct point_info_struct {
-    int x;                     // offset 0
-    int y;                     // offset 4
-    unsigned char touch_major; // offset 8
-    unsigned char touch_minor; // offset 9
-    char pad1[70];             // pad to 80
-    unsigned char field_80;    // offset 80
-    char pad2[2];              // pad to 83
-    unsigned char field_83;    // offset 83
-    unsigned char field_84;    // offset 84
-    char pad3[11];             // pad to 96
-    unsigned long last_stamp;  // offset 96
-    unsigned long pad4;        // offset 104
-    unsigned long timestamp;   // offset 112
-    unsigned long duration;    // offset 120
-    struct input_dev *input;   // offset 128
+    int x;                         /* 0x00 */
+    int y;                         /* 0x04 */
+    unsigned char touch_major;     /* 0x08 */
+    unsigned char touch_minor;     /* 0x09 */
+    unsigned char reserved_000a[14];
+    int down_x;                    /* 0x18 */
+    int down_y;                    /* 0x1c */
+    unsigned char reserved_0020[4];
+    int up_x;                      /* 0x24 */
+    int up_y;                      /* 0x28 */
+    unsigned char reserved_002c[36];
+    unsigned char field_80;        /* 0x50 */
+    unsigned char reserved_0051[2];
+    unsigned char field_83;        /* 0x53 */
+    unsigned char field_84;        /* 0x54 */
+    unsigned char reserved_0055[7];
+    unsigned short ghost_count;    /* 0x5c */
+    unsigned short ghost_active;   /* 0x5e */
+    unsigned long last_stamp;      /* 0x60 */
+    unsigned long reserved_0068;   /* 0x68 */
+    unsigned long timestamp;       /* 0x70 */
+    unsigned long duration;        /* 0x78 */
+    struct input_dev *input;       /* 0x80 */
 };
+
+static_assert(offsetof(struct point_info_struct, down_x) == 0x18);
+static_assert(offsetof(struct point_info_struct, up_x) == 0x24);
+static_assert(offsetof(struct point_info_struct, ghost_count) == 0x5c);
+static_assert(offsetof(struct point_info_struct, ghost_active) == 0x5e);
+static_assert(sizeof(struct point_info_struct) == 0x88);
 extern __int64 edge_long_press_up(struct input_dev *input, int index);
 
 extern int large_area_ignore_count;
@@ -543,6 +557,8 @@ extern void ztp_probe_work(struct work_struct *work);
 extern void tpd_resume_work(struct work_struct *work);
 extern void tpd_suspend_work(struct work_struct *work);
 extern void ufp_report_lcd_state_work(struct work_struct *work);
+extern bool tp_esd_check(void);
+extern bool tp_ghost_check(void);
 extern void tp_ghost_check_work(struct work_struct *work);
 extern void ufp_single_tap_work(struct work_struct *work);
 extern void set_lcd_reset_processing(unsigned char value);

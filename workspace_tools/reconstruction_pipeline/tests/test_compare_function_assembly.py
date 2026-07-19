@@ -12,6 +12,92 @@ SPEC.loader.exec_module(MODULE)
 
 
 class NormalizedRelocationTests(unittest.TestCase):
+    def test_commutative_add_and_mul_operand_swaps_are_equivalent(self) -> None:
+        stock, candidate, evidence = (
+            MODULE.canonicalize_commutative_instruction_pairs(
+                ["0b030043", "1b047d6a"],
+                ["0b020063", "1b0b7c8a"],
+            )
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 2)
+
+    def test_shifted_add_operand_swap_is_not_equivalent(self) -> None:
+        stock, candidate, evidence = (
+            MODULE.canonicalize_commutative_instruction_pairs(
+                ["0b030443"],
+                ["0b020463"],
+            )
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_guarded_boolean_count_pair_reordering_is_equivalent(self) -> None:
+        stock_input = [
+            "79411102",
+            "79400103",
+            "79422101",
+            "79433100",
+            "79444111",
+            "79455110",
+            "7100005f",
+            "7946610f",
+            "7947710e",
+            "1a9f07e9",
+            "7100007f",
+            "7948810c",
+            "1a890529",
+        ]
+        candidate_input = list(stock_input)
+        candidate_input[0], candidate_input[1] = (
+            candidate_input[1],
+            candidate_input[0],
+        )
+        candidate_input[6], candidate_input[10] = (
+            candidate_input[10],
+            candidate_input[6],
+        )
+
+        stock, candidate, evidence = (
+            MODULE.canonicalize_boolean_count_pair_reordering(
+                stock_input,
+                candidate_input,
+            )
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+
+    def test_boolean_pair_reordering_requires_cset_cinc_accumulation(self) -> None:
+        stock_input = [
+            "79411102",
+            "79400103",
+            "7100005f",
+            "d503201f",
+            "7100007f",
+            "d503201f",
+        ]
+        candidate_input = [
+            "79400103",
+            "79411102",
+            "7100007f",
+            "d503201f",
+            "7100005f",
+            "d503201f",
+        ]
+
+        stock, candidate, evidence = (
+            MODULE.canonicalize_boolean_count_pair_reordering(
+                stock_input,
+                candidate_input,
+            )
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
     def test_kernel_printk_prefix_is_compared_as_string_content(self) -> None:
         sections = {".rodata.str1.1": b"pad\0\x013message %d\0"}
 

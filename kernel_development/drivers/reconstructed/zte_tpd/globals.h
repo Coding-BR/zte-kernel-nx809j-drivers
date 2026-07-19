@@ -1051,7 +1051,7 @@ extern uint8_t tp_ic_vendor_info_l;
 extern uint8_t ztp_algo_info_l;
 
 extern void *off_338;
-extern char point_report_info[4096];
+extern struct point_info_struct point_report_info[10];
 
 extern unsigned long syna_dev_probe__alloc_tag;
 extern unsigned long tpfwupgrade_store__alloc_tag_195;
