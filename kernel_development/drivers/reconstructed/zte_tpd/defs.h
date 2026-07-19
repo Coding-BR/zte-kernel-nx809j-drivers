@@ -297,11 +297,17 @@ extern int syna_dev_process_touch_report(unsigned char report_code,
                                          const unsigned char *payload,
                                          unsigned int length, void *context);
 extern void syna_dev_reflash_startup_work(struct work_struct *work);
-extern __int64 syna_tcm_set_dynamic_config(__int64 a1, int a2, int a3, int a4);
+extern int syna_tcm_set_dynamic_config(struct tcm_dev *tcm, u8 config_id,
+				      u16 value, unsigned int delay_ms);
+extern int syna_tcm_get_dynamic_config(struct tcm_dev *tcm, u8 config_id,
+				      u16 *value, unsigned int delay_ms);
+extern int syna_tcm_enable_report(struct tcm_dev *tcm, u8 report_code,
+				  bool enable, unsigned int delay_ms);
 extern __int64 syna_tcm_do_fw_update(__int64 a1, __int64 a2, __int64 a3, unsigned int a4, char a5);
 extern __int64 syna_tcm_detect_device(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
-extern __int64 syna_tcm_switch_fw_mode(__int64 a1, int a2, unsigned int a3);
+extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
+				   unsigned int delay_ms);
 extern __int64 syna_dev_set_up_input_device(__int64 a1);
 extern int syna_tcm_get_boot_info(struct tcm_dev *tcm,
                                   struct tcm_boot_info *boot_info,
@@ -412,7 +418,8 @@ extern int syna_cdev_process_reports(unsigned char report_code,
 extern int syna_cdev_open(struct inode *inode, struct file *filp);
 extern int syna_cdev_release(struct inode *inode, struct file *filp);
 extern __int64 syna_tcm_get_event_data(__int64 a1, unsigned __int8 *a2, __int64 a3);
-extern __int64 syna_tcm_sleep(__int64 a1, char a2, __int64 a3);
+extern int syna_tcm_sleep(struct tcm_dev *tcm, bool enable,
+			  unsigned int delay_ms);
 extern __int64 syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);
 extern __int64 tpd_touch_release(__int64 result, unsigned __int16 a2, int a3);
 struct ufp_tp_ops_struct {

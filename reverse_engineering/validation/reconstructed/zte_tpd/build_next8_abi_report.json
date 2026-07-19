@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T16:18:33Z",
+  "mode": "offline_clean_reproducible_next8_abi",
+  "status": "static_verified_next8_abi_scoped",
+  "driver": "zte_tpd",
+  "stock": {
+    "path": "runs/NX809J-20260711T011653Z/01_acquisition/modules/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate": {
+    "path": "validation/audit_work_kcfi_next8/zte_tpd/zte_tpd.ko",
+    "sha256": "74c0172942814761020d96acd38fa144827fd192186cea4fb601f2df67080112",
+    "size": 19919304
+  },
+  "build": {
+    "passed": true,
+    "reproducible": true,
+    "clean_cycles": 2,
+    "first_build": {
+      "returncode": 0,
+      "sha256": "74c0172942814761020d96acd38fa144827fd192186cea4fb601f2df67080112",
+      "size": 19919304,
+      "duration_seconds": 124.654,
+      "log_sha256": "a6b0b9d9dd866759ffcf1cf7b10029438cbe8136d1b5c26ace3f7381f2973df5"
+    },
+    "second_build": {
+      "returncode": 0,
+      "sha256": "74c0172942814761020d96acd38fa144827fd192186cea4fb601f2df67080112",
+      "size": 19919304,
+      "duration_seconds": 115.326,
+      "log_sha256": "a6b0b9d9dd866759ffcf1cf7b10029438cbe8136d1b5c26ace3f7381f2973df5"
+    },
+    "container": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225 / Clang 19.0.1",
+    "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
+    "environment_warnings": []
+  },
+  "source_sha256": {
+    "defs.h": "80311881b20f83fafbef09f1695ed2fd1402f97202578c34461a0148d59e7c58",
+    "zte_tpd_tcm_layout.h": "44ef439f51b2d381415267b13f7c5be8f81979f9713d8a6cb012c26fec8b2b40",
+    "syna_tcm_sleep.c": "abce9e3c4e702ab4637b37041a22bfd0736d09a9e5379deb8ba39d2f3efcb6b9",
+    "syna_tcm_switch_fw_mode.c": "c6cc00fe2b4ec3230208da9c1b5268a1f40b4ee8e93f6d742b57eddd08572924",
+    "syna_tcm_enable_report.c": "5b2968693ea1c6a11a60ad312b6d14cac6ad3d925eb89e5408524f95791cd225",
+    "syna_tcm_get_dynamic_config.c": "5e6b7df38d4b6be25608d8ac34f51124d9fdd9a51f8bd95eb58d73b1ff3486a0",
+    "syna_tcm_set_dynamic_config.c": "a6b72640c99355286184037d269e1ab726e6bc776aec61b7c3095c4e8a406cbc",
+    "probes/layout_probe.c": "383dae81cccdaf0ea63a8135f47bc95218b8c37628a3a56345f5ebadba88ca50"
+  },
+  "notes": [
+    "Two independent clean module builds returned code 0 and produced identical bytes, size, SHA-256 and build-log SHA-256.",
+    "Neither canonical clean cycle emitted a warning or clock-skew diagnostic.",
+    "The scoped repository, curated and audit-tree source copies are byte-identical.",
+    "The public signatures are tied to four independently compiled KCFI oracles; sleep and switch_fw_mode intentionally share one exact contract.",
+    "The application and bootloader helpers are static source units inlined into switch_fw_mode; the final public function is instruction- and relocation-identical to stock.",
+    "This report proves compilation and reproducibility only; hardware behavior and total-driver semantic equivalence remain separate gates."
+  ]
+}

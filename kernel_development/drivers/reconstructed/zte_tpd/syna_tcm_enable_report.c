@@ -1,59 +1,37 @@
-__int64 __fastcall syna_tcm_enable_report(__int64 a1, __int64 a2, __int64 a3, int a4)
+int syna_tcm_enable_report(struct tcm_dev *tcm, u8 report_code,
+			   bool enable, unsigned int delay_ms)
 {
-  char v4; // w19
-  __int64 v5; // x2
-  __int64 (*v6)(__int64, unsigned char, unsigned char *, unsigned int, unsigned char *, int); // x9
-  unsigned __int8 v7; // w21
-  __int64 result; // x0
-  unsigned int v9; // w19
-  __int64 v10; // x21
+	u8 command;
+	u8 payload = report_code;
+	int retval;
 
-  _ReadStatusReg(SP_EL0);
-  if ( a1 )
-  {
-    v4 = a3;
-    v5 = *(unsigned __int8 *)(a1 + 9);
-    if ( (_DWORD)v5 == 1 )
-    {
-      int delay = a4;
-      if ( !a4 )
-      {
-        if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) == 0 )
-        {
-          printk(unk_3BA3F, "syna_tcm_enable_report", v5);
-          delay = *(_DWORD *)(a1 + 524);
-        }
-        else
-        {
-          delay = 0;
-        }
-      }
-      v6 = *(__int64 (**)(__int64, unsigned char, unsigned char *, unsigned int, unsigned char *, int))(a1 + 920);
-      if ( (v4 & 1) != 0 )
-        v7 = 5;
-      else
-        v7 = 6;
-      /* CFI check removed */
-      unsigned char payload = a2;
-      result = v6(a1, v7, &payload, 1, 0, delay);
-      if ( (result & 0x80000000) != 0 )
-      {
-        v9 = result;
-        printk(unk_39ED3, "syna_tcm_enable_report", v7);
-        result = v9;
-      }
-    }
-    else
-    {
-      printk(unk_33E1E, "syna_tcm_enable_report", v5);
-      result = 4294967055LL;
-    }
-  }
-  else
-  {
-    printk(unk_3365A, "syna_tcm_enable_report", a3);
-    result = 4294967055LL;
-  }
-  _ReadStatusReg(SP_EL0);
-  return result;
+	if (!tcm) {
+		printk("\x01" "3[error] %s: Invalid tcm device handle\n",
+		       "syna_tcm_enable_report");
+		return -241;
+	}
+	if (tcm->firmware_mode != 0x01) {
+		printk("\x01" "3[error] %s: Device is not in application fw mode, mode: %x\n",
+		       "syna_tcm_enable_report", tcm->firmware_mode);
+		return -241;
+	}
+
+	if (!delay_ms) {
+		if (!(tcm->transport->flags & 0x01)) {
+			delay_ms = tcm->command_delay_ms;
+			printk("\x01" "5[info ] %s: No support of IRQ control, use polling mode instead\n",
+			       "syna_tcm_enable_report");
+		} else {
+			delay_ms = 0;
+		}
+	}
+
+	command = enable ? 0x05 : 0x06;
+	retval = tcm->write_message(tcm, command, &payload, 1, NULL, delay_ms);
+	if (retval < 0)
+		printk("\x01" "3[error] %s: Fail to send command 0x%02x to %s 0x%02x report\n",
+		       "syna_tcm_enable_report", command,
+		       enable ? "enable" : "disable", payload);
+
+	return retval;
 }

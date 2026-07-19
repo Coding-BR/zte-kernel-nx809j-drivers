@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-19T16:18:33Z",
+  "driver": "zte_tpd",
+  "scope": "next8_abi_group",
+  "status": "PASS_SCOPED_ABI_LAYOUT_BEHAVIOR_ASSEMBLY_OFFLINE",
+  "global_manifest_updated": false,
+  "candidate_sha256": "74c0172942814761020d96acd38fa144827fd192186cea4fb601f2df67080112",
+  "tasks": [
+    {
+      "id": "285_syna_tcm_sleep",
+      "function": "syna_tcm_sleep",
+      "signature": "int (struct tcm_dev *, bool, unsigned int)",
+      "kcfi": "0xdad41fc4",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "sleep and wake commands, IRQ and polling delay selection, explicit timeout and transport failure covered offline"
+    },
+    {
+      "id": "276_syna_tcm_switch_fw_mode",
+      "function": "syna_tcm_switch_fw_mode",
+      "signature": "int (struct tcm_dev *, u8, unsigned int)",
+      "kcfi": "0xdad41fc4",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "application and bootloader transitions, already-active paths, timeout clamp, no-ATTN fallback, final-mode checks, errors and max-RW callback covered offline"
+    },
+    {
+      "id": "274_syna_tcm_enable_report",
+      "function": "syna_tcm_enable_report",
+      "signature": "int (struct tcm_dev *, u8, bool, unsigned int)",
+      "kcfi": "0xd6e30d13",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "application-mode gate, enable and disable commands, one-byte report payload, IRQ and polling paths and transport errors covered offline"
+    },
+    {
+      "id": "281_syna_tcm_get_dynamic_config",
+      "function": "syna_tcm_get_dynamic_config",
+      "signature": "int (struct tcm_dev *, u8, u16 *, unsigned int)",
+      "kcfi": "0x56ccd541",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "application-mode gate, command and field payload, little-endian value recovery, short response, polling and transport errors covered offline"
+    },
+    {
+      "id": "282_syna_tcm_set_dynamic_config",
+      "function": "syna_tcm_set_dynamic_config",
+      "signature": "int (struct tcm_dev *, u8, u16, unsigned int)",
+      "kcfi": "0xc1b5ec9e",
+      "direct_test": true,
+      "assembly_strict": true,
+      "semantic_scope": "application-mode gate, three-byte field/value payload, little-endian encoding, polling and transport errors covered offline"
+    }
+  ],
+  "evidence": {
+    "build": {
+      "path": "build_next8_abi_report.json",
+      "sha256": "79cc637a0bc4f29153b8b9f04ea3663288e4abd4830006b1c238cca55b89a94a",
+      "clean_cycles": 2,
+      "reproducible": true
+    },
+    "kcfi": {
+      "path": "kcfi_full_surface_next8_abi_final.json",
+      "sha256": "bafea015545441552a2441b4d15acbfec66fcb592de8b6161a90617081d10ffe",
+      "scoped_comparison_path": "kcfi_next8_abi_exact.json",
+      "scoped_comparison_sha256": "cbe8285ab2d62a648a5f53b0601772d7de3df05d49afd84a7e600b4c09256406",
+      "candidate_oracle_path": "signature_oracles/candidate_next8_abi_final_kcfi.json",
+      "candidate_oracle_sha256": "e7058717160d5032832d5b4681e405d50026579563538f05fcf72ed690bece95",
+      "matched": 285,
+      "stock_records": 322,
+      "scoped_functions_passed": 5
+    },
+    "test": {
+      "path": "next8_abi_harness_report.json",
+      "sha256": "fd537aaede8427a7f2b951691948a5d2c52d10db7c23d4a6b9658f468e8673f3",
+      "repetitions": 2,
+      "tests_per_repetition": 29,
+      "sanitizers": [
+        "ASAN",
+        "UBSAN"
+      ]
+    },
+    "assembly": {
+      "path": "assembly_comparison_next8_abi_final.json",
+      "sha256": "b8fae68445b08cc9a62ce0caafa9b3b5a216dd7f4bb8dd2f4521b2b8d1e5aad7",
+      "manifest_path": "candidate_assembly_next8_abi_final/manifest.json",
+      "manifest_sha256": "dd14429183722a1c8e5e0513cec9d248f5f5650e4691a6bcd211b5a0cfdcd0b1",
+      "passed": true,
+      "strict_passed_functions": 5,
+      "strict_checked_functions": 5
+    },
+    "layout": {
+      "header_probe_path": "header_layout_probe_next8_abi.json",
+      "header_probe_sha256": "9dbae7ffd39255aaba4c0cb09904233adf200868e266ebba503f18cda570b278",
+      "abi_path": "abi_validation_next8_abi.json",
+      "abi_sha256": "6c80563bb519addab35335624115faf27be4beac7ebe7dac916d71f8afdfd24b",
+      "passed": true
+    },
+    "traceability": {
+      "path": "reconstruction_map_next8_abi.json",
+      "sha256": "97986edeadab8db88191173d3550fd2386470e8f02ae3237aa082e1f91765fa8",
+      "mapped_functions": 367
+    },
+    "validation_document": {
+      "path": "NEXT8_ABI_VALIDATION_20260719.md",
+      "sha256": "3b99d41c1b6bc8220a6ada583289fedf5740cb24e8f9d26a04ebc9dbcf4fd782"
+    }
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 285 of 322 stock records.",
+    "The harness is offline and uses deterministic host data; it does not prove physical touch hardware behavior.",
+    "No smartphone validation was executed in this checkpoint.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "The global manifest was not updated because this is a scoped five-function checkpoint."
+  ]
+}
