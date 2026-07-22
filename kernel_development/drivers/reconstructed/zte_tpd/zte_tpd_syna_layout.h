@@ -56,7 +56,8 @@ struct syna_delayed_work_layout {
  */
 struct syna_tcm {
 	struct tcm_dev *tcm_dev;
-	u8 reserved_0008[0x268];
+	struct platform_device *pdev;
+	u8 reserved_0010[0x260];
 	struct syna_hw_interface *hw_if;
 	u8 reserved_0278[0x30];
 	struct syna_event_data_buffer event_data;
@@ -111,6 +112,7 @@ static_assert(offsetof(struct syna_hw_interface, hw_reset) == 0x188);
 static_assert(sizeof(struct syna_hw_interface) == 0x190);
 
 static_assert(offsetof(struct syna_tcm, tcm_dev) == 0x00);
+static_assert(offsetof(struct syna_tcm, pdev) == 0x08);
 static_assert(offsetof(struct syna_tcm, hw_if) == 0x270);
 static_assert(offsetof(struct syna_tcm, event_data) == 0x2a8);
 static_assert(offsetof(struct syna_tcm, isr_pid) == 0x2f0);

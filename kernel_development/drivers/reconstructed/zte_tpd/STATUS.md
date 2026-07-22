@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `9a168340ee6147c6547276f1c63a442ecc9302ec34180259b4740286078b85b7`
-- **Candidato:** `24076520` bytes
+- **Candidato SHA-256:** `647340ba7ca988b83d3f18f20013bc8c0726e765b0a1da83724aeafba9c84ad8`
+- **Candidato:** `24262064` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,41 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `154/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `297/322`;
+- O6: `155/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `299/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next15 - Orquestracao de Reflash
+
+O Next15 fechou `syna_dev_do_reflash` com a assinatura KCFI
+`int (struct syna_tcm *, bool)`, type ID `0x796eea76`. O oraculo local
+compilou `882` declaracoes; somente `struct syna_tcm *`, retorno inteiro de
+32 bits e um segundo argumento de um byte produziram o ID stock. Os dois
+chamadores locais, os valores `0/1` e o uso como bit de forca sustentam
+`bool` como declaracao canonica.
+
+O corpo candidato coincide com o stock em `260` bytes, `65` instrucoes,
+secao e todas as relocations. Uma importacao limpa no Ghidra 12.1.2 tambem
+coincide em C normalizado e na forma ordenada dos `190` registros P-Code. O
+harness direto passou `10/10` em duas execucoes ASAN/UBSAN, cobrindo
+`request_firmware`, propagacao de erros, update, logs exatos, truncamento de
+tamanho, bit `force` e `release_firmware` na ordem stock.
+
+Dois builds limpos produziram o mesmo modulo de `24.262.064` bytes, SHA-256
+`647340ba7ca988b83d3f18f20013bc8c0726e765b0a1da83724aeafba9c84ad8`.
+O KCFI global subiu para `299/322` (`92,86%`) e a microtarefa
+`144_syna_dev_do_reflash` foi promovida: `155 PASS / 212 READY`.
+
+A assinatura direta de `syna_tcm_do_fw_update` tambem foi recuperada como
+`int (struct tcm_dev *, const unsigned char *, unsigned int, unsigned int,
+bool)`, KCFI `0xb9434444`. Esta dependencia permanece READY: seu corpo ainda
+tem `860` bytes contra `824` stock e nao recebeu harness/assembly estritos
+proprios.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT15_REFLASH_VALIDATION_20260722.md`.
 
 ## Checkpoint Next14 - Extracao de Bits do Touch Report
 
@@ -319,22 +349,24 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `9a168340ee6147c6547276f1c63a442ecc9302ec34180259b4740286078b85b7`.
+  `647340ba7ca988b83d3f18f20013bc8c0726e765b0a1da83724aeafba9c84ad8`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `297/322` matches, `25` divergencias, zero registro
+- Superficie KCFI integral: `299/322` matches, `23` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
 - Harnesses do Next13: `24/24` casos por repeticao, duas repeticoes ASAN/UBSAN.
 - Harness Next14: `10/10` casos por repeticao, duas repeticoes ASAN/UBSAN,
   incluindo `1.024` combinacoes validas por execucao.
-- Microtarefas: `154 PASS`, `213 READY`, uma promocao nova no Next14 e zero
+- Harness Next15: `10/10` casos por repeticao, duas repeticoes ASAN/UBSAN,
+  cobrindo o ciclo request/update/log/release.
+- Microtarefas: `155 PASS`, `212 READY`, uma promocao nova no Next15 e zero
   PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
-- Suite focal do Next14 e ferramentas relacionadas: `48/48 PASS`.
+- Suite focal das ferramentas relacionadas: `48/48 PASS`.
 - Suite global do pipeline: `136/136 PASS`.
 - O hash obsoleto do config userdebug em `environment.lock.json` foi corrigido
   contra o arquivo rastreado e a auditoria de observabilidade voltou a PASS.
@@ -378,6 +410,7 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 - `../../validation/zte_tpd/signature_oracles/tcm_lifecycle_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT15_REFLASH_VALIDATION_20260722.md`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT14_TOUCH_DATA_VALIDATION_20260722.md`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT13_FIRMWARE_LIFECYCLE_VALIDATION_20260719.md`
 

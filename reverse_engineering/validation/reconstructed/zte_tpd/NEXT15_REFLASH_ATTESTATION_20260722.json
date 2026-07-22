@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-22T22:44:00Z",
+  "driver": "zte_tpd",
+  "scope": "next15_syna_dev_do_reflash",
+  "status": "PASS_SCOPED_SIGNATURE_BEHAVIOR_ASSEMBLY_GHIDRA_OFFLINE",
+  "global_manifest_updated": true,
+  "stock": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "function_entry": "0x001113fc"
+  },
+  "candidate": {
+    "sha256": "647340ba7ca988b83d3f18f20013bc8c0726e765b0a1da83724aeafba9c84ad8",
+    "size": 24262064
+  },
+  "task": {
+    "id": "144_syna_dev_do_reflash",
+    "function": "syna_dev_do_reflash",
+    "signature": "int (struct syna_tcm *, bool)",
+    "kcfi": "0x796eea76",
+    "source_path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_do_reflash.c",
+    "source_sha256": "85c775bf10c8cde94a284039adadeb975a420fff35bf8611e190a0e5df74d63e",
+    "stock_body_bytes": 260,
+    "stock_instruction_count": 65,
+    "stock_pcode_records": 190
+  },
+  "dependency_abi": {
+    "function": "syna_tcm_do_fw_update",
+    "status": "KCFI_SIGNATURE_ONLY_NOT_PROMOTED",
+    "signature": "int (struct tcm_dev *, const unsigned char *, unsigned int, unsigned int, bool)",
+    "kcfi": "0xb9434444",
+    "source_path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_do_fw_update.c",
+    "source_sha256": "e6ca35f1a5bcc10e893cdd15b14bd6fc071fac86fc35bcf998dc63e68f4f41cd",
+    "stock_body_bytes": 824,
+    "candidate_body_bytes": 860,
+    "microtask_promoted": false
+  },
+  "recovered_layout": {
+    "syna_tcm_tcm_dev_offset": "0x00",
+    "syna_tcm_platform_device_offset": "0x08",
+    "syna_tcm_hw_if_offset": "0x270",
+    "syna_tcm_size": "0x580",
+    "request_firmware_device_expression": "tcm->pdev->dev.parent",
+    "platform_device_parent_load_offset": "0x70"
+  },
+  "recovered_contract": {
+    "null_tcm_return": -22,
+    "firmware_name": "syna_firmware.img",
+    "request_error": "logged_and_propagated_without_release",
+    "update_error": "logged_then_mode_logged_and_firmware_released",
+    "image_size_width": 32,
+    "flash_area": 0,
+    "force": "least_significant_boolean_bit",
+    "return": "syna_tcm_do_fw_update_result"
+  },
+  "supporting_source_sha256": {
+    "defs.h": "dfeee50c8402147cb488688cf6505e768902100f681c33d45f11b1bdd1196463",
+    "zte_tpd_syna_layout.h": "816e2f7041e49fde902071f897ca139c257591abef7ab83e8f5b4be4edf83479",
+    "sub_156F8.c": "8a08f101d2ff75b49d12e424eac5c8d9c9831cb426860e809ce23fce572f2d1e",
+    "sub_2AAAC.c": "18694be80254a1588facff355749518f92f4ada72e1a71903c6207c26c263a45"
+  },
+  "evidence": {
+    "build": {
+      "path": "build_next15_reflash_probe3_report.json",
+      "sha256": "b19ffb3ec6e674083c79acc13dcaeb4e447e224ccab4512c004a3f68f80a7423",
+      "clean_cycles": 2,
+      "cycle_durations_seconds": [93.984, 82.047],
+      "reproducible": true,
+      "source_tree_files": 521,
+      "source_tree_manifest_sha256": "6e1dbb320f04a9afa067e778cca3bd58b492e8609f4bb46ccbe28b9cdd7ca1de",
+      "container": "nubia-sm8850-kernel-builder:latest",
+      "toolchain": "clang-r536225"
+    },
+    "signature_oracles": [
+      {
+        "function": "syna_dev_do_reflash",
+        "config_path": "signature_oracles/syna_dev_do_reflash_next15_config.json",
+        "config_sha256": "c60f1e762a40652541d0524ce28ae99cd04b4c95f4bb150bd4e6295b61d658f2",
+        "report_path": "signature_oracles/syna_dev_do_reflash_next15_report.json",
+        "report_sha256": "17fa9318f5db7b93eaf431a6a23df2edd5fd9d4b5f93d5e091381fdead9195e4",
+        "candidates_evaluated": 882,
+        "matching_alias_variants": 10
+      },
+      {
+        "function": "syna_tcm_do_fw_update",
+        "config_path": "signature_oracles/syna_tcm_do_fw_update_next15_dependency_config.json",
+        "config_sha256": "3fa53e16d3a7127baf733913617b60d5671295be7ab74c24020c55712b5b5e35",
+        "report_path": "signature_oracles/syna_tcm_do_fw_update_next15_dependency_report.json",
+        "report_sha256": "9ece5e470b704374ccb57233d6f1bc693df4f4c555e105d5ca02293b4401d425",
+        "candidates_evaluated": 20160,
+        "canonical_signature_recovered": true
+      }
+    ],
+    "kcfi": {
+      "candidate_path": "kcfi_candidate_next15_reflash_final.json",
+      "candidate_sha256": "83fa21a49a10834865b5f950caf01e3de344df9465ee0ed609c82bfde4d99782",
+      "scoped_path": "kcfi_next15_reflash_dependency_exact.json",
+      "scoped_sha256": "d9336bcd59e382fd3edb2c9a381413fd1c216ddae3dcff9831acf4b3e7d00d05",
+      "scoped_passed": true,
+      "scoped_functions": 2,
+      "global_path": "kcfi_full_surface_next15_reflash_final.json",
+      "global_sha256": "5e88adb35783955667050ae60974d784826e591285f8434c587c905c6f92ec43",
+      "stock_records": 322,
+      "matched": 299,
+      "mismatched": 23,
+      "missing_candidate": 0,
+      "match_percent": 92.86
+    },
+    "harness": {
+      "source_path": "harness/next15_reflash_harness.c",
+      "source_sha256": "bcf1166f023c6b42364e451f911f6655611845fd428eb284044a8100f7f2d86f",
+      "report_path": "next15_reflash_harness_report.json",
+      "report_sha256": "ad468ca6156b539434c162ce11ca870b9f62385bd98edd51da82dfb235121a4a",
+      "passed": true,
+      "repetitions": 2,
+      "tests_per_repetition": 10,
+      "sanitizers": ["ASAN", "UBSAN"]
+    },
+    "assembly": {
+      "path": "assembly_comparison_next15_reflash_probe3.json",
+      "sha256": "59bf67f4e6ef8021c47d71e940107a526558e87890768aa9e33d3841cf394216",
+      "manifest_path": "candidate_assembly_next15_reflash_probe3/manifest.json",
+      "manifest_sha256": "d9dd78c8a4a93dceb0cb455df7d3e5a9f92c53b518f5d1b4ddcfcc56354a68a4",
+      "passed": true,
+      "strict_checked_functions": 1,
+      "instruction_equivalences": 0,
+      "checks": ["instructions", "relocations", "section", "symbol_size"]
+    },
+    "ghidra": {
+      "path": "ghidra_semantic_comparison_next15_reflash_probe3.json",
+      "sha256": "e0d5caefb5194b8967642559c6f3875358831b10d9b02afc91a8652f4cd32518",
+      "export_manifest_path": "ghidra_candidate_next15_reflash_probe3/manifest.json",
+      "export_manifest_sha256": "147c60c9fc32a717bdffe5fe228d4e925e6d02b7bca8bb809759b1afa7b401e0",
+      "passed": true,
+      "functions": 1,
+      "body_bytes": 260,
+      "pcode_records": 190,
+      "normalized_decompiled_sha256": "ef6436d3dea1a1836139545d1204bf5cbfe39de33dfc6e4693f8e2e001cac8e2"
+    },
+    "traceability": {
+      "path": "reconstruction_map_next15_reflash.json",
+      "sha256": "323f56f1c2b831e89dd7326a934b8b64235ce2228e1f891aefc81bf552f6c785",
+      "mapped_functions": 367
+    },
+    "microtasks": {
+      "path": "microtask_attestation_next15_reflash.json",
+      "sha256": "38373721f2e7cc055e505f9d9096689b8e52cc7680342d090ab584cc5cf4c615",
+      "manifest_sha256": "df0ee3a539085ebc93ccafc7d07cd2cc9f90e6977241f13fc7831027362717d0",
+      "checkpoint_baseline_pass": 154,
+      "current_pass": 155,
+      "new_pass": 1,
+      "demoted_stale_pass": 0,
+      "remaining": 212,
+      "task_count": 367
+    },
+    "validation_document": {
+      "path": "NEXT15_REFLASH_VALIDATION_20260722.md",
+      "sha256": "4aa363265d1f26a15a2135a72747bb7931826f969c24402ebd816aeacc0c9da1"
+    }
+  },
+  "test_suites": {
+    "focused": {"passed": 48, "failed": 0},
+    "broad": {"passed": 136, "failed": 0, "errors": 0}
+  },
+  "limitations": [
+    "The global KCFI surface remains incomplete at 299 of 322 stock records.",
+    "The global microtask manifest remains incomplete with 155 PASS and 212 open tasks.",
+    "syna_tcm_do_fw_update has an exact KCFI signature but its body, assembly and direct behavior are not attested.",
+    "The host harness proves orchestration with stubs and does not parse or flash a physical firmware image.",
+    "Independent review remains NOT_PERFORMED and hardware validation remains DEFERRED.",
+    "No smartphone, ADB, fastboot, module loading, SPI, IRQ, MMIO or flash write was executed in this checkpoint."
+  ]
+}

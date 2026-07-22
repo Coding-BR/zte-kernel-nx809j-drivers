@@ -14,7 +14,7 @@ void syna_dev_reflash_startup_work(struct work_struct *work)
     return;
   }
   pm_stay_awake(*(_QWORD *)(a1 - 960) + 16LL);
-  if ( (syna_dev_do_reflash((__int64 *)(a1 - 968), 0) & 0x80000000) == 0 )
+  if ( (syna_dev_do_reflash((struct syna_tcm *)(a1 - 968), false) & 0x80000000) == 0 )
   {
     if ( (syna_dev_set_up_app_fw((struct syna_tcm *)(a1 - 968)) & 0x80000000) != 0 )
     {

@@ -1,0 +1,112 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer next15_reflash_harness.c -o build/next15_reflash_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next15_reflash_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 1,
+    "exact_diagnostic_strings": true,
+    "exact_function_pointer_type": true,
+    "firmware_mode_formatting": true,
+    "force_bit_and_size_truncation": true,
+    "hardware_paths_exercised": false,
+    "null_input_and_request_failure": true,
+    "request_update_release_order": true,
+    "update_error_and_positive_return_propagation": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS null_tcm\nPASS request_arguments\nPASS request_failure\nPASS successful_update_false\nPASS update_failure\nPASS force_true\nPASS firmware_size_truncation\nPASS positive_update_return\nPASS mode_format\nSUMMARY 10/10 passed\n",
+      "summary": "SUMMARY 10/10 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "null_tcm",
+        "request_arguments",
+        "request_failure",
+        "successful_update_false",
+        "update_failure",
+        "force_true",
+        "firmware_size_truncation",
+        "positive_update_return",
+        "mode_format"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS null_tcm\nPASS request_arguments\nPASS request_failure\nPASS successful_update_false\nPASS update_failure\nPASS force_true\nPASS firmware_size_truncation\nPASS positive_update_return\nPASS mode_format\nSUMMARY 10/10 passed\n",
+      "summary": "SUMMARY 10/10 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "null_tcm",
+        "request_arguments",
+        "request_failure",
+        "successful_update_false",
+        "update_failure",
+        "force_true",
+        "firmware_size_truncation",
+        "positive_update_return",
+        "mode_format"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-22T22:30:17.354325+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next15_reflash_harness.c",
+      "sha256": "bcf1166f023c6b42364e451f911f6655611845fd428eb284044a8100f7f2d86f",
+      "size": 7692
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_dev_do_reflash.c",
+      "sha256": "85c775bf10c8cde94a284039adadeb975a420fff35bf8611e190a0e5df74d63e",
+      "size": 812
+    }
+  ],
+  "limitations": [
+    "The harness uses controlled firmware and update stubs and proves the recovered orchestration contract only.",
+    "It does not parse a real firmware image or execute flash commands.",
+    "Assembly, relocations, KCFI, Ghidra P-Code and full-module integration remain independent gates.",
+    "No smartphone, ADB, fastboot, module loading, SPI, IRQ, MMIO or flash write is performed."
+  ],
+  "mode": "offline_direct_source_next15_reflash_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 10,
+    "failed": [],
+    "passed": [
+      "signature_contract",
+      "null_tcm",
+      "request_arguments",
+      "request_failure",
+      "successful_update_false",
+      "update_failure",
+      "force_true",
+      "firmware_size_truncation",
+      "positive_update_return",
+      "mode_format"
+    ],
+    "summary": "SUMMARY 10/10 passed"
+  }
+}

@@ -305,7 +305,12 @@ extern int syna_tcm_get_dynamic_config(struct tcm_dev *tcm, u8 config_id,
 				      u16 *value, unsigned int delay_ms);
 extern int syna_tcm_enable_report(struct tcm_dev *tcm, u8 report_code,
 				  bool enable, unsigned int delay_ms);
-extern __int64 syna_tcm_do_fw_update(__int64 a1, __int64 a2, __int64 a3, unsigned int a4, char a5);
+extern int syna_tcm_do_fw_update(struct tcm_dev *tcm_dev,
+				 const unsigned char *image,
+				 unsigned int image_size,
+				 unsigned int flash_area,
+				 bool force_reflash);
+extern int syna_dev_do_reflash(struct syna_tcm *tcm, bool force);
 extern __int64 syna_tcm_detect_device(__int64 a1, char a2, __int64 a3);
 extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
 extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,

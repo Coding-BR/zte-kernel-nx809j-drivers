@@ -1,5 +1,14 @@
-__int64 __fastcall syna_tcm_do_fw_update(__int64 a1, __int64 a2, __int64 a3, unsigned int a4, char a5)
+int syna_tcm_do_fw_update(struct tcm_dev *tcm_dev,
+                          const unsigned char *image,
+                          unsigned int image_size,
+                          unsigned int flash_area,
+                          bool force_reflash)
 {
+  __int64 a1 = (__int64)tcm_dev;
+  __int64 a2 = (__int64)image;
+  __int64 a3 = image_size;
+  unsigned int a4 = flash_area;
+  char a5 = force_reflash;
   void *v5; // x0
   unsigned int v7; // w22
   __int64 v9; // x24

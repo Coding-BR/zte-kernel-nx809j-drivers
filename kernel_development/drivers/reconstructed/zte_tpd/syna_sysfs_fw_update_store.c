@@ -27,7 +27,7 @@ ssize_t syna_sysfs_fw_update_store(struct kobject *kobj,
     }
     else
     {
-      v7 = syna_dev_do_reflash((__int64 *)v6, 1);
+      v7 = syna_dev_do_reflash((struct syna_tcm *)v6, true);
       if ( v7 < 0 )
       {
         LODWORD(a4) = v7;

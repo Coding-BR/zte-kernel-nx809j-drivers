@@ -1,39 +1,29 @@
-__int64 __fastcall syna_dev_do_reflash(__int64 *a1, char a2)
+int syna_dev_do_reflash(struct syna_tcm *tcm, bool force)
 {
-  __int64 result; // x0
-  __int64 v3; // x19
-  unsigned int v5; // w0
-  unsigned int v6; // w19
-  __int64 v7; // x2
-  unsigned int v8; // w20
-  _QWORD v9[2]; // [xsp+0h] [xbp-10h] BYREF
+  const struct firmware *firmware = NULL;
+  struct tcm_dev *tcm_dev;
+  int retval;
 
-  v9[1] = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v9[0] = 0;
-  if ( a1 )
-  {
-    v3 = *a1;
-    v5 = request_firmware(v9, "syna_firmware.img", *(_QWORD *)(a1[1] + 112));
-    if ( (v5 & 0x80000000) != 0 )
-    {
-      v6 = v5;
-      printk(unk_37594, "syna_dev_do_reflash", "syna_firmware.img");
-      result = v6;
-    }
-    else
-    {
-      v8 = syna_tcm_do_fw_update(v3, *(_QWORD *)(v9[0] + 8LL), *(unsigned int *)v9[0], 0, a2 & 1);
-      if ( (v8 & 0x80000000) != 0 )
-        printk(unk_3240E, "syna_dev_do_reflash", v7);
-      printk(unk_346D8, "syna_dev_do_reflash", *(unsigned __int8 *)(v3 + 9));
-      release_firmware(v9[0]);
-      result = v8;
-    }
+  if (!tcm)
+    return -EINVAL;
+
+  tcm_dev = tcm->tcm_dev;
+  retval = request_firmware(&firmware, "syna_firmware.img",
+                            tcm->pdev->dev.parent);
+  if (retval < 0) {
+    printk("\0013[error] %s: Fail to request %s\n", __func__,
+           "syna_firmware.img");
+    return retval;
   }
-  else
-  {
-    result = 4294967274LL;
-  }
-  _ReadStatusReg(SP_EL0);
-  return result;
+
+  retval = syna_tcm_do_fw_update(tcm_dev, firmware->data,
+                                 firmware->size, 0, force);
+  if (retval < 0)
+    printk("\0013[error] %s: Fail to do reflash\n", __func__);
+
+  printk("\0016[info ] %s: Firmware mode %02X after reflash\n", __func__,
+         tcm_dev->firmware_mode);
+  release_firmware(firmware);
+
+  return retval;
 }
