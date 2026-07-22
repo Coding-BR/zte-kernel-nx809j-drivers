@@ -1,0 +1,112 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer next14_touch_data_harness.c -o build/next14_touch_data_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next14_touch_data_harness"
+  ],
+  "coverage": {
+    "bounded_reference_cases_per_execution": 1024,
+    "direct_source_functions": 1,
+    "exact_diagnostic_strings": true,
+    "exact_function_pointer_type": true,
+    "hardware_paths_exercised": false,
+    "invalid_bit_count_and_null_input": true,
+    "out_of_bounds_zero_behavior": true,
+    "single_cross_byte_and_32_bit_reads": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS zero_bit_count\nPASS too_many_bits\nPASS null_report\nPASS out_of_bounds_zeroes_value\nPASS single_bit\nPASS cross_byte\nPASS aligned_32_bits\nPASS unaligned_32_bits\nPASS bounded_reference_matrix\nSUMMARY 10/10 passed\n",
+      "summary": "SUMMARY 10/10 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "zero_bit_count",
+        "too_many_bits",
+        "null_report",
+        "out_of_bounds_zeroes_value",
+        "single_bit",
+        "cross_byte",
+        "aligned_32_bits",
+        "unaligned_32_bits",
+        "bounded_reference_matrix"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS zero_bit_count\nPASS too_many_bits\nPASS null_report\nPASS out_of_bounds_zeroes_value\nPASS single_bit\nPASS cross_byte\nPASS aligned_32_bits\nPASS unaligned_32_bits\nPASS bounded_reference_matrix\nSUMMARY 10/10 passed\n",
+      "summary": "SUMMARY 10/10 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "zero_bit_count",
+        "too_many_bits",
+        "null_report",
+        "out_of_bounds_zeroes_value",
+        "single_bit",
+        "cross_byte",
+        "aligned_32_bits",
+        "unaligned_32_bits",
+        "bounded_reference_matrix"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-22T21:51:12.438853+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next14_touch_data_harness.c",
+      "sha256": "0c35ab9add8c710d0ed0e2ca89c6271e388b00f7fd5cf5d936500d1a86de3d35",
+      "size": 6192
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_tcm_get_touch_data.c",
+      "sha256": "d006fe384a31c458f3e8fa27c4163fa5f36f5c5574e51b17064b4d793b639b0d",
+      "size": 1426
+    }
+  ],
+  "limitations": [
+    "The harness proves the recovered pure bit-extraction contract on host memory.",
+    "The output pointer is a caller precondition because the stock function does not validate it.",
+    "Unsigned bit_offset plus bit_count overflow is retained as stock behavior and is not exercised with an invalid backing buffer.",
+    "Assembly, relocations, KCFI, Ghidra P-Code and full-module integration remain independent gates.",
+    "No smartphone, ADB, fastboot, module loading, SPI, IRQ or MMIO operation is performed."
+  ],
+  "mode": "offline_direct_source_next14_touch_data_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 10,
+    "failed": [],
+    "passed": [
+      "signature_contract",
+      "zero_bit_count",
+      "too_many_bits",
+      "null_report",
+      "out_of_bounds_zeroes_value",
+      "single_bit",
+      "cross_byte",
+      "aligned_32_bits",
+      "unaligned_32_bits",
+      "bounded_reference_matrix"
+    ],
+    "summary": "SUMMARY 10/10 passed"
+  }
+}

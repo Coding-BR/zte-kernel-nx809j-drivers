@@ -318,7 +318,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 312_syna_tcm_read_mtp_data | syna_tcm_read_mtp_data | 00127e84 | user_abi | syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data | PASS |
 | 313_syna_tcm_erase_mtp_data | syna_tcm_erase_mtp_data | 001281c8 | core_logic | syna_tcm_erase_mtp_data.c:syna_tcm_erase_mtp_data | PASS |
 | 314_syna_pal_mem_free | syna_pal_mem_free | 001284c0 | core_logic | syna_pal_mem_free.c:syna_pal_mem_free | READY_FOR_IMPLEMENTATION |
-| 315_syna_tcm_get_touch_data | syna_tcm_get_touch_data | 00128514 | core_logic | syna_tcm_get_touch_data.c:syna_tcm_get_touch_data | READY_FOR_IMPLEMENTATION |
+| 315_syna_tcm_get_touch_data | syna_tcm_get_touch_data | 00128514 | core_logic | syna_tcm_get_touch_data.c:syna_tcm_get_touch_data | PASS |
 | 316_syna_tcm_parse_touch_report | syna_tcm_parse_touch_report | 0012860c | core_logic | syna_tcm_parse_touch_report.c:syna_tcm_parse_touch_report | READY_FOR_IMPLEMENTATION |
 | 317_syna_tcm_set_touch_report_config | syna_tcm_set_touch_report_config | 0012a264 | core_logic | syna_tcm_set_touch_report_config.c:syna_tcm_set_touch_report_config | PASS |
 | 318_syna_pal_mem_cpy | syna_pal_mem_cpy | 0012a478 | core_logic | syna_pal_mem_cpy_1.c:syna_pal_mem_cpy_1 | READY_FOR_IMPLEMENTATION |

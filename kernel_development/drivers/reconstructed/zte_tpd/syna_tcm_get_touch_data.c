@@ -1,61 +1,51 @@
-__int64 __fastcall syna_tcm_get_touch_data(__int64 a1, int a2, __int64 a3, unsigned int a4, unsigned int *a5)
+int syna_tcm_get_touch_data(const unsigned char *report_data,
+                            unsigned int report_size,
+                            unsigned int bit_offset,
+                            unsigned int bit_count,
+                            unsigned int *value)
 {
-  unsigned __int64 v6; // x12
-  unsigned int v7; // w9
-  bool v8; // zf
-  unsigned int v9; // w11
-  unsigned int v10; // w9
-  unsigned int v11; // w12
-  int v12; // w15
-  int v13; // w13
-  unsigned int v14; // w14
-  char v15; // w15
+  unsigned int byte_offset;
+  unsigned int byte_value;
+  unsigned int bits_available;
+  unsigned int bits_remaining;
+  unsigned int bits_to_take;
+  unsigned int result;
 
-  if ( a4 - 33 <= 0xFFFFFFDF )
-  {
-    printk(unk_3399D, "syna_tcm_get_touch_data", a4);
-    return 4294967055LL;
+  if (bit_count == 0 || bit_count > 32) {
+    printk("\0013[error] %s: Invalid number of bits %d\n", __func__,
+           bit_count);
+    return -241;
   }
-  else if ( a1 )
-  {
-    if ( a4 + (unsigned int)a3 <= 8 * a2 )
-    {
-      v6 = (unsigned __int64)(unsigned int)a3 >> 3;
-      v7 = 8 - (a3 & 7);
-      if ( v7 >= a4 )
-        v7 = a4;
-      v9 = a4 - v7;
-      v8 = a4 == v7;
-      v10 = (*(unsigned __int8 *)(a1 + v6) >> (a3 & 7)) & (0xFFu >> (8 - v7));
-      if ( !v8 )
-      {
-        v11 = v6 + 1;
-        do
-        {
-          v12 = *(unsigned __int8 *)(a1 + v11++);
-          if ( v9 >= 8 )
-            v13 = 8;
-          else
-            v13 = v9;
-          v14 = (0xFFu >> (8 - v13)) & v12;
-          v15 = a4 - v9;
-          v9 -= v13;
-          v10 |= v14 << v15;
-        }
-        while ( v9 );
-      }
-      *a5 = v10;
-      return 0;
-    }
-    else
-    {
-      *a5 = 0;
-      return 0;
-    }
+
+  if (!report_data) {
+    printk("\0013[error] %s: Invalid report data\n", __func__);
+    return -241;
   }
-  else
-  {
-    printk(unk_37361, "syna_tcm_get_touch_data", a3);
-    return 4294967055LL;
+
+  if (bit_offset + bit_count > report_size * 8) {
+    *value = 0;
+    return 0;
   }
+
+  byte_offset = bit_offset >> 3;
+  bits_available = 8 - (bit_offset & 7);
+  byte_value = report_data[byte_offset];
+  if (bits_available > bit_count)
+    bits_available = bit_count;
+
+  result = (byte_value >> (bit_offset & 7)) &
+           (0xffU >> (8 - bits_available));
+  bits_remaining = bit_count - bits_available;
+
+  while (bits_remaining) {
+    byte_offset++;
+    bits_to_take = bits_remaining > 8 ? 8 : bits_remaining;
+    result |= (report_data[byte_offset] &
+               (0xffU >> (8 - bits_to_take)))
+              << (bit_count - bits_remaining);
+    bits_remaining -= bits_to_take;
+  }
+
+  *value = result;
+  return 0;
 }

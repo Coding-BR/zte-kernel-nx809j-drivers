@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-19
+## Estado Atual - 2026-07-22
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `328777a498b79f5cb3fb2ce2e4ce7fbe841049d9ac69faa0c66095074d2b863e`
-- **Candidato:** `24076504` bytes
+- **Candidato SHA-256:** `9a168340ee6147c6547276f1c63a442ecc9302ec34180259b4740286078b85b7`
+- **Candidato:** `24076520` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,35 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `153/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `296/322`;
+- O6: `154/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `297/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next14 - Extracao de Bits do Touch Report
+
+O Next14 fechou `syna_tcm_get_touch_data` com a assinatura KCFI
+`int (const unsigned char *, unsigned int, unsigned int, unsigned int,
+unsigned int *)`, type ID `0xfd344c7d`. O oraculo local compilou `6.400`
+declaracoes e encontrou somente a familia acima; as 32 correspondencias sao
+aliases equivalentes de `u8/u32` e `unsigned char/unsigned int`.
+
+O corpo candidato coincide com o stock em `244` bytes, `61` instrucoes,
+secao e todas as relocations. A nova importacao no Ghidra 12.1.2 tambem
+coincide em C normalizado e na forma ordenada dos `220` registros P-Code,
+sem equivalencia permissiva. O harness direto passou `10/10` em duas
+execucoes ASAN/UBSAN e comparou `1.024` combinacoes validas por execucao com
+um extrator de referencia, alem dos caminhos de erro e limites de 32 bits.
+
+Dois builds limpos e independentes produziram o mesmo modulo de `24.076.520`
+bytes, SHA-256
+`9a168340ee6147c6547276f1c63a442ecc9302ec34180259b4740286078b85b7`.
+O KCFI global subiu para `297/322` (`92,24%`) e a microtarefa
+`315_syna_tcm_get_touch_data` foi a unica promocao: `154 PASS / 213 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT14_TOUCH_DATA_VALIDATION_20260722.md`.
 
 ## Checkpoint Next13 - Ciclo de Firmware
 
@@ -295,22 +319,25 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 ## Resultados Medidos
 
 - Dois builds completamente limpos produziram o mesmo SHA-256
-  `328777a498b79f5cb3fb2ce2e4ce7fbe841049d9ac69faa0c66095074d2b863e`.
+  `9a168340ee6147c6547276f1c63a442ecc9302ec34180259b4740286078b85b7`.
 - Imports KMI: `152/152`, sem ausentes ou inesperados.
 - Aliases, namespaces, vermagic alvo e arquitetura AArch64 ET_REL: PASS.
 - Todos os `359` simbolos de texto stock existem no candidato.
 - O candidato possui `151` simbolos de texto adicionais classificados: 131
   subrotinas do decompilador, 9 duplicatas renomeadas, 2 wrappers de assinatura
   e 9 helpers diversos.
-- Superficie KCFI integral: `296/322` matches, `26` divergencias, zero registro
+- Superficie KCFI integral: `297/322` matches, `25` divergencias, zero registro
   candidato ausente e `46` preambulos stock excluidos para revisao separada.
 - Harnesses do Next13: `24/24` casos por repeticao, duas repeticoes ASAN/UBSAN.
-- Microtarefas: `153 PASS`, `214 READY`, tres promocoes novas neste checkpoint
-  e zero PASS obsoleto.
+- Harness Next14: `10/10` casos por repeticao, duas repeticoes ASAN/UBSAN,
+  incluindo `1.024` combinacoes validas por execucao.
+- Microtarefas: `154 PASS`, `213 READY`, uma promocao nova no Next14 e zero
+  PASS obsoleto.
 - Decomposicao: pseudocodigo, P-Code e assembly presentes para `367/367`.
-- Suite focal dos gates afetados: `63/63 PASS`.
-- Suite global: `129/130 PASS`; a unica falha e externa a este lote e registra
-  divergencia entre o config userdebug e `environment.lock.json`.
+- Suite focal do Next14 e ferramentas relacionadas: `48/48 PASS`.
+- Suite global do pipeline: `136/136 PASS`.
+- O hash obsoleto do config userdebug em `environment.lock.json` foi corrigido
+  contra o arquivo rastreado e a auditoria de observabilidade voltou a PASS.
 
 ## Evidencia Autoritativa
 
@@ -351,6 +378,7 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 - `../../validation/zte_tpd/signature_oracles/tcm_lifecycle_kcfi_report.json`
 - `reconstruction_map.json`
 - `MICROTASKS.json`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT14_TOUCH_DATA_VALIDATION_20260722.md`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT13_FIRMWARE_LIFECYCLE_VALIDATION_20260719.md`
 
 Nenhum comando ADB, fastboot, `insmod`, `rmmod` ou escrita de particao foi

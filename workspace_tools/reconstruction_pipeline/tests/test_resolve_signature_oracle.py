@@ -113,6 +113,20 @@ class ResolveSignatureOracleTests(unittest.TestCase):
 		self.assertIn("int probe_0000(void)", source)
 		self.assertIn("void probe_0001(void)", source)
 
+	def test_render_variadic_candidate(self):
+		candidate = {
+			"return_type": "int",
+			"parameters": [
+				{"type": "struct item *", "name": "item"},
+				{"type": "bool", "name": "enable"},
+			],
+			"variadic": True,
+		}
+		source = MODULE.render_source("target", ["struct item;"], candidate)
+		batch = MODULE.render_kcfi_batch(["struct item;"], [candidate])
+		self.assertIn("int target(struct item * item, bool enable, ...)", source)
+		self.assertIn("int probe_0000(struct item * item, bool enable, ...)", batch)
+
 
 if __name__ == "__main__":
 	unittest.main()

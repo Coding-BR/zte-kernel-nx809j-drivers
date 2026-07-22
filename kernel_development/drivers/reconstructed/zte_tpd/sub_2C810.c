@@ -1,8 +1,15 @@
 #include "defs.h"
 
-extern __int64 syna_tcm_get_touch_data(__int64 a1, int a2, __int64 a3, unsigned int a4, unsigned int *a5);
+extern int syna_tcm_get_touch_data(const unsigned char *report_data,
+                                   unsigned int report_size,
+                                   unsigned int bit_offset,
+                                   unsigned int bit_count,
+                                   unsigned int *value);
 
-__int64 sub_2C810(__int64 a1, int a2, __int64 a3, unsigned int a4, unsigned int *a5)
+int sub_2C810(const unsigned char *report_data, unsigned int report_size,
+              unsigned int bit_offset, unsigned int bit_count,
+              unsigned int *value)
 {
-  return syna_tcm_get_touch_data(a1, a2, a3, a4, a5);
+  return syna_tcm_get_touch_data(report_data, report_size, bit_offset,
+                                 bit_count, value);
 }

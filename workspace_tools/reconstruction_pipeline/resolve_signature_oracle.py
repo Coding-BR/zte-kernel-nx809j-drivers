@@ -33,6 +33,17 @@ def normalize_hex(value: str) -> str:
 	return f"0x{int(value, 0):08x}"
 
 
+def render_parameter_list(candidate: dict[str, Any]) -> str:
+	parameters = candidate.get("parameters", [])
+	parts = [
+		f"{parameter['type']} {parameter['name']}"
+		for parameter in parameters
+	]
+	if candidate.get("variadic"):
+		parts.append("...")
+	return ", ".join(parts) or "void"
+
+
 def write_text_if_changed(path: Path, text: str) -> None:
 	if path.exists() and path.read_text(encoding="utf-8") == text:
 		return
@@ -42,9 +53,7 @@ def write_text_if_changed(path: Path, text: str) -> None:
 def render_source(symbol: str, declarations: list[str], candidate: dict[str, Any]) -> str:
 	return_type = candidate["return_type"]
 	parameters = candidate.get("parameters", [])
-	parameter_text = ", ".join(
-		f"{parameter['type']} {parameter['name']}" for parameter in parameters
-	) or "void"
+	parameter_text = render_parameter_list(candidate)
 	uses_lines = [f"\t(void){parameter['name']};" for parameter in parameters]
 	if candidate.get("touch_struct_members"):
 		for parameter in parameters:
@@ -90,9 +99,7 @@ def render_kcfi_batch(declarations: list[str], candidates: list[dict[str, Any]])
 	for index, candidate in enumerate(candidates):
 		return_type = candidate["return_type"]
 		parameters = candidate.get("parameters", [])
-		parameter_text = ", ".join(
-			f"{parameter['type']} {parameter['name']}" for parameter in parameters
-		) or "void"
+		parameter_text = render_parameter_list(candidate)
 		lines.extend([
 			"__attribute__((__noinline__, __used__))",
 			f"{return_type} probe_{index:04d}({parameter_text})",
