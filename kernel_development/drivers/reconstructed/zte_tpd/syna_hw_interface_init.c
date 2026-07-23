@@ -1,26 +1,27 @@
 int syna_hw_interface_init(void)
 {
-  int result;
+	const char *message;
+	int result;
 
-  printk(unk_348D8, "syna_hw_interface_init");
-  result = platform_device_register(&syna_spi_device);
-  if ( result < 0 )
-  {
-    printk(unk_336E1, "syna_hw_interface_init");
-    return result;
-  }
+	printk("\0016[info ] %s: hw interface in", "syna_hw_interface_init");
+	result = platform_device_register(&syna_spi_device);
+	if (result < 0) {
+		message = "\0013[error] %s: Fail to register platform device\n";
+	} else {
+		p_device = (__int64)&syna_spi_device;
+		result = _spi_register_driver(THIS_MODULE, &syna_spi_driver);
+		if (__builtin_expect_with_probability(result < 0, 1, 0.55)) {
+			message = "\0013[error] %s: Fail to add spi driver\n";
+		} else {
+			printk("\0016[info ] %s: hw interface end",
+			       "syna_hw_interface_init");
+			buf_size = 0;
+			rx_buf = 0;
+			tx_buf = 0;
+			return result;
+		}
+	}
 
-  p_device = (__int64)&syna_spi_device;
-  result = _spi_register_driver(THIS_MODULE, &syna_spi_driver);
-  if ( result >= 0 )
-  {
-    printk(unk_3C561, "syna_hw_interface_init");
-    buf_size = 0;
-    rx_buf = 0;
-    tx_buf = 0;
-    return result;
-  }
-
-  printk(unk_32A1D, "syna_hw_interface_init");
-  return result;
+	printk(message, "syna_hw_interface_init");
+	return result;
 }

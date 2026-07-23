@@ -13,6 +13,7 @@ import datetime as dt
 import hashlib
 import json
 import re
+import shlex
 import shutil
 import subprocess
 from pathlib import Path
@@ -74,6 +75,26 @@ def docker_prefix(args: argparse.Namespace, engineering_root: Path) -> list[str]
         f"PATH={toolchain_bin}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
         args.image,
     ]
+
+
+def ephemeral_layout_build_script(work_in_container: str) -> str:
+    host_work = shlex.quote(work_in_container)
+    return "\n".join(
+        [
+            "set -eu",
+            "build_root=/tmp/zte_tpd_layout_probe",
+            'rm -rf "$build_root"',
+            f'cp -a {host_work} "$build_root"',
+            'find "$build_root" -exec touch -d "@0" {} +',
+            'make ARCH=arm64 LLVM=1 LLVM_IAS=1 M="$build_root" clean',
+            'make ARCH=arm64 LLVM=1 LLVM_IAS=1 M="$build_root" modules',
+            (
+                'cp "$build_root/zte_tpd_layout_probe.o" '
+                '"$build_root/zte_tpd_layout_probe.ko" '
+                f"{host_work}/"
+            ),
+        ]
+    )
 
 
 def parse_stock_layout(symbols: str, relocations: str) -> dict[str, Any]:
@@ -351,12 +372,9 @@ def main() -> int:
     build = run(
         [
             *common,
-            "make",
-            "ARCH=arm64",
-            "LLVM=1",
-            "LLVM_IAS=1",
-            "M=/work/engineering/validation/work/zte_tpd_layout_probe",
-            "modules",
+            "sh",
+            "-c",
+            ephemeral_layout_build_script(work_in_container),
         ]
     )
     shutil.copy2(stock, work / "stock.input.ko")
@@ -478,6 +496,8 @@ def main() -> int:
     obj = work / "zte_tpd_layout_probe.o"
     passed = (
         build["returncode"] == 0
+        and clean["stderr"] == ""
+        and build["stderr"] == ""
         and module.is_file()
         and obj.is_file()
         and stock_layout["passed"]
@@ -583,6 +603,7 @@ def main() -> int:
         "commands": {"clean": clean, "build": build},
         "limitations": [
             "Compilation proves header and overlay layout consistency, not device behavior.",
+            "The probe is built in an ephemeral Linux filesystem with normalized mtimes; any stderr rejects the gate.",
             "The partial TCM overlay contains only offsets tied to local stock evidence.",
             "The partial Synaptics overlay contains only offsets tied to local stock ELF and disassembly evidence.",
             "The testing-item overlay names only fields whose offsets are tied to local stock ELF evidence.",

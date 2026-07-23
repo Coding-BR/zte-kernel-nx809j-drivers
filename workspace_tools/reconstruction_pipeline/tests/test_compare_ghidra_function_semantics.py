@@ -106,6 +106,25 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
         self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
 
+    def test_syna_spi_device_binding_address_is_normalized_narrowly(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "platform_device_register(&syna_spi_device);", {}
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "platform_device_register(syna_spi_device);", {}
+        )
+        unrelated, _, _ = MODULE.normalize_decompiled(
+            "platform_device_register(&other_device);", {}
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(unrelated, candidate)
+        self.assertEqual(
+            stock_artifacts[0]["kind"],
+            "elf_object_binding_address_syntax",
+        )
+        self.assertEqual(candidate_artifacts, [])
+
     def test_changed_pcode_operation_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)

@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "status": "PASS",
   "driver": "zte_tpd",
-  "generated_utc": "2026-07-23T14:24:26.221910+00:00",
+  "generated_utc": "2026-07-23T15:27:44.255954+00:00",
   "mode": "offline_compile_time_probe",
   "compiler": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
   "kernel": "Android 16 / GKI 6.12.23 / AArch64",
@@ -322,8 +322,8 @@
     "testing_item_result_aux_offset": "0xe0"
   },
   "artifacts": {
-    "object_sha256": "541236ebc9cfa74a3648dbf7ed49ca8c4867083a0a138b0260e5a6392e048ccd",
-    "module_sha256": "27728bcc67ecf94d1388546ae2ae7d8e38850ec37ae76674db4ae11e58c53f4f"
+    "object_sha256": "804bc704b2870f84e418acc2f72165233187f960d533acc8c1a1b3665a0226a5",
+    "module_sha256": "6134e9c700b767c0b17fa1c4553a12968c026b0ce6f0d1344b8d88eded7c23be"
   },
   "commands": {
     "clean": {
@@ -369,20 +369,18 @@
         "-w",
         "/work/src/kernel/kernel_platform/common",
         "nubia-sm8850-kernel-builder:latest",
-        "make",
-        "ARCH=arm64",
-        "LLVM=1",
-        "LLVM_IAS=1",
-        "M=/work/engineering/validation/work/zte_tpd_layout_probe",
-        "modules"
+        "sh",
+        "-c",
+        "set -eu\nbuild_root=/tmp/zte_tpd_layout_probe\nrm -rf \"$build_root\"\ncp -a /work/engineering/validation/work/zte_tpd_layout_probe \"$build_root\"\nfind \"$build_root\" -exec touch -d \"@0\" {} +\nmake ARCH=arm64 LLVM=1 LLVM_IAS=1 M=\"$build_root\" clean\nmake ARCH=arm64 LLVM=1 LLVM_IAS=1 M=\"$build_root\" modules\ncp \"$build_root/zte_tpd_layout_probe.o\" \"$build_root/zte_tpd_layout_probe.ko\" /work/engineering/validation/work/zte_tpd_layout_probe/"
       ],
       "returncode": 0,
-      "stdout": "  CC [M]  /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.o\n  MODPOST /work/engineering/validation/work/zte_tpd_layout_probe/Module.symvers\n  CC [M]  /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.mod.o\n  CC [M]  /work/engineering/validation/work/zte_tpd_layout_probe/.module-common.o\n  LD [M]  /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.ko\n  BTF [M] /work/engineering/validation/work/zte_tpd_layout_probe/zte_tpd_layout_probe.ko\n",
+      "stdout": "  CC [M]  /tmp/zte_tpd_layout_probe/zte_tpd_layout_probe.o\n  MODPOST /tmp/zte_tpd_layout_probe/Module.symvers\n  CC [M]  /tmp/zte_tpd_layout_probe/zte_tpd_layout_probe.mod.o\n  CC [M]  /tmp/zte_tpd_layout_probe/.module-common.o\n  LD [M]  /tmp/zte_tpd_layout_probe/zte_tpd_layout_probe.ko\n  BTF [M] /tmp/zte_tpd_layout_probe/zte_tpd_layout_probe.ko\n",
       "stderr": ""
     }
   },
   "limitations": [
     "Compilation proves header and overlay layout consistency, not device behavior.",
+    "The probe is built in an ephemeral Linux filesystem with normalized mtimes; any stderr rejects the gate.",
     "The partial TCM overlay contains only offsets tied to local stock evidence.",
     "The partial Synaptics overlay contains only offsets tied to local stock ELF and disassembly evidence.",
     "The testing-item overlay names only fields whose offsets are tied to local stock ELF evidence.",

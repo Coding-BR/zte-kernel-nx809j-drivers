@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `2f5454ccdf37b7b34b4bcbc72d52c314dcb76ad974813c396973255ca144b4f8`
-- **Candidato:** `24581424` bytes
+- **Candidato SHA-256:** `9237c4cd4e2cb8bafd0824b4066fc6882ccdc9e0aceb9e597bc424deee681657`
+- **Candidato:** `24582360` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,53 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `162/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O6: `163/367` microtarefas possuem build, KCFI e teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next23 - Registro da Interface de Hardware
+
+O Next23 fechou `syna_hw_interface_init` com a assinatura:
+
+```c
+int syna_hw_interface_init(void);
+```
+
+A funcao preserva a ordem stock: log de entrada, registro do
+`syna_spi_device`, publicacao de `p_device`, registro do
+`syna_spi_driver` e inicializacao de `buf_size`, `rx_buf` e `tx_buf`
+somente no caminho de sucesso. Os dois erros retornam o codigo original e
+emitem suas strings stock sem executar efeitos posteriores.
+
+O corpo coincide exatamente com o stock em `196` bytes, `49` instrucoes,
+secao e relocations. O KCFI coincide em `0x6fbb3035`. Uma importacao limpa
+no Ghidra 12.1.2 confirmou C normalizado, as quatro strings e `149/149`
+operacoes P-Code. A unica normalizacao necessaria foi a diferenca de sintaxe
+`&syna_spi_device` versus `syna_spi_device`; o ELF comprova em ambos os
+casos o mesmo objeto de `1008` bytes e as relocations exatas.
+
+O harness direto cobre falha no registro do platform device, falha no
+registro SPI, sucesso com retorno zero e sucesso com retorno positivo. Os
+quatro casos passaram em dois ciclos Clang 19.0.1 com ASAN+UBSAN, incluindo
+ordem de chamadas, argumentos, logs e estado global.
+
+Dois builds canonicos em caminhos `M=` distintos, com mtimes normalizados,
+produziram o mesmo modulo de `24.582.360` bytes e SHA-256
+`9237c4cd4e2cb8bafd0824b4066fc6882ccdc9e0aceb9e597bc424deee681657`,
+sem diagnosticos. A auditoria independente repetiu dois builds e reproduziu
+o mesmo hash; o primeiro ciclo registrou apenas um aviso de clock skew do
+bind mount e o segundo teve stderr vazio. O artefato nao foi promovido com
+base nesse aviso: a promocao usa os dois builds canonicos sem diagnosticos.
+
+O KCFI global permanece em `305/322` (`94,72%`), a superficie direta em
+`176/176` e as oito familias de callback em `143/143`. Somente a
+microtarefa `198_syna_hw_interface_init` foi promovida:
+`163 PASS / 204 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT23_HW_INTERFACE_INIT_VALIDATION_20260723.md`.
 
 ## Checkpoint Next21/Next22 - Release e Reset do Transporte SPI
 

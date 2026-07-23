@@ -62,6 +62,21 @@ class FindRunTests(unittest.TestCase):
             self.assertEqual(MODULE.find_run(root, None), newer.resolve())
 
 
+class BuildIsolationTests(unittest.TestCase):
+    def test_ephemeral_build_avoids_bind_mount_as_make_output(self) -> None:
+        script = MODULE.ephemeral_layout_build_script(
+            "/work/engineering/validation/work/zte_tpd_layout_probe"
+        )
+
+        self.assertIn('M="$build_root" modules', script)
+        self.assertIn('touch -d "@0"', script)
+        self.assertIn("build_root=/tmp/zte_tpd_layout_probe", script)
+        self.assertNotIn(
+            "M=/work/engineering/validation/work/zte_tpd_layout_probe",
+            script,
+        )
+
+
 class ElfParsingTests(unittest.TestCase):
     def test_parse_symbol_table(self) -> None:
         symbols = """

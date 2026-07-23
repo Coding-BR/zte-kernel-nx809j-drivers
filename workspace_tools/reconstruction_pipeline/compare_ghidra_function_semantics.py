@@ -24,6 +24,7 @@ ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
     r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
 )
+OPTIONAL_OBJECT_ADDRESS_RE = re.compile(r"&(?P<symbol>syna_spi_device)\b")
 
 
 def sha256_file(path: Path) -> str:
@@ -123,6 +124,20 @@ def normalize_decompiled(
         return f"{match.group(1)}GHIDRA_ALLOC_TAG{match.group(3)}"
 
     replaced = ALLOC_TAG_ARGUMENT_RE.sub(replace_alloc_tag, replaced)
+
+    def replace_optional_object_address(match: re.Match[str]) -> str:
+        artifact_evidence.append(
+            {
+                "kind": "elf_object_binding_address_syntax",
+                "value": match.group(0),
+                "normalized": match.group("symbol"),
+            }
+        )
+        return match.group("symbol")
+
+    replaced = OPTIONAL_OBJECT_ADDRESS_RE.sub(
+        replace_optional_object_address, replaced
+    )
 
     local_labels: dict[str, str] = {}
 
