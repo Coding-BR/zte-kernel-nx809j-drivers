@@ -174,9 +174,10 @@ def validate_inputs(
 
     microtasks = inputs["microtasks"]
     summary = microtasks.get("summary", {})
+    current_pass = summary.get("current_pass", summary.get("promoted_pass", 0))
     require(summary.get("task_count") == mapping_count, "microtask count differs from mapping count")
     require(
-        summary.get("promoted_pass", 0) + summary.get("remaining", 0) == mapping_count,
+        current_pass + summary.get("remaining", 0) == mapping_count,
         "microtask progress totals are inconsistent",
     )
     require(summary.get("demoted_stale_pass") == 0, "stale microtask PASS entries were detected")
@@ -200,7 +201,8 @@ def validate_inputs(
         "full_kcfi_excluded": full_summary["stock_excluded"],
         "extra_text_count": len(symbols.get("text_symbol_delta", {}).get("extra", [])),
         "extra_text_classes": symbols.get("text_symbol_delta", {}).get("extra_class_counts", {}),
-        "microtasks_pass": summary["promoted_pass"],
+        "microtasks_pass": current_pass,
+        "microtasks_promoted": summary.get("promoted_pass", 0),
         "microtasks_remaining": summary["remaining"],
         "test_report_count": len(microtasks.get("test_reports", [])),
     }
@@ -291,8 +293,9 @@ def build_report(metrics: dict[str, Any]) -> dict[str, Any]:
                 "surface": "hash-attested direct-test subset",
                 "result": "PASS",
                 "evidence": (
-                    f"microtask_progress.json promotes {passed}/{total} current-source tasks from "
-                    f"{metrics['test_report_count']} sanitizer-backed host reports with zero stale PASS demotions"
+                    f"microtask_progress.json records {passed}/{total} current-source PASS tasks; "
+                    f"this scoped run promoted {metrics['microtasks_promoted']} task(s) from "
+                    f"{metrics['test_report_count']} sanitizer-backed host report(s), with zero stale PASS demotions"
                 ),
                 "note": f"This PASS covers only the attested subset; {remaining} functions remain unvalidated",
             },

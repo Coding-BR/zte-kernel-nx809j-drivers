@@ -1,62 +1,74 @@
-__int64 __fastcall syna_tcm_detect_device(__int64 a1, char a2, __int64 a3)
-{
-  __int64 v5; // x2
-  __int64 v7; // x2
-  void *v8; // x0
-  __int64 v9; // x2
+extern int syna_tcm_v1_detect(struct tcm_dev *tcm_dev, bool quick_setup,
+			      bool reinit);
 
-  if ( !a1 )
-  {
-    v8 = unk_3365A;
-    goto LABEL_16;
-  }
-  *(_WORD *)(a1 + 8) = 0;
-  if ( (a2 & 0xF) != 1 )
-  {
-    if ( (a2 & 0xF) == 2 )
-    {
-      printk(unk_32B1F, "syna_tcm_detect_device", 2);
-      return 4294967055LL;
-    }
-    v8 = unk_349DB;
-LABEL_16:
-    printk(v8, "syna_tcm_detect_device", a3);
-    return 4294967055LL;
-  }
-  if ( (syna_tcm_v1_detect(a1, a2 < 0, a3 & 1) & 0x80000000) != 0 )
-  {
-    if ( *(_DWORD *)(a1 + 584) )
-      printk(unk_33152, "syna_tcm_detect_device", **(unsigned __int8 **)(a1 + 576));
-    return 4294967051LL;
-  }
-  else if ( *(_QWORD *)(a1 + 920) && *(_QWORD *)(a1 + 912) )
-  {
-    if ( a2 < 0 )
-    {
-      return 1;
-    }
-    else
-    {
-      v9 = *(unsigned __int8 *)(a1 + 9);
-      if ( (_DWORD)v9 == 11 )
-      {
-        printk(unk_3C6EF, "syna_tcm_detect_device", v9);
-      }
-      else if ( (_DWORD)v9 == 1 )
-      {
-        printk(unk_3213C, "syna_tcm_detect_device", *(unsigned int *)(a1 + 12));
-      }
-      else
-      {
-        printk(unk_3962C, "syna_tcm_detect_device", v9);
-      }
-      return *(unsigned __int8 *)(a1 + 9);
-    }
-  }
-  else
-  {
-    printk(unk_3B9DE, "syna_tcm_detect_device", v5);
-    printk(unk_36C5F, "syna_tcm_detect_device", v7);
-    return 4294967051LL;
-  }
+int syna_tcm_detect_device(struct tcm_dev *tcm_dev, unsigned int protocol,
+			   bool reinit)
+{
+	int retval;
+	u8 *response;
+
+	if (!tcm_dev) {
+		printk("\0013[error] %s: Invalid tcm device handle\n", __func__);
+		return -241;
+	}
+
+	tcm_dev->detection_state = 0;
+
+	switch (protocol & 0x0f) {
+	case 1:
+		retval = syna_tcm_v1_detect(tcm_dev, (protocol >> 7) & 1,
+					    reinit & 1);
+		if (retval < 0) {
+			if (tcm_dev->message_buf.buf_size) {
+				response = tcm_dev->message_buf.data;
+				printk("\0013[error] %s: Fail to detect TouchComm v1 device, %02x %02x %02x %02x ...\n",
+				       __func__, response[0], response[1],
+				       response[2], response[3]);
+			}
+			return -245;
+		}
+
+		if (!tcm_dev->write_message || !tcm_dev->read_message) {
+			printk("\0013[error] %s: Invalid TouchCom R/W operations\n",
+			       __func__);
+			printk("\0013[error] %s: Fail to allocate the handler for TouchComm device\n",
+			       __func__);
+			return -245;
+		}
+
+		if (protocol & 0x80)
+			return 1;
+
+		if (tcm_dev->firmware_mode == 11)
+			goto bootloader;
+		if (tcm_dev->firmware_mode != 1)
+			goto unknown_mode;
+
+		printk("\0016[info ] %s: Device in Application FW, build id: %d, %s\n",
+		       __func__, tcm_dev->build_id,
+		       tcm_dev->identification_info.part_number);
+		goto detected;
+
+	bootloader:
+		printk("\0016[info ] %s: Device in Bootloader\n", __func__);
+		goto detected;
+
+	unknown_mode:
+		printk("\0014[warn ] %s: Found TouchCom device, but unknown mode:0x%02x detected\n",
+		       __func__, tcm_dev->firmware_mode);
+
+	detected:
+		barrier();
+		return tcm_dev->firmware_mode;
+
+	case 2:
+		printk("\0013[error] %s: Implementations of Touchcomm v%d is not built in\n",
+		       __func__, 2);
+		return -241;
+
+	default:
+		printk("\0013[error] %s: Invalid version of TouchComm protocol\n",
+		       __func__);
+		return -241;
+	}
 }

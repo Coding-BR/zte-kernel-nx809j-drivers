@@ -21,6 +21,19 @@ def add_stock(run_root: Path) -> None:
 
 
 class FindRunTests(unittest.TestCase):
+    def test_default_engineering_root_is_adjacent_to_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            script = (
+                root
+                / "repository"
+                / "workspace_tools"
+                / "reconstruction_pipeline"
+                / "validate_zte_tpd_layout.py"
+            )
+            expected = root / "kernel-docker-workspace" / "engenharia"
+            self.assertEqual(MODULE.default_engineering_root(script), expected)
+
     def test_requested_run_requires_the_stock_module(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

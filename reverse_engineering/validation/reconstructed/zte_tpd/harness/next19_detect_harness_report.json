@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-07-23T11:41:21.620675+00:00",
+  "mode": "offline_direct_source_next19_detect_asan_ubsan",
+  "target": "syna_tcm_detect_device",
+  "expected_cases": 11,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_command": [
+        "gcc",
+        "-std=c11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-next19-detect",
+        "-ffile-prefix-map=/repo=<repo>",
+        "-ffile-prefix-map=/engineering=<engineering>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_tcm_detect_device_host_test.c",
+        "-o",
+        "/engineering/validation/zte_tpd/host_next19_detect/cycle1/host_test_asan_ubsan"
+      ],
+      "returncode": 0,
+      "stdout": "PASS syna_tcm_detect_device host tests (11 cases)\n",
+      "stderr": "",
+      "binary_sha256": "37c61e88f97414cc1192a6cbc3cac250371835015c693bd265bf1359733dca57",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_command": [
+        "gcc",
+        "-std=c11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-next19-detect",
+        "-ffile-prefix-map=/repo=<repo>",
+        "-ffile-prefix-map=/engineering=<engineering>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_tcm_detect_device_host_test.c",
+        "-o",
+        "/engineering/validation/zte_tpd/host_next19_detect/cycle2/host_test_asan_ubsan"
+      ],
+      "returncode": 0,
+      "stdout": "PASS syna_tcm_detect_device host tests (11 cases)\n",
+      "stderr": "",
+      "binary_sha256": "37c61e88f97414cc1192a6cbc3cac250371835015c693bd265bf1359733dca57",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_tcm_detect_device_host_test.c",
+      "size": 8182,
+      "sha256": "3a4eb05f3bbcdaf7e622dcff3d3aee794cd5af2b33fb7eb1035b71a5c214d1bf"
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_detect_device.c",
+      "size": 1930,
+      "sha256": "3e7fd358e76c21324632856e3762d12d0a8a39d0e7075245a9bc7b086859010f"
+    }
+  ],
+  "coverage": {
+    "null_device": true,
+    "protocol_v2_and_invalid": true,
+    "v1_failure_with_and_without_response": true,
+    "missing_read_and_write_callbacks": true,
+    "quick_setup": true,
+    "application_bootloader_and_unknown_modes": true,
+    "offset_assertions": [
+      "0x08",
+      "0x09",
+      "0x0c",
+      "0x82",
+      "0x240",
+      "0x248",
+      "0x390",
+      "0x398"
+    ],
+    "asan_ubsan": true,
+    "hardware_paths_exercised": false
+  },
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness stubs printk, protocol-v1 detection and transport callbacks.",
+    "It proves branch, offset, argument, return and diagnostic behavior, not SPI hardware integration.",
+    "Assembly, KCFI, Ghidra P-Code and full-module integration remain independent gates.",
+    "No smartphone, ADB, fastboot, IRQ, MMIO or flash operation is performed."
+  ]
+}

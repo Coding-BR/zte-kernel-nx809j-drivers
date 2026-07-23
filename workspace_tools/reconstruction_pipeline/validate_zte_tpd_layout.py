@@ -242,10 +242,18 @@ def validate_testing_items(
     }
 
 
+def default_engineering_root(script: Path = Path(__file__)) -> Path:
+    repository = script.resolve().parents[2]
+    return repository.parent / "kernel-docker-workspace" / "engenharia"
+
+
 def parse_args() -> argparse.Namespace:
-    script = Path(__file__).resolve()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--engineering-root", type=Path, default=script.parents[1])
+    parser.add_argument(
+        "--engineering-root",
+        type=Path,
+        default=default_engineering_root(),
+    )
     parser.add_argument(
         "--run-root",
         type=Path,
@@ -528,9 +536,16 @@ def main() -> int:
             "tcm_transport_flags_offset": "0x14",
             "tcm_transport_overlay_size": "0x15",
             "tcm_dev_size": "0x23e8",
+            "tcm_dev_detection_state_offset": "0x08",
             "tcm_dev_firmware_mode_offset": "0x09",
             "tcm_dev_transport_offset": "0x48",
             "tcm_dev_command_delay_ms_offset": "0x20c",
+            "tcm_dev_message_buf_offset": "0x240",
+            "tcm_dev_message_buf_size_offset": "0x248",
+            "tcm_dev_message_buf_length_offset": "0x24c",
+            "tcm_dev_message_buf_mutex_offset": "0x250",
+            "tcm_dev_message_buf_lock_depth_offset": "0x280",
+            "tcm_dev_read_message_offset": "0x390",
             "tcm_dev_write_message_offset": "0x398",
             "syna_hw_interface_size": "0x190",
             "syna_hw_interface_irq_gpio_offset": "0xa8",

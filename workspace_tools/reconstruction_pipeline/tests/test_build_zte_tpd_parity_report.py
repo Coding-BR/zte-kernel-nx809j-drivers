@@ -98,6 +98,25 @@ class ValidateInputsTests(unittest.TestCase):
         self.assertEqual(report["status"], "PASS")
         self.assertEqual(report["semantic_equivalence"], "PARTIAL_TESTED_SUBSET_ONLY")
 
+    def test_prefers_current_pass_from_scoped_attestation(self) -> None:
+        inputs = valid_inputs()
+        inputs["microtasks"]["summary"].update(
+            {"current_pass": 2, "promoted_pass": 1, "remaining": 0}
+        )
+        metrics = MODULE.validate_inputs(inputs, SHA)
+        self.assertEqual(metrics["microtasks_pass"], 2)
+        self.assertEqual(metrics["microtasks_promoted"], 1)
+        self.assertEqual(metrics["microtasks_remaining"], 0)
+        report = MODULE.build_report(metrics)
+        self.assertEqual(report["status"], "PASS")
+        self.assertEqual(report["semantic_equivalence"], "PARTIAL_TESTED_SUBSET_ONLY")
+        direct_tests = next(
+            item for item in report["comparisons"]
+            if item["surface"] == "hash-attested direct-test subset"
+        )
+        self.assertIn("records 2/2 current-source PASS tasks", direct_tests["evidence"])
+        self.assertIn("this scoped run promoted 1 task(s)", direct_tests["evidence"])
+
     def test_rejects_stale_abi_report(self) -> None:
         inputs = valid_inputs()
         inputs["abi"]["candidate_sha256"] = "c" * 64

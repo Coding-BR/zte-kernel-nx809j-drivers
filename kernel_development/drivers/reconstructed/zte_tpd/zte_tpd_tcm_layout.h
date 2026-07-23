@@ -123,8 +123,14 @@ struct tcm_buffer {
 
 /* Partial overlay containing only offsets proven by the NX809J stock ELF. */
 struct tcm_dev {
-	u8 reserved_0000[0x09];
-	u8 firmware_mode;
+	u8 reserved_0000[0x08];
+	union {
+		u16 detection_state;
+		struct {
+			u8 reserved_0008;
+			u8 firmware_mode;
+		};
+	};
 	u8 reserved_000a[0x02];
 	u32 build_id;
 	u32 max_x;
@@ -166,7 +172,9 @@ struct tcm_dev {
 	u32 timing_0210;
 	u32 timing_0214;
 	u32 timing_0218;
-	u8 reserved_021c[0x15e];
+	u8 reserved_021c[0x24];
+	struct tcm_buffer message_buf;
+	u8 reserved_0288[0xf2];
 	u8 predict_reading_enabled;
 	u8 reserved_037b;
 	u32 predict_reading_offset;
@@ -186,6 +194,7 @@ struct tcm_dev {
 	tcm_post_reset_callback_fn post_reset_callback;
 };
 
+static_assert(offsetof(struct tcm_dev, detection_state) == 0x08);
 static_assert(offsetof(struct tcm_dev, firmware_mode) == 0x09);
 static_assert(offsetof(struct tcm_dev, build_id) == 0x0c);
 static_assert(offsetof(struct tcm_dev, max_x) == 0x10);
@@ -220,6 +229,12 @@ static_assert(offsetof(struct tcm_dev, command_delay_ms) == 0x20c);
 static_assert(offsetof(struct tcm_dev, timing_0210) == 0x210);
 static_assert(offsetof(struct tcm_dev, timing_0214) == 0x214);
 static_assert(offsetof(struct tcm_dev, timing_0218) == 0x218);
+static_assert(offsetof(struct tcm_dev, message_buf) == 0x240);
+static_assert(offsetof(struct tcm_dev, message_buf.data) == 0x240);
+static_assert(offsetof(struct tcm_dev, message_buf.buf_size) == 0x248);
+static_assert(offsetof(struct tcm_dev, message_buf.data_length) == 0x24c);
+static_assert(offsetof(struct tcm_dev, message_buf.mutex) == 0x250);
+static_assert(offsetof(struct tcm_dev, message_buf.lock_depth) == 0x280);
 static_assert(offsetof(struct tcm_dev, predict_reading_enabled) == 0x37a);
 static_assert(offsetof(struct tcm_dev, predict_reading_offset) == 0x37c);
 static_assert(offsetof(struct tcm_dev, read_message) == 0x390);

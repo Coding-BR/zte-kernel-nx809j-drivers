@@ -311,7 +311,8 @@ extern int syna_tcm_do_fw_update(struct tcm_dev *tcm_dev,
 				 unsigned int flash_area,
 				 bool force_reflash);
 extern int syna_dev_do_reflash(struct syna_tcm *tcm, bool force);
-extern __int64 syna_tcm_detect_device(__int64 a1, char a2, __int64 a3);
+extern int syna_tcm_detect_device(struct tcm_dev *tcm_dev,
+				  unsigned int protocol, bool reinit);
 extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
 extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
 				   unsigned int delay_ms);
