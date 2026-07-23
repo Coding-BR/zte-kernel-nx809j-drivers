@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `d8c3cf5c315406dbb4d8424aaa0732ca79bcabb765853196a3751847a23607e8`
-- **Candidato:** `24592200` bytes
+- **Candidato SHA-256:** `198cc353e3d6b51057624d64f00dd9226be2ef32c2aff77d025f7802a24dda0b`
+- **Candidato:** `24589656` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade

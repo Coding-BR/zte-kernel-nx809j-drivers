@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-07-23T20:09:48.002689+00:00",
+  "mode": "offline_direct_source_next27_sysfs_info_show_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "syna_sysfs_info_show",
+  "source": "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_info_show_host_test.c",
+  "source_sha256": "4f3f654d4fab03953f361dab60b04a175d659286b495985724b272efa30db4a5",
+  "compiler": "clang",
+  "compiler_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 5,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_command": [
+        "clang",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-next27-info",
+        "-ffile-prefix-map=/engineering/validation/zte_tpd/next27_sysfs_info_show_host_build=<build>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_info_show_host_test.c",
+        "-o",
+        "/engineering/validation/zte_tpd/next27_sysfs_info_show_host_build/cycle1/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS syna_sysfs_info_show host tests (5 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "0eb407312b238f4b97e467024b6246e571559839ffbfb682759f64c00550d132",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_command": [
+        "clang",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-next27-info",
+        "-ffile-prefix-map=/engineering/validation/zte_tpd/next27_sysfs_info_show_host_build=<build>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_info_show_host_test.c",
+        "-o",
+        "/engineering/validation/zte_tpd/next27_sysfs_info_show_host_build/cycle2/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS syna_sysfs_info_show host tests (5 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "0eb407312b238f4b97e467024b6246e571559839ffbfb682759f64c00550d132",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_info_show_host_test.c",
+      "size": 7247,
+      "sha256": "4f3f654d4fab03953f361dab60b04a175d659286b495985724b272efa30db4a5"
+    },
+    {
+      "path": "/repo/kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_info_show.c",
+      "size": 6908,
+      "sha256": "e31bf787c49c1247a3075ee89e534e6e44eabc3845c251bdd934276348dc57c9"
+    }
+  ],
+  "reproducible": true,
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness stubs kobject, device driver-data, scnprintf and printk APIs.",
+    "It proves observable formatting, state branches, offsets and return lengths.",
+    "Assembly, KCFI and Ghidra equivalence remain independent gates.",
+    "No smartphone, real sysfs kobject or kernel userspace ABI is used."
+  ]
+}
