@@ -8,15 +8,11 @@ ssize_t syna_sysfs_debug_store(struct kobject *kobj,
   __int64 v5; // x9
   __int64 v6; // x20
   __int64 v8; // x0
-  __int64 v9; // x2
-  __int64 v10; // x2
   __int64 v11; // x0
   unsigned int v12; // [xsp+4h] [xbp-Ch] BYREF
-  __int64 v13; // [xsp+8h] [xbp-8h]
 
   (void)attr;
 
-  v13 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v5 = *(_QWORD *)(a1 + 24);
   v12 = 0;
   v6 = *(_QWORD *)(v5 + 152);
@@ -26,7 +22,8 @@ ssize_t syna_sysfs_debug_store(struct kobject *kobj,
   {
     if ( v12 != 1 || *(_QWORD *)(v6 + 928) )
     {
-      printk(unk_32624, "syna_sysfs_debug_store", v12);
+      printk("\0014[warn ] %s: Unknown option %d (0:disable / 1:enable)\n",
+             "syna_sysfs_debug_store", v12);
 LABEL_2:
       a4 = -22;
       goto LABEL_3;
@@ -37,14 +34,16 @@ LABEL_2:
     {
       if ( (sysfs_create_group(v8, &attr_debug_group) & 0x80000000) != 0 )
       {
-        printk(unk_337A6, "syna_sysfs_debug_store", v10);
+        printk("\0013[error] %s: Fail to create sysfs debug group\n",
+               "syna_sysfs_debug_store");
         kobject_put(*(_QWORD *)(v6 + 928));
         a4 = -20;
       }
     }
     else
     {
-      printk(unk_330B8, "syna_sysfs_debug_store", v9);
+      printk("\0013[error] %s: Fail to create sysfs sub directory for debugging\n",
+             "syna_sysfs_debug_store");
       a4 = -20;
     }
   }
@@ -59,6 +58,5 @@ LABEL_2:
     }
   }
 LABEL_3:
-  _ReadStatusReg(SP_EL0);
   return a4;
 }

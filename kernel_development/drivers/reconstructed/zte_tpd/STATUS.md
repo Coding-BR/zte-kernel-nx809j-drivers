@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `198cc353e3d6b51057624d64f00dd9226be2ef32c2aff77d025f7802a24dda0b`
-- **Candidato:** `24589656` bytes
+- **Candidato SHA-256:** `e0ba557f6d5ab22719e4ad5fe776d5d97f3b8658103028dcebc1036f66dc0f62`
+- **Candidato:** `24588112` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,34 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `166/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `167/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next28 - sysfs debug store
+
+O Next28 promoveu `212_syna_sysfs_debug_store` para `PASS`. O fonte preserva
+os offsets `+0x398/+0x3a0`, o parse decimal, os caminhos enable/disable, o
+teardown do grupo e os tres literais de log extraidos do `.rodata`.
+
+O corpo coincide exatamente com o stock em `312` bytes e `78` instrucoes,
+incluindo relocations resolvidas. O type ID KCFI coincide em `0x9ce291cd`.
+Uma importacao limpa no Ghidra 12.1.2 confirmou C normalizado e shape P-Code
+identicos, com `225` operacoes em cada lado. O harness direto passou nove
+casos em dois ciclos Clang 19.0.1 com ASAN+UBSAN.
+
+O build canonico `next28_debug_probe2` produziu
+`24588112` bytes com SHA-256
+`e0ba557f6d5ab22719e4ad5fe776d5d97f3b8658103028dcebc1036f66dc0f62`.
+O documento autoritativo e
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT28_SYSFS_DEBUG_STORE_VALIDATION_20260723.md`.
+
+O alvo `211_syna_sysfs_info_show` continua `READY`: os probes atuais ainda
+produzem `1008` bytes contra `1020` do stock. O contador global agora e
+`167 PASS / 200 READY`.
 
 ## Checkpoint Next26 - Remocao Controlada da Hierarquia Sysfs
 

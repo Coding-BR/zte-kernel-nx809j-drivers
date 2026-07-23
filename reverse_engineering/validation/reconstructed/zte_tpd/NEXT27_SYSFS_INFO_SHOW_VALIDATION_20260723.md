@@ -15,7 +15,10 @@ com `aligned(1), may_alias`. Nenhum teste foi executado no smartphone.
   `198cc353e3d6b51057624d64f00dd9226be2ef32c2aff77d025f7802a24dda0b`.
 - Candidato: `24589656` bytes.
 - Microtarefa: `211_syna_sysfs_info_show`.
-- Contagem global: `166 PASS / 201 READY`.
+- Contagem global no momento deste documento: `166 PASS / 201 READY`.
+
+O checkpoint posterior Next28 promoveu a microtarefa 212; este documento
+continua sendo o registro especifico do alvo 211, que permanece `READY`.
 
 ## Evidencia positiva
 

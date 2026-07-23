@@ -5895,8 +5895,34 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_sysfs_debug_store\nEntrada Ghidra: 0011a9a0\nTamanho stock: 312 bytes\nCategoria: user_abi\nAlvo no fonte: syna_sysfs_debug_store.c:syna_sysfs_debug_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0211_0011a9a0_syna_sysfs_debug_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0211_0011a9a0_syna_sysfs_debug_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next28_debug_probe2_report.json",
+          "sha256": "527a65c147c1d1df9d429ffdca3554ec17a85ab65345ed51624110a997573f08"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/assembly_comparison_next28_debug_probe2.json",
+          "sha256": "007751de1334af58bc0c909b2e0afd9aebad289c453801c2d83982749dd20a05"
+        },
+        {
+          "role": "ghidra",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_semantic_comparison_next28_debug_probe2.json",
+          "sha256": "ffc535c01592b92ba17d188db9f46267eecc321bf878ed7e96c268414ad6063d"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_comparison_next28_debug_probe2.json",
+          "sha256": "79fada9173c26bd745ed891b3a170594c959549eff5ea12937ea4b4f090ae98f"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/harness/next28_sysfs_debug_store_host_test_report.json",
+          "sha256": "3c52c9e5cf2bdeae1e30b1406820d974767d6c4b63bf8f0a7ea322ffc64140a8"
+        }
+      ]
     },
     {
       "id": "213_syna_sysfs_get_delta_show",
