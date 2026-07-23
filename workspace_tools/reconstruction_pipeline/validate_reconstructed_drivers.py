@@ -44,6 +44,13 @@ REQUIRED_GHIDRA_FILES = (
 MODINFO_KEYS = {"license", "vermagic", "alias", "depends", "import_ns"}
 
 
+def default_engineering_root(script: Path) -> Path:
+    local_root = script.resolve().parents[2]
+    if local_root.name.casefold() == "engenharia":
+        return local_root
+    return script.resolve().parents[3] / "kernel-docker-workspace" / "engenharia"
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -65,6 +72,12 @@ def file_record(path: Path | None) -> dict[str, Any]:
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def resolve_target_kernel_manifest(curated_root: Path, explicit: Path | None) -> Path:
+    if explicit is not None:
+        return explicit.resolve()
+    return (curated_root.resolve().parent / "config" / "target_kernel.json").resolve()
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -534,7 +547,8 @@ def render_markdown(payload: dict[str, Any]) -> str:
         "",
         f"- Gerado em: `{payload['generated_utc']}`",
         f"- Run de evidência: `{payload['run_root']}`",
-        f"- Rebuild limpo: `{payload['rebuild_requested']}`",
+        f"- Rebuild limpo: `{'sim' if payload['rebuild_requested'] else 'não'}`",
+        f"- Manifesto do kernel alvo: `{payload['target_kernel_manifest'] or 'não fornecido'}`",
         "",
         "| Driver | Resultado estático | Hardware | Evidência que falta |",
         "|---|---|---|---|",
@@ -557,7 +571,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
 
 
 def parse_args() -> argparse.Namespace:
-    engineering_root = Path(__file__).resolve().parents[1]
+    engineering_root = default_engineering_root(Path(__file__))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--curated-root", type=Path, default=engineering_root / "curated")
     parser.add_argument("--run-root", type=Path)
@@ -573,8 +587,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--target-kernel-manifest",
         type=Path,
-        default=engineering_root / "config" / "target_kernel.json",
-        help="explicit target-kernel evidence used to justify OEM vermagic differences",
+        default=None,
+        help=(
+            "target-kernel evidence used to justify OEM vermagic differences; "
+            "defaults to <curated-root>/../config/target_kernel.json"
+        ),
     )
     parser.add_argument(
         "--promote-fresh",
@@ -597,9 +614,13 @@ def main() -> int:
         and (path / "STATUS.md").is_file()
     )
     run_root = (args.run_root or find_run(engineering_root, drivers)).resolve()
+    target_manifest = resolve_target_kernel_manifest(
+        args.curated_root,
+        args.target_kernel_manifest,
+    )
     target_kernel = None
-    if args.target_kernel_manifest and args.target_kernel_manifest.resolve().is_file():
-        target_kernel = read_json(args.target_kernel_manifest.resolve())
+    if target_manifest.is_file():
+        target_kernel = read_json(target_manifest)
     results: list[dict[str, Any]] = []
     for driver in drivers:
         results.append(
@@ -623,7 +644,7 @@ def main() -> int:
         "mode": "offline-only",
         "run_root": str(run_root),
         "rebuild_requested": args.rebuild,
-        "target_kernel_manifest": str(args.target_kernel_manifest.resolve()) if target_kernel else None,
+        "target_kernel_manifest": str(target_manifest) if target_kernel else None,
         "promote_fresh_requested": args.promote_fresh,
         "drivers": results,
         "summary": {

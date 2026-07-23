@@ -67,6 +67,7 @@ static_assert(sizeof(struct syna_tcm) == 0x580);
 static_assert(offsetof(struct syna_tcm, hw_if) == 0x270);
 static_assert(offsetof(struct syna_tcm, event_data) == 0x2a8);
 static_assert(offsetof(struct syna_tcm, sysfs_dir) == 0x398);
+static_assert(offsetof(struct syna_tcm, utility_dir) == 0x3a0);
 static_assert(offsetof(struct syna_tcm, frame_wait) == 0x448);
 static_assert(offsetof(struct syna_tcm, frame_available) == 0x468);
 static_assert(offsetof(struct syna_tcm, pm_resume_completion) == 0x558);

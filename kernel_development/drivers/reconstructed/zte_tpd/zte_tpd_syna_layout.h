@@ -98,7 +98,8 @@ struct syna_tcm {
 	pid_t isr_pid;
 	u8 reserved_02f4[0xa4];
 	struct kobject *sysfs_dir;
-	u8 reserved_03a0[0xa8];
+	struct kobject *utility_dir;
+	u8 reserved_03a8[0xa0];
 	wait_queue_head_t frame_wait;
 	u8 reserved_0460[0x08];
 	u32 frame_available;
@@ -176,6 +177,7 @@ static_assert(offsetof(struct syna_tcm, hw_if) == 0x270);
 static_assert(offsetof(struct syna_tcm, event_data) == 0x2a8);
 static_assert(offsetof(struct syna_tcm, isr_pid) == 0x2f0);
 static_assert(offsetof(struct syna_tcm, sysfs_dir) == 0x398);
+static_assert(offsetof(struct syna_tcm, utility_dir) == 0x3a0);
 static_assert(offsetof(struct syna_tcm, frame_wait) == 0x448);
 static_assert(offsetof(struct syna_tcm, frame_available) == 0x468);
 static_assert(offsetof(struct syna_tcm, pm_resume_completion) == 0x558);

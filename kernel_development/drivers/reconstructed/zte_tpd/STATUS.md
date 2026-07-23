@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `f828a61670510ed2da430a80ced9d6858a3d5b8807af96391fba14bef0e8358b`
-- **Candidato:** `24590136` bytes
+- **Candidato SHA-256:** `d8c3cf5c315406dbb4d8424aaa0732ca79bcabb765853196a3751847a23607e8`
+- **Candidato:** `24592200` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,48 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `165/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `166/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next26 - Remocao Controlada da Hierarquia Sysfs
+
+O Next26 fechou `syna_sysfs_remove_dir` com a assinatura:
+
+```c
+void syna_sysfs_remove_dir(struct syna_tcm *tcm);
+```
+
+O fluxo stock foi preservado byte a byte: log de handle nulo e retorno;
+retorno silencioso quando `sysfs_dir` em `syna_tcm + 0x398` e nulo; chamada
+de `syna_testing_remove_dir`; remocao do grupo `attr_debug_group` e
+`kobject_put` do diretorio `utility` em `+0x3a0`, quando presente; por fim,
+remocao de `attr_group` e `kobject_put` do diretorio principal. Os ponteiros
+nao sao zerados, conforme o `.ko` stock.
+
+O corpo coincide exatamente com o stock em `132` bytes, `33` instrucoes,
+secao e relocations resolvidas, sem equivalencias permissivas. Stock e
+candidato possuem KCFI `0x3175607e`. Uma importacao limpa no Ghidra 12.1.2
+confirmou C normalizado identico e `83/83` operacoes P-Code.
+
+O harness direto passou quatro cenarios em dois ciclos Clang 19.0.1 com
+ASAN+UBSAN: handle nulo, ausencia do diretorio principal, teardown sem
+`utility` e teardown completo. Ele valida offsets `+0x398/+0x3a0`, ordem,
+argumentos, log exato e retencao dos ponteiros.
+
+Dois builds canonicos sem diagnosticos produziram o mesmo modulo de
+`24.592.200` bytes e SHA-256
+`d8c3cf5c315406dbb4d8424aaa0732ca79bcabb765853196a3751847a23607e8`.
+O probe de layout AArch64 passou, a decomposicao permanece `367/367`, a
+superficie direta KCFI permanece `176/176` e as oito familias permanecem
+`143/143`. A microtarefa `210_syna_sysfs_remove_dir` foi promovida:
+`166 PASS / 201 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT26_SYSFS_REMOVE_VALIDATION_20260723.md`.
 
 ## Checkpoint Next25 - Criacao da Hierarquia Sysfs
 

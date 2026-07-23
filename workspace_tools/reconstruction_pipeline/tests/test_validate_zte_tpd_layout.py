@@ -76,7 +76,7 @@ class BuildIsolationTests(unittest.TestCase):
             script,
         )
 
-    def test_sysfs_dir_offset_is_asserted_and_reported(self) -> None:
+    def test_sysfs_directory_offsets_are_asserted_and_reported(self) -> None:
         repository = SCRIPT.parents[2]
         probe = (
             repository
@@ -93,7 +93,12 @@ class BuildIsolationTests(unittest.TestCase):
             "offsetof(struct syna_tcm, sysfs_dir) == 0x398",
             probe,
         )
+        self.assertIn(
+            "offsetof(struct syna_tcm, utility_dir) == 0x3a0",
+            probe,
+        )
         self.assertIn('"syna_tcm_sysfs_dir_offset": "0x398"', validator)
+        self.assertIn('"syna_tcm_utility_dir_offset": "0x3a0"', validator)
 
 
 class ElfParsingTests(unittest.TestCase):
