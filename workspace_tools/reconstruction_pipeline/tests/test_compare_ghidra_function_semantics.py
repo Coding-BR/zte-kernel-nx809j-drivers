@@ -92,6 +92,20 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertTrue(result["checks"]["normalized_decompiled_c"])
         self.assertTrue(result["checks"]["pcode_operation_shape"])
 
+    def test_relocated_unk_string_compares_equal(self) -> None:
+        stock, stock_evidence, _ = MODULE.normalize_decompiled(
+            "printk(&UNK_00101000);",
+            {0x00101001: "6[info ] message\n"},
+        )
+        candidate, candidate_evidence, _ = MODULE.normalize_decompiled(
+            "printk(&UNK_00202000);",
+            {0x00202001: "6[info ] message\n"},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
+        self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
+
     def test_changed_pcode_operation_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)

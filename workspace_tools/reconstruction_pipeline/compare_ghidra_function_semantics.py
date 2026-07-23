@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 
-DAT_RE = re.compile(r"&DAT_([0-9a-fA-F]+)")
+DATA_REFERENCE_RE = re.compile(r"&(?:DAT|UNK)_([0-9a-fA-F]+)")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
 SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
     r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
@@ -98,7 +98,7 @@ def normalize_decompiled(
             return f'GHIDRA_STRING[{json.dumps(value, ensure_ascii=True)}]'
         return match.group(0)
 
-    replaced = DAT_RE.sub(replace, text.replace("\r\n", "\n"))
+    replaced = DATA_REFERENCE_RE.sub(replace, text.replace("\r\n", "\n"))
 
     def replace_breakpoint_context(match: re.Match[str]) -> str:
         artifact_evidence.append(

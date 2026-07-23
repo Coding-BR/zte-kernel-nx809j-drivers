@@ -4,6 +4,7 @@
 
 #include <linux/build_bug.h>
 #include <linux/completion.h>
+#include <linux/mutex.h>
 #include <linux/platform_device.h>
 #include <linux/stddef.h>
 #include <linux/types.h>
@@ -12,6 +13,34 @@
 
 struct tcm_dev;
 struct spi_device;
+struct syna_hw_interface;
+
+/*
+ * TouchComm's transport-facing interface is embedded at offset 0x08 in the
+ * platform object. Its nominal tag is part of the stock KCFI contract.
+ */
+struct tcm_hw_platform {
+	struct syna_hw_interface *owner;
+	u8 bus_type;
+	u8 reserved_0009[0x03];
+	u32 rd_chunk_size;
+	u32 wr_chunk_size;
+	u8 reserved_0014[0x0c];
+	int (*read)(struct tcm_hw_platform *platform, u8 *data, u32 length);
+	int (*write)(struct tcm_hw_platform *platform, u8 *data, u32 length);
+	void *wait_irq;
+	int (*enable_irq)(struct tcm_hw_platform *platform, bool enable);
+};
+
+struct syna_hw_attn_data {
+	int irq_gpio;
+	int irq_on_state;
+	unsigned long irq_flags;
+	int irq_id;
+	u8 irq_enabled;
+	u8 reserved_0015[0x03];
+	struct mutex irq_en_mutex;
+};
 
 /*
  * Partial hardware interface overlay. Every named member is tied to an
@@ -19,15 +48,20 @@ struct spi_device;
  */
 struct syna_hw_interface {
 	struct spi_device *spi;
-	u8 reserved_0008[0x20];
-	void *read;
-	void *write;
-	u8 reserved_0038[0x08];
-	void *enable_irq;
+	struct tcm_hw_platform tcm_platform;
 	u8 reserved_0048[0x60];
-	int irq_gpio;
-	int irq_on_state;
-	u8 reserved_00b0[0x40];
+	union {
+		struct syna_hw_attn_data bdata_attn;
+		struct {
+			int irq_gpio;
+			int irq_on_state;
+			unsigned long irq_flags;
+			int irq_id;
+			u8 irq_enabled;
+			u8 reserved_00bd[0x03];
+			struct mutex irq_en_mutex;
+		};
+	};
 	int reset_gpio;
 	int reset_on_state;
 	u32 reset_delay_ms;
@@ -98,11 +132,34 @@ struct ufp_tp_ops_struct {
 	};
 };
 
-static_assert(offsetof(struct syna_hw_interface, read) == 0x28);
-static_assert(offsetof(struct syna_hw_interface, write) == 0x30);
-static_assert(offsetof(struct syna_hw_interface, enable_irq) == 0x40);
+static_assert(offsetof(struct tcm_hw_platform, owner) == 0x00);
+static_assert(offsetof(struct tcm_hw_platform, bus_type) == 0x08);
+static_assert(offsetof(struct tcm_hw_platform, rd_chunk_size) == 0x0c);
+static_assert(offsetof(struct tcm_hw_platform, wr_chunk_size) == 0x10);
+static_assert(offsetof(struct tcm_hw_platform, read) == 0x20);
+static_assert(offsetof(struct tcm_hw_platform, write) == 0x28);
+static_assert(offsetof(struct tcm_hw_platform, wait_irq) == 0x30);
+static_assert(offsetof(struct tcm_hw_platform, enable_irq) == 0x38);
+static_assert(sizeof(struct tcm_hw_platform) == 0x40);
+
+static_assert(offsetof(struct syna_hw_attn_data, irq_gpio) == 0x00);
+static_assert(offsetof(struct syna_hw_attn_data, irq_on_state) == 0x04);
+static_assert(offsetof(struct syna_hw_attn_data, irq_flags) == 0x08);
+static_assert(offsetof(struct syna_hw_attn_data, irq_id) == 0x10);
+static_assert(offsetof(struct syna_hw_attn_data, irq_enabled) == 0x14);
+static_assert(offsetof(struct syna_hw_attn_data, irq_en_mutex) == 0x18);
+static_assert(sizeof(struct syna_hw_attn_data) == 0x48);
+
+static_assert(offsetof(struct syna_hw_interface, tcm_platform) == 0x08);
+static_assert(offsetof(struct syna_hw_interface, tcm_platform.read) == 0x28);
+static_assert(offsetof(struct syna_hw_interface, tcm_platform.write) == 0x30);
+static_assert(offsetof(struct syna_hw_interface, tcm_platform.enable_irq) == 0x40);
 static_assert(offsetof(struct syna_hw_interface, irq_gpio) == 0xa8);
 static_assert(offsetof(struct syna_hw_interface, irq_on_state) == 0xac);
+static_assert(offsetof(struct syna_hw_interface, irq_flags) == 0xb0);
+static_assert(offsetof(struct syna_hw_interface, irq_id) == 0xb8);
+static_assert(offsetof(struct syna_hw_interface, irq_enabled) == 0xbc);
+static_assert(offsetof(struct syna_hw_interface, irq_en_mutex) == 0xc0);
 static_assert(offsetof(struct syna_hw_interface, reset_gpio) == 0xf0);
 static_assert(offsetof(struct syna_hw_interface, reset_on_state) == 0xf4);
 static_assert(offsetof(struct syna_hw_interface, reset_delay_ms) == 0xf8);

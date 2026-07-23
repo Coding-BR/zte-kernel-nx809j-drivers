@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-22
+## Estado Atual - 2026-07-23
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `214eb06c1a1074b329818fb0b0a7c9d0e9ca1e6880a1454442b8355fd3f4ea97`
-- **Candidato:** `24413752` bytes
+- **Candidato SHA-256:** `6bd9588301a6f56e23de34f6687f7b13d27c3234dd9942236b54f0c05fbb959f`
+- **Candidato:** `24581960` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,49 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `158/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `303/322`;
+- O6: `160/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next20 - Controle de IRQ do Transporte SPI
+
+O Next20 fechou `syna_spi_enable_irq` com a assinatura:
+
+```c
+int syna_spi_enable_irq(struct tcm_hw_platform *platform, bool enable);
+```
+
+Uma busca nominal local de `1.222.980` tags, corrigida para aplicar mascara
+de 64 bits em todas as caudas xxHash64, recuperou
+`struct tcm_hw_platform`. O type ID `0x342e61b1` coincide com o stock. A
+mesma tag tambem reproduz os type IDs de `syna_spi_read`,
+`syna_spi_write` e `syna_tcm_allocate_device`, confirmando o contrato por
+quatro fronteiras independentes.
+
+O layout agora representa `struct tcm_hw_platform` embutida em `+0x08` e
+`struct syna_hw_attn_data` em `+0xa8`. Os campos comprovados sao
+`irq_id` em `+0xb8`, `irq_enabled` como `u8` em `+0xbc` e
+`struct mutex` em `+0xc0`. O uso de `u8` e necessario: o stock testa o bit
+zero no caminho de enable e o byte inteiro no caminho de disable.
+
+O corpo candidato coincide exatamente com o stock em `216` bytes, `54`
+instrucoes, secao e relocations. O Ghidra 12.1.2 confirmou C normalizado
+identico, cinco strings resolvidas e `159/159` operacoes P-Code com a mesma
+forma. O harness direto passou seis cenarios em dois ciclos ASAN+UBSAN,
+cobrindo handle invalido, IRQ ausente, transicoes e chamadas idempotentes.
+
+Dois builds canonicos em caminhos `M=` diferentes produziram o mesmo modulo
+de `24.581.960` bytes e SHA-256
+`6bd9588301a6f56e23de34f6687f7b13d27c3234dd9942236b54f0c05fbb959f`.
+A auditoria independente repetiu dois builds limpos sem warnings. A
+superficie KCFI global subiu para `305/322` (`94,72%`) e somente a
+microtarefa `205_syna_spi_enable_irq` foi promovida:
+`160 PASS / 207 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT20_SPI_ENABLE_IRQ_VALIDATION_20260723.md`.
 
 ## Checkpoint Next18 - Comando de Teste de Producao
 
@@ -67,10 +105,10 @@ sem diagnosticos e com identidade byte a byte. O KCFI global permaneceu em
 nas 302 funcoes previamente aprovadas. Somente a microtarefa
 `287_syna_tcm_run_production_test` foi promovida: `158 PASS / 209 READY`.
 
-`syna_spi_enable_irq` continua READY. O type ID stock `0x342e61b1` nao foi
-recuperado mesmo apos buscas locais extensas; nenhuma assinatura aproximada
-foi aceita. O bloqueio e as hipoteses rejeitadas estao documentados em
-`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT18_IRQ_ABI_SEARCH_20260722.md`.
+O bloqueio historico de `syna_spi_enable_irq` documentado em
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT18_IRQ_ABI_SEARCH_20260722.md`
+foi resolvido no Next20 por uma busca nominal corrigida e correlacao entre
+quatro fronteiras KCFI.
 
 Documento autoritativo:
 `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT18_PRODUCTION_TEST_VALIDATION_20260722.md`.

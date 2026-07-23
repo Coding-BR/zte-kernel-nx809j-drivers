@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `2eba92f2f3b95b556b19c336b0369e3150080cf0275889b54d864c497b7678b8`
+Candidato vinculado: `6bd9588301a6f56e23de34f6687f7b13d27c3234dd9942236b54f0c05fbb959f`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -33,6 +33,10 @@ int syna_release(struct inode *inode, struct file *file);
 __poll_t syna_poll(struct file *file, struct poll_table_struct *wait);
 long syna_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 int syna_mmap(struct file *file, struct vm_area_struct *vma);
+
+int syna_spi_enable_irq(struct tcm_hw_platform *platform, bool enable);
+int syna_spi_read(struct tcm_hw_platform *platform, u8 *data, u32 length);
+int syna_spi_write(struct tcm_hw_platform *platform, u8 *data, u32 length);
 
 struct testing_item *syna_tcm_get_testing_0001(void);
 int syna_tcm_testing_build_id(struct tcm_dev *tcm,
@@ -118,6 +122,13 @@ static const struct platform_driver syna_dev_driver;
 static const struct spi_driver syna_spi_driver;
 static const struct file_operations zte_fops;
 ```
+
+O nome nominal `struct tcm_hw_platform` e parte do contrato KCFI. Ele foi
+recuperado simultaneamente em `syna_spi_enable_irq`, `syna_spi_read`,
+`syna_spi_write` e `syna_tcm_allocate_device`. Nao substitua esse tipo por
+`void *`, `long *` ou um cast de ponteiro de funcao. O campo
+`irq_enabled` do bloco de atencao e `u8`, nao `bool`: o Assembly stock testa
+o bit zero e, em outro ramo, o byte completo.
 
 Os 63 wrappers de proc foram removidos depois da comparacao de P-Code, assembly,
 KCFI e call sites. Os handlers usam diretamente as assinaturas nativas

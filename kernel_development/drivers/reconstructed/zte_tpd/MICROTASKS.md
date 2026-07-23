@@ -208,7 +208,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 202_syna_spi_remove | syna_spi_remove | 00119670 | binding | syna_spi_remove.c:syna_spi_remove | READY_FOR_IMPLEMENTATION |
 | 203_syna_spi_read | syna_spi_read | 00119800 | user_abi | syna_spi_read.c:syna_spi_read | READY_FOR_IMPLEMENTATION |
 | 204_syna_spi_write | syna_spi_write | 00119ae4 | user_abi | syna_spi_write.c:syna_spi_write | READY_FOR_IMPLEMENTATION |
-| 205_syna_spi_enable_irq | syna_spi_enable_irq | 00119da0 | async_or_irq | syna_spi_enable_irq.c:syna_spi_enable_irq | READY_FOR_IMPLEMENTATION |
+| 205_syna_spi_enable_irq | syna_spi_enable_irq | 00119da0 | async_or_irq | syna_spi_enable_irq.c:syna_spi_enable_irq | PASS |
 | 206_syna_spi_power_on | syna_spi_power_on | 00119e7c | core_logic | syna_spi_power_on.c:syna_spi_power_on | READY_FOR_IMPLEMENTATION |
 | 207_syna_spi_alloc_mem | syna_spi_alloc_mem | 0011a0e4 | core_logic | syna_spi_alloc_mem.c:syna_spi_alloc_mem | READY_FOR_IMPLEMENTATION |
 | 208_syna_spi_get_gpio | syna_spi_get_gpio | 0011a35c | core_logic | syna_spi_get_gpio.c:syna_spi_get_gpio | READY_FOR_IMPLEMENTATION |
