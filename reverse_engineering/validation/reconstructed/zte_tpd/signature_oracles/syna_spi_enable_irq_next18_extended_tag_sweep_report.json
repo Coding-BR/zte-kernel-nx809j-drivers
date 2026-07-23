@@ -1,0 +1,48 @@
+{
+  "build": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\workspace_tools\\validation\\signature_oracle:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/syna_spi_enable_irq",
+      "kcfi_batch.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC      /work/probe/syna_spi_enable_irq/kcfi_batch.o\n"
+  },
+  "candidate_count": 112086,
+  "config": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\signature_oracles\\syna_spi_enable_irq_next18_extended_tag_sweep_config.json",
+  "config_sha256": "f88b8f46e41908b1ccf6e9a1ed7bcd7b55482321d0b2313cd9794292017f869f",
+  "generated_utc": "2026-07-23T01:22:14.483089+00:00",
+  "matches": [],
+  "mode": "offline_kcfi_batch_oracle",
+  "object": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\workspace_tools\\validation\\signature_oracle\\syna_spi_enable_irq\\kcfi_batch.o",
+    "sha256": "3954c105cb39784a3154abed022bf80570eccdca599951ee35d64d30a0f20c7d",
+    "size": 28406984
+  },
+  "passed": false,
+  "schema_version": "1.0",
+  "source": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\workspace_tools\\validation\\signature_oracle\\syna_spi_enable_irq\\kcfi_batch.c",
+    "sha256": "867096c31f7f2a77513469cbb400151daf8bbcd3c988ad8fb2bc908ab786344a"
+  },
+  "symbol": "syna_spi_enable_irq",
+  "target_kcfi": "0x342e61b1"
+}

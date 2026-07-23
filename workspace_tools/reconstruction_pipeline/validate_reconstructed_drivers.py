@@ -328,6 +328,7 @@ def build_twice(
         "-w", "/work/src/kernel/kernel_platform/common",
         image,
         "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M=/work/validation/{driver}",
+        f"KCFLAGS=-ffile-prefix-map=/work/validation/{driver}=/zte_tpd",
     ]
     extra_symvers = work_dir / "vendor.Module.symvers"
     if extra_symvers.is_file():

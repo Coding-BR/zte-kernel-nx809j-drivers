@@ -434,6 +434,12 @@ extern int syna_cdev_open(struct inode *inode, struct file *filp);
 extern int syna_cdev_release(struct inode *inode, struct file *filp);
 extern int syna_tcm_get_event_data(struct tcm_dev *tcm_dev, u8 *code,
 				   struct tcm_buffer *event_data);
+extern int syna_tcm_buf_copy_2(struct tcm_buffer *dst,
+			       struct tcm_buffer *src);
+extern int syna_tcm_run_production_test(struct tcm_dev *tcm_dev,
+					unsigned char test_code,
+					struct tcm_buffer *test_data,
+					unsigned int response_mode);
 extern int syna_tcm_sleep(struct tcm_dev *tcm, bool enable,
 			  unsigned int delay_ms);
 extern __int64 syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);

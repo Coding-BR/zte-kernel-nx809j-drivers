@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `a26584d01155f435141ab78a2d5fe0f9b70572d62b2ad03695b6be08d51930fe`
-- **Candidato:** `24450896` bytes
+- **Candidato SHA-256:** `214eb06c1a1074b329818fb0b0a7c9d0e9ca1e6880a1454442b8355fd3f4ea97`
+- **Candidato:** `24413752` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,54 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `157/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `302/322`;
+- O6: `158/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `303/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next18 - Comando de Teste de Producao
+
+O Next18 fechou `syna_tcm_run_production_test` com a assinatura canonica:
+
+```c
+int syna_tcm_run_production_test(struct tcm_dev *tcm_dev,
+				 unsigned char test_code,
+				 struct tcm_buffer *test_data,
+				 unsigned int response_mode);
+```
+
+O oraculo KCFI local avaliou `10.584` declaracoes e recuperou o type ID stock
+`0x0b6a0563`. A implementacao preserva os retornos `-241`, o comando `42`, a
+selecao IRQ/polling, o atraso em `+0x20c`, a resposta em `+0x148` e as cinco
+strings stock. A unidade `syna_tcm_func_base_unit.c` tambem restaura o helper
+`syna_tcm_buf_copy` como simbolo local da mesma unidade de traducao, removendo
+o alias global artificial usado no rascunho anterior.
+
+O corpo final coincide exatamente com o stock em `392` bytes, `98`
+instrucoes, secao e relocations, sem equivalencia permissiva. Uma importacao
+limpa no Ghidra 12.1.2 confirmou C normalizado identico e `287/287` registros
+P-Code com a mesma forma ordenada. O harness direto passou nove cenarios em
+dois ciclos ASAN/UBSAN e gerou binarios identicos.
+
+Dois builds canonicos limpos, executados em caminhos `M=` deliberadamente
+diferentes, produziram o mesmo modulo de `24.413.752` bytes, SHA-256
+`214eb06c1a1074b329818fb0b0a7c9d0e9ca1e6880a1454442b8355fd3f4ea97`,
+sem diagnosticos e com identidade byte a byte. O KCFI global permaneceu em
+`303/322` (`94,10%`) sem regressao
+nas 302 funcoes previamente aprovadas. Somente a microtarefa
+`287_syna_tcm_run_production_test` foi promovida: `158 PASS / 209 READY`.
+
+`syna_spi_enable_irq` continua READY. O type ID stock `0x342e61b1` nao foi
+recuperado mesmo apos buscas locais extensas; nenhuma assinatura aproximada
+foi aceita. O bloqueio e as hipoteses rejeitadas estao documentados em
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT18_IRQ_ABI_SEARCH_20260722.md`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT18_PRODUCTION_TEST_VALIDATION_20260722.md`.
+
+Gate de independencia de caminho:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT18_PATH_INDEPENDENCE_20260722.md`.
 
 ## Checkpoint Next17 - ABI e Fluxo do `unlocked_ioctl`
 

@@ -26,6 +26,14 @@ GENERATED_SUFFIXES = (".o", ".ko", ".mod", ".cmd")
 DIAGNOSTIC_RE = re.compile(r"warning:|error:|clock skew", re.IGNORECASE)
 
 
+def module_path_for_cycle(audit_name: str, cycle: int) -> str:
+    if cycle == 1:
+        path_label = "a"
+    else:
+        path_label = f"path_independence_much_longer_cycle_{cycle}"
+    return f"/work/engineering/validation/{audit_name}/{path_label}/zte_tpd"
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -115,11 +123,15 @@ def main() -> int:
     run_id = generated.strftime("%Y%m%dT%H%M%SZ")
     run_root = root / "validation" / "zte_tpd" / "canonical_builds" / args.label / run_id
     run_root.mkdir(parents=True, exist_ok=False)
-    module_path = f"/work/engineering/validation/{args.audit_name}/zte_tpd"
+    module_paths = [
+        module_path_for_cycle(args.audit_name, cycle)
+        for cycle in range(1, args.cycles + 1)
+    ]
     source_record = source_tree_record(curated)
     cycle_records = []
 
     for cycle in range(1, args.cycles + 1):
+        module_path = module_paths[cycle - 1]
         cycle_root = run_root / f"cycle_{cycle}"
         cycle_root.mkdir()
         clean_log = cycle_root / "clean.log"
@@ -129,11 +141,12 @@ def main() -> int:
 set -euo pipefail
 export PATH=/work/toolchains/{args.clang_revision}/bin:$PATH
 MODULE={module_path}
+PREFIX_MAP="-ffile-prefix-map=$MODULE=/zte_tpd"
 mkdir -p "$(dirname "$MODULE")"
 cp -a /host/curated/zte_tpd "$MODULE"
 find "$MODULE" -type f -exec touch -d @946684800 {{}} +
 make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" clean > /out/clean.log 2>&1
-make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" KBUILD_EXTRA_SYMBOLS="$MODULE/vendor.Module.symvers" modules -j{args.parallelism} > /out/build.log 2>&1
+make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" KCFLAGS="$PREFIX_MAP" KBUILD_EXTRA_SYMBOLS="$MODULE/vendor.Module.symvers" modules -j{args.parallelism} > /out/build.log 2>&1
 cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
 """.strip()
         command = [
@@ -162,6 +175,7 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         cycle_records.append(
             {
                 "cycle": cycle,
+                "module_path": module_path,
                 "accepted": accepted,
                 "returncode": completed.returncode,
                 "duration_seconds": duration,
@@ -208,10 +222,11 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         "cycles_requested": args.cycles,
         "cycles_accepted": sum(record["accepted"] for record in cycle_records),
         "parallelism": args.parallelism,
-        "module_path": module_path,
+        "module_path": module_paths[0],
+        "module_paths": module_paths,
         "container": args.image,
         "toolchain": args.clang_revision,
-        "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
+        "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
         "output_filesystem": "independent ephemeral container Linux filesystem",
         "source_tree": source_record,
         "cycles": cycle_records,
@@ -221,8 +236,10 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
             "sha256": sha256_file(promoted) if promoted else None,
         },
         "notes": [
-            "Every cycle starts in a new container and copies the curated source into the same canonical M= path.",
+            "Every cycle starts in a new container and copies the curated source into a deliberately different M= path.",
             "Input mtimes are normalized before make clean to prevent host bind-mount clock skew.",
+            "KCFLAGS maps the complete module path to /zte_tpd for source objects and generated *.mod.c debug metadata.",
+            "Byte identity across the deliberately different M= paths is a mandatory path-independence gate.",
             "A cycle is rejected on nonzero exit, missing artifact, warning, error or clock-skew text.",
             "Promotion occurs only when every accepted cycle produces identical artifact bytes and size.",
         ],
