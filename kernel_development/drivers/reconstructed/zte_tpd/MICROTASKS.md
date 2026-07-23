@@ -219,7 +219,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 213_syna_sysfs_get_delta_show | syna_sysfs_get_delta_show | 0011aadc | user_abi | syna_sysfs_get_delta_show.c:syna_sysfs_get_delta_show | READY_FOR_IMPLEMENTATION |
 | 214_syna_sysfs_reset_store | syna_sysfs_reset_store | 0011afa8 | user_abi | syna_sysfs_reset_store.c:syna_sysfs_reset_store | READY_FOR_IMPLEMENTATION |
 | 215_syna_sysfs_irq_en_store | syna_sysfs_irq_en_store | 0011b12c | user_abi | syna_sysfs_irq_en_store.c:syna_sysfs_irq_en_store | READY_FOR_IMPLEMENTATION |
-| 216_syna_sysfs_pwr_store | syna_sysfs_pwr_store | 0011b2c4 | user_abi | syna_sysfs_pwr_store.c:syna_sysfs_pwr_store | READY_FOR_IMPLEMENTATION |
+| 216_syna_sysfs_pwr_store | syna_sysfs_pwr_store | 0011b2c4 | user_abi | syna_sysfs_pwr_store.c:syna_sysfs_pwr_store | PASS |
 | 217_syna_sysfs_fw_update_store | syna_sysfs_fw_update_store | 0011b3b0 | user_abi | syna_sysfs_fw_update_store.c:syna_sysfs_fw_update_store | READY_FOR_IMPLEMENTATION |
 | 218_syna_testing_pt0a_zte | syna_testing_pt0a_zte | 0011b4c0 | core_logic | syna_testing_pt0a_zte.c:syna_testing_pt0a_zte | READY_FOR_IMPLEMENTATION |
 | 219_syna_testing_pt05_zte | syna_testing_pt05_zte | 0011b818 | core_logic | syna_testing_pt05_zte.c:syna_testing_pt05_zte | READY_FOR_IMPLEMENTATION |

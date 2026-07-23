@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `e0ba557f6d5ab22719e4ad5fe776d5d97f3b8658103028dcebc1036f66dc0f62`
-- **Candidato:** `24588112` bytes
+- **Candidato SHA-256:** `f3bbf1ef92ee503cb87721cf7ac3b3183bdd9a9032b2585af63e88bc9752f918`
+- **Candidato:** `24646416` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,41 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `167/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `168/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `306/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next31 - sysfs power store
+
+O Next31 promoveu `216_syna_sysfs_pwr_store` para `PASS` depois de fechar
+cinco gates independentes. O fonte preserva a hierarquia `kobject`/`device`,
+os offsets `+0x582`, `+0x6c0` e `+0x6c8`, os callbacks com assinatura
+`int (*)(struct device *)`, os prefixos `resume`/`suspend`, os retornos stock
+e os dois literais de log.
+
+O build canonico foi repetido em dois containers independentes com resultado
+identico: `24646416` bytes e SHA-256
+`f3bbf1ef92ee503cb87721cf7ac3b3183bdd9a9032b2585af63e88bc9752f918`.
+Assembly, relocations e size coincidiram em `58` instrucoes e `232` bytes.
+O type ID KCFI da funcao coincidiu em `0x9ce291cd`; o guard indireto dos
+callbacks tambem foi preservado pela igualdade de opcode.
+
+Uma nova importacao headless no Ghidra 12.1.2 exportou `512` funcoes. A
+comparacao restrita ao alvo confirmou `232` bytes, `160` registros P-Code,
+pseudocodigo C normalizado e strings equivalentes. O harness direto passou dez
+casos em dois ciclos Clang 19.0.1 com ASAN e UBSAN, com SHA de binario
+identico entre os ciclos.
+
+O documento autoritativo e
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT31_SYSFS_PWR_STORE_VALIDATION_20260723.md`.
+
+O alvo `211_syna_sysfs_info_show` continua `READY`: os probes atuais ainda
+produzem `1008` bytes contra `1020` do stock. O alvo
+`214_syna_sysfs_reset_store` tambem continua `READY`. O contador global agora
+e `168 PASS / 199 READY`.
 
 ## Checkpoint Next28 - sysfs debug store
 
@@ -55,8 +84,8 @@ O documento autoritativo e
 `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT28_SYSFS_DEBUG_STORE_VALIDATION_20260723.md`.
 
 O alvo `211_syna_sysfs_info_show` continua `READY`: os probes atuais ainda
-produzem `1008` bytes contra `1020` do stock. O contador global agora e
-`167 PASS / 200 READY`.
+produzem `1008` bytes contra `1020` do stock. O contador naquele checkpoint
+era `167 PASS / 200 READY`.
 
 ## Checkpoint Next26 - Remocao Controlada da Hierarquia Sysfs
 
