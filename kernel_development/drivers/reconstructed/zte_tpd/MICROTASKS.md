@@ -200,10 +200,10 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 194_syna_cdev_ioctl_raw_write | syna_cdev_ioctl_raw_write | 001178d8 | user_abi | syna_cdev_ioctl_raw_write.c:syna_cdev_ioctl_raw_write | READY_FOR_IMPLEMENTATION |
 | 195_syna_cdev_process_reports | syna_cdev_process_reports | 00117c90 | core_logic | syna_cdev_process_reports.c:syna_cdev_process_reports | READY_FOR_IMPLEMENTATION |
 | 196_syna_request_managed_device | syna_request_managed_device | 00118364 | core_logic | syna_request_managed_device.c:syna_request_managed_device | READY_FOR_IMPLEMENTATION |
-| 197_syna_spi_hw_reset | syna_spi_hw_reset | 00118384 | core_logic | syna_spi_hw_reset.c:syna_spi_hw_reset | READY_FOR_IMPLEMENTATION |
+| 197_syna_spi_hw_reset | syna_spi_hw_reset | 00118384 | core_logic | syna_spi_hw_reset.c:syna_spi_hw_reset | PASS |
 | 198_syna_hw_interface_init | syna_hw_interface_init | 00118418 | lifecycle | syna_hw_interface_init.c:syna_hw_interface_init | READY_FOR_IMPLEMENTATION |
 | 199_syna_hw_interface_exit | syna_hw_interface_exit | 001184e0 | lifecycle | syna_hw_interface_exit.c:syna_hw_interface_exit | PASS |
-| 200_syna_spi_release | syna_spi_release | 00118514 | user_abi | syna_spi_release.c:syna_spi_release | READY_FOR_IMPLEMENTATION |
+| 200_syna_spi_release | syna_spi_release | 00118514 | user_abi | syna_spi_release.c:syna_spi_release | PASS |
 | 201_syna_spi_probe | syna_spi_probe | 00118544 | binding | syna_spi_probe.c:syna_spi_probe | READY_FOR_IMPLEMENTATION |
 | 202_syna_spi_remove | syna_spi_remove | 00119670 | binding | syna_spi_remove.c:syna_spi_remove | READY_FOR_IMPLEMENTATION |
 | 203_syna_spi_read | syna_spi_read | 00119800 | user_abi | syna_spi_read.c:syna_spi_read | READY_FOR_IMPLEMENTATION |

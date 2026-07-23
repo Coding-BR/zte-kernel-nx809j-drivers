@@ -1,4 +1,4 @@
 void syna_spi_release(struct device *dev)
 {
-  printk(unk_3420F, "syna_spi_release");
+  printk("\0016[info ] %s: SPI device removed\n", "syna_spi_release");
 }

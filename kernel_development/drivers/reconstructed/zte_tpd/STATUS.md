@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `6bd9588301a6f56e23de34f6687f7b13d27c3234dd9942236b54f0c05fbb959f`
-- **Candidato:** `24581960` bytes
+- **Candidato SHA-256:** `2f5454ccdf37b7b34b4bcbc72d52c314dcb76ad974813c396973255ca144b4f8`
+- **Candidato:** `24581424` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,48 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `160/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O6: `162/367` microtarefas possuem build, KCFI e teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next21/Next22 - Release e Reset do Transporte SPI
+
+O Next21 fechou `syna_spi_release` com a assinatura GKI:
+
+```c
+void syna_spi_release(struct device *dev);
+```
+
+O rascunho ja tinha ABI, tamanho e opcodes corretos, mas referenciava o
+marcador artificial `unk_3420F`, cujo conteudo nao correspondia ao stock. A
+implementacao agora usa a string comprovada
+`"\0016[info ] %s: SPI device removed\n"`. O corpo coincide em `44` bytes,
+`11` instrucoes, secao, relocations, KCFI `0x6c81b8c8`, C normalizado e
+`34/34` operacoes P-Code. O harness direto valida o log exato e o argumento
+`dev` deliberadamente ignorado, inclusive quando nulo.
+
+O Next22 fechou `syna_spi_hw_reset` sem alterar seu corpo, que ja coincidia
+integralmente com o stock. A funcao preserva os campos `reset_gpio` em
+`+0xf0`, `reset_on_state` em `+0xf4` e `reset_active_ms` em `+0xfc`, a
+polaridade, o atraso ativo condicional, o atraso final de `80 ms` e a ordem
+das chamadas GPIO. O corpo coincide em `144` bytes, `36` instrucoes,
+relocations, KCFI `0x2b3cba1b`, C normalizado e `110/110` operacoes P-Code.
+O harness cobre quatro cenarios em dois ciclos ASAN+UBSAN.
+
+Dois builds canonicos em caminhos `M=` diferentes produziram o mesmo modulo
+de `24.581.424` bytes e SHA-256
+`2f5454ccdf37b7b34b4bcbc72d52c314dcb76ad974813c396973255ca144b4f8`.
+Uma auditoria independente repetiu outros dois builds limpos, obteve o mesmo
+hash e registrou stderr vazio nos dois ciclos.
+O KCFI global permaneceu em `305/322` (`94,72%`), a superficie direta em
+`176/176` e as oito familias de callback em `143/143`. Somente as
+microtarefas `197_syna_spi_hw_reset` e `200_syna_spi_release` foram
+promovidas: `162 PASS / 205 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT21_22_SPI_LIFECYCLE_VALIDATION_20260723.md`.
 
 ## Checkpoint Next20 - Controle de IRQ do Transporte SPI
 

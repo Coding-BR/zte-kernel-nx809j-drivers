@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `6bd9588301a6f56e23de34f6687f7b13d27c3234dd9942236b54f0c05fbb959f`
+Candidato vinculado: `2f5454ccdf37b7b34b4bcbc72d52c314dcb76ad974813c396973255ca144b4f8`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -184,6 +184,17 @@ O harness `tcm_lifecycle_harness_report.json` cobre esses contratos offline.
 
 O callback `syna_spi_release` e uma excecao fechada: stock e candidato usam
 `void (struct device *)`, secao `.text`, tamanho 44 e KCFI `0x6c81b8c8`.
+O argumento nao e lido. O unico efeito e o `printk` de prioridade info com
+`"\0016[info ] %s: SPI device removed\n"`; nao reintroduza o marcador
+`unk_3420F`.
+
+`syna_spi_hw_reset` tambem esta fechado offline como
+`void (struct syna_hw_interface *)`, KCFI `0x2b3cba1b`. A funcao usa
+`reset_gpio` em `+0xf0`, `reset_on_state` em `+0xf4` e
+`reset_active_ms` em `+0xfc`. O primeiro valor GPIO e
+`reset_on_state & 1`; o segundo e `reset_on_state == 0`. O atraso ativo so e
+executado quando o campo, interpretado como `int`, e positivo, seguido sempre
+por `msleep(80)`.
 
 ## 2. Estrutura de Dados Estrita e Offsets (Arquivos .h)
 
