@@ -21,8 +21,8 @@ irqreturn_t syna_dev_isr(int irq, void *data)
 		return IRQ_HANDLED;
 
 	tcm->isr_pid = current->pid;
-	retval = syna_tcm_get_event_data((__int64)tcm->tcm_dev, &event,
-					 (__int64)&tcm->event_data);
+	retval = syna_tcm_get_event_data(tcm->tcm_dev, &event,
+					 (struct tcm_buffer *)&tcm->event_data);
 	if (retval < 0)
 		printk("\0013[error] %s: Fail to get event data\n", __func__);
 

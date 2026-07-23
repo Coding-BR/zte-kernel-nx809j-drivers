@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `647340ba7ca988b83d3f18f20013bc8c0726e765b0a1da83724aeafba9c84ad8`
-- **Candidato:** `24262064` bytes
+- **Candidato SHA-256:** `0b279dc039ab6ad9d670ebd66308d977fd2c286234a2852b70370683b3e8d5ce`
+- **Candidato:** `24381040` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,45 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `155/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `299/322`;
+- O6: `156/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `301/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next16 - Roteamento de Eventos TouchComm
+
+O Next16 fechou `syna_tcm_get_event_data` com a assinatura KCFI
+`int (struct tcm_dev *, unsigned char *, struct tcm_buffer *)`, type ID
+`0x2431fd45`. O oraculo local compilou `1.200` declaracoes e recuperou o nome
+nominal `struct tcm_buffer`; um segundo oraculo de `150` declaracoes confirmou
+o callback `read_message` como `int (struct tcm_dev *, unsigned char *)`, KCFI
+`0xe10dda21`.
+
+O layout agora representa os dois buffers de `72` bytes comprovados pelo ELF:
+`report_buf` em `+0x100`, com `data_length` em `+0x10c`, e `resp_buf` em
+`+0x148`, com `data_length` em `+0x154`. O corpo do alvo coincide exatamente
+com o stock em `316` bytes, `79` instrucoes, secao, relocations e destinos dos
+dois saltos para a copia `static` local. Nao foi usada equivalencia permissiva.
+
+Uma importacao limpa no Ghidra 12.1.2 confirmou C normalizado identico, as
+cinco strings exatas e `236/236` registros P-Code com a mesma forma ordenada.
+O comparador passou a normalizar enderecos `LAB_*` por mapeamento bijetivo e
+possui testes que rejeitam alteracao do grafo de labels. O harness direto
+passou `14/14` em duas execucoes ASAN/UBSAN, incluindo limites `0/1/15/16/254/255`,
+selecao de `report_buf`/`resp_buf`, erros e propagacao dos retornos.
+
+Dois builds limpos produziram o mesmo modulo de `24.381.040` bytes, SHA-256
+`0b279dc039ab6ad9d670ebd66308d977fd2c286234a2852b70370683b3e8d5ce`.
+O KCFI global subiu para `301/322` (`93,48%`) e somente a microtarefa
+`269_syna_tcm_get_event_data` foi promovida: `156 PASS / 211 READY`.
+
+`syna_tcm_v1_read_message` recebeu apenas a assinatura comprovada. Sua
+microtarefa continua READY porque o corpo candidato tem `5612` bytes contra
+`5484` stock e ainda nao possui paridade de assembly, Ghidra e harness integral.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT16_EVENT_DATA_VALIDATION_20260722.md`.
 
 ## Checkpoint Next15 - Orquestracao de Reflash
 

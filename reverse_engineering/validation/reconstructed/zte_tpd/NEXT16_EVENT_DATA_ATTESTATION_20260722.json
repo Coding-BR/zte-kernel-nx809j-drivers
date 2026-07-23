@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-22T23:45:00Z",
+  "driver": "zte_tpd",
+  "checkpoint": "next16_event_data",
+  "target": "syna_tcm_get_event_data",
+  "stock": {
+    "path": "reference_modules/stock/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "entry": "00121ad4",
+    "body_bytes": 316
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "0b279dc039ab6ad9d670ebd66308d977fd2c286234a2852b70370683b3e8d5ce",
+    "size": 24381040
+  },
+  "verdict": "PASS_SCOPED_ABI_BEHAVIOR_ASSEMBLY_GHIDRA_OFFLINE",
+  "passed": true,
+  "checks": {
+    "signature_oracle": true,
+    "callback_signature_oracle": true,
+    "layout_static_asserts": true,
+    "reproducible_build_two_cycles": true,
+    "kcfi_exact": true,
+    "assembly_exact": true,
+    "relocations_exact": true,
+    "ghidra_normalized_c_exact": true,
+    "ghidra_pcode_shape_exact": true,
+    "direct_harness_asan_ubsan": true,
+    "microtask_scoped_promotion": true,
+    "hardware_validation": false,
+    "independent_review": false
+  },
+  "metrics": {
+    "signature_candidates": 1200,
+    "callback_signature_candidates": 150,
+    "stock_instructions": 79,
+    "candidate_instructions": 79,
+    "stock_pcode_records": 236,
+    "candidate_pcode_records": 236,
+    "harness_tests_per_repetition": 14,
+    "harness_repetitions": 2,
+    "kcfi_matched": 301,
+    "kcfi_total": 322,
+    "microtasks_pass": 156,
+    "microtasks_ready": 211,
+    "microtasks_total": 367
+  },
+  "evidence": [
+    {
+      "path": "build_next16_event_final2_report.json",
+      "sha256": "ffe1c6da9ba8a200c53cf71df42723199d273ce1f7c491c3e94f37f87800bb1a"
+    },
+    {
+      "path": "assembly_comparison_next16_event_final2.json",
+      "sha256": "acc5b11ed71b1f309677f1785c2a2c5f91a8455f431304511b2141e639ec9c2e"
+    },
+    {
+      "path": "ghidra_semantic_comparison_next16_event_final2.json",
+      "sha256": "21ccb7b600cb9b7a52a2d8a8b2dbba2a97be6d850f970bc953ac79729a72909c"
+    },
+    {
+      "path": "harness/next16_event_harness_report.json",
+      "sha256": "aa2b304c8a2a58a1578c2a7b581e5813f055914d50895da1b32bbe67cd07a953"
+    },
+    {
+      "path": "kcfi_comparison_next16_event_final2.json",
+      "sha256": "0ef3945b0d744ea6e577b5c546d88ca384b5c9d09663f64c3fd2dca7b6dea877"
+    },
+    {
+      "path": "kcfi_full_surface_next16_event_final2.json",
+      "sha256": "8796844fd00810f16bc8fed7fccaaacede552539e2b7e9ba14396c5bc6755ea7"
+    },
+    {
+      "path": "microtask_attestation_next16_event_final2.json",
+      "sha256": "64e8cb66b9a48d63ceccd7ecd568b7dff3167a149ff63eb80689bfebca5e6fc0"
+    },
+    {
+      "path": "signature_oracles/syna_tcm_get_event_data_next16_report.json",
+      "sha256": "8ee2b022458b762e0564ebaa877d2e09b841543eba22ee993e97ce0a627b0927"
+    },
+    {
+      "path": "signature_oracles/syna_tcm_v1_read_message_next16_report.json",
+      "sha256": "e1a542a0f421521446d64a8f4ba7f36b91eb5dfcb6cdd87f05002837f3b91d71"
+    }
+  ],
+  "promoted_microtasks": [
+    "269_syna_tcm_get_event_data"
+  ],
+  "dependencies_not_promoted": [
+    {
+      "function": "syna_tcm_v1_read_message",
+      "reason": "KCFI exact, but candidate body is 5612 bytes versus 5484 stock and lacks strict body validation"
+    },
+    {
+      "function": "syna_tcm_buf_copy_2",
+      "reason": "Local copy placement is proven for the target; the standalone helper remains an independent microtask"
+    }
+  ],
+  "limitations": [
+    "The verdict is scoped to one function and is not a whole-module equivalence claim.",
+    "The host harness stubs read_message and buffer copy internals.",
+    "No hardware path or independent review was performed."
+  ]
+}

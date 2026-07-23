@@ -182,6 +182,40 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
 
         self.assertNotEqual(baseline_normalized, changed_normalized)
 
+    def test_relocated_local_labels_are_normalized_bijectively(self) -> None:
+        stock = (
+            "void target(void) { goto LAB_00101020; "
+            "LAB_00101010: return; LAB_00101020: goto LAB_00101010; }"
+        )
+        candidate = (
+            "void target(void) { goto LAB_00203040; "
+            "LAB_00203020: return; LAB_00203040: goto LAB_00203020; }"
+        )
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertEqual(len(stock_artifacts), 2)
+        self.assertEqual(len(candidate_artifacts), 2)
+
+    def test_changed_local_label_graph_is_rejected(self) -> None:
+        baseline = (
+            "void target(void) { goto LAB_00101020; "
+            "LAB_00101010: return; LAB_00101020: goto LAB_00101010; }"
+        )
+        changed = (
+            "void target(void) { goto LAB_00203040; "
+            "LAB_00203020: return; LAB_00203040: goto LAB_00203040; }"
+        )
+
+        baseline_normalized, _, _ = MODULE.normalize_decompiled(baseline, {})
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed, {})
+
+        self.assertNotEqual(baseline_normalized, changed_normalized)
+
 
 if __name__ == "__main__":
     unittest.main()

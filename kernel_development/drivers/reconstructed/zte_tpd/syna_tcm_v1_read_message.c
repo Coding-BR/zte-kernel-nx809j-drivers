@@ -1,5 +1,7 @@
-__int64 __fastcall syna_tcm_v1_read_message(__int64 a1, _BYTE *a2, __int64 a3)
+int syna_tcm_v1_read_message(struct tcm_dev *tcm_dev, u8 *code)
 {
+  __int64 a1 = (__int64)tcm_dev;
+  _BYTE *a2 = code;
   _BYTE *v4; // x25
   _BOOL4 v5; // w26
   int v6; // w8
@@ -205,7 +207,7 @@ __int64 __fastcall syna_tcm_v1_read_message(__int64 a1, _BYTE *a2, __int64 a3)
   {
     v65 = unk_3365A;
 LABEL_93:
-    printk(v65, "syna_tcm_v1_read_message", a3);
+    printk(v65, "syna_tcm_v1_read_message");
     return (unsigned int)-241;
   }
   if ( !*(_QWORD *)(a1 + 72) )

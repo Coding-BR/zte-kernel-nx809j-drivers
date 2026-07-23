@@ -9,6 +9,8 @@ typedef u64 tcm_unaligned_u64
 
 typedef void (*tcm_lifecycle_fn)(struct tcm_dev *tcm);
 
+typedef int (*tcm_read_message_fn)(struct tcm_dev *tcm, u8 *code);
+
 typedef int (*tcm_write_message_fn)(struct tcm_dev *tcm, u8 command,
 				    u8 *payload, u32 length,
 				    u8 *response_code, u32 delay_ms);
@@ -110,7 +112,7 @@ struct tcm_features_info {
 	u8 raw[0x10];
 };
 
-struct tcm_response_buffer {
+struct tcm_buffer {
 	u8 *data;
 	u32 buf_size;
 	u32 data_length;
@@ -149,8 +151,12 @@ struct tcm_dev {
 	};
 	struct tcm_application_info application_info;
 	struct tcm_boot_info boot_info;
-	u8 reserved_0100[0x48];
-	struct tcm_response_buffer response;
+	struct tcm_buffer report_buf;
+	union {
+		struct tcm_buffer resp_buf;
+		/* Legacy name retained while older reconstructed callers migrate. */
+		struct tcm_buffer response;
+	};
 	u8 reserved_0190[0x58];
 	u32 timing_01e8;
 	u32 timing_01ec;
@@ -165,7 +171,7 @@ struct tcm_dev {
 	u8 reserved_037b;
 	u32 predict_reading_offset;
 	u8 reserved_0380[0x10];
-	void *read_message;
+	tcm_read_message_fn read_message;
 	tcm_write_message_fn write_message;
 	tcm_lifecycle_fn terminate;
 	tcm_set_up_max_rw_size_fn set_up_max_rw_size;
@@ -198,6 +204,9 @@ static_assert(offsetof(struct tcm_dev, identify_max_write_size) == 0x96);
 static_assert(offsetof(struct tcm_dev, identification_info) == 0x80);
 static_assert(offsetof(struct tcm_dev, application_info) == 0xb0);
 static_assert(offsetof(struct tcm_dev, boot_info) == 0xe0);
+static_assert(offsetof(struct tcm_dev, report_buf) == 0x100);
+static_assert(offsetof(struct tcm_dev, report_buf.data_length) == 0x10c);
+static_assert(offsetof(struct tcm_dev, resp_buf) == 0x148);
 static_assert(offsetof(struct tcm_dev, response) == 0x148);
 static_assert(offsetof(struct tcm_dev, response.data) == 0x148);
 static_assert(offsetof(struct tcm_dev, response.buf_size) == 0x150);
@@ -245,7 +254,7 @@ static_assert(offsetof(struct tcm_boot_info, erase_page_size_words) == 0x05);
 static_assert(offsetof(struct tcm_boot_info, max_write_payload_size) == 0x07);
 static_assert(offsetof(struct tcm_boot_info, v3_page_size_words) == 0x14);
 static_assert(sizeof(struct tcm_features_info) == 0x10);
-static_assert(sizeof(struct tcm_response_buffer) == 0x48);
+static_assert(sizeof(struct tcm_buffer) == 0x48);
 static_assert(sizeof(struct tcm_dev) == 0x23e8);
 
 #endif

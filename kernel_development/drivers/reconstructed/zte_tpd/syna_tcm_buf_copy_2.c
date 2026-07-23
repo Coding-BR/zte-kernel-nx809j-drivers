@@ -1,5 +1,12 @@
-__int64 __fastcall syna_tcm_buf_copy_2(__int64 a1, __int64 a2)
+#ifndef SYNA_TCM_BUF_COPY_STORAGE
+#define SYNA_TCM_BUF_COPY_STORAGE
+#endif
+
+SYNA_TCM_BUF_COPY_STORAGE int syna_tcm_buf_copy_2(struct tcm_buffer *dst,
+						  struct tcm_buffer *src)
 {
+  __int64 a1 = (__int64)dst;
+  __int64 a2 = (__int64)src;
   __int64 v4; // x2
   unsigned int v5; // w21
   unsigned int v6; // w3

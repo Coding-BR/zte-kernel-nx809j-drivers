@@ -19,6 +19,7 @@ SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
     r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
     r"0x[0-9a-fA-F]+(\s*\))"
 )
+LOCAL_LABEL_RE = re.compile(r"\bLAB_[0-9a-fA-F]+\b")
 ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
     r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
@@ -122,6 +123,25 @@ def normalize_decompiled(
         return f"{match.group(1)}GHIDRA_ALLOC_TAG{match.group(3)}"
 
     replaced = ALLOC_TAG_ARGUMENT_RE.sub(replace_alloc_tag, replaced)
+
+    local_labels: dict[str, str] = {}
+
+    def replace_local_label(match: re.Match[str]) -> str:
+        label = match.group(0)
+        normalized = local_labels.get(label)
+        if normalized is None:
+            normalized = f"GHIDRA_LOCAL_LABEL_{len(local_labels)}"
+            local_labels[label] = normalized
+            artifact_evidence.append(
+                {
+                    "kind": "ghidra_local_label_address",
+                    "value": label,
+                    "normalized": normalized,
+                }
+            )
+        return normalized
+
+    replaced = LOCAL_LABEL_RE.sub(replace_local_label, replaced)
     return re.sub(r"\s+", "", replaced), evidence, artifact_evidence
 
 

@@ -1,0 +1,126 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer next16_event_harness.c -o build/next16_event_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next16_event_harness"
+  ],
+  "coverage": {
+    "asan_ubsan": true,
+    "copy_success_and_failure": true,
+    "direct_source_functions": 1,
+    "exact_diagnostic_strings": true,
+    "exact_function_pointer_type": true,
+    "hardware_paths_exercised": false,
+    "null_tcm_code_and_event_paths": true,
+    "positive_return_propagation": true,
+    "read_callback_arguments_and_error": true,
+    "report_and_response_buffer_selection": true,
+    "report_and_response_code_boundaries": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS null_tcm\nPASS null_code\nPASS read_failure\nPASS null_event_data\nPASS report_empty\nPASS report_success_boundaries\nPASS report_copy_failure\nPASS response_empty\nPASS response_success_boundaries\nPASS response_copy_failure\nPASS noncopy_codes\nPASS positive_read_result_preserved\nPASS only_selected_buffer_is_copied\nSUMMARY 14/14 passed\n",
+      "summary": "SUMMARY 14/14 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "null_tcm",
+        "null_code",
+        "read_failure",
+        "null_event_data",
+        "report_empty",
+        "report_success_boundaries",
+        "report_copy_failure",
+        "response_empty",
+        "response_success_boundaries",
+        "response_copy_failure",
+        "noncopy_codes",
+        "positive_read_result_preserved",
+        "only_selected_buffer_is_copied"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS null_tcm\nPASS null_code\nPASS read_failure\nPASS null_event_data\nPASS report_empty\nPASS report_success_boundaries\nPASS report_copy_failure\nPASS response_empty\nPASS response_success_boundaries\nPASS response_copy_failure\nPASS noncopy_codes\nPASS positive_read_result_preserved\nPASS only_selected_buffer_is_copied\nSUMMARY 14/14 passed\n",
+      "summary": "SUMMARY 14/14 passed",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "null_tcm",
+        "null_code",
+        "read_failure",
+        "null_event_data",
+        "report_empty",
+        "report_success_boundaries",
+        "report_copy_failure",
+        "response_empty",
+        "response_success_boundaries",
+        "response_copy_failure",
+        "noncopy_codes",
+        "positive_read_result_preserved",
+        "only_selected_buffer_is_copied"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-22T23:31:27.557137+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next16_event_harness.c",
+      "sha256": "ed60d3959cb14e73b7489b8d77e1f2474606e17da6eab0c1eb917b263db8969c",
+      "size": 8810
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_tcm_get_event_data.c",
+      "sha256": "4a32089b80534522d20bec9bf4aadc805f02817a804cf2aa19e42a1f0c1e144a",
+      "size": 1533
+    }
+  ],
+  "limitations": [
+    "The harness stubs read_message and syna_tcm_buf_copy and proves only the recovered event-routing contract.",
+    "The internal allocation, locking and copy implementation remains an independent microtask.",
+    "Assembly, relocations, KCFI, Ghidra P-Code and full-module integration remain independent gates.",
+    "No smartphone, ADB, fastboot, module loading, SPI, IRQ, MMIO or flash write is performed."
+  ],
+  "mode": "offline_direct_source_next16_event_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 14,
+    "failed": [],
+    "passed": [
+      "signature_contract",
+      "null_tcm",
+      "null_code",
+      "read_failure",
+      "null_event_data",
+      "report_empty",
+      "report_success_boundaries",
+      "report_copy_failure",
+      "response_empty",
+      "response_success_boundaries",
+      "response_copy_failure",
+      "noncopy_codes",
+      "positive_read_result_preserved",
+      "only_selected_buffer_is_copied"
+    ],
+    "summary": "SUMMARY 14/14 passed"
+  }
+}

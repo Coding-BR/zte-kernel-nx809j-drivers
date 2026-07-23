@@ -444,7 +444,7 @@ LABEL_112:
         goto LABEL_131;
       v73 += v74;
     }
-    while ( (*(_DWORD *)(a1 + 504) == 1 && (syna_tcm_v1_read_message(a1, 0, 0) & 0x80000000) != 0
+    while ( (*(_DWORD *)(a1 + 504) == 1 && (syna_tcm_v1_read_message((struct tcm_dev *)a1, NULL) & 0x80000000) != 0
           || *(_DWORD *)(a1 + 504) == 1)
          && v73 < *(_DWORD *)(a1 + 520) );
     if ( !*(_DWORD *)(a1 + 504) )

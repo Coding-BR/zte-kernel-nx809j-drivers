@@ -1,63 +1,68 @@
-__int64 __fastcall syna_tcm_get_event_data(__int64 a1, unsigned __int8 *a2, __int64 a3)
-{
-  __int64 (*v4)(__int64, unsigned char *, __int64); // x8
-  __int64 result; // x0
-  __int64 v8; // x2
-  __int64 v9; // x2
-  unsigned int v10; // w0
-  void *v11; // x0
-  unsigned int v12; // w19
-  void *v13; // x8
+#ifndef SYNA_TCM_GET_EVENT_DATA_EXTERNAL_BUF_COPY
+static int syna_tcm_buf_copy(struct tcm_buffer *dst,
+			     struct tcm_buffer *src);
 
-  if ( !a1 )
-  {
-    v11 = unk_3365A;
-LABEL_17:
-    printk(v11, "syna_tcm_get_event_data", a3);
-    return 4294967055LL;
-  }
-  if ( !a2 )
-  {
-    v11 = unk_38286;
-    goto LABEL_17;
-  }
-  v4 = *(__int64 (**)(__int64, unsigned char *, __int64))(a1 + 912);
-  if ( *((_DWORD *)v4 - 1) != -519185887 )
-    __break(0x8228u);
-  result = v4(a1, a2, a3);
-  if ( (result & 0x80000000) != 0 )
-  {
-    v12 = result;
-    printk(unk_3ACBB, "syna_tcm_get_event_data", v8);
-    return v12;
-  }
-  if ( !a3 )
-    return result;
-  LODWORD(v9) = *a2;
-  if ( (unsigned int)(v9 - 255) >= 0xFFFFFF11 )
-  {
-    if ( !*(_DWORD *)(a1 + 268) )
-      return result;
-    v10 = syna_tcm_buf_copy_2(a3, a1 + 256);
-    v9 = *a2;
-    if ( (v10 & 0x80000000) != 0 )
-    {
-      v13 = unk_3BA0D;
-LABEL_21:
-      v12 = v10;
-      printk(v13, "syna_tcm_get_event_data", v9);
-      return v12;
-    }
-    result = 0;
-  }
-  if ( (unsigned int)(v9 - 1) <= 0xE && *(_DWORD *)(a1 + 340) )
-  {
-    v10 = syna_tcm_buf_copy_2(a3, a1 + 328);
-    if ( (v10 & 0x80000000) == 0 )
-      return 0;
-    v9 = *a2;
-    v13 = unk_3CD23;
-    goto LABEL_21;
-  }
-  return result;
+#define syna_tcm_buf_copy_2 syna_tcm_buf_copy
+#endif
+
+int syna_tcm_get_event_data(struct tcm_dev *tcm_dev, u8 *code,
+			    struct tcm_buffer *event_data)
+{
+	int retval;
+
+	if (!tcm_dev) {
+		printk("\0013[error] %s: Invalid tcm device handle\n", __func__);
+		return -241;
+	}
+
+	if (!code) {
+		printk("\0013[error] %s: Invalid parameter\n", __func__);
+		return -241;
+	}
+
+	retval = tcm_dev->read_message(tcm_dev, code);
+	if (retval < 0) {
+		printk("\0013[error] %s: Fail to read messages\n", __func__);
+		return retval;
+	}
+
+	if (!event_data)
+		return retval;
+
+	if (*code >= 0x10 && *code < 0xff) {
+		if (!tcm_dev->report_buf.data_length)
+			return retval;
+
+		retval = syna_tcm_buf_copy_2(event_data, &tcm_dev->report_buf);
+		if (retval < 0) {
+			printk("\0013[error] %s: Fail to copy data, report type: %x\n",
+			       __func__, *code);
+			return retval;
+		}
+
+		retval = 0;
+	}
+
+	if (*code > 0 && *code < 0x10) {
+		if (!tcm_dev->resp_buf.data_length)
+			return retval;
+
+		retval = syna_tcm_buf_copy_2(event_data, &tcm_dev->resp_buf);
+		if (retval < 0) {
+			printk("\0013[error] %s: Fail to copy data, status code: %x\n",
+			       __func__, *code);
+			return retval;
+		}
+
+		retval = 0;
+	}
+
+	return retval;
 }
+
+#ifndef SYNA_TCM_GET_EVENT_DATA_EXTERNAL_BUF_COPY
+#define SYNA_TCM_BUF_COPY_STORAGE static
+#include "syna_tcm_buf_copy_2.c"
+#undef SYNA_TCM_BUF_COPY_STORAGE
+#undef syna_tcm_buf_copy_2
+#endif
