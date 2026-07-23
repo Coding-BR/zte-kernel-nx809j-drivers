@@ -1,0 +1,220 @@
+{
+  "applicable": false,
+  "checks": {
+    "caller_multiplicity_matches": true,
+    "candidate_has_incoming_calls": true,
+    "candidate_has_no_kcfi_exclusion": true,
+    "candidate_has_one_target_address": true,
+    "candidate_has_single_kcfi_record": true,
+    "candidate_incoming_calls_are_direct": true,
+    "candidate_module_matches_kcfi_report": true,
+    "incoming_call_count_matches": true,
+    "stock_exclusion_is_recorded": true,
+    "stock_has_incoming_calls": true,
+    "stock_has_no_kcfi_record": true,
+    "stock_has_one_target_address": true,
+    "stock_incoming_calls_are_direct": true,
+    "stock_module_matches_kcfi_report": true
+  },
+  "comparisons": [
+    {
+      "applicable": false,
+      "candidate_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "syna_spi_probe",
+            "count": 5,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "001485a0",
+            "callsite": "00148f70",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "001481a8"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "001485a0",
+            "callsite": "00148fcc",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "001481a8"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "001485a0",
+            "callsite": "00149060",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "001481a8"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "001485a0",
+            "callsite": "00149074",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "001481a8"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "001485a0",
+            "callsite": "001490a4",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "001481a8"
+          }
+        ],
+        "count": 5,
+        "target_addresses": [
+          "001481a8"
+        ]
+      },
+      "candidate_extra_instrumentation": true,
+      "candidate_kcfi_record": {
+        "function": "syna_spi_get_gpio",
+        "preamble_bytes_le": "d05e09cd",
+        "preamble_offset": "0xbc14",
+        "section": ".text",
+        "symbol_offset": "0xbc18",
+        "symbol_size": 224,
+        "type_id": "0xcd095ed0"
+      },
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "function": "syna_spi_get_gpio",
+      "passed": true,
+      "reason": "The stock ELF has no valid KCFI preamble for this function, and every incoming stock and candidate reference is a direct UNCONDITIONAL_CALL.",
+      "stock_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "syna_spi_probe",
+            "count": 5,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "00118544",
+            "callsite": "00118f60",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "0011a35c"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "00118544",
+            "callsite": "0011905c",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "0011a35c"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "00118544",
+            "callsite": "00119130",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "0011a35c"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "00118544",
+            "callsite": "00119154",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "0011a35c"
+          },
+          {
+            "caller": "syna_spi_probe",
+            "caller_entry": "00118544",
+            "callsite": "00119198",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "syna_spi_get_gpio",
+            "target_address": "0011a35c"
+          }
+        ],
+        "count": 5,
+        "target_addresses": [
+          "0011a35c"
+        ]
+      },
+      "stock_kcfi_exclusion": {
+        "function": "syna_spi_get_gpio",
+        "reason": "candidate preamble overlaps function body: syna_spi_alloc_mem+0x274"
+      },
+      "stock_kcfi_record": null
+    }
+  ],
+  "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "driver": "zte_tpd",
+  "function": "syna_spi_get_gpio",
+  "generated_utc": "2026-07-23T16:52:33.241348+00:00",
+  "inputs": {
+    "candidate_calls": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_candidate_next24_get_gpio_final/calls.jsonl",
+      "sha256": "13dcefb73dc27ae6eaca700e2f2b870cb4fbe83a0b8e74b584863eb249e0dcc9",
+      "size": 2336
+    },
+    "candidate_kcfi_report": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_candidate_next24_get_gpio_all.json",
+      "sha256": "f11e4634c8ebb1b257fe60b6e07520b61d3ba6897ae9307651b0450d14b4e9e2",
+      "size": 122818
+    },
+    "candidate_module": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+      "sha256": "d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6",
+      "size": 24582320
+    },
+    "stock_calls": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/calls.jsonl",
+      "sha256": "91036ccf7524b9446063248adf032fbe7c568d2c6b3a32d00cc54ef57853bc96",
+      "size": 677844
+    },
+    "stock_kcfi_report": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_stock_next24_get_gpio.json",
+      "sha256": "17218d6167dd8477070619027c5155523920fa95c39571ff90465b925a21793b",
+      "size": 471
+    },
+    "stock_module": {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "size": 633536
+    }
+  },
+  "limitations": [
+    "This decision proves only that no stock indirect KCFI boundary was observed.",
+    "The candidate compiler emitted an extra KCFI preamble; it is not claimed as a stock type-ID match.",
+    "Direct-call equivalence does not replace Assembly, P-Code, host, or hardware validation."
+  ],
+  "modules": {
+    "candidate": {
+      "sha256": "d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6",
+      "sha256_matches": true,
+      "size": 24582320,
+      "size_matches": true
+    },
+    "stock": {
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "sha256_matches": true,
+      "size": 633536,
+      "size_matches": true
+    }
+  },
+  "passed": true,
+  "schema_version": "1.0"
+}

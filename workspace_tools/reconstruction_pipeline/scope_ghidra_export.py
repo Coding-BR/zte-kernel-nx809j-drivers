@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-GENERATED_FILES = ("functions.jsonl", "strings.jsonl", "manifest.json")
+GENERATED_FILES = ("functions.jsonl", "calls.jsonl", "strings.jsonl", "manifest.json")
 GENERATED_DIRECTORIES = ("decompiled", "pcode")
 
 
@@ -74,6 +74,7 @@ def materialize_scoped_export(
 
     manifest_path = source / "manifest.json"
     functions_path = source / "functions.jsonl"
+    calls_path = source / "calls.jsonl"
     strings_path = source / "strings.jsonl"
     for path in (manifest_path, functions_path, strings_path):
         if not path.is_file():
@@ -115,6 +116,21 @@ def materialize_scoped_export(
         output / "functions.jsonl",
         "".join(json.dumps(row, separators=(",", ":")) + "\n" for row in selected),
     )
+    selected_calls: list[dict[str, Any]] = []
+    if calls_path.is_file():
+        requested = set(requested_functions)
+        selected_calls = [
+            row
+            for row in read_jsonl(calls_path)
+            if row.get("caller") in requested or row.get("target") in requested
+        ]
+        write_text(
+            output / "calls.jsonl",
+            "".join(
+                json.dumps(row, separators=(",", ":")) + "\n"
+                for row in selected_calls
+            ),
+        )
 
     portable_manifest = {
         "schema_version": 1,
@@ -126,10 +142,13 @@ def materialize_scoped_export(
         "image_base": source_manifest.get("image_base"),
         "pointer_size": source_manifest.get("pointer_size"),
         "function_count": len(selected),
+        "call_reference_count": len(selected_calls),
         "scope": requested_functions[0] if len(requested_functions) == 1 else requested_functions,
         "source_export_function_count": source_manifest.get("function_count"),
         "source_export_manifest_sha256": sha256_file(manifest_path),
     }
+    if calls_path.is_file():
+        portable_manifest["source_export_calls_sha256"] = sha256_file(calls_path)
     write_text(output / "manifest.json", json.dumps(portable_manifest, indent=2) + "\n")
     return portable_manifest
 

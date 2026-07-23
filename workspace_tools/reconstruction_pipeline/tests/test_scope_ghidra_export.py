@@ -36,6 +36,12 @@ def test_materializes_only_requested_function(tmp_path: Path) -> None:
     ]
     write(source / "manifest.json", json.dumps(manifest))
     write(source / "functions.jsonl", "".join(json.dumps(row) + "\n" for row in rows))
+    calls = [
+        {"caller": "probe", "target": "keep", "reference_type": "UNCONDITIONAL_CALL"},
+        {"caller": "keep", "target": "helper", "reference_type": "UNCONDITIONAL_CALL"},
+        {"caller": "drop", "target": "helper", "reference_type": "UNCONDITIONAL_CALL"},
+    ]
+    write(source / "calls.jsonl", "".join(json.dumps(row) + "\n" for row in calls))
     write(source / "strings.jsonl", '{"address":"1","value":"x"}\n')
     for row in rows:
         write(source / row["decompiled_file"], row["name"] + " C\n")
@@ -51,6 +57,13 @@ def test_materializes_only_requested_function(tmp_path: Path) -> None:
     assert (output / "decompiled/keep.c").is_file()
     assert not (output / "decompiled/drop.c").exists()
     assert json.loads((output / "functions.jsonl").read_text(encoding="utf-8"))["name"] == "keep"
+    scoped_calls = [
+        json.loads(line)
+        for line in (output / "calls.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert scoped_calls == calls[:2]
+    assert result["call_reference_count"] == 2
+    assert result["source_export_calls_sha256"]
     assert (output / "manifest.json").read_bytes()[:3] != b"\xef\xbb\xbf"
 
 

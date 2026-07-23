@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `9237c4cd4e2cb8bafd0824b4066fc6882ccdc9e0aceb9e597bc424deee681657`
+Candidato vinculado: `d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -26,6 +26,8 @@ int syna_spi_probe(struct spi_device *spi);
 void syna_spi_remove(struct spi_device *spi);
 void syna_spi_release(struct device *dev);
 int syna_hw_interface_init(void);
+int syna_spi_get_gpio(unsigned int gpio, int output,
+		      unsigned int state, char *label);
 
 irqreturn_t syna_dev_isr(int irq, void *data);
 
@@ -130,6 +132,12 @@ recuperado simultaneamente em `syna_spi_enable_irq`, `syna_spi_read`,
 `void *`, `long *` ou um cast de ponteiro de funcao. O campo
 `irq_enabled` do bloco de atencao e `u8`, nao `bool`: o Assembly stock testa
 o bit zero e, em outro ramo, o byte completo.
+
+`syna_spi_get_gpio` nao possui preambulo KCFI recuperavel no ELF stock.
+Cinco call sites em `syna_spi_probe` referenciam a funcao somente por
+`UNCONDITIONAL_CALL` direta, tanto no stock quanto no candidato. Portanto,
+seu gate correto e `KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY`, nao a igualdade
+do type ID adicional que o compilador candidato emite para o simbolo global.
 
 Os 63 wrappers de proc foram removidos depois da comparacao de P-Code, assembly,
 KCFI e call sites. Os handlers usam diretamente as assinaturas nativas

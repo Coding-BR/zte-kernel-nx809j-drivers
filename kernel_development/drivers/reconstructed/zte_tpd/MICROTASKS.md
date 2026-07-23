@@ -211,7 +211,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 205_syna_spi_enable_irq | syna_spi_enable_irq | 00119da0 | async_or_irq | syna_spi_enable_irq.c:syna_spi_enable_irq | PASS |
 | 206_syna_spi_power_on | syna_spi_power_on | 00119e7c | core_logic | syna_spi_power_on.c:syna_spi_power_on | READY_FOR_IMPLEMENTATION |
 | 207_syna_spi_alloc_mem | syna_spi_alloc_mem | 0011a0e4 | core_logic | syna_spi_alloc_mem.c:syna_spi_alloc_mem | READY_FOR_IMPLEMENTATION |
-| 208_syna_spi_get_gpio | syna_spi_get_gpio | 0011a35c | core_logic | syna_spi_get_gpio.c:syna_spi_get_gpio | READY_FOR_IMPLEMENTATION |
+| 208_syna_spi_get_gpio | syna_spi_get_gpio | 0011a35c | core_logic | syna_spi_get_gpio.c:syna_spi_get_gpio | PASS |
 | 209_syna_sysfs_create_dir | syna_sysfs_create_dir | 0011a440 | core_logic | syna_sysfs_create_dir.c:syna_sysfs_create_dir | READY_FOR_IMPLEMENTATION |
 | 210_syna_sysfs_remove_dir | syna_sysfs_remove_dir | 0011a518 | binding | syna_sysfs_remove_dir.c:syna_sysfs_remove_dir | READY_FOR_IMPLEMENTATION |
 | 211_syna_sysfs_info_show | syna_sysfs_info_show | 0011a5a0 | user_abi | syna_sysfs_info_show.c:syna_sysfs_info_show | READY_FOR_IMPLEMENTATION |

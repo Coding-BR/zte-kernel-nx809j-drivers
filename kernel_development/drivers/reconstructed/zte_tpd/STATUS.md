@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `9237c4cd4e2cb8bafd0824b4066fc6882ccdc9e0aceb9e597bc424deee681657`
-- **Candidato:** `24582360` bytes
+- **Candidato SHA-256:** `d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6`
+- **Candidato:** `24582320` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,54 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `163/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O6: `164/367` microtarefas possuem build, decisao KCFI e teste direto
+  atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next24 - Aquisicao dos GPIOs SPI
+
+O Next24 fechou `syna_spi_get_gpio` com a assinatura:
+
+```c
+int syna_spi_get_gpio(unsigned int gpio, int output,
+		      unsigned int state, char *label);
+```
+
+A funcao preserva o fluxo stock: formatacao de `tcm_gpio_%d\n` em um buffer
+de 16 bytes, requisicao do GPIO, conversao para descriptor, selecao entre
+direcao de saida raw e entrada e propagacao exata dos erros. Os tres logs
+stock e o bloco de erro compartilhado foram preservados.
+
+O corpo coincide exatamente com o stock em `224` bytes, `56` instrucoes,
+secao e `12` relocations resolvidas. Uma importacao limpa no Ghidra 12.1.2
+confirmou C normalizado identico, as strings recuperadas e `147/147`
+operacoes P-Code.
+
+O stock nao possui um preambulo KCFI valido para esta funcao. Os grafos
+Ghidra stock e candidato comprovam cinco referencias de entrada, todas
+`UNCONDITIONAL_CALL` diretas a partir de `syna_spi_probe`, com a mesma
+multiplicidade. A decisao automatizada e
+`KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY`; o type ID adicional emitido pelo
+compilador candidato nao e apresentado como correspondencia stock.
+
+O harness direto passou seis cenarios em dois ciclos Clang 19.0.1 com
+ASAN+UBSAN: falha de formatacao, falha de `gpio_request`, sucesso e falha
+nas direcoes de saida e entrada. Ele valida retornos, ordem das chamadas,
+argumentos, label e logs exatos.
+
+Dois builds canonicos e dois builds independentes, todos sem diagnosticos,
+produziram o mesmo modulo de `24.582.320` bytes e SHA-256
+`d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6`.
+O KCFI global permanece em `305/322` (`94,72%`), a superficie direta em
+`176/176` e as oito familias de callback em `143/143`. Somente a
+microtarefa `208_syna_spi_get_gpio` foi promovida:
+`164 PASS / 203 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT24_SPI_GET_GPIO_VALIDATION_20260723.md`.
 
 ## Checkpoint Next23 - Registro da Interface de Hardware
 
