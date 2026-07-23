@@ -106,24 +106,36 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
         self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
 
-    def test_syna_spi_device_binding_address_is_normalized_narrowly(self) -> None:
-        stock, _, stock_artifacts = MODULE.normalize_decompiled(
-            "platform_device_register(&syna_spi_device);", {}
-        )
-        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
-            "platform_device_register(syna_spi_device);", {}
-        )
-        unrelated, _, _ = MODULE.normalize_decompiled(
-            "platform_device_register(&other_device);", {}
-        )
+    def test_known_object_binding_addresses_are_normalized_narrowly(self) -> None:
+        for expression_with_address, expression_without_address in (
+            (
+                "platform_device_register(&syna_spi_device);",
+                "platform_device_register(syna_spi_device);",
+            ),
+            (
+                "sysfs_create_group(dir, &attr_group);",
+                "sysfs_create_group(dir, attr_group);",
+            ),
+        ):
+            stock, _, stock_artifacts = MODULE.normalize_decompiled(
+                expression_with_address, {}
+            )
+            candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+                expression_without_address, {}
+            )
+            unrelated, _, _ = MODULE.normalize_decompiled(
+                expression_with_address.replace("&attr_group", "&other_group")
+                .replace("&syna_spi_device", "&other_device"),
+                {},
+            )
 
-        self.assertEqual(stock, candidate)
-        self.assertNotEqual(unrelated, candidate)
-        self.assertEqual(
-            stock_artifacts[0]["kind"],
-            "elf_object_binding_address_syntax",
-        )
-        self.assertEqual(candidate_artifacts, [])
+            self.assertEqual(stock, candidate)
+            self.assertNotEqual(unrelated, candidate)
+            self.assertEqual(
+                stock_artifacts[0]["kind"],
+                "elf_object_binding_address_syntax",
+            )
+            self.assertEqual(candidate_artifacts, [])
 
     def test_changed_pcode_operation_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -21,11 +22,42 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
 def read_json(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
+    return read_json_bytes(path.read_bytes())
+
+
+def read_json_bytes(value: bytes) -> dict[str, Any]:
+    value = json.loads(value.decode("utf-8"))
     if not isinstance(value, dict):
         raise ValueError("expected JSON object")
     return value
+
+
+def git_index_blob(workspace_root: Path, relative_path: Path) -> bytes:
+    if relative_path.is_absolute() or ".." in relative_path.parts:
+        raise ValueError(f"invalid Git index path: {relative_path}")
+    result = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(workspace_root),
+            "show",
+            ":" + relative_path.as_posix(),
+        ],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        raise ValueError(
+            f"missing Git index blob {relative_path.as_posix()}: {detail}"
+        )
+    return result.stdout
 
 
 def discover_layout() -> tuple[Path, Path]:
@@ -56,6 +88,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--driver", required=True)
     parser.add_argument("--curated-root", type=Path, default=curated_root)
     parser.add_argument("--evidence-root", type=Path, default=evidence_root)
+    parser.add_argument(
+        "--git-index",
+        action="store_true",
+        help="verify the staged manifest and evidence blobs instead of checkout bytes",
+    )
     return parser.parse_args()
 
 
@@ -67,7 +104,13 @@ def main() -> int:
     output = args.evidence_root.resolve() / args.driver / "microtask_audit.json"
     if not manifest_path.is_file():
         raise ValueError("missing microtask manifest: " + str(manifest_path))
-    manifest = read_json(manifest_path)
+    if args.git_index:
+        manifest_relative = manifest_path.relative_to(workspace_root)
+        manifest = read_json_bytes(
+            git_index_blob(workspace_root, manifest_relative)
+        )
+    else:
+        manifest = read_json(manifest_path)
     failures = []
     checked = 0
     tasks = manifest.get("tasks", [])
@@ -95,12 +138,24 @@ def main() -> int:
             candidate = (workspace_root / path_value).resolve()
             if candidate != workspace_root and workspace_root not in candidate.parents:
                 failures.append(task["id"] + ": evidence escapes workspace")
-            elif not candidate.is_file():
-                failures.append(task["id"] + ": evidence file is missing")
-            elif sha256_file(candidate) != expected:
-                failures.append(task["id"] + ": evidence SHA-256 mismatch")
             else:
-                roles.add(role)
+                if args.git_index:
+                    try:
+                        actual = sha256_bytes(
+                            git_index_blob(workspace_root, Path(path_value))
+                        )
+                    except ValueError as error:
+                        failures.append(task["id"] + ": " + str(error))
+                        continue
+                elif not candidate.is_file():
+                    failures.append(task["id"] + ": evidence file is missing")
+                    continue
+                else:
+                    actual = sha256_file(candidate)
+                if actual != expected:
+                    failures.append(task["id"] + ": evidence SHA-256 mismatch")
+                else:
+                    roles.add(role)
         missing_roles = REQUIRED_ROLES - roles
         if missing_roles:
             failures.append(task["id"] + ": missing evidence roles " + ", ".join(sorted(missing_roles)))
@@ -109,12 +164,17 @@ def main() -> int:
         "schema_version": "1.0",
         "driver": args.driver,
         "manifest": str(manifest_path),
+        "evidence_source": "git_index" if args.git_index else "working_tree",
         "passed": passed,
         "checked_tasks": checked,
         "failures": failures,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
+    output.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + chr(10),
+        encoding="utf-8",
+        newline="\n",
+    )
     print(json.dumps({"driver": args.driver, "passed": passed, "checked_tasks": checked, "failures": len(failures)}, ensure_ascii=False))
     return 0 if passed else 1
 

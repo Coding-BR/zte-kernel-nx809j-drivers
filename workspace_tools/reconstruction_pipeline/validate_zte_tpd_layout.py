@@ -575,6 +575,7 @@ def main() -> int:
             "syna_tcm_size": "0x580",
             "syna_tcm_hw_if_offset": "0x270",
             "syna_tcm_event_data_offset": "0x2a8",
+            "syna_tcm_sysfs_dir_offset": "0x398",
             "syna_tcm_frame_wait_offset": "0x448",
             "syna_tcm_frame_available_offset": "0x468",
             "syna_tcm_pm_resume_completion_offset": "0x558",

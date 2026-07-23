@@ -24,7 +24,9 @@ ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
     r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
 )
-OPTIONAL_OBJECT_ADDRESS_RE = re.compile(r"&(?P<symbol>syna_spi_device)\b")
+OPTIONAL_OBJECT_ADDRESS_RE = re.compile(
+    r"&(?P<symbol>syna_spi_device|attr_group)\b"
+)
 
 
 def sha256_file(path: Path) -> str:

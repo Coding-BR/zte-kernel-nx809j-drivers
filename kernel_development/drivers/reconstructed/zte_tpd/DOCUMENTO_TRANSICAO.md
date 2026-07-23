@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6`
+Candidato vinculado: `f828a61670510ed2da430a80ced9d6858a3d5b8807af96391fba14bef0e8358b`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -28,6 +28,8 @@ void syna_spi_release(struct device *dev);
 int syna_hw_interface_init(void);
 int syna_spi_get_gpio(unsigned int gpio, int output,
 		      unsigned int state, char *label);
+int syna_sysfs_create_dir(struct syna_tcm *tcm,
+			  struct platform_device *parent);
 
 irqreturn_t syna_dev_isr(int irq, void *data);
 
@@ -138,6 +140,14 @@ Cinco call sites em `syna_spi_probe` referenciam a funcao somente por
 `UNCONDITIONAL_CALL` direta, tanto no stock quanto no candidato. Portanto,
 seu gate correto e `KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY`, nao a igualdade
 do type ID adicional que o compilador candidato emite para o simbolo global.
+
+`syna_sysfs_create_dir` possui KCFI stock e candidato `0x720adbbe`. O
+argumento `parent` e um `struct platform_device *`: a funcao entrega
+`&parent->dev.kobj` a `kobject_create_and_add`, com `dev` em `+0x10`.
+O kobject retornado fica em `syna_tcm + 0x398`. Preserve a ordem de rollback:
+falha em `sysfs_create_group` executa `kobject_put`; falha em
+`syna_testing_create_dir` executa primeiro `sysfs_remove_group` e depois
+`kobject_put`. Somente retornos negativos dos dois helpers representam erro.
 
 Os 63 wrappers de proc foram removidos depois da comparacao de P-Code, assembly,
 KCFI e call sites. Os handlers usam diretamente as assinaturas nativas
@@ -300,7 +310,26 @@ Layout GKI/ELF adicional comprovado:
 - `offsetof(struct platform_device, dev) == 0x10`;
 - `offsetof(struct device, release) == 0x328`;
 - `syna_spi_device.dev.release == syna_spi_device + 0x338`;
+- `offsetof(struct syna_tcm, sysfs_dir) == 0x398`;
 - `sizeof(void *) == 8` em AArch64.
+
+O trecho relevante do overlay Synaptics e:
+
+```c
+struct syna_tcm {
+        u8 reserved_0000[0x2f4];
+        u8 reserved_02f4[0xa4];
+        struct kobject *sysfs_dir;       /* 0x398 */
+        u8 reserved_03a0[0x1e0];
+};
+
+static_assert(offsetof(struct syna_tcm, sysfs_dir) == 0x398);
+static_assert(sizeof(struct syna_tcm) == 0x580);
+```
+
+O ponteiro tem ownership serializado pelo ciclo create/remove observado; nao
+ha evidencia para anota-lo `__rcu`. Nao altere o padding nem publique o
+ponteiro por outro mecanismo sem nova prova local.
 
 O arquivo `probes/layout_probe.c` transforma essas medidas em falhas de
 compilacao. Estruturas compartilhadas por IRQ/workqueue devem usar os locks
@@ -370,8 +399,7 @@ Ordem de prioridade recomendada para os proximos lotes:
 5. transporte TCM, buffers, firmware e testes de producao;
 6. helpers puramente diretos e duplicatas internas.
 
-O estado atual possui 146 tarefas `PASS`, com build, KCFI e teste hash-bound, e
-221 tarefas `READY_FOR_IMPLEMENTATION`. Treze relatorios de harness sustentam o
-subconjunto testado com 130 casos. A superficie KCFI integral esta em `251/322`
+O estado atual possui 165 tarefas `PASS`, com build, KCFI e teste hash-bound, e
+202 tarefas `READY_FOR_IMPLEMENTATION`. A superficie KCFI integral esta em `305/322`
 (176/176 na superficie direta selecionada e 143/143 nas oito familias de
 callbacks); portanto, nenhuma promocao global para `100%` e permitida.

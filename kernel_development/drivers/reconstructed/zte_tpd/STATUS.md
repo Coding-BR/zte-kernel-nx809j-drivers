@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `d7267e60da8fef2ea6b217fdc9b27952afbbb9e292bf91be2105c34630efd8e6`
-- **Candidato:** `24582320` bytes
+- **Candidato SHA-256:** `f828a61670510ed2da430a80ced9d6858a3d5b8807af96391fba14bef0e8358b`
+- **Candidato:** `24590136` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,56 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `164/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `165/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `305/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next25 - Criacao da Hierarquia Sysfs
+
+O Next25 fechou `syna_sysfs_create_dir` com a assinatura:
+
+```c
+int syna_sysfs_create_dir(struct syna_tcm *tcm,
+			  struct platform_device *parent);
+```
+
+A funcao cria `sysfs` sob `parent->dev.kobj`, armazena o objeto em
+`syna_tcm + 0x398`, cria `attr_group` e chama
+`syna_testing_create_dir`. Os tres caminhos de falha preservam retorno, log,
+ordem e rollback stock: `-20` quando o kobject nao pode ser criado,
+`kobject_put` apos falha do grupo e
+`sysfs_remove_group` seguido de `kobject_put` apos falha do diretorio de
+testes. Retornos positivos dos dois helpers sao tratados como sucesso.
+
+O corpo coincide exatamente com o stock em `212` bytes, `53` instrucoes,
+secao e `18` relocations de dados resolvidas, sem equivalencias permissivas.
+Stock e candidato possuem KCFI `0x720adbbe`. Uma importacao limpa no Ghidra
+12.1.2 confirmou C normalizado identico, as tres strings de erro e
+`154/154` operacoes P-Code.
+
+O harness direto passou cinco cenarios em dois ciclos Clang 19.0.1 com
+ASAN+UBSAN. Ele valida o offset `+0x398`, `parent->dev` em `+0x10`,
+argumentos, ordem das chamadas, retornos, rollback e logs exatos. O probe de
+layout tambem passou contra a arvore GKI 6.12 e agora declara
+`syna_tcm.sysfs_dir == 0x398`.
+
+Os hashes historicos de evidencias tambem foram vinculados aos blobs Git em
+LF, removendo dependencia de CRLF do checkout Windows. A verificacao direta
+do indice passou em `495/495` referencias das `165` tarefas PASS.
+
+Dois builds canonicos e dois builds independentes sem diagnosticos
+produziram o mesmo modulo de `24.590.136` bytes e SHA-256
+`f828a61670510ed2da430a80ced9d6858a3d5b8807af96391fba14bef0e8358b`.
+O KCFI global permanece em `305/322` (`94,72%`), a superficie direta em
+`176/176` e as oito familias de callback em `143/143`. Somente a
+microtarefa `209_syna_sysfs_create_dir` foi promovida:
+`165 PASS / 202 READY`.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT25_SYSFS_CREATE_VALIDATION_20260723.md`.
 
 ## Checkpoint Next24 - Aquisicao dos GPIOs SPI
 

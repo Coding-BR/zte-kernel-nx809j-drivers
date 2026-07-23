@@ -76,6 +76,25 @@ class BuildIsolationTests(unittest.TestCase):
             script,
         )
 
+    def test_sysfs_dir_offset_is_asserted_and_reported(self) -> None:
+        repository = SCRIPT.parents[2]
+        probe = (
+            repository
+            / "kernel_development"
+            / "drivers"
+            / "reconstructed"
+            / "zte_tpd"
+            / "probes"
+            / "layout_probe.c"
+        ).read_text(encoding="utf-8")
+        validator = SCRIPT.read_text(encoding="utf-8")
+
+        self.assertIn(
+            "offsetof(struct syna_tcm, sysfs_dir) == 0x398",
+            probe,
+        )
+        self.assertIn('"syna_tcm_sysfs_dir_offset": "0x398"', validator)
+
 
 class ElfParsingTests(unittest.TestCase):
     def test_parse_symbol_table(self) -> None:
