@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `0b279dc039ab6ad9d670ebd66308d977fd2c286234a2852b70370683b3e8d5ce`
-- **Candidato:** `24381040` bytes
+- **Candidato SHA-256:** `a26584d01155f435141ab78a2d5fe0f9b70572d62b2ad03695b6be08d51930fe`
+- **Candidato:** `24450896` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,11 +29,49 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `156/367` microtarefas possuem build, KCFI e teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `301/322`;
+- O6: `157/367` microtarefas possuem build, KCFI e teste direto atestados;
+- O8/O9: a superficie KCFI integral recuperavel esta em `302/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next17 - ABI e Fluxo do `unlocked_ioctl`
+
+O Next17 fechou `syna_ioctl` com a assinatura canonica de
+`struct file_operations.unlocked_ioctl`:
+
+```c
+long syna_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+```
+
+O KCFI stock e candidato agora usam o type ID `0x2af6cdbb`. O oraculo local
+compilou `500` declaracoes e encontrou oito aliases equivalentes de
+`long/ssize_t`, `unsigned int/u32` e `unsigned long/u64`; todas normalizam para
+a assinatura acima. O cast `(void *)` foi removido de `zte_fops`, preservando
+CFI no ponto de chamada indireta.
+
+O fluxo recuperado testa os comandos `0xc0047003`, `0xc0047002` e
+`0xc0047001` na ordem stock. O uso do tipo real `struct wait_queue_entry`
+tambem recuperou o layout de pilha do OEM. O corpo candidato coincide
+exatamente com o stock em `616` bytes, `154` instrucoes, secao e nas `11`
+relocations, sem equivalencia permissiva. Uma importacao limpa no Ghidra
+12.1.2 confirmou C normalizado identico e `401/401` registros P-Code com a
+mesma forma ordenada.
+
+O harness direto passou `10/10` em duas execucoes ASAN/UBSAN. Ele cobre
+comando invalido, estado desabilitado, evento ja pronto, wake em
+`prepare_to_wait_event`, interrupcao, ciclo por `schedule`, os dois valores
+copiados e falha `-EFAULT` com unlock. Dois builds limpos produziram o mesmo
+modulo de `24.450.896` bytes, SHA-256
+`a26584d01155f435141ab78a2d5fe0f9b70572d62b2ad03695b6be08d51930fe`.
+
+O KCFI global subiu para `302/322` (`93,79%`) e somente a microtarefa
+`175_syna_ioctl` foi promovida: `157 PASS / 210 READY`. Este veredito e
+restrito a funcao; scheduler real, `copy_to_user` real e hardware permanecem
+fora do harness host.
+
+Documento autoritativo:
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT17_IOCTL_VALIDATION_20260722.md`.
 
 ## Checkpoint Next16 - Roteamento de Eventos TouchComm
 
@@ -445,6 +483,7 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 - `reconstruction_map.json`
 - `MICROTASKS.json`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT15_REFLASH_VALIDATION_20260722.md`
+- `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT17_IOCTL_VALIDATION_20260722.md`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT14_TOUCH_DATA_VALIDATION_20260722.md`
 - `../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT13_FIRMWARE_LIFECYCLE_VALIDATION_20260719.md`
 

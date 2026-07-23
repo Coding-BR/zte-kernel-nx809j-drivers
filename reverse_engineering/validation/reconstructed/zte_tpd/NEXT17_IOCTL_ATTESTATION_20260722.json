@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-23T00:40:00Z",
+  "driver": "zte_tpd",
+  "checkpoint": "next17_ioctl",
+  "target": "syna_ioctl",
+  "stock": {
+    "path": "reference_modules/stock/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "entry": "00114580",
+    "body_bytes": 616
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "a26584d01155f435141ab78a2d5fe0f9b70572d62b2ad03695b6be08d51930fe",
+    "size": 24450896
+  },
+  "verdict": "PASS_SCOPED_ABI_BEHAVIOR_ASSEMBLY_GHIDRA_OFFLINE",
+  "passed": true,
+  "checks": {
+    "signature_oracle": true,
+    "file_operations_assignment_typed": true,
+    "reproducible_build_two_cycles": true,
+    "kcfi_exact": true,
+    "assembly_exact": true,
+    "relocations_exact": true,
+    "ghidra_normalized_c_exact": true,
+    "ghidra_pcode_shape_exact": true,
+    "direct_harness_asan_ubsan": true,
+    "microtask_scoped_promotion": true,
+    "hardware_validation": false,
+    "independent_review": false
+  },
+  "metrics": {
+    "signature_candidates": 500,
+    "signature_alias_matches": 8,
+    "stock_instructions": 154,
+    "candidate_instructions": 154,
+    "relocations": 11,
+    "stock_pcode_records": 401,
+    "candidate_pcode_records": 401,
+    "harness_tests_per_repetition": 10,
+    "harness_repetitions": 2,
+    "kcfi_matched": 302,
+    "kcfi_total": 322,
+    "microtasks_pass": 157,
+    "microtasks_ready": 210,
+    "microtasks_total": 367
+  },
+  "evidence": [
+    {
+      "path": "build_next17_ioctl_final_report.json",
+      "sha256": "ed5facf6c5f13dd36d277f842d2a42e9eccbf7471400a57e97679beb5b62132f"
+    },
+    {
+      "path": "assembly_comparison_next17_ioctl_final.json",
+      "sha256": "a6f4144dd5d7f3521e2177f4c37017e6fbc5cc90db2955b0f2a9c00bdd176d8b"
+    },
+    {
+      "path": "ghidra_semantic_comparison_next17_ioctl_final.json",
+      "sha256": "4fcbcb29730d4e36fe7aef13df0e3684d5899bfc99149d5a60160b2e9b22c4e6"
+    },
+    {
+      "path": "harness/next17_ioctl_harness_report.json",
+      "sha256": "21696acb9da9a40064d6aaffe9ac8c9615ad4a54557c07661554620a79c74f57"
+    },
+    {
+      "path": "kcfi_comparison_next17_ioctl_final.json",
+      "sha256": "eb9739da66566e639055991fda021a1a2c2bbc73ce53cc6782c765a1975f7992"
+    },
+    {
+      "path": "kcfi_full_surface_next17_ioctl_final.json",
+      "sha256": "814b5f12bf12bdc6f336b8a449a9d96e932e92e2d03d1b26f2fc510b8f82bdf3"
+    },
+    {
+      "path": "microtask_attestation_next17_ioctl_final.json",
+      "sha256": "154d2ece985b7facef4b342efb32a55390190b2d950c5067f801640135d0ee93"
+    },
+    {
+      "path": "signature_oracles/syna_ioctl_next17_report.json",
+      "sha256": "eca9b6ee26739a79e528d4a8ec9d6b977bf49caa8587359a10aa13f9e486a889"
+    },
+    {
+      "path": "reconstruction_map_next17_ioctl.json",
+      "sha256": "24ccdaccd4dd934938d5786d3c734694af6eab0defacd2e25f4ed27376d07dd6"
+    }
+  ],
+  "promoted_microtasks": [
+    "175_syna_ioctl"
+  ],
+  "dependencies_not_promoted": [
+    {
+      "function": "syna_cdev_ioctls",
+      "reason": "It shares the stock KCFI type ID but has an independent 8584-byte body and no direct Next17 harness."
+    }
+  ],
+  "limitations": [
+    "The verdict is scoped to one function and is not a whole-module equivalence claim.",
+    "The host harness stubs mutex, waitqueue, scheduler and copy_to_user primitives.",
+    "No hardware path or independent review was performed."
+  ]
+}

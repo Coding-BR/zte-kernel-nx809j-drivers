@@ -1,0 +1,113 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/validation/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer next17_ioctl_harness.c -o build/next17_ioctl_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next17_ioctl_harness"
+  ],
+  "coverage": {
+    "asan_ubsan": true,
+    "copy_failure_and_unlock": true,
+    "direct_source_functions": 1,
+    "disabled_and_ready_wait_paths": true,
+    "exact_file_operations_type": true,
+    "hardware_paths_exercised": false,
+    "offsets_0x20_0x438_0x448_0x468_0x470_0x5e0": true,
+    "prepare_wake_interrupt_and_schedule_paths": true,
+    "signal_and_report_rate_copy_paths": true,
+    "unknown_command": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS unknown_command\nPASS wait_disabled\nPASS wait_already_ready\nPASS wait_prepare_wakes\nPASS wait_interrupted\nPASS wait_schedule_then_wakes\nPASS copy_signal\nPASS copy_report_rate\nPASS copy_failure_unlocks\nSUMMARY 10/10\n",
+      "summary": "SUMMARY 10/10",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "unknown_command",
+        "wait_disabled",
+        "wait_already_ready",
+        "wait_prepare_wakes",
+        "wait_interrupted",
+        "wait_schedule_then_wakes",
+        "copy_signal",
+        "copy_report_rate",
+        "copy_failure_unlocks"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS signature_contract\nPASS unknown_command\nPASS wait_disabled\nPASS wait_already_ready\nPASS wait_prepare_wakes\nPASS wait_interrupted\nPASS wait_schedule_then_wakes\nPASS copy_signal\nPASS copy_report_rate\nPASS copy_failure_unlocks\nSUMMARY 10/10\n",
+      "summary": "SUMMARY 10/10",
+      "tests_failed": [],
+      "tests_passed": [
+        "signature_contract",
+        "unknown_command",
+        "wait_disabled",
+        "wait_already_ready",
+        "wait_prepare_wakes",
+        "wait_interrupted",
+        "wait_schedule_then_wakes",
+        "copy_signal",
+        "copy_report_rate",
+        "copy_failure_unlocks"
+      ]
+    }
+  ],
+  "generated_utc": "2026-07-23T00:28:32.756116+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\harness\\next17_ioctl_harness.c",
+      "sha256": "f0b8de031bb83f44bf3cb728670950d55009f105b6453e06dfd3925a0a204e05",
+      "size": 8341
+    },
+    {
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\syna_ioctl.c",
+      "sha256": "116e7c103df5eb22d2a4d8c04e92235aa81596c3a484756a78450c03bea80cf9",
+      "size": 1607
+    }
+  ],
+  "limitations": [
+    "The harness stubs mutex, waitqueue, scheduler and copy_to_user primitives.",
+    "It proves the recovered ioctl dispatch and state-transition contract, not kernel scheduler integration.",
+    "Assembly, relocations, KCFI, Ghidra P-Code and full-module integration remain independent gates.",
+    "No smartphone, ADB, fastboot, module loading, IRQ, MMIO or flash write is performed."
+  ],
+  "mode": "offline_direct_source_next17_ioctl_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 10,
+    "failed": [],
+    "passed": [
+      "signature_contract",
+      "unknown_command",
+      "wait_disabled",
+      "wait_already_ready",
+      "wait_prepare_wakes",
+      "wait_interrupted",
+      "wait_schedule_then_wakes",
+      "copy_signal",
+      "copy_report_rate",
+      "copy_failure_unlocks"
+    ],
+    "summary": "SUMMARY 10/10"
+  }
+}

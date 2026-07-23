@@ -2102,7 +2102,6 @@ const struct proc_ops proc_ops_tp_test = { .proc_read = tp_test_read, .proc_writ
 const struct proc_ops proc_ops_frame_data = { .proc_read = tp_frame_data_read, .proc_write = tp_frame_data_write, };
 
 // Declare prototypes of functions used in zte_fops
-extern __int64 syna_ioctl(__int64 a1, int a2, unsigned __int64 a3);
 extern int syna_mmap(struct file *file, struct vm_area_struct *vma);
 extern int syna_open(struct inode *inode, struct file *filp);
 extern int syna_release(struct inode *inode, struct file *filp);
@@ -2111,7 +2110,7 @@ extern int syna_release(struct inode *inode, struct file *filp);
 struct file_operations zte_fops = {
     .owner          = THIS_MODULE,
     .poll           = syna_poll,
-    .unlocked_ioctl = (void *)syna_ioctl,
+    .unlocked_ioctl = syna_ioctl,
     .mmap           = syna_mmap,
     .open           = syna_open,
     .release        = syna_release,

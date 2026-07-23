@@ -334,6 +334,8 @@ extern int syna_dev_process_unexpected_reset(unsigned char report_code,
 extern irqreturn_t syna_dev_isr(int irq, void *data);
 extern __poll_t syna_poll(struct file *file,
 			  struct poll_table_struct *wait);
+extern long syna_ioctl(struct file *file, unsigned int cmd,
+		       unsigned long arg);
 extern void syna_spi_hw_reset(struct syna_hw_interface *hw_if);
 extern int syna_dev_set_screen_on_fp_mode(struct syna_tcm *tcm,
 					  unsigned int enable);
