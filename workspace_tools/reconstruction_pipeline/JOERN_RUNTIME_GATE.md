@@ -134,9 +134,45 @@ O escopo fica registrado no manifest, no relatorio detalhado e no resumo
 portatil. Isso evita criar mapas temporarios ou remover entradas para obter um
 `PASS` artificial.
 
+### 4.1 Promover uma microtarefa com Joern
+
+Para microtarefas novas ou reatestadas, passe o resumo portatil produzido por
+esta execucao ao atestador. Ele confirma que o gate foi estrito, parse-clean,
+nao-promocional, cobre a funcao C e corresponde a arvore C/H atual.
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\attest_tested_driver_microtasks.py `
+  --workspace $repo `
+  --driver zte_tpd `
+  --manifest .\kernel_development\drivers\reconstructed\zte_tpd\MICROTASKS.json `
+  --source-dir .\kernel_development\drivers\reconstructed\zte_tpd `
+  --build-report <build-report.json> `
+  --kcfi-report <kcfi-report.json> `
+  --joern-report "$engineering\validation\zte_tpd\joern\<run-id>\joern_gate_summary.json" `
+  --test-report <harness-report.json> `
+  --candidate .\kernel_development\drivers\reconstructed\zte_tpd\zte_tpd.ko `
+  --function <source-function> `
+  --preserve-unselected `
+  --output <microtask-promotion-report.json>
+```
+
+O comando nao torna Joern autoridade para offset, KCFI, MMIO ou hardware; ele
+somente materializa Joern como evidencia obrigatoria ao lado desses gates.
+
 Use `--include` de forma repetivel ou `--compilation-database` quando houver
 informacao de compilacao real. `tests`, `validation` e `build` sao excluidos por
 padrao para o harness nao contaminar o grafo do driver.
+
+### 4.1 Promover uma microtarefa com Joern
+
+Para microtarefas novas ou reatestadas, entregue o resumo portatil desta
+execucao ao atestador pela opcao --joern-report. O atestador exige um relatorio
+estrito, parse-clean, nao-promocional, com a funcao C no escopo resolvido e o
+digest da arvore C/H igual ao candidato atual.
+
+O resumo e uma evidencia adicional. Ele nao torna Joern autoridade para
+offset, KCFI, MMIO ou hardware; esses gates continuam independentes e
+obrigatorios.
 
 ## 5. Saidas e publicacao
 

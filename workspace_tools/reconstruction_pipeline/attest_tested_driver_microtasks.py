@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Promote only microtasks backed by current build, KCFI, and direct tests."""
+"""Promote only microtasks backed by current build, KCFI, Joern, and tests."""
 
 from __future__ import annotations
 
@@ -11,8 +11,43 @@ from pathlib import Path
 from typing import Any
 
 
+JOERN_TEXT_SUFFIXES = {".c", ".h"}
+JOERN_EXCLUDED_PATHS = {"tests", "validation", "build"}
+
+
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def joern_sha256_file(path: Path) -> str:
+    """Match the normalized C/header hashing used by the Joern gate."""
+    content = path.read_bytes()
+    if path.suffix.lower() in JOERN_TEXT_SUFFIXES:
+        content = content.replace(b"\r\n", b"\n")
+    return hashlib.sha256(content).hexdigest()
+
+
+def joern_source_tree_sha256(source_dir: Path) -> str:
+    """Return the candidate source-tree digest recorded by the Joern gate."""
+    paths = sorted(
+        path
+        for path in source_dir.rglob("*")
+        if path.is_file()
+        and path.suffix.lower() in JOERN_TEXT_SUFFIXES
+        and not any(
+            part in JOERN_EXCLUDED_PATHS
+            for part in path.relative_to(source_dir).parts
+        )
+    )
+    if not paths:
+        raise ValueError(f"source directory contains no C/header files: {source_dir}")
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(path.relative_to(source_dir).as_posix().encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(joern_sha256_file(path).encode("ascii"))
+        digest.update(b"\n")
+    return digest.hexdigest()
 
 
 def read_object(path: Path) -> dict[str, Any]:
@@ -101,6 +136,39 @@ def direct_tested_sources(
     return sources
 
 
+def joern_functions(
+    source_dir: Path,
+    reports: list[tuple[Path, dict[str, Any]]],
+) -> dict[str, Path]:
+    """Index strict, current-tree Joern gates by covered source function."""
+    expected_tree = joern_source_tree_sha256(source_dir)
+    functions: dict[str, Path] = {}
+    for report_path, payload in reports:
+        scope = payload.get("scope")
+        parser = payload.get("parser")
+        input_hashes = payload.get("input_hashes")
+        if not isinstance(scope, dict) or not isinstance(parser, dict):
+            continue
+        if not isinstance(input_hashes, dict):
+            continue
+        if (
+            payload.get("passed") is not True
+            or payload.get("status") != "PASS"
+            or payload.get("strict") is not True
+            or payload.get("promotion_claim") is not False
+            or parser.get("parse_problem_count") != 0
+            or input_hashes.get("source_tree_sha256") != expected_tree
+        ):
+            continue
+        resolved = scope.get("resolved_source_functions")
+        if not isinstance(resolved, list):
+            continue
+        for function in resolved:
+            if isinstance(function, str) and function:
+                functions[function] = report_path
+    return functions
+
+
 def reset_microtask_attestations(
     tasks: object,
     *,
@@ -133,7 +201,7 @@ def render_manifest_markdown(payload: dict[str, Any]) -> str:
         f"# Microtarefas Obrigatorias: {payload['driver']}",
         "",
         "Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser "
-        "promovida sem mapeamento, compilacao, KCFI e teste com hash verificavel.",
+        "promovida sem mapeamento, compilacao, KCFI, Joern e teste com hash verificavel.",
         "",
         "| ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |",
         "|---|---|---|---|---|---|",
@@ -156,7 +224,7 @@ def render_manifest_markdown(payload: dict[str, Any]) -> str:
         [
             "",
             "O estado exibido e gerado do mesmo manifesto JSON pelo atestador. "
-            "PASS exige evidencias hashadas de compile, KCFI e teste direto.",
+            "PASS exige as evidencias declaradas no manifesto, incluindo Joern para novas microtarefas.",
             "",
         ]
     )
@@ -171,6 +239,13 @@ def main() -> int:
     parser.add_argument("--source-dir", type=Path, required=True)
     parser.add_argument("--build-report", type=Path, required=True)
     parser.add_argument("--kcfi-report", action="append", type=Path, required=True)
+    parser.add_argument(
+        "--joern-report",
+        action="append",
+        type=Path,
+        default=[],
+        help="strict Joern summary whose current source-tree hash must match --source-dir",
+    )
     parser.add_argument("--test-report", action="append", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
@@ -210,8 +285,12 @@ def main() -> int:
             raise ValueError("candidate module does not match build report")
 
     kcfi_reports = [(path.resolve(), read_object(path.resolve())) for path in args.kcfi_report]
+    joern_reports = [
+        (path.resolve(), read_object(path.resolve())) for path in args.joern_report
+    ]
     test_reports = [(path.resolve(), read_object(path.resolve())) for path in args.test_report]
     typed = kcfi_functions(kcfi_reports)
+    joern = joern_functions(source_dir, joern_reports)
     tested = direct_tested_sources(source_dir, test_reports)
     manifest = read_object(manifest_path)
     if manifest.get("driver") != args.driver:
@@ -251,7 +330,14 @@ def main() -> int:
             continue
         kcfi_path = typed.get(source_function)
         test_path = tested.get(Path(source_file).name)
-        if kcfi_path is None or test_path is None:
+        required_evidence = task.get("required_evidence", ["compile", "kcfi", "test"])
+        if not isinstance(required_evidence, list) or not all(
+            isinstance(role, str) for role in required_evidence
+        ):
+            raise ValueError(f"{task.get('id', 'unknown')}: invalid required_evidence")
+        require_joern = "joern" in required_evidence
+        joern_path = joern.get(source_function)
+        if kcfi_path is None or test_path is None or (require_joern and joern_path is None):
             continue
         task["status"] = "PASS"
         task["evidence"] = [
@@ -267,6 +353,14 @@ def main() -> int:
                 "sha256": sha256_file(test_path),
             },
         ]
+        if require_joern:
+            task["evidence"].append(
+                {
+                    "role": "joern",
+                    "path": relative_evidence_path(workspace, joern_path),
+                    "sha256": sha256_file(joern_path),
+                }
+            )
         promoted.append(task["id"])
 
     manifest["generated_utc"] = datetime.now(timezone.utc).isoformat()
@@ -294,6 +388,7 @@ def main() -> int:
         "manifest": str(manifest_path),
         "build_report": str(build_path),
         "kcfi_reports": [str(path) for path, _ in kcfi_reports],
+        "joern_reports": [str(path) for path, _ in joern_reports],
         "test_reports": [str(path) for path, _ in test_reports],
         "candidate": str(args.candidate.resolve()) if args.candidate else None,
         "candidate_sha256": candidate_sha,
@@ -313,6 +408,7 @@ def main() -> int:
         "gate_passed": len(current_pass) == len(tasks) and bool(tasks),
         "limitations": [
             "Shared build evidence proves whole-module compilation but does not replace per-function KCFI and direct-test evidence.",
+            "A required Joern report must be strict, parse-clean, non-promotional, cover the source function, and match the current C/header tree.",
             "Only source files whose current SHA-256 appears in a passing direct-test report are eligible.",
             "Hardware behavior remains outside this offline microtask gate.",
         ],

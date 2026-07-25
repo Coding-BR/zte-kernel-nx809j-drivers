@@ -12,6 +12,9 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 
+DEFAULT_REQUIRED_EVIDENCE = ["compile", "kcfi", "joern", "test"]
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -175,12 +178,14 @@ def implementation_prompt(
             "3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.",
             "4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.",
             "5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.",
-            "6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.",
+            "6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.",
+            "7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.",
             "",
             "Entregaveis obrigatorios para esta unica funcao:",
             "- patch restrito a funcao e aos stubs/testes indispensaveis;",
             "- relatorio de compilacao limpa e reproduzivel;",
             "- comparacao KCFI stock x candidato;",
+            "- relatorio Joern estrito e hashado para a funcao mapeada;",
             "- relatorio de teste com comando, saida, resultado e SHA-256;",
             "- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
         ]
@@ -423,7 +428,7 @@ def generate_driver(driver: str, curated_root: Path, run_root: Path, evidence_ro
                 "source_function": source_function,
                 "ghidra_pseudocode": str(pseudocode),
                 "ghidra_pcode": str(pcode),
-                "required_evidence": ["compile", "kcfi", "test"],
+                "required_evidence": DEFAULT_REQUIRED_EVIDENCE,
                 "implementation_prompt": implementation_prompt(
                     driver=driver,
                     name=name,

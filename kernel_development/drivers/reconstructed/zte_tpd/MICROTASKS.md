@@ -1,6 +1,6 @@
 # Microtarefas Obrigatorias: zte_tpd
 
-Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida sem mapeamento, compilacao, KCFI e teste com hash verificavel.
+Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida sem mapeamento, compilacao, KCFI, Joern e teste com hash verificavel.
 
 | ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |
 |---|---|---|---|---|---|
@@ -224,7 +224,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 218_syna_testing_pt0a_zte | syna_testing_pt0a_zte | 0011b4c0 | core_logic | syna_testing_pt0a_zte.c:syna_testing_pt0a_zte | PASS |
 | 219_syna_testing_pt05_zte | syna_testing_pt05_zte | 0011b818 | core_logic | syna_testing_pt05_zte.c:syna_testing_pt05_zte | PASS |
 | 220_syna_testing_pt01_zte | syna_testing_pt01_zte | 0011bb70 | core_logic | syna_testing_pt01_zte.c:syna_testing_pt01_zte | PASS |
-| 221_syna_testing_create_dir | syna_testing_create_dir | 0011be28 | core_logic | syna_testing_create_dir.c:syna_testing_create_dir | READY_FOR_IMPLEMENTATION |
+| 221_syna_testing_create_dir | syna_testing_create_dir | 0011be28 | core_logic | syna_testing_create_dir.c:syna_testing_create_dir | PASS |
 | 222_syna_testing_remove_dir | syna_testing_remove_dir | 0011bec4 | binding | syna_testing_remove_dir.c:syna_testing_remove_dir | READY_FOR_IMPLEMENTATION |
 | 223_syna_testing_check_dev_id_show | syna_testing_check_dev_id_show | 0011bf08 | user_abi | syna_testing_check_dev_id_show.c:syna_testing_check_dev_id_show | READY_FOR_IMPLEMENTATION |
 | 224_syna_testing_check_config_id_show | syna_testing_check_config_id_show | 0011c1f4 | user_abi | syna_testing_check_config_id_show.c:syna_testing_check_config_id_show | READY_FOR_IMPLEMENTATION |
@@ -372,4 +372,4 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 366_init_module | init_module | 0013159c | lifecycle | zte_touch_init.c:zte_touch_init | READY_FOR_IMPLEMENTATION |
 | 367_cleanup_module | cleanup_module | 001315e0 | lifecycle | cleanup_module.c:cleanup_module | PASS |
 
-O estado exibido e gerado do mesmo manifesto JSON pelo atestador. PASS exige evidencias hashadas de compile, KCFI e teste direto.
+O estado exibido e gerado do mesmo manifesto JSON pelo atestador. PASS exige as evidencias declaradas no manifesto, incluindo Joern para novas microtarefas.

@@ -63,6 +63,18 @@ class VerifyDriverMicrotasksTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "invalid Git index path"):
             MODULE.git_index_blob(Path("workspace"), Path("../outside"))
 
+    def test_task_can_require_joern_evidence(self) -> None:
+        self.assertEqual(
+            MODULE.required_roles_for_task(
+                {"required_evidence": ["compile", "kcfi", "joern", "test"]}
+            ),
+            {"compile", "kcfi", "joern", "test"},
+        )
+
+    def test_task_rejects_unknown_evidence_role(self) -> None:
+        with self.assertRaisesRegex(ValueError, "unsupported evidence roles"):
+            MODULE.required_roles_for_task({"required_evidence": ["unknown"]})
+
 
 if __name__ == "__main__":
     unittest.main()

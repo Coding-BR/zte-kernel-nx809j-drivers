@@ -1,32 +1,21 @@
 int syna_testing_create_dir(struct syna_tcm *tcm)
 {
-  __int64 a1 = (__int64)tcm;
-  __int64 v2; // x0
-  __int64 v3; // x2
-  unsigned int group; // w0
-  __int64 v5; // x2
-  unsigned int v7; // w20
+	int result;
 
-  v2 = kobject_create_and_add("testing", *(_QWORD *)(a1 + 920));
-  *(_QWORD *)(a1 + 936) = v2;
-  if ( v2 )
-  {
-    group = sysfs_create_group(v2, &attr_testing_group);
-    if ( (group & 0x80000000) != 0 )
-    {
-      v7 = group;
-      printk(unk_34964, "syna_testing_create_dir", v5);
-      kobject_put(*(_QWORD *)(a1 + 936));
-      return v7;
-    }
-    else
-    {
-      return 0;
-    }
-  }
-  else
-  {
-    printk(unk_389E1, "syna_testing_create_dir", v3);
-    return -22;
-  }
+	tcm->testing_dir = kobject_create_and_add("testing", tcm->sysfs_dir);
+	if (!tcm->testing_dir) {
+		printk("\0013[error] %s: Fail to create testing directory\n",
+		       "syna_testing_create_dir");
+		return -EINVAL;
+	}
+
+	result = sysfs_create_group(tcm->testing_dir, &attr_testing_group);
+	if (result < 0) {
+		printk("\0013[error] %s: Fail to create sysfs group\n",
+		       "syna_testing_create_dir");
+		kobject_put(tcm->testing_dir);
+		return result;
+	}
+
+	return 0;
 }

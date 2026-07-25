@@ -149,6 +149,17 @@ def relocation_multiset_equivalence(
     stock_only = Counter(stock) - Counter(candidate)
     candidate_only = Counter(candidate) - Counter(stock)
 
+    if not stock_only and not candidate_only:
+        return True, {
+            "stock_only": [],
+            "candidate_only": [],
+            "mode": "EXACT",
+            "accepted_rule": (
+                "exact relocation multiset or one local lock_class_key may be "
+                "stripped to an anonymous .bss target"
+            ),
+        }
+
     def split(value: str) -> tuple[str, str]:
         kind, target = value.split(" ", 1)
         return kind, target
@@ -182,8 +193,10 @@ def relocation_multiset_equivalence(
     return passed, {
         "stock_only": counter_rows(stock_only),
         "candidate_only": counter_rows(candidate_only),
+        "mode": "BOUNDED_LOCAL_LOCK_KEY" if passed else "REJECTED",
         "accepted_rule": (
-            "one local lock_class_key may be stripped to an anonymous .bss target"
+            "exact relocation multiset or one local lock_class_key may be "
+            "stripped to an anonymous .bss target"
         ),
     }
 

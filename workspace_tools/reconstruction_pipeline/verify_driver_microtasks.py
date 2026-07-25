@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify hash-backed compile, KCFI and test evidence for every microtask."""
+"""Verify hash-backed evidence required by each reconstructed microtask."""
 
 from __future__ import annotations
 
@@ -11,7 +11,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-REQUIRED_ROLES = {"compile", "kcfi", "test"}
+DEFAULT_REQUIRED_ROLES = {"compile", "kcfi", "test"}
+SUPPORTED_ROLES = DEFAULT_REQUIRED_ROLES | {"joern"}
 
 
 def sha256_file(path: Path) -> str:
@@ -35,6 +36,23 @@ def read_json_bytes(value: bytes) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError("expected JSON object")
     return value
+
+
+def required_roles_for_task(task: dict[str, Any]) -> set[str]:
+    declared = task.get("required_evidence")
+    if declared is None:
+        return set(DEFAULT_REQUIRED_ROLES)
+    if not isinstance(declared, list) or not declared or not all(
+        isinstance(role, str) for role in declared
+    ):
+        raise ValueError("invalid required_evidence")
+    roles = set(declared)
+    unsupported = roles - SUPPORTED_ROLES
+    if unsupported:
+        raise ValueError(
+            "unsupported evidence roles: " + ", ".join(sorted(unsupported))
+        )
+    return roles
 
 
 def git_index_blob(workspace_root: Path, relative_path: Path) -> bytes:
@@ -156,7 +174,12 @@ def main() -> int:
                     failures.append(task["id"] + ": evidence SHA-256 mismatch")
                 else:
                     roles.add(role)
-        missing_roles = REQUIRED_ROLES - roles
+        try:
+            required_roles = required_roles_for_task(task)
+        except ValueError as error:
+            failures.append(task["id"] + ": " + str(error))
+            continue
+        missing_roles = required_roles - roles
         if missing_roles:
             failures.append(task["id"] + ": missing evidence roles " + ", ".join(sorted(missing_roles)))
     passed = not failures and bool(manifest.get("tasks"))

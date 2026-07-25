@@ -88,6 +88,31 @@ class AttestTestedDriverMicrotasksTests(unittest.TestCase):
             )
             self.assertEqual(indexed, {"current.c": report})
 
+    def test_joern_index_requires_strict_current_tree_coverage(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source_dir = Path(temporary)
+            (source_dir / "current.c").write_text(
+                "int current(void) { return 0; }\n", encoding="ascii"
+            )
+            report = Path("joern.json")
+            payload = {
+                "passed": True,
+                "status": "PASS",
+                "strict": True,
+                "promotion_claim": False,
+                "parser": {"parse_problem_count": 0},
+                "scope": {"resolved_source_functions": ["current"]},
+                "input_hashes": {
+                    "source_tree_sha256": MODULE.joern_source_tree_sha256(source_dir)
+                },
+            }
+            self.assertEqual(
+                MODULE.joern_functions(source_dir, [(report, payload)]),
+                {"current": report},
+            )
+            payload["input_hashes"]["source_tree_sha256"] = "0" * 64
+            self.assertEqual(MODULE.joern_functions(source_dir, [(report, payload)]), {})
+
     def test_reset_is_fail_closed_for_previous_pass(self) -> None:
         tasks = [
             {"id": "old", "status": "PASS", "evidence": [{"role": "test"}]},

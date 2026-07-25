@@ -87,6 +87,23 @@ def test_accepts_named_local_key_against_stripped_bss() -> None:
     assert passed
     assert len(evidence["stock_only"]) == 2
     assert len(evidence["candidate_only"]) == 2
+    assert evidence["mode"] == "BOUNDED_LOCAL_LOCK_KEY"
+
+
+def test_accepts_exact_relocation_multiset() -> None:
+    relocations = [
+        "R_AARCH64_ADR_PREL_PG_HI21 .rodata:string=x",
+        "R_AARCH64_ADD_ABS_LO12_NC .rodata:string=x",
+    ]
+
+    passed, evidence = MODULE.relocation_multiset_equivalence(
+        relocations, relocations, "syna_testing_create_dir"
+    )
+
+    assert passed
+    assert evidence["mode"] == "EXACT"
+    assert evidence["stock_only"] == []
+    assert evidence["candidate_only"] == []
 
 
 def test_rejects_unrelated_bss_symbol() -> None:

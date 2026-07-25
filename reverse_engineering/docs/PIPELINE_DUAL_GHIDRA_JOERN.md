@@ -328,3 +328,81 @@ A integracao passa a fazer parte de todos os drivers em tres etapas:
 
 Esse caminho preserva a exatidao dos oraculos atuais e acrescenta uma camada de
 grafo auditavel sem transformar inferencia estatica em certeza falsa.
+
+## 13. Integracao obrigatoria na atestacao de microtarefas
+
+O Joern nao substitui o dicionario. Os dois resolvem problemas diferentes e
+devem permanecer ativos na mesma microtarefa:
+
+| Evidencia | Pergunta de aceite | Reprova quando |
+|---|---|---|
+| Dicionario + KCFI | A declaracao C produz a identidade de tipo observada? | type ID, CRC ou assinatura divergem |
+| Ghidra/ELF | O binario stock contem este fluxo, offset, relocacao e P-Code? | ha divergencia nao justificada |
+| Joern estrito | A funcao C mapeada entrou no CPG atual e preserva cobertura/calls mapeadas? | parser falha, a funcao some, mapa diverge ou call obrigatoria desaparece |
+| Harness + build | O candidato atual compila e executa o contrato isolado? | hash, build ou teste diverge |
+
+Microtarefas novas sao geradas com as evidencias compile, kcfi, joern e test.
+A promocao aceita Joern somente quando o resumo declara estado PASS, modo
+strict, zero erros de parser, a funcao C no escopo resolvido, promocao isolada
+desativada e hash da arvore C/H igual ao candidato atual.
+
+Assim, uma alteracao posterior em qualquer fonte ou header invalida a
+atestacao Joern ate uma nova execucao. O verificador le os requisitos por
+tarefa: evidencias antigas mantem seus requisitos historicos; tarefas novas ou
+reatestadas exigem Joern. Nenhuma tarefa legada ganha um PASS Joern retroativo.
+
+~~~text
+Ghidra/ELF -> dicionario e KCFI -> C atomico -> Joern estrito
+-> build reproduzivel -> Assembly/P-Code -> harness -> atestacao hashada
+~~~
+
+Use o resumo portatil joern_gate_summary.json no atestador. Ele contem hashes
+de lock, query, perfil, export Ghidra, mapa e arvore de fontes, sem expor
+caminhos locais. Findings J4 continuam seletores de revisao e nao sao
+automaticamente vulnerabilidades; falhas J1-J3 bloqueiam a promocao.
+
+O runbook compacto da regra esta em
+[JOERN_MICROTASK_ATTESTATION.md](JOERN_MICROTASK_ATTESTATION.md).
+
+## 13. Integracao obrigatoria na atestacao de microtarefas
+
+O Joern nao substitui o dicionario. Os dois resolvem problemas diferentes e
+devem permanecer ativos na mesma microtarefa:
+
+| Evidencia | Pergunta de aceite | Reprova quando |
+|---|---|---|
+| Dicionario + KCFI | A declaracao C produz a identidade de tipo observada? | type ID, CRC ou assinatura divergem |
+| Ghidra/ELF | O binario stock contem este fluxo, offset, relocacao e P-Code? | ha divergencia nao justificada |
+| Joern estrito | A funcao C mapeada entrou no CPG atual e preserva a cobertura/calls mapeadas? | parser falha, a funcao some, mapa diverge ou call obrigatoria desaparece |
+| Harness + build | O candidato atual compila e executa o contrato isolado? | hash, build ou teste diverge |
+
+Desde esta adocao, microtarefas novas sao geradas com
+`required_evidence: [compile, kcfi, joern, test]`. A promocao por
+`attest_tested_driver_microtasks.py` so aceita o papel `joern` quando o resumo
+da execucao declara simultaneamente:
+
+1. `status=PASS`, `passed=true`, `strict=true` e `promotion_claim=false`;
+2. zero `parse_problem_count`;
+3. a `source_function` declarada pela microtarefa em
+   `scope.resolved_source_functions`;
+4. `input_hashes.source_tree_sha256` igual ao digest atual de toda a arvore
+   C/H candidata, excluindo somente `tests`, `validation` e `build`.
+
+Assim, uma alteracao posterior em qualquer fonte ou header invalida a
+atestacao Joern ate uma nova execucao. O verificador de microtarefas le
+`required_evidence` por tarefa: evidencias antigas mantem seus requisitos
+historicos; tarefas novas ou reatestadas exigem Joern. Nenhuma tarefa legada
+ganha, por inferencia, um PASS Joern retroativo.
+
+Fluxo obrigatorio por funcao nova ou reatestada:
+
+```text
+Ghidra/ELF -> dicionario e KCFI -> C atomico -> Joern estrito
+-> build reproduzivel -> Assembly/P-Code -> harness -> atestacao hashada
+```
+
+Use o resumo portatil `joern_gate_summary.json` com
+`--joern-report`; ele contem hashes de lock, query, perfil, export Ghidra,
+mapa e arvore de fontes, sem expor caminhos locais. Findings J4 continuam
+seletor de revisao e nao sao automaticamente vulnerabilidades. Em contraste,
+falhas J1-J3 bloqueiam a promocao da microtarefa.

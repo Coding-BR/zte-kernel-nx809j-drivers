@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `e0f09eed5f42dd45549911ac32a08c480095e081a362418d125804d0280aca30`
-- **Candidato:** `24664136` bytes
+- **Candidato SHA-256:** `875f7ca048393aa88370467450bc39d98b8b4715e3f5b58bd7993afb28ea2854`
+- **Candidato:** `24665784` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,39 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `172/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `173/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `309/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `310/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next50 - Criacao do Diretorio de Testing
+
+O Next50 promoveu `221_syna_testing_create_dir` para `PASS` no protocolo
+offline. A funcao cria `testing` sob `tcm->sysfs_dir` em `+0x398`, armazena o
+ponteiro em `tcm->testing_dir` em `+0x3a8`, cria `attr_testing_group` e
+preserva os tres resultados stock: `-EINVAL` para falha de diretorio, retorno
+negativo com `kobject_put` para falha de grupo e `0` para retorno nao-negativo
+do grupo. O ponteiro nao e zerado apos o rollback, como no stock.
+
+Dois builds canônicos em containers e caminhos `M=` independentes produziram
+o mesmo modulo de `24665784` bytes e SHA-256
+`875f7ca048393aa88370467450bc39d98b8b4715e3f5b58bd7993afb28ea2854`.
+Assembly, relocations resolvidas, secao e tamanho coincidem exatamente: `152`
+bytes, `38` instrucoes e `12` relocations de dados comparadas. O KCFI e
+`0xae20471c`, tambem com secao e tamanho exatos.
+
+O Ghidra confirma `152` bytes, `108/108` registros P-Code e multiconjunto
+exato de instrucoes, controles, chamadas e strings. A desigualdade C
+normalizada foi divulgada; o gate limitado passou em modo P-Code e relocation
+`EXACT`. O harness executou quatro cenarios em dois ciclos ASAN/UBSAN
+reproduziveis. O Joern v4.0.548 encontrou `1/1` identidade, zero problemas de
+parser, zero chamadas nao resolvidas e zero deltas mapeados.
+
+O documento autoritativo e `NEXT50_TESTING_CREATE_VALIDATION_20260725.md`.
+Nao houve teste no smartphone. O contador global agora e `173 PASS / 194
+READY`; o proximo alvo sequencial e `222_syna_testing_remove_dir`.
 
 ## Checkpoint Next49 - PT01 testing path
 
