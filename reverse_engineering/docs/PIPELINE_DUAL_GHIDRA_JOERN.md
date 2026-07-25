@@ -119,9 +119,13 @@ indicada pelo mapa.
 
 ### J0: identidade dos insumos
 
-Registrar SHA-256 do lock Joern, script Scala, perfil de chamadas, fonte C/H,
-`functions.jsonl`, `calls.jsonl`, mapa de reconstrucao e `.ko` quando o frontend
-binario for usado.
+Registrar SHA-256 do runner Python, lock Joern, script Scala, perfil de chamadas,
+fonte C/H, `functions.jsonl`, `calls.jsonl`, mapa de reconstrucao e `.ko` quando
+o frontend binario for usado.
+
+Hashes de arquivos textuais sao calculados com finais de linha canonicos LF,
+para que checkouts Windows e Linux produzam a mesma identidade. Binarios como
+`.ko`, `.bin` e `.zip` permanecem byte-exatos.
 
 Saida: `input_manifest.json`.
 
@@ -131,6 +135,15 @@ Executar `c2cpg` sobre o fonte candidato. Zero metodos internos, erro do parser,
 falha do processo ou artefato ausente reprovam o gate. Includes ausentes devem
 ser corrigidos com os headers do kernel fixado ou com um compilation database;
 nao se deve ocultar o problema removendo codigo.
+
+Anotacoes de compilador que desaparecem no pre-processamento, como `__user`,
+`__init` e `__exit`, podem ser declaradas com `--define` quando o frontend nao
+receber os headers GKI. Passe apenas o nome da macro, registre cada valor no
+manifest e confirme que as funcoes antes ausentes aparecem no CPG. Prefira
+`compile_commands.json` e includes reais. Nunca defina em massa macros de
+configuracao ou controle para forcar cobertura: combinacoes contraditorias podem
+criar um programa que nao corresponde a nenhuma compilacao real, como alerta a
+[orientacao do c2cpg](https://github.com/joernio/joern/issues/1420).
 
 Saida: `source.cpg.bin` e `source_inventory/`.
 
@@ -234,14 +247,19 @@ python .\workspace_tools\reconstruction_pipeline\run_joern_reconstruction_gate.p
   --source-root .\kernel_development\drivers\reconstructed\zte_ir `
   --ghidra-export .\reverse_engineering\validation\reconstructed\zte_ir\offline_static\ghidra_stock `
   --reconstruction-map .\kernel_development\drivers\reconstructed\zte_ir\reconstruction_map.json `
-  --output-dir <engenharia>\validation\zte_ir\joern `
+  --output-dir <engenharia>\validation\zte_ir\joern\<run-id> `
+  --define __user `
+  --define __init `
+  --define __exit `
   --strict
 ```
 
 Quando houver `compile_commands.json`, passe `--compilation-database`. Includes
 adicionais podem ser repetidos com `--include`. O gate exclui `tests`,
 `validation` e `build` por padrao para o harness nao contaminar o CPG do modulo;
-use `--exclude` para acrescentar outras saidas geradas.
+use `--exclude` para acrescentar outras saidas geradas. Cada `--define` e
+registrado em `input_manifest.json`. O runner isola o workspace interno do Joern
+no proprio `<run-id>` para impedir contaminacao entre drivers ou execucoes.
 
 Para o frontend binario suplementar:
 
@@ -266,6 +284,7 @@ python .\workspace_tools\reconstruction_pipeline\run_joern_reconstruction_gate.p
   binary.cpg.bin                 # opcional
   binary_inventory/              # opcional
   joern_gate_report.json
+  joern_gate_summary.json        # portatil, sem caminhos locais
 ```
 
 `joern_gate_report.json` deve conter `promotion_claim=false` sempre. O estado
@@ -278,9 +297,11 @@ aceito e:
 | `FAIL` | erro de ferramenta ou inconsistencia bloqueadora |
 | `ADVISORY` | achado de fluxo/binario que exige revisao, sem conclusao automatica |
 
-CPGs sao artefatos derivados grandes. Publicar manifests, consultas e relatorios
-por padrao; publicar `*.cpg.bin` apenas quando o tamanho e a licenca forem
-aceitos. O CPG nunca substitui os arquivos de evidencia originais.
+CPGs sao artefatos derivados grandes. Publique a query, o runner e
+`joern_gate_summary.json` por padrao. O summary fixa os hashes dos insumos, do
+relatorio local e dos inventarios sem expor caminhos absolutos. Publique o
+manifest/relatorio detalhados ou `*.cpg.bin` somente quando caminhos, tamanho e
+licenca forem aceitos. O CPG nunca substitui os arquivos de evidencia originais.
 
 ## 10. Como usar no ciclo de microtarefas
 
@@ -316,11 +337,36 @@ Uma LLM ou contribuicao nao pode:
 O commit deve incluir scripts/queries alterados, testes, hashes e um relatorio
 reproduzivel. Mudanca de query sem teste invalida o gate.
 
-## 12. Criterio de adocao
+## 12. Validacao real da integracao
+
+O piloto Windows executado em 2026-07-24 com o lock `v4.0.548`, Java 21 e
+`zte_ir` obteve `PASS` em modo `--strict` depois de validar a instalacao real:
+
+| Medida | Resultado |
+|---|---:|
+| Funcoes stock/mapeadas | 8/8 |
+| Funcoes mapeadas ausentes no CPG | 0 |
+| Problemas de parsing reportados | 0 |
+| Chamadas inventariadas | 438 |
+| Estruturas de controle | 53 |
+| Seletores de revisao | 30 |
+| `promotion_claim` | `false` |
+
+Evidencia portatil:
+[JOERN_PILOT_V4.0.548.json](../validation/reconstructed/zte_ir/joern/JOERN_PILOT_V4.0.548.json).
+
+O teste tambem detectou e bloqueou tres problemas da primeira implementacao:
+fragmentacao de `key=value` pelo launcher Windows, uso incorreto da API
+`filename` no script Scala e colisao do workspace pelo nome `source.cpg.bin`.
+Essas falhas foram corrigidas antes do primeiro `PASS`. O resultado comprova que
+o gate funciona; nao comprova equivalencia funcional do driver.
+
+## 13. Criterio de adocao
 
 A integracao passa a fazer parte de todos os drivers em tres etapas:
 
-1. **Piloto:** `zte_ir` e uma funcao complexa de `zte_tpd`, sem `--strict`.
+1. **Piloto:** `zte_ir` aprovado em `--strict`; executar uma funcao complexa de
+   `zte_tpd` mantendo o restante incompleto explicitamente fora da promocao.
 2. **Baseline:** gerar CPG e classificar deltas de todos os drivers curated.
 3. **Obrigatorio:** ativar J0-J3 em strict por driver depois de zerar ou
    justificar deltas; manter J4 data flow e J5 binario como advisory ate seus

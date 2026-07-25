@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -130,6 +131,22 @@ class JoernGateTests(unittest.TestCase):
             second = GATE.source_tree_record(root)
             self.assertNotEqual(first["tree_sha256"], second["tree_sha256"])
 
+    def test_text_hash_normalizes_line_endings_but_binary_hash_does_not(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            lf_text = root / "lf.c"
+            crlf_text = root / "crlf.c"
+            lf_binary = root / "lf.ko"
+            crlf_binary = root / "crlf.ko"
+            lf_text.write_bytes(b"int value;\n")
+            crlf_text.write_bytes(b"int value;\r\n")
+            lf_binary.write_bytes(b"ELF\n")
+            crlf_binary.write_bytes(b"ELF\r\n")
+            self.assertEqual(GATE.sha256_file(lf_text), GATE.sha256_file(crlf_text))
+            self.assertNotEqual(
+                GATE.sha256_file(lf_binary), GATE.sha256_file(crlf_binary)
+            )
+
     def test_source_tree_excludes_host_harness(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -161,6 +178,64 @@ class JoernGateTests(unittest.TestCase):
             "stderr_tail": "",
         }
         self.assertEqual(GATE.count_parse_problems(result), 7)
+
+    def test_windows_batch_launcher_preserves_key_value_argument(self):
+        argv = ["joern.bat", "--param", "cpgFile=C:/analysis/source.cpg.bin"]
+        runnable = GATE.runnable_argv(argv)
+        if os.name == "nt":
+            self.assertEqual(runnable[:4], ["cmd.exe", "/d", "/c", "joern.bat"])
+            self.assertEqual(runnable[-1], '"cpgFile=C:/analysis/source.cpg.bin"')
+        else:
+            self.assertEqual(runnable, argv)
+
+    def test_public_summary_contains_hashes_without_local_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ghidra, reconstruction_map, inventory, profile = self.make_fixture(root)
+            write_json(inventory / "inventory.json", {"method_count": 3})
+            report = GATE.build_cross_oracle_report(
+                ghidra, reconstruction_map, inventory, profile, strict=True
+            )
+            report.update({"driver": "zte_ir", "parser": {"parse_problem_count": 0}})
+            report_path = root / "joern_gate_report.json"
+            write_json(report_path, report)
+
+            def record(path: Path):
+                return GATE.file_record(path)
+
+            runner = root / "runner.py"
+            query = root / "query.sc"
+            lock_file = root / "lock.json"
+            for path in (runner, query, lock_file):
+                path.write_text("fixture\n", encoding="ascii")
+            manifest = {
+                "source": {"tree_sha256": "a" * 64, "file_count": 1},
+                "ghidra": {
+                    "functions": record(ghidra / "functions.jsonl"),
+                    "calls": record(ghidra / "calls.jsonl"),
+                },
+                "reconstruction_map": record(reconstruction_map),
+                "joern": {
+                    "runner": record(runner),
+                    "lock": record(lock_file),
+                    "query": record(query),
+                    "call_profile": record(profile),
+                    "preprocessor_defines": ["__user"],
+                },
+            }
+            lock = {
+                "project": {"release_tag": "v1", "source_commit": "b" * 40},
+                "distribution": {"size": 42, "sha256": "c" * 64},
+                "runtime": {"java_major": 21},
+            }
+            summary = GATE.build_public_summary(
+                report, manifest, lock, report_path, inventory
+            )
+            encoded = json.dumps(summary)
+            self.assertNotIn(str(root), encoded)
+            self.assertFalse(summary["promotion_claim"])
+            self.assertEqual(summary["input_hashes"]["source_file_count"], 1)
+            self.assertIn("joern_gate_report", summary["output_hashes"])
 
 
 class JoernBootstrapTests(unittest.TestCase):

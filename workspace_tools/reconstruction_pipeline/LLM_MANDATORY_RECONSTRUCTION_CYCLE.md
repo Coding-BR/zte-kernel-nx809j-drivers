@@ -115,16 +115,21 @@ Não deixe todo, FUN_*, thunks, callbacks, init_module ou cleanup_module sem dec
 1. Preserve o dicionario e o oraculo KCFI/GENDWARFKSYMS; Joern nao recupera
    tipos nominais perdidos nem type IDs KCFI.
 2. Gere um CPG do fonte candidato com a versao Joern fixada no lock.
-3. Exija toda identidade `stock_function@entry` no mapa e toda
+3. Prefira `compile_commands.json` e headers GKI reais. Qualquer `--define`
+   usado para anotacoes do compilador deve ser explicito no manifest; nunca
+   force macros de configuracao para obter cobertura aparente.
+4. Isole cada workspace Joern por driver e `run-id`.
+5. Exija toda identidade `stock_function@entry` no mapa e toda
    `source_function` mapeada no CPG.
-4. Compare chamadas internas mapeadas, controle e pontos de risco. Divergencia
+6. Compare chamadas internas mapeadas, controle e pontos de risco. Divergencia
    exige revisao contra Assembly, relocacoes e P-Code.
-5. Trate `ghidra2cpg` binario como suplementar: o Ghidra canonico 12.1.2
+7. Trate `ghidra2cpg` binario como suplementar: o Ghidra canonico 12.1.2
    continua normativo.
-6. `PASS` Joern possui poder de veto, mas nunca promove o driver sozinho.
+8. `PASS` Joern possui poder de veto, mas nunca promove o driver sozinho.
 
-Evidencia: `input_manifest.json`, inventarios CPG e `joern_gate_report.json`,
-gerados conforme `reverse_engineering/docs/PIPELINE_DUAL_GHIDRA_JOERN.md`.
+Evidencia local: `input_manifest.json`, inventarios CPG e
+`joern_gate_report.json`. Evidencia publica: `joern_gate_summary.json`, gerada
+conforme `reverse_engineering/docs/PIPELINE_DUAL_GHIDRA_JOERN.md`.
 
 ### Gate 4: Arquitetura e ABI Antes do C
 

@@ -40,17 +40,25 @@ $body
   }
   writeJson(output, "methods.json", methodRows)
 
-  val calls = cpg.call.l.sortBy(call => (call.filename, call.lineNumber.getOrElse(-1), call.name, call.code))
-  val callRows = calls.map { call =>
-    val caller = call.method.name.headOption.getOrElse("")
-    s"""    {"caller":${jsonString(caller)},"name":${jsonString(call.name)},"method_full_name":${jsonString(call.methodFullName)},"code":${jsonString(call.code)},"filename":${jsonString(call.filename)},"line":${call.lineNumber.getOrElse(-1)}}"""
+  val calls = cpg.call.l.map { call =>
+    (call, call.method.filename)
+  }.sortBy { case (call, filename) =>
+    (filename, call.lineNumber.getOrElse(-1), call.name, call.code)
+  }
+  val callRows = calls.map { case (call, filename) =>
+    val caller = call.method.name
+    s"""    {"caller":${jsonString(caller)},"name":${jsonString(call.name)},"method_full_name":${jsonString(call.methodFullName)},"code":${jsonString(call.code)},"filename":${jsonString(filename)},"line":${call.lineNumber.getOrElse(-1)}}"""
   }
   writeJson(output, "calls.json", callRows)
 
-  val controls = cpg.controlStructure.l.sortBy(control => (control.filename, control.lineNumber.getOrElse(-1), control.controlStructureType, control.code))
-  val controlRows = controls.map { control =>
-    val owner = control.method.name.headOption.getOrElse("")
-    s"""    {"method":${jsonString(owner)},"type":${jsonString(control.controlStructureType)},"code":${jsonString(control.code)},"filename":${jsonString(control.filename)},"line":${control.lineNumber.getOrElse(-1)}}"""
+  val controls = cpg.controlStructure.l.map { control =>
+    (control, control.method.filename)
+  }.sortBy { case (control, filename) =>
+    (filename, control.lineNumber.getOrElse(-1), control.controlStructureType, control.code)
+  }
+  val controlRows = controls.map { case (control, filename) =>
+    val owner = control.method.name
+    s"""    {"method":${jsonString(owner)},"type":${jsonString(control.controlStructureType)},"code":${jsonString(control.code)},"filename":${jsonString(filename)},"line":${control.lineNumber.getOrElse(-1)}}"""
   }
   writeJson(output, "control_structures.json", controlRows)
 

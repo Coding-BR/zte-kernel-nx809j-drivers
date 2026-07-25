@@ -21,6 +21,10 @@ REPO_ROOT = SCRIPT_DIR.parents[1]
 DEFAULT_LOCK = SCRIPT_DIR / "joern" / "joern.lock.json"
 DEFAULT_QUERY = SCRIPT_DIR / "joern" / "nx809j_cpg_inventory.sc"
 DEFAULT_PROFILE = SCRIPT_DIR / "joern" / "kernel_call_profile.json"
+TEXT_HASH_SUFFIXES = {
+    ".c", ".h", ".json", ".jsonl", ".md", ".py", ".sc", ".sh",
+    ".toml", ".txt", ".yaml", ".yml",
+}
 
 
 def utc_now() -> str:
@@ -29,6 +33,9 @@ def utc_now() -> str:
 
 def sha256_file(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
     digest = hashlib.sha256()
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
+        return digest.hexdigest()
     with path.open("rb") as stream:
         while chunk := stream.read(chunk_size):
             digest.update(chunk)
@@ -144,12 +151,21 @@ def validate_install_marker(marker: Path, lock: dict[str, Any]) -> dict[str, Any
 
 def runnable_argv(argv: list[str]) -> list[str]:
     if os.name == "nt" and Path(argv[0]).suffix.lower() in {".bat", ".cmd"}:
-        return ["cmd.exe", "/d", "/c", *argv]
+        # Joern's generated batch launcher splits unquoted key=value arguments.
+        # Preserve each --param payload as one argument until Java receives it.
+        batch_args = [
+            f'"{argument}"' if "=" in argument else argument
+            for argument in argv[1:]
+        ]
+        return ["cmd.exe", "/d", "/c", argv[0], *batch_args]
     return argv
 
 
 def run_command(
-    argv: list[str], timeout: int = 7200, env: dict[str, str] | None = None
+    argv: list[str],
+    timeout: int = 7200,
+    env: dict[str, str] | None = None,
+    cwd: Path | None = None,
 ) -> dict[str, Any]:
     completed = subprocess.run(
         runnable_argv(argv),
@@ -160,9 +176,11 @@ def run_command(
         timeout=timeout,
         check=False,
         env=env,
+        cwd=cwd,
     )
     return {
         "argv": argv,
+        "cwd": str(cwd.resolve()) if cwd else None,
         "returncode": completed.returncode,
         "parse_problem_count": (
             completed.stdout.count("Parse problem '")
@@ -377,6 +395,77 @@ def build_cross_oracle_report(
     }
 
 
+def portable_record(record: dict[str, Any]) -> dict[str, Any]:
+    return {"size": int(record["size"]), "sha256": str(record["sha256"])}
+
+
+def build_public_summary(
+    report: dict[str, Any],
+    manifest: dict[str, Any],
+    lock: dict[str, Any],
+    report_path: Path,
+    source_inventory: Path,
+) -> dict[str, Any]:
+    finding_counts = collections.Counter(
+        (str(row.get("category", "")), str(row.get("severity", "")))
+        for row in report.get("review_findings", [])
+    )
+    inventory_files = {
+        name: portable_record(file_record(source_inventory / name))
+        for name in (
+            "inventory.json",
+            "methods.json",
+            "calls.json",
+            "control_structures.json",
+        )
+    }
+    joern = manifest["joern"]
+    ghidra = manifest["ghidra"]
+    return {
+        "schema_version": "1.0",
+        "generated_utc": utc_now(),
+        "driver": report["driver"],
+        "status": report["status"],
+        "passed": bool(report["passed"]),
+        "strict": bool(report.get("strict")),
+        "promotion_claim": False,
+        "blockers": report.get("blockers", []),
+        "toolchain": {
+            "joern_release": lock["project"]["release_tag"],
+            "joern_source_commit": lock["project"]["source_commit"],
+            "joern_archive": {
+                "size": lock["distribution"]["size"],
+                "sha256": lock["distribution"]["sha256"],
+            },
+            "java_major": lock["runtime"]["java_major"],
+            "preprocessor_defines": joern["preprocessor_defines"],
+        },
+        "input_hashes": {
+            "runner": portable_record(joern["runner"]),
+            "lock": portable_record(joern["lock"]),
+            "query": portable_record(joern["query"]),
+            "call_profile": portable_record(joern["call_profile"]),
+            "reconstruction_map": portable_record(manifest["reconstruction_map"]),
+            "ghidra_functions": portable_record(ghidra["functions"]),
+            "ghidra_calls": portable_record(ghidra["calls"]),
+            "source_tree_sha256": manifest["source"]["tree_sha256"],
+            "source_file_count": manifest["source"]["file_count"],
+        },
+        "output_hashes": {
+            "joern_gate_report": portable_record(file_record(report_path)),
+            "source_inventory": inventory_files,
+        },
+        "coverage": report.get("coverage", {}),
+        "graph": report.get("graph", {}),
+        "parser": report.get("parser", {}),
+        "review_finding_counts": [
+            {"category": category, "severity": severity, "count": count}
+            for (category, severity), count in sorted(finding_counts.items())
+        ],
+        "limitations": report.get("limitations", []),
+    }
+
+
 def parse_args() -> argparse.Namespace:
     lock = json.loads(DEFAULT_LOCK.read_text(encoding="utf-8"))
     default_home = REPO_ROOT / lock["runtime"]["install_directory"]
@@ -402,6 +491,12 @@ def parse_args() -> argparse.Namespace:
         action="append",
         default=["tests", "validation", "build"],
         help="relative directory or file excluded from the candidate CPG",
+    )
+    parser.add_argument(
+        "--define",
+        action="append",
+        default=[],
+        help="explicit c2cpg preprocessor definition, recorded in the input manifest",
     )
     parser.add_argument("--compilation-database", type=Path)
     parser.add_argument(
@@ -476,6 +571,8 @@ def main() -> int:
         source_command.extend(["--exclude", excluded])
     for include in args.include:
         source_command.extend(["--include", str(include.resolve())])
+    for definition in args.define:
+        source_command.extend(["--define", definition])
     if args.compilation_database:
         source_command.extend([
             "--compilation-database", str(args.compilation_database.resolve())
@@ -518,6 +615,8 @@ def main() -> int:
             "home": str(joern_home),
             "java_home": str(java_home) if java_home else None,
             "excluded_paths": args.exclude,
+            "preprocessor_defines": args.define,
+            "runner": file_record(Path(__file__).resolve()),
             "lock": file_record(lock_path),
             "query": file_record(query_path),
             "call_profile": file_record(profile_path),
@@ -573,7 +672,7 @@ def main() -> int:
     if args.with_binary_cpg:
         execution_order.extend(["binary_cpg", "binary_inventory"])
     for name in execution_order:
-        result = run_command(commands[name], env=execution_env)
+        result = run_command(commands[name], env=execution_env, cwd=output_dir)
         command_results[name] = result
         if result["returncode"] != 0:
             report = {
@@ -618,7 +717,14 @@ def main() -> int:
         "commands": command_results,
         **cross_oracle,
     }
-    write_json(output_dir / "joern_gate_report.json", report)
+    report_path = output_dir / "joern_gate_report.json"
+    write_json(report_path, report)
+    write_json(
+        output_dir / "joern_gate_summary.json",
+        build_public_summary(
+            report, manifest, lock_payload, report_path, source_inventory
+        ),
+    )
     print(json.dumps({
         "status": report["status"],
         "passed": report["passed"],
