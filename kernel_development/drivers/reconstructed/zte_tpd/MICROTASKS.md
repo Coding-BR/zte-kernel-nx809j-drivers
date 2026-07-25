@@ -225,7 +225,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 219_syna_testing_pt05_zte | syna_testing_pt05_zte | 0011b818 | core_logic | syna_testing_pt05_zte.c:syna_testing_pt05_zte | PASS |
 | 220_syna_testing_pt01_zte | syna_testing_pt01_zte | 0011bb70 | core_logic | syna_testing_pt01_zte.c:syna_testing_pt01_zte | PASS |
 | 221_syna_testing_create_dir | syna_testing_create_dir | 0011be28 | core_logic | syna_testing_create_dir.c:syna_testing_create_dir | PASS |
-| 222_syna_testing_remove_dir | syna_testing_remove_dir | 0011bec4 | binding | syna_testing_remove_dir.c:syna_testing_remove_dir | READY_FOR_IMPLEMENTATION |
+| 222_syna_testing_remove_dir | syna_testing_remove_dir | 0011bec4 | binding | syna_testing_remove_dir.c:syna_testing_remove_dir | PASS |
 | 223_syna_testing_check_dev_id_show | syna_testing_check_dev_id_show | 0011bf08 | user_abi | syna_testing_check_dev_id_show.c:syna_testing_check_dev_id_show | READY_FOR_IMPLEMENTATION |
 | 224_syna_testing_check_config_id_show | syna_testing_check_config_id_show | 0011c1f4 | user_abi | syna_testing_check_config_id_show.c:syna_testing_check_config_id_show | READY_FOR_IMPLEMENTATION |
 | 225_syna_testing_pt01_show | syna_testing_pt01_show | 0011c410 | user_abi | syna_testing_pt01_show.c:syna_testing_pt01_show | READY_FOR_IMPLEMENTATION |

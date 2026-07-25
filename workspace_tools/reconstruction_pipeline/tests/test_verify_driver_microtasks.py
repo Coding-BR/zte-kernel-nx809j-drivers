@@ -75,6 +75,20 @@ class VerifyDriverMicrotasksTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unsupported evidence roles"):
             MODULE.required_roles_for_task({"required_evidence": ["unknown"]})
 
+    def test_select_tasks_limits_a_checkpoint_by_source_function(self) -> None:
+        tasks = [
+            {"id": "001", "source_function": "first"},
+            {"id": "002", "source_function": "second"},
+        ]
+        self.assertEqual(
+            MODULE.select_tasks(tasks, ["second"]),
+            [{"id": "002", "source_function": "second"}],
+        )
+
+    def test_select_tasks_rejects_unknown_source_function(self) -> None:
+        with self.assertRaisesRegex(ValueError, "absent from manifest"):
+            MODULE.select_tasks([{"id": "001", "source_function": "first"}], ["nope"])
+
 
 if __name__ == "__main__":
     unittest.main()

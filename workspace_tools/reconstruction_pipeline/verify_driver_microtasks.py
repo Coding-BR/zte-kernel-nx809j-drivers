@@ -107,11 +107,39 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--curated-root", type=Path, default=curated_root)
     parser.add_argument("--evidence-root", type=Path, default=evidence_root)
     parser.add_argument(
+        "--function",
+        action="append",
+        dest="functions",
+        default=[],
+        help="source function to verify; repeat for a bounded checkpoint",
+    )
+    parser.add_argument(
         "--git-index",
         action="store_true",
         help="verify the staged manifest and evidence blobs instead of checkout bytes",
     )
     return parser.parse_args()
+
+
+def select_tasks(
+    tasks: list[dict[str, Any]], functions: list[str]
+) -> list[dict[str, Any]]:
+    """Limit a validation run without treating other pending tasks as failures."""
+    if not functions:
+        return tasks
+    requested = set(functions)
+    available = {
+        task.get("source_function")
+        for task in tasks
+        if isinstance(task.get("source_function"), str)
+    }
+    unknown = requested - available
+    if unknown:
+        raise ValueError(
+            "requested functions are absent from manifest: "
+            + ", ".join(sorted(unknown))
+        )
+    return [task for task in tasks if task.get("source_function") in requested]
 
 
 def main() -> int:
@@ -137,7 +165,8 @@ def main() -> int:
         detail = "; ".join(blockers) if isinstance(blockers, list) else "unknown blocker"
         failures.append("no microtasks available: " + detail)
         tasks = []
-    for task in tasks:
+    selected_tasks = select_tasks(tasks, args.functions)
+    for task in selected_tasks:
         checked += 1
         if task.get("status") != "PASS":
             failures.append(task.get("id", "unknown") + ": status is not PASS")
@@ -182,12 +211,13 @@ def main() -> int:
         missing_roles = required_roles - roles
         if missing_roles:
             failures.append(task["id"] + ": missing evidence roles " + ", ".join(sorted(missing_roles)))
-    passed = not failures and bool(manifest.get("tasks"))
+    passed = not failures and bool(selected_tasks)
     payload = {
         "schema_version": "1.0",
         "driver": args.driver,
         "manifest": str(manifest_path),
         "evidence_source": "git_index" if args.git_index else "working_tree",
+        "selected_functions": sorted(set(args.functions)),
         "passed": passed,
         "checked_tasks": checked,
         "failures": failures,

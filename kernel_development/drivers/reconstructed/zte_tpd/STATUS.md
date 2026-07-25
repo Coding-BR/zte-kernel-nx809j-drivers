@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `875f7ca048393aa88370467450bc39d98b8b4715e3f5b58bd7993afb28ea2854`
-- **Candidato:** `24665784` bytes
+- **Candidato SHA-256:** `ea2aa81295fc799f267e726ade177b5f58d400a80d7c21b2c60f6d6edff4a785`
+- **Candidato:** `24665648` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,34 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `173/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `174/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `310/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next51 - Remocao do Diretorio de Testing
+
+O Next51 promoveu `222_syna_testing_remove_dir` para `PASS` no protocolo
+offline. O contrato preserva a guarda nula de `tcm->testing_dir` em `+0x3a8`,
+`sysfs_remove_group` com `attr_testing_group` e a recarga do mesmo campo antes
+de `kobject_put`. Essa recarga, embora pareca redundante em C, e observada no
+stock e foi testada com uma mutacao controlada no stub de sysfs.
+
+Dois builds limpos e independentes produziram o modulo de `24665648` bytes,
+SHA-256 `ea2aa81295fc799f267e726ade177b5f58d400a80d7c21b2c60f6d6edff4a785`.
+Assembly e relocations resolvidas coincidem exatamente em `64` bytes e `16`
+instrucoes; o KCFI e `0x3175607e`, tambem com secao e tamanho exatos. O
+relatorio estrito do Ghidra registra a unica diferenca de apresentacao
+`&attr_testing_group` versus `attr_testing_group`; P-Code, chamadas,
+relocations e o gate semantico limitado sao exatos.
+
+O harness direto passou tres casos em dois ciclos Android Clang 19.0.1
+ASAN/UBSAN. Joern v4.0.548 passou em escopo de uma funcao, sem problemas de
+parser, chamadas nao resolvidas ou deltas mapeados. O contador global agora e
+`174 PASS / 193 READY`; o proximo alvo sequencial e
+`223_syna_testing_check_dev_id_show`. Nenhum teste no smartphone foi feito.
 
 ## Checkpoint Next50 - Criacao do Diretorio de Testing
 
