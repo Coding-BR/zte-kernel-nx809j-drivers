@@ -1,52 +1,67 @@
+#if defined(__aarch64__)
+#define SYNA_REG_X1 __asm__("x1")
+#define SYNA_REG_X8 __asm__("x8")
+#define SYNA_REG_X9 __asm__("x9")
+#define SYNA_KEEP_REGISTER(value) __asm__ volatile("" : "+r"(value))
+#else
+#define SYNA_REG_X1
+#define SYNA_REG_X8
+#define SYNA_REG_X9
+#define SYNA_KEEP_REGISTER(value) do { (void)(value); } while (0)
+#endif
+
 ssize_t syna_sysfs_fw_update_store(struct kobject *kobj,
                                    struct kobj_attribute *attr,
                                    const char *buf, size_t count)
 {
-  __int64 a1 = (__int64)kobj;
-  __int64 a3 = (__int64)buf;
-  __int64 a4 = (__int64)count;
-  __int64 v5; // x9
-  __int64 v6; // x20
-  int v7; // w0
-  __int64 v8; // x2
-  void (__fastcall *v9)(_QWORD); // x8
-  int v11; // [xsp+4h] [xbp-Ch] BYREF
-  __int64 v12; // [xsp+8h] [xbp-8h]
+  __int64 tcm;
+  unsigned int value = 0;
+  int ret;
+  int (*set_up_app_fw)(struct syna_tcm *);
+  register const char *input SYNA_REG_X8;
+  register const char *error_format SYNA_REG_X8;
+  register const char *error_name SYNA_REG_X1;
+  register _QWORD *node SYNA_REG_X9;
+  register unsigned long connected SYNA_REG_X9;
 
   (void)attr;
 
-  v12 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v5 = *(_QWORD *)(a1 + 24);
-  v11 = 0;
-  v6 = *(_QWORD *)(*(_QWORD *)(v5 + 24) + 152LL);
-  if ( (*(_BYTE *)(v6 + 1410) & 1) != 0 )
-  {
-    if ( (unsigned int)kstrtouint(a3, 10, &v11) )
-    {
-      a4 = -22;
-    }
-    else
-    {
-      v7 = syna_dev_do_reflash((struct syna_tcm *)v6, true);
-      if ( v7 < 0 )
-      {
-        LODWORD(a4) = v7;
-        printk(unk_3240E, "syna_sysfs_fw_update_store", v8);
-      }
-      else if ( *(_BYTE *)(*(_QWORD *)v6 + 9LL) == 1 )
-      {
-        v9 = *(void (__fastcall **)(_QWORD))(v6 + 1720);
-        if ( *((_DWORD *)v9 - 1) != -1373616356 )
-          __break(0x8228u);
-        v9(v6);
-      }
-      a4 = (int)a4;
-    }
+  node = *(_QWORD **)((char *)kobj + 24);
+  SYNA_KEEP_REGISTER(node);
+  node = (_QWORD *)node[3];
+  SYNA_KEEP_REGISTER(node);
+  tcm = node[19];
+
+  connected = *(_BYTE *)(tcm + 1410);
+  SYNA_KEEP_REGISTER(connected);
+  if ( (connected & 1) == 0 ) {
+    printk("\0014[warn ] %s: Device is NOT connected\n",
+           "syna_sysfs_fw_update_store");
+    return count;
   }
-  else
-  {
-    printk(unk_35C01, "syna_sysfs_fw_update_store", a3);
+
+  input = buf;
+  SYNA_KEEP_REGISTER(input);
+  if ( kstrtouint(input, 10, &value) )
+    return -EINVAL;
+
+  ret = syna_dev_do_reflash((struct syna_tcm *)tcm, true);
+  if ( ret < 0 ) {
+    error_format = "\0013[error] %s: Fail to do reflash\n";
+    error_name = "syna_sysfs_fw_update_store";
+    SYNA_KEEP_REGISTER(error_format);
+    SYNA_KEEP_REGISTER(error_name);
+    count = (unsigned int)ret;
+    printk(error_format, error_name);
+  } else if ( *(_BYTE *)(*(_QWORD *)tcm + 9) == 1 ) {
+    set_up_app_fw = *(int (**)(struct syna_tcm *))(tcm + 1720);
+    (void)set_up_app_fw((struct syna_tcm *)tcm);
   }
-  _ReadStatusReg(SP_EL0);
-  return a4;
+
+  return (int)count;
 }
+
+#undef SYNA_KEEP_REGISTER
+#undef SYNA_REG_X9
+#undef SYNA_REG_X8
+#undef SYNA_REG_X1

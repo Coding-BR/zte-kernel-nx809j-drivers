@@ -96,6 +96,29 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(compared[0], compared[1])
         self.assertEqual(compared[2], [])
 
+    def test_register_allocation_guard_accepts_sp_el0_destination(self) -> None:
+        stock = ["d5384109"]
+        candidate = ["d5384108"]
+
+        compared = MODULE.canonicalize_register_allocation_differences(
+            stock, candidate, {"passed": True}, "semantic-report-sha256"
+        )
+
+        self.assertEqual(compared[0], compared[1])
+        self.assertEqual(len(compared[2]), 1)
+        self.assertEqual(compared[2][0]["instruction_class"], "mrs SP_EL0 Rt")
+
+    def test_register_allocation_guard_rejects_other_system_register(self) -> None:
+        stock = ["d5384109"]
+        candidate = ["d5384008"]
+
+        compared = MODULE.canonicalize_register_allocation_differences(
+            stock, candidate, {"passed": True}, "semantic-report-sha256"
+        )
+
+        self.assertNotEqual(compared[0], compared[1])
+        self.assertEqual(compared[2], [])
+
     def test_register_allocation_guard_rejects_unapproved_instruction(self) -> None:
         stock = ["d503201f"]
         candidate = ["d503203f"]

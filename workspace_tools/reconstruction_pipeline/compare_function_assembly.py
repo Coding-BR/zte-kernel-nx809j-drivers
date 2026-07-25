@@ -671,6 +671,8 @@ def canonicalize_commutative_instruction_pairs(
 
 def _register_allocation_mask(word: int) -> tuple[int, str] | None:
     """Return mutable AArch64 register fields for a guarded instruction class."""
+    if word & 0xFFFFFFE0 == 0xD5384100:
+        return 0x0000001F, "mrs SP_EL0 Rt"
     if word & 0x3B000000 == 0x39000000:
         return 0x000003FF, "load/store unsigned-immediate Rt,Rn"
     if word & 0x1F200000 == 0x0B000000:

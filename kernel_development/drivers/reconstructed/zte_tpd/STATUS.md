@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-23
+## Estado Atual - 2026-07-24
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `f3bbf1ef92ee503cb87721cf7ac3b3183bdd9a9032b2585af63e88bc9752f918`
-- **Candidato:** `24646416` bytes
+- **Candidato SHA-256:** `e6125574d862d08e7f577e148e46bbd4d3aedf5f4a569c56738a865f61741075`
+- **Candidato:** `24646728` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,39 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `168/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `169/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `306/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `307/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next46 - sysfs firmware update store
+
+O Next46 promoveu `217_syna_sysfs_fw_update_store` para `PASS`. O fonte
+preserva a resolucao `kobject`/`device`, o byte de conexao em `tcm + 0x582`,
+o parse decimal, o reflash, o modo de firmware em `tcm->dev + 9` e o callback
+em `tcm + 0x6b8` com assinatura `int (*)(struct syna_tcm *)`.
+
+Dois builds em containers independentes produziram o mesmo modulo de
+`24646728` bytes e SHA-256
+`e6125574d862d08e7f577e148e46bbd4d3aedf5f4a569c56738a865f61741075`,
+sem diagnosticos. A comparacao cobriu `67` instrucoes e `268` bytes, com
+secao, tamanho e relocations iguais. Tres opcodes diferem somente no
+registrador temporario do stack canary (`x9` stock, `x8` candidato); a
+aceitacao e restrita aos campos de registrador e depende de um relatorio
+Ghidra aprovado e vinculado a hash exata do candidato.
+
+O Ghidra confirmou `268` bytes, C normalizado e shape P-Code com `193/193`
+registros. O type ID KCFI da funcao coincide em `0x9ce291cd`, e o guard do
+callback indireto permanece `0xae20471c`. O harness direto passou `12` casos
+em dois ciclos Clang 19.0.1 com ASAN e UBSAN e binario identico.
+
+O documento autoritativo e
+`../../../reverse_engineering/validation/reconstructed/zte_tpd/NEXT46_SYSFS_FW_UPDATE_STORE_VALIDATION_20260724.md`.
+Nao houve teste no smartphone neste checkpoint. O contador global agora e
+`169 PASS / 198 READY`; o proximo alvo sequencial e
+`218_syna_testing_pt0a_zte`.
 
 ## Checkpoint Next31 - sysfs power store
 

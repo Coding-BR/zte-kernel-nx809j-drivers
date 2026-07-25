@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-23T17:45:53.321206+00:00",
+  "generated_utc": "2026-07-25T02:03:18.582875+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -6042,8 +6042,34 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_sysfs_fw_update_store\nEntrada Ghidra: 0011b3b0\nTamanho stock: 268 bytes\nCategoria: user_abi\nAlvo no fonte: syna_sysfs_fw_update_store.c:syna_sysfs_fw_update_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0216_0011b3b0_syna_sysfs_fw_update_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0216_0011b3b0_syna_sysfs_fw_update_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next46_fw_update_final_report.json",
+          "sha256": "3aac5ebcf6b83b2a701300de2e65235b29d9a902d2eca0701cd981d23b072ff6"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/assembly_comparison_next46_fw_update_final.json",
+          "sha256": "703a46269d184efd2a5b0a6c175d2c4f064c29139f8961cca42800785c21e032"
+        },
+        {
+          "role": "ghidra",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_semantic_comparison_next46_fw_update_canonical.json",
+          "sha256": "caf0949e4b1636dbbc89ea0d29fea3d5deb47979cece2f0557db0aed98dcc2a6"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_comparison_next46_fw_update_final.json",
+          "sha256": "face1909192b5e442cbb59febde622e7777668160aa69aa235c795ccaa46e8f6"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/harness/next46_fw_update_host_test_report.json",
+          "sha256": "c1417f235aba1a01d3e777b03861e6d9173467596e2b5e5c642265d891ccd2b0"
+        }
+      ]
     },
     {
       "id": "218_syna_testing_pt0a_zte",
