@@ -30,6 +30,18 @@ def test_accepts_only_one_mov_width_lowering() -> None:
     assert evidence["candidate_only"] == [
         {"key": ["mov", 0, "COPY"], "count": 1}
     ]
+    assert evidence["mode"] == "BOUNDED_MOVE_WIDTH"
+
+
+def test_accepts_exact_pcode_multiset() -> None:
+    surface = Counter({("mov", 0, "COPY"): 2, ("ldr", 2, "LOAD"): 4})
+
+    passed, evidence = MODULE.bounded_move_width_equivalence(surface, surface)
+
+    assert passed
+    assert evidence["mode"] == "EXACT"
+    assert evidence["stock_only"] == []
+    assert evidence["candidate_only"] == []
 
 
 def test_rejects_additional_pcode_difference() -> None:
@@ -39,6 +51,21 @@ def test_rejects_additional_pcode_difference() -> None:
     passed, _ = MODULE.bounded_move_width_equivalence(stock, candidate)
 
     assert not passed
+
+
+def test_strict_failure_scope_accepts_known_nonempty_subsets() -> None:
+    assert MODULE.bounded_strict_failure_scope(["normalized_decompiled_c"])
+    assert MODULE.bounded_strict_failure_scope(["pcode_operation_shape"])
+    assert MODULE.bounded_strict_failure_scope(
+        ["normalized_decompiled_c", "pcode_operation_shape"]
+    )
+
+
+def test_strict_failure_scope_rejects_empty_or_unknown() -> None:
+    assert not MODULE.bounded_strict_failure_scope([])
+    assert not MODULE.bounded_strict_failure_scope(
+        ["normalized_decompiled_c", "call_targets"]
+    )
 
 
 def test_accepts_named_local_key_against_stripped_bss() -> None:

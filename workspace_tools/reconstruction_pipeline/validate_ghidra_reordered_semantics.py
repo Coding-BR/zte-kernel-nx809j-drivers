@@ -112,6 +112,16 @@ def bounded_move_width_equivalence(
 ) -> tuple[bool, dict[str, Any]]:
     stock_only = stock - candidate
     candidate_only = candidate - stock
+    if not stock_only and not candidate_only:
+        return True, {
+            "stock_only": [],
+            "candidate_only": [],
+            "mode": "EXACT",
+            "accepted_rule": (
+                "exact P-Code operation multiset or one mov operation lowered "
+                "as INT_ZEXT versus COPY"
+            ),
+        }
     expected_stock = Counter({("mov", 0, "INT_ZEXT"): 1})
     expected_candidate = Counter({("mov", 0, "COPY"): 1})
     direct = stock_only == expected_stock and candidate_only == expected_candidate
@@ -119,8 +129,18 @@ def bounded_move_width_equivalence(
     return direct or reverse, {
         "stock_only": counter_rows(stock_only),
         "candidate_only": counter_rows(candidate_only),
-        "accepted_rule": "one mov operation may lower as INT_ZEXT versus COPY",
+        "mode": "BOUNDED_MOVE_WIDTH" if direct or reverse else "REJECTED",
+        "accepted_rule": (
+            "exact P-Code operation multiset or one mov operation lowered "
+            "as INT_ZEXT versus COPY"
+        ),
     }
+
+
+def bounded_strict_failure_scope(failures: list[str]) -> bool:
+    actual = set(failures)
+    allowed = {"normalized_decompiled_c", "pcode_operation_shape"}
+    return bool(actual) and actual <= allowed
 
 
 def relocation_multiset_equivalence(
@@ -239,8 +259,9 @@ def main() -> int:
 
     checks = {
         "strict_failure_is_disclosed": strict.get("passed") is False,
-        "strict_failure_scope": set(strict_item.get("failures", []))
-        == {"normalized_decompiled_c", "pcode_operation_shape"},
+        "strict_failure_scope": bounded_strict_failure_scope(
+            list(strict_item.get("failures", []))
+        ),
         "candidate_module_hash_binding": strict_module.get("sha256") == module_hash,
         "assembly_section": assembly_item.get("checks", {}).get("section") is True,
         "assembly_symbol_size": assembly_item["stock"].get("symbol_size")

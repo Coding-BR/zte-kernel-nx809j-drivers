@@ -1071,7 +1071,7 @@ extern unsigned char default_custom_touch_format[21];
 extern unsigned short syna_tcm_crc16_crc16_table[256];
 
 /* Production test limit arrays extracted from official_zte_tpd.ko .rodata */
-extern unsigned char pt01_limits[16];
+extern const unsigned char pt01_limits[16];
 extern const unsigned char pt05_hi_limits[3200];
 extern const unsigned char pt05_lo_limits[3200];
 extern const unsigned char pt0a_hi_limits[3200];

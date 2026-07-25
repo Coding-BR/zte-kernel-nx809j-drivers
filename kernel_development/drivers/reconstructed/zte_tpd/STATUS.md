@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `18665cfcaa9dc4c090deb9cd3a30048e61d07d61c5471bcde6147aebd1005719`
-- **Candidato:** `24678288` bytes
+- **Candidato SHA-256:** `e0f09eed5f42dd45549911ac32a08c480095e081a362418d125804d0280aca30`
+- **Candidato:** `24664136` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,39 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `171/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `172/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `308/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `309/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next49 - PT01 testing path
+
+O Next49 promoveu `220_syna_testing_pt01_zte` para `PASS` no protocolo
+offline. A funcao preserva o item `0x0100`, uma tabela PT01 de 16 bytes em
+`.rodata`, os offsets de `testing_item`/`tcm_buffer`, o callback tipado e a
+formatacao byte a byte `x%02X `. O stock nao testa o bit de conexao nesse
+wrapper e mantem o buffer de saida alocado quando o item nao existe; ambos os
+comportamentos foram preservados e testados.
+
+Dois builds limpos, em caminhos `M=` diferentes, produziram o mesmo modulo de
+`24664136` bytes e SHA-256
+`e0f09eed5f42dd45549911ac32a08c480095e081a362418d125804d0280aca30`.
+Stock e candidato possuem `692` bytes de simbolo, `640` bytes de corpo Ghidra,
+`173` instrucoes, `42` relocations e `499` registros P-Code. A sequencia
+AArch64 e exata; o unico delta de relocation sao duas referencias a chave
+local de lock, removida por nome no stock e nomeada no candidato.
+
+O KCFI coincide em `0xae20471c`, com guard indireto `0x81c04a92`. O harness
+executou nove casos em dois ciclos ASAN/UBSAN reproduziveis. O Joern v4.0.548
+validou o alvo com escopo por funcao: `1/1` identidade, zero parse problems,
+zero chamadas nao resolvidas e zero deltas de chamadas mapeadas. Ele continua
+sem poder de promocao isolado.
+
+O documento autoritativo e `NEXT49_PT01_VALIDATION_20260725.md`. Nao houve
+teste no smartphone. O contador global agora e `172 PASS / 195 READY`; o
+proximo alvo sequencial e `221_syna_testing_create_dir`.
 
 ## Checkpoint Next48 - PT05 testing path
 
