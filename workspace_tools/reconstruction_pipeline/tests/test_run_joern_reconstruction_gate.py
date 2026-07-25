@@ -58,18 +58,20 @@ class JoernGateTests(unittest.TestCase):
                     "stock_function": "stock_a",
                     "stock_entry": "00100000",
                     "source_function": "source_a",
+                    "source_file": "a.c",
                 },
                 {
                     "stock_function": "stock_b",
                     "stock_entry": "00100040",
                     "source_function": "source_b",
+                    "source_file": "b.c",
                 },
             ]
         })
         write_json(inventory / "methods.json", {"records": [
-            {"name": "source_a", "is_external": False},
-            {"name": "source_b", "is_external": False},
-            {"name": "helper", "is_external": False},
+            {"name": "source_a", "filename": "a.c", "is_external": False},
+            {"name": "source_b", "filename": "b.c", "is_external": False},
+            {"name": "helper", "filename": "helper.c", "is_external": False},
         ]})
         calls = []
         if include_call:
@@ -118,6 +120,60 @@ class JoernGateTests(unittest.TestCase):
             self.assertFalse(report["passed"])
             self.assertIn(
                 "strict mode found mapped stock calls absent from the source CPG",
+                report["blockers"],
+            )
+
+    def test_function_scope_keeps_full_map_for_outgoing_call_resolution(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = self.make_fixture(Path(temporary))
+            report = GATE.build_cross_oracle_report(
+                *fixture,
+                strict=True,
+                selected_functions=["stock_a"],
+            )
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["scope"]["mode"], "FUNCTIONS")
+            self.assertEqual(
+                report["scope"]["resolved_source_functions"], ["source_a"]
+            )
+            self.assertEqual(report["coverage"]["ghidra_function_count"], 1)
+            self.assertEqual(report["coverage"]["mapped_identity_count"], 1)
+            self.assertEqual(report["coverage"]["extra_source_methods"], [])
+            self.assertEqual(report["coverage"]["joern_internal_method_count"], 1)
+            self.assertEqual(
+                report["coverage"]["joern_total_internal_method_count"], 3
+            )
+            self.assertEqual(report["graph"]["mapped_call_deltas"], [])
+            self.assertEqual(report["review_findings"], [])
+
+    def test_function_scope_accepts_source_name(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = self.make_fixture(Path(temporary))
+            report = GATE.build_cross_oracle_report(
+                *fixture,
+                strict=True,
+                selected_functions=["source_b"],
+            )
+            self.assertTrue(report["passed"])
+            self.assertEqual(
+                report["scope"]["resolved_stock_functions"], ["stock_b"]
+            )
+            self.assertEqual(report["review_findings"][0]["category"], "hardware_write")
+
+    def test_function_scope_rejects_unknown_name(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = self.make_fixture(Path(temporary))
+            report = GATE.build_cross_oracle_report(
+                *fixture,
+                strict=True,
+                selected_functions=["not_in_any_oracle"],
+            )
+            self.assertFalse(report["passed"])
+            self.assertEqual(
+                report["scope"]["unresolved_requests"], ["not_in_any_oracle"]
+            )
+            self.assertIn(
+                "requested function scope could not be resolved",
                 report["blockers"],
             )
 

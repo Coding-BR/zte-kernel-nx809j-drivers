@@ -39,6 +39,13 @@ def canonical_git_sha256(repo: Path, path: Path) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def canonical_git_index_sha256(repo: Path, path: Path) -> str:
+    """Return the SHA-256 of the exact blob staged for *path*."""
+    relative = path.resolve().relative_to(repo).as_posix()
+    data = run_git_bytes(repo, "show", f":{relative}")
+    return hashlib.sha256(data).hexdigest()
+
+
 def run_git(repo: Path, *args: str) -> str:
     return subprocess.run(
         ["git", *args],
@@ -68,15 +75,31 @@ def repo_path(repo: Path, value: str) -> Path:
     return path
 
 
-def refresh_record(repo: Path, record: dict[str, Any]) -> None:
+def refresh_record(
+    repo: Path, record: dict[str, Any], *, staged_only: bool = False
+) -> None:
     path = repo_path(repo, str(record["path"]))
     if not path.is_file():
         raise ValueError(f"missing evidence file: {record['path']}")
-    record["sha256"] = canonical_git_sha256(repo, path)
+    record["sha256"] = (
+        canonical_git_index_sha256(repo, path)
+        if staged_only
+        else canonical_git_sha256(repo, path)
+    )
 
 
-def parse_changes(repo: Path, base: str, bundle_root: str) -> list[dict[str, Any]]:
-    raw = run_git_bytes(repo, "diff", "--name-status", "--no-renames", "-z", base, "--")
+def parse_changes(
+    repo: Path,
+    base: str,
+    bundle_root: str,
+    *,
+    staged_only: bool = False,
+) -> list[dict[str, Any]]:
+    diff_args = ["diff"]
+    if staged_only:
+        diff_args.append("--cached")
+    diff_args.extend(("--name-status", "--no-renames", "-z", base, "--"))
+    raw = run_git_bytes(repo, *diff_args)
     fields = raw.split(b"\0")
     if fields and fields[-1] == b"":
         fields.pop()
@@ -87,10 +110,11 @@ def parse_changes(repo: Path, base: str, bundle_root: str) -> list[dict[str, Any
         status = fields[index].decode("ascii")
         name = fields[index + 1].decode("utf-8")
         changes[PurePosixPath(name).as_posix()] = status
-    untracked = run_git_bytes(repo, "ls-files", "--others", "--exclude-standard", "-z")
-    for name in untracked.split(b"\0"):
-        if name:
-            changes[name.decode("utf-8")] = "A"
+    if not staged_only:
+        untracked = run_git_bytes(repo, "ls-files", "--others", "--exclude-standard", "-z")
+        for name in untracked.split(b"\0"):
+            if name:
+                changes[name.decode("utf-8")] = "A"
     records: list[dict[str, Any]] = []
     for path, status in sorted(changes.items()):
         if path == bundle_root or path.startswith(bundle_root + "/"):
@@ -100,7 +124,13 @@ def parse_changes(repo: Path, base: str, bundle_root: str) -> list[dict[str, Any
             {
                 "path": path,
                 "change": status,
-                "sha256": None if status == "D" else canonical_git_sha256(repo, file_path),
+                "sha256": None
+                if status == "D"
+                else (
+                    canonical_git_index_sha256(repo, file_path)
+                    if staged_only
+                    else canonical_git_sha256(repo, file_path)
+                ),
             }
         )
     return records
@@ -110,6 +140,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--base", default="origin/main")
+    parser.add_argument(
+        "--staged",
+        action="store_true",
+        help="derive changed files and hashes exclusively from the Git index",
+    )
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
     manifest_path = args.manifest.resolve()
@@ -124,13 +159,15 @@ def main() -> int:
         repo,
         repo / "reproducible_environment" / "environment.lock.json"
     )
-    manifest["changed_files"] = parse_changes(repo, base, bundle_root)
+    manifest["changed_files"] = parse_changes(
+        repo, base, bundle_root, staged_only=args.staged
+    )
     for record in manifest.get("reproduction_scripts", []):
-        refresh_record(repo, record)
+        refresh_record(repo, record, staged_only=args.staged)
     for check in manifest.get("checks", []):
-        refresh_record(repo, check["log"])
+        refresh_record(repo, check["log"], staged_only=args.staged)
         if "report" in check:
-            refresh_record(repo, check["report"])
+            refresh_record(repo, check["report"], staged_only=args.staged)
     manifest_path.write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
         encoding="utf-8",

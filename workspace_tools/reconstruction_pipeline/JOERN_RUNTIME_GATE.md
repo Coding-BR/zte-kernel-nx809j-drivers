@@ -110,6 +110,30 @@ python .\workspace_tools\reconstruction_pipeline\run_joern_reconstruction_gate.p
   --strict
 ```
 
+Para uma microtarefa, mantenha o mapa completo como entrada e limite o gate com
+`--function`. O runner usa o mapa completo somente para resolver chamadas de
+saida da funcao selecionada; cobertura, findings e bloqueios ficam restritos ao
+alvo declarado. O nome pode ser o simbolo stock ou a funcao C candidata.
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\run_joern_reconstruction_gate.py `
+  --driver zte_tpd `
+  --function syna_testing_pt05_zte `
+  --source-root .\kernel_development\drivers\reconstructed\zte_tpd `
+  --ghidra-export .\reverse_engineering\validation\reconstructed\zte_tpd\offline_static\ghidra_stock `
+  --reconstruction-map .\kernel_development\drivers\reconstructed\zte_tpd\reconstruction_map.json `
+  --output-dir "$engineering\validation\zte_tpd\joern\<run-id>" `
+  --joern-home .\reproducible_environment\.tools\joern-v4.0.548 `
+  --java-home $env:JAVA_HOME `
+  --define __user --define __init --define __exit `
+  --strict
+```
+
+Uma funcao solicitada que nao exista no export Ghidra nem no mapa causa `FAIL`.
+O escopo fica registrado no manifest, no relatorio detalhado e no resumo
+portatil. Isso evita criar mapas temporarios ou remover entradas para obter um
+`PASS` artificial.
+
 Use `--include` de forma repetivel ou `--compilation-database` quando houver
 informacao de compilacao real. `tests`, `validation` e `build` sao excluidos por
 padrao para o harness nao contaminar o grafo do driver.

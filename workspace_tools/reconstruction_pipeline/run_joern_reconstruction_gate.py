@@ -261,14 +261,50 @@ def build_cross_oracle_report(
     *,
     strict: bool,
     binary_inventory: Path | None = None,
+    selected_functions: list[str] | None = None,
 ) -> dict[str, Any]:
-    ghidra_functions = read_jsonl(ghidra_export / "functions.jsonl")
+    all_ghidra_functions = read_jsonl(ghidra_export / "functions.jsonl")
     mappings_payload = json.loads(reconstruction_map.read_text(encoding="utf-8"))
-    mappings = mappings_payload.get("mappings", [])
+    all_mappings = mappings_payload.get("mappings", [])
     methods = load_records(source_inventory / "methods.json")
-    calls = load_records(source_inventory / "calls.json")
-    controls = load_records(source_inventory / "control_structures.json")
+    all_calls = load_records(source_inventory / "calls.json")
+    all_controls = load_records(source_inventory / "control_structures.json")
     profile = json.loads(profile_path.read_text(encoding="utf-8"))
+
+    requested = sorted(set(selected_functions or []))
+    if requested:
+        requested_set = set(requested)
+        directly_selected_stock = {
+            str(row.get("name", ""))
+            for row in all_ghidra_functions
+            if str(row.get("name", "")) in requested_set
+        }
+        mappings = [
+            row for row in all_mappings
+            if str(row.get("stock_function", "")) in requested_set
+            or str(row.get("source_function", "")) in requested_set
+            or str(row.get("stock_function", "")) in directly_selected_stock
+        ]
+        selected_stock = directly_selected_stock | {
+            str(row.get("stock_function", "")) for row in mappings
+        }
+        ghidra_functions = [
+            row for row in all_ghidra_functions
+            if str(row.get("name", "")) in selected_stock
+        ]
+        resolved_requests = {
+            name for name in requested_set
+            if name in selected_stock
+            or any(
+                name == str(row.get("source_function", ""))
+                for row in mappings
+            )
+        }
+        unresolved_requests = sorted(requested_set - resolved_requests)
+    else:
+        mappings = all_mappings
+        ghidra_functions = all_ghidra_functions
+        unresolved_requests = []
 
     expected_identities = {
         (str(row.get("name", "")), normalize_entry(row.get("entry")))
@@ -285,23 +321,45 @@ def build_cross_oracle_report(
         str(row.get("source_function", "")) for row in mappings
         if row.get("source_function")
     }
-    actual_source = {
+    all_actual_source = {
         str(row.get("name", "")) for row in methods
         if not row.get("is_external") and not str(row.get("name", "")).startswith("<")
     }
+    if requested:
+        selected_source_files = {
+            Path(str(row.get("source_file", ""))).name
+            for row in mappings
+            if row.get("source_file")
+        }
+        actual_source = {
+            str(row.get("name", "")) for row in methods
+            if not row.get("is_external")
+            and not str(row.get("name", "")).startswith("<")
+            and (
+                Path(str(row.get("filename", ""))).name in selected_source_files
+                or str(row.get("name", "")) in expected_source
+            )
+        }
+    else:
+        actual_source = all_actual_source
     missing_source_methods = sorted(expected_source - actual_source)
     extra_source_methods = sorted(actual_source - expected_source)
 
     stock_to_source = {
         str(row.get("stock_function", "")): str(row.get("source_function", ""))
-        for row in mappings
+        for row in all_mappings
         if row.get("stock_function") and row.get("source_function")
     }
     mapped_source_names = set(stock_to_source.values())
     stock_calls = ghidra_call_counters(ghidra_export / "calls.jsonl")
-    source_calls = joern_call_counters(calls)
+    source_calls = joern_call_counters(all_calls)
     call_deltas = []
-    for stock_caller, source_caller in sorted(stock_to_source.items()):
+    selected_stock_to_source = {
+        str(row.get("stock_function", "")): str(row.get("source_function", ""))
+        for row in mappings
+        if row.get("stock_function") and row.get("source_function")
+    }
+    for stock_caller, source_caller in sorted(selected_stock_to_source.items()):
         expected = collections.Counter()
         for stock_target, count in stock_calls.get(stock_caller, {}).items():
             source_target = stock_to_source.get(stock_target)
@@ -324,6 +382,19 @@ def build_cross_oracle_report(
                 "unexpected_mapped_calls": dict(sorted(unexpected.items())),
             })
 
+    scoped_source_names = set(selected_stock_to_source.values())
+    calls = (
+        [row for row in all_calls if str(row.get("caller", "")) in scoped_source_names]
+        if requested else all_calls
+    )
+    controls = (
+        [
+            row for row in all_controls
+            if str(row.get("method", row.get("method_name", "")))
+            in scoped_source_names
+        ]
+        if requested else all_controls
+    )
     unresolved_calls = [
         row for row in calls
         if not row.get("method_full_name")
@@ -337,6 +408,8 @@ def build_cross_oracle_report(
         blockers.append("reconstruction_map.json contains identities absent from the Ghidra export")
     if missing_source_methods:
         blockers.append("mapped source functions are absent from the Joern source CPG")
+    if unresolved_requests:
+        blockers.append("requested function scope could not be resolved")
     if not actual_source:
         blockers.append("Joern source CPG contains no internal methods")
     if strict and any(row["missing_mapped_calls"] for row in call_deltas):
@@ -368,6 +441,15 @@ def build_cross_oracle_report(
             "Call deltas require review because compiler inlining, macros, wrappers, and source hardening can change graph shape.",
             "The canonical Ghidra 12.1.2 export, ELF relocations, P-Code, assembly, KCFI, build, harness, and hardware gates remain mandatory.",
         ],
+        "scope": {
+            "mode": "FUNCTIONS" if requested else "FULL_DRIVER",
+            "requested_functions": requested,
+            "resolved_stock_functions": sorted(
+                str(row.get("name", "")) for row in ghidra_functions
+            ),
+            "resolved_source_functions": sorted(expected_source),
+            "unresolved_requests": unresolved_requests,
+        },
         "coverage": {
             "ghidra_function_count": len(expected_identities),
             "mapped_identity_count": len(mapped_identities),
@@ -379,6 +461,7 @@ def build_cross_oracle_report(
             ],
             "expected_source_method_count": len(expected_source),
             "joern_internal_method_count": len(actual_source),
+            "joern_total_internal_method_count": len(all_actual_source),
             "missing_source_methods": missing_source_methods,
             "extra_source_methods": extra_source_methods,
         },
@@ -430,6 +513,7 @@ def build_public_summary(
         "strict": bool(report.get("strict")),
         "promotion_claim": False,
         "blockers": report.get("blockers", []),
+        "scope": report.get("scope", {}),
         "toolchain": {
             "joern_release": lock["project"]["release_tag"],
             "joern_source_commit": lock["project"]["source_commit"],
@@ -471,6 +555,15 @@ def parse_args() -> argparse.Namespace:
     default_home = REPO_ROOT / lock["runtime"]["install_directory"]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--driver", required=True)
+    parser.add_argument(
+        "--function",
+        action="append",
+        default=[],
+        help=(
+            "stock or source function to gate; repeat for a bounded microtask "
+            "while retaining the complete map for outgoing-call resolution"
+        ),
+    )
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--ghidra-export", type=Path, required=True)
     parser.add_argument("--reconstruction-map", type=Path, required=True)
@@ -603,6 +696,7 @@ def main() -> int:
         "schema_version": "1.0",
         "generated_utc": utc_now(),
         "driver": args.driver,
+        "function_scope": sorted(set(args.function)),
         "mode": "PREPARE_ONLY" if args.prepare_only else "EXECUTE",
         "source": source_tree_record(source_root, set(args.exclude)),
         "ghidra": {
@@ -697,6 +791,7 @@ def main() -> int:
         profile_path,
         strict=args.strict,
         binary_inventory=binary_inventory if args.with_binary_cpg else None,
+        selected_functions=args.function,
     )
     parse_problem_count = count_parse_problems(command_results["source_cpg"])
     cross_oracle["parser"] = {

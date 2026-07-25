@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-24
+## Estado Atual - 2026-07-25
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `fbbdf07a4d854aaa188e0cb2e3425758ff0740428d0a325c6ac8c694f191a769`
-- **Candidato:** `24672280` bytes
+- **Candidato SHA-256:** `18665cfcaa9dc4c090deb9cd3a30048e61d07d61c5471bcde6147aebd1005719`
+- **Candidato:** `24678288` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,40 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `170/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `171/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `307/322`;
+- O8/O9: a superficie KCFI integral recuperavel esta em `308/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next48 - PT05 testing path
+
+O Next48 promoveu `219_syna_testing_pt05_zte` para `PASS` no protocolo
+offline. A funcao preserva o item `0x0500`, os blobs PT05 de 3200 bytes em
+`.rodata`, os offsets de `testing_item`/`tcm_buffer`, o callback tipado e a
+formatacao unsigned `u16`. Os dois vazamentos stock dos caminhos desconectado
+e item ausente continuam explicitamente preservados e testados.
+
+Dois builds independentes e com caminhos `M=` diferentes produziram o mesmo
+modulo de `24678288` bytes e SHA-256
+`18665cfcaa9dc4c090deb9cd3a30048e61d07d61c5471bcde6147aebd1005719`.
+Stock e candidato possuem `852` bytes de simbolo, `800` bytes de corpo Ghidra,
+`213` instrucoes, `46` relocations e `638` registros P-Code.
+
+Os comparadores estritos continuam publicados como `FAIL` por ordenacao fisica
+de blocos. O gate semantico limitado passou todas as invariantes, e o KCFI
+coincide em `0xae20471c`, com guard indireto `0x81c04a92`. O harness executou
+12 casos em dois ciclos ASAN/UBSAN reproduziveis, incluindo valores `u16`
+`65535`, `32768` e `40000`.
+
+O Joern v4.0.548 validou o alvo com escopo por funcao: `1/1` identidade,
+zero parse problems, zero chamadas nao resolvidas e zero deltas de chamadas
+mapeadas. Ele permanece um gate de consistencia sem poder de promocao isolado.
+
+O documento autoritativo e `NEXT48_PT05_VALIDATION_20260725.md`. Nao houve
+teste no smartphone. O contador global agora e `171 PASS / 196 READY`; o
+proximo alvo sequencial e `220_syna_testing_pt01_zte`.
 
 ## Checkpoint Next47 - PT0A testing path
 
