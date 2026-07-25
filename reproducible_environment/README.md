@@ -24,8 +24,12 @@ desta maquina e fixa as identidades relevantes em `environment.lock.json`.
 - Android Clang: `clang-r536225`, LLVM 19.0.1.
 - Android Rust: 1.82.0-dev, pacote `linux-12909517`.
 - Ghidra: 12.1.2 PUBLIC, asset oficial fixado por SHA-256.
+- Joern: v4.0.548, commit e asset `joern-cli.zip` fixados por SHA-256; frontend
+  binario apenas suplementar.
 - Java observado: Oracle Java 26, build `26+35-2893`. Java 21+ e
   compativel com o Ghidra, mas nao e o runtime identico registrado.
+- Java do Joern: Microsoft OpenJDK 21 via `JAVA_HOME`; o gate rejeita outra
+  versao para manter a execucao reproduzivel.
 - Kernel alvo: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.
 
 ## Verificacao somente dos arquivos
@@ -44,6 +48,16 @@ python .\reproducible_environment\verify_environment.py --mode runtime `
 
 O bootstrap usa volumes Docker nomeados apenas para evitar downloads repetidos.
 O conteudo relevante dos volumes e validado contra commits, nao presumido.
+
+O Joern e instalado separadamente porque o asset possui aproximadamente 2,1 GB
+e nao pertence a imagem de compilacao do kernel:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\bootstrap_joern.py --download
+```
+
+Consulte `reverse_engineering/docs/PIPELINE_DUAL_GHIDRA_JOERN.md` antes de
+ativar o gate em um driver.
 
 ## Compilacao
 

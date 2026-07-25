@@ -22,6 +22,12 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_canonical_text(path: Path) -> str:
+    """Hash a tracked text lock independently of Git checkout line endings."""
+    content = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(content).hexdigest()
+
+
 def run(command: list[str], check: bool = False) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         command,
@@ -65,7 +71,7 @@ def static_checks(repo_root: Path, lock: dict[str, Any]) -> list[dict[str, Any]]
 
     package_lock = lock["docker"]["package_lock"]
     package_path = repo_root / package_lock["path"]
-    actual_hash = sha256(package_path) if package_path.is_file() else None
+    actual_hash = sha256_canonical_text(package_path) if package_path.is_file() else None
     add_check(
         checks,
         "docker_package_lock_hash",

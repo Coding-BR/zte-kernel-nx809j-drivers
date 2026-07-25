@@ -6,7 +6,8 @@ Toda LLM deve seguir também `NX809J_LOCAL_SOURCE_OF_TRUTH.md`. Pesquisa publica
 repositorios externos e drivers de aparelhos parecidos nao podem provar nenhum
 offset, assinatura, hardware ou comportamento do NX809J. Lacunas devem ser
 resolvidas com o `.ko` stock local, assembly, relocacoes, KCFI, Ghidra/P-Code,
-DTS extraido e evidencia runtime do aparelho.
+DTS extraido e evidencia runtime do aparelho. Joern/CPG e um gate adicional de
+consistencia do fonte; nunca substitui nenhuma dessas fontes.
 
 Para trabalho sem smartphone, siga tambem
 `reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md` e
@@ -39,6 +40,8 @@ Antes de escrever ou alterar C, a LLM deve confirmar que possui:
 - Módulo stock .ko adquirido do aparelho, com SHA-256, tamanho, origem e data.
 - Kernel alvo, .config, Module.symvers, toolchain e vermagic alvo.
 - Export Ghidra completo: pseudocódigo, P-Code, símbolos, calls e strings.
+- Lock Joern, query hashada e `reconstruction_map.json` para gerar o CPG do
+  fonte candidato e cruzar metodos/calls com o export Ghidra.
 - Contexto DTS/DTBO extraido de imagem local. Evidencia runtime e obrigatoria
   para validacao fisica, mas pode ficar `DEFERRED` durante a fase offline.
 - Pasta exclusiva para o driver em engenharia/curated/<driver>/.
@@ -106,6 +109,22 @@ Depois, preencha curated/<driver>/reconstruction_map.json para cada função em 
 ~~~
 
 Não deixe todo, FUN_*, thunks, callbacks, init_module ou cleanup_module sem decisão documentada. Função não implementada impede a alegação de 100%, exceto se houver prova de código morto fora do caminho carregável.
+
+### Gate 3A: Consistencia Dual Ghidra + Joern
+
+1. Preserve o dicionario e o oraculo KCFI/GENDWARFKSYMS; Joern nao recupera
+   tipos nominais perdidos nem type IDs KCFI.
+2. Gere um CPG do fonte candidato com a versao Joern fixada no lock.
+3. Exija toda identidade `stock_function@entry` no mapa e toda
+   `source_function` mapeada no CPG.
+4. Compare chamadas internas mapeadas, controle e pontos de risco. Divergencia
+   exige revisao contra Assembly, relocacoes e P-Code.
+5. Trate `ghidra2cpg` binario como suplementar: o Ghidra canonico 12.1.2
+   continua normativo.
+6. `PASS` Joern possui poder de veto, mas nunca promove o driver sozinho.
+
+Evidencia: `input_manifest.json`, inventarios CPG e `joern_gate_report.json`,
+gerados conforme `reverse_engineering/docs/PIPELINE_DUAL_GHIDRA_JOERN.md`.
 
 ### Gate 4: Arquitetura e ABI Antes do C
 
@@ -192,6 +211,8 @@ Só use o estado "100% dos requisitos observáveis comprovados" quando todos os 
 - Cadeia de custódia stock validada por SHA-256.
 - Export Ghidra completo e sem erro.
 - Mapa de 100% das funções Ghidra para fonte revisado.
+- Gate dual Ghidra + Joern aprovado para a superficie ativada, com queries e
+  insumos vinculados por SHA-256.
 - ABI, offsets, locks e callbacks auditados.
 - Microtarefas, testes de host e KCFI aprovados.
 - Duas builds limpas idênticas contra o kernel alvo.
@@ -232,7 +253,7 @@ No início e no fim de cada sessão, a LLM deve informar o driver ativo nesta ta
 | 0 - Segurança | PASS/INCOMPLETO/REPROVADO | caminho | texto |
 | 1 - Stock | PASS/INCOMPLETO/REPROVADO | SHA-256 | texto |
 | 2 - Ghidra | PASS/INCOMPLETO/REPROVADO | export | texto |
-| 3 - Mapa | PASS/INCOMPLETO/REPROVADO | mapa | texto |
+| 3 - Mapa/Joern | PASS/INCOMPLETO/REPROVADO | mapa e joern_gate_report.json | texto |
 | 4 - ABI | PASS/INCOMPLETO/REPROVADO | probes | texto |
 | 5 - Microtarefas | PASS/INCOMPLETO/REPROVADO | relatórios | texto |
 | 6 - Build/KMI | PASS/INCOMPLETO/REPROVADO | hashes | texto |

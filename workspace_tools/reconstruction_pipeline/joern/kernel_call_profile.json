@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Classify Joern call nodes for review. Categories are evidence selectors, not behavioral truth.",
+  "categories": [
+    {
+      "name": "userspace_ingress",
+      "severity": "high",
+      "patterns": [
+        "^(copy_from_user|__copy_from_user|memdup_user|strndup_user|simple_write_to_buffer)$",
+        "^kstrto(u?int|u?long|bool)$",
+        "^nla_get_.*$"
+      ]
+    },
+    {
+      "name": "userspace_egress",
+      "severity": "high",
+      "patterns": [
+        "^(copy_to_user|__copy_to_user|simple_read_from_buffer)$",
+        "^(put_user|__put_user)$"
+      ]
+    },
+    {
+      "name": "hardware_write",
+      "severity": "critical",
+      "patterns": [
+        "^(write[bwlq]|iowrite(8|16|32|64)(be)?)$",
+        "^regmap_(write|raw_write|bulk_write|update_bits|write_bits)$",
+        "^(spi_write|spi_sync|spi_async|i2c_transfer|i2c_smbus_write_.*)$",
+        "^gpiod_set(_raw)?_value(_cansleep)?$"
+      ]
+    },
+    {
+      "name": "hardware_read",
+      "severity": "high",
+      "patterns": [
+        "^(read[bwlq]|ioread(8|16|32|64)(be)?)$",
+        "^regmap_(read|raw_read|bulk_read)$",
+        "^(spi_read|spi_sync|i2c_transfer|i2c_smbus_read_.*)$",
+        "^gpiod_get(_raw)?_value(_cansleep)?$"
+      ]
+    },
+    {
+      "name": "lifetime",
+      "severity": "high",
+      "patterns": [
+        "^(k|kv|vm|devm_k)(malloc|zalloc|calloc|realloc|free).*$",
+        "^(get_device|put_device|kref_get|kref_put|refcount_.*)$"
+      ]
+    },
+    {
+      "name": "synchronization",
+      "severity": "high",
+      "patterns": [
+        "^(mutex|spin|raw_spin|rwlock|down|up|rcu|srcu)_.*$",
+        "^(cancel_.*work.*|flush_.*work.*|queue_.*work.*|schedule_.*work.*)$"
+      ]
+    },
+    {
+      "name": "fatal_path",
+      "severity": "critical",
+      "patterns": [
+        "^(BUG|BUG_ON|panic|do_exit|kernel_restart|emergency_restart)$"
+      ]
+    }
+  ]
+}

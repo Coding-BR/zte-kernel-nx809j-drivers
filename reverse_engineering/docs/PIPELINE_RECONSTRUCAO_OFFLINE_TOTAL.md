@@ -104,6 +104,10 @@ Cada driver deve ter um pacote imutavel com:
   parity_report.json
   build_audit.json
   independent_review.json
+08_joern/
+  input_manifest.json
+  source_inventory/
+  joern_gate_report.json
 ```
 
 Arquivos ausentes sao bloqueadores. Um pseudocodigo agregado sem os P-Codes e
@@ -177,6 +181,11 @@ Crie uma linha em `reconstruction_map.json` para cada funcao stock, incluindo
 - offsets, constantes e strings usados;
 - microtarefa, harness e resultado KCFI;
 - nome do revisor e estado `reviewed`.
+
+Depois de fechar o mapa, gere tambem o CPG Joern do fonte candidato. Exija toda
+`source_function` mapeada no inventario e use o call graph para localizar
+divergencias. Joern complementa o dicionario/KCFI e o Ghidra; nao substitui
+identidade nominal, relocacao, P-Code, Assembly ou offsets.
 
 A identidade canonica e `nome@endereco_de_entrada`, nao apenas o nome. Modulos
 podem conter funcoes locais homonimas vindas de objetos diferentes; uma delas
@@ -415,6 +424,29 @@ continuam sendo gates independentes. O metodo e as limitacoes estao documentados
 em
 `reverse_engineering/docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md`.
 
+### 6.9 Executar o gate dual Ghidra + Joern
+
+Prepare e confira os caminhos antes de executar a distribuicao de 2,1 GB:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\run_joern_reconstruction_gate.py `
+  --driver <driver> `
+  --source-root <fonte-candidato> `
+  --ghidra-export <ghidra-stock> `
+  --reconstruction-map <reconstruction_map.json> `
+  --output-dir <engenharia>\validation\<driver>\joern `
+  --prepare-only
+```
+
+Instale a versao hashada e repita sem `--prepare-only`:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\bootstrap_joern.py --download
+```
+
+O procedimento completo, limites do frontend binario e estrategia de data flow
+estao em `reverse_engineering/docs/PIPELINE_DUAL_GHIDRA_JOERN.md`.
+
 ## 7. Regra de invalidacao
 
 Uma alteracao invalida automaticamente as evidencias dependentes:
@@ -427,6 +459,7 @@ Uma alteracao invalida automaticamente as evidencias dependentes:
 | `.config`, Clang, Docker ou `Module.symvers` | auditoria de observabilidade, O8 a O10 |
 | `.ko` stock ou run de aquisicao | todos os gates |
 | Script Ghidra ou versao do Ghidra | O3 a O10 |
+| Joern, query, perfil, mapa, includes ou compilation database | gate Joern e O4 a O10 |
 | Pseudocodigo, P-Code, Assembly ou indice de decomposicao | O2, O3 e O5 a O10 |
 | DTB/DTBO/firmware | O4 a O10 |
 | Harness | O7 a O10 |
