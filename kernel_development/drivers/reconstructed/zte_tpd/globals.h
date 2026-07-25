@@ -1074,8 +1074,8 @@ extern unsigned short syna_tcm_crc16_crc16_table[256];
 extern unsigned char pt01_limits[16];
 extern unsigned char pt05_hi_limits[3200];
 extern unsigned char pt05_lo_limits[3200];
-extern unsigned char pt0a_hi_limits[3200];
-extern unsigned char pt0a_lo_limits[3200];
+extern const unsigned char pt0a_hi_limits[3200];
+extern const unsigned char pt0a_lo_limits[3200];
 
 extern uint32_t is_fake_sleep_mode;
 extern uint32_t is_screen_off_awake_mode;

@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-07-25T04:15:10.5139442Z",
+  "driver": "zte_tpd",
+  "microtask": "218_syna_testing_pt0a_zte",
+  "function": "syna_testing_pt0a_zte",
+  "stock_entry": "0011b4c0",
+  "status": "PASS_OFFLINE",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_testing_pt0a_zte.c",
+    "sha256": "8e0b9546c6a88e8c6139c2c154430615728236072e97ba2b2ee9794b7aaedc7b"
+  },
+  "candidate_module": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "fbbdf07a4d854aaa188e0cb2e3425758ff0740428d0a325c6ac8c694f191a769",
+    "size": 24672280
+  },
+  "checks": {
+    "two_clean_independent_builds": true,
+    "path_independent_module_bytes": true,
+    "canonical_candidate_promoted": true,
+    "source_hash_bound_to_build": true,
+    "aarch64_section_match": true,
+    "aarch64_symbol_size_match": true,
+    "aarch64_instruction_count_match": true,
+    "aarch64_relocation_count_match": true,
+    "strict_instruction_order_match": false,
+    "strict_ghidra_ordered_pcode_match": false,
+    "bounded_block_reordering_semantics": true,
+    "local_lock_key_equivalence": true,
+    "kcfi_function_type_match": true,
+    "kcfi_callback_guard_match": true,
+    "direct_host_harness": true,
+    "asan_ubsan_clean": true,
+    "host_harness_reproducible": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 852,
+    "candidate_symbol_bytes": 852,
+    "stock_ghidra_body_bytes": 800,
+    "candidate_ghidra_body_bytes": 800,
+    "stock_instructions": 213,
+    "candidate_instructions": 213,
+    "stock_relocations": 46,
+    "candidate_relocations": 46,
+    "stock_pcode_records": 638,
+    "candidate_pcode_records": 638
+  },
+  "kcfi": {
+    "stock_function_type_id": "0xae20471c",
+    "candidate_function_type_id": "0xae20471c",
+    "indirect_testing_run_guard": "0x81c04a92",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 12,
+    "cycles": 2,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "binary_sha256": "e21bb270b47fed473132c88523001858747e2fac8d13ba610c31f646b5175e78"
+  },
+  "evidence": [
+    {
+      "role": "compile",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next47_pt0a_final_report.json",
+      "sha256": "e0d2c9008b454f95637888b633c8ace61471001dfd4a1eb0aac503c63ec67e5d"
+    },
+    {
+      "role": "compile_path_independence",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next47_pt0a_path_independent_report.json",
+      "sha256": "e434d6ac3c36ca8b88cf612db9bf9c58b025b23a61024c887150101fbd29e7a1"
+    },
+    {
+      "role": "assembly_strict_disclosed_failure",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/assembly_comparison_next47_pt0a_strict.json",
+      "sha256": "c6227872bf1ccc7bac632335029c2fc81ef7714ec1cedc25f8ee815249599379"
+    },
+    {
+      "role": "ghidra_strict_disclosed_failure",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_semantic_comparison_next47_pt0a.json",
+      "sha256": "a57159f7d3d7f658a53d90fba6e2334319185b2ecbaf4e28c6340e6aab176af2"
+    },
+    {
+      "role": "bounded_semantic_equivalence",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_reordered_semantic_validation_next47_pt0a.json",
+      "sha256": "0221c0b64e3a39fcf7807c153b44d72ebf762ddd2ef86ab72d86f278a711c150"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_comparison_next47_pt0a.json",
+      "sha256": "6165aacdfeb371e1543d58abb05dc8673e9baaac2d1206131fb4849c0b338628"
+    },
+    {
+      "role": "test",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/harness/next47_pt0a_host_test_report.json",
+      "sha256": "b86619d9a1cae1d74a92090943d53672cc965aa44f5c9af333d2bc799a9024e5"
+    }
+  ],
+  "limitations": [
+    "The function is not byte-identical because Clang placed equivalent basic blocks in a different physical order.",
+    "The strict assembly and strict ordered Ghidra reports remain published as failures and are not overwritten.",
+    "The bounded semantic gate accepts only one mov COPY/INT_ZEXT lowering and one stripped local lock key.",
+    "The two stock allocation leaks on disconnected and missing-item paths are intentionally preserved.",
+    "The full-driver audit remains incomplete because mapping 211 still lacks independent review; this does not invalidate the direct microtask-218 evidence.",
+    "No smartphone or physical touch-controller operation is claimed by this offline attestation."
+  ]
+}

@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `e6125574d862d08e7f577e148e46bbd4d3aedf5f4a569c56738a865f61741075`
-- **Candidato:** `24646728` bytes
+- **Candidato SHA-256:** `fbbdf07a4d854aaa188e0cb2e3425758ff0740428d0a325c6ac8c694f191a769`
+- **Candidato:** `24672280` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,38 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `169/367` microtarefas possuem build, decisao KCFI e teste direto
+- O6: `170/367` microtarefas possuem build, decisao KCFI e teste direto
   atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `307/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next47 - PT0A testing path
+
+O Next47 promoveu `218_syna_testing_pt0a_zte` para `PASS` no protocolo
+offline. Foram recuperados os layouts de `testing_item`, `testing_limit` e
+`tcm_buffer`, os offsets de linhas/colunas, os blobs PT0A de 3200 bytes em
+`.rodata`, o callback `testing_run_fn`, a formatacao da matriz `s16` e a ordem
+de liberacao. Os dois vazamentos observados no stock nos caminhos desconectado
+e item ausente foram preservados e testados explicitamente.
+
+Dois builds independentes produziram o mesmo modulo de `24672280` bytes e
+SHA-256
+`fbbdf07a4d854aaa188e0cb2e3425758ff0740428d0a325c6ac8c694f191a769`.
+Stock e candidato possuem `852` bytes de simbolo, `800` bytes de corpo Ghidra,
+`213` instrucoes, `46` relocations e `638` registros P-Code.
+
+Os comparadores estritos permanecem publicados como `FAIL`: o Clang ordenou
+blocos equivalentes de forma diferente. O gate tolerante e limitado passou
+porque mnemônicos, controle, chamadas, strings e relocations coincidem; ele
+aceita somente um `mov` `COPY/INT_ZEXT` e a chave local nomeada no candidato,
+mas removida do stock. O KCFI coincide em `0xae20471c`, com guard indireto
+`0x81c04a92`. O harness passou 12 casos em dois ciclos ASAN/UBSAN reproduziveis.
+
+O documento autoritativo e `NEXT47_PT0A_VALIDATION_20260724.md`. Nao houve
+teste no smartphone. O contador global agora e `170 PASS / 197 READY`; o
+proximo alvo sequencial e `219_syna_testing_pt05_zte`.
 
 ## Checkpoint Next46 - sysfs firmware update store
 

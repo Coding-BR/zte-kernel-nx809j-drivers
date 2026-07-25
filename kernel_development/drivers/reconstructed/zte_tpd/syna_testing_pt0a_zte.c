@@ -1,137 +1,105 @@
 int syna_testing_pt0a_zte(struct syna_tcm *tcm)
 {
-  _BYTE *a1 = (_BYTE *)tcm;
-  __int64 v2; // x0
-  __int64 v3; // x2
-  char *v4; // x19
-  struct testing_item *testing_0A00; // x0
-  __int64 v6; // x21
-  int v7; // w8
-  __int64 v9; // x0
-  const char *v10; // x5
-  unsigned int v13; // w22
-  __int64 v14; // x26
-  unsigned int v15; // w25
-  unsigned int v16; // w28
-  int v17; // w0
-  __int64 v18; // x20
-  __int64 v19; // x0
-  __int64 v20; // x2
-  void *v22; // [xsp+0h] [xbp-70h] BYREF
-  __int64 v23; // [xsp+8h] [xbp-68h]
-  const __int16 *v24; // [xsp+10h] [xbp-60h] BYREF
-  __int64 v25; // [xsp+18h] [xbp-58h]
-  __int64 v26; // [xsp+20h] [xbp-50h] BYREF
-  __int64 v27; // [xsp+28h] [xbp-48h]
-  _QWORD v28[6]; // [xsp+30h] [xbp-40h] BYREF
-  __int64 v29; // [xsp+60h] [xbp-10h]
-  __int64 v30; // [xsp+68h] [xbp-8h]
+  static struct lock_class_key __key;
+  struct {
+    struct testing_limit low;
+    struct testing_limit high;
+  } limits;
+  struct tcm_buffer result = { 0 };
+  struct testing_item *item;
+  struct device *managed;
+  const char *status;
+  const s16 *samples;
+  void *result_data;
+  char *data_buf;
+  u32 length;
+  u32 row;
+  u32 col;
+  int ret;
 
-  v30 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v25 = 0;
-  v23 = 0;
-  v29 = 0;
-  memset(v28, 0, sizeof(v28));
-  v2 = _kmalloc_cache_noprof(init_timer_key, 3520, 4096);
-  v4 = (char *)v2;
-  if ( v2 )
-  {
-    if ( (a1[1410] & 1) != 0 )
-    {
-      testing_0A00 = syna_tcm_get_testing_0A00();
-      if ( testing_0A00 )
-      {
-        v6 = (__int64)testing_0A00;
-        v7 = *(_DWORD *)(*(_QWORD *)a1 + 32LL);
-        v26 = 0;
-        v27 = 0;
-        *(_DWORD *)(v6 + 36) = v7;
-        *(_DWORD *)(v6 + 32) = *(_DWORD *)(*(_QWORD *)a1 + 28LL);
-        LOBYTE(v29) = 0;
-        _mutex_init(v28, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_3);
-        v24 = pt0a_hi_limits;
-        LODWORD(v25) = 3200;
-        v22 = &pt0a_lo_limits;
-        LODWORD(v23) = 3200;
-        *(_QWORD *)(v6 + 216) = &v26;
-        *(_QWORD *)(v6 + 56) = &v24;
-        *(_QWORD *)(v6 + 64) = &v22;
-        v9 = *(_QWORD *)a1;
-        if ( ((struct testing_item *)v6)->run((struct tcm_dev *)v9,
-                                               (struct testing_item *)v6,
-                                               false) < 0 )
-        {
-          printk(unk_3D2FD, "syna_testing_pt0a_zte", *(_QWORD *)(v6 + 8));
-          v10 = "Fail";
+  limits.low.size = 0;
+  limits.low.data_length = 0;
+  limits.high.size = 0;
+  limits.high.data_length = 0;
+
+  data_buf = (char *)_kmalloc_cache_noprof(init_timer_key, 3520, 4096);
+  if (data_buf) {
+    if (likely((*((u8 *)tcm + 0x582) & 1) != 0)) {
+      item = syna_tcm_get_testing_0A00();
+      if (item) {
+        item->image_cols = tcm->tcm_dev->num_of_image_cols;
+        item->image_rows = tcm->tcm_dev->num_of_image_rows;
+        result.data = NULL;
+        result.buf_size = 0;
+        result.data_length = 0;
+        result.lock_depth = 0;
+        _mutex_init(result.mutex, "(struct mutex *)ptr",
+                    &__key);
+
+        limits.high.data = pt0a_hi_limits;
+        limits.high.size = 3200;
+        limits.low.data = pt0a_lo_limits;
+        limits.low.size = 3200;
+        barrier();
+        item->result_data = &result;
+        item->limit_primary = &limits.high;
+        item->limit_secondary = &limits.low;
+
+        ret = item->run(tcm->tcm_dev, item, false);
+        if (ret < 0) {
+          printk("\0013[error] %s: Fail to run test, %s\n",
+                 "syna_testing_pt0a_zte", item->name);
+          status = "Fail";
+        } else {
+          status = item->result ? "Pass" : "Fail";
         }
-        else if ( *(_BYTE *)(v6 + 16) )
-        {
-          v10 = "Pass";
-        }
-        else
-        {
-          v10 = "Fail";
-        }
-        v13 = scnprintf(v4, 4096, "\n%s (version.%d): %s\n\n", *(const char **)(v6 + 8), *(_DWORD *)v6, v10);
-        if ( HIDWORD(v27) && *(_DWORD *)(v6 + 32) )
-        {
-          v14 = v26;
-          v15 = 0;
-          do
-          {
-            if ( *(_DWORD *)(v6 + 36) )
-            {
-              v16 = 0;
-              do
-              {
-                v17 = scnprintf(
-                        &v4[v13],
-                        4096LL - v13,
-                        "%d ",
-                        *(__int16 *)(v14 + 2LL * (v16 + v15 * *(_DWORD *)(*(_QWORD *)a1 + 32LL))));
-                ++v16;
-                v13 += v17;
-              }
-              while ( v16 < *(_DWORD *)(v6 + 36) );
+
+        length = scnprintf(data_buf, 4096, "\n%s (version.%d): %s\n\n",
+                           item->name, item->version, status);
+        if (result.data_length && item->image_rows) {
+          samples = (const s16 *)result.data;
+          for (row = 0; row < item->image_rows; row++) {
+            for (col = 0; col < item->image_cols; col++) {
+              length += scnprintf(
+                data_buf + length, 4096ULL - length, "%d ",
+                samples[col + row * tcm->tcm_dev->num_of_image_cols]);
             }
-            ++v15;
-            v13 += scnprintf(&v4[v13], 4096LL - v13, "\n");
+            length += scnprintf(data_buf + length, 4096ULL - length,
+                                "\n");
           }
-          while ( v15 < *(_DWORD *)(v6 + 32) );
         }
-        tpd_copy_to_tp_firmware_data(v4);
-        if ( (_BYTE)v29 )
-          printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v29);
-        v18 = v26;
-        v19 = syna_request_managed_device();
-        if ( v19 )
-        {
-          if ( v18 )
-            devm_kfree(v19, v18);
+
+        tpd_copy_to_tp_firmware_data(data_buf);
+        if (result.lock_depth)
+          printk("\0013[error] %s: Buffer still in used, %d references\n",
+                 "syna_tcm_buf_release", result.lock_depth);
+
+        result_data = result.data;
+        managed = syna_request_managed_device();
+        if (managed) {
+          if (result_data)
+            devm_kfree(managed, result_data);
+        } else {
+          printk("\0013[error] %s: Invalid managed device\n",
+                 "syna_pal_mem_free");
         }
-        else
-        {
-          printk(unk_3BE43, "syna_pal_mem_free", v20);
-        }
-        v27 = 0;
-        LOBYTE(v29) = 0;
-        kfree(v4);
+
+        result.buf_size = 0;
+        result.data_length = 0;
+        result.lock_depth = 0;
+        kfree(data_buf);
+      } else {
+        length = scnprintf(data_buf, 4096,
+                           "Invalid testing item id:%d\n", 0x0a00);
       }
-      else
-      {
-        v13 = scnprintf(v4, 4096, "Invalid testing item id:%d\n", 2560);
-      }
+    } else {
+      length = scnprintf(data_buf, 4096, "Device is NOT connected\n");
+      barrier_data(length);
     }
-    else
-    {
-      v13 = scnprintf(v2, 4096, "Device is NOT connected\n");
-    }
+  } else {
+    printk("\0013[error] %s: alloc data_buf failed",
+           "syna_testing_pt0a_zte");
+    length = -ENOMEM;
   }
-  else
-  {
-    printk(unk_3C045, "syna_testing_pt0a_zte", v3);
-    v13 = -12;
-  }
-  _ReadStatusReg(SP_EL0);
-  return v13;
+  return length;
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-25T02:03:18.582875+00:00",
+  "generated_utc": "2026-07-25T03:27:30.9737817+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -6087,8 +6087,44 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_testing_pt0a_zte\nEntrada Ghidra: 0011b4c0\nTamanho stock: 800 bytes\nCategoria: core_logic\nAlvo no fonte: syna_testing_pt0a_zte.c:syna_testing_pt0a_zte\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0217_0011b4c0_syna_testing_pt0a_zte.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0217_0011b4c0_syna_testing_pt0a_zte.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next47_pt0a_final_report.json",
+          "sha256": "e0d2c9008b454f95637888b633c8ace61471001dfd4a1eb0aac503c63ec67e5d"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/microtask_attestation_next47_pt0a.json",
+          "sha256": "5a4274de63a24a224630302b302e430318e0abede94d8444fc6b97b4a7f97a65"
+        },
+        {
+          "role": "assembly_strict_disclosed_failure",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/assembly_comparison_next47_pt0a_strict.json",
+          "sha256": "c6227872bf1ccc7bac632335029c2fc81ef7714ec1cedc25f8ee815249599379"
+        },
+        {
+          "role": "ghidra",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_reordered_semantic_validation_next47_pt0a.json",
+          "sha256": "0221c0b64e3a39fcf7807c153b44d72ebf762ddd2ef86ab72d86f278a711c150"
+        },
+        {
+          "role": "ghidra_strict_disclosed_failure",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/ghidra_semantic_comparison_next47_pt0a.json",
+          "sha256": "a57159f7d3d7f658a53d90fba6e2334319185b2ecbaf4e28c6340e6aab176af2"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_comparison_next47_pt0a.json",
+          "sha256": "6165aacdfeb371e1543d58abb05dc8673e9baaac2d1206131fb4849c0b338628"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/harness/next47_pt0a_host_test_report.json",
+          "sha256": "b86619d9a1cae1d74a92090943d53672cc965aa44f5c9af333d2bc799a9024e5"
+        }
+      ]
     },
     {
       "id": "219_syna_testing_pt05_zte",
