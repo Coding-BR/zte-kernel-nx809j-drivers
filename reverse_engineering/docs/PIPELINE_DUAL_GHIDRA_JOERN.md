@@ -364,45 +364,86 @@ automaticamente vulnerabilidades; falhas J1-J3 bloqueiam a promocao.
 O runbook compacto da regra esta em
 [JOERN_MICROTASK_ATTESTATION.md](JOERN_MICROTASK_ATTESTATION.md).
 
-## 13. Integracao obrigatoria na atestacao de microtarefas
+## 14. Politica operacional: dois oraculos, um grafo e nenhum atalho
 
-O Joern nao substitui o dicionario. Os dois resolvem problemas diferentes e
-devem permanecer ativos na mesma microtarefa:
+O dicionario/KCFI e o Joern devem continuar separados porque respondem a
+perguntas diferentes. Um nao preenche lacuna do outro.
 
-| Evidencia | Pergunta de aceite | Reprova quando |
-|---|---|---|
-| Dicionario + KCFI | A declaracao C produz a identidade de tipo observada? | type ID, CRC ou assinatura divergem |
-| Ghidra/ELF | O binario stock contem este fluxo, offset, relocacao e P-Code? | ha divergencia nao justificada |
-| Joern estrito | A funcao C mapeada entrou no CPG atual e preserva a cobertura/calls mapeadas? | parser falha, a funcao some, mapa diverge ou call obrigatoria desaparece |
-| Harness + build | O candidato atual compila e executa o contrato isolado? | hash, build ou teste diverge |
+| Classe | Artefato que decide | Uso na esteira | Nao permite concluir |
+|---|---|---|---|
+| Fato binario | ELF, relocacoes, Assembly e P-Code do Ghidra | origem de cada offset, chamada, literal e caminho stock | nome C original ou intencao eletrica do hardware |
+| Contrato de tipo | dicionario, compilador fixado e KCFI/GENDWARFKSYMS | assinatura, tag nominal, CRC, namespace e callback | que o fluxo da funcao esta completo |
+| Consistencia estrutural | CPG Joern do fonte C/H candidato | cobertura de funcao, chamadas, controle, lifecycle e selecao de riscos | layout, MMIO, KCFI, Assembly ou comportamento fisico |
+| Contrato executavel | build, comparadores binarios e harness | regressao verificavel da microtarefa | comportamento integrado no telefone |
 
-Desde esta adocao, microtarefas novas sao geradas com
-`required_evidence: [compile, kcfi, joern, test]`. A promocao por
-`attest_tested_driver_microtasks.py` so aceita o papel `joern` quando o resumo
-da execucao declara simultaneamente:
+Ha tres classes de consulta Joern, com politicas diferentes:
 
-1. `status=PASS`, `passed=true`, `strict=true` e `promotion_claim=false`;
-2. zero `parse_problem_count`;
-3. a `source_function` declarada pela microtarefa em
-   `scope.resolved_source_functions`;
-4. `input_hashes.source_tree_sha256` igual ao digest atual de toda a arvore
-   C/H candidata, excluindo somente `tests`, `validation` e `build`.
+1. **Bloqueadora:** parse limpo, identidade Ghidra -> mapa -> CPG, cobertura
+   da `source_function` e chamadas internas mapeadas. Uma falha impede a
+   promocao.
+2. **Revisao obrigatoria:** CFG, estruturas de controle, lifecycle, locks,
+   MMIO, SPI/I2C/GPIO e caminhos `copy_{from,to}_user`. A divergencia cria uma
+   tarefa de revisao; so se torna bloqueadora quando o P-Code/Assembly a
+   confirma como contrato da funcao.
+3. **Exploratoria:** `ossdataflow`, `ghidra2cpg`, busca de padroes e novas
+   semanticas. E util para encontrar pistas, mas nunca altera um estado de
+   promocao sem evidencia dos outros oraculos.
 
-Assim, uma alteracao posterior em qualquer fonte ou header invalida a
-atestacao Joern ate uma nova execucao. O verificador de microtarefas le
-`required_evidence` por tarefa: evidencias antigas mantem seus requisitos
-historicos; tarefas novas ou reatestadas exigem Joern. Nenhuma tarefa legada
-ganha, por inferencia, um PASS Joern retroativo.
+Cada query, perfil de chamadas, lock Joern, `compile_commands.json`, include
+extra e arvore C/H entra no manifesto hashado. O CPG e derivado e descartavel;
+o resumo portatil e a evidencia publicada. Alterar qualquer uma dessas entradas
+invalida o resultado Joern anterior.
 
-Fluxo obrigatorio por funcao nova ou reatestada:
+## 15. Esteira offline obrigatoria
+
+O telefone nao e necessario para alinhar um driver estaticamente. Ele e usado
+somente depois que o candidato atingir o limite offline e houver um protocolo
+de rollback. A sequencia por funcao e:
 
 ```text
-Ghidra/ELF -> dicionario e KCFI -> C atomico -> Joern estrito
--> build reproduzivel -> Assembly/P-Code -> harness -> atestacao hashada
+.ko stock imutavel
+  -> Ghidra 12.1.2: Assembly, P-Code, relocacoes, literais e calls
+  -> reconstruction_map: stock_function@endereco -> source_function
+  -> dicionario + KCFI: assinatura e tags nominais
+  -> implementacao C atomica
+  -> Joern strict: CPG, cobertura e deltas de chamadas
+  -> build Clang fixado + KCFI + Assembly/P-Code candidato
+  -> harness host e atestacao hashada
+  -> teste controlado no aparelho, quando aplicavel
 ```
 
-Use o resumo portatil `joern_gate_summary.json` com
-`--joern-report`; ele contem hashes de lock, query, perfil, export Ghidra,
-mapa e arvore de fontes, sem expor caminhos locais. Findings J4 continuam
-seletor de revisao e nao sao automaticamente vulnerabilidades. Em contraste,
-falhas J1-J3 bloqueiam a promocao da microtarefa.
+Para cada microtarefa nova ou reatestada, a lista minima permanece
+`required_evidence: [compile, kcfi, joern, test]`. `joern` so e aceito quando
+o resumo declara `PASS`, `strict=true`, `promotion_claim=false`, zero erros de
+parser, a funcao declarada no escopo resolvido e o SHA-256 atual de toda a
+arvore C/H. Microtarefas legadas preservam o historico; elas so adotam Joern
+apos reatestacao explicita.
+
+## 16. Melhorias adotadas e proximos incrementos
+
+Ja adotado:
+
+- gate `run_joern_reconstruction_gate.py` com CPG do fonte e escopo por
+  funcao;
+- lock de versao/distribuicao, query Scala e perfil de chamadas versionados;
+- exclusao de `tests`, `validation` e `build` para o harness nao contaminar o
+  CPG do driver;
+- atestador que revalida o hash da arvore C/H antes de aceitar Joern;
+- CPG binario opcional e explicitamente suplementar.
+
+Incrementos permitidos, mas ainda nao normativos, sao: criar resumos de
+estruturas de controle por funcao, comparar esses resumos contra P-Code sob
+revisao humana e introduzir semanticas Joern de APIs do kernel uma por vez,
+com casos positivo/negativo independentes. Nenhuma contagem de nos, arestas,
+branches ou caminhos pode ser usada como igualdade automatica de Assembly.
+
+O Joern e adequado aqui porque o frontend C/C++ e listado como de maturidade
+"Very High" e porque o CPG combina sintaxe, controle e fluxo de dados. Os
+graficos podem ser exportados como AST, CFG, CDG, DDG e PDG. A documentacao
+tambem alerta que chamadas externas sem semantica propagam fluxo de forma
+conservadora e imprecisa; por isso, data-flow permanece exploratorio ate cada
+semantica ser testada localmente. Fontes oficiais: [visao geral do
+Joern](https://docs.joern.io/), [Code Property
+Graph](https://docs.joern.io/code-property-graph/), [exportacao de
+grafos](https://docs.joern.io/export/) e [semanticas de
+data-flow](https://docs.joern.io/dataflow-semantics/).
