@@ -129,7 +129,7 @@ Não deixe todo, FUN_*, thunks, callbacks, init_module ou cleanup_module sem dec
 
 Evidencia local: `input_manifest.json`, inventarios CPG e
 `joern_gate_report.json`. Evidencia publica: `joern_gate_summary.json`, gerada
-conforme `reverse_engineering/docs/PIPELINE_DUAL_GHIDRA_JOERN.md`.
+conforme `workspace_tools/reconstruction_pipeline/JOERN_RUNTIME_GATE.md`.
 
 ### Gate 4: Arquitetura e ABI Antes do C
 

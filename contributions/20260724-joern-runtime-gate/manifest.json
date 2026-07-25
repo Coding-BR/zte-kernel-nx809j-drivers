@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "submission_id": "20260724-joern-runtime-gate",
+  "base_commit": "17234a206a735486b28942f65b91e3644bba29dc",
+  "environment_lock_sha256": "150e8e0f2261e998b3dedda23fec8f37d37e9e9fae898ac5eba97b81b40e77c2",
+  "intent": "incremental",
+  "scopes": [
+    "pipeline"
+  ],
+  "drivers": [],
+  "attestation": {
+    "executed_locally": true,
+    "reviewer_rerun_required": true,
+    "notes_pt": "O runtime Joern v4.0.548 foi instalado pelo lock, o gate foi corrigido e o piloto zte_ir passou em modo strict. O Joern permanece complementar e nao promove equivalencia do driver.",
+    "notes_en": "The locked Joern v4.0.548 runtime was installed, the gate was corrected, and the zte_ir pilot passed in strict mode. Joern remains complementary and does not promote driver equivalence."
+  },
+  "claims": {
+    "static_status": "INCOMPLETE",
+    "hardware_status": "DEFERRED"
+  },
+  "reproduction_scripts": [
+    {
+      "path": "contributions/20260724-joern-runtime-gate/reproduce.ps1",
+      "sha256": "22d7bde8d7b6a4ad5522b451c6bfbcc9cd1e115cca58bbbeec456178a3b49050"
+    },
+    {
+      "path": "contributions/20260724-joern-runtime-gate/reproduce.sh",
+      "sha256": "f0b550b3be3d41e6f17b9a8218a13138506b017dd66dde6466ad63548e06bd4a"
+    }
+  ],
+  "checks": [
+    {
+      "id": "reference_modules",
+      "command": "python workspace_tools/reconstruction_pipeline/manage_reference_modules.py verify",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": {
+        "path": "contributions/20260724-joern-runtime-gate/reports/reference_modules.log",
+        "sha256": "be796945f0a0f059b4214b75b1de8b9a2a0549b279baccd7ef5463fd8263ac73"
+      }
+    },
+    {
+      "id": "environment_static",
+      "command": "python reproducible_environment/verify_environment.py --mode static --report contributions/20260724-joern-runtime-gate/reports/environment_static.json",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": {
+        "path": "contributions/20260724-joern-runtime-gate/reports/environment_static.log",
+        "sha256": "0df9fd39ed31d4537772d61ae6ed25ee87895868e22d7eeaf13c026052287f7a"
+      },
+      "report": {
+        "path": "contributions/20260724-joern-runtime-gate/reports/environment_static.json",
+        "sha256": "7ab5e293c7b2d2069308c23d7b2863b24f443fe79371af6be76af6a3d9c355f1"
+      }
+    },
+    {
+      "id": "validator_tests",
+      "command": "python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution workspace_tools.reconstruction_pipeline.tests.test_validate_module_decomposition -v",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": {
+        "path": "contributions/20260724-joern-runtime-gate/reports/validator_tests.log",
+        "sha256": "ee31d6b7a2e560c41b04160bf155edc2b43f3c8382f038d26ad0756676f1ce76"
+      }
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "workspace_tools/reconstruction_pipeline/JOERN_RUNTIME_GATE.md",
+      "change": "A",
+      "sha256": "4aed47a78b04e4d453670bccaa71e7f20c66cc34435e6a9ca1f739bf9ac58df8"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/LLM_MANDATORY_RECONSTRUCTION_CYCLE.md",
+      "change": "M",
+      "sha256": "b28d8b37f2a7864f0b9c3f67c34f3cbe733216bc4d8ffc6f7ff7b136b6f02ccf"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/joern/evidence/JOERN_PILOT_V4.0.548.json",
+      "change": "A",
+      "sha256": "cd0f66ad1091b76c4f11062bc53da72d2e9556d7fbda6d4ed86db5f81f143c4b"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/joern/nx809j_cpg_inventory.sc",
+      "change": "M",
+      "sha256": "01c50ae6e43f144ca9f18e09bb10b67cf536355f13cd3b7465cb2ed7a422158a"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/run_joern_reconstruction_gate.py",
+      "change": "M",
+      "sha256": "af81bd5e038f045c4224f0ae2e69af92400c64a6d341f8242e5d6aea45b3f79d"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/tests/test_run_joern_reconstruction_gate.py",
+      "change": "M",
+      "sha256": "29f0e0bd3f5ef115efc4ccca1a7cdd5acee1918823b15802bad619c519d3bb3d"
+    }
+  ]
+}
