@@ -163,17 +163,6 @@ Use `--include` de forma repetivel ou `--compilation-database` quando houver
 informacao de compilacao real. `tests`, `validation` e `build` sao excluidos por
 padrao para o harness nao contaminar o grafo do driver.
 
-### 4.1 Promover uma microtarefa com Joern
-
-Para microtarefas novas ou reatestadas, entregue o resumo portatil desta
-execucao ao atestador pela opcao --joern-report. O atestador exige um relatorio
-estrito, parse-clean, nao-promocional, com a funcao C no escopo resolvido e o
-digest da arvore C/H igual ao candidato atual.
-
-O resumo e uma evidencia adicional. Ele nao torna Joern autoridade para
-offset, KCFI, MMIO ou hardware; esses gates continuam independentes e
-obrigatorios.
-
 ## 5. Saidas e publicacao
 
 ```text

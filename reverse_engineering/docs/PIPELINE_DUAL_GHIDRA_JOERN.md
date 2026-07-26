@@ -3,6 +3,9 @@
 Pesquisa e desenho tecnico consolidados em **2026-07-24** para o **NX809J,
 REDMAGIC 11 Pro+**, Android 16, GKI `6.12.23-android16`.
 
+A decisao curta, os limites de autoridade e o contrato de aceite estao
+registrados em [ADR-004: Joern junto com Ghidra e dicionario/KCFI](ADR_004_JOERN_WITH_GHIDRA_AND_KCFI.md).
+
 ## 1. Decisao tecnica
 
 O Joern ajuda a esteira, mas nao substitui o Ghidra nem o dicionario de tipos e
