@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `18ac3320f88d5f723ca3326877b71278c19adfdaef5ccd95c896a4fe659b76ba`
-- **Candidato:** `24706656` bytes
+- **Candidato SHA-256:** `e34af0a0b22e68cb31f1cfa73c20d66f925a0254c4d4d09190bdbede20561912`
+- **Candidato:** `24706680` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,7 +29,7 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `181/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `182/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.

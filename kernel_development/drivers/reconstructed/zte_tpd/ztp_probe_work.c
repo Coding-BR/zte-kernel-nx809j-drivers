@@ -1,8 +1,6 @@
 void ztp_probe_work(struct work_struct *work)
 {
   (void)work;
-  __int64 v3; // x0
-
-  v3 = printk(unk_33A5E);
+  printk("\0015tpd: ztp_probe_work in");
   syna_dev_module_init();
 }

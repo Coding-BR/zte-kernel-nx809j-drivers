@@ -23,7 +23,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 017_tpd_report_uevent | tpd_report_uevent | 001082ac | core_logic | tpd_report_uevent.c:tpd_report_uevent | PASS |
 | 018_zte_touch_pdev_unregister | zte_touch_pdev_unregister | 001083b4 | core_logic | zte_touch_pdev_unregister.c:zte_touch_pdev_unregister | PASS |
 | 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PASS |
-| 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | READY_FOR_IMPLEMENTATION |
+| 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | PASS |
 | 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PASS |
 | 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | READY_FOR_IMPLEMENTATION |
 | 023_tp_ghost_check_work | tp_ghost_check_work | 00108690 | async_or_irq | tp_ghost_check_work.c:tp_ghost_check_work | READY_FOR_IMPLEMENTATION |
