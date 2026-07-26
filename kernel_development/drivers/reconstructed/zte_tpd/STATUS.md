@@ -36,6 +36,23 @@ INCOMPLETE:
 
 Hardware permanece `DEFERRED`.
 
+## Checkpoint Next52 - Candidate de Device ID (sem promocao)
+
+`223_syna_testing_check_dev_id_show` possui agora uma reconstrucao tipada e
+reproduzivel em espera de equivalencia: o modulo candidato e identico nos dois
+builds canonicos (`24690736` bytes, SHA-256
+`04a9c5d2dd2e12fab9af65d9334860300acfce9a4a320a4d204098985b3f5887`), o
+KCFI coincide em `.text`, `744` bytes e `0x4e31a072`, e o harness ASAN/UBSAN
+passou sete cenarios. O Joern tambem passou sem problema de parser ou chamada
+nao resolvida.
+
+Ela nao foi promovida: Ghidra ainda encontra `623` registros P-Code contra
+`619` no stock e o gate semantico limitado rejeita a diferenca de modos de
+enderecamento do frame. O documento autoritativo e
+`NEXT52_TESTING_CHECK_DEV_ID_CANDIDATE_20260725.md`; o contador global e o
+status da microtarefa permanecem inalterados. Nenhum teste no smartphone foi
+feito.
+
 ## Checkpoint Next51 - Remocao do Diretorio de Testing
 
 O Next51 promoveu `222_syna_testing_remove_dir` para `PASS` no protocolo

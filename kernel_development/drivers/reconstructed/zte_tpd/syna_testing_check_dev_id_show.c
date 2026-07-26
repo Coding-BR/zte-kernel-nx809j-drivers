@@ -1,127 +1,172 @@
+#ifdef __aarch64__
+#define NX809J_REGISTER(name) __asm__(name)
+#else
+#define NX809J_REGISTER(name)
+#endif
+
+#undef syna_pal_mutex_alloc___key_3
+static struct lock_class_key syna_pal_mutex_alloc___key_3;
+
 ssize_t syna_testing_check_dev_id_show(struct kobject *kobj,
-                                       struct kobj_attribute *attr, char *buf)
+				       struct kobj_attribute *attr, char *buf)
 {
-  __int64 a1 = (__int64)kobj;
-  __int64 a3 = (__int64)buf;
-  __int64 v4; // x8
-  __int64 v5; // x8
-  __int64 *v6; // x23
-  struct testing_item *testing_0001; // x0
-  __int64 v8; // x20
-  __int64 v10; // x0
-  const char *v11; // x5
-  unsigned int v12; // w20
-  _DWORD *v13; // x19
-  __int64 v14; // x0
-  __int64 v15; // x2
-  const char *v16; // x19
-  __int64 v17; // x0
-  __int64 v18; // x2
-  __int64 result; // x0
-  const char *v20; // [xsp+8h] [xbp-A8h] BYREF
-  __int64 v21; // [xsp+10h] [xbp-A0h]
-  _DWORD *v22; // [xsp+18h] [xbp-98h] BYREF
-  __int64 v23; // [xsp+20h] [xbp-90h]
-  _QWORD v24[6]; // [xsp+28h] [xbp-88h] BYREF
-  __int64 v25; // [xsp+58h] [xbp-58h]
-  const char *v26; // [xsp+60h] [xbp-50h] BYREF
-  __int64 v27; // [xsp+68h] [xbp-48h]
-  _QWORD v28[6]; // [xsp+70h] [xbp-40h] BYREF
-  __int64 v29; // [xsp+A0h] [xbp-10h]
-  __int64 v30; // [xsp+A8h] [xbp-8h]
+	register char *output NX809J_REGISTER("x19") = buf;
+	register struct kobject *parent NX809J_REGISTER("x8");
+	register struct syna_tcm *tcm NX809J_REGISTER("x23");
+	register struct testing_item *item NX809J_REGISTER("x20");
+	register struct tcm_buffer *build_result NX809J_REGISTER("x24");
+	register struct tcm_buffer *device_result NX809J_REGISTER("x25");
+	struct testing_limit expected_device_id;
+	struct device *managed_device;
+	const char *result;
+	int written;
+	u8 connected;
 
-  (void)attr;
+	(void)attr;
 
-  v30 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v4 = *(_QWORD *)(a1 + 24);
-  v29 = 0;
-  v27 = 0;
-  memset(v28, 0, sizeof(v28));
-  v25 = 0;
-  v26 = nullptr;
-  memset(v24, 0, sizeof(v24));
-  v5 = *(_QWORD *)(v4 + 24);
-  v21 = 0;
-  v6 = *(__int64 **)(v5 + 152);
-  if ( (*((_BYTE *)v6 + 1410) & 1) == 0 )
-  {
-    LODWORD(result) = scnprintf(a3, 4096, "Device is NOT connected\n");
-LABEL_26:
-    result = (int)result;
-    goto LABEL_27;
-  }
-  testing_0001 = syna_tcm_get_testing_0001();
-  if ( !testing_0001 )
-  {
-    LODWORD(result) = scnprintf(a3, 4096, "Invalid testing item id:%d\n", 1);
-    goto LABEL_26;
-  }
-  v8 = (__int64)testing_0001;
-  LOBYTE(v25) = 0;
-  v22 = nullptr;
-  v23 = 0;
-  _mutex_init(v24, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_3);
-  *(_QWORD *)(v8 + 216) = &v22;
-  LOBYTE(v29) = 0;
-  v26 = nullptr;
-  v27 = 0;
-  _mutex_init(v28, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_3);
-  *(_QWORD *)(v8 + 224) = &v26;
-  v20 = "3908";
-  LODWORD(v21) = 4;
-  *(_QWORD *)(v8 + 56) = 0;
-  *(_QWORD *)(v8 + 64) = &v20;
-  v10 = *v6;
-  if ( ((struct testing_item *)v8)->run((struct tcm_dev *)v10,
-                                         (struct testing_item *)v8,
-                                         false) < 0 )
-  {
-    printk(unk_3D2FD, "syna_testing_check_dev_id_show", *(_QWORD *)(v8 + 8));
-    v11 = "Fail";
-  }
-  else if ( *(_BYTE *)(v8 + 16) )
-  {
-    v11 = "Pass";
-  }
-  else
-  {
-    v11 = "Fail";
-  }
-  v12 = scnprintf(a3, 4096, "\n%s (version.%d): %s\n\n", *(const char **)(v8 + 8), *(_DWORD *)v8, v11);
-  if ( HIDWORD(v23) )
-    v12 += scnprintf(a3 + v12, 4096LL - v12, "Build ID: %d\n", *v22);
-  if ( HIDWORD(v27) )
-    v12 += scnprintf(a3 + v12, 4096LL - v12, "Device ID: %s\n", v26);
-  if ( (_BYTE)v25 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v25);
-  v13 = v22;
-  v14 = syna_request_managed_device();
-  if ( v14 )
-  {
-    if ( v13 )
-      devm_kfree(v14, v13);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v15);
-  }
-  v23 = 0;
-  LOBYTE(v25) = 0;
-  if ( (_BYTE)v29 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v29);
-  v16 = v26;
-  v17 = syna_request_managed_device();
-  if ( v17 )
-  {
-    if ( v16 )
-      devm_kfree(v17, v16);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v18);
-  }
-  result = v12;
-LABEL_27:
-  _ReadStatusReg(SP_EL0);
-  return result;
+#ifdef __aarch64__
+	/* Recovered first memory access: keep parent materialization ahead of locals. */
+	asm volatile("ldr %0, [%1, #0x18]"
+		     : "=r"(parent) : "r"(kobj) : "memory");
+#else
+	parent = kobj->parent;
+#endif
+	/* Stock loads parent first, then materializes the two zeroed stack buffers. */
+	struct tcm_buffer device_id = {};
+	struct tcm_buffer build_id = {};
+
+	build_result = &build_id;
+	device_result = &device_id;
+#ifdef __aarch64__
+	/* Preserve the recovered live register relation across the local setup. */
+	asm volatile("" : : "r"(output), "r"(parent) : "memory");
+#endif
+	/* Stock follows testing -> sysfs -> device and reads driver_data at 0x98. */
+	tcm = *(struct syna_tcm **)((u8 *)parent->parent + 0x98);
+	connected = *((u8 *)tcm + 0x582);
+#ifdef __aarch64__
+	/* The recovered stock code branches to the cold sysfs error tail with TBZ. */
+	asm goto("tbz %w0, #0, %l[disconnected]" : : "r"(connected) : :
+		 disconnected);
+#else
+	if (!(connected & 1))
+		goto disconnected;
+#endif
+
+	item = syna_tcm_get_testing_0001();
+	if (!item)
+		return scnprintf(output, 4096, "Invalid testing item id:%d\n", 1);
+
+	/* The stock routine explicitly resets these fields immediately before init. */
+	build_result->lock_depth = 0;
+	build_result->data = NULL;
+	build_result->buf_size = 0;
+	build_result->data_length = 0;
+	_mutex_init(build_result->mutex, "(struct mutex *)ptr",
+		    &syna_pal_mutex_alloc___key_3);
+	item->result_data = build_result;
+	device_result->lock_depth = 0;
+	device_result->data = NULL;
+	device_result->buf_size = 0;
+	device_result->data_length = 0;
+	_mutex_init(device_result->mutex, "(struct mutex *)ptr",
+		    &syna_pal_mutex_alloc___key_3);
+	item->result_aux = device_result;
+	item->limit_primary = NULL;
+	expected_device_id.data = "3908";
+	expected_device_id.size = 4;
+	expected_device_id.data_length = 0;
+	item->limit_secondary = &expected_device_id;
+
+#ifdef __aarch64__
+	/* Keep the stock AArch64 register contract across the KCFI callback. */
+	asm volatile("" : : "r"(output), "r"(tcm), "r"(item),
+		     "r"(build_result), "r"(device_result) : "memory");
+#endif
+	if (item->run(tcm->tcm_dev, item, false) < 0) {
+		printk("\0013[error] %s: Fail to run test, %s\n",
+		       "syna_testing_check_dev_id_show", item->name);
+		result = "Fail";
+	} else if (item->result) {
+		result = "Pass";
+	} else {
+		result = "Fail";
+	}
+
+	written = scnprintf(output, 4096, "\n%s (version.%d): %s\n\n",
+			    item->name, item->version, result);
+	if (build_result->data_length)
+		written += scnprintf(output + written, 4096 - written,
+				     "Build ID: %d\n", *(u32 *)build_result->data);
+	if (device_result->data_length)
+		written += scnprintf(output + written, 4096 - written,
+				     "Device ID: %s\n", (char *)device_result->data);
+
+
+#ifdef __aarch64__
+	asm goto("cbnz %w0, %l[build_busy]" : :
+		 "r"(build_result->lock_depth) : : build_busy);
+#else
+	if (build_result->lock_depth)
+		goto build_busy;
+#endif
+build_release:
+	managed_device = syna_request_managed_device();
+	if (managed_device) {
+		if (build_result->data)
+			devm_kfree(managed_device, build_result->data);
+	} else {
+		printk("\0013[error] %s: Invalid managed device\n",
+		       "syna_pal_mem_free");
+	}
+	/* Stock clears the adjacent size and length words with one 64-bit store. */
+	build_result->buf_size = 0;
+	build_result->data_length = 0;
+	build_result->lock_depth = 0;
+
+#ifdef __aarch64__
+	asm goto("cbnz %w0, %l[device_busy]" : :
+		 "r"(device_result->lock_depth) : : device_busy);
+#else
+	if (device_result->lock_depth)
+		goto device_busy;
+#endif
+device_release:
+	managed_device = syna_request_managed_device();
+	if (managed_device) {
+		if (device_result->data)
+			devm_kfree(managed_device, device_result->data);
+	} else {
+		printk("\0013[error] %s: Invalid managed device\n",
+		       "syna_pal_mem_free");
+	}
+
+	return written;
+
+disconnected:
+	return scnprintf(output, 4096, "Device is NOT connected\n");
+
+build_busy:
+	printk("\0013[error] %s: Buffer still in used, %d references\n",
+	       "syna_tcm_buf_release", build_result->lock_depth);
+	/* The stock cold block branches back to the single release sequence. */
+#ifdef __aarch64__
+	asm goto("b %l[build_release]" : : : : build_release);
+	__builtin_unreachable();
+#else
+	goto build_release;
+#endif
+
+device_busy:
+	printk("\0013[error] %s: Buffer still in used, %d references\n",
+	       "syna_tcm_buf_release", device_result->lock_depth);
+	/* Keep the second cold path joined to its one stock release sequence. */
+#ifdef __aarch64__
+	asm goto("b %l[device_release]" : : : : device_release);
+	__builtin_unreachable();
+#else
+	goto device_release;
+#endif
 }
+
+#undef NX809J_REGISTER
