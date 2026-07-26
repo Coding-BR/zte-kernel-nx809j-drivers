@@ -69,6 +69,23 @@ impede uma promocao quando o CPG nao corresponde ao fonte atual. Ele ainda nao
 prova offsets, MMIO ou comportamento no telefone; esses contratos continuam
 dependentes de Ghidra, Assembly, KCFI e validacao dinamica controlada.
 
+## Checkpoint aplicado: `syna_dev_shutdown`
+
+Em 2026-07-26, `zte_tpd:syna_dev_shutdown` repetiu o ciclo completo com um
+contrato menor, mas sem reduzir os gates: dois builds canonicos, Assembly e
+relocation exatos (`28` bytes e `7` instrucoes), KCFI `0x24a11bb9`, comparacao
+Ghidra/P-Code e harness ASAN/UBSAN. O export Ghidra reutilizado e valido porque
+o candidato Next79 possui exatamente o mesmo SHA-256 do modulo analisado;
+essa identidade esta registrada no relatorio estrito.
+
+O Joern v4.0.548 passou em escopo de uma funcao: uma chamada mapeada para
+`syna_dev_remove`, nenhum problema de parser, nenhuma chamada nao resolvida e
+nenhum delta mapeado. O harness executou `NULL` e dois ponteiros distintos,
+confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next79_syna_dev_shutdown_v1/`.
+Isso nao declara comportamento de platform core ou hardware; ambos continuam
+fora do escopo deste checkpoint offline.
+
 ## Piloto inicial
 
 zte_tpd:syna_testing_create_dir foi o primeiro checkpoint atestado com essa

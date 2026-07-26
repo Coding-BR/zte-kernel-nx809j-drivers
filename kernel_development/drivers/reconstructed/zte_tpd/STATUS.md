@@ -29,12 +29,34 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `185/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `186/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next79 - Encaminhamento de Shutdown Synaptics
+
+`159_syna_dev_shutdown` foi promovida para `PASS` somente no protocolo offline.
+O contrato stock e um encaminhamento direto de `platform_device *` para
+`syna_dev_remove`; o ponteiro nao e consumido ou transformado antes da chamada.
+
+Dois builds canonicos independentes produziram o mesmo modulo de `24715592`
+bytes, SHA-256 `2a8d03aa18217e097a6d0c36ceaad92895b4ae75f320983ba73b60556738377c`.
+Assembly e relocation resolvida coincidem exatamente em `28` bytes e `7`
+instrucoes; KCFI preserva `.text`, `28` bytes e `0x24a11bb9`. O export Ghidra
+ja vinculado ao mesmo SHA-256 do candidato confirmou C decompilado normalizado
+e `18/18` operacoes P-Code. O Joern v4.0.548 passou em modo estrito, com uma
+funcao e uma chamada mapeadas, sem parse problems, deltas, chamadas nao
+resolvidas ou findings.
+
+O harness host executou `NULL` e dois ponteiros `platform_device` distintos em
+dois ciclos ASAN/UBSAN reproduziveis, comprovando uma unica chamada e o
+encaminhamento exato a `syna_dev_remove`. Nenhum teste no smartphone foi feito.
+A atestacao hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next79_syna_dev_shutdown_v1/`.
+O contador global e `186 PASS / 181 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next78 - Teardown da Plataforma Touch
 
@@ -54,7 +76,8 @@ O harness host executou os casos de callback presente e ausente em dois ciclos
 ASAN/UBSAN reproduziveis. Nenhum teste no smartphone foi feito. A atestacao
 hashada esta em
 `reverse_engineering/validation/reconstructed/zte_tpd/attestation/next78_zte_touch_shutdown_v1/`.
-O contador global e `185 PASS / 182 restantes`; o driver continua `INCOMPLETE`.
+O contador global naquele checkpoint era `185 PASS / 182 restantes`; o driver
+continua `INCOMPLETE`.
 
 ## Checkpoint Next64 - Trabalho de Ghost Point
 
