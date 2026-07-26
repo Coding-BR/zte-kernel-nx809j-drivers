@@ -29,12 +29,32 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `193/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `194/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next87 - Consulta da Tabela de Particoes
+
+`323_syna_tcm_get_partition_id_string` foi promovida para `PASS` somente no
+protocolo offline. O Assembly stock preserva a conversao sem sinal de
+`partition_id - 1`, limita o indice a `0x16`, carrega um ponteiro de tabela e
+retorna a string unica de fallback para valores invalidos.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram. O normalizador Ghidra
+agora registra bases de tabela de ponteiros relocadas sem normalizar o indice;
+o teste de regressao rejeita um indice diferente. O resolvedor usa o modulo
+stock de aquisicao `a3778a...`, que corresponde ao export Ghidra stock.
+
+O harness host confirmou os `23` nomes e cinco entradas invalidas em dois
+ciclos ASAN/UBSAN. Nenhum teste no smartphone, touch hardware ou flash foi
+feito. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next87_syna_tcm_get_partition_id_string_v1/`.
+O contador global e `194 PASS / 173 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next86 - Ponteiro do Item de Teste 0500
 

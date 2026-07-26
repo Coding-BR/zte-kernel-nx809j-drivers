@@ -261,6 +261,22 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
 
         self.assertNotEqual(baseline_normalized, changed_normalized)
 
+    def test_relocated_pointer_table_base_is_normalized_but_index_is_preserved(self) -> None:
+        stock = "char *target(int value) { return (&PTR_s_APP_CODE_00131428)[value - 1U]; }"
+        candidate = "char *target(int value) { return (&partition_names)[value - 1U]; }"
+        changed_index = "char *target(int value) { return (&partition_names)[value]; }"
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed_index, {})
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertNotEqual(stock_normalized, changed_normalized)
+        self.assertEqual(stock_artifacts[0]["kind"], "elf_pointer_table_base_symbol")
+        self.assertEqual(candidate_artifacts[0]["kind"], "elf_pointer_table_base_symbol")
+
 
 if __name__ == "__main__":
     unittest.main()

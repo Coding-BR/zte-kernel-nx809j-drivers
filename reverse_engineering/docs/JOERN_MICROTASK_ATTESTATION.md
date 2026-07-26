@@ -86,6 +86,16 @@ confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
 Isso nao declara comportamento de platform core ou hardware; ambos continuam
 fora do escopo deste checkpoint offline.
 
+## Checkpoint aplicado: `syna_tcm_get_partition_id_string`
+
+`zte_tpd:syna_tcm_get_partition_id_string` foi confirmado como selecao da
+tabela de `23` nomes com fallback para IDs invalidos. Assembly, KCFI,
+Ghidra/P-Code, Joern estrito e harness ASAN/UBSAN passaram. A equivalencia de
+bases de tabela relocadas e registrada como artefato Ghidra, mantendo o indice
+literal e exigindo os outros gates independentes. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next87_syna_tcm_get_partition_id_string_v1/`.
+Isso nao testa touch, hardware, flash ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0500`
 
 `zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de

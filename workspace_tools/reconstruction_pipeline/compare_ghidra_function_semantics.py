@@ -28,6 +28,9 @@ ALLOC_TAG_ARGUMENT_RE = re.compile(
 OPTIONAL_OBJECT_ADDRESS_RE = re.compile(
     r"&(?P<symbol>syna_spi_device|attr_group)\b"
 )
+POINTER_TABLE_BASE_RE = re.compile(
+    r"\(&(?P<symbol>(?:PTR_[A-Za-z0-9_]+|[a-z][A-Za-z0-9_]*))\)(?P<index>\[[^\]]+\])"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -169,10 +172,11 @@ def elf_data_string_resolver(root: Path, module: Path | None) -> dict[int, str]:
 
 
 def normalize_decompiled(
-    text: str, strings: dict[int, str], elf_strings: dict[int, str]
+    text: str, strings: dict[int, str], elf_strings: dict[int, str] | None = None
 ) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
     artifact_evidence: list[dict[str, Any]] = []
+    elf_strings = elf_strings or {}
 
     def replace(match: re.Match[str]) -> str:
         address = int(match.group(1), 16)
@@ -237,6 +241,19 @@ def normalize_decompiled(
         replace_optional_object_address, replaced
     )
 
+    def replace_pointer_table_base(match: re.Match[str]) -> str:
+        artifact_evidence.append(
+            {
+                "kind": "elf_pointer_table_base_symbol",
+                "value": match.group("symbol"),
+                "normalized": "GHIDRA_POINTER_TABLE",
+                "index": match.group("index"),
+            }
+        )
+        return f"GHIDRA_POINTER_TABLE{match.group('index')}"
+
+    replaced = POINTER_TABLE_BASE_RE.sub(replace_pointer_table_base, replaced)
+
     local_labels: dict[str, str] = {}
 
     def replace_local_label(match: re.Match[str]) -> str:
@@ -285,8 +302,8 @@ def compare_function(
     candidate_record: dict[str, Any] | None,
     stock_strings: dict[int, str],
     candidate_strings: dict[int, str],
-    stock_elf_strings: dict[int, str],
-    candidate_elf_strings: dict[int, str],
+    stock_elf_strings: dict[int, str] | None = None,
+    candidate_elf_strings: dict[int, str] | None = None,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
