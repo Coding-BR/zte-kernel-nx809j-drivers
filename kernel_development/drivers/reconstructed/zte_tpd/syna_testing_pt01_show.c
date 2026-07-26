@@ -1,107 +1,108 @@
+#ifdef __aarch64__
+#define NX809J_REGISTER(name) __asm__(name)
+#else
+#define NX809J_REGISTER(name)
+#endif
+
 ssize_t syna_testing_pt01_show(struct kobject *kobj,
-                               struct kobj_attribute *attr, char *buf)
+			       struct kobj_attribute *attr, char *buf)
 {
-  __int64 a1 = (__int64)kobj;
-  __int64 a3 = (__int64)buf;
-  __int64 v4; // x8
-  __int64 v5; // x8
-  __int64 *v6; // x21
-  struct testing_item *testing_0100; // x0
-  __int64 v8; // x20
-  __int64 v10; // x0
-  const char *v11; // x5
-  unsigned int v12; // w22
-  int v13; // w0
-  __int64 v14; // x19
-  __int64 v15; // x0
-  __int64 v16; // x2
-  __int64 result; // x0
-  void *v18; // [xsp+0h] [xbp-60h] BYREF
-  __int64 v19; // [xsp+8h] [xbp-58h]
-  __int64 v20; // [xsp+10h] [xbp-50h] BYREF
-  __int64 v21; // [xsp+18h] [xbp-48h]
-  _QWORD v22[6]; // [xsp+20h] [xbp-40h] BYREF
-  __int64 v23; // [xsp+50h] [xbp-10h]
-  __int64 v24; // [xsp+58h] [xbp-8h]
+	struct kobject *parent;
+	struct syna_tcm *tcm;
+	struct testing_item *item;
+	struct tcm_buffer result_buffer = {};
+	struct testing_limit pt01_limit = {};
+	struct device *managed_device;
+	u8 *result_data;
+	const char *result;
+	u32 written;
+	u8 connected;
 
-  (void)attr;
+	(void)attr;
+	parent = kobj->parent;
+	/* Stock follows testing -> sysfs -> device and reads driver_data at +0x98. */
+	tcm = *(struct syna_tcm **)((u8 *)parent->parent + 0x98);
+	connected = *((u8 *)tcm + 0x582);
+#ifdef __aarch64__
+	asm goto("tbz %w0, #0, %l[disconnected]" : : "r"(connected) : :
+		 disconnected);
+#else
+	if (!(connected & 1))
+		goto disconnected;
+#endif
 
-  v24 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v4 = *(_QWORD *)(a1 + 24);
-  v23 = 0;
-  v5 = *(_QWORD *)(v4 + 24);
-  v19 = 0;
-  memset(v22, 0, sizeof(v22));
-  v6 = *(__int64 **)(v5 + 152);
-  if ( (*((_BYTE *)v6 + 1410) & 1) == 0 )
-  {
-    LODWORD(result) = scnprintf(a3, 4096, "Device is NOT connected\n");
-LABEL_21:
-    result = (int)result;
-    goto LABEL_22;
-  }
-  testing_0100 = syna_tcm_get_testing_0100();
-  if ( !testing_0100 )
-  {
-    LODWORD(result) = scnprintf(a3, 4096, "Invalid testing item id:%d\n", 256);
-    goto LABEL_21;
-  }
-  v8 = (__int64)testing_0100;
-  LOBYTE(v23) = 0;
-  v20 = 0;
-  v21 = 0;
-  _mutex_init(v22, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_3);
-  v18 = &pt01_limits;
-  *(_QWORD *)(v8 + 216) = &v20;
-  LODWORD(v19) = 16;
-  *(_QWORD *)(v8 + 56) = &v18;
-  v10 = *v6;
-  if ( ((struct testing_item *)v8)->run((struct tcm_dev *)v10,
-                                         (struct testing_item *)v8,
-                                         false) < 0 )
-  {
-    printk(unk_3D2FD, "syna_testing_pt01_show", *(_QWORD *)(v8 + 8));
-    v11 = "Fail";
-  }
-  else if ( *(_BYTE *)(v8 + 16) )
-  {
-    v11 = "Pass";
-  }
-  else
-  {
-    v11 = "Fail";
-  }
-  LODWORD(v8) = scnprintf(a3, 4096, "\n%s (version.%d): %s\n\n", *(const char **)(v8 + 8), *(_DWORD *)v8, v11);
-  if ( HIDWORD(v21) )
-  {
-    v12 = 0;
-    do
-    {
-      v13 = scnprintf(
-              a3 + (unsigned int)v8,
-              4096LL - (unsigned int)v8,
-              "x%02X ",
-              *(unsigned __int8 *)(v20 + (int)v12++));
-      v8 = (unsigned int)(v13 + v8);
-    }
-    while ( v12 < HIDWORD(v21) );
-    LODWORD(v8) = scnprintf(a3 + v8, 4096 - v8, "\n") + v8;
-  }
-  if ( (_BYTE)v23 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v23);
-  v14 = v20;
-  v15 = syna_request_managed_device();
-  if ( v15 )
-  {
-    if ( v14 )
-      devm_kfree(v15, v14);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v16);
-  }
-  result = (unsigned int)v8;
-LABEL_22:
-  _ReadStatusReg(SP_EL0);
-  return result;
+	item = syna_tcm_get_testing_0100();
+	if (!item)
+		return scnprintf(buf, 4096, "Invalid testing item id:%d\n", 0x100);
+
+	result_buffer.lock_depth = 0;
+	result_buffer.data = NULL;
+	result_buffer.buf_size = 0;
+	result_buffer.data_length = 0;
+	_mutex_init(result_buffer.mutex, "(struct mutex *)ptr",
+		    &syna_pal_mutex_alloc___key_3);
+	item->result_data = &result_buffer;
+	/* Stock writes the pointer and size as distinct stores. */
+	asm volatile("" : : : "memory");
+	pt01_limit.data = pt01_limits;
+	asm volatile("" : : : "memory");
+	pt01_limit.size = 16;
+	item->limit_primary = &pt01_limit;
+
+	if (item->run(tcm->tcm_dev, item, false) < 0) {
+		printk("\0013[error] %s: Fail to run test, %s\n",
+		       "syna_testing_pt01_show", item->name);
+		result = "Fail";
+	} else if (item->result) {
+		result = "Pass";
+	} else {
+		result = "Fail";
+	}
+
+	written = scnprintf(buf, 4096, "\n%s (version.%d): %s\n\n",
+			    item->name, item->version, result);
+	if (result_buffer.data_length) {
+		int index = 0;
+		register unsigned long output_size NX809J_REGISTER("x23") = 4096;
+
+		for (; (u32)index < result_buffer.data_length; index++)
+			written += scnprintf(buf + written, output_size - written, "x%02X ",
+					     result_buffer.data[index]);
+		written += scnprintf(buf + written, output_size - written, "\n");
+	}
+
+#ifdef __aarch64__
+	asm goto("cbnz %w0, %l[result_busy]" : :
+		 "r"(result_buffer.lock_depth) : : result_busy);
+#else
+	if (result_buffer.lock_depth)
+		goto result_busy;
+#endif
+result_release:
+	result_data = result_buffer.data;
+	managed_device = syna_request_managed_device();
+	if (managed_device) {
+		if (result_data)
+			devm_kfree(managed_device, result_data);
+	} else {
+		printk("\0013[error] %s: Invalid managed device\n",
+		       "syna_pal_mem_free");
+	}
+
+	return (int)written;
+
+result_busy:
+	printk("\0013[error] %s: Buffer still in used, %d references\n",
+	       "syna_tcm_buf_release", result_buffer.lock_depth);
+#ifdef __aarch64__
+	asm goto("b %l[result_release]" : : : : result_release);
+	__builtin_unreachable();
+#else
+	goto result_release;
+#endif
+
+disconnected:
+	return scnprintf(buf, 4096, "Device is NOT connected\n");
 }
+
+#undef NX809J_REGISTER
