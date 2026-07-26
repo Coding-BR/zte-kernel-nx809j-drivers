@@ -29,12 +29,32 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `196/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `197/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next90 - Suspensao Goodix
+
+`181_tpd_goodix_ts_suspend` foi promovida para `PASS` somente no protocolo
+offline. O Assembly stock le a base em `pdev + 8`, ajusta o endereco em
+`+0x10`, chama `syna_dev_suspend` e preserva o retorno dessa chamada. A decisao
+KCFI independente confirma a assinatura `int (void *)`.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram. O Ghidra confirmou
+os `36` bytes e a chamada; o Joern ficou limpo, com uma funcao mapeada e
+nenhuma chamada nao resolvida.
+
+O harness host confirmou dois layouts validos, o ajuste de ponteiro e os
+retornos `0` e `-22` em dois ciclos ASAN/UBSAN. Ele nao passa `NULL`, pois o
+stock o dereferencia sem ramo de protecao. Nenhum teste no smartphone, touch,
+PM ou SPI foi feito. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next90_tpd_goodix_ts_suspend_v1/`.
+O contador global e `197 PASS / 170 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next89 - Retomada Goodix
 

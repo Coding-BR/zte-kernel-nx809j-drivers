@@ -119,6 +119,18 @@ hashada esta em
 `reverse_engineering/validation/reconstructed/zte_tpd/attestation/next89_tpd_goodix_ts_resume_v1/`.
 Isso nao testa touch, hardware, PM, SPI ou smartphone.
 
+## Checkpoint aplicado: `tpd_goodix_ts_suspend`
+
+`zte_tpd:tpd_goodix_ts_suspend` foi confirmado como leitura de `pdev + 8`,
+ajuste em `+0x10` e encaminhamento para `syna_dev_suspend`, preservando seu
+retorno. Assembly, KCFI, Ghidra/P-Code, Joern estrito e harness ASAN/UBSAN
+passaram contra a evidencia stock. O Joern registrou uma funcao mapeada, zero
+problemas de parser e zero chamadas nao resolvidas. O harness cobre dois
+layouts validos e nao fornece `NULL`, pois o stock o dereferencia. A evidencia
+hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next90_tpd_goodix_ts_suspend_v1/`.
+Isso nao testa touch, hardware, PM, SPI ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0500`
 
 `zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de
