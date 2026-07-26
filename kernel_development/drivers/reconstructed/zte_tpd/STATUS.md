@@ -29,12 +29,31 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `194/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `195/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next88 - Ponteiro do Dispositivo Gerenciado
+
+`196_syna_request_managed_device` foi promovida para `PASS` somente no
+protocolo offline. O Assembly stock preserva o teste de `p_device`, retorna
+`NULL` quando ele esta ausente e, quando presente, le exatamente o ponteiro no
+offset `0x70`. Nao ha chamada, alocacao, lock ou efeito adicional nessa funcao.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram. O Ghidra confirmou
+`28` bytes, o ramo nulo e a carga no offset `0x70`; o Joern ficou limpo, com uma
+funcao mapeada e nenhuma chamada nao resolvida.
+
+O harness host confirmou `NULL` e dois ponteiros distintos em dois ciclos
+ASAN/UBSAN. Nenhum teste no smartphone, no controlador touch ou no barramento
+SPI foi feito. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next88_syna_request_managed_device_v1/`.
+O contador global e `195 PASS / 172 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next87 - Consulta da Tabela de Particoes
 

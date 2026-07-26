@@ -96,6 +96,17 @@ literal e exigindo os outros gates independentes. A evidencia hashada esta em
 `reverse_engineering/validation/reconstructed/zte_tpd/attestation/next87_syna_tcm_get_partition_id_string_v1/`.
 Isso nao testa touch, hardware, flash ou smartphone.
 
+## Checkpoint aplicado: `syna_request_managed_device`
+
+`zte_tpd:syna_request_managed_device` foi confirmado como uma leitura
+condicional do ponteiro gerenciado em `p_device + 0x70`: `NULL` se a base nao
+existe, sem chamadas nem efeitos colaterais. Assembly, KCFI, Ghidra/P-Code,
+Joern estrito e harness ASAN/UBSAN passaram contra a evidencia stock. O Joern
+registrou uma funcao mapeada, zero problemas de parser e zero chamadas nao
+resolvidas. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next88_syna_request_managed_device_v1/`.
+Isso nao testa touch, hardware, barramento SPI ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0500`
 
 `zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de
