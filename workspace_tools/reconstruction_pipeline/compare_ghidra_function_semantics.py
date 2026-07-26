@@ -8,6 +8,7 @@ import datetime as dt
 import hashlib
 import json
 import re
+import struct
 import sys
 from pathlib import Path
 from typing import Any
@@ -77,8 +78,98 @@ def string_index(root: Path) -> dict[int, str]:
     return result
 
 
+def memory_blocks(root: Path) -> list[tuple[str, int, int]]:
+    result = []
+    for record in read_jsonl(root / "memory_blocks.jsonl"):
+        name = record.get("name")
+        start = record.get("start")
+        end = record.get("end")
+        if not isinstance(name, str) or not isinstance(start, str) or not isinstance(end, str):
+            continue
+        try:
+            result.append((name, int(start, 16), int(end, 16)))
+        except ValueError:
+            continue
+    return result
+
+
+def elf_sections(module: Path) -> tuple[bytes, dict[str, tuple[int, int]]]:
+    data = module.read_bytes()
+    if len(data) < 0x40 or data[:4] != b"\x7fELF":
+        raise ValueError(f"not an ELF64 file: {module}")
+    if data[4] != 2 or data[5] != 1:
+        raise ValueError(f"expected little-endian ELF64: {module}")
+    section_offset = struct.unpack_from("<Q", data, 0x28)[0]
+    section_size = struct.unpack_from("<H", data, 0x3A)[0]
+    section_count = struct.unpack_from("<H", data, 0x3C)[0]
+    string_table_index = struct.unpack_from("<H", data, 0x3E)[0]
+    if section_size < 0x40 or string_table_index >= section_count:
+        raise ValueError(f"invalid ELF64 section table: {module}")
+    table_end = section_offset + section_size * section_count
+    if table_end > len(data):
+        raise ValueError(f"truncated ELF64 section table: {module}")
+
+    headers = []
+    for index in range(section_count):
+        offset = section_offset + index * section_size
+        name_offset, _, _, _, data_offset, data_size, _, _, _, _ = struct.unpack_from(
+            "<IIQQQQIIQQ", data, offset
+        )
+        headers.append((name_offset, data_offset, data_size))
+    _, names_offset, names_size = headers[string_table_index]
+    if names_offset + names_size > len(data):
+        raise ValueError(f"truncated ELF64 section-name table: {module}")
+    names = data[names_offset : names_offset + names_size]
+
+    def section_name(offset: int) -> str:
+        if offset >= len(names):
+            return ""
+        end = names.find(b"\0", offset)
+        if end < 0:
+            return ""
+        return names[offset:end].decode("ascii", errors="strict")
+
+    result = {}
+    for name_offset, data_offset, data_size in headers:
+        name = section_name(name_offset)
+        if name and data_offset + data_size <= len(data):
+            result[name] = (data_offset, data_size)
+    return data, result
+
+
+def elf_data_string_resolver(root: Path, module: Path | None) -> dict[int, str]:
+    if module is None:
+        return {}
+    payload, sections = elf_sections(module)
+    result = {}
+    for name, start, end in memory_blocks(root):
+        section = sections.get(name)
+        if section is None:
+            continue
+        offset, size = section
+        if size != end - start + 1:
+            continue
+        raw = payload[offset : offset + size]
+        for relative, value in enumerate(raw):
+            if (relative != 0 and raw[relative - 1] != 0) or value == 0:
+                continue
+            terminator = raw.find(b"\0", relative)
+            if terminator < 0 or terminator == relative:
+                continue
+            candidate = raw[relative:terminator]
+            try:
+                text = candidate.decode("utf-8")
+            except UnicodeDecodeError:
+                continue
+            if len(text) <= 512 and all(
+                char.isprintable() or char in "\n\r\t" for char in text
+            ):
+                result[start + relative] = text
+    return result
+
+
 def normalize_decompiled(
-    text: str, strings: dict[int, str]
+    text: str, strings: dict[int, str], elf_strings: dict[int, str]
 ) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
     artifact_evidence: list[dict[str, Any]] = []
@@ -87,6 +178,10 @@ def normalize_decompiled(
         address = int(match.group(1), 16)
         for delta in (0, 1):
             value = strings.get(address + delta)
+            source = "ghidra_strings_jsonl"
+            if value is None:
+                value = elf_strings.get(address + delta)
+                source = "elf_section_bytes"
             if value is None:
                 continue
             fingerprint = hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -94,6 +189,7 @@ def normalize_decompiled(
                 {
                     "ghidra_address": f"{address:08x}",
                     "string_address_delta": delta,
+                    "source": source,
                     "value": value,
                     "sha256": fingerprint,
                 }
@@ -189,6 +285,8 @@ def compare_function(
     candidate_record: dict[str, Any] | None,
     stock_strings: dict[int, str],
     candidate_strings: dict[int, str],
+    stock_elf_strings: dict[int, str],
+    candidate_elf_strings: dict[int, str],
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -217,7 +315,9 @@ def compare_function(
         stock_string_evidence,
         stock_artifact_evidence,
     ) = normalize_decompiled(
-        paths["stock"]["decompiled"].read_text(encoding="utf-8"), stock_strings
+        paths["stock"]["decompiled"].read_text(encoding="utf-8"),
+        stock_strings,
+        stock_elf_strings,
     )
     (
         candidate_normalized,
@@ -226,6 +326,7 @@ def compare_function(
     ) = normalize_decompiled(
         paths["candidate"]["decompiled"].read_text(encoding="utf-8"),
         candidate_strings,
+        candidate_elf_strings,
     )
     stock_shape = pcode_shape(read_jsonl(paths["stock"]["pcode"]))
     candidate_shape = pcode_shape(read_jsonl(paths["candidate"]["pcode"]))
@@ -276,6 +377,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stock-export", type=Path, required=True)
     parser.add_argument("--candidate-export", type=Path, required=True)
+    parser.add_argument("--stock-module", type=Path)
     parser.add_argument("--candidate-module", type=Path)
     parser.add_argument("--function", action="append", dest="functions", required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -295,6 +397,13 @@ def main() -> int:
     candidate_manifest = read_json(candidate_root / "manifest.json")
     stock_functions = function_index(stock_root)
     candidate_functions = function_index(candidate_root)
+    stock_module = args.stock_module.resolve() if args.stock_module else None
+    candidate_module = args.candidate_module.resolve() if args.candidate_module else None
+    for module in (stock_module, candidate_module):
+        if module is not None and not module.is_file():
+            raise ValueError(f"missing module: {module}")
+    stock_elf_strings = elf_data_string_resolver(stock_root, stock_module)
+    candidate_elf_strings = elf_data_string_resolver(candidate_root, candidate_module)
     results = [
         compare_function(
             function,
@@ -304,10 +413,11 @@ def main() -> int:
             candidate_functions.get(function),
             string_index(stock_root),
             string_index(candidate_root),
+            stock_elf_strings,
+            candidate_elf_strings,
         )
         for function in args.functions
     ]
-    candidate_module = args.candidate_module.resolve() if args.candidate_module else None
     payload = {
         "schema_version": "1.0",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -323,6 +433,14 @@ def main() -> int:
             "manifest_sha256": sha256_file(stock_root / "manifest.json"),
             "executable_md5": stock_manifest.get("executable_md5"),
         },
+        "stock_module": (
+            {
+                "path": str(stock_module),
+                "sha256": sha256_file(stock_module),
+            }
+            if stock_module
+            else None
+        ),
         "candidate_export": {
             "path": str(candidate_root),
             "manifest_sha256": sha256_file(candidate_root / "manifest.json"),

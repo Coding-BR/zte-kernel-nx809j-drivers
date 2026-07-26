@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `e34af0a0b22e68cb31f1cfa73c20d66f925a0254c4d4d09190bdbede20561912`
-- **Candidato:** `24706680` bytes
+- **Candidato SHA-256:** `2e27df8900f1880339a47b991621df37d294fbb86acc2b91b4629b1d0fb5289d`
+- **Candidato:** `24707096` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,28 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `182/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `183/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next63 - Inicializacao da Workqueue
+
+`022_tpd_workqueue_init` foi promovida para `PASS` no protocolo offline. A
+reconstrucao preserva o `alloc_workqueue("%s", 0x6000a, 1, "tpd_wq")`, os
+offsets `+0x4b0`, `+0x8d0`, `+0xa50` e `+0x938`, e a inicializacao manual dos
+tres delayed works. O ramo de falha que chama `destroy_workqueue(NULL)` somente
+apos a limpeza controlada de `+0x4b0` tambem esta coberto pelo harness.
+
+Os dois builds canonicos sao identicos em `24707096` bytes, SHA-256
+`2e27df8900f1880339a47b991621df37d294fbb86acc2b91b4629b1d0fb5289d`.
+Assembly, relocations, KCFI (`0x6fbb3035`), Ghidra, Joern e ASan/UBSan passaram.
+O comparador Ghidra agora recupera literais curtos da secao ELF quando
+`strings.jsonl` nao os exporta, preservando a verificacao do formato `"%s"`.
+O documento autoritativo e `NEXT63_TPD_WORKQUEUE_INIT_VALIDATION_20260726.md`.
+Nenhum teste no smartphone foi feito.
 
 ## Checkpoint Next52 - Candidate de Device ID (sem promocao)
 
