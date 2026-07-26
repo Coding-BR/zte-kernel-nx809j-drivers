@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `2e27df8900f1880339a47b991621df37d294fbb86acc2b91b4629b1d0fb5289d`
-- **Candidato:** `24707096` bytes
+- **Candidato SHA-256:** `1a0a2dfbcfe54f2ea199f05fa8fb408b6c1d064278813b2df3239682321e9772`
+- **Candidato:** `24708352` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,30 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `183/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `184/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next64 - Trabalho de Ghost Point
+
+`023_tp_ghost_check_work` foi promovida para `PASS` no protocolo offline. A
+reconstrucao preserva a leitura de `tpd_cdev + 0x4a8`, o callback indireto em
+`+0xff0`, o reset de ghost e a limpeza do byte ativo em `+0x488`. Para manter o
+predicado AArch64 stock `cmp #2` / `b.gt`, a fonte usa `asm goto` limitado a
+essa comparacao; hosts nao AArch64 usam o ramo C equivalente.
+
+Os dois builds canonicos foram identicos: `24708352` bytes, SHA-256
+`1a0a2dfbcfe54f2ea199f05fa8fb408b6c1d064278813b2df3239682321e9772`.
+KCFI preservou `.text`, 176 bytes e o type ID `0xa607748c`. O comparador Ghidra
+estrito registra uma unica diferenca de ordem de blocos no P-Code. O gate
+limitado correspondente passou com 137 registros P-Code, mesmas chamadas,
+strings, relocs e contagens de instrucoes, mas nao declara ordem byte a byte.
+Joern estrito e o harness ASan/UBSan com quatro cenarios passaram. Nenhum teste
+no smartphone foi realizado. O documento autoritativo e
+`NEXT64_TP_GHOST_CHECK_WORK_VALIDATION_20260726.md`.
 
 ## Checkpoint Next63 - Inicializacao da Workqueue
 

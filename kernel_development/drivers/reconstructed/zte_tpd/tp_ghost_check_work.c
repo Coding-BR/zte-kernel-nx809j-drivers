@@ -1,37 +1,43 @@
+/* Stock KCFI tag 0x73fc0d79: int (struct ztp_device *). */
+typedef int (*tpd_ghost_reset_callback_t)(struct ztp_device *cdev);
+
 void tp_ghost_check_work(struct work_struct *work)
 {
-  (void)work;
-  __int64 v0; // x19
-  __int64 v1; // x1
-  __int64 v2; // x2
-  __int64 v4; // x1
-  __int64 v5; // x2
-  int v6; // w8
-  void (__fastcall *v7)(_QWORD); // x9
-  __int64 v8; // x2
+	char *cdev = (char *)(unsigned long)tpd_cdev;
+	int ghost_rst_num;
+	tpd_ghost_reset_callback_t reset_callback;
 
-  v0 = tpd_cdev;
-  if ( (tp_ghost_check() & 1) != 0 )
-  {
-    printk(unk_3B632, v1, v2);
-    v6 = *(_DWORD *)(v0 + 1192);
-    if ( v6 > 2 )
-    {
-      printk(unk_3698B, v4, v5);
-    }
-    else
-    {
-      v7 = *(void (__fastcall **)(_QWORD))(v0 + 3640);
-      if ( v7 )
-      {
-        /* CFI check removed */
-        v7(v0);
-        printk(unk_38629, (unsigned int)(*(_DWORD *)(v0 + 1192) + 1), v8);
-        v6 = *(_DWORD *)(v0 + 1192);
-      }
-      *(_DWORD *)(v0 + 1192) = v6 + 1;
-    }
-  }
-  ghost_check_reset();
-  *(_BYTE *)(v0 + 1160) = 0;
+	(void)work;
+	if (tp_ghost_check() & 1) {
+		printk("\0015tpd: may be ghost point");
+		ghost_rst_num = *(int *)(cdev + 0x4a8);
+#ifdef __aarch64__
+		asm goto("cmp %w0, #2\n\tb.gt %l[ghost_reset_limit]"
+			 : : "r"(ghost_rst_num) : "cc" : ghost_reset_limit);
+#else
+		if (ghost_rst_num > 2)
+			goto ghost_reset_limit;
+#endif
+		reset_callback = *(tpd_ghost_reset_callback_t *)(cdev + 0xff0);
+		if (reset_callback)
+			goto ghost_reset_callback;
+		*(int *)(cdev + 0x4a8) = ghost_rst_num + 1;
+		goto ghost_reset_done;
+
+ghost_reset_limit:
+		printk("\0015tpd: ghost_rst_num has already exceeded 3 times, skip");
+		goto ghost_reset_done;
+
+ghost_reset_callback:
+		reset_callback((struct ztp_device *)cdev);
+		printk("\0015tpd: ghost check reset, ghost_rst_num = %d",
+		       *(int *)(cdev + 0x4a8) + 1);
+		ghost_rst_num = *(int *)(cdev + 0x4a8);
+		*(int *)(cdev + 0x4a8) = ghost_rst_num + 1;
+
+ghost_reset_done:
+		;
+	}
+	ghost_check_reset();
+	*(u8 *)(cdev + 0x488) = 0;
 }
