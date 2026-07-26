@@ -29,12 +29,28 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `199/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `200/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next94 - Modo de Fingerprint com Tela Ligada
+
+`142_syna_dev_set_screen_on_fp_mode` foi promovida para `PASS` somente pelo
+protocolo offline. O wrapper registra a entrada, rejeita `tcm` nulo com
+`-EINVAL`, chama `syna_tcm_set_dynamic_config(tcm->tcm_dev, 0xd4, 3, enable)`
+e preserva retornos negativos, normalizando retorno nao negativo para zero.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly confirmou `136` bytes, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram.
+O harness host cobriu `tcm` nulo, sucesso positivo normalizado e erro negativo
+preservado em dois ciclos ASAN/UBSAN. Ele nao comunica com firmware, touch,
+display ou hardware. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next94_syna_dev_set_screen_on_fp_mode_v1/`.
+O contador global e `200 PASS / 167 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next92 - Inicializacao UFP
 

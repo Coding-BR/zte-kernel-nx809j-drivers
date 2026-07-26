@@ -154,6 +154,17 @@ hashada esta em
 `reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/`.
 Isso nao testa workqueue assincrona real, touch, hardware ou smartphone.
 
+## Checkpoint aplicado: `syna_dev_set_screen_on_fp_mode`
+
+`zte_tpd:syna_dev_set_screen_on_fp_mode` foi confirmado como wrapper sincrono
+para o dynamic config `0xd4`, valor `3` e atraso `enable`. Assembly (`136`
+bytes), KCFI, Ghidra/P-Code, Joern estrito e harness ASAN/UBSAN passaram contra
+o stock. O Joern registrou uma funcao mapeada, `9` chamadas analisadas, zero
+problemas de parser, zero chamadas nao resolvidas e zero deltas mapeados. A
+evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next94_syna_dev_set_screen_on_fp_mode_v1/`.
+Isso nao testa firmware, touch, display, hardware ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0500`
 
 `zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de
