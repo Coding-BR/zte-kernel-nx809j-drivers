@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-26T20:26:02.706398+00:00",
+  "generated_utc": "2026-07-26T20:50:54.053282+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -5373,11 +5373,33 @@
       "required_evidence": [
         "compile",
         "kcfi",
+        "joern",
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_goodix_ts_resume\nEntrada Ghidra: 00114a44\nTamanho stock: 36 bytes\nCategoria: binding\nAlvo no fonte: tpd_goodix_ts_resume.c:tpd_goodix_ts_resume\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0179_00114a44_tpd_goodix_ts_resume.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0179_00114a44_tpd_goodix_ts_resume.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next89_tpd_goodix_ts_resume_v1/build_next89_tpd_goodix_ts_resume_reconstruction.json",
+          "sha256": "9af0a6ef56f4c6b685343ae46fd3eec7bdcc5cd18460ccdb80dd2d32361b244c"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next89_tpd_goodix_ts_resume_v1/kcfi_comparison.json",
+          "sha256": "ab3bad2c77112180a3c3e55e1a165b2dfeb223e491fdb8a705d6520ff3da104a"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next89_tpd_goodix_ts_resume_v1/host_harness_report.json",
+          "sha256": "f3401b7ff31e628edfe5a4a408c3ce744a3c3be0294b9587f5b88b13c7b58cd7"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next89_tpd_goodix_ts_resume_v1/joern_gate_summary.json",
+          "sha256": "0ec0b2695186c21603993d8d7e83f95a3f47fdede940fa4af9bc3a5c2ff1229f"
+        }
+      ]
     },
     {
       "id": "181_tpd_goodix_ts_suspend",
