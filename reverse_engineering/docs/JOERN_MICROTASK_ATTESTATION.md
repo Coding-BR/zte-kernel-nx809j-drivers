@@ -86,6 +86,24 @@ confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
 Isso nao declara comportamento de platform core ou hardware; ambos continuam
 fora do escopo deste checkpoint offline.
 
+## Checkpoint aplicado: `syna_tcm_get_testing_0001`
+
+Em 2026-07-26, `zte_tpd:syna_tcm_get_testing_0001` foi confirmado como retorno
+do endereco de `test_0001`. Dois builds canonicos produziram o candidato
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly (`12` bytes, tres instrucoes e duas relocacoes de `test_0001`), KCFI
+`0x2b399469` e P-Code (`10/10` operacoes) passaram contra o modulo stock.
+
+O candidato recebeu o seed Ghidra restrito `SeedVerifiedDataObject.java` para
+o objeto de `0x178` bytes depois que Assembly e relocacoes provaram que nao ha
+LOAD. Isso corrige somente a inferencia de tipo do decompilador e nao altera o
+ELF. O Joern v4.0.548 passou em escopo estrito: uma funcao mapeada, parse
+limpo, nenhuma chamada nao resolvida e nenhum delta mapeado. O harness
+ASAN/UBSAN cobriu identidade e tres valores em dois ciclos. A evidencia hashada
+esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next83_syna_tcm_get_testing_0001_v1/`.
+Isso nao testa o subsistema de testes, touch ou smartphone.
+
 ## Checkpoint aplicado: `ufp_get_lcdstate`
 
 Em 2026-07-26, `zte_tpd:ufp_get_lcdstate` foi confirmado contra o modulo stock

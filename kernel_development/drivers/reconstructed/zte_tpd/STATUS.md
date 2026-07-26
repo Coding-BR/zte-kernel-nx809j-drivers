@@ -29,12 +29,39 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `189/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `190/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next83 - Ponteiro do Item de Teste 0001
+
+`234_syna_tcm_get_testing_0001` foi promovida para `PASS` somente no protocolo
+offline. O Assembly stock constroi e retorna o endereco de `test_0001`, sem
+leitura nem chamada: `12` bytes, tres instrucoes e duas relocacoes nomeadas. A
+fonte existente ja retornava `&test_0001` e nao foi alterada.
+
+Dois builds canonicos independentes produziram o modulo de `24714984` bytes,
+SHA-256 `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+O comparador de Assembly aprovou `.text`, `12` bytes, `3` instrucoes e as duas
+relocacoes de `test_0001`. KCFI preservou `.text`, `12` bytes e `0x2b399469`.
+
+O Ghidra inicialmente inferiu, de forma especulativa, o rotulo de dados como
+ponteiro no candidato. `reverse_engineering/ghidra_scripts/SeedVerifiedDataObject.java`
+marcou apenas o intervalo comprovado de `0x178` bytes como objeto enderecavel
+antes da exportacao; a prova de Assembly/P-Code e as relocacoes precedem esse
+seed. O binario nao e alterado. A exportacao Ghidra 12.1.2 voltou a coincidir
+com o C decompilado stock e com `10/10` operacoes P-Code. O Joern v4.0.548
+passou em modo estrito contra o grafo stock, sem erros de parse, chamadas nao
+resolvidas ou deltas mapeados.
+
+O harness host verificou a identidade de ponteiro e tres valores do objeto em
+dois ciclos ASAN/UBSAN reproduziveis. Nenhum teste no smartphone, touch
+hardware ou subsistema de testes foi feito. A atestacao hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next83_syna_tcm_get_testing_0001_v1/`.
+O contador global e `190 PASS / 177 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next82 - Leitura do Estado LCD UFP
 
