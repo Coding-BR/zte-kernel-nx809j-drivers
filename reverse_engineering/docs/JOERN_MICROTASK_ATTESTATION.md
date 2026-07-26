@@ -55,7 +55,21 @@ hashes sao obrigatorios. O guia conceitual e o runbook completo permanecem em
 [PIPELINE_DUAL_GHIDRA_JOERN.md](PIPELINE_DUAL_GHIDRA_JOERN.md) e
 [JOERN_RUNTIME_GATE.md](../../workspace_tools/reconstruction_pipeline/JOERN_RUNTIME_GATE.md).
 
-## Validacao real atual
+## Checkpoint aplicado: `zte_touch_shutdown`
+
+Em 2026-07-26, `zte_tpd:zte_touch_shutdown` passou pelo ciclo completo de uma
+microtarefa reatestada: build canonico reproduzivel, KCFI, Assembly, Ghidra,
+Joern strict e harness host ASAN/UBSAN. O atestador aceitou o resumo Joern
+porque ele foi `PASS`, parse-clean, nao-promocional, cobriu a funcao e possuia
+o hash atual da arvore C/H. A evidencia versionada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next78_zte_touch_shutdown_v1/`.
+
+Isso valida o processo de integracao: Joern detecta lacunas estruturais e
+impede uma promocao quando o CPG nao corresponde ao fonte atual. Ele ainda nao
+prova offsets, MMIO ou comportamento no telefone; esses contratos continuam
+dependentes de Ghidra, Assembly, KCFI e validacao dinamica controlada.
+
+## Piloto inicial
 
 zte_tpd:syna_testing_create_dir foi o primeiro checkpoint atestado com essa
 regra. O Joern v4.0.548 cobriu uma funcao mapeada, sem erros de parser, calls

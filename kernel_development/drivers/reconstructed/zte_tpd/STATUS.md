@@ -29,12 +29,32 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `184/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `185/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next78 - Teardown da Plataforma Touch
+
+`027_zte_touch_shutdown` foi promovida para `PASS` somente no protocolo
+offline. O candidato preserva a chamada indireta tipada em `tpd_cdev + 0xf90`,
+os logs stock, os cancelamentos em `+0x8d0`, `+0xa50` e `+0x938`, e o par
+`vfree`/zeramento em `+0xbe8`.
+
+Dois builds canonicos independentes produziram o mesmo modulo de `24715592`
+bytes, SHA-256 `2a8d03aa18217e097a6d0c36ceaad92895b4ae75f320983ba73b60556738377c`.
+Assembly e relocacoes resolvidas coincidem em `224` bytes e `56` instrucoes;
+o KCFI da funcao coincide em `0x24a11bb9`. O Ghidra confirmou C decompilado
+normalizado e `176/176` operacoes P-Code. O Joern v4.0.548 passou em escopo de
+uma funcao, sem parse problems, calls nao resolvidas ou deltas mapeados.
+
+O harness host executou os casos de callback presente e ausente em dois ciclos
+ASAN/UBSAN reproduziveis. Nenhum teste no smartphone foi feito. A atestacao
+hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next78_zte_touch_shutdown_v1/`.
+O contador global e `185 PASS / 182 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next64 - Trabalho de Ghost Point
 
