@@ -86,6 +86,22 @@ confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
 Isso nao declara comportamento de platform core ou hardware; ambos continuam
 fora do escopo deste checkpoint offline.
 
+## Checkpoint aplicado: `ufp_get_lcdstate`
+
+Em 2026-07-26, `zte_tpd:ufp_get_lcdstate` foi confirmado contra o modulo stock
+como uma leitura de 32 bits de `current_lcd_state`, sem ramificacoes. Dois
+builds canonicos produziram o candidato
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly (`12` bytes, tres instrucoes e duas relocacoes nomeadas), KCFI
+`0x6fbb3035` e Ghidra (`6/6` operacoes P-Code) passaram contra o modulo stock.
+
+O Joern v4.0.548 passou em escopo estrito usando o export Ghidra stock: uma
+funcao mapeada, parse limpo, nenhuma chamada nao resolvida e nenhum delta
+mapeado. O harness ASAN/UBSAN cobriu seis valores inteiros, incluindo limites
+de 32 bits, em dois ciclos. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next82_ufp_get_lcdstate_v1/`.
+Isso nao testa painel, notifier, display ou smartphone.
+
 ## Checkpoint aplicado: `syna_cdev_llseek`
 
 Em 2026-07-26, `zte_tpd:syna_cdev_llseek` foi confirmado contra o modulo stock

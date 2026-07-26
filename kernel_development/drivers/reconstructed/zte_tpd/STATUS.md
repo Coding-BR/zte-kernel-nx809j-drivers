@@ -29,12 +29,34 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `188/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `189/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next82 - Leitura do Estado LCD UFP
+
+`131_ufp_get_lcdstate` foi promovida para `PASS` somente no protocolo offline.
+O Assembly stock le `current_lcd_state` em 32 bits e retorna o valor sem
+ramificacoes: `12` bytes, tres instrucoes e duas relocacoes nomeadas para o
+simbolo. A fonte existente ja preservava esse contrato e nao foi alterada.
+
+Dois builds canonicos independentes produziram o modulo de `24714984` bytes,
+SHA-256 `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+O comparador de Assembly aprovou `.text`, `12` bytes, `3` instrucoes e as duas
+relocacoes de `current_lcd_state`. KCFI preservou `.text`, `12` bytes e
+`0x6fbb3035`. O Ghidra 12.1.2 foi executado novamente sobre esse hash e
+confirmou C decompilado normalizado e `6/6` operacoes P-Code. O Joern
+v4.0.548 passou em modo estrito contra o grafo stock, com mapeamento e parse
+limpos e sem chamadas nao resolvidas ou deltas mapeados.
+
+O harness host executou seis valores (`0`, estados ativos, `-1`, `INT_MIN` e
+`INT_MAX`) em dois ciclos ASAN/UBSAN reproduziveis. Nenhum teste no
+smartphone, painel, notifier ou display foi feito. A atestacao hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next82_ufp_get_lcdstate_v1/`.
+O contador global e `189 PASS / 178 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next81 - llseek do Character Device
 

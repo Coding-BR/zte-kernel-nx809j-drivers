@@ -134,7 +134,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 128_tpd_suspend_work | tpd_suspend_work | 001107a4 | binding | tpd_suspend_work.c:tpd_suspend_work | READY_FOR_IMPLEMENTATION |
 | 129_ufp_report_lcd_state_work | ufp_report_lcd_state_work | 001107f0 | async_or_irq | ufp_report_lcd_state_work.c:ufp_report_lcd_state_work | PASS |
 | 130_tpd_resume_work_deinit | tpd_resume_work_deinit | 00110810 | lifecycle | tpd_resume_work_deinit.c:tpd_resume_work_deinit | PASS |
-| 131_ufp_get_lcdstate | ufp_get_lcdstate | 00110868 | core_logic | ufp_get_lcdstate.c:ufp_get_lcdstate | READY_FOR_IMPLEMENTATION |
+| 131_ufp_get_lcdstate | ufp_get_lcdstate | 00110868 | core_logic | ufp_get_lcdstate.c:ufp_get_lcdstate | PASS |
 | 132_ufp_report_gesture_uevent | ufp_report_gesture_uevent | 00110878 | core_logic | ufp_report_gesture_uevent.c:ufp_report_gesture_uevent | READY_FOR_IMPLEMENTATION |
 | 133_report_ufp_uevent | report_ufp_uevent | 00110960 | core_logic | report_ufp_uevent.c:report_ufp_uevent | READY_FOR_IMPLEMENTATION |
 | 134_one_key_report | one_key_report | 00110be8 | core_logic | one_key_report.c:one_key_report | PASS |

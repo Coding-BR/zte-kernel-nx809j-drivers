@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-26T16:57:04.581073+00:00",
+  "generated_utc": "2026-07-26T17:20:36.741896+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -4254,11 +4254,33 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_get_lcdstate\nEntrada Ghidra: 00110868\nTamanho stock: 12 bytes\nCategoria: core_logic\nAlvo no fonte: ufp_get_lcdstate.c:ufp_get_lcdstate\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0130_00110868_ufp_get_lcdstate.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0130_00110868_ufp_get_lcdstate.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next82_ufp_get_lcdstate_v1/build_next82_ufp_get_lcdstate_reconstruction.json",
+          "sha256": "d06a30d523e089bc4c9841d76f5e458c54a1d6813eff86ebf8affb607dd006c2"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next82_ufp_get_lcdstate_v1/kcfi_comparison.json",
+          "sha256": "632b74d990e12cf4029faea5d18941298305ba9a859ec9d96daef9ede58c9886"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next82_ufp_get_lcdstate_v1/host_harness_report.json",
+          "sha256": "9102b7ec7c874a84a548bf7ee591d328b1ec05c04927201ffaeed7048b3e9788"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next82_ufp_get_lcdstate_v1/joern_gate_summary.json",
+          "sha256": "1020674c4f3c649502003b8d5034596c519e680dd89ad53f28cbbc021076d069"
+        }
+      ]
     },
     {
       "id": "132_ufp_report_gesture_uevent",
