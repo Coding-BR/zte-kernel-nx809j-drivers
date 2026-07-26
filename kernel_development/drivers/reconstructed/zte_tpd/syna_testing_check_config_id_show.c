@@ -1,93 +1,95 @@
 ssize_t syna_testing_check_config_id_show(struct kobject *kobj,
-                                          struct kobj_attribute *attr, char *buf)
+					  struct kobj_attribute *attr, char *buf)
 {
-  __int64 a1 = (__int64)kobj;
-  __int64 a3 = (__int64)buf;
-  __int64 v4; // x8
-  __int64 v5; // x8
-  __int64 *v6; // x21
-  struct testing_item *testing_0002; // x0
-  __int64 v8; // x20
-  __int64 v10; // x0
-  const char *v11; // x5
-  unsigned int v12; // w20
-  const char *v13; // x19
-  __int64 v14; // x0
-  __int64 v15; // x2
-  __int64 result; // x0
-  const char *v17; // [xsp+0h] [xbp-60h] BYREF
-  __int64 v18; // [xsp+8h] [xbp-58h]
-  const char *v19; // [xsp+10h] [xbp-50h] BYREF
-  __int64 v20; // [xsp+18h] [xbp-48h]
-  _QWORD v21[6]; // [xsp+20h] [xbp-40h] BYREF
-  __int64 v22; // [xsp+50h] [xbp-10h]
-  __int64 v23; // [xsp+58h] [xbp-8h]
+	struct kobject *parent;
+	struct syna_tcm *tcm;
+	struct testing_item *item;
+	struct tcm_buffer config_id = {};
+	struct testing_limit expected_default;
+	struct device *managed_device;
+	const char *result;
+	int written;
+	u8 connected;
 
-  (void)attr;
+	(void)attr;
+	parent = kobj->parent;
+	/* Stock follows testing -> sysfs -> device and reads driver_data at +0x98. */
+	tcm = *(struct syna_tcm **)((u8 *)parent->parent + 0x98);
+	connected = *((u8 *)tcm + 0x582);
+#ifdef __aarch64__
+	asm goto("tbz %w0, #0, %l[disconnected]" : : "r"(connected) : :
+		 disconnected);
+#else
+	if (!(connected & 1))
+		goto disconnected;
+#endif
 
-  v23 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v4 = *(_QWORD *)(a1 + 24);
-  v22 = 0;
-  v5 = *(_QWORD *)(v4 + 24);
-  v18 = 0;
-  memset(v21, 0, sizeof(v21));
-  v6 = *(__int64 **)(v5 + 152);
-  if ( (*((_BYTE *)v6 + 1410) & 1) == 0 )
-  {
-    LODWORD(result) = scnprintf(a3, 4096, "Device is NOT connected\n");
-LABEL_19:
-    result = (int)result;
-    goto LABEL_20;
-  }
-  testing_0002 = syna_tcm_get_testing_0002();
-  if ( !testing_0002 )
-  {
-    LODWORD(result) = scnprintf(a3, 4096, "Invalid testing item id:%d\n", 2);
-    goto LABEL_19;
-  }
-  v8 = (__int64)testing_0002;
-  LOBYTE(v22) = 0;
-  v19 = nullptr;
-  v20 = 0;
-  _mutex_init(v21, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_3);
-  v17 = "Default";
-  *(_QWORD *)(v8 + 216) = &v19;
-  LODWORD(v18) = 16;
-  *(_QWORD *)(v8 + 56) = &v17;
-  v10 = *v6;
-  if ( ((struct testing_item *)v8)->run((struct tcm_dev *)v10,
-                                         (struct testing_item *)v8,
-                                         false) < 0 )
-  {
-    printk(unk_3D2FD, "syna_testing_check_config_id_show", *(_QWORD *)(v8 + 8));
-    v11 = "Fail";
-  }
-  else if ( *(_BYTE *)(v8 + 16) )
-  {
-    v11 = "Pass";
-  }
-  else
-  {
-    v11 = "Fail";
-  }
-  v12 = scnprintf(a3, 4096, "\n%s (version.%d): %s\n\n", *(const char **)(v8 + 8), *(_DWORD *)v8, v11);
-  if ( HIDWORD(v20) )
-    v12 += scnprintf(a3 + v12, 4096LL - v12, "\nConfig ID: %s\n", v19);
-  if ( (_BYTE)v22 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v22);
-  v13 = v19;
-  v14 = syna_request_managed_device();
-  if ( v14 )
-  {
-    if ( v13 )
-      devm_kfree(v14, v13);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v15);
-  }
-  result = v12;
-LABEL_20:
-  _ReadStatusReg(SP_EL0);
-  return result;
+	item = syna_tcm_get_testing_0002();
+	if (!item)
+		return scnprintf(buf, 4096, "Invalid testing item id:%d\n", 2);
+
+	/* These stores and offsets are recovered from the stock stack buffer. */
+	config_id.lock_depth = 0;
+	config_id.data = NULL;
+	config_id.buf_size = 0;
+	config_id.data_length = 0;
+	_mutex_init(config_id.mutex, "(struct mutex *)ptr",
+		    &syna_pal_mutex_alloc___key_3);
+	item->result_data = &config_id;
+	expected_default.data_length = 0;
+	/* Preserve the stock's distinct pointer, size and length stores. */
+	asm volatile("" : : : "memory");
+	expected_default.data = "Default";
+	asm volatile("" : : : "memory");
+	expected_default.size = 16;
+	item->limit_primary = &expected_default;
+
+	if (item->run(tcm->tcm_dev, item, false) < 0) {
+		printk("\0013[error] %s: Fail to run test, %s\n",
+		       "syna_testing_check_config_id_show", item->name);
+		result = "Fail";
+	} else if (item->result) {
+		result = "Pass";
+	} else {
+		result = "Fail";
+	}
+
+	written = scnprintf(buf, 4096, "\n%s (version.%d): %s\n\n",
+			    item->name, item->version, result);
+	if (config_id.data_length)
+		written += scnprintf(buf + written, 4096 - written,
+				     "\nConfig ID: %s\n", (char *)config_id.data);
+
+#ifdef __aarch64__
+	asm goto("cbnz %w0, %l[config_busy]" : : "r"(config_id.lock_depth) : :
+		 config_busy);
+#else
+	if (config_id.lock_depth)
+		goto config_busy;
+#endif
+config_release:
+	managed_device = syna_request_managed_device();
+	if (managed_device) {
+		if (config_id.data)
+			devm_kfree(managed_device, config_id.data);
+	} else {
+		printk("\0013[error] %s: Invalid managed device\n",
+		       "syna_pal_mem_free");
+	}
+
+	return written;
+
+config_busy:
+	printk("\0013[error] %s: Buffer still in used, %d references\n",
+	       "syna_tcm_buf_release", config_id.lock_depth);
+#ifdef __aarch64__
+	/* Stock cold code branches back to the one managed-device sequence. */
+	asm goto("b %l[config_release]" : : : : config_release);
+	__builtin_unreachable();
+#else
+	goto config_release;
+#endif
+
+disconnected:
+	return scnprintf(buf, 4096, "Device is NOT connected\n");
 }
