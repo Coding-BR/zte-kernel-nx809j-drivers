@@ -29,12 +29,35 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `186/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `187/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next80 - Remocao da Plataforma Touch
+
+`026_zte_touch_remove` foi promovida para `PASS` somente no protocolo offline.
+O Assembly stock de `52` bytes registra `"\0015tpd: end %s, %d\n"` com
+`"zte_touch_remove"` e linha `2903`, depois chama `zte_touch_deinit()` sem
+propagar o retorno de `_printk`. A fonte anterior passava esse retorno como
+argumento e gerava instrucoes extras; a correcao restaura o contrato observado.
+
+Dois builds canonicos independentes produziram o modulo de `24714984` bytes,
+SHA-256 `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+O comparador de Assembly aprovou secao, tamanho, `13` instrucoes e relocacoes
+resolvidas; KCFI preservou `.text`, `52` bytes e `0x24a11bb9`. O Ghidra 12.1.2
+foi executado novamente sobre esse hash e confirmou C decompilado normalizado e
+`37/37` operacoes P-Code. O Joern v4.0.548 passou em modo estrito, com a funcao
+mapeada, parse limpo, sem chamadas nao resolvidas ou deltas mapeados.
+
+O harness host executou `NULL` e dois ponteiros `platform_device` distintos em
+dois ciclos ASAN/UBSAN reproduziveis; em cada caso confirmou um `printk` com os
+tres argumentos stock e uma chamada a `zte_touch_deinit`. Nenhum teste no
+smartphone foi feito. A atestacao hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next80_zte_touch_remove_v1/`.
+O contador global e `187 PASS / 180 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next79 - Encaminhamento de Shutdown Synaptics
 

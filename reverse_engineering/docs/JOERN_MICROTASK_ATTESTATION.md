@@ -86,6 +86,22 @@ confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
 Isso nao declara comportamento de platform core ou hardware; ambos continuam
 fora do escopo deste checkpoint offline.
 
+## Checkpoint aplicado: `zte_touch_remove`
+
+Em 2026-07-26, `zte_tpd:zte_touch_remove` foi refeito a partir do Assembly
+stock: `printk` com o literal, nome e linha exatos, seguido por
+`zte_touch_deinit()` sem argumento residual do retorno de `printk`. Dois builds
+canonicos produziram o mesmo candidato `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly (`52` bytes e `13` instrucoes), KCFI `0x24a11bb9` e Ghidra (`37/37`
+operacoes P-Code) passaram contra o modulo stock.
+
+O Joern v4.0.548 passou em escopo estrito para a funcao atual, com parse limpo,
+sem chamadas nao resolvidas e sem deltas mapeados. O harness ASAN/UBSAN cobriu
+`NULL` e dois ponteiros distintos, verificando um log stock e um teardown por
+chamada. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next80_zte_touch_remove_v1/`.
+Isso nao testa o platform core, controlador touch ou smartphone.
+
 ## Piloto inicial
 
 zte_tpd:syna_testing_create_dir foi o primeiro checkpoint atestado com essa
