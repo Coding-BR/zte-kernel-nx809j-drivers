@@ -29,12 +29,32 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `192/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `193/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next86 - Ponteiro do Item de Teste 0500
+
+`249_syna_tcm_get_testing_0500` foi promovida para `PASS` somente no protocolo
+offline. O Assembly stock retorna o endereco de `test_0500`, sem leitura nem
+chamada: `12` bytes, tres instrucoes e duas relocacoes nomeadas. A fonte ja
+retornava `&test_0500` e nao foi alterada.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram. O seed Ghidra
+`SeedVerifiedDataObject.java` foi aplicado somente apos a prova por
+Assembly/P-Code e relocacoes, para marcar o objeto enderecavel de `0x178`
+bytes; o ELF nao foi alterado.
+
+O harness host confirmou identidade de ponteiro e tres valores em dois ciclos
+ASAN/UBSAN. Nenhum teste no smartphone, touch hardware ou subsistema de testes
+foi feito. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next86_syna_tcm_get_testing_0500_v1/`.
+O contador global e `193 PASS / 174 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next85 - Ponteiro do Item de Teste 0100
 

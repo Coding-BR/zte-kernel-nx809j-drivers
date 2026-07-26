@@ -86,6 +86,16 @@ confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
 Isso nao declara comportamento de platform core ou hardware; ambos continuam
 fora do escopo deste checkpoint offline.
 
+## Checkpoint aplicado: `syna_tcm_get_testing_0500`
+
+`zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de
+`test_0500`. Assembly de `12` bytes, duas relocacoes, KCFI, Ghidra/P-Code,
+Joern estrito e harness ASAN/UBSAN passaram contra a evidencia stock. O seed
+Ghidra de objeto de dados foi aplicado somente depois da prova que o fluxo nao
+executa LOAD. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next86_syna_tcm_get_testing_0500_v1/`.
+Isso nao testa touch, hardware ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0100`
 
 `zte_tpd:syna_tcm_get_testing_0100` foi confirmado como retorno do endereco de
