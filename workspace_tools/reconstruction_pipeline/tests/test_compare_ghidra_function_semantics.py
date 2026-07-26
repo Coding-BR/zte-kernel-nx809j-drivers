@@ -3,6 +3,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 MODULE_PATH = (
@@ -105,6 +106,40 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock, candidate)
         self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
         self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
+
+    def test_relocated_global_data_labels_preserve_aliasing(self) -> None:
+        stock = "void target(void) { DAT_00101000 = DAT_00101008; DAT_00101008 = DAT_00101000; }"
+        candidate = "void target(void) { DAT_00202000 = DAT_00202008; DAT_00202008 = DAT_00202000; }"
+        changed_aliasing = "void target(void) { DAT_00202000 = DAT_00202008; DAT_00202010 = DAT_00202000; }"
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed_aliasing, {})
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertNotEqual(stock_normalized, changed_normalized)
+        self.assertEqual(len(stock_artifacts), 2)
+        self.assertEqual(len(candidate_artifacts), 2)
+        self.assertEqual(stock_artifacts[0]["kind"], "ghidra_global_data_address")
+
+    def test_elf_string_resolver_ignores_uninitialized_memory(self) -> None:
+        payload = b"untrusted\x00trusted\x00"
+        sections = {
+            ".bss": (0, len(b"untrusted\x00")),
+            ".rodata": (len(b"untrusted\x00"), len(b"trusted\x00")),
+        }
+        blocks = [
+            (".bss", 0x1000, 0x1009, False),
+            (".rodata", 0x2000, 0x2007, True),
+        ]
+
+        with patch.object(MODULE, "elf_sections", return_value=(payload, sections)):
+            with patch.object(MODULE, "memory_blocks", return_value=blocks):
+                resolved = MODULE.elf_data_string_resolver(Path("unused"), Path("unused"))
+
+        self.assertEqual(resolved, {0x2000: "trusted"})
 
     def test_known_object_binding_addresses_are_normalized_narrowly(self) -> None:
         for expression_with_address, expression_without_address in (

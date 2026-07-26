@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `1a0a2dfbcfe54f2ea199f05fa8fb408b6c1d064278813b2df3239682321e9772`
-- **Candidato:** `24708352` bytes
+- **Candidato SHA-256:** `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`
+- **Candidato:** `24714984` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,33 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `198/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `199/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next92 - Inicializacao UFP
+
+`138_ufp_mac_init` foi promovida para `PASS` somente no protocolo offline.
+O contrato observado cria a workqueue `single_tap_cancel`, inicializa o
+delayed work em `ufp_tp_ops + 0x10`, chama o timer com `0x200000`, registra a
+wake source, reinicializa a completion em `+0x80` e atualiza `pdev` somente
+quando `tpd_cdev + 0xdd0` nao e nulo.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram. O Assembly confirmou
+`216` bytes, `54` instrucoes e as relocacoes de workqueue, timer, wake source,
+completion, `tpd_cdev` e `ufp_tp_ops`; KCFI confirmou `0x6fbb3035` em `.text`.
+
+O harness host cobriu `pdev` presente, `pdev` ausente e workqueue nula em dois
+ciclos ASAN/UBSAN, incluindo a ordem das chamadas e os offsets observados. Ele
+nao fornece `tpd_cdev` nulo porque o stock o dereferencia sem guarda, e nao
+executa callback assincrono ou hardware. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/`.
+O contador global e `199 PASS / 168 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next91 - Notificador UFP
 

@@ -15,6 +15,7 @@ from typing import Any
 
 
 DATA_REFERENCE_RE = re.compile(r"&(?:DAT|UNK)_([0-9a-fA-F]+)")
+GLOBAL_DATA_LABEL_RE = re.compile(r"\b(?:DAT|UNK)_[0-9a-fA-F]+\b")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
 SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
     r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
@@ -81,16 +82,22 @@ def string_index(root: Path) -> dict[int, str]:
     return result
 
 
-def memory_blocks(root: Path) -> list[tuple[str, int, int]]:
+def memory_blocks(root: Path) -> list[tuple[str, int, int, bool]]:
     result = []
     for record in read_jsonl(root / "memory_blocks.jsonl"):
         name = record.get("name")
         start = record.get("start")
         end = record.get("end")
-        if not isinstance(name, str) or not isinstance(start, str) or not isinstance(end, str):
+        initialized = record.get("initialized")
+        if (
+            not isinstance(name, str)
+            or not isinstance(start, str)
+            or not isinstance(end, str)
+            or not isinstance(initialized, bool)
+        ):
             continue
         try:
-            result.append((name, int(start, 16), int(end, 16)))
+            result.append((name, int(start, 16), int(end, 16), initialized))
         except ValueError:
             continue
     return result
@@ -145,7 +152,9 @@ def elf_data_string_resolver(root: Path, module: Path | None) -> dict[int, str]:
         return {}
     payload, sections = elf_sections(module)
     result = {}
-    for name, start, end in memory_blocks(root):
+    for name, start, end, initialized in memory_blocks(root):
+        if not initialized:
+            continue
         section = sections.get(name)
         if section is None:
             continue
@@ -202,6 +211,29 @@ def normalize_decompiled(
         return match.group(0)
 
     replaced = DATA_REFERENCE_RE.sub(replace, text.replace("\r\n", "\n"))
+
+    # Ghidra labels unnamed globals with their linked virtual addresses. These
+    # addresses legitimately differ between stock and reconstructed modules;
+    # preserve reference identity/order while removing only that relocation
+    # artifact. P-Code, ELF assembly and KCFI remain independent gates.
+    global_labels: dict[str, str] = {}
+
+    def replace_global_data_label(match: re.Match[str]) -> str:
+        label = match.group(0)
+        normalized = global_labels.get(label)
+        if normalized is None:
+            normalized = f"GHIDRA_DATA_OBJECT_{len(global_labels)}"
+            global_labels[label] = normalized
+            artifact_evidence.append(
+                {
+                    "kind": "ghidra_global_data_address",
+                    "value": label,
+                    "normalized": normalized,
+                }
+            )
+        return normalized
+
+    replaced = GLOBAL_DATA_LABEL_RE.sub(replace_global_data_label, replaced)
 
     def replace_breakpoint_context(match: re.Match[str]) -> str:
         artifact_evidence.append(

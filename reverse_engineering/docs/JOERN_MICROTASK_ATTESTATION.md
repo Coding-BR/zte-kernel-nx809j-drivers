@@ -142,6 +142,18 @@ parser e zero chamadas nao resolvidas. O harness cobre `0`, `1`, `-17` e
 `reverse_engineering/validation/reconstructed/zte_tpd/attestation/next91_ufp_notifier_cb_v1/`.
 Isso nao testa touch, hardware, display, PM ou smartphone.
 
+## Checkpoint aplicado: `ufp_mac_init`
+
+`zte_tpd:ufp_mac_init` foi confirmado como inicializacao de ciclo de vida da
+workqueue `single_tap_cancel`, delayed work, timer, wake source, completion e
+do ponteiro condicional em `tpd_cdev + 0xdd0`. Assembly, KCFI, Ghidra/P-Code,
+Joern estrito e harness ASAN/UBSAN passaram contra a evidencia stock. O Joern
+registrou uma funcao mapeada, `59` chamadas analisadas, zero problemas de
+parser, zero chamadas nao resolvidas e zero deltas mapeados. A evidencia
+hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/`.
+Isso nao testa workqueue assincrona real, touch, hardware ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0500`
 
 `zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de
