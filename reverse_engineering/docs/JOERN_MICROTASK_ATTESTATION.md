@@ -131,6 +131,17 @@ hashada esta em
 `reverse_engineering/validation/reconstructed/zte_tpd/attestation/next90_tpd_goodix_ts_suspend_v1/`.
 Isso nao testa touch, hardware, PM, SPI ou smartphone.
 
+## Checkpoint aplicado: `ufp_notifier_cb`
+
+`zte_tpd:ufp_notifier_cb` foi confirmado como normalizacao de um `int` para
+booleano, uma chamada para `change_tp_state` e retorno constante `0`. Assembly,
+KCFI, Ghidra/P-Code, Joern estrito e harness ASAN/UBSAN passaram contra a
+evidencia stock. O Joern registrou uma funcao mapeada, zero problemas de
+parser e zero chamadas nao resolvidas. O harness cobre `0`, `1`, `-17` e
+`INT_MAX` em dois ciclos. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next91_ufp_notifier_cb_v1/`.
+Isso nao testa touch, hardware, display, PM ou smartphone.
+
 ## Checkpoint aplicado: `syna_tcm_get_testing_0500`
 
 `zte_tpd:syna_tcm_get_testing_0500` foi confirmado como retorno do endereco de

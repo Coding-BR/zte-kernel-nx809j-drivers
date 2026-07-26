@@ -29,12 +29,32 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `197/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `198/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next91 - Notificador UFP
+
+`137_ufp_notifier_cb` foi promovida para `PASS` somente no protocolo offline.
+O Assembly stock transforma `int` em booleano por `cset`, chama
+`change_tp_state` uma vez e retorna `0`. A decisao KCFI independente confirma
+a assinatura `int (int)` e o type ID `0xcdde824b` com `40` bytes na secao
+`.text`.
+
+Dois builds canonicos independentes produziram SHA-256
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly, KCFI, Ghidra 12.1.2 e Joern v4.0.548 passaram. O Ghidra confirmou
+os `40` bytes, o C normalizado e a forma do P-Code; o Joern ficou limpo, com
+uma funcao mapeada e nenhuma chamada nao resolvida.
+
+O harness host cobriu `0`, `1`, `-17` e `INT_MAX` em dois ciclos ASAN/UBSAN,
+confirmando a normalizacao zero/nao-zero e uma unica chamada ao helper. Nenhum
+teste no smartphone, touch, display ou PM foi feito. A evidencia esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next91_ufp_notifier_cb_v1/`.
+O contador global e `198 PASS / 169 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next90 - Suspensao Goodix
 
