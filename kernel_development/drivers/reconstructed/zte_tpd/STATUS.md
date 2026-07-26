@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-25
+## Estado Atual - 2026-07-26
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `ea2aa81295fc799f267e726ade177b5f58d400a80d7c21b2c60f6d6edff4a785`
-- **Candidato:** `24665648` bytes
+- **Candidato SHA-256:** `18ac3320f88d5f723ca3326877b71278c19adfdaef5ccd95c896a4fe659b76ba`
+- **Candidato:** `24706656` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,8 +29,8 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `174/367` microtarefas possuem build, decisao KCFI e teste direto
-  atestados;
+- O6: `181/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+  teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 

@@ -73,6 +73,8 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
 def source_name(stock_name: str, driver: str) -> str:
     # These names are compiler-generated or exported under an assembly alias;
     # they are represented by the surrounding source function in this driver.
+    if driver != "fp_goodix":
+        return stock_name
     inline_helpers = {"_inline_copy_to_user", "_inline_copy_from_user"}
     if stock_name in inline_helpers:
         return "gf_ioctl"
@@ -103,8 +105,22 @@ def bind_driver(repo: Path, driver: str, check: bool) -> dict[str, Any]:
     map_path = driver_root / "reconstruction_map.json"
     mapping = read_json(map_path)
 
-    ghidra_export = repo / mapping["ghidra_export"]
-    functions_path = ghidra_export / "functions.jsonl"
+    ghidra_export = mapping.get("ghidra_export")
+    if isinstance(ghidra_export, str) and ghidra_export:
+        functions_path = (repo / ghidra_export).resolve() / "functions.jsonl"
+    else:
+        inputs = mapping.get("inputs")
+        if not isinstance(inputs, dict):
+            raise MappingError("map has neither ghidra_export nor inputs")
+        ghidra_functions = inputs.get("ghidra_functions")
+        if not isinstance(ghidra_functions, str) or not ghidra_functions:
+            raise MappingError("map inputs has no ghidra_functions")
+        functions_path = Path(ghidra_functions)
+        if not functions_path.is_absolute():
+            functions_path = repo / functions_path
+        functions_path = functions_path.resolve()
+    if not functions_path.is_file():
+        raise MappingError(f"Ghidra function inventory is missing: {functions_path}")
     functions = read_jsonl(functions_path)
     source_texts: dict[str, str] = {}
 
@@ -131,7 +147,12 @@ def bind_driver(repo: Path, driver: str, check: bool) -> dict[str, Any]:
         stock_function = item.get("stock_function")
         if not isinstance(stock_function, str) or not stock_function:
             raise MappingError("mapping has no stock_function")
-        candidate = source_name(stock_function, driver)
+        mapped_function = item.get("source_function")
+        candidate = (
+            mapped_function
+            if isinstance(mapped_function, str) and mapped_function
+            else source_name(stock_function, driver)
+        )
         source_rel = source_file_name(
             stock_function, driver, item.get("source_file")
         )
