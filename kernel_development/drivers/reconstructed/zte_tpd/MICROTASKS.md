@@ -190,7 +190,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 184_syna_cdev_create | syna_cdev_create | 00114b3c | core_logic | syna_cdev_create.c:syna_cdev_create | READY_FOR_IMPLEMENTATION |
 | 185_syna_cdev_devnode | syna_cdev_devnode | 00114db8 | core_logic | syna_cdev_devnode.c:syna_cdev_devnode | READY_FOR_IMPLEMENTATION |
 | 186_syna_cdev_remove | syna_cdev_remove | 00114e04 | binding | syna_cdev_remove.c:syna_cdev_remove | READY_FOR_IMPLEMENTATION |
-| 187_syna_cdev_llseek | syna_cdev_llseek | 00114f98 | core_logic | syna_cdev_llseek.c:syna_cdev_llseek | READY_FOR_IMPLEMENTATION |
+| 187_syna_cdev_llseek | syna_cdev_llseek | 00114f98 | core_logic | syna_cdev_llseek.c:syna_cdev_llseek | PASS |
 | 188_syna_cdev_read | syna_cdev_read | 00114fa4 | user_abi | syna_cdev_read.c:syna_cdev_read | READY_FOR_IMPLEMENTATION |
 | 189_syna_cdev_write | syna_cdev_write | 00115048 | user_abi | syna_cdev_write.c:syna_cdev_write | READY_FOR_IMPLEMENTATION |
 | 190_syna_cdev_ioctls | syna_cdev_ioctls | 001150ec | user_abi | syna_cdev_ioctls.c:syna_cdev_ioctls | READY_FOR_IMPLEMENTATION |

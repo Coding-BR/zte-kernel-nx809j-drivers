@@ -86,6 +86,22 @@ confirmando uma chamada e encaminhamento identico. A evidencia hashada esta em
 Isso nao declara comportamento de platform core ou hardware; ambos continuam
 fora do escopo deste checkpoint offline.
 
+## Checkpoint aplicado: `syna_cdev_llseek`
+
+Em 2026-07-26, `zte_tpd:syna_cdev_llseek` foi confirmado contra o modulo stock
+como retorno constante `-EINVAL` (`-22`), sem acessar os argumentos. Dois
+builds canonicos produziram o mesmo candidato
+`b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+Assembly (`8` bytes e `2` instrucoes), KCFI `0xd527a0de` e Ghidra (`3/3`
+operacoes P-Code) passaram contra o modulo stock.
+
+O Joern v4.0.548 passou em escopo estrito usando o export Ghidra stock, com
+parse limpo, sem chamadas nao resolvidas nem deltas mapeados. O harness
+ASAN/UBSAN cobriu ponteiro nulo, valido e limites de offset/whence em dois
+ciclos, sempre exigindo `-22`. A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next81_syna_cdev_llseek_v1/`.
+Isso nao testa VFS, cdev ou smartphone.
+
 ## Checkpoint aplicado: `zte_touch_remove`
 
 Em 2026-07-26, `zte_tpd:zte_touch_remove` foi refeito a partir do Assembly

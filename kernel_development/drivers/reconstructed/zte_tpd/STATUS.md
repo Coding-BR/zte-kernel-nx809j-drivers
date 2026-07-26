@@ -29,12 +29,35 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `187/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `188/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next81 - llseek do Character Device
+
+`187_syna_cdev_llseek` foi promovida para `PASS` somente no protocolo offline.
+O Assembly stock de `8` bytes executa `mov x0,#-0x16` e `ret`: todos os tres
+argumentos sao ignorados e o retorno e `-EINVAL` (`-22`). A fonte existente ja
+reproduzia o contrato; este checkpoint transforma essa correspondencia em
+evidencia independente, sem refatoracao cosmetica.
+
+Dois builds canonicos independentes produziram o modulo de `24714984` bytes,
+SHA-256 `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`.
+O comparador de Assembly aprovou `.text`, `8` bytes, `2` instrucoes e nenhuma
+relocacao. KCFI preservou `.text`, `8` bytes e `0xd527a0de`. O Ghidra 12.1.2
+foi executado novamente sobre esse hash e confirmou C decompilado normalizado
+e `3/3` operacoes P-Code. O Joern v4.0.548 passou em modo estrito contra o
+grafo stock, com mapeamento, parse e chamadas resolvidas.
+
+O harness host executou ponteiro nulo, ponteiro valido, offsets positivos,
+negativos e limites `INT64` em dois ciclos ASAN/UBSAN reproduziveis, sempre
+observando `-22`. Nenhum teste no smartphone, VFS ou device core foi feito. A
+atestacao hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next81_syna_cdev_llseek_v1/`.
+O contador global e `188 PASS / 179 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next80 - Remocao da Plataforma Touch
 
