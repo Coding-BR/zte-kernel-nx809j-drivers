@@ -230,7 +230,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 224_syna_testing_check_config_id_show | syna_testing_check_config_id_show | 0011c1f4 | user_abi | syna_testing_check_config_id_show.c:syna_testing_check_config_id_show | READY_FOR_IMPLEMENTATION |
 | 225_syna_testing_pt01_show | syna_testing_pt01_show | 0011c410 | user_abi | syna_testing_pt01_show.c:syna_testing_pt01_show | READY_FOR_IMPLEMENTATION |
 | 226_syna_testing_pt05_show | syna_testing_pt05_show | 0011c66c | user_abi | syna_testing_pt05_show.c:syna_testing_pt05_show | PASS |
-| 227_syna_testing_pt0a_show | syna_testing_pt0a_show | 0011c944 | user_abi | syna_testing_pt0a_show.c:syna_testing_pt0a_show | READY_FOR_IMPLEMENTATION |
+| 227_syna_testing_pt0a_show | syna_testing_pt0a_show | 0011c944 | user_abi | syna_testing_pt0a_show.c:syna_testing_pt0a_show | PASS |
 | 228_syna_tcm_get_testing_0a00 | syna_tcm_get_testing_0A00 | 0011cc1c | core_logic | syna_tcm_get_testing_0A00.c:syna_tcm_get_testing_0A00 | READY_FOR_IMPLEMENTATION |
 | 229_syna_tcm_testing_noise | syna_tcm_testing_noise | 0011cc2c | core_logic | syna_tcm_testing_noise.c:syna_tcm_testing_noise | READY_FOR_IMPLEMENTATION |
 | 230_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011ce6c | core_logic | syna_tcm_buf_copy.c:syna_tcm_buf_copy | READY_FOR_IMPLEMENTATION |
