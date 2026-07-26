@@ -1,48 +1,54 @@
-int get_tp_algo_item_id(char *a1)
+int get_tp_algo_item_id(char *name)
 {
-  char *v1; // x21
-  size_t v3; // x0
-  size_t v4; // x0
-  size_t v5; // x0
-  size_t v6; // x0
-  size_t v7; // x0
-  size_t v8; // x0
-  size_t v9; // x0
+	struct ztp_algo_item *item = &ztp_algo_info_l[0];
 
-  v1 = &ztp_algo_info_l;
-  v3 = strlen(a1);
-  if ( !strnstr(a1, off_498, v3) )
-  {
-    v1 = &byte_4A0;
-    v4 = strlen(a1);
-    if ( !strnstr(a1, off_4A8, v4) )
-    {
-      v1 = &byte_4B0;
-      v5 = strlen(a1);
-      if ( !strnstr(a1, off_4B8, v5) )
-      {
-        v1 = &byte_4C0;
-        v6 = strlen(a1);
-        if ( !strnstr(a1, off_4C8, v6) )
-        {
-          v1 = &byte_4D0;
-          v7 = strlen(a1);
-          if ( !strnstr(a1, off_4D8, v7) )
-          {
-            v1 = &byte_4E0;
-            v8 = strlen(a1);
-            if ( !strnstr(a1, off_4E8, v8) )
-            {
-              v1 = &byte_4F0;
-              v9 = strlen(a1);
-              if ( !strnstr(a1, off_4F8, v9) )
-                return -EIO;
-            }
-          }
-        }
-      }
-    }
-  }
-  printk(unk_39C9D, "get_tp_algo_item_id", (unsigned char)*v1);
-  return (unsigned char)*v1;
+#ifdef __aarch64__
+	/* The stock implementation keeps each selected keyword live in x20. */
+	register const char *keyword __asm__("x20");
+#define ZTP_ALGO_SET_KEYWORD(item_) \
+	do { \
+		keyword = (item_)->keyword; \
+		asm volatile("" : "+r"(keyword)); \
+	} while (0)
+#else
+	const char *keyword;
+#define ZTP_ALGO_SET_KEYWORD(item_) \
+	do { \
+		keyword = (item_)->keyword; \
+	} while (0)
+#endif
+
+	ZTP_ALGO_SET_KEYWORD(item);
+	if (!strnstr(name, keyword, strlen(name))) {
+		item = &ztp_algo_info_l[1];
+		ZTP_ALGO_SET_KEYWORD(item);
+		if (!strnstr(name, keyword, strlen(name))) {
+			item = &ztp_algo_info_l[2];
+			ZTP_ALGO_SET_KEYWORD(item);
+			if (!strnstr(name, keyword, strlen(name))) {
+				item = &ztp_algo_info_l[3];
+				ZTP_ALGO_SET_KEYWORD(item);
+				if (!strnstr(name, keyword, strlen(name))) {
+					item = &ztp_algo_info_l[4];
+					ZTP_ALGO_SET_KEYWORD(item);
+					if (!strnstr(name, keyword, strlen(name))) {
+						item = &ztp_algo_info_l[5];
+						ZTP_ALGO_SET_KEYWORD(item);
+						if (!strnstr(name, keyword, strlen(name))) {
+							item = &ztp_algo_info_l[6];
+							ZTP_ALGO_SET_KEYWORD(item);
+							if (!strnstr(name, keyword, strlen(name)))
+								return -EIO;
+						}
+					}
+				}
+			}
+		}
+	}
+
+#undef ZTP_ALGO_SET_KEYWORD
+
+	printk("\0015tpd: %s: ztp_algo_item_id:%d.\n",
+	       "get_tp_algo_item_id", item->id);
+	return item->id;
 }

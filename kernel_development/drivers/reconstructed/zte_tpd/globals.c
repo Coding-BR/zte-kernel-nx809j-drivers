@@ -1140,16 +1140,16 @@ const char *off_468 = "panel_468";
 const char *off_478 = "panel_478";
 const char *off_488 = "panel_488";
 
-const char *off_498 = "algo_498";
-const char *off_4A8 = "algo_4A8";
-const char *off_4B8 = "algo_4B8";
-const char *off_4C8 = "algo_4C8";
-const char *off_4D8 = "algo_4D8";
-const char *off_4E8 = "algo_4E8";
-const char *off_4F8 = "algo_4F8";
-
 uint8_t tp_ic_vendor_info_l = 0;
-uint8_t ztp_algo_info_l = 0;
+struct ztp_algo_item ztp_algo_info_l[7] = {
+	{ .id = 0, .keyword = "algo_open" },
+	{ .id = 1, .keyword = "jitter_pixel" },
+	{ .id = 2, .keyword = "jitter_timer" },
+	{ .id = 3, .keyword = "click_pixel" },
+	{ .id = 4, .keyword = "long_press_open" },
+	{ .id = 5, .keyword = "long_press_timer" },
+	{ .id = 6, .keyword = "long_press_pixel" },
+};
 
 void *off_338 = (void *)gpio_free;
 

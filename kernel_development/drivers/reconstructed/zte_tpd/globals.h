@@ -1039,16 +1039,15 @@ extern const char *off_468;
 extern const char *off_478;
 extern const char *off_488;
 
-extern const char *off_498;
-extern const char *off_4A8;
-extern const char *off_4B8;
-extern const char *off_4C8;
-extern const char *off_4D8;
-extern const char *off_4E8;
-extern const char *off_4F8;
-
 extern uint8_t tp_ic_vendor_info_l;
-extern uint8_t ztp_algo_info_l;
+
+struct ztp_algo_item {
+	uint8_t id;
+	uint8_t reserved[7];
+	const char *keyword;
+};
+
+extern struct ztp_algo_item ztp_algo_info_l[7];
 
 extern void *off_338;
 extern struct point_info_struct point_report_info[10];
