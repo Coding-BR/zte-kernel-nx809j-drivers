@@ -12,7 +12,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 006_zlog_register_work_deinit | zlog_register_work_deinit | 00107874 | lifecycle | zlog_register_work_deinit.c:zlog_register_work_deinit | PASS |
 | 007_tpd_zlog_init | tpd_zlog_init | 001078c8 | lifecycle | tpd_zlog_init.c:tpd_zlog_init | PASS |
 | 008_get_tp_algo_item_id | get_tp_algo_item_id | 00107984 | core_logic | get_tp_algo_item_id.c:get_tp_algo_item_id | PASS |
-| 009_get_tp_chip_id | get_tp_chip_id | 00107aec | core_logic | get_tp_chip_id.c:get_tp_chip_id | READY_FOR_IMPLEMENTATION |
+| 009_get_tp_chip_id | get_tp_chip_id | 00107aec | core_logic | get_tp_chip_id.c:get_tp_chip_id | PASS |
 | 010_get_lcd_panel_name | get_lcd_panel_name | 00107ce0 | core_logic | get_lcd_panel_name.c:get_lcd_panel_name | PASS |
 | 011_tp_free_tp_firmware_data | tp_free_tp_firmware_data | 00107cf0 | core_logic | tp_free_tp_firmware_data.c:tp_free_tp_firmware_data | PASS |
 | 012_tp_alloc_tp_firmware_data | tp_alloc_tp_firmware_data | 00107d54 | core_logic | tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data | PASS |

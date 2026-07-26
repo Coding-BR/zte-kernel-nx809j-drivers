@@ -1127,20 +1127,19 @@ struct bin_attribute fwimage_attr = {
     .write = tpd_sysfs_fwimage_store,
 };
 
-// Panel name matching pointers
-const char *off_3E8 = "panel_3E8";
-const char *off_3F8 = "panel_3F8";
-const char *off_408 = "panel_408";
-const char *off_418 = "panel_418";
-const char *off_428 = "panel_428";
-const char *off_438 = "panel_438";
-const char *off_448 = "panel_448";
-const char *off_458 = "panel_458";
-const char *off_468 = "panel_468";
-const char *off_478 = "panel_478";
-const char *off_488 = "panel_488";
-
-uint8_t tp_ic_vendor_info_l = 0;
+struct tp_ic_vendor_item tp_ic_vendor_info_l[11] = {
+	{ .id = 0x01, .keyword = "synaptics" },
+	{ .id = 0x04, .keyword = "focal" },
+	{ .id = 0x05, .keyword = "goodix" },
+	{ .id = 0x08, .keyword = "himax" },
+	{ .id = 0x09, .keyword = "novatek" },
+	{ .id = 0x0a, .keyword = "ilitek" },
+	{ .id = 0x0b, .keyword = "tlsc" },
+	{ .id = 0x0c, .keyword = "chipone" },
+	{ .id = 0x0f, .keyword = "galaxycore" },
+	{ .id = 0x11, .keyword = "omnivision" },
+	{ .id = 0xff, .keyword = "Unknown" },
+};
 struct ztp_algo_item ztp_algo_info_l[7] = {
 	{ .id = 0, .keyword = "algo_open" },
 	{ .id = 1, .keyword = "jitter_pixel" },

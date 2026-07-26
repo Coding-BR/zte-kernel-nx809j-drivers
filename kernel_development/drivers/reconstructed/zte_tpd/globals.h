@@ -1026,20 +1026,13 @@ extern ssize_t tp_BBAT_test_write(struct file *file, const char __user *buffer, 
 extern ssize_t tp_test_write(struct file *file, const char __user *buffer, size_t count, loff_t *offset);
 extern ssize_t tp_frame_data_write(struct file *file, const char __user *buffer, size_t count, loff_t *offset);
 
-// Panel and algorithm tables declarations
-extern const char *off_3E8;
-extern const char *off_3F8;
-extern const char *off_408;
-extern const char *off_418;
-extern const char *off_428;
-extern const char *off_438;
-extern const char *off_448;
-extern const char *off_458;
-extern const char *off_468;
-extern const char *off_478;
-extern const char *off_488;
+struct tp_ic_vendor_item {
+	uint8_t id;
+	uint8_t reserved[7];
+	const char *keyword;
+};
 
-extern uint8_t tp_ic_vendor_info_l;
+extern struct tp_ic_vendor_item tp_ic_vendor_info_l[11];
 
 struct ztp_algo_item {
 	uint8_t id;

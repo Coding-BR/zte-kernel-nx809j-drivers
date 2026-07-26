@@ -1,58 +1,48 @@
 int get_tp_chip_id(void)
 {
-  __int64 v3; // x21
-  char *v4; // x19
-  __int64 v6; // x2
+	struct tp_ic_vendor_item *item = &tp_ic_vendor_info_l[0];
+	char *cdev = (char *)(unsigned long)tpd_cdev;
+	const char *panel_name = "Unknown_lcd";
 
-  v3 = tpd_cdev;
-  printk(unk_3806D, "get_tp_chip_id");
-  *(_BYTE *)(v3 + 1094) = -1;
-  printk(unk_3C91E, "get_tp_chip_id", "Unknown_lcd");
-  v4 = &tp_ic_vendor_info_l;
-  if ( !strnstr("Unknown_lcd", off_3E8, 11) )
-  {
-    v4 = &byte_3F0;
-    if ( !strnstr("Unknown_lcd", off_3F8, 11) )
-    {
-      v4 = &byte_400;
-      if ( !strnstr("Unknown_lcd", off_408, 11) )
-      {
-        v4 = &byte_410;
-        if ( !strnstr("Unknown_lcd", off_418, 11) )
-        {
-          v4 = &byte_420;
-          if ( !strnstr("Unknown_lcd", off_428, 11) )
-          {
-            v4 = &byte_430;
-            if ( !strnstr("Unknown_lcd", off_438, 11) )
-            {
-              v4 = &byte_440;
-              if ( !strnstr("Unknown_lcd", off_448, 11) )
-              {
-                v4 = &byte_450;
-                if ( !strnstr("Unknown_lcd", off_458, 11) )
-                {
-                  v4 = &byte_460;
-                  if ( !strnstr("Unknown_lcd", off_468, 11) )
-                  {
-                    v4 = &byte_470;
-                    if ( !strnstr("Unknown_lcd", off_478, 11) )
-                    {
-                      v4 = &byte_480;
-                      if ( !strnstr("Unknown_lcd", off_488, 11) )
-                        return -EIO;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  v6 = (unsigned __int8)*v4;
-  *(_BYTE *)(v3 + 1094) = v6;
-  printk(unk_3746B, "get_tp_chip_id", v6);
-  return 0;
+	printk("\0015tpd: %s:\n", "get_tp_chip_id");
+	cdev[0x446] = (char)0xff;
+	printk("\0015tpd: %s: panel name %s.\n", "get_tp_chip_id", panel_name);
+
+	if (!strnstr(panel_name, item->keyword, 11)) {
+		item = &tp_ic_vendor_info_l[1];
+		if (!strnstr(panel_name, item->keyword, 11)) {
+			item = &tp_ic_vendor_info_l[2];
+			if (!strnstr(panel_name, item->keyword, 11)) {
+				item = &tp_ic_vendor_info_l[3];
+				if (!strnstr(panel_name, item->keyword, 11)) {
+					item = &tp_ic_vendor_info_l[4];
+					if (!strnstr(panel_name, item->keyword, 11)) {
+						item = &tp_ic_vendor_info_l[5];
+						if (!strnstr(panel_name, item->keyword, 11)) {
+							item = &tp_ic_vendor_info_l[6];
+							if (!strnstr(panel_name, item->keyword, 11)) {
+								item = &tp_ic_vendor_info_l[7];
+								if (!strnstr(panel_name, item->keyword, 11)) {
+									item = &tp_ic_vendor_info_l[8];
+									if (!strnstr(panel_name, item->keyword, 11)) {
+										item = &tp_ic_vendor_info_l[9];
+										if (!strnstr(panel_name, item->keyword, 11)) {
+											item = &tp_ic_vendor_info_l[10];
+											if (!strnstr(panel_name, item->keyword, 11))
+												return -EIO;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	cdev[0x446] = item->id;
+	printk("\0015tpd: %s: tp_chip_id is 0x%02x.\n",
+	       "get_tp_chip_id", item->id);
+	return 0;
 }

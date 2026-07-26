@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-26T04:03:33.251637+00:00",
+  "generated_utc": "2026-07-26T04:17:18.628472+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -309,11 +309,33 @@
       "required_evidence": [
         "compile",
         "kcfi",
+        "joern",
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_tp_chip_id\nEntrada Ghidra: 00107aec\nTamanho stock: 496 bytes\nCategoria: core_logic\nAlvo no fonte: get_tp_chip_id.c:get_tp_chip_id\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0008_00107aec_get_tp_chip_id.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0008_00107aec_get_tp_chip_id.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next60_tp_chip_id_v1/build_next60_tp_chip_id_candidate_v1.json",
+          "sha256": "b805d6900d0fd6b8d9493930a4e4f22a815241b801c4bb51d04d4654346f3477"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next60_tp_chip_id_v1/kcfi_comparison_next60_tp_chip_id_v1.json",
+          "sha256": "befcf742160d70d34ca852a7ee7fc004a708b6ac849c3579ccda92b074229b4f"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next60_tp_chip_id_v1/next60_tp_chip_id_host_report_v1.json",
+          "sha256": "c50510d5ec2c4ae43ef61c20c209cd41442265f571b757145f9d6836d4ca14dd"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next60_tp_chip_id_v1/joern_gate_summary.json",
+          "sha256": "d7392a83d32ddab6b1472da4fb7c2f4a4127eee3362a3e3fa48b9b86f281d193"
+        }
+      ]
     },
     {
       "id": "010_get_lcd_panel_name",
