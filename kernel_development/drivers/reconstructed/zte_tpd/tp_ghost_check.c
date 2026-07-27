@@ -26,8 +26,8 @@ bool tp_ghost_check(void)
     printk("\001" "5tpd: log_buffer malloc fail");
     return 0;
   }
-  v4 = point_report_info[0].ghost_active;
   v5 = point_report_info[1].ghost_active != 0;
+  v4 = point_report_info[0].ghost_active;
   v5 += point_report_info[0].ghost_active != 0;
   if ( point_report_info[2].ghost_active )
     ++v5;
@@ -54,7 +54,7 @@ bool tp_ghost_check(void)
   if ( v7 > 2 )
     v8 = 1172;
   v9 = *((unsigned __int8 *)(unsigned long)v0 + v8);
-  v10 = v9 * v5;
+  v10 = v5 * v9;
   if ( v6 )
   {
     v11 = point_report_info[0].ghost_count;
@@ -80,7 +80,7 @@ bool tp_ghost_check(void)
   }
   if ( point_report_info[1].ghost_active )
   {
-    LOWORD(v4) = v4 + point_report_info[1].ghost_active;
+    LOWORD(v4) = point_report_info[1].ghost_active + v4;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -98,7 +98,7 @@ LABEL_43:
     }
     if ( point_report_info[3].ghost_active )
     {
-      LOWORD(v4) = v4 + point_report_info[3].ghost_active;
+      LOWORD(v4) = point_report_info[3].ghost_active + v4;
       if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
       {
         v4 = (unsigned __int16)v4;
@@ -118,7 +118,7 @@ LABEL_38:
   }
   if ( point_report_info[2].ghost_active )
   {
-    LOWORD(v4) = v4 + point_report_info[2].ghost_active;
+    LOWORD(v4) = point_report_info[2].ghost_active + v4;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -136,7 +136,7 @@ LABEL_48:
   }
   if ( point_report_info[4].ghost_active )
   {
-    LOWORD(v4) = v4 + point_report_info[4].ghost_active;
+    LOWORD(v4) = point_report_info[4].ghost_active + v4;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -154,7 +154,7 @@ LABEL_58:
     }
     if ( point_report_info[6].ghost_active )
     {
-      LOWORD(v4) = v4 + point_report_info[6].ghost_active;
+      LOWORD(v4) = point_report_info[6].ghost_active + v4;
       if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
       {
         v4 = (unsigned __int16)v4;
@@ -174,7 +174,7 @@ LABEL_53:
   }
   if ( point_report_info[5].ghost_active )
   {
-    LOWORD(v4) = v4 + point_report_info[5].ghost_active;
+    LOWORD(v4) = point_report_info[5].ghost_active + v4;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -192,7 +192,7 @@ LABEL_63:
   }
   if ( point_report_info[7].ghost_active )
   {
-    LOWORD(v4) = v4 + point_report_info[7].ghost_active;
+    LOWORD(v4) = point_report_info[7].ghost_active + v4;
     if ( v5 >= 6u && v10 < (unsigned __int16)v4 )
     {
       v4 = (unsigned __int16)v4;
@@ -209,7 +209,7 @@ LABEL_73:
         goto LABEL_77;
       if ( v5 < 6u )
         goto LABEL_77;
-      v4 = (unsigned __int16)(v4 + point_report_info[9].ghost_active);
+      v4 = (unsigned __int16)(point_report_info[9].ghost_active + v4);
       if ( v10 >= v4 )
         goto LABEL_77;
       goto LABEL_98;
@@ -226,7 +226,7 @@ LABEL_68:
     v13 = 8;
     goto LABEL_90;
   }
-  if ( !point_report_info[8].ghost_active || (LOWORD(v4) = v4 + point_report_info[8].ghost_active, v5 < 6u) || v10 >= (unsigned __int16)v4 )
+  if ( !point_report_info[8].ghost_active || (LOWORD(v4) = point_report_info[8].ghost_active + v4, v5 < 6u) || v10 >= (unsigned __int16)v4 )
   {
     if ( v6 == 9 )
     {
