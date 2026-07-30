@@ -4,11 +4,11 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-30T18:53:40.501017+00:00`
+Gerado em: `2026-07-30T19:29:29.383214+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
-| `zte_tpd` | `INCOMPLETE` | 3/10 | no assembly manifest found<br>mapping is not reviewed: _inline_copy_from_user<br>mapping is not reviewed: cancel_report_lcd_state_delayed_work<br>mapping is not reviewed: change_tp_state |
+| `zte_tpd` | `INCOMPLETE` | 2/10 | run validation manifest is missing<br>no assembly manifest found<br>mapping is not reviewed: _inline_copy_from_user<br>mapping is not reviewed: cancel_report_lcd_state_delayed_work |
 
 ## Regra de leitura
 

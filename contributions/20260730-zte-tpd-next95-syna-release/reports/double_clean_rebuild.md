@@ -2,8 +2,8 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-07-30T18:52:23.080986+00:00`
-- Run de evidência: `F:\drivers\workspaces\zte-tpd-next95-contribution-20260730\runs\public-replay-next95`
+- Gerado em: `2026-07-30T19:14:15.036047+00:00`
+- Run de evidência: `F:\drivers\workspaces\zte-tpd-next96-syna-open-20260730\runs\public-replay-next96`
 - Rebuild limpo: `sim`
 - Manifesto do kernel alvo: `F:\drivers\worktrees\zte-tpd-syna-release-attested\kernel_development\config\target_kernel.json`
 

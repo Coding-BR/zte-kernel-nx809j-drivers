@@ -6,8 +6,8 @@
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `3e474fe04f58561048794ccbc4f36e9d88df25aa1d7d3486c6d2618b76bf82ab`
-- **Candidato:** `24681824` bytes
+- **Candidato SHA-256:** `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`
+- **Candidato:** `24681560` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,36 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `201/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `202/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next96 - Abertura do Character Device
+
+`177_syna_open` foi promovida para `PASS` somente pelo protocolo offline. O
+pseudocodigo, P-Code e assembly stock comprovam a leitura de
+`file->private_data` no offset `0x20`, a subtracao de `0x4a0`, a escrita no
+mesmo offset, a chamada a `_printk` e retorno zero. A fonte reproduz o formato
+`KERN_INFO "[info ] %s: zte_evice open\\n"` com o nome `"syna_open"`, sem
+introduzir estado, alocacao, lock ou acesso ao hardware.
+
+Dois builds canonicos independentes, com caminhos `M=` diferentes, produziram
+o modulo `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+O confronto AArch64 confirmou exatamente `60` bytes, `15` instrucoes e quatro
+relocacoes de strings equivalentes ao stock; KCFI confirmou o type ID
+`0x9829071d`. O Joern v4.0.548 passou em modo estrito, sem problemas de parser
+ou chamadas nao resolvidas. O harness host inclui `syna_open.c` sob stubs
+minimos e cobriu `inode` nulo e nao nulo, o ajuste de `private_data`, formato
+de log e retorno em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next96_syna_open_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `202 PASS / 165 restantes`; o
+driver continua `INCOMPLETE`.
 
 ## Checkpoint Next95 - Release do Character Device
 
