@@ -1,13 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-26
+## Estado Atual - 2026-07-30
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `INCOMPLETE`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`
-- **Candidato:** `24714984` bytes
+- **Candidato SHA-256:** `3e474fe04f58561048794ccbc4f36e9d88df25aa1d7d3486c6d2618b76bf82ab`
+- **Candidato:** `24681824` bytes
 - **Teste em hardware desta revisao:** nao executado
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
@@ -29,12 +29,35 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `200/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `201/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next95 - Release do Character Device
+
+`178_syna_release` foi promovida para `PASS` somente pelo protocolo offline.
+O pseudocodigo e P-Code stock do Ghidra mostram uma unica chamada a `_printk`
+com o nivel `KERN_INFO`, a mensagem `"[info ] %s: zte_evice close\n"`, o nome
+`"syna_release"` e retorno zero. A fonte agora reproduz esse contrato sem
+adicionar estado, alocacao, lock ou acesso ao hardware.
+
+Dois builds canonicos independentes da arvore limpa produziram o modulo
+`3e474fe04f58561048794ccbc4f36e9d88df25aa1d7d3486c6d2618b76bf82ab`.
+O confronto AArch64 confirmou 48 bytes, 12 instrucoes e quatro relocacoes de
+strings equivalentes ao stock; KCFI confirmou o type ID `0x9829071d`. O Joern
+v4.0.548 passou em modo estrito, sem problemas de parser, sobre a arvore de
+fonte hashada. O harness host inclui o arquivo de producao `syna_release.c`
+sob stubs minimos e cobriu argumentos nulos, apenas `inode` e ambos os
+argumentos em dois ciclos ASAN/UBSAN, validando o formato de log e retorno.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next95_syna_release_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `201 PASS / 166 restantes`; o
+driver continua `INCOMPLETE`.
 
 ## Checkpoint Next94 - Modo de Fingerprint com Tela Ligada
 

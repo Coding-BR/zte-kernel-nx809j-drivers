@@ -181,7 +181,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | PASS |
 | 176_syna_mmap | syna_mmap | 001147ec | core_logic | syna_mmap.c:syna_mmap | READY_FOR_IMPLEMENTATION |
 | 177_syna_open | syna_open | 001148a0 | user_abi | syna_open.c:syna_open | READY_FOR_IMPLEMENTATION |
-| 178_syna_release | syna_release | 001148e0 | user_abi | syna_release.c:syna_release | READY_FOR_IMPLEMENTATION |
+| 178_syna_release | syna_release | 001148e0 | user_abi | syna_release.c:syna_release | PASS |
 | 179_syna_ts_panel_notifier_callback | syna_ts_panel_notifier_callback | 00114914 | async_or_irq | syna_ts_panel_notifier_callback.c:syna_ts_panel_notifier_callback | READY_FOR_IMPLEMENTATION |
 | 180_tpd_goodix_ts_resume | tpd_goodix_ts_resume | 00114a44 | binding | tpd_goodix_ts_resume.c:tpd_goodix_ts_resume | PASS |
 | 181_tpd_goodix_ts_suspend | tpd_goodix_ts_suspend | 00114a6c | binding | tpd_goodix_ts_suspend.c:tpd_goodix_ts_suspend | PASS |
