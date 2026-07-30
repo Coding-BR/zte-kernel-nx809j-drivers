@@ -29,12 +29,34 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `202/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `203/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next97 - Callback Pos-Reset TCM
+
+`294_syna_tcm_set_post_reset_callback` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra, P-Code e assembly stock comprovam que, quando `tcm`
+nao e nulo, o callback e escrito em `+0x23e0`, o contexto em `+0x23d8` e o
+retorno e zero. Para `tcm` nulo, a funcao registra o erro e retorna `-241`.
+
+Dois builds canonicos independentes, com caminhos `M=` diferentes, produziram
+o modulo `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+O confronto AArch64 confirmou exatamente `72` bytes e `18` instrucoes; KCFI
+confirmou o type ID `0xef5efc68`. O Joern v4.0.548 passou em modo estrito, sem
+problemas de parser ou chamadas nao resolvidas. O harness host inclui a fonte
+de producao sob um layout de `struct tcm_dev` com padding explicito, e cobriu
+armazenamento, sobrescrita, caminho nulo, log e retorno em dois ciclos
+ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next97_post_reset_callback_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real, touch,
+firmware ou display foi executado. O contador global e `203 PASS / 164
+restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next96 - Abertura do Character Device
 

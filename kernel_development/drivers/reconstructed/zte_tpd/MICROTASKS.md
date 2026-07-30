@@ -297,7 +297,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 291_syna_tcm_set_data_duplicator | syna_tcm_set_data_duplicator | 001240d4 | core_logic | syna_tcm_set_data_duplicator.c:syna_tcm_set_data_duplicator | READY_FOR_IMPLEMENTATION |
 | 292_syna_tcm_clear_data_duplicator | syna_tcm_clear_data_duplicator | 00124124 | core_logic | syna_tcm_clear_data_duplicator.c:syna_tcm_clear_data_duplicator | READY_FOR_IMPLEMENTATION |
 | 293_syna_tcm_clear_command_processing | syna_tcm_clear_command_processing | 00124178 | core_logic | syna_tcm_clear_command_processing.c:syna_tcm_clear_command_processing | PASS |
-| 294_syna_tcm_set_post_reset_callback | syna_tcm_set_post_reset_callback | 001241bc | core_logic | syna_tcm_set_post_reset_callback.c:syna_tcm_set_post_reset_callback | READY_FOR_IMPLEMENTATION |
+| 294_syna_tcm_set_post_reset_callback | syna_tcm_set_post_reset_callback | 001241bc | core_logic | syna_tcm_set_post_reset_callback.c:syna_tcm_set_post_reset_callback | PASS |
 | 295_syna_tcm_read_flash_address | syna_tcm_read_flash_address | 00124208 | user_abi | syna_tcm_read_flash_address.c:syna_tcm_read_flash_address | READY_FOR_IMPLEMENTATION |
 | 296_syna_tcm_set_up_flash_access | syna_tcm_set_up_flash_access | 001244e4 | core_logic | syna_tcm_set_up_flash_access.c:syna_tcm_set_up_flash_access | READY_FOR_IMPLEMENTATION |
 | 297_syna_tcm_read_flash | syna_tcm_read_flash | 001247c8 | user_abi | syna_tcm_read_flash.c:syna_tcm_read_flash | READY_FOR_IMPLEMENTATION |
