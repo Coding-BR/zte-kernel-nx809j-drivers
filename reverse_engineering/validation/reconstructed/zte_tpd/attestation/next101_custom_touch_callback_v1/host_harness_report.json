@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "syna_tcm_set_custom_touch_entity_callback"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "48676a786e4e31586dc848953a32364ef724d7d01ae9e56fef36892ac811c3b8",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next101_custom_touch_callback_v1\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next101-custom-touch-callback",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_tcm_set_custom_touch_entity_callback_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next101_custom_touch_callback_v1\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_tcm_set_custom_touch_entity_callback host tests (2 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "48676a786e4e31586dc848953a32364ef724d7d01ae9e56fef36892ac811c3b8",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next101_custom_touch_callback_v1\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next101-custom-touch-callback",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_tcm_set_custom_touch_entity_callback_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next101_custom_touch_callback_v1\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_tcm_set_custom_touch_entity_callback host tests (2 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 2,
+  "generated_utc": "2026-07-30T20:43:37.378369+00:00",
+  "inputs": [
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_tcm_set_custom_touch_entity_callback_host_test.c",
+      "sha256": "f6e1d905bba47408ece8b9b997705ec91f8daac95f0685aa1849fd3335a45de0",
+      "size": 2691
+    },
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_set_custom_touch_entity_callback.c",
+      "sha256": "14c509a5b08ac365b1d5e92e9ec129f3fb96bd9d31ee74ddbe9845b8aecd06a1",
+      "size": 420
+    }
+  ],
+  "limitations": [
+    "The harness validates only the two pointer stores, overwrite, null error path, logger contract, and return values.",
+    "It does not invoke the stored callback or load the module on an Android device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_custom_touch_callback_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "syna_tcm_set_custom_touch_entity_callback",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

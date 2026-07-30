@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-30T20:34:33.603935+00:00",
+  "generated_utc": "2026-07-30T20:46:54.818087+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -9182,8 +9182,24 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_set_custom_touch_entity_callback\nEntrada Ghidra: 0012aaa8\nTamanho stock: 72 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tcm_set_custom_touch_entity_callback.c:syna_tcm_set_custom_touch_entity_callback\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0320_0012aaa8_syna_tcm_set_custom_touch_entity_callback.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0320_0012aaa8_syna_tcm_set_custom_touch_entity_callback.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next101_custom_touch_callback_v1/build_report.json",
+          "sha256": "3cd9cff688e5df44232c7de40df0894f2f5df9e3215f39b2931877146f906ea7"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next101_custom_touch_callback_v1/kcfi_comparison.json",
+          "sha256": "60dca4dcad0cb9b85da92ea67909c95973472557dfcf23d7f942bc9fb32b02d0"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next101_custom_touch_callback_v1/host_harness_report.json",
+          "sha256": "135cb2bf574db9b1ab4eaf6fab74a0e3d4a4f90173bc27c00d1ffe01bfa708c3"
+        }
+      ]
     },
     {
       "id": "322_syna_tcm_set_custom_gesture_callback",
