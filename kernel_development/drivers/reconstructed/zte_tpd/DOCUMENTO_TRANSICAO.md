@@ -1,7 +1,7 @@
 # Documento de Transicao - `zte_tpd` / NX809J
 
 Stock vinculado: `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-Candidato vinculado: `f828a61670510ed2da430a80ced9d6858a3d5b8807af96391fba14bef0e8358b`
+Candidato vinculado: `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 

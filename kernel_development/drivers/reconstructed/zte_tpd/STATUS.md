@@ -29,12 +29,37 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `203/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `204/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next98 - Registrador de Duplicador de Dados TCM
+
+`291_syna_tcm_set_data_duplicator` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra, P-Code e assembly stock comprovam que, com `tcm`
+nao nulo, `report_code` e estendido como `u8`, multiplicado por `0x10`, e
+endereca uma entrada cujo contexto recebe `callback_data` em `+0x13d8` e cujo
+callback recebe `callback` em `+0x13e0`, nesta ordem. O retorno e zero. Com
+`tcm` nulo, a funcao registra o erro e retorna `-241`.
+
+Dois builds canonicos independentes, com caminhos `M=` diferentes, produziram
+o modulo `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+O confronto AArch64 confirmou exatamente `76` bytes, `19` instrucoes e quatro
+relocacoes de strings equivalentes ao stock; KCFI confirmou o type ID
+`0x6f1c1b70`. O Joern v4.0.548 passou em modo estrito, sem problemas de parser
+ou chamadas nao resolvidas. O harness host inclui a fonte de producao sob uma
+`struct tcm_dev` com padding explicito e 256 entradas de 16 bytes; cobriu os
+indices `0` e `0xff`, preservacao da entrada zero, caminho nulo, log e retorno
+em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next98_data_duplicator_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+touch, firmware ou display foi executado. O contador global e `204 PASS / 163
+restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next97 - Callback Pos-Reset TCM
 

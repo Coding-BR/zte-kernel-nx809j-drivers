@@ -52,6 +52,13 @@ try {
             --repo-root $RepoRoot --output $postResetHarness --repetitions 2
     } | Out-Null
     Copy-Item $postResetHarness (Join-Path $Reports "post_reset_callback_harness_report.json") -Force
+    $dataDuplicatorReplay = Join-Path $EngineeringRoot ("validation\$Driver\replays\data_duplicator_" + [guid]::NewGuid().ToString("N"))
+    $dataDuplicatorHarness = Join-Path $dataDuplicatorReplay "report.json"
+    Invoke-Logged "data_duplicator_harness.log" {
+        python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_data_duplicator_harness.py `
+            --repo-root $RepoRoot --output $dataDuplicatorHarness --repetitions 2
+    } | Out-Null
+    Copy-Item $dataDuplicatorHarness (Join-Path $Reports "data_duplicator_harness_report.json") -Force
     Invoke-Logged "offline_audit.log" {
         python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
             --engineering-root $EngineeringRoot --driver $Driver --allow-incomplete `
@@ -65,14 +72,14 @@ try {
     Invoke-Logged "double_clean_rebuild.log" {
         python .\workspace_tools\reconstruction_pipeline\validate_reconstructed_drivers.py `
             --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") --driver $Driver --rebuild `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next97") `
-            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-97") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next98") `
+            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-98") `
             --output (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null
     Invoke-Logged "llm_cycle.log" {
         python .\workspace_tools\reconstruction_pipeline\verify_llm_reconstruction_cycle.py `
             --driver $Driver --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next97") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next98") `
             --evidence-root (Join-Path $EngineeringRoot "validation") `
             --audit (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null

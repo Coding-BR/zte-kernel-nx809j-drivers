@@ -294,7 +294,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 288_syna_tcm_send_command | syna_tcm_send_command | 00123dc0 | core_logic | syna_tcm_send_command.c:syna_tcm_send_command | READY_FOR_IMPLEMENTATION |
 | 289_syna_tcm_enable_predict_reading | syna_tcm_enable_predict_reading | 00123fa0 | user_abi | syna_tcm_enable_predict_reading.c:syna_tcm_enable_predict_reading | READY_FOR_IMPLEMENTATION |
 | 290_syna_tcm_set_report_dispatcher | syna_tcm_set_report_dispatcher | 00124014 | core_logic | syna_tcm_set_report_dispatcher.c:syna_tcm_set_report_dispatcher | READY_FOR_IMPLEMENTATION |
-| 291_syna_tcm_set_data_duplicator | syna_tcm_set_data_duplicator | 001240d4 | core_logic | syna_tcm_set_data_duplicator.c:syna_tcm_set_data_duplicator | READY_FOR_IMPLEMENTATION |
+| 291_syna_tcm_set_data_duplicator | syna_tcm_set_data_duplicator | 001240d4 | core_logic | syna_tcm_set_data_duplicator.c:syna_tcm_set_data_duplicator | PASS |
 | 292_syna_tcm_clear_data_duplicator | syna_tcm_clear_data_duplicator | 00124124 | core_logic | syna_tcm_clear_data_duplicator.c:syna_tcm_clear_data_duplicator | READY_FOR_IMPLEMENTATION |
 | 293_syna_tcm_clear_command_processing | syna_tcm_clear_command_processing | 00124178 | core_logic | syna_tcm_clear_command_processing.c:syna_tcm_clear_command_processing | PASS |
 | 294_syna_tcm_set_post_reset_callback | syna_tcm_set_post_reset_callback | 001241bc | core_logic | syna_tcm_set_post_reset_callback.c:syna_tcm_set_post_reset_callback | PASS |
