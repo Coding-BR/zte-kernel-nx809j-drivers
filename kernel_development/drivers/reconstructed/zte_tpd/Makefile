@@ -15,6 +15,8 @@ obj-m += zte_tpd.o
 zte_tpd-objs := globals.o $(obj-files)
 
 CFLAGS_globals.o := -DGLOBALS_C
+# Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_free.o := -fno-sanitize=kcfi
 # Stock syna_pal_mem_free@0012a4ec has no valid KCFI entry preamble.
 CFLAGS_syna_pal_mem_free_0.o := -fno-sanitize=kcfi
 

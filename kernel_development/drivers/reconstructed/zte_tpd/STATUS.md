@@ -36,6 +36,33 @@ INCOMPLETE:
 
 Hardware permanece `DEFERRED`.
 
+## Checkpoint Next104 - Liberacao PAL com Guarda de Memoria
+
+`314_syna_pal_mem_free` foi promovida para `PASS` somente pelo protocolo
+offline. O alvo stock foi selecionado pela identidade
+`syna_pal_mem_free@001284c0`, pois o modulo contem outra funcao com o mesmo
+nome. Ghidra/P-Code e assembly confirmam a sequencia: obter o dispositivo
+gerenciado, registrar `Invalid managed device` quando ele for nulo e chamar
+`devm_kfree` somente quando dispositivo e memoria forem nao nulos.
+
+O candidato preserva exatamente os `80` bytes e as `19` instrucoes AArch64 do
+corpo stock. Ambos os lados possuem `NO_VALID_KCFI_PREAMBLE`; portanto, esta
+microtarefa nao declara um type ID KCFI. O harness ASan/UBSan passou duas
+repeticoes de tres contratos: liberar memoria valida, ignorar memoria nula e
+registrar a falha de dispositivo nulo.
+
+O Joern estrito passou com o seletor de identidade exata, uma funcao stock e
+uma funcao-fonte, sem deltas de chamadas ou problemas de parsing. A revisao
+estatistica de lifetime para `devm_kfree` permanece registrada como achado de
+revisao e nao como confirmacao de hardware. Dois builds canonicos produziram
+o mesmo modulo SHA-256
+`37c4f1e3cff2ba79d5ea42a028dd65f0ecc6577a2f2e4d64504a36139df9dc5b`.
+
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `210 PASS / 157 restantes`; o
+driver continua `INCOMPLETE`. A evidencia esta em
+`../../validation/zte_tpd/attestation/next104_pal_mem_free_base_v1/`.
+
 ## Checkpoint Next103 - Liberacao de Memoria PAL Synaptics
 
 `319_syna_pal_mem_free` foi promovida para `PASS` somente pelo protocolo

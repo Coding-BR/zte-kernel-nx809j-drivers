@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-07-30T21:50:41.279084+00:00",
+  "generated_utc": "2026-07-30T22:25:05.220295+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -9001,8 +9001,24 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_pal_mem_free\nEntrada Ghidra: 001284c0\nTamanho stock: 80 bytes\nCategoria: core_logic\nAlvo no fonte: syna_pal_mem_free.c:syna_pal_mem_free\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0313_001284c0_syna_pal_mem_free.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0313_001284c0_syna_pal_mem_free.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_pal_mem_free_base_v1/build_report.json",
+          "sha256": "b06ce257419c9940d45acf7c8be227f142166b73e076c3c3b04f8b3e3dcc6f78"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_pal_mem_free_base_v1/kcfi_comparison.json",
+          "sha256": "0b7a279bf1a4ac97d2d6a843928298aca4f8b7c3b8ca7a297778e07fdb0f2058"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_pal_mem_free_base_v1/host_harness_report.json",
+          "sha256": "7eaf383e272693be5cd27b624cadb88f713595d505d181e91f3661cfeecef013"
+        }
+      ]
     },
     {
       "id": "315_syna_tcm_get_touch_data",

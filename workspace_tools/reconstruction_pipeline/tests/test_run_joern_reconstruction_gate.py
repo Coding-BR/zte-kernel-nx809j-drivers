@@ -250,6 +250,53 @@ class JoernGateTests(unittest.TestCase):
             self.assertEqual(report["coverage"]["ghidra_function_count"], 1)
             self.assertEqual(report["graph"]["mapped_call_deltas"], [])
 
+    def test_function_scope_accepts_exact_duplicate_stock_identity(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ghidra = root / "ghidra"
+            inventory = root / "inventory"
+            reconstruction_map = root / "reconstruction_map.json"
+            profile = root / "profile.json"
+            write_jsonl(ghidra / "functions.jsonl", [
+                {"name": "stock_dup", "entry": "00100000"},
+                {"name": "stock_dup", "entry": "00100040"},
+            ])
+            write_jsonl(ghidra / "calls.jsonl", [])
+            write_json(reconstruction_map, {"mappings": [
+                {
+                    "stock_function": "stock_dup",
+                    "stock_entry": "00100000",
+                    "source_function": "source_first",
+                    "source_file": "first.c",
+                },
+                {
+                    "stock_function": "stock_dup",
+                    "stock_entry": "00100040",
+                    "source_function": "source_second",
+                    "source_file": "second.c",
+                },
+            ]})
+            write_json(inventory / "methods.json", {"records": [
+                {"name": "source_first", "filename": "first.c", "is_external": False},
+                {"name": "source_second", "filename": "second.c", "is_external": False},
+            ]})
+            write_json(inventory / "calls.json", {"records": []})
+            write_json(inventory / "control_structures.json", {"records": []})
+            write_json(profile, {"categories": []})
+
+            report = GATE.build_cross_oracle_report(
+                ghidra,
+                reconstruction_map,
+                inventory,
+                profile,
+                strict=True,
+                selected_functions=["stock_dup@00100040"],
+            )
+
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["coverage"]["ghidra_function_count"], 1)
+            self.assertEqual(report["scope"]["resolved_source_functions"], ["source_second"])
+
     def test_function_scope_rejects_unknown_name(self):
         with tempfile.TemporaryDirectory() as temporary:
             fixture = self.make_fixture(Path(temporary))

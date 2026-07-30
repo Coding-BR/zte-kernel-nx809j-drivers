@@ -205,6 +205,14 @@ def normalize_entry(value: Any) -> str:
     return text.lstrip("0") or "0"
 
 
+def split_function_selector(value: str) -> tuple[str, str | None]:
+    """Split a source name or exact ``stock_name@ghidra_entry`` selector."""
+    name, separator, entry = value.rpartition("@")
+    if separator and name and entry:
+        return name, normalize_entry(entry)
+    return value, None
+
+
 def ghidra_call_counters(
     path: Path,
 ) -> dict[tuple[str, str], collections.Counter[tuple[str, str]]]:
@@ -282,14 +290,29 @@ def build_cross_oracle_report(
     requested = sorted(set(selected_functions or []))
     if requested:
         requested_set = set(requested)
+        selectors = {request: split_function_selector(request) for request in requested}
+        requested_stock_identities = {
+            selector for selector in selectors.values() if selector[1] is not None
+        }
+        requested_unqualified = {
+            selector[0] for selector in selectors.values() if selector[1] is None
+        }
+        known_stock_identities = {
+            (str(row.get("name", "")), normalize_entry(row.get("entry")))
+            for row in all_ghidra_functions
+        }
         known_stock_names = {
             str(row.get("name", ""))
             for row in all_ghidra_functions
         }
         mappings = [
             row for row in all_mappings
-            if str(row.get("stock_function", "")) in requested_set
-            or str(row.get("source_function", "")) in requested_set
+            if (
+                str(row.get("stock_function", "")),
+                normalize_entry(row.get("stock_entry")),
+            ) in requested_stock_identities
+            or str(row.get("stock_function", "")) in requested_unqualified
+            or str(row.get("source_function", "")) in requested_unqualified
         ]
         mapped_identities_for_scope = {
             (
@@ -302,22 +325,35 @@ def build_cross_oracle_report(
             str(row.get("stock_function", "")) for row in mappings
         }
         unmapped_stock_requests = (
-            requested_set.intersection(known_stock_names) - mapped_stock_names
+            requested_unqualified.intersection(known_stock_names) - mapped_stock_names
         )
+        unmapped_stock_identities = requested_stock_identities - mapped_identities_for_scope
         ghidra_functions = [
             row for row in all_ghidra_functions
             if (
                 str(row.get("name", "")),
                 normalize_entry(row.get("entry")),
             ) in mapped_identities_for_scope
+            or (
+                str(row.get("name", "")),
+                normalize_entry(row.get("entry")),
+            ) in unmapped_stock_identities
             or str(row.get("name", "")) in unmapped_stock_requests
         ]
         resolved_requests = {
-            name for name in requested_set
-            if name in known_stock_names
-            or any(
-                name == str(row.get("source_function", ""))
-                for row in mappings
+            request for request, selector in selectors.items()
+            if (
+                selector[1] is not None and selector in known_stock_identities
+            )
+            or (
+                selector[1] is None
+                and (
+                    selector[0] in known_stock_names
+                    or any(
+                        selector[0] == str(row.get("source_function", ""))
+                        for row in mappings
+                    )
+                )
             )
         }
         unresolved_requests = sorted(requested_set - resolved_requests)
@@ -590,8 +626,9 @@ def parse_args() -> argparse.Namespace:
         action="append",
         default=[],
         help=(
-            "stock or source function to gate; repeat for a bounded microtask "
-            "while retaining the complete map for outgoing-call resolution"
+            "source function, stock function, or exact STOCK_FUNCTION@GHIDRA_ENTRY "
+            "to gate; repeat for a bounded microtask while retaining the complete "
+            "map for outgoing-call resolution"
         ),
     )
     parser.add_argument("--source-root", type=Path, required=True)

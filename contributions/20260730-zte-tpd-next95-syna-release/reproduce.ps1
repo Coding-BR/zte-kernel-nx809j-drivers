@@ -96,6 +96,13 @@ try {
             --repo-root $RepoRoot --output $palMemFreeHarness --repetitions 2
     } | Out-Null
     Copy-Item $palMemFreeHarness (Join-Path $Reports "pal_mem_free_harness_report.json") -Force
+    $palMemFreeBaseReplay = Join-Path $EngineeringRoot ("validation\$Driver\replays\pal_mem_free_base_" + [guid]::NewGuid().ToString("N"))
+    $palMemFreeBaseHarness = Join-Path $palMemFreeBaseReplay "report.json"
+    Invoke-Logged "pal_mem_free_base_harness.log" {
+        python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_pal_mem_free_base_harness.py `
+            --repo-root $RepoRoot --output $palMemFreeBaseHarness --repetitions 2
+    } | Out-Null
+    Copy-Item $palMemFreeBaseHarness (Join-Path $Reports "pal_mem_free_base_harness_report.json") -Force
     Invoke-Logged "offline_audit.log" {
         python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
             --engineering-root $EngineeringRoot --driver $Driver --allow-incomplete `
@@ -109,14 +116,14 @@ try {
     Invoke-Logged "double_clean_rebuild.log" {
         python .\workspace_tools\reconstruction_pipeline\validate_reconstructed_drivers.py `
             --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") --driver $Driver --rebuild `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next103") `
-            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-103") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next104") `
+            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-104-final") `
             --output (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null
     Invoke-Logged "llm_cycle.log" {
         python .\workspace_tools\reconstruction_pipeline\verify_llm_reconstruction_cycle.py `
             --driver $Driver --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next103") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next104") `
             --evidence-root (Join-Path $EngineeringRoot "validation") `
             --audit (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null
