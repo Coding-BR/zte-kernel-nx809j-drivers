@@ -60,6 +60,10 @@ PAL_MEM_FREE_BASE_REPLAY="$(mktemp -d "$ENGINEERING_ROOT/validation/$DRIVER/repl
 PAL_MEM_FREE_BASE_HARNESS="$PAL_MEM_FREE_BASE_REPLAY/report.json"
 run_logged pal_mem_free_base_harness.log python workspace_tools/reconstruction_pipeline/run_zte_tpd_pal_mem_free_base_harness.py --repo-root "$REPO_ROOT" --output "$PAL_MEM_FREE_BASE_HARNESS" --repetitions 2
 cp "$PAL_MEM_FREE_BASE_HARNESS" "$REPORTS/pal_mem_free_base_harness_report.json"
+PAL_MEM_CPY_0_REPLAY="$(mktemp -d "$ENGINEERING_ROOT/validation/$DRIVER/replays/pal_mem_cpy_0.XXXXXX")"
+PAL_MEM_CPY_0_HARNESS="$PAL_MEM_CPY_0_REPLAY/report.json"
+run_logged pal_mem_cpy_0_harness.log python workspace_tools/reconstruction_pipeline/run_zte_tpd_pal_mem_cpy_0_harness.py --repo-root "$REPO_ROOT" --output "$PAL_MEM_CPY_0_HARNESS" --repetitions 2
+cp "$PAL_MEM_CPY_0_HARNESS" "$REPORTS/pal_mem_cpy_0_harness_report.json"
 run_logged offline_audit.log python workspace_tools/reconstruction_pipeline/audit_offline_reconstruction.py --engineering-root "$ENGINEERING_ROOT" --driver "$DRIVER" --allow-incomplete --output "$REPORTS/offline_audit.json" --markdown "$REPORTS/offline_audit.md"
 run_logged module_decomposition.log python workspace_tools/reconstruction_pipeline/validate_module_decomposition.py --check --driver "$DRIVER" --output "$REPORTS/module_decomposition.json"
 run_logged double_clean_rebuild.log python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py --curated-root "$REPO_ROOT/kernel_development/drivers/reconstructed" --driver "$DRIVER" --rebuild --run-root "$ENGINEERING_ROOT/runs/public-replay-next104" --work-root "$ENGINEERING_ROOT/validation/contribution-work-next95-104-final" --output "$REPORTS/double_clean_rebuild.json"

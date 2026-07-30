@@ -103,6 +103,13 @@ try {
             --repo-root $RepoRoot --output $palMemFreeBaseHarness --repetitions 2
     } | Out-Null
     Copy-Item $palMemFreeBaseHarness (Join-Path $Reports "pal_mem_free_base_harness_report.json") -Force
+    $palMemCpy0Replay = Join-Path $EngineeringRoot ("validation\$Driver\replays\pal_mem_cpy_0_" + [guid]::NewGuid().ToString("N"))
+    $palMemCpy0Harness = Join-Path $palMemCpy0Replay "report.json"
+    Invoke-Logged "pal_mem_cpy_0_harness.log" {
+        python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_pal_mem_cpy_0_harness.py `
+            --repo-root $RepoRoot --output $palMemCpy0Harness --repetitions 2
+    } | Out-Null
+    Copy-Item $palMemCpy0Harness (Join-Path $Reports "pal_mem_cpy_0_harness_report.json") -Force
     Invoke-Logged "offline_audit.log" {
         python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
             --engineering-root $EngineeringRoot --driver $Driver --allow-incomplete `

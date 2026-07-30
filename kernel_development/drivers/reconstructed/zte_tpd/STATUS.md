@@ -36,6 +36,26 @@ INCOMPLETE:
 
 Hardware permanece `DEFERRED`.
 
+## Checkpoint Next105 - Copia PAL Fixa de 16 Bytes
+
+`242_syna_pal_mem_cpy` foi promovida para `PASS` somente pelo protocolo
+offline. A identidade stock e `syna_pal_mem_cpy@0011da1c`; a funcao retorna
+imediatamente para ponteiros nulos, registra o tamanho invalido abaixo de 16
+e copia exatamente dois words de 64 bits nos demais casos. O formato stock de
+log e seus tres argumentos foram recuperados do assembly e relocacoes.
+
+O candidato preserva os `84` bytes e as `21` instrucoes AArch64, incluindo o
+par `ldp/stp`, e ambos os lados possuem `NO_VALID_KCFI_PREAMBLE`. O harness
+ASan/UBSan passou duas repeticoes de quatro contratos. Joern estrito passou
+para a entrada exata, sem deltas de chamadas ou problemas de parsing. Dois
+builds canonicos produziram o SHA-256
+`6e31ce7cc7a96090987c2cf13d1372e89596f29984653fb2cba0438a1284e010`.
+
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `211 PASS / 156 restantes`; o
+driver continua `INCOMPLETE`. A evidencia esta em
+`../../validation/zte_tpd/attestation/next105_pal_mem_cpy_0_v1/`.
+
 ## Checkpoint Next104 - Liberacao PAL com Guarda de Memoria
 
 `314_syna_pal_mem_free` foi promovida para `PASS` somente pelo protocolo

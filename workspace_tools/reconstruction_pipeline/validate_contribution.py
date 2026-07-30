@@ -56,6 +56,10 @@ CHECK_MARKERS = {
         "run_zte_tpd_pal_mem_free_base_harness.py",
         "--repetitions",
     ),
+    "pal_mem_cpy_0_harness": (
+        "run_zte_tpd_pal_mem_cpy_0_harness.py",
+        "--repetitions",
+    ),
 }
 BASE_CHECKS = {"reference_modules", "environment_static", "validator_tests"}
 DRIVER_CHECKS = {
@@ -65,7 +69,11 @@ DRIVER_CHECKS = {
     "llm_cycle",
 }
 STRICT_DRIVER_CHECKS = {"module_decomposition"}
-OPTIONAL_DRIVER_CHECKS = {"pal_mem_free_harness", "pal_mem_free_base_harness"}
+OPTIONAL_DRIVER_CHECKS = {
+    "pal_mem_free_harness",
+    "pal_mem_free_base_harness",
+    "pal_mem_cpy_0_harness",
+}
 REPORT_CHECKS = {"environment_static", *DRIVER_CHECKS, *OPTIONAL_DRIVER_CHECKS}
 
 
