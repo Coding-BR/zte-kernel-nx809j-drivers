@@ -1,8 +1,8 @@
 {
   "attestation": {
     "executed_locally": true,
-    "notes_en": "Microtasks 177 syna_open, 178 syna_release, 291 syna_tcm_set_data_duplicator, and 294 syna_tcm_set_post_reset_callback were executed locally in a clean worktree. For each target, stock Ghidra/P-Code, assembly, KCFI, strict Joern, and an ASan/UBSan harness that includes the production source were verified. The complete module was built twice with identical SHA-256 values and its KMI parity was checked. No smartphone, loadable module, or hardware was used. The complete driver remains incomplete.",
-    "notes_pt": "As microtarefas 177 syna_open, 178 syna_release, 291 syna_tcm_set_data_duplicator e 294 syna_tcm_set_post_reset_callback foram executadas localmente em uma worktree limpa. Para cada alvo, Ghidra/P-Code stock, Assembly, KCFI, Joern estrito e um harness ASAN/UBSAN que inclui a fonte de producao foram verificados. O modulo completo foi compilado duas vezes com SHA-256 identico e sua paridade KMI foi conferida. Nenhum smartphone, modulo carregavel ou hardware foi usado. O driver completo permanece incompleto.",
+    "notes_en": "Microtasks 177 syna_open, 178 syna_release, 291 syna_tcm_set_data_duplicator, 292 syna_tcm_clear_data_duplicator, and 294 syna_tcm_set_post_reset_callback were executed locally in a clean worktree. For each target, stock Ghidra/P-Code, assembly, KCFI, strict Joern, and an ASan/UBSan harness that includes the production source were verified. The complete module was built twice with identical SHA-256 values and its KMI parity was checked. No smartphone, loadable module, or hardware was used. The complete driver remains incomplete.",
+    "notes_pt": "As microtarefas 177 syna_open, 178 syna_release, 291 syna_tcm_set_data_duplicator, 292 syna_tcm_clear_data_duplicator e 294 syna_tcm_set_post_reset_callback foram executadas localmente em uma worktree limpa. Para cada alvo, Ghidra/P-Code stock, Assembly, KCFI, Joern estrito e um harness ASAN/UBSAN que inclui a fonte de producao foram verificados. O modulo completo foi compilado duas vezes com SHA-256 identico e sua paridade KMI foi conferida. Nenhum smartphone, modulo carregavel ou hardware foi usado. O driver completo permanece incompleto.",
     "reviewer_rerun_required": true
   },
   "base_commit": "fddb80c06ad6b9d1b972026d1d0711d82030f191",
@@ -15,17 +15,17 @@
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json",
-      "sha256": "61cb25bb16de5f2b08d660b3f566e29a3ea0ec25182a22fa2defaa5647d8866e"
+      "sha256": "b8071bfc0bea2bfd50b5bd1115234884d2cec8da279e69a3ebcda112a7056794"
     },
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.md",
-      "sha256": "51d0997f37ef7423e67fa038093469b7a8e5214eb3aa1df340fc8a3e5449df86"
+      "sha256": "179ae152038dd6c6e70251a31e211bb93b3d52becb878c522159d734562b3915"
     },
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/STATUS.md",
-      "sha256": "0fb4fbdbda727d24c6653814fcc18517566c3dc09c0e60dab6c467d8f7dc64c9"
+      "sha256": "a3bad6b63682dc65b3615d7c9bd7b0aa58b20bd04dba400e57defcba5f9d4599"
     },
     {
       "change": "M",
@@ -56,6 +56,11 @@
       "change": "A",
       "path": "kernel_development/drivers/validation/zte_tpd/host/syna_release_host_test.c",
       "sha256": "965b2946bfe57029d8ce8ba202f46df462275aff8003530c4b6465695e00590b"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_tcm_clear_data_duplicator_host_test.c",
+      "sha256": "e2339aa0c0edd56701e3cbb0e685d41f43799a9bb5ef73d3a9268e5ee42bcfdc"
     },
     {
       "change": "A",
@@ -318,14 +323,79 @@
       "sha256": "22fce5e23dd2d4f5ccd907f212cfea4fef3fe6fab95d164a98f3e37940951e99"
     },
     {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/.gitignore",
+      "sha256": "0a5718677d091156da456ecf8a8f756c991250fd292f91c3472e406f04c28fe5"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/assembly_comparison.json",
+      "sha256": "39f935f58db33c4da36504e14d86490a8474ccd6c930d3b41fd3df562a0312d8"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/build_report.json",
+      "sha256": "12fc428eb14b722c5dfd19afd6ed37e55021a44739f87654244c661761ba2edd"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/candidate_assembly/0000_syna_tcm_clear_data_duplicator.asm",
+      "sha256": "3c0f850c036206bacacf56fc942b02d253aea8d826f366584b03b031b9ae29f6"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/candidate_assembly/manifest.json",
+      "sha256": "5f499e7b6dc839d1c73d074fbdfe1b168ca8b023f4e3e5f8b8cfaa65d8cd871e"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/host_harness_report.json",
+      "sha256": "4a0f0c60766c6c045a4078864b37078bcd27c3481545ee19be4902661981d241"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/joern_gate_report.json",
+      "sha256": "102fb247d086b8fdaf02c9496266e005259e333b2faffc0ab00586fccdb3aa7e"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/joern_gate_summary.json",
+      "sha256": "8847eeba4b0ef2b1fc237595d25c06c96102d94e8dce1e091de742bed4acc8cc"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/kcfi_candidate.json",
+      "sha256": "8dc1860c92434c962e8ce58138c4f095905196befc8e23747fa9802fbe2c1d08"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/kcfi_comparison.json",
+      "sha256": "03690d7343586c2608b1b91ad8866031b9db419c3b9cdccf027ad3c69dd779bc"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/kcfi_stock.json",
+      "sha256": "b1751d0f362a1f0c8b914850c40c13ae24e499c23f71276bb615e9f616a6c898"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/microtask_attestation_v1.json",
+      "sha256": "02ab7e699824650ef54e06a2d67316a7668d0a4fb630fda8c9fdd9bfba279dbd"
+    },
+    {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/microtask_audit.json",
-      "sha256": "2dcc75a16b6c1478a27ca7574bd433ca633ea97c1ecbf4283ac1eea01cbb1845"
+      "sha256": "50510373a367f2b1231e163a42cd0046d9191577e68642a9a72c17146ef3a3f9"
     },
     {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/MODULE_DECOMPOSITION_MANIFEST.json",
       "sha256": "07b656416f24cd8425c03900b3461b47046099d53b60986736d0e91e5858d026"
+    },
+    {
+      "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_clear_data_duplicator_harness.py",
+      "sha256": "87433739c6f36412cb1ce82f1b4cb3781a5dc7d2fdef6dd06d58239ac875cd82"
     },
     {
       "change": "A",
@@ -452,11 +522,11 @@
   "reproduction_scripts": [
     {
       "path": "contributions/20260730-zte-tpd-next95-syna-release/reproduce.ps1",
-      "sha256": "1706a17d7ce71e24a290825312d65f2a1c56f34866cb2fe035ba01822ce5ec22"
+      "sha256": "449f64ed23d9ef58c6abedded23e6a2fa9b8348c5e2ff51dd6a9b172d2a13e2d"
     },
     {
       "path": "contributions/20260730-zte-tpd-next95-syna-release/reproduce.sh",
-      "sha256": "e357f5ec2385e01b5a43de054428994b3246fce466a864f7a0b09bf216d5091c"
+      "sha256": "fd5fd0e9b41095057ebae5715ee81dc46d95847d8e0a892b24ffb4e308b5012e"
     }
   ],
   "schema_version": "1.0",
