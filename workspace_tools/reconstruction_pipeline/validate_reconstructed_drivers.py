@@ -51,6 +51,24 @@ def default_engineering_root(script: Path) -> Path:
     return script.resolve().parents[3] / "kernel-docker-workspace" / "engenharia"
 
 
+def repository_root_for_curated(curated_root: Path) -> Path | None:
+    """Return the repository root for the public reconstructed-driver layout."""
+    if curated_root.name == "reconstructed" and curated_root.parent.name == "drivers":
+        return curated_root.parents[2]
+    return None
+
+
+def public_evidence_paths(repository_root: Path, driver: str) -> tuple[Path, Path, Path]:
+    """Resolve immutable public stock/Ghidra evidence without a private run tree."""
+    return (
+        repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko",
+        repository_root / "reverse_engineering" / "validation" / "reconstructed"
+        / driver / "offline_static" / "ghidra_stock",
+        repository_root / "kernel_development" / "drivers" / "reconstructed"
+        / driver / "DOCUMENTO_TRANSICAO.md",
+    )
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -77,6 +95,9 @@ def read_json(path: Path) -> Any:
 def resolve_target_kernel_manifest(curated_root: Path, explicit: Path | None) -> Path:
     if explicit is not None:
         return explicit.resolve()
+    repository_root = repository_root_for_curated(curated_root.resolve())
+    if repository_root is not None:
+        return (repository_root / "kernel_development" / "config" / "target_kernel.json").resolve()
     return (curated_root.resolve().parent / "config" / "target_kernel.json").resolve()
 
 
@@ -212,9 +233,7 @@ def find_run(engineering_root: Path, drivers: list[str]) -> Path:
     )
 
 
-def ghidra_check(run_root: Path, module_name: str) -> tuple[dict[str, Any], list[str]]:
-    export = run_root / "03_ghidra" / "exports" / f"{module_name}.ko"
-    document = run_root / "04_documents" / f"{module_name}.ko" / "DOCUMENTO_TRANSICAO.md"
+def ghidra_check(export: Path, document: Path) -> tuple[dict[str, Any], list[str]]:
     errors: list[str] = []
     for filename in REQUIRED_GHIDRA_FILES:
         if not (export / filename).is_file():
@@ -385,7 +404,9 @@ def validate_regular_driver(
     *,
     driver: str,
     curated_root: Path,
-    run_root: Path,
+    stock: Path,
+    ghidra_export: Path,
+    transition_document: Path,
     work_root: Path,
     rebuild: bool,
     image: str,
@@ -396,7 +417,6 @@ def validate_regular_driver(
     promote_fresh: bool,
 ) -> dict[str, Any]:
     driver_dir = curated_root / driver
-    stock = run_root / "01_acquisition" / "modules" / f"{driver}.ko"
     candidate = driver_dir / f"{driver}.ko"
     errors: list[str] = []
     warnings: list[str] = []
@@ -410,11 +430,11 @@ def validate_regular_driver(
     if not checks["source_directory"] or not checks["makefile"] or not checks["source_files"]:
         errors.append("driver source tree or Makefile is incomplete")
     if not stock.is_file():
-        errors.append("acquired stock module is missing from the engineering run")
+        errors.append("acquired stock module is missing from the selected evidence source")
     if not candidate.is_file():
         errors.append("current reconstructed .ko is missing")
 
-    ghidra, ghidra_errors = ghidra_check(run_root, driver)
+    ghidra, ghidra_errors = ghidra_check(ghidra_export, transition_document)
     checks["ghidra_export"] = ghidra["passed"]
     errors.extend(ghidra_errors)
     stock_record = file_record(stock)
@@ -608,7 +628,6 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     curated_root = args.curated_root.resolve()
-    engineering_root = curated_root.parent
     drivers = args.drivers or sorted(
         path.name
         for path in curated_root.iterdir()
@@ -616,7 +635,37 @@ def main() -> int:
         and path.name.startswith(("zte_", "zlog_"))
         and (path / "STATUS.md").is_file()
     )
-    run_root = (args.run_root or find_run(engineering_root, drivers)).resolve()
+    repository_root = repository_root_for_curated(curated_root)
+    if args.run_root is not None:
+        run_root = args.run_root.resolve()
+        evidence_origin = str(run_root)
+        evidence_paths = {
+            driver: (
+                run_root / "01_acquisition" / "modules" / f"{driver}.ko",
+                run_root / "03_ghidra" / "exports" / f"{driver}.ko",
+                run_root / "04_documents" / f"{driver}.ko" / "DOCUMENTO_TRANSICAO.md",
+            )
+            for driver in drivers
+        }
+    elif repository_root is not None:
+        run_root = repository_root
+        evidence_origin = f"public repository evidence: {repository_root}"
+        evidence_paths = {
+            driver: public_evidence_paths(repository_root, driver)
+            for driver in drivers
+        }
+    else:
+        engineering_root = default_engineering_root(Path(__file__))
+        run_root = find_run(engineering_root, drivers).resolve()
+        evidence_origin = str(run_root)
+        evidence_paths = {
+            driver: (
+                run_root / "01_acquisition" / "modules" / f"{driver}.ko",
+                run_root / "03_ghidra" / "exports" / f"{driver}.ko",
+                run_root / "04_documents" / f"{driver}.ko" / "DOCUMENTO_TRANSICAO.md",
+            )
+            for driver in drivers
+        }
     target_manifest = resolve_target_kernel_manifest(
         args.curated_root,
         args.target_kernel_manifest,
@@ -630,7 +679,9 @@ def main() -> int:
             validate_regular_driver(
                 driver=driver,
                 curated_root=curated_root,
-                run_root=run_root,
+                stock=evidence_paths[driver][0],
+                ghidra_export=evidence_paths[driver][1],
+                transition_document=evidence_paths[driver][2],
                 work_root=args.work_root.resolve(),
                 rebuild=args.rebuild,
                 image=args.image,
@@ -645,7 +696,7 @@ def main() -> int:
         "schema_version": "1.0",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "mode": "offline-only",
-        "run_root": str(run_root),
+        "run_root": evidence_origin,
         "rebuild_requested": args.rebuild,
         "target_kernel_manifest": str(target_manifest) if target_kernel else None,
         "promote_fresh_requested": args.promote_fresh,
