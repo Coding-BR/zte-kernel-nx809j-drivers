@@ -29,12 +29,31 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `205/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `206/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next100 - Registro de Dispatcher de Relatorio TCM
+
+`290_syna_tcm_set_report_dispatcher` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra e P-Code comprovam indexacao `u8 * 0x10`, contexto
+em `+0x3d8`, callback em `+0x3e0`, aviso para codigos menores que `0x10`, log
+de registro em todos os codigos e erro `-241` quando `tcm` e nulo.
+
+Dois builds canonicos independentes produziram o modulo
+`1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+Assembly AArch64, KCFI `0x6f1c1b70` e Joern v4.0.548 estrito passaram. O
+harness valida os indices `0x0f` e `0xff`, os dois stores, os tres contratos
+de log e o caminho nulo em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next100_report_dispatcher_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+touch, firmware ou display foi executado. O contador global e `206 PASS / 161
+restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next99 - Limpeza de Duplicadores de Dados TCM
 
