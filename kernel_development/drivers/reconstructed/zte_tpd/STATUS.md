@@ -29,12 +29,32 @@ PASS:
 
 INCOMPLETE:
 
-- O6: `207/367` microtarefas possuem build, decisao KCFI, Joern estrito e
+- O6: `208/367` microtarefas possuem build, decisao KCFI, Joern estrito e
   teste direto atestados;
 - O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
 - O10: revisao independente ainda nao foi realizada.
 
 Hardware permanece `DEFERRED`.
+
+## Checkpoint Next102 - Callback Customizado de Gestos TCM
+
+`322_syna_tcm_set_custom_gesture_callback` foi promovida para `PASS` somente
+pelo protocolo offline. Ghidra e P-Code comprovam contexto em `+0x3c8`,
+callback em `+0x3d0`, retorno zero para `tcm` nao nulo e log com retorno
+`-241` no ramo nulo.
+
+Dois builds canonicos independentes produziram o modulo
+`1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+Assembly AArch64 confirmou `72` bytes e `18` instrucoes, KCFI
+`0x1e333d0b` e Joern v4.0.548 estrito passaram. O harness usa padding
+explicito, valida armazenamento, sobrescrita, log e retorno em dois ciclos
+ASAN/UBSAN com binarios identicos.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next102_custom_gesture_callback_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+gesto, touch, firmware ou display foi executado. O contador global e `208 PASS
+/ 159 restantes`; o driver continua `INCOMPLETE`.
 
 ## Checkpoint Next101 - Callback Customizado de Entidade Touch TCM
 

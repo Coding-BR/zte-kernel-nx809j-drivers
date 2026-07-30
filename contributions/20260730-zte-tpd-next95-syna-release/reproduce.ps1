@@ -80,6 +80,13 @@ try {
             --repo-root $RepoRoot --output $customTouchCallbackHarness --repetitions 2
     } | Out-Null
     Copy-Item $customTouchCallbackHarness (Join-Path $Reports "custom_touch_callback_harness_report.json") -Force
+    $customGestureCallbackReplay = Join-Path $EngineeringRoot ("validation\$Driver\replays\custom_gesture_callback_" + [guid]::NewGuid().ToString("N"))
+    $customGestureCallbackHarness = Join-Path $customGestureCallbackReplay "report.json"
+    Invoke-Logged "custom_gesture_callback_harness.log" {
+        python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_custom_gesture_callback_harness.py `
+            --repo-root $RepoRoot --output $customGestureCallbackHarness --repetitions 2
+    } | Out-Null
+    Copy-Item $customGestureCallbackHarness (Join-Path $Reports "custom_gesture_callback_harness_report.json") -Force
     Invoke-Logged "offline_audit.log" {
         python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
             --engineering-root $EngineeringRoot --driver $Driver --allow-incomplete `
@@ -93,14 +100,14 @@ try {
     Invoke-Logged "double_clean_rebuild.log" {
         python .\workspace_tools\reconstruction_pipeline\validate_reconstructed_drivers.py `
             --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") --driver $Driver --rebuild `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next101") `
-            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-101") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next102") `
+            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-102") `
             --output (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null
     Invoke-Logged "llm_cycle.log" {
         python .\workspace_tools\reconstruction_pipeline\verify_llm_reconstruction_cycle.py `
             --driver $Driver --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next101") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next102") `
             --evidence-root (Join-Path $EngineeringRoot "validation") `
             --audit (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null
