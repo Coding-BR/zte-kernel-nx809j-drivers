@@ -18,7 +18,7 @@ SPEC.loader.exec_module(MODULE)
 
 
 class BuildTwiceTests(unittest.TestCase):
-    def test_uses_fresh_source_tree_for_each_clean_cycle(self) -> None:
+    def test_reuses_one_canonical_container_path_after_each_clean(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             source = root / "source"
@@ -53,9 +53,10 @@ class BuildTwiceTests(unittest.TestCase):
             self.assertEqual(errors, [])
             self.assertTrue(result["passed"])
             self.assertTrue(result["reproducible"])
-            self.assertEqual(module, work_root / "zte_tpd" / "cycle_2" / "zte_tpd.ko")
-            self.assertTrue((work_root / "zte_tpd" / "cycle_1" / "driver.c").is_file())
-            self.assertTrue((work_root / "zte_tpd" / "cycle_2" / "driver.c").is_file())
+            self.assertEqual(module, work_root / "artifacts" / "zte_tpd" / "second.ko")
+            self.assertTrue((work_root / "zte_tpd" / "driver.c").is_file())
+            self.assertTrue((work_root / "artifacts" / "zte_tpd" / "first.ko").is_file())
+            self.assertTrue((work_root / "artifacts" / "zte_tpd" / "second.ko").is_file())
             mounts = [
                 next(argument for argument in command if argument.startswith("M=/work/validation/"))
                 for command in commands
@@ -63,12 +64,13 @@ class BuildTwiceTests(unittest.TestCase):
             self.assertEqual(
                 mounts,
                 [
-                    "M=/work/validation/zte_tpd/cycle_1",
-                    "M=/work/validation/zte_tpd/cycle_1",
-                    "M=/work/validation/zte_tpd/cycle_2",
-                    "M=/work/validation/zte_tpd/cycle_2",
+                    "M=/work/validation/zte_tpd",
+                    "M=/work/validation/zte_tpd",
+                    "M=/work/validation/zte_tpd",
+                    "M=/work/validation/zte_tpd",
                 ],
             )
+            self.assertTrue(all(not argument.startswith("KCFLAGS=") for command in commands for argument in command))
 
 
 if __name__ == "__main__":

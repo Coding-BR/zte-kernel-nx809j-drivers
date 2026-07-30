@@ -1,6 +1,6 @@
 # Status: `nubia_hw_version`
 
-Estado: **STAGE3_STATIC_PARTIAL - build/KMI e cobertura host completos; modulo
+Estado: **STAGE4_STATIC_PARTIAL - build/KMI e cobertura host completos; modulo
 OEM equivalente ainda INCOMPLETO**.
 
 O fonte foi reconstruido exclusivamente do `.ko` stock local, Ghidra, P-Code,
@@ -20,6 +20,7 @@ NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 | `nubia_hw_rf_band_show` | PARCIAL | mesma regra, 17 blocos, 23 arestas e duas chamadas; candidato 63 contra stock 61 instrucoes |
 | `hml_config_version_show` | PASS DE CONTEUDO | instrucoes exatas; blob `{0,2,1}` identico, mas alias nominal ambiguo |
 | Harness offline | PASS | 50/50 testes com ASan/UBSan; 19/19 funcoes modeladas no host |
+| Auditoria Stage 4 | PASS ESTATICO | build duplo fresco, evidencia publica, KMI e Joern estrito confirmados; hardware continua nao executado |
 | Revisao independente | PENDENTE | outro revisor ainda nao repetiu a esteira |
 | Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou pinctrl neste ciclo |
 
@@ -46,6 +47,7 @@ NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 
 ## Evidencias principais
 
+- `kernel_development/drivers/reconstructed/nubia_hw_version/STAGE4_STATIC_INVESTIGATION.md`
 - `kernel_development/drivers/reconstructed/nubia_hw_version/STAGE3_RECONSTRUCTION_AUDIT.md`
 - `kernel_development/drivers/reconstructed/nubia_hw_version/PROBE_CFG_STAGE3.md`
 - `kernel_development/drivers/reconstructed/nubia_hw_version/RF_BAND_CFG_STAGE3.md`

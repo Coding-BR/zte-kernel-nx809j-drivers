@@ -340,23 +340,25 @@ def build_twice(
 ) -> tuple[dict[str, Any], Path | None, list[str]]:
     errors: list[str] = []
     work_dir = work_root / driver
+    artifact_dir = work_root / "artifacts" / driver
     if work_dir.exists():
         shutil.rmtree(work_dir)
-    work_dir.mkdir(parents=True)
+    if artifact_dir.exists():
+        shutil.rmtree(artifact_dir)
+    shutil.copytree(
+        driver_dir,
+        work_dir,
+        ignore=shutil.ignore_patterns(
+            "*.o", "*.ko", "*.mod", "*.mod.c", "*.mod.o", "Module.symvers",
+            "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
+        ),
+    )
+    artifact_dir.mkdir(parents=True)
     toolchain_bin = f"/work/toolchains/{clang_revision}/bin"
+    container_dir = f"/work/validation/{driver}"
     commands: dict[str, Any] = {}
 
-    def clean_build(cycle: str, command_prefix: str) -> tuple[Path, dict[str, Any]]:
-        cycle_dir = work_dir / cycle
-        shutil.copytree(
-            driver_dir,
-            cycle_dir,
-            ignore=shutil.ignore_patterns(
-                "*.o", "*.ko", "*.mod", "*.mod.c", "*.mod.o", "Module.symvers",
-                "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
-            ),
-        )
-        container_dir = f"/work/validation/{driver}/{cycle}"
+    def clean_build(label: str) -> tuple[Path | None, dict[str, Any]]:
         base = [
             "docker", "run", "--rm",
             "-v", f"{source_volume}:/work/src:ro",
@@ -366,36 +368,42 @@ def build_twice(
             "-w", "/work/src/kernel/kernel_platform/common",
             image,
             "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
-            f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd",
         ]
-        if (cycle_dir / "vendor.Module.symvers").is_file():
+        if (work_dir / "vendor.Module.symvers").is_file():
             base.append(f"KBUILD_EXTRA_SYMBOLS={container_dir}/vendor.Module.symvers")
-        commands[f"clean_{command_prefix}"] = command_record([*base, "clean"])
-        commands[f"build_{command_prefix}"] = command_record([*base, "modules"])
-        return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
+        commands[f"clean_{label}"] = command_record([*base, "clean"])
+        if commands[f"clean_{label}"]["returncode"] != 0:
+            errors.append(f"fresh {label} clean failed")
+            return None, {"exists": False}
+        commands[f"build_{label}"] = command_record([*base, "modules"])
+        built_module = work_dir / f"{driver}.ko"
+        if commands[f"build_{label}"]["returncode"] != 0 or not built_module.is_file():
+            errors.append(f"fresh {label} build failed")
+            return None, file_record(built_module)
+        artifact = artifact_dir / f"{label}.ko"
+        shutil.copy2(built_module, artifact)
+        return artifact, file_record(artifact)
 
-    first_module, first = clean_build("cycle_1", "first")
-    if commands["build_first"]["returncode"] != 0 or not first_module.is_file():
-        errors.append("fresh first build failed")
+    first_module, first = clean_build("first")
+    if first_module is None:
         return ({"commands": commands, "first_build": first, "passed": False}, None, errors)
 
-    second_module, second = clean_build("cycle_2", "second")
-    if commands["build_second"]["returncode"] != 0 or not second_module.is_file():
-        errors.append("fresh second build failed")
+    second_module, second = clean_build("second")
     reproducible = first.get("sha256") == second.get("sha256") and first.get("size") == second.get("size")
     if not reproducible:
         errors.append("two clean builds are not reproducible")
     return (
         {
             "work_dir": str(work_dir),
-            "cycle_dirs": [str(first_module.parent), str(second_module.parent)],
+            "canonical_container_dir": container_dir,
+            "artifacts": [str(first_module), str(second_module) if second_module else None],
             "commands": commands,
             "first_build": first,
             "second_build": second,
             "reproducible": reproducible,
             "passed": not errors,
         },
-        second_module if second_module.is_file() else None,
+        second_module,
         errors,
     )
 
