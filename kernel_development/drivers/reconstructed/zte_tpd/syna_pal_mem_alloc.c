@@ -1,21 +1,15 @@
-__int64 __fastcall syna_pal_mem_alloc(int a1)
+void *syna_pal_mem_alloc(int size)
 {
-  __int64 v2; // x0
-  __int64 v3; // x2
-  void *v5; // x0
+  void *managed_device;
 
-  v2 = syna_request_managed_device();
-  if ( !v2 )
-  {
-    v5 = unk_3BE43;
-LABEL_7:
-    printk(v5, "syna_pal_mem_alloc", v3);
-    return 0;
+  managed_device = syna_request_managed_device();
+  if (!managed_device) {
+    printk("\x01" "3[error] %s: Invalid managed device\n", "syna_pal_mem_alloc");
+    return NULL;
   }
-  if ( a1 <= 0 )
-  {
-    v5 = unk_38286;
-    goto LABEL_7;
+  if (size <= 0) {
+    printk("\x01" "3[error] %s: Invalid parameter\n", "syna_pal_mem_alloc");
+    return NULL;
   }
-  return devm_kmalloc(v2, (unsigned int)a1, 3520);
+  return devm_kmalloc(managed_device, (unsigned int)size, 0xdc0);
 }
