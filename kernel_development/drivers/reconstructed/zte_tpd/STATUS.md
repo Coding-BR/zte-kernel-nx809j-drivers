@@ -36,6 +36,35 @@ INCOMPLETE:
 
 Hardware permanece `DEFERRED`.
 
+## Checkpoint Next103 - Liberacao de Memoria PAL Synaptics
+
+`319_syna_pal_mem_free` foi promovida para `PASS` somente pelo protocolo
+offline. O alvo stock foi selecionado pela identidade
+`syna_pal_mem_free@0012a4ec`, pois o modulo contem outra funcao com o mesmo
+nome. Ghidra, P-Code e assembly comprovam a sequencia: obter o dispositivo
+gerenciado, chamar `devm_kfree(dispositivo, memoria)` quando ele existe e, no
+ramo nulo, registrar exatamente `"[error] %s: Invalid managed device\\n"`
+com o nome `syna_pal_mem_free`.
+
+O candidato preserva `76` bytes, `19` instrucoes, secao `.text`, chamadas e
+relocacoes de strings. O preambulo KCFI esta ausente nos dois lados porque os
+quatro bytes anteriores ao alvo stock pertencem a funcao anterior; a decisao
+hashada e `BOTH_NO_VALID_KCFI_PREAMBLE`, nao uma equivalencia de type ID. O
+harness de producao passou tres contratos em dois ciclos ASAN/UBSAN com
+binarios identicos, inclusive o encaminhamento de um ponteiro de memoria nulo
+para `devm_kfree` quando o dispositivo existe.
+
+O Joern 4.0.548 passou no modo estrito, sem delta de chamadas e sem problema
+de parser. Ele mantem `devm_kfree(managed_device, memory)` como achado de
+revisao de ciclo de vida de severidade alta; isso e um ponto de auditoria
+estatica, nao uma prova de erro ou de comportamento no hardware.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next103_pal_mem_free_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `209 PASS / 158 restantes`; o
+driver continua `INCOMPLETE`.
+
 ## Checkpoint Next102 - Callback Customizado de Gestos TCM
 
 `322_syna_tcm_set_custom_gesture_callback` foi promovida para `PASS` somente

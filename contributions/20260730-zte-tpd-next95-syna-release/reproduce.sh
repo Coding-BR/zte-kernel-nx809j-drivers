@@ -22,7 +22,7 @@ run_logged() {
 
 run_logged reference_modules.log python workspace_tools/reconstruction_pipeline/manage_reference_modules.py verify
 run_logged environment_static.log python reproducible_environment/verify_environment.py --mode static --report "$REPORTS/environment_static.json"
-run_logged validator_tests.log python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution workspace_tools.reconstruction_pipeline.tests.test_validate_module_decomposition workspace_tools.reconstruction_pipeline.tests.test_validate_reconstructed_drivers workspace_tools.reconstruction_pipeline.tests.test_attest_tested_driver_microtasks workspace_tools.reconstruction_pipeline.tests.test_run_joern_reconstruction_gate workspace_tools.reconstruction_pipeline.tests.test_verify_driver_microtasks -v
+run_logged validator_tests.log python -m unittest workspace_tools.reconstruction_pipeline.tests.test_validate_contribution workspace_tools.reconstruction_pipeline.tests.test_validate_module_decomposition workspace_tools.reconstruction_pipeline.tests.test_validate_reconstructed_drivers workspace_tools.reconstruction_pipeline.tests.test_attest_tested_driver_microtasks workspace_tools.reconstruction_pipeline.tests.test_compare_function_assembly workspace_tools.reconstruction_pipeline.tests.test_compare_kcfi_reports workspace_tools.reconstruction_pipeline.tests.test_run_joern_reconstruction_gate workspace_tools.reconstruction_pipeline.tests.test_verify_driver_microtasks -v
 mkdir -p "$ENGINEERING_ROOT/validation/$DRIVER/replays"
 SYNA_OPEN_REPLAY="$(mktemp -d "$ENGINEERING_ROOT/validation/$DRIVER/replays/syna_open.XXXXXX")"
 SYNA_OPEN_HARNESS="$SYNA_OPEN_REPLAY/report.json"
@@ -52,8 +52,12 @@ CUSTOM_GESTURE_CALLBACK_REPLAY="$(mktemp -d "$ENGINEERING_ROOT/validation/$DRIVE
 CUSTOM_GESTURE_CALLBACK_HARNESS="$CUSTOM_GESTURE_CALLBACK_REPLAY/report.json"
 run_logged custom_gesture_callback_harness.log python workspace_tools/reconstruction_pipeline/run_zte_tpd_custom_gesture_callback_harness.py --repo-root "$REPO_ROOT" --output "$CUSTOM_GESTURE_CALLBACK_HARNESS" --repetitions 2
 cp "$CUSTOM_GESTURE_CALLBACK_HARNESS" "$REPORTS/custom_gesture_callback_harness_report.json"
+PAL_MEM_FREE_REPLAY="$(mktemp -d "$ENGINEERING_ROOT/validation/$DRIVER/replays/pal_mem_free.XXXXXX")"
+PAL_MEM_FREE_HARNESS="$PAL_MEM_FREE_REPLAY/report.json"
+run_logged pal_mem_free_harness.log python workspace_tools/reconstruction_pipeline/run_zte_tpd_pal_mem_free_harness.py --repo-root "$REPO_ROOT" --output "$PAL_MEM_FREE_HARNESS" --repetitions 2
+cp "$PAL_MEM_FREE_HARNESS" "$REPORTS/pal_mem_free_harness_report.json"
 run_logged offline_audit.log python workspace_tools/reconstruction_pipeline/audit_offline_reconstruction.py --engineering-root "$ENGINEERING_ROOT" --driver "$DRIVER" --allow-incomplete --output "$REPORTS/offline_audit.json" --markdown "$REPORTS/offline_audit.md"
 run_logged module_decomposition.log python workspace_tools/reconstruction_pipeline/validate_module_decomposition.py --check --driver "$DRIVER" --output "$REPORTS/module_decomposition.json"
-run_logged double_clean_rebuild.log python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py --curated-root "$REPO_ROOT/kernel_development/drivers/reconstructed" --driver "$DRIVER" --rebuild --run-root "$ENGINEERING_ROOT/runs/public-replay-next102" --work-root "$ENGINEERING_ROOT/validation/contribution-work-next95-102" --output "$REPORTS/double_clean_rebuild.json"
-run_logged llm_cycle.log python workspace_tools/reconstruction_pipeline/verify_llm_reconstruction_cycle.py --driver "$DRIVER" --curated-root "$REPO_ROOT/kernel_development/drivers/reconstructed" --run-root "$ENGINEERING_ROOT/runs/public-replay-next102" --evidence-root "$ENGINEERING_ROOT/validation" --audit "$REPORTS/double_clean_rebuild.json"
+run_logged double_clean_rebuild.log python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py --curated-root "$REPO_ROOT/kernel_development/drivers/reconstructed" --driver "$DRIVER" --rebuild --run-root "$ENGINEERING_ROOT/runs/public-replay-next103" --work-root "$ENGINEERING_ROOT/validation/contribution-work-next95-103" --output "$REPORTS/double_clean_rebuild.json"
+run_logged llm_cycle.log python workspace_tools/reconstruction_pipeline/verify_llm_reconstruction_cycle.py --driver "$DRIVER" --curated-root "$REPO_ROOT/kernel_development/drivers/reconstructed" --run-root "$ENGINEERING_ROOT/runs/public-replay-next103" --evidence-root "$ENGINEERING_ROOT/validation" --audit "$REPORTS/double_clean_rebuild.json"
 cp "$ENGINEERING_ROOT/validation/$DRIVER/cycle_validation.json" "$REPORTS/llm_cycle.json"

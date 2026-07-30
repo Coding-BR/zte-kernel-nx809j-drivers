@@ -35,6 +35,8 @@ try {
             workspace_tools.reconstruction_pipeline.tests.test_validate_module_decomposition `
             workspace_tools.reconstruction_pipeline.tests.test_validate_reconstructed_drivers `
             workspace_tools.reconstruction_pipeline.tests.test_attest_tested_driver_microtasks `
+            workspace_tools.reconstruction_pipeline.tests.test_compare_function_assembly `
+            workspace_tools.reconstruction_pipeline.tests.test_compare_kcfi_reports `
             workspace_tools.reconstruction_pipeline.tests.test_run_joern_reconstruction_gate `
             workspace_tools.reconstruction_pipeline.tests.test_verify_driver_microtasks -v
     } | Out-Null
@@ -87,6 +89,13 @@ try {
             --repo-root $RepoRoot --output $customGestureCallbackHarness --repetitions 2
     } | Out-Null
     Copy-Item $customGestureCallbackHarness (Join-Path $Reports "custom_gesture_callback_harness_report.json") -Force
+    $palMemFreeReplay = Join-Path $EngineeringRoot ("validation\$Driver\replays\pal_mem_free_" + [guid]::NewGuid().ToString("N"))
+    $palMemFreeHarness = Join-Path $palMemFreeReplay "report.json"
+    Invoke-Logged "pal_mem_free_harness.log" {
+        python .\workspace_tools\reconstruction_pipeline\run_zte_tpd_pal_mem_free_harness.py `
+            --repo-root $RepoRoot --output $palMemFreeHarness --repetitions 2
+    } | Out-Null
+    Copy-Item $palMemFreeHarness (Join-Path $Reports "pal_mem_free_harness_report.json") -Force
     Invoke-Logged "offline_audit.log" {
         python .\workspace_tools\reconstruction_pipeline\audit_offline_reconstruction.py `
             --engineering-root $EngineeringRoot --driver $Driver --allow-incomplete `
@@ -100,14 +109,14 @@ try {
     Invoke-Logged "double_clean_rebuild.log" {
         python .\workspace_tools\reconstruction_pipeline\validate_reconstructed_drivers.py `
             --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") --driver $Driver --rebuild `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next102") `
-            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-102") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next103") `
+            --work-root (Join-Path $EngineeringRoot "validation\contribution-work-next95-103") `
             --output (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null
     Invoke-Logged "llm_cycle.log" {
         python .\workspace_tools\reconstruction_pipeline\verify_llm_reconstruction_cycle.py `
             --driver $Driver --curated-root (Join-Path $RepoRoot "kernel_development\drivers\reconstructed") `
-            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next102") `
+            --run-root (Join-Path $EngineeringRoot "runs\public-replay-next103") `
             --evidence-root (Join-Path $EngineeringRoot "validation") `
             --audit (Join-Path $Reports "double_clean_rebuild.json")
     } | Out-Null

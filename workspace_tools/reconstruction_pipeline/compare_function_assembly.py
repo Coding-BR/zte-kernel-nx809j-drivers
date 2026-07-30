@@ -70,6 +70,41 @@ def records_by_function(manifest: dict[str, Any], root: Path) -> dict[str, dict[
     return result
 
 
+def records_by_function_id(manifest: dict[str, Any], root: Path) -> dict[str, dict[str, Any]]:
+    """Return manifest records indexed by their stable Ghidra-aware identity."""
+    records = manifest.get("records")
+    if not isinstance(records, list):
+        raise ValueError(f"manifest has no records array: {root}")
+    result: dict[str, dict[str, Any]] = {}
+    for record in records:
+        function_id = record.get("function_id") if isinstance(record, dict) else None
+        if not isinstance(function_id, str) or not function_id:
+            raise ValueError(f"invalid function identity: {root}")
+        if function_id in result:
+            raise ValueError(f"duplicate function identity {function_id}: {root}")
+        result[function_id] = record
+    return result
+
+
+def resolve_record(
+    selector: str,
+    by_function: dict[str, dict[str, Any]],
+    by_function_id: dict[str, dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Resolve ``name`` or exact ``name@ghidra_entry`` manifest selectors."""
+    return by_function_id.get(selector) or by_function.get(selector)
+
+
+def parse_function_pair(value: str) -> tuple[str, str]:
+    """Parse an explicit stock-to-candidate function identity mapping."""
+    stock_selector, separator, candidate_selector = value.partition("=")
+    if not separator or not stock_selector or not candidate_selector:
+        raise ValueError(
+            "--function-pair must be STOCK_FUNCTION[@ENTRY]=CANDIDATE_FUNCTION[@ENTRY]"
+        )
+    return stock_selector, candidate_selector
+
+
 def manifest_source_path(manifest: dict[str, Any], root: Path) -> Path | None:
     source = manifest.get("source")
     if not isinstance(source, dict) or not isinstance(source.get("path"), str):
@@ -669,6 +704,48 @@ def canonicalize_commutative_instruction_pairs(
     return stock, candidate, evidence
 
 
+def canonicalize_function_identity_aliases(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+    stock_function: str,
+    candidate_function: str,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Normalize only intra-function branch labels for an explicit name mapping."""
+    if stock_function == candidate_function:
+        return list(stock_instructions), list(candidate_instructions), []
+
+    def replace_self_reference(instructions: list[str], function: str) -> list[str]:
+        return [
+            instruction.replace(f"<{function}>", "<__self__>").replace(
+                f"<{function}+", "<__self__+"
+            )
+            for instruction in instructions
+        ]
+
+    stock = replace_self_reference(stock_instructions, stock_function)
+    candidate = replace_self_reference(candidate_instructions, candidate_function)
+    evidence: list[dict[str, Any]] = []
+    for index, (before_stock, before_candidate, after_stock, after_candidate) in enumerate(
+        zip(stock_instructions, candidate_instructions, stock, candidate)
+    ):
+        if (
+            before_stock != after_stock
+            or before_candidate != after_candidate
+        ) and after_stock == after_candidate:
+            evidence.append(
+                {
+                    "kind": "explicit_function_identity_alias",
+                    "instruction_index": index,
+                    "stock_function": stock_function,
+                    "candidate_function": candidate_function,
+                    "stock_instruction": before_stock,
+                    "candidate_instruction": before_candidate,
+                    "canonical_instruction": after_stock,
+                }
+            )
+    return stock, candidate, evidence
+
+
 def _register_allocation_mask(word: int) -> tuple[int, str] | None:
     """Return mutable AArch64 register fields for a guarded instruction class."""
     if word & 0xFFFFFFE0 == 0xD5384100:
@@ -1090,6 +1167,15 @@ def main() -> int:
     parser.add_argument("--stock-dir", type=Path, required=True)
     parser.add_argument("--candidate-dir", type=Path, required=True)
     parser.add_argument("--function", action="append", dest="functions")
+    parser.add_argument(
+        "--function-pair",
+        action="append",
+        dest="function_pairs",
+        help=(
+            "compare an explicit STOCK_FUNCTION[@ENTRY]=CANDIDATE_FUNCTION[@ENTRY] "
+            "pair; required when a stock module contains duplicate symbol names"
+        ),
+    )
     parser.add_argument("--ghidra-semantic-report", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -1100,6 +1186,8 @@ def main() -> int:
     candidate_manifest = load_manifest(candidate_root)
     stock_records = records_by_function(stock_manifest, stock_root)
     candidate_records = records_by_function(candidate_manifest, candidate_root)
+    stock_records_by_id = records_by_function_id(stock_manifest, stock_root)
+    candidate_records_by_id = records_by_function_id(candidate_manifest, candidate_root)
     stock_source = manifest_source_path(stock_manifest, stock_root)
     candidate_source = manifest_source_path(candidate_manifest, candidate_root)
     semantic_report = None
@@ -1143,19 +1231,33 @@ def main() -> int:
         stock_relocation_sites,
         candidate_relocation_sites,
     )
-    functions = args.functions or sorted(set(stock_records) & set(candidate_records))
+    comparisons: list[tuple[str, str, str]] = []
+    for function in args.functions or []:
+        comparisons.append((function, function, function))
+    for pair in args.function_pairs or []:
+        stock_selector, candidate_selector = parse_function_pair(pair)
+        comparisons.append((pair, stock_selector, candidate_selector))
+    if not comparisons:
+        comparisons = [
+            (function, function, function)
+            for function in sorted(set(stock_records) & set(candidate_records))
+        ]
     results = []
     failures = []
-    for function in functions:
-        stock_record = stock_records.get(function)
-        candidate_record = candidate_records.get(function)
+    for comparison_label, stock_selector, candidate_selector in comparisons:
+        stock_record = resolve_record(
+            stock_selector, stock_records, stock_records_by_id
+        )
+        candidate_record = resolve_record(
+            candidate_selector, candidate_records, candidate_records_by_id
+        )
         if stock_record is None or candidate_record is None:
-            failures.append(function + ": missing manifest record")
+            failures.append(comparison_label + ": missing manifest record")
             continue
         stock_path = stock_root / str(stock_record.get("file", ""))
         candidate_path = candidate_root / str(candidate_record.get("file", ""))
         if not stock_path.is_file() or not candidate_path.is_file():
-            failures.append(function + ": missing assembly file")
+            failures.append(comparison_label + ": missing assembly file")
             continue
         stock_instructions, stock_raw_relocations, stock_relocations = normalized_assembly(
             stock_path,
@@ -1176,10 +1278,20 @@ def main() -> int:
         (
             stock_instructions_compared,
             candidate_instructions_compared,
-            boolean_reordering_evidence,
-        ) = canonicalize_boolean_count_pair_reordering(
+            function_identity_evidence,
+        ) = canonicalize_function_identity_aliases(
             stock_instructions,
             candidate_instructions,
+            str(stock_record.get("function", "")),
+            str(candidate_record.get("function", "")),
+        )
+        (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            boolean_reordering_evidence,
+        ) = canonicalize_boolean_count_pair_reordering(
+            stock_instructions_compared,
+            candidate_instructions_compared,
         )
         (
             stock_instructions_compared,
@@ -1190,7 +1302,9 @@ def main() -> int:
             candidate_instructions_compared,
         )
         instruction_equivalences = (
-            boolean_reordering_evidence + commutative_evidence
+            function_identity_evidence
+            + boolean_reordering_evidence
+            + commutative_evidence
         )
         (
             stock_instructions_compared,
@@ -1199,7 +1313,7 @@ def main() -> int:
         ) = canonicalize_register_allocation_differences(
             stock_instructions_compared,
             candidate_instructions_compared,
-            semantic_proofs.get(function),
+            semantic_proofs.get(str(candidate_record.get("function", ""))),
             semantic_report_sha256,
         )
         instruction_equivalences += register_allocation_evidence
@@ -1241,11 +1355,18 @@ def main() -> int:
         passed = all(checks.values())
         if not passed:
             failures.append(
-                function + ": " + ", ".join(name for name, value in checks.items() if not value)
+                comparison_label
+                + ": "
+                + ", ".join(name for name, value in checks.items() if not value)
             )
         results.append(
             {
-                "function": function,
+                "function": candidate_record.get("function"),
+                "function_pair": comparison_label,
+                "stock_function": stock_record.get("function"),
+                "stock_function_id": stock_record.get("function_id"),
+                "candidate_function": candidate_record.get("function"),
+                "candidate_function_id": candidate_record.get("function_id"),
                 "passed": passed,
                 "checks": checks,
                 "instruction_equivalences": instruction_equivalences,
@@ -1279,8 +1400,8 @@ def main() -> int:
             "aarch64_opcode_relocation_resolved_branch_rodata_pointer_"
             "and_elf_symbol_comparison"
         ),
-        "passed": not failures and len(results) == len(functions),
-        "requested_functions": functions,
+        "passed": not failures and len(results) == len(comparisons),
+        "requested_functions": [item[0] for item in comparisons],
         "checked_functions": len(results),
         "failures": failures,
         "ghidra_semantic_report": (

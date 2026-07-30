@@ -205,13 +205,21 @@ def normalize_entry(value: Any) -> str:
     return text.lstrip("0") or "0"
 
 
-def ghidra_call_counters(path: Path) -> dict[str, collections.Counter[str]]:
-    counters: dict[str, collections.Counter[str]] = collections.defaultdict(collections.Counter)
+def ghidra_call_counters(
+    path: Path,
+) -> dict[tuple[str, str], collections.Counter[tuple[str, str]]]:
+    counters: dict[
+        tuple[str, str], collections.Counter[tuple[str, str]]
+    ] = collections.defaultdict(collections.Counter)
     for row in read_jsonl(path):
-        caller = str(row.get("caller", ""))
+        caller = (
+            str(row.get("caller", "")),
+            normalize_entry(row.get("caller_entry")),
+        )
         target = str(row.get("target", "")).removeprefix("<EXTERNAL>::")
-        if caller and target:
-            counters[caller][target] += 1
+        target_identity = (target, normalize_entry(row.get("target_address")))
+        if caller[0] and target:
+            counters[caller][target_identity] += 1
     return counters
 
 
@@ -274,27 +282,39 @@ def build_cross_oracle_report(
     requested = sorted(set(selected_functions or []))
     if requested:
         requested_set = set(requested)
-        directly_selected_stock = {
+        known_stock_names = {
             str(row.get("name", ""))
             for row in all_ghidra_functions
-            if str(row.get("name", "")) in requested_set
         }
         mappings = [
             row for row in all_mappings
             if str(row.get("stock_function", "")) in requested_set
             or str(row.get("source_function", "")) in requested_set
-            or str(row.get("stock_function", "")) in directly_selected_stock
         ]
-        selected_stock = directly_selected_stock | {
+        mapped_identities_for_scope = {
+            (
+                str(row.get("stock_function", "")),
+                normalize_entry(row.get("stock_entry")),
+            )
+            for row in mappings
+        }
+        mapped_stock_names = {
             str(row.get("stock_function", "")) for row in mappings
         }
+        unmapped_stock_requests = (
+            requested_set.intersection(known_stock_names) - mapped_stock_names
+        )
         ghidra_functions = [
             row for row in all_ghidra_functions
-            if str(row.get("name", "")) in selected_stock
+            if (
+                str(row.get("name", "")),
+                normalize_entry(row.get("entry")),
+            ) in mapped_identities_for_scope
+            or str(row.get("name", "")) in unmapped_stock_requests
         ]
         resolved_requests = {
             name for name in requested_set
-            if name in selected_stock
+            if name in known_stock_names
             or any(
                 name == str(row.get("source_function", ""))
                 for row in mappings
@@ -346,7 +366,10 @@ def build_cross_oracle_report(
     extra_source_methods = sorted(actual_source - expected_source)
 
     stock_to_source = {
-        str(row.get("stock_function", "")): str(row.get("source_function", ""))
+        (
+            str(row.get("stock_function", "")),
+            normalize_entry(row.get("stock_entry")),
+        ): str(row.get("source_function", ""))
         for row in all_mappings
         if row.get("stock_function") and row.get("source_function")
     }
@@ -354,12 +377,18 @@ def build_cross_oracle_report(
     stock_calls = ghidra_call_counters(ghidra_export / "calls.jsonl")
     source_calls = joern_call_counters(all_calls)
     call_deltas = []
-    selected_stock_to_source = {
-        str(row.get("stock_function", "")): str(row.get("source_function", ""))
+    selected_stock_to_source = [
+        (
+            (
+                str(row.get("stock_function", "")),
+                normalize_entry(row.get("stock_entry")),
+            ),
+            str(row.get("source_function", "")),
+        )
         for row in mappings
         if row.get("stock_function") and row.get("source_function")
-    }
-    for stock_caller, source_caller in sorted(selected_stock_to_source.items()):
+    ]
+    for stock_caller, source_caller in sorted(selected_stock_to_source):
         expected = collections.Counter()
         for stock_target, count in stock_calls.get(stock_caller, {}).items():
             source_target = stock_to_source.get(stock_target)
@@ -374,7 +403,8 @@ def build_cross_oracle_report(
         unexpected = observed - expected
         if missing or unexpected:
             call_deltas.append({
-                "stock_function": stock_caller,
+                "stock_function": stock_caller[0],
+                "stock_entry": stock_caller[1],
                 "source_function": source_caller,
                 "expected_mapped_calls": dict(sorted(expected.items())),
                 "observed_mapped_calls": dict(sorted(observed.items())),
@@ -382,7 +412,7 @@ def build_cross_oracle_report(
                 "unexpected_mapped_calls": dict(sorted(unexpected.items())),
             })
 
-    scoped_source_names = set(selected_stock_to_source.values())
+    scoped_source_names = {source for _stock, source in selected_stock_to_source}
     calls = (
         [row for row in all_calls if str(row.get("caller", "")) in scoped_source_names]
         if requested else all_calls

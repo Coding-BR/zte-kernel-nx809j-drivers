@@ -51,6 +51,7 @@ CHECK_MARKERS = {
     "module_decomposition": ("validate_module_decomposition.py", "--check"),
     "double_clean_rebuild": ("validate_reconstructed_drivers.py", "--rebuild"),
     "llm_cycle": ("verify_llm_reconstruction_cycle.py",),
+    "pal_mem_free_harness": ("run_zte_tpd_pal_mem_free_harness.py", "--repetitions"),
 }
 BASE_CHECKS = {"reference_modules", "environment_static", "validator_tests"}
 DRIVER_CHECKS = {
@@ -60,6 +61,8 @@ DRIVER_CHECKS = {
     "llm_cycle",
 }
 STRICT_DRIVER_CHECKS = {"module_decomposition"}
+OPTIONAL_DRIVER_CHECKS = {"pal_mem_free_harness"}
+REPORT_CHECKS = {"environment_static", *DRIVER_CHECKS, *OPTIONAL_DRIVER_CHECKS}
 
 
 class ValidationError(ValueError):
@@ -272,7 +275,7 @@ def validate_check(
     if intent == "incremental" and check_id in DRIVER_CHECKS and exit_code not in {0, 1}:
         raise ValidationError(f"checks[{check_id}]: exit code 2+ means the audit did not run correctly")
     verify_hashed_blob(repo, head, bundle_root, check.get("log"), field=f"checks[{check_id}].log")
-    if check_id in {"environment_static", *DRIVER_CHECKS}:
+    if check_id in REPORT_CHECKS:
         report_path, report_data = verify_hashed_blob(
             repo,
             head,
@@ -390,7 +393,7 @@ def validate_manifest(
     missing_checks = required_checks - set(check_ids)
     if missing_checks:
         raise ValidationError(f"{manifest_path}: missing checks {sorted(missing_checks)}")
-    for check_id in required_checks:
+    for check_id in check_ids:
         for marker in CHECK_MARKERS[check_id]:
             if marker not in script_text:
                 raise ValidationError(f"{manifest_path}: reproduction scripts omit {marker!r}")

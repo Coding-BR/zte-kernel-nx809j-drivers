@@ -12,6 +12,31 @@ SPEC.loader.exec_module(MODULE)
 
 
 class NormalizedRelocationTests(unittest.TestCase):
+    def test_function_pair_preserves_the_stock_entry_identity(self) -> None:
+        self.assertEqual(
+            MODULE.parse_function_pair(
+                "syna_pal_mem_free@0012a4ec=syna_pal_mem_free_0"
+            ),
+            ("syna_pal_mem_free@0012a4ec", "syna_pal_mem_free_0"),
+        )
+
+    def test_function_pair_rejects_ambiguous_selector(self) -> None:
+        with self.assertRaises(ValueError):
+            MODULE.parse_function_pair("syna_pal_mem_free")
+
+    def test_function_pair_normalizes_only_intra_function_branch_labels(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_function_identity_aliases(
+            ["bl <shared_helper>", "b <syna_pal_mem_free+0x24>"],
+            ["bl <shared_helper>", "b <syna_pal_mem_free_0+0x24>"],
+            "syna_pal_mem_free",
+            "syna_pal_mem_free_0",
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(stock[0], "bl <shared_helper>")
+        self.assertEqual(stock[1], "b <__self__+0x24>")
+        self.assertEqual(len(evidence), 1)
+
     def test_compiler_alloc_tag_suffix_is_guardedly_equivalent(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_compiler_alloc_tags(
             [
