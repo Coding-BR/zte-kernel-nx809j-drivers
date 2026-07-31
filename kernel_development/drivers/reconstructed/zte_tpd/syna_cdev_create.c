@@ -1,7 +1,7 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 
-static int syna_cdev_create_cdev_major_num = 0;
+#undef syna_cdev_create___key
 
 extern __int64 syna_cdev_read(__int64 a1, __int64 a2, __int64 a3);
 extern __int64 syna_cdev_write(__int64 a1, __int64 a2, __int64 a3);
@@ -50,85 +50,61 @@ static const struct file_operations device_fops = {
 
 int syna_cdev_create(struct syna_tcm *tcm, struct platform_device *data)
 {
-  __int64 a1 = (__int64)tcm;
-  __int64 a2 = (__int64)data;
+  static int cdev_major_num;
+  static struct lock_class_key mutex_key;
+  static struct lock_class_key __key;
   int v3; // w0
   unsigned __int64 v5; // x20
   void *v6; // x0
   int v7; // w0
   __int64 v8; // x1
   int v9; // w0
-  unsigned __int64 v11; // x0
-  unsigned __int64 v13; // x0
 
-  g_cdev_data = a2;
-  qword_31708 = 0;
-  qword_31710 = 0;
-  qword_316F8 = 0;
-  qword_31700 = 0;
-  qword_316E8 = 0;
-  qword_316F0 = 0;
-  qword_316D8 = 0;
-  qword_316E0 = 0;
-  qword_316C0 = 0;
-  qword_316C8 = 0;
-  qword_316B0 = 0;
-  qword_316B8 = 0;
-  qword_316A8 = 0;
-  qword_31690 = 0;
-  qword_31698 = 0;
-  qword_31680 = 0;
-  qword_31688 = 0;
-  qword_31670 = 0;
-  qword_31678 = 0;
-  qword_31658 = 0;
-  qword_31660 = 0;
-  qword_31668 = 0;
-  qword_316D0 = 0;
-  qword_316A0 = 0;
-  *(_QWORD *)(a1 + 904) = 0;
-  *(_QWORD *)(a1 + 912) = 0;
-  _mutex_init(&qword_316A0, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_0);
-  _mutex_init(&qword_316D0, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_0);
+  __builtin_memset(&syna_cdev_global_state, 0, sizeof(syna_cdev_global_state));
+  g_cdev_data = (__int64)data;
+  tcm->cdev_class = NULL;
+  tcm->cdev_device = NULL;
+  _mutex_init(&qword_316A0, "(struct mutex *)ptr", &mutex_key);
+  _mutex_init(&qword_316D0, "(struct mutex *)ptr", &mutex_key);
   LOBYTE(qword_31698) = 0;
   qword_31658 = 0;
   qword_31660 = 0;
-  _mutex_init(&qword_31668, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_0);
-  if ( syna_cdev_create_cdev_major_num )
+  _mutex_init(&qword_31668, "(struct mutex *)ptr", &mutex_key);
+  if ( !cdev_major_num )
+    goto allocate_cdev;
+
+  tcm->cdev_num = cdev_major_num << 20;
+  v3 = register_chrdev_region(tcm->cdev_num, 1, "synaptics_tcm");
+  if ( v3 < 0 )
   {
-    *(_DWORD *)(a1 + 896) = syna_cdev_create_cdev_major_num << 20;
-    v3 = register_chrdev_region(*(unsigned int *)(a1 + 896), 1, "synaptics_tcm");
-    if ( v3 < 0 )
-    {
-      LODWORD(v5) = v3;
-      v6 = "\0013[error] %s: Fail to register char device.\n";
-LABEL_17:
-      printk(v6, "syna_cdev_create");
-      return (unsigned int)v5;
-    }
+    LODWORD(v5) = v3;
+    v6 = "\0013[error] %s: Fail to register char device\n";
+    goto log_error;
   }
-  else
+  goto cdev_ready;
+
+allocate_cdev:
+  v7 = alloc_chrdev_region(&tcm->cdev_num, 0, 1, "synaptics_tcm");
+  if ( v7 < 0 )
   {
-    v7 = alloc_chrdev_region((dev_t *)(a1 + 896), 0, 1, "synaptics_tcm");
-    if ( v7 < 0 )
-    {
-      LODWORD(v5) = v7;
-      v6 = "\0013[error] %s: Fail to allocate char device.\n";
-      goto LABEL_17;
-    }
-    syna_cdev_create_cdev_major_num = *(_DWORD *)(a1 + 896) >> 20;
+    LODWORD(v5) = v7;
+    v6 = "\0013[error] %s: Fail to allocate char device\n";
+    goto log_error;
   }
-  cdev_init((struct cdev *)(a1 + 760), &device_fops);
-  v8 = *(unsigned int *)(a1 + 896);
-  *(_QWORD *)(a1 + 856) = (unsigned long long)THIS_MODULE;
-  v9 = cdev_add((struct cdev *)(a1 + 760), v8, 1);
+  cdev_major_num = tcm->cdev_num >> 20;
+
+cdev_ready:
+  cdev_init(&tcm->cdev, &device_fops);
+  v8 = tcm->cdev_num;
+  tcm->cdev.owner = THIS_MODULE;
+  v9 = cdev_add(&tcm->cdev, v8, 1);
   if ( v9 < 0 )
   {
     LODWORD(v5) = v9;
-    printk("\0013[error] %s: Fail to add cdev_add.\n",
+    printk("\0013[error] %s: Fail to add cdev_add\n",
            "syna_cdev_create");
 LABEL_15:
-    unregister_chrdev_region(*(unsigned int *)(a1 + 896), 1);
+    unregister_chrdev_region(tcm->cdev_num, 1);
     return (unsigned int)v5;
   }
 
@@ -136,29 +112,33 @@ LABEL_15:
   if ( IS_ERR(cl) )
   {
     LODWORD(v5) = PTR_ERR(cl);
-    printk("\0013[error] %s: Fail to create device class.\n",
+    printk("\0013[error] %s: Fail to create device class\n",
            "syna_cdev_create");
 LABEL_14:
-    cdev_del((struct cdev *)(a1 + 760));
+    cdev_del(&tcm->cdev);
     goto LABEL_15;
   }
   cl->devnode = syna_cdev_devnode;
-  struct device *dev = device_create(cl, NULL, *(unsigned int *)(a1 + 896), NULL, "tcm%d", *(_DWORD *)(a1 + 896) & 0xFFFFF);
+  struct device *dev = device_create(cl, NULL, tcm->cdev_num, NULL, "tcm%d", tcm->cdev_num & 0xFFFFF);
   if ( IS_ERR(dev) )
   {
-    LODWORD(v5) = PTR_ERR(dev);
-    printk("\0013[error] %s: Fail to create character device.\n",
-           "syna_cdev_create");
+    printk("\0013[error] %s: Fail to create character device\n",
+            "syna_cdev_create");
     class_destroy(cl);
+    LODWORD(v5) = -2;
     goto LABEL_14;
   }
-  *(struct device **)(a1 + 912) = dev;
-  *(struct class **)(a1 + 904) = cl;
+  tcm->cdev_device = dev;
+  syna_cdev_global_state.qword_31700_high = 0;
+  tcm->cdev_class = cl;
 
-  *(_DWORD *)(a1 + 900) = 0;
-  *(_QWORD *)(a1 + 1272) = a1 + 1272;
-  *(_QWORD *)(a1 + 1280) = a1 + 1272;
-  _init_waitqueue_head(a1 + 1288, "&tcm->wait_frame", &syna_cdev_create___key);
+  tcm->cdev_frame_count = 0;
+  INIT_LIST_HEAD(&tcm->frame_list);
+  _init_waitqueue_head(&tcm->wait_frame, "&tcm->wait_frame", &__key);
   LODWORD(v5) = 0;
+  return (unsigned int)v5;
+
+log_error:
+  printk(v6, "syna_cdev_create");
   return (unsigned int)v5;
 }

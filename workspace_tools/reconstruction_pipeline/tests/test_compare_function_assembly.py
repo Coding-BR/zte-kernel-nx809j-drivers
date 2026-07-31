@@ -504,6 +504,90 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(stock, candidate)
         self.assertEqual(evidence, [])
 
+    def test_stripped_mutex_key_matches_named_key_for_three_mutex_inits(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_mutex_keys(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x889",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x889",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 syna_cdev_create.mutex_key",
+                "R_AARCH64_ADD_ABS_LO12_NC syna_cdev_create.mutex_key",
+            ],
+            [
+                "d503233f", "94000000", "94000000", "94000000",
+                "bl <__mutex_init>", "94000000", "bl <__mutex_init>",
+                "94000000", "bl <__mutex_init>",
+            ],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["stock_target"], ".bss+0x889")
+        self.assertEqual(
+            evidence[0]["candidate_target"], "syna_cdev_create.mutex_key"
+        )
+
+    def test_stripped_mutex_key_requires_exactly_three_mutex_inits(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_mutex_keys(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x889",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x889",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 syna_cdev_create.mutex_key",
+                "R_AARCH64_ADD_ABS_LO12_NC syna_cdev_create.mutex_key",
+            ],
+            ["bl <__mutex_init>", "bl <__mutex_init>"],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_stripped_bss_subfield_matches_named_high_word_store(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_bss_subfields(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x874",
+                "R_AARCH64_ADR_PREL_PG_HI21 log_format",
+                "R_AARCH64_LDST32_ABS_LO12_NC .bss+0x874",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0xb4",
+                "R_AARCH64_ADR_PREL_PG_HI21 log_format",
+                "R_AARCH64_LDST32_ABS_LO12_NC g_cdev_data+0xb4",
+            ],
+            [10, 12, 14],
+            [10, 12, 14],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["stock_target"], ".bss+0x874")
+        self.assertEqual(evidence[0]["candidate_target"], "g_cdev_data+0xb4")
+
+    def test_stripped_bss_subfield_requires_instruction_match(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_bss_subfields(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x874",
+                "R_AARCH64_LDST32_ABS_LO12_NC .bss+0x874",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0xb4",
+                "R_AARCH64_LDST32_ABS_LO12_NC g_cdev_data+0xb4",
+            ],
+            [10, 14],
+            [10, 14],
+            False,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
 
 if __name__ == "__main__":
     unittest.main()

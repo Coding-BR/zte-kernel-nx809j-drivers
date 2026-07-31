@@ -1081,6 +1081,189 @@ def canonicalize_stripped_lock_keys(
     return stock, candidate, evidence
 
 
+def canonicalize_stripped_mutex_keys(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    instructions: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match one stripped mutex class key proved by three mutex initializers."""
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    mutex_calls = [
+        index for index, instruction in enumerate(instructions)
+        if instruction == "bl <__mutex_init>"
+    ]
+    if (
+        len(mutex_calls) != 3
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    relocation_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+
+    def split_relocation(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        if len(parts) != 2:
+            return None
+        return parts[0], parts[1]
+
+    def is_anonymous_bss(target: str) -> bool:
+        return bool(re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target))
+
+    for index in range(len(stock) - 1):
+        stock_pair = [split_relocation(value) for value in stock[index : index + 2]]
+        candidate_pair = [
+            split_relocation(value) for value in candidate[index : index + 2]
+        ]
+        if any(value is None for value in stock_pair + candidate_pair):
+            continue
+        stock_typed = [value for value in stock_pair if value is not None]
+        candidate_typed = [value for value in candidate_pair if value is not None]
+        if (
+            tuple(value[0] for value in stock_typed) != relocation_types
+            or tuple(value[0] for value in candidate_typed) != relocation_types
+        ):
+            continue
+        stock_positions = stock_instruction_indices[index : index + 2]
+        candidate_positions = candidate_instruction_indices[index : index + 2]
+        if not (
+            stock_positions == candidate_positions
+            and len(stock_positions) == 2
+            and stock_positions[1] == stock_positions[0] + 1
+            and 0 < mutex_calls[0] - stock_positions[1] <= 32
+        ):
+            continue
+        stock_targets = {value[1] for value in stock_typed}
+        candidate_targets = {value[1] for value in candidate_typed}
+        if len(stock_targets) != 1 or len(candidate_targets) != 1:
+            continue
+        stock_target = next(iter(stock_targets))
+        candidate_target = next(iter(candidate_targets))
+        if not (
+            is_anonymous_bss(stock_target)
+            and candidate_target.endswith(".mutex_key")
+        ):
+            continue
+
+        alias = "<local_mutex_class_key>"
+        for offset, relocation_type in enumerate(relocation_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "relocation_index": index,
+                "reason": (
+                    "compiler-named mutex_key matched to a stripped local .bss "
+                    "target at identical ADRP/ADD sites followed by exactly three "
+                    "__mutex_init calls"
+                ),
+                "stock_target": stock_target,
+                "candidate_target": candidate_target,
+                "canonical_target": alias,
+                "instruction_indices": stock_positions,
+                "mutex_call_indices": mutex_calls,
+            }
+        )
+        break
+    return stock, candidate, evidence
+
+
+def canonicalize_stripped_bss_subfields(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match a named global subfield to one stripped 32-bit .bss access."""
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split_relocation(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        if len(parts) != 2:
+            return None
+        return parts[0], parts[1]
+
+    def is_anonymous_bss(target: str) -> bool:
+        return bool(re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target))
+
+    def is_named_subfield(target: str) -> bool:
+        return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*\+0x[0-9a-fA-F]+", target))
+
+    for index, value in enumerate(stock):
+        stock_entry = split_relocation(value)
+        candidate_entry = split_relocation(candidate[index])
+        if (
+            stock_entry is None
+            or candidate_entry is None
+            or stock_entry[0] != "R_AARCH64_ADR_PREL_PG_HI21"
+            or candidate_entry[0] != "R_AARCH64_ADR_PREL_PG_HI21"
+            or not is_anonymous_bss(stock_entry[1])
+            or not is_named_subfield(candidate_entry[1])
+        ):
+            continue
+        for second in range(index + 1, len(stock)):
+            stock_second = split_relocation(stock[second])
+            candidate_second = split_relocation(candidate[second])
+            if stock_second is None or candidate_second is None:
+                continue
+            if (
+                stock_second[0] != "R_AARCH64_LDST32_ABS_LO12_NC"
+                or candidate_second[0] != "R_AARCH64_LDST32_ABS_LO12_NC"
+                or stock_second[1] != stock_entry[1]
+                or candidate_second[1] != candidate_entry[1]
+            ):
+                continue
+            stock_positions = [stock_instruction_indices[index], stock_instruction_indices[second]]
+            candidate_positions = [
+                candidate_instruction_indices[index], candidate_instruction_indices[second]
+            ]
+            if (
+                stock_positions != candidate_positions
+                or not 0 < stock_positions[1] - stock_positions[0] <= 4
+            ):
+                continue
+            alias = f"<stripped_bss_subfield:{candidate_entry[1]}>"
+            stock[index] = f"R_AARCH64_ADR_PREL_PG_HI21 {alias}"
+            candidate[index] = f"R_AARCH64_ADR_PREL_PG_HI21 {alias}"
+            stock[second] = f"R_AARCH64_LDST32_ABS_LO12_NC {alias}"
+            candidate[second] = f"R_AARCH64_LDST32_ABS_LO12_NC {alias}"
+            evidence.append(
+                {
+                    "adrp_relocation_index": index,
+                    "ldst32_relocation_index": second,
+                    "reason": (
+                        "named global subfield matched to stripped .bss only where "
+                        "identical instructions use the same ADRP then 32-bit store "
+                        "within four instructions"
+                    ),
+                    "stock_target": stock_entry[1],
+                    "candidate_target": candidate_entry[1],
+                    "canonical_target": alias,
+                    "instruction_indices": stock_positions,
+                }
+            )
+            break
+    return stock, candidate, evidence
+
+
 def canonicalize_compiler_alloc_tags(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -1330,6 +1513,32 @@ def main() -> int:
             non_branch_relocation_instruction_indices(stock_path),
             non_branch_relocation_instruction_indices(candidate_path),
         )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            mutex_key_equivalences,
+        ) = canonicalize_stripped_mutex_keys(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stock_instructions_compared
+            if stock_instructions_compared == candidate_instructions_compared
+            else [],
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+        )
+        relocation_equivalences += mutex_key_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            bss_subfield_equivalences,
+        ) = canonicalize_stripped_bss_subfields(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += bss_subfield_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,

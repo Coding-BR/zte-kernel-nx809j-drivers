@@ -1,8 +1,8 @@
 {
   "attestation": {
     "executed_locally": true,
-    "notes_en": "Microtasks 182 syna_pm_suspend and 183 syna_pm_resume were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. The suspend harness verifies the exact log format plus writes at offsets 0x578 and 0x558; the resume harness verifies the exact log format, the state clear at 0x578, and complete(core + 0x558). No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
-    "notes_pt": "As microtarefas 182 syna_pm_suspend e 183 syna_pm_resume foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. O harness de suspensao verifica o formato de log exato e as escritas nos offsets 0x578 e 0x558; o de retomada verifica o formato de log exato, a limpeza do estado em 0x578 e complete(core + 0x558). Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
+    "notes_en": "Microtasks 182 syna_pm_suspend, 183 syna_pm_resume, and 184 syna_cdev_create were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. The cdev harness covers allocation, registration, cdev-add, class-create, and device-create failure paths plus the successful initialization path. No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
+    "notes_pt": "As microtarefas 182 syna_pm_suspend, 183 syna_pm_resume e 184 syna_cdev_create foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. O harness de cdev cobre os caminhos de falha de alocacao, registro, cdev-add, criacao de classe e criacao de dispositivo, alem do caminho de inicializacao bem-sucedida. Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
     "reviewer_rerun_required": true
   },
   "base_commit": "fddb80c06ad6b9d1b972026d1d0711d82030f191",
@@ -20,12 +20,12 @@
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json",
-      "sha256": "0ce0a63ff97cea329e15569ff501d4b736e2aeb3bfe12c348c0d8eece009bee5"
+      "sha256": "48efb0784cc73e718147c99a51b514d3b175cb6775ad4f220bfeee66712785d4"
     },
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.md",
-      "sha256": "46cd0b1a8581d019620ef8a527f5645a693b4099f803758792d17fd4bed6eb0c"
+      "sha256": "fd2d7eb8530442260b71990348b10f6ef4486baac9b3de52decd44d8af463b4e"
     },
     {
       "change": "M",
@@ -36,6 +36,16 @@
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/STATUS.md",
       "sha256": "9f53b72d3348f8cef2bb0b0c60b494ec5f15f9e4d26f1dbe077853739c7d0e41"
+    },
+    {
+      "change": "M",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/globals.c",
+      "sha256": "f472f673ec3866fa086312eed7cf1e150548f612daa24db361bd0a37f56f7f53"
+    },
+    {
+      "change": "M",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/globals.h",
+      "sha256": "d479cf75e83554cf7b8717f5b0660e3d45e65a8bcbda21db88cd4e5c38b6a1e0"
     },
     {
       "change": "M",
@@ -51,6 +61,11 @@
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/suspend_tp_need_awake.c",
       "sha256": "e13c6c0aa423baec4af3771fd0134963e96b1cb9ccb5283983f03bf70e375dc9"
+    },
+    {
+      "change": "M",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
+      "sha256": "7520b949d1014ce04cf9b85969f71c6f614f36385a57b15209a41d96c5f82181"
     },
     {
       "change": "M",
@@ -128,9 +143,24 @@
       "sha256": "c340834de6640657f5c4c54411d864c912445e444618ff35d86e083545902045"
     },
     {
+      "change": "M",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_syna_layout.h",
+      "sha256": "ab92b620297c2dd15db05e16969d9861956db10aec3e027966a65b6e72341893"
+    },
+    {
       "change": "A",
       "path": "kernel_development/drivers/validation/zte_tpd/host/cancel_report_lcd_state_delayed_work_host_test.c",
       "sha256": "f652f93c183293f2eba6a9f23a6ec16f756eee964017e7acc1ec14ff29d2e369"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/include/linux/cdev.h",
+      "sha256": "73b70651768bf3d594604cc164404f900bfbe844fc31a450f3b2625100f36860"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/include/linux/fs.h",
+      "sha256": "65f41a1f69dd271f3fcdf0e0417b8c1dcc72b1114d442bc27f757e38d2995e19"
     },
     {
       "change": "A",
@@ -141,6 +171,11 @@
       "change": "A",
       "path": "kernel_development/drivers/validation/zte_tpd/host/suspend_tp_need_awake_host_test.c",
       "sha256": "b23c8d1219f340a5fefcee303d596a89b61ca09ef259b34d706d22a704898bd8"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_create_host_test.c",
+      "sha256": "08dbd890f65f7a63ec3830d8f6da416b81384e7dcc4a419cf99615e3593e5c30"
     },
     {
       "change": "A",
@@ -1279,6 +1314,61 @@
     },
     {
       "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/assembly_comparison.json",
+      "sha256": "7c191b803f78dac321a4d4ba167b16a3e52ebfa1cdd66f928ec440e30ad284ff"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/build_report.json",
+      "sha256": "2c56b8244d31e010f2402bc469ef692c47c91b8d6203c42cd0262da1ea00c1f1"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/candidate_assembly/0000_syna_cdev_create.asm",
+      "sha256": "37fe3df8cf542fef281c5fa05e05c25ab1e3e74a6ea29eba03b0969577d04c62"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/candidate_assembly/manifest.json",
+      "sha256": "116db605fc8bae426541375d7a84301c3078bb92ce84d7144bab47092ae11042"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/host_harness_report.json",
+      "sha256": "fb557cd21968804e6322f5c5527da4aac48771749ef10aab91d58f408ee0c1a7"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/joern_gate_report.json",
+      "sha256": "a7ef9734f02537b4a4ee49418b4f2c20ce8b9ae5f6ab959e48bc4bc3fc950921"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/joern_gate_summary.json",
+      "sha256": "bcd80e314c7e930bffcc00b9c0974140b9cea0e336b32d718c407f6f853e45a7"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/kcfi_candidate.json",
+      "sha256": "0e2eff18e5ba8d7add07e64851364cc7bfeed73c1c9c5ef299eb7f5658c85eaa"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/kcfi_comparison.json",
+      "sha256": "4243c2ef6e865e8e3032fcd0416185550a719c080f9c9d4086d3f0342f836029"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/kcfi_stock.json",
+      "sha256": "674f19dd447a496da70fd0ba36c1b65833f2719d13f3a1c29ccf524b9cfa0dc4"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/microtask_attestation_v1.json",
+      "sha256": "07a0997272d746463a94f4ab61353ec55f84054b532350ce1ce3d33e39a7b5a7"
+    },
+    {
+      "change": "A",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next95_syna_release_v1/assembly_comparison.json",
       "sha256": "1de97b671e49e186231ac7f07ab90eb1f0d5d6d41853f3ddadcbbe86ebfc77b1"
     },
@@ -1585,7 +1675,7 @@
     {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/microtask_audit.json",
-      "sha256": "04c042b4e4d685f32367c4c4cf6565f08fc3943590e9a804350ffc1ecaca8465"
+      "sha256": "598c2742546f98bb683d2fa8f29a0507bf5672b1fbf37f0568deb062bcfef52e"
     },
     {
       "change": "M",
@@ -1595,7 +1685,7 @@
     {
       "change": "M",
       "path": "workspace_tools/reconstruction_pipeline/compare_function_assembly.py",
-      "sha256": "ba31e395892574da101acf918067e94982e3170edd132d1646e0a05d2a9d95e4"
+      "sha256": "34bc8f9250248385b1acf555c3d53fb846f53ed05c6b427e6df41770ff707631"
     },
     {
       "change": "M",
@@ -1694,6 +1784,11 @@
     },
     {
       "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_cdev_create_harness.py",
+      "sha256": "ab2a724ca7c8d750053bbfca8f112c6db101675ea4ea53fa912a99e826d6a584"
+    },
+    {
+      "change": "A",
       "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_dev_module_init_harness.py",
       "sha256": "3ad260e9c01d0f51b699848f0ceca550d4b1af2a76c99f7ebb1c91404ecc8d85"
     },
@@ -1730,7 +1825,7 @@
     {
       "change": "M",
       "path": "workspace_tools/reconstruction_pipeline/tests/test_compare_function_assembly.py",
-      "sha256": "acbee674fba8674c887a6d33a73d503703dc944b4e632729fb42038491ef5161"
+      "sha256": "0b69824f49007b356a16272a51c958c1f72c077e3b81a8b0cc98459c943cd206"
     },
     {
       "change": "A",
