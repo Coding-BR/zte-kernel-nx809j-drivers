@@ -639,6 +639,119 @@ def normalized_assembly(
     return instructions, raw_relocations, normalized_relocations
 
 
+def canonicalize_initialized_unk_string_relocations(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    candidate_sections: dict[str, bytes],
+    candidate_symbols: dict[str, tuple[str, int]],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Bind a reconstructed ``unk_*`` log buffer to equal stock string bytes.
+
+    This deliberately accepts only a named, initialized candidate data object
+    whose nul-terminated bytes exactly match a stock normalized string
+    relocation. It does not alias arbitrary globals, anonymous data, or a
+    different string section.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    expected_types = ("R_AARCH64_ADR_PREL_PG_HI21", "R_AARCH64_ADD_ABS_LO12_NC")
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split_relocation(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def normalized_string(target: str) -> str | None:
+        matched = re.fullmatch(r"\.rodata(?:\.[A-Za-z0-9_.-]+)*:string=(.+)", target)
+        if matched is None:
+            return None
+        try:
+            value = json.loads(matched.group(1))
+        except json.JSONDecodeError:
+            return None
+        return value if isinstance(value, str) else None
+
+    def initialized_unk_string(target: str) -> str | None:
+        if not re.fullmatch(r"unk_[0-9a-fA-F]+", target):
+            return None
+        location = candidate_symbols.get(target)
+        if location is None or not location[0].startswith(".data"):
+            return None
+        section = candidate_sections.get(location[0])
+        if section is None or location[1] >= len(section):
+            return None
+        end = section.find(b"\0", location[1], min(len(section), location[1] + 4096))
+        if end < 0 or end == location[1]:
+            return None
+        value = section[location[1] : end]
+        if any(
+            byte < 0x20
+            and byte not in b"\t\n\r"
+            and not (index == 0 and byte == 0x01)
+            for index, byte in enumerate(value)
+        ):
+            return None
+        return value.decode("utf-8", errors="strict")
+
+    for index in range(len(stock) - 1):
+        stock_pair = [split_relocation(value) for value in stock[index : index + 2]]
+        candidate_pair = [split_relocation(value) for value in candidate[index : index + 2]]
+        if any(value is None for value in stock_pair + candidate_pair):
+            continue
+        stock_typed = [value for value in stock_pair if value is not None]
+        candidate_typed = [value for value in candidate_pair if value is not None]
+        if (
+            tuple(value[0] for value in stock_typed) != expected_types
+            or tuple(value[0] for value in candidate_typed) != expected_types
+            or stock_typed[0][1] != stock_typed[1][1]
+            or candidate_typed[0][1] != candidate_typed[1][1]
+            or candidate.count(candidate[index]) != 1
+            or candidate.count(candidate[index + 1]) != 1
+        ):
+            continue
+        stock_text = normalized_string(stock_typed[0][1])
+        candidate_text = initialized_unk_string(candidate_typed[0][1])
+        positions = stock_instruction_indices[index : index + 2]
+        if (
+            stock_text is None
+            or candidate_text is None
+            or stock_text != candidate_text
+            or positions != candidate_instruction_indices[index : index + 2]
+            or len(positions) != 2
+            or positions[1] != positions[0] + 1
+        ):
+            continue
+        digest = hashlib.sha256(stock_text.encode("utf-8")).hexdigest()
+        alias = f"<initialized_unk_string:sha256={digest}>"
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "kind": "initialized_unk_string_bytes",
+                "reason": (
+                    "unique ADRP/ADD relocation pair references an initialized "
+                    "candidate unk_* object whose exact bytes equal the stock string"
+                ),
+                "stock_target": stock_typed[0][1],
+                "candidate_target": candidate_typed[0][1],
+                "string_sha256": digest,
+                "instruction_indices": positions,
+            }
+        )
+    return stock, candidate, evidence
+
+
 def _opcode_word(instruction: str) -> int | None:
     if not re.fullmatch(r"[0-9a-f]{8}", instruction):
         return None
@@ -1657,18 +1770,87 @@ def canonicalize_postindexed_g_cdev_mutex_storage(
 
     base_instruction = base_positions[0]
     mutex_instruction = mutex_positions[0]
-    if (
-        base_instruction + 6 >= len(instructions)
-        or mutex_instruction + 2 >= len(instructions)
-        or _opcode_word(instructions[base_instruction + 3]) != 0xF8450408
-        or instructions[base_instruction + 6] != "bl <mutex_lock>"
-        or any(
-            instruction.startswith("bl <")
-            for instruction in instructions[base_instruction + 2 : base_instruction + 6]
-        )
-        or instructions[mutex_instruction + 2] != "bl <mutex_unlock>"
-    ):
+    schedules = (
+        (3, 6, 2, "staged_lock_setup", None),
+        (2, 4, 3, "direct_lock_setup", 0x9100C260),
+    )
+    matched_schedule: str | None = None
+    for (
+        postindex_delta,
+        lock_delta,
+        unlock_delta,
+        schedule_name,
+        derived_unlock_opcode,
+    ) in schedules:
+        if (
+            base_instruction + lock_delta >= len(instructions)
+            or mutex_instruction + unlock_delta >= len(instructions)
+            or _opcode_word(instructions[base_instruction + postindex_delta])
+            != 0xF8450408
+            or instructions[base_instruction + lock_delta] != "bl <mutex_lock>"
+            or any(
+                instruction.startswith("bl <")
+            for instruction in instructions[
+                base_instruction + postindex_delta : base_instruction + lock_delta
+            ]
+            )
+            or (
+                derived_unlock_opcode is not None
+                and _opcode_word(instructions[mutex_instruction + unlock_delta - 1])
+                != derived_unlock_opcode
+            )
+            or instructions[mutex_instruction + unlock_delta] != "bl <mutex_unlock>"
+        ):
+            continue
+        matched_schedule = schedule_name
+        break
+    if matched_schedule is None:
         return stock, candidate, evidence
+
+    queue_pairs = pairs_for_target(candidate, "g_cdev_data+0x80")
+    if matched_schedule == "direct_lock_setup" and len(queue_pairs) != 1:
+        return stock, candidate, evidence
+
+    queue_index = queue_pairs[0] if queue_pairs else None
+    queue_positions: list[int] | None = None
+    raw_stock_queue: list[list[str]] | None = None
+    if queue_index is not None:
+        stock_queue = [value.split(" ", 1) for value in stock[queue_index : queue_index + 2]]
+        raw_stock_queue = [
+            value.split(" ", 1) for value in raw_stock[queue_index : queue_index + 2]
+        ]
+        queue_positions = stock_instruction_indices[queue_index : queue_index + 2]
+        queue_offset = (
+            bss_offset(raw_stock_queue[0][1])
+            if all(len(entry) == 2 for entry in raw_stock_queue)
+            else None
+        )
+        queue_lock_indices = [
+            instruction_index
+            for instruction_index in range(queue_positions[-1] + 1, mutex_instruction)
+            if instructions[instruction_index] == "bl <mutex_lock>"
+        ]
+        if (
+            len(stock_queue) != 2
+            or any(len(entry) != 2 for entry in stock_queue + raw_stock_queue)
+            or tuple(entry[0] for entry in stock_queue) != expected_types
+            or tuple(entry[0] for entry in raw_stock_queue) != expected_types
+            or stock_queue[0][1] != stock_queue[1][1]
+            or raw_stock_queue[0][1] != raw_stock_queue[1][1]
+            or queue_offset is None
+            or queue_offset - stock_base_offset != 0x80
+            or queue_positions != candidate_instruction_indices[queue_index : queue_index + 2]
+            or len(queue_positions) != 2
+            or queue_positions[1] != queue_positions[0] + 1
+            or len(queue_lock_indices) != 1
+            or any(
+                instruction.startswith("bl <")
+                for instruction in instructions[
+                    queue_positions[-1] + 1 : queue_lock_indices[0]
+                ]
+            )
+        ):
+            return stock, candidate, evidence
 
     aliases = (
         "<postindexed_g_cdev_mutex:g_cdev_data>",
@@ -1678,6 +1860,11 @@ def canonicalize_postindexed_g_cdev_mutex_storage(
         for offset, relocation_type in enumerate(expected_types):
             stock[index + offset] = f"{relocation_type} {alias}"
             candidate[index + offset] = f"{relocation_type} {alias}"
+    if queue_index is not None:
+        alias = "<postindexed_g_cdev_mutex:g_cdev_data+0x80>"
+        for offset, relocation_type in enumerate(expected_types):
+            stock[queue_index + offset] = f"{relocation_type} {alias}"
+            candidate[queue_index + offset] = f"{relocation_type} {alias}"
     evidence.append(
         {
             "kind": "postindexed_g_cdev_mutex_storage",
@@ -1692,6 +1879,14 @@ def canonicalize_postindexed_g_cdev_mutex_storage(
             "candidate_mutex_target": "g_cdev_data+0x50",
             "base_instruction_indices": base_positions,
             "mutex_instruction_indices": mutex_positions,
+            "stock_queue_target": (
+                raw_stock_queue[0][1] if raw_stock_queue is not None else None
+            ),
+            "candidate_queue_target": (
+                "g_cdev_data+0x80" if queue_index is not None else None
+            ),
+            "queue_instruction_indices": queue_positions,
+            "instruction_schedule": matched_schedule,
         }
     )
     return stock, candidate, evidence
@@ -2119,10 +2314,23 @@ def main() -> int:
         (
             stock_relocations_compared,
             candidate_relocations_compared,
-            relocation_equivalences,
-        ) = canonicalize_stripped_lock_keys(
+            initialized_unk_string_equivalences,
+        ) = canonicalize_initialized_unk_string_relocations(
             stock_relocations,
             candidate_relocations,
+            candidate_sections,
+            candidate_symbols,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            relocation_equivalences,
+        ) = canonicalize_stripped_lock_keys(
+            stock_relocations_compared,
+            candidate_relocations_compared,
             stock_instructions_compared
             if stock_instructions_compared == candidate_instructions_compared
             else [],
@@ -2142,7 +2350,7 @@ def main() -> int:
             non_branch_relocation_instruction_indices(stock_path),
             non_branch_relocation_instruction_indices(candidate_path),
         )
-        relocation_equivalences += mutex_key_equivalences
+        relocation_equivalences = initialized_unk_string_equivalences + relocation_equivalences + mutex_key_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,

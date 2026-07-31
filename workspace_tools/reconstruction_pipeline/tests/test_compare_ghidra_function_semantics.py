@@ -107,6 +107,27 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
         self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
 
+    def test_resolved_symbol_string_address_syntax_is_normalized_narrowly(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "printk(unk_00101000);",
+            {},
+            symbol_strings={"unk_00101000": "message"},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "printk(&unk_00202000);",
+            {},
+            symbol_strings={"unk_00202000": "message"},
+        )
+        unrelated, _, _ = MODULE.normalize_decompiled(
+            "printk(&some_other_pointer);",
+            {},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(stock, unrelated)
+        self.assertEqual(candidate_artifacts[0]["kind"], "ghidra_string_pointer_address_syntax")
+        self.assertEqual(stock_artifacts, [])
+
     def test_relocated_global_data_labels_preserve_aliasing(self) -> None:
         stock = "void target(void) { DAT_00101000 = DAT_00101008; DAT_00101008 = DAT_00101000; }"
         candidate = "void target(void) { DAT_00202000 = DAT_00202008; DAT_00202008 = DAT_00202000; }"

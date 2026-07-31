@@ -717,6 +717,47 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertEqual(len(evidence), 1)
         self.assertEqual(evidence[0]["kind"], "stripped_mutex_storage")
 
+    def test_initialized_unk_string_requires_equal_data_bytes(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_initialized_unk_string_relocations(
+            [
+                'R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string="\\u00015message\\n"',
+                'R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string="\\u00015message\\n"',
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 unk_1234",
+                "R_AARCH64_ADD_ABS_LO12_NC unk_1234",
+            ],
+            {".data": b"\x015message\n\0"},
+            {"unk_1234": (".data", 0)},
+            [12, 13],
+            [12, 13],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["kind"], "initialized_unk_string_bytes")
+
+    def test_initialized_unk_string_rejects_different_data_bytes(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_initialized_unk_string_relocations(
+            [
+                'R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string="stock"',
+                'R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string="stock"',
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 unk_1234",
+                "R_AARCH64_ADD_ABS_LO12_NC unk_1234",
+            ],
+            {".data": b"candidate\0"},
+            {"unk_1234": (".data", 0)},
+            [12, 13],
+            [12, 13],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
     def test_postindexed_g_cdev_mutex_matches_proved_0x50_subfield(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_postindexed_g_cdev_mutex_storage(
             [
@@ -814,6 +855,65 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertEqual(evidence, [])
         self.assertNotEqual(stock, candidate)
+
+    def test_postindexed_g_cdev_mutex_accepts_direct_lock_setup(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_postindexed_g_cdev_mutex_storage(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data",
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x840",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x840",
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x810",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x810",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data",
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x80",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x80",
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x50",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x50",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x7c0",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x7c0",
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x840",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x840",
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x810",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x810",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data",
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x80",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x80",
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x50",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x50",
+            ],
+            [
+                "adrp",
+                "add",
+                "f8450408",
+                "ldr",
+                "bl <mutex_lock>",
+                "pad",
+                "adrp",
+                "add",
+                "store",
+                "store",
+                "bl <mutex_lock>",
+                "pad",
+                "adrp",
+                "add",
+                "9100c260",
+                "bl <mutex_unlock>",
+            ],
+            [0, 1, 6, 7, 12, 13],
+            [0, 1, 6, 7, 12, 13],
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(evidence[0]["instruction_schedule"], "direct_lock_setup")
 
     def test_stripped_g_cdev_data_base_requires_unique_pair(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_stripped_g_cdev_data_base(

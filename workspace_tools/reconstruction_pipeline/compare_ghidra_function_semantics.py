@@ -16,6 +16,7 @@ from typing import Any
 
 DATA_REFERENCE_RE = re.compile(r"&(?:DAT|UNK)_([0-9a-fA-F]+)")
 GLOBAL_DATA_LABEL_RE = re.compile(r"\b(?:DAT|UNK)_[0-9a-fA-F]+\b")
+SYMBOL_STRING_RE = re.compile(r"\b(?P<symbol>unk_[0-9a-fA-F]+)\b")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
 SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
     r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
@@ -163,6 +164,22 @@ def elf_data_string_resolver(root: Path, module: Path | None) -> dict[int, str]:
             continue
         raw = payload[offset : offset + size]
         for relative, value in enumerate(raw):
+            # printk format strings can begin with the Linux log-level byte
+            # (for example \x01'6').  Preserve the symbol's address while
+            # resolving the human-readable text after that prefix.
+            if value == 1 and relative + 1 < len(raw):
+                terminator = raw.find(b"\0", relative + 1)
+                if terminator > relative + 1:
+                    candidate = raw[relative + 1 : terminator]
+                    try:
+                        text = candidate.decode("utf-8")
+                    except UnicodeDecodeError:
+                        text = ""
+                    if len(text) <= 512 and all(
+                        char.isprintable() or char in "\n\r\t" for char in text
+                    ):
+                        result[start + relative] = text
+                continue
             if (relative != 0 and raw[relative - 1] != 0) or value == 0:
                 continue
             terminator = raw.find(b"\0", relative)
@@ -180,12 +197,43 @@ def elf_data_string_resolver(root: Path, module: Path | None) -> dict[int, str]:
     return result
 
 
+def symbol_string_index(root: Path, elf_strings: dict[int, str]) -> dict[str, str]:
+    """Resolve imported local data labels when they point at an ELF string."""
+    resolved: dict[str, str] = {}
+    for record in read_jsonl(root / "symbols.jsonl"):
+        name = record.get("name")
+        address = record.get("address")
+        if not isinstance(name, str) or not isinstance(address, str):
+            continue
+        try:
+            value = elf_strings.get(int(address, 16))
+        except ValueError:
+            continue
+        if value is not None:
+            resolved[name] = value
+    return resolved
+
+
 def normalize_decompiled(
-    text: str, strings: dict[int, str], elf_strings: dict[int, str] | None = None
+    text: str,
+    strings: dict[int, str],
+    elf_strings: dict[int, str] | None = None,
+    symbol_strings: dict[str, str] | None = None,
 ) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
     artifact_evidence: list[dict[str, Any]] = []
     elf_strings = elf_strings or {}
+    symbol_strings = symbol_strings or {}
+
+    def string_token(value: str, source: str, identity: str) -> str:
+        fingerprint = hashlib.sha256(value.encode("utf-8")).hexdigest()
+        evidence.append({
+            "source": source,
+            "identity": identity,
+            "value": value,
+            "sha256": fingerprint,
+        })
+        return f'GHIDRA_STRING[{json.dumps(value, ensure_ascii=True)}]'
 
     def replace(match: re.Match[str]) -> str:
         address = int(match.group(1), 16)
@@ -197,20 +245,35 @@ def normalize_decompiled(
                 source = "elf_section_bytes"
             if value is None:
                 continue
-            fingerprint = hashlib.sha256(value.encode("utf-8")).hexdigest()
-            evidence.append(
-                {
-                    "ghidra_address": f"{address:08x}",
-                    "string_address_delta": delta,
-                    "source": source,
-                    "value": value,
-                    "sha256": fingerprint,
-                }
-            )
-            return f'GHIDRA_STRING[{json.dumps(value, ensure_ascii=True)}]'
+            token = string_token(value, source, f"{address:08x}")
+            evidence[-1]["ghidra_address"] = f"{address:08x}"
+            evidence[-1]["string_address_delta"] = delta
+            return token
         return match.group(0)
 
     replaced = DATA_REFERENCE_RE.sub(replace, text.replace("\r\n", "\n"))
+
+    def replace_symbol_string(match: re.Match[str]) -> str:
+        symbol = match.group("symbol")
+        value = symbol_strings.get(symbol)
+        if value is None:
+            return match.group(0)
+        return string_token(value, "elf_symbol_bytes", symbol)
+
+    replaced = SYMBOL_STRING_RE.sub(replace_symbol_string, replaced)
+
+    # Ghidra can express a resolved string pointer either as GHIDRA_STRING[...] or
+    # &GHIDRA_STRING[...]. Both forms denote the same string-address expression;
+    # preserve the byte-backed string evidence while removing this decompiler-only
+    # syntax variation. No general address-of expression is normalized here.
+    if "&GHIDRA_STRING[" in replaced:
+        artifact_evidence.append(
+            {
+                "kind": "ghidra_string_pointer_address_syntax",
+                "value": "&GHIDRA_STRING[...]",
+            }
+        )
+        replaced = replaced.replace("&GHIDRA_STRING[", "GHIDRA_STRING[")
 
     # Ghidra labels unnamed globals with their linked virtual addresses. These
     # addresses legitimately differ between stock and reconstructed modules;
@@ -336,6 +399,8 @@ def compare_function(
     candidate_strings: dict[int, str],
     stock_elf_strings: dict[int, str] | None = None,
     candidate_elf_strings: dict[int, str] | None = None,
+    stock_symbol_strings: dict[str, str] | None = None,
+    candidate_symbol_strings: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -367,6 +432,7 @@ def compare_function(
         paths["stock"]["decompiled"].read_text(encoding="utf-8"),
         stock_strings,
         stock_elf_strings,
+        stock_symbol_strings,
     )
     (
         candidate_normalized,
@@ -376,6 +442,7 @@ def compare_function(
         paths["candidate"]["decompiled"].read_text(encoding="utf-8"),
         candidate_strings,
         candidate_elf_strings,
+        candidate_symbol_strings,
     )
     stock_shape = pcode_shape(read_jsonl(paths["stock"]["pcode"]))
     candidate_shape = pcode_shape(read_jsonl(paths["candidate"]["pcode"]))
@@ -453,6 +520,8 @@ def main() -> int:
             raise ValueError(f"missing module: {module}")
     stock_elf_strings = elf_data_string_resolver(stock_root, stock_module)
     candidate_elf_strings = elf_data_string_resolver(candidate_root, candidate_module)
+    stock_symbol_strings = symbol_string_index(stock_root, stock_elf_strings)
+    candidate_symbol_strings = symbol_string_index(candidate_root, candidate_elf_strings)
     results = [
         compare_function(
             function,
@@ -464,6 +533,8 @@ def main() -> int:
             string_index(candidate_root),
             stock_elf_strings,
             candidate_elf_strings,
+            stock_symbol_strings,
+            candidate_symbol_strings,
         )
         for function in args.functions
     ]
