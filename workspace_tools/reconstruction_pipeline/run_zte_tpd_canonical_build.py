@@ -130,6 +130,15 @@ def main() -> int:
         / "zte_tpd",
         help="Versioned source tree that must exactly match engineering/curated/zte_tpd.",
     )
+    parser.add_argument(
+        "--artifact-root",
+        type=Path,
+        help=(
+            "Root for temporary canonical-build cycles and the promoted module. "
+            "Defaults to ENGINEERING_ROOT/validation; use an external volume to "
+            "avoid consuming the engineering workspace disk."
+        ),
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", args.label):
@@ -142,6 +151,7 @@ def main() -> int:
         parser.error("--parallelism must be at least 1")
 
     root = args.engineering_root.resolve()
+    artifact_root = (args.artifact_root or root / "validation").resolve()
     curated = root / "curated" / "zte_tpd"
     candidate_source = args.candidate_source.resolve()
     if not curated.is_dir():
@@ -182,7 +192,7 @@ def main() -> int:
         return 1
 
     run_id = generated.strftime("%Y%m%dT%H%M%SZ")
-    run_root = root / "validation" / "zte_tpd" / "canonical_builds" / args.label / run_id
+    run_root = artifact_root / "zte_tpd" / "canonical_builds" / args.label / run_id
     run_root.mkdir(parents=True, exist_ok=False)
     module_paths = [
         module_path_for_cycle(args.audit_name, cycle)
@@ -265,7 +275,7 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
     reproducible = accepted and len(set(hashes)) == 1 and len(set(sizes)) == 1
     promoted = None
     if reproducible:
-        promoted = root / "validation" / args.audit_name / "zte_tpd" / "zte_tpd.ko"
+        promoted = artifact_root / args.audit_name / "zte_tpd" / "zte_tpd.ko"
         promoted.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(cycle_records[-1]["artifact"]["path"], promoted)
 
@@ -285,6 +295,7 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         "toolchain": args.clang_revision,
         "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
         "output_filesystem": "independent ephemeral container Linux filesystem",
+        "artifact_root": str(artifact_root),
         "source_tree": source_record,
         "candidate_source_tree": candidate_source_record,
         "source_sync": source_sync,

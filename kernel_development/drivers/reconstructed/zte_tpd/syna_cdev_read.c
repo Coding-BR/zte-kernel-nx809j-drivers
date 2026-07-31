@@ -1,20 +1,26 @@
+#ifndef __user
+#define __user
+#endif
+
 ssize_t syna_cdev_read(struct file *file, char __user *buffer, size_t count, loff_t *offset)
 {
-  __int64 a2 = (__int64)buffer;
-  __int64 a3 = (__int64)count;
-  __int64 *a4 = (__int64 *)offset;
+  __int64 tcm_hcd;
+  __int64 result;
+  int status;
+  unsigned int request;
 
   (void)file;
-  __int64 v5; // x21
-  __int64 v6; // x20
-
-  if ( !a3 )
+  (void)offset;
+  if (!count)
     return 0;
-  v5 = *(_QWORD *)(g_cdev_data + 168);
+  request = (unsigned int)count;
+  tcm_hcd = *(_QWORD *)(g_cdev_data + 168);
   mutex_lock(&qword_316A0);
-  v6 = (int)syna_cdev_ioctl_raw_read(v5, a2, (unsigned int)a3, (unsigned int)a3);
-  if ( v6 != a3 )
-    printk(unk_38868, "syna_cdev_read", (unsigned int)a3);
+  status = (int)syna_cdev_ioctl_raw_read(tcm_hcd, (__int64)buffer, request, request);
+  result = status;
+  if (result != count)
+    printk("\0013[error] %s: Invalid read operation, request:%d, return:%d\n",
+           "syna_cdev_read", request, status);
   mutex_unlock(&qword_316A0);
-  return v6;
+  return result;
 }

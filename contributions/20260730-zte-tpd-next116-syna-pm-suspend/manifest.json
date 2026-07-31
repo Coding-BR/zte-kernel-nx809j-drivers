@@ -1,8 +1,8 @@
 {
   "attestation": {
     "executed_locally": true,
-    "notes_en": "Microtasks 182 syna_pm_suspend, 183 syna_pm_resume, 184 syna_cdev_create, 185 syna_cdev_devnode, and 186 syna_cdev_remove were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. Task 186 matches the stock 400-byte/100-instruction function and KCFI type ID 0x3175607e; its direct-source harness covers null-TCM logging, full valid teardown, an empty no-managed-device path, and character-device teardown. A source-sync gate pins the builder source tree before canonical builds. No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
-    "notes_pt": "As microtarefas 182 syna_pm_suspend, 183 syna_pm_resume, 184 syna_cdev_create, 185 syna_cdev_devnode e 186 syna_cdev_remove foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. A tarefa 186 corresponde a funcao stock de 400 bytes/100 instrucoes e ao ID de tipo KCFI 0x3175607e; seu harness direto no fonte cobre log de TCM nulo, teardown valido completo, caminho vazio sem dispositivo gerenciado e teardown do dispositivo de caracteres. Um portao de sincronizacao fixa a arvore de fontes do compilador antes dos builds canonicos. Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
+    "notes_en": "Microtasks 182 syna_pm_suspend, 183 syna_pm_resume, 184 syna_cdev_create, 185 syna_cdev_devnode, 186 syna_cdev_remove, and 188 syna_cdev_read were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. Task 186 matches the stock 400-byte/100-instruction function and KCFI type ID 0x3175607e; its direct-source harness covers null-TCM logging, full valid teardown, an empty no-managed-device path, and character-device teardown. Task 188 matches the stock 160-byte/40-instruction function and KCFI type ID 0xf4e9d97c; its direct-source harness covers the zero-length path, full read, partial-read diagnostic, and negative 32-bit return with request truncation. Its bounded assembly equivalences prove u32 argument setup, the signed printk argument path, and the post-indexed g_cdev_data mutex address against raw stock relocations. A source-sync gate pins the builder source tree before canonical builds. No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
+    "notes_pt": "As microtarefas 182 syna_pm_suspend, 183 syna_pm_resume, 184 syna_cdev_create, 185 syna_cdev_devnode, 186 syna_cdev_remove e 188 syna_cdev_read foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. A tarefa 186 corresponde a funcao stock de 400 bytes/100 instrucoes e ao ID de tipo KCFI 0x3175607e; seu harness direto no fonte cobre log de TCM nulo, teardown valido completo, caminho vazio sem dispositivo gerenciado e teardown do dispositivo de caracteres. A tarefa 188 corresponde a funcao stock de 160 bytes/40 instrucoes e ao ID de tipo KCFI 0xf4e9d97c; seu harness direto no fonte cobre caminho de tamanho zero, leitura completa, diagnostico de leitura parcial e retorno negativo de 32 bits com truncamento da requisicao. Suas equivalencias limitadas de Assembly provam a preparacao de argumento u32, o caminho de argumento assinado para printk e o endereco do mutex g_cdev_data pos-indexado contra relocacoes stock brutas. Um portao de sincronizacao fixa a arvore de fontes do compilador antes dos builds canonicos. Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
     "reviewer_rerun_required": true
   },
   "base_commit": "fddb80c06ad6b9d1b972026d1d0711d82030f191",
@@ -20,12 +20,12 @@
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json",
-      "sha256": "553ce51b36d8f9f5b5fc1e17795d529f6f218b24164212a73c9746d53946873c"
+      "sha256": "ff7953f104575860a8b8aea7245056c5c15d76bbee735dccf86c10c1f98ce8ce"
     },
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.md",
-      "sha256": "d8a94ba2e25abf213b61b70f093e4415c7730c2658c646f286162645eeab7f56"
+      "sha256": "52674a52d472a6782ba9e4407c1666e76f69b45f86a360d329ccba6c14d3f84f"
     },
     {
       "change": "M",
@@ -66,6 +66,11 @@
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
       "sha256": "7520b949d1014ce04cf9b85969f71c6f614f36385a57b15209a41d96c5f82181"
+    },
+    {
+      "change": "M",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_read.c",
+      "sha256": "73a7e0b67baeb2e511d6d570657de0727819bcc9b303930a97a8d12ca515f878"
     },
     {
       "change": "M",
@@ -186,6 +191,11 @@
       "change": "A",
       "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_devnode_host_test.c",
       "sha256": "20e947b42613bdf318e43523b897c1bf9493f1e5f98cd6782a321d8761cf09d5"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_read_host_test.c",
+      "sha256": "d0628183f884ad102812900732e897a684565898cec9e42efd055955c2fc30dd"
     },
     {
       "change": "A",
@@ -1484,6 +1494,51 @@
     },
     {
       "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/assembly_comparison.json",
+      "sha256": "d74624889a54f9ee66a492af6097de0d81addc59882d8f3718f4781adc69f66a"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/build_report.json",
+      "sha256": "cfbf85971441b23be4403d24c289e74ea1636a14d86f71d0db48566219d85209"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/host_harness_report.json",
+      "sha256": "6f5a1e7fee3a6c8299b14ce13c522398bd6c9c7f2c5a9322b42613bbae41ded8"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/joern_gate_report.json",
+      "sha256": "6d89c4b9f446e6b47f206935251f9816cc851ed0eed2cdda8889d46cf3705af5"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/joern_gate_summary.json",
+      "sha256": "b555f4d879317f4c842ddd6d7eaf7cc202e0bbd3e70107ba9a84144e667013bb"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/kcfi_candidate.json",
+      "sha256": "e7a4e58898022a7094060c1a816fe9edfd56d37b5365a36f4e6f134c619e3c8f"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/kcfi_comparison.json",
+      "sha256": "2ca426c0c06cc41e335afd8cf1da2230a3a70ac8c51f483c213b10b07237cddc"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/kcfi_stock.json",
+      "sha256": "abac3327a093c56f3a50fad83b56425e907391594de980d75c314882cac2325c"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_syna_cdev_read_v1/microtask_attestation_v1.json",
+      "sha256": "5a9aeb4d68abe965189acef4755d6865b27d883830cce7d06a5befe1af106e95"
+    },
+    {
+      "change": "A",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next95_syna_release_v1/assembly_comparison.json",
       "sha256": "1de97b671e49e186231ac7f07ab90eb1f0d5d6d41853f3ddadcbbe86ebfc77b1"
     },
@@ -1790,7 +1845,7 @@
     {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/microtask_audit.json",
-      "sha256": "84dae82be5b45b7725b4bef1844133c44c87653858a287e244ef1916b3947122"
+      "sha256": "2aa5b3175c8851051e4bdc7fb9be7042975905fde2f938676b53764a65277533"
     },
     {
       "change": "M",
@@ -1800,7 +1855,7 @@
     {
       "change": "M",
       "path": "workspace_tools/reconstruction_pipeline/compare_function_assembly.py",
-      "sha256": "5e24b1e656a0eadd3076195a2b4efe0551e4fa062aa13418182eeca68cc5fdc8"
+      "sha256": "d290344ce1740c44d7cdd5fed8dd10b58beefff64ec5542e5091ca603469983c"
     },
     {
       "change": "M",
@@ -1825,7 +1880,7 @@
     {
       "change": "M",
       "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_canonical_build.py",
-      "sha256": "b94d34a58e173b47d3406f5272902832c088ac704fa7948622d5d794ce6538d4"
+      "sha256": "7c426c15626f0f44405318420a58c3e5e96c3f5f0d21ef3eb1597bc2ed14ea50"
     },
     {
       "change": "A",
@@ -1914,6 +1969,11 @@
     },
     {
       "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_cdev_read_harness.py",
+      "sha256": "eb5493d4c3b26248a52307d2598c86cc8e0d7fccd6c83eed5cbdf566f89e8b3a"
+    },
+    {
+      "change": "A",
       "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_cdev_remove_harness.py",
       "sha256": "cd3fe0fb3d12c05fb8ba13da0fbed693779f0d66477a53f4fc08f965ed58d578"
     },
@@ -1960,7 +2020,7 @@
     {
       "change": "M",
       "path": "workspace_tools/reconstruction_pipeline/tests/test_compare_function_assembly.py",
-      "sha256": "df3e3d03d3e570d1c10d07175cf959e999699eca3a9e0450d2e508b5485eec6c"
+      "sha256": "49000f91db24416d6c3e2fcd0ef6f17163fe19d87abd95591829109763f433e5"
     },
     {
       "change": "A",

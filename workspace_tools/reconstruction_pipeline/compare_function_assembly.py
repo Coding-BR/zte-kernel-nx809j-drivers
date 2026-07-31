@@ -731,7 +731,9 @@ def canonicalize_equality_cmp_operand_swaps(
     stock = list(stock_instructions)
     candidate = list(candidate_instructions)
     evidence: list[dict[str, Any]] = []
-    for index in range(len(stock) - 1):
+    # A size mismatch is a failed parity result, not a reason to index past the
+    # shorter instruction stream while checking a possible two-instruction pair.
+    for index in range(min(len(stock), len(candidate)) - 1):
         if stock[index] == candidate[index]:
             continue
         stock_word = _opcode_word(stock[index])
@@ -765,6 +767,182 @@ def canonicalize_equality_cmp_operand_swaps(
         )
         stock[index] = canonical
         candidate[index] = canonical
+    return stock, candidate, evidence
+
+
+def _mov_register_source_dest(word: int, width: int) -> tuple[int, int] | None:
+    """Return (source, destination) for the ORR alias MOV Wd/Xd, Wn/Xn."""
+    base = 0xAA0003E0 if width == 64 else 0x2A0003E0
+    if (word & 0xFFE0FFE0) != base:
+        return None
+    return ((word >> 16) & 0x1F, word & 0x1F)
+
+
+def _zero_extend_u32_source_dest(word: int) -> tuple[int, int] | None:
+    """Recognize only AND Xd, Xn, #0xffffffff, which does not set flags."""
+    if (word & 0xFFFFFC00) != 0x92407C00:
+        return None
+    return ((word >> 5) & 0x1F, word & 0x1F)
+
+
+def canonicalize_u32_argument_setup_reordering(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Normalize one proven u32 marshalling scheduling difference before a call.
+
+    A source declaration can require the compiler to emit ``AND Xd, Xn,
+    #0xffffffff`` where stock uses the exact ``MOV Wd, Wn`` alias. Both write
+    the same 64-bit zero-extended value. This rule allows the AND to move only
+    across two independent X-register moves and a final independent W-register
+    move, all immediately before the same direct call.
+    """
+    stock = list(stock_instructions)
+    candidate = list(candidate_instructions)
+    evidence: list[dict[str, Any]] = []
+    if len(stock) != len(candidate):
+        return stock, candidate, evidence
+
+    for index in range(len(stock) - 4):
+        if stock[index : index + 5] == candidate[index : index + 5]:
+            continue
+        stock_words = [_opcode_word(value) for value in stock[index : index + 4]]
+        candidate_words = [_opcode_word(value) for value in candidate[index : index + 4]]
+        if any(word is None for word in stock_words + candidate_words):
+            continue
+        stock_words = [word for word in stock_words if word is not None]
+        candidate_words = [word for word in candidate_words if word is not None]
+        first_move = _mov_register_source_dest(stock_words[0], 64)
+        second_move = _mov_register_source_dest(stock_words[1], 64)
+        zero_extend_move = _mov_register_source_dest(stock_words[2], 32)
+        final_move = _mov_register_source_dest(stock_words[3], 32)
+        candidate_zero_extend = _zero_extend_u32_source_dest(candidate_words[0])
+        if (
+            first_move is None
+            or second_move is None
+            or zero_extend_move is None
+            or final_move is None
+            or candidate_zero_extend != zero_extend_move
+            or candidate[ index + 1 : index + 4] != stock[index : index + 2] + stock[index + 3 : index + 4]
+            or stock[index + 4] != candidate[index + 4]
+            or not stock[index + 4].startswith("bl <")
+        ):
+            continue
+        destinations = {
+            first_move[1],
+            second_move[1],
+            zero_extend_move[1],
+            final_move[1],
+        }
+        if (
+            len(destinations) != 4
+            or zero_extend_move[0] in {first_move[1], second_move[1]}
+        ):
+            continue
+        candidate[index : index + 4] = stock[index : index + 4]
+        evidence.append(
+            {
+                "kind": "u32_argument_zero_extend_reordering",
+                "instruction_indices": list(range(index, index + 4)),
+                "call_index": index + 4,
+                "stock_setup": stock[index : index + 4],
+                "candidate_setup": candidate_instructions[index : index + 4],
+                "call": stock[index + 4],
+                "reason": (
+                    "AND Xd, Xn, #0xffffffff and MOV Wd, Wn both produce the "
+                    "same zero-extended u32; the moved instructions write "
+                    "independent argument registers and do not change flags."
+                ),
+            }
+        )
+    return stock, candidate, evidence
+
+
+def _sxtw_source_dest(word: int) -> tuple[int, int] | None:
+    """Recognize only SXTW Xd, Wn."""
+    if (word & 0xFFFFFC00) != 0x93407C00:
+        return None
+    return ((word >> 5) & 0x1F, word & 0x1F)
+
+
+def canonicalize_sxtw_int_printk_argument_reordering(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Normalize one signed-int vararg move proven by an unchanged SXTW path.
+
+    The candidate may schedule ``MOV X3, X0`` before loading the printk format,
+    while stock keeps the sign-extended value in X20 then emits ``MOV W3, W20``.
+    The rule accepts only an unchanged immediate SXTW/CMP/B.NE predecessor and
+    the same following ``_printk`` call; relocation comparison still requires
+    the exact ``%d`` format string.
+    """
+    stock = list(stock_instructions)
+    candidate = list(candidate_instructions)
+    evidence: list[dict[str, Any]] = []
+    if len(stock) != len(candidate):
+        return stock, candidate, evidence
+
+    for index in range(len(stock) - 6):
+        stock_words = [_opcode_word(value) for value in stock[index : index + 6]]
+        candidate_words = [_opcode_word(value) for value in candidate[index : index + 6]]
+        if any(word is None for word in stock_words + candidate_words):
+            continue
+        stock_words = [word for word in stock_words if word is not None]
+        candidate_words = [word for word in candidate_words if word is not None]
+        candidate_value_move = _mov_register_source_dest(candidate_words[0], 64)
+        stock_value_move = _mov_register_source_dest(stock_words[5], 32)
+        matching_preludes = []
+        for prelude in range(index - 2):
+            stock_extend = _sxtw_source_dest(_opcode_word(stock[prelude]) or -1)
+            candidate_extend = _sxtw_source_dest(
+                _opcode_word(candidate[prelude]) or -1
+            )
+            cmp_word = _opcode_word(stock[prelude + 1])
+            candidate_cmp = _opcode_word(candidate[prelude + 1])
+            branch_word = _opcode_word(stock[prelude + 2])
+            candidate_branch = _opcode_word(candidate[prelude + 2])
+            if (
+                stock_extend is not None
+                and stock_extend == candidate_extend
+                and cmp_word is not None
+                and cmp_word == candidate_cmp
+                and (cmp_word & 0xFFE0FC1F) == 0xEB00001F
+                and branch_word is not None
+                and branch_word == candidate_branch
+                and _is_equality_branch(branch_word)
+                and (branch_word & 0xF) == 1
+            ):
+                matching_preludes.append((prelude, stock_extend))
+        if (
+            candidate_value_move is None
+            or stock_value_move is None
+            or len(matching_preludes) != 1
+            or candidate_value_move
+            != (matching_preludes[0][1][0], stock_value_move[1])
+            or stock_value_move[0] != matching_preludes[0][1][1]
+            or candidate_value_move[1] != stock_value_move[1]
+            or stock[index : index + 5] != candidate[index + 1 : index + 6]
+            or stock[index + 6] != candidate[index + 6]
+            or stock[index + 6] != "bl <_printk>"
+        ):
+            continue
+        candidate[index : index + 6] = stock[index : index + 6]
+        evidence.append(
+            {
+                "kind": "sxtw_int_printk_argument_reordering",
+                "sxtw_index": matching_preludes[0][0],
+                "instruction_indices": list(range(index, index + 6)),
+                "call_index": index + 6,
+                "stock_value_move": stock[index + 5],
+                "candidate_value_move": candidate_instructions[index],
+                "reason": (
+                    "the unchanged SXTW establishes W20 and W0 with identical "
+                    "low 32 bits; both sequences pass that int as W3 to the same "
+                    "_printk call after independent format and request setup."
+                ),
+            }
+        )
     return stock, candidate, evidence
 
 
@@ -1346,6 +1524,179 @@ def canonicalize_stripped_mutex_storage(
     return stock, candidate, evidence
 
 
+def canonicalize_postindexed_g_cdev_mutex_storage(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_raw_relocations: list[str],
+    candidate_raw_relocations: list[str],
+    instructions: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match a stripped mutex at the proved ``g_cdev_data + 0x50`` location.
+
+    This is deliberately not a general global-alias rule.  It accepts exactly
+    one direct ``g_cdev_data`` ADRP/ADD pair and one ``g_cdev_data+0x50`` pair,
+    only when the stock .bss displacement is also 0x50 and the unchanged code
+    proves the post-indexed load and the lock/unlock endpoints.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    expected_types = ("R_AARCH64_ADR_PREL_PG_HI21", "R_AARCH64_ADD_ABS_LO12_NC")
+    if (
+        len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def compared_raw_relocations(relocations: list[str]) -> list[str]:
+        compared: list[str] = []
+        for relocation in relocations:
+            matched = RELOCATION_RE.search(relocation)
+            if matched is None or matched.group(1) in {
+                "R_AARCH64_CALL26",
+                "R_AARCH64_JUMP26",
+            }:
+                continue
+            compared.append(f"{matched.group(1)} {matched.group(2)}")
+        return compared
+
+    def pairs_for_target(relocations: list[str], target: str) -> list[int]:
+        pairs: list[int] = []
+        for index in range(len(relocations) - 1):
+            entries = [value.split(" ", 1) for value in relocations[index : index + 2]]
+            if (
+                all(len(entry) == 2 for entry in entries)
+                and tuple(entry[0] for entry in entries) == expected_types
+                and entries[0][1] == target
+                and entries[1][1] == target
+            ):
+                pairs.append(index)
+        return pairs
+
+    def bss_offset(target: str) -> int | None:
+        matched = re.fullmatch(r"\.bss(?:\+0x([0-9a-fA-F]+))?", target)
+        if matched is None:
+            return None
+        return int(matched.group(1) or "0", 16)
+
+    base_pairs = pairs_for_target(candidate, "g_cdev_data")
+    mutex_pairs = pairs_for_target(candidate, "g_cdev_data+0x50")
+    if len(base_pairs) != 1 or len(mutex_pairs) != 1:
+        return stock, candidate, evidence
+
+    base_index = base_pairs[0]
+    mutex_index = mutex_pairs[0]
+    raw_stock = compared_raw_relocations(stock_raw_relocations)
+    raw_candidate = compared_raw_relocations(candidate_raw_relocations)
+    if len(raw_stock) != len(stock) or len(raw_candidate) != len(candidate):
+        return stock, candidate, evidence
+    stock_base = [value.split(" ", 1) for value in stock[base_index : base_index + 2]]
+    stock_mutex = [value.split(" ", 1) for value in stock[mutex_index : mutex_index + 2]]
+    raw_stock_base = [value.split(" ", 1) for value in raw_stock[base_index : base_index + 2]]
+    raw_stock_mutex = [value.split(" ", 1) for value in raw_stock[mutex_index : mutex_index + 2]]
+    raw_candidate_base = [
+        value.split(" ", 1) for value in raw_candidate[base_index : base_index + 2]
+    ]
+    raw_candidate_mutex = [
+        value.split(" ", 1) for value in raw_candidate[mutex_index : mutex_index + 2]
+    ]
+    if (
+        any(
+            len(entry) != 2
+            for entry in (
+                stock_base
+                + stock_mutex
+                + raw_stock_base
+                + raw_stock_mutex
+                + raw_candidate_base
+                + raw_candidate_mutex
+            )
+        )
+        or any(
+            tuple(entry[0] for entry in pair) != expected_types
+            for pair in (
+                stock_base,
+                stock_mutex,
+                raw_stock_base,
+                raw_stock_mutex,
+                raw_candidate_base,
+                raw_candidate_mutex,
+            )
+        )
+        or stock_base[0][1] != stock_base[1][1]
+        or stock_mutex[0][1] != stock_mutex[1][1]
+        or raw_stock_base[0][1] != raw_stock_base[1][1]
+        or raw_stock_mutex[0][1] != raw_stock_mutex[1][1]
+        or raw_candidate_base[0][1] != raw_candidate_base[1][1]
+        or raw_candidate_mutex[0][1] != raw_candidate_mutex[1][1]
+        or stock_base[0][1] != "g_cdev_data"
+        or raw_candidate_base[0][1] != "g_cdev_data"
+        or raw_candidate_mutex[0][1] != "g_cdev_data+0x50"
+    ):
+        return stock, candidate, evidence
+
+    stock_base_offset = bss_offset(raw_stock_base[0][1])
+    stock_mutex_offset = bss_offset(raw_stock_mutex[0][1])
+    base_positions = stock_instruction_indices[base_index : base_index + 2]
+    mutex_positions = stock_instruction_indices[mutex_index : mutex_index + 2]
+    if (
+        stock_base_offset is None
+        or stock_mutex_offset is None
+        or stock_mutex_offset - stock_base_offset != 0x50
+        or base_positions != candidate_instruction_indices[base_index : base_index + 2]
+        or mutex_positions != candidate_instruction_indices[mutex_index : mutex_index + 2]
+        or len(base_positions) != 2
+        or len(mutex_positions) != 2
+        or base_positions[1] != base_positions[0] + 1
+        or mutex_positions[1] != mutex_positions[0] + 1
+    ):
+        return stock, candidate, evidence
+
+    base_instruction = base_positions[0]
+    mutex_instruction = mutex_positions[0]
+    if (
+        base_instruction + 6 >= len(instructions)
+        or mutex_instruction + 2 >= len(instructions)
+        or _opcode_word(instructions[base_instruction + 3]) != 0xF8450408
+        or instructions[base_instruction + 6] != "bl <mutex_lock>"
+        or any(
+            instruction.startswith("bl <")
+            for instruction in instructions[base_instruction + 2 : base_instruction + 6]
+        )
+        or instructions[mutex_instruction + 2] != "bl <mutex_unlock>"
+    ):
+        return stock, candidate, evidence
+
+    aliases = (
+        "<postindexed_g_cdev_mutex:g_cdev_data>",
+        "<postindexed_g_cdev_mutex:g_cdev_data+0x50>",
+    )
+    for index, alias in zip((base_index, mutex_index), aliases, strict=True):
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+    evidence.append(
+        {
+            "kind": "postindexed_g_cdev_mutex_storage",
+            "reason": (
+                "a unique direct g_cdev_data pair and +0x50 pair match stripped "
+                ".bss storage with the same 0x50 displacement; unchanged code "
+                "contains LDR X8, [X0], #0x50, mutex_lock, and mutex_unlock"
+            ),
+            "stock_base_target": raw_stock_base[0][1],
+            "stock_mutex_target": raw_stock_mutex[0][1],
+            "candidate_base_target": "g_cdev_data",
+            "candidate_mutex_target": "g_cdev_data+0x50",
+            "base_instruction_indices": base_positions,
+            "mutex_instruction_indices": mutex_positions,
+        }
+    )
+    return stock, candidate, evidence
+
+
 def canonicalize_stripped_g_cdev_data_base(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -1730,11 +2081,29 @@ def main() -> int:
             stock_instructions_compared,
             candidate_instructions_compared,
         )
+        (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            u32_argument_setup_evidence,
+        ) = canonicalize_u32_argument_setup_reordering(
+            stock_instructions_compared,
+            candidate_instructions_compared,
+        )
+        (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            sxtw_printk_evidence,
+        ) = canonicalize_sxtw_int_printk_argument_reordering(
+            stock_instructions_compared,
+            candidate_instructions_compared,
+        )
         instruction_equivalences = (
             function_identity_evidence
             + boolean_reordering_evidence
             + commutative_evidence
             + equality_cmp_evidence
+            + u32_argument_setup_evidence
+            + sxtw_printk_evidence
         )
         (
             stock_instructions_compared,
@@ -1788,6 +2157,22 @@ def main() -> int:
             non_branch_relocation_instruction_indices(candidate_path),
         )
         relocation_equivalences += mutex_storage_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            postindexed_g_cdev_mutex_equivalences,
+        ) = canonicalize_postindexed_g_cdev_mutex_storage(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stock_raw_relocations,
+            candidate_raw_relocations,
+            stock_instructions_compared
+            if stock_instructions_compared == candidate_instructions_compared
+            else [],
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+        )
+        relocation_equivalences += postindexed_g_cdev_mutex_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
