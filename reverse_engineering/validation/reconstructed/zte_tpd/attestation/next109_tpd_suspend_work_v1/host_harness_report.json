@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "tpd_suspend_work"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "6aa52cc50b06c8de0e7d914b07d269bfcca5e137f6e57166bbe2f2500f1355fa",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next109_tpd_suspend_work_v1\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next109-tpd-suspend-work",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tpd_suspend_work_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next109_tpd_suspend_work_v1\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS tpd_suspend_work host tests (2 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "6aa52cc50b06c8de0e7d914b07d269bfcca5e137f6e57166bbe2f2500f1355fa",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next109_tpd_suspend_work_v1\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next109-tpd-suspend-work",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tpd_suspend_work_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next109_tpd_suspend_work_v1\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS tpd_suspend_work host tests (2 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 2,
+  "generated_utc": "2026-07-31T00:17:43.077477+00:00",
+  "inputs": [
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tpd_suspend_work_host_test.c",
+      "sha256": "62a56059b274723a45e3bf2366d9b4f7e58b1eaae59bdd8b4476a6a5a89764e2",
+      "size": 1485
+    },
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_suspend_work.c",
+      "sha256": "2d8f01e3ffe7d65ae8b2d342fed1e56b0a00769f4a63886c6b9a43e205c50e9f",
+      "size": 247
+    }
+  ],
+  "limitations": [
+    "The harness validates the null callback branch, the 0xe10 callback slot, and context forwarding from 0xdd8.",
+    "It does not load the module on an Android device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_tpd_suspend_work_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "tpd_suspend_work",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}
