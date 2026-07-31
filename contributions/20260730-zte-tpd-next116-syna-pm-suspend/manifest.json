@@ -1,8 +1,8 @@
 {
   "attestation": {
     "executed_locally": true,
-    "notes_en": "Microtasks 182 syna_pm_suspend, 183 syna_pm_resume, and 184 syna_cdev_create were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. The cdev harness covers allocation, registration, cdev-add, class-create, and device-create failure paths plus the successful initialization path. No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
-    "notes_pt": "As microtarefas 182 syna_pm_suspend, 183 syna_pm_resume e 184 syna_cdev_create foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. O harness de cdev cobre os caminhos de falha de alocacao, registro, cdev-add, criacao de classe e criacao de dispositivo, alem do caminho de inicializacao bem-sucedida. Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
+    "notes_en": "Microtasks 182 syna_pm_suspend, 183 syna_pm_resume, 184 syna_cdev_create, and 185 syna_cdev_devnode were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. The devnode harness covers the null-mode return, the type-pointer path, the name fallback, and kasprintf failure propagation. No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
+    "notes_pt": "As microtarefas 182 syna_pm_suspend, 183 syna_pm_resume, 184 syna_cdev_create e 185 syna_cdev_devnode foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. O harness de devnode cobre o retorno com mode nulo, o caminho do ponteiro type, o fallback de name e a propagacao de falha de kasprintf. Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
     "reviewer_rerun_required": true
   },
   "base_commit": "fddb80c06ad6b9d1b972026d1d0711d82030f191",
@@ -20,12 +20,12 @@
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json",
-      "sha256": "48efb0784cc73e718147c99a51b514d3b175cb6775ad4f220bfeee66712785d4"
+      "sha256": "780b9dd87e792e3f4d221c30774702f1b3d2ef9b0cf3dca4525f116cd589fcd3"
     },
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.md",
-      "sha256": "fd2d7eb8530442260b71990348b10f6ef4486baac9b3de52decd44d8af463b4e"
+      "sha256": "aec7f3ccec4b47df4e81e773abc6658f12f90454ea0f4cad3eafd03c8c852eea"
     },
     {
       "change": "M",
@@ -176,6 +176,11 @@
       "change": "A",
       "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_create_host_test.c",
       "sha256": "08dbd890f65f7a63ec3830d8f6da416b81384e7dcc4a419cf99615e3593e5c30"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_devnode_host_test.c",
+      "sha256": "20e947b42613bdf318e43523b897c1bf9493f1e5f98cd6782a321d8761cf09d5"
     },
     {
       "change": "A",
@@ -1369,6 +1374,61 @@
     },
     {
       "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/assembly_comparison.json",
+      "sha256": "7c369c25bd1b980a63aa1d7bee1f1a5a7c632aaf47f4650e7326c2148888b368"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/build_report.json",
+      "sha256": "3967ba4d1a42a6b9505fcd976c85f5cd348fb2ccfef3da67e6bd65355597955a"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/candidate_assembly/0000_syna_cdev_devnode.asm",
+      "sha256": "978a97f790a38da0b015831b4173d4613d72319b73fe011d2dd3e8e4012e6c70"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/candidate_assembly/manifest.json",
+      "sha256": "708c95e1a4c497d1964d5cf3c1410d0eb5b3eb9506ec0f4eb5125dbf0b44bbef"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/host_harness_report.json",
+      "sha256": "fc0a990fd2893ecf770e6191496e3ffe5ef2d46bdaec144e2c806bfacbf9fe8d"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/joern_gate_report.json",
+      "sha256": "839f8d4245243112904bad93a67ee411d14db093568c16697679428a88fb48f2"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/joern_gate_summary.json",
+      "sha256": "636d2dfec3d037e28e13dfd9c88f31bca7839163f7a003492dfea5a6366ddd0f"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/kcfi_candidate.json",
+      "sha256": "fd8c8b6a0854c176a067ea9409b97c1ecb47994fb52f5ee64c3fe86d9dc87a9e"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/kcfi_comparison.json",
+      "sha256": "5943e4e6f60e2f3cdb4b0db924f523fb227d80a801c933cbc3be9dcb2a1ba627"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/kcfi_stock.json",
+      "sha256": "16eb277b65838c30c80eb440f4aea27ad342321941f56bc76b8ba12a1c382852"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_syna_cdev_devnode_v1/microtask_attestation_v1.json",
+      "sha256": "36b529799acc552a8c2c3faa75db5ffc33e6ff2c837c7f33e028262b14f502b7"
+    },
+    {
+      "change": "A",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next95_syna_release_v1/assembly_comparison.json",
       "sha256": "1de97b671e49e186231ac7f07ab90eb1f0d5d6d41853f3ddadcbbe86ebfc77b1"
     },
@@ -1675,7 +1735,7 @@
     {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/microtask_audit.json",
-      "sha256": "598c2742546f98bb683d2fa8f29a0507bf5672b1fbf37f0568deb062bcfef52e"
+      "sha256": "0439d64bc0851eafa55a863143941a0150ae14bba6198d73372403ed68385870"
     },
     {
       "change": "M",
@@ -1786,6 +1846,11 @@
       "change": "A",
       "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_cdev_create_harness.py",
       "sha256": "ab2a724ca7c8d750053bbfca8f112c6db101675ea4ea53fa912a99e826d6a584"
+    },
+    {
+      "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_cdev_devnode_harness.py",
+      "sha256": "f3e41bd123a94f32dc96cce9f4501b589f3d068939e8daa280f0e493cd08fa95"
     },
     {
       "change": "A",
