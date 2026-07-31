@@ -75,6 +75,25 @@ def source_tree_record(root: Path) -> dict[str, object]:
     }
 
 
+def source_tree_mismatches(
+    expected: dict[str, object], actual: dict[str, object]
+) -> dict[str, list[str]]:
+    """Return deterministic source-tree differences without inspecting build output."""
+    expected_files = {
+        item["path"]: item["sha256"] for item in expected["files"]
+    }
+    actual_files = {item["path"]: item["sha256"] for item in actual["files"]}
+    return {
+        "missing_from_curated": sorted(expected_files.keys() - actual_files.keys()),
+        "unexpected_in_curated": sorted(actual_files.keys() - expected_files.keys()),
+        "content_mismatch": sorted(
+            path
+            for path in expected_files.keys() & actual_files.keys()
+            if expected_files[path] != actual_files[path]
+        ),
+    }
+
+
 def diagnostics(path: Path) -> list[str]:
     if not path.is_file():
         return [f"missing log: {path}"]
@@ -101,6 +120,16 @@ def main() -> int:
     parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
+    parser.add_argument(
+        "--candidate-source",
+        type=Path,
+        default=script_root
+        / "kernel_development"
+        / "drivers"
+        / "reconstructed"
+        / "zte_tpd",
+        help="Versioned source tree that must exactly match engineering/curated/zte_tpd.",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", args.label):
@@ -114,12 +143,44 @@ def main() -> int:
 
     root = args.engineering_root.resolve()
     curated = root / "curated" / "zte_tpd"
+    candidate_source = args.candidate_source.resolve()
     if not curated.is_dir():
         raise FileNotFoundError(f"missing curated source tree: {curated}")
+    if not candidate_source.is_dir():
+        raise FileNotFoundError(f"missing candidate source tree: {candidate_source}")
     if not (curated / "vendor.Module.symvers").is_file():
         raise FileNotFoundError(f"missing vendor.Module.symvers: {curated}")
 
     generated = datetime.now(timezone.utc)
+    output = (
+        args.output
+        or root / "validation" / "zte_tpd" / f"build_{args.label}_report.json"
+    ).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    candidate_source_record = source_tree_record(candidate_source)
+    curated_source_record = source_tree_record(curated)
+    source_sync = source_tree_mismatches(candidate_source_record, curated_source_record)
+    if any(source_sync.values()):
+        report = {
+            "schema_version": "1.0",
+            "generated_utc": generated.isoformat(),
+            "label": args.label,
+            "mode": "offline_independent_linux_filesystem_canonical_build",
+            "passed": False,
+            "reproducible": False,
+            "failure_stage": "candidate_source_sync",
+            "candidate_source_tree": candidate_source_record,
+            "source_tree": curated_source_record,
+            "source_sync": source_sync,
+            "notes": [
+                "The curated Docker snapshot must be byte-identical to the versioned candidate source before a canonical build can start.",
+                "Use sync_zte_tpd_curated_source.py with --apply and retain its hash-bound report outside the source tree.",
+            ],
+        }
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(json.dumps({"output": str(output), "passed": False, "failure_stage": "candidate_source_sync"}))
+        return 1
+
     run_id = generated.strftime("%Y%m%dT%H%M%SZ")
     run_root = root / "validation" / "zte_tpd" / "canonical_builds" / args.label / run_id
     run_root.mkdir(parents=True, exist_ok=False)
@@ -127,7 +188,7 @@ def main() -> int:
         module_path_for_cycle(args.audit_name, cycle)
         for cycle in range(1, args.cycles + 1)
     ]
-    source_record = source_tree_record(curated)
+    source_record = curated_source_record
     cycle_records = []
 
     for cycle in range(1, args.cycles + 1):
@@ -208,10 +269,6 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         promoted.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(cycle_records[-1]["artifact"]["path"], promoted)
 
-    output = (
-        args.output
-        or root / "validation" / "zte_tpd" / f"build_{args.label}_report.json"
-    ).resolve()
     report = {
         "schema_version": "1.0",
         "generated_utc": generated.isoformat(),
@@ -229,6 +286,8 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
         "output_filesystem": "independent ephemeral container Linux filesystem",
         "source_tree": source_record,
+        "candidate_source_tree": candidate_source_record,
+        "source_sync": source_sync,
         "cycles": cycle_records,
         "candidate": {
             "path": str(promoted) if promoted else None,

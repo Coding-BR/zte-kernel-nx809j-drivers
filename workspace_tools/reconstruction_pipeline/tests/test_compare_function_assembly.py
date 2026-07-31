@@ -166,6 +166,25 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertEqual(stock, candidate)
         self.assertEqual(len(evidence), 2)
 
+    def test_equality_cmp_operand_swap_requires_an_identical_equality_branch(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_equality_cmp_operand_swaps(
+            ["eb14013f", "54000241"],
+            ["eb09029f", "54000241"],
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["kind"], "equality_cmp_operand_swap")
+
+    def test_equality_cmp_operand_swap_rejects_order_sensitive_branch(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_equality_cmp_operand_swaps(
+            ["eb14013f", "5400004b"],
+            ["eb09029f", "5400004b"],
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
     def test_shifted_add_operand_swap_is_not_equivalent(self) -> None:
         stock, candidate, evidence = (
             MODULE.canonicalize_commutative_instruction_pairs(
@@ -587,6 +606,71 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertNotEqual(stock, candidate)
         self.assertEqual(evidence, [])
+
+    def test_stripped_bss_subfield_matches_byte_and_pointer_accesses(self) -> None:
+        for relocation_type in (
+            "R_AARCH64_LDST8_ABS_LO12_NC",
+            "R_AARCH64_LDST64_ABS_LO12_NC",
+        ):
+            stock, candidate, evidence = MODULE.canonicalize_stripped_bss_subfields(
+                [
+                    "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x808",
+                    f"{relocation_type} .bss+0x808",
+                ],
+                [
+                    "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x48",
+                    f"{relocation_type} g_cdev_data+0x48",
+                ],
+                [14, 15],
+                [14, 15],
+                True,
+            )
+
+            self.assertEqual(stock, candidate)
+            self.assertEqual(len(evidence), 1)
+            self.assertEqual(evidence[0]["ldst_relocation_index"], 1)
+
+    def test_stripped_mutex_storage_requires_lock_unlock_pair(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_mutex_storage(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x840",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x840",
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x840",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x840",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x80",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x80",
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x80",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x80",
+            ],
+            ["adrp", "add", "bl <mutex_lock>", "pad", "adrp", "add", "bl <mutex_unlock>"],
+            [0, 1, 4, 5],
+            [0, 1, 4, 5],
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["kind"], "stripped_mutex_storage")
+
+    def test_stripped_g_cdev_data_base_requires_unique_pair(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_g_cdev_data_base(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x7c0",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x7c0",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data",
+                "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data",
+            ],
+            [24, 25],
+            [24, 25],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["kind"], "stripped_g_cdev_data_base")
 
 
 if __name__ == "__main__":

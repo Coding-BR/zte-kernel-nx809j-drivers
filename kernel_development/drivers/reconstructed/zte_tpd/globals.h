@@ -29,7 +29,8 @@ struct syna_cdev_global_state {
     uint64_t qword_31680;
     uint64_t qword_31688;
     uint64_t qword_31690;
-    uint64_t qword_31698;
+    uint8_t qword_31698;
+    uint8_t reserved_31699[7];
     uint64_t qword_316A0;
     uint64_t qword_316A8;
     uint64_t qword_316B0;
