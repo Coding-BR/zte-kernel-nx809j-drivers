@@ -632,6 +632,14 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--source-root", type=Path, required=True)
+    parser.add_argument(
+        "--source-view-root",
+        type=Path,
+        help=(
+            "optional analysis-only C source view for c2cpg; the canonical "
+            "--source-root remains recorded as the compiled-source provenance"
+        ),
+    )
     parser.add_argument("--ghidra-export", type=Path, required=True)
     parser.add_argument("--reconstruction-map", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -672,6 +680,9 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     source_root = args.source_root.resolve()
+    source_view_root = (
+        args.source_view_root.resolve() if args.source_view_root else source_root
+    )
     ghidra_export = args.ghidra_export.resolve()
     reconstruction_map = args.reconstruction_map.resolve()
     output_dir = args.output_dir.resolve()
@@ -681,6 +692,7 @@ def main() -> int:
     profile_path = args.profile.resolve()
     required = [
         source_root,
+        source_view_root,
         ghidra_export / "functions.jsonl",
         ghidra_export / "calls.jsonl",
         reconstruction_map,
@@ -722,7 +734,7 @@ def main() -> int:
 
     source_command = [
         launchers["c2cpg"],
-        str(source_root),
+        str(source_view_root),
         "--output", str(source_cpg),
         "--log-problems",
         "--with-include-auto-discovery",
@@ -766,6 +778,7 @@ def main() -> int:
         "function_scope": sorted(set(args.function)),
         "mode": "PREPARE_ONLY" if args.prepare_only else "EXECUTE",
         "source": source_tree_record(source_root, set(args.exclude)),
+        "analysis_source_view": source_tree_record(source_view_root, set(args.exclude)),
         "ghidra": {
             "export": str(ghidra_export),
             "functions": file_record(ghidra_export / "functions.jsonl"),
