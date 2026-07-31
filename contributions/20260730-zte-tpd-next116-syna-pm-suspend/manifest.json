@@ -1,8 +1,8 @@
 {
   "attestation": {
     "executed_locally": true,
-    "notes_en": "Microtask 182 syna_pm_suspend was locally attested with two byte-identical canonical builds, exact Assembly and relocation comparison, matching KCFI, strict Joern, and a two-cycle ASan/UBSan harness. The harness verifies the exact log format plus writes at offsets 0x578 and 0x558. No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
-    "notes_pt": "A microtarefa 182 syna_pm_suspend foi atestada localmente com dois builds canonicos byte-a-byte identicos, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harness ASan/UBSan em dois ciclos. O harness verifica o formato de log exato e as escritas nos offsets 0x578 e 0x558. Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
+    "notes_en": "Microtasks 182 syna_pm_suspend and 183 syna_pm_resume were locally attested with two byte-identical canonical builds each, exact Assembly and relocation comparison, matching KCFI, strict Joern, and two-cycle ASan/UBSan harnesses. The suspend harness verifies the exact log format plus writes at offsets 0x578 and 0x558; the resume harness verifies the exact log format, the state clear at 0x578, and complete(core + 0x558). No smartphone, module load, or hardware validation was performed. The full driver remains incomplete.",
+    "notes_pt": "As microtarefas 182 syna_pm_suspend e 183 syna_pm_resume foram atestadas localmente com dois builds canonicos byte-a-byte identicos cada, comparacao exata de Assembly e relocacoes, KCFI correspondente, Joern estrito e harnesses ASan/UBSan em dois ciclos. O harness de suspensao verifica o formato de log exato e as escritas nos offsets 0x578 e 0x558; o de retomada verifica o formato de log exato, a limpeza do estado em 0x578 e complete(core + 0x558). Nenhum smartphone, carregamento de modulo ou validacao em hardware foi executado. O driver completo permanece incompleto.",
     "reviewer_rerun_required": true
   },
   "base_commit": "fddb80c06ad6b9d1b972026d1d0711d82030f191",
@@ -20,12 +20,12 @@
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.json",
-      "sha256": "f98eb541c48890cd5d4e660fafb50101a915c003e6d370df9e974e801c64f575"
+      "sha256": "0ce0a63ff97cea329e15569ff501d4b736e2aeb3bfe12c348c0d8eece009bee5"
     },
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.md",
-      "sha256": "39f135e4efccbe6a77a6370291fc363851ec100278fe92e7d89f13c60ed23f4f"
+      "sha256": "46cd0b1a8581d019620ef8a527f5645a693b4099f803758792d17fd4bed6eb0c"
     },
     {
       "change": "M",
@@ -84,6 +84,11 @@
     },
     {
       "change": "M",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_pm_resume.c",
+      "sha256": "e825a448a2de7447c8acf519ac868ac8dc604200b49b7e555c9f206ef4135c0b"
+    },
+    {
+      "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_pm_suspend.c",
       "sha256": "d14965be79d0b9da9b7058bce61804cca0970a045c89c9cb21f0e6e25495753e"
     },
@@ -120,7 +125,7 @@
     {
       "change": "M",
       "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
-      "sha256": "5e893aaca23515701f73f113ba944212f8a645c3ebfc9c429f3822800b98284d"
+      "sha256": "c340834de6640657f5c4c54411d864c912445e444618ff35d86e083545902045"
     },
     {
       "change": "A",
@@ -166,6 +171,11 @@
       "change": "A",
       "path": "kernel_development/drivers/validation/zte_tpd/host/syna_pal_mem_free_host_test.c",
       "sha256": "f111364db9b8282fab4e7a3263a8ec6bf0d4257bb9222f5b63f9765915fc1617"
+    },
+    {
+      "change": "A",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_pm_resume_host_test.c",
+      "sha256": "828b3572d8342cf5302d63e6a948c128416d1b51b208cd7006afb30f8f140dd0"
     },
     {
       "change": "A",
@@ -240,7 +250,7 @@
     {
       "change": "M",
       "path": "reverse_engineering/validation/OFFLINE_RECONSTRUCTION_AUDIT.md",
-      "sha256": "b6ff5a16aff8b7e2b43578628f30ce78327aee4eb866fb7c7942f3cf75922f47"
+      "sha256": "49f53ae56f2b8ddcfc6038c015faac08b7e396c108d1876b1f4521211bbdd521"
     },
     {
       "change": "A",
@@ -1214,6 +1224,61 @@
     },
     {
       "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/assembly_comparison.json",
+      "sha256": "e7aca349c8b057ef9d159087d0a587d97192973cb1d3d98843e52130a9fd3d00"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/build_report.json",
+      "sha256": "c93fb35d3a938c8da54c22925dd3f7e572e87cb61cd63b1132390f7919485d71"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/candidate_assembly/0000_syna_pm_resume.asm",
+      "sha256": "6f08d991f4bd8ef7a5c12b4cead13ce44c42db9e78322ccdddd53b0331a80f7f"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/candidate_assembly/manifest.json",
+      "sha256": "9ed4bd6d5a7427d0d913bfb7d43b9cc502229fcf37a1affc7ce5096e500f52d3"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/host_harness_report.json",
+      "sha256": "470f1e7581916b850d1ce14f23d0deaabd3ccc9522b15d6d77c2b5bc4ab36606"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/joern_gate_report.json",
+      "sha256": "2b851921b8b3e227559ced2bf5c6522c4dc8d50bcc0ecadb73939582d34cd47c"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/joern_gate_summary.json",
+      "sha256": "ee4fcee7a847d394ed755345ba79f4a268c97da4f7a7702af7528abf25b62a5f"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/kcfi_candidate.json",
+      "sha256": "63e29a184ca0968fa3c5c53cc6c82018a677cc1a5b03ebf09bcdd3165e3f2809"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/kcfi_comparison.json",
+      "sha256": "962fd75edc0b1d3251aaefdf17d216edaa4c4241cbb5fd0d5a2ebbfc8ebabc5f"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/kcfi_stock.json",
+      "sha256": "fac0af929582ed136385956d2665b9691345aace3adb258360d6a66ff01f01e5"
+    },
+    {
+      "change": "A",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next117_syna_pm_resume_v1/microtask_attestation_v1.json",
+      "sha256": "6f8de8eaff0ea6cd64b819776369ef8e95c46bbeed3a246cb025a8d53934e63b"
+    },
+    {
+      "change": "A",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next95_syna_release_v1/assembly_comparison.json",
       "sha256": "1de97b671e49e186231ac7f07ab90eb1f0d5d6d41853f3ddadcbbe86ebfc77b1"
     },
@@ -1520,12 +1585,12 @@
     {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/microtask_audit.json",
-      "sha256": "2ce3f2963f3a93e47fdc61be4a0a9b47d31a9116afc6a9dd39bf53fabeded378"
+      "sha256": "04c042b4e4d685f32367c4c4cf6565f08fc3943590e9a804350ffc1ecaca8465"
     },
     {
       "change": "M",
       "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/MODULE_DECOMPOSITION_MANIFEST.json",
-      "sha256": "d2c7ff76ddba5c76bda8ecc2e3b81efbe94dbe79ebbc4eaf1e136de03680a801"
+      "sha256": "adaefbed8b770be17a58ca5d417a2784cc506dc6ae67fd06639cd5bb70a42bde"
     },
     {
       "change": "M",
@@ -1639,6 +1704,11 @@
     },
     {
       "change": "A",
+      "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_pm_resume_harness.py",
+      "sha256": "751dc93535307b5dc9aa8b23507a8dca7c752de47e0ba8230522ce971dfead9b"
+    },
+    {
+      "change": "A",
       "path": "workspace_tools/reconstruction_pipeline/run_zte_tpd_syna_pm_suspend_harness.py",
       "sha256": "1162e6973f23cf8b9254c967b74b961fd4417f0b1ef1f0be253425373a2b2c1a"
     },
@@ -1714,7 +1784,7 @@
       "id": "validator_tests",
       "log": {
         "path": "contributions/20260730-zte-tpd-next116-syna-pm-suspend/reports/validator_tests.log",
-        "sha256": "ebbe5706f367b824f19140d2e8620d4e1910b63d683283047b59667b6360a55b"
+        "sha256": "c0e2d4284c425c326b783c15bb09dc418e9c33dc3e6fe59230a1d607daea2d34"
       },
       "status": "PASS"
     },
@@ -1728,7 +1798,7 @@
       },
       "report": {
         "path": "contributions/20260730-zte-tpd-next116-syna-pm-suspend/reports/offline_audit.json",
-        "sha256": "ba6b4dfd5a9f6dfdfc1b7fd5239fdec9f129f154ae774106b494f78a9b6e6476"
+        "sha256": "c6c12bd267d05bcba0732d773f715dba73910b942c06935c1e5acaa60789c476"
       },
       "status": "INCOMPLETE"
     },
@@ -1742,7 +1812,7 @@
       },
       "report": {
         "path": "contributions/20260730-zte-tpd-next116-syna-pm-suspend/reports/module_decomposition.json",
-        "sha256": "26a2e612ba5a7acb5d7cc8e254af079cbe11d26d3228fd33b0d9761d0b7a44b3"
+        "sha256": "c8ab85f2e725e9e90f1ada42d73b920c1e87872e075093bf2587b56979565e65"
       },
       "status": "PASS"
     },
@@ -1756,7 +1826,7 @@
       },
       "report": {
         "path": "contributions/20260730-zte-tpd-next116-syna-pm-suspend/reports/double_clean_rebuild.json",
-        "sha256": "b1c7e03e86273345cf3e568f87f5e7abf9602ad84becc99777165c058e18c6a1"
+        "sha256": "fa80f2605058d96afc0db33a4c77dfbb03c6cfb312be0df726d0dc19d522ce60"
       },
       "status": "INCOMPLETE"
     },
@@ -1770,7 +1840,7 @@
       },
       "report": {
         "path": "contributions/20260730-zte-tpd-next116-syna-pm-suspend/reports/llm_cycle.json",
-        "sha256": "0ef30681cb29400954e06ffaa9b17943ac1078b9d6267b268d5edafb5ca7b8e7"
+        "sha256": "77ddfdc5dcd7fbb187274a8968e6615a0c044a5ae6dd7ad5293fe50cc450bbec"
       },
       "status": "INCOMPLETE"
     }
