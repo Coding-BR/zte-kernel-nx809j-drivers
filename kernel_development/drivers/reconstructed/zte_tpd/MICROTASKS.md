@@ -192,7 +192,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 186_syna_cdev_remove | syna_cdev_remove | 00114e04 | binding | syna_cdev_remove.c:syna_cdev_remove | PASS |
 | 187_syna_cdev_llseek | syna_cdev_llseek | 00114f98 | core_logic | syna_cdev_llseek.c:syna_cdev_llseek | PASS |
 | 188_syna_cdev_read | syna_cdev_read | 00114fa4 | user_abi | syna_cdev_read.c:syna_cdev_read | PASS |
-| 189_syna_cdev_write | syna_cdev_write | 00115048 | user_abi | syna_cdev_write.c:syna_cdev_write | READY_FOR_IMPLEMENTATION |
+| 189_syna_cdev_write | syna_cdev_write | 00115048 | user_abi | syna_cdev_write.c:syna_cdev_write | PASS |
 | 190_syna_cdev_ioctls | syna_cdev_ioctls | 001150ec | user_abi | syna_cdev_ioctls.c:syna_cdev_ioctls | READY_FOR_IMPLEMENTATION |
 | 191_syna_cdev_open | syna_cdev_open | 00117278 | user_abi | syna_cdev_open.c:syna_cdev_open | READY_FOR_IMPLEMENTATION |
 | 192_syna_cdev_release | syna_cdev_release | 001173e0 | user_abi | syna_cdev_release.c:syna_cdev_release | READY_FOR_IMPLEMENTATION |
