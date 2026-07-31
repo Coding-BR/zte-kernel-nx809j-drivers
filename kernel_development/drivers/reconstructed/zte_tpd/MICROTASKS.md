@@ -122,7 +122,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 116_point_is_in_limit_area | point_is_in_limit_area | 0010feec | core_logic | point_is_in_limit_area.c:point_is_in_limit_area | READY_FOR_IMPLEMENTATION |
 | 117_edge_long_press_up | edge_long_press_up | 001100ac | core_logic | edge_long_press_up.c:edge_long_press_up | READY_FOR_IMPLEMENTATION |
 | 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state.c:change_tp_state | READY_FOR_IMPLEMENTATION |
-| 119_suspend_tp_need_awake | suspend_tp_need_awake | 0011049c | binding | suspend_tp_need_awake.c:suspend_tp_need_awake | READY_FOR_IMPLEMENTATION |
+| 119_suspend_tp_need_awake | suspend_tp_need_awake | 0011049c | binding | suspend_tp_need_awake.c:suspend_tp_need_awake | PASS |
 | 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | PASS |
 | 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing.c:set_lcd_reset_processing | PASS |
 | 122_set_gpio_mode | set_gpio_mode | 00110580 | core_logic | set_gpio_mode.c:set_gpio_mode | PASS |
