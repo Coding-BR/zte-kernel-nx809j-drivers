@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T20:10:00Z",
+  "driver": "zte_tpd",
+  "microtask": "004_zlog_register_work_init",
+  "function": "zlog_register_work_init",
+  "stock_entry": "001077c8",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zlog_register_work_init.c",
+    "sha256": "2f2d4394eb52a7dd885ce9017804f5708b054a5ad9fe786c97b1878d8cde925a"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "c27e646c0deef520806e66a82100cd9397870bec5619bf90655b03f6477edaf4",
+    "size": 24701176
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "kcfi_delayed_work_callback_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 120,
+    "candidate_symbol_bytes": 120,
+    "stock_instructions": 30,
+    "candidate_instructions": 30,
+    "stock_normalized_relocations": 10,
+    "candidate_normalized_relocations": 10,
+    "stock_cfg_blocks": 1,
+    "candidate_cfg_blocks": 1,
+    "stock_direct_calls": 2,
+    "candidate_direct_calls": 2
+  },
+  "kcfi": {
+    "function_type_id": "0xe5c47d60",
+    "delayed_work_callback_type_id": "0xa607748c",
+    "delayed_work_callback_body_strict_match_claimed": false,
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "7200189d6f3dd0efd853a01d49df851e057f251d6a60eacd77032373077e7748"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_zlog_register_work_init_revalidated_v1/build_report.json",
+      "sha256": "3a9e19324f5eb7b291fdcec461f3af649c906a75cdd6618fcccce4f9715cd088"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_zlog_register_work_init_revalidated_v1/host_harness_report.json",
+      "sha256": "1a6ba1cea6561a71876eb385344cf027c36324205506ab22591840870444344a"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_zlog_register_work_init_revalidated_v1/joern_gate_summary.json",
+      "sha256": "e8ad6f6e9d645ea78ab4f534b470fd618d283960e5fd14820949721a801cac3b"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_zlog_register_work_init_revalidated_v1/assembly_comparison.json",
+      "sha256": "107c08c8a45dc7dae9c519ce956b56189fc7a948f3a61134fa651def9f5cd496"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_zlog_register_work_init_revalidated_v1/kcfi_comparison.json",
+      "sha256": "6a8451d450aeea6e63a69832090f6622655a273109f33f330d86aad842319ad8"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_zlog_register_work_init_revalidated_v1/cfg_comparison.json",
+      "sha256": "ef867239cfb966710658c7587699fd7ea91265f46973a7e3ff0188cb8101fe79"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only zlog_register_work_init and the KCFI type of its delayed-work callback.",
+    "The callback body zlog_register_work remains a separate microtask and is not promoted by this evidence.",
+    "No ADB, fastboot, module load, scheduler timing, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "Hardware validation remains deferred to the controlled NX809J procedure."
+  ]
+}
