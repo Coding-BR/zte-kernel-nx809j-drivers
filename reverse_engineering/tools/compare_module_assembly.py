@@ -26,6 +26,9 @@ INSTRUCTION_RE = re.compile(
 RELOCATION_RE = re.compile(
     r"^\s*[0-9a-fA-F]+:\s+(R_AARCH64_\S+)\s+(.+?)\s*$"
 )
+RELOCATION_ADDRESS_RE = re.compile(
+    r"^\s*([0-9a-fA-F]+):\s+(R_AARCH64_\S+)\s+(.+?)\s*$"
+)
 SECTION_RE = re.compile(r"^Disassembly of section (\S+):$")
 BRANCH_TARGET_RE = re.compile(r"\b0x([0-9a-fA-F]+)\b")
 CMP_IMMEDIATE_RE = re.compile(r"^cmp\s+(w\d+),\s*#0x([0-9a-fA-F]+)$")
@@ -246,56 +249,165 @@ def rodata_string(elf: ElfEvidence, section_name: str, offset: int) -> str | Non
     return c_string(section["data"], offset)
 
 
-def parse_printk_calls(path: Path, elf: ElfEvidence) -> list[dict[str, Any]]:
-    """Recover static printk format strings from AArch64 relocation pairs.
+def branch_target(disassembly: str) -> int | None:
+    match = BRANCH_TARGET_RE.search(disassembly)
+    return int(match.group(1), 16) if match else None
 
-    A printk call is represented by a CALL26 relocation on the preceding `bl`.
-    The format is conventionally materialized in x0 with an ADRP/ADD pair.  This
-    deliberately reports only statically resolvable formats: dynamic formats are
-    evidence gaps, not strings to guess.
+
+def control_predecessors(
+    instructions: list[dict[str, Any]],
+) -> dict[int, set[int]]:
+    """Build the intra-function predecessor map needed for format provenance."""
+    by_address = {item["address"]: index for index, item in enumerate(instructions)}
+    predecessors = {index: set() for index in range(len(instructions))}
+    for index, item in enumerate(instructions):
+        mnemonic = item["disassembly"].split(" ", 1)[0]
+        target = branch_target(item["disassembly"])
+        successors: list[int] = []
+        if mnemonic == "b":
+            if target in by_address:
+                successors.append(by_address[target])
+        elif mnemonic.startswith("b.") or mnemonic in {"cbz", "cbnz", "tbz", "tbnz"}:
+            if target in by_address:
+                successors.append(by_address[target])
+            if index + 1 < len(instructions):
+                successors.append(index + 1)
+        elif mnemonic not in {"br", "ret"} and index + 1 < len(instructions):
+            successors.append(index + 1)
+        for successor in successors:
+            predecessors[successor].add(index)
+    return predecessors
+
+
+def register_definition(
+    disassembly: str, register: str,
+    rodata: str | None,
+) -> tuple[str, str | None]:
+    """Classify one predecessor instruction for backwards pointer provenance."""
+    pieces = disassembly.split(" ", 1)
+    if len(pieces) != 2:
+        return "preserve", None
+    mnemonic, operands = pieces
+    values = [value.strip() for value in operands.split(",")]
+    if not values or values[0] != register:
+        return "preserve", None
+    if mnemonic == "adrp":
+        return ("static", rodata) if rodata is not None else ("unknown", None)
+    if mnemonic == "add" and len(values) >= 2 and values[1] == register:
+        return "preserve", None
+    if mnemonic == "mov" and len(values) == 2 and re.fullmatch(r"x\d+", values[1]):
+        return "alias", values[1]
+    return "unknown", None
+
+
+def printk_format_candidates(
+    instructions: list[dict[str, Any]],
+    predecessors: dict[int, set[int]],
+    rodata_by_address: dict[int, str],
+    call_index: int,
+) -> tuple[list[str], bool]:
+    """Recover all statically reachable x0 formats for one `_printk` call.
+
+    A linear backwards scan is unsound when conditional branches merge immediately
+    before the call.  This bounded backwards walk preserves control-flow joins and
+    follows only `ADRP`, self-`ADD`, and register `MOV` pointer setup.  Any other
+    x0 definition remains an explicit unresolved evidence path.
     """
-    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    calls: list[dict[str, Any]] = []
-    for index, line in enumerate(lines):
-        relocation = RELOCATION_RE.match(line)
-        if not relocation or not PRINTK_CALL_RE.fullmatch(
-            f"{relocation.group(1)}\t{relocation.group(2)}"
-        ):
+    formats: set[str] = set()
+    unresolved = False
+    pending = [(predecessor, "x0") for predecessor in predecessors[call_index]]
+    visited: set[tuple[int, str]] = set()
+    while pending:
+        index, register = pending.pop()
+        state = (index, register)
+        if state in visited:
             continue
+        visited.add(state)
+        item = instructions[index]
+        action, value = register_definition(
+            item["disassembly"], register, rodata_by_address.get(item["address"])
+        )
+        if action == "static":
+            formats.add(value)
+            continue
+        if action == "unknown":
+            unresolved = True
+            continue
+        next_register = value if action == "alias" else register
+        if not predecessors[index]:
+            unresolved = True
+            continue
+        for predecessor in predecessors[index]:
+            pending.append((predecessor, next_register))
+    return sorted(formats), unresolved
 
-        call_address = None
-        for previous in range(index - 1, max(-1, index - 5), -1):
-            instruction = INSTRUCTION_RE.match(lines[previous])
-            if instruction:
-                call_address = f"0x{int(instruction.group(1), 16):x}"
-                break
 
-        format_string = None
-        for previous in range(index - 1, max(-1, index - 65), -1):
-            candidate = RELOCATION_RE.match(lines[previous])
-            if not candidate:
-                continue
-            rodata = RODATA_RELOCATION_RE.fullmatch(
-                f"{candidate.group(1)}\t{candidate.group(2)}"
+def parse_printk_calls(path: Path, elf: ElfEvidence) -> list[dict[str, Any]]:
+    """Recover static `_printk` formats with branch-aware AArch64 provenance."""
+    instructions: list[dict[str, Any]] = []
+    rodata_by_address: dict[int, str] = {}
+    printk_addresses: list[int] = []
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if instruction := INSTRUCTION_RE.match(line):
+            address, opcode, disassembly = instruction.groups()
+            instructions.append(
+                {
+                    "address": int(address, 16),
+                    "opcode": opcode.lower(),
+                    "disassembly": normalize_disassembly(disassembly),
+                }
             )
-            if not rodata:
-                continue
-            for instruction_index in range(previous - 1, max(-1, previous - 5), -1):
-                register = INSTRUCTION_REGISTER_RE.match(lines[instruction_index])
-                if register:
-                    if register.group(1) == "x0":
-                        format_string = rodata_string(
-                            elf, rodata.group(1), int(rodata.group(2) or "0", 16)
-                        )
-                    break
-            if format_string is not None:
-                break
+            continue
+        relocation = RELOCATION_ADDRESS_RE.match(line)
+        if not relocation:
+            continue
+        address_text, relocation_type, target = relocation.groups()
+        address = int(address_text, 16)
+        if PRINTK_CALL_RE.fullmatch(f"{relocation_type}\t{target}"):
+            printk_addresses.append(address)
+            continue
+        rodata = RODATA_RELOCATION_RE.fullmatch(f"{relocation_type}\t{target}")
+        if rodata:
+            value = rodata_string(elf, rodata.group(1), int(rodata.group(2) or "0", 16))
+            if value is not None:
+                rodata_by_address[address] = value
 
+    by_address = {item["address"]: index for index, item in enumerate(instructions)}
+    predecessors = control_predecessors(instructions)
+    calls: list[dict[str, Any]] = []
+    for address in printk_addresses:
+        call_index = by_address.get(address)
+        if call_index is None:
+            calls.append(
+                {
+                    "address": f"0x{address:x}",
+                    "format": None,
+                    "format_candidates": [],
+                    "format_resolution": "unresolved",
+                }
+            )
+            continue
+        candidates, unresolved = printk_format_candidates(
+            instructions, predecessors, rodata_by_address, call_index
+        )
+        if len(candidates) == 1 and not unresolved:
+            resolution = "static"
+            format_string: str | None = candidates[0]
+        elif candidates and not unresolved:
+            resolution = "ambiguous_static"
+            format_string = None
+        elif candidates:
+            resolution = "partial_static"
+            format_string = None
+        else:
+            resolution = "unresolved"
+            format_string = None
         calls.append(
             {
-                "address": call_address,
+                "address": f"0x{address:x}",
                 "format": format_string,
-                "format_resolution": "static" if format_string is not None else "unresolved",
+                "format_candidates": candidates,
+                "format_resolution": resolution,
             }
         )
     return calls
@@ -304,17 +416,22 @@ def parse_printk_calls(path: Path, elf: ElfEvidence) -> list[dict[str, Any]]:
 def format_differences(
     stock_calls: list[dict[str, Any]], candidate_calls: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
+    def signature(call: dict[str, Any]) -> tuple[str, ...] | None:
+        candidates = call.get("format_candidates")
+        if isinstance(candidates, list) and candidates:
+            return tuple(str(value) for value in candidates)
+        value = call.get("format")
+        return (str(value),) if value is not None else None
+
     stock_formats = Counter(
-        str(call["format"]) for call in stock_calls if call["format"] is not None
+        signature(call) for call in stock_calls if signature(call) is not None
     )
     candidate_formats = Counter(
-        str(call["format"])
-        for call in candidate_calls
-        if call["format"] is not None
+        signature(call) for call in candidate_calls if signature(call) is not None
     )
     return [
         {
-            "format": value,
+            "format": list(value),
             "stock_count": stock_formats[value],
             "candidate_count": candidate_formats[value],
         }
@@ -474,12 +591,16 @@ def main() -> int:
         stock["symbol_size"] = stock_record.get("symbol_size")
         candidate["symbol_size"] = candidate_record.get("symbol_size")
 
+        printk_complete = all(
+            call["format_resolution"] in {"static", "ambiguous_static"}
+            for call in stock_printk_calls + candidate_printk_calls
+        )
         checks = {
             "instructions": stock["opcodes"] == candidate["opcodes"],
             "relocations": stock["relocations"] == candidate["relocations"],
             "section": stock["section"] == candidate["section"],
             "symbol_size": stock["symbol_size"] == candidate["symbol_size"],
-            "printk_formats": not printk_differences,
+            "printk_formats": printk_complete and not printk_differences,
         }
         strict_match = all(checks.values())
         semantic_match = strict_match
@@ -520,10 +641,12 @@ def main() -> int:
                     "stock_call_count": len(stock_printk_calls),
                     "candidate_call_count": len(candidate_printk_calls),
                     "stock_unresolved_count": sum(
-                        call["format"] is None for call in stock_printk_calls
+                        call["format_resolution"] not in {"static", "ambiguous_static"}
+                        for call in stock_printk_calls
                     ),
                     "candidate_unresolved_count": sum(
-                        call["format"] is None for call in candidate_printk_calls
+                        call["format_resolution"] not in {"static", "ambiguous_static"}
+                        for call in candidate_printk_calls
                     ),
                     "format_differences": printk_differences,
                     "stock_calls": stock_printk_calls,
