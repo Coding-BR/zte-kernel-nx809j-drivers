@@ -47,6 +47,13 @@ struct ztp_algo_item {
 	const char *keyword;
 };
 static struct ztp_algo_item ztp_algo_info_l[7];
+
+struct tp_ic_vendor_item {
+	u8 id;
+	u8 reserved[7];
+	const char *keyword;
+};
+static struct tp_ic_vendor_item tp_ic_vendor_info_l[11];
 static char unk_39C9D[8];
 
 static void mutex_lock(struct mutex *lock)
@@ -97,16 +104,20 @@ static const char *strnstr(const char *haystack, const char *needle,
 }
 
 #include "../../../curated/zte_tpd/get_tp_algo_item_id.c"
+#include "../../../curated/zte_tpd/get_tp_chip_id.c"
 #include "../../../curated/zte_tpd/set_gpio_mode.c"
 #include "../../../curated/zte_tpd/change_tp_state.c"
 
 typedef int (*get_tp_algo_item_id_fn)(char *name);
+typedef int (*get_tp_chip_id_fn)(void);
 typedef int (*set_gpio_mode_fn)(u8 mode);
 typedef void (*change_tp_state_fn)(enum lcdchange state);
 typedef int (*set_gpio_mode_callback_fn)(struct ztp_device *context, u8 mode);
 
 _Static_assert(__builtin_types_compatible_p(typeof(&get_tp_algo_item_id),
 						 get_tp_algo_item_id_fn), "get ABI");
+_Static_assert(__builtin_types_compatible_p(typeof(&get_tp_chip_id),
+						 get_tp_chip_id_fn), "chip ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&set_gpio_mode),
 						 set_gpio_mode_fn), "gpio ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&change_tp_state),
@@ -157,6 +168,43 @@ static bool test_algo_lookup_order_and_failure(void)
 	REQUIRE(get_tp_algo_item_id(first) == 11);
 	REQUIRE(get_tp_algo_item_id(last) == 77);
 	REQUIRE(get_tp_algo_item_id(unknown) == -EIO);
+	REQUIRE(printk_calls == 2);
+	return true;
+}
+
+static bool test_chip_lookup_and_failure_marker(void)
+{
+	unsigned int index;
+
+	reset_state();
+	for (index = 0; index < 11; index++)
+		tp_ic_vendor_info_l[index] = (struct tp_ic_vendor_item){
+			.id = (u8)(0x20 + index), .keyword = "no-match"
+		};
+	tp_ic_vendor_info_l[0].id = 0x42;
+	tp_ic_vendor_info_l[0].keyword = "Unknown";
+	REQUIRE(get_tp_chip_id() == 0);
+	REQUIRE(cdev_memory[0x446] == 0x42);
+	REQUIRE(printk_calls == 3);
+
+	reset_state();
+	for (index = 0; index < 11; index++)
+		tp_ic_vendor_info_l[index] = (struct tp_ic_vendor_item){
+			.id = (u8)(0x40 + index), .keyword = "no-match"
+		};
+	tp_ic_vendor_info_l[10].id = 0x7e;
+	tp_ic_vendor_info_l[10].keyword = "Unknown";
+	REQUIRE(get_tp_chip_id() == 0);
+	REQUIRE(cdev_memory[0x446] == 0x7e);
+	REQUIRE(printk_calls == 3);
+
+	reset_state();
+	for (index = 0; index < 11; index++)
+		tp_ic_vendor_info_l[index] = (struct tp_ic_vendor_item){
+			.id = (u8)index, .keyword = "no-match"
+		};
+	REQUIRE(get_tp_chip_id() == -EIO);
+	REQUIRE(cdev_memory[0x446] == 0xff);
 	REQUIRE(printk_calls == 2);
 	return true;
 }
@@ -252,6 +300,7 @@ int main(void)
 #define RUN(test) do { total++; failures += run_test(#test, test); } while (0)
 	RUN(test_signature_contract);
 	RUN(test_algo_lookup_order_and_failure);
+	RUN(test_chip_lookup_and_failure_marker);
 	RUN(test_gpio_null_callback);
 	RUN(test_state_screen_in_doze_to_on);
 	RUN(test_state_screen_in_doze_to_off);
