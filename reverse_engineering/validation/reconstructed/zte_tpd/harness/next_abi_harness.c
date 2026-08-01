@@ -105,11 +105,13 @@ static const char *strnstr(const char *haystack, const char *needle,
 
 #include "../../../curated/zte_tpd/get_tp_algo_item_id.c"
 #include "../../../curated/zte_tpd/get_tp_chip_id.c"
+#include "../../../curated/zte_tpd/get_lcd_panel_name.c"
 #include "../../../curated/zte_tpd/set_gpio_mode.c"
 #include "../../../curated/zte_tpd/change_tp_state.c"
 
 typedef int (*get_tp_algo_item_id_fn)(char *name);
 typedef int (*get_tp_chip_id_fn)(void);
+typedef const char *(*get_lcd_panel_name_fn)(void);
 typedef int (*set_gpio_mode_fn)(u8 mode);
 typedef void (*change_tp_state_fn)(enum lcdchange state);
 typedef int (*set_gpio_mode_callback_fn)(struct ztp_device *context, u8 mode);
@@ -118,6 +120,8 @@ _Static_assert(__builtin_types_compatible_p(typeof(&get_tp_algo_item_id),
 						 get_tp_algo_item_id_fn), "get ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&get_tp_chip_id),
 						 get_tp_chip_id_fn), "chip ABI");
+_Static_assert(__builtin_types_compatible_p(typeof(&get_lcd_panel_name),
+						 get_lcd_panel_name_fn), "panel ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&set_gpio_mode),
 						 set_gpio_mode_fn), "gpio ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&change_tp_state),
@@ -206,6 +210,15 @@ static bool test_chip_lookup_and_failure_marker(void)
 	REQUIRE(get_tp_chip_id() == -EIO);
 	REQUIRE(cdev_memory[0x446] == 0xff);
 	REQUIRE(printk_calls == 2);
+	return true;
+}
+
+static bool test_lcd_panel_name_contract(void)
+{
+	const char *name = get_lcd_panel_name();
+
+	REQUIRE(name != NULL);
+	REQUIRE(strcmp(name, "Unknown_lcd") == 0);
 	return true;
 }
 
@@ -301,6 +314,7 @@ int main(void)
 	RUN(test_signature_contract);
 	RUN(test_algo_lookup_order_and_failure);
 	RUN(test_chip_lookup_and_failure_marker);
+	RUN(test_lcd_panel_name_contract);
 	RUN(test_gpio_null_callback);
 	RUN(test_state_screen_in_doze_to_on);
 	RUN(test_state_screen_in_doze_to_off);

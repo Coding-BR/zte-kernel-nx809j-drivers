@@ -14,10 +14,11 @@ from pathlib import Path
 SOURCE_FILES = (
     "get_tp_algo_item_id.c",
     "get_tp_chip_id.c",
+    "get_lcd_panel_name.c",
     "set_gpio_mode.c",
     "change_tp_state.c",
 )
-EXPECTED_TESTS = 9
+EXPECTED_TESTS = 10
 
 
 def sha256_file(path: Path) -> str:
