@@ -9,6 +9,7 @@ import hashlib
 import json
 import re
 import struct
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,13 @@ RELOCATION_RE = re.compile(
 SECTION_RE = re.compile(r"^Disassembly of section (\S+):$")
 BRANCH_TARGET_RE = re.compile(r"\b0x([0-9a-fA-F]+)\b")
 CMP_IMMEDIATE_RE = re.compile(r"^cmp\s+(w\d+),\s*#0x([0-9a-fA-F]+)$")
+PRINTK_CALL_RE = re.compile(r"^R_AARCH64_CALL26\s+_printk$")
+RODATA_RELOCATION_RE = re.compile(
+    r"^R_AARCH64_ADR_PREL_PG_HI21\s+(\.rodata\.str[^+]*)(?:\+0x([0-9a-fA-F]+))?$"
+)
+INSTRUCTION_REGISTER_RE = re.compile(
+    r"^\s*[0-9a-fA-F]+:\s+[0-9a-fA-F]{8}\s+\S+\s+(x\d+)(?:,|\s)"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -231,6 +239,90 @@ def parse_assembly(path: Path, elf: ElfEvidence) -> dict[str, Any]:
     }
 
 
+def rodata_string(elf: ElfEvidence, section_name: str, offset: int) -> str | None:
+    section = elf.sections_by_name.get(section_name)
+    if section is None:
+        return None
+    return c_string(section["data"], offset)
+
+
+def parse_printk_calls(path: Path, elf: ElfEvidence) -> list[dict[str, Any]]:
+    """Recover static printk format strings from AArch64 relocation pairs.
+
+    A printk call is represented by a CALL26 relocation on the preceding `bl`.
+    The format is conventionally materialized in x0 with an ADRP/ADD pair.  This
+    deliberately reports only statically resolvable formats: dynamic formats are
+    evidence gaps, not strings to guess.
+    """
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    calls: list[dict[str, Any]] = []
+    for index, line in enumerate(lines):
+        relocation = RELOCATION_RE.match(line)
+        if not relocation or not PRINTK_CALL_RE.fullmatch(
+            f"{relocation.group(1)}\t{relocation.group(2)}"
+        ):
+            continue
+
+        call_address = None
+        for previous in range(index - 1, max(-1, index - 5), -1):
+            instruction = INSTRUCTION_RE.match(lines[previous])
+            if instruction:
+                call_address = f"0x{int(instruction.group(1), 16):x}"
+                break
+
+        format_string = None
+        for previous in range(index - 1, max(-1, index - 65), -1):
+            candidate = RELOCATION_RE.match(lines[previous])
+            if not candidate:
+                continue
+            rodata = RODATA_RELOCATION_RE.fullmatch(
+                f"{candidate.group(1)}\t{candidate.group(2)}"
+            )
+            if not rodata:
+                continue
+            for instruction_index in range(previous - 1, max(-1, previous - 5), -1):
+                register = INSTRUCTION_REGISTER_RE.match(lines[instruction_index])
+                if register:
+                    if register.group(1) == "x0":
+                        format_string = rodata_string(
+                            elf, rodata.group(1), int(rodata.group(2) or "0", 16)
+                        )
+                    break
+            if format_string is not None:
+                break
+
+        calls.append(
+            {
+                "address": call_address,
+                "format": format_string,
+                "format_resolution": "static" if format_string is not None else "unresolved",
+            }
+        )
+    return calls
+
+
+def format_differences(
+    stock_calls: list[dict[str, Any]], candidate_calls: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    stock_formats = Counter(
+        str(call["format"]) for call in stock_calls if call["format"] is not None
+    )
+    candidate_formats = Counter(
+        str(call["format"])
+        for call in candidate_calls
+        if call["format"] is not None
+    )
+    return [
+        {
+            "format": value,
+            "stock_count": stock_formats[value],
+            "candidate_count": candidate_formats[value],
+        }
+        for value in sorted(set(stock_formats) | set(candidate_formats))
+        if stock_formats[value] != candidate_formats[value]
+    ]
+
+
 def read_manifest(path: Path) -> dict[str, dict[str, Any]]:
     data = json.loads(path.read_text(encoding="utf-8"))
     records = data.get("records")
@@ -370,6 +462,15 @@ def main() -> int:
         candidate = parse_assembly(
             candidate_dir / candidate_record["file"], candidate_elf
         )
+        stock_printk_calls = parse_printk_calls(
+            stock_dir / stock_record["file"], stock_elf
+        )
+        candidate_printk_calls = parse_printk_calls(
+            candidate_dir / candidate_record["file"], candidate_elf
+        )
+        printk_differences = format_differences(
+            stock_printk_calls, candidate_printk_calls
+        )
         stock["symbol_size"] = stock_record.get("symbol_size")
         candidate["symbol_size"] = candidate_record.get("symbol_size")
 
@@ -378,6 +479,7 @@ def main() -> int:
             "relocations": stock["relocations"] == candidate["relocations"],
             "section": stock["section"] == candidate["section"],
             "symbol_size": stock["symbol_size"] == candidate["symbol_size"],
+            "printk_formats": not printk_differences,
         }
         strict_match = all(checks.values())
         semantic_match = strict_match
@@ -414,6 +516,19 @@ def main() -> int:
                 "semantic_match": semantic_match,
                 "checks": checks,
                 "exception": exception_result,
+                "printk": {
+                    "stock_call_count": len(stock_printk_calls),
+                    "candidate_call_count": len(candidate_printk_calls),
+                    "stock_unresolved_count": sum(
+                        call["format"] is None for call in stock_printk_calls
+                    ),
+                    "candidate_unresolved_count": sum(
+                        call["format"] is None for call in candidate_printk_calls
+                    ),
+                    "format_differences": printk_differences,
+                    "stock_calls": stock_printk_calls,
+                    "candidate_calls": candidate_printk_calls,
+                },
                 "stock": {
                     key: value
                     for key, value in stock.items()
@@ -475,18 +590,39 @@ def main() -> int:
             f"- Strict binary-shape verdict: `{'PASS' if report['strict_passed'] else 'FAIL'}`",
             f"- Validated semantic verdict: `{'PASS' if report['passed'] else 'FAIL'}`",
             "",
-            "| Function | Opcode exact | Relocations | Semantic verdict |",
-            "|---|---:|---:|---:|",
+            "| Function | Opcode exact | Relocations | printk formats | Semantic verdict |",
+            "|---|---:|---:|---:|---:|",
         ]
         for result in results:
             lines.append(
-                "| `{}` | {} | {} | {} |".format(
+                "| `{}` | {} | {} | {} | {} |".format(
                     result["function"],
                     "PASS" if result["checks"]["instructions"] else "FAIL",
                     "PASS" if result["checks"]["relocations"] else "FAIL",
+                    "PASS" if result["checks"]["printk_formats"] else "FAIL",
                     "PASS" if result["semantic_match"] else "FAIL",
                 )
             )
+        printk_failures = [
+            result for result in results if result["printk"]["format_differences"]
+        ]
+        if printk_failures:
+            lines.extend(["", "## printk Format Differences", ""])
+            for result in printk_failures:
+                lines.append(f"### `{result['function']}`")
+                lines.append("")
+                lines.append(
+                    f"- Static callsites: stock `{result['printk']['stock_call_count']}`, "
+                    f"candidate `{result['printk']['candidate_call_count']}`."
+                )
+                for difference in result["printk"]["format_differences"]:
+                    lines.append(
+                        "- `{}`: stock `{}`, candidate `{}`.".format(
+                            json.dumps(difference["format"], ensure_ascii=True),
+                            difference["stock_count"],
+                            difference["candidate_count"],
+                        )
+                    )
         exceptions = [
             result for result in results if result.get("exception") is not None
         ]
