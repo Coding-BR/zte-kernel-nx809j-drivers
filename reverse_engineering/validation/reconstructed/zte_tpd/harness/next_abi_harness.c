@@ -41,20 +41,12 @@ struct ufp_tp_ops_struct {
 };
 static struct ufp_tp_ops_struct ufp_tp_ops;
 
-static char ztp_algo_info_l;
-static char byte_4A0;
-static char byte_4B0;
-static char byte_4C0;
-static char byte_4D0;
-static char byte_4E0;
-static char byte_4F0;
-static const char *off_498 = "algo_498";
-static const char *off_4A8 = "algo_4A8";
-static const char *off_4B8 = "algo_4B8";
-static const char *off_4C8 = "algo_4C8";
-static const char *off_4D8 = "algo_4D8";
-static const char *off_4E8 = "algo_4E8";
-static const char *off_4F8 = "algo_4F8";
+struct ztp_algo_item {
+	u8 id;
+	u8 reserved[7];
+	const char *keyword;
+};
+static struct ztp_algo_item ztp_algo_info_l[7];
 static char unk_39C9D[8];
 
 static void mutex_lock(struct mutex *lock)
@@ -151,17 +143,17 @@ static bool test_signature_contract(void)
 
 static bool test_algo_lookup_order_and_failure(void)
 {
-	char first[] = "prefix-algo_498-suffix";
-	char last[] = "algo_4F8";
+	char first[] = "prefix-algo_open-suffix";
+	char last[] = "long_press_pixel";
 	char unknown[] = "no-match";
 	reset_state();
-	ztp_algo_info_l = 11;
-	byte_4A0 = 22;
-	byte_4B0 = 33;
-	byte_4C0 = 44;
-	byte_4D0 = 55;
-	byte_4E0 = 66;
-	byte_4F0 = 77;
+	ztp_algo_info_l[0] = (struct ztp_algo_item){ .id = 11, .keyword = "algo_open" };
+	ztp_algo_info_l[1] = (struct ztp_algo_item){ .id = 22, .keyword = "jitter_pixel" };
+	ztp_algo_info_l[2] = (struct ztp_algo_item){ .id = 33, .keyword = "jitter_timer" };
+	ztp_algo_info_l[3] = (struct ztp_algo_item){ .id = 44, .keyword = "click_pixel" };
+	ztp_algo_info_l[4] = (struct ztp_algo_item){ .id = 55, .keyword = "long_press_open" };
+	ztp_algo_info_l[5] = (struct ztp_algo_item){ .id = 66, .keyword = "long_press_timer" };
+	ztp_algo_info_l[6] = (struct ztp_algo_item){ .id = 77, .keyword = "long_press_pixel" };
 	REQUIRE(get_tp_algo_item_id(first) == 11);
 	REQUIRE(get_tp_algo_item_id(last) == 77);
 	REQUIRE(get_tp_algo_item_id(unknown) == -EIO);
