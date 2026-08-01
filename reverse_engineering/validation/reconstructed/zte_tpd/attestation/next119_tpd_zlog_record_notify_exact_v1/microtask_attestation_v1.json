@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T19:52:00Z",
+  "driver": "zte_tpd",
+  "microtask": "002_tpd_zlog_record_notify",
+  "function": "tpd_zlog_record_notify",
+  "stock_entry": "00106998",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_zlog_record_notify.c",
+    "sha256": "a2a2d72ecb28e09e82046619020a70413fe08536bd5af92570a980ed8f17ab4a"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "c27e646c0deef520806e66a82100cd9397870bec5619bf90655b03f6477edaf4",
+    "size": 24701176
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "joern_no_unresolved_calls": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_dispatch_table_bytes_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_block_edge_call_cardinality_match": true,
+    "cfg_raw_opcode_and_ordered_call_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 3452,
+    "candidate_symbol_bytes": 3452,
+    "stock_instructions": 863,
+    "candidate_instructions": 863,
+    "stock_non_branch_relocations": 180,
+    "candidate_non_branch_relocations": 180,
+    "stock_cfg_blocks": 130,
+    "candidate_cfg_blocks": 130,
+    "stock_cfg_edges": 180,
+    "candidate_cfg_edges": 180,
+    "stock_direct_calls": 90,
+    "candidate_direct_calls": 90,
+    "dispatch_table": {
+      "entry_count": 18,
+      "element_width": 2,
+      "sha256": "d847359a463ca15b5d7b9e709a599ef006db7ce8a478a12cba3dad891f88bb2d"
+    }
+  },
+  "kcfi": {
+    "function_type_id": "0xcc3d7e08",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "7200189d6f3dd0efd853a01d49df851e057f251d6a60eacd77032373077e7748"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/build_report.json",
+      "sha256": "04b8ef2056be03b45a04e822d9e4150e7fd7d8e6b2008e86e1f45fcde6cec841"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/assembly_comparison.json",
+      "sha256": "39b60d1c0ab50626dfcd04a357548c8493ca67e806669546f9a7f7b00c5d35c1"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/cfg_comparison.json",
+      "sha256": "ab537075bf59372353e8a8e32cf3d71f98071c394264f074bc4329f7f880d2de"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/host_harness_report.json",
+      "sha256": "1a6ba1cea6561a71876eb385344cf027c36324205506ab22591840870444344a"
+    },
+    {
+      "role": "joern_source_view",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/joern_source_view.json",
+      "sha256": "d51a1311bcb3c55e69c8aecf98e285aac9355883c4d8d47225aedff951af3fbf"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/joern_gate_summary.json",
+      "sha256": "13b2200db3aa2e959e422e805374c7472c457555955e57a0c1a14a40db594eae"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next119_tpd_zlog_record_notify_exact_v1/kcfi_comparison.json",
+      "sha256": "0f445d8c5698d40659fae3d115fc2e57f9a6fec0d80f4d515071aa33045fafc1"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only tpd_zlog_record_notify.",
+    "The host harness intercepts the stock null-memset path after failed buffer allocation.",
+    "No ADB, fastboot, module load, Android zlog service, SPI, IRQ, display, or touch-controller operation was performed.",
+    "Physical NX809J validation remains a separate controlled stage."
+  ]
+}

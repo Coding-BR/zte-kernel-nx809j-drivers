@@ -752,6 +752,205 @@ def canonicalize_initialized_unk_string_relocations(
     return stock, candidate, evidence
 
 
+def canonicalize_mapping_symbol_u16_dispatch_tables(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_sections: dict[str, bytes],
+    candidate_sections: dict[str, bytes],
+    stock_symbols: dict[str, tuple[str, int]],
+    candidate_symbols: dict[str, tuple[str, int]],
+    stock_relocation_sites: dict[tuple[str, int], tuple[str, str]],
+    candidate_relocation_sites: dict[tuple[str, int], tuple[str, str]],
+    instructions: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Bind an anonymous AArch64 u16 dispatch table only by exact bytes.
+
+    Clang emits a ``$d.N`` mapping symbol for an unnamed switch table.  The
+    mapping symbol has no size, and independent module layouts can move an
+    otherwise identical table within ``.rodata``.  This rule accepts that
+    relocation difference only when the code at the relocation site is the
+    exact bounds-checked ``ldrh``/``br`` dispatch idiom and every reachable
+    u16 entry is byte-identical, unique, and free of data relocations.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    expected_types = ("R_AARCH64_ADR_PREL_PG_HI21", "R_AARCH64_ADD_ABS_LO12_NC")
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split_relocation(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def table_location(
+        target: str, symbols: dict[str, tuple[str, int]]
+    ) -> tuple[str, int] | None:
+        if re.fullmatch(r"\$d\.[0-9]+", target):
+            location = symbols.get(target)
+        else:
+            location = resolved_section_target(target, symbols)
+        if location is None or location[0] != ".rodata":
+            return None
+        return location
+
+    def exact_dispatch_entry_count(relocation_instruction: int) -> int | None:
+        """Recognize ``cmp wN,#max; b.hi; adrp/add; adr; ldrh; add; br``."""
+        if relocation_instruction < 2 or relocation_instruction + 5 >= len(instructions):
+            return None
+        words = [
+            _opcode_word(value)
+            for value in instructions[
+                relocation_instruction - 2 : relocation_instruction + 6
+            ]
+        ]
+        if any(word is None for word in words):
+            return None
+        (
+            compare,
+            branch,
+            adrp,
+            add_immediate,
+            adr,
+            load_halfword,
+            add_register,
+            branch_register,
+        ) = [word for word in words if word is not None]
+        if (
+            (compare & 0x7F00001F) != 0x7100001F
+            or compare & (1 << 22)
+            or (branch & 0xFF000010) != 0x54000000
+            or (branch & 0xF) != 8  # B.HI
+            or (adrp & 0x9F000000) != 0x90000000
+            or (add_immediate & 0xFFC00000) != 0x91000000
+            or (adr & 0x9F000000) != 0x10000000
+            or (load_halfword & 0xFFE0FC00) != 0x78607800
+            or (add_register & 0x7F200000) != 0x0B000000
+            or ((add_register >> 10) & 0x3F) != 2
+            or (branch_register & 0xFFFFFC1F) != 0xD61F0000
+        ):
+            return None
+
+        table_register = adrp & 0x1F
+        dispatch_register = adr & 0x1F
+        selector_register = (compare >> 5) & 0x1F
+        if (
+            ((add_immediate >> 5) & 0x1F) != table_register
+            or (add_immediate & 0x1F) != table_register
+            or ((load_halfword >> 5) & 0x1F) != table_register
+            or ((load_halfword >> 16) & 0x1F) != selector_register
+            or ((add_register >> 5) & 0x1F) != dispatch_register
+            or (add_register & 0x1F) != dispatch_register
+            or ((add_register >> 16) & 0x1F) != (load_halfword & 0x1F)
+            or ((branch_register >> 5) & 0x1F) != dispatch_register
+        ):
+            return None
+
+        entry_count = ((compare >> 10) & 0xFFF) + 1
+        return entry_count if 2 <= entry_count <= 256 else None
+
+    def has_relocation(
+        sites: dict[tuple[str, int], tuple[str, str]], section: str, offset: int, size: int
+    ) -> bool:
+        return any(
+            site_section == section and offset <= site_offset < offset + size
+            for site_section, site_offset in sites
+        )
+
+    def occurrence_count(payload: bytes, needle: bytes) -> int:
+        count = 0
+        offset = 0
+        while True:
+            found = payload.find(needle, offset)
+            if found < 0:
+                return count
+            count += 1
+            offset = found + 1
+
+    for index in range(len(stock) - 1):
+        stock_pair = [split_relocation(value) for value in stock[index : index + 2]]
+        candidate_pair = [split_relocation(value) for value in candidate[index : index + 2]]
+        if any(value is None for value in stock_pair + candidate_pair):
+            continue
+        stock_typed = [value for value in stock_pair if value is not None]
+        candidate_typed = [value for value in candidate_pair if value is not None]
+        if (
+            tuple(value[0] for value in stock_typed) != expected_types
+            or tuple(value[0] for value in candidate_typed) != expected_types
+            or stock_typed[0][1] != stock_typed[1][1]
+            or candidate_typed[0][1] != candidate_typed[1][1]
+        ):
+            continue
+        positions = stock_instruction_indices[index : index + 2]
+        if (
+            positions != candidate_instruction_indices[index : index + 2]
+            or len(positions) != 2
+            or positions[1] != positions[0] + 1
+        ):
+            continue
+        entry_count = exact_dispatch_entry_count(positions[0])
+        stock_location = table_location(stock_typed[0][1], stock_symbols)
+        candidate_location = table_location(candidate_typed[0][1], candidate_symbols)
+        if entry_count is None or stock_location is None or candidate_location is None:
+            continue
+        size = entry_count * 2
+        stock_section, stock_offset = stock_location
+        candidate_section, candidate_offset = candidate_location
+        stock_data = stock_sections.get(stock_section)
+        candidate_data = candidate_sections.get(candidate_section)
+        if (
+            stock_data is None
+            or candidate_data is None
+            or stock_offset + size > len(stock_data)
+            or candidate_offset + size > len(candidate_data)
+            or has_relocation(stock_relocation_sites, stock_section, stock_offset, size)
+            or has_relocation(
+                candidate_relocation_sites, candidate_section, candidate_offset, size
+            )
+        ):
+            continue
+        stock_table = stock_data[stock_offset : stock_offset + size]
+        candidate_table = candidate_data[candidate_offset : candidate_offset + size]
+        if (
+            stock_table != candidate_table
+            or not any(stock_table)
+            or occurrence_count(stock_data, stock_table) != 1
+            or occurrence_count(candidate_data, candidate_table) != 1
+        ):
+            continue
+        digest = hashlib.sha256(stock_table).hexdigest()
+        alias = (
+            f"<u16_dispatch_table:entries={entry_count}:sha256={digest}>"
+        )
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "kind": "mapping_symbol_u16_dispatch_table_bytes",
+                "reason": (
+                    "matching bounds-checked AArch64 u16 dispatch sequence; "
+                    "the uniquely addressed relocation-free table bytes match exactly"
+                ),
+                "stock_target": stock_typed[0][1],
+                "candidate_target": candidate_typed[0][1],
+                "entry_count": entry_count,
+                "element_width": 2,
+                "table_sha256": digest,
+                "instruction_indices": positions,
+            }
+        )
+    return stock, candidate, evidence
+
+
 def _opcode_word(instruction: str) -> int | None:
     if not re.fullmatch(r"[0-9a-f]{8}", instruction):
         return None
@@ -2327,6 +2526,24 @@ def main() -> int:
         (
             stock_relocations_compared,
             candidate_relocations_compared,
+            dispatch_table_equivalences,
+        ) = canonicalize_mapping_symbol_u16_dispatch_tables(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stock_sections,
+            candidate_sections,
+            stock_symbols,
+            candidate_symbols,
+            stock_relocation_sites,
+            candidate_relocation_sites,
+            stock_instructions_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
             relocation_equivalences,
         ) = canonicalize_stripped_lock_keys(
             stock_relocations_compared,
@@ -2350,7 +2567,12 @@ def main() -> int:
             non_branch_relocation_instruction_indices(stock_path),
             non_branch_relocation_instruction_indices(candidate_path),
         )
-        relocation_equivalences = initialized_unk_string_equivalences + relocation_equivalences + mutex_key_equivalences
+        relocation_equivalences = (
+            initialized_unk_string_equivalences
+            + dispatch_table_equivalences
+            + relocation_equivalences
+            + mutex_key_equivalences
+        )
         (
             stock_relocations_compared,
             candidate_relocations_compared,

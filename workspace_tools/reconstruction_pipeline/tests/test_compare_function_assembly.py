@@ -357,6 +357,72 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertEqual(result, "R_AARCH64_ADR_PREL_PG_HI21 .rodata")
 
+    def test_mapping_symbol_u16_dispatch_table_requires_exact_unique_bytes(self) -> None:
+        stock_table = bytes.fromhex(
+            "00005f00380045002b006c00790052008600a1019c019701b201a601c201bd0111001e00"
+        )
+        candidate_rodata = b"\0" * 16 + stock_table + b"\0"
+        stock, candidate, evidence = MODULE.canonicalize_mapping_symbol_u16_dispatch_tables(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 $d.7",
+                "R_AARCH64_ADD_ABS_LO12_NC $d.7",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata+0x10",
+                "R_AARCH64_ADD_ABS_LO12_NC .rodata+0x10",
+            ],
+            {".rodata": stock_table},
+            {".rodata": candidate_rodata},
+            {"$d.7": (".rodata", 0)},
+            {},
+            {},
+            {},
+            [
+                "510006a8", "7100451f", "540065c8", "90000009", "91000129",
+                "1000008a", "7868792b", "8b0b094a", "d61f0140",
+            ],
+            [3, 4],
+            [3, 4],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["entry_count"], 18)
+        self.assertEqual(evidence[0]["element_width"], 2)
+
+    def test_mapping_symbol_u16_dispatch_table_rejects_changed_byte(self) -> None:
+        stock_table = bytes.fromhex(
+            "00005f00380045002b006c00790052008600a1019c019701b201a601c201bd0111001e00"
+        )
+        candidate_table = stock_table[:-1] + b"\x01"
+        stock, candidate, evidence = MODULE.canonicalize_mapping_symbol_u16_dispatch_tables(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 $d.7",
+                "R_AARCH64_ADD_ABS_LO12_NC $d.7",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata",
+                "R_AARCH64_ADD_ABS_LO12_NC .rodata",
+            ],
+            {".rodata": stock_table},
+            {".rodata": candidate_table},
+            {"$d.7": (".rodata", 0)},
+            {},
+            {},
+            {},
+            [
+                "510006a8", "7100451f", "540065c8", "90000009", "91000129",
+                "1000008a", "7868792b", "8b0b094a", "d61f0140",
+            ],
+            [3, 4],
+            [3, 4],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
     def test_defined_symbol_keeps_identity_across_section_layouts(self) -> None:
         result = MODULE.normalized_relocation(
             "R_AARCH64_ADR_PREL_PG_HI21",
