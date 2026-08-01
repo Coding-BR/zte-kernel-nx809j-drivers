@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T20:30:00Z",
+  "driver": "zte_tpd",
+  "microtask": "005_zlog_register_work",
+  "function": "zlog_register_work",
+  "stock_entry": "00107844",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zlog_register_work.c",
+    "sha256": "c98fe4bb0227f5fca30ba6a91e1acb03d04490780df09eaab2d66c424593b1c7"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "c27e646c0deef520806e66a82100cd9397870bec5619bf90655b03f6477edaf4",
+    "size": 24701176
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 44,
+    "candidate_symbol_bytes": 44,
+    "stock_instructions": 11,
+    "candidate_instructions": 11,
+    "stock_normalized_relocations": 2,
+    "candidate_normalized_relocations": 2,
+    "stock_cfg_blocks": 3,
+    "candidate_cfg_blocks": 3,
+    "stock_direct_calls": 1,
+    "candidate_direct_calls": 1
+  },
+  "kcfi": {
+    "function_type_id": "0xa607748c",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "7200189d6f3dd0efd853a01d49df851e057f251d6a60eacd77032373077e7748"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_zlog_register_work_revalidated_v1/build_report.json",
+      "sha256": "78cd736f5be3e2df7a56a684422fb2a0827279ff5f542828f91fb97018c89443"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_zlog_register_work_revalidated_v1/host_harness_report.json",
+      "sha256": "375eb44debce5eea23cf7bb6365f457276aed3cb4324a5a11a95b50d8acb9f18"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_zlog_register_work_revalidated_v1/joern_gate_summary.json",
+      "sha256": "95addf7e96f8885e240a2d77378dea14d3f7408190a240c4fbad2a4a6e322238"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_zlog_register_work_revalidated_v1/assembly_comparison.json",
+      "sha256": "b394c0bce383a989034dc58c026b7fea6c38fbffa278a818b97dc5d23448a2be"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_zlog_register_work_revalidated_v1/kcfi_comparison.json",
+      "sha256": "98fb5c1c180abab9a592b732de71b041e8f6fff443d09c168bf7dd3e6f4944dd"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_zlog_register_work_revalidated_v1/cfg_comparison.json",
+      "sha256": "fcae15b6892f00f2c1183d4f043459114b727c62c2b92cb4b76c650545afc57a"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only zlog_register_work.",
+    "The callback intentionally has no null guard before reading tpd_cdev + 0xbf0; the exact reconstruction preserves that precondition.",
+    "No ADB, fastboot, module load, scheduler timing, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "Hardware validation remains deferred to the controlled NX809J procedure."
+  ]
+}
