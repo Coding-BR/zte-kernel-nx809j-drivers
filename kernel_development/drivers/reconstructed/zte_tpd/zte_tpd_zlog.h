@@ -72,7 +72,7 @@ struct ztp_device {
 	bool zlog_registered;
 	u8 reserved_bf1[7];
 	unsigned long tp_reset_timer;
-	s8 probe_fail_chip_id;
+	u8 probe_fail_chip_id;
 	u8 reserved_c01[0xff];
 	u32 firmware_version;
 };

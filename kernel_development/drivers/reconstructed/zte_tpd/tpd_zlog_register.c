@@ -11,30 +11,31 @@ struct zlog_mod_info zlog_tp_dev = {
 
 void tpd_zlog_register(struct ztp_device *cdev)
 {
-	if (cdev->zlog_client) {
-		pr_debug("zte_tpd: zlog client already registered\n");
-		return;
-	}
-
-	cdev->zlog_client = zlog_register_client(&zlog_tp_dev);
 	if (!cdev->zlog_client) {
-		pr_err("zte_tpd: zlog client registration failed\n");
-		goto out_registered;
-	}
+		cdev->zlog_client = zlog_register_client(&zlog_tp_dev);
+		if (!cdev->zlog_client) {
+			printk("\0015tpd_zlog: %s zlog register client zlog_tp_dev fail\n",
+			       "tpd_zlog_register");
+		} else {
+			cdev->ztp_zlog_buffer = vmalloc(ZTE_TPD_ZLOG_BUFFER_SIZE);
+			if (!cdev->ztp_zlog_buffer) {
+				printk("\0015tpd_zlog: ztp_zlog_buffer");
+				memset(cdev->ztp_zlog_buffer, 0,
+				       ZTE_TPD_ZLOG_BUFFER_SIZE);
+			}
 
-	cdev->ztp_zlog_buffer = vmalloc(ZTE_TPD_ZLOG_BUFFER_SIZE);
-	if (!cdev->ztp_zlog_buffer) {
-		pr_err("zte_tpd: zlog buffer allocation failed\n");
-		goto out_registered;
+			if ((u8)cdev->probe_fail_chip_id != 0xff) {
+				if (tpd_zlog_device()->ztp_zlog_buffer) {
+					snprintf(tpd_zlog_device()->ztp_zlog_buffer,
+						 ZTE_TPD_ZLOG_BUFFER_SIZE,
+						 "tp probe fail, chip id:%d",
+						 cdev->probe_fail_chip_id);
+				}
+				tpd_zlog_record_notify(TP_PROBE_ERROR_NO);
+			}
+		}
+		cdev->zlog_registered = true;
+	} else {
+		printk("\0015tpd_zlog: ztp zlog already registered, no need register again!");
 	}
-	memset(cdev->ztp_zlog_buffer, 0, ZTE_TPD_ZLOG_BUFFER_SIZE);
-
-	if (cdev->probe_fail_chip_id != (s8)0xff) {
-		snprintf(cdev->ztp_zlog_buffer, ZTE_TPD_ZLOG_BUFFER_SIZE,
-			 "tp probe fail, chip id:%d", cdev->probe_fail_chip_id);
-		tpd_zlog_record_notify(TP_PROBE_ERROR_NO);
-	}
-
-out_registered:
-	cdev->zlog_registered = true;
 }
