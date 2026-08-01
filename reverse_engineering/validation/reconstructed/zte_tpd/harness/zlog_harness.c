@@ -50,6 +50,7 @@ static char last_record[4096];
 
 #define pr_debug(...) ((void)0)
 #define pr_err(...) ((void)0)
+#define printk(...) ((void)0)
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define jiffies_to_msecs(value) (value)
 #define INIT_DELAYED_WORK(dwork, callback) ((dwork)->work.fn = (callback))
