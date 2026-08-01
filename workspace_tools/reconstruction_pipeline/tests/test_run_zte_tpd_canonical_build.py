@@ -1,4 +1,6 @@
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -35,3 +37,31 @@ class CandidateSourceSyncTests(unittest.TestCase):
                 "content_mismatch": ["changed.c"],
             },
         )
+
+    def test_source_tree_record_excludes_evidence_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "Makefile").write_text("obj-m += zte_tpd.o\n", encoding="utf-8")
+            (root / "driver.c").write_text("int driver(void) { return 0; }\n", encoding="utf-8")
+            metadata = root / "MICROTASKS.json"
+            metadata.write_text(json.dumps({"build": "first"}), encoding="utf-8")
+            first = MODULE.source_tree_record(root)
+
+            metadata.write_text(json.dumps({"build": "second"}), encoding="utf-8")
+            second = MODULE.source_tree_record(root)
+
+        self.assertEqual(first["manifest_sha256"], second["manifest_sha256"])
+        self.assertEqual(["Makefile", "driver.c"], [item["path"] for item in first["files"]])
+
+    def test_source_tree_record_binds_compilable_header(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "Makefile").write_text("obj-m += zte_tpd.o\n", encoding="utf-8")
+            header = root / "driver.h"
+            header.write_text("#define VALUE 1\n", encoding="utf-8")
+            first = MODULE.source_tree_record(root)
+
+            header.write_text("#define VALUE 2\n", encoding="utf-8")
+            second = MODULE.source_tree_record(root)
+
+        self.assertNotEqual(first["manifest_sha256"], second["manifest_sha256"])

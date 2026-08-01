@@ -506,25 +506,36 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_alloc_tp_firmware_data\nEntrada Ghidra: 00107d54\nTamanho stock: 260 bytes\nCategoria: core_logic\nAlvo no fonte: tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0011_00107d54_tp_alloc_tp_firmware_data.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0011_00107d54_tp_alloc_tp_firmware_data.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next13_firmware_lifecycle_final_report.json",
-          "sha256": "94b89518676c3a53fbfd814f94ee7618625e07bc470e3c10ad204d147037ce0b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next128_tp_alloc_tp_firmware_data_revalidated_v1/build_report.json",
+          "sha256": "d8df81c7511baa2b270f639538f141867565947d04882f7c26fe642d944bb345"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_next13_firmware_lifecycle_exact.json",
-          "sha256": "6163939ef2f079ec9fb0824fb1b2b78cdab7f2d7c25ae3ec7143a67711a63546"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next128_tp_alloc_tp_firmware_data_revalidated_v1/kcfi_comparison.json",
+          "sha256": "e766d4e95e78d1db41dd9efcea8911a1a6e388660b590d1fcfff4eed0085deda"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/next13_firmware_harness_report.json",
-          "sha256": "bc1cb8d570264126ed36ea7bc33adc69d0f5ef5572c5013f93755002696e8b4d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next128_tp_alloc_tp_firmware_data_revalidated_v1/host_harness_report.json",
+          "sha256": "cf7717ac8f04c5a9e30f7dd25bd87374b3ac6284400f7de246d4c33d41922c9e"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next128_tp_alloc_tp_firmware_data_revalidated_v1/joern_gate_summary.json",
+          "sha256": "3308d34f94333128307624790a680db2c0b9c72fd0d13f63eca6f3c701c83e60"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next128_tp_alloc_tp_firmware_data_revalidated_v1/assembly_comparison.json",
+          "sha256": "0204ba9bf57ed6ef3fdb2a13c0f3392eb3e8b33a8c4cce4ef182b190ada7d0a2"
         }
       ]
     },

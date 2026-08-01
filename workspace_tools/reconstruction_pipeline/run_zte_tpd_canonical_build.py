@@ -23,6 +23,9 @@ GENERATED_NAMES = {
     "zte_tpd.o",
 }
 GENERATED_SUFFIXES = (".o", ".ko", ".mod", ".cmd")
+KBUILD_INPUT_NAMES = {"Kbuild", "Kconfig", "Makefile", "vendor.Module.symvers"}
+KBUILD_INPUT_SUFFIXES = {".S", ".c", ".h", ".inc", ".s"}
+KBUILD_INPUT_SELECTION = "kbuild_input_allowlist_v1"
 DIAGNOSTIC_RE = re.compile(r"warning:|error:|clock skew", re.IGNORECASE)
 
 
@@ -43,6 +46,7 @@ def sha256_file(path: Path) -> str:
 
 
 def source_files(root: Path) -> list[Path]:
+    """Return only versioned files that can affect this external-module build."""
     files = []
     for path in root.rglob("*"):
         if not path.is_file() or path.name in GENERATED_NAMES:
@@ -50,6 +54,8 @@ def source_files(root: Path) -> list[Path]:
         if path.name.startswith(".") and path.name.endswith(".cmd"):
             continue
         if path.suffix in GENERATED_SUFFIXES:
+            continue
+        if path.name not in KBUILD_INPUT_NAMES and path.suffix not in KBUILD_INPUT_SUFFIXES:
             continue
         files.append(path)
     return sorted(files, key=lambda path: path.relative_to(root).as_posix())
@@ -69,6 +75,9 @@ def source_tree_record(root: Path) -> dict[str, object]:
         aggregate.update(b"\n")
     return {
         "path": str(root),
+        "selection": KBUILD_INPUT_SELECTION,
+        "included_names": sorted(KBUILD_INPUT_NAMES),
+        "included_suffixes": sorted(KBUILD_INPUT_SUFFIXES),
         "file_count": len(records),
         "manifest_sha256": aggregate.hexdigest(),
         "files": records,
@@ -183,7 +192,7 @@ def main() -> int:
             "source_tree": curated_source_record,
             "source_sync": source_sync,
             "notes": [
-                "The curated Docker snapshot must be byte-identical to the versioned candidate source before a canonical build can start.",
+                "The curated Docker snapshot must be byte-identical to the versioned Kbuild input set before a canonical build can start.",
                 "Use sync_zte_tpd_curated_source.py with --apply and retain its hash-bound report outside the source tree.",
             ],
         }
@@ -307,6 +316,7 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         },
         "notes": [
             "Every cycle starts in a new container and copies the curated source into a deliberately different M= path.",
+            "Source synchronization is limited to files that can affect the Kbuild external-module artifact; evidence manifests and documentation are not compiler inputs.",
             "Input mtimes are normalized before make clean to prevent host bind-mount clock skew.",
             "KCFLAGS maps the complete module path to /zte_tpd for source objects and generated *.mod.c debug metadata.",
             "Byte identity across the deliberately different M= paths is a mandatory path-independence gate.",
