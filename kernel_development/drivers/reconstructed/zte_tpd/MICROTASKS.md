@@ -275,7 +275,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 269_syna_tcm_get_event_data | syna_tcm_get_event_data | 00121ad4 | core_logic | syna_tcm_get_event_data.c:syna_tcm_get_event_data | PASS |
 | 270_syna_tcm_buf_copy | syna_tcm_buf_copy | 00121c10 | core_logic | syna_tcm_buf_copy_2.c:syna_tcm_buf_copy_2 | READY_FOR_IMPLEMENTATION |
 | 271_syna_tcm_identify | syna_tcm_identify | 00121f54 | core_logic | syna_tcm_identify.c:syna_tcm_identify | READY_FOR_IMPLEMENTATION |
-| 272_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 00122140 | core_logic | syna_tcm_buf_unlock_0.c:syna_tcm_buf_unlock_0 | READY_FOR_IMPLEMENTATION |
+| 272_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 00122140 | core_logic | syna_tcm_buf_unlock_0.c:syna_tcm_buf_unlock_0 | PASS |
 | 273_syna_tcm_reset | syna_tcm_reset | 001221ac | core_logic | syna_tcm_reset.c:syna_tcm_reset | PASS |
 | 274_syna_tcm_enable_report | syna_tcm_enable_report | 0012231c | core_logic | syna_tcm_enable_report.c:syna_tcm_enable_report | READY_FOR_IMPLEMENTATION |
 | 275_syna_tcm_wait_for_report | syna_tcm_wait_for_report | 0012248c | core_logic | syna_tcm_wait_for_report.c:syna_tcm_wait_for_report | READY_FOR_IMPLEMENTATION |
