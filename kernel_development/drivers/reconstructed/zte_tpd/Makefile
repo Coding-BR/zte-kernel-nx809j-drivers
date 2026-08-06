@@ -21,6 +21,8 @@ CFLAGS_syna_pal_mem_free.o := -fno-sanitize=kcfi
 CFLAGS_syna_pal_mem_free_0.o := -fno-sanitize=kcfi
 # Stock syna_pal_mem_cpy@0011da1c has no valid KCFI entry preamble.
 CFLAGS_syna_pal_mem_cpy_0.o := -fno-sanitize=kcfi
+# Stock syna_pal_mem_cpy@0011d67c has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_cpy.o := -fno-sanitize=kcfi
 # Stock syna_pal_mem_alloc@00127e18 has no valid KCFI entry preamble.
 CFLAGS_syna_pal_mem_alloc.o := -fno-sanitize=kcfi
 # Stock tpd_touch_report@0010eb70 has no valid KCFI entry preamble.
