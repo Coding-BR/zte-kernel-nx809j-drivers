@@ -60,6 +60,24 @@ class PredicateEquivalenceTests(unittest.TestCase):
         self.assertEqual(substitutions, [])
         self.assertEqual(len(unresolved), 2)
 
+    def test_function_relative_target_is_independent_of_elf_address(self) -> None:
+        stock = [
+            instruction("7100241f", "cmp", "w0, #0x9"),
+            instruction("54000688", "b.hi", "0x82e4 <point_report_reset+0xd4>"),
+        ]
+        candidate = [
+            instruction("7100281f", "cmp", "w0, #0xa"),
+            instruction("54000682", "b.hs", "0x1f60 <point_report_reset+0xd4>"),
+        ]
+
+        passed, substitutions, unresolved = MODULE.classify_instructions(
+            stock, candidate
+        )
+
+        self.assertTrue(passed)
+        self.assertEqual(("self", "0xd4"), substitutions[0]["branch_target"])
+        self.assertEqual([], unresolved)
+
     def test_non_adjacent_limits_are_rejected(self) -> None:
         stock = [
             instruction("71002abf", "cmp", "w21, #0xa"),
