@@ -38,3 +38,5 @@ ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-Wno-incompatible-library-redeclaration -Wno-return-type \
 	-Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label \
 	-Wframe-larger-than=8192
+# Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
+CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
