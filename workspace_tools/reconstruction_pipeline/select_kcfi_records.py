@@ -26,13 +26,15 @@ def selected_by_function(
         if not isinstance(record, dict):
             raise ValueError(f"{source}: invalid {key} record")
         function = record.get("function")
-        if function not in functions:
+        offset = record.get("symbol_offset")
+        selector = f"{function}@{offset}" if isinstance(offset, str) else function
+        if function not in functions and selector not in functions:
             continue
         if not isinstance(function, str) or not function:
             raise ValueError(f"{source}: invalid {key} function")
-        if function in seen:
+        if selector in seen:
             raise ValueError(f"{source}: duplicate selected {key} function: {function}")
-        seen.add(function)
+        seen.add(selector)
         selected.append(record)
     return sorted(selected, key=lambda record: str(record["function"]))
 
@@ -55,7 +57,8 @@ def project_payload(source: Path, functions: list[str]) -> dict[str, Any]:
             f"{source}: selected records and exclusions overlap: "
             + ", ".join(sorted(overlap))
         )
-    missing = requested_set - record_names - excluded_names
+    selected_selectors = {f"{r['function']}@{r['symbol_offset']}" if r.get("symbol_offset") else r["function"] for r in records + excluded}
+    missing = {name for name in requested_set if name not in record_names and name not in excluded_names and name not in selected_selectors}
     if missing:
         raise ValueError(
             f"{source}: selected functions are absent: " + ", ".join(sorted(missing))

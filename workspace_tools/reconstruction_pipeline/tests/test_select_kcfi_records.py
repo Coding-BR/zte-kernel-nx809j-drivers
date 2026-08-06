@@ -55,6 +55,22 @@ class SelectKcfiRecordsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "selected functions are absent: target"):
             MODULE.project_payload(source, ["target"])
 
+    def test_offset_selector_disambiguates_duplicate_exclusions(self) -> None:
+        source = self.write_payload(
+            {
+                "records": [],
+                "excluded": [
+                    {"function": "target", "symbol_offset": "0x10"},
+                    {"function": "target", "symbol_offset": "0x20"},
+                ],
+            }
+        )
+
+        result = MODULE.project_payload(source, ["target@0x10"])
+
+        self.assertEqual(["target@0x10"], result["selected_functions"])
+        self.assertEqual("0x10", result["excluded"][0]["symbol_offset"])
+
 
 if __name__ == "__main__":
     unittest.main()

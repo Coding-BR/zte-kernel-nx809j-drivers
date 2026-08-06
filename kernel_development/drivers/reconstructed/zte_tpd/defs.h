@@ -294,7 +294,7 @@ extern int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
 extern void syna_tcm_clear_command_processing(struct tcm_dev *tcm);
 extern void syna_tcm_remove_device(struct tcm_dev *tcm);
 extern void syna_tcm_v1_terminate(struct tcm_dev *tcm);
-extern __int64 syna_tcm_buf_unlock(__int64 buffer);
+extern void syna_tcm_buf_unlock(__int64 buffer);
 extern int syna_dev_process_touch_report(unsigned char report_code,
                                          const unsigned char *payload,
                                          unsigned int length, void *context);
