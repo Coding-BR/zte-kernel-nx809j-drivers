@@ -155,7 +155,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 149_syna_dev_set_display_rotation | syna_dev_set_display_rotation | 00111a30 | core_logic | syna_dev_set_display_rotation.c:syna_dev_set_display_rotation | READY_FOR_IMPLEMENTATION |
 | 150_syna_dev_set_play_game | syna_dev_set_play_game | 00111b38 | core_logic | syna_dev_set_play_game.c:syna_dev_set_play_game | PASS |
 | 151_syna_recovery_game_mode_after_reset | syna_recovery_game_mode_after_reset | 00111bac | core_logic | syna_recovery_game_mode_after_reset.c:syna_recovery_game_mode_after_reset | READY_FOR_IMPLEMENTATION |
-| 152_syna_dev_get_frame_data | syna_dev_get_frame_data | 00111d48 | core_logic | syna_dev_get_frame_data.c:syna_dev_get_frame_data | READY_FOR_IMPLEMENTATION |
+| 152_syna_dev_get_frame_data | syna_dev_get_frame_data | 00111d48 | core_logic | syna_dev_get_frame_data.c:syna_dev_get_frame_data | PASS |
 | 153_syna_ts_check_dt | syna_ts_check_dt | 00111dc4 | core_logic | syna_ts_check_dt.c:syna_ts_check_dt | READY_FOR_IMPLEMENTATION |
 | 154_zte_reset_frame_list | zte_reset_frame_list | 00111f64 | core_logic | zte_reset_frame_list.c:zte_reset_frame_list | PASS |
 | 155_syna_dev_module_init | syna_dev_module_init | 00111fcc | lifecycle | syna_dev_module_init.c:syna_dev_module_init | PASS |
