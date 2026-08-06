@@ -23,6 +23,8 @@ CFLAGS_syna_pal_mem_free_0.o := -fno-sanitize=kcfi
 CFLAGS_syna_pal_mem_cpy_0.o := -fno-sanitize=kcfi
 # Stock syna_pal_mem_alloc@00127e18 has no valid KCFI entry preamble.
 CFLAGS_syna_pal_mem_alloc.o := -fno-sanitize=kcfi
+# Stock tpd_touch_report@0010eb70 has no valid KCFI entry preamble.
+CFLAGS_tpd_touch_report.o := -fno-sanitize=kcfi
 
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \

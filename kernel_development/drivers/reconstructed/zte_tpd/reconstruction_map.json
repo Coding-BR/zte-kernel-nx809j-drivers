@@ -1784,21 +1784,23 @@
     },
     {
       "evidence": [
-        "source:tpd_touch_report.c:sha256:f0322a3a54c48fe0bad06375e30e4c033be48c188d5841745aa83430a1b4d7db",
+        "source:tpd_touch_report.c:sha256:b5bc500eca7ef8e154280cb070b9b646446541c541c37117ce35e2c639d98107",
         "ghidra-pseudocode:decompiled/0097_0010eb70_tpd_touch_report.c:sha256:8344df0b2afb4611fc5dbd454fc1a1f66f46b064187af1ae0a3cfcb4915c0e5d",
         "ghidra-pcode:pcode/0097_0010eb70_tpd_touch_report.jsonl:sha256:3dbe56574a9e2de2211bfbbd3ba267a8a2f606dbb4872d25d96ae91a5b28097f",
-        "stock-assembly:0097_tpd_touch_report_0010eb70.asm:sha256:4e8e0acccba4de8cc863c7a875cc07af431bf2637bcdd8f9af78402094275ffd"
+        "stock-assembly:0097_tpd_touch_report_0010eb70.asm:sha256:4e8e0acccba4de8cc863c7a875cc07af431bf2637bcdd8f9af78402094275ffd",
+        "assembly-comparison:attestation/next134_tpd_touch_report_revalidated_v1/assembly_comparison.json:sha256:afa3924bc4fb34d8d103a5d696f15b052580fda1a0a0060e8e08aa1d942040b2",
+        "kcfi-comparison:attestation/next134_tpd_touch_report_revalidated_v1/kcfi_comparison.json:sha256:2ee52c0bb9efed75dcff5d856f716fcdb4547e153ffa1bec34fc6ec1adc05407"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode and P-Code review plus exact function-level AArch64, CFG and KCFI-absence evidence; strict Joern is a required independent gate",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_touch_report.c",
       "source_function": "tpd_touch_report",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 252,
       "stock_entry": "0010eb70",
       "stock_function": "tpd_touch_report",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity covers the input event order, optional pressure and touch-major branches, mutex offset 0xc90 and the stock absence of a valid KCFI preamble via an object-specific Kbuild flag. Input subsystem integration and NX809J hardware behavior remain unverified until the controlled physical procedure runs."
     },
     {
       "evidence": [
