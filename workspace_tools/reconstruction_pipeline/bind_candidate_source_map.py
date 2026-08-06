@@ -148,10 +148,17 @@ def bind_driver(repo: Path, driver: str, check: bool) -> dict[str, Any]:
         if not isinstance(stock_function, str) or not stock_function:
             raise MappingError("mapping has no stock_function")
         mapped_function = item.get("source_function")
+        canonical_function = source_name(stock_function, driver)
+        # Compiler-generated exports and module entry aliases must supersede a
+        # stale self-reference carried by an older reconstruction map.
         candidate = (
-            mapped_function
-            if isinstance(mapped_function, str) and mapped_function
-            else source_name(stock_function, driver)
+            canonical_function
+            if canonical_function != stock_function
+            else (
+                mapped_function
+                if isinstance(mapped_function, str) and mapped_function
+                else canonical_function
+            )
         )
         source_rel = source_file_name(
             stock_function, driver, item.get("source_file")

@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+import re
 from pathlib import Path
 
 from workspace_tools.reconstruction_pipeline.bind_candidate_source_map import (
@@ -9,7 +10,37 @@ from workspace_tools.reconstruction_pipeline.bind_candidate_source_map import (
 )
 
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+
+
+def string_values(value):
+    if isinstance(value, dict):
+        for nested in value.values():
+            yield from string_values(nested)
+    elif isinstance(value, list):
+        for nested in value:
+            yield from string_values(nested)
+    elif isinstance(value, str):
+        yield value
+
+
 class BindCandidateSourceMapTests(unittest.TestCase):
+    def test_reconstruction_maps_do_not_embed_absolute_paths(self):
+        maps = sorted(
+            (REPOSITORY_ROOT / "kernel_development" / "drivers" / "reconstructed").glob(
+                "*/reconstruction_map.json"
+            )
+        )
+        self.assertTrue(maps)
+        for path in maps:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            absolute_paths = [
+                value
+                for value in string_values(payload)
+                if re.match(r"^[A-Za-z]:[\\\\/]", value) or value.startswith("/")
+            ]
+            self.assertEqual(absolute_paths, [], path.as_posix())
+
     def test_fp_goodix_translation_unit_dispatch(self):
         self.assertEqual(
             source_file_name("gf_ioctl", "fp_goodix", "fp_goodix.c"),
