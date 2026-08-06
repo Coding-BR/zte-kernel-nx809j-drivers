@@ -100,8 +100,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | PASS |
 | 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit.c:zte_touch_deinit | READY_FOR_IMPLEMENTATION |
 | 096_tpd_touch_press | tpd_touch_press | 0010e254 | core_logic | tpd_touch_press.c:tpd_touch_press | READY_FOR_IMPLEMENTATION |
-| 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | READY_FOR_IMPLEMENTATION |
-| 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | READY_FOR_IMPLEMENTATION |
+| 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | PASS |
+| 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | PASS |
 | 099_tpd_touch_release | tpd_touch_release | 0010ec70 | user_abi | tpd_touch_release.c:tpd_touch_release | READY_FOR_IMPLEMENTATION |
 | 100_ghost_check_area | ghost_check_area | 0010f2ac | core_logic | ghost_check_area.c:ghost_check_area | READY_FOR_IMPLEMENTATION |
 | 101_tp_ghost_check | tp_ghost_check | 0010f400 | core_logic | tp_ghost_check.c:tp_ghost_check | PASS |
@@ -259,8 +259,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 253_syna_tcm_testing_0500_check_upper_bound | syna_tcm_testing_0500_check_upper_bound | 0011e844 | core_logic | syna_tcm_testing_0500_check_upper_bound.c:syna_tcm_testing_0500_check_upper_bound | PASS |
 | 254_syna_tcm_testing_0500_check_lower_bound | syna_tcm_testing_0500_check_lower_bound | 0011e8ac | core_logic | syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound | PASS |
 | 255_syna_tcm_v1_detect | syna_tcm_v1_detect | 0011e914 | core_logic | syna_tcm_v1_detect.c:syna_tcm_v1_detect | READY_FOR_IMPLEMENTATION |
-| 256_syna_tcm_buf_lock | syna_tcm_buf_lock | 0011ede8 | core_logic | syna_tcm_buf_lock.c:syna_tcm_buf_lock | READY_FOR_IMPLEMENTATION |
-| 257_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 0011ee40 | core_logic | syna_tcm_buf_unlock.c:syna_tcm_buf_unlock | READY_FOR_IMPLEMENTATION |
+| 256_syna_tcm_buf_lock | syna_tcm_buf_lock | 0011ede8 | core_logic | syna_tcm_buf_lock.c:syna_tcm_buf_lock | PASS |
+| 257_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 0011ee40 | core_logic | syna_tcm_buf_unlock.c:syna_tcm_buf_unlock | PASS |
 | 258_syna_tcm_v1_write_message | syna_tcm_v1_write_message | 0011eeac | user_abi | syna_tcm_v1_write_message.c:syna_tcm_v1_write_message | READY_FOR_IMPLEMENTATION |
 | 259_syna_tcm_v1_parse_idinfo | syna_tcm_v1_parse_idinfo | 0011f6d0 | core_logic | syna_tcm_v1_parse_idinfo.c:syna_tcm_v1_parse_idinfo | READY_FOR_IMPLEMENTATION |
 | 260_syna_tcm_v1_check_max_rw_size | syna_tcm_v1_check_max_rw_size | 0011f790 | core_logic | syna_tcm_v1_check_max_rw_size.c:syna_tcm_v1_check_max_rw_size | READY_FOR_IMPLEMENTATION |
@@ -363,7 +363,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 357_tpd_set_frame_data | tpd_set_frame_data | 0012c818 | core_logic | tpd_set_frame_data.c:tpd_set_frame_data | READY_FOR_IMPLEMENTATION |
 | 358_tpd_get_palm_mode | tpd_get_palm_mode | 0012c8e4 | core_logic | tpd_get_palm_mode.c:tpd_get_palm_mode | PASS |
 | 359_tpd_set_palm_mode | tpd_set_palm_mode | 0012c900 | core_logic | tpd_set_palm_mode.c:tpd_set_palm_mode | PASS |
-| 360_syna_ghost_check_reset | syna_ghost_check_reset | 0012c940 | core_logic | syna_ghost_check_reset.c:syna_ghost_check_reset | READY_FOR_IMPLEMENTATION |
+| 360_syna_ghost_check_reset | syna_ghost_check_reset | 0012c940 | core_logic | syna_ghost_check_reset.c:syna_ghost_check_reset | PASS |
 | 361_tpd_set_fake_sleep | tpd_set_fake_sleep | 0012c9a4 | core_logic | tpd_set_fake_sleep.c:tpd_set_fake_sleep | PASS |
 | 362_tpd_get_fake_sleep | tpd_get_fake_sleep | 0012ca00 | core_logic | tpd_get_fake_sleep.c:tpd_get_fake_sleep | PASS |
 | 363_tpd_set_screen_off_awake | tpd_set_screen_off_awake | 0012ca1c | core_logic | tpd_set_screen_off_awake.c:tpd_set_screen_off_awake | PASS |

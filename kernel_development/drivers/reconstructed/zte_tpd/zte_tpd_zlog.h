@@ -75,6 +75,9 @@ struct ztp_device {
 	u8 probe_fail_chip_id;
 	u8 reserved_c01[0xff];
 	u32 firmware_version;
+	u8 reserved_d04[0xb4];
+	/* Stock syna_ghost_check_reset@0012c940 reads this context at +0xdb8. */
+	struct syna_tcm *syna_tcm;
 };
 
 static_assert(sizeof(struct zlog_mod_info) == 48);
@@ -87,6 +90,7 @@ static_assert(offsetof(struct ztp_device, zlog_registered) == 0xbf0);
 static_assert(offsetof(struct ztp_device, tp_reset_timer) == 0xbf8);
 static_assert(offsetof(struct ztp_device, probe_fail_chip_id) == 0xc00);
 static_assert(offsetof(struct ztp_device, firmware_version) == 0xd00);
+static_assert(offsetof(struct ztp_device, syna_tcm) == 0xdb8);
 
 extern struct zlog_mod_info zlog_tp_dev;
 extern struct zlog_client *zlog_register_client(struct zlog_mod_info *module);
