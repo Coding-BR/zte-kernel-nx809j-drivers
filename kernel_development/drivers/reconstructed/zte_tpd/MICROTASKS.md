@@ -157,7 +157,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 151_syna_recovery_game_mode_after_reset | syna_recovery_game_mode_after_reset | 00111bac | core_logic | syna_recovery_game_mode_after_reset.c:syna_recovery_game_mode_after_reset | READY_FOR_IMPLEMENTATION |
 | 152_syna_dev_get_frame_data | syna_dev_get_frame_data | 00111d48 | core_logic | syna_dev_get_frame_data.c:syna_dev_get_frame_data | READY_FOR_IMPLEMENTATION |
 | 153_syna_ts_check_dt | syna_ts_check_dt | 00111dc4 | core_logic | syna_ts_check_dt.c:syna_ts_check_dt | READY_FOR_IMPLEMENTATION |
-| 154_zte_reset_frame_list | zte_reset_frame_list | 00111f64 | core_logic | zte_reset_frame_list.c:zte_reset_frame_list | READY_FOR_IMPLEMENTATION |
+| 154_zte_reset_frame_list | zte_reset_frame_list | 00111f64 | core_logic | zte_reset_frame_list.c:zte_reset_frame_list | PASS |
 | 155_syna_dev_module_init | syna_dev_module_init | 00111fcc | lifecycle | syna_dev_module_init.c:syna_dev_module_init | PASS |
 | 156_syna_dev_module_exit | syna_dev_module_exit | 0011200c | lifecycle | syna_dev_module_exit.c:syna_dev_module_exit | PASS |
 | 157_syna_dev_probe | syna_dev_probe | 00112038 | binding | syna_dev_probe.c:syna_dev_probe | READY_FOR_IMPLEMENTATION |
