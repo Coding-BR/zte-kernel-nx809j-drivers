@@ -132,25 +132,12 @@ int zte_touch_probe(struct platform_device *pdev)
   __int64 v130; // [xsp+8h] [xbp-8h]
 
   v130 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  if (pdev) {
-    if (pdev->name) {
-      printk("zte_touch_probe: probing device named '%s'\n", pdev->name);
-      if (strcmp(pdev->name, "zte_touch") == 0) {
-        printk("zte_touch_probe: ignoring virtual device 'zte_touch' to prevent recursion\n");
-        return 0;
-      }
-    } else {
-      printk("zte_touch_probe: pdev->name is NULL\n");
-    }
-  } else {
-    printk("zte_touch_probe: pdev is NULL\n");
-  }
   printk(unk_322D0, "zte_touch_probe", 2858);
-  v2 = devm_kmalloc(a1 + 16, 3664, 3520);
+  v2 = devm_kmalloc(a1 + 16, 4104, 3520);
   if ( v2 )
   {
     v5 = v2;
-    *(_QWORD *)(v2 + 3088) = a1;
+    *(_QWORD *)(v2 + 3528) = a1;
     tpd_cdev = v2;
     *(_QWORD *)(a1 + 168) = v2;
     zte_touch_pdev_register();
@@ -292,9 +279,9 @@ int zte_touch_probe(struct platform_device *pdev)
         printk(unk_32889, v126, v125);
       }
     }
-    _mutex_init(v5 + 2728, "&ztp_dev->cmd_mutex", &zte_touch_probe___key);
-    _mutex_init(v5 + 2776, "&ztp_dev->report_mutex", &zte_touch_probe___key_92);
-    _mutex_init(v5 + 2824, "&ztp_dev->tp_resume_mutex", &zte_touch_probe___key_94);
+    _mutex_init(v5 + 3168, "&ztp_dev->cmd_mutex", &zte_touch_probe___key);
+    _mutex_init(v5 + 3216, "&ztp_dev->report_mutex", &zte_touch_probe___key_92);
+    _mutex_init(v5 + 3264, "&ztp_dev->tp_resume_mutex", &zte_touch_probe___key_94);
     v40 = proc_mkdir("touchscreen", 0);
     tpd_proc_dir = v40;
     if ( v40 )
@@ -371,18 +358,18 @@ int zte_touch_probe(struct platform_device *pdev)
       printk(unk_3A0E3, "create_tpd_proc_entry", v41);
     }
     v106 = tpd_cdev;
-    v107 = *(_QWORD *)(tpd_cdev + 3096);
+    v107 = *(_QWORD *)(tpd_cdev + 3536);
     if ( v107 )
     {
       v108 = kobject_create_and_add("fwupdate", v107 + 16);
-      *(_QWORD *)(v106 + 2712) = v108;
+      *(_QWORD *)(v106 + 3152) = v108;
       if ( v108 )
       {
         bin_file = sysfs_create_bin_file(v108, &fwimage_attr);
         if ( bin_file )
         {
           printk(unk_3537D, bin_file, v112);
-          kobject_put(*(_QWORD *)(v106 + 2712));
+          kobject_put(*(_QWORD *)(v106 + 3152));
         }
       }
       else
@@ -400,7 +387,28 @@ int zte_touch_probe(struct platform_device *pdev)
     if ( !(unsigned int)tpd_workqueue_init() )
     {
       queue_delayed_work_on(32, *(_QWORD *)(v5 + 1200), v5 + 2256, 375);
-      tpd_zlog_init();
+      *(_QWORD *)(tpd_cdev + 3048) = 0;
+      *(_BYTE *)(v5 + 3056) = 0;
+      *(_QWORD *)(v5 + 3064) = jiffies;
+      *(_QWORD *)(v5 + 2896) = jiffies;
+      *(_QWORD *)(v5 + 2904) = jiffies;
+      *(_QWORD *)(v5 + 2912) = jiffies;
+      *(_QWORD *)(v5 + 2920) = jiffies;
+      *(_QWORD *)(v5 + 2928) = jiffies;
+      *(_QWORD *)(v5 + 2936) = jiffies;
+      *(_QWORD *)(v5 + 2944) = jiffies;
+      *(_QWORD *)(v5 + 2952) = jiffies;
+      *(_QWORD *)(v5 + 2960) = jiffies;
+      *(_QWORD *)(v5 + 2968) = jiffies;
+      *(_QWORD *)(v5 + 2976) = jiffies;
+      *(_QWORD *)(v5 + 2984) = jiffies;
+      *(_QWORD *)(v5 + 2992) = jiffies;
+      *(_QWORD *)(v5 + 3000) = jiffies;
+      *(_QWORD *)(v5 + 3008) = jiffies;
+      *(_QWORD *)(v5 + 3016) = jiffies;
+      *(_QWORD *)(v5 + 3024) = jiffies;
+      *(_QWORD *)(v5 + 3032) = jiffies;
+      *(_QWORD *)(v5 + 3040) = jiffies;
       queue_delayed_work_on(32, *(_QWORD *)(v5 + 1208), v5 + 2640, 1250);
       *(_BYTE *)(v5 + 29) = 0;
       *(_BYTE *)(v5 + 3072) = -1;
