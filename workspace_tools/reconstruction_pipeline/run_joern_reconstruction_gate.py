@@ -738,6 +738,7 @@ def main() -> int:
         "--output", str(source_cpg),
         "--log-problems",
         "--with-include-auto-discovery",
+        "--with-preprocessed-files",
     ]
     for excluded in args.exclude:
         source_command.extend(["--exclude", excluded])
