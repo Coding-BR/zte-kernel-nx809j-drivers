@@ -34,7 +34,7 @@ def test_generated_module_object_receives_prefix_map() -> None:
     auditor = INDEPENDENT_AUDITOR.read_text(encoding="utf-8")
 
     assert 'KCFLAGS="$PREFIX_MAP"' in builder
-    assert "KCFLAGS=-ffile-prefix-map=/work/validation/{driver}=/zte_tpd" in auditor
+    assert 'f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"' in auditor
 
 
 def test_module_sources_receive_matching_prefix_map() -> None:
