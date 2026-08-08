@@ -332,7 +332,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 326_trim | trim | 0012b4dc | core_logic | trim.c:trim | READY_FOR_IMPLEMENTATION |
 | 327_syna_tpd_register_fw_class | syna_tpd_register_fw_class | 0012b55c | core_logic | syna_tpd_register_fw_class.c:syna_tpd_register_fw_class | READY_FOR_IMPLEMENTATION |
 | 328_syna_work_charger_detect_work | syna_work_charger_detect_work | 0012b8d0 | async_or_irq | syna_work_charger_detect_work.c:syna_work_charger_detect_work | READY_FOR_IMPLEMENTATION |
-| 329_tpd_init_tpinfo | tpd_init_tpinfo | 0012baac | lifecycle | tpd_init_tpinfo.c:tpd_init_tpinfo | READY_FOR_IMPLEMENTATION |
+| 329_tpd_init_tpinfo | tpd_init_tpinfo | 0012baac | lifecycle | tpd_init_tpinfo.c:tpd_init_tpinfo | PASS |
 | 330_tpd_get_wakegesture | tpd_get_wakegesture | 0012bb30 | core_logic | tpd_get_wakegesture.c:tpd_get_wakegesture | PASS |
 | 331_tpd_enable_wakegesture | tpd_enable_wakegesture | 0012bb4c | core_logic | tpd_enable_wakegesture.c:tpd_enable_wakegesture | PASS |
 | 332_tpd_get_singlegamegesture | tpd_get_singlegamegesture | 0012bb9c | core_logic | tpd_get_singlegamegesture.c:tpd_get_singlegamegesture | PASS |
