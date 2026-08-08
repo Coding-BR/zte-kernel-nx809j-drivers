@@ -1,3 +1,11 @@
+/* Stock uses three distinct lockdep class keys for these probe-local mutexes. */
+#undef zte_touch_probe___key
+#undef zte_touch_probe___key_92
+#undef zte_touch_probe___key_94
+static struct lock_class_key zte_touch_probe___key;
+static struct lock_class_key zte_touch_probe___key_136;
+static struct lock_class_key zte_touch_probe___key_138;
+
 int zte_touch_probe(struct platform_device *pdev)
 {
   __int64 a1 = (__int64)pdev;
@@ -128,11 +136,8 @@ int zte_touch_probe(struct platform_device *pdev)
   __int64 v126; // x1
   __int64 v127; // x1
   __int64 v128; // x1
-  int v129; // [xsp+4h] [xbp-Ch] BYREF
-  __int64 v130; // [xsp+8h] [xbp-8h]
-
-  v130 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  printk(unk_322D0, "zte_touch_probe", 2858);
+  int v129 __uninitialized; // [xsp+4h] [xbp-Ch] BYREF
+  printk("\0015tpd: enter %s, %d\n", "zte_touch_probe", 2858);
   v2 = devm_kmalloc(a1 + 16, 4104, 3520);
   if ( v2 )
   {
@@ -146,12 +151,12 @@ int zte_touch_probe(struct platform_device *pdev)
     property = of_find_property(v6, "zte,tp_algo", 0);
     *(_BYTE *)(v5 + 27) = property != 0;
     if ( property )
-      printk(unk_3339E, v8, v9);
+      printk("\0015tpd: zte_tp_algo enabled");
     v10 = of_find_property(v6, "zte,tp_long_press", 0);
     *(_BYTE *)(v5 + 37) = v10 != 0;
     if ( v10 )
     {
-      printk(unk_3A0BE, v11, v12);
+      printk("\0015tpd: edge_long_press_check enabled");
       if ( (of_property_read_variable_u32_array(v6, "zte,tp_long_press_timer", &v129, 1, 0) & 0x80000000) == 0 )
         *(_WORD *)(v5 + 60) = v129;
       if ( (of_property_read_variable_u32_array(v6, "zte,tp_long_press_left_v", &v129, 1, 0) & 0x80000000) == 0 )
@@ -167,46 +172,46 @@ int zte_touch_probe(struct platform_device *pdev)
     *(_BYTE *)(v5 + 1168) = v13 != 0;
     if ( v13 )
     {
-      printk(unk_36E60, v14, v15);
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_single_time", &v129, 1, 0) < 0 )
+      printk("\0015tpd: ghost_check_config enabled");
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_single_time", &v129, 1, 0);
+      v16 = v129;
+      if ( v24 < 0 )
         v16 = 25;
-      else
-        v16 = v129;
       *(_BYTE *)(v5 + 1169) = v16;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_multi_time", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_multi_time", &v129, 1, 0);
+      v17 = v129;
+      if ( v24 < 0 )
         v17 = 20;
-      else
-        v17 = v129;
       *(_BYTE *)(v5 + 1170) = v17;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_single_count", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_single_count", &v129, 1, 0);
+      v18 = v129;
+      if ( v24 < 0 )
         v18 = 5;
-      else
-        v18 = v129;
       *(_BYTE *)(v5 + 1171) = v18;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_multi_count", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_multi_count", &v129, 1, 0);
+      v19 = v129;
+      if ( v24 < 0 )
         v19 = 8;
-      else
-        v19 = v129;
       *(_BYTE *)(v5 + 1172) = v19;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_start_time", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_start_time", &v129, 1, 0);
+      v20 = v129;
+      if ( v24 < 0 )
         v20 = 35;
-      else
-        v20 = v129;
       *(_BYTE *)(v5 + 1173) = v20;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_id", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_id", &v129, 1, 0);
+      v21 = v129;
+      if ( v24 < 0 )
         v21 = -1;
-      else
-        v21 = v129;
       *(_DWORD *)(v5 + 1176) = v21;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_edge_area", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_edge_area", &v129, 1, 0);
+      v22 = v129;
+      if ( v24 < 0 )
         v22 = 5121;
-      else
-        v22 = v129;
       *(_DWORD *)(v5 + 1180) = v22;
-      if ( (int)of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_corner_x", &v129, 1, 0) < 0 )
+      v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_corner_x", &v129, 1, 0);
+      v23 = v129;
+      if ( v24 < 0 )
         v23 = 801;
-      else
-        v23 = v129;
       *(_DWORD *)(v5 + 1184) = v23;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_corner_y", &v129, 1, 0);
       v25 = v129;
@@ -224,27 +229,27 @@ int zte_touch_probe(struct platform_device *pdev)
       *(_DWORD *)(v5 + 1184) = 801;
     }
     *(_DWORD *)(v5 + 1188) = v25;
-    printk(unk_333B9, v26, v15);
-    printk(unk_35E38, *(unsigned __int8 *)(v5 + 1170), v27);
-    printk(unk_333DE, *(unsigned __int8 *)(v5 + 1171), v28);
-    printk(unk_33A77, *(unsigned __int8 *)(v5 + 1172), v29);
-    printk(unk_396F5, *(unsigned __int8 *)(v5 + 1173), v30);
-    printk(unk_38C31, *(unsigned int *)(v5 + 1176), v31);
-    printk(unk_364EF, *(unsigned int *)(v5 + 1180), v32);
-    printk(unk_31D70, *(unsigned int *)(v5 + 1184), v33);
-    printk(unk_33A9C, *(unsigned int *)(v5 + 1188), v34);
+    printk("\0015tpd: ghost_check_single_time is %d", (int)v26);
+    printk("\0015tpd: ghost_check_multi_time is %d", *(unsigned __int8 *)(v5 + 1170));
+    printk("\0015tpd: ghost_check_single_count is %d", *(unsigned __int8 *)(v5 + 1171));
+    printk("\0015tpd: ghost_check_multi_count is %d", *(unsigned __int8 *)(v5 + 1172));
+    printk("\0015tpd: ghost_check_start_time is %d", *(unsigned __int8 *)(v5 + 1173));
+    printk("\0015tpd: ghost_check_ignore_id is %d", *(unsigned int *)(v5 + 1176));
+    printk("\0015tpd: ghost_check_ignore_edge_area is %d", *(unsigned int *)(v5 + 1180));
+    printk("\0015tpd: ghost_check_ignore_corner_x is %d", *(unsigned int *)(v5 + 1184));
+    printk("\0015tpd: ghost_check_ignore_corner_y is %d", *(unsigned int *)(v5 + 1188));
     if ( (of_property_read_variable_u32_array(v6, "zte,tp_jitter_check", &v129, 1, 0) & 0x80000000) == 0 )
     {
       v119 = (unsigned __int8)v129;
       *(_BYTE *)(v5 + 36) = v129;
-      printk(unk_3C972, v119, v35);
+      printk("\0015tpd: tp_jitter_check is %d", (int)v119);
       if ( *(_BYTE *)(v5 + 36) )
       {
         if ( (of_property_read_variable_u32_array(v6, "zte,tp_jitter_timer", &v129, 1, 0) & 0x80000000) == 0 )
         {
           v121 = (unsigned __int16)v129;
           *(_WORD *)(v5 + 62) = v129;
-          printk(unk_35E5C, v121, v120);
+          printk("\0015tpd: tp_jitter_timer is %d", (int)v121);
         }
       }
     }
@@ -252,110 +257,110 @@ int zte_touch_probe(struct platform_device *pdev)
     {
       v122 = (unsigned __int8)v129;
       *(_BYTE *)(v5 + 38) = v129;
-      printk(unk_36E82, v122, v36);
+      printk("\0015tpd: tp_edge_click_suppression_pixel is %d", (int)v122);
       *(_DWORD *)(v5 + 39) = 16843009 * *(unsigned __int8 *)(v5 + 38);
     }
     v37 = of_find_property(v6, "zte,ufp_enable", 0);
     *(_BYTE *)(v5 + 28) = v37 != 0;
     if ( v37 )
     {
-      printk(unk_38669, v38, v39);
+      printk("\0015tpd: ufp_enable enabled");
       if ( (of_property_read_variable_u32_array(v6, "zte,ufp_circle_center_x", &v129, 1, 0) & 0x80000000) == 0 )
       {
         v127 = (unsigned __int16)v129;
         *(_WORD *)(v5 + 30) = v129;
-        printk(unk_3749F, v127, v123);
+        printk("\0015tpd: ufp_circle_center_x is %d", (int)v127);
       }
       if ( (of_property_read_variable_u32_array(v6, "zte,ufp_circle_center_y", &v129, 1, 0) & 0x80000000) == 0 )
       {
         v128 = (unsigned __int16)v129;
         *(_WORD *)(v5 + 32) = v129;
-        printk(unk_32DBE, v128, v124);
+        printk("\0015tpd: ufp_circle_center_y is %d", (int)v128);
       }
       if ( (of_property_read_variable_u32_array(v6, "zte,ufp_circle_radius", &v129, 1, 0) & 0x80000000) == 0 )
       {
         v126 = (unsigned __int16)v129;
         *(_WORD *)(v5 + 34) = v129;
-        printk(unk_32889, v126, v125);
+        printk("\0015tpd: ufp_circle_radius is %d", (int)v126);
       }
     }
     _mutex_init(v5 + 3168, "&ztp_dev->cmd_mutex", &zte_touch_probe___key);
-    _mutex_init(v5 + 3216, "&ztp_dev->report_mutex", &zte_touch_probe___key_92);
-    _mutex_init(v5 + 3264, "&ztp_dev->tp_resume_mutex", &zte_touch_probe___key_94);
+    _mutex_init(v5 + 3216, "&ztp_dev->report_mutex", &zte_touch_probe___key_136);
+    _mutex_init(v5 + 3264, "&ztp_dev->tp_resume_mutex", &zte_touch_probe___key_138);
     v40 = proc_mkdir("touchscreen", 0);
     tpd_proc_dir = v40;
     if ( v40 )
     {
       if ( !proc_create("ts_information", 436, v40, &proc_ops_tp_module_Info) )
-        printk(unk_3652D, v42, v43);
+        printk("\0013proc_create ts_information failed!\n");
       if ( !proc_create("wake_gesture", 436, tpd_proc_dir, &proc_ops_wake_gesture) )
-        printk(unk_34C27, v44, v45);
+        printk("\0013proc_create wake_gesture failed!\n");
       if ( !proc_create("smart_cover", 436, tpd_proc_dir, &proc_ops_smart_cover) )
-        printk(unk_380C2, v46, v47);
+        printk("\0013proc_create smart_cover failed!\n");
       if ( !proc_create("glove_mode", 436, tpd_proc_dir, &proc_ops_glove) )
-        printk(unk_3C3D0, v48, v49);
+        printk("\0013proc_create glove mode failed!\n");
       if ( !proc_create("FW_upgrade", 436, tpd_proc_dir, &proc_ops_tpfwupgrade) )
-        printk(unk_32358, v50, v51);
+        printk("\0013proc_create FW_upgrade failed!\n");
       if ( !proc_create("suspend", 436, tpd_proc_dir, &proc_ops_suspend) )
-        printk(unk_391A8, v52, v53);
+        printk("\0013proc_create suspend failed!\n");
       if ( !proc_create("headset_state", 436, tpd_proc_dir, &proc_ops_headset_state) )
-        printk(unk_391C7, v54, v55);
+        printk("\0013proc_create headset_state failed!\n");
       if ( !proc_create("rotation_limit_level", 436, tpd_proc_dir, &proc_ops_rotation_limit_level) )
-        printk(unk_31825, v56, v57);
+        printk("\0013proc_create rotation_limit_level failed!\n");
       if ( !proc_create("mRotation", 436, tpd_proc_dir, &proc_ops_mrotation) )
-        printk(unk_3B64C, v58, v59);
+        printk("\0013proc_create mRotation failed!\n");
       if ( !proc_create("single_tap", 436, tpd_proc_dir, &proc_ops_single_tap) )
-        printk(unk_3AF41, v60, v61);
+        printk("\0013proc_create single_tap failed!\n");
       if ( !proc_create("single_aod", 436, tpd_proc_dir, &proc_ops_single_aod) )
-        printk(unk_369C3, v62, v63);
+        printk("\0013proc_create single_aod failed!\n");
       if ( !proc_create("single_game", 436, tpd_proc_dir, &proc_ops_single_game) )
-        printk(unk_38683, v64, v65);
+        printk("\0013proc_create single_game failed!\n");
       if ( !proc_create("get_noise", 436, tpd_proc_dir, &proc_ops_get_noise) )
-        printk(unk_374D6, v66, v67);
+        printk("\0013proc_create get_noise failed!\n");
       if ( !proc_create("edge_report_limit", 436, tpd_proc_dir, &proc_ops_edge_report_limit) )
-        printk(unk_39719, v68, v69);
+        printk("\0013proc_create edge_report_limit failed!\n");
       if ( !proc_create("one_key", 436, tpd_proc_dir, &proc_ops_onekey) )
-        printk(unk_34042, v70, v71);
+        printk("\0013proc_create one_key failed!\n");
       if ( !proc_create("play_game", 436, tpd_proc_dir, &proc_ops_playgame) )
-        printk(unk_352C1, v72, v73);
+        printk("\0013proc_create play_game failed!\n");
       if ( !proc_create("tp_report_rate", 436, tpd_proc_dir, &proc_ops_tp_report_rate) )
-        printk(unk_35E79, v74, v75);
+        printk("\0013proc_create tp report rate failed!\n");
       if ( !proc_create("follow_hand_level", 436, tpd_proc_dir, &proc_ops_follow_hand_level) )
-        printk(unk_3C9A7, v76, v77);
+        printk("\0013proc_create follow_hand level failed!\n");
       if ( !proc_create("stability_level", 436, tpd_proc_dir, &proc_ops_stability_level) )
-        printk(unk_38C54, v78, v79);
+        printk("\0013proc_create stability level failed!\n");
       if ( !proc_create("sensibility", 436, tpd_proc_dir, &proc_ops_sensibility_level) )
-        printk(unk_358DB, v80, v81);
+        printk("\0013proc_create sensilibity failed!\n");
       if ( !proc_create("game_partition", 436, tpd_proc_dir, &proc_ops_game_partition) )
-        printk(unk_3C3F2, v82, v83);
+        printk("\0013proc_create game_partition failed!\n");
       if ( !proc_create("pen_only", 436, tpd_proc_dir, &proc_ops_pen_only) )
-        printk(unk_3CEFC, v84, v85);
+        printk("\0013proc_create pen only failed!\n");
       if ( !proc_create("finger_lock_flag", 436, tpd_proc_dir, &proc_ops_finger_lock_flag) )
-        printk(unk_37BE2, v86, v87);
+        printk("\0013proc_create finger_lock_flag failed!\n");
       if ( !proc_create("tp_self_test", 436, tpd_proc_dir, &proc_ops_tp_self_test) )
-        printk(unk_37C0A, v88, v89);
+        printk("\0013proc_create tp self test failed!\n");
       if ( !proc_create("tp_palm_mode", 436, tpd_proc_dir, &proc_ops_palm_mode) )
-        printk(unk_34C4B, v90, v91);
+        printk("\0013proc_create palm mode failed!\n");
       if ( !proc_create("fold_state", 436, tpd_proc_dir, &proc_ops_fold_state) )
-        printk(unk_33AE9, v92, v93);
+        printk("\0013proc_create fold state failed!\n");
       if ( !proc_create("fake_sleep", 436, tpd_proc_dir, &proc_ops_fake_sleep) )
-        printk(unk_38C7B, v94, v95);
+        printk("\0013proc_create touch_fake_sleep failed!\n");
       if ( !proc_create("screen_off_awake", 436, tpd_proc_dir, &proc_ops_screen_off_awake) )
-        printk(unk_386A6, v96, v97);
+        printk("\0013proc_create touch_screen_off_awake failed!\n");
       if ( !proc_create("zlog_debug", 436, tpd_proc_dir, &proc_ops_zlog_debug) )
-        printk("3proc_create zlog_debug failed!\n");
+        printk("\0013proc_create zlog_debug failed!\n");
       if ( !proc_create("ghost_debug", 436, tpd_proc_dir, &proc_ops_ghost_debug) )
-        printk(unk_3A104, v98, v99);
+        printk("\0013proc_create ghost_debug failed!\n");
       if ( !proc_create("BBAT_test", 436, tpd_proc_dir, &proc_ops_BBAT_test) )
-        printk(unk_36EAF, v100, v101);
+        printk("\0013proc_create BBAT_test failed!\n");
       if ( !proc_create("tp_test", 436, tpd_proc_dir, &proc_ops_tp_test) )
-        printk(unk_36553, v102, v103);
+        printk("\0013proc_create tp_test failed!\n");
       if ( !proc_create("frame_data", 436, tpd_proc_dir, &proc_ops_frame_data) )
-        printk(unk_33B0B, v104, v105);
+        printk("\0013proc_create frame_data failed!\n");
     }
     else
     {
-      printk(unk_3A0E3, "create_tpd_proc_entry", v41);
+      printk("\0013%s: mkdir touchscreen failed!\n", "create_tpd_proc_entry");
     }
     v106 = tpd_cdev;
     v107 = *(_QWORD *)(tpd_cdev + 3536);
@@ -368,18 +373,18 @@ int zte_touch_probe(struct platform_device *pdev)
         bin_file = sysfs_create_bin_file(v108, &fwimage_attr);
         if ( bin_file )
         {
-          printk(unk_3537D, bin_file, v112);
+          printk("\0013failed create fwimage bin node, %d", bin_file);
           kobject_put(*(_QWORD *)(v106 + 3152));
         }
       }
       else
       {
-        printk(unk_334BC, v109, v110);
+        printk("\0013failed create sub dir for fwupdate");
       }
     }
     else
     {
-      printk(unk_36F15, v104, v105);
+      printk("\0015tpd: zte_touch_pdev is NULL.");
     }
     tpd_clean_all_event();
     ghost_check_reset();
@@ -387,28 +392,29 @@ int zte_touch_probe(struct platform_device *pdev)
     if ( !(unsigned int)tpd_workqueue_init() )
     {
       queue_delayed_work_on(32, *(_QWORD *)(v5 + 1200), v5 + 2256, 375);
-      *(_QWORD *)(tpd_cdev + 3048) = 0;
-      *(_BYTE *)(v5 + 3056) = 0;
-      *(_QWORD *)(v5 + 3064) = jiffies;
-      *(_QWORD *)(v5 + 2896) = jiffies;
-      *(_QWORD *)(v5 + 2904) = jiffies;
-      *(_QWORD *)(v5 + 2912) = jiffies;
-      *(_QWORD *)(v5 + 2920) = jiffies;
-      *(_QWORD *)(v5 + 2928) = jiffies;
-      *(_QWORD *)(v5 + 2936) = jiffies;
-      *(_QWORD *)(v5 + 2944) = jiffies;
-      *(_QWORD *)(v5 + 2952) = jiffies;
-      *(_QWORD *)(v5 + 2960) = jiffies;
-      *(_QWORD *)(v5 + 2968) = jiffies;
-      *(_QWORD *)(v5 + 2976) = jiffies;
-      *(_QWORD *)(v5 + 2984) = jiffies;
-      *(_QWORD *)(v5 + 2992) = jiffies;
-      *(_QWORD *)(v5 + 3000) = jiffies;
-      *(_QWORD *)(v5 + 3008) = jiffies;
-      *(_QWORD *)(v5 + 3016) = jiffies;
-      *(_QWORD *)(v5 + 3024) = jiffies;
-      *(_QWORD *)(v5 + 3032) = jiffies;
-      *(_QWORD *)(v5 + 3040) = jiffies;
+      v106 = tpd_cdev;
+      *(_QWORD *)(v106 + 3048) = 0;
+      *(_BYTE *)(v106 + 3056) = 0;
+      *(_QWORD *)(v106 + 3064) = jiffies;
+      *(_QWORD *)(v106 + 2896) = jiffies;
+      *(_QWORD *)(v106 + 2904) = jiffies;
+      *(_QWORD *)(v106 + 2912) = jiffies;
+      *(_QWORD *)(v106 + 2920) = jiffies;
+      *(_QWORD *)(v106 + 2928) = jiffies;
+      *(_QWORD *)(v106 + 2936) = jiffies;
+      *(_QWORD *)(v106 + 2944) = jiffies;
+      *(_QWORD *)(v106 + 2952) = jiffies;
+      *(_QWORD *)(v106 + 2960) = jiffies;
+      *(_QWORD *)(v106 + 2968) = jiffies;
+      *(_QWORD *)(v106 + 2976) = jiffies;
+      *(_QWORD *)(v106 + 2984) = jiffies;
+      *(_QWORD *)(v106 + 2992) = jiffies;
+      *(_QWORD *)(v106 + 3000) = jiffies;
+      *(_QWORD *)(v106 + 3008) = jiffies;
+      *(_QWORD *)(v106 + 3016) = jiffies;
+      *(_QWORD *)(v106 + 3024) = jiffies;
+      *(_QWORD *)(v106 + 3032) = jiffies;
+      *(_QWORD *)(v106 + 3040) = jiffies;
       queue_delayed_work_on(32, *(_QWORD *)(v5 + 1208), v5 + 2640, 1250);
       *(_BYTE *)(v5 + 29) = 0;
       *(_BYTE *)(v5 + 3072) = -1;
@@ -416,17 +422,16 @@ int zte_touch_probe(struct platform_device *pdev)
       *(_DWORD *)(v5 + 3552) = 0;
       _init_swait_queue_head(v5 + 3560, "&x->wait", &init_completion___key);
       *(_BYTE *)(v5 + 3585) = 0;
-      printk(unk_38656, "zte_touch_probe", 2897);
+      printk("\0015tpd: end %s, %d\n", "zte_touch_probe", 2897);
       result = 0;
       goto LABEL_119;
     }
   }
   else
   {
-    printk(unk_3C945, v3, v4);
+    printk("\0015tpd: Failed to allocate memory for ztp dev");
   }
   result = 4294967284LL;
 LABEL_119:
-  _ReadStatusReg(SP_EL0);
   return result;
 }
