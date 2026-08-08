@@ -263,7 +263,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 257_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 0011ee40 | core_logic | syna_tcm_buf_unlock.c:syna_tcm_buf_unlock | PASS |
 | 258_syna_tcm_v1_write_message | syna_tcm_v1_write_message | 0011eeac | user_abi | syna_tcm_v1_write_message.c:syna_tcm_v1_write_message | READY_FOR_IMPLEMENTATION |
 | 259_syna_tcm_v1_parse_idinfo | syna_tcm_v1_parse_idinfo | 0011f6d0 | core_logic | syna_tcm_v1_parse_idinfo.c:syna_tcm_v1_parse_idinfo | READY_FOR_IMPLEMENTATION |
-| 260_syna_tcm_v1_check_max_rw_size | syna_tcm_v1_check_max_rw_size | 0011f790 | core_logic | syna_tcm_v1_check_max_rw_size.c:syna_tcm_v1_check_max_rw_size | READY_FOR_IMPLEMENTATION |
+| 260_syna_tcm_v1_check_max_rw_size | syna_tcm_v1_check_max_rw_size | 0011f790 | core_logic | syna_tcm_v1_check_max_rw_size.c:syna_tcm_v1_check_max_rw_size | PASS |
 | 261_syna_tcm_v1_read_message | syna_tcm_v1_read_message | 0011f838 | user_abi | syna_tcm_v1_read_message.c:syna_tcm_v1_read_message | READY_FOR_IMPLEMENTATION |
 | 262_syna_tcm_v1_set_up_max_rw_size | syna_tcm_v1_set_up_max_rw_size | 00120da8 | core_logic | syna_tcm_v1_set_up_max_rw_size.c:syna_tcm_v1_set_up_max_rw_size | READY_FOR_IMPLEMENTATION |
 | 263_syna_tcm_v1_terminate | syna_tcm_v1_terminate | 00120e64 | core_logic | syna_tcm_v1_terminate.c:syna_tcm_v1_terminate | PASS |
