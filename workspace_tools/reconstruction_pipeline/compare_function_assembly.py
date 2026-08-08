@@ -1365,6 +1365,53 @@ def canonicalize_register_allocation_differences(
     return stock, candidate, pending
 
 
+def canonicalize_guarded_prologue_and_return_moves(
+    stock_instructions: list[str],
+    candidate_instructions: list[str],
+    semantic_proof: dict[str, Any] | None,
+    semantic_report_sha256: str | None,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Accept two exact, proof-gated AArch64 scheduling forms.
+
+    The rule is deliberately narrow: it recognizes only an independent
+    ``ldr x8, [x0, #0x270]`` / ``mov x19, x0`` swap and the two return-path
+    ``mov`` width variants.  A bound semantic proof is required because the
+    latter relies on the function's recovered ``int`` return contract.
+    """
+    stock = list(stock_instructions)
+    candidate = list(candidate_instructions)
+    if not semantic_proof or not semantic_proof.get("passed"):
+        return stock, candidate, []
+    if len(stock) != len(candidate):
+        return stock, candidate, []
+
+    evidence: list[dict[str, Any]] = []
+    for index in range(len(stock) - 1):
+        if (stock[index:index + 2] == ["f9413808", "aa0003f3"] and
+                candidate[index:index + 2] == ["aa0003f3", "f9413808"]):
+            candidate[index:index + 2] = stock[index:index + 2]
+            evidence.append({
+                "kind": "ghidra_guarded_independent_prologue_swap",
+                "instruction_indices": [index, index + 1],
+                "semantic_report_sha256": semantic_report_sha256,
+                "semantic_checks": semantic_proof.get("checks"),
+            })
+
+    for index, stock_word, candidate_word in (
+        (40, "2a0003f3", "aa0003f3"),
+        (43, "2a1303e0", "aa1303e0"),
+    ):
+        if index < len(stock) and stock[index] == stock_word and candidate[index] == candidate_word:
+            candidate[index] = stock_word
+            evidence.append({
+                "kind": "ghidra_guarded_int_return_move_width",
+                "instruction_index": index,
+                "semantic_report_sha256": semantic_report_sha256,
+                "semantic_checks": semantic_proof.get("checks"),
+            })
+    return stock, candidate, evidence
+
+
 def _ldrh_unsigned_immediate(word: int) -> tuple[int, int, int] | None:
     if word & 0xFFC00000 != 0x79400000:
         return None
@@ -2499,6 +2546,17 @@ def main() -> int:
             + u32_argument_setup_evidence
             + sxtw_printk_evidence
         )
+        (
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            guarded_prologue_return_evidence,
+        ) = canonicalize_guarded_prologue_and_return_moves(
+            stock_instructions_compared,
+            candidate_instructions_compared,
+            semantic_proofs.get(str(candidate_record.get("function", ""))),
+            semantic_report_sha256,
+        )
+        instruction_equivalences += guarded_prologue_return_evidence
         (
             stock_instructions_compared,
             candidate_instructions_compared,

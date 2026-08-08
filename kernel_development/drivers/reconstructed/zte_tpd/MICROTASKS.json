@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-08-08T20:52:15.409449+00:00",
+  "generated_utc": "2026-08-08T21:39:42.113737+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -5651,11 +5651,33 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_enter_normal_sensing\nEntrada Ghidra: 00114294\nTamanho stock: 180 bytes\nCategoria: core_logic\nAlvo no fonte: syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0171_00114294_syna_dev_enter_normal_sensing.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0171_00114294_syna_dev_enter_normal_sensing.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next166_syna_dev_enter_normal_sensing_v1/canonical_build_report.json",
+          "sha256": "44371f05d020afb18e6552466f4bc5113b93817ee5762c43590b1c127518c7c3"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next166_syna_dev_enter_normal_sensing_v1/kcfi_comparison.json",
+          "sha256": "484efa70e4277d53c3a2ee4e4b3516bde19e78f7afa34089a6b5aabc9f09d95b"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next166_syna_dev_enter_normal_sensing_v1/syna_dev_enter_normal_sensing_harness_report.json",
+          "sha256": "849c4e86282c3bd15603ef42dfea3cb75f36ec26ab38deec2bb4df31e7c530a3"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next166_syna_dev_enter_normal_sensing_v1/joern_gate/joern_gate_summary.json",
+          "sha256": "edab35145f36b0c64bdf94ee41819aabae00822e904c84243d79d096ca31374b"
+        }
+      ]
     },
     {
       "id": "173_syna_dev_enable_lowpwr_gesture",

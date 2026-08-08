@@ -155,6 +155,43 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(compared[0], compared[1])
         self.assertEqual(compared[2], [])
 
+    def test_guarded_normal_sensing_patterns_require_semantic_proof(self) -> None:
+        stock = ["d503201f"] * 44
+        candidate = list(stock)
+        stock[4:6] = ["f9413808", "aa0003f3"]
+        candidate[4:6] = ["aa0003f3", "f9413808"]
+        stock[40], candidate[40] = "2a0003f3", "aa0003f3"
+        stock[43], candidate[43] = "2a1303e0", "aa1303e0"
+
+        compared = MODULE.canonicalize_guarded_prologue_and_return_moves(
+            stock, candidate, None, None
+        )
+
+        self.assertNotEqual(compared[0], compared[1])
+        self.assertEqual(compared[2], [])
+
+    def test_guarded_normal_sensing_patterns_bind_semantic_evidence(self) -> None:
+        stock = ["d503201f"] * 44
+        candidate = list(stock)
+        stock[4:6] = ["f9413808", "aa0003f3"]
+        candidate[4:6] = ["aa0003f3", "f9413808"]
+        stock[40], candidate[40] = "2a0003f3", "aa0003f3"
+        stock[43], candidate[43] = "2a1303e0", "aa1303e0"
+
+        compared = MODULE.canonicalize_guarded_prologue_and_return_moves(
+            stock,
+            candidate,
+            {"passed": True, "checks": {"int_return_contract": True}},
+            "semantic-report-sha256",
+        )
+
+        self.assertEqual(compared[0], compared[1])
+        self.assertEqual(len(compared[2]), 3)
+        self.assertTrue(all(
+            item["semantic_report_sha256"] == "semantic-report-sha256"
+            for item in compared[2]
+        ))
+
     def test_commutative_add_and_mul_operand_swaps_are_equivalent(self) -> None:
         stock, candidate, evidence = (
             MODULE.canonicalize_commutative_instruction_pairs(

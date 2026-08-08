@@ -175,7 +175,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 169_syna_dev_reflash_startup_work | syna_dev_reflash_startup_work | 00113b40 | async_or_irq | syna_dev_reflash_startup_work.c:syna_dev_reflash_startup_work | READY_FOR_IMPLEMENTATION |
 | 170_syna_dev_process_touch_report | syna_dev_process_touch_report | 00113c74 | core_logic | syna_dev_process_touch_report.c:syna_dev_process_touch_report | READY_FOR_IMPLEMENTATION |
 | 171_syna_dev_isr | syna_dev_isr | 001141b4 | core_logic | syna_dev_isr.c:syna_dev_isr | READY_FOR_IMPLEMENTATION |
-| 172_syna_dev_enter_normal_sensing | syna_dev_enter_normal_sensing | 00114294 | core_logic | syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing | READY_FOR_IMPLEMENTATION |
+| 172_syna_dev_enter_normal_sensing | syna_dev_enter_normal_sensing | 00114294 | core_logic | syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing | PASS |
 | 173_syna_dev_enable_lowpwr_gesture | syna_dev_enable_lowpwr_gesture | 00114348 | core_logic | syna_dev_enable_lowpwr_gesture.c:syna_dev_enable_lowpwr_gesture | READY_FOR_IMPLEMENTATION |
 | 174_syna_poll | syna_poll | 00114510 | core_logic | syna_poll.c:syna_poll | PASS |
 | 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | PASS |

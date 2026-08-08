@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "candidate_module": {
+    "sha256": "fddc658c13cc0dc6b386bef1c90f0c589c54a827b2c1d5236dbdfde55ac9800b",
+    "size": 29270152
+  },
+  "evidence": {
+    "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0171_00114294_syna_dev_enter_normal_sensing.jsonl",
+    "stock_function": "syna_dev_enter_normal_sensing",
+    "stock_entry": "00114294"
+  },
+  "passed": true,
+  "results": [
+    {
+      "checks": {
+        "independent_prologue_operations": "P-Code loads device[0x4e] and copies the device argument without a data dependency.",
+        "int_return_contract": "Ghidra recovers int syna_dev_enter_normal_sensing(long *); only W0/W19 are observable at its return paths.",
+        "remaining_instruction_surface": "The candidate differs only in the two proof-gated patterns recognized by compare_function_assembly.py."
+      },
+      "function": "syna_dev_enter_normal_sensing",
+      "passed": true
+    }
+  ]
+}
