@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and run the tp_module_info_read harness twice with sanitizers."""
+"""Run a reproducible ASan/UBSan harness for tp_module_info_read in Docker."""
 
 from __future__ import annotations
 
@@ -7,101 +7,135 @@ import argparse
 import datetime as dt
 import hashlib
 import json
-import os
-import pathlib
-import shutil
 import subprocess
+from pathlib import Path
+from typing import Any
 
 
 EXPECTED_STDOUT = "PASS tp_module_info_read host tests (2 cases)\n"
 
 
-def sha256(path: pathlib.Path) -> str:
+def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
     return digest.hexdigest()
 
 
-def run(command: list[str], env: dict[str, str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, check=False, env=env, text=True,
-                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def run_command(command: list[str]) -> dict[str, Any]:
+    completed = subprocess.run(command, capture_output=True, text=True, check=False)
+    return {
+        "command": command,
+        "returncode": completed.returncode,
+        "stdout": completed.stdout[-4000:],
+        "stderr": completed.stderr[-4000:],
+    }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--compiler", default="clang")
-    parser.add_argument("--source", type=pathlib.Path,
-                        default=pathlib.Path(__file__).with_name(
-                            "tp_module_info_read_host_test.c"))
-    parser.add_argument("--build-root", type=pathlib.Path, required=True)
-    parser.add_argument("--output", type=pathlib.Path, required=True)
+    parser = argparse.ArgumentParser(description=__doc__)
+    repository_root = Path(__file__).resolve().parents[5]
+    parser.add_argument("--repo-root", type=Path, default=repository_root)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--repetitions", type=int, default=2)
+    parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
+    parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
+    parser.add_argument("--clang-revision", default="clang-r536225")
     args = parser.parse_args()
+    if args.repetitions < 2:
+        parser.error("--repetitions must be at least 2")
 
-    source = args.source.resolve()
-    driver_source = source.parents[3] / "reconstructed" / "zte_tpd" / "tp_module_info_read.c"
-    build_root = args.build_root.resolve()
+    root = args.repo_root.resolve()
+    drivers_root = root / "kernel_development" / "drivers"
+    harness = drivers_root / "validation" / "zte_tpd" / "host" / "tp_module_info_read_host_test.c"
+    source = drivers_root / "reconstructed" / "zte_tpd" / "tp_module_info_read.c"
+    if not harness.is_file() or not source.is_file():
+        raise FileNotFoundError("tp_module_info_read harness or source is missing")
+
     output = args.output.resolve()
-    for path in (source, driver_source):
-        if not path.is_file():
-            parser.error(f"source not found: {path}")
+    build_root = output.parent / "host-build"
+    build_root.mkdir(parents=True, exist_ok=False)
+    cycles: list[dict[str, Any]] = []
+    binary_hashes: list[str] = []
 
-    env = os.environ.copy()
-    env.update({"ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:strict_string_checks=1",
-                "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
-                "LC_ALL": "C", "SOURCE_DATE_EPOCH": "0", "TZ": "UTC"})
-    compiler_version = run([args.compiler, "--version"], env)
-    if compiler_version.returncode:
-        raise SystemExit(compiler_version.stderr.strip())
-    if build_root.exists():
-        shutil.rmtree(build_root)
-    build_root.mkdir(parents=True)
-
-    cycles: list[dict[str, object]] = []
-    for cycle in (1, 2):
+    for cycle in range(1, args.repetitions + 1):
         cycle_root = build_root / f"cycle{cycle}"
         cycle_root.mkdir()
         binary = cycle_root / "host_test_asan_ubsan"
-        command = [args.compiler, "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror",
-                   "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
-                   "-frandom-seed=zte-tpd-tp-module-info-read",
-                   f"-ffile-prefix-map={build_root}=<build>", "-fsanitize=address,undefined",
-                   "-Wl,--build-id=none", str(source), "-o", str(binary)]
-        compile_result = run(command, env)
-        run_result = run([str(binary)], env) if compile_result.returncode == 0 else None
-        passed = bool(run_result and run_result.returncode == 0 and
-                      run_result.stdout == EXPECTED_STDOUT and run_result.stderr == "")
-        cycles.append({"cycle": cycle, "compile_command": command,
-                       "compile_returncode": compile_result.returncode,
-                       "compile_stdout": compile_result.stdout,
-                       "compile_stderr": compile_result.stderr,
-                       "run_returncode": run_result.returncode if run_result else None,
-                       "run_stdout": run_result.stdout if run_result else "",
-                       "run_stderr": run_result.stderr if run_result else "",
-                       "binary_sha256": sha256(binary) if binary.is_file() else None,
-                       "passed": passed})
+        compile_command = [
+            "docker", "run", "--rm",
+            "-v", f"{drivers_root}:/drivers:ro",
+            "-v", f"{cycle_root}:/output",
+            "-v", f"{args.toolchain_volume}:/toolchains:ro",
+            args.image,
+            f"/toolchains/{args.clang_revision}/bin/clang",
+            "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror",
+            "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
+            "-frandom-seed=zte-tpd-tp-module-info-read",
+            "-ffile-prefix-map=/drivers=<drivers>",
+            "-fsanitize=address,undefined", "-Wl,--build-id=none",
+            "/drivers/validation/zte_tpd/host/tp_module_info_read_host_test.c",
+            "-o", "/output/host_test_asan_ubsan",
+        ]
+        compile_result = run_command(compile_command)
+        run_result = {"command": [], "returncode": None, "stdout": "", "stderr": ""}
+        binary_hash = None
+        if compile_result["returncode"] == 0 and binary.is_file():
+            run_result = run_command([
+                "docker", "run", "--rm", "-v", f"{cycle_root}:/output:ro",
+                args.image, "/output/host_test_asan_ubsan",
+            ])
+            binary_hash = sha256_file(binary)
+            binary_hashes.append(binary_hash)
+        passed = (
+            compile_result["returncode"] == 0
+            and run_result["returncode"] == 0
+            and run_result["stdout"] == EXPECTED_STDOUT
+            and run_result["stderr"] == ""
+        )
+        cycles.append({
+            "cycle": cycle,
+            "compile": compile_result,
+            "run": run_result,
+            "binary_sha256": binary_hash,
+            "passed": passed,
+        })
 
-    hashes = [cycle["binary_sha256"] for cycle in cycles]
-    reproducible = len(set(hashes)) == 1 and hashes[0] is not None
-    passed = all(bool(cycle["passed"]) for cycle in cycles) and reproducible
-    report = {"schema_version": 1, "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-              "mode": "offline_direct_source_tp_module_info_read_asan_ubsan",
-              "driver": "zte_tpd", "target": "tp_module_info_read",
-              "source": str(source), "source_sha256": sha256(source),
-              "compiler": args.compiler, "compiler_version": compiler_version.stdout.splitlines()[0],
-              "sanitizers": ["address", "undefined"], "expected_cases": 2, "repetitions": 2,
-              "cycles": cycles, "reproducible": reproducible,
-              "reproducible_binary": reproducible, "passed": passed,
-              "status": "PASS" if passed else "FAIL",
-              "limitations": ["The harness models only the VFS read helper and a single cdev callback.",
-                              "It proves formatting, offsets, cursor handling and callback ABI without a device.",
-                              "The fatal BRK overflow path is intentionally not executed on the host.",
-                              "Assembly, KCFI and Ghidra comparison remain independent gates."]}
+    passed = all(cycle["passed"] for cycle in cycles)
+    reproducible = passed and len(binary_hashes) == args.repetitions and len(set(binary_hashes)) == 1
+    report = {
+        "schema_version": "1.0",
+        "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "mode": "offline_direct_source_tp_module_info_read_asan_ubsan",
+        "driver": "zte_tpd",
+        "target": "tp_module_info_read",
+        "covered_functions": ["tp_module_info_read"],
+        "compiler": f"/toolchains/{args.clang_revision}/bin/clang",
+        "container_image": args.image,
+        "toolchain_volume": args.toolchain_volume,
+        "sanitizers": ["address", "undefined"],
+        "expected_cases": 2,
+        "repetitions": args.repetitions,
+        "inputs": [
+            {"path": str(harness), "size": harness.stat().st_size, "sha256": sha256_file(harness)},
+            {"path": str(source), "size": source.stat().st_size, "sha256": sha256_file(source)},
+        ],
+        "cycles": cycles,
+        "reproducible_binary": reproducible,
+        "passed": passed and reproducible,
+        "status": "PASS" if passed and reproducible else "FAIL",
+        "limitations": [
+            "The harness models only the VFS read helper and a single cdev callback.",
+            "It proves formatting, offsets, cursor handling and callback ABI without a device.",
+            "The fatal BRK overflow path is intentionally not executed on the host.",
+            "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates.",
+        ],
+    }
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"{report['status']}: {output}")
-    return 0 if passed else 1
+    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(json.dumps({"output": str(output), "passed": report["passed"], "cycles": len(cycles)}))
+    return 0 if report["passed"] else 1
 
 
 if __name__ == "__main__":
