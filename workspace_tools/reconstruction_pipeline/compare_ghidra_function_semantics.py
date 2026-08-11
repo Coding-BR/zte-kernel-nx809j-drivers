@@ -33,6 +33,19 @@ OPTIONAL_OBJECT_ADDRESS_RE = re.compile(
 POINTER_TABLE_BASE_RE = re.compile(
     r"\(&(?P<symbol>(?:PTR_[A-Za-z0-9_]+|[a-z][A-Za-z0-9_]*))\)(?P<index>\[[^\]]+\])"
 )
+FRAGMENTED_BYTE_FLAG_STOCK_RE = re.compile(
+    r"if\("
+    r"(?P<high>GHIDRA_DATA_OBJECT_\d+)\._1_1_!='\\0'"
+    r"\|\|\(char\)(?P<low>GHIDRA_DATA_OBJECT_\d+)!='\\0'"
+    r"\)\{(?P<set>GHIDRA_DATA_OBJECT_\d+)=1;"
+)
+FRAGMENTED_BYTE_FLAG_CANDIDATE_RE = re.compile(
+    r"if\("
+    r"(?P<high>GHIDRA_DATA_OBJECT_\d+)!='\\0'"
+    r"\|\|(?P<low>GHIDRA_DATA_OBJECT_\d+)!='\\0'"
+    r"\)\{(?P<set>GHIDRA_DATA_OBJECT_\d+)=1;"
+)
+NORMALIZED_GLOBAL_LABEL_RE = re.compile(r"\bGHIDRA_DATA_OBJECT_\d+\b")
 
 
 def sha256_file(path: Path) -> str:
@@ -370,6 +383,104 @@ def normalize_decompiled(
     return re.sub(r"\s+", "", replaced), evidence, artifact_evidence
 
 
+def fragmented_byte_flag_normalization(
+    stock: str,
+    candidate: str,
+    stock_artifacts: list[dict[str, Any]],
+    candidate_artifacts: list[dict[str, Any]],
+) -> tuple[str, str, dict[str, Any]] | None:
+    """Normalize one proven Ghidra BSS byte-fragmentation artifact.
+
+    This deliberately does not generalize global-data aliasing.  It accepts only
+    a stock ``u16`` byte-field condition versus a candidate's three contiguous
+    byte labels with the identical ``||`` predicate and ``= 1`` store.  Callers
+    use it only after exact body-size and P-Code-shape equality.
+    """
+
+    stock_match = FRAGMENTED_BYTE_FLAG_STOCK_RE.search(stock)
+    candidate_match = FRAGMENTED_BYTE_FLAG_CANDIDATE_RE.search(candidate)
+    if stock_match is None or candidate_match is None:
+        return None
+
+    def addresses(artifacts: list[dict[str, Any]]) -> dict[str, int]:
+        result: dict[str, int] = {}
+        for artifact in artifacts:
+            if artifact.get("kind") != "ghidra_global_data_address":
+                continue
+            label = artifact.get("normalized")
+            value = artifact.get("value")
+            if not isinstance(label, str) or not isinstance(value, str):
+                continue
+            try:
+                result[label] = int(value.rsplit("_", 1)[1], 16)
+            except ValueError:
+                continue
+        return result
+
+    stock_addresses = addresses(stock_artifacts)
+    candidate_addresses = addresses(candidate_artifacts)
+    stock_low = stock_match.group("low")
+    stock_high = stock_match.group("high")
+    stock_set = stock_match.group("set")
+    candidate_low = candidate_match.group("low")
+    candidate_high = candidate_match.group("high")
+    candidate_set = candidate_match.group("set")
+
+    # The stock high byte must be the same aggregate object.  Its concrete
+    # address is the base label; the suffix ``._1_1_`` denotes base + 1.
+    if stock_low != stock_high:
+        return None
+    if (
+        stock_set not in stock_addresses
+        or stock_low not in stock_addresses
+        or candidate_low not in candidate_addresses
+        or candidate_high not in candidate_addresses
+        or candidate_set not in candidate_addresses
+    ):
+        return None
+    if stock_addresses[stock_set] != stock_addresses[stock_low] + 2:
+        return None
+    if candidate_addresses[candidate_high] != candidate_addresses[candidate_low] + 1:
+        return None
+    if candidate_addresses[candidate_set] != candidate_addresses[candidate_low] + 2:
+        return None
+
+    canonical_prefix = (
+        "if(GHIDRA_FRAGMENTED_GLOBAL_BYTE_1!='\\0'"
+        "||GHIDRA_FRAGMENTED_GLOBAL_BYTE_0!='\\0')"
+        "{GHIDRA_FRAGMENTED_GLOBAL_BYTE_2=1;"
+    )
+    stock = stock[: stock_match.start()] + canonical_prefix + stock[stock_match.end() :]
+    candidate = (
+        candidate[: candidate_match.start()]
+        + canonical_prefix
+        + candidate[candidate_match.end() :]
+    )
+
+    def reindex_remaining(text: str) -> str:
+        labels: dict[str, str] = {}
+
+        def replace(match: re.Match[str]) -> str:
+            label = match.group(0)
+            normalized = labels.get(label)
+            if normalized is None:
+                normalized = f"GHIDRA_RELOCATED_OBJECT_{len(labels)}"
+                labels[label] = normalized
+            return normalized
+
+        return NORMALIZED_GLOBAL_LABEL_RE.sub(replace, text)
+
+    return (
+        reindex_remaining(stock),
+        reindex_remaining(candidate),
+        {
+            "kind": "ghidra_fragmented_contiguous_byte_flag",
+            "stock_base": f"0x{stock_addresses[stock_low]:x}",
+            "candidate_base": f"0x{candidate_addresses[candidate_low]:x}",
+        },
+    )
+
+
 def pcode_shape(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     shape = []
     for record in records:
@@ -446,13 +557,32 @@ def compare_function(
     )
     stock_shape = pcode_shape(read_jsonl(paths["stock"]["pcode"]))
     candidate_shape = pcode_shape(read_jsonl(paths["candidate"]["pcode"]))
+    direct_normalized_match = stock_normalized == candidate_normalized
+    body_bytes_match = stock_record.get("body_bytes") == candidate_record.get(
+        "body_bytes"
+    )
+    pcode_shape_match = stock_shape == candidate_shape
+    fallback_evidence: dict[str, Any] | None = None
+    if not direct_normalized_match and body_bytes_match and pcode_shape_match:
+        fallback = fragmented_byte_flag_normalization(
+            stock_normalized,
+            candidate_normalized,
+            stock_artifact_evidence,
+            candidate_artifact_evidence,
+        )
+        if fallback is not None:
+            fallback_stock, fallback_candidate, fallback_evidence = fallback
+            normalized_decompiled_match = fallback_stock == fallback_candidate
+        else:
+            normalized_decompiled_match = False
+    else:
+        normalized_decompiled_match = direct_normalized_match
     checks = {
         "decompiled": bool(stock_record.get("decompiled"))
         and bool(candidate_record.get("decompiled")),
-        "body_bytes": stock_record.get("body_bytes")
-        == candidate_record.get("body_bytes"),
-        "normalized_decompiled_c": stock_normalized == candidate_normalized,
-        "pcode_operation_shape": stock_shape == candidate_shape,
+        "body_bytes": body_bytes_match,
+        "normalized_decompiled_c": normalized_decompiled_match,
+        "pcode_operation_shape": pcode_shape_match,
     }
     failures = [name for name, passed in checks.items() if not passed]
     return {
@@ -460,6 +590,10 @@ def compare_function(
         "passed": not failures,
         "checks": checks,
         "failures": failures,
+        "decompiled_normalization": {
+            "direct_match": direct_normalized_match,
+            "fragmented_byte_global_fallback": fallback_evidence,
+        },
         "stock": {
             "body_bytes": stock_record.get("body_bytes"),
             "decompiled_path": str(paths["stock"]["decompiled"]),

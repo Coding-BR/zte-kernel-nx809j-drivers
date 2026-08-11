@@ -145,6 +145,57 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(len(candidate_artifacts), 2)
         self.assertEqual(stock_artifacts[0]["kind"], "ghidra_global_data_address")
 
+    def test_fragmented_contiguous_byte_flag_is_normalized_only_with_layout_proof(
+        self,
+    ) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00101001._1_1_ != '\\0' || (char)DAT_00101001 != '\\0') { "
+            "DAT_00101003 = 1; _printk(&DAT_00102000); }",
+            {},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00203002 != '\\0' || DAT_00203001 != '\\0') { "
+            "DAT_00203003 = 1; _printk(&DAT_00204000); }",
+            {},
+        )
+
+        result = MODULE.fragmented_byte_flag_normalization(
+            stock, candidate, stock_artifacts, candidate_artifacts
+        )
+
+        self.assertIsNotNone(result)
+        normalized_stock, normalized_candidate, evidence = result
+        self.assertEqual(normalized_stock, normalized_candidate)
+        self.assertEqual(evidence["kind"], "ghidra_fragmented_contiguous_byte_flag")
+
+    def test_fragmented_byte_flag_rejects_changed_operator_or_offset(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00101001._1_1_ != '\\0' || (char)DAT_00101001 != '\\0') { "
+            "DAT_00101003 = 1; }",
+            {},
+        )
+        changed_operator, _, changed_operator_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00203002 != '\\0' && DAT_00203001 != '\\0') { "
+            "DAT_00203003 = 1; }",
+            {},
+        )
+        changed_offset, _, changed_offset_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00203003 != '\\0' || DAT_00203001 != '\\0') { "
+            "DAT_00203004 = 1; }",
+            {},
+        )
+
+        self.assertIsNone(
+            MODULE.fragmented_byte_flag_normalization(
+                stock, changed_operator, stock_artifacts, changed_operator_artifacts
+            )
+        )
+        self.assertIsNone(
+            MODULE.fragmented_byte_flag_normalization(
+                stock, changed_offset, stock_artifacts, changed_offset_artifacts
+            )
+        )
+
     def test_elf_string_resolver_ignores_uninitialized_memory(self) -> None:
         payload = b"untrusted\x00trusted\x00"
         sections = {
