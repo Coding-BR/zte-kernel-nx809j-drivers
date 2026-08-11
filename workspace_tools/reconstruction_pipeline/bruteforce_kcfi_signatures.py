@@ -166,6 +166,28 @@ def control_signatures() -> list[str]:
     ]
 
 
+def suspend_signatures() -> list[str]:
+    signatures: list[str] = []
+    for return_type, device, state in itertools.product(
+        (
+            "void", "bool", "char", "signed char", "unsigned char", "u8",
+            "short", "unsigned short", "u16", "int", "unsigned int", "u32",
+            "long", "unsigned long", "long long", "unsigned long long", "ssize_t",
+        ),
+        (
+            "struct ztp_device *", "struct tpd_classdev_t *", "void *",
+            "long", "unsigned long",
+        ),
+        (
+            "bool", "char", "signed char", "unsigned char", "u8", "short",
+            "unsigned short", "u16", "int", "unsigned int", "u32", "long",
+            "unsigned long", "long long", "unsigned long long", "void *",
+        ),
+    ):
+        signatures.append(f"{return_type} ({device}, {state})")
+    return signatures
+
+
 def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
     lines = [TYPE_PREAMBLE]
     mapping: dict[str, str] = {}
@@ -187,7 +209,7 @@ def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "family", choices=("touch", "game", "string", "zlog", "control")
+        "family", choices=("touch", "game", "string", "zlog", "control", "suspend")
     )
     parser.add_argument("target_type_id", help="KCFI hash such as 0xeb35dc7c")
     parser.add_argument("--engineering-root", type=Path,
@@ -215,6 +237,8 @@ def main() -> int:
         signatures = string_signatures()
     elif args.family == "zlog":
         signatures = zlog_signatures()
+    elif args.family == "suspend":
+        signatures = suspend_signatures()
     else:
         signatures = control_signatures()
     source, mapping = render_probe(signatures)
@@ -241,7 +265,7 @@ def main() -> int:
     build = subprocess.run(command, text=True, capture_output=True, check=False)
     if build.returncode == 0:
         extract_command = [
-            "python", str(engineering_root / "tools" / "extract_kcfi.py"),
+            "python", str(Path(__file__).with_name("extract_kcfi.py")),
             str(object_path), "--output", str(kcfi_path),
         ]
         extract = subprocess.run(extract_command, text=True, capture_output=True, check=False)
