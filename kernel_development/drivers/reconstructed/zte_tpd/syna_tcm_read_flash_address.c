@@ -1,13 +1,3 @@
-struct syna_tcm_flash_access_context {
-	u8 reserved_0000[0x40];
-	void *temporary_allocation;
-	u8 reserved_0048[0x38];
-	u8 release_required;
-	u8 reserved_0081[0x07];
-	void *managed_allocation;
-	u8 reserved_0090[0x10];
-};
-
 extern int syna_tcm_set_up_flash_access(__int64 tcm,
 					__int64 access_context,
 					__int64 delay_ms,

@@ -121,6 +121,24 @@ struct tcm_buffer {
 	u8 reserved_41[0x07];
 };
 
+/* Scratch overlay shared by the flash-access setup and read helpers. */
+struct syna_tcm_flash_access_context {
+	u8 reserved_0000[0x20];
+	struct tcm_boot_info *boot_info;
+	u32 erase_page_size_bytes;
+	u32 write_block_size_bytes;
+	u32 max_write_payload_size;
+	u8 reserved_0034[0x08];
+	u32 v3_page_size_bytes;
+	void *managed_allocation;
+	u8 reserved_0048[0x08];
+	u8 mutex[0x30];
+	u8 release_required;
+	u8 reserved_0081[0x07];
+	u8 setup_release_required;
+	u8 reserved_0089[0x07];
+};
+
 /* Partial overlay containing only offsets proven by the NX809J stock ELF. */
 struct tcm_dev {
 	u8 reserved_0000[0x08];
@@ -270,6 +288,22 @@ static_assert(offsetof(struct tcm_boot_info, max_write_payload_size) == 0x07);
 static_assert(offsetof(struct tcm_boot_info, v3_page_size_words) == 0x14);
 static_assert(sizeof(struct tcm_features_info) == 0x10);
 static_assert(sizeof(struct tcm_buffer) == 0x48);
+static_assert(offsetof(struct syna_tcm_flash_access_context, boot_info) == 0x20);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   erase_page_size_bytes) == 0x28);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   write_block_size_bytes) == 0x2c);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   max_write_payload_size) == 0x30);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   v3_page_size_bytes) == 0x3c);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   managed_allocation) == 0x40);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   release_required) == 0x80);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   setup_release_required) == 0x88);
+static_assert(sizeof(struct syna_tcm_flash_access_context) == 0x90);
 static_assert(sizeof(struct tcm_dev) == 0x23e8);
 
 #endif

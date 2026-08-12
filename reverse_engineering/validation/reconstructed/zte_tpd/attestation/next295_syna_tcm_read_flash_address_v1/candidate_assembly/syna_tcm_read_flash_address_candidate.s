@@ -5,19 +5,19 @@
 	.type	syna_tcm_read_flash_address,@function
 syna_tcm_read_flash_address:            // @syna_tcm_read_flash_address
 // %bb.0:
-	sub	sp, sp, #240
+	sub	sp, sp, #224
 	movi	v0.2d, #0000000000000000
-	stp	x29, x30, [sp, #160]            // 16-byte Folded Spill
-	add	x29, sp, #160
-	str	x25, [sp, #176]                 // 8-byte Folded Spill
-	stp	x24, x23, [sp, #192]            // 16-byte Folded Spill
-	stp	x22, x21, [sp, #208]            // 16-byte Folded Spill
-	stp	x20, x19, [sp, #224]            // 16-byte Folded Spill
-	stp	q0, q0, [sp]
-	stp	q0, q0, [sp, #32]
-	stp	q0, q0, [sp, #64]
-	stp	q0, q0, [sp, #96]
-	stp	q0, q0, [sp, #128]
+	stp	x29, x30, [sp, #144]            // 16-byte Folded Spill
+	add	x29, sp, #144
+	str	x25, [sp, #160]                 // 8-byte Folded Spill
+	stp	x24, x23, [sp, #176]            // 16-byte Folded Spill
+	stp	x22, x21, [sp, #192]            // 16-byte Folded Spill
+	stp	x20, x19, [sp, #208]            // 16-byte Folded Spill
+	stp	q0, q0, [sp, #16]
+	stp	q0, q0, [sp, #48]
+	stp	q0, q0, [sp, #80]
+	stp	q0, q0, [sp, #112]
+	str	q0, [sp]
 	cbz	x0, .LBB0_4
 // %bb.1:
 	mov	x21, x3
@@ -141,7 +141,7 @@ syna_tcm_read_flash_address:            // @syna_tcm_read_flash_address
 	bl	syna_tcm_switch_fw_mode
 .LBB0_27:
 	bl	syna_request_managed_device
-	ldr	x1, [sp, #136]
+	ldr	x1, [sp, #64]
 	cbz	x0, .LBB0_30
 // %bb.28:
 	cbz	x1, .LBB0_30
@@ -161,12 +161,12 @@ syna_tcm_read_flash_address:            // @syna_tcm_read_flash_address
 .LBB0_33:
 	sxtw	x0, w24
 .LBB0_34:
-	ldp	x20, x19, [sp, #224]            // 16-byte Folded Reload
-	ldr	x25, [sp, #176]                 // 8-byte Folded Reload
-	ldp	x22, x21, [sp, #208]            // 16-byte Folded Reload
-	ldp	x24, x23, [sp, #192]            // 16-byte Folded Reload
-	ldp	x29, x30, [sp, #160]            // 16-byte Folded Reload
-	add	sp, sp, #240
+	ldp	x20, x19, [sp, #208]            // 16-byte Folded Reload
+	ldr	x25, [sp, #160]                 // 8-byte Folded Reload
+	ldp	x22, x21, [sp, #192]            // 16-byte Folded Reload
+	ldp	x24, x23, [sp, #176]            // 16-byte Folded Reload
+	ldp	x29, x30, [sp, #144]            // 16-byte Folded Reload
+	add	sp, sp, #224
 	ret
 .LBB0_35:
 	str	wzr, [x21, #8]
