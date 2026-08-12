@@ -144,7 +144,11 @@ def bounded_strict_failure_scope(failures: list[str]) -> bool:
 
 
 def relocation_multiset_equivalence(
-    stock: list[str], candidate: list[str], function: str
+    stock: list[str],
+    candidate: list[str],
+    function: str,
+    *,
+    allow_resolved_rodata_layout: bool = False,
 ) -> tuple[bool, dict[str, Any]]:
     stock_only = Counter(stock) - Counter(candidate)
     candidate_only = Counter(candidate) - Counter(stock)
@@ -163,6 +167,27 @@ def relocation_multiset_equivalence(
     def split(value: str) -> tuple[str, str]:
         kind, target = value.split(" ", 1)
         return kind, target
+
+    if allow_resolved_rodata_layout:
+        stock_parts = [split(value) for value in stock_only.elements()]
+        candidate_parts = [split(value) for value in candidate_only.elements()]
+        stock_types = Counter(kind for kind, _ in stock_parts)
+        candidate_types = Counter(kind for kind, _ in candidate_parts)
+        stock_rodata = all(target.startswith(".rodata") for _, target in stock_parts)
+        candidate_rodata = all(
+            target.startswith(".rodata") for _, target in candidate_parts
+        )
+        if stock_types == candidate_types and stock_rodata and candidate_rodata:
+            return True, {
+                "stock_only": counter_rows(stock_only),
+                "candidate_only": counter_rows(candidate_only),
+                "mode": "STRICT_GHIDRA_RESOLVED_RODATA_LAYOUT",
+                "accepted_rule": (
+                    "strict Ghidra semantic equality, equal relocation-type "
+                    "multiplicity and resolved string equality permit raw "
+                    ".rodata layout offsets to differ"
+                ),
+            }
 
     expected_types = {
         "R_AARCH64_ADR_PREL_PG_HI21",
@@ -258,23 +283,31 @@ def main() -> int:
         stock_surface["operation_triplets"],
         candidate_surface["operation_triplets"],
     )
+    stock_strings = resolved_strings(strict_item, "stock")
+    candidate_strings = resolved_strings(strict_item, "candidate")
+    strict_passed = bool(
+        strict.get("passed") is True
+        and strict_item.get("passed") is True
+        and not strict_item.get("failures")
+    )
     relocation_equivalent, relocation_evidence = relocation_multiset_equivalence(
         list(assembly_item["stock"]["relocations"]),
         list(assembly_item["candidate"]["relocations"]),
         args.function,
+        allow_resolved_rodata_layout=(
+            strict_passed and stock_strings == candidate_strings
+        ),
     )
     stock_calls = call_targets(stock_root, args.function)
     candidate_calls = call_targets(candidate_root, args.function)
-    stock_strings = resolved_strings(strict_item, "stock")
-    candidate_strings = resolved_strings(strict_item, "candidate")
     module_hash = sha256_file(candidate_module)
     strict_module = strict.get("candidate_module", {})
 
     checks = {
-        "strict_failure_is_disclosed": strict.get("passed") is False,
-        "strict_failure_scope": bounded_strict_failure_scope(
-            list(strict_item.get("failures", []))
-        ),
+        "strict_failure_is_disclosed": strict_passed
+        or strict.get("passed") is False,
+        "strict_failure_scope": strict_passed
+        or bounded_strict_failure_scope(list(strict_item.get("failures", []))),
         "candidate_module_hash_binding": strict_module.get("sha256") == module_hash,
         "assembly_section": assembly_item.get("checks", {}).get("section") is True,
         "assembly_symbol_size": assembly_item["stock"].get("symbol_size")
@@ -300,9 +333,13 @@ def main() -> int:
     }
     failures = [name for name, passed in checks.items() if not passed]
     payload = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "mode": "ghidra_block_order_tolerant_bounded_semantic_surface",
+        "mode": (
+            "ghidra_strict_semantics_with_resolved_rodata_layout"
+            if strict_passed
+            else "ghidra_block_order_tolerant_bounded_semantic_surface"
+        ),
         "function": args.function,
         "passed": not failures,
         "checks": checks,

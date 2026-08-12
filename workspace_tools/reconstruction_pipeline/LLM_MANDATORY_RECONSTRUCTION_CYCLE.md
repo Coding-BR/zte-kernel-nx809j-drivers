@@ -14,6 +14,12 @@ Para trabalho sem smartphone, siga tambem
 `reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md`. Evidencia runtime
 fica `DEFERRED`; ela nao pode ser substituida por inferencia estatica.
 
+Quando C semanticamente correto ainda produzir Assembly, P-Code ou KCFI
+divergente, siga obrigatoriamente
+`reverse_engineering/docs/PROTOCOLO_EQUIVALENCIA_BINARIA_COMPILADOR.md`. Uma ilha
+de assembly so e permitida depois da escada de diagnostico e deve passar todos
+os gates novamente; ela nunca autoriza uma promocao por semelhanca visual.
+
 "100%" significa 100% dos requisitos observáveis, exports Ghidra e validações definidos aqui possuem evidência reproduzível. Não significa equivalência matemática de comportamento que não foi observado.
 
 ## Regra de Ouro
