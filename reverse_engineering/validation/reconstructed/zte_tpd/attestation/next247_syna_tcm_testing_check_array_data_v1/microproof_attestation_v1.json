@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "kind": "bounded_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "247_syna_tcm_testing_check_array_data",
+  "stock_function": "syna_tcm_testing_check_array_data",
+  "stock_entry": "0011df64",
+  "status": "HOST_ONLY_MICROPROOFS_PASS",
+  "promotion_allowed": false,
+  "promotion_blockers": [
+    "full canonical zte_tpd module build and KCFI evidence were not run for this isolated candidate",
+    "independent L3 review has not been recorded",
+    "smartphone validation was intentionally not run"
+  ],
+  "evidence": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_testing_check_array_data.c",
+      "sha256": "03c3885af348b959d99a03f9040817e6dfe1ed2ce6962dfcfc7b5931cdf9c3b0"
+    },
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0246_0011df64_syna_tcm_testing_check_array_data.c",
+      "sha256": "daae788f3b27a3df638ac559b3b8cfb30a42014adb018f2519ae34aeca01c62a"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0246_0011df64_syna_tcm_testing_check_array_data.jsonl",
+      "sha256": "0b2a27d0c0e13200afa65aad5753a5f3c5b6029f479d8b08f9cff1498c0557d8"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0246_syna_tcm_testing_check_array_data_0011df64.asm",
+      "sha256": "4a45c9863a8b94a156d8b81989d21a33d696ff49e6fdcd225f21fd0abea2fe8d"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next247_syna_tcm_testing_check_array_data_v1/candidate_assembly/array_data_candidate.s",
+      "sha256": "1337ee9480b17ce656c44b28dfe631eb672c220933e496ba091369b9a08d7d33"
+    },
+    "host_harness": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next247_syna_tcm_testing_check_array_data_v1/host_harness_report.json",
+      "sha256": "0a3f714414c1480f745129dcea35ae53e9182dd72a598af55bc5b92774c7ed5d"
+    }
+  },
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_STATE_EFFECT_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_TEST_ORACLE_DRAFT": "PASS",
+    "MP7_CANDIDATE_PATCH": "PENDING_CANONICAL_BUILD",
+    "MP8_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "observed_contract": {
+    "null_a1_or_a3_returns_zero_with_log": true,
+    "signed_32_bit_a2_less_than_one_returns_one": true,
+    "helper_signature_arguments": 3,
+    "helper_calls_are_non_short_circuit": true,
+    "loop_count": "a2 & 0x7fffffff",
+    "a3_offset_when_a4_ge_a2": "index",
+    "a3_offset_when_a4_lt_a2": 0,
+    "result_mask": 1,
+    "writes": 0,
+    "allocations": 0,
+    "hardware_access": false,
+    "indirect_calls": false
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible_binary": true,
+    "asan_ubsan_stderr_empty": true,
+    "cycles": 2,
+    "cases": 11
+  }
+}

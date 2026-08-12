@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "247_syna_tcm_testing_check_array_data",
+  "stock_entry": "0011df64",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0246_syna_tcm_testing_check_array_data_0011df64.asm",
+      "sha256": "4a45c9863a8b94a156d8b81989d21a33d696ff49e6fdcd225f21fd0abea2fe8d"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next247_syna_tcm_testing_check_array_data_v1/candidate_assembly/array_data_candidate.s",
+      "sha256": "1337ee9480b17ce656c44b28dfe631eb672c220933e496ba091369b9a08d7d33"
+    }
+  },
+  "checks": {
+    "null_a1_or_a3_logs_and_returns_zero": "PASS",
+    "signed_32_bit_a2_less_than_one_returns_one": "PASS",
+    "helper_signature_has_three_arguments": "PASS",
+    "loop_bound_is_a2_and_0x7fffffff": "PASS",
+    "a1_uses_current_index": "PASS",
+    "a3_offset_selected_when_a4_is_at_least_a2": "PASS",
+    "helper_calls_do_not_short_circuit_after_failure": "PASS",
+    "result_is_and_accumulated_then_masked_to_one": "PASS",
+    "no_memory_writes": "PASS",
+    "hardware_access": "ABSENT",
+    "indirect_calls": "ABSENT"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP and relocation context that the freestanding candidate assembly does not reproduce.",
+    "The candidate was generated with GCC 13.3.0, not the vendor compiler and flags.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or exact binary equivalence."
+  ]
+}
