@@ -28,7 +28,7 @@ int syna_ts_check_dt(struct device *dev)
       else
         v8 = (const char **)v12[0];
       if ( v8 )
-        printk(unk_31E60, "syna_ts_check_dt", "syna_ts_check_dt");
+        printk(unk_31E60, "syna_ts_check_dt", "syna_ts_check_dt", *v8);
       panel = of_drm_find_panel(v8);
       if ( panel <= 0xFFFFFFFFFFFFF000LL )
       {
