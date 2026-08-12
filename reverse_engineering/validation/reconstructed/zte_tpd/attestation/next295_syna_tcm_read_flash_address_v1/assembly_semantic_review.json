@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "295_syna_tcm_read_flash_address",
+  "stock_entry": "00124208",
+  "stock_symbol": "syna_tcm_read_flash_address",
+  "candidate_symbol": "syna_tcm_read_flash_address",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0294_00124208_syna_tcm_read_flash_address.c",
+      "sha256": "88c67cff1b420457e5599ffe15156c32ae69c16c9be906468e561bfb192939c6"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0294_00124208_syna_tcm_read_flash_address.jsonl",
+      "sha256": "01239cf6fbd36c035924736d25643a8efa485a3efbc1f53556b6c64acd074bc5"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0294_syna_tcm_read_flash_address_00124208.asm",
+      "sha256": "dbfd6f00363a8b92a0488003026a6cf2da7d5b81186e9c7747ac7b4fdedf4756"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_address.c",
+      "sha256": "e429f7ffd5558a3e9dea7772d3db20f7add6f2912a7a5af685fec817b6431315"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next295_syna_tcm_read_flash_address_v1/candidate_assembly/syna_tcm_read_flash_address_candidate.s",
+      "sha256": "dcdcb21c56bd878e078af430ea8914e8ce3faa8879d7dd470c628328f2442785"
+    }
+  },
+  "checks": {
+    "null_device_and_buffer_validation": "PASS",
+    "bootloader_setup_skip": "PASS",
+    "delay_and_timeout_selection": "PASS",
+    "managed_buffer_resize_and_release": "PASS",
+    "flash_read_and_data_length_propagation": "PASS",
+    "application_mode_restore": "PASS",
+    "setup_read_and_allocation_error_returns": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation context that does not establish final module equivalence.",
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The setup/read dependency implementations and their hardware behavior are outside this isolated target.",
+    "The observed managed allocation context offsets are recorded, but are not independently proven against the full vendor allocator implementation.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}
