@@ -3,7 +3,6 @@ __int64 __fastcall syna_tcm_v1_parse_idinfo(__int64 a1, const void *a2, __int64 
   size_t v4; // x4
   int v6; // w8
   __int64 result; // x0
-  __int64 v8; // x2
 
   if ( a2 && a4 )
   {
@@ -13,8 +12,8 @@ __int64 __fastcall syna_tcm_v1_parse_idinfo(__int64 a1, const void *a2, __int64 
       v4 = a4;
     if ( (unsigned int)v4 > (unsigned int)a3 )
     {
-      printk(unk_3944E, "syna_pal_mem_cpy", a3);
-      printk(unk_320CD, "syna_tcm_v1_parse_idinfo", v8);
+      printk(unk_3944E, "syna_pal_mem_cpy", a3, 0x30, v4);
+      printk(unk_320CD, "syna_tcm_v1_parse_idinfo");
       return 4294967274LL;
     }
     else
@@ -29,7 +28,7 @@ __int64 __fastcall syna_tcm_v1_parse_idinfo(__int64 a1, const void *a2, __int64 
   }
   else
   {
-    printk(unk_3B313, "syna_tcm_v1_parse_idinfo", a3);
+    printk(unk_3B313, "syna_tcm_v1_parse_idinfo");
     return 4294967055LL;
   }
   return result;
