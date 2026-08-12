@@ -34,7 +34,7 @@ int tpd_set_play_game(struct ztp_device *cdev, int a2)
     {
       v9 = unk_3B5E0;
     }
-    printk(v9, "tpd_set_play_game", v7);
+    printk(v9, "tpd_set_play_game");
     return *(unsigned int *)(a1 + 16);
   }
   return -22;

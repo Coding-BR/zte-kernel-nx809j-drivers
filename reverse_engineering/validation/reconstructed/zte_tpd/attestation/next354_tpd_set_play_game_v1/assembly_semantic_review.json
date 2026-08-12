@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "354_tpd_set_play_game",
+  "stock_entry": "0012c6e8",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0353_tpd_set_play_game_0012c6e8.asm",
+      "sha256": "88b63cf90ac2287b3811040c8382bee5ce9b09b07e3084c8199ab7c3ae05e1ed"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next354_tpd_set_play_game_v1/candidate_assembly/tpd_set_play_game_candidate.s",
+      "sha256": "bebcfbc35c340e71d372a02f10cde768f64689081fe7c2be19b0ce9642dca949"
+    }
+  },
+  "checks": {
+    "entry_log_precedes_context_branch": "PASS",
+    "null_internal_context_returns_einval": "PASS",
+    "active_zte_state_selects_zero_limit": "PASS",
+    "inactive_zte_state_selects_root_plus_0x20c": "PASS",
+    "only_mode_one_calls_callee": "PASS",
+    "mode_store_precedes_callee": "PASS",
+    "nonnegative_callee_result_returns_cdev_plus_0x10": "PASS",
+    "negative_callee_result_logs_without_extra_v7_argument": "PASS",
+    "suspend_mode_logs_without_callee": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP and relocation context that the freestanding candidate assembly does not reproduce.",
+    "The candidate was generated with GCC 13.3.0, not the vendor compiler and flags.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or exact binary equivalence."
+  ]
+}
