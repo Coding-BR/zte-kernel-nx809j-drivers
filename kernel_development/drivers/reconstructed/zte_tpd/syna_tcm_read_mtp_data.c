@@ -1,202 +1,115 @@
-int syna_tcm_read_mtp_data(struct tcm_dev *tcm, char *data,
-                           unsigned int length, unsigned int offset,
-                           unsigned int delay_mode)
-{
-  __int64 a1 = (__int64)(unsigned long)tcm;
-  char *a2 = data;
-  unsigned int a3 = length;
-  unsigned int a4 = offset;
-  unsigned int a5 = delay_mode;
-  unsigned int v6; // w20
-  unsigned int v10; // w25
-  unsigned int v11; // w21
-  unsigned int v12; // w0
-  __int64 v13; // x2
-  __int64 v14; // x2
-  unsigned int v15; // w9
-  unsigned int flash_mtp_config; // w0
-  unsigned int v17; // w20
-  void *v18; // x19
-  __int64 v19; // x0
-  __int64 v20; // x2
-  __int64 v21; // x19
-  __int64 v22; // x0
-  __int64 v23; // x2
-  int result; // w0
-  void *v25; // x0
-  void *v26; // x0
-  void *src; // [xsp+8h] [xbp-E8h] BYREF
-  __int64 v28; // [xsp+10h] [xbp-E0h]
-  _QWORD v29[6]; // [xsp+18h] [xbp-D8h] BYREF
-  __int64 v30; // [xsp+48h] [xbp-A8h]
-  __int64 v31; // [xsp+50h] [xbp-A0h] BYREF
-  __int64 v32; // [xsp+58h] [xbp-98h]
-  __int64 v33; // [xsp+60h] [xbp-90h]
-  __int64 v34; // [xsp+68h] [xbp-88h]
-  unsigned __int8 *v35; // [xsp+70h] [xbp-80h]
-  __int64 v36; // [xsp+78h] [xbp-78h]
-  __int64 v37; // [xsp+80h] [xbp-70h]
-  __int64 v38; // [xsp+88h] [xbp-68h]
-  __int64 v39; // [xsp+90h] [xbp-60h]
-  __int64 v40; // [xsp+98h] [xbp-58h]
-  __int64 v41; // [xsp+A0h] [xbp-50h] BYREF
-  __int64 v42; // [xsp+A8h] [xbp-48h]
-  __int64 v43; // [xsp+B0h] [xbp-40h]
-  __int64 v44; // [xsp+B8h] [xbp-38h]
-  __int64 v45; // [xsp+C0h] [xbp-30h]
-  __int64 v46; // [xsp+C8h] [xbp-28h]
-  __int64 v47; // [xsp+D0h] [xbp-20h]
-  __int64 v48; // [xsp+D8h] [xbp-18h]
-  __int64 v49; // [xsp+E0h] [xbp-10h]
-  __int64 v50; // [xsp+E8h] [xbp-8h]
+extern int syna_tcm_set_up_flash_access(
+	struct tcm_dev *tcm,
+	struct syna_tcm_flash_access_context *access,
+	u32 timeout_ms,
+	u32 mode_delay_ms);
+extern int syna_tcm_read_flash_mtp_config(
+	struct tcm_dev *tcm,
+	struct syna_tcm_flash_access_context *access,
+	struct tcm_buffer *buffer,
+	u32 requested_length,
+	u32 offset,
+	u32 delay_mode);
+extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
+					   u32 delay_ms);
+extern struct device *syna_request_managed_device(void);
+extern void mutex_init(void *lock);
+extern void devm_kfree(struct device *device, void *memory);
 
-  v50 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v48 = 0;
-  v49 = 0;
-  v46 = 0;
-  v47 = 0;
-  v44 = 0;
-  v45 = 0;
-  v42 = 0;
-  v43 = 0;
-  v40 = 0;
-  v41 = 0;
-  v38 = 0;
-  v39 = 0;
-  v36 = 0;
-  v37 = 0;
-  v34 = 0;
-  v35 = nullptr;
-  v32 = 0;
-  v33 = 0;
-  v30 = 0;
-  v31 = 0;
-  memset(v29, 0, sizeof(v29));
-  src = nullptr;
-  v28 = 0;
-  if ( !a1 )
-  {
-    v25 = unk_3365A;
-LABEL_32:
-    printk(v25, "syna_tcm_read_mtp_data", a3);
-    result = -241;
-    goto LABEL_29;
-  }
-  if ( !a2 || (v6 = a3) == 0 )
-  {
-    v25 = unk_372B2;
-    goto LABEL_32;
-  }
-  v48 = 0;
-  v49 = 0;
-  v46 = 0;
-  v47 = 0;
-  v44 = 0;
-  v45 = 0;
-  v42 = 0;
-  v43 = 0;
-  v40 = 0;
-  v41 = 0;
-  v38 = 0;
-  v39 = 0;
-  v36 = 0;
-  v37 = 0;
-  v34 = 0;
-  v35 = nullptr;
-  v32 = 0;
-  v33 = 0;
-  v31 = 0;
-  if ( a5 )
-  {
-    v10 = *(_DWORD *)(a1 + 524);
-    v11 = *(_DWORD *)(a1 + 488);
-  }
-  else
-  {
-    v11 = 0;
-    v10 = 0;
-  }
-  v39 = 0;
-  v40 = 0;
-  _mutex_init(&v41, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_8);
-  LOBYTE(v30) = 0;
-  src = nullptr;
-  v28 = 0;
-  _mutex_init(v29, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_8);
-  v12 = syna_tcm_set_up_flash_access(a1, (__int64)&v31, v10, v11);
-  if ( (v12 & 0x80000000) != 0 )
-  {
-    v17 = v12;
-    v26 = unk_32BC8;
-LABEL_38:
-    printk(v26, "syna_tcm_read_mtp_data", v13);
-    goto LABEL_16;
-  }
-  v14 = *v35;
-  if ( (unsigned int)v14 <= 2 )
-  {
-    v17 = v12;
-    printk(unk_34475, "syna_tcm_read_mtp_data", v14);
-    goto LABEL_16;
-  }
-  if ( HIDWORD(v36) )
-    v15 = (v6 + HIDWORD(v36) - 1) / HIDWORD(v36);
-  else
-    v15 = 0;
-  flash_mtp_config = syna_tcm_read_flash_mtp_config(a1, (__int64)&v31, (__int64)&src, v15 * HIDWORD(v36), a4, a5);
-  if ( (flash_mtp_config & 0x80000000) != 0 )
-  {
-    v17 = flash_mtp_config;
-    v26 = unk_38FA8;
-    goto LABEL_38;
-  }
-  if ( !src )
-  {
-LABEL_40:
-    printk(unk_3D41E, "syna_tcm_read_mtp_data", v13);
-    v17 = -22;
-    goto LABEL_16;
-  }
-  if ( (unsigned int)v28 < v6 )
-  {
-    printk(unk_3944E, "syna_pal_mem_cpy", (unsigned int)v28);
-    goto LABEL_40;
-  }
-  memcpy(a2, src, v6);
-  v17 = 0;
-LABEL_16:
-  if ( *(_BYTE *)(a1 + 9) == 11 )
-    syna_tcm_switch_fw_mode(a1, 1, v11);
-  if ( (_BYTE)v30 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v30);
-  v18 = src;
-  v19 = syna_request_managed_device();
-  if ( v19 )
-  {
-    if ( v18 )
-      devm_kfree(v19, v18);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v20);
-  }
-  v28 = 0;
-  LOBYTE(v30) = 0;
-  if ( (_BYTE)v47 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v47);
-  v21 = v39;
-  v22 = syna_request_managed_device();
-  if ( v22 )
-  {
-    if ( v21 )
-      devm_kfree(v22, v21);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v23);
-  }
-  result = v17;
-LABEL_29:
-  _ReadStatusReg(SP_EL0);
-  return result;
+static u32 syna_read_mtp_round_up(u32 value, u32 alignment)
+{
+	if (value > 0xffffffffU - (alignment - 1U))
+		return 0;
+	return ((value + alignment - 1U) / alignment) * alignment;
+}
+
+int syna_tcm_read_mtp_data(struct tcm_dev *tcm, char *data,
+				   unsigned int length, unsigned int offset,
+				   unsigned int delay_mode)
+{
+	struct syna_tcm_flash_access_context access = {};
+	struct tcm_buffer mtp_config = {};
+	struct device *managed_device;
+	struct tcm_boot_info *boot_info;
+	u32 timeout_ms;
+	u32 mode_delay_ms;
+	u32 block_size;
+	u32 requested_length;
+	int result = -241;
+	int retval;
+
+	if (!tcm || !data || !length) {
+		printk("\\0013[error] %s: Invalid parameter\\n",
+		       "syna_tcm_read_mtp_data");
+		return -241;
+	}
+
+	timeout_ms = delay_mode ? tcm->command_delay_ms : 0;
+	mode_delay_ms = delay_mode ? tcm->timing_01e8 : 0;
+	mutex_init(access.mutex);
+	mutex_init(mtp_config.mutex);
+
+	retval = syna_tcm_set_up_flash_access(tcm, &access, timeout_ms,
+						     mode_delay_ms);
+	if (retval < 0) {
+		result = retval;
+		goto cleanup;
+	}
+
+	boot_info = access.boot_info;
+	if (!boot_info || boot_info->version < 3) {
+		result = retval;
+		goto cleanup;
+	}
+
+	block_size = access.write_block_size_bytes;
+	if (block_size)
+		requested_length = syna_read_mtp_round_up(length, block_size);
+	else
+		requested_length = 0;
+	if (block_size && !requested_length) {
+		result = -22;
+		goto cleanup;
+	}
+
+	retval = syna_tcm_read_flash_mtp_config(tcm, &access, &mtp_config,
+							requested_length, offset, delay_mode);
+	if (retval < 0) {
+		result = retval;
+		goto cleanup;
+	}
+	if (!mtp_config.data || mtp_config.data_length < length) {
+		result = -22;
+		goto cleanup;
+	}
+
+	memcpy(data, mtp_config.data, length);
+	result = 0;
+
+cleanup:
+	if (tcm->firmware_mode == 0x0b)
+		(void)syna_tcm_switch_fw_mode(tcm, 1, mode_delay_ms);
+	if (mtp_config.lock_depth)
+		printk("\\0013[error] %s: Temporary buffer release required\\n",
+		       "syna_tcm_read_mtp_data");
+	managed_device = syna_request_managed_device();
+	if (managed_device && mtp_config.data)
+		devm_kfree(managed_device, mtp_config.data);
+	else if (!managed_device)
+		printk("\\0013[error] %s: Managed free unavailable\\n",
+		       "syna_tcm_read_mtp_data");
+	mtp_config.data = NULL;
+	mtp_config.lock_depth = 0;
+	if (access.release_required)
+		printk("\\0013[error] %s: Temporary access release required\\n",
+		       "syna_tcm_read_mtp_data");
+	managed_device = syna_request_managed_device();
+	if (managed_device && access.managed_allocation)
+		devm_kfree(managed_device, access.managed_allocation);
+	else if (!managed_device)
+		printk("\\0013[error] %s: Managed free unavailable\\n",
+		       "syna_tcm_read_mtp_data");
+	access.managed_allocation = NULL;
+	access.release_required = 0;
+	return result;
 }
