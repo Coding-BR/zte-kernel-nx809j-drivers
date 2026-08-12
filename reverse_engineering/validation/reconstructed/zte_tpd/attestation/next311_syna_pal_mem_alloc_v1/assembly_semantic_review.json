@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_pal_mem_alloc",
+  "stock_entry": "00127e18",
+  "stock_assembly": "0310_syna_pal_mem_alloc_00127e18.asm",
+  "candidate_assembly": "candidate_assembly/syna_pal_mem_alloc_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKER",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34 and armv8.2-a.",
+    "The managed-device request occurs before size validation, matching stock order.",
+    "Non-positive sizes return NULL without calling devm_kmalloc.",
+    "Positive sizes are forwarded unchanged with allocation flag 0xdc0 and the allocator return value is returned directly."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kmalloc ownership and the caller's eventual release path require independent kernel review."
+    }
+  ],
+  "promotion_allowed": false
+}
