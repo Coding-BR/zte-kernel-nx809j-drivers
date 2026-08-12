@@ -23,8 +23,6 @@ extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
 					   u32 delay_ms);
 extern char *syna_tcm_get_partition_id_string(enum flash_area partition_id);
 extern struct device *syna_request_managed_device(void);
-extern void mutex_init(void *lock);
-extern void devm_kfree(struct device *device, void *memory);
 
 static u32 syna_lockdown_read_u32(const void *base, u32 offset)
 {

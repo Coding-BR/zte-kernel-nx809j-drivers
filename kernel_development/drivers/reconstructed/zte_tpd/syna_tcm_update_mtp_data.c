@@ -13,8 +13,6 @@ extern int syna_tcm_write_flash(
 extern struct device *syna_request_managed_device(void);
 extern void *devm_kmalloc(struct device *device, size_t size,
 				  unsigned int flags);
-extern void devm_kfree(struct device *device, void *memory);
-extern void mutex_init(void *lock);
 extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
 					   u32 delay_ms);
 

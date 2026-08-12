@@ -13,8 +13,6 @@ extern int syna_tcm_read_flash_boot_cs_config(
 extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
 					   u32 delay_ms);
 extern struct device *syna_request_managed_device(void);
-extern void mutex_init(void *lock);
-extern void devm_kfree(struct device *device, void *memory);
 
 static u32 syna_cs_data_round_up(u32 value, u32 alignment)
 {

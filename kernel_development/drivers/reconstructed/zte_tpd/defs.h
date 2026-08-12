@@ -168,7 +168,8 @@ int zte_touch_pdev_register(void);
 #define mutex_unlock(lock) mutex_unlock((struct mutex *)(lock))
 
 #undef mutex_init
-#define mutex_init(lock) mutex_init((struct mutex *)(lock))
+#define mutex_init(lock) \
+    __mutex_init((struct mutex *)(lock), "(struct mutex *)ptr", &dummy_lock_key)
 
 #define _mutex_init(lock, name, key) __mutex_init((struct mutex *)(lock), name, key)
 
@@ -557,7 +558,7 @@ extern int syna_ghost_check_reset(struct ztp_device *cdev);
 
 // Testing check and helper functions
 bool syna_tcm_testing_0100_check_data(void *data, void *limit,
-                                      int column, int row);
+                                      int column);
 bool syna_tcm_testing_0500_check_upper_bound(void *data, void *limit,
                                              int column, int row);
 bool syna_tcm_testing_0500_check_lower_bound(void *data, void *limit,

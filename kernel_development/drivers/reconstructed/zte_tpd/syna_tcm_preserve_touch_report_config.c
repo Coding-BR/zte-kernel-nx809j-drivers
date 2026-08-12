@@ -5,7 +5,6 @@ struct device;
 extern struct device *syna_request_managed_device(void);
 extern void *devm_kmalloc(struct device *device, size_t size,
 				  unsigned int flags);
-extern void devm_kfree(struct device *device, void *memory);
 
 static void syna_tcm_preserve_buf_lock(struct tcm_buffer *buffer)
 {

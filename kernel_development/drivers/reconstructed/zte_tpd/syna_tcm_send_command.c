@@ -1,5 +1,3 @@
-extern int syna_tcm_buf_copy_2(__int64 destination, __int64 source);
-
 int syna_tcm_send_command(__int64 raw_tcm, unsigned int command,
 			  __int64 raw_payload, __int64 payload_length,
 			  u8 *response_code, __int64 raw_event_data,
@@ -47,8 +45,7 @@ int syna_tcm_send_command(__int64 raw_tcm, unsigned int command,
 			return retval;
 
 		copy_ret = syna_tcm_buf_copy_2(
-			(__int64)(unsigned long)event_data,
-			(__int64)(unsigned long)&tcm->report_buf);
+			event_data, &tcm->report_buf);
 		if (copy_ret < 0) {
 			printk("\0013[error] %s: Fail to copy report data, report type: %x\n",
 			       "syna_tcm_send_command", local_response_code);
@@ -62,8 +59,7 @@ int syna_tcm_send_command(__int64 raw_tcm, unsigned int command,
 			return retval;
 
 		copy_ret = syna_tcm_buf_copy_2(
-			(__int64)(unsigned long)event_data,
-			(__int64)(unsigned long)&tcm->response);
+			event_data, &tcm->response);
 		if (copy_ret < 0) {
 			printk("\0013[error] %s: Fail to copy response data, status code: %x\n",
 			       "syna_tcm_send_command", local_response_code);

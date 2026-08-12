@@ -60,11 +60,6 @@ static const u8 syna_tcm_default_touch_format[SYNAPARSE_DEFAULT_FORMAT_SIZE] = {
 	0x0c, 0x0c, 0x0c, 0x03, 0x00,
 };
 
-extern int printk(const char *format, ...);
-extern void *memcpy(void *destination, const void *source,
-			   unsigned long length);
-extern void *memset(void *destination, int value, unsigned long length);
-
 static u32 syna_tcm_parse_load_u32(const void *base, u32 offset)
 {
 	u32 value;

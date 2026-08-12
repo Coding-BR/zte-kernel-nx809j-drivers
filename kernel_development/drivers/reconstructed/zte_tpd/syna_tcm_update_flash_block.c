@@ -1,6 +1,4 @@
 extern struct device *syna_request_managed_device(void);
-extern void mutex_lock(void *lock);
-extern void mutex_unlock(void *lock);
 
 struct syna_tcm_fw_partition {
 	u8 reserved_0000[0x08];
