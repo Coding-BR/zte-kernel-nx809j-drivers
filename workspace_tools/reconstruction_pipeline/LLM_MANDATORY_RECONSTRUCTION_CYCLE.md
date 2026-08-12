@@ -20,6 +20,11 @@ divergente, siga obrigatoriamente
 de assembly so e permitida depois da escada de diagnostico e deve passar todos
 os gates novamente; ela nunca autoriza uma promocao por semelhanca visual.
 
+Quando o trabalho for dividido entre pessoas ou LLMs de capacidades diferentes,
+siga tambem
+`reverse_engineering/docs/PIPELINE_DELEGACAO_LLM_E_MICROPROVAS.md`. O planejador
+de delegacao roteia trabalho, mas nao prova equivalencia e nunca concede `PASS`.
+
 "100%" significa 100% dos requisitos observáveis, exports Ghidra e validações definidos aqui possuem evidência reproduzível. Não significa equivalência matemática de comportamento que não foi observado.
 
 ## Regra de Ouro
@@ -136,6 +141,33 @@ Não deixe todo, FUN_*, thunks, callbacks, init_module ou cleanup_module sem dec
 Evidencia local: `input_manifest.json`, inventarios CPG e
 `joern_gate_report.json`. Evidencia publica: `joern_gate_summary.json`, gerada
 conforme `workspace_tools/reconstruction_pipeline/JOERN_RUNTIME_GATE.md`.
+
+### Gate 3B: Roteamento por Capacidade, Dependencias e Microprovas
+
+1. Gere um plano atual a partir de `MICROTASKS.json`,
+   `FUNCTION_EVIDENCE_INDEX.jsonl` e `calls.jsonl`.
+2. Exija que os hashes do indice coincidam com pseudocodigo, P-Code e Assembly.
+3. Resolva primeiro as ondas de callee; SCCs e fluxo indireto exigem revisao
+   conjunta.
+4. Divida a funcao em `MP0` a `MP8`; modelos L0/L1 nunca editam C.
+5. Permita patch L2 somente quando
+   `lower_capability_c_edit_allowed=true` no plano atual.
+6. Contradicao entre microprovas bloqueia implementacao e escala para L4.
+7. Implementador e revisor devem ser agentes ou pessoas diferentes.
+8. Score e rota nunca alteram status nem substituem os gates seguintes.
+
+~~~powershell
+python .\workspace_tools\reconstruction_pipeline\plan_llm_reconstruction_work.py `
+  --manifest <curated-driver>\MICROTASKS.json `
+  --function-index <validation-driver>\offline_static\FUNCTION_EVIDENCE_INDEX.jsonl `
+  --calls <validation-driver>\offline_static\ghidra_stock\calls.jsonl `
+  --output <validation-driver>\LLM_DELEGATION_PLAN.json `
+  --markdown <validation-driver>\LLM_DELEGATION_PLAN.md `
+  --check
+~~~
+
+Evidencia: plano JSON/Markdown preso aos hashes de entrada, pacote minimo da
+microprova e relatorio de contradicoes. Plano ausente ou stale bloqueia `MP7`.
 
 ### Gate 4: Arquitetura e ABI Antes do C
 

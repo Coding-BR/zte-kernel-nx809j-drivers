@@ -58,7 +58,7 @@ reconstrução funcional completa. Os candidatos publicados continuam
 - [12 candidatos ZTE gerenciados, as bases `zlog_exception` e `zlog_common`, e o snapshot stock completo com 335 módulos](./reference_modules/README.md)
 - [`zlog_common`: fonte, candidato, harness e 13 microtarefas atestadas](./kernel_development/drivers/reconstructed/zlog_common/STATUS.md)
 - [`zte_ir`: candidato canônico, harness 8/8 e runbook de rollback](./kernel_development/drivers/zte_ir/STATUS.md)
-- [`zte_tpd`: candidato estatico, KMI 152/152, mapa 367/367, KCFI 311/322 e 200/367 microtarefas PASS](./kernel_development/drivers/reconstructed/zte_tpd/STATUS.md)
+- [`zte_tpd`: candidato estatico, KMI 152/152, mapa 367/367, KCFI 311/322 e 247/367 microtarefas PASS](./kernel_development/drivers/reconstructed/zte_tpd/STATUS.md)
 - [Ambiente Docker, kernel, toolchains e Ghidra fixados](./reproducible_environment/README.md)
 - [Requisitos compartilhados e procedimento de setup](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Esteira completa de reconstrução offline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
@@ -67,6 +67,7 @@ reconstrução funcional completa. Os candidatos publicados continuam
 - [Decomposição por função: pseudocódigo C, P-Code e Assembly](./reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md)
 - [Protocolo para equivalencia binaria sensivel ao compilador](./reverse_engineering/docs/PROTOCOLO_EQUIVALENCIA_BINARIA_COMPILADOR.md)
 - [Tecnicas avancadas e observabilidade real do GKI 6.12/userdebug](./reverse_engineering/docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md)
+- [Delegacao por capacidade e microprovas para pessoas e LLMs menores](./reverse_engineering/docs/PIPELINE_DELEGACAO_LLM_E_MICROPROVAS.md)
 - [Dossiê reverso de hardware](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
 
 Validação inicial após o clone:
@@ -159,7 +160,7 @@ applicable gates are demonstrated.
 - [12 managed ZTE candidates, the `zlog_exception` and `zlog_common` foundations, and a complete 335-module stock snapshot](./reference_modules/README.md)
 - [`zlog_common`: source, candidate, harness, and 13 attested microtasks](./kernel_development/drivers/reconstructed/zlog_common/STATUS.md)
 - [`zte_ir`: canonical candidate, 8/8 harness, and rollback runbook](./kernel_development/drivers/zte_ir/STATUS.md)
-- [`zte_tpd`: static candidate, exact 152/152 KMI, 367/367 map, 311/322 KCFI, and 200/367 PASS microtasks](./kernel_development/drivers/reconstructed/zte_tpd/STATUS.md)
+- [`zte_tpd`: static candidate, exact 152/152 KMI, 367/367 map, 311/322 KCFI, and 247/367 PASS microtasks](./kernel_development/drivers/reconstructed/zte_tpd/STATUS.md)
 - [Pinned Docker environment, kernel, toolchains, and Ghidra](./reproducible_environment/README.md)
 - [Shared requirements and setup procedure](./SHARED_ENVIRONMENT_REQUIREMENTS.md)
 - [Complete offline reconstruction pipeline](./reverse_engineering/docs/PIPELINE_RECONSTRUCAO_OFFLINE_TOTAL.md)
@@ -168,6 +169,7 @@ applicable gates are demonstrated.
 - [Per-function decomposition: C pseudocode, P-Code, and assembly](./reverse_engineering/docs/DECOMPOSICAO_MODULOS_STOCK.md)
 - [Protocol for compiler-sensitive binary equivalence](./reverse_engineering/docs/PROTOCOLO_EQUIVALENCIA_BINARIA_COMPILADOR.md)
 - [Advanced methods and actual GKI 6.12/userdebug observability](./reverse_engineering/docs/TECNICAS_AVANCADAS_RECONSTRUCAO_ANDROID_GKI_6_12.md)
+- [Capability-based delegation and microproof workflow (Portuguese)](./reverse_engineering/docs/PIPELINE_DELEGACAO_LLM_E_MICROPROVAS.md)
 - [Reverse hardware dossier](./reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md)
 
 Initial validation after cloning:
