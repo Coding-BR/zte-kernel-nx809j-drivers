@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-12T21:55:00Z",
+  "driver": "zte_tpd",
+  "target": "tpd_get_singleaodgesture",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_get_singleaodgesture.c",
+  "source_sha256": "C10EFEEEA3E46431F32B45FEF6FB4CFD7C7E1AEED5FB32108DDAFF8D793EBABF",
+  "correction": {
+    "previous_root_offset": "0xc00",
+    "stock_root_offset": "0xdb8",
+    "state_offset": "0x5b4",
+    "output_offset": "0x450",
+    "reason": "Ghidra and stock AArch64 assembly require the root pointer at 0xdb8, state at 0x5b4 and output at 0x450."
+  },
+  "syntax_check": "PASS",
+  "assembly_generation": "PASS",
+  "object_generation": "PASS",
+  "candidate_assembly_sha256": "43B2883D7E0C7720EB6C3C8BDBB51CFB91E02410BDBE5189067B5937C6C70757",
+  "candidate_object_sha256": "A7645EF6CDB5EAA0D600BDBCC4869376407077721D0F74220F13DFA1EC7EE0F1",
+  "required_instruction_checks": [
+    {"regex": "ldr\\s+x8,\\s+\\[x0,\\s+#0xdb8\\]", "found": true},
+    {"regex": "ldr\\s+w2,\\s+\\[x8,\\s+#0x5b4\\]", "found": true},
+    {"regex": "str\\s+w2,\\s+\\[x0,\\s+#0x450\\]", "found": true},
+    {"regex": "mov\\s+w0,\\s+wzr", "found": true},
+    {"regex": "ret", "found": true}
+  ],
+  "required_instruction_checks_passed": true,
+  "exact_stock_opcode_parity": "NOT_ESTABLISHED",
+  "exact_stock_opcode_parity_reason": "The canonical .ko build is blocked by unrelated shared source errors.",
+  "status": "PASS_WITH_CANONICAL_BLOCKER"
+}

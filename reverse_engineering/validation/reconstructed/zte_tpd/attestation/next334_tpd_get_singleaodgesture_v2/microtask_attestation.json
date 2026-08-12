@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-12T21:55:00Z",
+  "driver": "zte_tpd",
+  "target": "tpd_get_singleaodgesture",
+  "function": "tpd_get_singleaodgesture",
+  "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_get_singleaodgesture.c",
+  "source_sha256": "C10EFEEEA3E46431F32B45FEF6FB4CFD7C7E1AEED5FB32108DDAFF8D793EBABF",
+  "gates": {
+    "host_contract": {"status": "PASS", "passed": true, "report": "tpd_get_singleaodgesture_contract_harness_report.json"},
+    "aarch64": {"status": "PASS_WITH_CANONICAL_BLOCKER", "passed": true, "report": "candidate_aarch64/aarch64_validation_report.json"},
+    "joern": {"status": "PASS", "passed": true, "strict": true, "report": "joern_gate/joern_gate_summary.json"},
+    "kcfi": {"status": "NOT_ESTABLISHED", "report": "kcfi_status.json"},
+    "canonical_build": {"status": "BLOCKED", "passed": false, "cycles_requested": 2, "cycles_accepted": 0, "report": "canonical_build_report.json"}
+  },
+  "promotion": "BLOCKED",
+  "promotion_reason": "The corrected function passes isolated gates, but final promotion requires fresh KCFI and two clean canonical module builds; both builds fail in syna_tcm_erase_mtp_data.c.",
+  "limitations": [
+    "No smartphone execution was performed.",
+    "Standalone AArch64 object checks target observed instruction shape but do not replace final .ko parity."
+  ],
+  "status": "BLOCKED_BY_SHARED_CANONICAL_BUILD"
+}
