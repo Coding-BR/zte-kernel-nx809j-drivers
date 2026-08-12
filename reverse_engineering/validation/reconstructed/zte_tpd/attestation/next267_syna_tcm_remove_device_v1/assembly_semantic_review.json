@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "267_syna_tcm_remove_device",
+  "stock_entry": "001216d0",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0266_001216d0_syna_tcm_remove_device.c",
+      "sha256": "4590588d9dd1d61a61144ea660fc1faae69ee68871cc9b36f1482a70018a797c"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0266_001216d0_syna_tcm_remove_device.jsonl",
+      "sha256": "02442c05d78282115c584affe5e10d84ad63811a270e95d1f1f77df79ff6dcbe"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0266_syna_tcm_remove_device_001216d0.asm",
+      "sha256": "5eeee00d69f8e8b280aac163d786768b5142f3e5a1815872c7eec43a088c886d"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_remove_device.c",
+      "sha256": "7b7bbac7a7b1622eb8d2a78cab757a67e1000d31b9503a78dd380d16bd60571b"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next267_syna_tcm_remove_device_v1/candidate_assembly/syna_tcm_remove_device_candidate.s",
+      "sha256": "ebf8880c133a844c325eba0d2d5e23f06d5ae6f61a04d1c282e52f5c0e4093ae"
+    }
+  },
+  "checks": {
+    "null_device_branch": "PASS",
+    "six_buffer_cleanup_sequence": "PASS",
+    "managed_device_missing_continues_cleanup": "PASS",
+    "identity_field_reset": "PASS",
+    "final_tcm_free": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation context that does not establish final module equivalence.",
+    "Candidate assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "This review does not establish kernel ABI, KCFI, module relocation or physical hardware behavior."
+  ]
+}
