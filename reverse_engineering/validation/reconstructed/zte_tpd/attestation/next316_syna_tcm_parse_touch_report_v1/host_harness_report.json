@@ -2,8 +2,8 @@
   "schema_version": 1,
   "target": "syna_tcm_parse_touch_report",
   "stock_contract": "Ghidra decompilation, P-Code and Assembly entry 0012860c",
-  "mode": "decompiler_compatibility_asan_ubsan_host_oracle",
-  "expected_cases": 9,
+  "mode": "typed_transition_asan_ubsan_host_oracle",
+  "expected_cases": 13,
   "container_image": "nubia-sm8850-kernel-builder:latest",
   "container_image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
   "clang": "Android clang version 19.0.1 (r536225)",
@@ -14,7 +14,7 @@
       "run_returncode": 0,
       "stdout": "PASS: syna_tcm_parse_touch_report host contract\n",
       "stderr": "",
-      "binary_sha256": "88302b446dd130e2fc30a22bec2dd89681dd8b373267b6720adec9487ad6fa57",
+      "binary_sha256": "866fc4ebc6c3783855100b306983bd251ec3fe988ed0507338c9f766d32286cc",
       "passed": true
     },
     {
@@ -23,7 +23,7 @@
       "run_returncode": 0,
       "stdout": "PASS: syna_tcm_parse_touch_report host contract\n",
       "stderr": "",
-      "binary_sha256": "88302b446dd130e2fc30a22bec2dd89681dd8b373267b6720adec9487ad6fa57",
+      "binary_sha256": "866fc4ebc6c3783855100b306983bd251ec3fe988ed0507338c9f766d32286cc",
       "passed": true
     }
   ],
@@ -31,13 +31,13 @@
   "asan_ubsan_stderr_empty": true,
   "aarch64_syntax_check": true,
   "candidate_assembly_emitted": true,
-  "compatibility_shim_required": true,
+  "compatibility_layout_probe": true,
   "passed": true,
-  "status": "PASS_WITH_RECONSTRUCTION_BLOCKER",
+  "status": "PASS_WITH_REVIEW_BLOCKERS",
   "limitations": [
-    "The candidate remains an IDA/Ghidra-style decompiler export with raw offsets and compatibility aliases; it is not yet a canonical typed GKI C implementation.",
-    "The harness proves null handling, parser disablement, format termination, selected scalar fields and invalid widths through a compatibility layer; it does not prove every custom-format opcode or callback path.",
-    "The Assembly emission covers the ABI probe wrapper, not a relocation-equivalent build of the full raw candidate.",
+    "The candidate is a typed transition with explicit proven offsets, but tcm_dev and the report object are still represented through an opaque layout view rather than independently reconstructed canonical GKI structures.",
+    "The harness covers 13 assertions across guards, parser disablement, format termination, scalar/object/global fields and invalid widths; callback, truncated-report, multi-object boundary and every error edge still require dedicated cases.",
+    "The Assembly emission covers the AArch64 ABI probe wrapper, not a relocation-equivalent build of the complete driver function.",
     "Canonical module build, typed layout review, KCFI/relocation comparison, independent review and physical hardware validation remain required."
   ]
 }

@@ -7,20 +7,26 @@
   "review_status": "PASS_WITH_REVIEW_BLOCKERS",
   "verified_semantics": [
     "AArch64 ABI probe syntax accepted with Android clang target aarch64-linux-android34.",
-    "The compatibility harness preserves the three invalid-handle guards and the parser-disabled success branch.",
-    "The compatibility harness exercises the format terminator, scalar field decoder, first-field decoder and invalid field-width branch.",
+    "The typed transition preserves the three invalid-handle guards and the parser-disabled success branch.",
+    "The typed transition names the proven tcm_dev and report offsets and implements explicit width, scalar, object and global field handling.",
+    "The compatibility harness exercises 13 assertions including scalar/object/global decoding and invalid field widths.",
     "Joern confirms one mapped source identity with no mapped call or control deltas and no parser problems."
   ],
   "review_findings": [
     {
-      "severity": "critical",
+      "severity": "high",
       "category": "source_typing",
-      "finding": "The candidate still uses raw decompiler types, magic offsets, IDA lvalue macros and compatibility symbols; it must be translated to typed tcm_dev/report structures before canonical GKI promotion."
+      "finding": "The implementation still exposes tcm_dev through a proven-offset layout view; an independent layout reconstruction must confirm every field, pointer provenance and lifetime before canonical GKI promotion."
     },
     {
       "severity": "high",
+      "category": "callback_cfi",
+      "finding": "Touch and gesture callback extraction/invocation requires an ABI- and CFI-specific review, including null callbacks, callback return propagation and function-pointer type identity."
+    },
+    {
+      "severity": "medium",
       "category": "coverage",
-      "finding": "All custom-format opcodes, callback error paths and multi-object iteration require a dedicated typed harness before claiming full behavioral parity."
+      "finding": "Dedicated cases remain for truncated reports, multi-object boundaries, all callback paths and malformed custom formats."
     }
   ],
   "promotion_allowed": false

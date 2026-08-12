@@ -1,14 +1,16 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 
-extern long long syna_tcm_parse_touch_report(long long tcm,
-						 long long report,
-						 unsigned int report_size,
-						 long long output);
+struct tcm_dev;
 
-long long syna_tcm_parse_touch_report_aarch64_probe(long long tcm,
-							    long long report,
-							    long long output)
+extern int syna_tcm_parse_touch_report(struct tcm_dev *tcm,
+						const u8 *report,
+						u32 report_size,
+						void *output);
+
+int syna_tcm_parse_touch_report_aarch64_probe(struct tcm_dev *tcm,
+							      const u8 *report,
+							      void *output)
 {
 	return syna_tcm_parse_touch_report(tcm, report, 8U, output);
 }
