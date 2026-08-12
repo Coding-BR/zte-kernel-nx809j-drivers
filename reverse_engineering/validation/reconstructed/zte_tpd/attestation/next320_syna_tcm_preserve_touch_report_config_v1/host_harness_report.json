@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "target": "syna_tcm_preserve_touch_report_config",
+  "stock_contract": "Ghidra decompilation, P-Code and Assembly entry 0012a53c",
+  "mode": "typed_transition_asan_ubsan_host_oracle",
+  "expected_assertions": 16,
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "container_image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "clang": "Android clang version 19.0.1 (r536225)",
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_preserve_touch_report_config host contract\n",
+      "stderr": "",
+      "binary_sha256": "d023933ee55e226dcf1422256f82294d4e8172d26d60bc5b9ce2379f6e8a6280",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_preserve_touch_report_config host contract\n",
+      "stderr": "",
+      "binary_sha256": "d023933ee55e226dcf1422256f82294d4e8172d26d60bc5b9ce2379f6e8a6280",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "asan_ubsan_stderr_empty": true,
+  "aarch64_syntax_check": true,
+  "candidate_body_assembly_emitted": true,
+  "typed_layout_static_asserts": true,
+  "passed": true,
+  "status": "PASS_WITH_REVIEW_BLOCKERS",
+  "limitations": [
+    "The typed overlay covers tcm_dev+0x190 through +0x1e4 and parser mode +0x38c, but the complete ownership contract of the managed preservation buffer remains under review.",
+    "The harness covers 16 assertions across validation, command dispatch, delay selection, reuse, allocation, copy bounds, lock cleanup and format-state decoding; malformed truncated format records are not exercised because the stock loop reads a following width byte without a bound guard.",
+    "The transition deliberately preserves the stock stale format_offset behavior when entity 3 is absent; this stateful behavior requires a dedicated differential review.",
+    "Canonical vendor_dlkm build, KCFI/relocation comparison, independent review and smartphone validation remain required."
+  ]
+}
