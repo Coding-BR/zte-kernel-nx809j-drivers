@@ -1,174 +1,111 @@
-int syna_tcm_erase_mtp_data(struct tcm_dev *tcm, unsigned int delay_ms)
-{
-  __int64 a1 = (__int64)(unsigned long)tcm;
-  unsigned int a2 = delay_ms;
-  unsigned int v4; // w23
-  unsigned int v5; // w20
-  unsigned int v6; // w0
-  __int64 v7; // x2
-  __int64 v8; // x2
-  unsigned int v9; // w8
-  unsigned int v10; // w21
-  unsigned int v11; // w22
-  __int64 v12; // x3
-  __int64 v13; // x2
-  __int64 v14; // x5
-  _DWORD *v15; // x8
-  unsigned int v16; // w0
-  unsigned int v17; // w23
-  __int64 v18; // x19
-  __int64 v19; // x0
-  __int64 v20; // x2
-  int result; // w0
-  void *v22; // x0
-  unsigned int v23; // w23
-  unsigned int v24; // w24
-  unsigned int v25; // w23
-  unsigned int v26; // w24
-  int v27; // [xsp+Ch] [xbp-A4h] BYREF
-  _QWORD v28[4]; // [xsp+10h] [xbp-A0h] BYREF
-  unsigned __int8 *v29; // [xsp+30h] [xbp-80h]
-  __int64 v30; // [xsp+38h] [xbp-78h]
-  __int64 v31; // [xsp+40h] [xbp-70h]
-  __int64 v32; // [xsp+48h] [xbp-68h]
-  __int64 v33; // [xsp+50h] [xbp-60h]
-  __int64 v34; // [xsp+58h] [xbp-58h]
-  _QWORD v35[6]; // [xsp+60h] [xbp-50h] BYREF
-  __int64 v36; // [xsp+90h] [xbp-20h]
-  __int64 v37; // [xsp+98h] [xbp-18h]
-  __int64 v38; // [xsp+A0h] [xbp-10h]
-  __int64 v39; // [xsp+A8h] [xbp-8h]
+extern int syna_tcm_set_up_flash_access(
+	struct tcm_dev *tcm,
+	struct syna_tcm_flash_access_context *access,
+	u32 timeout_ms,
+	u32 mode_delay_ms);
+extern struct device *syna_request_managed_device(void);
+extern void devm_kfree(struct device *device, void *memory);
+extern void mutex_init(void *lock);
+extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
+					   u32 delay_ms);
 
-  v39 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  if ( !a1 )
-  {
-    printk(unk_3365A, "syna_tcm_erase_mtp_data");
-    result = -241;
-    goto LABEL_26;
-  }
-  v37 = 0;
-  v38 = 0;
-  v36 = 0;
-  memset(v35, 0, sizeof(v35));
-  v33 = 0;
-  v34 = 0;
-  v31 = 0;
-  v32 = 0;
-  v29 = nullptr;
-  v30 = 0;
-  memset(v28, 0, sizeof(v28));
-  if ( a2 )
-  {
-    v4 = *(_DWORD *)(a1 + 524);
-    v5 = *(_DWORD *)(a1 + 488);
-  }
-  else
-  {
-    v5 = 0;
-    v4 = 0;
-  }
-  v33 = 0;
-  v34 = 0;
-  _mutex_init(v35, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_8);
-  v6 = syna_tcm_set_up_flash_access(a1, (__int64)v28, v4, v5);
-  if ( (v6 & 0x80000000) != 0 )
-  {
-    v17 = v6;
-    v22 = unk_32BC8;
-LABEL_34:
-    printk(v22, "syna_tcm_erase_mtp_data");
-    goto LABEL_18;
-  }
-  v8 = *v29;
-  if ( (unsigned int)v8 <= 2 )
-  {
-    v17 = v6;
-    printk(unk_34475, "syna_tcm_erase_mtp_data");
-    goto LABEL_18;
-  }
-  v9 = v29[21];
-  v27 = 0;
-  v10 = 0;
-  v11 = 0;
-  if ( (unsigned int)v30 )
-  {
-    v10 = HIDWORD(v32) / (unsigned int)v30;
-    v11 = ((unsigned int)v30 + (_DWORD)v30 * v9 - 1) / (unsigned int)v30;
-  }
-  if ( (v11 | v10) >= 0x100 )
-  {
-    v9 = v10 >> 8;
-    v12 = 4;
-    HIWORD(v27) = v11;
-  }
-  else
-  {
-    v12 = 2;
-    LOBYTE(v9) = ((unsigned int)v30 + (_DWORD)v30 * v9 - 1) / (unsigned int)v30;
-  }
-  v13 = *(unsigned __int8 *)(a1 + 9);
-  v14 = v11 * v4;
-  LOBYTE(v27) = HIDWORD(v32) / (unsigned int)v30;
-  BYTE1(v27) = v9;
-  if ( (_DWORD)v13 == 11 )
-  {
-    if ( (_DWORD)v14 )
-      goto LABEL_14;
-  }
-  else
-  {
-    v23 = v12;
-    v24 = v14;
-    printk(unk_37A54, "syna_tcm_reflash_send_command", v13, v23);
-    v14 = v24;
-    v12 = v23;
-    if ( v24 )
-      goto LABEL_14;
-  }
-  if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) != 0 )
-  {
-    v14 = 0;
-  }
-  else
-  {
-    v25 = *(_DWORD *)(a1 + 524);
-    v26 = v12;
-    printk(unk_36818, "syna_tcm_reflash_send_command", v25, v26);
-    v14 = v25;
-    v12 = v26;
-  }
-LABEL_14:
-  v15 = *(_DWORD **)(a1 + 920);
-  if ( *(v15 - 1) != 606091918 )
-    __break(0x8228u);
-  v16 = ((__int64 (__fastcall *)(__int64, __int64, int *, __int64, _QWORD, __int64))v15)(a1, 17, &v27, v12, 0, v14);
-  if ( (v16 & 0x80000000) != 0 )
-  {
-    v17 = v16;
-    printk(unk_39AB7, "syna_tcm_reflash_send_command", 17);
-    printk(unk_36439, "syna_tcm_erase_flash", v10, v11);
-    v22 = unk_38FD4;
-    goto LABEL_34;
-  }
-  v17 = 0;
-LABEL_18:
-  if ( *(_BYTE *)(a1 + 9) == 11 )
-    syna_tcm_switch_fw_mode(a1, 1, v5);
-  if ( (_BYTE)v36 )
-    printk(unk_34845, "syna_tcm_buf_release");
-  v18 = v33;
-  v19 = syna_request_managed_device();
-  if ( v19 )
-  {
-    if ( v18 )
-      devm_kfree(v19, v18);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free");
-  }
-  result = v17;
-LABEL_26:
-  _ReadStatusReg(SP_EL0);
-  return result;
+static u32 syna_tcm_erase_count(u32 page_size, u32 unit_size)
+{
+	if (!unit_size)
+		return 0;
+	return (page_size + unit_size - 1U) / unit_size;
+}
+
+int syna_tcm_erase_mtp_data(struct tcm_dev *tcm, unsigned int delay_mode)
+{
+	struct syna_tcm_flash_access_context access = {};
+	struct device *managed_device;
+	u8 command_data[4] = {};
+	u32 timeout_ms;
+	u32 mode_delay_ms;
+	u32 erase_count;
+	u32 block_count;
+	u32 command_length;
+	u32 command_delay;
+	u32 erase_page_size;
+	u32 write_block_size;
+	u32 page_size;
+	int result = 0;
+	int retval;
+
+	if (!tcm) {
+		printk("\\0013[error] %s: Invalid parameter\\n",
+		       "syna_tcm_erase_mtp_data");
+		return -241;
+	}
+
+	timeout_ms = delay_mode ? tcm->command_delay_ms : 0;
+	mode_delay_ms = delay_mode ? tcm->timing_01e8 : 0;
+	mutex_init(access.mutex);
+
+	retval = syna_tcm_set_up_flash_access(tcm, &access, timeout_ms,
+						     mode_delay_ms);
+	if (retval < 0) {
+		result = retval;
+		goto cleanup;
+	}
+
+	if (!access.boot_info || access.boot_info->version < 3)
+		goto cleanup;
+
+	erase_page_size = access.erase_page_size_bytes;
+	page_size = access.v3_page_size_bytes;
+	write_block_size = delay_mode ? tcm->command_delay_ms : 0;
+	block_count = syna_tcm_erase_count(page_size, erase_page_size);
+	erase_count = syna_tcm_erase_count(
+		erase_page_size * (u32)access.boot_info->v3_page_size_words,
+		erase_page_size);
+
+	if ((block_count | erase_count) < 0x100U) {
+		command_length = 2;
+		command_data[0] = (u8)block_count;
+		command_data[1] = (u8)erase_count;
+	} else {
+		command_length = 4;
+		command_data[0] = (u8)block_count;
+		command_data[1] = (u8)(block_count >> 8);
+		command_data[2] = (u8)erase_count;
+		command_data[3] = (u8)(erase_count >> 8);
+	}
+
+	command_delay = erase_count * write_block_size;
+	if (tcm->firmware_mode != 0x0b)
+		printk("\\0013[error] %s: Firmware mode is not bootloader\\n",
+		       "syna_tcm_reflash_send_command");
+	if (!command_delay) {
+		if (!tcm->transport || !(tcm->transport->flags & 1U))
+			command_delay = tcm->command_delay_ms;
+		else
+			command_delay = 0;
+	}
+	if (!tcm->write_message) {
+		result = -241;
+		goto cleanup;
+	}
+
+	retval = tcm->write_message(tcm, 0x11, command_data, command_length,
+					    NULL, command_delay);
+	if (retval < 0)
+		result = retval;
+
+cleanup:
+	if (tcm->firmware_mode == 0x0b)
+		(void)syna_tcm_switch_fw_mode(tcm, 1, mode_delay_ms);
+	if (access.release_required)
+		printk("\\0013[error] %s: Temporary buffer release required\\n",
+		       "syna_tcm_erase_mtp_data");
+	managed_device = syna_request_managed_device();
+	if (managed_device && access.managed_allocation)
+		devm_kfree(managed_device, access.managed_allocation);
+	else if (!managed_device)
+		printk("\\0013[error] %s: Managed free unavailable\\n",
+		       "syna_tcm_erase_mtp_data");
+	access.managed_allocation = NULL;
+	access.release_required = 0;
+	return result;
 }
