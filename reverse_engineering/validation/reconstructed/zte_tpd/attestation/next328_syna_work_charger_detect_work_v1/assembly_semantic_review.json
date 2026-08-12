@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "task_id": "328_syna_work_charger_detect_work",
+  "status": "SEMANTIC_SHAPE_PASS_EXACT_EQUIVALENCE_PENDING",
+  "stock": {
+    "entry": "0012b8d0",
+    "decompiled_sha256": "2f3d68a7317f09ad47f6f60883a54f9eb16e9501e764a33bca1c4e027f3da142",
+    "pcode_sha256": "01abfb4e0559750411b5bf84771aedf59bf7b177e3bdee07fb0bf481ea17d77d",
+    "assembly_sha256": "667365fc23459660673645db7fefa94e328cad5d863a4221dfc4c31b29741be6",
+    "observed_instruction_count": 149,
+    "features": ["null work guard", "device-state delay selection", "battery lookup", "guarded indirect property read", "charger states 1/4", "USB flag transition", "charger-mode transition"]
+  },
+  "candidate": {
+    "assembly_sha256": "86ec637b9086fcabf9a48d614033015c3f061ed83e05652c392ab1afb9807e13",
+    "object_sha256": "39920335092acc576ba30cca3c393e016ad482b3fd1ae12b171bd99499d1ccb3",
+    "observed_instruction_count": 101,
+    "features": ["null work guard", "device-state delay selection", "battery lookup", "guarded indirect property read", "charger states 1/4", "USB flag transition", "charger-mode transition"]
+  },
+  "checks": {
+    "null_work_path": true,
+    "battery_cache_path": true,
+    "indirect_callback_guarded": true,
+    "status_1_and_4_are_usb_active": true,
+    "status_flag_transition": true,
+    "charger_mode_call_arguments": true,
+    "mmio_or_barrier": false,
+    "exact_opcode_equivalence": false
+  },
+  "limitations": [
+    "The standalone candidate is not linked into zte_tpd.ko.",
+    "The host harness intentionally bypasses the real KCFI memory sentinel while testing state behavior.",
+    "KCFI, relocations and exact opcode identity remain separate gates."
+  ],
+  "passed": false,
+  "promotion_allowed": false
+}
