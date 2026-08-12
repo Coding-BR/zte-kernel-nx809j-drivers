@@ -1,11 +1,78 @@
+#if defined(ZTE_TPD_AARCH64_INPUT)
+typedef long long __int64;
+typedef unsigned long long _QWORD;
+typedef unsigned int _DWORD;
+typedef unsigned short _WORD;
+struct syna_tcm;
+
+#define _ReadStatusReg(reg) ((void)0)
+#define __break(value) __builtin_trap()
+
+extern int printk(const char *format, ...);
+extern __int64 alloc_workqueue(const char *name, unsigned int flags,
+                               int max_active, const char *key);
+extern __int64 power_supply_get_by_name(const char *name);
+extern void power_supply_reg_notifier(void *notifier);
+extern void init_timer_key(void *timer, void *function, unsigned int flags,
+                           void *name, void *key);
+extern __int64 syna_get_charger_status_batt_psy;
+extern unsigned char syna_usb_detect_flag;
+extern __int64 tpd_cdev;
+extern void syna_work_charger_detect_work(void);
+extern void syna_charger_notify_call(void);
+extern void tpd_init_tpinfo(void);
+extern void tpd_get_wakegesture(void);
+extern void tpd_enable_wakegesture(void);
+extern void tpd_get_singlegamegesture(void);
+extern void tpd_set_singlegamegesture(void);
+extern void tpd_get_singleaodgesture(void);
+extern void tpd_set_singleaodgesture(void);
+extern void tpd_get_singlefpgesture(void);
+extern void tpd_set_singlefpgesture(void);
+extern void tpd_set_one_key(void);
+extern void tpd_get_one_key(void);
+extern void tpd_test_cmd_store(void);
+extern void tpd_test_cmd_show(void);
+extern void tpd_get_tp_report_rate(void);
+extern void tpd_set_tp_report_rate(void);
+extern void tpd_get_sensibility_level(void);
+extern void tpd_set_sensibility_level(void);
+extern void tpd_get_follow_hand_level(void);
+extern void tpd_set_follow_hand_level(void);
+extern void tpd_get_stability_level(void);
+extern void tpd_set_stability_level(void);
+extern void tpd_get_rotation_limit_level(void);
+extern void tpd_set_rotation_limit_level(void);
+extern void tpd_set_display_rotation(void);
+extern void tpd_get_play_game(void);
+extern void tpd_set_play_game(void);
+extern void tpd_set_game_partition(void);
+extern void tpd_get_frame_data(void);
+extern void tpd_set_frame_data(void);
+extern void tpd_get_palm_mode(void);
+extern void tpd_set_palm_mode(void);
+extern void syna_ghost_check_reset(void);
+extern void tpd_set_fake_sleep(void);
+extern void tpd_get_fake_sleep(void);
+extern void tpd_set_screen_off_awake(void);
+extern void tpd_get_screen_off_awake(void);
+extern void delayed_work_timer_fn(void);
+extern const char unk_390F2[];
+extern const char unk_364AC[];
+extern const char unk_3A676[];
+extern const char unk_37409[];
+extern const char unk_3D4B9[];
+extern const char unk_3AECC[];
+#endif
+
 void syna_tpd_register_fw_class(struct syna_tcm *tcm)
 {
   __int64 a1 = (__int64)tcm;
   __int64 v4; // x0
-  __int64 v5; // x2
+  __int64 v5 = 0; // x2 is unspecified on the stock error-log path
   __int64 v7; // x0
   void (*v8)(void); // x8
-  __int64 v9; // x2
+  __int64 v9 = 0; // x2 is unspecified on the stock notifier-log path
   __int64 v10; // x8
 
   _ReadStatusReg(SP_EL0);
@@ -19,7 +86,7 @@ void syna_tpd_register_fw_class(struct syna_tcm *tcm)
       || (v7 = power_supply_get_by_name("battery"), (syna_get_charger_status_batt_psy = v7) != 0) )
     {
       v8 = *(void (**)(void))(*(_QWORD *)v7 + 40LL);
-      if ( *((_DWORD *)v8 - 1) != -392622893 )
+      if ( (int)*((_DWORD *)v8 - 1) != -392622893 )
         __break(0x8228u);
       v8();
     }
@@ -39,43 +106,43 @@ void syna_tpd_register_fw_class(struct syna_tcm *tcm)
     printk(unk_3D4B9, "syna_tpd_register_fw_class", v5);
   }
   v10 = tpd_cdev;
-  *(_QWORD *)(tpd_cdev + 3176) = tpd_init_tpinfo;
-  *(_QWORD *)(v10 + 3184) = tpd_get_wakegesture;
-  *(_QWORD *)(v10 + 3192) = tpd_enable_wakegesture;
-  *(_QWORD *)(v10 + 3360) = tpd_get_singlegamegesture;
-  *(_QWORD *)(v10 + 3368) = tpd_set_singlegamegesture;
-  *(_QWORD *)(v10 + 3344) = tpd_get_singleaodgesture;
-  *(_QWORD *)(v10 + 3352) = tpd_set_singleaodgesture;
-  *(_QWORD *)(v10 + 3328) = tpd_get_singlefpgesture;
-  *(_QWORD *)(v10 + 3336) = tpd_set_singlefpgesture;
-  *(_QWORD *)(v10 + 3392) = tpd_set_one_key;
-  *(_QWORD *)(v10 + 3384) = tpd_get_one_key;
-  *(_QWORD *)(v10 + 3560) = tpd_test_cmd_store;
-  *(_QWORD *)(v10 + 3552) = tpd_test_cmd_show;
-  *(_QWORD *)(v10 + 3424) = tpd_get_tp_report_rate;
-  *(_QWORD *)(v10 + 3416) = tpd_set_tp_report_rate;
-  *(_QWORD *)(v10 + 3496) = tpd_get_sensibility_level;
-  *(_QWORD *)(v10 + 3504) = tpd_set_sensibility_level;
-  *(_QWORD *)(v10 + 3440) = tpd_get_follow_hand_level;
-  *(_QWORD *)(v10 + 3432) = tpd_set_follow_hand_level;
-  *(_QWORD *)(v10 + 3456) = tpd_get_stability_level;
-  *(_QWORD *)(v10 + 3448) = tpd_set_stability_level;
-  *(_QWORD *)(v10 + 3280) = tpd_get_rotation_limit_level;
-  *(_QWORD *)(v10 + 3272) = tpd_set_rotation_limit_level;
-  *(_QWORD *)(v10 + 3288) = tpd_set_display_rotation;
-  *(_QWORD *)(v10 + 3400) = tpd_get_play_game;
-  *(_QWORD *)(v10 + 3408) = tpd_set_play_game;
-  *(_QWORD *)(v10 + 3480) = tpd_set_game_partition;
-  *(_QWORD *)(v10 + 3656) = tpd_get_frame_data;
-  *(_QWORD *)(v10 + 3648) = tpd_set_frame_data;
-  *(_QWORD *)(v10 + 3568) = tpd_get_palm_mode;
-  *(_QWORD *)(v10 + 3576) = tpd_set_palm_mode;
-  *(_QWORD *)(v10 + 3640) = syna_ghost_check_reset;
-  *(_QWORD *)(v10 + 3608) = tpd_set_fake_sleep;
-  *(_QWORD *)(v10 + 3600) = tpd_get_fake_sleep;
-  *(_QWORD *)(v10 + 3624) = tpd_set_screen_off_awake;
-  *(_QWORD *)(v10 + 3072) = a1;
-  *(_QWORD *)(v10 + 3616) = tpd_get_screen_off_awake;
+  *(_QWORD *)(tpd_cdev + 0xe20) = tpd_init_tpinfo;
+  *(_QWORD *)(v10 + 0xe28) = tpd_get_wakegesture;
+  *(_QWORD *)(v10 + 0xe30) = tpd_enable_wakegesture;
+  *(_QWORD *)(v10 + 0xed8) = tpd_get_singlegamegesture;
+  *(_QWORD *)(v10 + 0xee0) = tpd_set_singlegamegesture;
+  *(_QWORD *)(v10 + 0xec8) = tpd_get_singleaodgesture;
+  *(_QWORD *)(v10 + 0xed0) = tpd_set_singleaodgesture;
+  *(_QWORD *)(v10 + 0xeb8) = tpd_get_singlefpgesture;
+  *(_QWORD *)(v10 + 0xec0) = tpd_set_singlefpgesture;
+  *(_QWORD *)(v10 + 0xef8) = tpd_set_one_key;
+  *(_QWORD *)(v10 + 0xef0) = tpd_get_one_key;
+  *(_QWORD *)(v10 + 0xfa0) = tpd_test_cmd_store;
+  *(_QWORD *)(v10 + 0xf98) = tpd_test_cmd_show;
+  *(_QWORD *)(v10 + 0xf18) = tpd_get_tp_report_rate;
+  *(_QWORD *)(v10 + 0xf10) = tpd_set_tp_report_rate;
+  *(_QWORD *)(v10 + 0xf60) = tpd_get_sensibility_level;
+  *(_QWORD *)(v10 + 0xf68) = tpd_set_sensibility_level;
+  *(_QWORD *)(v10 + 0xf28) = tpd_get_follow_hand_level;
+  *(_QWORD *)(v10 + 0xf20) = tpd_set_follow_hand_level;
+  *(_QWORD *)(v10 + 0xf38) = tpd_get_stability_level;
+  *(_QWORD *)(v10 + 0xf30) = tpd_set_stability_level;
+  *(_QWORD *)(v10 + 0xe88) = tpd_get_rotation_limit_level;
+  *(_QWORD *)(v10 + 0xe80) = tpd_set_rotation_limit_level;
+  *(_QWORD *)(v10 + 0xe90) = tpd_set_display_rotation;
+  *(_QWORD *)(v10 + 0xf00) = tpd_get_play_game;
+  *(_QWORD *)(v10 + 0xf08) = tpd_set_play_game;
+  *(_QWORD *)(v10 + 0xf50) = tpd_set_game_partition;
+  *(_QWORD *)(v10 + 0x1000) = tpd_get_frame_data;
+  *(_QWORD *)(v10 + 0xff8) = tpd_set_frame_data;
+  *(_QWORD *)(v10 + 0xfa8) = tpd_get_palm_mode;
+  *(_QWORD *)(v10 + 0xfb0) = tpd_set_palm_mode;
+  *(_QWORD *)(v10 + 0xff0) = syna_ghost_check_reset;
+  *(_QWORD *)(v10 + 0xfd0) = tpd_set_fake_sleep;
+  *(_QWORD *)(v10 + 0xfc8) = tpd_get_fake_sleep;
+  *(_QWORD *)(v10 + 0xfe0) = tpd_set_screen_off_awake;
+  *(_QWORD *)(v10 + 0xdb8) = a1;
+  *(_QWORD *)(v10 + 0xfd8) = tpd_get_screen_off_awake;
   *(_WORD *)(v10 + 1090) = *(_DWORD *)(a1 + 952);
   *(_WORD *)(v10 + 1092) = *(_DWORD *)(a1 + 956);
   printk(unk_3AECC, "syna_tpd_register_fw_class");
