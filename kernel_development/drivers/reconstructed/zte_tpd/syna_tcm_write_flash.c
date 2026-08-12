@@ -1,199 +1,210 @@
-__int64 __fastcall syna_tcm_write_flash(__int64 a1, __int64 a2, int a3, __int64 a4, unsigned int a5, unsigned int a6)
+static u32 syna_tcm_write_flash_read_u32(const void *base, u32 offset)
 {
-  unsigned int v6; // w20
-  unsigned int v7; // w21
-  int v12; // w8
-  unsigned int v13; // w23
-  unsigned int v14; // w21
-  unsigned int v15; // w20
-  size_t v16; // x2
-  void *v17; // x0
-  size_t v18; // x27
-  int v19; // w25
-  __int64 v20; // x22
-  __int64 v21; // x0
-  __int64 v22; // x2
-  __int64 v23; // x0
-  __int64 v24; // x2
-  unsigned int v25; // w8
-  unsigned int v26; // w8
-  const void *v27; // x1
-  __int64 v28; // x8
-  __int64 v29; // x2
-  __int64 v30; // x2
-  __int64 v31; // x22
-  _DWORD *v32; // x8
-  unsigned int v33; // w0
-  void *v34; // x0
-  unsigned int v35; // w28
-  char v36; // w9
-  __int64 v38; // x2
-  unsigned int v39; // [xsp+Ch] [xbp-14h]
-  unsigned int v40; // [xsp+10h] [xbp-10h]
+	const u8 *bytes = (const u8 *)base + offset;
 
-  v6 = *(_DWORD *)(a2 + 44);
-  v7 = *(_DWORD *)(a2 + 48);
-  if ( *(_BYTE *)(a2 + 128) )
-    printk(unk_38244, "syna_tcm_buf_lock", *(unsigned __int8 *)(a2 + 128));
-  mutex_lock(a2 + 80);
-  LOBYTE(v12) = *(_BYTE *)(a2 + 128) + 1;
-  *(_BYTE *)(a2 + 128) = v12;
-  if ( !a5 )
-  {
-LABEL_38:
-    v35 = 0;
-    v36 = 0;
-    if ( (unsigned __int8)v12 != 1 )
-      goto LABEL_48;
-    goto LABEL_39;
-  }
-  v13 = 0;
-  v39 = a6;
-  v40 = a5;
-  v14 = v7 / v6 * v6;
-  v15 = a5;
-  while ( 1 )
-  {
-    v16 = *(unsigned int *)(a2 + 72);
-    v17 = *(void **)(a2 + 64);
-    if ( v15 >= v14 )
-      v18 = v14;
-    else
-      v18 = v15;
-    v19 = v18 + 2;
-    if ( (unsigned int)v16 >= (int)v18 + 2 )
-      goto LABEL_16;
-    if ( !v17 )
-      goto LABEL_12;
-    v20 = *(_QWORD *)(a2 + 64);
-    v21 = syna_request_managed_device();
-    if ( v21 )
-    {
-      devm_kfree(v21, v20);
-LABEL_12:
-      v23 = syna_request_managed_device();
-      if ( !v23 )
-        goto LABEL_37;
-      goto LABEL_13;
-    }
-    printk(unk_3BE43, "syna_pal_mem_free", v22);
-    v23 = syna_request_managed_device();
-    if ( !v23 )
-    {
-LABEL_37:
-      v34 = unk_3BE43;
-      goto LABEL_46;
-    }
-LABEL_13:
-    if ( v19 <= 0 )
-      break;
-    v17 = (void *)devm_kmalloc(v23, (unsigned int)(v18 + 2), 3520);
-    *(_QWORD *)(a2 + 64) = v17;
-    if ( !v17 )
-      goto LABEL_47;
-    v16 = (unsigned int)(v18 + 2);
-    *(_DWORD *)(a2 + 72) = v19;
-LABEL_16:
-    memset(v17, 0, v16);
-    v25 = *(_DWORD *)(a2 + 44);
-    *(_DWORD *)(a2 + 76) = 0;
-    **(_WORD **)(a2 + 64) = (v13 + a3) / v25;
-    v26 = *(_DWORD *)(a2 + 44);
-    if ( v26 )
-      v26 = ((unsigned int)v18 + v26 - 1) / v26;
-    if ( a6 )
-      a6 = v26 * a6 / 0x3E8;
-    v27 = (const void *)(a4 + v13);
-    if ( !v27 )
-      goto LABEL_41;
-    v28 = *(_QWORD *)(a2 + 64);
-    if ( v28 == -2 )
-      goto LABEL_41;
-    v29 = v40 - v13;
-    if ( (unsigned int)v18 > (unsigned int)v29 || (unsigned int)v18 > *(_DWORD *)(a2 + 72) - 2 )
-    {
-      printk(unk_3944E, "syna_pal_mem_cpy", v29);
-LABEL_41:
-      printk(unk_37FAF, "syna_tcm_write_flash", (unsigned int)v18);
-      v12 = *(unsigned __int8 *)(a2 + 128);
-      v35 = -22;
-      if ( v12 != 1 )
-        goto LABEL_48;
-LABEL_42:
-      v36 = 0;
-      goto LABEL_39;
-    }
-    memcpy((void *)(v28 + 2), v27, v18);
-    v30 = *(unsigned __int8 *)(a1 + 9);
-    v31 = *(_QWORD *)(a2 + 64);
-    if ( (_DWORD)v30 == 11 )
-    {
-      if ( a6 )
-        goto LABEL_28;
-    }
-    else
-    {
-      printk(unk_37A54, "syna_tcm_reflash_send_command", v30);
-      if ( a6 )
-        goto LABEL_28;
-    }
-    if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) != 0 )
-    {
-      a6 = 0;
-    }
-    else
-    {
-      a6 = *(_DWORD *)(a1 + 524);
-      printk(unk_36818, "syna_tcm_reflash_send_command", a6);
-    }
-LABEL_28:
-    v32 = *(_DWORD **)(a1 + 920);
-    if ( *(v32 - 1) != 606091918 )
-      __break(0x8228u);
-    v33 = ((__int64 (__fastcall *)(__int64, __int64, __int64, _QWORD, _QWORD, _QWORD))v32)(
-            a1,
-            18,
-            v31,
-            (unsigned int)v19,
-            0,
-            a6);
-    if ( (v33 & 0x80000000) != 0 )
-    {
-      v35 = v33;
-      printk(unk_39AB7, "syna_tcm_reflash_send_command", 18);
-      printk(unk_39072, "syna_tcm_write_flash", v13 + a3);
-      v12 = *(unsigned __int8 *)(a2 + 128);
-      if ( v12 == 1 )
-        goto LABEL_42;
-      goto LABEL_48;
-    }
-    a6 = v39;
-    v15 -= v18;
-    v13 += v18;
-    *(_DWORD *)(a2 + 144) += v18;
-    if ( !v15 )
-    {
-      LOBYTE(v12) = *(_BYTE *)(a2 + 128);
-      goto LABEL_38;
-    }
-  }
-  v34 = unk_38286;
-LABEL_46:
-  printk(v34, "syna_pal_mem_alloc", v24);
-  *(_QWORD *)(a2 + 64) = 0;
-LABEL_47:
-  printk(unk_3703C, "syna_tcm_buf_alloc", (unsigned int)v19);
-  *(_QWORD *)(a2 + 72) = 0;
-  printk(unk_363F1, "syna_tcm_write_flash", v38);
-  v12 = *(unsigned __int8 *)(a2 + 128);
-  v35 = -243;
-  if ( v12 == 1 )
-    goto LABEL_42;
-LABEL_48:
-  printk(unk_38244, "syna_tcm_buf_unlock", (unsigned __int8)v12);
-  v36 = *(_BYTE *)(a2 + 128) - 1;
-LABEL_39:
-  *(_BYTE *)(a2 + 128) = v36;
-  mutex_unlock(a2 + 80);
-  return v35;
+	return (u32)bytes[0] | ((u32)bytes[1] << 8) |
+		((u32)bytes[2] << 16) | ((u32)bytes[3] << 24);
+}
+
+static void syna_tcm_write_flash_store_u32(void *base, u32 offset, u32 value)
+{
+	u8 *bytes = (u8 *)base + offset;
+
+	bytes[0] = (u8)value;
+	bytes[1] = (u8)(value >> 8);
+	bytes[2] = (u8)(value >> 16);
+	bytes[3] = (u8)(value >> 24);
+}
+
+static u8 *syna_tcm_write_flash_data(
+	struct syna_tcm_flash_access_context *access)
+{
+	return (u8 *)access->managed_allocation;
+}
+
+static u32 syna_tcm_write_flash_buffer_size(
+	const struct syna_tcm_flash_access_context *access)
+{
+	return syna_tcm_write_flash_read_u32(access, 0x48);
+}
+
+static void syna_tcm_write_flash_set_buffer_size(
+	struct syna_tcm_flash_access_context *access, u32 size)
+{
+	syna_tcm_write_flash_store_u32(access, 0x48, size);
+}
+
+static void syna_tcm_write_flash_set_data_length(
+	struct syna_tcm_flash_access_context *access, u32 length)
+{
+	syna_tcm_write_flash_store_u32(access, 0x4c, length);
+}
+
+static void syna_tcm_write_flash_release(
+	struct syna_tcm_flash_access_context *access)
+{
+	if (access->release_required != 1) {
+		printk("\\0013[error] %s: Temporary buffer unlock\\n",
+		       "syna_tcm_buf_unlock");
+		--access->release_required;
+	} else {
+		access->release_required = 0;
+	}
+	mutex_unlock(access->mutex);
+}
+
+int syna_tcm_write_flash(struct tcm_dev *tcm,
+	struct syna_tcm_flash_access_context *access,
+	int data_offset,
+	u8 *data,
+	u32 data_length,
+	u32 delay_ms)
+{
+	struct tcm_transport_overlay *transport;
+	u32 write_block_size;
+	u32 max_write_payload;
+	u32 max_chunk;
+	u32 remaining;
+	u32 processed = 0;
+	u32 chunk;
+	u32 required_size;
+	u32 block_index;
+	u32 block_count;
+	u32 effective_delay;
+	u32 buffer_size;
+	u32 total_written;
+	u8 *buffer_data;
+	u8 *source;
+	struct device *managed_device;
+	u8 *old_data;
+	void *new_data;
+	int retval = 0;
+
+	if (!tcm || !access)
+		return -241;
+
+	write_block_size = access->write_block_size_bytes;
+	max_write_payload = access->max_write_payload_size;
+	if (data_length && !write_block_size)
+		return -241;
+	max_chunk = write_block_size ?
+		(max_write_payload / write_block_size) * write_block_size : 0;
+	if (data_length && !max_chunk)
+		return -241;
+
+	transport = tcm->transport;
+	if (access->release_required)
+		printk("\\0013[error] %s: Temporary buffer already locked\\n",
+		       "syna_tcm_buf_lock");
+	mutex_lock(access->mutex);
+	++access->release_required;
+
+	remaining = data_length;
+	while (remaining) {
+		chunk = remaining < max_chunk ? remaining : max_chunk;
+		if (chunk > 0xfffffffdU) {
+			retval = -22;
+			goto write_error;
+		}
+		required_size = chunk + 2;
+		buffer_size = syna_tcm_write_flash_buffer_size(access);
+		buffer_data = syna_tcm_write_flash_data(access);
+		if (buffer_size < required_size || !buffer_data) {
+			old_data = buffer_data;
+			if (old_data) {
+				managed_device = syna_request_managed_device();
+				if (managed_device) {
+					devm_kfree(managed_device, old_data);
+					access->managed_allocation = NULL;
+				} else {
+					printk("\\0013[error] %s: Managed free unavailable\\n",
+					       "syna_pal_mem_free");
+					managed_device = syna_request_managed_device();
+					if (!managed_device) {
+						retval = -243;
+						goto write_error;
+					}
+					goto allocate_with_device;
+				}
+			}
+			managed_device = syna_request_managed_device();
+			if (!managed_device) {
+				retval = -243;
+				goto write_error;
+			}
+
+allocate_with_device:
+			if (required_size == 0) {
+				retval = -243;
+				goto write_error;
+			}
+			new_data = devm_kmalloc(managed_device, required_size, 3520);
+			access->managed_allocation = new_data;
+			if (!new_data) {
+				syna_tcm_write_flash_set_buffer_size(access, 0);
+				retval = -243;
+				goto write_error;
+			}
+			syna_tcm_write_flash_set_buffer_size(access, required_size);
+			buffer_data = syna_tcm_write_flash_data(access);
+			buffer_size = syna_tcm_write_flash_buffer_size(access);
+		}
+		if (!buffer_data || buffer_size < required_size) {
+			retval = -22;
+			goto write_error;
+		}
+
+		memset(buffer_data, 0, buffer_size);
+		syna_tcm_write_flash_set_data_length(access, 0);
+		block_index = (processed + (u32)data_offset) / write_block_size;
+		buffer_data[0] = (u8)block_index;
+		buffer_data[1] = (u8)(block_index >> 8);
+		block_count = (chunk + write_block_size - 1) /
+			write_block_size;
+		effective_delay = block_count * delay_ms / 1000;
+		source = data ? data + processed : NULL;
+		if (!source ||
+			(data_length - processed) < chunk ||
+			chunk > buffer_size - 2) {
+			printk("\\0013[error] %s: Copy bounds invalid\\n",
+			       "syna_tcm_write_flash");
+			retval = -22;
+			goto write_error;
+		}
+		memcpy(buffer_data + 2, source, chunk);
+
+		if (tcm->firmware_mode != 0x0b)
+			printk("\\0013[error] %s: Firmware mode is not bootloader\\n",
+			       "syna_tcm_reflash_send_command");
+		if (!effective_delay) {
+			if (!transport || !(transport->flags & 1)) {
+				effective_delay = tcm->command_delay_ms;
+				printk("\\0016[info] %s: Using command delay\\n",
+				       "syna_tcm_reflash_send_command");
+			} else {
+				effective_delay = 0;
+			}
+		}
+		if (!tcm->write_message) {
+			retval = -241;
+			goto write_error;
+		}
+		retval = tcm->write_message(tcm, 0x12, buffer_data,
+						required_size, NULL, effective_delay);
+		if (retval < 0)
+			goto write_error;
+
+		remaining -= chunk;
+		processed += chunk;
+		total_written = syna_tcm_write_flash_read_u32(access, 0x90);
+		syna_tcm_write_flash_store_u32(access, 0x90,
+				total_written + chunk);
+	}
+
+write_error:
+	if (retval < 0)
+		printk("\\0013[error] %s: Flash write failed\\n",
+		       "syna_tcm_write_flash");
+	syna_tcm_write_flash_release(access);
+	return retval;
 }
