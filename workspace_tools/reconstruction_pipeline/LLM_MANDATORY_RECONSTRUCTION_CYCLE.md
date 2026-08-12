@@ -169,6 +169,26 @@ python .\workspace_tools\reconstruction_pipeline\plan_llm_reconstruction_work.py
 Evidencia: plano JSON/Markdown preso aos hashes de entrada, pacote minimo da
 microprova e relatorio de contradicoes. Plano ausente ou stale bloqueia `MP7`.
 
+### Gate 3C: Pacote para LLM de menor capacidade
+
+Para uma tarefa com rota `BOUNDED_LLM_WITH_INDEPENDENT_REVIEW`, gere o pacote
+deterministico antes de delegar. O pacote precisa conter `TASK.json`,
+`CONTRACT.md`, `PROMPT.md`, `SUBMISSION_TEMPLATE.json`, candidato atual e
+evidencia individual hashada.
+Uma tarefa de outra rota nao pode ser forcada para L2 por solicitacao humana ou
+por uma LLM.
+
+~~~powershell
+python .\workspace_tools\reconstruction_pipeline\generate_llm_task_packets.py `
+  --plan .\reverse_engineering\validation\reconstructed\zte_tpd\LLM_DELEGATION_PLAN.json `
+  --output .\reverse_engineering\validation\reconstructed\zte_tpd\llm_small_tasks
+~~~
+
+O pacote e material de trabalho, nao atestacao. A LLM menor pode entregar
+MP0-MP4 e, somente com essas provas aprovadas, propor MP7 no unico arquivo
+permitido. MP8 deve ser executada por revisor independente; divergencia de hash,
+evidencia ou comportamento bloqueia e escala para L4.
+
 ### Gate 4: Arquitetura e ABI Antes do C
 
 1. Gere ou revise o Documento de Transição: assinaturas, estruturas, alinhamento AArch64, locks, lifetime e CFI.

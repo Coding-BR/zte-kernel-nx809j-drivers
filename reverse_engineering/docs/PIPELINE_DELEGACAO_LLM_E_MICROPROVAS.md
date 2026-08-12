@@ -327,6 +327,35 @@ Uma LLM menor nao deve receber o driver inteiro. O pacote deve conter apenas:
 Esse pacote deve ser gerado, nao montado manualmente em conversa. Todos os
 arquivos precisam de SHA-256 e caminho relativo.
 
+### 8.1 Geracao automatica do pacote para LLM pequena
+
+O gerador materializa somente as tarefas autorizadas pela rota
+`BOUNDED_LLM_WITH_INDEPENDENT_REVIEW`. Cada pacote possui `TASK.json`,
+`CONTRACT.md`, `PROMPT.md`, `SUBMISSION_TEMPLATE.json`, o candidato atual e
+tres artefatos de evidencia copiados para `evidence/`. O arquivo `TASK.json`
+prende o pacote ao hash do plano e aos hashes individuais dos artefatos.
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\generate_llm_task_packets.py `
+  --plan .\reverse_engineering\validation\reconstructed\zte_tpd\LLM_DELEGATION_PLAN.json `
+  --output .\reverse_engineering\validation\reconstructed\zte_tpd\llm_small_tasks
+```
+
+Para entregar apenas uma tarefa:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\generate_llm_task_packets.py `
+  --plan .\reverse_engineering\validation\reconstructed\zte_tpd\LLM_DELEGATION_PLAN.json `
+  --output .\reverse_engineering\validation\reconstructed\zte_tpd\llm_small_tasks `
+  --task-id 243_syna_tcm_testing_0002_check_config_id
+```
+
+Uma LLM pequena recebe apenas `PROMPT.md` e o diretorio do pacote. Ela pode
+produzir MP0-MP4 sem editar C; a edicao limitada MP7 so comeca quando essas
+provas estiverem aprovadas. O revisor deve ser uma pessoa ou agente diferente
+e precisa repetir os gates de build, KCFI, Joern, harness, Assembly e
+atestacao. Regenerar o plano invalida pacotes antigos pelo `plan_sha256`.
+
 ## 9. Tecnicas avancadas avaliadas
 
 ### 9.1 Joern CPG slicing: adotar como proximo P0
