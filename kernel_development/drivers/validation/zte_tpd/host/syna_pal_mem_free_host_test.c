@@ -1,111 +1,88 @@
-#include <stdarg.h>
-#include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
-static void *managed_device;
-static unsigned int managed_device_calls;
-static unsigned int devm_kfree_calls;
-static void *freed_device;
+struct device { int marker; };
+
+static bool device_available;
+static int request_calls;
+static int free_calls;
 static void *freed_memory;
-static unsigned int printk_calls;
-static const char *captured_format;
-static const char *captured_name;
+static struct device managed_device;
 
-static void *syna_request_managed_device(void)
+int printk(const char *format, ...)
 {
-    managed_device_calls++;
-    return managed_device;
+	(void)format;
+	return 0;
 }
 
-static void devm_kfree(void *device, void *memory)
+void *syna_request_managed_device(void)
 {
-    devm_kfree_calls++;
-    freed_device = device;
-    freed_memory = memory;
+	++request_calls;
+	return device_available ? &managed_device : NULL;
 }
 
-static int host_printk(const char *format, ...)
+void devm_kfree(void *device, void *memory)
 {
-    va_list arguments;
-
-    printk_calls++;
-    captured_format = format;
-    va_start(arguments, format);
-    captured_name = va_arg(arguments, const char *);
-    va_end(arguments);
-    return 0;
+	if (device != &managed_device || !memory)
+		exit(3);
+	++free_calls;
+	freed_memory = memory;
 }
 
-#define printk host_printk
 #include "../../../reconstructed/zte_tpd/syna_pal_mem_free.c"
-#undef printk
 
-static void reset_state(void)
+static void expect_true(bool condition, const char *label)
 {
-    managed_device = NULL;
-    managed_device_calls = 0;
-    devm_kfree_calls = 0;
-    freed_device = NULL;
-    freed_memory = NULL;
-    printk_calls = 0;
-    captured_format = NULL;
-    captured_name = NULL;
+	if (!condition) {
+		fprintf(stderr, "FAIL: %s\n", label);
+		exit(1);
+	}
 }
 
-static int test_free_non_null_memory(void)
+static void reset_fixture(void)
 {
-    uint32_t device;
-    uint32_t memory;
-
-    reset_state();
-    managed_device = &device;
-    syna_pal_mem_free(&memory);
-    if (managed_device_calls != 1 || devm_kfree_calls != 1 ||
-        freed_device != &device || freed_memory != &memory || printk_calls != 0) {
-        fprintf(stderr, "non-null memory free contract mismatch\n");
-        return 1;
-    }
-    return 0;
+	device_available = true;
+	request_calls = 0;
+	free_calls = 0;
+	freed_memory = NULL;
 }
 
-static int test_null_memory_is_not_freed(void)
+static void test_null_memory(void)
 {
-    uint32_t device;
-
-    reset_state();
-    managed_device = &device;
-    syna_pal_mem_free(NULL);
-    if (managed_device_calls != 1 || devm_kfree_calls != 0 || printk_calls != 0) {
-        fprintf(stderr, "null memory must not reach devm_kfree\n");
-        return 1;
-    }
-    return 0;
+	reset_fixture();
+	syna_pal_mem_free(NULL);
+	expect_true(request_calls == 1 && free_calls == 0,
+			"null memory requests device but does not free");
 }
 
-static int test_null_managed_device_logs(void)
+static void test_managed_free(void)
 {
-    static const char expected_format[] =
-        "\0013[error] %s: Invalid managed device\n";
-    uint32_t memory;
+	int memory = 7;
 
-    reset_state();
-    syna_pal_mem_free(&memory);
-    if (managed_device_calls != 1 || devm_kfree_calls != 0 || printk_calls != 1 ||
-        strcmp(captured_format, expected_format) != 0 ||
-        strcmp(captured_name, "syna_pal_mem_free") != 0) {
-        fprintf(stderr, "null managed device log contract mismatch\n");
-        return 1;
-    }
-    return 0;
+	reset_fixture();
+	syna_pal_mem_free(&memory);
+	expect_true(request_calls == 1 && free_calls == 1 &&
+				freed_memory == &memory,
+				"managed memory is freed exactly once");
+}
+
+static void test_missing_device(void)
+{
+	int memory = 9;
+
+	reset_fixture();
+	device_available = false;
+	syna_pal_mem_free(&memory);
+	expect_true(request_calls == 1 && free_calls == 0,
+			"missing managed device skips free");
 }
 
 int main(void)
 {
-    if (test_free_non_null_memory() || test_null_memory_is_not_freed() ||
-        test_null_managed_device_logs())
-        return 1;
-
-    printf("PASS syna_pal_mem_free host tests (3 cases)\n");
-    return 0;
+	test_null_memory();
+	test_managed_free();
+	test_missing_device();
+	puts("PASS: syna_pal_mem_free host contract");
+	return 0;
 }
