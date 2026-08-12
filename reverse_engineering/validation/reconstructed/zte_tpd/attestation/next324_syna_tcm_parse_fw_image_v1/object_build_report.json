@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "mode": "offline_kernel_translation_unit_build",
+  "driver": "zte_tpd",
+  "target": "syna_tcm_parse_fw_image",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "kernel_source_volume": "nubia_sm8850_kernel_src",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "command": "make -C /work/src/kernel/kernel_platform/common LLVM=/toolchains/clang-r536225/bin/ LLVM_IAS=1 ARCH=arm64 M=/workspace/kernel_development/drivers/reconstructed/zte_tpd KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=<M>/vendor.Module.symvers syna_tcm_parse_fw_image.o -j2",
+  "object": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_parse_fw_image.o",
+  "object_sha256": "6dc0f9207526c601e92360ae10d25a77972e8c0cd76375ab46e61620ca678d4b",
+  "object_size": 17792,
+  "symbol": {
+    "name": "syna_tcm_parse_fw_image",
+    "offset": "0x4",
+    "size": "0x330",
+    "size_bytes": 816
+  },
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "This proves the target translation unit compiles in the kernel container; it is not a whole-module .ko build.",
+    "The existing full-tree build remains blocked by unrelated pre-existing declarations in syna_tcm_erase_mtp_data.c and syna_tcm_buf_copy_2/syna_tcm_func_base_unit.c."
+  ]
+}
