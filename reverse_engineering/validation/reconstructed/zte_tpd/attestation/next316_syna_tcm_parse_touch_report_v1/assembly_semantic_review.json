@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_parse_touch_report",
+  "stock_entry": "0012860c",
+  "stock_assembly": "0315_syna_tcm_parse_touch_report_0012860c.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_parse_touch_report_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 ABI probe syntax accepted with Android clang target aarch64-linux-android34.",
+    "The compatibility harness preserves the three invalid-handle guards and the parser-disabled success branch.",
+    "The compatibility harness exercises the format terminator, scalar field decoder, first-field decoder and invalid field-width branch.",
+    "Joern confirms one mapped source identity with no mapped call or control deltas and no parser problems."
+  ],
+  "review_findings": [
+    {
+      "severity": "critical",
+      "category": "source_typing",
+      "finding": "The candidate still uses raw decompiler types, magic offsets, IDA lvalue macros and compatibility symbols; it must be translated to typed tcm_dev/report structures before canonical GKI promotion."
+    },
+    {
+      "severity": "high",
+      "category": "coverage",
+      "finding": "All custom-format opcodes, callback error paths and multi-object iteration require a dedicated typed harness before claiming full behavioral parity."
+    }
+  ],
+  "promotion_allowed": false
+}
