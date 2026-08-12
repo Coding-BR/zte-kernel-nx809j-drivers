@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "298_syna_tcm_read_flash_area",
+  "stock_entry": "00124ab4",
+  "stock_symbol": "syna_tcm_read_flash_area",
+  "candidate_symbol": "syna_tcm_read_flash_area",
+  "candidate_compiler": "GCC aarch64-linux-gnu cross-compiler in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0297_00124ab4_syna_tcm_read_flash_area.c",
+      "sha256": "c79b085f9529c563213dd904d04ad8770f370e981b74f0b0a7e143b1a389a811"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0297_00124ab4_syna_tcm_read_flash_area.jsonl",
+      "sha256": "0fef1bfcc7b29ccf1c25ed107985e9467b98189706963b7fff8eb813d2de903b"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0297_syna_tcm_read_flash_area_00124ab4.asm",
+      "sha256": "79dcc52cb3aa0b1d1d3fab61fcc23e48d4f70498080289d7ad4c0a35ea4aea0f"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_area.c",
+      "sha256": "411d7a28125826153c02654f2aaadfb36b93864901c6524bca5859d66bd65731"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_v1/candidate_assembly/syna_tcm_read_flash_area_candidate.s",
+      "sha256": "1a3f926d87720f360790c12929409ef59df0a0b2a274236afc0028ff1839f4c6"
+    }
+  },
+  "checks": {
+    "argument_validation": "PASS",
+    "setup_and_timeout_order": "PASS",
+    "partition_dispatch": "PASS",
+    "app_config_resize_and_read": "PASS",
+    "lockdown_offset_ladder": "PASS",
+    "mode_restore_and_cleanup": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The lockdown minimum-size rejection is a safety guard around an unsafe stock-derived offset ladder.",
+    "Dependency implementations are outside this isolated target.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}
