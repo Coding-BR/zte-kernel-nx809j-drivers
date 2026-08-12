@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "kind": "guided_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "262_syna_tcm_v1_set_up_max_rw_size",
+  "stock_function": "syna_tcm_v1_set_up_max_rw_size",
+  "stock_entry": "00120da8",
+  "status": "HOST_JOERN_MICROPROOFS_PASS",
+  "promotion_allowed": false,
+  "promotion_blockers": [
+    "full canonical zte_tpd module build and KCFI evidence were not run for this isolated candidate",
+    "independent L4 review has not been recorded",
+    "smartphone validation was intentionally not run"
+  ],
+  "evidence": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_v1_set_up_max_rw_size.c",
+      "sha256": "5681588c211f2e21632eb02406ffc51b70117bc8e0ad26246aa23075222f1b04"
+    },
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0261_00120da8_syna_tcm_v1_set_up_max_rw_size.c",
+      "sha256": "c82e3baf37d22f62550e9665ace8dd409438b662ecb2102be406ac4fe4abae67"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0261_00120da8_syna_tcm_v1_set_up_max_rw_size.jsonl",
+      "sha256": "ac0982a817a304a84ac8c8b15896f59570ba02f0064ec764b9a95eebf53f51ac"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0261_syna_tcm_v1_set_up_max_rw_size_00120da8.asm",
+      "sha256": "e954318c9d85877144e1a63e0c8e2070c75f2f308fade1ebd953c3f6daa070bd"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next262_syna_tcm_v1_set_up_max_rw_size_v1/candidate_assembly/set_up_max_rw_size_candidate.asm",
+      "sha256": "973baeac9152ea56946dda750b3fa25ace91bebc0093102fe017d0db11e0a7f9"
+    },
+    "host_harness": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next262_syna_tcm_v1_set_up_max_rw_size_v1/host_harness_report.json",
+      "sha256": "601498312b3bbe3ff60120c8c56b9a9f36c7f789123f5b1e9e4bbf016d1cf09c"
+    },
+    "joern_gate_summary": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next262_syna_tcm_v1_set_up_max_rw_size_v1/joern_gate_summary.json",
+      "sha256": "b7e6716968f50bcfb720ceed8397c81dde61974f6acc3f5088747295d19090e9"
+    }
+  },
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_STATE_EFFECT_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_TEST_ORACLE": "PASS",
+    "MP7_CANDIDATE_PATCH": "PENDING_CANONICAL_BUILD",
+    "MP8_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "joern_gate": {
+    "release": "v4.0.548",
+    "strict": true,
+    "passed": true,
+    "promotion_claim": false,
+    "mapped_identity_count": 1,
+    "unresolved_call_count": 0,
+    "mapped_call_deltas": []
+  },
+  "observed_contract": {
+    "protocol_required": 1,
+    "error_return": -241,
+    "read_limit": "min(identify_max_write_size, host_max_read_size, max_read_size) when identify_max_write_size >= max_read_size",
+    "zero_host_read_limit_fallback": "max_read_size",
+    "write_limit": "min(requested_write_size, host_max_write_size) when host_max_read_size != 0",
+    "read_offset": "0x38",
+    "write_offset": "0x3c",
+    "protocol_offset": "0x80",
+    "identify_max_write_offset": "0x96",
+    "host_max_read_offset": "0x40",
+    "host_max_write_offset": "0x44",
+    "allocations": 0,
+    "hardware_access": false,
+    "indirect_calls": false
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible_binary": true,
+    "asan_ubsan_stderr_empty": true,
+    "cycles": 2,
+    "cases": 7
+  }
+}
