@@ -1,5 +1,101 @@
+#if defined(ZTE_TPD_HOST_TEST)
+#include <ctype.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef unsigned char u8;
+#define GFP_KERNEL 0
+#define KERN_INFO ""
+#define printk zte_tpd_host_printk
+
+static int zte_tpd_host_alloc_fail_after = -1;
+
+static int zte_tpd_host_printk(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    va_end(args);
+    return 0;
+}
+
+static void *zte_tpd_host_kmalloc(size_t size)
+{
+    if (zte_tpd_host_alloc_fail_after == 0)
+        return NULL;
+    if (zte_tpd_host_alloc_fail_after > 0)
+        zte_tpd_host_alloc_fail_after--;
+    return malloc(size);
+}
+
+static void *zte_tpd_host_kzalloc(size_t size)
+{
+    void *memory = zte_tpd_host_kmalloc(size);
+
+    if (memory)
+        memset(memory, 0, size);
+    return memory;
+}
+
+#define kmalloc(size, flags) zte_tpd_host_kmalloc(size)
+#define kzalloc(size, flags) zte_tpd_host_kzalloc(size)
+#define kfree free
+#define simple_strtoul stringtoul
+#define __break(value) ((void)(value))
+#define unk_33FD8 "%s: %s rotation=%d\n"
+
+static unsigned long stringtoul(const char *string, char **end, unsigned int base)
+{
+    return strtoul(string, end, base);
+}
+
+static char *trim(char *input)
+{
+    char *end;
+
+    if (!input)
+        return NULL;
+    while (*input && isspace((unsigned char)*input))
+        input++;
+    if (!*input)
+        return input;
+    end = input + strlen(input) - 1;
+    while (end > input && isspace((unsigned char)*end))
+        end--;
+    end[1] = '\0';
+    return input;
+}
+
+#elif defined(ZTE_TPD_AARCH64_INPUT)
+typedef __SIZE_TYPE__ size_t;
+typedef unsigned char u8;
+
+extern size_t strlen(const char *string);
+extern void *memcpy(void *destination, const void *source, size_t length);
+extern char *strchr(const char *string, int character);
+extern char *strsep(char **stringp, const char *delimiter);
+extern int zte_tpd_aarch64_printk(const char *format, ...);
+extern char unk_33FD8[];
+extern void *kmalloc(size_t size, unsigned int flags);
+extern void *kzalloc(size_t size, unsigned int flags);
+extern void kfree(void *memory);
+extern unsigned long simple_strtoul(const char *string, char **end,
+                                    unsigned int base);
+extern char *trim(char *input);
+
+#define GFP_KERNEL 0
+#define NULL 0
+#define KERN_INFO ""
+#define printk zte_tpd_aarch64_printk
+#define __break(value) ((void)(value))
+#else
 #include "defs.h"
 #include "trim.c"
+#endif
 
 #define nullptr NULL
 
@@ -68,7 +164,7 @@ unsigned char *string_change(long a1, char *s, int *a3)
       if (*trimmed)
       {
         unsigned char val = (unsigned char)simple_strtoul(trimmed, NULL, 16);
-        if (v15 >= out_max)
+        if (v15 < 0 || (size_t)v15 >= out_max)
         {
           // overflow check from decomp
           __break(1u);
@@ -105,7 +201,7 @@ unsigned char *string_change(long a1, char *s, int *a3)
 
       if (v23)
       {
-        if (v21 >= out_max)
+        if (v21 < 0 || (size_t)v21 >= out_max)
         {
           __break(1u);
           goto LABEL_77;
@@ -120,10 +216,10 @@ unsigned char *string_change(long a1, char *s, int *a3)
         *seg_colon = 0;
         char *seg_prefix = trim(trimmed_seg);
         coords_str = seg_colon + 1;
-        if (*seg_prefix)
+        if (seg_prefix)
         {
           unsigned char val = (unsigned char)simple_strtoul(seg_prefix, NULL, 16);
-          if (v21 >= out_max)
+          if (v21 < 0 || (size_t)v21 >= out_max)
           {
             __break(1u);
             goto LABEL_77;
@@ -151,55 +247,63 @@ unsigned char *string_change(long a1, char *s, int *a3)
         unsigned int y2 = simple_strtoul(t4, NULL, 10);
 
         int rotation = *(int *)(a1 + 1544);
-        int v41 = 0, v44 = 0;
-        unsigned short v45 = 0, v42 = 0, v43 = 0;
-        unsigned char v46 = 0, v47 = 0;
+        unsigned int first = 0;
+        unsigned int second = 0;
+        unsigned int third = 0;
+        unsigned int fourth = 0;
+        unsigned int fifth = 0;
+        unsigned int sixth = 0;
+        unsigned int seventh = 0;
+        unsigned int eighth = 0;
 
         printk(unk_33FD8, "change_coordinate", rotation);
 
         if (rotation == 3)
         {
-          v41 = 5 * y1;
-          v45 = 10 * (2688 - x2) - 1;
-          v44 = 10 * y1;
-          v42 = (10 * (2688 - x1)) | 1;
-          v43 = 10 * y2 - 1;
-          v46 = (2 * v41) | 1;
-          v47 = HIBYTE(v44);
+          unsigned int x2_scaled = 10 * (2688 - x2) - 1;
+          unsigned int y2_scaled = 10 * y2 - 1;
+          unsigned int x1_scaled = 10 * (2688 - x1) | 1;
+
+          first = 10 * y1 | 1;
+          second = (10 * y1) >> 8;
+          third = x2_scaled;
+          fourth = x2_scaled >> 8;
+          fifth = y2_scaled;
+          sixth = y2_scaled >> 8;
+          seventh = x1_scaled;
+          eighth = ((2688 - x1) * 5 & 0x7fffffffU) >> 7;
         }
         else if (rotation == 1)
         {
-          v41 = 5 * (-64 - y2);
-          v42 = 10 * x2 - 1;
-          v43 = 10 * (1216 - y1) - 1;
-          v44 = 10 * (1216 - y2);
-          v45 = (10 * x1) | 1;
-          v46 = (2 * v41) | 1;
-          v47 = HIBYTE(v44);
-        }
-        else
-        {
-          v46 = 0;
-          v47 = 0;
-          v45 = 0;
-          v43 = 0;
-          v42 = 0;
+          unsigned int x2_scaled = 10 * x2 - 1;
+          unsigned int y1_scaled = (1216 - y1) * 10 - 1;
+          unsigned int x1_scaled = 10 * x1 | 1;
+          unsigned int y2_scaled = (1216 - y2) * 10 | 1;
+
+          first = y2_scaled;
+          second = y2_scaled >> 8;
+          third = x1_scaled;
+          fourth = (x1 * 5 & 0x7fffffffU) >> 7;
+          fifth = y1_scaled;
+          sixth = y1_scaled >> 8;
+          seventh = x2_scaled;
+          eighth = x2_scaled >> 8;
         }
 
-        if (v21 + 8 > out_max)
+        if (v21 < 0 || (size_t)v21 + 8 > out_max)
         {
           __break(1u);
           goto LABEL_77;
         }
 
-        out_buf[v21] = v46;
-        out_buf[v21 + 1] = v47;
-        out_buf[v21 + 2] = v45;
-        out_buf[v21 + 3] = HIBYTE(v45);
-        out_buf[v21 + 4] = v43;
-        out_buf[v21 + 5] = HIBYTE(v43);
-        out_buf[v21 + 6] = v42;
-        out_buf[v21 + 7] = HIBYTE(v42);
+        out_buf[v21] = first;
+        out_buf[v21 + 1] = second;
+        out_buf[v21 + 2] = third;
+        out_buf[v21 + 3] = fourth;
+        out_buf[v21 + 4] = fifth;
+        out_buf[v21 + 5] = sixth;
+        out_buf[v21 + 6] = seventh;
+        out_buf[v21 + 7] = eighth;
         v21 += 8;
       }
 
