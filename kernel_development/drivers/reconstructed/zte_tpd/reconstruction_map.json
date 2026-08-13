@@ -3038,10 +3038,15 @@
         "source:syna_dev_remove.c:sha256:f52a5efc5973c884313ac238fa69dd49ecd4c1650aa0057d4b36688273a7a691",
         "ghidra-pseudocode:decompiled/0157_001125bc_syna_dev_remove.c:sha256:c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff",
         "ghidra-pcode:pcode/0157_001125bc_syna_dev_remove.jsonl:sha256:19d4433d0d790e395fe434c61b868c385e478ec710a66c711bf5080b3bef5be0",
-        "stock-assembly:0157_syna_dev_remove_001125bc.asm:sha256:ace4aaba332c4f2d9b1eec7ab442fcb57827d590889449bbf1c25af0f042e5e5"
+        "stock-assembly:0157_syna_dev_remove_001125bc.asm:sha256:ace4aaba332c4f2d9b1eec7ab442fcb57827d590889449bbf1c25af0f042e5e5",
+        "joern:next158_syna_dev_remove_v1/joern_gate_summary.json:sha256:47cde5157e5c84606d68f64cbd3860806be724464540177663301cfcc36e7bd0",
+        "host-harness:next158_syna_dev_remove_v1/host_harness_report.json:sha256:e2162de5675439ece55426f222b3cc79ecd79d5529b1dbe6eab9b02fe7820910",
+        "canonical-build:next158_syna_dev_remove_v1/canonical_build_report.json:sha256:b58aeaae1c8678583d8a1a5d4fbda413371f51b94607b60b0ca9161dd449fcff",
+        "kcfi:next158_syna_dev_remove_v1/kcfi_comparison.json:sha256:ec3e161e52321d94b96bae93b6e44b4b2ea9d3f95773b98632519bceea541184",
+        "aarch64-assembly:next158_syna_dev_remove_v1/assembly_comparison.json:sha256:dce40822366a6a46c7318b5236d70e3889479bc5278fef035989374ae61eef27"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
+      "mapping_basis": "Ghidra pseudocode + Ghidra P-Code + Joern + ASan/UBSan host harness + reproducible Docker build + KCFI/AArch64 comparison",
+      "review_scope": "offline_static_attestation",
       "semantic_equivalence": "UNPROVEN",
       "source_file": "syna_dev_remove.c",
       "source_function": "syna_dev_remove",
@@ -3049,7 +3054,7 @@
       "stock_body_bytes": 308,
       "stock_entry": "001125bc",
       "stock_function": "syna_dev_remove",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline attestation: Joern and canonical build pass; host harness covers four cleanup/resource paths. KCFI type, preamble and section match, but symbol size and AArch64 opcode identity differ from stock. Scheduler, panel, firmware transport and hardware behavior remain unverified."
     },
     {
       "evidence": [
