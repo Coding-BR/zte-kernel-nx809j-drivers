@@ -520,21 +520,22 @@
     },
     {
       "evidence": [
-        "source:zte_touch_shutdown.c:sha256:7008a844f99c0aceaa0fd4348a39edeb969d696ec6f08112f0e8693c5557d3c8",
+        "source:zte_touch_shutdown.c:sha256:a9539fc60293fbe8b44d421b19d9214cdb6d55767cc3ffe7a341eb63c0735653",
         "ghidra-pseudocode:decompiled/0026_001096a0_zte_touch_shutdown.c:sha256:b6e1ebcca2a3b71654faeec1eafaac3061d762cfc6b3902bc549b7bc80b7f14a",
         "ghidra-pcode:pcode/0026_001096a0_zte_touch_shutdown.jsonl:sha256:74bb1263ec137431ab14ae25071d3fa40109b85127b8f3a7e28853043fcbbfaf",
-        "stock-assembly:0026_zte_touch_shutdown_001096a0.asm:sha256:d3db62780a620a6c2be8a9662dba6dfcb8d0aba8849c77bb56e5647a18f13314"
+        "stock-assembly:0026_zte_touch_shutdown_001096a0.asm:sha256:d3db62780a620a6c2be8a9662dba6dfcb8d0aba8849c77bb56e5647a18f13314",
+        "attestation:next389_zte_touch_shutdown_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus exact AArch64 instruction count/size/call order, KCFI, Joern, Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "zte_touch_shutdown.c",
       "source_function": "zte_touch_shutdown",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 224,
       "stock_entry": "001096a0",
       "stock_function": "zte_touch_shutdown",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 56 AArch64 instructions and 224-byte .text body match, KCFI type/size match, and the callback, workqueue teardown, vfree and delayed-work cancellation order matches the stock function. Raw relocation offsets differ only because the candidate module has a different local .rodata layout. Joern has no blockers or unresolved calls but reports three synchronization findings for cancel_delayed_work_sync; platform-bus teardown and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
