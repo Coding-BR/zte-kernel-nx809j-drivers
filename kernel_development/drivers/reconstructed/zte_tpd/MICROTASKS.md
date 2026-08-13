@@ -89,7 +89,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 083_tp_zlog_debug_read | tp_zlog_debug_read | 0010d408 | user_abi | tp_zlog_debug_read.c:tp_zlog_debug_read | PASS |
 | 084_tp_zlog_debug_write | tp_zlog_debug_write | 0010d4a8 | user_abi | tp_zlog_debug_write.c:tp_zlog_debug_write | PASS |
 | 085_ghost_debug_read | ghost_debug_read | 0010d57c | user_abi | ghost_debug_read.c:ghost_debug_read | PASS (offline gates; stock parity blocked) |
-| 086_ghost_debug_write | ghost_debug_write | 0010d8d0 | user_abi | ghost_debug_write.c:ghost_debug_write | READY_FOR_IMPLEMENTATION |
+| 086_ghost_debug_write | ghost_debug_write | 0010d8d0 | user_abi | ghost_debug_write.c:ghost_debug_write | PASS (offline gates; stock parity blocked) |
 | 087_tp_bbat_test_read | tp_BBAT_test_read | 0010da90 | user_abi | tp_BBAT_test_read.c:tp_BBAT_test_read | PASS |
 | 088_tp_bbat_test_write | tp_BBAT_test_write | 0010db98 | user_abi | tp_BBAT_test_write.c:tp_BBAT_test_write | PASS |
 | 089_tp_test_read | tp_test_read | 0010dbd0 | user_abi | tp_test_read.c:tp_test_read | PASS |
