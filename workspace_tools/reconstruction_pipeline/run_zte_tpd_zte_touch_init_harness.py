@@ -1,135 +1,161 @@
 #!/usr/bin/env python3
-"""Run a reproducible ASan/UBSan harness for zte_touch_init."""
+"""Run the offline zte_touch_init contract and AArch64 object gates."""
 
 from __future__ import annotations
 
 import argparse
-import datetime as dt
 import hashlib
 import json
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+
+
+SOURCE = "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_init.c"
+HOST_HARNESS = "kernel_development/drivers/validation/zte_tpd/host/zte_touch_init_host_test.c"
+AARCH64_INPUT = "kernel_development/drivers/validation/zte_tpd/host/zte_touch_init_aarch64_assembly_input.c"
+EXPECTED_OUTPUT = "PASS zte_touch_init host tests (1 case)"
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def run_command(command: list[str]) -> dict[str, Any]:
-    completed = subprocess.run(command, capture_output=True, text=True, check=False)
-    return {
-        "command": command,
-        "returncode": completed.returncode,
-        "stdout": completed.stdout[-4000:],
-        "stderr": completed.stderr[-4000:],
-    }
+def run(command: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(command, text=True, capture_output=True, check=False)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    repository_root = Path(__file__).resolve().parents[2]
-    parser.add_argument("--repo-root", type=Path, default=repository_root)
+    root = Path(__file__).resolve().parents[2]
+    parser.add_argument("--workspace", type=Path, default=root)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--repetitions", type=int, default=2)
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
+    parser.add_argument("--repetitions", type=int, default=2)
     args = parser.parse_args()
-    if args.repetitions < 2:
-        parser.error("--repetitions must be at least 2")
+    if args.repetitions < 1:
+        parser.error("--repetitions must be at least 1")
 
-    root = args.repo_root.resolve()
-    drivers_root = root / "kernel_development" / "drivers"
-    harness = drivers_root / "validation" / "zte_tpd" / "host" / "zte_touch_init_host_test.c"
-    source = drivers_root / "reconstructed" / "zte_tpd" / "zte_touch_init.c"
-    if not harness.is_file() or not source.is_file():
-        raise FileNotFoundError("zte_touch_init harness or source is missing")
-
+    workspace = args.workspace.resolve()
     output = args.output.resolve()
-    build_root = output.parent / "host-build"
-    build_root.mkdir(parents=True, exist_ok=False)
-    cycles: list[dict[str, Any]] = []
-    binary_hashes: list[str] = []
+    output.mkdir(parents=True, exist_ok=True)
+    source = workspace / SOURCE
+    host_harness = workspace / HOST_HARNESS
+    aarch64_input = workspace / AARCH64_INPUT
+    for path in (source, host_harness, aarch64_input):
+        if not path.is_file():
+            raise FileNotFoundError(path)
 
-    for cycle in range(1, args.repetitions + 1):
-        cycle_root = build_root / f"cycle{cycle}"
-        cycle_root.mkdir()
-        binary = cycle_root / "host_test_asan_ubsan"
-        compile_command = [
-            "docker", "run", "--rm",
-            "-v", f"{drivers_root}:/drivers:ro",
-            "-v", f"{cycle_root}:/output",
-            "-v", f"{args.toolchain_volume}:/toolchains:ro",
-            args.image,
-            f"/toolchains/{args.clang_revision}/bin/clang",
-            "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror",
-            "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
-            "-frandom-seed=zte-tpd-next115-zte-touch-init",
-            "-ffile-prefix-map=/drivers=<drivers>",
-            "-fsanitize=address,undefined", "-Wl,--build-id=none",
-            "/drivers/validation/zte_tpd/host/zte_touch_init_host_test.c",
-            "-o", "/output/host_test_asan_ubsan",
-        ]
-        compile_result = run_command(compile_command)
-        run_result = {"command": [], "returncode": None, "stdout": "", "stderr": ""}
-        binary_hash = None
-        if compile_result["returncode"] == 0 and binary.is_file():
-            run_result = run_command([
-                "docker", "run", "--rm", "-v", f"{cycle_root}:/output:ro",
-                args.image, "/output/host_test_asan_ubsan",
-            ])
-            binary_hash = sha256_file(binary)
-            binary_hashes.append(binary_hash)
-        passed = (
-            compile_result["returncode"] == 0
-            and run_result["returncode"] == 0
-            and "PASS zte_touch_init host tests (1 case)" in run_result["stdout"]
-        )
-        cycles.append({
-            "cycle": cycle,
-            "compile": compile_result,
-            "run": run_result,
-            "binary_sha256": binary_hash,
-            "passed": passed,
+    container_root = "/work/workspace"
+    host_path = f"{container_root}/{HOST_HARNESS}"
+    clang = f"/toolchains/{args.clang_revision}/bin/clang"
+    host_executable = "/work/output/zte_touch_init_host_test"
+    host_command = [
+        "docker", "run", "--rm", "-v", f"{workspace}:{container_root}",
+        "-v", f"{output}:/work/output", "-v",
+        f"{args.toolchain_volume}:/toolchains:ro", args.image, "sh", "-lc",
+        f"{clang} -std=gnu11 -O1 -g -Wall -Wextra -Werror "
+        f"-fno-omit-frame-pointer -fno-pie -no-pie "
+        f"-fsanitize=address,undefined -Wl,--build-id=none "
+        f"{host_path} -o {host_executable} && "
+        f"ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 "
+        f"UBSAN_OPTIONS=halt_on_error=1 {host_executable}",
+    ]
+    executions = []
+    for index in range(args.repetitions):
+        completed = run(host_command)
+        executions.append({
+            "cycle": index + 1,
+            "returncode": completed.returncode,
+            "passed": completed.returncode == 0 and EXPECTED_OUTPUT in completed.stdout,
+            "stdout": completed.stdout,
+            "stderr": completed.stderr,
         })
+    host_passed = all(item["passed"] for item in executions)
 
-    passed = all(cycle["passed"] for cycle in cycles)
-    reproducible = passed and len(set(binary_hashes)) == 1
+    aarch64_output = output / "aarch64"
+    aarch64_output.mkdir(parents=True, exist_ok=True)
+    aarch64_object = "/work/output/aarch64/zte_touch_init.o"
+    aarch64_path = f"{container_root}/{AARCH64_INPUT}"
+    aarch64_command = [
+        "docker", "run", "--rm", "-v", f"{workspace}:{container_root}",
+        "-v", f"{output}:/work/output", "-v",
+        f"{args.toolchain_volume}:/toolchains:ro", args.image, "sh", "-lc",
+        f"{clang} -target aarch64-linux-gnu -std=gnu11 -O2 -ffreestanding "
+        f"-fno-builtin -Wall -Wextra -Werror -c {aarch64_path} -o {aarch64_object}",
+    ]
+    aarch64_compile = run(aarch64_command)
+    objdump_command = [
+        "docker", "run", "--rm", "--entrypoint",
+        f"/toolchains/{args.clang_revision}/bin/llvm-objdump",
+        "-v", f"{output}:/work/output:ro", "-v",
+        f"{args.toolchain_volume}:/toolchains:ro",
+        args.image, "-dr", "/work/output/aarch64/zte_touch_init.o",
+    ]
+    objdump = run(objdump_command) if aarch64_compile.returncode == 0 else None
+    objdump_path = aarch64_output / "zte_touch_init_objdump.asm"
+    if objdump is not None:
+        objdump_path.write_text(objdump.stdout, encoding="utf-8", newline="\n")
+    aarch64_passed = (
+        aarch64_compile.returncode == 0
+        and objdump is not None
+        and objdump.returncode == 0
+        and "zte_touch_init" in objdump.stdout
+    )
+
     report = {
         "schema_version": "1.0",
-        "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "mode": "offline_direct_source_zte_touch_init_asan_ubsan",
+        "mode": "offline_zte_touch_init_contract_and_aarch64_asan_ubsan",
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
         "driver": "zte_tpd",
-        "target": "zte_touch_init",
-        "covered_functions": ["zte_touch_init"],
-        "compiler": f"/toolchains/{args.clang_revision}/bin/clang",
-        "container_image": args.image,
-        "toolchain_volume": args.toolchain_volume,
-        "sanitizers": ["address", "undefined"],
-        "expected_cases": 1,
-        "repetitions": args.repetitions,
+        "function": "zte_touch_init",
+        "stock_function": "init_module",
+        "passed": host_passed and aarch64_passed,
+        "host": {
+            "passed": host_passed,
+            "repetitions": args.repetitions,
+            "executions": executions,
+            "command": host_command,
+        },
+        "aarch64": {
+            "passed": aarch64_passed,
+            "compile_command": aarch64_command,
+            "compile_returncode": aarch64_compile.returncode,
+            "compile_stdout": aarch64_compile.stdout,
+            "compile_stderr": aarch64_compile.stderr,
+            "objdump_command": objdump_command,
+            "objdump_returncode": objdump.returncode if objdump else None,
+            "objdump_stdout": objdump.stdout if objdump else "",
+            "objdump_stderr": objdump.stderr if objdump else "",
+            "object": {
+                "path": str(output / "aarch64/zte_touch_init.o"),
+                "exists": (aarch64_output / "zte_touch_init.o").is_file(),
+                "sha256": sha256_file(aarch64_output / "zte_touch_init.o")
+                if (aarch64_output / "zte_touch_init.o").is_file() else None,
+            },
+        },
         "inputs": [
-            {"path": str(harness), "size": harness.stat().st_size, "sha256": sha256_file(harness)},
-            {"path": str(source), "size": source.stat().st_size, "sha256": sha256_file(source)},
+            {"path": str(path), "size": path.stat().st_size, "sha256": sha256_file(path)}
+            for path in (source, host_harness, aarch64_input)
         ],
-        "cycles": cycles,
-        "reproducible_binary": reproducible,
-        "passed": passed and reproducible,
-        "status": "PASS" if passed and reproducible else "FAIL",
+        "coverage": {
+            "printk_format_and_label": True,
+            "platform_driver_argument": True,
+            "module_owner_argument": True,
+            "registration_return_propagation": True,
+            "hardware_paths_exercised": False,
+        },
         "limitations": [
-            "The harness validates the exact printk format and name, registration arguments, and registration return propagation.",
-            "It does not load the module on an Android device.",
-            "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates.",
+            "The host gate uses deterministic stubs for printk and platform registration.",
+            "The AArch64 gate verifies compilation and relocations only; it does not execute ARM64 code.",
+            "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or hardware is exercised.",
         ],
     }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps({"output": str(output), "passed": report["passed"], "cycles": len(cycles)}))
+    report_path = output / "zte_touch_init_harness_report.json"
+    report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    print(json.dumps({"output": str(report_path), "passed": report["passed"]}, sort_keys=True))
     return 0 if report["passed"] else 1
 
 

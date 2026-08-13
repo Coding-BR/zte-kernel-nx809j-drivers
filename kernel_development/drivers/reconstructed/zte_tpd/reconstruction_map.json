@@ -6779,10 +6779,16 @@
     },
     {
       "evidence": [
-        "source:zte_touch_init.c:sha256:5e341cddf86b658a70c1486e9c873fdc0199b2777391bdfa0b5f1b3ee0f02701",
+        "source:zte_touch_init.c:sha256:9896ca02fce43b05a9a24531e27c14bcdad047e8c8d6e46edcdccdb14961e372",
         "ghidra-pseudocode:decompiled/0365_0013159c_init_module.c:sha256:d28e0b05b3b37eccb1a11e23ebca3b7acafb2d664940768e913578370a41eb50",
         "ghidra-pcode:pcode/0365_0013159c_init_module.jsonl:sha256:83c5e66274faf350421e67d77c20691ae72dd41402fb8af99462f57904244c05",
-        "stock-assembly:0365_init_module_0013159c.asm:sha256:15c6a530b08cbe7ad796a882019e52920bb9b3bfc146b8973f543b5e1f30e13a"
+        "stock-assembly:0365_init_module_0013159c.asm:sha256:15c6a530b08cbe7ad796a882019e52920bb9b3bfc146b8973f543b5e1f30e13a",
+        "harness:attestation/next365_zte_touch_init_v1/host_harness_report.json:sha256:0c03fd8951caac7a346dbddc599b8595217a0fac824a972c0360f29c3f1ff02d",
+        "joern:attestation/next365_zte_touch_init_v1/joern_gate_summary.json",
+        "canonical:attestation/next365_zte_touch_init_v1/canonical_build_report.json:sha256:ff10248df514439d8919bbbeb210779be2a5f996493a87dd44f5af31eacde267",
+        "sync:attestation/next365_zte_touch_init_v1/source_sync_report.json:sha256:ab98ec739d4be01e067ebe3f435a917dd0e03099a0358b34cb418dc2609ee032",
+        "kcfi:attestation/next365_zte_touch_init_v1/kcfi_status.json:sha256:dd08056ef7088212cc1651f27672c8ea4283b97859a26c54a4d974eaf0da43cd",
+        "assembly-compare:attestation/next365_zte_touch_init_v1/assembly_comparison.json:sha256:9063d434dbc41b27a057594ab25df1a1724ffb23a4128d488405ac6b9dbee9d3"
       ],
       "mapping_basis": "module_init(zte_touch_init) emits the ELF init_module entry point",
       "review_scope": "structural_identity_only",
@@ -6793,7 +6799,7 @@
       "stock_body_bytes": 64,
       "stock_entry": "0013159c",
       "stock_function": "init_module",
-      "mapping_note": "Kernel module entrypoint is emitted by the zte_fp_init/zte_fp_exit source function; function-level parity remains unproven."
+      "mapping_note": "Kernel module entrypoint is emitted by module_init(zte_touch_init); offline gates pass, but PAC hardening differs from the 16-instruction Ghidra reference and byte identity remains unproven."
     },
     {
       "evidence": [
