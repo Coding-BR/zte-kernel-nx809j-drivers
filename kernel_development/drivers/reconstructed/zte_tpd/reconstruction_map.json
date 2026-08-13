@@ -486,23 +486,18 @@
         "ghidra-pseudocode:decompiled/0024_001087e4_zte_touch_probe.c:sha256:584967d0cf254af8a107ca1ed3d7a1e587ea030b64019c7e205a290e3bed8b8f",
         "ghidra-pcode:pcode/0024_001087e4_zte_touch_probe.jsonl:sha256:cddc47dab0a04be5ee8306f6e929fa471c2a7eba353e2c0d9637a8a71e957abc",
         "stock-assembly:0024_zte_touch_probe_001087e4.asm:sha256:265ceb8cef3a461dd0afd23eaa301eddf93c745a760a68fab2afe01b945f276f",
-        "harness:attestation/next025_zte_touch_probe_v1/host_harness_report.json:sha256:717f98162df4307d9d644772a6e6456bf5dd43b5677469f25e3c8c7489e40538",
-        "joern:attestation/next025_zte_touch_probe_v1/joern_gate_summary.json:sha256:1988d858d2ae18529bb43cc4c09cd4a641b5afff159819653646747a06d12bf6",
-        "canonical:attestation/next025_zte_touch_probe_v1/canonical_build_report.json:sha256:cc42e1735102f0b4e6bef638eed6d18a09be96b3584d8e146a01ab54f4807ee0",
-        "sync:attestation/next025_zte_touch_probe_v1/source_sync_report.json:sha256:e2664f45eb090cd8e3ef793c393d561316e8a916c7f2431b1a954e586bcc800b",
-        "kcfi:attestation/next025_zte_touch_probe_v1/kcfi_status.json:sha256:bddf8075f30de3564f692bd2e9e7a61a3e59a1a5bebe38adb9a831301c1b52b6",
-        "assembly-compare:attestation/next025_zte_touch_probe_v1/assembly_comparison.json:sha256:9026357c6c26bf78e0cc78664a3e34e5e35c32165939e484d0a75f95068a38d2"
+        "attestation:next387_zte_touch_probe_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus normalized AArch64 dataflow, KCFI, Joern, canonical Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "zte_touch_probe.c",
       "source_function": "zte_touch_probe",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 3712,
       "stock_entry": "001087e4",
       "stock_function": "zte_touch_probe",
-      "mapping_note": "Offline host, KCFI and canonical reproducibility gates pass; candidate body size matches 3712 bytes, but instruction/relocation parity and hardware behavior remain unproven. Joern reports three review findings for allocation lifetime and delayed-work synchronization."
+      "mapping_note": "Offline semantic parity is attested: 928 AArch64 instructions, 3712-byte .text size, .text section and function KCFI type/size match; the four-case direct-source host contract passes twice with ASan/UBSan. The recovered probe preserves allocation/store offsets, Device Tree property defaults and reads, mutex classes, proc/sysfs creation paths, cleanup calls, workqueue setup, timer initialization and success/error returns. Raw instruction comparison differs in nine register-allocation/order instructions in the ghost-config default block and in module-local relocations; Joern, scheduler, platform-bus and NX809J hardware behavior remain subject to follow-up."
     },
     {
       "evidence": [
