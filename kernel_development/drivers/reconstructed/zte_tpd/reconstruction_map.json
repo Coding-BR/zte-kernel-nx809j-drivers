@@ -801,21 +801,22 @@
     },
     {
       "evidence": [
-        "source:get_rotation_limit_level.c:sha256:e2457b1fb9435383984a67cabc0eea6d095b0291acce45137a7b1640ea201b2c",
+         "source:get_rotation_limit_level.c:sha256:b73e48790261dd2cdd74e7abc01464592e5c1fe59fa8a2dd7add9dcc8b224a76",
         "ghidra-pseudocode:decompiled/0040_0010a6c0_get_rotation_limit_level.c:sha256:d8164ea393295bf9fbdf009d674a89b0eb4536e1903b5da299d1a449e0c65998",
         "ghidra-pcode:pcode/0040_0010a6c0_get_rotation_limit_level.jsonl:sha256:8f8ff1bd328889a8c313952f3fe55f5ad9ec1adef70700b2474775d2f5a4aa8e",
-        "stock-assembly:0040_get_rotation_limit_level_0010a6c0.asm:sha256:3ec17fc5047b9858a7d4959ae019e6f0f41fb6b69b3fc6c4de75698f469a1273"
+         "stock-assembly:0040_get_rotation_limit_level_0010a6c0.asm:sha256:3ec17fc5047b9858a7d4959ae019e6f0f41fb6b69b3fc6c4de75698f469a1273",
+         "attestation:next410_get_rotation_limit_level_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "get_rotation_limit_level.c",
       "source_function": "get_rotation_limit_level",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 240,
       "stock_entry": "0010a6c0",
       "stock_function": "get_rotation_limit_level",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Corrected the optional callback to tpd_cdev + 0xe88 with callback KCFI type 0x73fc0d79, read value offset +0xc and stock ten-byte snprintf contract. Candidate and stock both contain 60 instructions and a 240-byte .text body; function KCFI type 0xf4e9d97c matches, Joern parsed strictly with zero unresolved calls, and the two-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local zero-initialization scheduling and reconstructed local .rodata relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
