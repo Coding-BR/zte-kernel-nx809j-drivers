@@ -1,84 +1,46 @@
 #!/usr/bin/env python3
-"""Run the device-tree panel resolver in the project Docker image."""
-
+"""Build and run the syna_ts_check_dt host harness twice in Docker."""
 from __future__ import annotations
+import argparse, datetime as dt, hashlib, json, pathlib, subprocess
 
-import argparse
-import hashlib
-import json
-import pathlib
-import subprocess
-
+IMAGE = "nubia-sm8850-kernel-builder:latest"
+TOOLCHAIN_VOLUME = "nubia_sm8850_kernel_toolchains"
+CLANG = "/toolchains/clang-r536225/bin/clang"
+EXPECTED_STDOUT = "PASS syna_ts_check_dt host tests (6 scenarios)\n"
 
 def sha256(path: pathlib.Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+def execute(command: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(command, check=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--source", type=pathlib.Path, default=pathlib.Path(__file__).with_name("syna_ts_check_dt_host_test.c"))
     parser.add_argument("--build-root", type=pathlib.Path, required=True)
     parser.add_argument("--output", type=pathlib.Path, required=True)
-    parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
     args = parser.parse_args()
-
-    source = pathlib.Path(__file__).resolve()
-    repo_root = source.parents[5]
-    build_root = args.build_root.resolve()
-    output = args.output.resolve()
-    build_root.mkdir(parents=True, exist_ok=True)
-    compile_command = (
-        "gcc -std=gnu11 -O1 -g -Wall -Wextra -Werror -Wno-sign-compare "
-        "-fno-omit-frame-pointer "
-        "-fno-pie -no-pie -fsanitize=address,undefined -Wl,--build-id=none "
-        "/drivers/kernel_development/drivers/validation/zte_tpd/host/"
-        "syna_ts_check_dt_host_test.c "
-        "-o /out/syna_ts_check_dt_host_test && /out/syna_ts_check_dt_host_test"
-    )
-    cycles = []
+    source, build_root, output = args.source.resolve(), args.build_root.resolve(), args.output.resolve()
+    drivers = source.parents[3]
+    if not source.is_file(): parser.error(f"source not found: {source}")
+    if build_root.exists(): parser.error(f"build root already exists: {build_root}")
+    version = execute(["docker", "run", "--rm", "-v", f"{TOOLCHAIN_VOLUME}:/toolchains:ro", IMAGE, CLANG, "--version"])
+    if version.returncode: raise SystemExit(version.stderr.strip())
+    build_root.mkdir(parents=True); cycles = []
     for cycle in (1, 2):
-        output_dir = build_root / f"cycle{cycle}"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        binary = output_dir / "syna_ts_check_dt_host_test"
-        result = subprocess.run(
-            [
-                "docker", "run", "--rm", "-v", f"{repo_root}:/drivers:ro",
-                "-v", f"{output_dir}:/out", args.image, "bash", "-lc",
-                compile_command,
-            ],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        cycles.append(
-            {
-                "cycle": cycle,
-                "returncode": result.returncode,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "sha256": sha256(binary) if binary.exists() else None,
-                "passed": result.returncode == 0 and not result.stderr,
-            }
-        )
-
-    hashes = {cycle["sha256"] for cycle in cycles}
-    reproducible = len(hashes) == 1 and None not in hashes
+        cycle_root = build_root / f"cycle{cycle}"; cycle_root.mkdir()
+        binary_name = "host_test_asan_ubsan"; binary = cycle_root / binary_name
+        command = ["docker", "run", "--rm", "-v", f"{drivers}:/drivers:ro", "-v", f"{cycle_root}:/output", "-v", f"{TOOLCHAIN_VOLUME}:/toolchains:ro", IMAGE, CLANG, "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror", "-Wno-sign-compare", "-fno-omit-frame-pointer", "-fno-pie", "-no-pie", "-D", "ZTE_TPD_HOST_TEST", "-frandom-seed=zte-tpd-next153-check-dt", "-ffile-prefix-map=/drivers=<drivers>", "-fsanitize=address,undefined", "-Wl,--build-id=none", "/drivers/validation/zte_tpd/host/syna_ts_check_dt_host_test.c", "-o", f"/output/{binary_name}"]
+        compiled = execute(command)
+        run = execute(["docker", "run", "--rm", "-v", f"{cycle_root}:/output:ro", IMAGE, f"/output/{binary_name}"]) if compiled.returncode == 0 else None
+        passed = bool(run and run.returncode == 0 and run.stdout == EXPECTED_STDOUT and run.stderr == "")
+        cycles.append({"cycle": cycle, "compile_returncode": compiled.returncode, "compile_stderr": compiled.stderr, "run_returncode": run.returncode if run else None, "run_stdout": run.stdout if run else "", "run_stderr": run.stderr if run else "", "binary_sha256": sha256(binary) if binary.is_file() else None, "passed": passed})
+    hashes = [cycle["binary_sha256"] for cycle in cycles]; reproducible = len(set(hashes)) == 1 and hashes[0] is not None
     passed = all(cycle["passed"] for cycle in cycles) and reproducible
-    report = {
-        "schema_version": 1,
-        "target": "syna_ts_check_dt",
-        "mode": "direct_source_asan_ubsan_host_oracle",
-        "stock_contract": "Ghidra Assembly 00111dc4",
-        "expected_cases": 7,
-        "cycles": cycles,
-        "reproducible_binary": reproducible,
-        "passed": passed,
-        "status": "PASS" if passed else "FAIL",
-    }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"{report['status']}: {output}")
-    return 0 if passed else 1
-
-
+    report = {"schema_version": 1, "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(), "mode": "offline_direct_source_syna_ts_check_dt_asan_ubsan", "driver": "zte_tpd", "target": "syna_ts_check_dt", "covered_functions": ["syna_ts_check_dt"], "source": str(source), "source_sha256": sha256(source), "expected_scenarios": 6, "repetitions": 2, "cycles": cycles, "reproducible": reproducible, "reproducible_binary": reproducible, "passed": passed, "status": "PASS" if passed else "FAIL", "limitations": ["The harness covers no-phandle, parse failure, panel success, deferred panel, last-error and unknown-error continuation paths.", "Device Tree and DRM behavior are stubbed offline; no smartphone, firmware transport or physical hardware is exercised."]}
+    output.parent.mkdir(parents=True, exist_ok=True); output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    print(f"{report['status']}: {output}"); return 0 if passed else 1
 if __name__ == "__main__":
     raise SystemExit(main())

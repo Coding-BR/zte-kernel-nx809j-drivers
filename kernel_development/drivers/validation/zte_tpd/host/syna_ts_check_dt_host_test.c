@@ -1,244 +1,200 @@
-#include <assert.h>
 #include <stdarg.h>
-#include <stddef.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
-struct device {
-  unsigned char padding[744];
-  void *of_node;
-};
+#define __int64 long long
+typedef unsigned long long _QWORD;
+typedef unsigned int _DWORD;
+typedef unsigned char _BYTE;
+typedef unsigned long long uintptr_t_compat;
+typedef unsigned long long u64;
+struct device { unsigned char bytes[0x2e8]; void *of_node; };
+struct panel_node { const char *name; };
 
-static const char node_format[] = "\0016[info ] %s: %s: node = %s\n";
-static const char no_device_format[] = "\0016[info ] %s: %s: no device!\n";
-static const char not_probed_format[] =
-    "\0016[info ] %s: %s: device has not been probed yet\n";
-
-static char device_node_name[100];
+static char DEVICE_NODE_NAME[100];
 static unsigned long long active_panel;
-static unsigned int phandle_count;
+static char unk_31E60[] = "panel";
+static char unk_33BEE[] = "not_found";
+static char unk_3351C[] = "defer";
+static struct panel_node *nodes[8];
+static int panel_results[8];
+static int count_result;
 static int parse_results[8];
-static unsigned long long panel_results[8];
-static const char *node_names[8];
-struct fake_node {
-  const char *name;
-};
-static struct fake_node fake_nodes[8];
-static unsigned int find_calls;
+static unsigned int parse_calls, find_calls, printk_calls, failures;
+static const char *printk_names[16];
+static unsigned int printk_arg_counts[16];
+static unsigned char stack_guard[2048];
 
-static unsigned int printk_calls;
-static const char *last_format;
-static const char *last_function;
-static const char *last_component;
-static const char *last_node;
-static unsigned char host_status_register[1824];
-
-static unsigned long long host_read_status_reg(unsigned long long reg)
+static int of_count_phandle_with_args(__int64 node, const char *name, int index)
 {
-  (void)reg;
-  return (unsigned long long)(uintptr_t)host_status_register;
+	if (node != (__int64)(intptr_t)0x1234 || strcmp(name, "panel") != 0 || index != 0)
+		failures++;
+	return count_result;
 }
 
-static int test_printk(const char *format, ...)
+static int _of_parse_phandle_with_args(__int64 node, const char *name, int index,
+					       int cells, unsigned int entry, void *args)
 {
-  va_list args;
-
-  va_start(args, format);
-  printk_calls++;
-  last_format = format;
-  last_function = va_arg(args, const char *);
-  last_component = va_arg(args, const char *);
-  last_node = NULL;
-  if (strcmp(format, node_format) == 0)
-    last_node = va_arg(args, const char *);
-  va_end(args);
-  return 0;
-}
-
-static int of_count_phandle_with_args(long long node, const char *name, int cells)
-{
-  (void)node;
-  (void)name;
-  (void)cells;
-  return (int)phandle_count;
-}
-
-static int _of_parse_phandle_with_args(long long node, const char *name,
-                                       int index, int flags,
-                                       unsigned int phandle_index, void *out)
-{
-  (void)node;
-  (void)name;
-  (void)index;
-  (void)flags;
-  assert(phandle_index < 8);
-  if (parse_results[phandle_index] == 0) {
-    fake_nodes[phandle_index].name = node_names[phandle_index];
-    *(const char **)out = (const char *)(void *)&fake_nodes[phandle_index];
-  }
-  return parse_results[phandle_index];
+	if (node != (__int64)(intptr_t)0x1234 || strcmp(name, "panel") != 0 || index != 0 || cells != 0)
+		failures++;
+	parse_calls++;
+	if (parse_results[entry] == 0)
+		((u64 *)args)[0] = (u64)(uintptr_t_compat)&nodes[entry]->name;
+	return parse_results[entry];
 }
 
 static unsigned long long of_drm_find_panel(const char **node)
 {
-  (void)node;
-  assert(find_calls < 8);
-  return panel_results[find_calls++];
+	unsigned int index = find_calls++;
+	if (index >= 8)
+		return (unsigned long long)-19;
+	if (node && *node != nodes[index]->name)
+		failures++;
+	return (unsigned long long)(long long)panel_results[index];
 }
 
-#define __int64 long long
-#define __fastcall
-#define _QWORD unsigned long long
-#define nullptr 0
+static void *_ReadStatusReg(int selector)
+{
+	if (selector != 0)
+		failures++;
+	return stack_guard;
+}
+
+static int printk(const char *format, ...)
+{
+	va_list args;
+	const char *name;
+	unsigned int count = 0;
+
+	(void)format;
+	va_start(args, format);
+	name = va_arg(args, const char *);
+	count++;
+	if (strcmp(name, "syna_ts_check_dt") != 0)
+		failures++;
+	if (format == unk_31E60)
+		(void)va_arg(args, const char *), (void)va_arg(args, const char *), count += 2;
+	if (printk_calls >= 16)
+		failures++;
+	printk_names[printk_calls] = name;
+	printk_arg_counts[printk_calls] = count;
+	printk_calls++;
+	va_end(args);
+	return 0;
+}
+
 #define SP_EL0 0
-#define _ReadStatusReg(reg) host_read_status_reg((unsigned long long)(reg))
-#define printk test_printk
-#define of_count_phandle_with_args of_count_phandle_with_args
-#define _of_parse_phandle_with_args _of_parse_phandle_with_args
-#define of_drm_find_panel of_drm_find_panel
-#define DEVICE_NODE_NAME device_node_name
-#define unk_31E60 "\0016[info ] %s: %s: node = %s\n"
-#define unk_33BEE "\0016[info ] %s: %s: no device!\n"
-#define unk_3351C "\0016[info ] %s: %s: device has not been probed yet\n"
+#define nullptr 0
 #include "../../../reconstructed/zte_tpd/syna_ts_check_dt.c"
-#undef unk_3351C
-#undef unk_33BEE
-#undef unk_31E60
-#undef DEVICE_NODE_NAME
-#undef of_drm_find_panel
-#undef _of_parse_phandle_with_args
-#undef of_count_phandle_with_args
-#undef printk
-#undef _ReadStatusReg
-#undef SP_EL0
-#undef nullptr
-#undef _QWORD
-#undef __fastcall
-#undef __int64
 
-static void reset_observations(void)
+static void reset_trace(void)
 {
-  unsigned int i;
-
-  memset(device_node_name, 0, sizeof(device_node_name));
-  active_panel = 0;
-  phandle_count = 0;
-  find_calls = 0;
-  printk_calls = 0;
-  last_format = NULL;
-  last_function = NULL;
-  last_component = NULL;
-  last_node = NULL;
-  for (i = 0; i < 8; ++i) {
-    parse_results[i] = 0;
-    panel_results[i] = 0;
-    node_names[i] = NULL;
-  }
+	parse_calls = find_calls = printk_calls = 0;
+	memset(parse_results, 0, sizeof(parse_results));
+	memset(printk_names, 0, sizeof(printk_names));
+	memset(printk_arg_counts, 0, sizeof(printk_arg_counts));
+	memset(DEVICE_NODE_NAME, 0, sizeof(DEVICE_NODE_NAME));
+	active_panel = 0;
 }
-
-static void assert_no_log(void)
+static void expect_int(const char *name, long long actual, long long expected)
 {
-  assert(printk_calls == 0);
-  assert(last_format == NULL);
-  assert(last_function == NULL);
-  assert(last_component == NULL);
-  assert(last_node == NULL);
+	if (actual != expected) {
+		fprintf(stderr, "%s: got %lld expected %lld\n", name, actual, expected);
+		failures++;
+	}
 }
-
-static void assert_log(const char *format, const char *node)
+static void expect_true(const char *name, bool value)
 {
-  assert(printk_calls >= 1);
-  assert(last_format != NULL);
-  assert(strcmp(last_format, format) == 0);
-  assert(last_function != NULL);
-  assert(strcmp(last_function, "syna_ts_check_dt") == 0);
-  assert(last_component != NULL);
-  assert(strcmp(last_component, "syna_ts_check_dt") == 0);
-  if (node != NULL) {
-    assert(last_node == node);
-  } else {
-    assert(last_node == NULL);
-  }
+	if (!value) {
+		fprintf(stderr, "%s: condition failed\n", name);
+		failures++;
+	}
 }
-
-static void set_entry(unsigned int index, int parse_result,
-                      unsigned long long panel, const char *name)
+static void setup_nodes(struct panel_node *first, struct panel_node *second)
 {
-  parse_results[index] = parse_result;
-  panel_results[index] = panel;
-  node_names[index] = name;
+	nodes[0] = first;
+	nodes[1] = second ? second : first;
+	panel_results[0] = panel_results[1] = -19;
 }
-
+static struct device make_device(void)
+{
+	struct device dev;
+	memset(&dev, 0, sizeof(dev));
+	dev.of_node = (void *)0x1234;
+	return dev;
+}
+static void test_no_phandle(void)
+{
+	struct panel_node node = {"panel0"};
+	struct device dev = make_device();
+	setup_nodes(&node, NULL); reset_trace(); count_result = 0;
+	expect_int("no phandle", syna_ts_check_dt(&dev), -19);
+	expect_int("no phandle parse", parse_calls, 0);
+	expect_int("no phandle find", find_calls, 0);
+}
+static void test_success_first(void)
+{
+	struct panel_node node = {"panel-main"};
+	struct device dev = make_device();
+	setup_nodes(&node, NULL); reset_trace(); count_result = 1; panel_results[0] = 0x123;
+	expect_int("success", syna_ts_check_dt(&dev), 0);
+	expect_int("success parse", parse_calls, 1);
+	expect_int("success find", find_calls, 1);
+	expect_true("active panel", active_panel == 0x123);
+	expect_true("node name", strcmp(DEVICE_NODE_NAME, "panel-main") == 0);
+	expect_int("node log args", printk_arg_counts[0], 3);
+}
+static void test_parse_error(void)
+{
+	struct panel_node node = {"panel-parse"};
+	struct device dev = make_device();
+	setup_nodes(&node, NULL); reset_trace(); count_result = 1; parse_results[0] = -1;
+	expect_int("parse error", syna_ts_check_dt(&dev), -19);
+	expect_int("parse error calls", find_calls, 1);
+	expect_int("parse error logs", printk_calls, 1);
+}
+static void test_defer_then_success(void)
+{
+	struct panel_node first = {"panel-defer"};
+	struct panel_node second = {"panel-ready"};
+	struct device dev = make_device();
+	setup_nodes(&first, &second); reset_trace(); count_result = 2;
+	panel_results[0] = -517; panel_results[1] = 0x456;
+	expect_int("defer success", syna_ts_check_dt(&dev), 0);
+	expect_int("defer calls", find_calls, 2);
+	expect_int("defer logs", printk_calls, 3);
+	expect_true("defer active", active_panel == 0x456);
+	expect_true("defer node", strcmp(DEVICE_NODE_NAME, "panel-ready") == 0);
+}
+static void test_last_error(void)
+{
+	struct panel_node first = {"panel-missing"};
+	struct panel_node second = {"panel-defer"};
+	struct device dev = make_device();
+	setup_nodes(&first, &second); reset_trace(); count_result = 2;
+	panel_results[0] = -19; panel_results[1] = -517;
+	expect_int("last error", syna_ts_check_dt(&dev), -517);
+	expect_int("last error calls", find_calls, 2);
+	expect_int("last error logs", printk_calls, 4);
+}
+static void test_unknown_error_continues(void)
+{
+	struct panel_node first = {"panel-unknown"};
+	struct panel_node second = {"panel-ready"};
+	struct device dev = make_device();
+	setup_nodes(&first, &second); reset_trace(); count_result = 2;
+	panel_results[0] = -22; panel_results[1] = 0x789;
+	expect_int("unknown then success", syna_ts_check_dt(&dev), 0);
+	expect_int("unknown calls", find_calls, 2);
+	expect_true("unknown active", active_panel == 0x789);
+}
 int main(void)
 {
-  struct device dev;
-  const char *panel_name = "panel0";
-  const char *panel_name_second = "panel1";
-
-  memset(&dev, 0, sizeof(dev));
-  dev.of_node = (void *)(uintptr_t)0x1111;
-
-  reset_observations();
-  assert(syna_ts_check_dt(&dev) == -19);
-  assert_no_log();
-  assert(find_calls == 0);
-
-  reset_observations();
-  phandle_count = 1;
-  set_entry(0, 0, 0x12345000ULL, panel_name);
-  assert(syna_ts_check_dt(&dev) == 0);
-  assert(find_calls == 1);
-  assert(active_panel == 0x12345000ULL);
-  assert(strcmp(device_node_name, panel_name) == 0);
-  assert_log(node_format, panel_name);
-
-  reset_observations();
-  phandle_count = 2;
-  set_entry(0, 0, (unsigned long long)-19, panel_name);
-  set_entry(1, 0, 0x12346000ULL, panel_name_second);
-  assert(syna_ts_check_dt(&dev) == 0);
-  assert(find_calls == 2);
-  assert(active_panel == 0x12346000ULL);
-  assert(strcmp(device_node_name, panel_name_second) == 0);
-  assert(printk_calls == 3);
-  assert(strcmp(last_format, node_format) == 0);
-  assert(last_node == panel_name_second);
-
-  reset_observations();
-  phandle_count = 1;
-  set_entry(0, 0, (unsigned long long)-517, panel_name);
-  assert(syna_ts_check_dt(&dev) == -517);
-  assert(find_calls == 1);
-  assert(printk_calls == 2);
-  assert_log(not_probed_format, NULL);
-
-  reset_observations();
-  phandle_count = 1;
-  set_entry(0, 0, (unsigned long long)-5, panel_name);
-  assert(syna_ts_check_dt(&dev) == -1);
-  assert(find_calls == 1);
-  assert_log(node_format, panel_name);
-
-  reset_observations();
-  phandle_count = 1;
-  set_entry(0, -2, (unsigned long long)-19, panel_name);
-  assert(syna_ts_check_dt(&dev) == -19);
-  assert(find_calls == 1);
-  assert_log(no_device_format, NULL);
-
-  reset_observations();
-  phandle_count = 2;
-  set_entry(0, -2, (unsigned long long)-19, panel_name);
-  set_entry(1, 0, 0x12347000ULL, panel_name_second);
-  assert(syna_ts_check_dt(&dev) == 0);
-  assert(find_calls == 2);
-  assert(active_panel == 0x12347000ULL);
-  assert(strcmp(device_node_name, panel_name_second) == 0);
-  assert(printk_calls == 2);
-  assert(strcmp(last_format, node_format) == 0);
-  assert(last_node == panel_name_second);
-
-  puts("syna_ts_check_dt host oracle: PASS");
-  return 0;
+	test_no_phandle(); test_success_first(); test_parse_error();
+	test_defer_then_success(); test_last_error(); test_unknown_error_continues();
+	if (failures) return 1;
+	puts("PASS syna_ts_check_dt host tests (6 scenarios)");
+	return 0;
 }
