@@ -63,21 +63,22 @@
     },
     {
       "evidence": [
-        "source:tpd_zlog_check.c:sha256:18ad4427bcad2634b10ff64b9d8c6628a1bc7d19a91cd1e43783903b64cbd0f5",
+        "source:tpd_zlog_check.c:sha256:0c592c03faa3ea7f36c2e8a745582248cfc7546bb32c42295bd10900b69589a1",
         "ghidra-pseudocode:decompiled/0002_00107718_tpd_zlog_check.c:sha256:ee3f9d895d0facaa03cd2d4c72ffdd38ded40c615540c05e8409cd554c2d9776",
       "ghidra-pcode:pcode/0002_00107718_tpd_zlog_check.jsonl:sha256:facb77ff170c314351898b4eb80824143c9dd173c71ae1e3242233d719685974",
-      "stock-assembly:0002_tpd_zlog_check_00107718.asm:sha256:19d6b7b8518640b73cb61e2d36477df238b9dc33b0334f1229e16354c812a0a1"
+        "stock-assembly:0002_tpd_zlog_check_00107718.asm:sha256:19d6b7b8518640b73cb61e2d36477df238b9dc33b0334f1229e16354c812a0a1",
+        "attestation:next376_tpd_zlog_check_v1/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_zlog_check.c",
       "source_function": "tpd_zlog_check",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 172,
       "stock_entry": "00107718",
       "stock_function": "tpd_zlog_check",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity is attested. The assembly comparator reports only module-specific .rodata literal relocation offsets; instruction count, section, size, data references, calls and KCFI type match. The invalid-index path is the observed non-returning brk #0x5512; Android runtime and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
