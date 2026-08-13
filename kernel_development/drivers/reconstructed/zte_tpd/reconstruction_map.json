@@ -3162,10 +3162,16 @@
         "source:syna_dev_resume.c:sha256:a9aa884c3cd5715bf7fc47b2552dc3579d8b7299f5cbd200dc738b586f6a59c8",
         "ghidra-pseudocode:decompiled/0162_00112d6c_syna_dev_resume.c:sha256:309b3cd8a330036e50562ec210ee29e79e868c70e29db6fbb568c6d426f77e03",
         "ghidra-pcode:pcode/0162_00112d6c_syna_dev_resume.jsonl:sha256:098e43e1b2fc7e05c165db137b8a31462edc7d8f9a20176de9663f559a9c3e4a",
-        "stock-assembly:0162_syna_dev_resume_00112d6c.asm:sha256:6cb5f44945adaa0cb09dc6cef775b1472ff3e2f1b841369a63aee55cd07d5b77"
+        "stock-assembly:0162_syna_dev_resume_00112d6c.asm:sha256:6cb5f44945adaa0cb09dc6cef775b1472ff3e2f1b841369a63aee55cd07d5b77",
+        "harness:attestation/next370_syna_dev_resume_v1/host_harness_report.json:sha256:78ccaa5b8ba05a16d85b1a108160f1688c6acca1e9a5b16f5e34d61ae978bd8e",
+        "joern:attestation/next370_syna_dev_resume_v1/joern_gate_summary.json:sha256:055b124c84cffecd8150880b830cecbe7cc7f5a8dd5f3ff778699ec177af1bf2",
+        "canonical:attestation/next370_syna_dev_resume_v1/canonical_build_report.json:sha256:98272e79af1a0b2457f75259e2d7b10f77d1f6a2e58819c44f2d7f2ef59e8259",
+        "sync:attestation/next370_syna_dev_resume_v1/source_sync_report.json:sha256:3147150b14d680db6ae3ecbb48e7402200d6b716e76e7b4500f5c0cebedbbb97",
+        "kcfi:attestation/next370_syna_dev_resume_v1/kcfi_comparison.json:sha256:ad12ffe4841a50c8b648b85bc7b00b10d7dbbb6fa87afcb76c09486a17f6e182",
+        "assembly-compare:attestation/next370_syna_dev_resume_v1/assembly_comparison.json:sha256:008fd5b15ac422f15cb5948b5eb3eaebb545190252a2486db73a1a80c626549d"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
+      "mapping_basis": "Ghidra P-Code plus Joern, Docker canonical build, ASan/UBSan host harness, KCFI and AArch64 assembly comparison",
+      "review_scope": "offline_static_attestation",
       "semantic_equivalence": "UNPROVEN",
       "source_file": "syna_dev_resume.c",
       "source_function": "syna_dev_resume",
@@ -3173,7 +3179,7 @@
       "stock_body_bytes": 1548,
       "stock_entry": "00112d6c",
       "stock_function": "syna_dev_resume",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Joern strict passes and the offline harness covers six resume, event, reset and settings scenarios in two reproducible cycles. KCFI type-id matches, but promotion is blocked because candidate assembly is 1584 bytes/396 instructions versus the 1548-byte/387-instruction stock reference; firmware, power state and hardware remain unverified."
     },
     {
       "evidence": [
