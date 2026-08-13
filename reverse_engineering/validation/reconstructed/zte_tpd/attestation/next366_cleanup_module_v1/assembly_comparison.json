@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "mode": "offline_aarch64_structural_comparison",
+  "function": "cleanup_module",
+  "stock_function": "cleanup_module",
+  "stock_entry": "001315e0",
+  "stock_reference_available": false,
+  "candidate_symbol_size": 56,
+  "stock_body_bytes": 44,
+  "candidate_instruction_count": 14,
+  "stock_instruction_count_inferred_from_body": 11,
+  "checks": {
+    "section_exit_text": true,
+    "teardown_call_order": true,
+    "zero_arguments_to_touch_deinit": true,
+    "driver_unregister_relocation": true,
+    "symbol_size_matches_stock_body": false,
+    "prologue_epilogue_byte_identity": false
+  },
+  "status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "difference": "The candidate is 56 bytes and includes PACIASP/AUTIASP plus explicit zero argument moves; the Ghidra stock body is 44 bytes.",
+  "limitations": [
+    "The original stock ELF bytes are unavailable, so exact instruction count and byte identity cannot be established beyond the preserved Ghidra body length and P-Code order.",
+    "The Ghidra pseudocode omits the explicit argument values at the zte_touch_deinit call site; the reconstructed source passes three zero values as required by its recovered prototype."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "cleanup_module",
+  "stock_entry": "001315e0",
+  "protocol": "offline_reconstruction_attestation_v1",
+  "gates": {
+    "host_contract_harness": true,
+    "aarch64_critical_assembly": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "canonical_reproducible": true,
+    "kcfi_candidate": true
+  },
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "smartphone_test": "NOT_RUN_BY_DESIGN",
+  "canonical_module_sha256": "f4c58cb9b14dccc6253c1848ffc84d0ee4208f89304452e6cd029137fea936cf",
+  "canonical_module_size": 29350144,
+  "notes": [
+    "All offline gates passed for this target.",
+    "The direct harness validates teardown order, three zero arguments to zte_touch_deinit, and the exact platform-driver pointer in two ASAN/UBSAN cycles.",
+    "The AArch64 object contains the expected teardown calls and zero-argument setup.",
+    "Joern strict parsing and function mapping passed for cleanup_module.",
+    "The candidate is 56 bytes while the Ghidra stock body is 44 bytes; candidate-only KCFI is recorded because stock ELF bytes are unavailable.",
+    "No smartphone or module-unload execution was performed."
+  ]
+}
