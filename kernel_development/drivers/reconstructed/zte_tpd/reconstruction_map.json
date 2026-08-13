@@ -1006,21 +1006,23 @@
     },
     {
       "evidence": [
-        "source:tp_single_game_write.c:sha256:8386fb59d65e2a940ce2ad54eca15d7ab196e139531b20aaa97e97f71403a75e",
+        "source:tp_single_game_write.c:sha256:6996770e683ead27c5a56c2b082587615c73ef9798d0eef244df8b6330997e18",
         "ghidra-pseudocode:decompiled/0049_0010aee8_tp_single_game_write.c:sha256:c41a9be0ef85d9476a881ae41a9d75c46cfabd13fb404b3960aa03fc93b0d172",
         "ghidra-pcode:pcode/0049_0010aee8_tp_single_game_write.jsonl:sha256:26b3713e1f30753960b405f46752d6accc4bf4a9f36e8823f62f74b6f6f6d33d",
-        "stock-assembly:0049_tp_single_game_write_0010aee8.asm:sha256:a3c951b977a4c0c0577025dd087ab40c38a5ed128fd15bc07b184e17b5ae79ff"
+        "stock-assembly:0049_tp_single_game_write_0010aee8.asm:sha256:a3c951b977a4c0c0577025dd087ab40c38a5ed128fd15bc07b184e17b5ae79ff",
+        "attestation:next419_tp_single_game_write_v1/microtask_attestation.json",
+        "attestation:next419_tp_single_game_write_v1/aarch64_validation_report.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus normalized AArch64 control/data flow, KCFI, Joern, Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_opcode_function_level",
+      "semantic_equivalence": "OFFLINE_OPCODE_SEMANTIC",
       "source_file": "tp_single_game_write.c",
       "source_function": "tp_single_game_write",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 212,
       "stock_entry": "0010aee8",
       "stock_function": "tp_single_game_write",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline opcode and semantic parity is attested: base-10 parsing, -EINVAL failure behavior, nonzero-to-5 and zero-to-0 normalization, printk label, callback at +0xee0 with int (struct ztp_device *, int) signature and KCFI type 0x6af8b499. Candidate and stock contain the same 53-instruction opcode sequence and 212-byte .text body; function KCFI type 0xc3d43b4d matches, strict Joern has zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Only module-local rodata relocation placement differs; procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
