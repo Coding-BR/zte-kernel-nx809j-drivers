@@ -174,50 +174,32 @@ int zte_touch_probe(struct platform_device *pdev)
     {
       printk("\0015tpd: ghost_check_config enabled");
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_single_time", &v129, 1, 0);
-      v16 = v129;
-      if ( v24 < 0 )
-        v16 = 25;
+      v16 = v24 >= 0 ? v129 : 25;
       *(_BYTE *)(v5 + 1169) = v16;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_multi_time", &v129, 1, 0);
-      v17 = v129;
-      if ( v24 < 0 )
-        v17 = 20;
+      v17 = v24 >= 0 ? v129 : 20;
       *(_BYTE *)(v5 + 1170) = v17;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_single_count", &v129, 1, 0);
-      v18 = v129;
-      if ( v24 < 0 )
-        v18 = 5;
+      v18 = v24 >= 0 ? v129 : 5;
       *(_BYTE *)(v5 + 1171) = v18;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_multi_count", &v129, 1, 0);
-      v19 = v129;
-      if ( v24 < 0 )
-        v19 = 8;
+      v19 = v24 >= 0 ? v129 : 8;
       *(_BYTE *)(v5 + 1172) = v19;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_start_time", &v129, 1, 0);
-      v20 = v129;
-      if ( v24 < 0 )
-        v20 = 35;
+      v20 = v24 >= 0 ? v129 : 35;
       *(_BYTE *)(v5 + 1173) = v20;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_id", &v129, 1, 0);
-      v21 = v129;
-      if ( v24 < 0 )
-        v21 = -1;
+      v21 = v24 >= 0 ? v129 : -1;
       *(_DWORD *)(v5 + 1176) = v21;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_edge_area", &v129, 1, 0);
-      v22 = v129;
-      if ( v24 < 0 )
-        v22 = 5121;
+      v22 = v24 >= 0 ? v129 : 5121;
       *(_DWORD *)(v5 + 1180) = v22;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_corner_x", &v129, 1, 0);
-      v23 = v129;
-      if ( v24 < 0 )
-        v23 = 801;
+      v23 = v24 >= 0 ? v129 : 801;
       *(_DWORD *)(v5 + 1184) = v23;
       v24 = of_property_read_variable_u32_array(v6, "zte,ghost_check_ignore_corner_y", &v129, 1, 0);
-      v25 = v129;
+      v25 = v24 >= 0 ? v129 : 801;
       v26 = *(unsigned __int8 *)(v5 + 1169);
-      if ( v24 < 0 )
-        v25 = 801;
     }
     else
     {
@@ -225,8 +207,8 @@ int zte_touch_probe(struct platform_device *pdev)
       *(_BYTE *)(v5 + 1173) = 35;
       *(_DWORD *)(v5 + 1169) = 134550553;
       *(_QWORD *)(v5 + 1176) = 0xC81FFFFFFFFLL;
-      v25 = 801;
       *(_DWORD *)(v5 + 1184) = 801;
+      v25 = 801;
     }
     *(_DWORD *)(v5 + 1188) = v25;
     printk("\0015tpd: ghost_check_single_time is %d", (int)v26);
@@ -385,6 +367,7 @@ int zte_touch_probe(struct platform_device *pdev)
     else
     {
       printk("\0015tpd: zte_touch_pdev is NULL.");
+      asm volatile("" ::: "memory");
     }
     tpd_clean_all_event();
     ghost_check_reset();

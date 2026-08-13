@@ -1014,7 +1014,30 @@
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_probe\nEntrada Ghidra: 001087e4\nTamanho stock: 3712 bytes\nCategoria: binding\nAlvo no fonte: zte_touch_probe.c:zte_touch_probe\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0024_001087e4_zte_touch_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0024_001087e4_zte_touch_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_v1/canonical_build_report.json",
+          "sha256": "cc42e1735102f0b4e6bef638eed6d18a09be96b3584d8e146a01ab54f4807ee0"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_v1/kcfi_status.json",
+          "sha256": "bddf8075f30de3564f692bd2e9e7a61a3e59a1a5bebe38adb9a831301c1b52b6"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_v1/host_harness_report.json",
+          "sha256": "717f98162df4307d9d644772a6e6456bf5dd43b5677469f25e3c8c7489e40538"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_v1/joern_gate_summary.json",
+          "sha256": "1988d858d2ae18529bb43cc4c09cd4a641b5afff159819653646747a06d12bf6"
+        }
+      ],
+      "attestation": "Offline build, harness, KCFI and Joern gates passed; exact stock instruction/relocation parity remains blocked."
     },
     {
       "id": "026_zte_touch_remove",

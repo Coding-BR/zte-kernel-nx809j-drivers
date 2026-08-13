@@ -28,7 +28,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | PASS |
 | 023_tp_ghost_check_work | tp_ghost_check_work | 00108690 | async_or_irq | tp_ghost_check_work.c:tp_ghost_check_work | PASS |
 | 024_tpd_workqueue_deinit | tpd_workqueue_deinit | 00108744 | lifecycle | tpd_workqueue_deinit.c:tpd_workqueue_deinit | PASS |
-| 025_zte_touch_probe | zte_touch_probe | 001087e4 | binding | zte_touch_probe.c:zte_touch_probe | READY_FOR_IMPLEMENTATION |
+| 025_zte_touch_probe | zte_touch_probe | 001087e4 | binding | zte_touch_probe.c:zte_touch_probe | PASS |
 | 026_zte_touch_remove | zte_touch_remove | 00109668 | binding | zte_touch_remove.c:zte_touch_remove | PASS |
 | 027_zte_touch_shutdown | zte_touch_shutdown | 001096a0 | core_logic | zte_touch_shutdown.c:zte_touch_shutdown | PASS |
 | 028_tp_module_info_read | tp_module_info_read | 00109784 | user_abi | tp_module_info_read.c:tp_module_info_read | READY_FOR_IMPLEMENTATION |
