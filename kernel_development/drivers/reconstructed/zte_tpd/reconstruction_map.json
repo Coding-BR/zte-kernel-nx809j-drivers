@@ -406,21 +406,22 @@
     },
     {
       "evidence": [
-        "source:tpd_probe_work_deinit.c:sha256:0a1fe9e96d0f43cef164b8d69e14c83ca028e0ca2b0de1dcbdc15945a777a438",
+        "source:tpd_probe_work_deinit.c:sha256:a1bb9942cf04622c53d8c746bdb9ea180ac3193b3d6e080201e7c99e9194c211",
         "ghidra-pseudocode:decompiled/0020_001084c0_tpd_probe_work_deinit.c:sha256:afa21e3205fa258abfb806514c019f1cd40ff1a93bd28e1ce62b8dfa79c97275",
         "ghidra-pcode:pcode/0020_001084c0_tpd_probe_work_deinit.jsonl:sha256:16898902a1072711ad314ffbe431a191feb1d0d0a89a747c1315537f254fdadb",
-        "stock-assembly:0020_tpd_probe_work_deinit_001084c0.asm:sha256:88b52f015290052319783989672fb0a564eef577f8f2f2e5701c2d4a6881847b"
+        "stock-assembly:0020_tpd_probe_work_deinit_001084c0.asm:sha256:88b52f015290052319783989672fb0a564eef577f8f2f2e5701c2d4a6881847b",
+        "attestation:next383_tpd_probe_work_deinit_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tpd_probe_work_deinit.c",
       "source_function": "tpd_probe_work_deinit",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 68,
       "stock_entry": "001084c0",
       "stock_function": "tpd_probe_work_deinit",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 17 AArch64 instructions, 68-byte .text size, .text section and KCFI type/size match; host contract passes twice with ASan/UBSan. The recovered contract logs the stock tpd: %s enter format, loads tpd_cdev and cancels delayed work at offset 0x8d0. Raw relocation comparison differs only in separately linked module-local .rodata offsets. Workqueue cancellation and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
