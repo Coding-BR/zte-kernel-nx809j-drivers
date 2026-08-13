@@ -501,21 +501,22 @@
     },
     {
       "evidence": [
-        "source:zte_touch_remove.c:sha256:8dc3b25582b30d1e2b5f73d8c10fd406541351289be6ff23b88652332ea3ea69",
+        "source:zte_touch_remove.c:sha256:1f40f044a6b9e679829749e572b77b3ba81dfad72f7ce18cb961afdbc036f899",
         "ghidra-pseudocode:decompiled/0025_00109668_zte_touch_remove.c:sha256:7611f2b57a6e29c9c3bbcd732726540b0ac0e78f84988aad4a4fad556dd9893c",
         "ghidra-pcode:pcode/0025_00109668_zte_touch_remove.jsonl:sha256:4205004f798a7b1a37cc63ca90bef03d8b92aa18026bf157a8d92672af1ccb4e",
-        "stock-assembly:0025_zte_touch_remove_00109668.asm:sha256:c11c82805240d545e6a70dec02a230046c24f1f600f48e78dd96c866b4b0876f"
+        "stock-assembly:0025_zte_touch_remove_00109668.asm:sha256:c11c82805240d545e6a70dec02a230046c24f1f600f48e78dd96c866b4b0876f",
+        "attestation:next388_zte_touch_remove_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus exact AArch64 instruction count/size/call order, KCFI, Joern, Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "zte_touch_remove.c",
       "source_function": "zte_touch_remove",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 52,
       "stock_entry": "00109668",
       "stock_function": "zte_touch_remove",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 13 AArch64 instructions and 52-byte .text body match, KCFI type/size match, and the printk -> zte_touch_deinit call order matches the stock function. The candidate has one additional R_AARCH64_CALL26 relocation for the module-local zte_touch_deinit symbol; this is a relocation-layout difference, not a changed call sequence. Joern has no blockers or unresolved calls. Platform-bus teardown and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
