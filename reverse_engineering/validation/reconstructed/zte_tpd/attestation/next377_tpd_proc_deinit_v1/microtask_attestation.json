@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tpd_proc_deinit",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "PASS",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_and_normalized_relocation_parity": "PASS"
+  },
+  "semantic_contract": [
+    "When tpd_proc_dir is NULL, log and return without removals.",
+    "When non-null remove exactly 30 entries in stock order; all except touchscreen use tpd_proc_dir, touchscreen uses NULL."
+  ],
+  "unverified": [
+    "Actual kernel ProcFS lifecycle and concurrent callers.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "aarch64_validation_report.json"
+  }
+}
