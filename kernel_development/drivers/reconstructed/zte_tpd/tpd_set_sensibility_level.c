@@ -6,9 +6,9 @@ int tpd_set_sensibility_level(struct ztp_device *cdev, unsigned char a2)
   __int64 v6; // x2
   int v7; // w8
   int v8; // w1
-  void *v10; // x0
+  const char *v10; // x0
 
-  v3 = *(_QWORD **)(a1 + 3072);
+  v3 = *(_QWORD **)(a1 + 0xdb8);
   printk(unk_34878, "tpd_set_sensibility_level");
   if ( v3 )
   {
@@ -34,7 +34,7 @@ int tpd_set_sensibility_level(struct ztp_device *cdev, unsigned char a2)
     {
       v10 = unk_3B5E0;
     }
-    printk(v10, "tpd_set_sensibility_level", v6);
+    printk(v10, "tpd_set_sensibility_level");
     return 0;
   }
   return -22;
