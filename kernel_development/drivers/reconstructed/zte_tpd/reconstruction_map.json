@@ -548,18 +548,19 @@
         "canonical:attestation/next028_tp_module_info_read_v1/canonical_build_report.json:sha256:323d2fe89c5aa5dca256b4ee1185154efd5a5d7f99d2648dc4fc813a337e75a5",
         "sync:attestation/next028_tp_module_info_read_v1/source_sync_report.json:sha256:c076cc6e2ce80f2720939d936c8f3a29fa315842d97f53dc6a648cccbd1ee5d6",
         "kcfi:attestation/next028_tp_module_info_read_v1/kcfi_status.json:sha256:d6913dba5de54ab22b685939cfb6994ff56f655ce041c518ab51d65fc889da2c",
-        "assembly-compare:attestation/next028_tp_module_info_read_v1/assembly_comparison.json:sha256:178d5e5c8ad5ae15812b763059cdbf105e131e4778d3611f16861f5d2b581738"
+        "assembly-compare:attestation/next028_tp_module_info_read_v1/assembly_comparison.json:sha256:178d5e5c8ad5ae15812b763059cdbf105e131e4778d3611f16861f5d2b581738",
+        "attestation:next390_tp_module_info_read_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus normalized AArch64 control/data flow, KCFI, Joern, Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tp_module_info_read.c",
       "source_function": "tp_module_info_read",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 672,
       "stock_entry": "00109784",
       "stock_function": "tp_module_info_read",
-      "mapping_note": "Offline host, KCFI and canonical reproducibility gates pass; candidate body size matches 672 bytes, but instruction/relocation parity and hardware behavior remain unproven. Joern flags the userspace egress call to simple_read_from_buffer for ABI review."
+      "mapping_note": "Offline semantic parity is attested: 168 AArch64 instructions and 672-byte .text body match, KCFI type/size match, and field offsets, conditional formatting, overflow guard, callback and simple_read_from_buffer flow match the stock function. Raw comparison differs in one callback-load scheduling choice, terminal brk/stack-check block layout and module-local relocations; Joern has no blockers or unresolved calls but flags simple_read_from_buffer for userspace ABI review. Procfs/userspace and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
