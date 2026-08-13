@@ -444,21 +444,22 @@
     },
     {
       "evidence": [
-        "source:tp_ghost_check_work.c:sha256:7a21ba29af21f081986cddee038de95914a40c4ace8661d1528e46d3e5af5f36",
+        "source:tp_ghost_check_work.c:sha256:1f804866839eab24bf01e5c0cf92b34f09c80f593cb621476b81ba509d9d8a8d",
         "ghidra-pseudocode:decompiled/0022_00108690_tp_ghost_check_work.c:sha256:4357a4a3769ae71c218d6e360187fe7df1156a35dfb2303ff71c39687fb02c3d",
         "ghidra-pcode:pcode/0022_00108690_tp_ghost_check_work.jsonl:sha256:30ffca7ef2d3390d8c488110b94278f836e59dff4126db806d68f76dcefa4fd1",
-        "stock-assembly:0022_tp_ghost_check_work_00108690.asm:sha256:e5ce2a469c55fabd8af796755847d9fbab090c784e535be9eee29b0836d25cf8"
+        "stock-assembly:0022_tp_ghost_check_work_00108690.asm:sha256:e5ce2a469c55fabd8af796755847d9fbab090c784e535be9eee29b0836d25cf8",
+        "attestation:next385_tp_ghost_check_work_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus normalized AArch64 control flow, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tp_ghost_check_work.c",
       "source_function": "tp_ghost_check_work",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 176,
       "stock_entry": "00108690",
       "stock_function": "tp_ghost_check_work",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 44 AArch64 instructions, 176-byte .text size, .text section and function KCFI type/size match; five-path host contract passes twice with ASan/UBSan. The recovered contract preserves the odd-bit gate, counter +0x4a8 limit, callback at +0xff0, KCFI guard 0x73fc0d79, reset call and flag clear at +0x488. Raw instruction comparison differs only in branch block layout and module-local string relocations; runtime hardware remains unverified."
     },
     {
       "evidence": [
