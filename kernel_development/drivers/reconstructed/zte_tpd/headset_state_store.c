@@ -1,4 +1,8 @@
-ssize_t headset_state_store(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
+struct ztp_device;
+typedef int (*headset_state_store_callback_t)(struct ztp_device *cdev, int value);
+
+ssize_t headset_state_store(struct file *file, const char __user *buffer,
+                            size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
   __int64 a3 = (__int64)count;
@@ -7,17 +11,13 @@ ssize_t headset_state_store(struct file *file, const char __user *buffer, size_t
   (void)offset;
   __int64 v4; // x20
   size_t v5; // x19
-  _BOOL8 v7; // x2
-  void (__fastcall *v8)(__int64, _BOOL8); // x8
-  _BOOL8 v9; // x1
-  _BOOL4 v10; // [xsp+4h] [xbp-1Ch] BYREF
+  headset_state_store_callback_t v8; // x8
+  unsigned int v10; // [xsp+4h] [xbp-1Ch] BYREF
   struct __attribute__((packed)) {
     __int64 low;
     __int16 high;
   } v11 = { 0 }; // [xsp+8h] [xbp-18h] BYREF
-  __int64 v13; // [xsp+18h] [xbp-8h]
 
-  v13 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v4 = tpd_cdev;
   v10 = 0;
   if ( a3 >= 9 )
@@ -25,23 +25,21 @@ ssize_t headset_state_store(struct file *file, const char __user *buffer, size_t
   else
     v5 = a3;
   _check_object_size(&v11, v5, 0);
-  if ( zte_inline_copy_from_user(&v11, (const void __user *)a2, v5) || (unsigned int)kstrtouint((const char *)&v11, 0, &v10) )
+  if ( zte_inline_copy_from_user(&v11, (const void __user *)a2, v5) ||
+       (unsigned int)kstrtouint((const char *)&v11, 0, &v10) )
   {
     v5 = -22;
   }
   else
   {
-    v7 = v10;
-    v10 = v10;
-    printk(unk_31DA7, "headset_state_store", v7);
-    v8 = *(void (__fastcall **)(__int64, _BOOL8))(v4 + 3256);
+    v10 = (v10 != 0);
+    printk(unk_31DA7, "headset_state_store", v10);
+    v8 = *(headset_state_store_callback_t *)(v4 + 0xe70);
     if ( v8 )
     {
-      v9 = v10;
       /* CFI check removed */
-      v8(v4, v9);
+      v8((struct ztp_device *)v4, (int)v10);
     }
   }
-  _ReadStatusReg(SP_EL0);
   return v5;
 }

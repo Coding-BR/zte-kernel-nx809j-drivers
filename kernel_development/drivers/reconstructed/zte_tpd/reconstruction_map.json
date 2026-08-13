@@ -758,21 +758,21 @@
     },
     {
       "evidence": [
-        "source:headset_state_store.c:sha256:097e76447f453a6736dbfbfce9c09efabe199fd3ac591d06a80ac20fc659961e",
+        "source:headset_state_store.c:sha256:26d1bee8044debfa7f0344d85de1c7c194f241c1bdb77610138d61b45e53b8d9",
         "ghidra-pseudocode:decompiled/0038_0010a4bc_headset_state_store.c:sha256:70de7b2d4e156dcc2a0e7c1c497aee8cd364a4c95f8effe1571d8816a71bdce7",
         "ghidra-pcode:pcode/0038_0010a4bc_headset_state_store.jsonl:sha256:e4117d30eea46007d7c4fed502c508a6dc07419990b60b5745a92de46c9b15c3",
         "stock-assembly:0038_headset_state_store_0010a4bc.asm:sha256:2007a39e3405d46aa00829c65c49929e7288a97246a68d82c28b34be3d03f18a"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "headset_state_store.c",
       "source_function": "headset_state_store",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 268,
       "stock_entry": "0010a4bc",
       "stock_function": "headset_state_store",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Corrected the parsed value to unsigned int and normalized it to 0/1, retaining the nine-byte input cap and -EINVAL error path. Candidate and stock both contain 67 instructions and a 268-byte .text body; function KCFI type 0xc3d43b4d matches, the indirect callback contract uses slot +0xe70 with KCFI type 0x6af8b499, Joern parsed strictly with zero unresolved calls, and the four-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs in helper-call relocation materialization and reconstructed local .rodata symbol layout. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
