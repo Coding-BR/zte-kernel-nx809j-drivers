@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-EXPECTED_STDOUT = "PASS suspend_store host tests (3 cases)\n"
+EXPECTED_STDOUT = "PASS suspend_store host tests (4 cases)\n"
 
 
 def sha256_file(path: Path) -> str:
@@ -116,7 +116,7 @@ def main() -> int:
         "container_image": args.image,
         "toolchain_volume": args.toolchain_volume,
         "sanitizers": ["address", "undefined"],
-        "expected_cases": 3,
+        "expected_cases": 4,
         "repetitions": args.repetitions,
         "inputs": [
             {"path": str(harness), "size": harness.stat().st_size, "sha256": sha256_file(harness)},
@@ -128,7 +128,7 @@ def main() -> int:
         "status": "PASS" if passed and reproducible else "FAIL",
         "limitations": [
             "The harness models only user parsing, the local device overlay, mutex calls and the indirect callback.",
-            "The host callback intentionally exposes the unresolved stock KCFI mismatch and keeps the host break stub non-fatal so callback semantics can be observed.",
+            "The host callback models the stock two-argument callback; the AArch64 inline KCFI check is verified by the separate assembly gate.",
             "The stock fatal BRK semantics and AArch64 KCFI type ID require the separate KCFI/Assembly gates.",
             "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates.",
         ],
