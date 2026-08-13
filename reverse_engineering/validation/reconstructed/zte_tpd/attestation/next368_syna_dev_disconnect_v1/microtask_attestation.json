@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_dev_disconnect",
+  "source_function": "syna_dev_disconnect",
+  "stock_function": "syna_dev_disconnect",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "BLOCKED",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_size_relocation_parity": "BLOCKED"
+  },
+  "semantic_contract": [
+    "Return 0 without cleanup when the connected flag at offset 1410 is clear.",
+    "Handle state 3 by logging and clearing state and connected flags when no callback is available.",
+    "Flush and destroy the delayed-work queue before releasing IRQ and input resources.",
+    "Clear IRQ metadata and input state after cleanup, then clear the connected state."
+  ],
+  "unverified": [
+    "Exact static parity with the 392-byte stock body.",
+    "Indirect transport callbacks and KCFI failure behavior.",
+    "Workqueue concurrency, firmware transport and runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}
