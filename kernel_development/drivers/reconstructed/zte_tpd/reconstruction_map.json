@@ -463,21 +463,22 @@
     },
     {
       "evidence": [
-        "source:tpd_workqueue_deinit.c:sha256:c7c4f7251e1209d7cc798765ad281d8de510361d6af7669b90568d0844fc93a2",
+        "source:tpd_workqueue_deinit.c:sha256:1a467653b890b41ec1867d9ba05aded37c69f19800ce7b30fc88a00ff6c2f198",
         "ghidra-pseudocode:decompiled/0023_00108744_tpd_workqueue_deinit.c:sha256:3d5a9b39c6c22f1ba2e8d99e4a0eecc596e4f2f40659e7ad55c69af54b9250c1",
         "ghidra-pcode:pcode/0023_00108744_tpd_workqueue_deinit.jsonl:sha256:b0eb0504a298f4581c3d4b5f89193caf221b6e1b447399088a10a37aa1db20fe",
-        "stock-assembly:0023_tpd_workqueue_deinit_00108744.asm:sha256:879da7b74b2da57d2955efc9018eadc268da62911ae3ab25c41057b5a831e8f0"
+        "stock-assembly:0023_tpd_workqueue_deinit_00108744.asm:sha256:879da7b74b2da57d2955efc9018eadc268da62911ae3ab25c41057b5a831e8f0",
+        "attestation:next386_tpd_workqueue_deinit_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tpd_workqueue_deinit.c",
       "source_function": "tpd_workqueue_deinit",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 156,
       "stock_entry": "00108744",
       "stock_function": "tpd_workqueue_deinit",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 39 AArch64 instructions, 156-byte .text size, .text section and function KCFI type/size match; two-case teardown contract passes twice with ASan/UBSan. The recovered function preserves the three logs, report/resume deinitializers, cancellation offsets +0x8d0, +0xa50 and +0x938, vfree at +0xbe8 and slot clear. Raw relocation comparison differs only in the recovered format symbol and module-local string offsets; kernel scheduler and hardware behavior remain unverified."
     },
     {
       "evidence": [
