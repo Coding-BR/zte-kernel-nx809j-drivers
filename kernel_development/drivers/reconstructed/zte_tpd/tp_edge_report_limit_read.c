@@ -7,8 +7,8 @@ ssize_t tp_edge_report_limit_read(struct file *file, char __user *buffer, size_t
   (void)file;
   __int64 v7; // x23
   char *v9; // x0
-  __int64 v10; // x1
-  __int64 v11; // x2
+  __int64 v10 = 0; // x1
+  __int64 v11 = 0; // x2
   char *v12; // x22
   int v13; // w0
   __int64 v14; // x25
