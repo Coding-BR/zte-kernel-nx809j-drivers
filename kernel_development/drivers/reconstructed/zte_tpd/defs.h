@@ -506,7 +506,8 @@ struct tpd_firmware_data {
 
 static_assert(offsetof(struct tpd_firmware_data, data) == 0x08);
 static_assert(sizeof(struct tpd_firmware_data) == 0x18);
-extern __int64 edge_long_press_up(struct input_dev *input, int index);
+extern __int64 edge_long_press_up(struct input_dev *input,
+                                  unsigned short index);
 
 extern int large_area_ignore_count;
 extern int large_area_uevent_count;
