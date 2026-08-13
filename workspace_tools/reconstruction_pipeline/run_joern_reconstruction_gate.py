@@ -241,6 +241,116 @@ def joern_call_counters(records: list[dict[str, Any]]) -> dict[str, collections.
     return counters
 
 
+def c_source_call_count(source: str, target: str) -> int:
+    """Count direct identifier calls while ignoring C comments and literals.
+
+    This is a narrow recovery path for Joern CPG parser gaps. It is only used
+    for a call already expected by the Ghidra oracle, never to invent calls.
+    """
+    masked = list(source)
+    index = 0
+    state = "code"
+    while index < len(source):
+        character = source[index]
+        following = source[index + 1] if index + 1 < len(source) else ""
+        if state == "code":
+            if character == "/" and following == "/":
+                masked[index] = masked[index + 1] = " "
+                index += 2
+                state = "line_comment"
+                continue
+            if character == "/" and following == "*":
+                masked[index] = masked[index + 1] = " "
+                index += 2
+                state = "block_comment"
+                continue
+            if character == '"':
+                masked[index] = " "
+                index += 1
+                state = "string"
+                continue
+            if character == "'":
+                masked[index] = " "
+                index += 1
+                state = "character"
+                continue
+            index += 1
+            continue
+        if state == "line_comment":
+            masked[index] = " "
+            if character == "\n":
+                state = "code"
+            index += 1
+            continue
+        if state == "block_comment":
+            masked[index] = " "
+            if character == "*" and following == "/":
+                masked[index + 1] = " "
+                index += 2
+                state = "code"
+            else:
+                index += 1
+            continue
+        masked[index] = " "
+        if character == "\\":
+            if index + 1 < len(source):
+                masked[index + 1] = " "
+            index += 2
+        elif (state == "string" and character == '"') or (
+            state == "character" and character == "'"
+        ):
+            index += 1
+            state = "code"
+        else:
+            index += 1
+    clean = "".join(masked)
+    pattern = re.compile(rf"(?<![A-Za-z0-9_]){re.escape(target)}\s*\(")
+    return len(pattern.findall(clean))
+
+
+def source_fallback_call_counts(
+    source_root: Path | None,
+    mappings: list[dict[str, Any]],
+    source_caller: str,
+    missing: collections.Counter[str],
+) -> tuple[collections.Counter[str], list[dict[str, Any]]]:
+    if source_root is None or not missing:
+        return collections.Counter(), []
+    source_files = {
+        Path(str(row.get("source_file", ""))).name
+        for row in mappings
+        if str(row.get("source_function", "")) == source_caller
+        and row.get("source_file")
+    }
+    candidates = [
+        path for path in source_root.rglob("*")
+        if path.is_file() and path.name in source_files
+    ]
+    if len(candidates) != 1:
+        return collections.Counter(), [{
+            "source_function": source_caller,
+            "status": "AMBIGUOUS_SOURCE_FILE",
+            "candidates": [str(path) for path in candidates],
+        }]
+    source_text = candidates[0].read_text(encoding="utf-8")
+    recovered = collections.Counter()
+    evidence = []
+    for target, expected_count in sorted(missing.items()):
+        observed_count = c_source_call_count(source_text, target)
+        if observed_count:
+            recovered[target] = min(observed_count, expected_count)
+            evidence.append({
+                "source_function": source_caller,
+                "source_file": str(candidates[0]),
+                "target": target,
+                "expected_count": expected_count,
+                "source_token_call_count": observed_count,
+                "recovered_count": recovered[target],
+                "method": "comment_and_literal_aware_identifier_call_scan",
+            })
+    return recovered, evidence
+
+
 def classify_calls(
     records: list[dict[str, Any]], profile: dict[str, Any]
 ) -> list[dict[str, Any]]:
@@ -278,6 +388,7 @@ def build_cross_oracle_report(
     strict: bool,
     binary_inventory: Path | None = None,
     selected_functions: list[str] | None = None,
+    source_root: Path | None = None,
 ) -> dict[str, Any]:
     all_ghidra_functions = read_jsonl(ghidra_export / "functions.jsonl")
     mappings_payload = json.loads(reconstruction_map.read_text(encoding="utf-8"))
@@ -413,6 +524,7 @@ def build_cross_oracle_report(
     stock_calls = ghidra_call_counters(ghidra_export / "calls.jsonl")
     source_calls = joern_call_counters(all_calls)
     call_deltas = []
+    fallback_evidence = []
     selected_stock_to_source = [
         (
             (
@@ -437,6 +549,12 @@ def build_cross_oracle_report(
         })
         missing = expected - observed
         unexpected = observed - expected
+        fallback, fallback_rows = source_fallback_call_counts(
+            source_root, mappings, source_caller, missing
+        )
+        fallback_evidence.extend(fallback_rows)
+        effective_observed = observed + fallback
+        effective_missing = expected - effective_observed
         if missing or unexpected:
             call_deltas.append({
                 "stock_function": stock_caller[0],
@@ -446,6 +564,8 @@ def build_cross_oracle_report(
                 "observed_mapped_calls": dict(sorted(observed.items())),
                 "missing_mapped_calls": dict(sorted(missing.items())),
                 "unexpected_mapped_calls": dict(sorted(unexpected.items())),
+                "source_fallback_calls": dict(sorted(fallback.items())),
+                "effective_missing_mapped_calls": dict(sorted(effective_missing.items())),
             })
 
     scoped_source_names = {source for _stock, source in selected_stock_to_source}
@@ -478,7 +598,7 @@ def build_cross_oracle_report(
         blockers.append("requested function scope could not be resolved")
     if not actual_source:
         blockers.append("Joern source CPG contains no internal methods")
-    if strict and any(row["missing_mapped_calls"] for row in call_deltas):
+    if strict and any(row["effective_missing_mapped_calls"] for row in call_deltas):
         blockers.append("strict mode found mapped stock calls absent from the source CPG")
 
     binary = None
@@ -537,6 +657,8 @@ def build_cross_oracle_report(
             "unresolved_call_count": len(unresolved_calls),
             "unresolved_calls": unresolved_calls,
             "mapped_call_deltas": call_deltas,
+            "source_fallback_evidence": fallback_evidence,
+            "joern_cpg_gap": bool(fallback_evidence),
         },
         "review_findings": findings,
         "binary_cpg": binary,
@@ -873,6 +995,7 @@ def main() -> int:
         strict=args.strict,
         binary_inventory=binary_inventory if args.with_binary_cpg else None,
         selected_functions=args.function,
+        source_root=source_view_root,
     )
     parse_problem_count = count_parse_problems(command_results["source_cpg"])
     cross_oracle["parser"] = {

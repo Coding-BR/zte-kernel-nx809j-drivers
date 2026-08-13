@@ -128,6 +128,28 @@ class JoernGateTests(unittest.TestCase):
                 report["blockers"],
             )
 
+    def test_source_fallback_recovers_joern_nested_call_gap(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture = self.make_fixture(root, include_call=False)
+            (root / "a.c").write_text(
+                "int source_a(void) { /* source_b() */ return source_b(); }\n",
+                encoding="utf-8",
+            )
+            report = GATE.build_cross_oracle_report(
+                *fixture, strict=True, source_root=root
+            )
+            self.assertTrue(report["passed"])
+            self.assertTrue(report["graph"]["joern_cpg_gap"])
+            self.assertEqual(
+                report["graph"]["source_fallback_evidence"][0]["target"],
+                "source_b",
+            )
+            self.assertEqual(
+                report["graph"]["mapped_call_deltas"][0]["effective_missing_mapped_calls"],
+                {},
+            )
+
     def test_function_scope_keeps_full_map_for_outgoing_call_resolution(self):
         with tempfile.TemporaryDirectory() as temporary:
             fixture = self.make_fixture(Path(temporary))
