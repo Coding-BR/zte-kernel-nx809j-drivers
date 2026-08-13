@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_touch_pdev_unregister",
+  "attestation_id": "next380_zte_touch_pdev_unregister_v1",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT_WITH_RUNTIME_PENDING",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id_and_symbol_size": "PASS",
+    "aarch64_instruction_sequence": "PASS",
+    "aarch64_relocations": "PASS",
+    "aarch64_section": "PASS"
+  },
+  "recovered_contract": [
+    "read the platform-device slot at tpd_cdev + 0xdd0",
+    "return without side effects when that slot is nonzero",
+    "when the slot is zero, load the callback pointer from absolute address 0x338",
+    "pass literal 16 through the stock KCFI-typed indirect callback",
+    "call platform_device_unregister with the value from tpd_cdev + 0xdd0, which is NULL on the observed path",
+    "do not clear the slot"
+  ],
+  "evidence": {
+    "stock_body_bytes": 96,
+    "candidate_body_bytes": 96,
+    "stock_instruction_count": 24,
+    "candidate_instruction_count": 24,
+    "kcfi_type_id": "0xe5c47d60",
+    "assembly_comparison": "PASS_EXACT"
+  },
+  "interpretation_note": "The null-slot unregister path is unusual and was reproduced because it is the behavior present in the supplied stock assembly. It is not a safety recommendation or proof that platform_device_unregister(NULL) is acceptable outside the original execution context.",
+  "unverified": [
+    "runtime behavior on NX809J hardware",
+    "the actual callback object at absolute address 0x338 in the running image",
+    "full module integration and boot behavior"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, Joern strict gate, reproducible Docker build, two-cycle host sanitizer harness, exact KCFI type and size, and exact normalized AArch64 instruction/relocation comparison. No smartphone test was performed."
+}
