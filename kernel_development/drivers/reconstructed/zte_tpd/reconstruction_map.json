@@ -390,18 +390,19 @@
         "source:ztp_probe_work.c:sha256:678aa9fdd5852294e4a5b285897975f80a419ddfe086774b0842646af2446ef3",
         "ghidra-pseudocode:decompiled/0019_00108494_ztp_probe_work.c:sha256:f4449ac35a04fdbfbea469a25f46ea556e21c2ed78d057da458cff17d06fc572",
         "ghidra-pcode:pcode/0019_00108494_ztp_probe_work.jsonl:sha256:2dfa5779f5bd3a0c4bb7b7595a74d7d01efe52788154e95b5880ef5bbc8b6cfa",
-        "stock-assembly:0019_ztp_probe_work_00108494.asm:sha256:613f7161f1e2bf0ea9e17dbe9ae3366067afe20ec57af03035c78af9db18e8a3"
+        "stock-assembly:0019_ztp_probe_work_00108494.asm:sha256:613f7161f1e2bf0ea9e17dbe9ae3366067afe20ec57af03035c78af9db18e8a3",
+        "attestation:next382_ztp_probe_work_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "ztp_probe_work.c",
       "source_function": "ztp_probe_work",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 40,
       "stock_entry": "00108494",
       "stock_function": "ztp_probe_work",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 10 AArch64 instructions, 40-byte .text size, .text section and KCFI type/size match; host contract passes twice with ASan/UBSan. Raw relocation comparison differs only in the separately linked module-local .rodata offset; the resolved printk string and syna_dev_module_init call match. Workqueue scheduling, Synaptics transport and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
