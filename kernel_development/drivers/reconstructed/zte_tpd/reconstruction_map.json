@@ -621,21 +621,22 @@
     },
     {
       "evidence": [
-        "source:tp_smart_cover_write.c:sha256:1c0373188d06f6edb5f70dd1fa19f4bd73d3ee622633fc17290565945efb7a0e",
+        "source:tp_smart_cover_write.c:sha256:ddf9a01927467d0d4841d5593dcc42e5effd3cd7d6ec5938f354bab676eded61",
         "ghidra-pseudocode:decompiled/0031_00109ce4_tp_smart_cover_write.c:sha256:0c653257e92d6180cb79aafc85ea2d66fd3897ee34bc8ee3d4ecb08beaec7a76",
         "ghidra-pcode:pcode/0031_00109ce4_tp_smart_cover_write.jsonl:sha256:450d7470826e04272155aa9d9362e5ef2ed667d4fc63351e9832bda313ae3c58",
-        "stock-assembly:0031_tp_smart_cover_write_00109ce4.asm:sha256:2a55dbc0d5843ed0bc97b249b3513580112b50a8e0f88c9ff90513c14572793f"
+        "stock-assembly:0031_tp_smart_cover_write_00109ce4.asm:sha256:2a55dbc0d5843ed0bc97b249b3513580112b50a8e0f88c9ff90513c14572793f",
+        "attestation:next401_tp_smart_cover_write_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tp_smart_cover_write.c",
       "source_function": "tp_smart_cover_write",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 208,
       "stock_entry": "00109ce4",
       "stock_function": "tp_smart_cover_write",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Corrected the boolean normalization and callback load to tpd_cdev + 0xe40 with the stock callback KCFI type 0x6af8b499. Candidate and stock both contain 52 instructions and a 208-byte .text body; Joern parsed strictly with zero unresolved calls and the host contract passed three cases in two cycles. Raw assembly differs only in reconstructed local .rodata relocation names/offsets. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
