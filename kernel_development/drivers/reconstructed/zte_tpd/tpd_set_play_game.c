@@ -4,9 +4,9 @@ int tpd_set_play_game(struct ztp_device *cdev, int a2)
   __int64 v4; // x20
   __int64 v6; // x9
   __int64 v7; // x2
-  void *v9; // x0
+  const char *v9; // x0
 
-  v4 = *(_QWORD *)(a1 + 3072);
+  v4 = *(_QWORD *)(a1 + 0xdb8);
   printk(unk_34878, "tpd_set_play_game");
   if ( v4 )
   {
@@ -17,7 +17,7 @@ int tpd_set_play_game(struct ztp_device *cdev, int a2)
       v7 = *(unsigned int *)(*(_QWORD *)v4 + 524LL);
     if ( *(_DWORD *)(v4 + 1404) == 1 )
     {
-      if ( *(_DWORD *)(v4 + 1500) == a2 )
+      if ( *(_DWORD *)(v4 + 1500) == (unsigned int)a2 )
       {
         v9 = unk_32D58;
       }
