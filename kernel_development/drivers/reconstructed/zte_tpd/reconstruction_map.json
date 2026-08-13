@@ -660,21 +660,23 @@
     },
     {
       "evidence": [
-        "source:tp_glove_write.c:sha256:a988afad7d4c3f14662f60af7f097d96abda6c5740957ad4eba9a4af0007fe3b",
+        "source:tp_glove_write.c:sha256:6bee2616e247ca0b342b4ca93b6d6811eebd156393d3149d33235c3eb8b4f294",
         "ghidra-pseudocode:decompiled/0033_00109eac_tp_glove_write.c:sha256:21e30913f67ef34fa0684bedb4909aacd76be3c7552f2f3e6300b76c9b2bf34f",
         "ghidra-pcode:pcode/0033_00109eac_tp_glove_write.jsonl:sha256:caacfcdf8da67a8872eaa3c3493da59d521185dc2629e0bf0112ccc7a5c26e4e",
-        "stock-assembly:0033_tp_glove_write_00109eac.asm:sha256:a14a4990dbb1d5f193433165c855cd0dd0b2c859c430f5aadebfb923d8973c46"
+        "stock-assembly:0033_tp_glove_write_00109eac.asm:sha256:a14a4990dbb1d5f193433165c855cd0dd0b2c859c430f5aadebfb923d8973c46",
+        "attestation:next403_tp_glove_write_v1/microtask_attestation.json",
+        "attestation:next403_tp_glove_write_v1/aarch64_validation_report.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tp_glove_write.c",
       "source_function": "tp_glove_write",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 208,
       "stock_entry": "00109eac",
       "stock_function": "tp_glove_write",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Corrected boolean normalization, callback signature/KCFI, and callback load to tpd_cdev + 0xe50. Candidate and stock both contain 52 instructions and a 208-byte .text body; function KCFI type 0xc3d43b4d matches, callback KCFI type 0x6af8b499 matches, Joern parsed strictly with zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in reconstructed local .rodata relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
