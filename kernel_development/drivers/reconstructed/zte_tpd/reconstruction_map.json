@@ -368,21 +368,22 @@
     },
     {
       "evidence": [
-        "source:tpd_probe_work_init.c:sha256:88a5c0022e7ce29397c6f9026706a5433925e1e799b350f5581bea4ba24760e0",
+        "source:tpd_probe_work_init.c:sha256:3cc42ccbb1ed1ed369a32684d89c4a8e0216a41e93d131a747cffe44d873cbae",
         "ghidra-pseudocode:decompiled/0018_00108418_tpd_probe_work_init.c:sha256:967a0e8ba1bb9fbeba9890836f118bcba163d1ea202d1ca6ac141169f883883d",
         "ghidra-pcode:pcode/0018_00108418_tpd_probe_work_init.jsonl:sha256:4fe5cb3ee4ae166c9365410035d7debd1d96e1f456f57f5939c71ad75a981114",
-        "stock-assembly:0018_tpd_probe_work_init_00108418.asm:sha256:26e95fae1c2690b20617f4049f1e863d4cc76d0c0926e92cf9677995a506cbbc"
+        "stock-assembly:0018_tpd_probe_work_init_00108418.asm:sha256:26e95fae1c2690b20617f4049f1e863d4cc76d0c0926e92cf9677995a506cbbc",
+        "attestation:next381_tpd_probe_work_init_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tpd_probe_work_init.c",
       "source_function": "tpd_probe_work_init",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 120,
       "stock_entry": "00108418",
       "stock_function": "tpd_probe_work_init",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 30 AArch64 instructions, 120-byte .text size, .text section and KCFI type/size match; host contract passes twice with ASan/UBSan. Raw relocation comparison differs only in module-local .rodata offsets and the callback symbol spelling (stock .text+0x1c0c resolves to ztp_probe_work in the recovered function set). Runtime scheduler, timer and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
