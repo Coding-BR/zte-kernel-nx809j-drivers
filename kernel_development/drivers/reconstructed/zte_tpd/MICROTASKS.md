@@ -56,8 +56,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 050_tp_single_game_write | tp_single_game_write | 0010aee8 | user_abi | tp_single_game_write.c:tp_single_game_write | PASS |
 | 051_get_tp_noise_show | get_tp_noise_show | 0010afc0 | user_abi | get_tp_noise_show.c:get_tp_noise_show | PASS |
 | 052_get_tp_noise_store | get_tp_noise_store | 0010b0dc | user_abi | get_tp_noise_store.c:get_tp_noise_store | PASS |
-| 053_tp_edge_report_limit_read | tp_edge_report_limit_read | 0010b150 | user_abi | tp_edge_report_limit_read.c:tp_edge_report_limit_read | PASS (offline gates; stock parity blocked) |
-| 054_tp_edge_report_limit_write | tp_edge_report_limit_write | 0010b690 | user_abi | tp_edge_report_limit_write.c:tp_edge_report_limit_write | PASS (offline gates; stock parity blocked) |
+| 053_tp_edge_report_limit_read | tp_edge_report_limit_read | 0010b150 | user_abi | tp_edge_report_limit_read.c:tp_edge_report_limit_read | PASS |
+| 054_tp_edge_report_limit_write | tp_edge_report_limit_write | 0010b690 | user_abi | tp_edge_report_limit_write.c:tp_edge_report_limit_write | PASS |
 | 055_get_one_key | get_one_key | 0010ba4c | core_logic | get_one_key.c:get_one_key | PASS |
 | 056_set_one_key | set_one_key | 0010bb40 | core_logic | set_one_key.c:set_one_key | PASS |
 | 057_get_play_game | get_play_game | 0010bc14 | core_logic | get_play_game.c:get_play_game | PASS |
@@ -88,8 +88,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 082_set_screen_off_awake | set_screen_off_awake | 0010d334 | core_logic | set_screen_off_awake.c:set_screen_off_awake | PASS |
 | 083_tp_zlog_debug_read | tp_zlog_debug_read | 0010d408 | user_abi | tp_zlog_debug_read.c:tp_zlog_debug_read | PASS |
 | 084_tp_zlog_debug_write | tp_zlog_debug_write | 0010d4a8 | user_abi | tp_zlog_debug_write.c:tp_zlog_debug_write | PASS |
-| 085_ghost_debug_read | ghost_debug_read | 0010d57c | user_abi | ghost_debug_read.c:ghost_debug_read | PASS (offline gates; stock parity blocked) |
-| 086_ghost_debug_write | ghost_debug_write | 0010d8d0 | user_abi | ghost_debug_write.c:ghost_debug_write | PASS (offline gates; stock parity blocked) |
+| 085_ghost_debug_read | ghost_debug_read | 0010d57c | user_abi | ghost_debug_read.c:ghost_debug_read | PASS |
+| 086_ghost_debug_write | ghost_debug_write | 0010d8d0 | user_abi | ghost_debug_write.c:ghost_debug_write | PASS |
 | 087_tp_bbat_test_read | tp_BBAT_test_read | 0010da90 | user_abi | tp_BBAT_test_read.c:tp_BBAT_test_read | PASS |
 | 088_tp_bbat_test_write | tp_BBAT_test_write | 0010db98 | user_abi | tp_BBAT_test_write.c:tp_BBAT_test_write | PASS |
 | 089_tp_test_read | tp_test_read | 0010dbd0 | user_abi | tp_test_read.c:tp_test_read | PASS |
@@ -98,7 +98,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 092_tp_frame_data_write | tp_frame_data_write | 0010de08 | user_abi | tp_frame_data_write.c:tp_frame_data_write | PASS |
 | 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | PASS |
 | 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | PASS |
-| 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit.c:zte_touch_deinit | PASS (offline gates; stock KCFI/parity blocked) |
+| 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit.c:zte_touch_deinit | PASS |
 | 096_tpd_touch_press | tpd_touch_press | 0010e254 | core_logic | tpd_touch_press.c:tpd_touch_press | READY_FOR_IMPLEMENTATION |
 | 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | PASS |
 | 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | PASS |

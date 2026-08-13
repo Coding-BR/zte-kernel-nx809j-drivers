@@ -936,21 +936,28 @@
     },
     {
       "evidence": [
-        "source:tp_single_aod_read.c:sha256:a2d5e7c582b571cca28c3b231714c0a11aa323c35aaa2bd47375a9d54cda877f",
+        "source:tp_single_aod_read.c:sha256:206ef0effda8147acc58e663891d1feeba7c82c3c478c16889d3eb38f0e71e6d",
         "ghidra-pseudocode:decompiled/0046_0010ac28_tp_single_aod_read.c:sha256:eb4224e557fcbaebd1cfe4d513cbd03635d3718f59a4551e0c47cacf6efe6329",
         "ghidra-pcode:pcode/0046_0010ac28_tp_single_aod_read.jsonl:sha256:0d719fc328f989fdc7b88304c2a9791dd9bb2102796a5bb89c3d0abf5ff1a8c8",
-        "stock-assembly:0046_tp_single_aod_read_0010ac28.asm:sha256:d8721f81b6f162119176460b9a6161bf30ce577c61b25227b92bf77a4d4cd7cf"
+        "stock-assembly:0046_tp_single_aod_read_0010ac28.asm:sha256:d8721f81b6f162119176460b9a6161bf30ce577c61b25227b92bf77a4d4cd7cf",
+        "harness:attestation/next416_tp_single_aod_read_v1/host_harness_report.json:sha256:6d59e76bd62bd6b7dc76daa90350e2313e4730f23f895c25978c6b9765b79165",
+        "joern:attestation/next416_tp_single_aod_read_v1/joern_gate_summary.json:sha256:d65d8317ff027ce54cef7c0577a2a15ad88e75cdd20b97f478d1bbac5fc64177",
+        "canonical:attestation/next416_tp_single_aod_read_v1/canonical_build_report.json:sha256:f58fbc0aa58eecf02df2be72292010dc9a806347e4f0ab6ce6b69cfd2a124b4f",
+        "sync:attestation/next416_tp_single_aod_read_v1/source_sync_report.json:sha256:3bc42c0a5f8e1e0ae07d270b40ba4fce28c2745be090fe1c91381c094f5ea6a1",
+        "kcfi:attestation/next416_tp_single_aod_read_v1/kcfi_comparison.json:sha256:9e3d5ea95e761ae7a946640f43d1c828b8c8d2a69d1cb0092673129120929f30",
+        "assembly-compare:attestation/next416_tp_single_aod_read_v1/assembly_comparison.json:sha256:1c1ed2a48a08d5ee1d5ada498c3955f4b78e47b582e5419d9d6dbd7fff647697",
+        "attestation:next416_tp_single_aod_read_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus normalized AArch64 control/data flow, KCFI, Joern, Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tp_single_aod_read.c",
       "source_function": "tp_single_aod_read",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 240,
       "stock_entry": "0010ac28",
       "stock_function": "tp_single_aod_read",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: callback at +0xec8 with int (struct ztp_device *) signature and KCFI type 0x73fc0d79, value at +0x450, nonzero offset no-side-effect path, 60 AArch64 instructions and 240-byte .text body, matching function KCFI type 0xf4e9d97c, strict Joern with zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local stack/register scheduling and module-local rodata relocation layout. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
