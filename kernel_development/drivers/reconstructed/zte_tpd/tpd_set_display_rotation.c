@@ -2,20 +2,20 @@ int tpd_set_display_rotation(struct ztp_device *cdev, int a2)
 {
   unsigned long a1 = (unsigned long)cdev;
   _QWORD *v4; // x20
+  _QWORD *v5; // x8
   __int64 v7; // x9
   unsigned int v8; // w21
-  __int64 v9; // x2
-  __int64 v10; // x2
 
-  v4 = *(_QWORD **)(a1 + 3072);
+  v4 = *(_QWORD **)(a1 + 0xdb8);
   printk(unk_34878, "tpd_set_display_rotation");
   if ( !v4 )
     return -22;
+  v5 = (_QWORD *)*v4;
   v7 = v4[78];
-  if ( *(_DWORD *)(v7 + 184) && (*(_BYTE *)(v7 + 188) & 1) != 0 )
-    v8 = 0;
+  if ( !(*(_DWORD *)(v7 + 184) && (*(_BYTE *)(v7 + 188) & 1) != 0) )
+    v8 = *(unsigned int *)((unsigned char *)v5 + 524LL);
   else
-    v8 = *(_DWORD *)(*v4 + 524LL);
+    v8 = 0;
   *(_DWORD *)(a1 + 16) = a2;
   *((_DWORD *)v4 + 386) = a2;
   printk(unk_37B3D, "tpd_set_display_rotation", *(unsigned int *)(a1 + 16));
@@ -36,18 +36,18 @@ int tpd_set_display_rotation(struct ztp_device *cdev, int a2)
           printk(unk_3C397, "tpd_set_display_rotation", 3);
           msleep(200);
           if ( *((_DWORD *)v4 + 351) != 1 )
-          {
-            printk(unk_3C397, "tpd_set_display_rotation", 4);
-            msleep(200);
-            printk(unk_38BA1, "tpd_set_display_rotation", v10);
-            return -22;
-          }
+        {
+          printk(unk_3C397, "tpd_set_display_rotation", 4);
+          msleep(200);
+          printk(unk_38BA1, "tpd_set_display_rotation");
+          return -22;
         }
+      }
       }
     }
   }
   if ( (syna_dev_set_display_rotation((struct syna_tcm *)v4,
                                       *(_DWORD *)(a1 + 16), v8) & 0x80000000) != 0 )
-    printk(unk_36936, "tpd_set_display_rotation", v9);
+    printk(unk_36936, "tpd_set_display_rotation");
   return *(unsigned int *)(a1 + 16);
 }
