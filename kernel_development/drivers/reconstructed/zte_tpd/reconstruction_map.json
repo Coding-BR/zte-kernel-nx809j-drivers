@@ -740,21 +740,21 @@
     },
     {
       "evidence": [
-        "source:headset_state_show.c:sha256:4471822fb3b80ea6dd68d6546a21fbe0e8a736704722db90fb7bc235481b7a87",
+        "source:headset_state_show.c:sha256:0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
         "ghidra-pseudocode:decompiled/0037_0010a3c4_headset_state_show.c:sha256:9fc75ce3590cf4fe02b6107f4c92cf637ae4ed847d6cc181d8e1526be7a16241",
         "ghidra-pcode:pcode/0037_0010a3c4_headset_state_show.jsonl:sha256:504d49bfe141f479262c51af4f07336527505811b29a89553cb57933d72caac4",
         "stock-assembly:0037_headset_state_show_0010a3c4.asm:sha256:06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "headset_state_show.c",
       "source_function": "headset_state_show",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 244,
       "stock_entry": "0010a3c4",
       "stock_function": "headset_state_show",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Corrected the optional callback load to tpd_cdev + 0xe78 and callback signature to int (*)(struct ztp_device *), matching callback KCFI type 0x73fc0d79. Candidate and stock both contain 61 instructions and a 244-byte .text body; function KCFI type 0xf4e9d97c matches, Joern parsed strictly with zero unresolved calls, and the two-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local stack initialization scheduling and reconstructed local .rodata relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [

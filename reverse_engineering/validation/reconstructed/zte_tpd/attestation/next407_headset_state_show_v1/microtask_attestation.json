@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "headset_state_show",
+  "attestation_id": "next407_headset_state_show_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_DEAD_LOCAL_STACK_SCHEDULE_AND_RUNTIME_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "kcfi_indirect_callback_type": "PASS_0x73fc0d79",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "FAIL_LOCAL_STACK_INITIALIZATION_SCHEDULE_ONLY",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_SYMBOL_LAYOUT_ONLY",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero without callback when *offset is nonzero",
+    "load optional callback from tpd_cdev + 0xe78 with callback KCFI type 0x73fc0d79",
+    "pass struct ztp_device * to callback",
+    "read headset state byte from tpd_cdev + 0x17",
+    "log headset_state_show and format headset state: %u\\n with snprintf size 30",
+    "return formatted value through simple_read_from_buffer"
+  ],
+  "evidence": {
+    "stock_body_bytes": 244,
+    "candidate_body_bytes": 244,
+    "stock_instruction_count": 61,
+    "candidate_instruction_count": 61,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "indirect_callback_kcfi_type_id": "0x73fc0d79",
+    "candidate_module_sha256": "405ae1c4d43c7f1be28742a8f5a6191e8f54ced45550da3c36f048f81f42377d",
+    "candidate_function_assembly_sha256": "e6e2124400f39582775740a83d4bfa45dd3755de3e3c460d24c7f1d7b6e312fc",
+    "stock_function_assembly_sha256": "06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c",
+    "host_cases": 2,
+    "host_repetitions": 2,
+    "host_binary_sha256": "25b0cf6823babb96fade3085dddf26b2786dbbfd2bdd6667c59d40115dddcbdb",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_difference": "The candidate uses an equivalent local stack zeroing schedule and reconstructed local .rodata symbols with generated offsets different from stock."
+  },
+  "follow_up_required": [
+    "Review local stack zeroing schedule only if exact opcode order is required.",
+    "Review local .rodata symbol placement only if exact relocation parity is required.",
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 61-instruction/244-byte AArch64 body, matching function and indirect callback KCFI contracts, strict Joern with zero unresolved calls, reproducible Docker build, and two-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}
