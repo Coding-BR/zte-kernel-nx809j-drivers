@@ -38,7 +38,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
   _BOOL8 v34; // x1
   __int64 v35; // [xsp+0h] [xbp-80h] BYREF
   char *stringp; // [xsp+8h] [xbp-78h] BYREF
-  char s[32]; // [xsp+10h] [xbp-70h] BYREF
+  char s[104]; // [xsp+10h] [xbp-70h] BYREF
   __int64 v38; // [xsp+18h] [xbp-68h]
   __int64 v39; // [xsp+20h] [xbp-60h]
   __int64 v40; // [xsp+28h] [xbp-58h]
