@@ -598,7 +598,7 @@ extern ssize_t tpd_sysfs_fwimage_store(struct file *file, struct kobject *kobj,
 extern void tp_ghost_check_work(struct work_struct *work);
 extern void ufp_single_tap_work(struct work_struct *work);
 extern void set_lcd_reset_processing(unsigned char value);
-extern void tpd_report_uevent(unsigned char value);
+extern void tpd_report_uevent(char value);
 extern void tpd_reset_gpio_output(unsigned char value);
 
 
