@@ -3,7 +3,7 @@ int tpd_get_frame_data(struct ztp_device *cdev)
   unsigned long a1 = (unsigned long)cdev;
   __int64 v1; // x9
 
-  v1 = *(_QWORD *)(a1 + 3072);
+  v1 = *(_QWORD *)(a1 + 0xdb8);
   *(_DWORD *)(a1 + 1120) = *(_DWORD *)(v1 + 1504);
   return 0;
 }
