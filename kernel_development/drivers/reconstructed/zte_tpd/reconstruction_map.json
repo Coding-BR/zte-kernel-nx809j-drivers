@@ -428,18 +428,19 @@
         "source:tpd_workqueue_init.c:sha256:190e7998cecfbd958dfb36bd6f2dcb3ce59a98bb9c54bd70ae07e70644685ac3",
         "ghidra-pseudocode:decompiled/0021_00108508_tpd_workqueue_init.c:sha256:420ee0325597b633cc4af6ade641cc994444f72b14e3f01c39b99e11ad6555ca",
         "ghidra-pcode:pcode/0021_00108508_tpd_workqueue_init.jsonl:sha256:d9c85f34c112ae15c2c760d8436ee12befa1bc52ba1bbd61d2a89c1d31085fbc",
-        "stock-assembly:0021_tpd_workqueue_init_00108508.asm:sha256:0819bc046423349fd574ff0c9fd15ddba027db9e4c121c47edb9a1835b50e835"
+        "stock-assembly:0021_tpd_workqueue_init_00108508.asm:sha256:0819bc046423349fd574ff0c9fd15ddba027db9e4c121c47edb9a1835b50e835",
+        "attestation:next384_tpd_workqueue_init_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_semantic_function_level",
+      "semantic_equivalence": "OFFLINE_SEMANTIC",
       "source_file": "tpd_workqueue_init.c",
       "source_function": "tpd_workqueue_init",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 388,
       "stock_entry": "00108508",
       "stock_function": "tpd_workqueue_init",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline semantic parity is attested: 97 AArch64 instructions, 388-byte .text size, .text section and KCFI type/size match; four-path host contract passes twice with ASan/UBSan. The recovered function preserves alloc_workqueue flags/name, report-work error cleanup, -ENOMEM return, three delayed-work layouts/callbacks and timer initialization. Raw relocation comparison differs only in separately linked module-local .rodata offsets and local callback symbol spellings. Kernel workqueue scheduling and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
