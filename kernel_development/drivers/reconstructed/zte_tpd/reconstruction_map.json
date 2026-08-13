@@ -27,18 +27,19 @@
         "source:tpd_zlog_register.c:sha256:dc46a1f2b146eebdbcd3c0f20e09b6a3279a67e1f7a44d149b3da74520b76258",
         "ghidra-pseudocode:decompiled/0000_0010688c_tpd_zlog_register.c:sha256:5a779f1eb106d68381b1b509eaa9f369c94a126160740b1922ec8ee138904399",
         "ghidra-pcode:pcode/0000_0010688c_tpd_zlog_register.jsonl:sha256:7d5d72f3c76c2dcb33f24dfb243d63fd6892537209717fb0044862dce984dcbf",
-        "stock-assembly:0000_tpd_zlog_register_0010688c.asm:sha256:0273e82df981ec4e1dbda11af9759b441ed9c72c9562b1f13434ea0d23fc7e58"
+        "stock-assembly:0000_tpd_zlog_register_0010688c.asm:sha256:0273e82df981ec4e1dbda11af9759b441ed9c72c9562b1f13434ea0d23fc7e58",
+        "attestation:next375_tpd_zlog_register_v1/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, ASan/UBSan, reproducible Docker, KCFI and AArch64 instruction/size/section evidence",
-      "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_zlog_register.c",
       "source_function": "tpd_zlog_register",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 224,
       "stock_entry": "0010688c",
       "stock_function": "tpd_zlog_register",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity is attested. The assembly comparator reports only module-specific .rodata and allocation-tag relocation differences; instruction count, section, size, call targets, strings and KCFI type match. Stock contains an observed memset(NULL) path after vmalloc failure; this safety defect is documented and runtime behavior on NX809J remains unverified."
     },
     {
       "evidence": [
