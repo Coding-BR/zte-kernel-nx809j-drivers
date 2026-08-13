@@ -29,6 +29,8 @@ CFLAGS_syna_pal_mem_cpy.o := -fno-sanitize=kcfi
 CFLAGS_syna_pal_mem_alloc.o := -fno-sanitize=kcfi
 # Stock tpd_touch_report@0010eb70 has no valid KCFI entry preamble.
 CFLAGS_tpd_touch_report.o := -fno-sanitize=kcfi
+# Stock _inline_copy_from_user@0010a5c8 has no valid KCFI entry preamble.
+CFLAGS__inline_copy_from_user.o := -fno-sanitize=kcfi
 # Stock point_report_reset@0010ea98 has no valid KCFI entry preamble.
 CFLAGS_point_report_reset.o := -fno-sanitize=kcfi
 # Stock syna_dev_enter_normal_sensing@00114294 has no valid KCFI entry preamble.

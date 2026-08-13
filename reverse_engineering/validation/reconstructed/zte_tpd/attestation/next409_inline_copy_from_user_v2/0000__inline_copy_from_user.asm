@@ -1,0 +1,69 @@
+
+/input/zte_tpd.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000000000 <_inline_copy_from_user>:
+       0: d503233f     	paciasp
+       4: a9bd7bfd     	stp	x29, x30, [sp, #-0x30]!
+       8: f9000bf5     	str	x21, [sp, #0x10]
+       c: a9024ff4     	stp	x20, x19, [sp, #0x20]
+      10: 910003fd     	mov	x29, sp
+      14: d5384108     	mrs	x8, SP_EL0
+      18: 39411909     	ldrb	w9, [x8, #0x46]
+      1c: aa0203f3     	mov	x19, x2
+      20: aa0003f4     	mov	x20, x0
+      24: 37280089     	tbnz	w9, #0x5, 0x34 <_inline_copy_from_user+0x34>
+      28: f940010a     	ldr	x10, [x8]
+      2c: aa0103e9     	mov	x9, x1
+      30: 36d0006a     	tbz	w10, #0x1a, 0x3c <_inline_copy_from_user+0x3c>
+      34: d378dc29     	lsl	x9, x1, #8
+      38: 8a892029     	and	x9, x1, x9, asr #8
+      3c: d2c0100a     	mov	x10, #0x8000000000      // =549755813888
+      40: aa1303f5     	mov	x21, x19
+      44: eb0a027f     	cmp	x19, x10
+      48: 54000408     	b.hi	0xc8 <_inline_copy_from_user+0xc8>
+      4c: cb13014a     	sub	x10, x10, x19
+      50: aa1303f5     	mov	x21, x19
+      54: eb09015f     	cmp	x10, x9
+      58: 54000383     	b.lo	0xc8 <_inline_copy_from_user+0xc8>
+      5c: d503201f     	nop
+      60: d53b4229     	mrs	x9, DAIF
+      64: d50343df     	msr	DAIFSet, #0x3
+      68: f9400508     	ldr	x8, [x8, #0x8]
+      6c: d538202a     	mrs	x10, TTBR1_EL1
+      70: aa0803eb     	mov	x11, x8
+      74: b340bd4b     	bfxil	x11, x10, #0, #48
+      78: d518202b     	msr	TTBR1_EL1, x11
+      7c: d5182008     	msr	TTBR0_EL1, x8
+      80: d5033fdf     	isb
+      84: d51b4229     	msr	DAIF, x9
+      88: 9248f821     	and	x1, x1, #0xff7fffffffffffff
+      8c: aa1403e0     	mov	x0, x20
+      90: aa1303e2     	mov	x2, x19
+      94: 94000000     	bl	0x94 <_inline_copy_from_user+0x94>
+		0000000000000094:  R_AARCH64_CALL26	__arch_copy_from_user
+      98: aa0003f5     	mov	x21, x0
+      9c: d503201f     	nop
+      a0: d53b4228     	mrs	x8, DAIF
+      a4: d50343df     	msr	DAIFSet, #0x3
+      a8: d5382029     	mrs	x9, TTBR1_EL1
+      ac: 9240bd29     	and	x9, x9, #0xffffffffffff
+      b0: d140052a     	sub	x10, x9, #0x1, lsl #12  // =0x1000
+      b4: d518200a     	msr	TTBR0_EL1, x10
+      b8: d5182029     	msr	TTBR1_EL1, x9
+      bc: d5033fdf     	isb
+      c0: d51b4228     	msr	DAIF, x8
+      c4: b40000d5     	cbz	x21, 0xdc <_inline_copy_from_user+0xdc>
+      c8: cb150268     	sub	x8, x19, x21
+      cc: 2a1f03e1     	mov	w1, wzr
+      d0: aa1503e2     	mov	x2, x21
+      d4: 8b080280     	add	x0, x20, x8
+      d8: 94000000     	bl	0xd8 <_inline_copy_from_user+0xd8>
+		00000000000000d8:  R_AARCH64_CALL26	memset
+      dc: aa1503e0     	mov	x0, x21
+      e0: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+      e4: f9400bf5     	ldr	x21, [sp, #0x10]
+      e8: a8c37bfd     	ldp	x29, x30, [sp], #0x30
+      ec: d50323bf     	autiasp
+      f0: d65f03c0     	ret
