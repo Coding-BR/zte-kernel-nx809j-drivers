@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "432_tp_game_partition_read",
+  "function": "tp_game_partition_read",
+  "source_file": "tp_game_partition_read.c",
+  "stock_entry": "0010c504",
+  "protocol": [
+    "Ghidra pseudocode and P-Code reviewed",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two cycles",
+    "canonical Docker build with clang-r536225, two cycles",
+    "KCFI type and size comparison",
+    "AArch64 instruction and relocation comparison"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "canonical_reproducible": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "hardware": "DEFERRED"
+  },
+  "candidate_artifact": {
+    "sha256": "69c3ea6cae47fe301d6a6820d8e4e7198ff511f23c29be93691dace3b9a6c33e",
+    "size": 30050064
+  },
+  "promotion": "OFFLINE_EXACT_HARDWARE_DEFERRED",
+  "passed": true,
+  "claim": "The function is Joern-clean, host-tested, reproducibly built, and exactly matches the stock KCFI, AArch64 instruction, symbol-size and normalized relocation evidence offline. Hardware behavior remains unverified by design."
+}
