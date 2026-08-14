@@ -7,7 +7,7 @@ ssize_t tp_sensibility_level_write(struct file *file, const char __user *buffer,
   (void)offset;
   __int64 v4; // x20
   size_t v5; // x19
-  __int64 v7; // x2
+  int v7; // w2
   void (__fastcall *v8)(__int64, __int64); // x8
   __int64 v9; // x1
   unsigned int v10; // [xsp+4h] [xbp-1Ch] BYREF
@@ -33,14 +33,36 @@ ssize_t tp_sensibility_level_write(struct file *file, const char __user *buffer,
   {
     v7 = (unsigned __int8)v10;
     *(_BYTE *)(v4 + 64) = v10;
-    printk(unk_3343E, "tp_sensibility_level_write", v7);
+    printk("\x01\x35%s:sensibility level:val %d.\n", "tp_sensibility_level_write", v7);
     v8 = *(void (__fastcall **)(__int64, __int64))(v4 + 3504);
     if ( v8 )
     {
+#if defined(__aarch64__)
+      __asm__ volatile(
+        "ldr w1, [sp, #4]\n"
+        "mov x0, %x[device]\n"
+        "ldur w16, [%x[callback], #-4]\n"
+        "movk w17, #0x3dc1\n"
+        "movk w17, #0xe1d6, lsl #16\n"
+        "cmp w16, w17\n"
+        "b.eq 1f\n"
+        "brk #0x8228\n"
+        "1:\n"
+        "blr %x[callback]"
+        :
+        : [device] "r"(v4), [callback] "r"(v8)
+        : "x0", "x1", "x16", "x17", "cc", "memory");
+#else
       v9 = v10;
-      if ( *((_DWORD *)v8 - 1) != -506053183 )
+      if ( *((_DWORD *)v8 - 1) != -506053183 ) {
+#if defined(ZTE_TPD_HOST_TEST)
         __break(0x8228u);
+#else
+        __builtin_trap();
+#endif
+      }
       v8(v4, v9);
+#endif
     }
   }
   _ReadStatusReg(SP_EL0);
