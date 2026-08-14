@@ -5530,7 +5530,33 @@
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_set_sensibility_level\nEntrada Ghidra: 00111578\nTamanho stock: 412 bytes\nCategoria: core_logic\nAlvo no fonte: syna_dev_set_sensibility_level.c:syna_dev_set_sensibility_level\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0145_00111578_syna_dev_set_sensibility_level.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0145_00111578_syna_dev_set_sensibility_level.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next146_syna_dev_set_sensibility_level_v1/canonical_build_report.json",
+          "sha256": "cacb0e37164bd0b9aaa99bbfd98af1f1607d1b137c1dbbec1e88145cdf11fa4c"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next146_syna_dev_set_sensibility_level_v1/kcfi_status.json",
+          "sha256": "7943d2eaebb7f16a42759a4a8abe9f34dd84216bef47ce6e297dfede39c6ca41"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next146_syna_dev_set_sensibility_level_v1/joern_gate_summary.json",
+          "sha256": "4dd88208226c4c3c3d2740d9ce30f8e04f0b322f4c990b0be624ef2359ab88f9"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next146_syna_dev_set_sensibility_level_v1/host_harness_report.json",
+          "sha256": "d81f49f8f31130d9661c891eda017914183c7fa8cd56338a240b427adfc572eb"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next146_syna_dev_set_sensibility_level_v1/aarch64_validation_report.json",
+          "sha256": "64a49f7fc8787f72c5d8cbbe68057e738c1ccdf4b07be92ad04a9165e11c073a"
+        }
+      ]
     },
     {
       "id": "147_syna_dev_set_follow_hand_level",
