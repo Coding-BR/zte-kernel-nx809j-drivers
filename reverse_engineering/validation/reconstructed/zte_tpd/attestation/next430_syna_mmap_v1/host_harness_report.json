@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_mmap",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source_sha256": "8a219548827e844bf64b7d463e247510e5e90e392a017afb273e9f1cbf95ef28",
+  "harness_sha256": "a9b61063d04c377d9c18941255fa3e28c6ee33f4e4d2afc1d3441e9e5c940dad",
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_mmap.c",
+      "sha256": "8a219548827e844bf64b7d463e247510e5e90e392a017afb273e9f1cbf95ef28"
+    },
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_mmap_host_test.c",
+      "sha256": "a9b61063d04c377d9c18941255fa3e28c6ee33f4e4d2afc1d3441e9e5c940dad"
+    }
+  ],
+  "expected_cases": 4,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS syna_mmap host tests (4 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "38f2aabe5eeccffc31e8bb485b8d2e026172297200c0825dee98ae9ab6bfa427",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS syna_mmap host tests (4 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "38f2aabe5eeccffc31e8bb485b8d2e026172297200c0825dee98ae9ab6bfa427",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "Valid file/private_data fixtures only; stock has no null guards.",
+    "MMIO and NX809J runtime behavior are unverified."
+  ]
+}

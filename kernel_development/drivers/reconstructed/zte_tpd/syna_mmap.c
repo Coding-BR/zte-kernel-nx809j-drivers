@@ -12,16 +12,11 @@ int syna_mmap(struct file *file, struct vm_area_struct *vma)
 
   if ( size > 0x32000 )
   {
-    printk(unk_3990A, "syna_mmap", (unsigned int)size);
+    printk(unk_3990A, "syna_mmap", (unsigned int)size, 0x32000);
     return -22; // -EINVAL
   }
 
-  if ( !private_data )
-    return -22;
-
   buffer = *(void **)((char *)private_data + 1120);
-  if ( !buffer )
-    return -22;
 
   if ( remap_pfn_range(vma, vma->vm_start,
                        (((unsigned long)buffer - PAGE_OFFSET + memstart_addr) >> PAGE_SHIFT) +
