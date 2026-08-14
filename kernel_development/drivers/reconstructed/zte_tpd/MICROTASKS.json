@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-08-13T23:56:51.423735+00:00",
+  "generated_utc": "2026-08-14T00:05:34.659154+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -1975,6 +1975,7 @@
       "required_evidence": [
         "compile",
         "kcfi",
+        "joern",
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_tp_noise_show\nEntrada Ghidra: 0010afc0\nTamanho stock: 280 bytes\nCategoria: user_abi\nAlvo no fonte: get_tp_noise_show.c:get_tp_noise_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0050_0010afc0_get_tp_noise_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0050_0010afc0_get_tp_noise_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
@@ -1982,18 +1983,23 @@
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next13_firmware_lifecycle_final_report.json",
-          "sha256": "94b89518676c3a53fbfd814f94ee7618625e07bc470e3c10ad204d147037ce0b"
+          "path": ".tmp_target420_v1/canonical_build_report.json",
+          "sha256": "9d66859282627e420e2465538f9280b8d353de95c73418642257bd872685873f"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_next13_firmware_lifecycle_exact.json",
-          "sha256": "6163939ef2f079ec9fb0824fb1b2b78cdab7f2d7c25ae3ec7143a67711a63546"
+          "path": ".tmp_target420_v1/kcfi_comparison.json",
+          "sha256": "5e69391e406a5c210ec352c753b094190f7a9c1c8308a6c17353ffad548d74d0"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_special_harness_next13_report.json",
-          "sha256": "ad57125b38a39a3e461bd7fbb48b9f07a4242cbd36aadac7e76e962837eb0d3a"
+          "path": ".tmp_target420_get_tp_noise_show_host_retry1/report.json",
+          "sha256": "29c35017a5d17eac669d52db73ff8e95356c677d5fe0efe4a223426c94516e8d"
+        },
+        {
+          "role": "joern",
+          "path": ".tmp_target420_v1/joern/joern_gate_summary.json",
+          "sha256": "335a510cd9e2edc9a4855980e382d350a24c0b273926b64979a9706b70b95019"
         }
       ]
     },

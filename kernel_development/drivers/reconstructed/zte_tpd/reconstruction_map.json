@@ -1026,21 +1026,23 @@
     },
     {
       "evidence": [
-        "source:get_tp_noise_show.c:sha256:4f8f7f4787d2c2a949bd39779e8cfee1dbd0055927763cf2e56e197c81911808",
+        "source:get_tp_noise_show.c:sha256:3fd1f8b157e327b4210d51a06d382846701361539566df45b50d80a3e326db15",
         "ghidra-pseudocode:decompiled/0050_0010afc0_get_tp_noise_show.c:sha256:5e0d66ac8a5cc2a58aeae8e2755a1a28940157d29e56905094bd7d78d0c6f0b8",
         "ghidra-pcode:pcode/0050_0010afc0_get_tp_noise_show.jsonl:sha256:3513a46b433b2113ff29c46b30174aaa788119e053d1c796b31588ff0bb4c25f",
-        "stock-assembly:0050_get_tp_noise_show_0010afc0.asm:sha256:ecd9e3074e57acd6238c029be212f30cbfcd8ad6efdcdf0d1b79a241cc909ae3"
+        "stock-assembly:0050_get_tp_noise_show_0010afc0.asm:sha256:ecd9e3074e57acd6238c029be212f30cbfcd8ad6efdcdf0d1b79a241cc909ae3",
+        "attestation:next420_get_tp_noise_show_v1/microtask_attestation.json",
+        "attestation:next420_get_tp_noise_show_v1/aarch64_validation_report.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus normalized AArch64 control/data flow, KCFI, Joern, Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_opcode_function_level",
+      "semantic_equivalence": "OFFLINE_OPCODE_SEMANTIC",
       "source_file": "get_tp_noise_show.c",
       "source_function": "get_tp_noise_show",
-      "status": "mapped_not_exact",
+      "status": "reviewed_semantic",
       "stock_body_bytes": 280,
       "stock_entry": "0010afc0",
       "stock_function": "get_tp_noise_show",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline opcode and semantic parity is attested: mutex at +0xc60, noise pointer at +0xc58, callback at +0xee8 with int (struct ztp_device *) signature and KCFI type 0x73fc0d79, snprintf size 0x1e, and empty output when the pointer is null. Candidate and stock contain the same 70-instruction opcode sequence and 280-byte .text body; function KCFI type 0xf4e9d97c matches, strict Joern has zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Only module-local rodata relocation placement differs; procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
