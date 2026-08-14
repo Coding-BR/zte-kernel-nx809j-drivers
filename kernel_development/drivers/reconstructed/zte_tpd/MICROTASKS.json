@@ -3913,11 +3913,38 @@
       "required_evidence": [
         "compile",
         "kcfi",
+        "joern",
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_report_work_init\nEntrada Ghidra: 0010fa04\nTamanho stock: 672 bytes\nCategoria: lifecycle\nAlvo no fonte: tpd_report_work_init.c:tpd_report_work_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0103_0010fa04_tpd_report_work_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0103_0010fa04_tpd_report_work_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_tpd_report_work_init_v1/canonical_build_report.json",
+          "sha256": "d6bdde36768df2c143b7c0e99b33db4f9ef74e6b777fbf219f84f393cc85d886"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_tpd_report_work_init_v1/kcfi_status.json",
+          "sha256": "953c1491b673f488f517596bf420b2f5a90a3c6b909df91c86ddd633814c9fcb"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_tpd_report_work_init_v1/joern_gate_summary.json",
+          "sha256": "f05ba6aa2e4a99dd670bfebeda4866423a31cf0e1b432faf7a7e43dd742ee101"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_tpd_report_work_init_v1/host_harness_report.json",
+          "sha256": "50402c478dd9e2e9bd6a66b0a47ba0d1a89a5d8b0119108bd5d64df8cc058aab"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next104_tpd_report_work_init_v1/aarch64_validation_report.json",
+          "sha256": "3d263ee4a4f9b04914203e6fce76c1998beedd6a16199c2b3f57d2b77c1e5e45"
+        }
+      ]
     },
     {
       "id": "105_tpd_id0_report_work",
