@@ -89,6 +89,10 @@ int zte_touch_pdev_register(void);
 // Map Ghidra's __break calls to a safe kernel warning instead of panicking
 #define __break(x) pr_warn("zte_tpd CFI/assert warning: 0x%x at %s:%d\n", (unsigned int)(x), __FILE__, __LINE__)
 
+#ifndef ZTE_TPD_BRK_5512
+#define ZTE_TPD_BRK_5512() asm volatile("brk #0x5512")
+#endif
+
 // Cast wrappers for standard kernel functions called with __int64 / long long arguments
 #undef simple_read_from_buffer
 #define simple_read_from_buffer(to, count, ppos, from, available) \
