@@ -15,7 +15,6 @@ int syna_dev_process_touch_report(unsigned char a1, const unsigned char *a2,
   __int64 v18; // x23
   _DWORD *v19; // x22
   char v20; // w8
-  int v21; // w9
   unsigned int v22; // w25
   signed int v23; // w28
   signed int v24; // w24
@@ -121,7 +120,6 @@ LABEL_18:
     {
       if ( ufp_tp_ops.pdev )
       {
-        v21 = large_area_ignore_count;
         if ( large_area_ignore_count < 0 )
         {
           if ( large_area_uevent_count <= 2 )
