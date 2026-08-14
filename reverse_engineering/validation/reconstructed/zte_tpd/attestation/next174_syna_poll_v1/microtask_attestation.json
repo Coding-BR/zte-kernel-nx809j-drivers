@@ -1,0 +1,59 @@
+{
+  "schema_version": "reconstruction_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "174_syna_poll",
+  "stock_entry": "00114510",
+  "stock_function": "syna_poll",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "semantic_equivalence": "UNPROVEN",
+  "source_of_truth": {
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "ghidra_decompiled_sha256": "3e16c45ff760b703f1d9c3811af3ba0e54d675b6ee4eb2ac24fc0d25cdfe8f4b",
+    "ghidra_pcode_sha256": "59d4f78e11902dfca7bff38288ae2ae3a8ecfcb949dc76da3702582c4e5d9221",
+    "stock_assembly_sha256": "13ce36aa5c86843bef536efd95546a89ce01a6b8b028bca203af79fd8e425b26"
+  },
+  "candidate": {
+    "module_sha256": "fcbbd6246732c6e04f12b9321d71e9a29e20ddfe2c374c18526c83e93f355dfc",
+    "module_size": 30037504,
+    "source_sha256": "eb502ef5c2787139e75cecfeb0502e9ea424c23a4c633ff5154ff46f7c429ca3",
+    "clang_revision": "clang-r536225",
+    "docker_image": "nubia-sm8850-kernel-builder:latest"
+  },
+  "gates": {
+    "ghidra_exports_present": "PASS",
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "host_harness_asan_ubsan": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "kcfi_type_id": {
+      "status": "PASS",
+      "stock_type_id": "0x0b7841ca",
+      "candidate_type_id": "0x0b7841ca",
+      "stock_symbol_size": 108,
+      "candidate_symbol_size": 108
+    },
+    "aarch64_symbol_size": "PASS",
+    "aarch64_instruction_count": {
+      "status": "PASS",
+      "stock": 27,
+      "candidate": 27
+    },
+    "aarch64_exact_opcode_parity": "PASS",
+    "relocation_identity": "PASS",
+    "hardware_validation": "NOT_RUN"
+  },
+  "limitations": [
+    "The source harness uses a deterministic host poll_wait stub and does not exercise the kernel scheduler.",
+    "Exact offline AArch64/KCFI parity does not prove behavior on the NX809J hardware.",
+    "No smartphone, module loading, SPI, IRQ, MMIO or firmware transport was exercised."
+  ],
+  "artifacts": {
+    "source_sync_report.json": "c381ed13aa0aee07b296e9b5cc4c51808e286059996edfeda96a761ffc49d84e",
+    "joern_gate_report.json": "2680deb07032a8a48ed1e6ada17800f7461894bab9bb3e4b840a1884c6fb1970",
+    "host_harness_report.json": "8bc76d03fa62879a113003831720354decf374b25843355532a5830433a34ea7",
+    "canonical_build_report.json": "60f4f6e6c72d1d0a91dd9770b42380b36eb6be00aa4c56839f988f27c5c51440",
+    "kcfi_comparison.json": "0b6fd18f7167a1a32a1b0cd40c0de23cf831668b073cc57337693a56f56113e8",
+    "assembly_comparison.json": "3d466640664fc3d2976df8f3eba6f3ce44acb0cee06dc127a7ee2a9cd1cef529"
+  }
+}
