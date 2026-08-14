@@ -446,7 +446,7 @@ extern int syna_tcm_run_production_test(struct tcm_dev *tcm_dev,
 					unsigned int response_mode);
 extern int syna_tcm_sleep(struct tcm_dev *tcm, bool enable,
 			  unsigned int delay_ms);
-extern __int64 syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);
+extern int syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);
 extern __int64 tpd_touch_release(__int64 result, unsigned __int16 a2, int a3);
 extern struct ufp_tp_ops_struct ufp_tp_ops;
 
