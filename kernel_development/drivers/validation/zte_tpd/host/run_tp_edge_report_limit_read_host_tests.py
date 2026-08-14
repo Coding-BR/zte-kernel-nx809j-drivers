@@ -67,10 +67,12 @@ def main() -> int:
             args.image,
             f"/toolchains/{args.clang_revision}/bin/clang",
             "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror",
-            "-Wno-format-security", "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
+            "-Wno-format-security", "-Wno-ignored-attributes",
+            "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
             "-frandom-seed=zte-tpd-edge-report-limit-read",
             "-ffile-prefix-map=/drivers=<drivers>",
-            "-fsanitize=address,undefined", "-Wl,--build-id=none",
+            "-fsanitize=address,undefined", "-fno-sanitize=alignment",
+            "-Wl,--build-id=none",
             "/drivers/validation/zte_tpd/host/tp_edge_report_limit_read_host_test.c",
             "-o", "/output/host_test_asan_ubsan",
         ]
@@ -107,6 +109,9 @@ def main() -> int:
         "container_image": args.image,
         "toolchain_volume": args.toolchain_volume,
         "sanitizers": ["address", "undefined"],
+        "sanitizer_exceptions": [
+            "alignment: disabled because the recovered stock P-Code performs intentional unaligned byte-layout stores",
+        ],
         "expected_cases": 3,
         "repetitions": args.repetitions,
         "inputs": [

@@ -29,25 +29,16 @@ ssize_t tp_edge_report_limit_read(struct file *file, char __user *buffer, size_t
   if ( v9 )
   {
     strcpy(v9, "#######################################");
-    strcpy(
-      v9 + 183,
-      "jitter_timer, echo jitter_timer:100 > edge_report_limit\n"
-      "click_pixel, echo click_pixel:10 > edge_report_limit\n"
-      "long_press_open, echo long_press_open:1 > edge_report_limit\n"
-      "long_press_timer, echo long_press_timer:500 > edge_report_limit\n"
-      "pixel limit level,user setting. echo 5 > edge_report_limit\n");
-    strcpy(
-      v9 + 39,
-      "#######################################\n"
-      "\n"
-      "algo_open, echo algo_open:1 > edge_report_limit\n"
-      "jitter_pixel, echo jitter_pixel:10 > edge_report_limit\n");
-    strcpy(
-      v9 + 475,
-      "long_press_pixel, echo long_press_pixel:10,10,20,20 > edge_report_limit\n"
-      "\n"
-      "#######################################");
-    strcpy(v9 + 587, "#######################################\n\n");
+    strcpy(v9 + 39, "#######################################\n\n");
+    strcpy(v9 + 0x50, "algo_open, echo algo_open:1 > edge_report_limit\n");
+    strcpy(v9 + 0x80, "jitter_pixel, echo jitter_pixel:10 > edge_report_limit\n");
+    strcpy(v9 + 0xb7, "jitter_timer, echo jitter_timer:100 > edge_report_limit\n");
+    strcpy(v9 + 0xef, "click_pixel, echo click_pixel:10 > edge_report_limit\n");
+    strcpy(v9 + 0x124, "long_press_open, echo long_press_open:1 > edge_report_limit\n");
+    strcpy(v9 + 0x160, "long_press_timer, echo long_press_timer:500 > edge_report_limit\n");
+    strcpy(v9 + 0x1a0, "pixel limit level,user setting. echo 5 > edge_report_limit\n");
+    strcpy(v9 + 0x1db, "long_press_pixel, echo long_press_pixel:10,10,20,20 > edge_report_limit\n\n");
+    strcpy(v9 + 0x24b, "#######################################\n\n");
     v13 = snprintf(v9 + 628, 0xD8Cu, "algo_open:%5u\n", *(unsigned __int8 *)(v7 + 27));
     v14 = v13 + 628LL + snprintf(&v12[v13 + 628], 3468LL - v13, "jitter_pixel:%5u\n", *(unsigned __int8 *)(v7 + 36));
     v15 = v14 + snprintf(&v12[v14], 4096 - v14, "jitter_timer:%5u\n", *(unsigned __int16 *)(v7 + 62));

@@ -7,7 +7,7 @@
 
 #define __user
 #define __int64 long long
-#define _QWORD long long
+#define _QWORD long long __attribute__((aligned(1)))
 #define _DWORD unsigned int
 #define _BYTE unsigned char
 #define __int8 char
