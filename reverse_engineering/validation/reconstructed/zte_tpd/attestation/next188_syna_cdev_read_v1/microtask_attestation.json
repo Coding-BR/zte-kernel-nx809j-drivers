@@ -1,0 +1,63 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "target188_syna_cdev_read",
+  "function": "syna_cdev_read",
+  "stock_entry": "00114fa4",
+  "status": "PARTIAL",
+  "semantic_equivalence": "UNPROVEN",
+  "hardware_validation": "NOT_RUN",
+  "gates": {
+    "ghidra_decompilation": {
+      "passed": true,
+      "decompiled_sha256": "1828b76e7f10b99e94f916a4cff8234aa664be02a5342afd6e0b2ece2fc5cc88",
+      "pcode_sha256": "4974828874c7131a4be2d2899b18b6182b8df8d1a3b60589676536ef2c4cc4b8",
+      "stock_assembly_sha256": "00b7935922baccd5420ec54826b2a7cbc4fab1e41d0767b60cec78148781f13b"
+    },
+    "source_sync": {
+      "passed": true,
+      "report_sha256": "63daf5fd406603a93a24b9176c6ced13f302dcf2a673fc87c9aca66aaedc907c"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "3f48b66c2e5f8f273cce3e8fd927be237e65cd51b8396cf70158c6b6f047b522"
+    },
+    "host_harness_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "report_sha256": "179c1a0f3eaabbaf3a70afb1db2ad4b2ee76931f2b420ae2fdcd94069643a430"
+    },
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "bc6057e862a2a59b8b1472df71b4111b1ac7e9ebe2eb2e535389525a12c7c6b4",
+      "module_size": 30037456,
+      "report_sha256": "cf0108c4ad998b2a626c3a0ce7737cecd520fb5a15123080017c78e27a8161db"
+    },
+    "kcfi": {
+      "passed": true,
+      "type_id": "0xf4e9d97c",
+      "stock_size": 160,
+      "candidate_size": 160,
+      "report_sha256": "a48984a10add96c2248926a39d8bbc99aa555deb29fcb650892797e6e2bcf556"
+    },
+    "aarch64_assembly": {
+      "passed": true,
+      "stock_instructions": 40,
+      "candidate_instructions": 40,
+      "opcode_parity": true,
+      "relocation_parity": true,
+      "report_sha256": "29f0441386af5edbba3f7297ee0616bd33aa85e120c493057bafb6c4fe58c02d"
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "094bf4668d3823c5fe98da724dcb6844b9ab8dd2c785058889c93be279a39a42",
+    "candidate_assembly_sha256": "dcef8e2b3719c4735e98a6160f3431c9570656b9ecc3ba0b96dce19e38a49f22",
+    "candidate_kcfi_sha256": "3a954194429aa0dd3d8f24865d8790064e2321a7a0b0c2c90783d409f4e55c36",
+    "stock_kcfi_sha256": "c5d110ce315ca8c70552f1556d86e1c80365c9eeab26d17b87e6bef31dd53ce5"
+  },
+  "limitations": [
+    "KCFI and exact AArch64 parity prove the captured offline ABI and body shape, not full runtime semantics.",
+    "The smartphone was intentionally not used in this microtask; runtime and hardware behavior remain unproven."
+  ]
+}
