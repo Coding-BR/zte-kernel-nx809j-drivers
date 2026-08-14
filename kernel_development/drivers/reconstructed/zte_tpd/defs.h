@@ -319,7 +319,7 @@ extern int syna_tcm_parse_fw_image(const u8 *image, u32 image_size,
                                    void *parsed_image);
 extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
 				   unsigned int delay_ms);
-extern __int64 syna_dev_set_up_input_device(__int64 a1);
+extern int syna_dev_set_up_input_device(struct syna_tcm *tcm);
 extern int syna_tcm_get_boot_info(struct tcm_dev *tcm,
                                   struct tcm_boot_info *boot_info,
                                   unsigned int timeout_ms);
