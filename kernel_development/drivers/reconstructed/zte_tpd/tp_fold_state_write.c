@@ -1,3 +1,7 @@
+#ifndef __user
+#define __user
+#endif
+
 ssize_t tp_fold_state_write(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
@@ -23,8 +27,8 @@ ssize_t tp_fold_state_write(struct file *file, const char __user *buffer, size_t
   }
   else
   {
-    v6 = v9;
-    v9 = v9;
+    v6 = v9 != 0;
+    v9 = v6;
     printk(unk_374F7, "tp_fold_state_write", v6);
     v7 = *(void (__fastcall **)(__int64, _BOOL8))(v4 + 3592);
     if ( v7 )
