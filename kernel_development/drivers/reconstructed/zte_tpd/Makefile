@@ -11,11 +11,13 @@ src-files := $(filter-out $(src)/syna_tcm_send_command.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_write.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_read.c, $(src-files))
 src-files := $(filter-out $(src)/get_one_key.c, $(src-files))
+src-files := $(filter-out $(src)/set_one_key.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
+obj-files += set_one_key_exact.o
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -27,6 +29,7 @@ AFLAGS_tp_edge_report_limit_write_exact.o := -g0
 # byte-identical across independent cycles.
 AFLAGS_tp_edge_report_limit_read_exact.o := -g0
 AFLAGS_get_one_key_exact.o := -g0
+AFLAGS_set_one_key_exact.o := -g0
 
 obj-m += zte_tpd.o
 zte_tpd-objs := globals.o $(obj-files)
