@@ -1,3 +1,7 @@
+#ifndef __user
+#define __user
+#endif
+
 ssize_t get_screen_off_awake(struct file *file, char __user *buffer, size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
