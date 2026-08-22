@@ -1,3 +1,7 @@
+#ifndef __user
+#define __user
+#endif
+
 ssize_t set_fake_sleep(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
@@ -23,8 +27,8 @@ ssize_t set_fake_sleep(struct file *file, const char __user *buffer, size_t coun
   }
   else
   {
-    v6 = v9;
-    v9 = v9;
+    v6 = v9 != 0;
+    v9 = v6;
     printk(unk_374F7, "set_fake_sleep", v6);
     v7 = *(void (__fastcall **)(__int64, _BOOL8))(v4 + 3608);
     if ( v7 )

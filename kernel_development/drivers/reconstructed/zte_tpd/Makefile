@@ -33,6 +33,7 @@ src-files := $(filter-out $(src)/tp_game_partition_write.c, $(src-files))
 src-files := $(filter-out $(src)/tp_fold_state_read.c, $(src-files))
 src-files := $(filter-out $(src)/tp_fold_state_write.c, $(src-files))
 src-files := $(filter-out $(src)/get_fake_sleep.c, $(src-files))
+src-files := $(filter-out $(src)/set_fake_sleep.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += tp_edge_report_limit_write_exact.o
@@ -59,6 +60,7 @@ obj-files += tp_game_partition_write_exact.o
 obj-files += tp_fold_state_read_exact.o
 obj-files += tp_fold_state_write_exact.o
 obj-files += get_fake_sleep_exact.o
+obj-files += set_fake_sleep_exact.o
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -91,6 +93,7 @@ AFLAGS_tp_game_partition_write_exact.o := -g0
 AFLAGS_tp_fold_state_read_exact.o := -g0
 AFLAGS_tp_fold_state_write_exact.o := -g0
 AFLAGS_get_fake_sleep_exact.o := -g0
+AFLAGS_set_fake_sleep_exact.o := -g0
 
 obj-m += zte_tpd.o
 zte_tpd-objs := syna_dev_set_sensibility_level_exact.o globals.o $(obj-files)
