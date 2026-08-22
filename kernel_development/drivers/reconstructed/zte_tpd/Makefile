@@ -22,6 +22,7 @@ src-files := $(filter-out $(src)/get_stability_level.c, $(src-files))
 src-files := $(filter-out $(src)/set_stability_level.c, $(src-files))
 src-files := $(filter-out $(src)/tp_sensibility_level_read.c, $(src-files))
 src-files := $(filter-out $(src)/tp_sensibility_level_write.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_set_sensibility_level.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += tp_edge_report_limit_write_exact.o
@@ -59,9 +60,10 @@ AFLAGS_get_stability_level_exact.o := -g0
 AFLAGS_set_stability_level_exact.o := -g0
 AFLAGS_tp_sensibility_level_read_exact.o := -g0
 AFLAGS_tp_sensibility_level_write_exact.o := -g0
+AFLAGS_syna_dev_set_sensibility_level_exact.o := -g0
 
 obj-m += zte_tpd.o
-zte_tpd-objs := globals.o $(obj-files)
+zte_tpd-objs := syna_dev_set_sensibility_level_exact.o globals.o $(obj-files)
 
 CFLAGS_globals.o := -DGLOBALS_C
 # Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
