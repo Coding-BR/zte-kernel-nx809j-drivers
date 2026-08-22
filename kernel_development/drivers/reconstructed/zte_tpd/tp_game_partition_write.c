@@ -1,3 +1,7 @@
+#ifndef __user
+#define __user
+#endif
+
 ssize_t tp_game_partition_write(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
 #if defined(__aarch64__)
