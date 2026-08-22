@@ -28,6 +28,7 @@ src-files := $(filter-out $(src)/syna_dev_set_stability_level.c, $(src-files))
 src-files := $(filter-out $(src)/syna_dev_set_display_rotation.c, $(src-files))
 src-files := $(filter-out $(src)/syna_recovery_game_mode_after_reset.c, $(src-files))
 src-files := $(filter-out $(src)/syna_ts_check_dt.c, $(src-files))
+src-files := $(filter-out $(src)/tp_game_partition_read.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += tp_edge_report_limit_write_exact.o
@@ -49,6 +50,7 @@ obj-files += syna_dev_set_stability_level_exact.o
 obj-files += syna_dev_set_display_rotation_exact.o
 obj-files += syna_recovery_game_mode_after_reset_exact.o
 obj-files += syna_ts_check_dt_exact.o
+obj-files += tp_game_partition_read_exact.o
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -76,6 +78,7 @@ AFLAGS_syna_dev_set_stability_level_exact.o := -g0
 AFLAGS_syna_dev_set_display_rotation_exact.o := -g0
 AFLAGS_syna_recovery_game_mode_after_reset_exact.o := -g0
 AFLAGS_syna_ts_check_dt_exact.o := -g0
+AFLAGS_tp_game_partition_read_exact.o := -g0
 
 obj-m += zte_tpd.o
 zte_tpd-objs := syna_dev_set_sensibility_level_exact.o globals.o $(obj-files)

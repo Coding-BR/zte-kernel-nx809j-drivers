@@ -1,0 +1,46 @@
+{
+  "limitations": [
+    "The host harness replaces kernel user-buffer helpers with deterministic contracts.",
+    "Privileged system registers and hardware transport are not executed.",
+    "Assembly, KCFI, Ghidra, Joern, canonical build and hardware gates remain separate."
+  ],
+  "target": "tp_game_partition_read",
+  "driver": "zte_tpd",
+  "passed": true,
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "expected_cases": 5,
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "runs": [
+    {
+      "passed": true,
+      "stdout": "PASS tp_game_partition_read: 5 cases",
+      "cycle": 1
+    },
+    {
+      "passed": true,
+      "stdout": "PASS tp_game_partition_read: 5 cases",
+      "cycle": 2
+    }
+  ],
+  "inputs": [
+    {
+      "sha256": "f216a852ed4f91dcccb0624182c094856246461dca9e6042c4c9da7e4d76604b",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/tp_game_partition_read_host_test.c"
+    },
+    {
+      "sha256": "336f9e463c2164255db15e5741e6f0b7e1d1cf8ada23f5c05766f0f864d0a80d",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tp_game_partition_read.c"
+    }
+  ],
+  "binary_sha256": "228e839fe499b6de0d396de447fe9d62c6409bbf114a0d54b5595050e68e6794",
+  "reproducible_binary": true,
+  "schema_version": "1.0",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "repetitions": 2,
+  "status": "PASS",
+  "mode": "offline_direct_source_tp_game_partition_read_asan_ubsan"
+}
