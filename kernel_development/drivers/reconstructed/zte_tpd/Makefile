@@ -21,6 +21,7 @@ src-files := $(filter-out $(src)/set_follow_hand_level.c, $(src-files))
 src-files := $(filter-out $(src)/get_stability_level.c, $(src-files))
 src-files := $(filter-out $(src)/set_stability_level.c, $(src-files))
 src-files := $(filter-out $(src)/tp_sensibility_level_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_sensibility_level_write.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += tp_edge_report_limit_write_exact.o
@@ -36,6 +37,7 @@ obj-files += set_follow_hand_level_exact.o
 obj-files += get_stability_level_exact.o
 obj-files += set_stability_level_exact.o
 obj-files += tp_sensibility_level_read_exact.o
+obj-files += tp_sensibility_level_write_exact.o
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -56,6 +58,7 @@ AFLAGS_set_follow_hand_level_exact.o := -g0
 AFLAGS_get_stability_level_exact.o := -g0
 AFLAGS_set_stability_level_exact.o := -g0
 AFLAGS_tp_sensibility_level_read_exact.o := -g0
+AFLAGS_tp_sensibility_level_write_exact.o := -g0
 
 obj-m += zte_tpd.o
 zte_tpd-objs := globals.o $(obj-files)
