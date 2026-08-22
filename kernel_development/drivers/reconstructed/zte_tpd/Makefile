@@ -141,3 +141,7 @@ ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-Wframe-larger-than=8192
 # Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
 CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
+
+src-files := $(filter-out $(src)/set_screen_off_awake.c, $(src-files))
+obj-files += set_screen_off_awake_exact.o
+AFLAGS_set_screen_off_awake_exact.o := -g0
