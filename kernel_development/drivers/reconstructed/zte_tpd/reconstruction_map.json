@@ -1346,22 +1346,28 @@
       },
     {
       "evidence": [
-        "source:set_stability_level.c:sha256:cf6594b273f9448fa93e4963f0cdbc35c8c7e59ad769e0aca7af04ca2622b69d",
+        "source:set_stability_level.c:sha256:540711d0fa6d6fd167c323bcbb032769298c13983ab2787f18bbc687131ebc62",
+        "exact-assembly:set_stability_level_exact.S:sha256:12f05d392c57f890cd5c4868b7c45daaa405e446bd1c3fe0a45cf8ec15c3df00",
         "ghidra-pseudocode:decompiled/0063_0010c23c_set_stability_level.c:sha256:45cd5f1d78d5063c7f173a47edeafc9ab52f9220fcc8af2f93e6c9c72c3f8319",
         "ghidra-pcode:pcode/0063_0010c23c_set_stability_level.jsonl:sha256:e192fabca1b7dce08aa6d0f603e738f2bfbc60d1dee4532d169b3ffca241a548",
-        "stock-assembly:0063_set_stability_level_0010c23c.asm:sha256:f9028d94b393ae286d4e80ad273634745e1f4e484e437a637aab3afd667e38ad"
+        "stock-assembly:0063_set_stability_level_0010c23c.asm:sha256:f9028d94b393ae286d4e80ad273634745e1f4e484e437a637aab3afd667e38ad",
+        "attestation:next453_set_stability_level_v1/aarch64_validation_report.json:sha256:ef6e2f9053ff60823e38ca525a297f1ebc3fcce5339650e387431ebce16e95a8",
+        "attestation:next453_set_stability_level_v1/assembly_comparison.json:sha256:bd3384415ad686c9d24d7b5343acb725b067a9eba06add89cb1460dc7c2d0e9c",
+        "attestation:next453_set_stability_level_v1/kcfi_comparison.json:sha256:61553b5f4afc50edf691fb283d93d72a70dadc91b29c4cf8bb629dd6b9d766d8",
+        "attestation:next453_set_stability_level_v1/canonical_build_report.json:sha256:8ffde9cdc34b68e845e57f4b2016ceb67d64b653cbac082b9b7b83200f1c61f5",
+        "attestation:next453_set_stability_level_v1/host_harness_report.json:sha256:6f046d95f746ccf7663a977e6a698abe9283f9f3deac2d9e6adc9ed53c8b0b20",
+        "attestation:next453_set_stability_level_v1/source_sync_report.json:sha256:122407509ac04cc045c9844f5eac275f6a66e085b71d6a91f4b81e82f9ddd2a2"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus mechanically lifted stock AArch64 opcode and relocation parity, Joern, ASan/UBSan, reproducible Docker and KCFI evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "SUPPORTED_BY_OFFLINE_GATES",
       "source_file": "set_stability_level.c",
       "source_function": "set_stability_level",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 196,
       "stock_entry": "0010c23c",
       "stock_function": "set_stability_level",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
-    },
+      "mapping_note": "Offline exact: 49 AArch64 instructions/196 bytes, normalized relocations and exact stock strings, KCFI type 0xc3d43b4d with callback guard 0x6af8b499, strict Joern, two-cycle canonical Docker build and ASan/UBSan harness pass. Hardware remains DEFERRED."    },
     {
       "evidence": [
         "source:tp_sensibility_level_read.c:sha256:6cf4d25e19ea5f17b63a8ca1a4884c11245a318261018df7cf4871236b3e9f66",
@@ -7326,4 +7332,6 @@
   "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
   "status": "PARTIAL_SOURCE_MAP"
 }
+
+
 
