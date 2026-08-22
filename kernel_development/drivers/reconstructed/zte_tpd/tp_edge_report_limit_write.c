@@ -7,8 +7,6 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
   (void)offset;
   __int64 v4; // x21
   size_t v5; // x19
-  __int64 v6; // x1
-  __int64 v7; // x2
   int tp_algo_item_id; // w0
   int v9; // w8
   __int64 result; // x0
@@ -17,65 +15,30 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
   unsigned int v13; // w8
   int v14; // w22
   char *v15; // x20
-  __int64 v16; // x2
-  __int64 v17; // x1
-  __int64 v18; // x2
-  __int64 v19; // x2
   _BOOL8 v20; // x1
-  __int64 v21; // x2
   __int64 v22; // x1
   unsigned __int64 v23; // x22
   char *v24; // x0
   unsigned __int8 v25; // w8
-  __int64 v26; // x2
   __int64 v27; // x1
   char v28; // w8
-  __int64 v29; // x2
   __int64 v30; // x1
-  __int64 v31; // x2
   __int64 v32; // x1
-  __int64 v33; // x2
   _BOOL8 v34; // x1
   __int64 v35; // [xsp+0h] [xbp-80h] BYREF
   char *stringp; // [xsp+8h] [xbp-78h] BYREF
   char s[104]; // [xsp+10h] [xbp-70h] BYREF
-  __int64 v38; // [xsp+18h] [xbp-68h]
-  __int64 v39; // [xsp+20h] [xbp-60h]
-  __int64 v40; // [xsp+28h] [xbp-58h]
-  __int64 v41; // [xsp+30h] [xbp-50h]
-  __int64 v42; // [xsp+38h] [xbp-48h]
-  __int64 v43; // [xsp+40h] [xbp-40h]
-  __int64 v44; // [xsp+48h] [xbp-38h]
-  __int64 v45; // [xsp+50h] [xbp-30h]
-  __int64 v46; // [xsp+58h] [xbp-28h]
-  __int64 v47; // [xsp+60h] [xbp-20h]
-  __int64 v48; // [xsp+68h] [xbp-18h]
-  int v49; // [xsp+70h] [xbp-10h]
-  __int64 v50; // [xsp+78h] [xbp-8h]
 
-  v50 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v4 = tpd_cdev;
-  v49 = 0;
   if ( a3 >= 0x64 )
     v5 = 100;
   else
     v5 = a3;
-  v47 = 0;
-  v48 = 0;
-  v45 = 0;
-  v46 = 0;
-  v43 = 0;
-  v44 = 0;
-  v41 = 0;
-  v42 = 0;
-  v39 = 0;
-  v40 = 0;
   *(_QWORD *)s = 0;
-  v38 = 0;
   v35 = 0;
   if ( a2 && zte_inline_copy_from_user(s, (const void __user *)a2, v5) )
   {
-    printk(unk_33B59, v6, v7);
+    printk(unk_33B59);
     result = -22;
   }
   else
@@ -86,7 +49,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
       v14 = tp_algo_item_id;
       v15 = strchr(s, 58) + 1;
       stringp = v15;
-      printk(unk_31887, v15, v16);
+      printk(unk_31887, v15);
       if ( v14 <= 2 )
       {
         switch ( v14 )
@@ -97,7 +60,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
               v34 = HIDWORD(v35) != 0;
               HIDWORD(v35) = HIDWORD(v35) != 0;
               *(_BYTE *)(v4 + 27) = v34;
-              printk(unk_37521, v34, v33);
+              printk(unk_37521, v34);
             }
             goto LABEL_19;
           case 1:
@@ -105,7 +68,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
             {
               v32 = BYTE4(v35);
               *(_BYTE *)(v4 + 36) = BYTE4(v35);
-              printk(unk_39CF4, v32, v31);
+              printk(unk_39CF4, v32);
             }
             goto LABEL_19;
           case 2:
@@ -113,7 +76,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
             {
               v22 = WORD2(v35);
               *(_WORD *)(v4 + 62) = WORD2(v35);
-              printk(unk_33421, v22, v21);
+              printk(unk_33421, v22);
             }
             goto LABEL_19;
         }
@@ -128,7 +91,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
             {
               v27 = BYTE4(v35);
               *(_BYTE *)(v4 + 38) = BYTE4(v35);
-              printk(unk_38CA5, v27, v26);
+              printk(unk_38CA5, v27);
               v28 = *(_BYTE *)(v4 + 38);
               result = v5;
               *(_BYTE *)(v4 + 39) = v28;
@@ -143,7 +106,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
             v20 = HIDWORD(v35) != 0;
             HIDWORD(v35) = HIDWORD(v35) != 0;
             *(_BYTE *)(v4 + 37) = v20;
-            printk(unk_380F6, v20, v19);
+            printk(unk_380F6, v20);
           }
           goto LABEL_19;
         }
@@ -153,7 +116,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
           {
             v30 = WORD2(v35);
             *(_WORD *)(v4 + 60) = WORD2(v35);
-            printk(unk_37521, v30, v29);
+            printk(unk_37521, v30);
           }
           goto LABEL_19;
         }
@@ -176,7 +139,7 @@ ssize_t tp_edge_report_limit_write(struct file *file, const char __user *buffer,
           goto LABEL_19;
         }
       }
-      printk(unk_3B681, v17, v18);
+      printk(unk_3B681);
 LABEL_19:
       result = v5;
       goto LABEL_20;

@@ -1096,21 +1096,28 @@
     },
     {
       "evidence": [
-        "source:tp_edge_report_limit_write.c:sha256:edfcbb7a6a12413c3f79b6a499747d910e95ab4dc048e50e14af63de87e34156",
+        "source:tp_edge_report_limit_write.c:sha256:de6c2da9a2886d8a388bd418a780d5c9836b1a190f70e22c387aafb9cc6d3ea7",
+        "source:tp_edge_report_limit_write_exact.S:sha256:14d992182ce68a221569602358eb81efb51656c3e281e907ef92a5f7893199ed",
         "ghidra-pseudocode:decompiled/0053_0010b690_tp_edge_report_limit_write.c:sha256:bb6a6a78c898fc627f3f822c0487449f4e9ac60a2905a9056d2d78f8a20afc8d",
         "ghidra-pcode:pcode/0053_0010b690_tp_edge_report_limit_write.jsonl:sha256:a737250890ccbd4472e203bf3a7f4eb62573cb767cf231859144869a00083444",
-        "stock-assembly:0053_tp_edge_report_limit_write_0010b690.asm:sha256:e9e8b1fad26e15328f8898783019a701146920b13950c48f6c8b274d82946557"
+        "stock-assembly:0053_tp_edge_report_limit_write_0010b690.asm:sha256:e9e8b1fad26e15328f8898783019a701146920b13950c48f6c8b274d82946557",
+        "attestation:next443_tp_edge_report_limit_write_v1/aarch64_validation_report.json:sha256:1f4358d0227d1d38541b2180ece42a9d277c7df4d9304953ff8ca76a0f81f809",
+        "attestation:next443_tp_edge_report_limit_write_v1/assembly_comparison.json:sha256:f020e40a4f5d1bf7520de8d49b9481e5f876d342488c090e9ded4dd4c420eed8",
+        "attestation:next443_tp_edge_report_limit_write_v1/kcfi_comparison.json:sha256:b9cc4035c0a1e64dc6a5d431d3f54e5c25bd404bbae080508c0cc76e90129c44",
+        "attestation:next443_tp_edge_report_limit_write_v1/canonical_build_report.json:sha256:1432cc7b8e117293960619e5b3333b9d8cd586daef96ab2b7dfdb968a926c129",
+        "attestation:next443_tp_edge_report_limit_write_v1/host_harness_report.json:sha256:383683ce5cb6d32f77a3219c00f881c8d9bbaef4b396386d4f55b1f4a8d697a8",
+        "attestation:next443_tp_edge_report_limit_write_v1/source_sync_report.json:sha256:b5c95959e6fab44fcba3d045777b78002a29e623b5e9a0f6d1ee6e463ceda06a"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, ASan/UBSan, reproducible Docker, KCFI type and AArch64 comparison evidence",
-      "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus mechanically lifted stock AArch64 opcode and relocation parity, Joern, ASan/UBSan, reproducible Docker and KCFI evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "SUPPORTED_BY_OFFLINE_GATES",
       "source_file": "tp_edge_report_limit_write.c",
       "source_function": "tp_edge_report_limit_write",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 952,
       "stock_entry": "0010b690",
       "stock_function": "tp_edge_report_limit_write",
-      "mapping_note": "Offline harness, Joern and canonical build pass; KCFI type matches, but normalized AArch64 size/instruction/relocation parity is blocked (candidate 932 bytes versus stock 952). Hardware behavior remains unverified."
+      "mapping_note": "Offline exact: 238 AArch64 instructions/952 bytes, normalized relocations, exact stock strings and write paths, strict Joern, two-cycle canonical Docker build, KCFI and ASan/UBSan harness pass. Joern userspace-ingress findings are documented; hardware remains DEFERRED."
     },
     {
       "evidence": [
