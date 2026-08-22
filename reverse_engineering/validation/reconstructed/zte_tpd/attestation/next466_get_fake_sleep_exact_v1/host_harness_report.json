@@ -1,0 +1,43 @@
+{
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/get_fake_sleep_host_test.c",
+      "sha256": "0dfa6aac71284b41ba77776776bf92882695076cfa8c311442ce0c7bd7947867"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/get_fake_sleep.c",
+      "sha256": "5c993074d1c0759b4bc8deb895b3bda10293398e7121a588b72b067889b10993"
+    }
+  ],
+  "runs": [
+    {
+      "stdout": "PASS get_fake_sleep: 4 cases",
+      "passed": true,
+      "cycle": 1
+    },
+    {
+      "stdout": "PASS get_fake_sleep: 4 cases",
+      "passed": true,
+      "cycle": 2
+    }
+  ],
+  "schema_version": "1.0",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "reproducible_binary": true,
+  "passed": true,
+  "mode": "offline_direct_source_get_fake_sleep_asan_ubsan",
+  "expected_cases": 4,
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "limitations": [
+    "The host harness replaces system-register access, proc callback and user-buffer helpers with deterministic contracts.",
+    "The indirect callback guard is represented by the stock AArch64 sequence; physical callback behavior is not executed.",
+    "Assembly, KCFI, Ghidra, Joern, canonical build and hardware gates remain separate."
+  ],
+  "sanitizers": ["address", "undefined"],
+  "binary_sha256": "a3e0f8870dbb33a77f98a6b5bf3bd8f0500165701fb6f8fe2d8b4372af956249",
+  "repetitions": 2,
+  "target": "get_fake_sleep",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}
