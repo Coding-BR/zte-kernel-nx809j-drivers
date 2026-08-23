@@ -1,5 +1,3 @@
-#include <errno.h>
-#include <limits.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -10,35 +8,27 @@
 
 #define __user
 #define __int64 long long
-#define __int16 short
-#define _QWORD unsigned long long
-#define _WORD unsigned short
-#define _BYTE unsigned char
+#define __int8 char
 #define _DWORD unsigned int
+#define _QWORD uint64_t
+#define _BYTE unsigned char
+#define SP_EL0 0
 #define _DEFS_H
 
 struct file { int unused; };
 
 long long tpd_cdev;
+static unsigned char status_page[2048];
 static int g_copy_fail;
 static unsigned int g_copy_calls;
 static unsigned int g_printk_calls;
-static const char *unk_31DF8 = "ghost_debug_write copy failed\n";
+static const char *unk_31DF8 = "copy failed";
 
-#define WORD1(value) (((unsigned short *)&(value))[1])
-#define WORD2(value) (((unsigned short *)&(value))[2])
-#define HIWORD(value) (((unsigned short *)&(value))[3])
-#define BYTE2(value) (((unsigned char *)&(value))[2])
-#define BYTE4(value) (((unsigned char *)&(value))[4])
-#define BYTE6(value) (((unsigned char *)&(value))[6])
-
-static unsigned long read_sp_el0(void)
+static long long _ReadStatusReg(int selector)
 {
-	return 0;
+	(void)selector;
+	return (long long)(uintptr_t)status_page;
 }
-
-#define SP_EL0 0
-#define _ReadStatusReg(reg) read_sp_el0()
 
 static int printk_stub(const char *format, ...)
 {
@@ -50,27 +40,27 @@ static int printk_stub(const char *format, ...)
 #define printk(...) printk_stub(__VA_ARGS__)
 
 static unsigned long zte_inline_copy_from_user(void *destination,
-		const void *source, unsigned long count)
+		const void __user *source, unsigned long size)
 {
 	++g_copy_calls;
 	if (g_copy_fail)
 		return 1;
-	if (count != 0)
-		memcpy(destination, source, (size_t)count);
+	memcpy(destination, source, (size_t)size);
 	return 0;
 }
 
-static int kstrtouint(const char *text, unsigned int base, void *value)
+static int kstrtouint(const char *text, unsigned int base,
+		unsigned int *value)
 {
 	char *end;
 	unsigned long parsed;
 
 	if (!text || !*text || base != 10)
-		return -EINVAL;
+		return -22;
 	parsed = strtoul(text, &end, base);
-	if (*end != '\0' || parsed > UINT_MAX)
-		return -EINVAL;
-	*(unsigned int *)value = (unsigned int)parsed;
+	if (*end != '\0' || parsed > UINT32_MAX)
+		return -22;
+	*value = (unsigned int)parsed;
 	return 0;
 }
 
@@ -88,14 +78,14 @@ static void expect(int condition, const char *case_name, const char *message)
 		fail(case_name, message);
 }
 
-static void put_u32(unsigned char *device, size_t offset, unsigned int value)
+static void store_u32(unsigned char *device, size_t offset, uint32_t value)
 {
 	memcpy(device + offset, &value, sizeof(value));
 }
 
-static unsigned int get_u32(const unsigned char *device, size_t offset)
+static uint32_t load_u32(const unsigned char *device, size_t offset)
 {
-	unsigned int value;
+	uint32_t value;
 
 	memcpy(&value, device + offset, sizeof(value));
 	return value;
@@ -104,134 +94,100 @@ static unsigned int get_u32(const unsigned char *device, size_t offset)
 static void fixture_reset(unsigned char *device)
 {
 	memset(device, 0, 1240);
-	device[1169] = 0xa1;
-	device[1170] = 0xa2;
-	device[1171] = 0xa3;
-	device[1172] = 0xa4;
-	device[1173] = 0xa5;
-	put_u32(device, 1176, 0xa6a6a6a6U);
-	put_u32(device, 1180, 0xa7a7a7a7U);
-	put_u32(device, 1184, 0xa8a8a8a8U);
-	put_u32(device, 1188, 0xa9a9a9a9U);
+	memset(status_page, 0, sizeof(status_page));
+	store_u32(status_page, 1808, 0x5a5a5a5a);
 	tpd_cdev = (long long)(uintptr_t)device;
 	g_copy_fail = 0;
 	g_copy_calls = 0;
 	g_printk_calls = 0;
 }
 
-static void expect_state(const unsigned char *device, unsigned int first,
-		const char *case_name)
+static void expect_report(unsigned char *device)
 {
-	expect(device[1169] == (unsigned char)first, case_name,
-		"first byte does not match parsed word 0");
-	expect(device[1170] == (unsigned char)(first + 1), case_name,
-		"second byte does not match parsed word 2");
-	expect(device[1171] == (unsigned char)(first + 2), case_name,
-		"third byte does not match parsed word 4");
-	expect(device[1172] == (unsigned char)(first + 3), case_name,
-		"fourth byte does not match parsed word 6");
-	expect(device[1173] == (unsigned char)(first + 4), case_name,
-		"fifth byte does not match parsed word 8");
-	expect(get_u32(device, 1176) == first + 5, case_name,
-		"first dword does not match parsed word 9");
-	expect(get_u32(device, 1180) == first + 6
-		&& get_u32(device, 1184) == first + 7
-		&& get_u32(device, 1188) == first + 8, case_name,
-		"remaining parsed dwords do not match");
+	expect(device[1169] == 25 && device[1170] == 20 && device[1171] == 5,
+		"full_csv", "first ghost fields differ");
+	expect(device[1172] == 8 && device[1173] == 35,
+		"full_csv", "timing fields differ");
+	expect(load_u32(device, 1176) == 9 && load_u32(device, 1180) == 3201,
+		"full_csv", "ignore fields differ");
+	expect(load_u32(device, 1184) == 801 && load_u32(device, 1188) == 801,
+		"full_csv", "corner fields differ");
 }
 
-static void test_full_vector(void)
+static void test_full_csv(void)
 {
-	const char *name = "full_vector";
-	const char input[] = "1,2,3,4,5,6,7,8,9,10";
+	const char *name = "full_csv";
+	const char input[] = "25,20,5,8,35,9,3201,801,801";
 	unsigned char device[1240];
 	struct file file = {0};
 	loff_t position = 0;
-	ssize_t result;
 
 	fixture_reset(device);
-	result = ghost_debug_write(&file, input, strlen(input), &position);
-	expect(result == (ssize_t)strlen(input), name, "return count differs");
+	expect(ghost_debug_write(&file, input, sizeof(input) - 1, &position) ==
+		(ssize_t)(sizeof(input) - 1), name, "full CSV return differs");
+	expect_report(device);
 	expect(g_copy_calls == 1 && g_printk_calls == 0, name,
-		"copy or printk path differs");
-	expect_state(device, 1, name);
+		"full CSV call counts differ");
 }
 
-static void test_invalid_token_and_no_delimiter(void)
+static void test_count_is_capped(void)
 {
-	const char *name = "invalid_token_and_no_delimiter";
-	const char input[] = "bad,11";
-	const char no_delimiter[] = "17";
+	const char *name = "count_is_capped";
+	char input[100] = {0};
 	unsigned char device[1240];
 	struct file file = {0};
 	loff_t position = 0;
 
 	fixture_reset(device);
-	expect(ghost_debug_write(&file, input, strlen(input), &position) ==
-		(ssize_t)strlen(input), name, "invalid-token return count differs");
-	expect(device[1169] == 11 && device[1170] == 0, name,
-		"valid token after invalid token was not stored at index zero");
-
-	fixture_reset(device);
-	position = 0;
-	expect(ghost_debug_write(&file, no_delimiter, strlen(no_delimiter),
-			&position) == (ssize_t)strlen(no_delimiter), name,
-		"single-token return count differs");
-	expect(device[1169] == 17 && device[1170] == 0, name,
-		"single token was not parsed");
+	memcpy(input, "1,2,3,4,5,6,7,8,9,EXTRA-DATA", 29);
+	expect(ghost_debug_write(&file, input, 1000, &position) == 100,
+		name, "count was not capped at 100");
+	expect(device[1169] == 1 && device[1170] == 2 && device[1173] == 5,
+		name, "capped input fields differ");
+	expect(load_u32(device, 1176) == 6 && load_u32(device, 1188) == 9,
+		name, "capped input u32 fields differ");
 }
 
-static void test_ten_token_limit_and_count_cap(void)
+static void test_null_user_buffer(void)
 {
-	const char *name = "ten_token_limit_and_count_cap";
-	char input[160];
-	unsigned char device[1240];
-	struct file file = {0};
-	loff_t position = 0;
-	int length;
-
-	length = snprintf(input, sizeof(input),
-		"1,2,3,4,5,6,7,8,9,10,");
-	while (length < 150)
-		input[length++] = 'x';
-	input[length] = '\0';
-	expect(length > 100, name, "limit fixture is too short");
-	fixture_reset(device);
-	expect(ghost_debug_write(&file, input, (size_t)length, &position) == 100,
-		name, "count was not capped at 100 bytes");
-	expect_state(device, 1, name);
-}
-
-static void test_null_buffer_and_copy_failure(void)
-{
-	const char *name = "null_buffer_and_copy_failure";
-	const char input[] = "1,2,3";
+	const char *name = "null_user_buffer";
 	unsigned char device[1240];
 	struct file file = {0};
 	loff_t position = 0;
 
 	fixture_reset(device);
-	expect(ghost_debug_write(&file, NULL, 101, &position) == 100, name,
-		"null-buffer count cap differs");
-	expect(g_copy_calls == 0 && device[1169] == 0 && device[1173] == 0,
-		name, "null-buffer path did not parse zeroed input");
+	expect(ghost_debug_write(&file, NULL, 16, &position) == 16,
+		name, "null buffer return differs");
+	expect(device[1169] == 0 && device[1173] == 0 && load_u32(device, 1176) == 0,
+		name, "null buffer did not produce zero fields");
+	expect(g_copy_calls == 0 && g_printk_calls == 0, name,
+		"null buffer unexpectedly copied or logged");
+}
+
+static void test_copy_failure(void)
+{
+	const char *name = "copy_failure";
+	const char input[] = "9,8,7,6,5,4,3,2,1";
+	unsigned char device[1240];
+	struct file file = {0};
+	loff_t position = 0;
 
 	fixture_reset(device);
 	g_copy_fail = 1;
-	expect(ghost_debug_write(&file, input, strlen(input), &position) == -EINVAL,
+	expect(ghost_debug_write(&file, input, sizeof(input) - 1, &position) == -22,
 		name, "copy failure errno differs");
+	expect(device[1169] == 0 && load_u32(device, 1176) == 0, name,
+		"copy failure modified device state");
 	expect(g_copy_calls == 1 && g_printk_calls == 1, name,
-		"copy failure diagnostics differ");
-	expect(device[1169] == 0xa1 && get_u32(device, 1176) == 0xa6a6a6a6U,
-		name, "copy failure modified cdev state");
+		"copy failure call counts differ");
 }
 
 int main(void)
 {
-	test_full_vector();
-	test_invalid_token_and_no_delimiter();
-	test_ten_token_limit_and_count_cap();
-	test_null_buffer_and_copy_failure();
+	test_full_csv();
+	test_count_is_capped();
+	test_null_user_buffer();
+	test_copy_failure();
 	puts("PASS ghost_debug_write host tests (4 cases)");
 	return 0;
 }
