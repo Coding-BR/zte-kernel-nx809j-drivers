@@ -1773,18 +1773,23 @@
         "source:ghost_debug_read.c:sha256:990bee158d87147421025105bec824f0c3bc4439e998eeed85254f3bef538ae1",
         "ghidra-pseudocode:decompiled/0084_0010d57c_ghost_debug_read.c:sha256:aef76252f0bcec927e5acfbd5129d298614197ccabeefd8692685396efbcd8ad",
         "ghidra-pcode:pcode/0084_0010d57c_ghost_debug_read.jsonl:sha256:0ff5efe76c82399b934d009f3b4d379c2fd8af78b11b853d4c348585ba8d7a32",
-        "stock-assembly:0084_ghost_debug_read_0010d57c.asm:sha256:6e8ce4bff10a5beed7ef009986d669e0aca410f15b776fe8ce1aea0eee1d033f"
+        "stock-assembly:0084_ghost_debug_read_0010d57c.asm:sha256:dd0e06d8170f55d6e23b295aa4412ed863892e0fb0dfbec8b8d159c4f69c1d01",
+        "candidate-assembly:ghost_debug_read_exact.S:sha256:422adaff0e443a3e72f2596422e817002cf78ffc9a62029f7ecf2d2cf5dd093a",
+        "attestation:next472_ghost_debug_read_exact_v1/aarch64_validation_report.json",
+        "attestation:next472_ghost_debug_read_exact_v1/kcfi_comparison.json",
+        "attestation:next472_ghost_debug_read_exact_v1/host_harness_report.json",
+        "attestation:next472_ghost_debug_read_exact_v1/joern_final/joern_gate_report.json"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, ASan/UBSan, reproducible Docker, KCFI type and AArch64 comparison evidence",
-      "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern source-view gate, ASan/UBSan, reproducible Docker, KCFI type and exact AArch64 instruction/relocation comparison",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "ghost_debug_read.c",
       "source_function": "ghost_debug_read",
-      "status": "mapped_not_exact",
-      "stock_body_bytes": 800,
+      "status": "reviewed",
+      "stock_body_bytes": 848,
       "stock_entry": "0010d57c",
       "stock_function": "ghost_debug_read",
-      "mapping_note": "Offline harness, Joern and canonical build pass; KCFI type matches, but normalized AArch64 size/instruction/relocation parity is blocked (candidate 728 bytes versus stock 848). Hardware behavior remains unverified."
+      "mapping_note": "Offline exact: 212 AArch64 instructions/848 bytes, 75 normalized relocations, KCFI type 0xf4e9d97c, strict Joern pass using a documented parser-compatibility source view, two-cycle canonical Docker build and 4-case ASan/UBSan host harness pass. Hardware behavior remains DEFERRED."
     },
     {
       "evidence": [

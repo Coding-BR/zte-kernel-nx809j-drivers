@@ -153,3 +153,7 @@ AFLAGS_tp_zlog_debug_read_exact.o := -g0
 src-files := $(filter-out $(src)/tp_zlog_debug_write.c, $(src-files))
 obj-files += tp_zlog_debug_write_exact.o
 AFLAGS_tp_zlog_debug_write_exact.o := -g0
+
+src-files := $(filter-out $(src)/ghost_debug_read.c, $(src-files))
+obj-files += ghost_debug_read_exact.o
+AFLAGS_ghost_debug_read_exact.o := -g0 -I$(src)
