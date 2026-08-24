@@ -189,3 +189,7 @@ AFLAGS_tp_frame_data_write_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/tpd_sysfs_fwimage_show.c, $(src-files))
 obj-files += tpd_sysfs_fwimage_show_exact.o
 AFLAGS_tpd_sysfs_fwimage_show_exact.o := -g0 -I$(src)
+
+src-files := $(filter-out $(src)/tpd_sysfs_fwimage_store.c, $(src-files))
+obj-files += tpd_sysfs_fwimage_store_exact.o
+AFLAGS_tpd_sysfs_fwimage_store_exact.o := -g0 -I$(src)
