@@ -257,3 +257,7 @@ AFLAGS_tpd_id8_report_work_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/tpd_id9_report_work.c, $(src-files))
 obj-files += tpd_id9_report_work_exact.o
 AFLAGS_tpd_id9_report_work_exact.o := -g0 -I$(src)
+# Exact offline reconstruction: tpd_report_work_deinit
+src-files := $(filter-out $(src)/tpd_report_work_deinit.c, $(src-files))
+obj-files += tpd_report_work_deinit_exact.o
+AFLAGS_tpd_report_work_deinit_exact.o := -g0 -I$(src)
