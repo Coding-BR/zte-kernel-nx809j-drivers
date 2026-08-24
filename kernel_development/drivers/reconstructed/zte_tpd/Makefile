@@ -199,3 +199,6 @@ AFLAGS_zte_touch_deinit_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/tpd_touch_press.c, $(src-files))
 obj-files += tpd_touch_press_exact.o
 AFLAGS_tpd_touch_press_exact.o := -g0 -I$(src)
+src-files := $(filter-out $(src)/tpd_touch_release.c, $(src-files))
+obj-files += tpd_touch_release_exact.o
+AFLAGS_tpd_touch_release_exact.o := -g0 -I$(src)
