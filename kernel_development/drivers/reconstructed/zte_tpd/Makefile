@@ -269,3 +269,7 @@ AFLAGS_point_is_in_limit_area_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/edge_long_press_up.c, $(src-files))
 obj-files += edge_long_press_up_exact.o
 AFLAGS_edge_long_press_up_exact.o := -g0 -I$(src)
+# Exact offline reconstruction: change_tp_state
+src-files := $(filter-out $(src)/change_tp_state.c, $(src-files))
+obj-files += change_tp_state_exact.o
+AFLAGS_change_tp_state_exact.o := -g0 -I$(src)

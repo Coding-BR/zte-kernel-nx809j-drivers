@@ -28,14 +28,21 @@ def parse(path: pathlib.Path) -> list[tuple[str, list[tuple[str, str]]]]:
     return records
 
 
-def render(function: str, records: list[tuple[str, list[tuple[str, str]]]], rodata: str | None) -> str:
+def render(
+    function: str,
+    records: list[tuple[str, list[tuple[str, str]]]],
+    rodata: str | None,
+    kcfi_type_id: str | None,
+) -> str:
     lines = [
         '.section .text,"ax",@progbits',
         ".align 2",
         f".global {function}",
         f".type {function}, %function",
-        f"{function}:",
     ]
+    if kcfi_type_id:
+        lines.append(f"    .word 0x{kcfi_type_id.removeprefix('0x')}")
+    lines.append(f"{function}:")
     for word, relocations in records:
         lines.append(f"    .inst 0x{word}")
         for kind, target in relocations:
@@ -57,8 +64,14 @@ def main() -> int:
     parser.add_argument("--function", required=True)
     parser.add_argument("--output", type=pathlib.Path, required=True)
     parser.add_argument("--rodata-include")
+    parser.add_argument("--kcfi-type-id")
     args = parser.parse_args()
-    output = render(args.function, parse(args.assembly), args.rodata_include)
+    output = render(
+        args.function,
+        parse(args.assembly),
+        args.rodata_include,
+        args.kcfi_type_id,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(output, encoding="utf-8", newline="\n")
     print(f"WROTE {args.output} ({output.count('.inst ')} instructions)")
