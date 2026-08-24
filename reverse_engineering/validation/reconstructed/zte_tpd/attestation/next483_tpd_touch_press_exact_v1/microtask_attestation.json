@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "target": "tpd_touch_press",
+  "status": "OFFLINE_EXACT",
+  "promotion_claim": false,
+  "gates": {
+    "ghidra_pseudocode": "PASS_REVIEWED",
+    "ghidra_pcode": "PASS_INPUT_PRESENT",
+    "joern_strict": "PASS",
+    "source_sync": "PASS",
+    "canonical_docker_build": "PASS_TWO_CYCLES",
+    "aarch64_assembly": "PASS_EXACT_529_INSTRUCTIONS_2116_BYTES",
+    "relocations": "PASS",
+    "kcfi": "PASS_TYPE_ID_0x73b3656d",
+    "host_asan_ubsan": "PASS_TWO_REPRODUCIBLE_CYCLES",
+    "hardware": "DEFERRED_NO_SMARTPHONE_TEST"
+  },
+  "behavior_contract": [
+    "input/id validation and point-report state updates",
+    "limit-area and long-press suppression branches",
+    "jiffies/debounce handling and release path",
+    "touch reporting, input synchronization and point reset paths"
+  ],
+  "artifacts": {
+    "assembly": "assembly_comparison.json",
+    "kcfi": "kcfi_comparison.json",
+    "joern": "joern_final/joern_gate_report.json",
+    "canonical_build": "canonical_build_report.json",
+    "host_harness": "host_harness_report.json"
+  },
+  "limitations": [
+    "Exact offline parity is not proof of physical touch-controller behavior.",
+    "Runtime smartphone validation is intentionally postponed."
+  ]
+}
