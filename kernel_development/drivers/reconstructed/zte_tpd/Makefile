@@ -205,3 +205,6 @@ AFLAGS_tpd_touch_release_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/ghost_check_area.c, $(src-files))
 obj-files += ghost_check_area_exact.o
 AFLAGS_ghost_check_area_exact.o := -g0 -I$(src)
+src-files := $(filter-out $(src)/tp_ghost_check.c, $(src-files))
+obj-files += tp_ghost_check_exact.o
+AFLAGS_tp_ghost_check_exact.o := -g0 -I$(src)
