@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"tpd_sysfs_fwimage_show","type":"IF","code":"if (firmware == (struct firmware_data *)0 || firmware->data == 0) {\n\t\tprintk(\"Need set fw image size first\");\n\t\treturn -12;\n\t}","filename":"tpd_sysfs_fwimage_show.c","line":35},
+    {"method":"tpd_sysfs_fwimage_show","type":"IF","code":"if (firmware->size == 0) {\n\t\tprintk(\"Invalid firmware size\");\n\t\treturn -22;\n\t}","filename":"tpd_sysfs_fwimage_show.c","line":39},
+    {"method":"tpd_sysfs_fwimage_show","type":"IF","code":"if (available <= position) {\n\t\t*(unsigned int *)(tpd_cdev + 0x448) = 0;\n\t\tvfree(firmware->data);\n\t\tfirmware->data = 0;\n\t\tkfree(firmware);\n\t\t*(struct firmware_data **)(tpd_cdev + 0xc58) = 0;\n\t\tprintk(\"tpd, tp_firmware free.\\n\");\n\t\tmutex_unlock((struct mutex *)(tpd_cdev + 0xc60));\n\t\treturn 0;\n\t}","filename":"tpd_sysfs_fwimage_show.c","line":47},
+    {"method":"tpd_sysfs_fwimage_show","type":"IF","code":"if (position + count > available)\n\t\tcount = available - position;","filename":"tpd_sysfs_fwimage_show.c","line":57}
+  ]
+}
