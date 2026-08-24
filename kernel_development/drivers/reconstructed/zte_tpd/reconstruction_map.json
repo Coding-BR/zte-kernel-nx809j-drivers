@@ -1919,21 +1919,28 @@
     },
     {
       "evidence": [
-        "source:tp_frame_data_read.c:sha256:efab333b8babc691f0f6171cbd1a99bc9d6dea8b8438835b9178d60d4779b03c",
+        "source:tp_frame_data_read.c:sha256:665444858bec1736787a4ead7eb3ffd7a53f1295daa158845491202d059a361d",
         "ghidra-pseudocode:decompiled/0090_0010dd14_tp_frame_data_read.c:sha256:17de196cc2c8c1ecd681eb3f2ae529a44de4b52baa40904400f0e01de26434b4",
         "ghidra-pcode:pcode/0090_0010dd14_tp_frame_data_read.jsonl:sha256:ad2add300832279e45eca3bc29e030aeeccaf318c2586023a3800aa4a1bc7ad9",
-        "stock-assembly:0090_tp_frame_data_read_0010dd14.asm:sha256:49489c302f5be659a1f636a035f68aba3b30f5ca4b6d64c4fb6ad0236507544a"
+        "stock-assembly:0090_tp_frame_data_read_0010dd14.asm:sha256:49489c302f5be659a1f636a035f68aba3b30f5ca4b6d64c4fb6ad0236507544a",
+        "candidate-assembly-source:tp_frame_data_read_exact.S:sha256:cb765f385af66b493794c1a4fd1cfa5808d35619a3d2c601a25bdabba6f93449",
+        "assembly-comparison:attestation/next478_tp_frame_data_read_exact_v1/aarch64_validation_report.json",
+        "kcfi:attestation/next478_tp_frame_data_read_exact_v1/kcfi_comparison.json",
+        "harness:attestation/next478_tp_frame_data_read_exact_v1/host_harness_report.json",
+        "joern:attestation/next478_tp_frame_data_read_exact_v1/joern_final/joern_gate_report.json",
+        "canonical:attestation/next478_tp_frame_data_read_exact_v1/canonical_build_report.json",
+        "sync:attestation/next478_tp_frame_data_read_exact_v1/source_sync_report.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, strict Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_frame_data_read.c",
       "source_function": "tp_frame_data_read",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 240,
       "stock_entry": "0010dd14",
       "stock_function": "tp_frame_data_read",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline exact: 60 AArch64 instructions/240 bytes, 12 normalized relocations, KCFI type 0xf4e9d97c, strict Joern pass using a documented parser-compatibility source view, two-cycle canonical Docker build and 4-case ASan/UBSan host harness pass. The callback offset was corrected from Ghidra's 0xe48 rendering to the 0x1000 offset confirmed by stock P-Code/assembly; the stock CFI breakpoint is retained in the exact assembly. Hardware behavior remains DEFERRED."
     },
     {
       "evidence": [

@@ -177,3 +177,7 @@ AFLAGS_tp_test_read_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/tp_test_write.c, $(src-files))
 obj-files += tp_test_write_exact.o
 AFLAGS_tp_test_write_exact.o := -g0 -I$(src)
+
+src-files := $(filter-out $(src)/tp_frame_data_read.c, $(src-files))
+obj-files += tp_frame_data_read_exact.o
+AFLAGS_tp_frame_data_read_exact.o := -g0 -I$(src)
