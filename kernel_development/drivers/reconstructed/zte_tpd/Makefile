@@ -165,3 +165,7 @@ AFLAGS_ghost_debug_write_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/tp_BBAT_test_read.c, $(src-files))
 obj-files += tp_BBAT_test_read_exact.o
 AFLAGS_tp_BBAT_test_read_exact.o := -g0 -I$(src)
+
+src-files := $(filter-out $(src)/tp_BBAT_test_write.c, $(src-files))
+obj-files += tp_BBAT_test_write_exact.o
+AFLAGS_tp_BBAT_test_write_exact.o := -g0 -I$(src)
