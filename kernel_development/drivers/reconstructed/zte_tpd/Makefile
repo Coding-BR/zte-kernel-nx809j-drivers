@@ -214,3 +214,6 @@ AFLAGS_ghost_check_reset_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/tpd_clean_all_event.c, $(src-files))
 obj-files += tpd_clean_all_event_exact.o
 AFLAGS_tpd_clean_all_event_exact.o := -g0 -I$(src)
+src-files := $(filter-out $(src)/tpd_report_work_init.c, $(src-files))
+obj-files += tpd_report_work_init_exact.o
+AFLAGS_tpd_report_work_init_exact.o := -g0 -I$(src)
