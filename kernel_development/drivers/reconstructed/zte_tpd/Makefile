@@ -265,3 +265,7 @@ AFLAGS_tpd_report_work_deinit_exact.o := -g0 -I$(src)
 src-files := $(filter-out $(src)/point_is_in_limit_area.c, $(src-files))
 obj-files += point_is_in_limit_area_exact.o
 AFLAGS_point_is_in_limit_area_exact.o := -g0 -I$(src)
+# Exact offline reconstruction: edge_long_press_up
+src-files := $(filter-out $(src)/edge_long_press_up.c, $(src-files))
+obj-files += edge_long_press_up_exact.o
+AFLAGS_edge_long_press_up_exact.o := -g0 -I$(src)
