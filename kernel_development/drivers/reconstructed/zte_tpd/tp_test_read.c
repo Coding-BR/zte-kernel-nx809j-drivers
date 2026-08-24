@@ -25,7 +25,7 @@ ssize_t tp_test_read(struct file *file, char __user *buffer, size_t count, loff_
   if ( !v5 )
   {
     v8 = tpd_cdev;
-    v10 = *(unsigned __int8 *)(tpd_cdev + 2632);
+    v10 = *(unsigned __int8 *)(tpd_cdev + 0xC00);
     if ( (_DWORD)v10 == 255 )
     {
       printk(unk_3CABE, *(unsigned __int8 *)(tpd_cdev + 1094), a3);
