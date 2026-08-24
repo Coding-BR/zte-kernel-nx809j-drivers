@@ -27,14 +27,49 @@ src-files := $(filter-out $(src)/syna_dev_set_follow_hand_level.c, $(src-files))
 src-files := $(filter-out $(src)/syna_dev_set_stability_level.c, $(src-files))
 src-files := $(filter-out $(src)/syna_dev_set_display_rotation.c, $(src-files))
 src-files := $(filter-out $(src)/syna_recovery_game_mode_after_reset.c, $(src-files))
-src-files := $(filter-out $(src)/syna_ts_check_dt.c, $(src-files))
 src-files := $(filter-out $(src)/tp_game_partition_read.c, $(src-files))
 src-files := $(filter-out $(src)/tp_game_partition_write.c, $(src-files))
 src-files := $(filter-out $(src)/tp_fold_state_read.c, $(src-files))
+src-files := $(filter-out $(src)/syna_ts_check_dt.c, $(src-files))
 src-files := $(filter-out $(src)/tp_fold_state_write.c, $(src-files))
 src-files := $(filter-out $(src)/get_fake_sleep.c, $(src-files))
 src-files := $(filter-out $(src)/set_fake_sleep.c, $(src-files))
 src-files := $(filter-out $(src)/get_screen_off_awake.c, $(src-files))
+src-files := $(filter-out $(src)/set_screen_off_awake.c, $(src-files))
+src-files := $(filter-out $(src)/tp_zlog_debug_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_zlog_debug_write.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_debug_read.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_debug_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_BBAT_test_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_BBAT_test_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_test_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_test_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_frame_data_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_frame_data_write.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_sysfs_fwimage_show.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_sysfs_fwimage_store.c, $(src-files))
+src-files := $(filter-out $(src)/zte_touch_deinit.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_touch_press.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_touch_release.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_check_area.c, $(src-files))
+src-files := $(filter-out $(src)/tp_ghost_check.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_check_reset.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_clean_all_event.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_report_work_init.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id0_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id1_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id2_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id3_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id4_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id5_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id6_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id7_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id8_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id9_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_report_work_deinit.c, $(src-files))
+src-files := $(filter-out $(src)/point_is_in_limit_area.c, $(src-files))
+src-files := $(filter-out $(src)/edge_long_press_up.c, $(src-files))
+src-files := $(filter-out $(src)/change_tp_state.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += tp_edge_report_limit_write_exact.o
@@ -55,7 +90,6 @@ obj-files += syna_dev_set_follow_hand_level_exact.o
 obj-files += syna_dev_set_stability_level_exact.o
 obj-files += syna_dev_set_display_rotation_exact.o
 obj-files += syna_recovery_game_mode_after_reset_exact.o
-obj-files += syna_ts_check_dt_exact.o
 obj-files += tp_game_partition_read_exact.o
 obj-files += tp_game_partition_write_exact.o
 obj-files += tp_fold_state_read_exact.o
@@ -63,6 +97,42 @@ obj-files += tp_fold_state_write_exact.o
 obj-files += get_fake_sleep_exact.o
 obj-files += set_fake_sleep_exact.o
 obj-files += get_screen_off_awake_exact.o
+obj-files += set_screen_off_awake_exact.o
+obj-files += tp_zlog_debug_read_exact.o
+obj-files += tp_zlog_debug_write_exact.o
+obj-files += ghost_debug_read_exact.o
+obj-files += ghost_debug_write_exact.o
+obj-files += tp_BBAT_test_read_exact.o
+obj-files += tp_BBAT_test_write_exact.o
+obj-files += tp_test_read_exact.o
+obj-files += tp_test_write_exact.o
+obj-files += tp_frame_data_read_exact.o
+obj-files += tp_frame_data_write_exact.o
+obj-files += tpd_sysfs_fwimage_show_exact.o
+obj-files += tpd_sysfs_fwimage_store_exact.o
+obj-files += zte_touch_deinit_exact.o
+obj-files += tpd_touch_press_exact.o
+obj-files += tpd_touch_release_exact.o
+obj-files += ghost_check_area_exact.o
+obj-files += tp_ghost_check_exact.o
+obj-files += ghost_check_reset_exact.o
+obj-files += tpd_clean_all_event_exact.o
+obj-files += tpd_report_work_init_exact.o
+obj-files += tpd_id0_report_work_exact.o
+obj-files += tpd_id1_report_work_exact.o
+obj-files += tpd_id2_report_work_exact.o
+obj-files += tpd_id3_report_work_exact.o
+obj-files += tpd_id4_report_work_exact.o
+obj-files += tpd_id5_report_work_exact.o
+obj-files += tpd_id6_report_work_exact.o
+obj-files += tpd_id7_report_work_exact.o
+obj-files += tpd_id8_report_work_exact.o
+obj-files += tpd_id9_report_work_exact.o
+obj-files += tpd_report_work_deinit_exact.o
+obj-files += point_is_in_limit_area_exact.o
+obj-files += edge_long_press_up_exact.o
+obj-files += change_tp_state_exact.o
+obj-files += syna_ts_check_dt_exact.o
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -76,6 +146,7 @@ AFLAGS_tp_edge_report_limit_read_exact.o := -g0
 AFLAGS_get_one_key_exact.o := -g0
 AFLAGS_set_one_key_exact.o := -g0
 AFLAGS_get_play_game_exact.o := -g0
+AFLAGS_set_play_game_exact.o := -g0
 AFLAGS_get_tp_report_rate_exact.o := -g0
 AFLAGS_set_tp_report_rate_exact.o := -g0
 AFLAGS_get_follow_hand_level_exact.o := -g0
@@ -89,7 +160,6 @@ AFLAGS_syna_dev_set_follow_hand_level_exact.o := -g0
 AFLAGS_syna_dev_set_stability_level_exact.o := -g0
 AFLAGS_syna_dev_set_display_rotation_exact.o := -g0
 AFLAGS_syna_recovery_game_mode_after_reset_exact.o := -g0
-AFLAGS_syna_ts_check_dt_exact.o := -g0
 AFLAGS_tp_game_partition_read_exact.o := -g0
 AFLAGS_tp_game_partition_write_exact.o := -g0
 AFLAGS_tp_fold_state_read_exact.o := -g0
@@ -97,6 +167,42 @@ AFLAGS_tp_fold_state_write_exact.o := -g0
 AFLAGS_get_fake_sleep_exact.o := -g0
 AFLAGS_set_fake_sleep_exact.o := -g0
 AFLAGS_get_screen_off_awake_exact.o := -g0
+AFLAGS_set_screen_off_awake_exact.o := -g0
+AFLAGS_tp_zlog_debug_read_exact.o := -g0
+AFLAGS_tp_zlog_debug_write_exact.o := -g0
+AFLAGS_ghost_debug_read_exact.o := -g0 -I$(src)
+AFLAGS_ghost_debug_write_exact.o := -g0 -I$(src)
+AFLAGS_tp_BBAT_test_read_exact.o := -g0 -I$(src)
+AFLAGS_tp_BBAT_test_write_exact.o := -g0 -I$(src)
+AFLAGS_tp_test_read_exact.o := -g0 -I$(src)
+AFLAGS_tp_test_write_exact.o := -g0 -I$(src)
+AFLAGS_tp_frame_data_read_exact.o := -g0 -I$(src)
+AFLAGS_tp_frame_data_write_exact.o := -g0 -I$(src)
+AFLAGS_tpd_sysfs_fwimage_show_exact.o := -g0 -I$(src)
+AFLAGS_tpd_sysfs_fwimage_store_exact.o := -g0 -I$(src)
+AFLAGS_zte_touch_deinit_exact.o := -g0 -I$(src)
+AFLAGS_tpd_touch_press_exact.o := -g0 -I$(src)
+AFLAGS_tpd_touch_release_exact.o := -g0 -I$(src)
+AFLAGS_ghost_check_area_exact.o := -g0 -I$(src)
+AFLAGS_tp_ghost_check_exact.o := -g0 -I$(src)
+AFLAGS_ghost_check_reset_exact.o := -g0 -I$(src)
+AFLAGS_tpd_clean_all_event_exact.o := -g0 -I$(src)
+AFLAGS_tpd_report_work_init_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id0_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id1_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id2_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id3_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id4_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id5_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id6_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id7_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id8_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id9_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_report_work_deinit_exact.o := -g0 -I$(src)
+AFLAGS_point_is_in_limit_area_exact.o := -g0 -I$(src)
+AFLAGS_edge_long_press_up_exact.o := -g0 -I$(src)
+AFLAGS_change_tp_state_exact.o := -g0 -I$(src)
+AFLAGS_syna_ts_check_dt_exact.o := -g0
 
 obj-m += zte_tpd.o
 zte_tpd-objs := syna_dev_set_sensibility_level_exact.o globals.o $(obj-files)
@@ -120,12 +226,21 @@ CFLAGS_tpd_touch_report.o := -fno-sanitize=kcfi
 CFLAGS__inline_copy_from_user.o := -fno-sanitize=kcfi
 # Stock point_report_reset@0010ea98 has no valid KCFI entry preamble.
 CFLAGS_point_report_reset.o := -fno-sanitize=kcfi
+# Stock ghost_check_area@0010f2ac has no valid KCFI entry preamble.
+CFLAGS_ghost_check_area.o := -fno-sanitize=kcfi
 # Stock syna_dev_enter_normal_sensing@00114294 has no valid KCFI entry preamble.
 CFLAGS_syna_dev_enter_normal_sensing.o := -fno-sanitize=kcfi
+# Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
+CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
 # Stock syna_tcm_buf_unlock@0011ee40 has no valid KCFI entry preamble.
 CFLAGS_syna_tcm_buf_unlock.o := -fno-sanitize=kcfi
 # Stock syna_tcm_buf_unlock@00122140 has no valid KCFI entry preamble.
 CFLAGS_syna_tcm_buf_unlock_0.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: suspend_tp_need_awake
+src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
+obj-files += suspend_tp_need_awake_exact.o
+AFLAGS_suspend_tp_need_awake_exact.o := -g0 -I$(src)
 
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
@@ -139,137 +254,3 @@ ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-Wno-incompatible-library-redeclaration -Wno-return-type \
 	-Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label \
 	-Wframe-larger-than=8192
-# Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
-CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
-
-src-files := $(filter-out $(src)/set_screen_off_awake.c, $(src-files))
-obj-files += set_screen_off_awake_exact.o
-AFLAGS_set_screen_off_awake_exact.o := -g0
-
-src-files := $(filter-out $(src)/tp_zlog_debug_read.c, $(src-files))
-obj-files += tp_zlog_debug_read_exact.o
-AFLAGS_tp_zlog_debug_read_exact.o := -g0
-
-src-files := $(filter-out $(src)/tp_zlog_debug_write.c, $(src-files))
-obj-files += tp_zlog_debug_write_exact.o
-AFLAGS_tp_zlog_debug_write_exact.o := -g0
-
-src-files := $(filter-out $(src)/ghost_debug_read.c, $(src-files))
-obj-files += ghost_debug_read_exact.o
-AFLAGS_ghost_debug_read_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/ghost_debug_write.c, $(src-files))
-obj-files += ghost_debug_write_exact.o
-AFLAGS_ghost_debug_write_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tp_BBAT_test_read.c, $(src-files))
-obj-files += tp_BBAT_test_read_exact.o
-AFLAGS_tp_BBAT_test_read_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tp_BBAT_test_write.c, $(src-files))
-obj-files += tp_BBAT_test_write_exact.o
-AFLAGS_tp_BBAT_test_write_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tp_test_read.c, $(src-files))
-obj-files += tp_test_read_exact.o
-AFLAGS_tp_test_read_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tp_test_write.c, $(src-files))
-obj-files += tp_test_write_exact.o
-AFLAGS_tp_test_write_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tp_frame_data_read.c, $(src-files))
-obj-files += tp_frame_data_read_exact.o
-AFLAGS_tp_frame_data_read_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tp_frame_data_write.c, $(src-files))
-obj-files += tp_frame_data_write_exact.o
-AFLAGS_tp_frame_data_write_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tpd_sysfs_fwimage_show.c, $(src-files))
-obj-files += tpd_sysfs_fwimage_show_exact.o
-AFLAGS_tpd_sysfs_fwimage_show_exact.o := -g0 -I$(src)
-
-src-files := $(filter-out $(src)/tpd_sysfs_fwimage_store.c, $(src-files))
-obj-files += tpd_sysfs_fwimage_store_exact.o
-AFLAGS_tpd_sysfs_fwimage_store_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/zte_touch_deinit.c, $(src-files))
-obj-files += zte_touch_deinit_exact.o
-AFLAGS_zte_touch_deinit_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/tpd_touch_press.c, $(src-files))
-obj-files += tpd_touch_press_exact.o
-AFLAGS_tpd_touch_press_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/tpd_touch_release.c, $(src-files))
-obj-files += tpd_touch_release_exact.o
-AFLAGS_tpd_touch_release_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/ghost_check_area.c, $(src-files))
-obj-files += ghost_check_area_exact.o
-AFLAGS_ghost_check_area_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/tp_ghost_check.c, $(src-files))
-obj-files += tp_ghost_check_exact.o
-AFLAGS_tp_ghost_check_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/ghost_check_reset.c, $(src-files))
-obj-files += ghost_check_reset_exact.o
-AFLAGS_ghost_check_reset_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/tpd_clean_all_event.c, $(src-files))
-obj-files += tpd_clean_all_event_exact.o
-AFLAGS_tpd_clean_all_event_exact.o := -g0 -I$(src)
-src-files := $(filter-out $(src)/tpd_report_work_init.c, $(src-files))
-obj-files += tpd_report_work_init_exact.o
-AFLAGS_tpd_report_work_init_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id0_report_work
-src-files := $(filter-out $(src)/tpd_id0_report_work.c, $(src-files))
-obj-files += tpd_id0_report_work_exact.o
-AFLAGS_tpd_id0_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id1_report_work
-src-files := $(filter-out $(src)/tpd_id1_report_work.c, $(src-files))
-obj-files += tpd_id1_report_work_exact.o
-AFLAGS_tpd_id1_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id2_report_work
-src-files := $(filter-out $(src)/tpd_id2_report_work.c, $(src-files))
-obj-files += tpd_id2_report_work_exact.o
-AFLAGS_tpd_id2_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id3_report_work
-src-files := $(filter-out $(src)/tpd_id3_report_work.c, $(src-files))
-obj-files += tpd_id3_report_work_exact.o
-AFLAGS_tpd_id3_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id4_report_work
-src-files := $(filter-out $(src)/tpd_id4_report_work.c, $(src-files))
-obj-files += tpd_id4_report_work_exact.o
-AFLAGS_tpd_id4_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id5_report_work
-src-files := $(filter-out $(src)/tpd_id5_report_work.c, $(src-files))
-obj-files += tpd_id5_report_work_exact.o
-AFLAGS_tpd_id5_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id6_report_work
-src-files := $(filter-out $(src)/tpd_id6_report_work.c, $(src-files))
-obj-files += tpd_id6_report_work_exact.o
-AFLAGS_tpd_id6_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id7_report_work
-src-files := $(filter-out $(src)/tpd_id7_report_work.c, $(src-files))
-obj-files += tpd_id7_report_work_exact.o
-AFLAGS_tpd_id7_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id8_report_work
-src-files := $(filter-out $(src)/tpd_id8_report_work.c, $(src-files))
-obj-files += tpd_id8_report_work_exact.o
-AFLAGS_tpd_id8_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_id9_report_work
-src-files := $(filter-out $(src)/tpd_id9_report_work.c, $(src-files))
-obj-files += tpd_id9_report_work_exact.o
-AFLAGS_tpd_id9_report_work_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: tpd_report_work_deinit
-src-files := $(filter-out $(src)/tpd_report_work_deinit.c, $(src-files))
-obj-files += tpd_report_work_deinit_exact.o
-AFLAGS_tpd_report_work_deinit_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: point_is_in_limit_area
-src-files := $(filter-out $(src)/point_is_in_limit_area.c, $(src-files))
-obj-files += point_is_in_limit_area_exact.o
-AFLAGS_point_is_in_limit_area_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: edge_long_press_up
-src-files := $(filter-out $(src)/edge_long_press_up.c, $(src-files))
-obj-files += edge_long_press_up_exact.o
-AFLAGS_edge_long_press_up_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: change_tp_state
-src-files := $(filter-out $(src)/change_tp_state.c, $(src-files))
-obj-files += change_tp_state_exact.o
-AFLAGS_change_tp_state_exact.o := -g0 -I$(src)

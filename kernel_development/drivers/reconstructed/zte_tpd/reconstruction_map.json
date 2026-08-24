@@ -2656,21 +2656,22 @@
     },
     {
       "evidence": [
-        "source:suspend_tp_need_awake.c:sha256:4c71415c0bd3169322530b4d89828a3b6a4c0c238992728b01d8e168a98896e2",
+        "source:suspend_tp_need_awake.c:sha256:e13c6c0aa423baec4af3771fd0134963e96b1cb9ccb5283983f03bf70e375dc9",
         "ghidra-pseudocode:decompiled/0118_0011049c_suspend_tp_need_awake.c:sha256:cdebb5337985da0cbed0482141941476ddc14ef9b992d2bfc992a7b2f4979fe7",
         "ghidra-pcode:pcode/0118_0011049c_suspend_tp_need_awake.jsonl:sha256:81f9b9d0a07fac79c3afb228c0c8ba465032956389f1df4a67a076d109007a16",
-        "stock-assembly:0118_suspend_tp_need_awake_0011049c.asm:sha256:5713c31d54db90ffea84ce72ffac844fa9311acac99fbeba297f5cd7aa6da8ba"
+        "stock-assembly:0118_suspend_tp_need_awake_0011049c.asm:sha256:5713c31d54db90ffea84ce72ffac844fa9311acac99fbeba297f5cd7aa6da8ba",
+        "attestation:next504_suspend_tp_need_awake_exact_v1/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "suspend_tp_need_awake.c",
       "source_function": "suspend_tp_need_awake",
-      "status": "mapped_not_exact",
+      "status": "reviewed",
       "stock_body_bytes": 80,
       "stock_entry": "0011049c",
       "stock_function": "suspend_tp_need_awake",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity is attested at 20 AArch64 instructions and 80 bytes; the candidate preserves the stock tpd_cdev callback slot at 0xe68 and KCFI type 0x6fbb3035. Android runtime and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
