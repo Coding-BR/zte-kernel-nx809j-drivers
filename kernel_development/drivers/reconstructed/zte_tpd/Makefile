@@ -256,3 +256,4 @@ ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-Wno-incompatible-library-redeclaration -Wno-return-type \
 	-Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label \
 	-Wframe-larger-than=8192
+CFLAGS_syna_dev_set_up_input_device.o := -fno-sanitize=kcfi
