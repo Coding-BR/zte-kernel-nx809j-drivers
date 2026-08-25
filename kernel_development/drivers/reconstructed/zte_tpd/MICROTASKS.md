@@ -243,7 +243,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 237_syna_pal_mem_cpy | syna_pal_mem_cpy | 0011d67c | core_logic | syna_pal_mem_cpy.c:syna_pal_mem_cpy | PASS |
 | 238_syna_tcm_testing_0001_check_device_id | syna_tcm_testing_0001_check_device_id | 0011d6e4 | core_logic | syna_tcm_testing_0001_check_device_id.c:syna_tcm_testing_0001_check_device_id | PROMOTED_OFFLINE_EXACT |
 | 239_syna_tcm_get_testing_0002 | syna_tcm_get_testing_0002 | 0011d79c | core_logic | syna_tcm_get_testing_0002.c:syna_tcm_get_testing_0002 | PROMOTED_OFFLINE_EXACT |
-| 240_syna_tcm_testing_config_id | syna_tcm_testing_config_id | 0011d7ac | core_logic | syna_tcm_testing_config_id.c:syna_tcm_testing_config_id | READY_FOR_IMPLEMENTATION |
+| 240_syna_tcm_testing_config_id | syna_tcm_testing_config_id | 0011d7ac | core_logic | syna_tcm_testing_config_id.c:syna_tcm_testing_config_id | PROMOTED_OFFLINE_EXACT |
 | 241_syna_tcm_buf_alloc | syna_tcm_buf_alloc | 0011d940 | core_logic | syna_tcm_buf_alloc_0.c:syna_tcm_buf_alloc_0 | READY_FOR_IMPLEMENTATION |
 | 242_syna_pal_mem_cpy | syna_pal_mem_cpy | 0011da1c | core_logic | syna_pal_mem_cpy_0.c:syna_pal_mem_cpy_0 | PASS |
 | 243_syna_tcm_testing_0002_check_config_id | syna_tcm_testing_0002_check_config_id | 0011da70 | core_logic | syna_tcm_testing_0002_check_config_id.c:syna_tcm_testing_0002_check_config_id | READY_FOR_IMPLEMENTATION |
