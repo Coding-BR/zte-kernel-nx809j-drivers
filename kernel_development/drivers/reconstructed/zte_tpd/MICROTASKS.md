@@ -280,7 +280,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 274_syna_tcm_enable_report | syna_tcm_enable_report | 0012231c | core_logic | syna_tcm_enable_report.c:syna_tcm_enable_report | PROMOTED_OFFLINE_EXACT |
 | 275_syna_tcm_wait_for_report | syna_tcm_wait_for_report | 0012248c | core_logic | syna_tcm_wait_for_report.c:syna_tcm_wait_for_report | PROMOTED_OFFLINE_EXACT |
 | 276_syna_tcm_switch_fw_mode | syna_tcm_switch_fw_mode | 001226ec | core_logic | syna_tcm_switch_fw_mode.c:syna_tcm_switch_fw_mode | PROMOTED_OFFLINE_EXACT |
-| 277_syna_tcm_get_boot_info | syna_tcm_get_boot_info | 001229c8 | core_logic | syna_tcm_get_boot_info.c:syna_tcm_get_boot_info | READY_FOR_IMPLEMENTATION |
+| 277_syna_tcm_get_boot_info | syna_tcm_get_boot_info | 001229c8 | core_logic | syna_tcm_get_boot_info.c:syna_tcm_get_boot_info | PROMOTED_OFFLINE_EXACT |
 | 278_syna_tcm_get_app_info | syna_tcm_get_app_info | 00122c08 | core_logic | syna_tcm_get_app_info.c:syna_tcm_get_app_info | READY_FOR_IMPLEMENTATION |
 | 279_syna_tcm_get_static_config | syna_tcm_get_static_config | 00122eac | core_logic | syna_tcm_get_static_config.c:syna_tcm_get_static_config | PASS |
 | 280_syna_tcm_set_static_config | syna_tcm_set_static_config | 001230dc | core_logic | syna_tcm_set_static_config.c:syna_tcm_set_static_config | PASS |
