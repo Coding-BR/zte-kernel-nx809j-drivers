@@ -255,7 +255,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 249_syna_tcm_get_testing_0500 | syna_tcm_get_testing_0500 | 0011e204 | core_logic | syna_tcm_get_testing_0500.c:syna_tcm_get_testing_0500 | PROMOTED_OFFLINE_EXACT |
 | 250_syna_tcm_testing_full_raw | syna_tcm_testing_full_raw | 0011e214 | core_logic | syna_tcm_testing_full_raw.c:syna_tcm_testing_full_raw | PROMOTED_OFFLINE_EXACT |
 | 251_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011e454 | core_logic | syna_tcm_buf_copy_1.c:syna_tcm_buf_copy_1 | PROMOTED_OFFLINE_EXACT |
-| 252_syna_tcm_testing_check_frame_data | syna_tcm_testing_check_frame_data | 0011e6d4 | core_logic | syna_tcm_testing_check_frame_data_0.c:syna_tcm_testing_check_frame_data_0 | READY_FOR_IMPLEMENTATION |
+| 252_syna_tcm_testing_check_frame_data | syna_tcm_testing_check_frame_data | 0011e6d4 | core_logic | syna_tcm_testing_check_frame_data_0.c:syna_tcm_testing_check_frame_data_0 | PROMOTED_OFFLINE_EXACT |
 | 253_syna_tcm_testing_0500_check_upper_bound | syna_tcm_testing_0500_check_upper_bound | 0011e844 | core_logic | syna_tcm_testing_0500_check_upper_bound.c:syna_tcm_testing_0500_check_upper_bound | PASS |
 | 254_syna_tcm_testing_0500_check_lower_bound | syna_tcm_testing_0500_check_lower_bound | 0011e8ac | core_logic | syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound | PASS |
 | 255_syna_tcm_v1_detect | syna_tcm_v1_detect | 0011e914 | core_logic | syna_tcm_v1_detect.c:syna_tcm_v1_detect | READY_FOR_IMPLEMENTATION |
