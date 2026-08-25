@@ -54,6 +54,9 @@ int printk(const char *format, ...)
 	return 0;
 }
 
+void mutex_init(void *lock);
+void devm_kfree(struct device *device, void *memory);
+
 #include "../../../reconstructed/zte_tpd/syna_tcm_update_lockdown_config.c"
 
 static void put_le32(u8 *bytes, u32 value)

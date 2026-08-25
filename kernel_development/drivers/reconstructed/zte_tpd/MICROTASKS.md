@@ -308,7 +308,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 302_syna_tcm_do_fw_update_ex | syna_tcm_do_fw_update_ex | 00125c18 | core_logic | syna_tcm_do_fw_update_ex.c:syna_tcm_do_fw_update_ex | PROMOTED_OFFLINE_EXACT |
 | 303_syna_tcm_update_flash_block | syna_tcm_update_flash_block | 00125f38 | core_logic | syna_tcm_update_flash_block.c:syna_tcm_update_flash_block | PROMOTED_OFFLINE_EXACT |
 | 304_syna_tcm_do_fw_update | syna_tcm_do_fw_update | 001267b0 | core_logic | syna_tcm_do_fw_update.c:syna_tcm_do_fw_update | PROMOTED_OFFLINE_EXACT |
-| 305_syna_tcm_update_lockdown_config | syna_tcm_update_lockdown_config | 00126aec | core_logic | syna_tcm_update_lockdown_config.c:syna_tcm_update_lockdown_config | READY_FOR_IMPLEMENTATION |
+| 305_syna_tcm_update_lockdown_config | syna_tcm_update_lockdown_config | 00126aec | core_logic | syna_tcm_update_lockdown_config.c:syna_tcm_update_lockdown_config | PROMOTED_OFFLINE_EXACT |
 | 306_syna_tcm_check_flash_block | syna_tcm_check_flash_block | 00126e70 | core_logic | syna_tcm_check_flash_block.c:syna_tcm_check_flash_block | READY_FOR_IMPLEMENTATION |
 | 307_syna_tcm_write_flash | syna_tcm_write_flash | 0012704c | user_abi | syna_tcm_write_flash.c:syna_tcm_write_flash | READY_FOR_IMPLEMENTATION |
 | 308_syna_tcm_update_cs_config | syna_tcm_update_cs_config | 00127414 | core_logic | syna_tcm_update_cs_config.c:syna_tcm_update_cs_config | PASS |
