@@ -250,7 +250,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 244_syna_tcm_get_testing_0100 | syna_tcm_get_testing_0100 | 0011daec | core_logic | syna_tcm_get_testing_0100.c:syna_tcm_get_testing_0100 | PROMOTED_OFFLINE_EXACT |
 | 245_syna_tcm_testing_trx_trx_short | syna_tcm_testing_trx_trx_short | 0011dafc | core_logic | syna_tcm_testing_trx_trx_short.c:syna_tcm_testing_trx_trx_short | PROMOTED_OFFLINE_EXACT |
 | 246_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011dce4 | core_logic | syna_tcm_buf_copy_0.c:syna_tcm_buf_copy_0 | PROMOTED_OFFLINE_EXACT |
-| 247_syna_tcm_testing_check_array_data | syna_tcm_testing_check_array_data | 0011df64 | core_logic | syna_tcm_testing_check_array_data.c:syna_tcm_testing_check_array_data | READY_FOR_IMPLEMENTATION |
+| 247_syna_tcm_testing_check_array_data | syna_tcm_testing_check_array_data | 0011df64 | core_logic | syna_tcm_testing_check_array_data.c:syna_tcm_testing_check_array_data | PROMOTED_OFFLINE_EXACT |
 | 248_syna_tcm_testing_0100_check_data | syna_tcm_testing_0100_check_data | 0011e01c | core_logic | syna_tcm_testing_0100_check_data.c:syna_tcm_testing_0100_check_data | PASS |
 | 249_syna_tcm_get_testing_0500 | syna_tcm_get_testing_0500 | 0011e204 | core_logic | syna_tcm_get_testing_0500.c:syna_tcm_get_testing_0500 | PASS |
 | 250_syna_tcm_testing_full_raw | syna_tcm_testing_full_raw | 0011e214 | core_logic | syna_tcm_testing_full_raw.c:syna_tcm_testing_full_raw | READY_FOR_IMPLEMENTATION |
