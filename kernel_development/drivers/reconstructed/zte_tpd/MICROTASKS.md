@@ -291,7 +291,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 285_syna_tcm_sleep | syna_tcm_sleep | 001238fc | core_logic | syna_tcm_sleep.c:syna_tcm_sleep | PROMOTED_OFFLINE_EXACT |
 | 286_syna_tcm_get_features | syna_tcm_get_features | 00123a08 | core_logic | syna_tcm_get_features.c:syna_tcm_get_features | PROMOTED_OFFLINE_EXACT |
 | 287_syna_tcm_run_production_test | syna_tcm_run_production_test | 00123c34 | core_logic | syna_tcm_run_production_test.c:syna_tcm_run_production_test | PASS |
-| 288_syna_tcm_send_command | syna_tcm_send_command | 00123dc0 | core_logic | syna_tcm_send_command.c:syna_tcm_send_command | READY_FOR_IMPLEMENTATION |
+| 288_syna_tcm_send_command | syna_tcm_send_command | 00123dc0 | core_logic | syna_tcm_send_command.c:syna_tcm_send_command | PROMOTED_OFFLINE_EXACT |
 | 289_syna_tcm_enable_predict_reading | syna_tcm_enable_predict_reading | 00123fa0 | user_abi | syna_tcm_enable_predict_reading.c:syna_tcm_enable_predict_reading | PASS |
 | 290_syna_tcm_set_report_dispatcher | syna_tcm_set_report_dispatcher | 00124014 | core_logic | syna_tcm_set_report_dispatcher.c:syna_tcm_set_report_dispatcher | PASS |
 | 291_syna_tcm_set_data_duplicator | syna_tcm_set_data_duplicator | 001240d4 | core_logic | syna_tcm_set_data_duplicator.c:syna_tcm_set_data_duplicator | PASS |
