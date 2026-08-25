@@ -169,7 +169,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 163_syna_dev_resume | syna_dev_resume | 00112d6c | binding | syna_dev_resume.c:syna_dev_resume | READY_FOR_IMPLEMENTATION |
 | 164_syna_dev_suspend | syna_dev_suspend | 0011337c | binding | syna_dev_suspend.c:syna_dev_suspend | READY_FOR_IMPLEMENTATION |
 | 165_syna_ts_register_for_panel_events | syna_ts_register_for_panel_events | 00113504 | core_logic | syna_ts_register_for_panel_events.c:syna_ts_register_for_panel_events | PROMOTED_OFFLINE_EXACT |
-| 166_syna_dev_helper_work | syna_dev_helper_work | 00113590 | async_or_irq | syna_dev_helper_work.c:syna_dev_helper_work | READY_FOR_IMPLEMENTATION |
+| 166_syna_dev_helper_work | syna_dev_helper_work | 00113590 | async_or_irq | syna_dev_helper_work.c:syna_dev_helper_work | PROMOTED_OFFLINE_EXACT |
 | 167_syna_dev_set_up_input_device | syna_dev_set_up_input_device | 001136c4 | core_logic | syna_dev_set_up_input_device.c:syna_dev_set_up_input_device | READY_FOR_IMPLEMENTATION |
 | 168_syna_dev_process_unexpected_reset | syna_dev_process_unexpected_reset | 00113a9c | core_logic | syna_dev_process_unexpected_reset.c:syna_dev_process_unexpected_reset | PASS |
 | 169_syna_dev_reflash_startup_work | syna_dev_reflash_startup_work | 00113b40 | async_or_irq | syna_dev_reflash_startup_work.c:syna_dev_reflash_startup_work | READY_FOR_IMPLEMENTATION |
