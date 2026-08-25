@@ -325,7 +325,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 319_syna_pal_mem_free | syna_pal_mem_free | 0012a4ec | core_logic | syna_pal_mem_free_0.c:syna_pal_mem_free_0 | PROMOTED_OFFLINE_EXACT |
 | 320_syna_tcm_preserve_touch_report_config | syna_tcm_preserve_touch_report_config | 0012a53c | core_logic | syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config | PASS |
 | 321_syna_tcm_set_custom_touch_entity_callback | syna_tcm_set_custom_touch_entity_callback | 0012aaa8 | core_logic | syna_tcm_set_custom_touch_entity_callback.c:syna_tcm_set_custom_touch_entity_callback | PROMOTED_OFFLINE_EXACT |
-| 322_syna_tcm_set_custom_gesture_callback | syna_tcm_set_custom_gesture_callback | 0012aaf4 | core_logic | syna_tcm_set_custom_gesture_callback.c:syna_tcm_set_custom_gesture_callback | PASS |
+| 322_syna_tcm_set_custom_gesture_callback | syna_tcm_set_custom_gesture_callback | 0012aaf4 | core_logic | syna_tcm_set_custom_gesture_callback.c:syna_tcm_set_custom_gesture_callback | PROMOTED_OFFLINE_EXACT |
 | 323_syna_tcm_get_partition_id_string | syna_tcm_get_partition_id_string | 0012ab40 | core_logic | syna_tcm_get_partition_id_string.c:syna_tcm_get_partition_id_string | PASS |
 | 324_syna_tcm_parse_fw_image | syna_tcm_parse_fw_image | 0012ab6c | core_logic | syna_tcm_parse_fw_image.c:syna_tcm_parse_fw_image | READY_FOR_IMPLEMENTATION |
 | 325_string_change | string_change | 0012aecc | core_logic | string_change.c:string_change | READY_FOR_IMPLEMENTATION |

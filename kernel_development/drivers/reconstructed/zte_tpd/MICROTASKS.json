@@ -11779,12 +11779,17 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_set_custom_gesture_callback\nEntrada Ghidra: 0012aaf4\nTamanho stock: 72 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tcm_set_custom_gesture_callback.c:syna_tcm_set_custom_gesture_callback\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0321_0012aaf4_syna_tcm_set_custom_gesture_callback.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0321_0012aaf4_syna_tcm_set_custom_gesture_callback.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next102_custom_gesture_callback_v1/build_report.json",
           "sha256": "5260e59606b6caf68b495dfd61962dcadea27530104a00e2a0dbb3f8684e0ae5"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next102_custom_gesture_callback_v1/assembly_comparison.json",
+          "sha256": "15db83a344cb4f2554619b20d75936b88cf13d491a9211f41976aacdaaa4432b"
         },
         {
           "role": "kcfi",
@@ -11795,6 +11800,11 @@
           "role": "test",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next102_custom_gesture_callback_v1/host_harness_report.json",
           "sha256": "1a35073cc1549373d55bacb6ea595ea96e73d01686aa7da560a05e6c0f3a877b"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next102_custom_gesture_callback_v1/joern_gate_summary.json",
+          "sha256": "cfb8fd58b517b6b9eba429d855de8e202339f439a73dc491d91027b8630b715d"
         }
       ]
     },
