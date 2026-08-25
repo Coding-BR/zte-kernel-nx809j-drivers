@@ -246,7 +246,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 240_syna_tcm_testing_config_id | syna_tcm_testing_config_id | 0011d7ac | core_logic | syna_tcm_testing_config_id.c:syna_tcm_testing_config_id | PROMOTED_OFFLINE_EXACT |
 | 241_syna_tcm_buf_alloc | syna_tcm_buf_alloc | 0011d940 | core_logic | syna_tcm_buf_alloc_0.c:syna_tcm_buf_alloc_0 | PROMOTED_OFFLINE_EXACT |
 | 242_syna_pal_mem_cpy | syna_pal_mem_cpy | 0011da1c | core_logic | syna_pal_mem_cpy_0.c:syna_pal_mem_cpy_0 | PROMOTED_OFFLINE_EXACT |
-| 243_syna_tcm_testing_0002_check_config_id | syna_tcm_testing_0002_check_config_id | 0011da70 | core_logic | syna_tcm_testing_0002_check_config_id.c:syna_tcm_testing_0002_check_config_id | READY_FOR_IMPLEMENTATION |
+| 243_syna_tcm_testing_0002_check_config_id | syna_tcm_testing_0002_check_config_id | 0011da70 | core_logic | syna_tcm_testing_0002_check_config_id.c:syna_tcm_testing_0002_check_config_id | PROMOTED_OFFLINE_EXACT |
 | 244_syna_tcm_get_testing_0100 | syna_tcm_get_testing_0100 | 0011daec | core_logic | syna_tcm_get_testing_0100.c:syna_tcm_get_testing_0100 | PASS |
 | 245_syna_tcm_testing_trx_trx_short | syna_tcm_testing_trx_trx_short | 0011dafc | core_logic | syna_tcm_testing_trx_trx_short.c:syna_tcm_testing_trx_trx_short | READY_FOR_IMPLEMENTATION |
 | 246_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011dce4 | core_logic | syna_tcm_buf_copy_0.c:syna_tcm_buf_copy_0 | READY_FOR_IMPLEMENTATION |
