@@ -78,6 +78,7 @@ src-files := $(filter-out $(src)/syna_tcm_get_testing_0002.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_testing_config_id.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_alloc_0.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_testing_0002_check_config_id.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_trx_trx_short.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += syna_dev_set_up_app_fw_exact.o
@@ -225,7 +226,7 @@ AFLAGS_syna_tcm_testing_0001_check_device_id_exact.o := -g0
 AFLAGS_syna_ts_check_dt_exact.o := -g0
 
 obj-m += zte_tpd.o
-zte_tpd-objs := syna_dev_set_sensibility_level_exact.o globals.o $(obj-files)
+zte_tpd-objs := syna_dev_set_sensibility_level_exact.o syna_tcm_testing_trx_trx_short_exact.o globals.o $(obj-files)
 
 CFLAGS_globals.o := -DGLOBALS_C
 # Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
@@ -263,6 +264,7 @@ CFLAGS_syna_ts_register_for_panel_events.o := -fno-sanitize=kcfi
 AFLAGS_syna_tcm_testing_config_id_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_buf_alloc_0_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_testing_0002_check_config_id_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_trx_trx_short_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_get_testing_0002_exact.o := -g0 -I$(src)
 
 # Exact offline reconstruction: suspend_tp_need_awake
