@@ -285,7 +285,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 279_syna_tcm_get_static_config | syna_tcm_get_static_config | 00122eac | core_logic | syna_tcm_get_static_config.c:syna_tcm_get_static_config | PASS |
 | 280_syna_tcm_set_static_config | syna_tcm_set_static_config | 001230dc | core_logic | syna_tcm_set_static_config.c:syna_tcm_set_static_config | PASS |
 | 281_syna_tcm_get_dynamic_config | syna_tcm_get_dynamic_config | 00123228 | core_logic | syna_tcm_get_dynamic_config.c:syna_tcm_get_dynamic_config | PROMOTED_OFFLINE_EXACT |
-| 282_syna_tcm_set_dynamic_config | syna_tcm_set_dynamic_config | 001233b4 | core_logic | syna_tcm_set_dynamic_config.c:syna_tcm_set_dynamic_config | READY_FOR_IMPLEMENTATION |
+| 282_syna_tcm_set_dynamic_config | syna_tcm_set_dynamic_config | 001233b4 | core_logic | syna_tcm_set_dynamic_config.c:syna_tcm_set_dynamic_config | PROMOTED_OFFLINE_EXACT |
 | 283_syna_tcm_set_game_partition_config | syna_tcm_set_game_partition_config | 00123518 | core_logic | syna_tcm_set_game_partition_config.c:syna_tcm_set_game_partition_config | PASS |
 | 284_syna_tcm_rezero | syna_tcm_rezero | 001237ec | core_logic | syna_tcm_rezero.c:syna_tcm_rezero | PASS |
 | 285_syna_tcm_sleep | syna_tcm_sleep | 001238fc | core_logic | syna_tcm_sleep.c:syna_tcm_sleep | READY_FOR_IMPLEMENTATION |
