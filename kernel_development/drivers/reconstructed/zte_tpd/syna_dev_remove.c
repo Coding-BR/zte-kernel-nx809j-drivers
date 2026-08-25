@@ -1,22 +1,23 @@
 void syna_dev_remove(struct platform_device *pdev)
 {
   __int64 a1 = (__int64)pdev;
-  __int64 a3 = 0;
   __int64 v3; // x19
   __int64 v4; // x0
   __int64 v5; // x20
   __int64 v6; // x0
-  __int64 v7; // x2
-  __int64 v8; // x2
   __int64 v9; // x20
   __int64 v10; // x0
-  __int64 v11; // x2
   __int64 v12; // x0
+#ifdef __aarch64__
+  register unsigned int refs __asm__("w2");
+#else
+  unsigned int refs;
+#endif
 
   v3 = *(_QWORD *)(a1 + 168);
   if ( !v3 )
-    printk(unk_38D7D, "syna_dev_remove", a3);
-  printk(unk_34878, "syna_dev_remove", a3);
+    printk("\0014[warn ] %s: Invalid handle to remove\n", "syna_dev_remove");
+  printk("\0016[info ] %s: enter\n", "syna_dev_remove");
   cancel_work_sync(v3 + 1320);
   _flush_workqueue(*(_QWORD *)(v3 + 1352));
   destroy_workqueue(*(_QWORD *)(v3 + 1352));
@@ -31,19 +32,20 @@ void syna_dev_remove(struct platform_device *pdev)
     v6 = syna_request_managed_device();
     if ( !v6 )
     {
-      v4 = printk(unk_3BE43, "syna_pal_mem_free", v7);
-      v8 = *(unsigned __int8 *)(v3 + 744);
-      if ( !*(_BYTE *)(v3 + 744) )
+      printk("\0013[error] %s: Invalid managed device\n", "syna_pal_mem_free");
+      refs = *(unsigned char *)(v3 + 744);
+      if ( !refs )
         goto LABEL_10;
       goto LABEL_16;
     }
     v4 = devm_kfree(v6, v5);
   }
-  v8 = *(unsigned __int8 *)(v3 + 744);
-  if ( !*(_BYTE *)(v3 + 744) )
+  refs = *(unsigned char *)(v3 + 744);
+  if ( !refs )
     goto LABEL_10;
 LABEL_16:
-  v4 = printk(unk_34845, "syna_tcm_buf_release", v8);
+  printk("\0013[error] %s: Buffer still in used, %d references\n",
+         "syna_tcm_buf_release", refs);
 LABEL_10:
   v9 = *(_QWORD *)(v3 + 680);
   v10 = syna_request_managed_device();
@@ -54,7 +56,7 @@ LABEL_10:
   }
   else
   {
-    printk(unk_3BE43, "syna_pal_mem_free", v11);
+    printk("\0013[error] %s: Invalid managed device\n", "syna_pal_mem_free");
   }
   v12 = *(_QWORD *)(v3 + 1120);
   *(_QWORD *)(v3 + 688) = 0;
