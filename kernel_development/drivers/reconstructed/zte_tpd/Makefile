@@ -79,6 +79,7 @@ src-files := $(filter-out $(src)/syna_tcm_testing_config_id.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_alloc_0.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_testing_0002_check_config_id.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_testing_trx_trx_short.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_copy_0.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += syna_dev_set_up_app_fw_exact.o
@@ -89,6 +90,7 @@ obj-files += syna_tcm_get_testing_0002_exact.o
 obj-files += syna_tcm_testing_config_id_exact.o
 obj-files += syna_tcm_buf_alloc_0_exact.o
 obj-files += syna_tcm_testing_0002_check_config_id_exact.o
+obj-files += syna_tcm_buf_copy_0_exact.o
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
@@ -265,6 +267,7 @@ AFLAGS_syna_tcm_testing_config_id_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_buf_alloc_0_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_testing_0002_check_config_id_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_testing_trx_trx_short_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_buf_copy_0_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_get_testing_0002_exact.o := -g0 -I$(src)
 
 # Exact offline reconstruction: suspend_tp_need_awake
