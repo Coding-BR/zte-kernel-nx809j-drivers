@@ -288,7 +288,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 282_syna_tcm_set_dynamic_config | syna_tcm_set_dynamic_config | 001233b4 | core_logic | syna_tcm_set_dynamic_config.c:syna_tcm_set_dynamic_config | PROMOTED_OFFLINE_EXACT |
 | 283_syna_tcm_set_game_partition_config | syna_tcm_set_game_partition_config | 00123518 | core_logic | syna_tcm_set_game_partition_config.c:syna_tcm_set_game_partition_config | PASS |
 | 284_syna_tcm_rezero | syna_tcm_rezero | 001237ec | core_logic | syna_tcm_rezero.c:syna_tcm_rezero | PASS |
-| 285_syna_tcm_sleep | syna_tcm_sleep | 001238fc | core_logic | syna_tcm_sleep.c:syna_tcm_sleep | READY_FOR_IMPLEMENTATION |
+| 285_syna_tcm_sleep | syna_tcm_sleep | 001238fc | core_logic | syna_tcm_sleep.c:syna_tcm_sleep | PROMOTED_OFFLINE_EXACT |
 | 286_syna_tcm_get_features | syna_tcm_get_features | 00123a08 | core_logic | syna_tcm_get_features.c:syna_tcm_get_features | READY_FOR_IMPLEMENTATION |
 | 287_syna_tcm_run_production_test | syna_tcm_run_production_test | 00123c34 | core_logic | syna_tcm_run_production_test.c:syna_tcm_run_production_test | PASS |
 | 288_syna_tcm_send_command | syna_tcm_send_command | 00123dc0 | core_logic | syna_tcm_send_command.c:syna_tcm_send_command | READY_FOR_IMPLEMENTATION |
