@@ -1,5 +1,10 @@
 .section .text,"ax",@progbits
 .align 2
+.type syna_pal_mem_alloc_kcfi_guard, %function
+syna_pal_mem_alloc_kcfi_guard:
+    .inst 0x00000000
+.size syna_pal_mem_alloc_kcfi_guard, .-syna_pal_mem_alloc_kcfi_guard
+
 .global syna_pal_mem_alloc
 .type syna_pal_mem_alloc, %function
 syna_pal_mem_alloc:

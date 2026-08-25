@@ -11259,22 +11259,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_pal_mem_alloc\nEntrada Ghidra: 00127e18\nTamanho stock: 104 bytes\nCategoria: core_logic\nAlvo no fonte: syna_pal_mem_alloc.c:syna_pal_mem_alloc\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0310_00127e18_syna_pal_mem_alloc.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0310_00127e18_syna_pal_mem_alloc.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_pal_mem_alloc_v1/build_report.json",
-          "sha256": "f3de20519b9a01a95fcd1cf34172c8a8d519a88755ce30eae4dad4dcb1d39e5d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next612_syna_pal_mem_alloc_exact_v1/canonical_build_report.json",
+          "sha256": "cdaafc83c896fcac1b89b20a9f27b448fa00b94f4de4b471d846390821fa9569"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_pal_mem_alloc_v1/kcfi_comparison.json",
-          "sha256": "886271000daab995482e15839f306d8bbe9c11d6ba8c9d6b8c91843e09032e64"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next612_syna_pal_mem_alloc_exact_v1/kcfi/comparison.json",
+          "sha256": "b6a37806a1029563cbefd81511f168b7c4dabf7d240422d98ba4eb678967b7e6"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_pal_mem_alloc_v1/host_harness_report.json",
-          "sha256": "a30919d3a22503f204c0efd6a07623c56754c69d525df4271eb67c9873085956"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next612_syna_pal_mem_alloc_exact_v1/host_harness_report.json",
+          "sha256": "199e915444d418736157fbf8cbc5572a3ad774faa498d7083d5086fc2ca86af0"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next612_syna_pal_mem_alloc_exact_v1/assembly/comparison.json",
+          "sha256": "7c16ac509b667cb6f998c49575c04a10849333856fa17e4aa7fa967eed8a8a3d"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next612_syna_pal_mem_alloc_exact_v1/joern/joern_gate_report.json",
+          "sha256": "dce90413590f4642b1dcad97f3775c9dd96a169ff9813e93c9bc3fb75406a813"
+        },
+        {
+          "role": "aarch64",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next612_syna_pal_mem_alloc_exact_v1/aarch64_validation_report.json",
+          "sha256": "db4f0fd53afe2e4354cb26d22e26e704370095bb06ed9a331f33eaaebda021ef"
         }
       ]
     },
