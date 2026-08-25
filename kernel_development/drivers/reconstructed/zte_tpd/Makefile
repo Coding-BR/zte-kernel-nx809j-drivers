@@ -91,6 +91,7 @@ src-files := $(filter-out $(src)/syna_tcm_v1_write_message.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_v1_parse_idinfo.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_v1_read_message.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_v1_set_up_max_rw_size.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_read.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += syna_dev_set_up_app_fw_exact.o
@@ -112,6 +113,7 @@ obj-files += syna_tcm_v1_write_message_exact.o
 obj-files += syna_tcm_v1_parse_idinfo_exact.o
 obj-files += syna_tcm_v1_read_message_exact.o
 obj-files += syna_tcm_v1_set_up_max_rw_size_exact.o
+obj-files += syna_tcm_v1_read_exact.o
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
@@ -181,6 +183,7 @@ AFLAGS_tp_edge_report_limit_write_exact.o := -g0
 AFLAGS_syna_tcm_v1_parse_idinfo_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_v1_read_message_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_v1_set_up_max_rw_size_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_v1_read_exact.o := -g0 -I$(src)
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
