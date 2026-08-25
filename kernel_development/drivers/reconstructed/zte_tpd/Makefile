@@ -88,6 +88,7 @@ src-files := $(filter-out $(src)/syna_tcm_buf_copy_1.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_testing_check_frame_data_0.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_v1_detect.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_v1_write_message.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_parse_idinfo.c, $(src-files))
 src-files := $(filter-out $(src)/%.mod.c, $(src-files))
 obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
 obj-files += syna_dev_set_up_app_fw_exact.o
@@ -106,6 +107,7 @@ obj-files += syna_tcm_buf_copy_1_exact.o
 obj-files += syna_tcm_testing_check_frame_data_0_exact.o
 obj-files += syna_tcm_v1_detect_exact.o
 obj-files += syna_tcm_v1_write_message_exact.o
+obj-files += syna_tcm_v1_parse_idinfo_exact.o
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
@@ -172,6 +174,7 @@ obj-files += syna_ts_check_dt_exact.o
 # path-dependent assembler debug records so the canonical M= path gate stays
 # byte-identical across independent cycles.
 AFLAGS_tp_edge_report_limit_write_exact.o := -g0
+AFLAGS_syna_tcm_v1_parse_idinfo_exact.o := -g0 -I$(src)
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
