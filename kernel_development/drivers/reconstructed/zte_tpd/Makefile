@@ -19,6 +19,9 @@ src-files := $(filter-out $(src)/syna_tcm_get_features.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_unlock.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_run_production_test.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_send_command.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash_address.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_up_flash_access.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_write.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_read.c, $(src-files))
 src-files := $(filter-out $(src)/get_one_key.c, $(src-files))
@@ -224,6 +227,8 @@ AFLAGS_syna_tcm_set_dynamic_config_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_sleep_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_get_features_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_send_command_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_address_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_address_layout_pad.o := -g0
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -295,9 +300,13 @@ AFLAGS_syna_tcm_testing_0001_check_device_id_exact.o := -g0
 AFLAGS_syna_ts_check_dt_exact.o := -g0
 
 obj-m += zte_tpd.o
-zte_tpd-objs := syna_dev_set_sensibility_level_exact.o syna_tcm_testing_full_raw_exact.o syna_tcm_testing_trx_trx_short_exact.o globals.o $(obj-files)
+zte_tpd-objs := syna_tcm_read_flash_address_exact.o syna_tcm_set_up_flash_access.o syna_tcm_read_flash_address_layout_pad.o syna_tcm_read_flash.o syna_dev_set_sensibility_level_exact.o syna_tcm_testing_full_raw_exact.o syna_tcm_testing_trx_trx_short_exact.o globals.o $(obj-files)
 
 CFLAGS_globals.o := -DGLOBALS_C
+# These two stock helper bodies have no KCFI preamble; keep their symbol
+# starts aligned with the direct BL targets used by the exact lifted caller.
+CFLAGS_syna_tcm_set_up_flash_access.o := -fno-sanitize=kcfi
+CFLAGS_syna_tcm_read_flash.o := -fno-sanitize=kcfi
 # Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
 CFLAGS_syna_pal_mem_free.o := -fno-sanitize=kcfi
 # Stock syna_pal_mem_free@0012a4ec has no valid KCFI entry preamble.
