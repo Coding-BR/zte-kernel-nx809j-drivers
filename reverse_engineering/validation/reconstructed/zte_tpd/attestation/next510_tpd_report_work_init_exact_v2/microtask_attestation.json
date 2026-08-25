@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "104",
+  "function": "tpd_report_work_init",
+  "stock_entry": "0010fa04",
+  "stock_body_bytes": 672,
+  "candidate_symbol_bytes": 672,
+  "stock_instruction_count": 168,
+  "candidate_instruction_count": 168,
+  "stock_relocation_count": 49,
+  "candidate_relocation_count": 49,
+  "protocol": [
+    "Ghidra pseudocode and P-Code reviewed",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two cycles",
+    "canonical Docker build, two cycles",
+    "KCFI surface comparison",
+    "AArch64 instruction and relocation comparison"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "c4a9fecefcb1cdafb546e1af4487d732b18f57256e97e46276bebf2ae5c38125",
+    "candidate_module_size": 25375080,
+    "candidate_source_sha256": "1d613c9f5b5f91be4b917f3b628080cb28fb4611915122bcb028b6e79473996f",
+    "exact_assembly_sha256": "25a38fdf185b2d2f92544f66e5d259c682a41b84ca349da578920c645fa8264f",
+    "rodata_include_sha256": "2bac5e90d9b01d69242bfd533d515db19ddacda3e22d831bb05f918b7f89cb96",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type ID and offline harness contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "DT, DRM, MMIO and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

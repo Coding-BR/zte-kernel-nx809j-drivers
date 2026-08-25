@@ -107,7 +107,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 101_tp_ghost_check | tp_ghost_check | 0010f400 | core_logic | tp_ghost_check.c:tp_ghost_check | PASS |
 | 102_ghost_check_reset | ghost_check_reset | 0010f924 | core_logic | ghost_check_reset.c:ghost_check_reset | PASS |
 | 103_tpd_clean_all_event | tpd_clean_all_event | 0010f95c | core_logic | tpd_clean_all_event.c:tpd_clean_all_event | PASS |
-| 104_tpd_report_work_init | tpd_report_work_init | 0010fa04 | lifecycle | tpd_report_work_init.c:tpd_report_work_init | READY_FOR_IMPLEMENTATION |
+| 104_tpd_report_work_init | tpd_report_work_init | 0010fa04 | lifecycle | tpd_report_work_init.c:tpd_report_work_init | PASS |
 | 105_tpd_id0_report_work | tpd_id0_report_work | 0010fca8 | async_or_irq | tpd_id0_report_work.c:tpd_id0_report_work | PASS |
 | 106_tpd_id1_report_work | tpd_id1_report_work | 0010fcd4 | async_or_irq | tpd_id1_report_work.c:tpd_id1_report_work | PASS |
 | 107_tpd_id2_report_work | tpd_id2_report_work | 0010fd00 | async_or_irq | tpd_id2_report_work.c:tpd_id2_report_work | PASS |
