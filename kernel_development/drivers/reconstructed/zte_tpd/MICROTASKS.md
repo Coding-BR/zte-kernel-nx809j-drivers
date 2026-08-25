@@ -315,7 +315,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 309_syna_tcm_read_cs_data | syna_tcm_read_cs_data | 001277fc | user_abi | syna_tcm_read_cs_data.c:syna_tcm_read_cs_data | PROMOTED_OFFLINE_EXACT |
 | 310_syna_tcm_update_mtp_data | syna_tcm_update_mtp_data | 00127b14 | core_logic | syna_tcm_update_mtp_data.c:syna_tcm_update_mtp_data | PROMOTED_OFFLINE_EXACT |
 | 311_syna_pal_mem_alloc | syna_pal_mem_alloc | 00127e18 | core_logic | syna_pal_mem_alloc.c:syna_pal_mem_alloc | PROMOTED_OFFLINE_EXACT |
-| 312_syna_tcm_read_mtp_data | syna_tcm_read_mtp_data | 00127e84 | user_abi | syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data | PASS |
+| 312_syna_tcm_read_mtp_data | syna_tcm_read_mtp_data | 00127e84 | user_abi | syna_tcm_read_mtp_data.c:syna_tcm_read_mtp_data | PROMOTED_OFFLINE_EXACT |
 | 313_syna_tcm_erase_mtp_data | syna_tcm_erase_mtp_data | 001281c8 | core_logic | syna_tcm_erase_mtp_data.c:syna_tcm_erase_mtp_data | PASS |
 | 314_syna_pal_mem_free | syna_pal_mem_free | 001284c0 | core_logic | syna_pal_mem_free.c:syna_pal_mem_free | PASS |
 | 315_syna_tcm_get_touch_data | syna_tcm_get_touch_data | 00128514 | core_logic | syna_tcm_get_touch_data.c:syna_tcm_get_touch_data | PASS |
