@@ -15,6 +15,7 @@ src-files := $(filter-out $(src)/syna_tcm_get_app_info.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_dynamic_config.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_set_dynamic_config.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_sleep.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_features.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_unlock.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_run_production_test.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_send_command.c, $(src-files))
@@ -138,6 +139,7 @@ obj-files += syna_tcm_get_app_info_exact.o
 obj-files += syna_tcm_get_dynamic_config_exact.o
 obj-files += syna_tcm_set_dynamic_config_exact.o
 obj-files += syna_tcm_sleep_exact.o
+obj-files += syna_tcm_get_features_exact.o
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
@@ -219,6 +221,7 @@ AFLAGS_syna_tcm_get_app_info_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_get_dynamic_config_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_set_dynamic_config_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_sleep_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_features_exact.o := -g0 -I$(src)
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
