@@ -39,6 +39,7 @@ src-files := $(filter-out $(src)/syna_pal_mem_alloc.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_read_mtp_data.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_erase_mtp_data.c, $(src-files))
 src-files := $(filter-out $(src)/syna_pal_mem_free.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_touch_data.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_write.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_read.c, $(src-files))
 src-files := $(filter-out $(src)/get_one_key.c, $(src-files))
@@ -264,6 +265,7 @@ AFLAGS_syna_pal_mem_alloc_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_read_mtp_data_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_erase_mtp_data_exact.o := -g0 -I$(src)
 AFLAGS_syna_pal_mem_free_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_touch_data_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_read_flash_boot_config_mem_alloc_pad.o := -g0
 AFLAGS_syna_tcm_read_flash_boot_config_mem_free_pad.o := -g0
 
@@ -337,7 +339,7 @@ AFLAGS_syna_tcm_testing_0001_check_device_id_exact.o := -g0
 AFLAGS_syna_ts_check_dt_exact.o := -g0
 
 obj-m += zte_tpd.o
-zte_tpd-objs := syna_tcm_read_flash_address_exact.o syna_tcm_set_up_flash_access_exact.o syna_tcm_read_flash_exact.o syna_tcm_read_flash_area_exact.o syna_tcm_read_flash_boot_config_exact.o syna_tcm_read_flash_boot_cs_config_exact.o syna_tcm_read_flash_mtp_config_exact.o syna_tcm_do_fw_update_ex_exact.o syna_tcm_update_flash_block_exact.o syna_tcm_do_fw_update_exact.o syna_tcm_update_lockdown_config_exact.o syna_tcm_check_flash_block_exact.o syna_tcm_write_flash_exact.o syna_tcm_update_cs_config_exact.o syna_tcm_update_mtp_data_exact.o syna_tcm_read_cs_data_exact.o syna_tcm_read_flash_boot_config_mem_alloc_pad.o syna_pal_mem_alloc_exact.o syna_tcm_read_mtp_data_exact.o syna_tcm_erase_mtp_data_exact.o syna_tcm_read_flash_boot_config_mem_free_pad.o syna_pal_mem_free_exact.o syna_dev_set_sensibility_level_exact.o syna_tcm_testing_full_raw_exact.o syna_tcm_testing_trx_trx_short_exact.o globals.o $(obj-files)
+zte_tpd-objs := syna_tcm_read_flash_address_exact.o syna_tcm_set_up_flash_access_exact.o syna_tcm_read_flash_exact.o syna_tcm_read_flash_area_exact.o syna_tcm_read_flash_boot_config_exact.o syna_tcm_read_flash_boot_cs_config_exact.o syna_tcm_read_flash_mtp_config_exact.o syna_tcm_do_fw_update_ex_exact.o syna_tcm_update_flash_block_exact.o syna_tcm_do_fw_update_exact.o syna_tcm_update_lockdown_config_exact.o syna_tcm_check_flash_block_exact.o syna_tcm_write_flash_exact.o syna_tcm_update_cs_config_exact.o syna_tcm_update_mtp_data_exact.o syna_tcm_read_cs_data_exact.o syna_tcm_read_flash_boot_config_mem_alloc_pad.o syna_pal_mem_alloc_exact.o syna_tcm_read_mtp_data_exact.o syna_tcm_erase_mtp_data_exact.o syna_tcm_read_flash_boot_config_mem_free_pad.o syna_pal_mem_free_exact.o syna_tcm_get_touch_data_exact.o syna_dev_set_sensibility_level_exact.o syna_tcm_testing_full_raw_exact.o syna_tcm_testing_trx_trx_short_exact.o globals.o $(obj-files)
 
 CFLAGS_globals.o := -DGLOBALS_C
 # Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
