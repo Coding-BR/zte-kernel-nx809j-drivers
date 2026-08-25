@@ -269,7 +269,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 263_syna_tcm_v1_terminate | syna_tcm_v1_terminate | 00120e64 | core_logic | syna_tcm_v1_terminate.c:syna_tcm_v1_terminate | PASS |
 | 264_syna_tcm_v1_read | syna_tcm_v1_read | 00120eec | user_abi | syna_tcm_v1_read.c:syna_tcm_v1_read | PROMOTED_OFFLINE_EXACT |
 | 265_syna_tcm_config_timings | syna_tcm_config_timings | 00121034 | core_logic | syna_tcm_config_timings.c:syna_tcm_config_timings | PROMOTED_OFFLINE_EXACT |
-| 266_syna_tcm_allocate_device | syna_tcm_allocate_device | 00121124 | core_logic | syna_tcm_allocate_device.c:syna_tcm_allocate_device | READY_FOR_IMPLEMENTATION |
+| 266_syna_tcm_allocate_device | syna_tcm_allocate_device | 00121124 | core_logic | syna_tcm_allocate_device.c:syna_tcm_allocate_device | PROMOTED_OFFLINE_EXACT |
 | 267_syna_tcm_remove_device | syna_tcm_remove_device | 001216d0 | binding | syna_tcm_remove_device.c:syna_tcm_remove_device | PASS |
 | 268_syna_tcm_detect_device | syna_tcm_detect_device | 00121944 | core_logic | syna_tcm_detect_device.c:syna_tcm_detect_device | PASS |
 | 269_syna_tcm_get_event_data | syna_tcm_get_event_data | 00121ad4 | core_logic | syna_tcm_get_event_data.c:syna_tcm_get_event_data | PASS |
