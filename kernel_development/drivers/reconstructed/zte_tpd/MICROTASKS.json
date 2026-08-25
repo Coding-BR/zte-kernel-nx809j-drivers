@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-08-25T00:32:30.813421+00:00",
+  "generated_utc": "2026-08-25T00:39:30.637917+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -4398,32 +4398,22 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: change_tp_state\nEntrada Ghidra: 00110320\nTamanho stock: 376 bytes\nCategoria: core_logic\nAlvo no fonte: change_tp_state.c:change_tp_state\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0117_00110320_change_tp_state.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0117_00110320_change_tp_state.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_change_tp_state_v2/canonical_build_report.json",
-          "sha256": "7366283ffb5b79369dfd3af7b92be0c3128dae789589324273456a4d5bf295fd"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next513_change_tp_state_exact_v2/canonical_build_report.json",
+          "sha256": "68bfd1b9f456c9b4d2251aa5af72e98840b186f3eca0f36b2a95be03cb34dd4c"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_change_tp_state_v2/kcfi_status.json",
-          "sha256": "e68ff1240699bd6b299fc04bb2c2ef9d1794c7f7b19e7311c7a4f91900048a9e"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_change_tp_state_v2/joern_gate_summary.json",
-          "sha256": "905325e0c398fcad25a2ba68b59b5548747ed8864c4ca044192c1249ea70c130"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next513_change_tp_state_exact_v2/kcfi_comparison.json",
+          "sha256": "f1b16fe7b095d52f310d229ae9f151e831790adb4876c139eadc8da7dd74a581"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_change_tp_state_v2/host_harness_report.json",
-          "sha256": "f69662df2b1f8014b139de019f6a22a1f50f624548833c1d66c22053214e7b27"
-        },
-        {
-          "role": "aarch64_assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_change_tp_state_v2/aarch64_validation_report.json",
-          "sha256": "48a1825751f261c07acbd07ede4f1c75bab16975ceace20f05292829209c0b1e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next513_change_tp_state_exact_v2/host_harness_report.json",
+          "sha256": "e93d0f8a2e9ca2c69994e7c2871a444339b0f68f6a6cb22c9c008627ccb5a414"
         }
       ]
     },
