@@ -301,7 +301,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 295_syna_tcm_read_flash_address | syna_tcm_read_flash_address | 00124208 | user_abi | syna_tcm_read_flash_address.c:syna_tcm_read_flash_address | PROMOTED_OFFLINE_EXACT |
 | 296_syna_tcm_set_up_flash_access | syna_tcm_set_up_flash_access | 001244e4 | core_logic | syna_tcm_set_up_flash_access.c:syna_tcm_set_up_flash_access | PROMOTED_OFFLINE_EXACT |
 | 297_syna_tcm_read_flash | syna_tcm_read_flash | 001247c8 | user_abi | syna_tcm_read_flash.c:syna_tcm_read_flash | PROMOTED_OFFLINE_EXACT |
-| 298_syna_tcm_read_flash_area | syna_tcm_read_flash_area | 00124ab4 | user_abi | syna_tcm_read_flash_area.c:syna_tcm_read_flash_area | READY_FOR_IMPLEMENTATION |
+| 298_syna_tcm_read_flash_area | syna_tcm_read_flash_area | 00124ab4 | user_abi | syna_tcm_read_flash_area.c:syna_tcm_read_flash_area | PROMOTED_OFFLINE_EXACT |
 | 299_syna_tcm_read_flash_boot_config | syna_tcm_read_flash_boot_config | 00125290 | user_abi | syna_tcm_read_flash_boot_config.c:syna_tcm_read_flash_boot_config | READY_FOR_IMPLEMENTATION |
 | 300_syna_tcm_read_flash_boot_cs_config | syna_tcm_read_flash_boot_cs_config | 001254bc | user_abi | syna_tcm_read_flash_boot_cs_config.c:syna_tcm_read_flash_boot_cs_config | READY_FOR_IMPLEMENTATION |
 | 301_syna_tcm_read_flash_mtp_config | syna_tcm_read_flash_mtp_config | 00125a18 | user_abi | syna_tcm_read_flash_mtp_config.c:syna_tcm_read_flash_mtp_config | READY_FOR_IMPLEMENTATION |
