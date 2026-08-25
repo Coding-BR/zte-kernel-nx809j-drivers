@@ -304,7 +304,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 298_syna_tcm_read_flash_area | syna_tcm_read_flash_area | 00124ab4 | user_abi | syna_tcm_read_flash_area.c:syna_tcm_read_flash_area | PROMOTED_OFFLINE_EXACT |
 | 299_syna_tcm_read_flash_boot_config | syna_tcm_read_flash_boot_config | 00125290 | user_abi | syna_tcm_read_flash_boot_config.c:syna_tcm_read_flash_boot_config | PROMOTED_OFFLINE_EXACT |
 | 300_syna_tcm_read_flash_boot_cs_config | syna_tcm_read_flash_boot_cs_config | 001254bc | user_abi | syna_tcm_read_flash_boot_cs_config.c:syna_tcm_read_flash_boot_cs_config | PROMOTED_OFFLINE_EXACT |
-| 301_syna_tcm_read_flash_mtp_config | syna_tcm_read_flash_mtp_config | 00125a18 | user_abi | syna_tcm_read_flash_mtp_config.c:syna_tcm_read_flash_mtp_config | READY_FOR_IMPLEMENTATION |
+| 301_syna_tcm_read_flash_mtp_config | syna_tcm_read_flash_mtp_config | 00125a18 | user_abi | syna_tcm_read_flash_mtp_config.c:syna_tcm_read_flash_mtp_config | PROMOTED_OFFLINE_EXACT |
 | 302_syna_tcm_do_fw_update_ex | syna_tcm_do_fw_update_ex | 00125c18 | core_logic | syna_tcm_do_fw_update_ex.c:syna_tcm_do_fw_update_ex | READY_FOR_IMPLEMENTATION |
 | 303_syna_tcm_update_flash_block | syna_tcm_update_flash_block | 00125f38 | core_logic | syna_tcm_update_flash_block.c:syna_tcm_update_flash_block | READY_FOR_IMPLEMENTATION |
 | 304_syna_tcm_do_fw_update | syna_tcm_do_fw_update | 001267b0 | core_logic | syna_tcm_do_fw_update.c:syna_tcm_do_fw_update | READY_FOR_IMPLEMENTATION |
