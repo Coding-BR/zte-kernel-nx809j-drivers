@@ -1,5 +1,11 @@
 .section .text,"ax",@progbits
 .align 2
+.global syna_pal_mem_free_kcfi_guard
+.type syna_pal_mem_free_kcfi_guard, %function
+syna_pal_mem_free_kcfi_guard:
+    .inst 0x00000000
+.size syna_pal_mem_free_kcfi_guard, .-syna_pal_mem_free_kcfi_guard
+
 .global syna_pal_mem_free
 .type syna_pal_mem_free, %function
 syna_pal_mem_free:
