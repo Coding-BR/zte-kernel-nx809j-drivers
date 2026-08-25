@@ -151,7 +151,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 145_syna_dev_set_charger_mode | syna_dev_set_charger_mode | 00111504 | core_logic | syna_dev_set_charger_mode.c:syna_dev_set_charger_mode | PASS |
 | 146_syna_dev_set_sensibility_level | syna_dev_set_sensibility_level | 00111578 | core_logic | syna_dev_set_sensibility_level.c:syna_dev_set_sensibility_level | PASS |
 | 147_syna_dev_set_follow_hand_level | syna_dev_set_follow_hand_level | 00111718 | core_logic | syna_dev_set_follow_hand_level.c:syna_dev_set_follow_hand_level | PASS |
-| 148_syna_dev_set_stability_level | syna_dev_set_stability_level | 001118a4 | core_logic | syna_dev_set_stability_level.c:syna_dev_set_stability_level | READY_FOR_IMPLEMENTATION |
+| 148_syna_dev_set_stability_level | syna_dev_set_stability_level | 001118a4 | core_logic | syna_dev_set_stability_level.c:syna_dev_set_stability_level | PASS |
 | 149_syna_dev_set_display_rotation | syna_dev_set_display_rotation | 00111a30 | core_logic | syna_dev_set_display_rotation.c:syna_dev_set_display_rotation | READY_FOR_IMPLEMENTATION |
 | 150_syna_dev_set_play_game | syna_dev_set_play_game | 00111b38 | core_logic | syna_dev_set_play_game.c:syna_dev_set_play_game | PASS |
 | 151_syna_recovery_game_mode_after_reset | syna_recovery_game_mode_after_reset | 00111bac | core_logic | syna_recovery_game_mode_after_reset.c:syna_recovery_game_mode_after_reset | READY_FOR_IMPLEMENTATION |
