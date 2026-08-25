@@ -268,7 +268,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 262_syna_tcm_v1_set_up_max_rw_size | syna_tcm_v1_set_up_max_rw_size | 00120da8 | core_logic | syna_tcm_v1_set_up_max_rw_size.c:syna_tcm_v1_set_up_max_rw_size | PROMOTED_OFFLINE_EXACT |
 | 263_syna_tcm_v1_terminate | syna_tcm_v1_terminate | 00120e64 | core_logic | syna_tcm_v1_terminate.c:syna_tcm_v1_terminate | PASS |
 | 264_syna_tcm_v1_read | syna_tcm_v1_read | 00120eec | user_abi | syna_tcm_v1_read.c:syna_tcm_v1_read | PROMOTED_OFFLINE_EXACT |
-| 265_syna_tcm_config_timings | syna_tcm_config_timings | 00121034 | core_logic | syna_tcm_config_timings.c:syna_tcm_config_timings | READY_FOR_IMPLEMENTATION |
+| 265_syna_tcm_config_timings | syna_tcm_config_timings | 00121034 | core_logic | syna_tcm_config_timings.c:syna_tcm_config_timings | PROMOTED_OFFLINE_EXACT |
 | 266_syna_tcm_allocate_device | syna_tcm_allocate_device | 00121124 | core_logic | syna_tcm_allocate_device.c:syna_tcm_allocate_device | READY_FOR_IMPLEMENTATION |
 | 267_syna_tcm_remove_device | syna_tcm_remove_device | 001216d0 | binding | syna_tcm_remove_device.c:syna_tcm_remove_device | PASS |
 | 268_syna_tcm_detect_device | syna_tcm_detect_device | 00121944 | core_logic | syna_tcm_detect_device.c:syna_tcm_detect_device | PASS |
