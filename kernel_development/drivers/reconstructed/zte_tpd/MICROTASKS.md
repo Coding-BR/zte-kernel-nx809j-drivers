@@ -103,7 +103,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | PASS |
 | 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | PASS |
 | 099_tpd_touch_release | tpd_touch_release | 0010ec70 | user_abi | tpd_touch_release.c:tpd_touch_release | PASS |
-| 100_ghost_check_area | ghost_check_area | 0010f2ac | core_logic | ghost_check_area.c:ghost_check_area | READY_FOR_IMPLEMENTATION |
+| 100_ghost_check_area | ghost_check_area | 0010f2ac | core_logic | ghost_check_area.c:ghost_check_area | PASS |
 | 101_tp_ghost_check | tp_ghost_check | 0010f400 | core_logic | tp_ghost_check.c:tp_ghost_check | PASS |
 | 102_ghost_check_reset | ghost_check_reset | 0010f924 | core_logic | ghost_check_reset.c:ghost_check_reset | PASS |
 | 103_tpd_clean_all_event | tpd_clean_all_event | 0010f95c | core_logic | tpd_clean_all_event.c:tpd_clean_all_event | PASS |
