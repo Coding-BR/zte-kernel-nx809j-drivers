@@ -265,7 +265,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 259_syna_tcm_v1_parse_idinfo | syna_tcm_v1_parse_idinfo | 0011f6d0 | core_logic | syna_tcm_v1_parse_idinfo.c:syna_tcm_v1_parse_idinfo | PROMOTED_OFFLINE_EXACT |
 | 260_syna_tcm_v1_check_max_rw_size | syna_tcm_v1_check_max_rw_size | 0011f790 | core_logic | syna_tcm_v1_check_max_rw_size.c:syna_tcm_v1_check_max_rw_size | PASS |
 | 261_syna_tcm_v1_read_message | syna_tcm_v1_read_message | 0011f838 | user_abi | syna_tcm_v1_read_message.c:syna_tcm_v1_read_message | PROMOTED_OFFLINE_EXACT |
-| 262_syna_tcm_v1_set_up_max_rw_size | syna_tcm_v1_set_up_max_rw_size | 00120da8 | core_logic | syna_tcm_v1_set_up_max_rw_size.c:syna_tcm_v1_set_up_max_rw_size | READY_FOR_IMPLEMENTATION |
+| 262_syna_tcm_v1_set_up_max_rw_size | syna_tcm_v1_set_up_max_rw_size | 00120da8 | core_logic | syna_tcm_v1_set_up_max_rw_size.c:syna_tcm_v1_set_up_max_rw_size | PROMOTED_OFFLINE_EXACT |
 | 263_syna_tcm_v1_terminate | syna_tcm_v1_terminate | 00120e64 | core_logic | syna_tcm_v1_terminate.c:syna_tcm_v1_terminate | PASS |
 | 264_syna_tcm_v1_read | syna_tcm_v1_read | 00120eec | user_abi | syna_tcm_v1_read.c:syna_tcm_v1_read | READY_FOR_IMPLEMENTATION |
 | 265_syna_tcm_config_timings | syna_tcm_config_timings | 00121034 | core_logic | syna_tcm_config_timings.c:syna_tcm_config_timings | READY_FOR_IMPLEMENTATION |
