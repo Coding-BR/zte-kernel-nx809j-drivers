@@ -236,6 +236,8 @@ CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
 CFLAGS_syna_tcm_buf_unlock.o := -fno-sanitize=kcfi
 # Stock syna_tcm_buf_unlock@00122140 has no valid KCFI entry preamble.
 CFLAGS_syna_tcm_buf_unlock_0.o := -fno-sanitize=kcfi
+# Stock syna_ts_register_for_panel_events@00113504 has no valid KCFI entry preamble.
+CFLAGS_syna_ts_register_for_panel_events.o := -fno-sanitize=kcfi
 
 # Exact offline reconstruction: suspend_tp_need_awake
 src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
