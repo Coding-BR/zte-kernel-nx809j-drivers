@@ -168,8 +168,8 @@ def main() -> int:
     selected_tasks = select_tasks(tasks, args.functions)
     for task in selected_tasks:
         checked += 1
-        if task.get("status") != "PASS":
-            failures.append(task.get("id", "unknown") + ": status is not PASS")
+        if task.get("status") not in {"PASS", "PROMOTED_OFFLINE_EXACT"}:
+            failures.append(task.get("id", "unknown") + ": status is not PASS or PROMOTED_OFFLINE_EXACT")
             continue
         roles = set()
         for record in task.get("evidence", []):

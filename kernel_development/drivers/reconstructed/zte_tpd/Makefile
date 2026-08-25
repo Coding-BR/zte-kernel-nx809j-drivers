@@ -6,6 +6,7 @@ src-files := $(filter-out $(src)/offset_test.c, $(src-files))
 src-files := $(filter-out $(src)/globals.c, $(src-files))
 src-files := $(filter-out $(src)/trim.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_copy_2.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_copy.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_run_production_test.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_send_command.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_write.c, $(src-files))
@@ -118,6 +119,7 @@ obj-files += syna_tcm_v1_set_up_max_rw_size_exact.o
 obj-files += syna_tcm_v1_read_exact.o
 obj-files += syna_tcm_config_timings_exact.o
 obj-files += syna_tcm_allocate_device_exact.o
+obj-files += syna_tcm_buf_copy_2_exact.o
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
@@ -190,6 +192,7 @@ AFLAGS_syna_tcm_v1_set_up_max_rw_size_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_v1_read_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_config_timings_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_allocate_device_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_buf_copy_2_exact.o := -g0 -I$(src)
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
