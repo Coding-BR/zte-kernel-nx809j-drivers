@@ -5,7 +5,7 @@ Cada linha representa uma única função stock. Nenhuma função pode ser promo
 | ID | Função stock | Entrada | Categoria | Fonte mapeada | Estado |
 |---|---|---|---|---|---|
 | 001_gpio_keys_probe | gpio_keys_probe | 0010071c | binding | gpio_keys_nubia.c:gpio_keys_probe | MAPPED_NOT_EXACT |
-| 002_gpio_keys_shutdown | gpio_keys_shutdown | 00101530 | core_logic | gpio_keys_nubia.c:gpio_keys_shutdown | READY_FOR_IMPLEMENTATION |
+| 002_gpio_keys_shutdown | gpio_keys_shutdown | 00101530 | core_logic | gpio_keys_shutdown_exact.S:gpio_keys_shutdown | PROMOTED_OFFLINE_EXACT |
 | 003_gpio_keys_open | gpio_keys_open | 00101578 | user_abi | gpio_keys_nubia.c:gpio_keys_open | READY_FOR_IMPLEMENTATION |
 | 004_gpio_keys_close | gpio_keys_close | 0010163c | core_logic | gpio_keys_nubia.c:gpio_keys_close | READY_FOR_IMPLEMENTATION |
 | 005_gpio_keys_gpio_report_event | gpio_keys_gpio_report_event | 00101684 | core_logic | gpio_keys_nubia.c:gpio_keys_gpio_report_event | READY_FOR_IMPLEMENTATION |
