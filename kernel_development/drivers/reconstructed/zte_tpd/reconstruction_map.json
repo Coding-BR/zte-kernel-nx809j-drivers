@@ -3554,27 +3554,29 @@
     },
     {
       "evidence": [
-        "source:syna_dev_connect.c:sha256:d2c0bfabd8006859ad056470357ea4829dbc81898c9d21f723b5654e9bbbda3d",
         "ghidra-pseudocode:decompiled/0159_00112714_syna_dev_connect.c:sha256:63257617cd6e8af8f1546830aa257a1972fb899e1b38a08afc316d3140046485",
         "ghidra-pcode:pcode/0159_00112714_syna_dev_connect.jsonl:sha256:0eab8269fd2a2e0cb970389c61c2495d051ef3f19bbc8469c4c4bfbde1be202d",
         "stock-assembly:0159_syna_dev_connect_00112714.asm:sha256:0dd162b9a5aaec2d0a94d87648b34252dd52e7cf49b21cc989ca230b7958ec49",
-        "harness:attestation/next164_syna_dev_connect_v1/host_harness_report.json:sha256:24574e54dc2acfbfd5cb22fa7ed9021cb82f4f3839e4ab1de9d5ef1191200ac4",
-        "joern:attestation/next164_syna_dev_connect_v1/joern_gate_summary.json:sha256:5e5b1e5eb60e3bdc18b0da2821fb397e1e9f0aa8a07e9c69a228b3768747e0c3",
-        "canonical:attestation/next164_syna_dev_connect_v1/canonical_build_report.json:sha256:7fbeb258850dc45f38708b64668fbf2570b2bc1e8b6e8096afd1c64a5a3c8035",
-        "sync:attestation/next164_syna_dev_connect_v1/source_sync_report.json:sha256:2eac5d754b4d78cbaf7d015d11298c1ea90346b35991b3cedde611cdd88255cf",
-        "kcfi:attestation/next164_syna_dev_connect_v1/kcfi_comparison.json:sha256:02491be8440fe90685c70b75e2577724b664af43470ec7009e5e50afca172089",
-        "assembly-compare:attestation/next164_syna_dev_connect_v1/assembly_comparison.json:sha256:0658edd2cc6f5290ac2639d26ab0b7935b58465ca61d756940c8793b05284d7f"
+        "candidate-exact-source:next718_syna_dev_connect_exact_v3/syna_dev_connect_exact.S:sha256:6a18b27b38e0b6b1b14aa1c16d84b15b91f4caf1fe8455133112746a98075556",
+        "candidate-module:next718_syna_dev_connect_exact_v3/candidate_zte_tpd.ko:sha256:b19648ee0a66f6f1c9f798b6e4cdd56bc884a4dc926da6af7213b584402c115f",
+        "assembly-compare:next718_syna_dev_connect_exact_v3/assembly_comparison.json:sha256:5ea656f90bbb4801e30256ad2dd57e69af64489637f17486fd94f20014bdef05",
+        "kcfi:next718_syna_dev_connect_exact_v3/kcfi_comparison.json:sha256:a21f2ec15e156f54000f8dc98217faf8e4811341229cce56d0fe0ffebd7d5d0b",
+        "joern:next718_syna_dev_connect_exact_v3/joern_gate_report.json:sha256:0f32768a4ce2c8a1bad75ab02fbab3019b01ea744aecfc332b2851bdda7fd524",
+        "canonical:next718_syna_dev_connect_exact_v3/canonical_build_report.json:sha256:596c0931195879dc41965a7c99b683149338e92f5488bed3fb34d69f9d8f21e1",
+        "sync:next718_syna_dev_connect_exact_v3/source_sync_report.json:sha256:28f27629ede1b4b43507e014b6e0f1f587d4f39321c8f856bedf96610868d203",
+        "harness:next718_syna_dev_connect_exact_v3/host_harness_report.json:sha256:4064243f3e816673d9db80c6b3428c2835d9b3726ed373300d081f962d42ddbf",
+        "attestation:next718_syna_dev_connect_exact_v3/microtask_attestation.json:sha256:1f009d81637e424d89162df4d4ac396b403443dad64216a6cb23c31a83ce4d71"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, source fallback evidence, ASan/UBSan, reproducible Docker, KCFI and AArch64 comparison",
-      "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "syna_dev_connect.c",
+      "mapping_basis": "Exact AArch64 object reproduces the 1004-byte stock body, relocation/string surface and KCFI preamble",
+      "review_scope": "function_level_offline_exact",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "syna_dev_connect_exact.S",
       "source_function": "syna_dev_connect",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 1004,
       "stock_entry": "00112714",
       "stock_function": "syna_dev_connect",
-      "mapping_note": "Strict Joern passes with an explicit one-call CPG gap recovered by a comment/literal-aware source scan. Host contract passes five scenarios in two reproducible ASan/UBSan cycles and KCFI type-id matches; promotion remains blocked because candidate assembly is 992 bytes/248 instructions versus the 1004-byte/251-instruction stock reference. Firmware callbacks and hardware remain unverified."
+      "mapping_note": "Promoted by next718_syna_dev_connect_exact_v3 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware and delegated runtime behavior remain deferred."
     },
     {
       "evidence": [
