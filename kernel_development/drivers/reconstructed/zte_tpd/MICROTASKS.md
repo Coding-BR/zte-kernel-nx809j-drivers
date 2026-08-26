@@ -217,7 +217,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 211_syna_sysfs_info_show | syna_sysfs_info_show | 0011a5a0 | user_abi | syna_sysfs_info_show.c:syna_sysfs_info_show | READY_FOR_IMPLEMENTATION |
 | 212_syna_sysfs_debug_store | syna_sysfs_debug_store | 0011a9a0 | user_abi | syna_sysfs_debug_store.c:syna_sysfs_debug_store | PASS |
 | 213_syna_sysfs_get_delta_show | syna_sysfs_get_delta_show | 0011aadc | user_abi | syna_sysfs_get_delta_show.c:syna_sysfs_get_delta_show | READY_FOR_IMPLEMENTATION |
-| 214_syna_sysfs_reset_store | syna_sysfs_reset_store | 0011afa8 | user_abi | syna_sysfs_reset_store.c:syna_sysfs_reset_store | READY_FOR_IMPLEMENTATION |
+| 214_syna_sysfs_reset_store | syna_sysfs_reset_store | 0011afa8 | user_abi | syna_sysfs_reset_store_exact.S:syna_sysfs_reset_store | PROMOTED_OFFLINE_EXACT |
 | 215_syna_sysfs_irq_en_store | syna_sysfs_irq_en_store | 0011b12c | user_abi | syna_sysfs_irq_en_store.c:syna_sysfs_irq_en_store | READY_FOR_IMPLEMENTATION |
 | 216_syna_sysfs_pwr_store | syna_sysfs_pwr_store | 0011b2c4 | user_abi | syna_sysfs_pwr_store.c:syna_sysfs_pwr_store | PASS |
 | 217_syna_sysfs_fw_update_store | syna_sysfs_fw_update_store | 0011b3b0 | user_abi | syna_sysfs_fw_update_store.c:syna_sysfs_fw_update_store | PASS |
