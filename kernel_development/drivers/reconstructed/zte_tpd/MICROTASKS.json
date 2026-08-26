@@ -4933,35 +4933,36 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_report_gesture_uevent\nEntrada Ghidra: 00110878\nTamanho stock: 228 bytes\nCategoria: core_logic\nAlvo no fonte: ufp_report_gesture_uevent.c:ufp_report_gesture_uevent\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0131_00110878_ufp_report_gesture_uevent.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0131_00110878_ufp_report_gesture_uevent.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next132_ufp_report_gesture_uevent_v1/canonical_build_report.json",
-          "sha256": "bcb2cd3e12c7e20870b7c21d71ff39839f47fe9fddcc1f58362220423f21be06"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/canonical_build_report.json",
+          "sha256": "246966157ae66c9a8e727725899ed80fbfed2f3256aa352d7abe4fbbe5fdbaeb"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next132_ufp_report_gesture_uevent_v1/kcfi_status.json",
-          "sha256": "10edff990bc95af0d886c4244b536e5f32baa9913b93829ab1d9ee36226fe232"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/kcfi/comparison.json",
+          "sha256": "6b654e5090d92d898ac2be33f0ec52ed1e7aa36da272805011dbb9e1592b9f99"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next132_ufp_report_gesture_uevent_v1/joern_gate_summary.json",
-          "sha256": "3251a3d58b13f184686632bc844c41ea7439b102d2396165f68e8d274276983b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "744ce5a4f1c07d1643192a984d7c47c539efbe444be8eb0c49b17598e6478a10"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next132_ufp_report_gesture_uevent_v1/host_harness_report.json",
-          "sha256": "3e210f4cca0df4ef532d645caf8ead569d95cac5bad7261e740f9b3a8138b7be"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/host_harness_report.json",
+          "sha256": "877f31a2b45fcab508687bb7d8592309edad71d18c7a3137e071a6866c943a6b"
         },
         {
-          "role": "aarch64_assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next132_ufp_report_gesture_uevent_v1/aarch64_validation_report.json",
-          "sha256": "d31e8081888acadd130a1f93a320afc4000b441703aad9186e090313ea52ada7"
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/assembly/comparison.json",
+          "sha256": "1185bd1f5c6b11d243d058276fb6d7ba0ac6424389f2a04a09d04ea93b7e6103"
         }
       ]
     },

@@ -426,6 +426,13 @@ zte_tpd-objs := $(filter-out syna_dev_set_tp_report_rate.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_dev_set_tp_report_rate_exact.o
 AFLAGS_syna_dev_set_tp_report_rate_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: ufp_report_gesture_uevent
+src-files := $(filter-out $(src)/ufp_report_gesture_uevent.c, $(src-files))
+obj-files := $(filter-out ufp_report_gesture_uevent.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_gesture_uevent.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_gesture_uevent_exact.o
+AFLAGS_ufp_report_gesture_uevent_exact.o := -g0 -I$(src)
+
 # Exact offline reconstruction: suspend_tp_need_awake
 src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
 obj-files += suspend_tp_need_awake_exact.o
