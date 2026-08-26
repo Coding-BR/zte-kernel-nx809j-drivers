@@ -257,20 +257,30 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:e1033861e8106873328d332db462b524c364d4c35484a96c21665ae5686e7bc9",
+        "source:gpio_keys_nubia.c:sha256:c2edc9d69fe3cbc2b36907b4c9697bf5fff22a6e2e30118037e9356c3b4bbb20",
         "ghidra-pseudocode:decompiled/0009_00101acc_gpio_keys_quiesce_key.c:sha256:b489763101707109f1fea8f5db08dbe0dc47315d6c051f12524555f40ed8b86a",
         "ghidra-pcode:pcode/0009_00101acc_gpio_keys_quiesce_key.jsonl:sha256:bea057ba347620b76d466228620060813ce60481ab7a1230a9cf38aaa502e8c3",
-        "stock-assembly:0009_gpio_keys_quiesce_key_00101acc.asm:sha256:eb51ef6032021dc48e46337d6afa18b22b2e1fb482a91066bf254e999b41be92"
+        "stock-assembly:0009_gpio_keys_quiesce_key_00101acc.asm:sha256:eb51ef6032021dc48e46337d6afa18b22b2e1fb482a91066bf254e999b41be92",
+        "candidate-exact-source:attestation/next805_gpio_keys_quiesce_key_exact_v1/gpio_keys_quiesce_key_exact.S:sha256:3147e530d9b4100c17b8ea6f72a3e307def72bf35ff206d5d92d9ab8e021eb09",
+        "candidate-module:attestation/next805_gpio_keys_quiesce_key_exact_v1/candidate_gpio_keys_nubia.ko:sha256:553df62f5e40973583fae40b6b69b3cb14576b1acd14f96d6ad80e69188a940d",
+        "assembly-comparison:attestation/next805_gpio_keys_quiesce_key_exact_v1/aarch64_comparison.json:sha256:a493b9b3af85d7e4d075ff823d9268e2e0322bf25ac75a35d4ac0dfd1a461603",
+        "kcfi-comparison:attestation/next805_gpio_keys_quiesce_key_exact_v1/kcfi_comparison.json:sha256:412445733d8b3417f0299c2840fbd18f9602aeb4528b3c24d8cf46255a17cf21",
+        "joern-strict:attestation/next805_gpio_keys_quiesce_key_exact_v1/joern_gate_report.json:sha256:27c38aabb7dfb4ec5b59f9f668866a741e383c7c7cfb0ab6ca4dc030849c6c64",
+        "canonical-build:attestation/next805_gpio_keys_quiesce_key_exact_v1/canonical_build_report.json:sha256:a8e7d3f0df27511560af69b13298a9449cbc13fe5a6f776b393b10bb10be498d",
+        "source-sync:attestation/next805_gpio_keys_quiesce_key_exact_v1/source_sync_report.json:sha256:a7e9316fedcf40737bd62bda763eccf162adac2c2b4e7c3acc99f7b4dce82e5f",
+        "host-asan-ubsan:attestation/next805_gpio_keys_quiesce_key_exact_v1/host_harness_report.json:sha256:cd9f3992311722bf4d8ecac2fb83f9d2e31d0e50cd1fe07918cb1f466b04e5b0",
+        "attestation:attestation/next805_gpio_keys_quiesce_key_exact_v1/microtask_attestation.json:sha256:2d03b1a4219f5ff2f3b5c282c21abe2077b71b1e7da5ac3aab9e565419ffd06c"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "gpio_keys_nubia.c",
+      "mapping_basis": "Stock ELF symbol plus exact offline AArch64 opcode and relocation comparison",
+      "review_scope": "function_level_offline_exact",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "gpio_keys_quiesce_key_exact.S",
       "source_function": "gpio_keys_quiesce_key",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 52,
       "stock_entry": "00101acc",
-      "stock_function": "gpio_keys_quiesce_key"
+      "stock_function": "gpio_keys_quiesce_key",
+      "mapping_note": "Promoted by next805_gpio_keys_quiesce_key_exact_v1 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware remains deferred."
     },
     {
       "evidence": [
