@@ -8163,7 +8163,7 @@
       "stock_entry": "0011b12c",
       "stock_body_bytes": 404,
       "category": "user_abi",
-      "source_file": "syna_sysfs_irq_en_store.c",
+      "source_file": "syna_sysfs_irq_en_store_exact.S",
       "source_function": "syna_sysfs_irq_en_store",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0214_0011b12c_syna_sysfs_irq_en_store.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0214_0011b12c_syna_sysfs_irq_en_store.jsonl",
@@ -8173,8 +8173,49 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_sysfs_irq_en_store\nEntrada Ghidra: 0011b12c\nTamanho stock: 404 bytes\nCategoria: user_abi\nAlvo no fonte: syna_sysfs_irq_en_store.c:syna_sysfs_irq_en_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0214_0011b12c_syna_sysfs_irq_en_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0214_0011b12c_syna_sysfs_irq_en_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/microtask_attestation.json",
+          "sha256": "6514dac6b576d590dd8b0274d5bfed8304148220af0ef833ebe5cc908e46c03e"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/canonical_build_report.json",
+          "sha256": "7f873022c13be6985d4afaeedfa2a58c3fbe01beb7e5637f8c42e149c284cd74"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/canonical_build_report.json",
+          "sha256": "7f873022c13be6985d4afaeedfa2a58c3fbe01beb7e5637f8c42e149c284cd74"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/assembly_comparison.json",
+          "sha256": "7c5e3684a3beb695a067eec9bb8de1f7ad8b0e4fa8f19dae8b3c37a7d28e3957"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/kcfi_comparison.json",
+          "sha256": "b5a0d42612a72d8fd26c0eea27edde140ab1a78f4d5fff1db2453743287d3ea7"
+        },
+        {
+          "role": "joern_strict",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/joern_gate_report.json",
+          "sha256": "c7192fda4611c66cae69ab022de3492ebc507d7aeb348e6827261162c098dfe9"
+        },
+        {
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/host_harness_report.json",
+          "sha256": "20818496202202e37d8f2d7e82a3671401891787f5a44f830b3b7d4bf28bea4d"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next708_syna_sysfs_irq_en_store_exact_v1/host_harness_report.json",
+          "sha256": "20818496202202e37d8f2d7e82a3671401891787f5a44f830b3b7d4bf28bea4d"
+        }
+      ]
     },
     {
       "id": "216_syna_sysfs_pwr_store",
