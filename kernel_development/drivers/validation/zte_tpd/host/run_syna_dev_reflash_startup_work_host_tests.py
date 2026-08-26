@@ -11,7 +11,20 @@ import subprocess
 from datetime import datetime, timezone
 
 
-EXPECTED_STDOUT = "PASS syna_dev_reflash_startup_work host tests (5 cases)\n"
+EXPECTED_STDOUT = (
+    "PASS disabled_waits_250_ticks\n"
+    "PASS disabled_returns_before_power_wakeup\n"
+    "PASS reflash_failure_stops_pipeline\n"
+    "PASS reflash_failure_balances_wakeup\n"
+    "PASS reflash_uses_recovered_tcm_offset\n"
+    "PASS app_fw_failure_stops_before_input\n"
+    "PASS app_fw_failure_logs_and_relaxes\n"
+    "PASS input_failure_reaches_input_stage\n"
+    "PASS input_failure_skips_post_setup\n"
+    "PASS success_runs_full_pipeline\n"
+    "PASS success_uses_mode_rate_and_balances_wakeup\n"
+    "SUMMARY tests=11 failures=0\n"
+)
 
 
 def main() -> int:
@@ -32,7 +45,7 @@ def main() -> int:
         cycle_root.mkdir()
         compile_command = [
             "docker", "run", "--rm",
-            "-v", f"{root / 'kernel_development' / 'drivers'}:/drivers:ro",
+            "-v", f"{root}:/repo:ro",
             "-v", f"{cycle_root}:/output",
             "-v", "nubia_sm8850_kernel_toolchains:/toolchains:ro",
             "nubia-sm8850-kernel-builder:latest",
@@ -40,9 +53,9 @@ def main() -> int:
             "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror",
             "-Wno-int-conversion", "-Wno-unused-variable", "-fno-omit-frame-pointer",
             "-fno-pie", "-no-pie", "-frandom-seed=zte-tpd-next169-reflash-startup-work",
-            "-ffile-prefix-map=/drivers=<drivers>", "-fsanitize=address,undefined",
+            "-ffile-prefix-map=/repo=<repo>", "-fsanitize=address,undefined",
             "-Wl,--build-id=none",
-            "/drivers/validation/zte_tpd/host/syna_dev_reflash_startup_work_host_test.c",
+            "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_dev_reflash_startup_work_host_test.c",
             "-o", "/output/host_test_asan_ubsan",
         ]
         compiled = subprocess.run(compile_command, capture_output=True, text=True)
@@ -79,7 +92,7 @@ def main() -> int:
         "container_image": "nubia-sm8850-kernel-builder:latest",
         "toolchain_volume": "nubia_sm8850_kernel_toolchains",
         "sanitizers": ["address", "undefined"],
-        "expected_cases": 5,
+        "expected_cases": 11,
         "repetitions": 2,
         "cycles": cycles,
         "reproducible": all(c["passed"] for c in cycles) and cycles[0]["binary_sha256"] == cycles[1]["binary_sha256"],

@@ -172,7 +172,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 166_syna_dev_helper_work | syna_dev_helper_work | 00113590 | async_or_irq | syna_dev_helper_work.c:syna_dev_helper_work | PROMOTED_OFFLINE_EXACT |
 | 167_syna_dev_set_up_input_device | syna_dev_set_up_input_device | 001136c4 | core_logic | syna_dev_set_up_input_device.c:syna_dev_set_up_input_device | PROMOTED_OFFLINE_EXACT |
 | 168_syna_dev_process_unexpected_reset | syna_dev_process_unexpected_reset | 00113a9c | core_logic | syna_dev_process_unexpected_reset.c:syna_dev_process_unexpected_reset | PASS |
-| 169_syna_dev_reflash_startup_work | syna_dev_reflash_startup_work | 00113b40 | async_or_irq | syna_dev_reflash_startup_work.c:syna_dev_reflash_startup_work | READY_FOR_IMPLEMENTATION |
+| 169_syna_dev_reflash_startup_work | syna_dev_reflash_startup_work | 00113b40 | async_or_irq | syna_dev_reflash_startup_work_exact.S:syna_dev_reflash_startup_work | PROMOTED_OFFLINE_EXACT |
 | 170_syna_dev_process_touch_report | syna_dev_process_touch_report | 00113c74 | core_logic | syna_dev_process_touch_report_exact.S:syna_dev_process_touch_report | PROMOTED_OFFLINE_EXACT |
 | 171_syna_dev_isr | syna_dev_isr | 001141b4 | core_logic | syna_dev_isr.c:syna_dev_isr | PROMOTED_OFFLINE_EXACT |
 | 172_syna_dev_enter_normal_sensing | syna_dev_enter_normal_sensing | 00114294 | core_logic | syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing | PASS |
