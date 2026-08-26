@@ -412,6 +412,13 @@ zte_tpd-objs := $(filter-out syna_tpd_register_fw_class.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tpd_register_fw_class_exact.o
 AFLAGS_syna_tpd_register_fw_class_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_work_charger_detect_work
+src-files := $(filter-out $(src)/syna_work_charger_detect_work.c, $(src-files))
+obj-files := $(filter-out syna_work_charger_detect_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_work_charger_detect_work.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_work_charger_detect_work_exact.o
+AFLAGS_syna_work_charger_detect_work_exact.o := -g0 -I$(src)
+
 # Exact offline reconstruction: suspend_tp_need_awake
 src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
 obj-files += suspend_tp_need_awake_exact.o
