@@ -36,6 +36,9 @@ ALLOC_TAG_RE = re.compile(
     r"^(?P<type>R_AARCH64_[A-Z0-9_]+) "
     r"(?P<owner>[A-Za-z0-9_.$]+)\._alloc_tag(?:\.(?P<suffix>[0-9]+))?$"
 )
+CODETAG_SECTION_TARGET_RE = re.compile(
+    r"^R_AARCH64_[A-Z0-9_]+ \.codetag\.alloc_tags\+0x[0-9a-fA-F]+$"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -2685,6 +2688,84 @@ def canonicalize_compiler_alloc_tags(
     return stock, candidate, evidence
 
 
+def canonicalize_stripped_codetag_alloc_tags(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match stripped stock codetag section offsets to named candidate tags.
+
+    The stock module may retain only ``.codetag.alloc_tags+offset`` while the
+    reconstructed object exposes the same compiler-generated allocation tag as
+    ``owner._alloc_tag[.N]``. Accept only identical ADRP/ADD pairs at the same
+    instruction sites; this avoids treating arbitrary section offsets as
+    equivalent.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    expected_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    for index in range(len(stock) - 1):
+        stock_parts = [value.split(" ", 1) for value in stock[index:index + 2]]
+        candidate_parts = [value.split(" ", 1) for value in candidate[index:index + 2]]
+        if (
+            any(len(value) != 2 for value in stock_parts + candidate_parts)
+            or tuple(value[0] for value in stock_parts) != expected_types
+            or tuple(value[0] for value in candidate_parts) != expected_types
+            or not all(
+                CODETAG_SECTION_TARGET_RE.fullmatch(value)
+                or ALLOC_TAG_RE.fullmatch(value)
+                for value in stock[index:index + 2]
+            )
+            or not all(
+                CODETAG_SECTION_TARGET_RE.fullmatch(value)
+                or ALLOC_TAG_RE.fullmatch(value)
+                for value in candidate[index:index + 2]
+            )
+        ):
+            continue
+        positions = stock_instruction_indices[index:index + 2]
+        if (
+            positions != candidate_instruction_indices[index:index + 2]
+            or len(positions) != 2
+            or positions[1] != positions[0] + 1
+        ):
+            continue
+        candidate_target = candidate_parts[0][1]
+        alias = f"<codetag_alloc_tag:{candidate_target}>"
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "kind": "stripped_codetag_alloc_tag",
+                "reason": (
+                    "matching ADRP/ADD pair at identical instruction sites maps "
+                    "the stripped stock codetag section offset to the named "
+                    "candidate allocation tag"
+                ),
+                "stock_target": stock_parts[0][1],
+                "candidate_target": candidate_target,
+                "canonical_target": alias,
+                "instruction_indices": positions,
+            }
+        )
+    return stock, candidate, evidence
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stock-dir", type=Path, required=True)
@@ -3055,6 +3136,18 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += alloc_tag_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stripped_codetag_equivalences,
+        ) = canonicalize_stripped_codetag_alloc_tags(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += stripped_codetag_equivalences
         checks = {
             "section": stock_record.get("section") == candidate_record.get("section"),
             "symbol_size": stock_record.get("symbol_size") == candidate_record.get("symbol_size"),

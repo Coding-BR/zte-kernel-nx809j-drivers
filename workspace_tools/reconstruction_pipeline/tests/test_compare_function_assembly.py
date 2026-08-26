@@ -91,6 +91,60 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(stock, candidate)
         self.assertEqual(evidence, [])
 
+    def test_stripped_codetag_offset_matches_named_candidate_tag(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_codetag_alloc_tags(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x190",
+                "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x190",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 owner._alloc_tag",
+                "R_AARCH64_ADD_ABS_LO12_NC owner._alloc_tag",
+            ],
+            [100, 101],
+            [100, 101],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+
+    def test_stripped_codetag_requires_matching_instruction_positions(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_codetag_alloc_tags(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x190",
+                "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x190",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 owner._alloc_tag",
+                "R_AARCH64_ADD_ABS_LO12_NC owner._alloc_tag",
+            ],
+            [100, 101],
+            [101, 102],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_stripped_codetag_matches_moved_candidate_section(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_codetag_alloc_tags(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x190",
+                "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x190",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0xb20",
+                "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0xb20",
+            ],
+            [100, 101],
+            [100, 101],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+
     def test_register_allocation_changes_require_semantic_proof(self) -> None:
         stock = ["f9462eab", "eb090148", "9a948114"]
         candidate = ["f9462ea8", "eb0a0169", "9a948134"]
