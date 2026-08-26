@@ -176,7 +176,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 170_syna_dev_process_touch_report | syna_dev_process_touch_report | 00113c74 | core_logic | syna_dev_process_touch_report_exact.S:syna_dev_process_touch_report | PROMOTED_OFFLINE_EXACT |
 | 171_syna_dev_isr | syna_dev_isr | 001141b4 | core_logic | syna_dev_isr.c:syna_dev_isr | PROMOTED_OFFLINE_EXACT |
 | 172_syna_dev_enter_normal_sensing | syna_dev_enter_normal_sensing | 00114294 | core_logic | syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing | PASS |
-| 173_syna_dev_enable_lowpwr_gesture | syna_dev_enable_lowpwr_gesture | 00114348 | core_logic | syna_dev_enable_lowpwr_gesture.c:syna_dev_enable_lowpwr_gesture | READY_FOR_IMPLEMENTATION |
+| 173_syna_dev_enable_lowpwr_gesture | syna_dev_enable_lowpwr_gesture | 00114348 | core_logic | syna_dev_enable_lowpwr_gesture_exact.S:syna_dev_enable_lowpwr_gesture | PROMOTED_OFFLINE_EXACT |
 | 174_syna_poll | syna_poll | 00114510 | core_logic | syna_poll.c:syna_poll | PASS |
 | 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | PASS |
 | 176_syna_mmap | syna_mmap | 001147ec | core_logic | syna_mmap.c:syna_mmap | PROMOTED_OFFLINE_EXACT |
