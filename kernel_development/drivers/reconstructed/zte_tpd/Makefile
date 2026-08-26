@@ -405,6 +405,13 @@ AFLAGS_syna_tcm_get_partition_id_string_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_parse_fw_image_exact.o := -g0 -I$(src)
 AFLAGS_syna_string_change_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_tpd_register_fw_class
+src-files := $(filter-out $(src)/syna_tpd_register_fw_class.c, $(src-files))
+obj-files := $(filter-out syna_tpd_register_fw_class.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tpd_register_fw_class.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tpd_register_fw_class_exact.o
+AFLAGS_syna_tpd_register_fw_class_exact.o := -g0 -I$(src)
+
 # Exact offline reconstruction: suspend_tp_need_awake
 src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
 obj-files += suspend_tp_need_awake_exact.o
