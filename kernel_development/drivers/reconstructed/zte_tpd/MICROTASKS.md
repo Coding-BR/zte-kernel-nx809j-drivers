@@ -206,7 +206,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 200_syna_spi_release | syna_spi_release | 00118514 | user_abi | syna_spi_release.c:syna_spi_release | PASS |
 | 201_syna_spi_probe | syna_spi_probe | 00118544 | binding | syna_spi_probe_exact.S:syna_spi_probe | PROMOTED_OFFLINE_EXACT |
 | 202_syna_spi_remove | syna_spi_remove | 00119670 | binding | syna_spi_remove_exact.S:syna_spi_remove | PROMOTED_OFFLINE_EXACT |
-| 203_syna_spi_read | syna_spi_read | 00119800 | user_abi | syna_spi_read.c:syna_spi_read | READY_FOR_IMPLEMENTATION |
+| 203_syna_spi_read | syna_spi_read | 00119800 | user_abi | syna_spi_read_exact.S:syna_spi_read | PROMOTED_OFFLINE_EXACT |
 | 204_syna_spi_write | syna_spi_write | 00119ae4 | user_abi | syna_spi_write.c:syna_spi_write | READY_FOR_IMPLEMENTATION |
 | 205_syna_spi_enable_irq | syna_spi_enable_irq | 00119da0 | async_or_irq | syna_spi_enable_irq.c:syna_spi_enable_irq | PASS |
 | 206_syna_spi_power_on | syna_spi_power_on | 00119e7c | core_logic | syna_spi_power_on.c:syna_spi_power_on | READY_FOR_IMPLEMENTATION |
