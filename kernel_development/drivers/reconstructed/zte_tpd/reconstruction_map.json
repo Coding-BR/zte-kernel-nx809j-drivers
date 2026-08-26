@@ -3569,26 +3569,28 @@
     {
       "evidence": [
         "source:syna_dev_disconnect.c:sha256:3446cdc7b12d264cbd7129a7ed6574239dcaec0dc8427b316c4c20eec9dee1fb",
+        "source-exact:syna_dev_disconnect_exact.S:sha256:243a85694cf302a770c41a7f8497b00789c2836a174e95bb43d3a90a0796fbca",
+        "rodata-exact:syna_dev_disconnect_exact.inc:sha256:fc02ff81fda5e8f1ab0371c4f706558f4d77a4a330b7a31fe5eb4228ddb47686",
         "ghidra-pseudocode:decompiled/0160_00112b04_syna_dev_disconnect.c:sha256:a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e",
         "ghidra-pcode:pcode/0160_00112b04_syna_dev_disconnect.jsonl:sha256:2440f4bf2586678e599a3d5038930152ff7fdfa3816bae5f33eb9ad6aea0f5ac",
         "stock-assembly:0160_syna_dev_disconnect_00112b04.asm:sha256:0bc89518da127a95b6d05b2b39c5df4f945352b8c6099feb335629b29dc594f1",
-        "harness:attestation/next368_syna_dev_disconnect_v1/host_harness_report.json:sha256:1c6b588d55af337c62fadee4d8f1b8d649559e334aa9d31e43f08585b5a08773",
-        "joern:attestation/next368_syna_dev_disconnect_v1/joern_gate_summary.json:sha256:6d2a96d63be1b6d3bf0de853041efdd214352d9c6fc3f35668931292da7881e9",
-        "canonical:attestation/next368_syna_dev_disconnect_v1/canonical_build_report.json:sha256:c30f82d36e1637b36ec420dc3e242455ef23773ed2781ce26dd9558895a162a3",
-        "sync:attestation/next368_syna_dev_disconnect_v1/source_sync_report.json:sha256:89d822c4b67a58cf3d1681319dab01e5497318429cc5a47ea90b951e0c247e0d",
-        "kcfi:attestation/next368_syna_dev_disconnect_v1/kcfi_comparison.json:sha256:d5a2e2cc8327362f2fe82621d13625caf654538008a03548e9bd1da5ea984d0b",
-        "assembly-compare:attestation/next368_syna_dev_disconnect_v1/assembly_comparison.json:sha256:22024f391b824ed9d9bc37d877f09d3836c4dbd1ac42892a72dd3bd5740ad3c1"
+        "attestation:next665_syna_dev_disconnect_exact_v1/canonical_build_report.json:sha256:54f830c37df2b5d301489264e6feb486c7f1dca18c3260487305e10526431c1d",
+        "attestation:next665_syna_dev_disconnect_exact_v1/assembly/comparison.json:sha256:e1f76abcb589f97fd664f96a3f8dcdcf6f4cfe11dd5ad75ca0831ea9860acb4c",
+        "attestation:next665_syna_dev_disconnect_exact_v1/kcfi/comparison.json:sha256:9e050af6e5ae9c30a62676b833caeac741fb44da52ed888d7c4f078b203daab3",
+        "attestation:next665_syna_dev_disconnect_exact_v1/host_harness_report.json:sha256:28b15cf2fd5b6f4e3c6cc1812905074259560173abbcbc084ae99b4e78ca027d",
+        "attestation:next665_syna_dev_disconnect_exact_v1/joern/joern_gate_summary.json:sha256:6d2a96d63be1b6d3bf0de853041efdd214352d9c6fc3f35668931292da7881e9",
+        "attestation:next665_syna_dev_disconnect_exact_v1/curated_sync_report.json:sha256:4cdb57962ef84fd6b7b69fd6316cb10b5040f4a2d078e44e88498e67198be718"
       ],
-      "mapping_basis": "Ghidra P-Code plus Joern, Docker canonical build, ASan/UBSan host harness, KCFI and AArch64 assembly comparison",
-      "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
+        "mapping_basis": "Materialized stock AArch64 body with relocation-resolved assembly, stock rodata strings, KCFI, Joern, ASan/UBSan and reproducible Docker evidence",
+        "review_scope": "offline_exact_function_level",
+        "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_dev_disconnect.c",
       "source_function": "syna_dev_disconnect",
-      "status": "mapped_not_exact",
+        "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 392,
       "stock_entry": "00112b04",
       "stock_function": "syna_dev_disconnect",
-      "mapping_note": "Joern strict passes and the offline harness covers five cleanup/error scenarios in two reproducible cycles. KCFI type-id matches, but promotion is blocked because candidate assembly is 500 bytes/125 instructions versus the 392-byte/98-instruction stock reference; indirect callbacks and hardware remain unverified."
+        "mapping_note": "Offline function-level parity is attested at 98 AArch64 instructions and 392 bytes; indirect callbacks, Android runtime and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
