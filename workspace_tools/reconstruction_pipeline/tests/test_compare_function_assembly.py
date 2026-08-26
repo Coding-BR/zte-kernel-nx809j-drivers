@@ -828,6 +828,28 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(stock, candidate)
         self.assertEqual(evidence, [])
 
+    def test_same_site_storage_target_matches_named_data_field(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_same_site_storage_targets(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .data+0x8d8",
+                "R_AARCH64_ADD_ABS_LO12_NC .data+0x8d8",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 syna_spi_hw_if+0xa8",
+                "R_AARCH64_ADD_ABS_LO12_NC syna_spi_hw_if+0xa8",
+            ],
+            [410, 411],
+            [410, 411],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["stock_target"], ".data+0x8d8")
+        self.assertEqual(
+            evidence[0]["candidate_target"], "syna_spi_hw_if+0xa8"
+        )
+
     def test_stripped_bss_subfield_matches_byte_and_pointer_accesses(self) -> None:
         for relocation_type in (
             "R_AARCH64_LDST8_ABS_LO12_NC",

@@ -2446,8 +2446,8 @@ def canonicalize_stripped_bss_subfields(
             return None
         return parts[0], parts[1]
 
-    def is_anonymous_bss(target: str) -> bool:
-        return bool(re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target))
+    def is_anonymous_storage(target: str) -> bool:
+        return bool(re.fullmatch(r"\.(?:bss|data)(?:\+0x[0-9a-fA-F]+)?", target))
 
     def is_named_subfield(target: str) -> bool:
         return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*\+0x[0-9a-fA-F]+", target))
@@ -2460,7 +2460,7 @@ def canonicalize_stripped_bss_subfields(
             or candidate_entry is None
             or stock_entry[0] != "R_AARCH64_ADR_PREL_PG_HI21"
             or candidate_entry[0] != "R_AARCH64_ADR_PREL_PG_HI21"
-            or not is_anonymous_bss(stock_entry[1])
+            or not is_anonymous_storage(stock_entry[1])
             or not is_named_subfield(candidate_entry[1])
         ):
             continue
@@ -2501,7 +2501,7 @@ def canonicalize_stripped_bss_subfields(
                     "adrp_relocation_index": index,
                     "ldst_relocation_index": second,
                     "reason": (
-                        "named global subfield matched to stripped .bss only where "
+                        "named global subfield matched to stripped .bss/.data only where "
                         "identical instructions use the same ADRP then a byte, word, "
                         "or pointer access within four instructions"
                     ),
@@ -2512,6 +2512,101 @@ def canonicalize_stripped_bss_subfields(
                 }
             )
             break
+    return stock, candidate, evidence
+
+
+def canonicalize_same_site_storage_targets(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match anonymous stock storage to a named candidate field at exact sites.
+
+    Some stripped modules expose a global as ``.data+offset`` or ``.bss+offset``
+    while a reconstruction exposes the same storage as a field of a named
+    object.  This rule accepts only equal relocation types at equal instruction
+    indices and requires a stable one-to-one target mapping across all uses.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def anonymous_storage(target: str) -> bool:
+        return bool(re.fullmatch(r"\.(?:bss|data)(?:\+0x[0-9a-fA-F]+)?", target))
+
+    def named_storage_field(target: str) -> bool:
+        return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*\+0x[0-9a-fA-F]+", target))
+
+    stock_to_candidate: dict[str, str] = {}
+    candidate_to_stock: dict[str, str] = {}
+    sites: dict[tuple[str, str], list[int]] = {}
+    for index, (stock_value, candidate_value) in enumerate(zip(stock, candidate, strict=True)):
+        stock_entry = split(stock_value)
+        candidate_entry = split(candidate_value)
+        if (
+            stock_entry is None
+            or candidate_entry is None
+            or stock_entry[0] != candidate_entry[0]
+            or stock_instruction_indices[index] != candidate_instruction_indices[index]
+            or not anonymous_storage(stock_entry[1])
+            or not named_storage_field(candidate_entry[1])
+        ):
+            continue
+        stock_target, candidate_target = stock_entry[1], candidate_entry[1]
+        if (
+            stock_target in stock_to_candidate
+            and stock_to_candidate[stock_target] != candidate_target
+        ) or (
+            candidate_target in candidate_to_stock
+            and candidate_to_stock[candidate_target] != stock_target
+        ):
+            continue
+        stock_to_candidate[stock_target] = candidate_target
+        candidate_to_stock[candidate_target] = stock_target
+        sites.setdefault((stock_target, candidate_target), []).append(
+            stock_instruction_indices[index]
+        )
+
+    for index, (stock_value, candidate_value) in enumerate(zip(stock, candidate, strict=True)):
+        stock_entry = split(stock_value)
+        candidate_entry = split(candidate_value)
+        if stock_entry is None or candidate_entry is None:
+            continue
+        pair = (stock_entry[1], candidate_entry[1])
+        if pair not in sites or stock_entry[0] != candidate_entry[0]:
+            continue
+        alias = f"<same_site_storage:{pair[0]}:{pair[1]}>"
+        stock[index] = f"{stock_entry[0]} {alias}"
+        candidate[index] = f"{candidate_entry[0]} {alias}"
+
+    for (stock_target, candidate_target), instruction_sites in sites.items():
+        evidence.append(
+            {
+                "kind": "same_site_storage_target",
+                "reason": (
+                    "equal relocation types at identical instruction sites establish "
+                    "a stable one-to-one mapping from stripped stock storage to the "
+                    "named candidate field"
+                ),
+                "stock_target": stock_target,
+                "candidate_target": candidate_target,
+                "canonical_target": f"<same_site_storage:{stock_target}:{candidate_target}>",
+                "instruction_indices": instruction_sites,
+            }
+        )
     return stock, candidate, evidence
 
 
@@ -3076,6 +3171,18 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += bss_subfield_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            same_site_storage_equivalences,
+        ) = canonicalize_same_site_storage_targets(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += same_site_storage_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
