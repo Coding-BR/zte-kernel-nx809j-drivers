@@ -8764,7 +8764,7 @@
       "stock_entry": "0011d594",
       "stock_body_bytes": 232,
       "category": "core_logic",
-      "source_file": "syna_tcm_buf_alloc.c",
+      "source_file": "syna_tcm_buf_alloc_exact.S",
       "source_function": "syna_tcm_buf_alloc",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0235_0011d594_syna_tcm_buf_alloc.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0235_0011d594_syna_tcm_buf_alloc.jsonl",
@@ -8774,8 +8774,49 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_buf_alloc\nEntrada Ghidra: 0011d594\nTamanho stock: 232 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tcm_buf_alloc.c:syna_tcm_buf_alloc\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0235_0011d594_syna_tcm_buf_alloc.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0235_0011d594_syna_tcm_buf_alloc.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/microtask_attestation.json",
+          "sha256": "9ef3748b30dcfec43593646a5b6b31df9597cde2d314aa2b98958a3aec98a140"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/canonical_build_report.json",
+          "sha256": "a2f7d60ea9e205dd7e0498142e35439533d1f0adbe05ed11b02b85afc7e9121a"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/canonical_build_report.json",
+          "sha256": "a2f7d60ea9e205dd7e0498142e35439533d1f0adbe05ed11b02b85afc7e9121a"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/assembly_comparison.json",
+          "sha256": "665244addd6b2de165ef87196eee4a1bc7b8648a76831785655b9243031a9773"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/kcfi_comparison.json",
+          "sha256": "aefa5a2dbce491951f0757a099456ea9419086028f3898a01c1a2d35263ac90f"
+        },
+        {
+          "role": "joern_strict",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/joern_gate_report.json",
+          "sha256": "f24cf1a42fe3f74f3216ece47882314c40516915d5e98e655924f02b8b3dff5b"
+        },
+        {
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/host_harness_report.json",
+          "sha256": "e6d1a103a80e032a90d57a1d2e2767e7ffb71bf0cec93eee0b52179b01dda3ca"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next699_syna_tcm_buf_alloc_exact_v1/host_harness_report.json",
+          "sha256": "e6d1a103a80e032a90d57a1d2e2767e7ffb71bf0cec93eee0b52179b01dda3ca"
+        }
+      ]
     },
     {
       "id": "237_syna_pal_mem_cpy",

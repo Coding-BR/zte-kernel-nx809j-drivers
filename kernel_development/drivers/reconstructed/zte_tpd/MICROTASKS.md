@@ -239,7 +239,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 233_syna_tcm_testing_0a00_check_lower_bound | syna_tcm_testing_0A00_check_lower_bound | 0011d2c4 | core_logic | syna_tcm_testing_0A00_check_lower_bound.c:syna_tcm_testing_0A00_check_lower_bound | PASS |
 | 234_syna_tcm_get_testing_0001 | syna_tcm_get_testing_0001 | 0011d32c | core_logic | syna_tcm_get_testing_0001.c:syna_tcm_get_testing_0001 | PASS |
 | 235_syna_tcm_testing_build_id | syna_tcm_testing_build_id | 0011d33c | core_logic | syna_tcm_testing_build_id.c:syna_tcm_testing_build_id | READY_FOR_IMPLEMENTATION |
-| 236_syna_tcm_buf_alloc | syna_tcm_buf_alloc | 0011d594 | core_logic | syna_tcm_buf_alloc.c:syna_tcm_buf_alloc | READY_FOR_IMPLEMENTATION |
+| 236_syna_tcm_buf_alloc | syna_tcm_buf_alloc | 0011d594 | core_logic | syna_tcm_buf_alloc_exact.S:syna_tcm_buf_alloc | PROMOTED_OFFLINE_EXACT |
 | 237_syna_pal_mem_cpy | syna_pal_mem_cpy | 0011d67c | core_logic | syna_pal_mem_cpy.c:syna_pal_mem_cpy | PASS |
 | 238_syna_tcm_testing_0001_check_device_id | syna_tcm_testing_0001_check_device_id | 0011d6e4 | core_logic | syna_tcm_testing_0001_check_device_id.c:syna_tcm_testing_0001_check_device_id | PROMOTED_OFFLINE_EXACT |
 | 239_syna_tcm_get_testing_0002 | syna_tcm_get_testing_0002 | 0011d79c | core_logic | syna_tcm_get_testing_0002.c:syna_tcm_get_testing_0002 | PROMOTED_OFFLINE_EXACT |
