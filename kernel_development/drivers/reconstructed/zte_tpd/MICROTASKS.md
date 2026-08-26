@@ -360,7 +360,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 354_tpd_set_play_game | tpd_set_play_game | 0012c6e8 | core_logic | tpd_set_play_game.c:tpd_set_play_game | PROMOTED_OFFLINE_EXACT |
 | 355_tpd_set_game_partition | tpd_set_game_partition | 0012c7c4 | core_logic | tpd_set_game_partition.c:tpd_set_game_partition | PASS |
 | 356_tpd_get_frame_data | tpd_get_frame_data | 0012c7fc | core_logic | tpd_get_frame_data.c:tpd_get_frame_data | PASS |
-| 357_tpd_set_frame_data | tpd_set_frame_data | 0012c818 | core_logic | tpd_set_frame_data.c:tpd_set_frame_data | READY_FOR_IMPLEMENTATION |
+| 357_tpd_set_frame_data | tpd_set_frame_data | 0012c818 | core_logic | tpd_set_frame_data.c:tpd_set_frame_data | PROMOTED_OFFLINE_EXACT |
 | 358_tpd_get_palm_mode | tpd_get_palm_mode | 0012c8e4 | core_logic | tpd_get_palm_mode.c:tpd_get_palm_mode | PASS |
 | 359_tpd_set_palm_mode | tpd_set_palm_mode | 0012c900 | core_logic | tpd_set_palm_mode.c:tpd_set_palm_mode | PASS |
 | 360_syna_ghost_check_reset | syna_ghost_check_reset | 0012c940 | core_logic | syna_ghost_check_reset.c:syna_ghost_check_reset | PASS |

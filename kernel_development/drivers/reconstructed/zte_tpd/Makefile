@@ -529,6 +529,13 @@ zte_tpd-objs := $(filter-out tpd_set_play_game.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_play_game_exact.o
 AFLAGS_tpd_set_play_game_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: tpd_set_frame_data
+src-files := $(filter-out $(src)/tpd_set_frame_data.c, $(src-files))
+obj-files := $(filter-out tpd_set_frame_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_frame_data.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_frame_data_exact.o
+AFLAGS_tpd_set_frame_data_exact.o := -g0 -I$(src)
+
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-I$(src) -include $(src)/defs.h -Wno-self-assign \
