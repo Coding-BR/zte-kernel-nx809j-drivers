@@ -13382,8 +13382,34 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_set_display_rotation\nEntrada Ghidra: 0012c50c\nTamanho stock: 444 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_set_display_rotation.c:tpd_set_display_rotation\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0351_0012c50c_tpd_set_display_rotation.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0351_0012c50c_tpd_set_display_rotation.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next661_tpd_set_display_rotation_exact_v1/canonical_build_report.json",
+          "sha256": "a38def286a1f315a2effbe0c6a73952e18de9c812437a8d7bea8496752e0ec39"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next661_tpd_set_display_rotation_exact_v1/kcfi/comparison.json",
+          "sha256": "65418d56ee4d59dd0b91ea6cc74f10fd17b9d0c250b45d346b442c4e32ad6af6"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next661_tpd_set_display_rotation_exact_v1/host_harness_report.json",
+          "sha256": "0e008c4c39e48d5d7aadcba71072dea4f8663bc9c93d163b6a30d39e7ed0713f"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next661_tpd_set_display_rotation_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "6a68fdf101519a38c776a16be362ffd21a2e2adb506a96c89c953347394cb33c"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next661_tpd_set_display_rotation_exact_v1/assembly/comparison.json",
+          "sha256": "662942cc608a6f910bce0d6af9993eb5b45a1c163c270bdeda6854941e0c042a"
+        }
+      ]
     },
     {
       "id": "353_tpd_get_play_game",
