@@ -2664,21 +2664,28 @@
     {
       "evidence": [
         "source:suspend_tp_need_awake.c:sha256:e13c6c0aa423baec4af3771fd0134963e96b1cb9ccb5283983f03bf70e375dc9",
+        "source-exact:suspend_tp_need_awake_exact.S:sha256:43f134474f41f12c1e95e64347cb7b373e4b0c24e5d9935cb035e30648e952ce",
         "ghidra-pseudocode:decompiled/0118_0011049c_suspend_tp_need_awake.c:sha256:cdebb5337985da0cbed0482141941476ddc14ef9b992d2bfc992a7b2f4979fe7",
         "ghidra-pcode:pcode/0118_0011049c_suspend_tp_need_awake.jsonl:sha256:81f9b9d0a07fac79c3afb228c0c8ba465032956389f1df4a67a076d109007a16",
         "stock-assembly:0118_suspend_tp_need_awake_0011049c.asm:sha256:5713c31d54db90ffea84ce72ffac844fa9311acac99fbeba297f5cd7aa6da8ba",
-        "attestation:next504_suspend_tp_need_awake_exact_v1/microtask_attestation.json:status:OFFLINE_EXACT"
+        "joern:attestation/next675_suspend_tp_need_awake_exact_v1/joern/joern_gate_summary.json:sha256:cc6f6818291d1b75a6b69ce649ab975c3059b54a19bc376dc9f00f9c89816426",
+        "host-harness:attestation/next675_suspend_tp_need_awake_exact_v1/host_harness_report.json:sha256:486ee68e4e53af0f949bbc99cbc5340cda1ea71f34bd1f995db2db49c06cc16b",
+        "canonical-build:attestation/next675_suspend_tp_need_awake_exact_v1/canonical_build_report.json:sha256:c60d67355a02174441fa8ef8b3aa949e8a8074fb43c9c11381a4d124e727f55c",
+        "source-sync:attestation/next675_suspend_tp_need_awake_exact_v1/curated_sync_report.json:sha256:32d585200cf3884e85e9316cd751ecf949808001ea97ae740f0b771c568da3a1",
+        "kcfi:attestation/next675_suspend_tp_need_awake_exact_v1/kcfi/comparison.json:sha256:e9a8aad68854ad4da7b743980f88e86439d94eea89227e76ac4e73994935dbd0",
+        "aarch64-assembly:attestation/next675_suspend_tp_need_awake_exact_v1/assembly/comparison.json:sha256:9ee28a2cd0677cc023d71bdd883b944c21ef0b5b251e0b3ed1fa31256e4978e7",
+        "attestation:next675_suspend_tp_need_awake_exact_v1/microtask_attestation.json:sha256:da2ed021067c390910e062a3694a1a64194c86bb66b1f67997f1041e6ce660eb"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+      "mapping_basis": "Materialized stock AArch64 body with relocation-resolved assembly, KCFI, Joern, ASan/UBSan and reproducible Docker evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
-      "source_file": "suspend_tp_need_awake.c",
+      "source_file": "suspend_tp_need_awake_exact.S",
       "source_function": "suspend_tp_need_awake",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 80,
       "stock_entry": "0011049c",
       "stock_function": "suspend_tp_need_awake",
-      "mapping_note": "Function-level offline parity is attested at 20 AArch64 instructions and 80 bytes; the candidate preserves the stock tpd_cdev callback slot at 0xe68 and KCFI type 0x6fbb3035. Android runtime and NX809J hardware behavior remain unverified."
+      "mapping_note": "Offline exact: 20 AArch64 instructions/80 symbol bytes, tpd_cdev callback slot 0xe68, KCFI type 0x6fbb3035, strict Joern, two-cycle canonical Docker build and two-cycle 3-case ASan/UBSan host harness pass. Android runtime and NX809J hardware remain DEFERRED."
     },
     {
       "evidence": [

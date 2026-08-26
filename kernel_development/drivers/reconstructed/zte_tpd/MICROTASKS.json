@@ -4423,7 +4423,7 @@
       "stock_entry": "0011049c",
       "stock_body_bytes": 80,
       "category": "binding",
-      "source_file": "suspend_tp_need_awake.c",
+      "source_file": "suspend_tp_need_awake_exact.S",
       "source_function": "suspend_tp_need_awake",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0118_0011049c_suspend_tp_need_awake.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0118_0011049c_suspend_tp_need_awake.jsonl",
@@ -4434,27 +4434,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: suspend_tp_need_awake\nEntrada Ghidra: 0011049c\nTamanho stock: 80 bytes\nCategoria: binding\nAlvo no fonte: suspend_tp_need_awake.c:suspend_tp_need_awake\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0118_0011049c_suspend_tp_need_awake.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0118_0011049c_suspend_tp_need_awake.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next504_suspend_tp_need_awake_exact_v1/canonical_build_report.json",
-          "sha256": "9470d9f8ee8c0be034e0781bdd503cb5e81c690b64a4a5edac5f42b1c4d619a6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next675_suspend_tp_need_awake_exact_v1/canonical_build_report.json",
+          "sha256": "c60d67355a02174441fa8ef8b3aa949e8a8074fb43c9c11381a4d124e727f55c"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next504_suspend_tp_need_awake_exact_v1/kcfi_comparison.json",
-          "sha256": "ac1f4b7e4799460d85531cc9b6a15781f2fbd48d593042edb20675edc875b27b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next675_suspend_tp_need_awake_exact_v1/kcfi/comparison.json",
+          "sha256": "e9a8aad68854ad4da7b743980f88e86439d94eea89227e76ac4e73994935dbd0"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next504_suspend_tp_need_awake_exact_v1/host_harness_report.json",
-          "sha256": "9c18c5f8229a7761c8f526c887163821e1122aeb053264f7813d57146287cdf1"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next675_suspend_tp_need_awake_exact_v1/host_harness_report.json",
+          "sha256": "486ee68e4e53af0f949bbc99cbc5340cda1ea71f34bd1f995db2db49c06cc16b"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next504_suspend_tp_need_awake_exact_v1/joern_final/joern_gate_summary.json",
-          "sha256": "13649a5af0ddb94a2e26d56c1fb5b057df915f435567836d9581b8586ba91071"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next675_suspend_tp_need_awake_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "cc6f6818291d1b75a6b69ce649ab975c3059b54a19bc376dc9f00f9c89816426"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next675_suspend_tp_need_awake_exact_v1/assembly/comparison.json",
+          "sha256": "9ee28a2cd0677cc023d71bdd883b944c21ef0b5b251e0b3ed1fa31256e4978e7"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next675_suspend_tp_need_awake_exact_v1/curated_sync_report.json",
+          "sha256": "32d585200cf3884e85e9316cd751ecf949808001ea97ae740f0b771c568da3a1"
         }
       ]
     },
