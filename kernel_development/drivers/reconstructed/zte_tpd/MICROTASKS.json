@@ -13247,8 +13247,34 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_set_stability_level\nEntrada Ghidra: 0012c364\nTamanho stock: 188 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_set_stability_level.c:tpd_set_stability_level\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0348_0012c364_tpd_set_stability_level.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0348_0012c364_tpd_set_stability_level.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next656_tpd_set_stability_level_exact_v1/canonical_build_report.json",
+          "sha256": "8c21e7e45cd4ef416b640f085c896028059b0f4b93ae60c084c80002b8d6d28f"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next656_tpd_set_stability_level_exact_v1/kcfi/comparison.json",
+          "sha256": "e0e50eb31b4590d96ce23d7bbde50509932427bfc4d19a9b6b71bf98cf7090cf"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next656_tpd_set_stability_level_exact_v1/host_harness_report.json",
+          "sha256": "8c7a26aa006870927c1e60961fe150bed727847c4596f2b6ae729b93e996be61"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next656_tpd_set_stability_level_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "d4e6292c99f78956b48a549f1ffac65d7ab47b9c8811e5dd18eeecc3cd1146cc"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next656_tpd_set_stability_level_exact_v1/assembly/comparison.json",
+          "sha256": "d72958e2978084c3ba81092e9bb578247d67dd9cf73cc1096687dc066d476983"
+        }
+      ]
     },
     {
       "id": "350_tpd_get_rotation_limit_level",
