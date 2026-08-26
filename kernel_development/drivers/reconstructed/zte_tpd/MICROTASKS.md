@@ -227,7 +227,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 221_syna_testing_create_dir | syna_testing_create_dir | 0011be28 | core_logic | syna_testing_create_dir.c:syna_testing_create_dir | PASS |
 | 222_syna_testing_remove_dir | syna_testing_remove_dir | 0011bec4 | binding | syna_testing_remove_dir.c:syna_testing_remove_dir | PASS |
 | 223_syna_testing_check_dev_id_show | syna_testing_check_dev_id_show | 0011bf08 | user_abi | syna_testing_check_dev_id_show_exact.S:syna_testing_check_dev_id_show | PROMOTED_OFFLINE_EXACT |
-| 224_syna_testing_check_config_id_show | syna_testing_check_config_id_show | 0011c1f4 | user_abi | syna_testing_check_config_id_show.c:syna_testing_check_config_id_show | READY_FOR_IMPLEMENTATION |
+| 224_syna_testing_check_config_id_show | syna_testing_check_config_id_show | 0011c1f4 | user_abi | syna_testing_check_config_id_show_exact.S:syna_testing_check_config_id_show | PROMOTED_OFFLINE_EXACT |
 | 225_syna_testing_pt01_show | syna_testing_pt01_show | 0011c410 | user_abi | syna_testing_pt01_show.c:syna_testing_pt01_show | READY_FOR_IMPLEMENTATION |
 | 226_syna_testing_pt05_show | syna_testing_pt05_show | 0011c66c | user_abi | syna_testing_pt05_show.c:syna_testing_pt05_show | PASS |
 | 227_syna_testing_pt0a_show | syna_testing_pt0a_show | 0011c944 | user_abi | syna_testing_pt0a_show.c:syna_testing_pt0a_show | PASS |
