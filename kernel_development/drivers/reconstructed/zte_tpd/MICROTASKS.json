@@ -13202,22 +13202,32 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_get_stability_level\nEntrada Ghidra: 0012c348\nTamanho stock: 24 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_get_stability_level.c:tpd_get_stability_level\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0347_0012c348_tpd_get_stability_level.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0347_0012c348_tpd_get_stability_level.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next655_tpd_get_stability_level_exact_v1/canonical_build_report.json",
+          "sha256": "ac434bc10719b93a02d1ce2bd9dc3a9aed0ee47ee5a6cc44cdafbae0c3dfd50a"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next655_tpd_get_stability_level_exact_v1/kcfi/comparison.json",
+          "sha256": "6847c65a596030144091897763aeda6a59d8cf6b82859bcef5e93671eeeb7ea2"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/fw_callbacks_harness_report.json",
-          "sha256": "d634137f1e9ed26fb92a9bd3e8ca0744beb3da32fc8bbc74ad68689d031a7d2c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next655_tpd_get_stability_level_exact_v1/host_harness_report.json",
+          "sha256": "808dfaa2bcc964ed2ef186683eef93781f9d1e0de59c060a8d2baefb27af5672"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next655_tpd_get_stability_level_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "9d0faaff160879cbaffd65a4bf2d533ffdfce7946fa5c918e9b318be6fdef0f7"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next655_tpd_get_stability_level_exact_v1/assembly/comparison.json",
+          "sha256": "8a251e2937287b8f7e0d55ebd0e41e92d2342d2bab15807c7bc1a35cfadbb5d2"
         }
       ]
     },
