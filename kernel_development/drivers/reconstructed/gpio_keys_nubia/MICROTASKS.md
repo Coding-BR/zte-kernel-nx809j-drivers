@@ -10,7 +10,7 @@ Cada linha representa uma única função stock. Nenhuma função pode ser promo
 | 004_gpio_keys_close | gpio_keys_close | 0010163c | core_logic | gpio_keys_close_exact.S:gpio_keys_close | PROMOTED_OFFLINE_EXACT |
 | 005_gpio_keys_gpio_report_event | gpio_keys_gpio_report_event | 00101684 | core_logic | gpio_keys_gpio_report_event_exact.S:gpio_keys_gpio_report_event | PROMOTED_OFFLINE_EXACT |
 | 006_gpio_keys_gpio_work_func | gpio_keys_gpio_work_func | 0010181c | async_or_irq | gpio_keys_gpio_work_func_exact.S:gpio_keys_gpio_work_func | PROMOTED_OFFLINE_EXACT |
-| 007_gpio_keys_gpio_isr | gpio_keys_gpio_isr | 00101878 | core_logic | gpio_keys_nubia.c:gpio_keys_gpio_isr | READY_FOR_IMPLEMENTATION |
+| 007_gpio_keys_gpio_isr | gpio_keys_gpio_isr | 00101878 | core_logic | gpio_keys_gpio_isr_exact.S:gpio_keys_gpio_isr | PROMOTED_OFFLINE_EXACT |
 | 008_gpio_keys_irq_timer | gpio_keys_irq_timer | 00101928 | async_or_irq | gpio_keys_nubia.c:gpio_keys_irq_timer | READY_FOR_IMPLEMENTATION |
 | 009_gpio_keys_irq_isr | gpio_keys_irq_isr | 001019b0 | async_or_irq | gpio_keys_nubia.c:gpio_keys_irq_isr | READY_FOR_IMPLEMENTATION |
 | 010_gpio_keys_quiesce_key | gpio_keys_quiesce_key | 00101acc | core_logic | gpio_keys_nubia.c:gpio_keys_quiesce_key | READY_FOR_IMPLEMENTATION |

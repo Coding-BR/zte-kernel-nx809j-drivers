@@ -24,7 +24,7 @@
   "mappings": [
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:e1033861e8106873328d332db462b524c364d4c35484a96c21665ae5686e7bc9",
+        "source:gpio_keys_nubia.c:sha256:2a80a71dd1eba2eda6efbfddb61ca9165cb8de4e728474937bddaa4d4c511391",
         "ghidra-pseudocode:decompiled/0000_0010071c_gpio_keys_probe.c:sha256:5c825a1c1e662ea56df852ecf9f0502b48683b4064d2b45f824ac8869009c4ed",
         "ghidra-pcode:pcode/0000_0010071c_gpio_keys_probe.jsonl:sha256:812d5ca04afb0c04b6251a7744432b97bbf39bd58909fce82b572acbe1abf811",
         "stock-assembly:0000_gpio_keys_probe_0010071c.asm:sha256:7823a50e1f494af5d2a4eae3c709ffb967cdeb75c31afa2756e81a6795333dbe"
@@ -176,20 +176,30 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:e1033861e8106873328d332db462b524c364d4c35484a96c21665ae5686e7bc9",
+        "source:gpio_keys_nubia.c:sha256:2a80a71dd1eba2eda6efbfddb61ca9165cb8de4e728474937bddaa4d4c511391",
         "ghidra-pseudocode:decompiled/0006_00101878_gpio_keys_gpio_isr.c:sha256:49bdba8a9d464c3b530d1a04311a0898ab4d8851bd97dec4607d078c2441ab38",
         "ghidra-pcode:pcode/0006_00101878_gpio_keys_gpio_isr.jsonl:sha256:ddeda81494e8295495976cd4212a4e3e96eb2776c65e8ae5248bdc6697fbfd3d",
-        "stock-assembly:0006_gpio_keys_gpio_isr_00101878.asm:sha256:546941a34e4017f6e4899fc02870d09b8e6775e1f674fb26c907938b8bf562a4"
+        "stock-assembly:0006_gpio_keys_gpio_isr_00101878.asm:sha256:546941a34e4017f6e4899fc02870d09b8e6775e1f674fb26c907938b8bf562a4",
+        "candidate-exact-source:attestation/next802_gpio_keys_gpio_isr_exact_v1/gpio_keys_gpio_isr_exact.S:sha256:b84c14eee4f6474a0bd8fc8b537a9415002e8410c7b0827adb45a1fb92151f89",
+        "candidate-module:attestation/next802_gpio_keys_gpio_isr_exact_v1/candidate_gpio_keys_nubia.ko:sha256:bf755bb130cfc4d02f7ce183c8d25ac1e2f0601892c2cef109f02637ad8db9d5",
+        "assembly-comparison:attestation/next802_gpio_keys_gpio_isr_exact_v1/aarch64_comparison.json:sha256:8f96118e3cd1273c0cf67c32918aacd0226ff4e2bce79aaf613ef66a6e6b5462",
+        "kcfi-comparison:attestation/next802_gpio_keys_gpio_isr_exact_v1/kcfi_comparison.json:sha256:766292757cd195b118eb76e8fd71cd387311f27c423926eae8e76bef1a4cf2b3",
+        "joern-strict:attestation/next802_gpio_keys_gpio_isr_exact_v1/joern_gate_report.json:sha256:bf6926c830af7ac75ab002bc6377cbfd3428f6885984579ea19075c6d538a5df",
+        "canonical-build:attestation/next802_gpio_keys_gpio_isr_exact_v1/canonical_build_report.json:sha256:6856eb2b13492e091a6b36785fe1d441993d9fdcfdb667ebe0b54542b655e8a1",
+        "source-sync:attestation/next802_gpio_keys_gpio_isr_exact_v1/source_sync_report.json:sha256:5284232bcce60d1b5475c85887684abf2e5e3f2247fd810250797cade9d4c239",
+        "host-asan-ubsan:attestation/next802_gpio_keys_gpio_isr_exact_v1/host_harness_report.json:sha256:ab3ab4f5843689c2cd67e9476b0f7973e4093103bcd92eb83ba160f512498eb8",
+        "attestation:attestation/next802_gpio_keys_gpio_isr_exact_v1/microtask_attestation.json:sha256:9f7922403bb63dcdea49e384785222fbd27823f5af2893f6170dd591d886df19"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "gpio_keys_nubia.c",
+      "mapping_basis": "Stock ELF symbol plus exact offline AArch64 opcode and relocation comparison",
+      "review_scope": "function_level_offline_exact",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "gpio_keys_gpio_isr_exact.S",
       "source_function": "gpio_keys_gpio_isr",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 172,
       "stock_entry": "00101878",
-      "stock_function": "gpio_keys_gpio_isr"
+      "stock_function": "gpio_keys_gpio_isr",
+      "mapping_note": "Promoted by next802_gpio_keys_gpio_isr_exact_v1 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware remains deferred."
     },
     {
       "evidence": [
@@ -198,10 +208,10 @@
         "ghidra-pcode:pcode/0007_00101928_gpio_keys_irq_timer.jsonl:sha256:4f8e445338380e52b0d4bb0477da6e100d6c3184bdc617e91f0443b1e6f37e9f",
         "stock-assembly:0007_gpio_keys_irq_timer_00101928.asm:sha256:d49af92582918a1a061b6d5cb1124ea152df6401a399e5c954ae1c36c69e811a"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "gpio_keys_nubia.c",
+      "mapping_basis": "Stock ELF symbol plus exact offline AArch64 opcode and relocation comparison",
+      "review_scope": "function_level_offline_exact",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "gpio_keys_gpio_isr_exact.S",
       "source_function": "gpio_keys_irq_timer",
       "status": "reviewed",
       "stock_body_bytes": 132,
