@@ -7909,7 +7909,7 @@
       "stock_entry": "00119ae4",
       "stock_body_bytes": 696,
       "category": "user_abi",
-      "source_file": "syna_spi_write.c",
+      "source_file": "syna_spi_write_exact.S",
       "source_function": "syna_spi_write",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0203_00119ae4_syna_spi_write.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0203_00119ae4_syna_spi_write.jsonl",
@@ -7919,8 +7919,17 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_spi_write\nEntrada Ghidra: 00119ae4\nTamanho stock: 696 bytes\nCategoria: user_abi\nAlvo no fonte: syna_spi_write.c:syna_spi_write\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0203_00119ae4_syna_spi_write.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0203_00119ae4_syna_spi_write.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {"role": "attestation", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/microtask_attestation.json", "sha256": "dcc2b420493e3486b2a9dfd695bce5b2ab75d61d36ddff8ee5c7483bcafe2f16"},
+        {"role": "canonical_build", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/canonical_build_report.json", "sha256": "5757a10dc3523189e938d7afca2e0e7ca9046accd61223cad6240f26c5f92162"},
+        {"role": "compile", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/canonical_build_report.json", "sha256": "5757a10dc3523189e938d7afca2e0e7ca9046accd61223cad6240f26c5f92162"},
+        {"role": "aarch64_assembly", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/aarch64_comparison.json", "sha256": "83050e31844206c9d4d90a0c2ff09019762e9f5e29d3cb188c3714b6a2288f4d"},
+        {"role": "kcfi", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/kcfi_comparison.json", "sha256": "61cf91a6f6511df40d7a40fc71f15dcfd3b2f7879abf21e2a3ca28a618f6406a"},
+        {"role": "joern_strict", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/joern_gate_report.json", "sha256": "3f80d15b3b6453ffefc4c78eecd069da6764c56d284771eb3d9934ef71d23f46"},
+        {"role": "asan_ubsan_host", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/host_harness_report.json", "sha256": "8c1d70ce508a42d9fb006c420a09634dfbb258818044e6ff9b3d95b802cf41de"},
+        {"role": "test", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next743_syna_spi_write_exact_v1/host_harness_report.json", "sha256": "8c1d70ce508a42d9fb006c420a09634dfbb258818044e6ff9b3d95b802cf41de"}
+      ]
     },
     {
       "id": "205_syna_spi_enable_irq",
