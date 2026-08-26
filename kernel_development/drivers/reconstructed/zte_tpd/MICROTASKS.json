@@ -6466,27 +6466,32 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_process_touch_report\nEntrada Ghidra: 00113c74\nTamanho stock: 1340 bytes\nCategoria: core_logic\nAlvo no fonte: syna_dev_process_touch_report.c:syna_dev_process_touch_report\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0169_00113c74_syna_dev_process_touch_report.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0169_00113c74_syna_dev_process_touch_report.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next427_syna_dev_process_touch_report_v1/canonical_build_report.json",
-          "sha256": "4e8fa1326441baa2b1e678d72d2df911b2fcf6287dd08951a00d44ae68279bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next683_syna_dev_process_touch_report_exact_v1/canonical_build_report.json",
+          "sha256": "f5c5d23a3d9c43a079849753dbc904b81adc6dfd6eabb6a4339b7db4a8e0d3b5"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next427_syna_dev_process_touch_report_v1/kcfi_status.json",
-          "sha256": "00b3ae07c6403b478783ce9bd10498c93ba1cb43e5b20c4bb4512735660d37ea"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next683_syna_dev_process_touch_report_exact_v1/kcfi/comparison.json",
+          "sha256": "8cc70c35c1cc9ac7c96519e2ae6076784bba3864660dee94f8dd211fc1924787"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next427_syna_dev_process_touch_report_v1/joern_gate_summary.json",
-          "sha256": "49832ae9d6a75076a06abeac6409e94879ff243426dde7fa26b4e695fc18ca56"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next683_syna_dev_process_touch_report_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "fc3672f9342d053397a98e5830857caafd69257677cd72ccb42a930cdda371b9"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next427_syna_dev_process_touch_report_v1/host_harness_report.json",
-          "sha256": "2b9d2d7233216fc34e7e3d829d1de407f3763a758aba70b882bec16f3714e13e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next683_syna_dev_process_touch_report_exact_v1/host_harness_report.json",
+          "sha256": "95daa089f985e3c50d9c8986772589fddfbe05220cbf21cdce350e2e3469f9cf"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next683_syna_dev_process_touch_report_exact_v1/assembly/comparison.json",
+          "sha256": "37364d7f57bb4ef0181e857e749980eeaa49567f642c02a0994f98a8885fe652"
         }
       ]
     },

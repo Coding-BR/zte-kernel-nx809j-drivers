@@ -2200,6 +2200,81 @@ def canonicalize_stripped_g_cdev_data_base(
     return stock, candidate, evidence
 
 
+def canonicalize_anonymous_section_offsets(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match section-relative data/bss relocations whose linked offsets moved.
+
+    A stripped stock module may expose a relocation as ``.data+offset`` or
+    ``.bss+offset`` while the reconstructed module has the same anonymous
+    section storage at a different final offset.  This rule only aliases
+    corresponding section-relative relocations at identical instruction
+    sites, with the same relocation type and section, and requires a stable
+    one-to-one stock-target to candidate-target mapping.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    target_re = re.compile(r"^(\.data|\.bss)(?:\+0x[0-9a-fA-F]+)?$")
+    mappings: dict[str, str] = {}
+    reverse_mappings: dict[str, str] = {}
+    for index, (stock_value, candidate_value) in enumerate(zip(stock, candidate)):
+        stock_parts = stock_value.split(" ", 1)
+        candidate_parts = candidate_value.split(" ", 1)
+        if len(stock_parts) != 2 or len(candidate_parts) != 2:
+            continue
+        if (
+            stock_parts[0] != candidate_parts[0]
+            or stock_instruction_indices[index] != candidate_instruction_indices[index]
+        ):
+            continue
+        stock_match = target_re.fullmatch(stock_parts[1])
+        candidate_match = target_re.fullmatch(candidate_parts[1])
+        if not stock_match or not candidate_match:
+            continue
+        if stock_match.group(1) != candidate_match.group(1):
+            continue
+        stock_target = stock_parts[1]
+        candidate_target = candidate_parts[1]
+        if (
+            mappings.get(stock_target, candidate_target) != candidate_target
+            or reverse_mappings.get(candidate_target, stock_target) != stock_target
+        ):
+            continue
+        mappings[stock_target] = candidate_target
+        reverse_mappings[candidate_target] = stock_target
+        alias = f"<anonymous_section:{stock_target}>"
+        stock[index] = f"{stock_parts[0]} {alias}"
+        candidate[index] = f"{candidate_parts[0]} {alias}"
+        evidence.append(
+            {
+                "kind": "anonymous_section_offset",
+                "reason": (
+                    "same-section relocations at identical instruction sites map "
+                    "a stripped stock section offset to the candidate's moved "
+                    "section storage"
+                ),
+                "stock_target": stock_target,
+                "candidate_target": candidate_target,
+                "canonical_target": alias,
+                "instruction_index": stock_instruction_indices[index],
+            }
+        )
+    return stock, candidate, evidence
+
+
 def canonicalize_stripped_bss_subfields(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2676,6 +2751,17 @@ def main() -> int:
         (
             stock_relocations_compared,
             candidate_relocations_compared,
+            anonymous_section_equivalences,
+        ) = canonicalize_anonymous_section_offsets(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
             dispatch_table_equivalences,
         ) = canonicalize_mapping_symbol_u16_dispatch_tables(
             stock_relocations_compared,
@@ -2719,6 +2805,7 @@ def main() -> int:
         )
         relocation_equivalences = (
             initialized_unk_string_equivalences
+            + anonymous_section_equivalences
             + dispatch_table_equivalences
             + relocation_equivalences
             + mutex_key_equivalences
