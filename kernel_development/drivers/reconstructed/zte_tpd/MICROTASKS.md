@@ -323,7 +323,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 317_syna_tcm_set_touch_report_config | syna_tcm_set_touch_report_config | 0012a264 | core_logic | syna_tcm_set_touch_report_config.c:syna_tcm_set_touch_report_config | PROMOTED_OFFLINE_EXACT |
 | 318_syna_pal_mem_cpy | syna_pal_mem_cpy | 0012a478 | core_logic | syna_pal_mem_cpy_1.c:syna_pal_mem_cpy_1 | PROMOTED_OFFLINE_EXACT |
 | 319_syna_pal_mem_free | syna_pal_mem_free | 0012a4ec | core_logic | syna_pal_mem_free_0.c:syna_pal_mem_free_0 | PROMOTED_OFFLINE_EXACT |
-| 320_syna_tcm_preserve_touch_report_config | syna_tcm_preserve_touch_report_config | 0012a53c | core_logic | syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config | PASS |
+| 320_syna_tcm_preserve_touch_report_config | syna_tcm_preserve_touch_report_config | 0012a53c | core_logic | syna_tcm_preserve_touch_report_config.c:syna_tcm_preserve_touch_report_config | PROMOTED_OFFLINE_EXACT |
 | 321_syna_tcm_set_custom_touch_entity_callback | syna_tcm_set_custom_touch_entity_callback | 0012aaa8 | core_logic | syna_tcm_set_custom_touch_entity_callback.c:syna_tcm_set_custom_touch_entity_callback | PROMOTED_OFFLINE_EXACT |
 | 322_syna_tcm_set_custom_gesture_callback | syna_tcm_set_custom_gesture_callback | 0012aaf4 | core_logic | syna_tcm_set_custom_gesture_callback.c:syna_tcm_set_custom_gesture_callback | PROMOTED_OFFLINE_EXACT |
 | 323_syna_tcm_get_partition_id_string | syna_tcm_get_partition_id_string | 0012ab40 | core_logic | syna_tcm_get_partition_id_string.c:syna_tcm_get_partition_id_string | PASS |
