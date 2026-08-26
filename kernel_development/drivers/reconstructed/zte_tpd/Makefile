@@ -578,6 +578,13 @@ zte_tpd-objs := $(filter-out syna_dev_enable_lowpwr_gesture.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_dev_enable_lowpwr_gesture_exact.o
 AFLAGS_syna_dev_enable_lowpwr_gesture_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_cdev_release
+src-files := $(filter-out $(src)/syna_cdev_release.c, $(src-files))
+obj-files := $(filter-out syna_cdev_release.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_release.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_release_exact.o
+AFLAGS_syna_cdev_release_exact.o := -g0 -I$(src)
+
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-I$(src) -include $(src)/defs.h -Wno-self-assign \

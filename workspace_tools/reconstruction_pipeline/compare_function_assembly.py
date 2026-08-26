@@ -2275,6 +2275,78 @@ def canonicalize_anonymous_section_offsets(
     return stock, candidate, evidence
 
 
+def canonicalize_stripped_g_cdev_data_subfields(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match a g_cdev_data subfield ADRP/ADD pair to stripped .bss storage.
+
+    The stock ELF can expose a field of the anonymous cdev state only as a
+    section-relative .bss offset.  The reconstructed object retains the
+    recovered g_cdev_data base symbol and expresses the same field as a
+    base-plus-offset ADRP/ADD pair.  Accept only identical relocation sites,
+    matching ADRP/ADD types and the known g_cdev_data symbol form.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    expected_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+    for index in range(len(stock) - 1):
+        stock_parts = [value.split(" ", 1) for value in stock[index : index + 2]]
+        candidate_parts = [value.split(" ", 1) for value in candidate[index : index + 2]]
+        if (
+            any(len(value) != 2 for value in stock_parts + candidate_parts)
+            or tuple(value[0] for value in stock_parts) != expected_types
+            or tuple(value[0] for value in candidate_parts) != expected_types
+            or stock_parts[0][1] != stock_parts[1][1]
+            or candidate_parts[0][1] != candidate_parts[1][1]
+            or not re.fullmatch(r"\.bss\+0x[0-9a-fA-F]+", stock_parts[0][1])
+            or not re.fullmatch(r"g_cdev_data\+0x[0-9a-fA-F]+", candidate_parts[0][1])
+            or stock.count(stock[index]) != 1
+            or candidate.count(candidate[index]) != 1
+        ):
+            continue
+        positions = stock_instruction_indices[index : index + 2]
+        if (
+            positions != candidate_instruction_indices[index : index + 2]
+            or len(positions) != 2
+            or positions[1] != positions[0] + 1
+        ):
+            continue
+        alias = f"<stripped_bss_g_cdev_subfield:{candidate_parts[0][1]}>"
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "kind": "stripped_bss_g_cdev_subfield",
+                "reason": (
+                    "an identical ADRP/ADD pair maps an anonymous stock .bss "
+                    "offset to the recovered g_cdev_data subfield"
+                ),
+                "stock_target": stock_parts[0][1],
+                "candidate_target": candidate_parts[0][1],
+                "canonical_target": alias,
+                "instruction_indices": positions,
+            }
+        )
+    return stock, candidate, evidence
+
+
 def canonicalize_stripped_bss_subfields(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2876,6 +2948,18 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += g_cdev_data_base_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            g_cdev_data_subfield_equivalences,
+        ) = canonicalize_stripped_g_cdev_data_subfields(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += g_cdev_data_subfield_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
