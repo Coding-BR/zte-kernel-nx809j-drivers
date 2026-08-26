@@ -165,7 +165,7 @@
       "stock_entry": "0010163c",
       "stock_body_bytes": 72,
       "category": "core_logic",
-      "source_file": "gpio_keys_nubia.c",
+      "source_file": "gpio_keys_close_exact.S",
       "source_function": "gpio_keys_close",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0003_0010163c_gpio_keys_close.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0003_0010163c_gpio_keys_close.jsonl",
@@ -175,8 +175,54 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: gpio_keys_nubia\nFuncao stock: gpio_keys_close\nEntrada Ghidra: 0010163c\nTamanho stock: 72 bytes\nCategoria: core_logic\nAlvo no fonte: gpio_keys_nubia.c:gpio_keys_close\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0003_0010163c_gpio_keys_close.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0003_0010163c_gpio_keys_close.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/microtask_attestation.json",
+          "sha256": "c7ab4f7a12406eccfd9054ccd886eea8641b4dd878cdde1d6dc95ccbb4158661"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/canonical_build_report.json",
+          "sha256": "5d6b438fbddfeeea017b86bc896313d4841ddec1b820e96ff2b8a78dfb0bc662"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/canonical_build_report.json",
+          "sha256": "5d6b438fbddfeeea017b86bc896313d4841ddec1b820e96ff2b8a78dfb0bc662"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/source_sync_report.json",
+          "sha256": "a3f0a192f2cd2c9923e854e306c4a156557b4591cfd49a3d3c01a7fa42ddc579"
+        },
+        {
+          "role": "aarch64",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/aarch64_comparison.json",
+          "sha256": "8c8472347426765d3e3606c4049e2c4ce06748a16372128da3e991ac0210dc32"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/kcfi_comparison.json",
+          "sha256": "dd337c7116becb04fb2cb7476760aaafcf0012a2c6c628033c7ef208a47360a6"
+        },
+        {
+          "role": "joern_strict",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/joern_gate_report.json",
+          "sha256": "953071b732458bffc977b57499a3308ce0ea06bb549810d259aa9c28adff592f"
+        },
+        {
+          "role": "host_asan_ubsan",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/host_harness_report.json",
+          "sha256": "4cba096a118f46db622b0ce9817ea0ee0f947987faa2028e2b0d47cabba8cb2f"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next799_gpio_keys_close_exact_v1/host_harness_report.json",
+          "sha256": "4cba096a118f46db622b0ce9817ea0ee0f947987faa2028e2b0d47cabba8cb2f"
+        }
+      ]
     },
     {
       "id": "005_gpio_keys_gpio_report_event",
