@@ -2347,6 +2347,77 @@ def canonicalize_stripped_g_cdev_data_subfields(
     return stock, candidate, evidence
 
 
+def canonicalize_stripped_g_cdev_data_offset_accesses(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match repeated g_cdev_data field accesses by the proven base offset.
+
+    Some compiler paths reuse a field's ADRP or load/store relocation far
+    from the ADRP/ADD pair that first established it.  Accept only identical
+    instruction sites where the candidate spelling is ``g_cdev_data+N`` and
+    the stock spelling is ``.bss+(0x7c0+N)``.  The fixed base is the recovered
+    stock location of g_cdev_data, not a general section-offset relaxation.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def g_cdev_offset(target: str) -> int | None:
+        match = re.fullmatch(r"g_cdev_data(?:\+0x([0-9a-fA-F]+))?", target)
+        return int(match.group(1) or "0", 16) if match else None
+
+    for index, (stock_value, candidate_value) in enumerate(zip(stock, candidate, strict=True)):
+        stock_parts = split(stock_value)
+        candidate_parts = split(candidate_value)
+        if stock_parts is None or candidate_parts is None:
+            continue
+        if stock_parts[0].endswith("CALL26") or candidate_parts[0].endswith("CALL26"):
+            continue
+        stock_match = re.fullmatch(r"\.bss\+0x([0-9a-fA-F]+)", stock_parts[1])
+        candidate_offset = g_cdev_offset(candidate_parts[1])
+        if stock_match is None or candidate_offset is None:
+            continue
+        if stock_parts[0] != candidate_parts[0]:
+            continue
+        stock_offset = int(stock_match.group(1), 16)
+        if stock_offset != 0x7C0 + candidate_offset:
+            continue
+        if stock_instruction_indices[index] != candidate_instruction_indices[index]:
+            continue
+        alias = f"<stripped_bss_g_cdev_offset:g_cdev_data+0x{candidate_offset:x}>"
+        stock[index] = f"{stock_parts[0]} {alias}"
+        candidate[index] = f"{candidate_parts[0]} {alias}"
+        evidence.append(
+            {
+                "kind": "stripped_bss_g_cdev_offset_access",
+                "reason": (
+                    "same relocation type and instruction site prove the stock "
+                    ".bss offset equals the recovered g_cdev_data base plus N"
+                ),
+                "stock_target": stock_parts[1],
+                "candidate_target": candidate_parts[1],
+                "canonical_target": alias,
+                "instruction_index": stock_instruction_indices[index],
+            }
+        )
+    return stock, candidate, evidence
+
+
 def canonicalize_stripped_bss_subfields(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2960,6 +3031,18 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += g_cdev_data_subfield_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            g_cdev_data_offset_equivalences,
+        ) = canonicalize_stripped_g_cdev_data_offset_accesses(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += g_cdev_data_offset_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
