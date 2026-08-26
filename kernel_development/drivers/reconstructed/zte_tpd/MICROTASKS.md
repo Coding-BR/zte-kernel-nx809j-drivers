@@ -357,7 +357,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 351_tpd_set_rotation_limit_level | tpd_set_rotation_limit_level | 0012c440 | core_logic | tpd_set_rotation_limit_level.c:tpd_set_rotation_limit_level | READY_FOR_IMPLEMENTATION |
 | 352_tpd_set_display_rotation | tpd_set_display_rotation | 0012c50c | core_logic | tpd_set_display_rotation.c:tpd_set_display_rotation | READY_FOR_IMPLEMENTATION |
 | 353_tpd_get_play_game | tpd_get_play_game | 0012c6cc | core_logic | tpd_get_play_game.c:tpd_get_play_game | PASS |
-| 354_tpd_set_play_game | tpd_set_play_game | 0012c6e8 | core_logic | tpd_set_play_game.c:tpd_set_play_game | READY_FOR_IMPLEMENTATION |
+| 354_tpd_set_play_game | tpd_set_play_game | 0012c6e8 | core_logic | tpd_set_play_game.c:tpd_set_play_game | PROMOTED_OFFLINE_EXACT |
 | 355_tpd_set_game_partition | tpd_set_game_partition | 0012c7c4 | core_logic | tpd_set_game_partition.c:tpd_set_game_partition | PASS |
 | 356_tpd_get_frame_data | tpd_get_frame_data | 0012c7fc | core_logic | tpd_get_frame_data.c:tpd_get_frame_data | PASS |
 | 357_tpd_set_frame_data | tpd_set_frame_data | 0012c818 | core_logic | tpd_set_frame_data.c:tpd_set_frame_data | READY_FOR_IMPLEMENTATION |
