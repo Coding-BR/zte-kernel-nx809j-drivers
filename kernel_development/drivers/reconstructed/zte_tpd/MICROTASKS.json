@@ -11914,7 +11914,7 @@
       "id": "325_string_change",
       "stock_function": "string_change",
       "stock_entry": "0012aecc",
-      "stock_body_bytes": 1404,
+      "stock_body_bytes": 1552,
       "category": "core_logic",
       "source_file": "string_change.c",
       "source_function": "string_change",
@@ -11923,11 +11923,38 @@
       "required_evidence": [
         "compile",
         "kcfi",
+        "joern",
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: string_change\nEntrada Ghidra: 0012aecc\nTamanho stock: 1404 bytes\nCategoria: core_logic\nAlvo no fonte: string_change.c:string_change\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0324_0012aecc_string_change.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0324_0012aecc_string_change.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "READY_FOR_IMPLEMENTATION",
-      "evidence": []
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "evidence": [
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next637_string_change_exact_v1/canonical_build_report.json",
+          "sha256": "40d844d6e3807e3562ff75d4ef2d1f19c6425a3772b5d91c4132a42ebdee33e2"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next637_string_change_exact_v1/assembly/comparison.json",
+          "sha256": "9bf0338da881bf63d480cb06e6096dcb5b4927c5b78e9d177cbc4e003c309ac8"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next637_string_change_exact_v1/kcfi/comparison.json",
+          "sha256": "59f260df2ccb607122e5ab0a667c8f9d2cb253633f6258c6fe73d8ac08193f0a"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next637_string_change_exact_v1/host_harness_report.json",
+          "sha256": "41899187448f151af037e1edb2fd745241017f8ca8bc8c25df1b3492dd1ef824"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next637_string_change_exact_v1/joern_gate_summary.json",
+          "sha256": "f9b980b2114739e7d1b9261717960bcdd552a9b05699e8d3d6b3afe1f0cc58fe"
+        }
+      ]
     },
     {
       "id": "326_trim",

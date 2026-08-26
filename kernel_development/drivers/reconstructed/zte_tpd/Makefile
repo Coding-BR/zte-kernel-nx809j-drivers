@@ -45,6 +45,7 @@ src-files := $(filter-out $(src)/syna_tcm_set_touch_report_config.c, $(src-files
 src-files := $(filter-out $(src)/syna_tcm_preserve_touch_report_config.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_partition_id_string.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_parse_fw_image.c, $(src-files))
+src-files := $(filter-out $(src)/string_change.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_write.c, $(src-files))
 src-files := $(filter-out $(src)/tp_edge_report_limit_read.c, $(src-files))
 src-files := $(filter-out $(src)/get_one_key.c, $(src-files))
@@ -231,6 +232,7 @@ obj-files += syna_ts_check_dt_exact.o
 obj-files += syna_tcm_preserve_touch_report_config_exact.o
 obj-files += syna_tcm_get_partition_id_string_exact.o
 obj-files += syna_tcm_parse_fw_image_exact.o
+obj-files += syna_string_change_exact.o
 
 # The lifted Assembly is validated from its opcodes/relocations; suppress
 # path-dependent assembler debug records so the canonical M= path gate stays
@@ -401,6 +403,7 @@ AFLAGS_syna_tcm_get_testing_0002_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_preserve_touch_report_config_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_get_partition_id_string_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_parse_fw_image_exact.o := -g0 -I$(src)
+AFLAGS_syna_string_change_exact.o := -g0 -I$(src)
 
 # Exact offline reconstruction: suspend_tp_need_awake
 src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
