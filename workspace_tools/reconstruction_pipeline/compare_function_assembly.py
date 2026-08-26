@@ -2294,6 +2294,98 @@ def canonicalize_stripped_bss_subfields(
     return stock, candidate, evidence
 
 
+def canonicalize_repeated_anonymous_bss_pairs(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match a repeated anonymous .bss pair when the unchanged code proves its sites.
+
+    A fully linked reconstruction can place a materialized .bss fragment after
+    the source objects, changing the section-relative spelling of a stripped
+    section relocation.  This rule is deliberately narrower than a general
+    global alias: it accepts only an ADRP/ADD pair whose target occurs exactly
+    twice on each side and whose two instruction sites are identical.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def anonymous_bss(target: str) -> bool:
+        return bool(re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target))
+
+    def pair_indices(values: list[str], target: str) -> list[int]:
+        return [
+            index
+            for index in range(len(values) - 1)
+            if (
+                split(values[index]) == ("R_AARCH64_ADR_PREL_PG_HI21", target)
+                and split(values[index + 1]) == (
+                    "R_AARCH64_ADD_ABS_LO12_NC",
+                    target,
+                )
+            )
+        ]
+
+    for index, value in enumerate(stock):
+        stock_entry = split(value)
+        candidate_entry = split(candidate[index])
+        if (
+            stock_entry is None
+            or candidate_entry is None
+            or stock_entry[0] != "R_AARCH64_ADR_PREL_PG_HI21"
+            or candidate_entry[0] != "R_AARCH64_ADR_PREL_PG_HI21"
+            or not anonymous_bss(stock_entry[1])
+            or stock_entry[1] == candidate_entry[1]
+        ):
+            continue
+        stock_pairs = pair_indices(stock, stock_entry[1])
+        candidate_pairs = pair_indices(candidate, candidate_entry[1])
+        if len(stock_pairs) != 2 or len(candidate_pairs) != 2:
+            continue
+        if index not in stock_pairs or index not in candidate_pairs:
+            continue
+        if any(
+            stock_instruction_indices[pair] != candidate_instruction_indices[candidate_pair]
+            or stock_instruction_indices[pair + 1]
+            != candidate_instruction_indices[candidate_pair + 1]
+            for pair, candidate_pair in zip(stock_pairs, candidate_pairs)
+        ):
+            continue
+        alias = f"<repeated_anonymous_bss:{stock_entry[1]}:{candidate_entry[1]}>"
+        for pair, candidate_pair in zip(stock_pairs, candidate_pairs):
+            stock[pair] = f"R_AARCH64_ADR_PREL_PG_HI21 {alias}"
+            stock[pair + 1] = f"R_AARCH64_ADD_ABS_LO12_NC {alias}"
+            candidate[candidate_pair] = f"R_AARCH64_ADR_PREL_PG_HI21 {alias}"
+            candidate[candidate_pair + 1] = f"R_AARCH64_ADD_ABS_LO12_NC {alias}"
+        evidence.append(
+            {
+                "kind": "repeated_anonymous_bss_pair",
+                "stock_target": stock_entry[1],
+                "candidate_target": candidate_entry[1],
+                "canonical_target": alias,
+                "stock_instruction_sites": [
+                    stock_instruction_indices[pair] for pair in stock_pairs
+                ],
+            }
+        )
+        break
+    return stock, candidate, evidence
+
+
 def canonicalize_compiler_alloc_tags(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2673,6 +2765,18 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += bss_subfield_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            repeated_anonymous_bss_equivalences,
+        ) = canonicalize_repeated_anonymous_bss_pairs(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += repeated_anonymous_bss_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
