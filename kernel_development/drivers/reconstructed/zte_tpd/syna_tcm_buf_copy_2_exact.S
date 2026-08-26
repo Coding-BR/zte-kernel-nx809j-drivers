@@ -1,8 +1,8 @@
 .section .text,"ax",@progbits
 .align 2
-.global syna_tcm_buf_copy
-.type syna_tcm_buf_copy, %function
-syna_tcm_buf_copy:
+.global syna_tcm_buf_copy_2
+.type syna_tcm_buf_copy_2, %function
+syna_tcm_buf_copy_2:
     .inst 0xd503233f
     .inst 0xa9bc7bfd
     .inst 0xf9000bf7
@@ -291,7 +291,7 @@ syna_tcm_buf_copy:
     .inst 0x39410288
     .inst 0x51000508
     .inst 0x17ffffe2
-.size syna_tcm_buf_copy, .-syna_tcm_buf_copy
+.size syna_tcm_buf_copy_2, .-syna_tcm_buf_copy_2
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

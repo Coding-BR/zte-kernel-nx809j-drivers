@@ -232,8 +232,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 226_syna_testing_pt05_show | syna_testing_pt05_show | 0011c66c | user_abi | syna_testing_pt05_show.c:syna_testing_pt05_show | PASS |
 | 227_syna_testing_pt0a_show | syna_testing_pt0a_show | 0011c944 | user_abi | syna_testing_pt0a_show.c:syna_testing_pt0a_show | PASS |
 | 228_syna_tcm_get_testing_0a00 | syna_tcm_get_testing_0A00 | 0011cc1c | core_logic | syna_tcm_get_testing_0A00.c:syna_tcm_get_testing_0A00 | PASS |
-| 229_syna_tcm_testing_noise | syna_tcm_testing_noise | 0011cc2c | core_logic | syna_tcm_testing_noise.c:syna_tcm_testing_noise | READY_FOR_IMPLEMENTATION |
-| 230_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011ce6c | core_logic | syna_tcm_buf_copy.c:syna_tcm_buf_copy | READY_FOR_IMPLEMENTATION |
+| 229_syna_tcm_testing_noise | syna_tcm_testing_noise | 0011cc2c | core_logic | syna_tcm_testing_noise_exact.S:syna_tcm_testing_noise | PROMOTED_OFFLINE_EXACT |
+| 230_syna_tcm_buf_copy | syna_tcm_buf_copy | 0011ce6c | core_logic | syna_tcm_buf_copy_exact.S:syna_tcm_buf_copy | PROMOTED_OFFLINE_EXACT |
 | 231_syna_tcm_testing_check_frame_data | syna_tcm_testing_check_frame_data | 0011d0ec | core_logic | syna_tcm_testing_check_frame_data_exact.S:syna_tcm_testing_check_frame_data | PROMOTED_OFFLINE_EXACT |
 | 232_syna_tcm_testing_0a00_check_upper_bound | syna_tcm_testing_0A00_check_upper_bound | 0011d25c | core_logic | syna_tcm_testing_0A00_check_upper_bound.c:syna_tcm_testing_0A00_check_upper_bound | PASS |
 | 233_syna_tcm_testing_0a00_check_lower_bound | syna_tcm_testing_0A00_check_lower_bound | 0011d2c4 | core_logic | syna_tcm_testing_0A00_check_lower_bound.c:syna_tcm_testing_0A00_check_lower_bound | PASS |

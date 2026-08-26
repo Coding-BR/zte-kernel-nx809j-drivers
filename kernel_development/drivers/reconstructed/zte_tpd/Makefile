@@ -623,8 +623,7 @@ AFLAGS_syna_tcm_buf_alloc_exact.o := -g0 -I$(src)
 # Exact offline reconstruction: syna_tcm_testing_check_frame_data
 src-files := $(filter-out $(src)/syna_tcm_testing_check_frame_data.c, $(src-files))
 obj-files := $(filter-out syna_tcm_testing_check_frame_data.o, $(obj-files))
-zte_tpd-objs := $(filter-out syna_tcm_testing_check_frame_data.o, $(zte_tpd-objs))
-zte_tpd-objs += syna_tcm_testing_check_frame_data_exact.o
+zte_tpd-objs := $(filter-out syna_tcm_testing_check_frame_data.o syna_tcm_testing_check_frame_data_exact.o, $(zte_tpd-objs))
 AFLAGS_syna_tcm_testing_check_frame_data_exact.o := -g0 -I$(src)
 
 # Exact offline reconstruction: syna_sysfs_reset_store
@@ -731,6 +730,21 @@ obj-files := $(filter-out syna_testing_pt01_show.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_testing_pt01_show.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_testing_pt01_show_exact.o
 AFLAGS_syna_testing_pt01_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_testing_noise
+src-files := $(filter-out $(src)/syna_tcm_testing_noise.c, $(src-files))
+obj-files := $(filter-out syna_tcm_testing_noise.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_testing_noise.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_testing_noise_exact.o
+AFLAGS_syna_tcm_testing_noise_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_buf_copy
+src-files := $(filter-out $(src)/syna_tcm_buf_copy.c, $(src-files))
+obj-files := $(filter-out syna_tcm_buf_copy.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_buf_copy.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_buf_copy_exact.o
+zte_tpd-objs += syna_tcm_testing_check_frame_data_exact.o
+AFLAGS_syna_tcm_buf_copy_exact.o := -g0 -I$(src)
 
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
