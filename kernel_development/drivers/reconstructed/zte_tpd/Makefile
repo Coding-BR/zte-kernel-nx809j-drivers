@@ -725,6 +725,13 @@ zte_tpd-objs := $(filter-out syna_testing_check_config_id_show.o, $(zte_tpd-objs
 zte_tpd-objs += syna_testing_check_config_id_show_exact.o
 AFLAGS_syna_testing_check_config_id_show_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_testing_pt01_show
+src-files := $(filter-out $(src)/syna_testing_pt01_show.c, $(src-files))
+obj-files := $(filter-out syna_testing_pt01_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_pt01_show.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_pt01_show_exact.o
+AFLAGS_syna_testing_pt01_show_exact.o := -g0 -I$(src)
+
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-I$(src) -include $(src)/defs.h -Wno-self-assign \
