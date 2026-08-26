@@ -452,6 +452,13 @@ zte_tpd-objs := $(filter-out tpd_test_cmd_store.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_test_cmd_store_exact.o
 AFLAGS_tpd_test_cmd_store_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: tpd_set_tp_report_rate
+src-files := $(filter-out $(src)/tpd_set_tp_report_rate.c, $(src-files))
+obj-files := $(filter-out tpd_set_tp_report_rate.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_tp_report_rate.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_tp_report_rate_exact.o
+AFLAGS_tpd_set_tp_report_rate_exact.o := -g0 -I$(src)
+
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-I$(src) -include $(src)/defs.h -Wno-self-assign \
