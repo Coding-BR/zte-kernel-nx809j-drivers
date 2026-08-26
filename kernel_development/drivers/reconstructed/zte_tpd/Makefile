@@ -419,6 +419,13 @@ zte_tpd-objs := $(filter-out syna_work_charger_detect_work.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_work_charger_detect_work_exact.o
 AFLAGS_syna_work_charger_detect_work_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_dev_set_tp_report_rate
+src-files := $(filter-out $(src)/syna_dev_set_tp_report_rate.c, $(src-files))
+obj-files := $(filter-out syna_dev_set_tp_report_rate.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_set_tp_report_rate.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_set_tp_report_rate_exact.o
+AFLAGS_syna_dev_set_tp_report_rate_exact.o := -g0 -I$(src)
+
 # Exact offline reconstruction: suspend_tp_need_awake
 src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
 obj-files += suspend_tp_need_awake_exact.o
