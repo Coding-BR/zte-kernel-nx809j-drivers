@@ -634,6 +634,13 @@ zte_tpd-objs := $(filter-out syna_sysfs_reset_store.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_sysfs_reset_store_exact.o
 AFLAGS_syna_sysfs_reset_store_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_spi_remove
+src-files := $(filter-out $(src)/syna_spi_remove.c, $(src-files))
+obj-files := $(filter-out syna_spi_remove.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_remove.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_remove_exact.o
+AFLAGS_syna_spi_remove_exact.o := -g0 -I$(src)
+
 # The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
 ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-I$(src) -include $(src)/defs.h -Wno-self-assign \
