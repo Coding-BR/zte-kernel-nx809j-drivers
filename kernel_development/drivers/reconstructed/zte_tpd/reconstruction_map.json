@@ -7308,21 +7308,27 @@
     },
     {
       "evidence": [
-        "source:trim.c:sha256:a2f83f8ef9b827ed127b419fc05fccb106a5bd892a6fbfededdf644315390fa0",
+        "source:trim.c:sha256:4c1ad52d07dbaccfcd572aadc3bccf3ad7c063758729415bf0c0b404a9a409db",
+        "exact-source:syna_string_change_exact.S:sha256:dae7b216b8963abc2e97ecc154dc4acc85b006c8be28113cd4f598fa2baed558",
         "ghidra-pseudocode:decompiled/0325_0012b4dc_trim.c:sha256:f77ae823e3d387c1716c7bbdda3cef4cac9d9beae765922f4e3828671a50f517",
         "ghidra-pcode:pcode/0325_0012b4dc_trim.jsonl:sha256:02ca8f24ec1b3d2185cc134066579ab9f67e866e9637de2c41ba211766ebd620",
-        "stock-assembly:0325_trim_0012b4dc.asm:sha256:6bca473c86660e49a3b25d24540ecc458f81775010546d4d0874ea733c7417a6"
+        "stock-assembly:0325_trim_0012b4dc.asm:sha256:6bca473c86660e49a3b25d24540ecc458f81775010546d4d0874ea733c7417a6",
+        "assembly:attestation/next638_trim_exact_v1/assembly/comparison.json:sha256:821922e6f1286618d7b335870dd930f616e5dd6c53636eb78ee20ab92bbef150",
+        "kcfi:attestation/next638_trim_exact_v1/kcfi/comparison.json:sha256:93cae01e2f9bfc943b190dbb7114a6dfcdf1f113008a58a5b0f71158cc8837fe",
+        "harness:attestation/next638_trim_exact_v1/host_harness_report.json:sha256:10ed9c1bbab6d4908a5641deb87ff1364becce5ff32d0bd5e6f702a50a4e6d58",
+        "joern:attestation/next638_trim_exact_v1/joern_gate_summary.json:sha256:01fb92c9ecca1459900fe97dc1b04ce95e6c58dbb3e9a081e9d7199941a87032",
+        "compile:attestation/next638_trim_exact_v1/canonical_build_report.json:sha256:40d844d6e3807e3562ff75d4ef2d1f19c6425a3772b5d91c4132a42ebdee33e2"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra identity plus exact AArch64, KCFI absence parity, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "trim.c",
       "source_function": "trim",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 124,
       "stock_entry": "0012b4dc",
       "stock_function": "trim",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Offline function-level parity is attested against the stock function; trim is co-materialized in the exact string_change Assembly object to preserve the stock local call layout. Android runtime and NX809J hardware behavior remain unverified until a controlled physical procedure runs."
     },
     {
       "evidence": [

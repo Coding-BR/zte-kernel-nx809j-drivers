@@ -329,7 +329,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 323_syna_tcm_get_partition_id_string | syna_tcm_get_partition_id_string | 0012ab40 | core_logic | syna_tcm_get_partition_id_string.c:syna_tcm_get_partition_id_string | PROMOTED_OFFLINE_EXACT |
 | 324_syna_tcm_parse_fw_image | syna_tcm_parse_fw_image | 0012ab6c | core_logic | syna_tcm_parse_fw_image.c:syna_tcm_parse_fw_image | PROMOTED_OFFLINE_EXACT |
 | 325_string_change | string_change | 0012aecc | core_logic | string_change.c:string_change | PROMOTED_OFFLINE_EXACT |
-| 326_trim | trim | 0012b4dc | core_logic | trim.c:trim | READY_FOR_IMPLEMENTATION |
+| 326_trim | trim | 0012b4dc | core_logic | trim.c:trim | PROMOTED_OFFLINE_EXACT |
 | 327_syna_tpd_register_fw_class | syna_tpd_register_fw_class | 0012b55c | core_logic | syna_tpd_register_fw_class.c:syna_tpd_register_fw_class | READY_FOR_IMPLEMENTATION |
 | 328_syna_work_charger_detect_work | syna_work_charger_detect_work | 0012b8d0 | async_or_irq | syna_work_charger_detect_work.c:syna_work_charger_detect_work | READY_FOR_IMPLEMENTATION |
 | 329_tpd_init_tpinfo | tpd_init_tpinfo | 0012baac | lifecycle | tpd_init_tpinfo.c:tpd_init_tpinfo | PASS |
