@@ -905,27 +905,32 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ztp_probe_work\nEntrada Ghidra: 00108494\nTamanho stock: 40 bytes\nCategoria: binding\nAlvo no fonte: ztp_probe_work.c:ztp_probe_work\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0019_00108494_ztp_probe_work.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0019_00108494_ztp_probe_work.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next62_ztp_probe_work_v1/build_next62_ztp_probe_work_candidate_v2.json",
-          "sha256": "7713c87f1faf177aeb2178340321c4015e806b0add7d33e1fe2c6abcb0d7c0f9"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next382_ztp_probe_work_v1/canonical_build_report.json",
+          "sha256": "6eb08ae55d91b48caa255bbfaff8b5bb98a9ee5d3aed0d77e74cf6d8cfd92510"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next62_ztp_probe_work_v1/kcfi_comparison_next62_ztp_probe_work_v2.json",
-          "sha256": "77bb950e4af7f72839c7542b02ada8ad4e08a4d8f5caba83d48345ff0af28874"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next382_ztp_probe_work_v1/kcfi_comparison.json",
+          "sha256": "f8722c280f82a2c417920993f1d6df8ee0aeb6c56d3002dfcdbdee8c0b267b89"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next62_ztp_probe_work_v1/host_harness_report.json",
-          "sha256": "10c75cd548b33b209247f906bdaf2c1b96eff080e17590131e41da105efa0b4e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next382_ztp_probe_work_v1/host_harness_report.json",
+          "sha256": "5691c40cda63b1a0580da3cd9295b009ca69be06ca5e5792689f4fde6c63e68f"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next62_ztp_probe_work_v1/joern_gate_summary.json",
-          "sha256": "de255d616253d5f33ba97b238c072eecfdcb81086e7f8263cd30a87898a9007f"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next382_ztp_probe_work_v1/joern_gate_summary.json",
+          "sha256": "0a15ccc8fe31048cef9cbf3a09e18c6e7d6aa8a549f5539d751803d002b6e465"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next382_ztp_probe_work_v1/aarch64_validation_report.json",
+          "sha256": "9df8dc0ef0b16ff2a3f06c3d620bfeab3b45f21c79326759f733a8a797d8154e"
         }
       ]
     },

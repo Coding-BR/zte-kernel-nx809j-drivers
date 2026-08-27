@@ -542,18 +542,27 @@
         "ghidra-pseudocode:decompiled/0019_00108494_ztp_probe_work.c:sha256:f4449ac35a04fdbfbea469a25f46ea556e21c2ed78d057da458cff17d06fc572",
         "ghidra-pcode:pcode/0019_00108494_ztp_probe_work.jsonl:sha256:2dfa5779f5bd3a0c4bb7b7595a74d7d01efe52788154e95b5880ef5bbc8b6cfa",
         "stock-assembly:0019_ztp_probe_work_00108494.asm:sha256:613f7161f1e2bf0ea9e17dbe9ae3366067afe20ec57af03035c78af9db18e8a3",
-        "attestation:next382_ztp_probe_work_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "candidate-assembly:attestation/next382_ztp_probe_work_v1/candidate_assembly.asm:sha256:959612b756dd68c299428499c900d5b56bb550ddb9e72238165dbc089bdc8541",
+        "assembly-diagnostic:attestation/next382_ztp_probe_work_v1/assembly_comparison.json:sha256:d74ec7093677d55e4f81ef0a22292010a1702098a0640a8d40ab867b736a7b8c",
+        "aarch64-validation:attestation/next382_ztp_probe_work_v1/aarch64_validation_report.json:sha256:9df8dc0ef0b16ff2a3f06c3d620bfeab3b45f21c79326759f733a8a797d8154e",
+        "source-sync:attestation/next382_ztp_probe_work_v1/source_sync_report.json:sha256:776c3cd425333b445fe222433336bbb64e7e8833e6d697a2e3ba6ce5b33e99d1",
+        "canonical-build:attestation/next382_ztp_probe_work_v1/canonical_build_report.json:sha256:6eb08ae55d91b48caa255bbfaff8b5bb98a9ee5d3aed0d77e74cf6d8cfd92510",
+        "host-harness:attestation/next382_ztp_probe_work_v1/host_harness_report.json:sha256:5691c40cda63b1a0580da3cd9295b009ca69be06ca5e5792689f4fde6c63e68f",
+        "joern:attestation/next382_ztp_probe_work_v1/joern_gate_summary.json:sha256:0a15ccc8fe31048cef9cbf3a09e18c6e7d6aa8a549f5539d751803d002b6e465",
+        "kcfi:attestation/next382_ztp_probe_work_v1/kcfi_comparison.json:sha256:f8722c280f82a2c417920993f1d6df8ee0aeb6c56d3002dfcdbdee8c0b267b89",
+        "attestation:next382_ztp_probe_work_v1/microtask_attestation.json:sha256:a496ffadfccc0b469a508f2d9fbc701e8bf82cef3dc085d7eac1b3158023a09f"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
-      "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, normalized relocation roles, Joern and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "ztp_probe_work.c",
       "source_function": "ztp_probe_work",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 40,
+      "elf_symbol_bytes": 40,
       "stock_entry": "00108494",
       "stock_function": "ztp_probe_work",
-      "mapping_note": "Offline semantic parity is attested: 10 AArch64 instructions, 40-byte .text size, .text section and KCFI type/size match; host contract passes twice with ASan/UBSan. Raw relocation comparison differs only in the separately linked module-local .rodata offset; the resolved printk string and syna_dev_module_init call match. Workqueue scheduling, Synaptics transport and NX809J hardware behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity attested: 10 AArch64 instructions and 40-byte .text size match; .text section, KCFI type/size, opcode/control-flow sequence and normalized relocation roles match. The body preserves the prefixed stock printk string and exactly one syna_dev_module_init call, while accepting and ignoring the workqueue callback argument. Raw relocation identity differs only because the candidate is separately linked and therefore has a module-local .rodata offset; workqueue scheduling, Synaptics transport and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
