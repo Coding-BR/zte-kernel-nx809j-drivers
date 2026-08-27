@@ -161,7 +161,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 155_syna_dev_module_init | syna_dev_module_init | 00111fcc | lifecycle | syna_dev_module_init.c:syna_dev_module_init | PASS |
 | 156_syna_dev_module_exit | syna_dev_module_exit | 0011200c | lifecycle | syna_dev_module_exit.c:syna_dev_module_exit | PASS |
 | 157_syna_dev_probe | syna_dev_probe | 00112038 | binding | syna_dev_probe_exact.S:syna_dev_probe | PROMOTED_OFFLINE_EXACT |
-| 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | PASS |
+| 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | PROMOTED_OFFLINE_EXACT |
 | 159_syna_dev_shutdown | syna_dev_shutdown | 001126f4 | core_logic | syna_dev_shutdown.c:syna_dev_shutdown | PASS |
 | 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_exact.S:syna_dev_connect | PROMOTED_OFFLINE_EXACT |
 | 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_dev_disconnect.c:syna_dev_disconnect | PROMOTED_OFFLINE_EXACT |
