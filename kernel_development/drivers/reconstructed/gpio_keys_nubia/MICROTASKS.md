@@ -17,7 +17,7 @@ Cada linha representa uma única função stock. Nenhuma função pode ser promo
 | 011_gpio_keys_suspend | gpio_keys_suspend | 00101b04 | binding | gpio_keys_suspend_exact.S:gpio_keys_suspend | PROMOTED_OFFLINE_EXACT |
 | 012_gpio_keys_show_keys | gpio_keys_show_keys | 00101d18 | user_abi | gpio_keys_show_keys_exact.S:gpio_keys_show_keys | PROMOTED_OFFLINE_EXACT |
 | 013_gpio_keys_attr_show_helper | gpio_keys_attr_show_helper | 00101d44 | user_abi | gpio_keys_attr_show_helper_exact.S:gpio_keys_attr_show_helper | PROMOTED_OFFLINE_EXACT |
-| 014_gpio_keys_show_switches | gpio_keys_show_switches | 00101e88 | user_abi | gpio_keys_nubia.c:gpio_keys_show_switches | READY_FOR_IMPLEMENTATION |
+| 014_gpio_keys_show_switches | gpio_keys_show_switches | 00101e88 | user_abi | gpio_keys_show_switches_exact.S:gpio_keys_show_switches | PROMOTED_OFFLINE_EXACT |
 | 015_gpio_keys_show_disabled_keys | gpio_keys_show_disabled_keys | 00101eb8 | user_abi | gpio_keys_nubia.c:gpio_keys_show_disabled_keys | READY_FOR_IMPLEMENTATION |
 | 016_gpio_keys_store_disabled_keys | gpio_keys_store_disabled_keys | 00101ee8 | user_abi | gpio_keys_nubia.c:gpio_keys_store_disabled_keys | READY_FOR_IMPLEMENTATION |
 | 017_gpio_keys_attr_store_helper | gpio_keys_attr_store_helper | 00101f24 | user_abi | gpio_keys_nubia.c:gpio_keys_attr_store_helper | READY_FOR_IMPLEMENTATION |
