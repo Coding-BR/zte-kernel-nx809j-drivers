@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "085",
+  "function": "ghost_debug_read",
+  "stock_entry": "0010d57c",
+  "stock_body_bytes": 848,
+  "candidate_symbol_bytes": 848,
+  "stock_instruction_count": 212,
+  "candidate_instruction_count": 212,
+  "stock_relocation_count": 52,
+  "candidate_relocation_count": 52,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison",
+    "AArch64 instruction, relocation and symbol-size comparison"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "25a4eb40bedbcd66c2ab5e45ac540981044c07cc27e8b69d2d827c7a9d70bf9c",
+    "candidate_module_size": 17969632,
+    "candidate_source_sha256": "4a1e4d750f85e5ead02616c061ada7034eb17e8ea3e057a162c63bb4530e418e",
+    "readable_source_sha256": "990bee158d87147421025105bec824f0c3bc4439e998eeed85254f3bef538ae1",
+    "rodata_include_sha256": "16f654e53b626cbd8f63d1a9b3e99479617560fc4317c82aa6d2c84292a0d81d",
+    "candidate_assembly_sha256": "d794c67e3876e73d66923f0fe35bdc1c65761083297d149853b91f9803c3b976",
+    "stock_assembly_sha256": "6e8ce4bff10a5beed7ef009986d669e0aca410f15b776fe8ce1aea0eee1d033f",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0xf4e9d97c"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The repaired candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "repair_note": "The previous exact assembly artifact was 182 instructions/728 bytes; it was regenerated from the preserved stock assembly and now matches the 212-instruction/848-byte stock body.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "DT, DRM, MMIO and physical userspace behavior remain deferred to hardware validation."
+  ]
+}
