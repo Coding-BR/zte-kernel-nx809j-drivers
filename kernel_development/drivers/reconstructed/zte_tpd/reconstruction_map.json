@@ -143,19 +143,29 @@
         "source:zlog_register_work.c:sha256:c98fe4bb0227f5fca30ba6a91e1acb03d04490780df09eaab2d66c424593b1c7",
         "ghidra-pseudocode:decompiled/0004_00107844_zlog_register_work.c:sha256:702faeee9ffa3f4b980bd7d7dee25c40cc9d8fad84019d9d0a56333aef6e725e",
         "ghidra-pcode:pcode/0004_00107844_zlog_register_work.jsonl:sha256:97cde174ab5b874c34f84eb043329ee1bcccf37f5f77ff678d862e79a946455a",
-        "stock-assembly:0004_zlog_register_work_00107844.asm:sha256:3520e04428212e182103974c1f2611c204cd7d54dd3d869e090c744cf20e89c1",
-        "attestation:next121_zlog_register_work_revalidated_v1/assembly_comparison.json:sha256:b394c0bce383a989034dc58c026b7fea6c38fbffa278a818b97dc5d23448a2be"
+        "stock-assembly:attestation/next005_zlog_register_work_exact_v2/stock_assembly/0000_zlog_register_work.asm:sha256:3520e04428212e182103974c1f2611c204cd7d54dd3d869e090c744cf20e89c1",
+        "candidate-assembly:attestation/next005_zlog_register_work_exact_v2/candidate_assembly/0000_zlog_register_work.asm:sha256:dd85edf117370b08b6cd2f27d26fec3bf0ce66d66ad9b0582655107a50c6421b",
+        "assembly-compare:attestation/next005_zlog_register_work_exact_v2/assembly_comparison.json:sha256:d811eee3ff276044626c5094d21f1e221b82641ef280d868dd064fdd444d09f0",
+        "kcfi-compare:attestation/next005_zlog_register_work_exact_v2/kcfi_comparison.json:sha256:88df691eef6a16c4ae6d3207f52d8e9f210a00e4b4d62ac4dd4393e313d42676",
+        "canonical-build:attestation/next005_zlog_register_work_exact_v2/canonical_build_report.json:sha256:0f3aa8f2adf0bc3e19ddee83a95dd38d09fb0411b3c2ff5a3e6cfe5c4e08a99b",
+        "source-sync:attestation/next005_zlog_register_work_exact_v2/source_sync_report.json:sha256:018f515248c507a33d017f72af5af0f20b4f18533b7b05f73cf1485c5a7af910",
+        "host-harness:attestation/next005_zlog_register_work_exact_v2/host_harness_report.json:sha256:9229a2c8abe93eefed5dcaa4b41b20a77233ea0a0846b730f97e70ea46d98a9c",
+        "joern:attestation/next005_zlog_register_work_exact_v2/joern/joern_gate_summary.json:sha256:fb4d82f93228aad9690ffbdb017f89ad0c1443bf018d126d75d0074bb92eddde",
+        "comparator-tool:workspace_tools/reconstruction_pipeline/compare_function_assembly.py:sha256:121bfefb3c2ea0b3dea4e555084a8d0c256638b23b1e44fd0d51181f4786f9d4",
+        "comparator-tests:workspace_tools/reconstruction_pipeline/tests/test_compare_function_assembly.py:sha256:f67c17b114ca0daea20b0870059ec689bdf0a8d21d8816fac8fb227fd86d827a",
+        "attestation:next005_zlog_register_work_exact_v2/microtask_attestation.json:sha256:701db9efb36ae1bcea64cabdda0fd9fd01f54680e41516b9fc505bae671346c2"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "zlog_register_work.c",
       "source_function": "zlog_register_work",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 44,
+      "elf_symbol_bytes": 44,
       "stock_entry": "00107844",
       "stock_function": "zlog_register_work",
-      "mapping_note": "Function-level offline parity is attested. The callback intentionally preserves the stock precondition that tpd_cdev is valid; Android scheduler and NX809J hardware behavior remain unverified until the controlled physical procedure runs."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 11 AArch64 instructions and 44-byte ELF symbols; the Ghidra body size and ELF symbol size agree. The callback preserves the stock valid-device precondition, checks zlog_registered and calls tpd_zlog_register only when registration is absent; opcode sequence, section and normalized references match. Android scheduler and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
