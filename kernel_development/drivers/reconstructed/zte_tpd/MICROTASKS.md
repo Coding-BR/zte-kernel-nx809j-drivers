@@ -113,7 +113,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 107_tpd_id2_report_work | tpd_id2_report_work | 0010fd00 | async_or_irq | tpd_id2_report_work_exact.S:tpd_id2_report_work | PROMOTED_OFFLINE_EXACT |
 | 108_tpd_id3_report_work | tpd_id3_report_work | 0010fd2c | async_or_irq | tpd_id3_report_work_exact.S:tpd_id3_report_work | PROMOTED_OFFLINE_EXACT |
 | 109_tpd_id4_report_work | tpd_id4_report_work | 0010fd58 | async_or_irq | tpd_id4_report_work_exact.S:tpd_id4_report_work | PROMOTED_OFFLINE_EXACT |
-| 110_tpd_id5_report_work | tpd_id5_report_work | 0010fd84 | async_or_irq | tpd_id5_report_work.c:tpd_id5_report_work | PASS |
+| 110_tpd_id5_report_work | tpd_id5_report_work | 0010fd84 | async_or_irq | tpd_id5_report_work_exact.S:tpd_id5_report_work | PROMOTED_OFFLINE_EXACT |
 | 111_tpd_id6_report_work | tpd_id6_report_work | 0010fdb0 | async_or_irq | tpd_id6_report_work.c:tpd_id6_report_work | PASS |
 | 112_tpd_id7_report_work | tpd_id7_report_work | 0010fddc | async_or_irq | tpd_id7_report_work.c:tpd_id7_report_work | PASS |
 | 113_tpd_id8_report_work | tpd_id8_report_work | 0010fe08 | async_or_irq | tpd_id8_report_work.c:tpd_id8_report_work | PASS |
