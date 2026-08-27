@@ -760,24 +760,24 @@
         "ghidra-pseudocode:decompiled/0027_00109784_tp_module_info_read.c:sha256:265d4b627982500f4f513b359d23f53549745db5f4c1c70cbc0e949eb7a21043",
         "ghidra-pcode:pcode/0027_00109784_tp_module_info_read.jsonl:sha256:66321a3658aac70b77580c952da1cad7741a2a1acb8d7527fd7e5aa32f31fe0a",
         "stock-assembly:0027_tp_module_info_read_00109784.asm:sha256:8bb318bddaba5fcfdc7a849ff859e6fe69f10afcd4d4c69fa9ef86d1349931fb",
-        "harness:attestation/next028_tp_module_info_read_v1/host_harness_report.json:sha256:efe5ae4bda8ff2eceec848d5f891102b10a8f85d0f2223467d848b7e4ecdecb7",
-        "joern:attestation/next028_tp_module_info_read_v1/joern_gate_summary.json:sha256:23046f9ec435358a55051c1bba02ac02bb667188f771132437346beb750f2a38",
-        "canonical:attestation/next028_tp_module_info_read_v1/canonical_build_report.json:sha256:323d2fe89c5aa5dca256b4ee1185154efd5a5d7f99d2648dc4fc813a337e75a5",
-        "sync:attestation/next028_tp_module_info_read_v1/source_sync_report.json:sha256:c076cc6e2ce80f2720939d936c8f3a29fa315842d97f53dc6a648cccbd1ee5d6",
-        "kcfi:attestation/next028_tp_module_info_read_v1/kcfi_status.json:sha256:d6913dba5de54ab22b685939cfb6994ff56f655ce041c518ab51d65fc889da2c",
-        "assembly-compare:attestation/next028_tp_module_info_read_v1/assembly_comparison.json:sha256:178d5e5c8ad5ae15812b763059cdbf105e131e4778d3611f16861f5d2b581738",
-        "attestation:next390_tp_module_info_read_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "harness:attestation/next390_tp_module_info_read_exact_v2/host_harness_report.json:sha256:2c7f40273aa7f3c41e8c03940db4cd4dd7f3e8f1bdd4902abfe85b0a17d63842",
+        "joern:attestation/next390_tp_module_info_read_exact_v2/joern/joern_gate_summary.json:sha256:40eb160c9f0e1867b9a9f79367460fff2ffa6f19d056da28cae7ff17eb9a83fa",
+        "canonical:attestation/next390_tp_module_info_read_exact_v2/canonical_build_report.json:sha256:80ce71e5fc4e4d4792fce656e446e48ff124e1ec7bb04939bbb332c32fb68998",
+        "sync:attestation/next390_tp_module_info_read_exact_v2/source_sync_report.json:sha256:4ffb86fb74222f751064d4c3c736d0dbb0a7e84090d0328154f737128e2d4a9e",
+        "kcfi:attestation/next390_tp_module_info_read_exact_v2/kcfi_comparison.json:sha256:902c1e67b30bae26750f979ecdc1da2059ed5ca6eb5b8d00665c5d594d0426c0",
+        "assembly-compare:attestation/next390_tp_module_info_read_exact_v2/assembly_comparison.json:sha256:6c5b3cf42bbdf2e414f8b994acf4981055de36ab20ba2ab8fa46d4df7ede733e",
+        "attestation:next390_tp_module_info_read_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code plus normalized AArch64 control/data flow, KCFI, Joern, Docker build and ASan/UBSan host evidence",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_module_info_read.c",
       "source_function": "tp_module_info_read",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 672,
       "stock_entry": "00109784",
       "stock_function": "tp_module_info_read",
-      "mapping_note": "Offline semantic parity is attested: 168 AArch64 instructions and 672-byte .text body match, KCFI type/size match, and field offsets, conditional formatting, overflow guard, callback and simple_read_from_buffer flow match the stock function. Raw comparison differs in one callback-load scheduling choice, terminal brk/stack-check block layout and module-local relocations; Joern has no blockers or unresolved calls but flags simple_read_from_buffer for userspace ABI review. Procfs/userspace and NX809J runtime behavior remain unverified."
+      "mapping_note": "Offline exact parity is attested: the promoted .S body matches all 168 AArch64 instructions, 672-byte .text size, normalized relocations, section and KCFI type/size. The C reconstruction remains preserved for host/semantic review, with formatting, offsets, guards, callback, overflow BRK and simple_read_from_buffer flow matching Ghidra. Joern retains the simple_read_from_buffer userspace ABI review finding; procfs/userspace and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [

@@ -808,3 +808,10 @@ ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
 	-Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label \
 	-Wframe-larger-than=8192
 CFLAGS_syna_dev_set_up_input_device.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: tp_module_info_read
+src-files := $(filter-out $(src)/tp_module_info_read.c, $(src-files))
+obj-files := $(filter-out tp_module_info_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_module_info_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_module_info_read_exact.o
+AFLAGS_tp_module_info_read_exact.o := -g0 -I$(src)
