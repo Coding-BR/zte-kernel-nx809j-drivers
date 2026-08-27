@@ -4353,7 +4353,7 @@
       "stock_entry": "001100ac",
       "stock_body_bytes": 624,
       "category": "core_logic",
-      "source_file": "edge_long_press_up.c",
+      "source_file": "edge_long_press_up_exact.S",
       "source_function": "edge_long_press_up",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0116_001100ac_edge_long_press_up.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0116_001100ac_edge_long_press_up.jsonl",
@@ -4363,22 +4363,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: edge_long_press_up\nEntrada Ghidra: 001100ac\nTamanho stock: 624 bytes\nCategoria: core_logic\nAlvo no fonte: edge_long_press_up.c:edge_long_press_up\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0116_001100ac_edge_long_press_up.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0116_001100ac_edge_long_press_up.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next512_edge_long_press_up_exact_v2/canonical_build_report.json",
-          "sha256": "03cd29d1f7dab413335fc04d7b08943678227526d02058f5db76bacc6f9977f5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next798_edge_long_press_up_exact_v1/canonical_build_report.json",
+          "sha256": "622b54a35dad8f76618fb448b321a003e7a92a720fcec6fe79f2aad440083d4d"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next512_edge_long_press_up_exact_v2/kcfi_comparison.json",
-          "sha256": "681812a346411831944b0588ad2a2c1b7b5ab96a28a87d414e9884f81541129a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next798_edge_long_press_up_exact_v1/kcfi_comparison.json",
+          "sha256": "d8d5a978e7a1e6526bf603e5786d5e0110a452dd67d89cb247a407442eb0ea89"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next512_edge_long_press_up_exact_v2/host_harness_report.json",
-          "sha256": "6b1da84fcbd002dddf2480031aa20b65ac8f5c1b9041fc847cc46cdbfae9fd06"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next798_edge_long_press_up_exact_v1/host_harness_report.json",
+          "sha256": "7515cfb4b9bacf7db21129cd3aa86fded33a5097e22bd95abe0de60db0fe4dfb"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next798_edge_long_press_up_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "b59b0edbc30a6127b2b39ed798e4d162f8380006de98275ef4741f68b6af079e"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next798_edge_long_press_up_exact_v1/aarch64_comparison.json",
+          "sha256": "0ec26a00d9cade811bfa3325f659a3bd9f123ea65a8ec3dd115960f070a03e83"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next798_edge_long_press_up_exact_v1/source_sync_report.json",
+          "sha256": "2cd921b80ca7925356a599a81cde4b0800d719bd67a8782efad515bb0851f69e"
         }
       ]
     },
