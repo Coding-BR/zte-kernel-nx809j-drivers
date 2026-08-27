@@ -416,22 +416,31 @@
     },
     {
       "evidence": [
-        "source:tpd_proc_deinit.c:sha256:57fa05d8fca47d822dbb1c07c8819a4cb41e19b5cb70a549cc2ed703b2aa6eb7",
+        "source:tpd_proc_deinit.c:sha256:0a8cfd93efb8f6926b52c823a1792fa8a4b914f2fec6e8f4b596cca5e7c5e4a6",
         "ghidra-pseudocode:decompiled/0014_00107fa4_tpd_proc_deinit.c:sha256:0b4101fbc3c57c43e33480b35f36282939cf4de58975b2f2e20450f64cb6a1cf",
         "ghidra-pcode:pcode/0014_00107fa4_tpd_proc_deinit.jsonl:sha256:fc9a70b8cc55375f6600a45340044d9abe4ad06457816588a051346e55507057",
-        "stock-assembly:0014_tpd_proc_deinit_00107fa4.asm:sha256:65bded6af3aec4b366e97fac7dc67fbeb3de856a54868aeafde8f6c97fbddcdc",
-        "attestation:next377_tpd_proc_deinit_v1/microtask_attestation.json:status:OFFLINE_EXACT"
+        "stock-assembly:offline_static/stock_assembly/0014_tpd_proc_deinit_00107fa4.asm:sha256:65bded6af3aec4b366e97fac7dc67fbeb3de856a54868aeafde8f6c97fbddcdc",
+        "candidate-assembly:attestation/next377_tpd_proc_deinit_v1/candidate_assembly.asm:sha256:ed7324dfa95ccedb538a463f57966962e20a2d65241d54ddcc685ad8107cbcc6",
+        "assembly-diagnostic:attestation/next377_tpd_proc_deinit_v1/assembly_comparison.json:sha256:4cf0ae7891a8df4931ae9a9320aec9fb2c684d9621ad1be235b9a6a8fd0bc87e",
+        "aarch64-validation:attestation/next377_tpd_proc_deinit_v1/aarch64_validation_report.json:sha256:bbfc1f39dfc4e6fdb5ef5f40c019173e6562eff8aa12d3c3bf23288a1292fe3b",
+        "source-sync:attestation/next377_tpd_proc_deinit_v1/source_sync_report.json:sha256:167b75bc0d7dba1a44cb28cfc8b3d7039526a1646add9021e8072ae262656edc",
+        "canonical-build:attestation/next377_tpd_proc_deinit_v1/canonical_build_report.json:sha256:25ae29ef57d99ac341477f84cdeccfa2340ef641c433c4c035fba062c981172d",
+        "host-harness:attestation/next377_tpd_proc_deinit_v1/host_harness_report.json:sha256:03f202a0943f007f5afb765fc1d06731d2dbd8cad8f291f0bd4d511283990744",
+        "joern:attestation/next377_tpd_proc_deinit_v1/joern_gate_summary.json:sha256:4cc1abf8bf36507d9089f84293b49ff6e2f6a4b864799ea76017c1575132dec1",
+        "kcfi:attestation/next377_tpd_proc_deinit_v1/kcfi_comparison.json:sha256:6370aa7f77c0143f29d9ad3027fdd3899dc1d77e4ed61e7e245d0208aeeacfd7",
+        "attestation:next377_tpd_proc_deinit_v1/microtask_attestation.json:sha256:678e3902afe0199643e1364745713f7a7e2dde03341b96503d8c184685e14ac1"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan contract evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_proc_deinit.c",
       "source_function": "tpd_proc_deinit",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 544,
+      "elf_symbol_bytes": 544,
       "stock_entry": "00107fa4",
       "stock_function": "tpd_proc_deinit",
-      "mapping_note": "Offline exact function-level parity attested: instruction count, .text size, call targets, string references and KCFI match; only module-specific .rodata relocation offsets differ. ProcFS lifecycle and hardware behavior remain unverified."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 136 AArch64 instructions and 544-byte ELF symbols; the Ghidra body size and ELF symbol size agree. The NULL-directory early return, exact 30-entry removal order, parent pointer usage for all entries except touchscreen, and final NULL parent are preserved. Instruction sequence, call targets, string references, section and KCFI match; only module-specific .rodata relocation offsets differ and are normalized by the AArch64 validation. ProcFS lifecycle concurrency and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
