@@ -1321,3 +1321,10 @@ obj-files := $(filter-out syna_pal_mem_cpy_0.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_pal_mem_cpy_0.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_pal_mem_cpy_0_exact.o
 AFLAGS_syna_pal_mem_cpy_0_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_buf_lock
+src-files := $(filter-out $(src)/syna_tcm_buf_lock.c, $(src-files))
+obj-files := $(filter-out syna_tcm_buf_lock.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_buf_lock.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_buf_lock_exact.o
+AFLAGS_syna_tcm_buf_lock_exact.o := -g0 -I$(src)
