@@ -118,7 +118,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 112_tpd_id7_report_work | tpd_id7_report_work | 0010fddc | async_or_irq | tpd_id7_report_work_exact.S:tpd_id7_report_work | PROMOTED_OFFLINE_EXACT |
 | 113_tpd_id8_report_work | tpd_id8_report_work | 0010fe08 | async_or_irq | tpd_id8_report_work_exact.S:tpd_id8_report_work | PROMOTED_OFFLINE_EXACT |
 | 114_tpd_id9_report_work | tpd_id9_report_work | 0010fe34 | async_or_irq | tpd_id9_report_work_exact.S:tpd_id9_report_work | PROMOTED_OFFLINE_EXACT |
-| 115_tpd_report_work_deinit | tpd_report_work_deinit | 0010fe60 | lifecycle | tpd_report_work_deinit.c:tpd_report_work_deinit | PASS |
+| 115_tpd_report_work_deinit | tpd_report_work_deinit | 0010fe60 | lifecycle | tpd_report_work_deinit_exact.S:tpd_report_work_deinit | PROMOTED_OFFLINE_EXACT |
 | 116_point_is_in_limit_area | point_is_in_limit_area | 0010feec | core_logic | point_is_in_limit_area_exact.S:point_is_in_limit_area | PROMOTED_OFFLINE_EXACT |
 | 117_edge_long_press_up | edge_long_press_up | 001100ac | core_logic | edge_long_press_up_exact.S:edge_long_press_up | PROMOTED_OFFLINE_EXACT |
 | 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state_exact.S:change_tp_state | PROMOTED_OFFLINE_EXACT |
