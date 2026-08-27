@@ -960,18 +960,20 @@
         "source:headset_state_show.c:sha256:0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
         "ghidra-pseudocode:decompiled/0037_0010a3c4_headset_state_show.c:sha256:9fc75ce3590cf4fe02b6107f4c92cf637ae4ed847d6cc181d8e1526be7a16241",
         "ghidra-pcode:pcode/0037_0010a3c4_headset_state_show.jsonl:sha256:504d49bfe141f479262c51af4f07336527505811b29a89553cb57933d72caac4",
-        "stock-assembly:0037_headset_state_show_0010a3c4.asm:sha256:06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c"
+        "stock-assembly:0037_headset_state_show_0010a3c4.asm:sha256:06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c",
+        "attestation:next407_headset_state_show_exact_v2/microtask_attestation.json",
+        "attestation:next407_headset_state_show_exact_v2/aarch64_validation_report.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "headset_state_show.c",
       "source_function": "headset_state_show",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 244,
       "stock_entry": "0010a3c4",
       "stock_function": "headset_state_show",
-      "mapping_note": "Corrected the optional callback load to tpd_cdev + 0xe78 and callback signature to int (*)(struct ztp_device *), matching callback KCFI type 0x73fc0d79. Candidate and stock both contain 61 instructions and a 244-byte .text body; function KCFI type 0xf4e9d97c matches, Joern parsed strictly with zero unresolved calls, and the two-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local stack initialization scheduling and reconstructed local .rodata relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Promoted to offline exact: candidate and stock match at 61 instructions and 244 bytes, with raw instruction sequence and normalized relocations aligned. Function KCFI type 0xf4e9d97c and callback type 0x73fc0d79 at tpd_cdev + 0xe78 match; the device state byte remains at +0x17. Strict Joern, reproducible two-cycle Docker build and two-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrent callback lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [

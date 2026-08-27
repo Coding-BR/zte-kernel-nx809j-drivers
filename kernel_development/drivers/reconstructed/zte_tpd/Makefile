@@ -857,3 +857,10 @@ obj-files := $(filter-out tpfwupgrade_store.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpfwupgrade_store.o, $(zte_tpd-objs))
 zte_tpd-objs += tpfwupgrade_store_exact.o
 AFLAGS_tpfwupgrade_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: headset_state_show
+src-files := $(filter-out $(src)/headset_state_show.c, $(src-files))
+obj-files := $(filter-out headset_state_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out headset_state_show.o, $(zte_tpd-objs))
+zte_tpd-objs += headset_state_show_exact.o
+AFLAGS_headset_state_show_exact.o := -g0 -I$(src)
