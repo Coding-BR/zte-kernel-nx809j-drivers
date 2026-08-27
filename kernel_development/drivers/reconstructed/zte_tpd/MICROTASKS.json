@@ -2265,24 +2265,35 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_one_key\nEntrada Ghidra: 0010ba4c\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_one_key.c:get_one_key\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0054_0010ba4c_get_one_key.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0054_0010ba4c_get_one_key.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next444_get_one_key_exact_v2/canonical_build_report.json",
+          "sha256": "71b95142fb59623b3365cd8f13dfdb5b2ab5092fc53d197b7e85f55f9d518feb"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next444_get_one_key_exact_v2/kcfi_comparison.json",
+          "sha256": "4d089a59f59762767e219ae817d533ec7b5728a89c2c6f27d8494e2fbcb4f56d"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_scalar_harness_report.json",
-          "sha256": "07d63e3ff8c1d8b5e93b6477dd1f8c70a5dcd1593666b01f3c76eddadfbdfc91"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next444_get_one_key_exact_v2/host_harness_report.json",
+          "sha256": "45b1af0526b226eaf6803a55f51f0769e74fe4b2c8c2275711ffea64b1f6ff3d"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next444_get_one_key_exact_v2/joern_gate_summary.json",
+          "sha256": "4982447b8b110971e590edc62470a44e3d7562130938bbb9d24241866a505b88"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next444_get_one_key_exact_v2/aarch64_validation_report.json",
+          "sha256": "5fee4e614b1ae2ceb4f875a222e472ace40b0e5f49211b06040fdacccee94828"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next444_get_one_key_exact_v2; one documented userspace-egress Joern finding remains a review item, and hardware behavior is deferred."
     },
     {
       "id": "056_set_one_key",
