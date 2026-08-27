@@ -3331,23 +3331,26 @@
         "ghidra-pseudocode:decompiled/0141_0011120c_syna_dev_set_screen_on_fp_mode.c:sha256:aa01034bebe3423f9a08f1c03c11c3c578ac0bc10cef6fcf9d874c98d9d2b671",
         "ghidra-pcode:pcode/0141_0011120c_syna_dev_set_screen_on_fp_mode.jsonl:sha256:010fc15da92fba1e986920c85d33077b9a1e64f56e69bdf53e7a6e641fbe9b3c",
         "stock-assembly:0141_syna_dev_set_screen_on_fp_mode_0011120c.asm:sha256:222110ddc2608833179fe9737fca909fddfe918ce59564c6629e00cdfeacfae1",
-        "harness:attestation/next372_syna_dev_set_screen_on_fp_mode_v1/host_harness_report.json:sha256:f1ef459dc8297f7475805a8050abd1420d1f2f3a988a898c7237803c984a259a",
-        "joern:attestation/next372_syna_dev_set_screen_on_fp_mode_v1/joern_gate_summary.json:sha256:8867608b1a251d1875747ce2992c74ea854fffae212b43459d85c5e58b56fd69",
-        "canonical:attestation/next372_syna_dev_set_screen_on_fp_mode_v1/canonical_build_report.json:sha256:968c3570631c25b91b2467b3fec8101991000968c9e83461168fc89dd92e15a0",
-        "sync:attestation/next372_syna_dev_set_screen_on_fp_mode_v1/source_sync_report.json:sha256:9e1ee2665a7aa9c1cfe1430fd6c61777ff3cf07a7d69106e9e0bbaa58297a55b",
-        "kcfi:attestation/next372_syna_dev_set_screen_on_fp_mode_v1/kcfi_comparison.json:sha256:ae91c99cebaf10593e226a4ddc65cabd5e75509397aed7bd78a44f20ad868eb8",
-        "assembly-compare:attestation/next372_syna_dev_set_screen_on_fp_mode_v1/assembly_comparison.json:sha256:1231fa79ef0fe07349d366f5ac450b9494e293ddba11eb552110f68823a1704a"
+        "stock-assembly:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/stock_assembly/0000_syna_dev_set_screen_on_fp_mode.asm:sha256:222110ddc2608833179fe9737fca909fddfe918ce59564c6629e00cdfeacfae1",
+        "candidate-assembly:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/candidate_assembly/0000_syna_dev_set_screen_on_fp_mode.asm:sha256:27ce50bd7ef9d34663b7fe48264867464f9f2d20124bf273867c1a020bb7341b",
+        "assembly-compare:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/assembly_comparison.json:sha256:0cf3a6d7ec478864b9901b2dbdb4d2aaf6dae4f884c8e64ca8c63170d45db4d1",
+        "kcfi:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/kcfi_comparison.json:sha256:34577afcceaa963a23d2c441c6ec92aebe204ddc9225e8bae46f41242cd35c1d",
+        "canonical:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/canonical_build_report.json:sha256:de901273696013617a32eb97202a79cba79d31b0711d4c399ae4a571f92f78a1",
+        "source-sync:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/source_sync_report.json:sha256:f650e6d35d98a05c7415ef8ac2fa88a4a5114c1bde918a8615980ccec67fd49a",
+        "harness:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/host_harness_report.json:sha256:49294707fd39041c6e32e5bcb0e8524a53190d1942ae6fe2ce9309314f26b051",
+        "joern:attestation/next142_syna_dev_set_screen_on_fp_mode_exact_v2/joern/joern_gate_summary.json:sha256:7ae7c8707f512ed98e39fbe14842e336b043b58deee4c90414fa19eb48d73f2b",
+        "attestation:next142_syna_dev_set_screen_on_fp_mode_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT:sha256:18ec3c9d8d19f1c85bd63eb62acf26c41070fe49dcf3bf4f512ff964538177a5"
       ],
-      "mapping_basis": "Ghidra P-Code plus Joern, Docker canonical build, ASan/UBSan host harness, KCFI and AArch64 opcode/normalized relocation comparison",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_dev_set_screen_on_fp_mode.c",
       "source_function": "syna_dev_set_screen_on_fp_mode",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 136,
       "stock_entry": "0011120c",
       "stock_function": "syna_dev_set_screen_on_fp_mode",
-      "mapping_note": "Function-level offline parity is attested: 136-byte/34-instruction body and KCFI type-id match; raw string relocations differ only by module-specific .rodata offsets. Host contract passes three scenarios in two ASan/UBSan cycles. Physical fingerprint controller behavior remains unverified."
+      "mapping_note": "Offline function-level parity is promoted: stock and candidate both contain 34 AArch64 instructions and 136 bytes; relocations resolve to identical strings and call targets, KCFI type 0x82a068af matches, and two-cycle Docker, strict Joern and ASan/UBSan host gates pass. Android fingerprint-controller and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [

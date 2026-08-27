@@ -145,7 +145,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 139_ufp_single_tap_work | ufp_single_tap_work | 0011108c | async_or_irq | ufp_single_tap_work.c:ufp_single_tap_work | PASS (offline-exact v2) |
 | 140_ufp_mac_exit | ufp_mac_exit | 0011109c | lifecycle | ufp_mac_exit.c:ufp_mac_exit | PASS (offline-exact v2) |
 | 141_syna_dev_free_input_events | syna_dev_free_input_events | 001110f0 | core_logic | syna_dev_free_input_events.c:syna_dev_free_input_events | PASS (offline-exact v2) |
-| 142_syna_dev_set_screen_on_fp_mode | syna_dev_set_screen_on_fp_mode | 0011120c | core_logic | syna_dev_set_screen_on_fp_mode.c:syna_dev_set_screen_on_fp_mode | PASS |
+| 142_syna_dev_set_screen_on_fp_mode | syna_dev_set_screen_on_fp_mode | 0011120c | core_logic | syna_dev_set_screen_on_fp_mode.c:syna_dev_set_screen_on_fp_mode | PROMOTED_OFFLINE_EXACT |
 | 143_syna_dev_set_tp_report_rate | syna_dev_set_tp_report_rate | 00111298 | core_logic | syna_dev_set_tp_report_rate.c:syna_dev_set_tp_report_rate | READY_FOR_IMPLEMENTATION |
 | 144_syna_dev_do_reflash | syna_dev_do_reflash | 001113fc | core_logic | syna_dev_do_reflash.c:syna_dev_do_reflash | PASS |
 | 145_syna_dev_set_charger_mode | syna_dev_set_charger_mode | 00111504 | core_logic | syna_dev_set_charger_mode.c:syna_dev_set_charger_mode | PASS (offline-exact v2) |
