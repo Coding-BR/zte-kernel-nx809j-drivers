@@ -1307,3 +1307,10 @@ zte_tpd-objs += tpd_resume_work_exact.o tpd_suspend_work_exact.o tpd_resume_work
 AFLAGS_tpd_resume_work_exact.o := -g0 -I$(src)
 AFLAGS_tpd_suspend_work_exact.o := -g0 -I$(src)
 AFLAGS_tpd_resume_work_deinit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_mac_exit
+src-files := $(filter-out $(src)/ufp_mac_exit.c, $(src-files))
+obj-files := $(filter-out ufp_mac_exit.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_mac_exit.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_mac_exit_exact.o
+AFLAGS_ufp_mac_exit_exact.o := -g0 -I$(src)
