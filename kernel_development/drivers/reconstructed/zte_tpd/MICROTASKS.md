@@ -22,7 +22,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 016_zte_touch_pdev_register | zte_touch_pdev_register | 001081c8 | core_logic | zte_touch_pdev_register.c:zte_touch_pdev_register | PROMOTED_OFFLINE_EXACT |
 | 017_tpd_report_uevent | tpd_report_uevent | 001082ac | core_logic | tpd_report_uevent.c:tpd_report_uevent | PASS |
 | 018_zte_touch_pdev_unregister | zte_touch_pdev_unregister | 001083b4 | core_logic | zte_touch_pdev_unregister.c:zte_touch_pdev_unregister | PASS (offline-exact v2) |
-| 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PASS |
+| 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PROMOTED_OFFLINE_EXACT |
 | 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | PASS |
 | 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PASS |
 | 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | PASS |
