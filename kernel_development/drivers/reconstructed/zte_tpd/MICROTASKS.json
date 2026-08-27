@@ -2512,7 +2512,7 @@
       "stock_entry": "0010c304",
       "stock_body_bytes": 240,
       "category": "user_abi",
-      "source_file": "tp_sensibility_level_read.c",
+      "source_file": "tp_sensibility_level_read_exact.S",
       "source_function": "tp_sensibility_level_read",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0064_0010c304_tp_sensibility_level_read.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0064_0010c304_tp_sensibility_level_read.jsonl",
@@ -2522,22 +2522,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_sensibility_level_read\nEntrada Ghidra: 0010c304\nTamanho stock: 240 bytes\nCategoria: user_abi\nAlvo no fonte: tp_sensibility_level_read.c:tp_sensibility_level_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0064_0010c304_tp_sensibility_level_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0064_0010c304_tp_sensibility_level_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/canonical_build_report.json",
+          "sha256": "f8b486f017a9cb5a2a53d0a979dc6e03a1a1f95bf74b5a9bd22c21d098039702"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/kcfi_comparison.json",
+          "sha256": "22a3f5a2855f3b87ffd3efca702f0ba63f2c808ad83220dcc6ec02a9c8cd52d9"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_special_harness_report.json",
-          "sha256": "f5b632950b7b2f488dc2cf71ec73eb6f638e4d1790d9edef4ccdba5c038208c7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/host_harness_report.json",
+          "sha256": "099b6b121b9f01c6833b916c2f1f6f4efadae5fa90aec155149733b6f52e6839"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/joern/joern_gate_summary.json",
+          "sha256": "e9db261003f73c4cc5b5d8151b25daf15203cd3b657de610a8223ee250d7d0e7"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/aarch64_comparison.json",
+          "sha256": "9bead05189db35cc9a43271aa250b08f7675ad9c6210deb6bd10b79e69bb0de5"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/source_sync_report.json",
+          "sha256": "b88d17b74a522f886f96dba5e9daff84f40d7719846588f33c86423ff20dbb8e"
         }
       ]
     },
