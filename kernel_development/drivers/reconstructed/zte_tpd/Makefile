@@ -836,3 +836,17 @@ obj-files := $(filter-out tp_smart_cover_write.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_smart_cover_write.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_smart_cover_write_exact.o
 AFLAGS_tp_smart_cover_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_glove_read
+src-files := $(filter-out $(src)/tp_glove_read.c, $(src-files))
+obj-files := $(filter-out tp_glove_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_glove_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_glove_read_exact.o
+AFLAGS_tp_glove_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_glove_write
+src-files := $(filter-out $(src)/tp_glove_write.c, $(src-files))
+obj-files := $(filter-out tp_glove_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_glove_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_glove_write_exact.o
+AFLAGS_tp_glove_write_exact.o := -g0 -I$(src)

@@ -861,19 +861,19 @@
         "ghidra-pseudocode:decompiled/0032_00109db8_tp_glove_read.c:sha256:cca3543e2217bd3bbbec96f97110d6198fd818d05fd1f3fa3c1d5a7bc94c5fa0",
         "ghidra-pcode:pcode/0032_00109db8_tp_glove_read.jsonl:sha256:5e000854838671c7d55cc0eb5b432dc1bbac15ce3c89b351c39671f0e766317c",
         "stock-assembly:0032_tp_glove_read_00109db8.asm:sha256:fd03526b6ee746caf41ad5e0d5fd936d9667d382a947dedb87b36ed9a16e41ec",
-        "attestation:next402_tp_glove_read_v1/microtask_attestation.json",
-        "attestation:next402_tp_glove_read_v1/aarch64_validation_report.json"
+        "attestation:next402_tp_glove_read_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT",
+        "attestation:next402_tp_glove_read_exact_v2/aarch64_validation_report.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_glove_read.c",
       "source_function": "tp_glove_read",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 240,
       "stock_entry": "00109db8",
       "stock_function": "tp_glove_read",
-      "mapping_note": "Corrected the value load to tpd_cdev + 0x8 and the optional callback load to tpd_cdev + 0xe48 with callback KCFI type 0x73fc0d79. Candidate and stock both contain 60 instructions and a 240-byte .text body; function KCFI type 0xf4e9d97c matches, Joern parsed strictly with zero unresolved calls, and the two-case host contract passed in two ASan/UBSan cycles. Raw assembly still differs by the dead local store schedule and reconstructed local .rodata relocation layout. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Promoted to offline exact: value load at tpd_cdev + 0x8 and optional callback load at tpd_cdev + 0xe48, 60 instructions and 240-byte .text body, raw instruction sequence and normalized relocations matching stock, function KCFI type 0xf4e9d97c and callback type 0x73fc0d79. Strict Joern, reproducible two-cycle Docker build and two-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
@@ -881,19 +881,19 @@
         "ghidra-pseudocode:decompiled/0033_00109eac_tp_glove_write.c:sha256:21e30913f67ef34fa0684bedb4909aacd76be3c7552f2f3e6300b76c9b2bf34f",
         "ghidra-pcode:pcode/0033_00109eac_tp_glove_write.jsonl:sha256:caacfcdf8da67a8872eaa3c3493da59d521185dc2629e0bf0112ccc7a5c26e4e",
         "stock-assembly:0033_tp_glove_write_00109eac.asm:sha256:a14a4990dbb1d5f193433165c855cd0dd0b2c859c430f5aadebfb923d8973c46",
-        "attestation:next403_tp_glove_write_v1/microtask_attestation.json",
-        "attestation:next403_tp_glove_write_v1/aarch64_validation_report.json"
+        "attestation:next403_tp_glove_write_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT",
+        "attestation:next403_tp_glove_write_exact_v2/aarch64_validation_report.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_glove_write.c",
       "source_function": "tp_glove_write",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 208,
       "stock_entry": "00109eac",
       "stock_function": "tp_glove_write",
-      "mapping_note": "Corrected boolean normalization, callback signature/KCFI, and callback load to tpd_cdev + 0xe50. Candidate and stock both contain 52 instructions and a 208-byte .text body; function KCFI type 0xc3d43b4d matches, callback KCFI type 0x6af8b499 matches, Joern parsed strictly with zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in reconstructed local .rodata relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Promoted to offline exact: boolean normalization and callback load at tpd_cdev + 0xe50, 52 instructions and 208-byte .text body, raw instruction sequence and normalized relocations matching stock, function KCFI type 0xc3d43b4d and callback type 0x6af8b499. Strict Joern, reproducible two-cycle Docker build and three-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
