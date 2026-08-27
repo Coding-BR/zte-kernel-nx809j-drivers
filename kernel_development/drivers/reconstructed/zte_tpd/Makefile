@@ -1277,3 +1277,10 @@ obj-files := $(filter-out zte_touch_pdev_unregister.o, $(obj-files))
 zte_tpd-objs := $(filter-out zte_touch_pdev_unregister.o, $(zte_tpd-objs))
 zte_tpd-objs += zte_touch_pdev_unregister_exact.o
 AFLAGS_zte_touch_pdev_unregister_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_esd_check
+src-files := $(filter-out $(src)/tp_esd_check.c, $(src-files))
+obj-files := $(filter-out tp_esd_check.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_esd_check.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_esd_check_exact.o
+AFLAGS_tp_esd_check_exact.o := -g0 -I$(src)
