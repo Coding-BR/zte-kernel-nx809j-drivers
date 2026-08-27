@@ -124,7 +124,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state_exact.S:change_tp_state | PROMOTED_OFFLINE_EXACT |
 | 119_suspend_tp_need_awake | suspend_tp_need_awake | 0011049c | binding | suspend_tp_need_awake_exact.S:suspend_tp_need_awake | PROMOTED_OFFLINE_EXACT |
 | 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | PROMOTED_OFFLINE_EXACT |
-| 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing.c:set_lcd_reset_processing | PASS |
+| 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing_exact.S:set_lcd_reset_processing | PROMOTED_OFFLINE_EXACT |
 | 122_set_gpio_mode | set_gpio_mode | 00110580 | core_logic | set_gpio_mode.c:set_gpio_mode | PASS |
 | 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PASS |
 | 124_ufp_report_lcd_state_delayed_work | ufp_report_lcd_state_delayed_work | 00110624 | async_or_irq | ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work | PASS |

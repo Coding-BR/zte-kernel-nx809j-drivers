@@ -4931,7 +4931,7 @@
       "stock_entry": "00110544",
       "stock_body_bytes": 56,
       "category": "core_logic",
-      "source_file": "set_lcd_reset_processing.c",
+      "source_file": "set_lcd_reset_processing_exact.S",
       "source_function": "set_lcd_reset_processing",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0120_00110544_set_lcd_reset_processing.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0120_00110544_set_lcd_reset_processing.jsonl",
@@ -4941,22 +4941,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: set_lcd_reset_processing\nEntrada Ghidra: 00110544\nTamanho stock: 56 bytes\nCategoria: core_logic\nAlvo no fonte: set_lcd_reset_processing.c:set_lcd_reset_processing\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0120_00110544_set_lcd_reset_processing.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0120_00110544_set_lcd_reset_processing.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_set_lcd_reset_processing_exact_v1/canonical_build_report.json",
+          "sha256": "f0c2a9d7b3caa960c2d32cf7ed175f549e1743b31fc59a6b563876ad567eee66"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_set_lcd_reset_processing_exact_v1/kcfi_comparison.json",
+          "sha256": "ca96187eb6094a16aad7f5208fb5e1e35a506b7c3682b416d72b29f7519d4d39"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/control_value_harness_report.json",
-          "sha256": "cf2ff4fd81207f439722a91e0c3dcce1b2847e88527a7142b63e01f35a35f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_set_lcd_reset_processing_exact_v1/host_harness_report.json",
+          "sha256": "613d3d03960355ea8ff2970455147f938f08856ed93db9c1fa51d4e6a15db8d5"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_set_lcd_reset_processing_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "9e0c42d5e65d6936811f75dd9b4c4bd1241de72e720745f5dbc815122bfcca8d"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_set_lcd_reset_processing_exact_v1/assembly_comparison.json",
+          "sha256": "f6c01695fd55557f1b7ad0874475d539b7ed8f2c8f808045fb579b486e7215ba"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next121_set_lcd_reset_processing_exact_v1/source_sync_report.json",
+          "sha256": "d906c81e407abf5cec0002dacecf8a9312894d36fa2f3dfffdc635f0449df3f8"
         }
       ]
     },
