@@ -56,7 +56,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 050_tp_single_game_write | tp_single_game_write | 0010aee8 | user_abi | tp_single_game_write.c:tp_single_game_write | PASS |
 | 051_get_tp_noise_show | get_tp_noise_show | 0010afc0 | user_abi | get_tp_noise_show.c:get_tp_noise_show | PASS |
 | 052_get_tp_noise_store | get_tp_noise_store | 0010b0dc | user_abi | get_tp_noise_store.c:get_tp_noise_store | PASS |
-| 053_tp_edge_report_limit_read | tp_edge_report_limit_read | 0010b150 | user_abi | tp_edge_report_limit_read.c:tp_edge_report_limit_read | PASS |
+| 053_tp_edge_report_limit_read | tp_edge_report_limit_read | 0010b150 | user_abi | tp_edge_report_limit_read.c:tp_edge_report_limit_read | PASS (offline-exact v2) |
 | 054_tp_edge_report_limit_write | tp_edge_report_limit_write | 0010b690 | user_abi | tp_edge_report_limit_write.c:tp_edge_report_limit_write | PASS |
 | 055_get_one_key | get_one_key | 0010ba4c | core_logic | get_one_key.c:get_one_key | PASS |
 | 056_set_one_key | set_one_key | 0010bb40 | core_logic | set_one_key.c:set_one_key | PASS |
