@@ -392,20 +392,30 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:e1033861e8106873328d332db462b524c364d4c35484a96c21665ae5686e7bc9",
+        "source:gpio_keys_nubia.c:sha256:51e27b3fc1fa54ada223c9e862853c54c9b606fca17def9cca01d9dd509cdf4f",
         "ghidra-pseudocode:decompiled/0014_00101eb8_gpio_keys_show_disabled_keys.c:sha256:0f9d7a0aa85746600a71c3cf0318eba789113a5493e53aa2b26da44067f23641",
         "ghidra-pcode:pcode/0014_00101eb8_gpio_keys_show_disabled_keys.jsonl:sha256:40796e172c1688c86b6701cb7f069c09b19c2f6681cfd50ec1fcc3072723df77",
-        "stock-assembly:0014_gpio_keys_show_disabled_keys_00101eb8.asm:sha256:d768b82a85be113e62ab28bf77b7b1efcea264705e15280c6b9460be2634c7cb"
+        "stock-assembly:0014_gpio_keys_show_disabled_keys_00101eb8.asm:sha256:d768b82a85be113e62ab28bf77b7b1efcea264705e15280c6b9460be2634c7cb",
+        "candidate-exact-source:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/gpio_keys_show_disabled_keys_exact.S:sha256:79212b524bb9a3efcd70587e6a8f0d691d5efb1036f5d33555f899f649a75da9",
+        "candidate-module:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/candidate_gpio_keys_nubia.ko:sha256:dff970969dd67f83623b1003c324ccb08e70a5788f46154a6ab4ec4c235fb1bb",
+        "assembly-comparison:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/aarch64_comparison.json:sha256:346db72628fa059ef9369f6bd798487de125fe52e50834eda49d5502b2e4576f",
+        "kcfi-comparison:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/kcfi_comparison.json:sha256:cb0dae4ca941e4ba588001a07036156387e48e6945175807d88d7d42edd190c1",
+        "joern-strict:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/joern_gate_report.json:sha256:4b63192516da75d37bfedf1ef7e60321bfdd1ec3f9df0611e01e708e12863811",
+        "canonical-build:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/canonical_build_report.json:sha256:313498ec5364521978f3aee0e6443698542f877bf04b65ec9a78a80b26201260",
+        "source-sync:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/source_sync_report.json:sha256:e1fa83da9a384415e6d09536df819072968eb4f691335ddecfe21e45b1c86379",
+        "host-asan-ubsan:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/host_harness_report.json:sha256:3b272017559faf55602db8f534e8b0f2923b4f2892a8364de85faa6548c672ed",
+        "attestation:attestation/next810_gpio_keys_show_disabled_keys_exact_v1/microtask_attestation.json:sha256:68a2f61e7fd1a962db8fa0d48d77a15a93b87365032aa8e425c9a72895943b53"
       ],
-      "mapping_basis": "ATTR_SHOW_FN(disabled_keys, EV_KEY, true) emits the stock wrapper",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "gpio_keys_nubia.c",
+      "mapping_basis": "Stock ELF symbol plus exact offline AArch64 opcode and relocation comparison",
+      "review_scope": "function_level_offline_exact",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "gpio_keys_show_disabled_keys_exact.S",
       "source_function": "gpio_keys_show_disabled_keys",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 44,
       "stock_entry": "00101eb8",
-      "stock_function": "gpio_keys_show_disabled_keys"
+      "stock_function": "gpio_keys_show_disabled_keys",
+      "mapping_note": "Promoted by next810_gpio_keys_show_disabled_keys_exact_v1 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware remains deferred."
     },
     {
       "evidence": [
