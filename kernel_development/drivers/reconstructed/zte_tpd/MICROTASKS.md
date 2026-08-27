@@ -139,7 +139,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 133_report_ufp_uevent | report_ufp_uevent | 00110960 | core_logic | report_ufp_uevent.c:report_ufp_uevent | READY_FOR_IMPLEMENTATION |
 | 134_one_key_report | one_key_report | 00110be8 | core_logic | one_key_report.c:one_key_report | PROMOTED_OFFLINE_EXACT |
 | 135_uf_touch_report | uf_touch_report | 00110d28 | core_logic | uf_touch_report.c:uf_touch_report | PROMOTED_OFFLINE_EXACT |
-| 136_ufp_report_lcd_state | ufp_report_lcd_state | 00110ee0 | core_logic | ufp_report_lcd_state.c:ufp_report_lcd_state | PASS |
+| 136_ufp_report_lcd_state | ufp_report_lcd_state | 00110ee0 | core_logic | ufp_report_lcd_state.c:ufp_report_lcd_state | PROMOTED_OFFLINE_EXACT |
 | 137_ufp_notifier_cb | ufp_notifier_cb | 00110f84 | async_or_irq | ufp_notifier_cb.c:ufp_notifier_cb | PASS (offline-exact v2) |
 | 138_ufp_mac_init | ufp_mac_init | 00110fb0 | lifecycle | ufp_mac_init.c:ufp_mac_init | PASS |
 | 139_ufp_single_tap_work | ufp_single_tap_work | 0011108c | async_or_irq | ufp_single_tap_work.c:ufp_single_tap_work | PASS (offline-exact v2) |

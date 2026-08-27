@@ -52,6 +52,7 @@ src-files := $(filter-out $(src)/get_one_key.c, $(src-files))
 src-files := $(filter-out $(src)/set_one_key.c, $(src-files))
 src-files := $(filter-out $(src)/one_key_report.c, $(src-files))
 src-files := $(filter-out $(src)/uf_touch_report.c, $(src-files))
+src-files := $(filter-out $(src)/ufp_report_lcd_state.c, $(src-files))
 src-files := $(filter-out $(src)/get_play_game.c, $(src-files))
 src-files := $(filter-out $(src)/set_play_game.c, $(src-files))
 src-files := $(filter-out $(src)/get_tp_report_rate.c, $(src-files))
@@ -234,6 +235,7 @@ obj-files += tpd_id9_report_work_exact.o
 obj-files += tpd_report_work_deinit_exact.o
 obj-files += one_key_report_exact.o
 obj-files += uf_touch_report_exact.o
+obj-files += ufp_report_lcd_state_exact.o
 obj-files += point_is_in_limit_area_exact.o
 obj-files += edge_long_press_up_exact.o
 obj-files += change_tp_state_exact.o
@@ -343,6 +345,7 @@ AFLAGS_tpd_clean_all_event_exact.o := -g0 -I$(src)
 AFLAGS_tpd_resume_work_init_exact.o := -g0 -I$(src)
 AFLAGS_one_key_report_exact.o := -g0 -I$(src)
 AFLAGS_uf_touch_report_exact.o := -g0 -I$(src)
+AFLAGS_ufp_report_lcd_state_exact.o := -g0 -I$(src)
 AFLAGS_tpd_report_work_init_exact.o := -g0 -I$(src)
 AFLAGS_tpd_id0_report_work_exact.o := -g0 -I$(src)
 AFLAGS_tpd_id1_report_work_exact.o := -g0 -I$(src)
@@ -382,6 +385,11 @@ zte_tpd-objs += one_key_report_exact.o
 obj-files := $(filter-out uf_touch_report.o, $(obj-files))
 zte_tpd-objs := $(filter-out uf_touch_report.o, $(zte_tpd-objs))
 zte_tpd-objs += uf_touch_report_exact.o
+
+# Exact offline reconstruction: ufp_report_lcd_state
+obj-files := $(filter-out ufp_report_lcd_state.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_lcd_state.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_lcd_state_exact.o
 
 CFLAGS_globals.o := -DGLOBALS_C
 # Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
