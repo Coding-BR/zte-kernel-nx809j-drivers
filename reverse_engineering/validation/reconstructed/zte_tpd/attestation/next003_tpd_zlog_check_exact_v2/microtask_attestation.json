@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "003_tpd_zlog_check",
+  "stock_function": "tpd_zlog_check",
+  "stock_entry": "00107718",
+  "ghidra_body_bytes": 172,
+  "elf_symbol_bytes": 172,
+  "selected_functions": ["tpd_zlog_check"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "0c592c03faa3ea7f36c2e8a745582248cfc7546bb32c42295bd10900b69589a1",
+  "candidate_module_sha256": "f8ac727f9d3c2ec3fbd06cad74d69bcb67b16eb5b6fce1ed5bb07b0237ef129a",
+  "candidate_module_size": 17688992,
+  "evidence": [
+    {"role": "stock_assembly", "path": "stock_assembly/0000_tpd_zlog_check.asm", "sha256": "19d6b7b8518640b73cb61e2d36477df238b9dc33b0334f1229e16354c812a0a1"},
+    {"role": "candidate_assembly", "path": "candidate_assembly/0000_tpd_zlog_check.asm", "sha256": "801ff02b7080741dfea4d657a683f739bd7781995d16abd04335cad68144c181"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "1078a83d98e4eb3d3a724b6e67ed9aeeabc4547ebfeb34a8278f2e15b24e911c"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "44425f54ca23ca72e9c0ad4289a34eb68718484a448c24ffe3cb3d987323a287"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "11efc1429094f6c60cb8a838cbb5d90b1375c75a23ab95579cbfd82175808a01"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "365b85b223c98a4cad7a18b037717707a0eeb478164ed366d0b6182e1fd27593"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "555f73c8eef93a420229aad1e6a1147f48ca766e1946a48a5502c2e39b5da1b4"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "abb1a472dde1420958fecb00d11f0bf015fadf7804c5f55289ae94b0028a85af"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "42672b545319381b1302a0d2e7f85c3df33cd9c70deeb358ce7e59f3e49bc13b"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "0be3aa803130d71858a4fd149843d6a1afa68ffd5893585232ba7b7dd9623148"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "c3d319099aab99a7536b8b16f3e55f8e90773406ccffd5c4582e3a8433a37e02"}
+  ],
+  "findings": [
+    "Stock and candidate ELF symbols contain 43 AArch64 instructions and 172 bytes; the Ghidra body size and ELF symbol size agree.",
+    "KCFI type ID matches at 0xc3c3f247 in .text with a 172-byte symbol size.",
+    "The opcode sequence, section, symbol size, data references, call targets and normalized string relocation match; only module-local .rodata offsets differ.",
+    "The host harness passes five direct ASan/UBSan cases covering first event, repeated event within 60000 ms, exact boundary, expired timer and valid index limits.",
+    "The invalid-index path is the stock non-returning brk #0x5512 trap and is verified statically rather than executed in the userspace harness; Android runtime and NX809J hardware behavior remain unverified."
+  ]
+}

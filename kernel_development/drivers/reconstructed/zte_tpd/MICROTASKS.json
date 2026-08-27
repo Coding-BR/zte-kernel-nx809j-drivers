@@ -130,27 +130,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_zlog_check\nEntrada Ghidra: 00107718\nTamanho stock: 172 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_zlog_check.c:tpd_zlog_check\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0002_00107718_tpd_zlog_check.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0002_00107718_tpd_zlog_check.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next003_tpd_zlog_check_exact_v2/canonical_build_report.json",
+          "sha256": "555f73c8eef93a420229aad1e6a1147f48ca766e1946a48a5502c2e39b5da1b4"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next003_tpd_zlog_check_exact_v2/kcfi_comparison.json",
+          "sha256": "365b85b223c98a4cad7a18b037717707a0eeb478164ed366d0b6182e1fd27593"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/zlog_harness_report.json",
-          "sha256": "f1df4e4ae5a474ba37f0f0dba5455f9110d3c276891090a380edd4842918329e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next003_tpd_zlog_check_exact_v2/host_harness_report.json",
+          "sha256": "42672b545319381b1302a0d2e7f85c3df33cd9c70deeb358ce7e59f3e49bc13b"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/joern_gate/joern_gate_summary.json",
-          "sha256": "cf010989bbc9d6343ba531c9edaafd970f31a4fccd4f0165c29ed4dd0ad4ba38"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next003_tpd_zlog_check_exact_v2/joern/joern_gate_summary.json",
+          "sha256": "c3d319099aab99a7536b8b16f3e55f8e90773406ccffd5c4582e3a8433a37e02"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next003_tpd_zlog_check_exact_v2/assembly_comparison.json",
+          "sha256": "1078a83d98e4eb3d3a724b6e67ed9aeeabc4547ebfeb34a8278f2e15b24e911c"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next003_tpd_zlog_check_exact_v2/microtask_attestation.json",
+          "sha256": "1aa2ca4759e8256de03db8e43db06092479a1271f6e355d019f15c69eb5f09a3"
         }
       ]
     },
