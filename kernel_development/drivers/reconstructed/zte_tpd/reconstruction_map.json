@@ -785,18 +785,18 @@
         "ghidra-pseudocode:decompiled/0028_00109a28_tp_wake_gesture_read.c:sha256:f5f6037b6ebd132342c85fb536b44bb27db82c340b25289395a81d3581738508",
         "ghidra-pcode:pcode/0028_00109a28_tp_wake_gesture_read.jsonl:sha256:ebfe9c2a8a220d8037a2ce896a4715e378513f9641c84b0faa067285b727c78b",
         "stock-assembly:0028_tp_wake_gesture_read_00109a28.asm:sha256:df8dd1467adc0a2083936e855e9fc1e52fc35315c33c5e393468858b9f2e50f4",
-        "attestation:next398_tp_wake_gesture_read_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "attestation:next398_tp_wake_gesture_read_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_wake_gesture_read.c",
       "source_function": "tp_wake_gesture_read",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 240,
       "stock_entry": "00109a28",
       "stock_function": "tp_wake_gesture_read",
-      "mapping_note": "Corrected the callback load to tpd_cdev + 0xe28 and matched the stock function and indirect callback KCFI types. Candidate and stock both contain 60 instructions and a 240-byte .text body; Joern has zero unresolved calls and one userspace-egress review finding. Raw assembly still differs only in dead-local store scheduling and module-local relocation layout. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact parity is attested: the promoted .S body matches all 60 AArch64 instructions, 240-byte .text size, normalized relocations, section and KCFI type/size. The C reconstruction remains preserved for host/semantic review, with the callback at tpd_cdev + 0xe28, value at +0x0, stock log format and simple_read_from_buffer flow matching Ghidra. Joern retains the simple_read_from_buffer userspace ABI review finding; procfs/userspace and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [

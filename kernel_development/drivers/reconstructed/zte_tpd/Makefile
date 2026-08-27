@@ -815,3 +815,10 @@ obj-files := $(filter-out tp_module_info_read.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_module_info_read.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_module_info_read_exact.o
 AFLAGS_tp_module_info_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_wake_gesture_read
+src-files := $(filter-out $(src)/tp_wake_gesture_read.c, $(src-files))
+obj-files := $(filter-out tp_wake_gesture_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_wake_gesture_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_wake_gesture_read_exact.o
+AFLAGS_tp_wake_gesture_read_exact.o := -g0 -I$(src)
