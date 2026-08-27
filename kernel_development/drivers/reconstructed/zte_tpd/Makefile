@@ -1314,3 +1314,10 @@ obj-files := $(filter-out ufp_mac_exit.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_mac_exit.o, $(zte_tpd-objs))
 zte_tpd-objs += ufp_mac_exit_exact.o
 AFLAGS_ufp_mac_exit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_pal_mem_cpy_0 (stock symbol syna_pal_mem_cpy)
+src-files := $(filter-out $(src)/syna_pal_mem_cpy_0.c, $(src-files))
+obj-files := $(filter-out syna_pal_mem_cpy_0.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_pal_mem_cpy_0.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_pal_mem_cpy_0_exact.o
+AFLAGS_syna_pal_mem_cpy_0_exact.o := -g0 -I$(src)
