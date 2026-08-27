@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "set_gpio_mode"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "5f7f16dbe11701e558a8e2547bfc01b34ca93fa49cde3b7df681c2f296155390",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next122_set_gpio_mode\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next107-set-gpio-mode",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/set_gpio_mode_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next122_set_gpio_mode\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS set_gpio_mode host tests (3 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "5f7f16dbe11701e558a8e2547bfc01b34ca93fa49cde3b7df681c2f296155390",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next122_set_gpio_mode\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next107-set-gpio-mode",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/set_gpio_mode_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next122_set_gpio_mode\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS set_gpio_mode host tests (3 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 3,
+  "generated_utc": "2026-08-27T08:58:10.174028+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\set_gpio_mode_host_test.c",
+      "sha256": "2ee991fc2ff2820c6718a6946045b1b243a9018ad9d75797e7529ccae1cf4d27",
+      "size": 2128
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\set_gpio_mode.c",
+      "sha256": "0af3f7f14a43289259fd223cc928277df99e5d33934d56f3a39772c54351acdc",
+      "size": 300
+    }
+  ],
+  "limitations": [
+    "The harness validates the null callback branch, the 0xf58 callback slot, argument forwarding, and return propagation.",
+    "It does not load the module on an Android device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_set_gpio_mode_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "set_gpio_mode",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}
