@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_single_tap_read",
+  "attestation_id": "next414_tp_single_tap_read_exact_v1",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "PASS_EXACT",
+    "aarch64_relocations_raw": "PASS_WITH_MODULE_LOCAL_RELOCATION_NORMALIZATION",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero without callback, logging or copying when *offset is nonzero",
+    "load the optional refresh callback from tpd_cdev + 0xeb8",
+    "invoke the callback as int (*)(struct ztp_device *) when present and preserve its KCFI type 0x73fc0d79",
+    "read the single-tap value from tpd_cdev + 0x44c",
+    "log tp_single_tap_read with the observed value",
+    "format the unsigned value with %u\\n and snprintf size 10",
+    "return the formatted bytes through simple_read_from_buffer"
+  ],
+  "evidence": {
+    "stock_body_bytes": 240,
+    "candidate_body_bytes": 240,
+    "stock_instruction_count": 60,
+    "candidate_instruction_count": 60,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "callback_kcfi_type_id": "0x73fc0d79",
+    "candidate_module_sha256": "7378e2f0ab3246c09c1b836e36cf6eef19c7155b6d2ceda668eb716a9719b6dc",
+    "candidate_function_assembly_sha256": "0c82bf57d9beeee6f0f5e51c6aa0c37f4a5a46dd7ed197f2c06fc2d7334906b8",
+    "stock_function_assembly_sha256": "cecfa21f860ad3ebdfd502ce11a54170e13a745fdcaf0c72f1839ad34b78be0f",
+    "host_cases": 3,
+    "host_repetitions": 2,
+    "host_binary_sha256": "c806a1ba609521a830b0079c09e67fee6ca1ee5f2020fd25518de80a154a1b41",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_difference": "The candidate has the byte-identical 60-instruction and 240-byte body. Module-local rodata relocation offsets are normalized by symbolic labels; the stock and candidate relocation classes and counts remain equivalent."
+  },
+  "follow_up_required": [
+    "The raw function body is exact; only module-local rodata relocation offsets are normalized symbolically.",
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "callback lifetime under concurrent teardown",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 60-instruction/240-byte AArch64 body, matching function and callback KCFI contracts, strict Joern with zero unresolved calls, reproducible Docker build, and three-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

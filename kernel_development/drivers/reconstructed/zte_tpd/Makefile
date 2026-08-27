@@ -899,3 +899,10 @@ obj-files := $(filter-out set_display_rotation.o, $(obj-files))
 zte_tpd-objs := $(filter-out set_display_rotation.o, $(zte_tpd-objs))
 zte_tpd-objs += set_display_rotation_exact.o
 AFLAGS_set_display_rotation_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_tap_read
+src-files := $(filter-out $(src)/tp_single_tap_read.c, $(src-files))
+obj-files := $(filter-out tp_single_tap_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_tap_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_tap_read_exact.o
+AFLAGS_tp_single_tap_read_exact.o := -g0 -I$(src)
