@@ -1349,3 +1349,10 @@ obj-files := $(filter-out syna_pal_mem_free_0.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_pal_mem_free_0.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_pal_mem_free_0_exact.o
 AFLAGS_syna_pal_mem_free_0_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_enable_wakegesture
+src-files := $(filter-out $(src)/tpd_enable_wakegesture.c, $(src-files))
+obj-files := $(filter-out tpd_enable_wakegesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_enable_wakegesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_enable_wakegesture_exact.o
+AFLAGS_tpd_enable_wakegesture_exact.o := -g0 -I$(src)
