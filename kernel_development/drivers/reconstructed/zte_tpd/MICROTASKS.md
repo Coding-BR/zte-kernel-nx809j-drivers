@@ -62,7 +62,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 056_set_one_key | set_one_key | 0010bb40 | core_logic | set_one_key.c:set_one_key | PROMOTED_OFFLINE_EXACT |
 | 057_get_play_game | get_play_game | 0010bc14 | core_logic | get_play_game.c:get_play_game | PASS |
 | 058_set_play_game | set_play_game | 0010bd08 | core_logic | set_play_game.c:set_play_game | PROMOTED_OFFLINE_EXACT |
-| 059_get_tp_report_rate | get_tp_report_rate | 0010bdd0 | core_logic | get_tp_report_rate.c:get_tp_report_rate | PASS |
+| 059_get_tp_report_rate | get_tp_report_rate | 0010bdd0 | core_logic | get_tp_report_rate.c:get_tp_report_rate | PROMOTED_OFFLINE_EXACT |
 | 060_set_tp_report_rate | set_tp_report_rate | 0010bec4 | core_logic | set_tp_report_rate.c:set_tp_report_rate | PASS |
 | 061_get_follow_hand_level | get_follow_hand_level | 0010bf8c | core_logic | get_follow_hand_level.c:get_follow_hand_level | PASS |
 | 062_set_follow_hand_level | set_follow_hand_level | 0010c080 | core_logic | set_follow_hand_level.c:set_follow_hand_level | PASS |
