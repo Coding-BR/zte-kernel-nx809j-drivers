@@ -743,22 +743,32 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_pdev_register\nEntrada Ghidra: 001081c8\nTamanho stock: 224 bytes\nCategoria: core_logic\nAlvo no fonte: zte_touch_pdev_register.c:zte_touch_pdev_register\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0015_001081c8_zte_touch_pdev_register.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0015_001081c8_zte_touch_pdev_register.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next61_pdev_register_v1/build_next61_pdev_register_candidate_v3.json",
-          "sha256": "4ab6d8a62a41fbb0c9b40bbb7f9ed30bef39062c0e0429fae824facd54dd0b83"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next378_zte_touch_pdev_register_v1/canonical_build_report.json",
+          "sha256": "083f000200948027538877de9c86a37515c2d50431ee770e483198316519bf43"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next61_pdev_register_v1/kcfi_comparison_next61_pdev_register_v3.json",
-          "sha256": "bd394bba61127d1148efbe670dbfc4dd8eac4143234070423ae3bd43588c3cc5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next378_zte_touch_pdev_register_v1/kcfi_comparison.json",
+          "sha256": "4595c127c08a5b133334c276cb2301eb4dda23a8b301cacb8ed5739c0e095b36"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next61_pdev_register_v1/host_harness_report.json",
-          "sha256": "c12af28b41375e49a6c23d71029aa330c98d8a7e90a01b54974cf75aac1315a9"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next378_zte_touch_pdev_register_v1/host_harness_report.json",
+          "sha256": "a362822367682b5b7b73f9a5f5583ed5e770dc5333612bbe39942a00a9ada3ab"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next378_zte_touch_pdev_register_v1/joern_gate_summary.json",
+          "sha256": "fe1606965d9fdadf42f97e32cce101031d067a607436246a2eb5dfb68d29db6b"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next378_zte_touch_pdev_register_v1/aarch64_validation_report.json",
+          "sha256": "3721e6d37655b7b988fb7bcf03ad36b7ac6c4228b9ff1d02e36a8db9d8a84ced"
         }
       ]
     },
