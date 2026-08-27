@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "tpd_sysfs_fwimage_store",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "independent_builds": 2,
+  "runs": 2,
+  "cases": [
+    "missing_firmware",
+    "invalid_size",
+    "bounded_write",
+    "chunked_write",
+    "end_resets_position"
+  ],
+  "observed_contract": "rejects missing/invalid firmware, bounds writes to remaining firmware size, advances position under mutex, and resets position at end-of-firmware",
+  "binary_sha256": "96ef570c9d813f97d79605c63577fa04b43024e5f9b2558d32ee3ff272f23cdf",
+  "binary_reproducible": true,
+  "result": "PASS",
+  "hardware_validation": "DEFERRED"
+}
