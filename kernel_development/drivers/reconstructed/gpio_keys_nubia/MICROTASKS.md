@@ -24,7 +24,7 @@ Cada linha representa uma única função stock. Nenhuma função pode ser promo
 | 018_gpio_keys_show_disabled_switches | gpio_keys_show_disabled_switches | 00102248 | user_abi | gpio_keys_show_disabled_switches_exact.S:gpio_keys_show_disabled_switches | PROMOTED_OFFLINE_EXACT |
 | 019_gpio_keys_store_disabled_switches | gpio_keys_store_disabled_switches | 00102278 | user_abi | gpio_keys_store_disabled_switches_exact.S:gpio_keys_store_disabled_switches | PROMOTED_OFFLINE_EXACT |
 | 020_gpio_keys_show_gamekeystatus | gpio_keys_show_GamekeyStatus | 001022b8 | user_abi | gpio_keys_show_GamekeyStatus_exact.S:gpio_keys_show_GamekeyStatus | PROMOTED_OFFLINE_EXACT |
-| 021_gpio_keys_store_gamekeystatus | gpio_keys_store_GamekeyStatus | 00102388 | user_abi | gpio_keys_nubia.c:gpio_keys_store_GamekeyStatus | READY_FOR_IMPLEMENTATION |
+| 021_gpio_keys_store_gamekeystatus | gpio_keys_store_GamekeyStatus | 00102388 | user_abi | gpio_keys_store_GamekeyStatus_exact.S:gpio_keys_store_GamekeyStatus | PROMOTED_OFFLINE_EXACT |
 | 022_gpio_keys_resume | gpio_keys_resume | 001023c0 | binding | gpio_keys_nubia.c:gpio_keys_resume | READY_FOR_IMPLEMENTATION |
 | 023_init_module | init_module | 001025f4 | lifecycle | gpio_keys_nubia.c:gpio_keys_init | READY_FOR_IMPLEMENTATION |
 | 024_cleanup_module | cleanup_module | 00102624 | lifecycle | gpio_keys_nubia.c:gpio_keys_exit | READY_FOR_IMPLEMENTATION |
