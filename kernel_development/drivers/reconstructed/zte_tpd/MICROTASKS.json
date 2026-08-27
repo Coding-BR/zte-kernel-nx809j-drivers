@@ -1588,24 +1588,35 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: suspend_store\nEntrada Ghidra: 0010a2ac\nTamanho stock: 276 bytes\nCategoria: binding\nAlvo no fonte: suspend_store.c:suspend_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0036_0010a2ac_suspend_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0036_0010a2ac_suspend_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next259_suspend_store_clean_commit_v1/canonical_build_report.json",
-          "sha256": "95d8c49be30a8d6c2061e0658ae7dd6547ac16647b16e6039b05087b8fe93c8f"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next406_suspend_store_exact_v2/canonical_build_report.json",
+          "sha256": "17dca59caa8979bbda14355e75f123e6e16eedfe1456289d24fa119dcdd8fc61"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next259_suspend_store_clean_commit_v1/kcfi_comparison.json",
-          "sha256": "2fecd6b2250c33e0593c41ebb60e732bd7d799d2b9839ddc8d8cd6a857969290"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next406_suspend_store_exact_v2/kcfi_comparison.json",
+          "sha256": "07512735cc670e236d854b0035055b4fb2693d615f3537f306b50440a83beea7"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next259_suspend_store_clean_commit_v1/suspend_store_harness_report.json",
-          "sha256": "9d0029b7b0dbaf868f684c1a33deddcfe34dc9b42f13d633116459659d1def59"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next406_suspend_store_exact_v2/host_harness_report.json",
+          "sha256": "b9a1b4895dfe1ce4408ba83e4b1183d4bcc4887639618de459e8cd69baa89835"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next406_suspend_store_exact_v2/joern/joern_gate_summary.json",
+          "sha256": "cd2fd47389d1c88bd4cb232ff8c7ae92c33cd930a3ecbcb3dea6845c87107a11"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next406_suspend_store_exact_v2/assembly_comparison.json",
+          "sha256": "c89285683e3803f0895b74fe7d0d00c51c99408ac64417776737d8fd079a540b"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next406_suspend_store_exact_v2; physical hardware validation remains deferred."
     },
     {
       "id": "038_headset_state_show",

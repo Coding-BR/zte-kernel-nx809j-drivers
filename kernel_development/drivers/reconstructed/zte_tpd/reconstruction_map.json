@@ -937,23 +937,23 @@
     },
     {
       "evidence": [
-        "source:suspend_store.c:sha256:eadfac9f5b26477b464679d1ffb2feae3e01062eac15a0695171eac89558dc1f",
+    "source:suspend_store.c:sha256:4fc41fd624044d5b6f6230fe1ceb8d5bf2f3116d2d5ae259051a134c4eda7680",
         "ghidra-pseudocode:decompiled/0036_0010a2ac_suspend_store.c:sha256:309f01b14f4bb23388603b9ce1418370f651987c76c227218008666dbdb21063",
         "ghidra-pcode:pcode/0036_0010a2ac_suspend_store.jsonl:sha256:6cea49e029acde46568a1be83c1a190771819c57756c2b60686964e205a11fe0",
         "stock-assembly:0036_suspend_store_0010a2ac.asm:sha256:67878b848098ebcc0ecfec6206a69dbe0d887eac19ed18528411e6b2449595e3",
-        "attestation:next406_suspend_store_v1/microtask_attestation.json",
-        "attestation:next406_suspend_store_v1/aarch64_validation_report.json"
+    "attestation:next406_suspend_store_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT",
+    "attestation:next406_suspend_store_exact_v2/aarch64_validation_report.json:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, inline KCFI literal, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+  "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "suspend_store.c",
       "source_function": "suspend_store",
-      "status": "reviewed_semantic",
+  "status": "promoted_offline_exact",
       "stock_body_bytes": 276,
       "stock_entry": "0010a2ac",
       "stock_function": "suspend_store",
-      "mapping_note": "Candidate and stock both contain 69 instructions and a 276-byte .text body; function KCFI type 0xc3d43b4d matches, the inline callback KCFI literal 0x38d5b490 and callback slot +0xe60 match stock, Joern parsed strictly with zero unresolved calls, and the four-case host contract passed in two ASan/UBSan cycles. Raw opcode differences are limited to register allocation in the state comparison; inline assembly intentionally has no ordinary callback relocation. Runtime procfs, concurrency, and NX809J behavior remain unverified."
+  "mapping_note": "Candidate and stock match exactly at 69 instructions, 276 bytes, raw relocations, section and symbol size; function KCFI type 0xc3d43b4d matches, the inline callback KCFI literal 0x38d5b490 and callback slot +0xe60 match stock. Strict Joern, reproducible two-cycle Docker build and four-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrency, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
