@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "154",
+  "function": "zte_reset_frame_list",
+  "stock_entry": "00111f64",
+  "stock_body_bytes": 100,
+  "candidate_symbol_bytes": 100,
+  "stock_instruction_count": 25,
+  "candidate_instruction_count": 25,
+  "stock_relocation_count": 4,
+  "candidate_relocation_count": 4,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison regenerated from bundled modules",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "f135a9dbd1c1c294334ade52df451f47800376bb6036fe0fcab0a313ff63dd39",
+    "candidate_module_size": 29278264,
+    "candidate_source_sha256": "323d809f3534941136a65b7f7094d676306a31f2e64b041e476d6ce70fb12a4c",
+    "ghidra_pseudocode_sha256": "32f8315590cd9b61d4b61ff6a16b92f02a5963d890821d6a3681aea46ae9b3ee",
+    "ghidra_pcode_sha256": "7c7dd882def19fb6ba181944c460bdc8e6747ebdab78512d15716afeb10a315d",
+    "candidate_assembly_sha256": "30deaac3dc7ae39b692992c862d080555b4aced83b91f476c34019659512a92d",
+    "stock_assembly_sha256": "4cbf8cb550f893fbeb4541a07d3a347582f8969996ebd33d4d0d67250f65d1c5",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0x3175607e"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "Frame-list teardown is represented by deterministic host stubs.",
+    "Android runtime and physical userspace behavior remain deferred to hardware validation."
+  ]
+}
