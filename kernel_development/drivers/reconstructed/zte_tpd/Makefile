@@ -1298,3 +1298,12 @@ obj-files := $(filter-out tpd_reset_gpio_output.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_reset_gpio_output.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_reset_gpio_output_exact.o
 AFLAGS_tpd_reset_gpio_output_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd work callbacks
+src-files := $(filter-out $(src)/tpd_resume_work.c $(src)/tpd_suspend_work.c $(src)/tpd_resume_work_deinit.c, $(src-files))
+obj-files := $(filter-out tpd_resume_work.o tpd_suspend_work.o tpd_resume_work_deinit.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_resume_work.o tpd_suspend_work.o tpd_resume_work_deinit.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_resume_work_exact.o tpd_suspend_work_exact.o tpd_resume_work_deinit_exact.o
+AFLAGS_tpd_resume_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_suspend_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_resume_work_deinit_exact.o := -g0 -I$(src)
