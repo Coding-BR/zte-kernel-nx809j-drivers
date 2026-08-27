@@ -392,20 +392,27 @@
         "source:tpd_reset_fw_data_pos_and_size.c:sha256:704d8773a2c21d18c4c73b7b61fec273962f9e7ef66f3810516f7a51275a9427",
         "ghidra-pseudocode:decompiled/0013_00107f84_tpd_reset_fw_data_pos_and_size.c:sha256:07ad4b6efcda96ced4e43088006ed74d7db5409f2f08421580079c31bddd0a72",
         "ghidra-pcode:pcode/0013_00107f84_tpd_reset_fw_data_pos_and_size.jsonl:sha256:ba32ecb04dbf60a04c1234d7ce6ca40bc84657a50198002c0132bb45abe88048",
-        "stock-assembly:0013_tpd_reset_fw_data_pos_and_size_00107f84.asm:sha256:3ba8e263f7ebb136951f0fed80a4c34b99f3dc40d05b08576ad27a3d57c081e5",
+        "stock-assembly:offline_static/stock_assembly/0013_tpd_reset_fw_data_pos_and_size_00107f84.asm:sha256:3ba8e263f7ebb136951f0fed80a4c34b99f3dc40d05b08576ad27a3d57c081e5",
+        "candidate-assembly:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/candidate_assembly/0000_tpd_reset_fw_data_pos_and_size.asm:sha256:941078be6656c8d154951544e12f3e9bc2c6caacd4fff69f7fd01addc2d9920f",
         "assembly-comparison:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/assembly_comparison.json:sha256:c0aa8970f4035f18e6e308fb18c1c209db212c19a0631154a3699cb1462c524e",
-        "kcfi-comparison:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/kcfi_comparison.json:sha256:fec99959f76b28150cb627a8f81cb2843505b79b9d77528e89700a51d578a0c9"
+        "cfg-comparison:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/cfg_comparison.json:sha256:12ef8af89c79c074f8c5bf566b343cc27898d38ca190c23b1bc82796e5c411b7",
+        "kcfi-comparison:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/kcfi_comparison.json:sha256:fec99959f76b28150cb627a8f81cb2843505b79b9d77528e89700a51d578a0c9",
+        "canonical-build:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/build_report.json:sha256:e90d1f03558546161ce892ae8684efe46fc00b24d62d67486e58ac1ad1dc3e68",
+        "host-harness:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/host_harness_report.json:sha256:c7c6dab0e60889a6749b45ce6c716a99a3f16b483f415e7901ecb7257550ea67",
+        "joern:attestation/next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/joern_gate_summary.json:sha256:b9022c5636785a822b352974b27f571abfd8428434bf82395940d802c6042fcc",
+        "attestation:next130_tpd_reset_fw_data_pos_and_size_revalidated_v1/microtask_attestation_v1.json:sha256:12b6eb28db92f1eae826e0bae6362a3a41d2c871fc3fdf58f485a62e2ddb96a9"
       ],
       "mapping_basis": "Ghidra pseudocode and P-Code review plus exact function-level AArch64, KCFI and CFG evidence; strict Joern is a required independent gate",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_reset_fw_data_pos_and_size.c",
       "source_function": "tpd_reset_fw_data_pos_and_size",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 28,
+      "elf_symbol_bytes": 28,
       "stock_entry": "00107f84",
       "stock_function": "tpd_reset_fw_data_pos_and_size",
-      "mapping_note": "Function-level offline parity covers the direct descriptor store, offset 0x448 reset, offset 0xc58 pointer dereference and zero-extension behavior. Firmware flow, caller lifecycle and NX809J hardware behavior remain unverified until the controlled physical procedure runs."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 7 AArch64 instructions and 28-byte ELF symbols; the Ghidra body size and ELF symbol size agree. The direct read of offset 0x448, zero-extended 64-bit store through descriptor offset 0xc58 and subsequent 32-bit zero reset are preserved; opcode sequence, section and normalized references match. Firmware flow, caller lifecycle and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [

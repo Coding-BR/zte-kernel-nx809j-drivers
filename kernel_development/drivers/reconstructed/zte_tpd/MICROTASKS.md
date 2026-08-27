@@ -17,7 +17,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 011_tp_free_tp_firmware_data | tp_free_tp_firmware_data | 00107cf0 | core_logic | tp_free_tp_firmware_data.c:tp_free_tp_firmware_data | PROMOTED_OFFLINE_EXACT |
 | 012_tp_alloc_tp_firmware_data | tp_alloc_tp_firmware_data | 00107d54 | core_logic | tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data | PROMOTED_OFFLINE_EXACT |
 | 013_tpd_copy_to_tp_firmware_data | tpd_copy_to_tp_firmware_data | 00107eb8 | core_logic | tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data | PROMOTED_OFFLINE_EXACT |
-| 014_tpd_reset_fw_data_pos_and_size | tpd_reset_fw_data_pos_and_size | 00107f84 | core_logic | tpd_reset_fw_data_pos_and_size.c:tpd_reset_fw_data_pos_and_size | PASS |
+| 014_tpd_reset_fw_data_pos_and_size | tpd_reset_fw_data_pos_and_size | 00107f84 | core_logic | tpd_reset_fw_data_pos_and_size.c:tpd_reset_fw_data_pos_and_size | PROMOTED_OFFLINE_EXACT |
 | 015_tpd_proc_deinit | tpd_proc_deinit | 00107fa4 | lifecycle | tpd_proc_deinit.c:tpd_proc_deinit | PASS |
 | 016_zte_touch_pdev_register | zte_touch_pdev_register | 001081c8 | core_logic | zte_touch_pdev_register.c:zte_touch_pdev_register | PASS |
 | 017_tpd_report_uevent | tpd_report_uevent | 001082ac | core_logic | tpd_report_uevent.c:tpd_report_uevent | PASS |
