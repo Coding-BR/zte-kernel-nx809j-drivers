@@ -871,3 +871,10 @@ obj-files := $(filter-out headset_state_store.o, $(obj-files))
 zte_tpd-objs := $(filter-out headset_state_store.o, $(zte_tpd-objs))
 zte_tpd-objs += headset_state_store_exact.o
 AFLAGS_headset_state_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_rotation_limit_level
+src-files := $(filter-out $(src)/get_rotation_limit_level.c, $(src-files))
+obj-files := $(filter-out get_rotation_limit_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_rotation_limit_level.o, $(zte_tpd-objs))
+zte_tpd-objs += get_rotation_limit_level_exact.o
+AFLAGS_get_rotation_limit_level_exact.o := -g0 -I$(src)
