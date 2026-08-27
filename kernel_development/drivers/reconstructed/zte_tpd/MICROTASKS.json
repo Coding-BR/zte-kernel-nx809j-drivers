@@ -1885,7 +1885,7 @@
       ]
     },
     {
-      "id": "043_display_rotation_show",
+  "id": "043_display_rotation_show",
       "stock_function": "display_rotation_show",
       "stock_entry": "0010a87c",
       "stock_body_bytes": 212,
@@ -1900,22 +1900,27 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: display_rotation_show\nEntrada Ghidra: 0010a87c\nTamanho stock: 212 bytes\nCategoria: user_abi\nAlvo no fonte: display_rotation_show.c:display_rotation_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0042_0010a87c_display_rotation_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0042_0010a87c_display_rotation_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+  "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/canonical_build_report.json",
+      "sha256": "9a0f381c61cdcf04832b9c48e36096007760b285d2adc578488a0dc8398e854f"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/kcfi_comparison.json",
+      "sha256": "55dd053273dad93c08508810091c6c7daf82228524aced8899441297b19ca00b"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_scalar_harness_report.json",
-          "sha256": "07d63e3ff8c1d8b5e93b6477dd1f8c70a5dcd1593666b01f3c76eddadfbdfc91"
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/host_harness_report.json",
+      "sha256": "6c518ebc4c6df8711957519871ac8f9641e7f8faa4286dae3a95a375546d2acb"
+    },
+    {
+      "role": "joern",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/joern/joern_gate_report.json",
+      "sha256": "3183ff6f9878f1e287379c35c40013043031a278306902de0caa65ade251fc10"
         }
       ]
     },

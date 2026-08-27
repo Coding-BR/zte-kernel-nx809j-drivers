@@ -1094,17 +1094,25 @@
         "ghidra-pseudocode:decompiled/0042_0010a87c_display_rotation_show.c:sha256:9ed26f7485f4ab4005e3ced91064ec4b4884c8330ef7189e972e257a76c6c6b0",
         "ghidra-pcode:pcode/0042_0010a87c_display_rotation_show.jsonl:sha256:deaece0f63eaa9c779cdca3473d121a5b437a00316dfb0fbc19aa063b8f35a59",
         "stock-assembly:0042_display_rotation_show_0010a87c.asm:sha256:b9aa4e0e4e0f30802f3f31afb0f09ddc94b916bed2796d643dc274d344ad0e0e",
-        "attestation:next412_display_rotation_show_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC"
+        "attestation:next412_display_rotation_show_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC",
+        "attestation:next412_display_rotation_show_exact_v2/microtask_attestation.json",
+        "attestation:next412_display_rotation_show_exact_v2/aarch64_validation_report.json",
+        "attestation:next412_display_rotation_show_exact_v2/assembly_comparison.json",
+        "attestation:next412_display_rotation_show_exact_v2/kcfi_comparison.json",
+        "attestation:next412_display_rotation_show_exact_v2/canonical_build_report.json",
+        "attestation:next412_display_rotation_show_exact_v2/host_harness_report.json",
+        "attestation:next412_display_rotation_show_exact_v2/joern/joern_gate_report.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "display_rotation_show.c",
       "source_function": "display_rotation_show",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 212,
       "stock_entry": "0010a87c",
       "stock_function": "display_rotation_show",
+      "promotion_note": "Offline exact: 53 instructions and 212 bytes match byte-for-byte; KCFI 0xf4e9d97c, display value +0x10, snprintf size 30 and simple_read_from_buffer contract are preserved. Joern, two-cycle Docker build and two-case two-cycle ASan/UBSan pass. Local .rodata link offsets are normalized; runtime remains unverified.",
       "mapping_note": "Preserved the display value at tpd_cdev + 0x10, the nonzero-offset early return, printk label and snprintf size 0x1e format contract. Candidate and stock both contain 53 instructions and a 212-byte .text body; function KCFI type 0xf4e9d97c matches, Joern parsed strictly with zero unresolved calls, and the two-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local buffer initialization/register scheduling and reconstructed local .rodata relocation layout. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
