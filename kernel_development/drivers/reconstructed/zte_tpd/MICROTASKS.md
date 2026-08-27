@@ -95,7 +95,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 089_tp_test_read | tp_test_read | 0010dbd0 | user_abi | tp_test_read.c:tp_test_read | PASS (offline-exact v2) |
 | 090_tp_test_write | tp_test_write | 0010dcdc | user_abi | tp_test_write.c:tp_test_write | PASS (offline-exact v2) |
 | 091_tp_frame_data_read | tp_frame_data_read | 0010dd14 | user_abi | tp_frame_data_read.c:tp_frame_data_read | PASS (offline-exact v2) |
-| 092_tp_frame_data_write | tp_frame_data_write | 0010de08 | user_abi | tp_frame_data_write.c:tp_frame_data_write | PASS |
+| 092_tp_frame_data_write | tp_frame_data_write | 0010de08 | user_abi | tp_frame_data_write.c:tp_frame_data_write | PASS (offline-exact v2) |
 | 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | PASS |
 | 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | PASS |
 | 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit_exact.S:zte_touch_deinit | PROMOTED_OFFLINE_EXACT |
