@@ -1342,3 +1342,10 @@ obj-files := $(filter-out syna_tcm_clear_data_duplicator.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_clear_data_duplicator.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_clear_data_duplicator_exact.o
 AFLAGS_syna_tcm_clear_data_duplicator_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_pal_mem_free_0 (stock symbol syna_pal_mem_free)
+src-files := $(filter-out $(src)/syna_pal_mem_free_0.c, $(src-files))
+obj-files := $(filter-out syna_pal_mem_free_0.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_pal_mem_free_0.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_pal_mem_free_0_exact.o
+AFLAGS_syna_pal_mem_free_0_exact.o := -g0 -I$(src)
