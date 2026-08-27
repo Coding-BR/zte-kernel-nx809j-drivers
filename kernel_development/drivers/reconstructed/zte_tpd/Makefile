@@ -1335,3 +1335,10 @@ obj-files := $(filter-out syna_tcm_set_data_duplicator.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_set_data_duplicator.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_set_data_duplicator_exact.o
 AFLAGS_syna_tcm_set_data_duplicator_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_clear_data_duplicator
+src-files := $(filter-out $(src)/syna_tcm_clear_data_duplicator.c, $(src-files))
+obj-files := $(filter-out syna_tcm_clear_data_duplicator.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_clear_data_duplicator.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_clear_data_duplicator_exact.o
+AFLAGS_syna_tcm_clear_data_duplicator_exact.o := -g0 -I$(src)
