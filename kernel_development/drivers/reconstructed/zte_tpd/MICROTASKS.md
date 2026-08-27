@@ -132,7 +132,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 126_tpd_resume_work_init | tpd_resume_work_init | 00110698 | lifecycle | tpd_resume_work_init.c:tpd_resume_work_init | PASS |
 | 127_tpd_resume_work | tpd_resume_work | 0011074c | binding | tpd_resume_work.c:tpd_resume_work | PASS |
 | 128_tpd_suspend_work | tpd_suspend_work | 001107a4 | binding | tpd_suspend_work.c:tpd_suspend_work | PASS |
-| 129_ufp_report_lcd_state_work | ufp_report_lcd_state_work | 001107f0 | async_or_irq | ufp_report_lcd_state_work.c:ufp_report_lcd_state_work | PASS |
+| 129_ufp_report_lcd_state_work | ufp_report_lcd_state_work | 001107f0 | async_or_irq | ufp_report_lcd_state_work.c:ufp_report_lcd_state_work | PASS (offline-exact v2) |
 | 130_tpd_resume_work_deinit | tpd_resume_work_deinit | 00110810 | lifecycle | tpd_resume_work_deinit.c:tpd_resume_work_deinit | PASS |
 | 131_ufp_get_lcdstate | ufp_get_lcdstate | 00110868 | core_logic | ufp_get_lcdstate.c:ufp_get_lcdstate | PASS (offline-exact v2) |
 | 132_ufp_report_gesture_uevent | ufp_report_gesture_uevent | 00110878 | core_logic | ufp_report_gesture_uevent.c:ufp_report_gesture_uevent | READY_FOR_IMPLEMENTATION |

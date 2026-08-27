@@ -5221,25 +5221,31 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_report_lcd_state_work\nEntrada Ghidra: 001107f0\nTamanho stock: 28 bytes\nCategoria: async_or_irq\nAlvo no fonte: ufp_report_lcd_state_work.c:ufp_report_lcd_state_work\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0128_001107f0_ufp_report_lcd_state_work.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0128_001107f0_ufp_report_lcd_state_work.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_ufp_report_lcd_state_work_exact_v1/canonical_build_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next840_ufp_report_lcd_state_work_exact_v2/canonical_build_report.json",
           "sha256": "46a42af65631524cfbcfb93dd311091579bdb368e46be8f8c5c82626e52b97fd"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_ufp_report_lcd_state_work_exact_v1/kcfi_comparison.json",
-          "sha256": "a2799815cdcceb734e826e54632cd5c293a53334bfd2034521ec2a190a61017b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next840_ufp_report_lcd_state_work_exact_v2/kcfi_comparison_regenerated.json",
+          "sha256": "c271d19528a14fa9f42bdfe9c34421fe360017b7d5eb0e1a1b0a6f7a20f7a1ae"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_ufp_report_lcd_state_work_exact_v1/ufp_report_lcd_state_work_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next840_ufp_report_lcd_state_work_exact_v2/ufp_report_lcd_state_work_harness_report.json",
           "sha256": "0d23adb23c0b88731285ae2f73fddb2f5a3c1ba439d98d1a22529a390e439dd0"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next840_ufp_report_lcd_state_work_exact_v2/joern/joern_gate_summary.json",
+          "sha256": "eaae98eb0bd5b401f64c09588ab60a991f39905019b005fe2e29f38a2896841e"
         }
       ]
     },
