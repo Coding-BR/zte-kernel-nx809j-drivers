@@ -129,7 +129,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PROMOTED_OFFLINE_EXACT |
 | 124_ufp_report_lcd_state_delayed_work | ufp_report_lcd_state_delayed_work | 00110624 | async_or_irq | ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work | PROMOTED_OFFLINE_EXACT |
 | 125_cancel_report_lcd_state_delayed_work | cancel_report_lcd_state_delayed_work | 0011066c | async_or_irq | cancel_report_lcd_state_delayed_work.c:cancel_report_lcd_state_delayed_work | PROMOTED_OFFLINE_EXACT |
-| 126_tpd_resume_work_init | tpd_resume_work_init | 00110698 | lifecycle | tpd_resume_work_init.c:tpd_resume_work_init | PASS |
+| 126_tpd_resume_work_init | tpd_resume_work_init | 00110698 | lifecycle | tpd_resume_work_init.c:tpd_resume_work_init | PROMOTED_OFFLINE_EXACT |
 | 127_tpd_resume_work | tpd_resume_work | 0011074c | binding | tpd_resume_work.c:tpd_resume_work | PASS |
 | 128_tpd_suspend_work | tpd_suspend_work | 001107a4 | binding | tpd_suspend_work.c:tpd_suspend_work | PASS |
 | 129_ufp_report_lcd_state_work | ufp_report_lcd_state_work | 001107f0 | async_or_irq | ufp_report_lcd_state_work.c:ufp_report_lcd_state_work | PASS (offline-exact v2) |
