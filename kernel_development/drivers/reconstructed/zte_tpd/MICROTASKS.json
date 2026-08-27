@@ -2020,22 +2020,27 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_single_tap_write\nEntrada Ghidra: 0010ab50\nTamanho stock: 212 bytes\nCategoria: user_abi\nAlvo no fonte: tp_single_tap_write.c:tp_single_tap_write\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0045_0010ab50_tp_single_tap_write.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0045_0010ab50_tp_single_tap_write.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next415_tp_single_tap_write_exact_v1/canonical_build_report.json",
+          "sha256": "b6b2c80f38b8fcc163448ed3670c243dd0faff5637def743635d9085f9a8654a"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next415_tp_single_tap_write_exact_v1/kcfi_comparison.json",
+          "sha256": "084c94cda692669db13eb9cd997eb24d60fdd080a527698540a37e29967d6e52"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_feature_harness_report.json",
-          "sha256": "7834e2e63e8da68af48e2104feb5ea034a48298ec945cc2287ce67b4452c03e5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next415_tp_single_tap_write_exact_v1/host_harness_report.json",
+          "sha256": "a7f9d7727fc6f10d19691e2dfc000767ecdb08ab98749d51f4088a544c83320d"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next415_tp_single_tap_write_exact_v1/joern_gate_report.json",
+          "sha256": "3037bfe102247ef5eb6ff0cc9f29e8144c9791b1e7b9518f9d8e0f93818d3dd2"
         }
       ]
     },

@@ -1173,25 +1173,25 @@
         "ghidra-pseudocode:decompiled/0045_0010ab50_tp_single_tap_write.c:sha256:30852c06969c73cc565ea252c2c5679fbe3fe8c1778e300f6d1f2f0f0a0b71eb",
         "ghidra-pcode:pcode/0045_0010ab50_tp_single_tap_write.jsonl:sha256:b6fc4bf92184bb7af7b73b8330dd9e1e25804bc8113b908fd577b1d101b3e5c8",
         "stock-assembly:0045_tp_single_tap_write_0010ab50.asm:sha256:27c2ef8c78fa6d9dbdd3ec10ea50d71d64b41e5ff390059954e89814f1caec63",
-        "attestation:next415_tp_single_tap_write_v1/microtask_attestation.json:sha256:60f28b90de0ac00ba1eb5bc370b57607f8bbe8cee7e97a17b59dca06043eae9d",
-        "attestation:next415_tp_single_tap_write_v1/aarch64_validation_report.json:sha256:d8af4250910e6a238909d5782ab4ddd70cd91359eddd2f71861e1c29dd2ba88c",
-        "attestation:next415_tp_single_tap_write_v1/assembly_comparison.json:sha256:876663e7c7d1b9f73149619e51459491473ee25e1f34f427d11be93f048648c4",
-        "attestation:next415_tp_single_tap_write_v1/kcfi_comparison.json:sha256:afd0678935edede74ab4f873d40a9d55c15ada2c6f8993f751cae13850afd5d9",
-        "attestation:next415_tp_single_tap_write_v1/host_harness_report.json:sha256:a7f9d7727fc6f10d19691e2dfc000767ecdb08ab98749d51f4088a544c83320d",
-        "attestation:next415_tp_single_tap_write_v1/joern_gate_report.json:sha256:43f139403842abecc1c403258976fa9e70248eaaa429ce6b96c416c8547fe74e",
-        "attestation:next415_tp_single_tap_write_v1/canonical_build_report.json:sha256:62b17e6fdb7fc34697a8862c5deba75681b727ac59c4231f9a839a9f81cee381",
-        "attestation:next415_tp_single_tap_write_v1/source_sync_report.json:sha256:797eaae4ee78633f0929c60ef9b3dae61fb6d86667e5cff42cff407c70536726"
+        "attestation:next415_tp_single_tap_write_exact_v1/microtask_attestation.json:sha256:a127421f0f6906886cc0ed24195c8deb9f1f6f5e2f1ed1a1b86a39249138bbdb",
+        "attestation:next415_tp_single_tap_write_exact_v1/aarch64_validation_report.json:sha256:98af081495f60e99fa89a286908e3bb1c7bb05609c9971d35a563ae19ac4d80d",
+        "attestation:next415_tp_single_tap_write_exact_v1/assembly_comparison.json:sha256:a48abee80e435aa600980513b61c00d55d25d2339f78feb40d70eaed9d9ee0ca",
+        "attestation:next415_tp_single_tap_write_exact_v1/kcfi_comparison.json:sha256:084c94cda692669db13eb9cd997eb24d60fdd080a527698540a37e29967d6e52",
+        "attestation:next415_tp_single_tap_write_exact_v1/host_harness_report.json:sha256:a7f9d7727fc6f10d19691e2dfc000767ecdb08ab98749d51f4088a544c83320d",
+        "attestation:next415_tp_single_tap_write_exact_v1/joern_gate_report.json:sha256:3037bfe102247ef5eb6ff0cc9f29e8144c9791b1e7b9518f9d8e0f93818d3dd2",
+        "attestation:next415_tp_single_tap_write_exact_v1/canonical_build_report.json:sha256:b6b2c80f38b8fcc163448ed3670c243dd0faff5637def743635d9085f9a8654a",
+        "attestation:next415_tp_single_tap_write_exact_v1/source_sync_report.json:sha256:222305b8ec76a96faba3f2a44445a3fa07cc68eb3c47be01dc96bb8f91e2d23a"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, ASan/UBSan, reproducible Docker, KCFI and AArch64 comparison evidence",
-      "review_scope": "offline_semantic_attestation",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_single_tap_write.c",
       "source_function": "tp_single_tap_write",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 212,
       "stock_entry": "0010ab50",
       "stock_function": "tp_single_tap_write",
-      "mapping_note": "Offline semantic parity is attested: base-10 parsing, -EINVAL failure behavior, nonzero-to-5 and zero-to-0 normalization, printk label, callback at +0xec0 with int (struct ztp_device *, int) signature and KCFI type 0x6af8b499. Candidate and stock both contain 53 instructions and a 212-byte .text body; function KCFI type 0xc3d43b4d matches, Joern parsed strictly with zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local stack/register scheduling and module-local rodata relocation layout. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact: 53 AArch64 instructions/212 bytes match byte-for-byte, function KCFI 0xc3d43b4d and callback KCFI 0x6af8b499 are preserved, strict Joern has zero unresolved calls, and two-cycle Docker plus three-case ASan/UBSan evidence passes. Module-local rodata relocation offsets are normalized symbolically; runtime behavior on NX809J remains unverified."
     },
     {
       "evidence": [
