@@ -126,7 +126,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | PROMOTED_OFFLINE_EXACT |
 | 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing_exact.S:set_lcd_reset_processing | PROMOTED_OFFLINE_EXACT |
 | 122_set_gpio_mode | set_gpio_mode | 00110580 | core_logic | set_gpio_mode.c:set_gpio_mode | PROMOTED_OFFLINE_EXACT |
-| 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PASS |
+| 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PROMOTED_OFFLINE_EXACT |
 | 124_ufp_report_lcd_state_delayed_work | ufp_report_lcd_state_delayed_work | 00110624 | async_or_irq | ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work | PASS |
 | 125_cancel_report_lcd_state_delayed_work | cancel_report_lcd_state_delayed_work | 0011066c | async_or_irq | cancel_report_lcd_state_delayed_work.c:cancel_report_lcd_state_delayed_work | PASS |
 | 126_tpd_resume_work_init | tpd_resume_work_init | 00110698 | lifecycle | tpd_resume_work_init.c:tpd_resume_work_init | PASS |
