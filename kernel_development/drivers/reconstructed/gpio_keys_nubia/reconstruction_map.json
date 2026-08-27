@@ -500,20 +500,30 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:e1033861e8106873328d332db462b524c364d4c35484a96c21665ae5686e7bc9",
+        "source:gpio_keys_nubia.c:sha256:56c18134a0c0ebee4660e541322d3dc3508523f593e8cdcf320de2d2ff18a4d1",
         "ghidra-pseudocode:decompiled/0018_00102278_gpio_keys_store_disabled_switches.c:sha256:0cbbca5caa13e4d3be461f6fbc85cb15132a3d3ea997e41b0e0dac3096db2d4f",
         "ghidra-pcode:pcode/0018_00102278_gpio_keys_store_disabled_switches.jsonl:sha256:eefb1ca6a5c10cac5daec3e9a37ed551fabe33e7e6210a26559e582e8c3687da",
-        "stock-assembly:0018_gpio_keys_store_disabled_switches_00102278.asm:sha256:4bf712a5818fa3c559657f54e23028b13779e48020c3de4491c159a928153616"
+        "stock-assembly:0018_gpio_keys_store_disabled_switches_00102278.asm:sha256:4bf712a5818fa3c559657f54e23028b13779e48020c3de4491c159a928153616",
+        "candidate-exact-source:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/gpio_keys_store_disabled_switches_exact.S:sha256:c345d86bacb4aed160eb834e742315c16740426a449ea73787a6ee03441bc425",
+        "candidate-module:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/candidate_gpio_keys_nubia.ko:sha256:bf823ea816b3dd623f7871fce9427dd2703a55b81455882b8f17ede5500285fa",
+        "assembly-comparison:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/aarch64_comparison.json:sha256:bbb1656d89e96a2e2ef06d71243b370bb242fe0b7386601f40cca1ce16f25a62",
+        "kcfi-comparison:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/kcfi_comparison.json:sha256:d4ea7ec02c300ff2f0ddd60118a8141d82096f23758ff8da051a032b79e9cc3f",
+        "joern-strict:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/joern_gate_report.json:sha256:25991b6250100ff7d4ddd515f86b1709364a6e5f372f1e241e990ef37a3db3f7",
+        "canonical-build:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/canonical_build_report.json:sha256:61b89cbbfaf5abcd00abdb5c96061774df59c62203a836bd0f4b592f74e73d53",
+        "source-sync:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/source_sync_report.json:sha256:debbb5b979c2ac9d6f7deee4e0a5148681a3928b398b839b927e61364bccb6bd",
+        "host-asan-ubsan:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/host_harness_report.json:sha256:3605a63d7a06970923486950e08745d6c29795fa8d5af80e80a88cc9e7094633",
+        "attestation:attestation/next814_gpio_keys_store_disabled_switches_exact_v1/microtask_attestation.json:sha256:565e428adf9f176dd6c5d45b1452f8ee671e90f3982e88e60abeb4f58df915ee"
       ],
-      "mapping_basis": "ATTR_STORE_FN(disabled_switches, EV_SW) emits the stock wrapper",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "stock ELF symbol paired with exact offline AArch64 opcode, size and relocation comparison",
+      "review_scope": "function_level_offline_exact",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "gpio_keys_nubia.c",
       "source_function": "gpio_keys_store_disabled_switches",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 60,
       "stock_entry": "00102278",
-      "stock_function": "gpio_keys_store_disabled_switches"
+      "stock_function": "gpio_keys_store_disabled_switches",
+      "mapping_note": "Promoted by next814_gpio_keys_store_disabled_switches_exact_v1 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware remains deferred."
     },
     {
       "evidence": [
