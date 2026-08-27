@@ -878,3 +878,10 @@ obj-files := $(filter-out get_rotation_limit_level.o, $(obj-files))
 zte_tpd-objs := $(filter-out get_rotation_limit_level.o, $(zte_tpd-objs))
 zte_tpd-objs += get_rotation_limit_level_exact.o
 AFLAGS_get_rotation_limit_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: set_rotation_limit_level
+src-files := $(filter-out $(src)/set_rotation_limit_level.c, $(src-files))
+obj-files := $(filter-out set_rotation_limit_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out set_rotation_limit_level.o, $(zte_tpd-objs))
+zte_tpd-objs += set_rotation_limit_level_exact.o
+AFLAGS_set_rotation_limit_level_exact.o := -g0 -I$(src)

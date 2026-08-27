@@ -1067,17 +1067,25 @@
         "ghidra-pseudocode:decompiled/0041_0010a7b4_set_rotation_limit_level.c:sha256:2cdbc712af7540212a40f0941705634dfd0e3df987d51e667e04650c706ee659",
         "ghidra-pcode:pcode/0041_0010a7b4_set_rotation_limit_level.jsonl:sha256:b46424d8cddbfdf52c469e5c1479b6d8a5ff9a03eedf3c7528513c0dcf09cd15",
         "stock-assembly:0041_set_rotation_limit_level_0010a7b4.asm:sha256:5a3e4efa9dda2989339bde9585c7db8b2b59f95cbc6f98b30f4a3eea534f16b7",
-        "attestation:next411_set_rotation_limit_level_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC"
+        "attestation:next411_set_rotation_limit_level_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC",
+        "attestation:next411_set_rotation_limit_level_exact_v2/microtask_attestation.json",
+        "attestation:next411_set_rotation_limit_level_exact_v2/aarch64_validation_report.json",
+        "attestation:next411_set_rotation_limit_level_exact_v2/assembly_comparison.json",
+        "attestation:next411_set_rotation_limit_level_exact_v2/kcfi_comparison.json",
+        "attestation:next411_set_rotation_limit_level_exact_v2/canonical_build_report.json",
+        "attestation:next411_set_rotation_limit_level_exact_v2/host_harness_report.json",
+        "attestation:next411_set_rotation_limit_level_exact_v2/joern/joern_gate_report.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "set_rotation_limit_level.c",
       "source_function": "set_rotation_limit_level",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 196,
       "stock_entry": "0010a7b4",
       "stock_function": "set_rotation_limit_level",
+      "promotion_note": "Offline exact: 49 instructions and 196 bytes match byte-for-byte; KCFI 0xc3d43b4d, callback 0x6af8b499 at tpd_cdev + 0xe80, base-10 parse, -EINVAL and count-return contracts are preserved. Joern, two-cycle Docker build and three-case two-cycle ASan/UBSan pass. Local .rodata link offsets are normalized; runtime remains unverified.",
       "mapping_note": "Corrected the optional callback to tpd_cdev + 0xe80 with callback KCFI type 0x6af8b499 and preserved the base-10 kstrtouint_from_user, -EINVAL and count-return contracts. Candidate and stock both contain 49 instructions and a 196-byte .text body; function KCFI type 0xc3d43b4d matches, Joern parsed strictly with zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in register allocation and reconstructed local .rodata relocation layout. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
