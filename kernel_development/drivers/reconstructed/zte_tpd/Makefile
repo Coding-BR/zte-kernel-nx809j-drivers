@@ -850,3 +850,10 @@ obj-files := $(filter-out tp_glove_write.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_glove_write.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_glove_write_exact.o
 AFLAGS_tp_glove_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpfwupgrade_store
+src-files := $(filter-out $(src)/tpfwupgrade_store.c, $(src-files))
+obj-files := $(filter-out tpfwupgrade_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpfwupgrade_store.o, $(zte_tpd-objs))
+zte_tpd-objs += tpfwupgrade_store_exact.o
+AFLAGS_tpfwupgrade_store_exact.o := -g0 -I$(src)

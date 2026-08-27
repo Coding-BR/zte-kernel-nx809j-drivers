@@ -1573,22 +1573,27 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpfwupgrade_store\nEntrada Ghidra: 00109f80\nTamanho stock: 468 bytes\nCategoria: user_abi\nAlvo no fonte: tpfwupgrade_store.c:tpfwupgrade_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0034_00109f80_tpfwupgrade_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0034_00109f80_tpfwupgrade_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next13_firmware_lifecycle_final_report.json",
-          "sha256": "94b89518676c3a53fbfd814f94ee7618625e07bc470e3c10ad204d147037ce0b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next404_tpfwupgrade_store_exact_v2/canonical_build_report.json",
+          "sha256": "6e8cdcf947e7e49849fcecda12c0a9bf02614b99040ecc4b2bbb05742405de22"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_next13_firmware_lifecycle_exact.json",
-          "sha256": "6163939ef2f079ec9fb0824fb1b2b78cdab7f2d7c25ae3ec7143a67711a63546"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next404_tpfwupgrade_store_exact_v2/kcfi_comparison.json",
+          "sha256": "10ef75baeb99db458efdab04fd60f2a3f2bc4b1574a56fd0b713b55351b925c1"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_special_harness_next13_report.json",
-          "sha256": "ad57125b38a39a3e461bd7fbb48b9f07a4242cbd36aadac7e76e962837eb0d3a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next404_tpfwupgrade_store_exact_v2/host_harness_report.json",
+          "sha256": "f6768b63bfd3b44c23cb4229c45a21680e673aac2add628e20c18725ef0ba9cb"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next404_tpfwupgrade_store_exact_v2/joern/joern_gate_report.json",
+          "sha256": "f5547058777141493e6237f1114b423c9538b236c1ab05ad8ed2b5b1fa7cd49e"
         }
       ]
     },

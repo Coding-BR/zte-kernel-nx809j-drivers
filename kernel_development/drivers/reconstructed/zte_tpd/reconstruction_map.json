@@ -901,19 +901,19 @@
         "ghidra-pseudocode:decompiled/0034_00109f80_tpfwupgrade_store.c:sha256:e6e2975fc87e722a2e35472928b7e307c8a8b45ad0916fdc968a97836144efad",
         "ghidra-pcode:pcode/0034_00109f80_tpfwupgrade_store.jsonl:sha256:8668778865ad727a6575dd38d8ad7526dd7ad862771bf87c73f0b13ae2bd1548",
         "stock-assembly:0034_tpfwupgrade_store_00109f80.asm:sha256:34f67170afd6d51847b74dc29f8afe188afd82d911ee6ac6cf0127f9ab2215c5",
-        "attestation:next404_tpfwupgrade_store_v1/microtask_attestation.json",
-        "attestation:next404_tpfwupgrade_store_v1/aarch64_validation_report.json"
+        "attestation:next404_tpfwupgrade_store_exact_v2/microtask_attestation.json",
+        "attestation:next404_tpfwupgrade_store_exact_v2/aarch64_validation_report.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpfwupgrade_store.c",
       "source_function": "tpfwupgrade_store",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 468,
       "stock_entry": "00109f80",
       "stock_function": "tpfwupgrade_store",
-      "mapping_note": "Candidate and stock both contain 140 instructions and a 560-byte .text body; function KCFI type 0xc3d43b4d matches, the firmware callback at tpd_cdev + 0xe18 has stock KCFI type 0x4d7650a4, Joern parsed strictly with zero unresolved calls, and the five-case host contract passed in two ASan/UBSan cycles. The source preserves the stock parse, mutex, cleanup, callback, allocation, zeroization and ENOMEM branches. Raw AArch64 differs only in generated local .rodata and allocation-tag relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Promoted to offline exact: candidate and stock both contain 140 instructions and a 560-byte .text body; raw instructions and normalized relocations match, function KCFI type 0xc3d43b4d matches, and the firmware callback at tpd_cdev + 0xe18 has type 0x4d7650a4. Strict Joern, reproducible two-cycle Docker build and five-case two-cycle ASan/UBSan host contract passed. The Ghidra inventory's 468-byte body value is retained as source evidence; runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
