@@ -177,16 +177,16 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 171_syna_dev_isr | syna_dev_isr | 001141b4 | core_logic | syna_dev_isr.c:syna_dev_isr | PROMOTED_OFFLINE_EXACT |
 | 172_syna_dev_enter_normal_sensing | syna_dev_enter_normal_sensing | 00114294 | core_logic | syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing | PASS |
 | 173_syna_dev_enable_lowpwr_gesture | syna_dev_enable_lowpwr_gesture | 00114348 | core_logic | syna_dev_enable_lowpwr_gesture_exact.S:syna_dev_enable_lowpwr_gesture | PROMOTED_OFFLINE_EXACT |
-| 174_syna_poll | syna_poll | 00114510 | core_logic | syna_poll.c:syna_poll | PASS |
-| 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | PASS |
+| 174_syna_poll | syna_poll | 00114510 | core_logic | syna_poll.c:syna_poll | PASS (offline-exact v2) |
+| 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | PASS (offline-exact v2) |
 | 176_syna_mmap | syna_mmap | 001147ec | core_logic | syna_mmap.c:syna_mmap | PROMOTED_OFFLINE_EXACT |
 | 177_syna_open | syna_open | 001148a0 | user_abi | syna_open.c:syna_open | PASS |
-| 178_syna_release | syna_release | 001148e0 | user_abi | syna_release.c:syna_release | PASS |
+| 178_syna_release | syna_release | 001148e0 | user_abi | syna_release.c:syna_release | PASS (offline-exact v2) |
 | 179_syna_ts_panel_notifier_callback | syna_ts_panel_notifier_callback | 00114914 | async_or_irq | syna_ts_panel_notifier_callback.c:syna_ts_panel_notifier_callback | READY_FOR_IMPLEMENTATION |
-| 180_tpd_goodix_ts_resume | tpd_goodix_ts_resume | 00114a44 | binding | tpd_goodix_ts_resume.c:tpd_goodix_ts_resume | PASS |
-| 181_tpd_goodix_ts_suspend | tpd_goodix_ts_suspend | 00114a6c | binding | tpd_goodix_ts_suspend.c:tpd_goodix_ts_suspend | PASS |
-| 182_syna_pm_suspend | syna_pm_suspend | 00114a94 | binding | syna_pm_suspend.c:syna_pm_suspend | PASS |
-| 183_syna_pm_resume | syna_pm_resume | 00114ae0 | binding | syna_pm_resume.c:syna_pm_resume | PASS |
+| 180_tpd_goodix_ts_resume | tpd_goodix_ts_resume | 00114a44 | binding | tpd_goodix_ts_resume.c:tpd_goodix_ts_resume | PASS (offline-exact v2) |
+| 181_tpd_goodix_ts_suspend | tpd_goodix_ts_suspend | 00114a6c | binding | tpd_goodix_ts_suspend.c:tpd_goodix_ts_suspend | PASS (offline-exact v2) |
+| 182_syna_pm_suspend | syna_pm_suspend | 00114a94 | binding | syna_pm_suspend.c:syna_pm_suspend | PASS (offline-exact v2) |
+| 183_syna_pm_resume | syna_pm_resume | 00114ae0 | binding | syna_pm_resume.c:syna_pm_resume | PASS (offline-exact v2) |
 | 184_syna_cdev_create | syna_cdev_create | 00114b3c | core_logic | syna_cdev_create.c:syna_cdev_create | PASS (offline-exact v2) |
 | 185_syna_cdev_devnode | syna_cdev_devnode | 00114db8 | core_logic | syna_cdev_devnode.c:syna_cdev_devnode | PASS (offline-exact v2) |
 | 186_syna_cdev_remove | syna_cdev_remove | 00114e04 | binding | syna_cdev_remove.c:syna_cdev_remove | PASS (offline-exact v2) |
