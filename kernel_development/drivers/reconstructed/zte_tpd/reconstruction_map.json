@@ -56,20 +56,29 @@
         "source:tpd_zlog_record_notify.c:sha256:a2a2d72ecb28e09e82046619020a70413fe08536bd5af92570a980ed8f17ab4a",
         "ghidra-pseudocode:decompiled/0001_00106998_tpd_zlog_record_notify.c:sha256:f589fdc1270459f944cd254379dd43d95fa1087e5bccc23a103c4fa3a000cad8",
         "ghidra-pcode:pcode/0001_00106998_tpd_zlog_record_notify.jsonl:sha256:982a0deff4dc6ee38c4b53b4f83c9b71d70eea3556351bd423ea08127154765c",
-        "stock-assembly:0001_tpd_zlog_record_notify_00106998.asm:sha256:3dcf43970f70bc8a0eacfd52c459eb62a6c92d14ed23716eb50d8a248952ba7c",
-        "attestation:next119_tpd_zlog_record_notify_exact_v1/assembly_comparison.json:sha256:39b60d1c0ab50626dfcd04a357548c8493ca67e806669546f9a7f7b00c5d35c1",
-        "attestation:next119_tpd_zlog_record_notify_exact_v1/joern_gate_summary.json:sha256:13b2200db3aa2e959e422e805374c7472c457555955e57a0c1a14a40db594eae"
+        "stock-assembly:attestation/next002_tpd_zlog_record_notify_exact_v2/stock_assembly/0000_tpd_zlog_record_notify.asm:sha256:3dcf43970f70bc8a0eacfd52c459eb62a6c92d14ed23716eb50d8a248952ba7c",
+        "candidate-assembly:attestation/next002_tpd_zlog_record_notify_exact_v2/candidate_assembly/0000_tpd_zlog_record_notify.asm:sha256:9f109585a8c13ee6189202b9a1cc61e4068d4233afb6f178eeb8d40f4d31204c",
+        "assembly-compare:attestation/next002_tpd_zlog_record_notify_exact_v2/assembly_comparison.json:sha256:d46917d0d7491a9d8f8707cb2c480348d85a60dbe16998273675b3d59abd6912",
+        "kcfi-compare:attestation/next002_tpd_zlog_record_notify_exact_v2/kcfi_comparison.json:sha256:27bc8fb30218b636dba3ecaffc458013398441c3485b82b5c8ed1180b9e21745",
+        "canonical-build:attestation/next002_tpd_zlog_record_notify_exact_v2/canonical_build_report.json:sha256:8aee74b7ea7ce057dca35148d2e05c11e5b0fb6fe459052dc8cf77609b59a73e",
+        "source-sync:attestation/next002_tpd_zlog_record_notify_exact_v2/source_sync_report.json:sha256:f9fb722b983eac9b2e708e0da4c229750acabfe61b9ca9fa01131db63f209305",
+        "host-harness:attestation/next002_tpd_zlog_record_notify_exact_v2/host_harness_report.json:sha256:9229a2c8abe93eefed5dcaa4b41b20a77233ea0a0846b730f97e70ea46d98a9c",
+        "joern:attestation/next002_tpd_zlog_record_notify_exact_v2/joern/joern_gate_summary.json:sha256:8b2b8778fdfedb779e7b3b016ee93db973b7981454decb392b6d979b6599c902",
+        "comparator-tool:workspace_tools/reconstruction_pipeline/compare_function_assembly.py:sha256:121bfefb3c2ea0b3dea4e555084a8d0c256638b23b1e44fd0d51181f4786f9d4",
+        "comparator-tests:workspace_tools/reconstruction_pipeline/tests/test_compare_function_assembly.py:sha256:f67c17b114ca0daea20b0870059ec689bdf0a8d21d8816fac8fb227fd86d827a",
+        "attestation:next002_tpd_zlog_record_notify_exact_v2/microtask_attestation.json:sha256:6b3f52a23189a9cac4d8599fe6f9c39a0e6cdb9d5fe3e08c371f996869a22d3a"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_zlog_record_notify.c",
       "source_function": "tpd_zlog_record_notify",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 3452,
+      "elf_symbol_bytes": 3452,
       "stock_entry": "00106998",
       "stock_function": "tpd_zlog_record_notify",
-      "mapping_note": "Function-level offline parity is attested. Android scheduler, zlog service and NX809J hardware behavior remain unverified until the controlled physical procedure runs."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 863 AArch64 instructions and 3452-byte ELF symbols. The 18-entry u16 switch dispatch table is identical after the comparator's bounds-checked dispatch and table-hash proof; strings, call targets, section and KCFI type match. The current ASan/UBSan cluster harness covers all event mappings, throttle/reset gates, escalation, lifecycle and the stock null-memset path without dereferencing NULL in userspace. Android scheduler, zlog service and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
