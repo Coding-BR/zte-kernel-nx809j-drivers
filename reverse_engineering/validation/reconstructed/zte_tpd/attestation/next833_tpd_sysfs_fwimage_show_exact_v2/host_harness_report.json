@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "function": "tpd_sysfs_fwimage_show",
+  "compiler": "clang-r536225",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "runs": 2,
+  "cases": [
+    "missing_firmware",
+    "invalid_size",
+    "chunked_copy",
+    "cleanup_at_end"
+  ],
+  "observed_contract": "rejects missing/invalid firmware, copies bounded chunks under mutex, advances position, and frees firmware at end-of-stream",
+  "result": "PASS",
+  "binary_sha256": "2986ac9ee973db715a63cba74046988898f433b49e9d48eb1ce8ed76ca64aa2a",
+  "hardware_validation": "DEFERRED"
+}
