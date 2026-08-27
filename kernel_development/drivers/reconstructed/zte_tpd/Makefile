@@ -1284,3 +1284,10 @@ obj-files := $(filter-out tp_esd_check.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_esd_check.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_esd_check_exact.o
 AFLAGS_tp_esd_check_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: set_gpio_mode
+src-files := $(filter-out $(src)/set_gpio_mode.c, $(src-files))
+obj-files := $(filter-out set_gpio_mode.o, $(obj-files))
+zte_tpd-objs := $(filter-out set_gpio_mode.o, $(zte_tpd-objs))
+zte_tpd-objs += set_gpio_mode_exact.o
+AFLAGS_set_gpio_mode_exact.o := -g0 -I$(src)
