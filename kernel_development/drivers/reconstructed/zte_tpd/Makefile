@@ -829,3 +829,10 @@ obj-files := $(filter-out tp_smart_cover_read.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_smart_cover_read.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_smart_cover_read_exact.o
 AFLAGS_tp_smart_cover_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_smart_cover_write
+src-files := $(filter-out $(src)/tp_smart_cover_write.c, $(src-files))
+obj-files := $(filter-out tp_smart_cover_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_smart_cover_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_smart_cover_write_exact.o
+AFLAGS_tp_smart_cover_write_exact.o := -g0 -I$(src)
