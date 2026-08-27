@@ -800,22 +800,22 @@
     },
     {
       "evidence": [
-        "source:tp_wake_gesture_write.c:sha256:463daee0e9eba1a2c342570b327110713d4cf6d2aad370652a55754837e9d597",
+        "source:tp_wake_gesture_write.c:sha256:6dcf116774e4e0e459c2a0a2cdf11057cadf604982ef06e48350745a25ca36fe",
         "ghidra-pseudocode:decompiled/0029_00109b1c_tp_wake_gesture_write.c:sha256:ad3a06af91de0ddf192b2b2b9a9faac03696108a2fd51355466ee3759929b8f2",
         "ghidra-pcode:pcode/0029_00109b1c_tp_wake_gesture_write.jsonl:sha256:f17971a0bfc864fc73948527bb7b89f2e90334abacdbddb9f1b312c2c0364c7c",
         "stock-assembly:0029_tp_wake_gesture_write_00109b1c.asm:sha256:a706f5b4d44d0112480b07a097cbabbc649e3015337ecea752efd1e16c113034",
-        "attestation:next399_tp_wake_gesture_write_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "attestation:next399_tp_wake_gesture_write_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_wake_gesture_write.c",
       "source_function": "tp_wake_gesture_write",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 208,
       "stock_entry": "00109b1c",
       "stock_function": "tp_wake_gesture_write",
-      "mapping_note": "Corrected the boolean normalization and callback load to tpd_cdev + 0xe30 with the stock callback KCFI type 0x6af8b499. Candidate and stock both contain 52 instructions and a 208-byte .text body; Joern parsed strictly with zero unresolved calls and the host contract passed three cases in two cycles. Raw assembly differs only in reconstructed local .rodata relocation names/offsets. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Corrected the boolean normalization, callback load to tpd_cdev + 0xe30, and stock printk format. Candidate and stock match exactly at 52 instructions, 208 bytes, raw relocations, section and symbol size; candidate KCFI type is 0xc3d43b4d and callback type is 0x6af8b499. Strict Joern, reproducible two-cycle Docker build and three-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
