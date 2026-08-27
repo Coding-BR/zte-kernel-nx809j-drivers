@@ -1224,24 +1224,24 @@
         "ghidra-pseudocode:decompiled/0047_0010ad1c_tp_single_aod_write.c:sha256:9205ff8f69b3ad2edb95b1ed0d4e4375fc33aa5ac4db25499926f5256dd53367",
         "ghidra-pcode:pcode/0047_0010ad1c_tp_single_aod_write.jsonl:sha256:04eb16807837a013a8edc8d0e52213c664f23303b5690ab4401eb2f8e0bdb91e",
         "stock-assembly:0047_tp_single_aod_write_0010ad1c.asm:sha256:075302d204fbe0c74add6075f3099c385b95b2e1c52431afc4bcae0548516e0d",
-        "harness:attestation/next417_tp_single_aod_write_v1/host_harness_report.json:sha256:39f67abd46ac394311ae000090e48d0f09dfb73382227dd2f4958082781c1b65",
-        "joern:attestation/next417_tp_single_aod_write_v1/joern_gate_summary.json:sha256:97b4ca8f09961c382d23fc4ea717dfc953846ff0ef0fcb0292fa6c528d19c1c9",
-        "canonical:attestation/next417_tp_single_aod_write_v1/canonical_build_report.json:sha256:fe118afcca6a724cd1f98bda2af4ac8d78bc265399671c76161b568518645d89",
-        "sync:attestation/next417_tp_single_aod_write_v1/source_sync_report.json:sha256:8696713ee52ec00162c5d70fb9ecdfdc64502a34441f79b537591082cad049be",
-        "kcfi:attestation/next417_tp_single_aod_write_v1/kcfi_comparison.json:sha256:9964f52c52d77697984b33d17714c07e0c32ba7fe50b61716d4f335cf506bb97",
-        "assembly-compare:attestation/next417_tp_single_aod_write_v1/assembly_comparison.json:sha256:84aecca79f6d738ed35cf6262e0f86dd8b5708d9131de0803f7f725732f4d134",
-        "attestation:next417_tp_single_aod_write_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "harness:attestation/next417_tp_single_aod_write_exact_v1/host_harness_report.json:sha256:39f67abd46ac394311ae000090e48d0f09dfb73382227dd2f4958082781c1b65",
+        "joern:attestation/next417_tp_single_aod_write_exact_v1/joern_gate_summary.json:sha256:0b4b2eb17411914ee35e52200ab59349eb695f64c161d94d3642754db022e189",
+        "canonical:attestation/next417_tp_single_aod_write_exact_v1/canonical_build_report.json:sha256:c386d90dd55463a1a13132fffea08b96655623f2361000135eb28a2394f95e50",
+        "sync:attestation/next417_tp_single_aod_write_exact_v1/source_sync_report.json:sha256:9438a3def53c6b415d7cdee63fbf055d5be6562e3137994c0e8c676fd31c9e85",
+        "kcfi:attestation/next417_tp_single_aod_write_exact_v1/kcfi_comparison.json:sha256:96b3d94e8a8e3e45e55b57b63d913fccd335f8b56ced17128bdfd0411de4ca46",
+        "assembly-compare:attestation/next417_tp_single_aod_write_exact_v1/assembly_comparison.json:sha256:ee9439ee5ef38271e3f4575f5c4b6afc66af58c2d0cbd26c5ab87f0b26e1b69b",
+        "attestation:next417_tp_single_aod_write_exact_v1/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code plus normalized AArch64 control/data flow, KCFI, Joern, Docker build and ASan/UBSan host evidence",
-      "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_single_aod_write.c",
       "source_function": "tp_single_aod_write",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 212,
       "stock_entry": "0010ad1c",
       "stock_function": "tp_single_aod_write",
-      "mapping_note": "Offline opcode and semantic parity is attested: base-10 parsing, -EINVAL failure behavior, nonzero-to-5 and zero-to-0 normalization, printk label, callback at +0xed0 with int (struct ztp_device *, int) signature and KCFI type 0x6af8b499. Candidate and stock contain the same 53-instruction opcode sequence and 212-byte .text body; function KCFI type 0xc3d43b4d matches, Joern parsed strictly with zero unresolved calls, and the three-case host contract passed in two ASan/UBSan cycles. Only module-local rodata relocation placement differs. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact: 53 AArch64 instructions/212 bytes match byte-for-byte, function KCFI 0xc3d43b4d and callback KCFI 0x6af8b499 are preserved, strict Joern has zero unresolved calls, and two-cycle Docker plus three-case ASan/UBSan evidence passes. Module-local rodata relocation offsets are normalized symbolically; runtime behavior on NX809J remains unverified."
     },
     {
       "evidence": [
