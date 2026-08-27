@@ -3847,7 +3847,7 @@
       "stock_entry": "0010f924",
       "stock_body_bytes": 52,
       "category": "core_logic",
-      "source_file": "ghost_check_reset.c",
+      "source_file": "ghost_check_reset_exact.S",
       "source_function": "ghost_check_reset",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0101_0010f924_ghost_check_reset.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0101_0010f924_ghost_check_reset.jsonl",
@@ -3857,22 +3857,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ghost_check_reset\nEntrada Ghidra: 0010f924\nTamanho stock: 52 bytes\nCategoria: core_logic\nAlvo no fonte: ghost_check_reset.c:ghost_check_reset\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0101_0010f924_ghost_check_reset.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0101_0010f924_ghost_check_reset.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next812_ghost_check_reset_exact_v2/canonical_build_report.json",
+          "sha256": "0919c787a8288787b3506799194a65206f8378a50659c26af40de2081259a168"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next812_ghost_check_reset_exact_v2/kcfi_comparison.json",
+          "sha256": "2220160779d45a824c2cdb48141d8f4b399d984f4cc8439e46c19181132e62bc"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/work_void_harness_report.json",
-          "sha256": "f48228c08c98805352ba1a178c3497b8b9fc2f8dbcb0241cde963263cd9f0ba5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next812_ghost_check_reset_exact_v2/host_harness_report.json",
+          "sha256": "9c2b7b6e511ceacee162430da181b641badd1c59b724c0d3d5a8baed6b1d4413"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next812_ghost_check_reset_exact_v2/joern/joern_gate_summary.json",
+          "sha256": "598891828806b8b994e0954b127418022f889a4fee13f4ebf44e9ee9d7320088"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next812_ghost_check_reset_exact_v2/aarch64_comparison.json",
+          "sha256": "d073532047f56a40cba7a67ab060f94dcbe31a370d1d38d42402ae9230ff3be7"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next812_ghost_check_reset_exact_v2/source_sync_report.json",
+          "sha256": "5c7cc9aa6c1c1d8fab7f07d3a4afbc573c506948f75760ce4b4a3be9bdc3dbbb"
         }
       ]
     },
