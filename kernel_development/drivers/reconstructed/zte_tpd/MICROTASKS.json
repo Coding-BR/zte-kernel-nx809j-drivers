@@ -4318,7 +4318,7 @@
       "stock_entry": "0010feec",
       "stock_body_bytes": 448,
       "category": "core_logic",
-      "source_file": "point_is_in_limit_area.c",
+      "source_file": "point_is_in_limit_area_exact.S",
       "source_function": "point_is_in_limit_area",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0115_0010feec_point_is_in_limit_area.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0115_0010feec_point_is_in_limit_area.jsonl",
@@ -4328,22 +4328,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: point_is_in_limit_area\nEntrada Ghidra: 0010feec\nTamanho stock: 448 bytes\nCategoria: core_logic\nAlvo no fonte: point_is_in_limit_area.c:point_is_in_limit_area\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0115_0010feec_point_is_in_limit_area.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0115_0010feec_point_is_in_limit_area.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next511_point_is_in_limit_area_exact_v2/canonical_build_report.json",
-          "sha256": "330f6302f363f7f8a101c74f22bac27ef3b65465a9f58c7d3b0a1c02a51276bc"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next799_point_is_in_limit_area_exact_v1/canonical_build_report.json",
+          "sha256": "a957734208614bcea2f5a05ed1fa6b6984a1a649ca00e6051d79ea5dddb4b0e5"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next511_point_is_in_limit_area_exact_v2/kcfi_comparison.json",
-          "sha256": "41edb3ec81cd409bab37f57d3ff00135753cb74fbefb478ffe33483be5f046a5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next799_point_is_in_limit_area_exact_v1/kcfi_comparison.json",
+          "sha256": "70d3531373edaa99defc911fbd0b81cc24bc99b388cbf82ca16eb98459b86d5e"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next511_point_is_in_limit_area_exact_v2/host_harness_report.json",
-          "sha256": "4a4bd1d5c8c6257c8c10f0abc3cbd044cc44e80f2905c66d910d0e211e14821b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next799_point_is_in_limit_area_exact_v1/host_harness_report.json",
+          "sha256": "cd35a9eafc8ddc18010e9254551bd0a26d619aecfc530ef47ec1fb32892de280"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next799_point_is_in_limit_area_exact_v1/joern/joern_gate_summary.json",
+          "sha256": "b72e380cb12a820a1ab9624ffa56da22af96c7a48953fa99bfd4b6e79016ae2a"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next799_point_is_in_limit_area_exact_v1/aarch64_comparison.json",
+          "sha256": "f6ee220a600df58a4419de521d61eecd89b81f0da7abc23ff20708ac43170218"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next799_point_is_in_limit_area_exact_v1/source_sync_report.json",
+          "sha256": "d436fff7889d9ce6a0f60d259ae9fa8b6ce9df55a0a29cedfce41e3814a9d110"
         }
       ]
     },
