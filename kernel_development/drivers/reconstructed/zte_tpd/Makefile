@@ -913,3 +913,10 @@ obj-files := $(filter-out tp_single_tap_write.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_single_tap_write.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_single_tap_write_exact.o
 AFLAGS_tp_single_tap_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_aod_read
+src-files := $(filter-out $(src)/tp_single_aod_read.c, $(src-files))
+obj-files := $(filter-out tp_single_aod_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_aod_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_aod_read_exact.o
+AFLAGS_tp_single_aod_read_exact.o := -g0 -I$(src)
