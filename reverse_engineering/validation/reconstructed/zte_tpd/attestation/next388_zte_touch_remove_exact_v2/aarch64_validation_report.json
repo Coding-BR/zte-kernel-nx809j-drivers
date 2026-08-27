@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "target": "zte_touch_remove",
+  "mode": "offline_aarch64_exact_instruction_and_normalized_relocation_comparison",
+  "instruction_count": {
+    "stock": 13,
+    "candidate": 13,
+    "exact": true,
+    "normalized_match": true
+  },
+  "symbol_size": {
+    "stock": 52,
+    "candidate": 52,
+    "exact": true,
+    "delta_bytes": 0
+  },
+  "section": {
+    "stock": ".text",
+    "candidate": ".text",
+    "match": true
+  },
+  "function_kcfi_type_id": {
+    "stock": "0x24a11bb9",
+    "candidate": "0x24a11bb9",
+    "match": true
+  },
+  "instruction_sequence": {
+    "raw_match": true,
+    "normalized_match": true,
+    "raw_differences": 0,
+    "comparison": "All 13 AArch64 instructions, including PAC/stack-prologue/epilogue, printk argument setup and zte_touch_deinit call, match exactly."
+  },
+  "call_contract": {
+    "order": ["_printk", "zte_touch_deinit"],
+    "normalized_match": true,
+    "deinit_calls": 1
+  },
+  "relocation_normalization": {
+    "stock_count": 5,
+    "candidate_count": 6,
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The additional candidate R_AARCH64_CALL26 entry resolves the same module-local zte_touch_deinit call target; raw relocation table identity differs because the modules are independently linked."
+  },
+  "decision": "OFFLINE_EXACT",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw module-local relocation identity is not exact across independently linked modules; instruction bytes and normalized call roles match.",
+    "The host harness proves the log arguments and one zte_touch_deinit call, but does not exercise the target platform-driver core.",
+    "No smartphone, scheduler, platform bus or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "c11c82805240d545e6a70dec02a230046c24f1f600f48e78dd96c866b4b0876f",
+    "candidate_assembly_sha256": "aef508c0a6aa18c935a6f92d703085db5fd2bd52420db6841639c83b1bc085d5",
+    "candidate_module_sha256": "3ba6661e500cdd7c47dbdcb8e87ad7eebcaa7d075f6aaea2b3c0f8fb9eea2932"
+  }
+}
