@@ -3602,7 +3602,7 @@
       "stock_entry": "0010e0d0",
       "stock_body_bytes": 376,
       "category": "lifecycle",
-      "source_file": "zte_touch_deinit.c",
+      "source_file": "zte_touch_deinit_exact.S",
       "source_function": "zte_touch_deinit",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl",
@@ -3612,27 +3612,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_deinit\nEntrada Ghidra: 0010e0d0\nTamanho stock: 376 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_touch_deinit.c:zte_touch_deinit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next095_zte_touch_deinit_v1/canonical_build_report.json",
-          "sha256": "97c00705cfd14bbf15f15782b350f246dd3fa293a25d266e1c0b2e3a6d23e1e4"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/canonical_build_report.json",
+          "sha256": "6d5c50a0adebff31253184d384daec575953b6c75e373889a2740274a2b80b2c"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next095_zte_touch_deinit_v1/kcfi_status.json",
-          "sha256": "1073d37ed4d2f2842ae0468e7a7487e2ea3ac48a3abdd9f69f0459fd471112f3"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/kcfi_comparison.json",
+          "sha256": "36d244ce68a1354d9a1e5133ef0f619e9d36a10ce8da9a4f4dd3b250d7447797"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next095_zte_touch_deinit_v1/host_harness_report.json",
-          "sha256": "0c4043254e877e83b1b102dc530c1b9a14aad7843250b6e89144b62bc4fc3ee8"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/host_harness_report.json",
+          "sha256": "ad3b8205ce535cf21a7eb6c2efbe9e4cb6a79fb798b1368354cfbe461ad3b35c"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next095_zte_touch_deinit_v1/joern_gate_summary.json",
-          "sha256": "6aa4e52d319a825c432a1a91fdf703975f4561eb22fbe090f5ffb10a879b03d7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/joern/joern_gate_summary.json",
+          "sha256": "6c05a49768277004fe7553d3f5c87da7846ab2f617d1f5e05bcce0f99583a04c"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/aarch64_comparison.json",
+          "sha256": "b7d275ddaa5fe6507ef5dafc6187cd61df02cf84b8f752ab4ed134b6a0ef0d89"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/source_sync_report.json",
+          "sha256": "6c5a50b4d9c283ad115fb2de4d755f734e2a0c17cc61d199c6516bb37deface0"
         }
       ]
     },

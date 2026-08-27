@@ -98,7 +98,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 092_tp_frame_data_write | tp_frame_data_write | 0010de08 | user_abi | tp_frame_data_write.c:tp_frame_data_write | PASS |
 | 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | PASS |
 | 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | PASS |
-| 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit.c:zte_touch_deinit | PASS |
+| 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit_exact.S:zte_touch_deinit | PROMOTED_OFFLINE_EXACT |
 | 096_tpd_touch_press | tpd_touch_press | 0010e254 | core_logic | tpd_touch_press.c:tpd_touch_press | PASS |
 | 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | PASS |
 | 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | PASS |
