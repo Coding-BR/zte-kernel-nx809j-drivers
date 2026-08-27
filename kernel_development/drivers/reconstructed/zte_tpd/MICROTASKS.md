@@ -76,8 +76,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 070_tp_pen_only_write | tp_pen_only_write | 0010c818 | user_abi | tp_pen_only_write.c:tp_pen_only_write | PASS |
 | 071_get_finger_lock_flag | get_finger_lock_flag | 0010c92c | core_logic | get_finger_lock_flag.c:get_finger_lock_flag | PASS |
 | 072_set_finger_lock_flag | set_finger_lock_flag | 0010ca00 | core_logic | set_finger_lock_flag.c:set_finger_lock_flag | PROMOTED_OFFLINE_EXACT |
-| 073_tp_self_test_read | tp_self_test_read | 0010cae8 | user_abi | tp_self_test_read.c:tp_self_test_read | PASS |
-| 074_tp_self_test_write | tp_self_test_write | 0010cc50 | user_abi | tp_self_test_write.c:tp_self_test_write | PASS |
+| 073_tp_self_test_read | tp_self_test_read | 0010cae8 | user_abi | tp_self_test_read.c:tp_self_test_read | PROMOTED_OFFLINE_EXACT |
+| 074_tp_self_test_write | tp_self_test_write | 0010cc50 | user_abi | tp_self_test_write.c:tp_self_test_write | PROMOTED_OFFLINE_EXACT |
 | 075_tp_palm_mode_read | tp_palm_mode_read | 0010cce8 | user_abi | tp_palm_mode_read.c:tp_palm_mode_read | PROMOTED_OFFLINE_EXACT |
 | 076_tp_palm_mode_write | tp_palm_mode_write | 0010cddc | user_abi | tp_palm_mode_write.c:tp_palm_mode_write | PROMOTED_OFFLINE_EXACT |
 | 077_tp_fold_state_read | tp_fold_state_read | 0010ceb0 | user_abi | tp_fold_state_read.c:tp_fold_state_read | PASS (offline-exact v2) |
