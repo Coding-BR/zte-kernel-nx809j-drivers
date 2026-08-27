@@ -622,22 +622,32 @@
     },
     {
       "evidence": [
-        "source:tp_ghost_check_work.c:sha256:1f804866839eab24bf01e5c0cf92b34f09c80f593cb621476b81ba509d9d8a8d",
+        "source:tp_ghost_check_work.c:sha256:f16e094e79f2803eddf90b57fc7a3a8fe431330a67076836c5b63491fbdd6d3a",
         "ghidra-pseudocode:decompiled/0022_00108690_tp_ghost_check_work.c:sha256:4357a4a3769ae71c218d6e360187fe7df1156a35dfb2303ff71c39687fb02c3d",
         "ghidra-pcode:pcode/0022_00108690_tp_ghost_check_work.jsonl:sha256:30ffca7ef2d3390d8c488110b94278f836e59dff4126db806d68f76dcefa4fd1",
         "stock-assembly:0022_tp_ghost_check_work_00108690.asm:sha256:e5ce2a469c55fabd8af796755847d9fbab090c784e535be9eee29b0836d25cf8",
-        "attestation:next385_tp_ghost_check_work_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "candidate-assembly:attestation/next385_tp_ghost_check_work_exact_v2/candidate_assembly/0000_tp_ghost_check_work.asm:sha256:efce2051910645207d01813e9217c53632912212531298c04a92d441f35ca149",
+        "assembly-diagnostic:attestation/next385_tp_ghost_check_work_exact_v2/assembly_comparison.json:sha256:1927cfcc1574bc0420943d4c187d3207e726f12d0f4d0a3b2d88db1578ec98f7",
+        "aarch64-validation:attestation/next385_tp_ghost_check_work_exact_v2/aarch64_validation_report.json:sha256:97d52a2556c5226da3f601b7ea313048530824176caf8ac56e6df02454d34861",
+        "source-sync:attestation/next385_tp_ghost_check_work_exact_v2/source_sync_report.json:sha256:f8a44a0021117a685acbeeebd0f41193c2b02117c4d5179dc5d084c7ee5c530f",
+        "canonical-build:attestation/next385_tp_ghost_check_work_exact_v2/canonical_build_report.json:sha256:f9309640de33a47d95be6f0aca45524c9134618a3fc6587e0098491422c5d918",
+        "host-harness:attestation/next385_tp_ghost_check_work_exact_v2/host_harness_report.json:sha256:2caf762e701160071d0e8a6a26aeec15a877f14296ad78b48f03d2bac7cd75a9",
+        "joern:attestation/next385_tp_ghost_check_work_exact_v2/joern/joern_gate_summary.json:sha256:c30da2ae36f7af9d68363c3a257cfa0689d8877f3f5546084fb704a252db7cbc",
+        "kcfi:attestation/next385_tp_ghost_check_work_exact_v2/kcfi_comparison.json:sha256:79eb7a2c53af22b277f1ecf0dc8762aee6b01eb354fee68e6a5a3acdb67be753",
+        "candidate-module:attestation/next385_tp_ghost_check_work_exact_v2/zte_tpd.ko:sha256:b059face3ca8c45628eef0b967bf6d055b4c983c07ba14163c9e09018b6240b8",
+        "attestation:next385_tp_ghost_check_work_exact_v2/microtask_attestation.json:sha256:9b4282fde1f68ad768e5df1c154360b1d1e67c3327e8b455bf89514ad865d57e"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus normalized AArch64 control flow, KCFI, Joern and ASan/UBSan harness evidence",
-      "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact AArch64 opcode/control-flow sequence, KCFI, normalized relocation roles, Joern, canonical Docker build and ASan/UBSan harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_ghost_check_work.c",
       "source_function": "tp_ghost_check_work",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 176,
+      "elf_symbol_bytes": 176,
       "stock_entry": "00108690",
       "stock_function": "tp_ghost_check_work",
-      "mapping_note": "Offline semantic parity is attested: 44 AArch64 instructions, 176-byte .text size, .text section and function KCFI type/size match; five-path host contract passes twice with ASan/UBSan. The recovered contract preserves the odd-bit gate, counter +0x4a8 limit, callback at +0xff0, KCFI guard 0x73fc0d79, reset call and flag clear at +0x488. Raw instruction comparison differs only in branch block layout and module-local string relocations; runtime hardware remains unverified."
+      "mapping_note": "Offline exact function-level parity attested: 44 AArch64 instructions and 176-byte .text size match; strict opcode/control-flow comparison, .text section, function KCFI type/size, callback KCFI guard and normalized relocation roles pass. The recovered contract preserves the odd-bit gate, counter +0x4a8 limit, callback at +0xff0, KCFI guard 0x73fc0d79, reset call and flag clear at +0x488. Raw relocation identity differs only because the candidate is separately linked and has module-local .rodata offsets; scheduler, smartphone and hardware behavior remain unverified."
     },
     {
       "evidence": [
