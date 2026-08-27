@@ -5391,29 +5391,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_resume_work_deinit\nEntrada Ghidra: 00110810\nTamanho stock: 84 bytes\nCategoria: lifecycle\nAlvo no fonte: tpd_resume_work_deinit.c:tpd_resume_work_deinit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0129_00110810_tpd_resume_work_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0129_00110810_tpd_resume_work_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next111_tpd_resume_work_deinit_v1/build_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next130_tpd_resume_work_deinit_exact_v1/canonical_build_report.json",
           "sha256": "4f807b393d6bae3f30fe94d1bcd395015927c1715eb274d136c70b5691cd3707"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next111_tpd_resume_work_deinit_v1/kcfi_comparison.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next130_tpd_resume_work_deinit_exact_v1/kcfi_comparison.json",
           "sha256": "be49943929fea9cfba768f10a01a30f80d269cea257586c2f0bc07133f7a5801"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next111_tpd_resume_work_deinit_v1/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next130_tpd_resume_work_deinit_exact_v1/host_harness_report.json",
           "sha256": "41276a30ebb8b6fe801f2676f2ed9d0031889760d5a62dfecffea3f7cb8e30f8"
         },
         {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next130_tpd_resume_work_deinit_exact_v1/assembly_comparison.json",
+          "sha256": "67b9529ddb02730fd58a972fc95854637ad3f991b704ac575f8e5c69f71ef489"
+        },
+        {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next111_tpd_resume_work_deinit_v1/joern_gate_summary.json",
-          "sha256": "e067311661522f3f2d1f35c9f34e455b8d8b19021c109a7cea812a4b5bc0055c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next130_tpd_resume_work_deinit_exact_v1/joern/joern_gate_report.json",
+          "sha256": "d63d775a91d88a538e7390d3053b40b9e657c33e0e6d14dbba67584e62c72105"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next130_tpd_resume_work_deinit_exact_v1/microtask_attestation.json",
+          "sha256": "071fa729072e5f206cee641c1c64026906a0822f4732f1ed87141f315b9a88b3"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next130_tpd_resume_work_deinit_exact_v1; physical hardware validation remains deferred."
     },
     {
       "id": "131_ufp_get_lcdstate",
