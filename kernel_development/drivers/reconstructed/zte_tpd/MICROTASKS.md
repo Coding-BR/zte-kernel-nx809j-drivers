@@ -368,7 +368,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 362_tpd_get_fake_sleep | tpd_get_fake_sleep | 0012ca00 | core_logic | tpd_get_fake_sleep.c:tpd_get_fake_sleep | PASS |
 | 363_tpd_set_screen_off_awake | tpd_set_screen_off_awake | 0012ca1c | core_logic | tpd_set_screen_off_awake.c:tpd_set_screen_off_awake | PASS |
 | 364_tpd_get_screen_off_awake | tpd_get_screen_off_awake | 0012ca78 | core_logic | tpd_get_screen_off_awake.c:tpd_get_screen_off_awake | PASS |
-| 365_syna_charger_notify_call | syna_charger_notify_call | 0012ca94 | core_logic | syna_charger_notify_call.c:syna_charger_notify_call | PASS |
+| 365_syna_charger_notify_call | syna_charger_notify_call | 0012ca94 | core_logic | syna_charger_notify_call.c:syna_charger_notify_call | PASS (offline-exact v2) |
 | 366_init_module | init_module | 0013159c | lifecycle | zte_touch_init.c:zte_touch_init | PASS |
 | 367_cleanup_module | cleanup_module | 001315e0 | lifecycle | cleanup_module.c:cleanup_module | PASS |
 
