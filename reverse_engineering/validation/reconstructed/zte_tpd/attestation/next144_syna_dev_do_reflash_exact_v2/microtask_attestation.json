@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "144_syna_dev_do_reflash",
+  "stock_function": "syna_dev_do_reflash",
+  "stock_entry": "001113fc",
+  "stock_body_bytes": 260,
+  "selected_functions": ["syna_dev_do_reflash"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "e533eb46a45060d5e1de6cfc049003ec390c339bfa5dd6db087106b27c5c1914",
+  "candidate_module_sha256": "f8ac727f9d3c2ec3fbd06cad74d69bcb67b16eb5b6fce1ed5bb07b0237ef129a",
+  "candidate_module_size": 17688992,
+  "evidence": [
+    {"role": "stock_assembly", "path": "stock_assembly/0000_syna_dev_do_reflash.asm", "sha256": "fdeb70ada4557fd69d5ec1062996c1eb57f1f4236a083fce59070a74b8285f2e"},
+    {"role": "candidate_assembly", "path": "candidate_assembly/0000_syna_dev_do_reflash.asm", "sha256": "1f0a8250f5716360345a33689ef548f29d38929e27740a81b15abc66021b3a83"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "6da2459f0b538b948b11a8b2c3135849c90d888a3645ac90f5e8284a84a582f6"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "d0aa2756894bcb959f6c79dc1e9c877f83fa7b44ecdf195ee9f7188986a41936"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "83e4ee9523e29d448e1b0295091e8ae39abcc8c7599f8650061e217ffa400b3d"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "9e35ab19e2734304ca859730d0a8562d79a7c0c42d1b232b3c0bcff2c7554c43"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "98279ca334e77bcba8abc6e198b6101ccdb1f70216028d47ea7250a13fd228f4"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "e13e7298d933066dff2161cd592e651ee46e27af7fa825383b5465b063e75bc0"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "16aa4f8a4690a018f489e59ff52b9f729cb1d015e5a3dbc85bf134a0ec0db6c8"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "c60f6925dea5f1549c1ac7a8f33d0dcae3c5df71ef73aac55e20c273110b1910"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "a4006a4915e96fd5cb5a1f46ced6465ce4802aa41f481466908aa90f9c8531b7"}
+  ],
+  "findings": [
+    "Stock and candidate contain 65 AArch64 instructions and 260 bytes.",
+    "KCFI type ID matches at 0x796eea76 in .text with 260-byte symbol size.",
+    "Relocations resolve to identical strings and call targets; only module-specific raw .rodata offsets differ.",
+    "The harness covers null tcm, firmware request failure, update failure, success, force normalization and release ordering.",
+    "Android firmware transport and NX809J hardware behavior remain unverified."
+  ]
+}

@@ -6047,24 +6047,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_do_reflash\nEntrada Ghidra: 001113fc\nTamanho stock: 260 bytes\nCategoria: core_logic\nAlvo no fonte: syna_dev_do_reflash.c:syna_dev_do_reflash\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0143_001113fc_syna_dev_do_reflash.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0143_001113fc_syna_dev_do_reflash.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next15_reflash_probe3_report.json",
-          "sha256": "b19ffb3ec6e674083c79acc13dcaeb4e447e224ccab4512c004a3f68f80a7423"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next144_syna_dev_do_reflash_exact_v2/canonical_build_report.json",
+          "sha256": "98279ca334e77bcba8abc6e198b6101ccdb1f70216028d47ea7250a13fd228f4"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_next15_reflash_dependency_exact.json",
-          "sha256": "d9336bcd59e382fd3edb2c9a381413fd1c216ddae3dcff9831acf4b3e7d00d05"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next144_syna_dev_do_reflash_exact_v2/kcfi_comparison.json",
+          "sha256": "9e35ab19e2734304ca859730d0a8562d79a7c0c42d1b232b3c0bcff2c7554c43"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/next15_reflash_harness_report.json",
-          "sha256": "ad468ca6156b539434c162ce11ca870b9f62385bd98edd51da82dfb235121a4a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next144_syna_dev_do_reflash_exact_v2/host_harness_report.json",
+          "sha256": "16aa4f8a4690a018f489e59ff52b9f729cb1d015e5a3dbc85bf134a0ec0db6c8"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next144_syna_dev_do_reflash_exact_v2/joern/joern_gate_summary.json",
+          "sha256": "a4006a4915e96fd5cb5a1f46ced6465ce4802aa41f481466908aa90f9c8531b7"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next144_syna_dev_do_reflash_exact_v2/assembly_comparison.json",
+          "sha256": "6da2459f0b538b948b11a8b2c3135849c90d888a3645ac90f5e8284a84a582f6"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next144_syna_dev_do_reflash_exact_v2/microtask_attestation.json",
+          "sha256": "c1c4bcb0802676e6ea9d33ab4925bd6be2ac61f4716b9bc467ed16f84532e7a6"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next144_syna_dev_do_reflash_exact_v2; physical hardware validation remains deferred."
     },
     {
       "id": "145_syna_dev_set_charger_mode",
