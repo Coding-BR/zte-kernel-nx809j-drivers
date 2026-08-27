@@ -14,7 +14,7 @@ Cada linha representa uma única função stock. Nenhuma função pode ser promo
 | 008_gpio_keys_irq_timer | gpio_keys_irq_timer | 00101928 | async_or_irq | gpio_keys_irq_timer_exact.S:gpio_keys_irq_timer | PROMOTED_OFFLINE_EXACT |
 | 009_gpio_keys_irq_isr | gpio_keys_irq_isr | 001019b0 | async_or_irq | gpio_keys_irq_isr_exact.S:gpio_keys_irq_isr | PROMOTED_OFFLINE_EXACT |
 | 010_gpio_keys_quiesce_key | gpio_keys_quiesce_key | 00101acc | core_logic | gpio_keys_quiesce_key_exact.S:gpio_keys_quiesce_key | PROMOTED_OFFLINE_EXACT |
-| 011_gpio_keys_suspend | gpio_keys_suspend | 00101b04 | binding | gpio_keys_nubia.c:gpio_keys_suspend | READY_FOR_IMPLEMENTATION |
+| 011_gpio_keys_suspend | gpio_keys_suspend | 00101b04 | binding | gpio_keys_suspend_exact.S:gpio_keys_suspend | PROMOTED_OFFLINE_EXACT |
 | 012_gpio_keys_show_keys | gpio_keys_show_keys | 00101d18 | user_abi | gpio_keys_nubia.c:gpio_keys_show_keys | READY_FOR_IMPLEMENTATION |
 | 013_gpio_keys_attr_show_helper | gpio_keys_attr_show_helper | 00101d44 | user_abi | gpio_keys_nubia.c:gpio_keys_attr_show_helper | READY_FOR_IMPLEMENTATION |
 | 014_gpio_keys_show_switches | gpio_keys_show_switches | 00101e88 | user_abi | gpio_keys_nubia.c:gpio_keys_show_switches | READY_FOR_IMPLEMENTATION |
