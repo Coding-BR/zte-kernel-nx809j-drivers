@@ -82,10 +82,10 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 076_tp_palm_mode_write | tp_palm_mode_write | 0010cddc | user_abi | tp_palm_mode_write.c:tp_palm_mode_write | PASS |
 | 077_tp_fold_state_read | tp_fold_state_read | 0010ceb0 | user_abi | tp_fold_state_read.c:tp_fold_state_read | PASS |
 | 078_tp_fold_state_write | tp_fold_state_write | 0010cfa4 | user_abi | tp_fold_state_write.c:tp_fold_state_write | PASS |
-| 079_get_fake_sleep | get_fake_sleep | 0010d078 | core_logic | get_fake_sleep.c:get_fake_sleep | PASS |
-| 080_set_fake_sleep | set_fake_sleep | 0010d16c | core_logic | set_fake_sleep.c:set_fake_sleep | PASS |
-| 081_get_screen_off_awake | get_screen_off_awake | 0010d240 | core_logic | get_screen_off_awake.c:get_screen_off_awake | PASS |
-| 082_set_screen_off_awake | set_screen_off_awake | 0010d334 | core_logic | set_screen_off_awake.c:set_screen_off_awake | PASS |
+| 079_get_fake_sleep | get_fake_sleep | 0010d078 | core_logic | get_fake_sleep.c:get_fake_sleep | PASS (offline-exact v2) |
+| 080_set_fake_sleep | set_fake_sleep | 0010d16c | core_logic | set_fake_sleep.c:set_fake_sleep | PASS (offline-exact v2) |
+| 081_get_screen_off_awake | get_screen_off_awake | 0010d240 | core_logic | get_screen_off_awake.c:get_screen_off_awake | PASS (offline-exact v2) |
+| 082_set_screen_off_awake | set_screen_off_awake | 0010d334 | core_logic | set_screen_off_awake.c:set_screen_off_awake | PASS (offline-exact v2) |
 | 083_tp_zlog_debug_read | tp_zlog_debug_read | 0010d408 | user_abi | tp_zlog_debug_read.c:tp_zlog_debug_read | PASS |
 | 084_tp_zlog_debug_write | tp_zlog_debug_write | 0010d4a8 | user_abi | tp_zlog_debug_write.c:tp_zlog_debug_write | PASS |
 | 085_ghost_debug_read | ghost_debug_read | 0010d57c | user_abi | ghost_debug_read.c:ghost_debug_read | PASS (offline-exact v2) |
