@@ -1121,25 +1121,25 @@
         "ghidra-pseudocode:decompiled/0043_0010a954_set_display_rotation.c:sha256:6ab5fe14c7f9df261c1e0583e6dffc900e165fd60b8aba2e09e0417210486e39",
         "ghidra-pcode:pcode/0043_0010a954_set_display_rotation.jsonl:sha256:8669ae24aaa3ad9d07904a8caefc544020863673ff3668b0df43351a7a74fd06",
         "stock-assembly:0043_set_display_rotation_0010a954.asm:sha256:7ae8928604771509b115bf60e3492f4a41b577154e6be1f9e99250d9f560d2c2",
-        "attestation:next413_set_display_rotation_v2/microtask_attestation.json:sha256:18c8d9bbb78ef81c5e6448f5d8121ab4fd2ae6959ce2d61e30a22465d0a09f4b",
-        "attestation:next413_set_display_rotation_v2/aarch64_validation_report.json:sha256:c5b44319dba5a0f381c9416f75587655a5b78e737dc7a717d37f3c0f72fbfcb9",
-        "attestation:next413_set_display_rotation_v2/assembly_comparison.json:sha256:97c3e2fd8e24b0a8053713da976df3881cdf9101e5152e374c1f3b98a50fff04",
-        "attestation:next413_set_display_rotation_v2/kcfi_comparison.json:sha256:4eebf0fb12042fb1363c2d220054695d929080967664ce90a277789bb27ba861",
-        "attestation:next413_set_display_rotation_v2/host_harness_report.json:sha256:6036b3d089df0194691133fab78990ab41b7a0b43ad48c0f25dd094edac068dd",
-        "attestation:next413_set_display_rotation_v2/joern_gate_report.json:sha256:22f65138cf401b7c946f3558498ab6c9985b112072a342f80fbac0206fc48dcb",
-        "attestation:next413_set_display_rotation_v2/canonical_build_report.json:sha256:9a46cb5b7679573f7c5adcba875dfbe587ca76f10a766ed2bfc0783c80080892",
-        "attestation:next413_set_display_rotation_v2/source_sync_report.json:sha256:a105987624b6f08551a4f0619a8520dd34b9849f982fc951abb8a344f43cbf1d"
+        "attestation:next413_set_display_rotation_exact_v2/microtask_attestation.json:sha256:c617acc6e2c64001d5aec8fc5d0808d100378580eb959acf87e42a7c13f0e1a2",
+        "attestation:next413_set_display_rotation_exact_v2/aarch64_validation_report.json:sha256:8df94ec21e12215d9067a42efa5d589650d20a7230bf82e82baea97a36d026e7",
+        "attestation:next413_set_display_rotation_exact_v2/assembly_comparison.json:sha256:24b7a0f141c1995611fdad31e847bab4ccda2cc9dc6b978d8bf6fde0c73c1fc3",
+        "attestation:next413_set_display_rotation_exact_v2/kcfi_comparison.json:sha256:f24aafb8d036b224047007f0fee83a1629792dd81bda5bee6d06c2010c540396",
+        "attestation:next413_set_display_rotation_exact_v2/host_harness_report.json:sha256:6036b3d089df0194691133fab78990ab41b7a0b43ad48c0f25dd094edac068dd",
+        "attestation:next413_set_display_rotation_exact_v2/joern/joern_gate_report.json:sha256:ebc6cea6dce10cc9ba483a36e5b312406ec72f515eed711b695aaca0705b04a2",
+        "attestation:next413_set_display_rotation_exact_v2/canonical_build_report.json:sha256:e7b8ff96139f8bebcb1cb161d71f1c5995bbdbbb883c70b7739d1722870d62f2",
+        "attestation:next413_set_display_rotation_exact_v2/source_sync_report.json:sha256:3c5a750d7a703c4fd77f9f33a2b04a230678fa8c024f7d7e4055df17e7a0e9c7"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, ASan/UBSan, reproducible Docker, KCFI and AArch64 comparison evidence",
-      "review_scope": "offline_semantic_attestation",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "set_display_rotation.c",
       "source_function": "set_display_rotation",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 260,
       "stock_entry": "0010a954",
       "stock_function": "set_display_rotation",
-      "mapping_note": "Offline semantic parity is attested: base-zero parsing, nine-byte cap, -EINVAL failure behavior, tpd_cdev + 0x10 store, callback at +0xe90 with KCFI type 0x6af8b499, 65 instructions, 260-byte .text body, function KCFI type 0xc3d43b4d, strict Joern with zero unresolved calls, two-cycle Docker build and four-case ASan/UBSan harness pass. Raw AArch64 differs in local stack/register scheduling, local copy-helper relocation representation and module-local rodata layout; runtime behavior on NX809J remains unverified."
+      "mapping_note": "Offline exact: 65 AArch64 instructions/260 bytes match byte-for-byte, function KCFI 0xc3d43b4d and callback KCFI 0x6af8b499 are preserved, strict Joern has zero unresolved calls, and two-cycle Docker plus four-case ASan/UBSan evidence passes. The internal copy-helper relocation is normalized symbolically; runtime behavior on NX809J remains unverified."
     },
     {
       "evidence": [
