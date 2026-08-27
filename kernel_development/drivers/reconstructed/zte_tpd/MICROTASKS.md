@@ -66,7 +66,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 060_set_tp_report_rate | set_tp_report_rate | 0010bec4 | core_logic | set_tp_report_rate.c:set_tp_report_rate | PASS |
 | 061_get_follow_hand_level | get_follow_hand_level | 0010bf8c | core_logic | get_follow_hand_level.c:get_follow_hand_level | PASS |
 | 062_set_follow_hand_level | set_follow_hand_level | 0010c080 | core_logic | set_follow_hand_level.c:set_follow_hand_level | PASS |
-| 063_get_stability_level | get_stability_level | 0010c148 | core_logic | get_stability_level.c:get_stability_level | PASS |
+| 063_get_stability_level | get_stability_level | 0010c148 | core_logic | get_stability_level_exact.S:get_stability_level | PROMOTED_OFFLINE_EXACT |
 | 064_set_stability_level | set_stability_level | 0010c23c | core_logic | set_stability_level.c:set_stability_level | PASS |
 | 065_tp_sensibility_level_read | tp_sensibility_level_read | 0010c304 | user_abi | tp_sensibility_level_read.c:tp_sensibility_level_read | PASS |
 | 066_tp_sensibility_level_write | tp_sensibility_level_write | 0010c3f8 | user_abi | tp_sensibility_level_write_exact.S:tp_sensibility_level_write | PROMOTED_OFFLINE_EXACT |
