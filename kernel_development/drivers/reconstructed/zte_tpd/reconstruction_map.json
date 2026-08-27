@@ -823,18 +823,18 @@
         "ghidra-pseudocode:decompiled/0030_00109bf0_tp_smart_cover_read.c:sha256:2f08f2654f148645166d931232474f45ac46e47c86ea9b5e01dd047fd13c41c3",
         "ghidra-pcode:pcode/0030_00109bf0_tp_smart_cover_read.jsonl:sha256:d42a1f2ba1f6ffa3bb225c3f3615e8ffbb509b7f1096be0aefca3ca4257d633f",
         "stock-assembly:0030_tp_smart_cover_read_00109bf0.asm:sha256:94a94d8ee00eea0e4f26922e7206059be2f72369e4ce8d51811a2e9e9735e5be",
-        "attestation:next400_tp_smart_cover_read_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "attestation:next400_tp_smart_cover_read_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_smart_cover_read.c",
       "source_function": "tp_smart_cover_read",
-      "status": "reviewed_semantic",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 240,
       "stock_entry": "00109bf0",
       "stock_function": "tp_smart_cover_read",
-      "mapping_note": "Corrected the smart-cover value pointer to tpd_cdev + 0x4 and the callback load to tpd_cdev + 0xe38 with KCFI type 0x73fc0d79. Candidate and stock both contain 60 instructions and a 240-byte .text body; Joern parsed strictly with zero unresolved calls and the host contract passed two cases in two cycles. Raw assembly differs only in dead-local store scheduling and reconstructed local .rodata relocation layout. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Promoted to offline exact: callback load at tpd_cdev + 0xe38, value at tpd_cdev + 0x4, 60 instructions and 240-byte .text body, raw instruction sequence and normalized relocations matching stock, function KCFI type 0xf4e9d97c and callback type 0x73fc0d79. Strict Joern, reproducible two-cycle Docker build and two-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrent lifetime, and NX809J behavior remain unverified."
     },
     {
       "evidence": [
