@@ -24,22 +24,32 @@
   "mappings": [
     {
       "evidence": [
-        "source:tpd_zlog_register.c:sha256:dc46a1f2b146eebdbcd3c0f20e09b6a3279a67e1f7a44d149b3da74520b76258",
+        "source:tpd_zlog_register.c:sha256:9615dbb7d4b0b97c119ff5a171547ce96e23008a7fbb51557478fb15cf852ba3",
         "ghidra-pseudocode:decompiled/0000_0010688c_tpd_zlog_register.c:sha256:5a779f1eb106d68381b1b509eaa9f369c94a126160740b1922ec8ee138904399",
         "ghidra-pcode:pcode/0000_0010688c_tpd_zlog_register.jsonl:sha256:7d5d72f3c76c2dcb33f24dfb243d63fd6892537209717fb0044862dce984dcbf",
-        "stock-assembly:0000_tpd_zlog_register_0010688c.asm:sha256:0273e82df981ec4e1dbda11af9759b441ed9c72c9562b1f13434ea0d23fc7e58",
-        "attestation:next375_tpd_zlog_register_v1/microtask_attestation.json:status:OFFLINE_EXACT"
+        "stock-assembly:attestation/next001_tpd_zlog_register_exact_v2/stock_assembly/0000_tpd_zlog_register.asm:sha256:0273e82df981ec4e1dbda11af9759b441ed9c72c9562b1f13434ea0d23fc7e58",
+        "candidate-assembly:attestation/next001_tpd_zlog_register_exact_v2/candidate_assembly/0000_tpd_zlog_register.asm:sha256:9b7ff2853f2eb092c6659a28710d91e45da3a4b8f04bb35173d9484b7f18570d",
+        "assembly-compare:attestation/next001_tpd_zlog_register_exact_v2/assembly_comparison.json:sha256:6580126003b35f8c0de2f96c4606b33d065264058267fda5bc16166afb4e3f64",
+        "kcfi-compare:attestation/next001_tpd_zlog_register_exact_v2/kcfi_comparison.json:sha256:3d8e9b606f75481b5a6155a999fdff7c2c97d209658218d6910bfefbeb4f338f",
+        "canonical-build:attestation/next001_tpd_zlog_register_exact_v2/canonical_build_report.json:sha256:47cf217dbdace66a4205ea5deff055cad016ad41aca138095fda97c66f18e30c",
+        "source-sync:attestation/next001_tpd_zlog_register_exact_v2/source_sync_report.json:sha256:8c586f069c5cfa63eabaf8e32cdd4f998822a81eaf0dbc1a4aae22bfaaefcef3",
+        "host-harness:attestation/next001_tpd_zlog_register_exact_v2/host_harness_report.json:sha256:02463b6216702bec3e718497f13b1fcd7ccf7e7895f4e1228265052fa542ddf6",
+        "joern:attestation/next001_tpd_zlog_register_exact_v2/joern/joern_gate_summary.json:sha256:2d95528a9b964d965286d956b3a2e39c83501cfa42d32f622b836395bbf0ab66",
+        "comparator-tool:workspace_tools/reconstruction_pipeline/compare_function_assembly.py:sha256:121bfefb3c2ea0b3dea4e555084a8d0c256638b23b1e44fd0d51181f4786f9d4",
+        "comparator-tests:workspace_tools/reconstruction_pipeline/tests/test_compare_function_assembly.py:sha256:f67c17b114ca0daea20b0870059ec689bdf0a8d21d8816fac8fb227fd86d827a",
+        "attestation:next001_tpd_zlog_register_exact_v2/microtask_attestation.json:sha256:7b138a1981d5204cdcacd18c8b4518e6836e343fc9c49108c217a818530b01be:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpd_zlog_register.c",
       "source_function": "tpd_zlog_register",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 224,
+      "elf_symbol_bytes": 264,
       "stock_entry": "0010688c",
       "stock_function": "tpd_zlog_register",
-      "mapping_note": "Function-level offline parity is attested. The assembly comparator reports only module-specific .rodata and allocation-tag relocation differences; instruction count, section, size, call targets, strings and KCFI type match. Stock contains an observed memset(NULL) path after vmalloc failure; this safety defect is documented and runtime behavior on NX809J remains unverified."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 66 AArch64 instructions and 264 bytes; the Ghidra functions inventory reports 224 body bytes for the same entry, and both measurements are retained. The comparator resolves only module-specific .rodata offsets and the stripped __start_alloc_tags versus compiler-generated alloc-tag relocation at identical ADRP/ADD sites; instruction opcodes, section, symbol size, call targets, strings and KCFI type match. Stock contains an observed memset(NULL) path after vmalloc failure; this behavior is preserved and runtime behavior on NX809J remains unverified."
     },
     {
       "evidence": [

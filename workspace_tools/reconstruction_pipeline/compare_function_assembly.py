@@ -2805,6 +2805,19 @@ def canonicalize_stripped_codetag_alloc_tags(
         "R_AARCH64_ADR_PREL_PG_HI21",
         "R_AARCH64_ADD_ABS_LO12_NC",
     )
+
+    def is_codetag_target(value: str) -> bool:
+        # Some objdump symbol tables expose the same stripped allocation-tag
+        # section as __start_alloc_tags instead of .codetag.alloc_tags+offset.
+        # Keep this alias narrow: it is accepted only in the paired ADRP/ADD
+        # rule below, at identical instruction sites, beside a compiler tag.
+        target = value.split(" ", 1)[1] if " " in value else ""
+        return (
+            CODETAG_SECTION_TARGET_RE.fullmatch(value) is not None
+            or target in {"__start_alloc_tags", "__stop_alloc_tags"}
+            or ALLOC_TAG_RE.fullmatch(value) is not None
+        )
+
     if (
         not instructions_match
         or len(stock) != len(candidate)
@@ -2820,15 +2833,9 @@ def canonicalize_stripped_codetag_alloc_tags(
             any(len(value) != 2 for value in stock_parts + candidate_parts)
             or tuple(value[0] for value in stock_parts) != expected_types
             or tuple(value[0] for value in candidate_parts) != expected_types
+            or not all(is_codetag_target(value) for value in stock[index:index + 2])
             or not all(
-                CODETAG_SECTION_TARGET_RE.fullmatch(value)
-                or ALLOC_TAG_RE.fullmatch(value)
-                for value in stock[index:index + 2]
-            )
-            or not all(
-                CODETAG_SECTION_TARGET_RE.fullmatch(value)
-                or ALLOC_TAG_RE.fullmatch(value)
-                for value in candidate[index:index + 2]
+                is_codetag_target(value) for value in candidate[index:index + 2]
             )
         ):
             continue

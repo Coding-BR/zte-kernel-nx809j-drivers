@@ -109,6 +109,24 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertEqual(stock, candidate)
         self.assertEqual(len(evidence), 1)
 
+    def test_stripped_codetag_start_symbol_matches_named_candidate_tag(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stripped_codetag_alloc_tags(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 __start_alloc_tags",
+                "R_AARCH64_ADD_ABS_LO12_NC __start_alloc_tags",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 owner._alloc_tag",
+                "R_AARCH64_ADD_ABS_LO12_NC owner._alloc_tag",
+            ],
+            [100, 101],
+            [100, 101],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+
     def test_stripped_codetag_requires_matching_instruction_positions(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_stripped_codetag_alloc_tags(
             [
