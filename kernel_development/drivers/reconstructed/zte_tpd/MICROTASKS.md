@@ -91,7 +91,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 085_ghost_debug_read | ghost_debug_read | 0010d57c | user_abi | ghost_debug_read.c:ghost_debug_read | PASS (offline-exact v2) |
 | 086_ghost_debug_write | ghost_debug_write | 0010d8d0 | user_abi | ghost_debug_write.c:ghost_debug_write | PASS (offline-exact v2) |
 | 087_tp_bbat_test_read | tp_BBAT_test_read | 0010da90 | user_abi | tp_BBAT_test_read.c:tp_BBAT_test_read | PASS (offline-exact v2) |
-| 088_tp_bbat_test_write | tp_BBAT_test_write | 0010db98 | user_abi | tp_BBAT_test_write.c:tp_BBAT_test_write | PASS |
+| 088_tp_bbat_test_write | tp_BBAT_test_write | 0010db98 | user_abi | tp_BBAT_test_write.c:tp_BBAT_test_write | PASS (offline-exact v2) |
 | 089_tp_test_read | tp_test_read | 0010dbd0 | user_abi | tp_test_read.c:tp_test_read | PASS |
 | 090_tp_test_write | tp_test_write | 0010dcdc | user_abi | tp_test_write.c:tp_test_write | PASS |
 | 091_tp_frame_data_read | tp_frame_data_read | 0010dd14 | user_abi | tp_frame_data_read.c:tp_frame_data_read | PASS |
