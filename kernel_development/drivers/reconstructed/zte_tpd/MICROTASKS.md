@@ -142,7 +142,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 136_ufp_report_lcd_state | ufp_report_lcd_state | 00110ee0 | core_logic | ufp_report_lcd_state.c:ufp_report_lcd_state | PASS |
 | 137_ufp_notifier_cb | ufp_notifier_cb | 00110f84 | async_or_irq | ufp_notifier_cb.c:ufp_notifier_cb | PASS |
 | 138_ufp_mac_init | ufp_mac_init | 00110fb0 | lifecycle | ufp_mac_init.c:ufp_mac_init | PASS |
-| 139_ufp_single_tap_work | ufp_single_tap_work | 0011108c | async_or_irq | ufp_single_tap_work.c:ufp_single_tap_work | PASS |
+| 139_ufp_single_tap_work | ufp_single_tap_work | 0011108c | async_or_irq | ufp_single_tap_work.c:ufp_single_tap_work | PASS (offline-exact v2) |
 | 140_ufp_mac_exit | ufp_mac_exit | 0011109c | lifecycle | ufp_mac_exit.c:ufp_mac_exit | PASS |
 | 141_syna_dev_free_input_events | syna_dev_free_input_events | 001110f0 | core_logic | syna_dev_free_input_events.c:syna_dev_free_input_events | PASS |
 | 142_syna_dev_set_screen_on_fp_mode | syna_dev_set_screen_on_fp_mode | 0011120c | core_logic | syna_dev_set_screen_on_fp_mode.c:syna_dev_set_screen_on_fp_mode | PASS |

@@ -5611,25 +5611,31 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_single_tap_work\nEntrada Ghidra: 0011108c\nTamanho stock: 12 bytes\nCategoria: async_or_irq\nAlvo no fonte: ufp_single_tap_work.c:ufp_single_tap_work\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0138_0011108c_ufp_single_tap_work.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0138_0011108c_ufp_single_tap_work.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next216_ufp_single_tap_work_exact_v1/canonical_build_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next835_ufp_single_tap_work_exact_v2/canonical_build_report.json",
           "sha256": "ca5857b326c9874b408d9a71e0f7172e601c5663eb8d0f471c7686908fc7f568"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next216_ufp_single_tap_work_exact_v1/kcfi_comparison.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next835_ufp_single_tap_work_exact_v2/kcfi_comparison.json",
           "sha256": "92f595bd2e8529cce76901e78010da0c1ed00d3fe33ecf1df792fa895959166c"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next216_ufp_single_tap_work_exact_v1/ufp_single_tap_work_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next835_ufp_single_tap_work_exact_v2/ufp_single_tap_work_harness_report.json",
           "sha256": "e14e7ac3006109e4a1ec6f20c6546e50ae9ab43b95b72b45b75a263806b96b14"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next835_ufp_single_tap_work_exact_v2/joern/joern_gate_report.json",
+          "sha256": "9fdf1872ba28b078c7849fc00a4cfb1a6ef1ca22ff1b591da4b2484cbbb940c5"
         }
       ]
     },
