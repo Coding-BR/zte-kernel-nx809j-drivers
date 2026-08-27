@@ -148,7 +148,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 142_syna_dev_set_screen_on_fp_mode | syna_dev_set_screen_on_fp_mode | 0011120c | core_logic | syna_dev_set_screen_on_fp_mode.c:syna_dev_set_screen_on_fp_mode | PASS |
 | 143_syna_dev_set_tp_report_rate | syna_dev_set_tp_report_rate | 00111298 | core_logic | syna_dev_set_tp_report_rate.c:syna_dev_set_tp_report_rate | READY_FOR_IMPLEMENTATION |
 | 144_syna_dev_do_reflash | syna_dev_do_reflash | 001113fc | core_logic | syna_dev_do_reflash.c:syna_dev_do_reflash | PASS |
-| 145_syna_dev_set_charger_mode | syna_dev_set_charger_mode | 00111504 | core_logic | syna_dev_set_charger_mode.c:syna_dev_set_charger_mode | PASS |
+| 145_syna_dev_set_charger_mode | syna_dev_set_charger_mode | 00111504 | core_logic | syna_dev_set_charger_mode.c:syna_dev_set_charger_mode | PASS (offline-exact v2) |
 | 146_syna_dev_set_sensibility_level | syna_dev_set_sensibility_level | 00111578 | core_logic | syna_dev_set_sensibility_level.c:syna_dev_set_sensibility_level | PROMOTED_OFFLINE_EXACT |
 | 147_syna_dev_set_follow_hand_level | syna_dev_set_follow_hand_level | 00111718 | core_logic | syna_dev_set_follow_hand_level.c:syna_dev_set_follow_hand_level | PASS |
 | 148_syna_dev_set_stability_level | syna_dev_set_stability_level | 001118a4 | core_logic | syna_dev_set_stability_level.c:syna_dev_set_stability_level | PASS |
