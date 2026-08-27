@@ -679,22 +679,32 @@
     },
     {
       "evidence": [
-        "source:zte_touch_probe.c:sha256:f3d0f4316ee2f4cd17efd4d3f34a1336913cf2c300fd65cdf43b63c5780f2bb2",
+        "source:zte_touch_probe.c:sha256:c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9",
         "ghidra-pseudocode:decompiled/0024_001087e4_zte_touch_probe.c:sha256:584967d0cf254af8a107ca1ed3d7a1e587ea030b64019c7e205a290e3bed8b8f",
         "ghidra-pcode:pcode/0024_001087e4_zte_touch_probe.jsonl:sha256:cddc47dab0a04be5ee8306f6e929fa471c2a7eba353e2c0d9637a8a71e957abc",
         "stock-assembly:0024_zte_touch_probe_001087e4.asm:sha256:265ceb8cef3a461dd0afd23eaa301eddf93c745a760a68fab2afe01b945f276f",
-        "attestation:next387_zte_touch_probe_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "candidate-assembly:attestation/next387_zte_touch_probe_exact_v2/candidate_assembly/0000_zte_touch_probe.asm:sha256:5322cd4ff82760be849e7167488e758b780348ba45756d6c8fa719af6f65c7a8",
+        "assembly-compare:attestation/next387_zte_touch_probe_exact_v2/assembly_comparison.json:sha256:1e854b3fe6a8dd252b0014cb9d222da1f4e3870133a8e0ac7209e03fa20ad564",
+        "aarch64-validation:attestation/next387_zte_touch_probe_exact_v2/aarch64_validation_report.json:sha256:57ccc2090154dafef04b9a594f918281a7a9ae62750b278551f94b07c40a8e86",
+        "kcfi-compare:attestation/next387_zte_touch_probe_exact_v2/kcfi_comparison.json:sha256:c822372ea86fcb1f9079166ba06cbc0419d2cc00d7873e3cbacdba0b1a36d21b",
+        "canonical-build:attestation/next387_zte_touch_probe_exact_v2/canonical_build_report.json:sha256:b6b0bc61d377462a7e65344984223b6fe964febc1eb8256f5e62c589c75b0493",
+        "source-sync:attestation/next387_zte_touch_probe_exact_v2/source_sync_report.json:sha256:fa13df1443271feb85eff98eec9a9f255e2e48e3110e251a17bd37afcc110ade",
+        "host-harness:attestation/next387_zte_touch_probe_exact_v2/host_harness_report.json:sha256:bf0c5def8d9a3ea1b09879a4f022c691ee417bcb2b92157d66fd2661d713dec8",
+        "joern:attestation/next387_zte_touch_probe_exact_v2/joern/joern_gate_summary.json:sha256:8513e2f9fcf8eb717d6510b1167fdc2b2682ff434c0ea8d453694a33b72dda66",
+        "candidate-module:attestation/next387_zte_touch_probe_exact_v2/zte_tpd.ko:sha256:5c42f629f075f4a7f17200f983afd2e7d9c796a9f651d658d547e454c4345af7",
+        "attestation:next387_zte_touch_probe_exact_v2/microtask_attestation.json:sha256:ce1cfc375bc3402a137585db146cddd1eb3a9a16a21d22080aa6ccddfc00d772:status:OFFLINE_EXACT"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus normalized AArch64 dataflow, KCFI, Joern, canonical Docker build and ASan/UBSan host evidence",
-      "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact AArch64 opcode/control-flow sequence, KCFI, normalized dataflow and relocation roles, Joern, canonical Docker build and ASan/UBSan host evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "zte_touch_probe.c",
       "source_function": "zte_touch_probe",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 3712,
       "stock_entry": "001087e4",
       "stock_function": "zte_touch_probe",
-      "mapping_note": "Offline semantic parity is attested: 928 AArch64 instructions, 3712-byte .text size, .text section and function KCFI type/size match; the four-case direct-source host contract passes twice with ASan/UBSan. The recovered probe preserves allocation/store offsets, Device Tree property defaults and reads, mutex classes, proc/sysfs creation paths, cleanup calls, workqueue setup, timer initialization and success/error returns. Raw instruction comparison differs in nine register-allocation/order instructions in the ghost-config default block and in module-local relocations; Joern, scheduler, platform-bus and NX809J hardware behavior remain subject to follow-up."
+      "elf_symbol_bytes": 3712,
+      "mapping_note": "Function-level offline exact parity is promoted: stock and candidate contain 928 AArch64 instructions and 3712-byte .text symbols with matching section, KCFI, opcode/control-flow sequence, normalized dataflow and normalized relocation roles. The ghost-config default sequence now matches through source reordering plus an empty compiler barrier. The recovered probe preserves allocation/store offsets, Device Tree defaults and reads, mutex classes, proc/sysfs creation paths, cleanup calls, workqueue setup, timer initialization and success/error returns. Raw relocation identities still vary only for independently linked module-local .rodata layout; scheduler, platform-bus, NX809J hardware and complete module integration remain unverified."
     },
     {
       "evidence": [
