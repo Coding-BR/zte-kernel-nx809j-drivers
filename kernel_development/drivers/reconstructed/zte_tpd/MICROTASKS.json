@@ -4891,22 +4891,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_esd_check\nEntrada Ghidra: 001104f0\nTamanho stock: 80 bytes\nCategoria: core_logic\nAlvo no fonte: tp_esd_check.c:tp_esd_check\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0119_001104f0_tp_esd_check.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0119_001104f0_tp_esd_check.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_next11_abi_report.json",
-          "sha256": "84f5fca0c7f6cce36d83f2c96476eb2a4f6d425d585e18ec5405cfb53e9da25e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_tp_esd_check_v1/canonical_build_report.json",
+          "sha256": "b04214f142888cea0e15186e21259f687899f5ca1cb1062eeb599e0e45898ba1"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_next11_abi_exact.json",
-          "sha256": "db494a4c0f8c01763e84ce9116f9fc067a331f547ca96b857e540ea41f35493f"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_tp_esd_check_v1/kcfi_comparison.json",
+          "sha256": "440683152d77b939d2fe8383cf52e2204d7cd59df4cb0dfbb2b3897b07334895"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/next11_abi_harness_report.json",
-          "sha256": "84f5a8a4ba64830346a572b1dfa263d0678d54a22fcd25ac3e3f0641ad9201cf"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_tp_esd_check_v1/host_harness_report.json",
+          "sha256": "a9e1fd9d96a7bbe323d7f09a0ce5ad207ef82f7797a0e4163088c9b7e1655781"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_tp_esd_check_v1/joern/joern_gate_summary.json",
+          "sha256": "924012dbd09b1fb58f45ca9ed9c15ce6c56b6475094f4d22ebca82775bf7d1aa"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_tp_esd_check_v1/assembly_comparison.json",
+          "sha256": "b5045dc791f42d118e551113514a041673f08d9e25f773ad736d54a83de908f6"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_tp_esd_check_v1/source_sync_report.json",
+          "sha256": "a7c418c2f784975f2fd9b790156e4783c5c682fabcd7f8788e3234ce8fe62912"
         }
       ]
     },
