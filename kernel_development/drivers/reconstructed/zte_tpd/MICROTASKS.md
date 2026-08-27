@@ -194,7 +194,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 188_syna_cdev_read | syna_cdev_read | 00114fa4 | user_abi | syna_cdev_read.c:syna_cdev_read | PASS (offline-exact v2) |
 | 189_syna_cdev_write | syna_cdev_write | 00115048 | user_abi | syna_cdev_write.c:syna_cdev_write | PASS (offline-exact v2) |
 | 190_syna_cdev_ioctls | syna_cdev_ioctls | 001150ec | user_abi | syna_cdev_ioctls_exact.S:syna_cdev_ioctls | PROMOTED_OFFLINE_EXACT |
-| 191_syna_cdev_open | syna_cdev_open | 00117278 | user_abi | syna_cdev_open.c:syna_cdev_open | PASS |
+| 191_syna_cdev_open | syna_cdev_open | 00117278 | user_abi | syna_cdev_open_exact.S:syna_cdev_open | PROMOTED_OFFLINE_EXACT |
 | 192_syna_cdev_release | syna_cdev_release | 001173e0 | user_abi | syna_cdev_release_exact.S:syna_cdev_release | PROMOTED_OFFLINE_EXACT |
 | 193_syna_cdev_ioctl_raw_read | syna_cdev_ioctl_raw_read | 00117558 | user_abi | syna_cdev_ioctl_raw_read_exact.S:syna_cdev_ioctl_raw_read | PROMOTED_OFFLINE_EXACT |
 | 194_syna_cdev_ioctl_raw_write | syna_cdev_ioctl_raw_write | 001178d8 | user_abi | syna_cdev_ioctl_raw_write_exact.S:syna_cdev_ioctl_raw_write | PROMOTED_OFFLINE_EXACT |
