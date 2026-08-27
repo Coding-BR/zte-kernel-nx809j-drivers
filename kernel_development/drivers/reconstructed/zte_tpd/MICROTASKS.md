@@ -21,7 +21,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 015_tpd_proc_deinit | tpd_proc_deinit | 00107fa4 | lifecycle | tpd_proc_deinit.c:tpd_proc_deinit | PASS |
 | 016_zte_touch_pdev_register | zte_touch_pdev_register | 001081c8 | core_logic | zte_touch_pdev_register.c:zte_touch_pdev_register | PASS |
 | 017_tpd_report_uevent | tpd_report_uevent | 001082ac | core_logic | tpd_report_uevent.c:tpd_report_uevent | PASS |
-| 018_zte_touch_pdev_unregister | zte_touch_pdev_unregister | 001083b4 | core_logic | zte_touch_pdev_unregister.c:zte_touch_pdev_unregister | PASS |
+| 018_zte_touch_pdev_unregister | zte_touch_pdev_unregister | 001083b4 | core_logic | zte_touch_pdev_unregister.c:zte_touch_pdev_unregister | PASS (offline-exact v2) |
 | 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PASS |
 | 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | PASS |
 | 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PASS |
@@ -70,9 +70,9 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 064_set_stability_level | set_stability_level | 0010c23c | core_logic | set_stability_level.c:set_stability_level | PASS |
 | 065_tp_sensibility_level_read | tp_sensibility_level_read | 0010c304 | user_abi | tp_sensibility_level_read.c:tp_sensibility_level_read | PASS |
 | 066_tp_sensibility_level_write | tp_sensibility_level_write | 0010c3f8 | user_abi | tp_sensibility_level_write_exact.S:tp_sensibility_level_write | PROMOTED_OFFLINE_EXACT |
-| 067_tp_game_partition_read | tp_game_partition_read | 0010c504 | user_abi | tp_game_partition_read.c:tp_game_partition_read | PASS |
-| 068_tp_game_partition_write | tp_game_partition_write | 0010c5e0 | user_abi | tp_game_partition_write.c:tp_game_partition_write | PASS |
-| 069_tp_pen_only_read | tp_pen_only_read | 0010c724 | user_abi | tp_pen_only_read.c:tp_pen_only_read | PASS |
+| 067_tp_game_partition_read | tp_game_partition_read | 0010c504 | user_abi | tp_game_partition_read.c:tp_game_partition_read | PASS (offline-exact v2) |
+| 068_tp_game_partition_write | tp_game_partition_write | 0010c5e0 | user_abi | tp_game_partition_write.c:tp_game_partition_write | PASS (offline-exact v2) |
+| 069_tp_pen_only_read | tp_pen_only_read | 0010c724 | user_abi | tp_pen_only_read.c:tp_pen_only_read | PASS (offline-exact v2) |
 | 070_tp_pen_only_write | tp_pen_only_write | 0010c818 | user_abi | tp_pen_only_write.c:tp_pen_only_write | PASS |
 | 071_get_finger_lock_flag | get_finger_lock_flag | 0010c92c | core_logic | get_finger_lock_flag.c:get_finger_lock_flag | PASS |
 | 072_set_finger_lock_flag | set_finger_lock_flag | 0010ca00 | core_logic | set_finger_lock_flag.c:set_finger_lock_flag | PASS |
@@ -80,14 +80,14 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 074_tp_self_test_write | tp_self_test_write | 0010cc50 | user_abi | tp_self_test_write.c:tp_self_test_write | PASS |
 | 075_tp_palm_mode_read | tp_palm_mode_read | 0010cce8 | user_abi | tp_palm_mode_read.c:tp_palm_mode_read | PASS |
 | 076_tp_palm_mode_write | tp_palm_mode_write | 0010cddc | user_abi | tp_palm_mode_write.c:tp_palm_mode_write | PASS |
-| 077_tp_fold_state_read | tp_fold_state_read | 0010ceb0 | user_abi | tp_fold_state_read.c:tp_fold_state_read | PASS |
-| 078_tp_fold_state_write | tp_fold_state_write | 0010cfa4 | user_abi | tp_fold_state_write.c:tp_fold_state_write | PASS |
+| 077_tp_fold_state_read | tp_fold_state_read | 0010ceb0 | user_abi | tp_fold_state_read.c:tp_fold_state_read | PASS (offline-exact v2) |
+| 078_tp_fold_state_write | tp_fold_state_write | 0010cfa4 | user_abi | tp_fold_state_write.c:tp_fold_state_write | PASS (offline-exact v2) |
 | 079_get_fake_sleep | get_fake_sleep | 0010d078 | core_logic | get_fake_sleep.c:get_fake_sleep | PASS (offline-exact v2) |
 | 080_set_fake_sleep | set_fake_sleep | 0010d16c | core_logic | set_fake_sleep.c:set_fake_sleep | PASS (offline-exact v2) |
 | 081_get_screen_off_awake | get_screen_off_awake | 0010d240 | core_logic | get_screen_off_awake.c:get_screen_off_awake | PASS (offline-exact v2) |
 | 082_set_screen_off_awake | set_screen_off_awake | 0010d334 | core_logic | set_screen_off_awake.c:set_screen_off_awake | PASS (offline-exact v2) |
-| 083_tp_zlog_debug_read | tp_zlog_debug_read | 0010d408 | user_abi | tp_zlog_debug_read.c:tp_zlog_debug_read | PASS |
-| 084_tp_zlog_debug_write | tp_zlog_debug_write | 0010d4a8 | user_abi | tp_zlog_debug_write.c:tp_zlog_debug_write | PASS |
+| 083_tp_zlog_debug_read | tp_zlog_debug_read | 0010d408 | user_abi | tp_zlog_debug_read.c:tp_zlog_debug_read | PASS (offline-exact v2) |
+| 084_tp_zlog_debug_write | tp_zlog_debug_write | 0010d4a8 | user_abi | tp_zlog_debug_write.c:tp_zlog_debug_write | PASS (offline-exact v2) |
 | 085_ghost_debug_read | ghost_debug_read | 0010d57c | user_abi | ghost_debug_read.c:ghost_debug_read | PASS (offline-exact v2) |
 | 086_ghost_debug_write | ghost_debug_write | 0010d8d0 | user_abi | ghost_debug_write.c:ghost_debug_write | PASS (offline-exact v2) |
 | 087_tp_bbat_test_read | tp_BBAT_test_read | 0010da90 | user_abi | tp_BBAT_test_read.c:tp_BBAT_test_read | PASS (offline-exact v2) |
