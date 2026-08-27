@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "138_ufp_mac_init",
+  "stock_function": "ufp_mac_init",
+  "stock_entry": "00110fb0",
+  "stock_body_bytes": 216,
+  "selected_functions": ["ufp_mac_init"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "6cfae99dc202643f1b3eacff4e657ceff0c635231108e1603342d81a51844842",
+  "candidate_module_sha256": "f8ac727f9d3c2ec3fbd06cad74d69bcb67b16eb5b6fce1ed5bb07b0237ef129a",
+  "candidate_module_size": 17688992,
+  "evidence": [
+    {"role": "stock_assembly", "path": "stock_assembly/0137_ufp_mac_init_00110fb0.asm", "sha256": "4be264e76c297aee1df63f29af2dc9ac8e1d09ee55a4fee4f42ac569be140c32"},
+    {"role": "candidate_assembly", "path": "candidate_assembly/0000_ufp_mac_init.asm", "sha256": "6e9bf26c2ac1f34e945a98a9643969bea84b13c31807c3a23a6d7217bbc1cd3d"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "2b1639b79be287ff7c55ba74556139322c3f26f57ef6002dfc216f2bf84be6ec"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "03bbff654bf71fb28700f4c4e51f9d7b3d4eb7044e37d6ed4534696bb8e188f9"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "899069a7e0168546186af5588c0e05358029ac02311b5e9c194ebc113f90a5d8"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "2383d08e608d22c8ae8a36e061cc05da15a7e7044f2832363ee3aac0fdee6c14"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "7a6e3381fe7eef42ec3ea2af0406726b320133d9a471ff635d6ee11c93eee066"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "349a54911f8331b33345b5418a6b899b9999a2dc3c0a0d369305e25be3b01106"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "1bcd506a3be51d0cc7de6b596359e2a8611beb10298a9e24da6ced84e80ae442"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "81d0217f597e2ecf5e05b3917d0b818b2d885733adc9cc197815cccb9b151602"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "9247252af1e5b213d19b06dfdfd909c63295066ac83986b94b647a2c152bd4c9"}
+  ],
+  "findings": [
+    "Stock and candidate contain 54 AArch64 instructions and 216 bytes.",
+    "KCFI type ID matches at 0x6fbb3035 in .text with 216-byte symbol size.",
+    "The only relocation normalization is the compiler-named init_completion lock key matching the stripped stock local .bss target.",
+    "Android runtime, scheduler behavior and NX809J hardware behavior remain unverified."
+  ]
+}

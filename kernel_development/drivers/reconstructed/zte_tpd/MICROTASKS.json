@@ -5785,29 +5785,35 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_mac_init\nEntrada Ghidra: 00110fb0\nTamanho stock: 216 bytes\nCategoria: lifecycle\nAlvo no fonte: ufp_mac_init.c:ufp_mac_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0137_00110fb0_ufp_mac_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0137_00110fb0_ufp_mac_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/build_next92_ufp_mac_init_reconstruction.json",
-          "sha256": "b3ce72502424f18a10b76e6b0017a93fdce624f8b5ddb8417313e51472399755"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next138_ufp_mac_init_exact_v2/canonical_build_report.json",
+          "sha256": "7a6e3381fe7eef42ec3ea2af0406726b320133d9a471ff635d6ee11c93eee066"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/kcfi_comparison.json",
-          "sha256": "0454513f2a7a2e84e7c083f70372b7018f70c2f946fda0f2b014dbbaeaa89a62"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next138_ufp_mac_init_exact_v2/kcfi_comparison.json",
+          "sha256": "2383d08e608d22c8ae8a36e061cc05da15a7e7044f2832363ee3aac0fdee6c14"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/host_harness_report.json",
-          "sha256": "5f98e31f449b5a917d6d730a1a01cdd81c753e5a7b749014e1678c0b52283b16"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next138_ufp_mac_init_exact_v2/host_harness_report.json",
+          "sha256": "1bcd506a3be51d0cc7de6b596359e2a8611beb10298a9e24da6ced84e80ae442"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next92_ufp_mac_init_v1/joern_gate_summary.json",
-          "sha256": "64f9c03d9658799bb28ca1c2d6023e2f9d473dad0790a2f3aad8048f9d5a8d53"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next138_ufp_mac_init_exact_v2/joern/joern_gate_summary.json",
+          "sha256": "9247252af1e5b213d19b06dfdfd909c63295066ac83986b94b647a2c152bd4c9"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next138_ufp_mac_init_exact_v2/microtask_attestation.json",
+          "sha256": "6c4e0d585fa7e25c5f2a7718bb56a70f57fc6a05c6bb02f8140c9474042dd58f"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next138_ufp_mac_init_exact_v2; physical hardware validation remains deferred."
     },
     {
       "id": "139_ufp_single_tap_work",
