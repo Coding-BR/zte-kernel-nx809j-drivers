@@ -1241,3 +1241,10 @@ obj-files := $(filter-out ufp_report_lcd_state_delayed_work.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_report_lcd_state_delayed_work.o, $(zte_tpd-objs))
 zte_tpd-objs += ufp_report_lcd_state_delayed_work_exact.o
 AFLAGS_ufp_report_lcd_state_delayed_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_devnode
+src-files := $(filter-out $(src)/syna_cdev_devnode.c, $(src-files))
+obj-files := $(filter-out syna_cdev_devnode.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_devnode.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_devnode_exact.o
+AFLAGS_syna_cdev_devnode_exact.o := -g0 -I$(src)
