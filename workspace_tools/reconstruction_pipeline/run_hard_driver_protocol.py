@@ -236,6 +236,45 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
     return normalized
 
 
+def select_functions(
+    functions: list[dict[str, Any]], selectors: list[str]
+) -> list[dict[str, Any]]:
+    """Select source functions or exact stock identities for a narrow run."""
+    if not selectors:
+        return functions
+    selected: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    available = {
+        str(item["source_function"])
+        for item in functions
+        if isinstance(item.get("source_function"), str)
+    }
+    available.update(
+        str(item["identity"])
+        for item in functions
+        if isinstance(item.get("identity"), str)
+    )
+    unknown = set(selectors) - available
+    if unknown:
+        raise ValueError(
+            "requested functions are absent from job: "
+            + ", ".join(sorted(unknown))
+        )
+    for selector in selectors:
+        matches = [
+            item
+            for item in functions
+            if item.get("source_function") == selector
+            or item.get("identity") == selector
+        ]
+        for item in matches:
+            identity = str(item["identity"])
+            if identity not in seen:
+                selected.append(item)
+                seen.add(identity)
+    return selected
+
+
 def required_gates(job: dict[str, Any], functions: list[dict[str, Any]]) -> dict[str, dict[str, str]]:
     gates = {
         name: {"reason": reason, "kind": "AUTOMATED" if name in AUTOMATED_GATES else "EVIDENCE"}
@@ -726,6 +765,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--mode", choices=("plan", "core"), default="plan")
+    parser.add_argument(
+        "--function",
+        action="append",
+        dest="functions",
+        default=[],
+        help="source function or exact stock_function@entry to run; repeat to select a subset",
+    )
     parser.add_argument("--python", type=Path, default=Path(sys.executable))
     parser.add_argument("--engineering-root", type=Path)
     parser.add_argument("--joern-home", type=Path)
@@ -746,7 +792,9 @@ def main() -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     job_path = args.job.resolve()
     job = read_json(job_path)
-    functions = validate_job(job)
+    functions = select_functions(validate_job(job), args.functions)
+    if not functions:
+        raise ValueError("function selection produced no functions")
     paths = job["paths"]
     source_root = resolve_repo_path(repo_root, paths["source_root"], label="paths.source_root")
     stock_module = resolve_repo_path(repo_root, paths["stock_module"], label="paths.stock_module")

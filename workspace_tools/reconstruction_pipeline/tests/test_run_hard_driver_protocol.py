@@ -9,6 +9,7 @@ from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
     find_map_bindings,
     required_gates,
     resolve_repo_path,
+    select_functions,
     validate_job,
 )
 
@@ -68,6 +69,36 @@ class HardDriverProtocolTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "duplicate function identity"):
             validate_job(job)
+
+    def test_function_selection_accepts_source_or_exact_stock_identity(self):
+        job = base_job(
+            functions=[
+                {
+                    "stock_function": "stock_a",
+                    "stock_entry": "00100010",
+                    "source_function": "source_a",
+                },
+                {
+                    "stock_function": "stock_b",
+                    "stock_entry": "00100020",
+                    "source_function": "source_b",
+                },
+            ]
+        )
+        functions = validate_job(job)
+
+        self.assertEqual(
+            [item["source_function"] for item in select_functions(functions, ["source_b"])],
+            ["source_b"],
+        )
+        self.assertEqual(
+            [item["source_function"] for item in select_functions(functions, ["stock_a@100010"])],
+            ["source_a"],
+        )
+
+    def test_function_selection_rejects_unknown_selector(self):
+        with self.assertRaisesRegex(ValueError, "absent from job"):
+            select_functions(validate_job(base_job()), ["missing_fn"])
 
     def test_relative_path_cannot_escape_repository(self):
         with tempfile.TemporaryDirectory() as directory:
