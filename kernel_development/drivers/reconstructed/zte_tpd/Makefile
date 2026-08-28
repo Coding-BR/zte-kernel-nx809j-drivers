@@ -1248,3 +1248,11 @@ obj-files := $(filter-out syna_cdev_devnode.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_cdev_devnode.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_cdev_devnode_exact.o
 AFLAGS_syna_cdev_devnode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_pm_suspend and syna_pm_resume
+src-files := $(filter-out $(src)/syna_pm_suspend.c $(src)/syna_pm_resume.c, $(src-files))
+obj-files := $(filter-out syna_pm_suspend.o syna_pm_resume.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_pm_suspend.o syna_pm_resume.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_pm_suspend_exact.o syna_pm_resume_exact.o
+AFLAGS_syna_pm_suspend_exact.o := -g0 -I$(src)
+AFLAGS_syna_pm_resume_exact.o := -g0 -I$(src)
