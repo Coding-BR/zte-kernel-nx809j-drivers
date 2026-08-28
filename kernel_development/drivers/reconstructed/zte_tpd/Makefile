@@ -961,3 +961,59 @@ obj-files := $(filter-out get_tp_noise_store.o, $(obj-files))
 zte_tpd-objs := $(filter-out get_tp_noise_store.o, $(zte_tpd-objs))
 zte_tpd-objs += get_tp_noise_store_exact.o
 AFLAGS_get_tp_noise_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_wakegesture
+src-files := $(filter-out $(src)/tpd_get_wakegesture.c, $(src-files))
+obj-files := $(filter-out tpd_get_wakegesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_wakegesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_wakegesture_exact.o
+AFLAGS_tpd_get_wakegesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_one_key
+src-files := $(filter-out $(src)/tpd_get_one_key.c, $(src-files))
+obj-files := $(filter-out tpd_get_one_key.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_one_key.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_one_key_exact.o
+AFLAGS_tpd_get_one_key_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_tp_report_rate
+src-files := $(filter-out $(src)/tpd_get_tp_report_rate.c, $(src-files))
+obj-files := $(filter-out tpd_get_tp_report_rate.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_tp_report_rate.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_tp_report_rate_exact.o
+AFLAGS_tpd_get_tp_report_rate_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_play_game
+src-files := $(filter-out $(src)/tpd_get_play_game.c, $(src-files))
+obj-files := $(filter-out tpd_get_play_game.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_play_game.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_play_game_exact.o
+AFLAGS_tpd_get_play_game_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_frame_data
+src-files := $(filter-out $(src)/tpd_get_frame_data.c, $(src-files))
+obj-files := $(filter-out tpd_get_frame_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_frame_data.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_frame_data_exact.o
+AFLAGS_tpd_get_frame_data_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_palm_mode
+src-files := $(filter-out $(src)/tpd_get_palm_mode.c, $(src-files))
+obj-files := $(filter-out tpd_get_palm_mode.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_palm_mode.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_palm_mode_exact.o
+AFLAGS_tpd_get_palm_mode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_fake_sleep
+src-files := $(filter-out $(src)/tpd_get_fake_sleep.c, $(src-files))
+obj-files := $(filter-out tpd_get_fake_sleep.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_fake_sleep.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_fake_sleep_exact.o
+AFLAGS_tpd_get_fake_sleep_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_screen_off_awake
+src-files := $(filter-out $(src)/tpd_get_screen_off_awake.c, $(src-files))
+obj-files := $(filter-out tpd_get_screen_off_awake.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_screen_off_awake.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_screen_off_awake_exact.o
+AFLAGS_tpd_get_screen_off_awake_exact.o := -g0 -I$(src)
