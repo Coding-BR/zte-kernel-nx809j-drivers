@@ -542,6 +542,36 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertEqual(result, "R_AARCH64_ADR_PREL_PG_HI21 client_1")
 
+    def test_named_section_base_resolves_to_section_relative_target(self) -> None:
+        result = MODULE.normalized_symbol_target(
+            "nubia_hw_exact_rodata_base+0x340",
+            {"nubia_hw_exact_rodata_base": (".rodata", 0)},
+        )
+
+        self.assertEqual(result, ".rodata+0x340")
+
+    def test_named_codetag_base_resolves_to_section_relative_target(self) -> None:
+        result = MODULE.normalized_symbol_target(
+            "zlog_exact_codetag_base+0x28",
+            {"zlog_exact_codetag_base": (".codetag.alloc_tags", 0)},
+        )
+
+        self.assertEqual(result, ".codetag.alloc_tags+0x28")
+
+    def test_alloc_tags_start_alias_resolves_to_section_base(self) -> None:
+        result = MODULE.normalized_symbol_target(
+            "__start_alloc_tags", {"other_symbol": (".text", 0)}
+        )
+
+        self.assertEqual(result, ".codetag.alloc_tags")
+
+    def test_codetag_section_base_is_accepted_as_alloc_tag_target(self) -> None:
+        self.assertTrue(
+            MODULE.CODETAG_SECTION_TARGET_RE.fullmatch(
+                "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x28"
+            )
+        )
+
     def test_section_offset_resolves_to_defined_symbol(self) -> None:
         result = MODULE.normalized_relocation(
             "R_AARCH64_LDST32_ABS_LO12_NC",
@@ -806,6 +836,43 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(stock, candidate)
         self.assertEqual(evidence, [])
 
+    def test_single_stripped_mutex_key_matches_one_local_static_key(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_single_stripped_mutex_key(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x95e",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x95e",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 syna_testing_pt01_zte.__key",
+                "R_AARCH64_ADD_ABS_LO12_NC syna_testing_pt01_zte.__key",
+            ],
+            ["adrp", "add", "mov", "bl <__mutex_init>"],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(evidence[0]["kind"], "single_stripped_mutex_key")
+        self.assertEqual(evidence[0]["mutex_call_index"], 3)
+
+    def test_single_stripped_mutex_key_rejects_nonlocal_or_multiple_initializers(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_single_stripped_mutex_key(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x95e",
+                "R_AARCH64_ADD_ABS_LO12_NC .bss+0x95e",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 global_key",
+                "R_AARCH64_ADD_ABS_LO12_NC global_key",
+            ],
+            ["adrp", "add", "bl <__mutex_init>", "bl <__mutex_init>"],
+            [0, 1],
+            [0, 1],
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
     def test_stripped_bss_subfield_matches_named_high_word_store(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_stripped_bss_subfields(
             [
@@ -947,6 +1014,47 @@ class NormalizedRelocationTests(unittest.TestCase):
             ],
             {".data": b"candidate\0"},
             {"unk_1234": (".data", 0)},
+            [12, 13],
+            [12, 13],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_stock_rodata_offset_matches_identical_candidate_literal(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stock_rodata_string_offsets(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0x20",
+                "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0x20",
+            ],
+            [
+                'R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string="unknow"',
+                'R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string="unknow"',
+            ],
+            {".rodata.str1.1": b"x" * 0x20 + b"unknow\0"},
+            {".rodata.str1.1": b"unknow\0"},
+            [12, 13],
+            [12, 13],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["kind"], "stock_rodata_string_offset")
+
+    def test_stock_rodata_offset_rejects_different_literal(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_stock_rodata_string_offsets(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0x20",
+                "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0x20",
+            ],
+            [
+                'R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string="other"',
+                'R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string="other"',
+            ],
+            {".rodata.str1.1": b"x" * 0x20 + b"unknow\0"},
+            {".rodata.str1.1": b"other\0"},
             [12, 13],
             [12, 13],
             True,
@@ -1130,6 +1238,108 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertEqual(stock, candidate)
         self.assertEqual(len(evidence), 1)
         self.assertEqual(evidence[0]["kind"], "stripped_g_cdev_data_base")
+
+    def test_named_stock_bss_binds_to_same_candidate_mapping_symbol(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_named_bss_to_stripped_mapping(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 debug_value",
+                "R_AARCH64_LDST32_ABS_LO12_NC debug_value",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 $d.3",
+                "R_AARCH64_LDST32_ABS_LO12_NC $d.3",
+            ],
+            {"debug_value": (".bss", 0x18)},
+            {"$d.3": (".bss", 0x18)},
+            [12, 13],
+            [12, 13],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(
+            evidence[0]["kind"], "named_stock_bss_to_stripped_mapping_symbol"
+        )
+
+    def test_named_stock_bss_mapping_rejects_different_location(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_named_bss_to_stripped_mapping(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 debug_value",
+                "R_AARCH64_LDST32_ABS_LO12_NC debug_value",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 $d.3",
+                "R_AARCH64_LDST32_ABS_LO12_NC $d.3",
+            ],
+            {"debug_value": (".bss", 0x18)},
+            {"$d.3": (".bss", 0x1C)},
+            [12, 13],
+            [12, 13],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_named_stock_bss_mapping_rewrites_repeated_references(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_named_bss_to_stripped_mapping(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 debug_value",
+                "R_AARCH64_LDST32_ABS_LO12_NC debug_value",
+                "R_AARCH64_LDST32_ABS_LO12_NC debug_value",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x18",
+                "R_AARCH64_LDST32_ABS_LO12_NC .bss+0x18",
+                "R_AARCH64_LDST32_ABS_LO12_NC .bss+0x18",
+            ],
+            {"debug_value": (".bss", 0x18)},
+            {},
+            [12, 13, 20],
+            [12, 13, 20],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["instruction_indices"], [12, 13, 20])
+
+    def test_pointer_target_mapping_symbol_requires_same_elf_location(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_pointer_target_mapping_symbols(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata:pointer=R_AARCH64_ABS64->hw_pcb_gpio_map",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata:pointer=R_AARCH64_ABS64->$d.2",
+            ],
+            {"hw_pcb_gpio_map": (".rodata", 0)},
+            {"$d.2": (".rodata", 0)},
+            [10],
+            [10],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+
+    def test_pointer_target_mapping_symbol_rejects_different_elf_location(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_pointer_target_mapping_symbols(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata:pointer=R_AARCH64_ABS64->hw_pcb_gpio_map",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 .rodata:pointer=R_AARCH64_ABS64->$d.2",
+            ],
+            {"hw_pcb_gpio_map": (".rodata", 0)},
+            {"$d.2": (".rodata", 8)},
+            [10],
+            [10],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
 
 
 if __name__ == "__main__":

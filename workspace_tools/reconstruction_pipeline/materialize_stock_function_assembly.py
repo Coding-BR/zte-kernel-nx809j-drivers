@@ -33,6 +33,7 @@ def render(
     records: list[tuple[str, list[tuple[str, str]]]],
     rodata: str | None,
     kcfi_type_id: str | None,
+    section_base_prefix: str | None,
 ) -> str:
     lines = [
         '.section .text,"ax",@progbits',
@@ -46,6 +47,27 @@ def render(
     for word, relocations in records:
         lines.append(f"    .inst 0x{word}")
         for kind, target in relocations:
+            if section_base_prefix:
+                if target.startswith(".rodata.str1.1"):
+                    target = (
+                        f"{section_base_prefix}_rodata_str_base"
+                        + target.removeprefix(".rodata.str1.1")
+                    )
+                elif target.startswith(".rodata"):
+                    target = (
+                        f"{section_base_prefix}_rodata_base"
+                        + target.removeprefix(".rodata")
+                    )
+                elif target.startswith(".bss"):
+                    target = (
+                        f"{section_base_prefix}_bss_base"
+                        + target.removeprefix(".bss")
+                    )
+                elif target.startswith(".codetag.alloc_tags"):
+                    target = (
+                        f"{section_base_prefix}_codetag_base"
+                        + target.removeprefix(".codetag.alloc_tags")
+                    )
             lines.append(f"    .reloc .-4, {kind}, {target}")
     lines.append(f".size {function}, .-{function}")
     if rodata:
@@ -65,12 +87,21 @@ def main() -> int:
     parser.add_argument("--output", type=pathlib.Path, required=True)
     parser.add_argument("--rodata-include")
     parser.add_argument("--kcfi-type-id")
+    parser.add_argument(
+        "--section-base-prefix",
+        help=(
+            "rewrite .rodata/.rodata.str1.1/.bss/.codetag.alloc_tags targets "
+            "to named absolute bases PREFIX_rodata_base, PREFIX_rodata_str_base, "
+            "PREFIX_bss_base and PREFIX_codetag_base"
+        ),
+    )
     args = parser.parse_args()
     output = render(
         args.function,
         parse(args.assembly),
         args.rodata_include,
         args.kcfi_type_id,
+        args.section_base_prefix,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(output, encoding="utf-8", newline="\n")

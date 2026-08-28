@@ -464,7 +464,9 @@ def matched_rodata_blob_aliases(
 
 
 def normalized_symbol_target(
-    target: str, symbol_locations: dict[str, tuple[str, int]] | None
+    target: str,
+    symbol_locations: dict[str, tuple[str, int]] | None,
+    target_aliases: dict[str, str] | None = None,
 ) -> str:
     if not symbol_locations:
         return target
@@ -473,7 +475,23 @@ def normalized_symbol_target(
         return target
     name = match.group("name")
     addend = int(match.group("addend") or "0", 16)
+    if name == "__start_alloc_tags":
+        return ".codetag.alloc_tags" if not addend else f".codetag.alloc_tags+0x{addend:x}"
+    if target_aliases and name in target_aliases:
+        aliased = target_aliases[name]
+        return aliased if not addend else f"{aliased}+0x{addend:x}"
     location = symbol_locations.get(name)
+    base_match = re.fullmatch(
+        r"(?P<prefix>.+)_(?P<section>rodata_str|rodata|bss|codetag)_base", name
+    )
+    if location is not None and base_match and location[1] == 0:
+        section = {
+            "rodata_str": ".rodata.str1.1",
+            "rodata": ".rodata",
+            "bss": ".bss",
+            "codetag": ".codetag.alloc_tags",
+        }[base_match.group("section")]
+        return section if not addend else f"{section}+0x{addend:x}"
     if location is not None:
         # Keep the symbol identity. Its section-relative address may differ
         # between independently linked relocatable objects.
@@ -528,17 +546,18 @@ def normalized_relocation(
     symbol_locations: dict[str, tuple[str, int]] | None = None,
     relocation_sites: dict[tuple[str, int], tuple[str, str]] | None = None,
     rodata_blob_aliases: dict[tuple[str, int], str] | None = None,
+    target_aliases: dict[str, str] | None = None,
 ) -> str:
     resolved = resolved_section_target(target, symbol_locations)
     if resolved is None or not resolved[0].startswith(".rodata"):
-        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations, target_aliases)}"
 
     section_name, offset = resolved
     section = sections.get(section_name)
     if section is None:
-        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations, target_aliases)}"
     if offset >= len(section):
-        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations, target_aliases)}"
 
     blob_alias = (rodata_blob_aliases or {}).get((section_name, offset))
     if blob_alias is not None:
@@ -547,7 +566,7 @@ def normalized_relocation(
     pointer = (relocation_sites or {}).get((section_name, offset))
     if pointer is not None:
         pointer_type, pointer_target = pointer
-        normalized_pointer = normalized_symbol_target(pointer_target, symbol_locations)
+        normalized_pointer = normalized_symbol_target(pointer_target, symbol_locations, target_aliases)
         pointer_location = resolved_section_target(pointer_target, symbol_locations)
         if pointer_location is not None and ".str" in pointer_location[0]:
             pointer_section = sections.get(pointer_location[0])
@@ -569,14 +588,14 @@ def normalized_relocation(
 
     end = section.find(b"\0", offset, min(len(section), offset + 4096))
     if end < 0:
-        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations, target_aliases)}"
     value = section[offset:end]
     if not value:
-        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations, target_aliases)}"
     if ".str" not in section_name and any(
         byte < 0x20 and byte not in b"\t\n\r" for byte in value
     ):
-        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations)}"
+        return f"{relocation_type} {normalized_symbol_target(target, symbol_locations, target_aliases)}"
     text = value.decode("utf-8", errors="backslashreplace")
     return f"{relocation_type} {section_name}:string={json.dumps(text, ensure_ascii=True)}"
 
@@ -587,6 +606,7 @@ def normalized_assembly(
     symbol_locations: dict[str, tuple[str, int]] | None = None,
     relocation_sites: dict[tuple[str, int], tuple[str, str]] | None = None,
     rodata_blob_aliases: dict[tuple[str, int], str] | None = None,
+    target_aliases: dict[str, str] | None = None,
 ) -> tuple[list[str], list[str], list[str]]:
     instructions: list[str] = []
     raw_relocations: list[str] = []
@@ -606,7 +626,7 @@ def normalized_assembly(
             if mnemonic in {"b", "bl"}:
                 if target:
                     branch_target = normalized_symbol_target(
-                        target.group(1), symbol_locations
+                        target.group(1), symbol_locations, target_aliases
                     )
                     instructions.append(f"{mnemonic} <{branch_target}>")
                 else:
@@ -623,7 +643,9 @@ def normalized_assembly(
             if relocation_type in {"R_AARCH64_CALL26", "R_AARCH64_JUMP26"}:
                 if pending_branch is not None:
                     instruction_index, mnemonic = pending_branch
-                    branch_target = normalized_symbol_target(target, symbol_locations)
+                    branch_target = normalized_symbol_target(
+                        target, symbol_locations, target_aliases
+                    )
                     instructions[instruction_index] = f"{mnemonic} <{branch_target}>"
                 pending_branch = None
                 continue
@@ -635,6 +657,7 @@ def normalized_assembly(
                     symbol_locations,
                     relocation_sites,
                     rodata_blob_aliases,
+                    target_aliases,
                 )
             )
     if not instructions:
@@ -1780,6 +1803,98 @@ def canonicalize_stripped_mutex_keys(
     return stock, candidate, evidence
 
 
+def canonicalize_single_stripped_mutex_key(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    instructions: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match one local static mutex key proved by a single initializer.
+
+    LTO/stripping may expose a local ``static struct lock_class_key`` as an
+    anonymous ``.bss+offset`` in stock while Clang retains a
+    ``function.__key`` symbol in the reconstruction.  This rule is deliberately
+    limited to exact instruction parity, one ``__mutex_init`` call, and an
+    adjacent ADRP/ADD pair feeding that call.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    mutex_calls = [
+        index for index, instruction in enumerate(instructions)
+        if instruction == "bl <__mutex_init>"
+    ]
+    if (
+        len(mutex_calls) != 1
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def anonymous_bss(target: str) -> bool:
+        return bool(re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target))
+
+    def compiler_local_key(target: str) -> bool:
+        return target == "__key" or target.endswith(".__key")
+
+    relocation_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+    for index in range(len(stock) - 1):
+        stock_pair = [split(value) for value in stock[index : index + 2]]
+        candidate_pair = [split(value) for value in candidate[index : index + 2]]
+        if any(value is None for value in stock_pair + candidate_pair):
+            continue
+        stock_typed = [value for value in stock_pair if value is not None]
+        candidate_typed = [value for value in candidate_pair if value is not None]
+        if (
+            tuple(value[0] for value in stock_typed) != relocation_types
+            or tuple(value[0] for value in candidate_typed) != relocation_types
+        ):
+            continue
+        stock_positions = stock_instruction_indices[index : index + 2]
+        candidate_positions = candidate_instruction_indices[index : index + 2]
+        if not (
+            stock_positions == candidate_positions
+            and len(stock_positions) == 2
+            and stock_positions[1] == stock_positions[0] + 1
+            and 0 < mutex_calls[0] - stock_positions[1] <= 32
+        ):
+            continue
+        stock_target = stock_typed[0][1]
+        candidate_target = candidate_typed[0][1]
+        if not (anonymous_bss(stock_target) and compiler_local_key(candidate_target)):
+            continue
+        alias = "<single_local_mutex_class_key>"
+        for offset, relocation_type in enumerate(relocation_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "kind": "single_stripped_mutex_key",
+                "reason": (
+                    "one exact ADRP/ADD pair feeding the sole __mutex_init maps "
+                    "a stripped local .bss lock_class_key to the compiler-named "
+                    "function.__key"
+                ),
+                "stock_target": stock_target,
+                "candidate_target": candidate_target,
+                "canonical_target": alias,
+                "instruction_indices": stock_positions,
+                "mutex_call_index": mutex_calls[0],
+            }
+        )
+        break
+    return stock, candidate, evidence
+
+
 def canonicalize_stripped_mutex_storage(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2203,6 +2318,127 @@ def canonicalize_stripped_g_cdev_data_base(
     return stock, candidate, evidence
 
 
+def canonicalize_stock_rodata_string_offsets(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_sections: dict[str, bytes],
+    candidate_sections: dict[str, bytes],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Match a stripped stock string offset to an identical candidate literal.
+
+    ``llvm-objdump`` may render a relocation against a local string symbol as
+    ``.rodata.str1.1:string=...`` even when the stock evidence records the same
+    target as ``.rodata.str1.1+offset``.  Accept only an adjacent ADRP/ADD pair
+    at identical instruction sites, with exact NUL-terminated bytes in the
+    stock and candidate sections.  This is deliberately limited to the merged
+    string section and never aliases different strings or arbitrary storage.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    expected_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def stock_literal(target: str) -> tuple[str, int, bytes] | None:
+        match = re.fullmatch(r"\.rodata\.str1\.1\+0x([0-9a-fA-F]+)", target)
+        if match is None:
+            return None
+        offset = int(match.group(1), 16)
+        section = stock_sections.get(".rodata.str1.1")
+        if section is None or offset >= len(section):
+            return None
+        end = section.find(b"\0", offset, min(len(section), offset + 4096))
+        if end <= offset:
+            return None
+        value = section[offset:end]
+        try:
+            text = value.decode("utf-8", errors="strict")
+        except UnicodeDecodeError:
+            return None
+        return text, offset, value
+
+    def candidate_literal(target: str) -> tuple[str, bytes] | None:
+        match = re.fullmatch(r"\.rodata\.str1\.1:string=(.+)", target)
+        if match is None:
+            return None
+        try:
+            text = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            return None
+        if not isinstance(text, str) or not text:
+            return None
+        value = text.encode("utf-8")
+        section = candidate_sections.get(".rodata.str1.1")
+        if section is None or section.find(value + b"\0") < 0:
+            return None
+        return text, value
+
+    for index in range(len(stock) - 1):
+        stock_pair = [split(item) for item in stock[index : index + 2]]
+        candidate_pair = [split(item) for item in candidate[index : index + 2]]
+        if any(item is None for item in stock_pair + candidate_pair):
+            continue
+        stock_typed = [item for item in stock_pair if item is not None]
+        candidate_typed = [item for item in candidate_pair if item is not None]
+        if (
+            tuple(item[0] for item in stock_typed) != expected_types
+            or tuple(item[0] for item in candidate_typed) != expected_types
+            or stock_typed[0][1] != stock_typed[1][1]
+            or candidate_typed[0][1] != candidate_typed[1][1]
+            or stock_instruction_indices[index + 1]
+            != stock_instruction_indices[index] + 1
+            or candidate_instruction_indices[index + 1]
+            != candidate_instruction_indices[index] + 1
+            or stock_instruction_indices[index : index + 2]
+            != candidate_instruction_indices[index : index + 2]
+        ):
+            continue
+        stock_value = stock_literal(stock_typed[0][1])
+        candidate_value = candidate_literal(candidate_typed[0][1])
+        if stock_value is None or candidate_value is None:
+            continue
+        stock_text, stock_offset, stock_bytes = stock_value
+        candidate_text, candidate_bytes = candidate_value
+        if stock_text != candidate_text or stock_bytes != candidate_bytes:
+            continue
+        digest = hashlib.sha256(stock_bytes).hexdigest()
+        alias = f"<rodata_string:sha256={digest}>"
+        for pair_offset, relocation_type in enumerate(expected_types):
+            stock[index + pair_offset] = f"{relocation_type} {alias}"
+            candidate[index + pair_offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "kind": "stock_rodata_string_offset",
+                "reason": (
+                    "adjacent ADRP/ADD relocations at identical instruction sites "
+                    "resolve to byte-identical NUL-terminated string data"
+                ),
+                "stock_target": stock_typed[0][1],
+                "candidate_target": candidate_typed[0][1],
+                "stock_offset": stock_offset,
+                "string_sha256": digest,
+                "instruction_indices": stock_instruction_indices[index : index + 2],
+            }
+        )
+    return stock, candidate, evidence
+
+
 def canonicalize_anonymous_section_offsets(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2610,6 +2846,217 @@ def canonicalize_same_site_storage_targets(
     return stock, candidate, evidence
 
 
+def canonicalize_named_bss_to_stripped_mapping(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_symbols: dict[str, tuple[str, int]],
+    candidate_symbols: dict[str, tuple[str, int]],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Bind a named stock ``.bss`` object to an anonymous candidate target.
+
+    The mapping is accepted only when an ADRP/load pair in both ELF symbol
+    tables resolves to the same ``.bss`` byte and the instruction sites and
+    relocation types are identical.  The pair may contain intervening
+    instructions because AArch64 permits the loaded register to remain live
+    across those instructions.  This handles compiler mapping-symbol or
+    section-relative spelling without creating a free-form name alias.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    def split(value: str) -> tuple[str, str] | None:
+        parts = value.split(" ", 1)
+        return (parts[0], parts[1]) if len(parts) == 2 else None
+
+    def named_stock_storage(target: str) -> bool:
+        return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.]*", target))
+
+    def anonymous_candidate_storage(target: str) -> bool:
+        return bool(
+            re.fullmatch(r"\$d\.[0-9]+", target)
+            or re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target)
+        )
+
+    load_types = {
+        "R_AARCH64_LDST8_ABS_LO12_NC",
+        "R_AARCH64_LDST16_ABS_LO12_NC",
+        "R_AARCH64_LDST32_ABS_LO12_NC",
+        "R_AARCH64_LDST64_ABS_LO12_NC",
+    }
+    for index in range(len(stock) - 1):
+        stock_pair = [split(value) for value in stock[index : index + 2]]
+        candidate_pair = [split(value) for value in candidate[index : index + 2]]
+        if any(value is None for value in stock_pair + candidate_pair):
+            continue
+        stock_typed = [value for value in stock_pair if value is not None]
+        candidate_typed = [value for value in candidate_pair if value is not None]
+        if (
+            stock_typed[0][0] != "R_AARCH64_ADR_PREL_PG_HI21"
+            or candidate_typed[0][0] != "R_AARCH64_ADR_PREL_PG_HI21"
+            or stock_typed[1][0] != candidate_typed[1][0]
+            or stock_typed[1][0] not in load_types
+            or stock_typed[0][1] not in stock_symbols
+            or not named_stock_storage(stock_typed[0][1])
+            or not anonymous_candidate_storage(candidate_typed[0][1])
+            or stock_typed[0][1] != stock_typed[1][1]
+            or candidate_typed[0][1] != candidate_typed[1][1]
+        ):
+            continue
+        stock_location = stock_symbols[stock_typed[0][1]]
+        candidate_location = (
+            candidate_symbols.get(candidate_typed[0][1])
+            if candidate_typed[0][1].startswith("$d.")
+            else resolved_section_target(candidate_typed[0][1], candidate_symbols)
+        )
+        if candidate_location is None:
+            continue
+        positions = stock_instruction_indices[index : index + 2]
+        if (
+            stock_location[0] != ".bss"
+            or stock_location != candidate_location
+            or positions != candidate_instruction_indices[index : index + 2]
+            or len(positions) != 2
+            or positions[1] <= positions[0]
+        ):
+            continue
+        alias = f"<named_bss_mapping:{stock_location[0]}+0x{stock_location[1]:x}>"
+        matching_indices: list[int] = []
+        for follow_index, (stock_value, candidate_value) in enumerate(
+            zip(stock_relocations, candidate_relocations, strict=True)
+        ):
+            follow_stock = split(stock_value)
+            follow_candidate = split(candidate_value)
+            if follow_stock is None or follow_candidate is None:
+                continue
+            if (
+                follow_stock[1] != stock_typed[0][1]
+                or follow_candidate[1] != candidate_typed[0][1]
+                or follow_stock[0] != follow_candidate[0]
+                or stock_instruction_indices[follow_index]
+                != candidate_instruction_indices[follow_index]
+            ):
+                continue
+            stock[follow_index] = f"{follow_stock[0]} {alias}"
+            candidate[follow_index] = f"{follow_candidate[0]} {alias}"
+            matching_indices.append(stock_instruction_indices[follow_index])
+        evidence.append(
+            {
+                "kind": "named_stock_bss_to_stripped_mapping_symbol",
+                "reason": (
+                    "same .bss ELF location, relocation types, and adjacent instruction "
+                    "sites bind the named stock object to the candidate mapping symbol"
+                ),
+                "stock_target": stock_typed[0][1],
+                "candidate_target": candidate_typed[0][1],
+                "canonical_target": alias,
+                "instruction_indices": matching_indices,
+            }
+        )
+        break
+    return stock, candidate, evidence
+
+
+def canonicalize_pointer_target_mapping_symbols(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_symbols: dict[str, tuple[str, int]],
+    candidate_symbols: dict[str, tuple[str, int]],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Bind a stock named pointer target to a candidate ``$d.N`` target.
+
+    The outer relocation must be the same pointer fingerprint at identical
+    instruction sites, and both inner targets must resolve to the same ELF
+    section-relative address.  This is limited to candidate mapping symbols.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    pointer_re = re.compile(
+        r"(?P<type>R_AARCH64_[A-Z0-9_]+) "
+        r"(?P<section>\.rodata(?:\.[A-Za-z0-9_.-]+)*):pointer="
+        r"(?P<pointer_type>R_AARCH64_[A-Z0-9_]+)->(?P<target>.+)"
+    )
+
+    def target_location(
+        target: str, symbols: dict[str, tuple[str, int]]
+    ) -> tuple[str, int] | None:
+        if target.startswith("$d."):
+            return symbols.get(target)
+        return resolved_section_target(target, symbols)
+
+    for index, (stock_value, candidate_value) in enumerate(
+        zip(stock, candidate, strict=True)
+    ):
+        stock_match = pointer_re.fullmatch(stock_value)
+        candidate_match = pointer_re.fullmatch(candidate_value)
+        if stock_match is None or candidate_match is None:
+            continue
+        if (
+            stock_match.group("type") != candidate_match.group("type")
+            or stock_match.group("section") != candidate_match.group("section")
+            or stock_match.group("pointer_type")
+            != candidate_match.group("pointer_type")
+            or not re.fullmatch(
+                r"[A-Za-z_][A-Za-z0-9_.]*", stock_match.group("target")
+            )
+            or not re.fullmatch(r"\$d\.[0-9]+", candidate_match.group("target"))
+            or stock_match.group("target") not in stock_symbols
+            or candidate_match.group("target") not in candidate_symbols
+            or stock_instruction_indices[index]
+            != candidate_instruction_indices[index]
+        ):
+            continue
+        stock_location = stock_symbols[stock_match.group("target")]
+        candidate_location = candidate_symbols[candidate_match.group("target")]
+        if stock_location != candidate_location:
+            continue
+        alias = (
+            f"<pointer_target:{stock_location[0]}+0x{stock_location[1]:x}>"
+        )
+        stock[index] = f"{stock_match.group('type')} {stock_match.group('section')}:pointer=" \
+            f"{stock_match.group('pointer_type')}->{alias}"
+        candidate[index] = (
+            f"{candidate_match.group('type')} {candidate_match.group('section')}:pointer="
+            f"{candidate_match.group('pointer_type')}->{alias}"
+        )
+        evidence.append(
+            {
+                "kind": "pointer_target_mapping_symbol",
+                "reason": (
+                    "identical pointer relocation fingerprint and ELF target location "
+                    "bind the stock symbol to the candidate mapping symbol"
+                ),
+                "stock_target": stock_match.group("target"),
+                "candidate_target": candidate_match.group("target"),
+                "canonical_target": alias,
+                "instruction_index": stock_instruction_indices[index],
+            }
+        )
+    return stock, candidate, evidence
+
+
 def canonicalize_repeated_anonymous_bss_pairs(
     stock_relocations: list[str],
     candidate_relocations: list[str],
@@ -2814,7 +3261,11 @@ def canonicalize_stripped_codetag_alloc_tags(
         target = value.split(" ", 1)[1] if " " in value else ""
         return (
             CODETAG_SECTION_TARGET_RE.fullmatch(value) is not None
-            or target in {"__start_alloc_tags", "__stop_alloc_tags"}
+            or target in {
+                ".codetag.alloc_tags",
+                "__start_alloc_tags",
+                "__stop_alloc_tags",
+            }
             or ALLOC_TAG_RE.fullmatch(value) is not None
         )
 
@@ -2882,6 +3333,11 @@ def main() -> int:
             "pair; required when a stock module contains duplicate symbol names"
         ),
     )
+    parser.add_argument(
+        "--all-function-identities",
+        action="store_true",
+        help="compare every shared stock/candidate manifest identity, including duplicate symbols",
+    )
     parser.add_argument("--ghidra-semantic-report", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -2927,6 +3383,42 @@ def main() -> int:
         name: (section, offset)
         for name, (section, offset, _size) in candidate_symbol_ranges.items()
     }
+    # A reconstructed module must disambiguate duplicate stock names in its
+    # ELF symbols (for example syna_tcm_buf_copy_2).  The extraction manifest
+    # may retain the stock/Ghidra entry for a duplicate whose candidate symbol
+    # moved, so bind compiler suffixes by stable duplicate order rather than by
+    # that path-dependent address.  This affects branch-target spelling, not
+    # opcodes or relocation sites.
+    candidate_target_aliases: dict[str, str] = {}
+    stock_functions = sorted(
+        {
+            record.get("function")
+            for record in stock_records_by_id.values()
+            if isinstance(record.get("function"), str)
+        }
+    )
+    for stock_function in stock_functions:
+        duplicate_ids = [
+            function_id
+            for function_id, record in stock_records_by_id.items()
+            if record.get("function") == stock_function
+            and function_id in candidate_records_by_id
+        ]
+        if len(duplicate_ids) < 2:
+            continue
+        duplicate_ids.sort(
+            key=lambda function_id: int(
+                str(stock_records_by_id[function_id].get("ghidra_entry", "0")), 16
+            )
+        )
+        for duplicate_index, _function_id in enumerate(duplicate_ids):
+            candidate_name = (
+                stock_function
+                if duplicate_index == 0
+                else f"{stock_function}_{duplicate_index - 1}"
+            )
+            if candidate_name in candidate_symbols and candidate_name != stock_function:
+                candidate_target_aliases[candidate_name] = stock_function
     stock_relocation_sites = elf_relocation_sites(stock_source)
     candidate_relocation_sites = elf_relocation_sites(candidate_source)
     stock_blob_aliases, candidate_blob_aliases = matched_rodata_blob_aliases(
@@ -2943,7 +3435,16 @@ def main() -> int:
     for pair in args.function_pairs or []:
         stock_selector, candidate_selector = parse_function_pair(pair)
         comparisons.append((pair, stock_selector, candidate_selector))
-    if not comparisons:
+    if args.all_function_identities:
+        existing_pairs = {(item[1], item[2]) for item in comparisons}
+        for function_id in sorted(
+            set(stock_records_by_id) & set(candidate_records_by_id)
+        ):
+            pair = (function_id, function_id, function_id)
+            if (pair[1], pair[2]) not in existing_pairs:
+                comparisons.append(pair)
+                existing_pairs.add((pair[1], pair[2]))
+    elif not comparisons:
         comparisons = [
             (function, function, function)
             for function in sorted(set(stock_records) & set(candidate_records))
@@ -2979,6 +3480,7 @@ def main() -> int:
                 candidate_symbols,
                 candidate_relocation_sites,
                 candidate_blob_aliases,
+                candidate_target_aliases,
             )
         )
         (
@@ -3064,10 +3566,23 @@ def main() -> int:
         (
             stock_relocations_compared,
             candidate_relocations_compared,
-            initialized_unk_string_equivalences,
-        ) = canonicalize_initialized_unk_string_relocations(
+            stock_rodata_string_equivalences,
+        ) = canonicalize_stock_rodata_string_offsets(
             stock_relocations,
             candidate_relocations,
+            stock_sections,
+            candidate_sections,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            initialized_unk_string_equivalences,
+        ) = canonicalize_initialized_unk_string_relocations(
+            stock_relocations_compared,
+            candidate_relocations_compared,
             candidate_sections,
             candidate_symbols,
             non_branch_relocation_instruction_indices(stock_path),
@@ -3129,12 +3644,27 @@ def main() -> int:
             non_branch_relocation_instruction_indices(stock_path),
             non_branch_relocation_instruction_indices(candidate_path),
         )
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            single_mutex_key_equivalences,
+        ) = canonicalize_single_stripped_mutex_key(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stock_instructions_compared
+            if stock_instructions_compared == candidate_instructions_compared
+            else [],
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+        )
         relocation_equivalences = (
-            initialized_unk_string_equivalences
+            stock_rodata_string_equivalences
+            + initialized_unk_string_equivalences
             + anonymous_section_equivalences
             + dispatch_table_equivalences
             + relocation_equivalences
             + mutex_key_equivalences
+            + single_mutex_key_equivalences
         )
         (
             stock_relocations_compared,
@@ -3190,6 +3720,34 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += same_site_storage_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            named_bss_mapping_equivalences,
+        ) = canonicalize_named_bss_to_stripped_mapping(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stock_symbols,
+            candidate_symbols,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += named_bss_mapping_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            pointer_target_mapping_equivalences,
+        ) = canonicalize_pointer_target_mapping_symbols(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            stock_symbols,
+            candidate_symbols,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += pointer_target_mapping_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
