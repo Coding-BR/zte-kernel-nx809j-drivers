@@ -1143,3 +1143,17 @@ obj-files := $(filter-out syna_dev_shutdown.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_dev_shutdown.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_dev_shutdown_exact.o
 AFLAGS_syna_dev_shutdown_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_goodix_ts_resume
+src-files := $(filter-out $(src)/tpd_goodix_ts_resume.c, $(src-files))
+obj-files := $(filter-out tpd_goodix_ts_resume.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_goodix_ts_resume.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_goodix_ts_resume_exact.o
+AFLAGS_tpd_goodix_ts_resume_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_goodix_ts_suspend
+src-files := $(filter-out $(src)/tpd_goodix_ts_suspend.c, $(src-files))
+obj-files := $(filter-out tpd_goodix_ts_suspend.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_goodix_ts_suspend.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_goodix_ts_suspend_exact.o
+AFLAGS_tpd_goodix_ts_suspend_exact.o := -g0 -I$(src)
