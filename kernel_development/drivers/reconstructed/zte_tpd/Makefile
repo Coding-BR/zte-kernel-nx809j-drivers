@@ -1171,3 +1171,10 @@ obj-files := $(filter-out ufp_notifier_cb.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_notifier_cb.o, $(zte_tpd-objs))
 zte_tpd-objs += ufp_notifier_cb_exact.o
 AFLAGS_ufp_notifier_cb_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zlog_register_work
+src-files := $(filter-out $(src)/zlog_register_work.c, $(src-files))
+obj-files := $(filter-out zlog_register_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out zlog_register_work.o, $(zte_tpd-objs))
+zte_tpd-objs += zlog_register_work_exact.o
+AFLAGS_zlog_register_work_exact.o := -g0 -I$(src)
