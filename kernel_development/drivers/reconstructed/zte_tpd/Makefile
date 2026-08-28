@@ -1080,3 +1080,17 @@ obj-files := $(filter-out tpd_set_palm_mode.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_set_palm_mode.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_palm_mode_exact.o
 AFLAGS_tpd_set_palm_mode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_fake_sleep
+src-files := $(filter-out $(src)/tpd_set_fake_sleep.c, $(src-files))
+obj-files := $(filter-out tpd_set_fake_sleep.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_fake_sleep.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_fake_sleep_exact.o
+AFLAGS_tpd_set_fake_sleep_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_screen_off_awake
+src-files := $(filter-out $(src)/tpd_set_screen_off_awake.c, $(src-files))
+obj-files := $(filter-out tpd_set_screen_off_awake.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_screen_off_awake.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_screen_off_awake_exact.o
+AFLAGS_tpd_set_screen_off_awake_exact.o := -g0 -I$(src)
