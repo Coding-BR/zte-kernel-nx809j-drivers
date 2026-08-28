@@ -1213,3 +1213,10 @@ obj-files := $(filter-out ufp_get_lcdstate.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_get_lcdstate.o, $(zte_tpd-objs))
 zte_tpd-objs += ufp_get_lcdstate_exact.o
 AFLAGS_ufp_get_lcdstate_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ztp_probe_work
+src-files := $(filter-out $(src)/ztp_probe_work.c, $(src-files))
+obj-files := $(filter-out ztp_probe_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ztp_probe_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ztp_probe_work_exact.o
+AFLAGS_ztp_probe_work_exact.o := -g0 -I$(src)
