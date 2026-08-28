@@ -1129,3 +1129,10 @@ obj-files := $(filter-out tpd_reset_fw_data_pos_and_size.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_reset_fw_data_pos_and_size.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_reset_fw_data_pos_and_size_exact.o
 AFLAGS_tpd_reset_fw_data_pos_and_size_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_report_lcd_state_work
+src-files := $(filter-out $(src)/ufp_report_lcd_state_work.c, $(src-files))
+obj-files := $(filter-out ufp_report_lcd_state_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_lcd_state_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_lcd_state_work_exact.o
+AFLAGS_ufp_report_lcd_state_work_exact.o := -g0 -I$(src)
