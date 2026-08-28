@@ -941,3 +941,17 @@ obj-files := $(filter-out tp_single_game_write.o, $(obj-files))
 zte_tpd-objs := $(filter-out tp_single_game_write.o, $(zte_tpd-objs))
 zte_tpd-objs += tp_single_game_write_exact.o
 AFLAGS_tp_single_game_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_tp_noise_show
+src-files := $(filter-out $(src)/get_tp_noise_show.c, $(src-files))
+obj-files := $(filter-out get_tp_noise_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_tp_noise_show.o, $(zte_tpd-objs))
+zte_tpd-objs += get_tp_noise_show_exact.o
+AFLAGS_get_tp_noise_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_tp_noise_store
+src-files := $(filter-out $(src)/get_tp_noise_store.c, $(src-files))
+obj-files := $(filter-out get_tp_noise_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_tp_noise_store.o, $(zte_tpd-objs))
+zte_tpd-objs += get_tp_noise_store_exact.o
+AFLAGS_get_tp_noise_store_exact.o := -g0 -I$(src)
