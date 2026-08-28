@@ -1101,3 +1101,10 @@ obj-files := $(filter-out syna_testing_remove_dir.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_testing_remove_dir.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_testing_remove_dir_exact.o
 AFLAGS_syna_testing_remove_dir_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_clear_command_processing
+src-files := $(filter-out $(src)/syna_tcm_clear_command_processing.c, $(src-files))
+obj-files := $(filter-out syna_tcm_clear_command_processing.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_clear_command_processing.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_clear_command_processing_exact.o
+AFLAGS_syna_tcm_clear_command_processing_exact.o := -g0 -I$(src)
