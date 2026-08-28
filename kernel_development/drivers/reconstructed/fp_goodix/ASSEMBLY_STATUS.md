@@ -5,19 +5,19 @@ Este relatorio usa o modulo OEM como fonte da verdade. A comparacao canonica est
 ## Resultado
 
 - Funcoes verificadas: 30
-- Identidade de opcode, relocacao, secao e tamanho: 27
+- Identidade de opcode, relocacao, secao e tamanho: 28
 - Call graph equivalente: 30/30
 - KCFI equivalente: 23/23 funcoes instrumentadas
-- Funcoes sem identidade binaria completa: 3
+- Funcoes sem identidade binaria completa: 2
 
 | Funcao | Bytes OEM/candidato | Instrucoes OEM/candidato | Relocations OEM/candidato | Diferenca restante |
 |---|---:|---:|---:|---|
 | `gf_ioctl` | 1436/1424 | 359/356 | 122/122 | topologia de blocos, ordem de relocations e 12 bytes |
-| `gf_open` | 508/508 | 127/127 | 59/59 | somente sequencia de opcodes |
+| `gf_open` | 508/508 | 127/127 | 59/59 | exata |
 | `gf_parse_dts` | 828/828 | 207/207 | 118/118 | layout de blocos e ordem de relocations |
 | `gf_probe` | 1040/1040 | 260/260 | 120/120 | exata |
 
-Para as três funções ainda abertas, o conjunto de chamadas, as contagens estruturais indicadas e os type IDs KCFI aplicáveis foram validados. `gf_probe` agora também possui identidade integral de opcode, relocação e tamanho. Isso é evidência forte de proximidade estrutural, mas não substitui identidade binária total do módulo, revisão independente ou teste no hardware.
+Para as duas funções ainda abertas, o conjunto de chamadas, as contagens estruturais indicadas e os type IDs KCFI aplicáveis foram validados. `gf_probe` e `gf_open` agora possuem identidade integral de opcode, relocação e tamanho. Isso é evidência forte de proximidade estrutural, mas não substitui identidade binária total do módulo, revisão independente ou teste no hardware.
 
 ## Evidencias canonicas
 
@@ -53,6 +53,14 @@ Uma variante isolada de `gf_parse_dts` que inlinha o `pinctrl_select_state` obse
 - Joern estrito: `gf_parse_dts` agora apresenta a chamada direta a `pinctrl_select_state`; os quatro helpers de cópia do stock são reconciliados explicitamente com as APIs públicas `copy_to_user/copy_from_user`. O slice de dados permanece limitado pelo runtime Windows.
 - Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/canonical_direct_promotion_20260828.json`.
 - Rechecagem isolada: `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\validation\fp_goodix_power_promoted_recheck_20260828\`; 30/30 extraídos, quatro bloqueadores conhecidos, host harness PASS/reprodutível. A comparação isolada de `gf_ioctl` passou relocations e manteve somente `symbol_size/instructions` divergentes.
+
+## Promoção canônica de `gf_open` — 2026-08-28
+
+- Fonte promovida: `fp_goodix_core.c`, SHA-256 `d12c977c8ad16131e96b745872e751d3ea304c5ca7c7434599ce7d400cf04de2`.
+- Comparação isolada: `gf_open` passou 508/508 bytes, 127/127 instruções, 59/59 relocations e identidade de seção.
+- Recheck do módulo completo: 30 funções extraídas, 28 exatas; divergências restantes somente em `gf_ioctl` e `gf_parse_dts`.
+- Host harness: PASS, reprodutível, 30 funções cobertas.
+- Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/gf_open_exact_promotion_20260828.json`.
 
 ## Promoção canônica de `gf_probe` — 2026-08-28
 

@@ -117,12 +117,12 @@ Disassembly of section .text:
 		00000000000006dc:  R_AARCH64_CALL26	_printk
      6e0: b94032e8     	ldr	w8, [x23, #0x30]
      6e4: 7100051f     	cmp	w8, #0x1
-     6e8: 540004a1     	b.ne	0x77c <gf_open+0x1c0>
+     6e8: 540004c1     	b.ne	0x780 <gf_open+0x1c4>
      6ec: aa1303e0     	mov	x0, x19
      6f0: 94000000     	bl	0x6f0 <gf_open+0x134>
 		00000000000006f0:  R_AARCH64_CALL26	gf_parse_dts
-     6f4: 34000180     	cbz	w0, 0x724 <gf_open+0x168>
-     6f8: 2a0003f4     	mov	w20, w0
+     6f4: 2a0003f4     	mov	w20, w0
+     6f8: 34000160     	cbz	w0, 0x724 <gf_open+0x168>
      6fc: 90000000     	adrp	x0, 0x0 <.text>
 		00000000000006fc:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x30
      700: 91000000     	add	x0, x0, #0x0
@@ -163,27 +163,27 @@ Disassembly of section .text:
      75c: b90042e0     	str	w0, [x23, #0x40]
      760: 94000000     	bl	0x760 <gf_open+0x1a4>
 		0000000000000760:  R_AARCH64_CALL26	request_threaded_irq
-     764: 350001a0     	cbnz	w0, 0x798 <gf_open+0x1dc>
-     768: b94042e0     	ldr	w0, [x23, #0x40]
-     76c: 52800021     	mov	w1, #0x1                // =1
-     770: 52800034     	mov	w20, #0x1               // =1
-     774: 94000000     	bl	0x774 <gf_open+0x1b8>
-		0000000000000774:  R_AARCH64_CALL26	irq_set_irq_wake
-     778: b90046f4     	str	w20, [x23, #0x44]
-     77c: aa1303e0     	mov	x0, x19
-     780: 528000a1     	mov	w1, #0x5                // =5
-     784: 94000000     	bl	0x784 <gf_open+0x1c8>
-		0000000000000784:  R_AARCH64_CALL26	gf_hw_reset
-     788: 2a1f03f4     	mov	w20, wzr
+     764: b94042e1     	ldr	w1, [x23, #0x40]
+     768: 350001a0     	cbnz	w0, 0x79c <gf_open+0x1e0>
+     76c: 2a0103e0     	mov	w0, w1
+     770: 52800021     	mov	w1, #0x1                // =1
+     774: 52800034     	mov	w20, #0x1               // =1
+     778: 94000000     	bl	0x778 <gf_open+0x1bc>
+		0000000000000778:  R_AARCH64_CALL26	irq_set_irq_wake
+     77c: b90046f4     	str	w20, [x23, #0x44]
+     780: aa1303e0     	mov	x0, x19
+     784: 528000a1     	mov	w1, #0x5                // =5
+     788: 94000000     	bl	0x788 <gf_open+0x1cc>
+		0000000000000788:  R_AARCH64_CALL26	gf_hw_reset
      78c: 52800028     	mov	w8, #0x1                // =1
-     790: 3901a2e8     	strb	w8, [x23, #0x68]
-     794: 17ffffbf     	b	0x690 <gf_open+0xd4>
-     798: 2a0003f4     	mov	w20, w0
-     79c: 90000000     	adrp	x0, 0x0 <.text>
-		000000000000079c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c7
-     7a0: 91000000     	add	x0, x0, #0x0
-		00000000000007a0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c7
-     7a4: 2a1403e1     	mov	w1, w20
+     790: 2a1f03f4     	mov	w20, wzr
+     794: 3901a2e8     	strb	w8, [x23, #0x68]
+     798: 17ffffbe     	b	0x690 <gf_open+0xd4>
+     79c: 2a0003f4     	mov	w20, w0
+     7a0: 90000000     	adrp	x0, 0x0 <.text>
+		00000000000007a0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c7
+     7a4: 91000000     	add	x0, x0, #0x0
+		00000000000007a4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c7
      7a8: 94000000     	bl	0x7a8 <gf_open+0x1ec>
 		00000000000007a8:  R_AARCH64_CALL26	_printk
      7ac: aa1303e0     	mov	x0, x19

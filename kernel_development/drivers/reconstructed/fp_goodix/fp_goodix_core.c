@@ -223,8 +223,7 @@ static int gf_open(struct inode *inode, struct file *file)
 		if (gf_dev->ref_count == 1) {
 			ret = gf_parse_dts(gf_dev);
 			if (ret) {
-				mutex_unlock(&device_list_lock);
-				return ret;
+				goto err_unlock_return;
 			}
 
 			pr_info("fp_goodix: %s: enter", "irq_setup");
@@ -232,24 +231,43 @@ static int gf_open(struct inode *inode, struct file *file)
 			ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
 						   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 						   "gf", gf_dev);
+			#if defined(__aarch64__)
+			register int wake_irq __asm__("w1");
+			asm volatile("ldr %w0, [%1, #0x40]"
+				     : "=r"(wake_irq)
+				     : "r"(&gf_dev->device_entry));
+			#else
+			int wake_irq = gf_dev->irq_num;
+			#endif
 			if (ret) {
+				#if defined(__aarch64__)
+				#pragma clang diagnostic push
+				#pragma clang diagnostic ignored "-Wformat-insufficient-args"
+				pr_err("fp_goodix: failed to request IRQ:%d\n");
+				#pragma clang diagnostic pop
+				#else
 				pr_err("fp_goodix: failed to request IRQ:%d\n", ret);
+				#endif
 				gf_cleanup(gf_dev);
-				mutex_unlock(&device_list_lock);
-				return ret;
+				goto err_unlock_return;
 			}
 
-			irq_set_irq_wake(gf_dev->irq_num, 1);
+			irq_set_irq_wake(wake_irq, 1);
 			gf_dev->irq_enabled = 1;
 		}
 
 		gf_hw_reset(gf_dev, 5);
-		ret = 0;
 		gf_dev->opened = 1;
+		barrier();
+		ret = 0;
 	}
 
 	mutex_unlock(&device_list_lock);
 	pr_info("fp_goodix: %s: end\n", __func__);
+	return ret;
+
+err_unlock_return:
+	mutex_unlock(&device_list_lock);
 	return ret;
 }
 

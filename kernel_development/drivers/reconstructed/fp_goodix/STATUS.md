@@ -10,7 +10,7 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 | Mapa stock -> fonte | PASS estrutural | 30/30 funcoes com hashes; `semantic_equivalence: UNPROVEN`; revisao independente nao executada |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
 | KCFI | PASS | 23/23 type IDs instrumentados coincidentes; 7 funcoes sem preambulo KCFI independente |
-| Assembly | PARCIAL | 27/30 funcoes exatas; tres diferencas delimitadas em `ASSEMBLY_STATUS.md` |
+| Assembly | PARCIAL | 28/30 funcoes exatas; duas diferencas delimitadas em `ASSEMBLY_STATUS.md` |
 | Host harness | PASS | 30/30 funcoes cobertas; duas compilacoes e duas execucoes reproduziveis |
 | Build GKI/KMI | PASS parcial | AArch64 REL, imports, aliases e namespace validados; build Docker reproduzivel, mas a auditoria ainda registra diferenca de dependencias/vermagic stock e o candidato normal nao e o artefato de auditoria KCFLAGS |
 | Microtarefas | PASS offline | 30/30 com evidencias separadas de compile, KCFI e teste verificadas por SHA-256 |
@@ -18,13 +18,13 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 
 Candidato atual:
 
-- SHA-256: `68338a7bec5eba35fd11456bf4a73c482bb191e3661ee5b529df2b1b4b8d6a2f`
-- tamanho: `730720` bytes
+- SHA-256: `13ce11deef98d2b2d10ae5b042a2285c3c803e77b6a7c488b1239bff60e445fd`
+- tamanho: `730792` bytes
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Bloqueadores para uma declaracao de equivalencia total:
 
-1. Fechar identidade de opcode de `gf_ioctl`, `gf_open` e `gf_parse_dts`.
+1. Fechar identidade de opcode de `gf_ioctl` e `gf_parse_dts`.
 2. Executar revisao independente do mapa estrutural.
 3. Executar o protocolo controlado no NX809J com rollback e logs.
 
@@ -44,3 +44,10 @@ Rechecagem e promoção de `gf_probe` em 2026-08-28:
 - A correção usa a ordem de inicialização observada, gravação zero-extend de 64 bits no par de sentinelas e `list_add` para a topologia `CONFIG_LIST_HARDENED` do stock.
 - O módulo canônico foi recompilado no snapshot `kernel-docker-workspace\\engenharia\\curated\\fp_goodix` com SHA-256 `68338a7bec5eba35fd11456bf4a73c482bb191e3661ee5b529df2b1b4b8d6a2f`; o recheck completo ficou em 27/30 funções exatas, sem regressão nas três funções ainda abertas.
 - Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/probe_initialization_list_add_promotion_20260828.json`.
+
+Rechecagem e promoção de `gf_open` em 2026-08-28:
+
+- A variante com rótulo comum de unlock/return, argumento de IRQ materializado a partir de `device_entry` e ordem de stores observada no stock reproduziu `gf_open` exatamente: 508 bytes, 127 instruções e relocations equivalentes.
+- O módulo canônico foi recompilado independentemente no Docker; o recheck completo passou 28/30 funções, removendo `gf_open` sem regressão nas 27 funções anteriormente exatas.
+- O harness host passou de forma reproduzível, cobrindo 30 funções.
+- Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/gf_open_exact_promotion_20260828.json`.
