@@ -1370,3 +1370,10 @@ obj-files := $(filter-out tpd_get_singlefpgesture.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_get_singlefpgesture.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_get_singlefpgesture_exact.o
 AFLAGS_tpd_get_singlefpgesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_one_key
+src-files := $(filter-out $(src)/tpd_set_one_key.c, $(src-files))
+obj-files := $(filter-out tpd_set_one_key.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_one_key.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_one_key_exact.o
+AFLAGS_tpd_set_one_key_exact.o := -g0 -I$(src)
