@@ -29,3 +29,11 @@ Para as quatro funcoes, o conjunto de chamadas, as contagens estruturais indicad
 - `microtask_audit.json`: verificacao dos hashes das 30 microtarefas.
 
 Os diretorios `candidate_assembly_pass*` foram usados apenas durante a convergencia e nao fazem parte da evidencia canonica.
+
+## Rechecagem diagnóstica Docker — 2026-08-28
+
+Duas compilações limpas do snapshot canônico no Docker `nubia-sm8850-kernel-builder:latest`, usando `clang-r536225`, produziram novamente o candidato `D114E25B…` com 730632 bytes. A evidência operacional está em `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\validation\fp_goodix_recheck_20260828\` e o resumo hashado está em `reverse_engineering/validation/reconstructed/fp_goodix/diagnostic_recheck_20260828.json`.
+
+Foi testada uma variante isolada de `gf_probe` que removeu os sentinelas iniciais de `irq_gpio/reset_gpio`, inicializou `irq_num` e reordenou `pdev`. Ela reproduziu a forma do `stur` de 64 bits observada no stock, mas gerou 258/260 instruções e 1032/1040 bytes; também permaneceu divergente na sequência de `list_add_tail`. O SHA-256 da variante foi `751744CA9913DD006E1D75B793A0B3192ED0176199C22A85DF65385E9E573814`. A variante foi rejeitada e não alterou a fonte canônica.
+
+Conclusão operacional: `gf_ioctl` exige reconstrução de CFG/cases; `gf_open` e `gf_parse_dts` exigem recuperação de idiomática de controle/cleanup; `gf_probe` exige separar inicialização de campos da expansão de lista. Nenhuma das quatro divergências está autorizada para patch pós-link por palavra isolada.
