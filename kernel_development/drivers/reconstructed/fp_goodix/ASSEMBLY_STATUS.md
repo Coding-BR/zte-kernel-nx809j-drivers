@@ -42,4 +42,12 @@ Conclusão operacional: `gf_ioctl` exige reconstrução de CFG/cases; `gf_open` 
 
 O job versionado `workspace_tools/reconstruction_pipeline/hard_driver_job.fp_goodix.example.json` foi executado com Joern pinado, Java 21 e Docker `nubia-sm8850-kernel-builder:latest`/`clang-r536225`. A onda `gf_open@00100de8` passou identidade, mapa, Joern estrito, slice, Docker reproduzível em dois ciclos e KCFI; Assembly continua aberto por ordenação de opcodes. A evidência detalhada está em `reverse_engineering/validation/reconstructed/fp_goodix/protocol_recheck_20260828.json`.
 
-Uma variante isolada de `gf_parse_dts` que inlinha o `pinctrl_select_state` observado no stock manteve 207 instruções e 84 relocations, mas não melhorou a comparação de opcodes; foi rejeitada e não promovida. O candidato canônico permanece inalterado. O protocolo não executou hardware e não autoriza declaração de equivalência total.
+Uma variante isolada de `gf_parse_dts` que inlinha o `pinctrl_select_state` observado no stock manteve 207 instruções e 84 relocations, mas não melhorou a comparação de opcodes. A alteração de fonte foi promovida porque corrigiu a topologia de chamada direta no Joern sem degradar as outras 26 funções; a variante binária isolada permanece apenas como evidência diagnóstica. O protocolo não executou hardware e não autoriza declaração de equivalência total.
+
+## Promoção canônica — 2026-08-28
+
+- Fonte promovida: `fp_goodix_platform.c`, SHA-256 `6ae2f637f74f957c05cf5d94ac18d833c176d8e3ccb520c1eb2157e149045b5d`.
+- Candidato canônico normal: SHA-256 `2529e9880e78e05107f231e75da7e2f5e2eef51c2c933d6f285db2507c49a00d`, `730896` bytes.
+- Comparação AArch64 com o mesmo extrator stock/candidato: 26/30 funções continuam exatas; as quatro diferenças permanecem delimitadas, sem regressão nas 26 funções fechadas.
+- Joern estrito: `gf_parse_dts` agora apresenta a chamada direta a `pinctrl_select_state`; os quatro helpers de cópia do stock são reconciliados explicitamente com as APIs públicas `copy_to_user/copy_from_user`. O slice de dados permanece limitado pelo runtime Windows.
+- Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/canonical_direct_promotion_20260828.json`.

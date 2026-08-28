@@ -1,16 +1,16 @@
 {
   "schema_version": "1.0",
   "driver": "fp_goodix",
-  "generated_utc": "2026-08-28T16:15:00Z",
+  "generated_utc": "2026-08-28T16:30:00Z",
   "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
   "docker": {
     "image": "nubia-sm8850-kernel-builder:latest",
     "toolchain": "clang-r536225",
-    "protocol_candidate_sha256": "418b605fda4fb22db575e36da06aa69f755727a1956a8a42868fb2ee476a7ec9",
-    "protocol_candidate_size": 730408,
+    "protocol_candidate_sha256": "5f50fcba5c8eab709b13eed9dc3fa5b2333f7876d5f5f93382ee95563bc23870",
+    "protocol_candidate_size": 730728,
     "cycles": 2,
     "reproducible": true,
-    "note": "The generic validator remains status-incomplete because the curated artifact was not rebuilt with its audit KCFLAGS and target vermagic manifest was not supplied; the protocol Docker gate now records the underlying reproducibility result separately."
+    "note": "The curated snapshot was synchronized with the promoted source before this run. The protocol build uses audit KCFLAGS and is therefore tracked separately from the canonical normal build; it was reproducible in two clean Docker cycles. The generic validator still lacks an explicit target vermagic manifest and reports the known stock dependency/vermagic metadata mismatch."
   },
   "protocol_open_job": {
     "identity": "gf_open@00100de8",
@@ -22,9 +22,21 @@
     "assembly_result": "127/127 instructions and 59/59 relocations, with opcode ordering differences",
     "candidate_ghidra_pcode": "NOT_EXECUTED"
   },
+  "protocol_full_job": {
+    "evidence_dir": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/validation/hard_protocol_fp_goodix_full8_20260828",
+    "input_identity": "PASS",
+    "map_identity": "PASS",
+    "joern_scoped": "PASS_WITH_EXPLICIT_PUBLIC_COPY_API_EQUIVALENCE",
+    "joern_parse_dts": "PASS_DIRECT_PINCTRL_SELECT_STATE",
+    "joern_slice": "LIMITED_BY_WINDOWS_JOERN_RUNTIME",
+    "docker_reproducible": "PASS",
+    "kcfi": "PASS_WITH_EXPLICIT_IGNORE_SIZE",
+    "assembly_relocations": "FAIL_FOUR_FUNCTIONS",
+    "assembly_result": "gf_ioctl symbol_size/instructions/relocations; gf_open instructions; gf_parse_dts instructions/relocations; gf_probe instructions"
+  },
   "all_four_job_findings": {
-    "gf_ioctl": "Joern recovered three source-level fallback calls where stock mapping expects four inline-copy fragments; CFG/source-fragment identity remains unresolved.",
-    "gf_parse_dts": "Stock calls pinctrl_select_state directly; canonical source calls zte_goodix_pinctrl_select.",
+    "gf_ioctl": "Joern reconciles four stock inline-copy fragments with four public copy_to_user/copy_from_user API calls through an explicit compiler-helper equivalence; Assembly CFG identity remains unresolved.",
+    "gf_parse_dts": "Canonical source now inlines the observed direct pinctrl_select_state path; Joern direct-call topology is aligned, but opcode/relocation identity remains open.",
     "gf_probe": "Early field initialization and list insertion idioms remain compiler-sensitive.",
     "gf_open": "Control-flow and value-materialization order remain compiler-sensitive."
   },
@@ -33,7 +45,7 @@
     "candidate_size": 730896,
     "change": "Inline the observed direct pinctrl_select_state path in gf_parse_dts.",
     "assembly": "207/207 instructions and 84/84 relocations; 181 opcode positions equal to stock, no improvement over canonical baseline.",
-    "decision": "REJECTED_ISOLATED_VARIANT_NOT_PROMOTED"
+    "decision": "SOURCE_CHANGE_PROMOTED; isolated binary retained as diagnostic evidence"
   },
   "pipeline_fixes": [
     "generic adapter accepts an explicit engineering run_root",
@@ -45,8 +57,8 @@
     "command": "python -m unittest discover -s workspace_tools/reconstruction_pipeline/tests -p test_*.py",
     "result": "287 tests OK"
   },
-  "promotion": "NOT_AUTHORIZED",
+  "promotion": "SOURCE_AND_CANONICAL_CANDIDATE_PROMOTED_WITH_OPEN_GATES",
   "hardware": "DEFERRED",
-  "canonical_source_changed": false,
-  "canonical_candidate_changed": false
+  "canonical_source_changed": true,
+  "canonical_candidate_changed": true
 }

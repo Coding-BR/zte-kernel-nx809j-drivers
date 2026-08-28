@@ -336,18 +336,47 @@ def source_fallback_call_counts(
     recovered = collections.Counter()
     evidence = []
     for target, expected_count in sorted(missing.items()):
-        observed_count = c_source_call_count(source_text, target)
+        # The stock compiler materializes copy_{to,from}_user as local helper
+        # symbols.  The reconstructed source is expected to use the exported
+        # kernel APIs; both symbols map to the containing source function in
+        # the reconstruction map, so a plain target-name scan would report a
+        # false missing call.  Keep this translation explicit and evidence
+        # carrying instead of weakening the strict call gate globally.
+        helper_api_names = []
+        for row in mappings:
+            if str(row.get("source_function", "")) != source_caller:
+                continue
+            stock_function = str(row.get("stock_function", ""))
+            if stock_function == "_inline_copy_to_user":
+                helper_api_names.extend(("copy_to_user", "__copy_to_user"))
+            elif stock_function == "_inline_copy_from_user":
+                helper_api_names.extend(("copy_from_user", "__copy_from_user"))
+        if target == source_caller and helper_api_names:
+            observed_count = sum(
+                c_source_call_count(source_text, api_name)
+                for api_name in sorted(set(helper_api_names))
+            )
+            fallback_method = "public_copy_api_equivalent_for_compiler_helper"
+        else:
+            observed_count = c_source_call_count(source_text, target)
+            fallback_method = "comment_and_literal_aware_identifier_call_scan"
         if observed_count:
             recovered[target] = min(observed_count, expected_count)
-            evidence.append({
+            row = {
                 "source_function": source_caller,
                 "source_file": str(candidates[0]),
                 "target": target,
                 "expected_count": expected_count,
                 "source_token_call_count": observed_count,
                 "recovered_count": recovered[target],
-                "method": "comment_and_literal_aware_identifier_call_scan",
-            })
+                "method": fallback_method,
+            }
+            if fallback_method == "public_copy_api_equivalent_for_compiler_helper":
+                row["equivalent_source_apis"] = sorted(set(helper_api_names))
+                row["stock_helper_symbols"] = [
+                    "_inline_copy_to_user", "_inline_copy_from_user"
+                ]
+            evidence.append(row)
     return recovered, evidence
 
 
@@ -550,7 +579,7 @@ def build_cross_oracle_report(
         missing = expected - observed
         unexpected = observed - expected
         fallback, fallback_rows = source_fallback_call_counts(
-            source_root, mappings, source_caller, missing
+            source_root, all_mappings, source_caller, missing
         )
         fallback_evidence.extend(fallback_rows)
         effective_observed = observed + fallback
