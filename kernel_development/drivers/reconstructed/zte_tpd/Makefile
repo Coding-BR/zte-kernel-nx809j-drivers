@@ -1234,3 +1234,10 @@ obj-files := $(filter-out tpd_probe_work_deinit.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_probe_work_deinit.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_probe_work_deinit_exact.o
 AFLAGS_tpd_probe_work_deinit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_report_lcd_state_delayed_work
+src-files := $(filter-out $(src)/ufp_report_lcd_state_delayed_work.c, $(src-files))
+obj-files := $(filter-out ufp_report_lcd_state_delayed_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_lcd_state_delayed_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_lcd_state_delayed_work_exact.o
+AFLAGS_ufp_report_lcd_state_delayed_work_exact.o := -g0 -I$(src)
