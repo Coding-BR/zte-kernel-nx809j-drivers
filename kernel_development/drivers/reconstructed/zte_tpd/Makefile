@@ -1017,3 +1017,10 @@ obj-files := $(filter-out tpd_get_screen_off_awake.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_get_screen_off_awake.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_get_screen_off_awake_exact.o
 AFLAGS_tpd_get_screen_off_awake_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_request_managed_device
+src-files := $(filter-out $(src)/syna_request_managed_device.c, $(src-files))
+obj-files := $(filter-out syna_request_managed_device.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_request_managed_device.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_request_managed_device_exact.o
+AFLAGS_syna_request_managed_device_exact.o := -g0 -I$(src)
