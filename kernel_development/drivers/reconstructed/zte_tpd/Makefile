@@ -1094,3 +1094,10 @@ obj-files := $(filter-out tpd_set_screen_off_awake.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_set_screen_off_awake.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_screen_off_awake_exact.o
 AFLAGS_tpd_set_screen_off_awake_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_testing_remove_dir
+src-files := $(filter-out $(src)/syna_testing_remove_dir.c, $(src-files))
+obj-files := $(filter-out syna_testing_remove_dir.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_remove_dir.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_remove_dir_exact.o
+AFLAGS_syna_testing_remove_dir_exact.o := -g0 -I$(src)
