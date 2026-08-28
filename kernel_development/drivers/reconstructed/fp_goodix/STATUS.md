@@ -10,7 +10,7 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 | Mapa stock -> fonte | PASS estrutural | 30/30 funcoes com hashes; `semantic_equivalence: UNPROVEN`; revisao independente nao executada |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
 | KCFI | PASS | 23/23 type IDs instrumentados coincidentes; 7 funcoes sem preambulo KCFI independente |
-| Assembly | PARCIAL | 26/30 funcoes exatas; quatro diferencas delimitadas em `ASSEMBLY_STATUS.md` |
+| Assembly | PARCIAL | 27/30 funcoes exatas; tres diferencas delimitadas em `ASSEMBLY_STATUS.md` |
 | Host harness | PASS | 30/30 funcoes cobertas; duas compilacoes e duas execucoes reproduziveis |
 | Build GKI/KMI | PASS parcial | AArch64 REL, imports, aliases e namespace validados; build Docker reproduzivel, mas a auditoria ainda registra diferenca de dependencias/vermagic stock e o candidato normal nao e o artefato de auditoria KCFLAGS |
 | Microtarefas | PASS offline | 30/30 com evidencias separadas de compile, KCFI e teste verificadas por SHA-256 |
@@ -18,13 +18,13 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 
 Candidato atual:
 
-- SHA-256: `1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c`
+- SHA-256: `68338a7bec5eba35fd11456bf4a73c482bb191e3661ee5b529df2b1b4b8d6a2f`
 - tamanho: `730720` bytes
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Bloqueadores para uma declaracao de equivalencia total:
 
-1. Fechar identidade de opcode de `gf_ioctl`, `gf_open`, `gf_parse_dts` e `gf_probe`.
+1. Fechar identidade de opcode de `gf_ioctl`, `gf_open` e `gf_parse_dts`.
 2. Executar revisao independente do mapa estrutural.
 3. Executar o protocolo controlado no NX809J com rollback e logs.
 
@@ -37,3 +37,10 @@ Rechecagem Docker e promoção canônica em 2026-08-28:
 - `gf_ioctl` teve a condição `power_offset` reescrita na forma de branch equivalente ao stock; a rechecagem isolada não causou regressão nos 26 símbolos fechados, mas a função ainda diverge na comparação final de opcodes/tamanho.
 - O protocolo completo passou identidade, mapa, Joern estrito e KCFI (com `ignore_size` explícito para a diferença conhecida de `gf_ioctl`); o slice ficou limitado pelo runtime Windows após exceder o tempo prático.
 - Evidência detalhada: `reverse_engineering/validation/reconstructed/fp_goodix/canonical_direct_promotion_20260828.json` e `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\validation\hard_protocol_fp_goodix_full8_20260828\`.
+
+Rechecagem e promoção de `gf_probe` em 2026-08-28:
+
+- O Docker reproduziu `gf_probe` com identidade integral: 1040 bytes, 260 instruções e relocações equivalentes.
+- A correção usa a ordem de inicialização observada, gravação zero-extend de 64 bits no par de sentinelas e `list_add` para a topologia `CONFIG_LIST_HARDENED` do stock.
+- O módulo canônico foi recompilado no snapshot `kernel-docker-workspace\\engenharia\\curated\\fp_goodix` com SHA-256 `68338a7bec5eba35fd11456bf4a73c482bb191e3661ee5b529df2b1b4b8d6a2f`; o recheck completo ficou em 27/30 funções exatas, sem regressão nas três funções ainda abertas.
+- Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/probe_initialization_list_add_promotion_20260828.json`.

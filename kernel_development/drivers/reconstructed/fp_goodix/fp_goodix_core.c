@@ -546,12 +546,12 @@ static int gf_probe(struct platform_device *pdev)
 	pr_info("fp_goodix: %s\n", __func__);
 
 	INIT_LIST_HEAD(&gf_dev->device_entry);
+	gf_dev->pdev = pdev;
 	gf_dev->irq_gpio = -EINVAL;
 	gf_dev->reset_gpio = -EINVAL;
-	gf_dev->reserved_44 = (u32)-EINVAL;
+	*(u64 *)&gf_dev->reserved_44 = (u64)(u32)-EINVAL;
 	gf_dev->opened = 0;
 	gf_dev->screen_state = 0;
-	gf_dev->pdev = pdev;
 
 	gf_dev->screen_state_wq = create_singlethread_workqueue("screen_state_wq");
 	if (gf_dev->screen_state_wq) {
@@ -579,7 +579,7 @@ static int gf_probe(struct platform_device *pdev)
 	}
 
 	set_bit(minor, minors);
-	list_add_tail(&gf_dev->device_entry, &device_list);
+	list_add(&gf_dev->device_entry, &device_list);
 	mutex_unlock(&device_list_lock);
 
 	gf_dev->input_dev = input_allocate_device();

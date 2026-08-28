@@ -124,6 +124,14 @@ void host_mutex_unlock(struct mutex *lock) { CHECK(lock->locked > 0); lock->lock
 void host_init_mutex(struct mutex *lock) { lock->locked = 0; }
 void host_init_list(struct list_head *head) { head->next = head; head->prev = head; }
 
+void host_list_add(struct list_head *entry, struct list_head *head)
+{
+	entry->next = head->next;
+	entry->prev = head;
+	head->next->prev = entry;
+	head->next = entry;
+}
+
 void host_list_add_tail(struct list_head *entry, struct list_head *head)
 {
 	entry->prev = head->prev;
