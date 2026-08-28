@@ -378,11 +378,12 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	if (!gf.opened) {
 		power_offset = cmd - 0x6707;
 		OPTIMIZER_HIDE_VAR(power_offset);
-		if (power_offset > 1) {
+		if (power_offset <= 1) {
+			pr_info("fp_goodix: power cmd\n");
+		} else {
 			pr_info("fp_goodix: Sensor is power off currently.\n");
 			goto err_nodev;
 		}
-		pr_info("fp_goodix: power cmd\n");
 	}
 
 	switch (cmd) {

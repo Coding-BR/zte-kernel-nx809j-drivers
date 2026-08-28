@@ -18,8 +18,8 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 
 Candidato atual:
 
-- SHA-256: `2529e9880e78e05107f231e75da7e2f5e2eef51c2c933d6f285db2507c49a00d`
-- tamanho: `730896` bytes
+- SHA-256: `1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c`
+- tamanho: `730720` bytes
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Bloqueadores para uma declaracao de equivalencia total:
@@ -33,6 +33,7 @@ Nao declarar este driver "100% reconstruido" ou "hardware validado" enquanto ess
 Rechecagem Docker e promoção canônica em 2026-08-28:
 
 - A fonte `fp_goodix_platform.c` foi atualizada para reproduzir a chamada direta a `pinctrl_select_state` observada no stock; o hash está registrado no `reconstruction_map.json`.
-- O candidato normal canônico foi recompilado de forma reproduzível no Docker e promovido com SHA-256 `2529e9880e78e05107f231e75da7e2f5e2eef51c2c933d6f285db2507c49a00d`.
+- O candidato normal canônico foi recompilado de forma reproduzível no Docker e promovido com SHA-256 `1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c`.
+- `gf_ioctl` teve a condição `power_offset` reescrita na forma de branch equivalente ao stock; a rechecagem isolada não causou regressão nos 26 símbolos fechados, mas a função ainda diverge na comparação final de opcodes/tamanho.
 - O protocolo completo passou identidade, mapa, Joern estrito e KCFI (com `ignore_size` explícito para a diferença conhecida de `gf_ioctl`); o slice ficou limitado pelo runtime Windows após exceder o tempo prático.
 - Evidência detalhada: `reverse_engineering/validation/reconstructed/fp_goodix/canonical_direct_promotion_20260828.json` e `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\validation\hard_protocol_fp_goodix_full8_20260828\`.

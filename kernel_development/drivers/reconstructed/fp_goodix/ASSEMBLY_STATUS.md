@@ -47,7 +47,9 @@ Uma variante isolada de `gf_parse_dts` que inlinha o `pinctrl_select_state` obse
 ## Promoção canônica — 2026-08-28
 
 - Fonte promovida: `fp_goodix_platform.c`, SHA-256 `6ae2f637f74f957c05cf5d94ac18d833c176d8e3ccb520c1eb2157e149045b5d`.
-- Candidato canônico normal: SHA-256 `2529e9880e78e05107f231e75da7e2f5e2eef51c2c933d6f285db2507c49a00d`, `730896` bytes.
+- Fonte adicional promovida: `fp_goodix_core.c`, SHA-256 `e3b3b339189690be3e3589b449df4488c82fece029a69ef68ba5b907702df11c`; a condição de energia de `gf_ioctl` agora segue a forma de branch observada no stock.
+- Candidato canônico normal: SHA-256 `1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c`, `730720` bytes.
 - Comparação AArch64 com o mesmo extrator stock/candidato: 26/30 funções continuam exatas; as quatro diferenças permanecem delimitadas, sem regressão nas 26 funções fechadas.
 - Joern estrito: `gf_parse_dts` agora apresenta a chamada direta a `pinctrl_select_state`; os quatro helpers de cópia do stock são reconciliados explicitamente com as APIs públicas `copy_to_user/copy_from_user`. O slice de dados permanece limitado pelo runtime Windows.
 - Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/canonical_direct_promotion_20260828.json`.
+- Rechecagem isolada: `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\validation\fp_goodix_power_promoted_recheck_20260828\`; 30/30 extraídos, quatro bloqueadores conhecidos, host harness PASS/reprodutível. A comparação isolada de `gf_ioctl` passou relocations e manteve somente `symbol_size/instructions` divergentes.
