@@ -91,6 +91,60 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertNotEqual(stock, candidate)
         self.assertEqual(evidence, [])
 
+    def test_compiler_lock_key_suffix_is_guardedly_equivalent(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_compiler_lock_key_suffixes(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 zlog_init.__key.11",
+                "R_AARCH64_ADD_ABS_LO12_NC zlog_init.__key.11",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 zlog_init.__key.10",
+                "R_AARCH64_ADD_ABS_LO12_NC zlog_init.__key.10",
+            ],
+            [9, 10],
+            [9, 10],
+            True,
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+
+    def test_compiler_lock_key_requires_same_owner(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_compiler_lock_key_suffixes(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 first.__key.11",
+                "R_AARCH64_ADD_ABS_LO12_NC first.__key.11",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 second.__key.10",
+                "R_AARCH64_ADD_ABS_LO12_NC second.__key.10",
+            ],
+            [9, 10],
+            [9, 10],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
+    def test_compiler_lock_key_requires_matching_instruction_positions(self) -> None:
+        stock, candidate, evidence = MODULE.canonicalize_compiler_lock_key_suffixes(
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 zlog_init.__key.11",
+                "R_AARCH64_ADD_ABS_LO12_NC zlog_init.__key.11",
+            ],
+            [
+                "R_AARCH64_ADR_PREL_PG_HI21 zlog_init.__key.10",
+                "R_AARCH64_ADD_ABS_LO12_NC zlog_init.__key.10",
+            ],
+            [9, 10],
+            [10, 11],
+            True,
+        )
+
+        self.assertNotEqual(stock, candidate)
+        self.assertEqual(evidence, [])
+
     def test_stripped_codetag_offset_matches_named_candidate_tag(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_stripped_codetag_alloc_tags(
             [

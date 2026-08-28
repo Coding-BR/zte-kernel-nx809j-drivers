@@ -36,6 +36,9 @@ ALLOC_TAG_RE = re.compile(
     r"^(?P<type>R_AARCH64_[A-Z0-9_]+) "
     r"(?P<owner>[A-Za-z0-9_.$]+)\._alloc_tag(?:\.(?P<suffix>[0-9]+))?$"
 )
+COMPILER_LOCK_KEY_RE = re.compile(
+    r"^(?P<owner>[A-Za-z0-9_.$]+)\.__(?:key)(?:\.(?P<suffix>[0-9]+))?$"
+)
 CODETAG_SECTION_TARGET_RE = re.compile(
     r"^R_AARCH64_[A-Z0-9_]+ \.codetag\.alloc_tags\+0x[0-9a-fA-F]+$"
 )
@@ -3319,6 +3322,85 @@ def canonicalize_stripped_codetag_alloc_tags(
     return stock, candidate, evidence
 
 
+def canonicalize_compiler_lock_key_suffixes(
+    stock_relocations: list[str],
+    candidate_relocations: list[str],
+    stock_instruction_indices: list[int],
+    candidate_instruction_indices: list[int],
+    instructions_match: bool,
+) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    """Normalize numeric suffixes on matching compiler-generated lock keys.
+
+    Clang may assign a different local numeric suffix to the same
+    ``function.__key`` lockdep object in independently linked builds. Accept
+    only an identical ADRP/ADD pair at identical instruction sites with the
+    same owner; unrelated local symbols remain unequal.
+    """
+    stock = list(stock_relocations)
+    candidate = list(candidate_relocations)
+    evidence: list[dict[str, Any]] = []
+    expected_types = (
+        "R_AARCH64_ADR_PREL_PG_HI21",
+        "R_AARCH64_ADD_ABS_LO12_NC",
+    )
+    if (
+        not instructions_match
+        or len(stock) != len(candidate)
+        or len(stock_instruction_indices) != len(stock)
+        or len(candidate_instruction_indices) != len(candidate)
+    ):
+        return stock, candidate, evidence
+
+    for index in range(len(stock) - 1):
+        stock_parts = [value.split(" ", 1) for value in stock[index:index + 2]]
+        candidate_parts = [value.split(" ", 1) for value in candidate[index:index + 2]]
+        if any(len(value) != 2 for value in stock_parts + candidate_parts):
+            continue
+        if (
+            tuple(value[0] for value in stock_parts) != expected_types
+            or tuple(value[0] for value in candidate_parts) != expected_types
+        ):
+            continue
+        stock_match = COMPILER_LOCK_KEY_RE.fullmatch(stock_parts[0][1])
+        candidate_match = COMPILER_LOCK_KEY_RE.fullmatch(candidate_parts[0][1])
+        if stock_match is None or candidate_match is None:
+            continue
+        if stock_match.group("owner") != candidate_match.group("owner"):
+            continue
+        positions = stock_instruction_indices[index:index + 2]
+        candidate_positions = candidate_instruction_indices[index:index + 2]
+        if (
+            positions != candidate_positions
+            or len(positions) != 2
+            or positions[1] != positions[0] + 1
+        ):
+            continue
+        if stock_parts[0][1] == candidate_parts[0][1]:
+            continue
+
+        owner = stock_match.group("owner")
+        alias = f"<{owner}.__key:relocation_pair_{index}>"
+        for offset, relocation_type in enumerate(expected_types):
+            stock[index + offset] = f"{relocation_type} {alias}"
+            candidate[index + offset] = f"{relocation_type} {alias}"
+        evidence.append(
+            {
+                "relocation_index": index,
+                "kind": "compiler_generated_lock_key_suffix",
+                "reason": (
+                    "matching ADRP/ADD pair at identical instruction indices; "
+                    "only the compiler-assigned local lock-key suffix differs"
+                ),
+                "owner": owner,
+                "stock_target": stock_parts[0][1],
+                "candidate_target": candidate_parts[0][1],
+                "canonical_target": alias,
+                "instruction_indices": positions,
+            }
+        )
+    return stock, candidate, evidence
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stock-dir", type=Path, required=True)
@@ -3808,6 +3890,18 @@ def main() -> int:
             stock_instructions_compared == candidate_instructions_compared,
         )
         relocation_equivalences += alloc_tag_equivalences
+        (
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            compiler_lock_key_equivalences,
+        ) = canonicalize_compiler_lock_key_suffixes(
+            stock_relocations_compared,
+            candidate_relocations_compared,
+            non_branch_relocation_instruction_indices(stock_path),
+            non_branch_relocation_instruction_indices(candidate_path),
+            stock_instructions_compared == candidate_instructions_compared,
+        )
+        relocation_equivalences += compiler_lock_key_equivalences
         (
             stock_relocations_compared,
             candidate_relocations_compared,
