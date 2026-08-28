@@ -1263,3 +1263,10 @@ obj-files := $(filter-out zlog_register_work_deinit.o, $(obj-files))
 zte_tpd-objs := $(filter-out zlog_register_work_deinit.o, $(zte_tpd-objs))
 zte_tpd-objs += zlog_register_work_deinit_exact.o
 AFLAGS_zlog_register_work_deinit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_free_tp_firmware_data
+src-files := $(filter-out $(src)/tp_free_tp_firmware_data.c, $(src-files))
+obj-files := $(filter-out tp_free_tp_firmware_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_free_tp_firmware_data.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_free_tp_firmware_data_exact.o
+AFLAGS_tp_free_tp_firmware_data_exact.o := -g0 -I$(src)
