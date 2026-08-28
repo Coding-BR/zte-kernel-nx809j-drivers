@@ -1052,3 +1052,10 @@ obj-files := $(filter-out syna_spi_release.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_spi_release.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_spi_release_exact.o
 AFLAGS_syna_spi_release_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_module_init
+src-files := $(filter-out $(src)/syna_dev_module_init.c, $(src-files))
+obj-files := $(filter-out syna_dev_module_init.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_module_init.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_module_init_exact.o
+AFLAGS_syna_dev_module_init_exact.o := -g0 -I$(src)
