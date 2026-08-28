@@ -1227,3 +1227,10 @@ obj-files := $(filter-out zte_touch_remove.o, $(obj-files))
 zte_tpd-objs := $(filter-out zte_touch_remove.o, $(zte_tpd-objs))
 zte_tpd-objs += zte_touch_remove_exact.o
 AFLAGS_zte_touch_remove_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_probe_work_deinit
+src-files := $(filter-out $(src)/tpd_probe_work_deinit.c, $(src-files))
+obj-files := $(filter-out tpd_probe_work_deinit.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_probe_work_deinit.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_probe_work_deinit_exact.o
+AFLAGS_tpd_probe_work_deinit_exact.o := -g0 -I$(src)
