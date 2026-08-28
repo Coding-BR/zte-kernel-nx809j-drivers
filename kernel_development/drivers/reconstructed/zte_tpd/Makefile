@@ -1192,3 +1192,10 @@ obj-files := $(filter-out get_lcd_panel_name.o, $(obj-files))
 zte_tpd-objs := $(filter-out get_lcd_panel_name.o, $(zte_tpd-objs))
 zte_tpd-objs += get_lcd_panel_name_exact.o
 AFLAGS_get_lcd_panel_name_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_get_testing_0100
+src-files := $(filter-out $(src)/syna_tcm_get_testing_0100.c, $(src-files))
+obj-files := $(filter-out syna_tcm_get_testing_0100.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_get_testing_0100.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_get_testing_0100_exact.o
+AFLAGS_syna_tcm_get_testing_0100_exact.o := -g0 -I$(src)
