@@ -1066,3 +1066,10 @@ obj-files := $(filter-out syna_open.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_open.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_open_exact.o
 AFLAGS_syna_open_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_game_partition
+src-files := $(filter-out $(src)/tpd_set_game_partition.c, $(src-files))
+obj-files := $(filter-out tpd_set_game_partition.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_game_partition.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_game_partition_exact.o
+AFLAGS_tpd_set_game_partition_exact.o := -g0 -I$(src)
