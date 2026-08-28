@@ -238,7 +238,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--source-dir", type=Path, required=True)
     parser.add_argument("--build-report", type=Path, required=True)
-    parser.add_argument("--kcfi-report", action="append", type=Path, required=True)
+    parser.add_argument("--kcfi-report", action="append", type=Path, default=[])
     parser.add_argument(
         "--joern-report",
         action="append",
@@ -246,7 +246,7 @@ def main() -> int:
         default=[],
         help="strict Joern summary whose current source-tree hash must match --source-dir",
     )
-    parser.add_argument("--test-report", action="append", type=Path, required=True)
+    parser.add_argument("--test-report", action="append", type=Path, default=[])
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--function",
@@ -260,6 +260,21 @@ def main() -> int:
         help="leave statuses and evidence outside --function unchanged",
     )
     parser.add_argument(
+        "--require-joern",
+        action="store_true",
+        help="require and record strict Joern evidence for every selected function",
+    )
+    parser.add_argument(
+        "--manifest-evidence",
+        action="store_true",
+        help="load KCFI and direct-test reports referenced by the input manifest",
+    )
+    parser.add_argument(
+        "--scan-test-root",
+        type=Path,
+        help="also scan JSON reports below this root for passing direct-test inputs",
+    )
+    parser.add_argument(
         "--candidate",
         type=Path,
         help="candidate module whose SHA-256 must match the build report",
@@ -270,6 +285,34 @@ def main() -> int:
     workspace = args.workspace.resolve()
     manifest_path = args.manifest.resolve()
     source_dir = args.source_dir.resolve()
+    manifest = read_object(manifest_path)
+    if manifest.get("driver") != args.driver:
+        raise ValueError("manifest driver does not match --driver")
+    if args.manifest_evidence:
+        referenced: dict[str, list[Path]] = {"kcfi": [], "test": []}
+        for task in manifest.get("tasks", []):
+            for record in task.get("evidence", []):
+                role = record.get("role")
+                value = record.get("path")
+                if role not in referenced or not isinstance(value, str):
+                    continue
+                path = (workspace / value).resolve()
+                if path.is_file() and path not in referenced[role]:
+                    referenced[role].append(path)
+        args.kcfi_report = referenced["kcfi"]
+        args.test_report = referenced["test"]
+    if args.scan_test_root:
+        scan_root = args.scan_test_root.resolve()
+        for path in sorted(scan_root.rglob("*.json")):
+            if path.is_file() and path not in args.test_report:
+                try:
+                    candidate = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if isinstance(candidate, dict) and isinstance(candidate.get("inputs"), list):
+                    args.test_report.append(path)
+    if not args.kcfi_report or not args.test_report:
+        raise ValueError("at least one KCFI and one direct-test report are required")
     build_path = args.build_report.resolve()
     build = read_object(build_path)
     if not build_passed(build):
@@ -292,9 +335,6 @@ def main() -> int:
     typed = kcfi_functions(kcfi_reports)
     joern = joern_functions(source_dir, joern_reports)
     tested = direct_tested_sources(source_dir, test_reports)
-    manifest = read_object(manifest_path)
-    if manifest.get("driver") != args.driver:
-        raise ValueError("manifest driver does not match --driver")
     selected_functions = set(args.function)
     if args.preserve_unselected and not selected_functions:
         raise ValueError("--preserve-unselected requires at least one --function")
@@ -335,7 +375,7 @@ def main() -> int:
             isinstance(role, str) for role in required_evidence
         ):
             raise ValueError(f"{task.get('id', 'unknown')}: invalid required_evidence")
-        require_joern = "joern" in required_evidence
+        require_joern = args.require_joern or "joern" in required_evidence
         joern_path = joern.get(source_function)
         if kcfi_path is None or test_path is None or (require_joern and joern_path is None):
             continue
