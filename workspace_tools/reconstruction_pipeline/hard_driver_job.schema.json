@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.nx809j/hard-driver-job.schema.json",
+  "title": "NX809J difficult-driver protocol job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "driver",
+    "profiles",
+    "functions",
+    "paths",
+    "docker",
+    "joern"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "driver": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+    "stock_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "LEAF_PURE",
+          "STATEFUL_MEMORY",
+          "CALLBACK_ABI",
+          "CONCURRENCY_LIFETIME",
+          "HARDWARE_BUS",
+          "DISPATCHER_PARSER",
+          "COMPILER_SENSITIVE"
+        ]
+      }
+    },
+    "functions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stock_function", "stock_entry", "source_function"],
+        "properties": {
+          "stock_function": {"type": "string", "minLength": 1},
+          "stock_entry": {"type": "string", "pattern": "^(?:0x)?[0-9a-fA-F]+$"},
+          "source_function": {"type": "string", "minLength": 1},
+          "stock_symbol_offset": {"type": ["string", "integer"]},
+          "candidate_symbol_offset": {"type": ["string", "integer"]},
+          "kcfi_required": {"type": "boolean"}
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_root",
+        "stock_module",
+        "ghidra_export",
+        "reconstruction_map"
+      ],
+      "properties": {
+        "source_root": {"type": "string", "minLength": 1},
+        "stock_module": {"type": "string", "minLength": 1},
+        "ghidra_export": {"type": "string", "minLength": 1},
+        "reconstruction_map": {"type": "string", "minLength": 1},
+        "candidate_ghidra_export": {"type": "string", "minLength": 1}
+      }
+    },
+    "docker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter"],
+      "properties": {
+        "adapter": {
+          "enum": ["zte_tpd_canonical", "generic_driver_audit"]
+        },
+        "cycles": {"type": "integer", "minimum": 2},
+        "parallelism": {"type": "integer", "minimum": 1},
+        "image": {"type": "string", "minLength": 1},
+        "source_volume": {"type": "string", "minLength": 1},
+        "toolchain_volume": {"type": "string", "minLength": 1},
+        "clang_revision": {"type": "string", "minLength": 1},
+        "run_root": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional engineering run root used for stock/Ghidra evidence"
+        }
+      }
+    },
+    "joern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slice"],
+      "properties": {
+        "source_view_root": {"type": "string", "minLength": 1},
+        "include": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "define": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "slice": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode"],
+          "properties": {
+            "mode": {"enum": ["off", "data-flow", "usages"]},
+            "depth": {"type": "integer", "minimum": 1, "maximum": 100},
+            "parallelism": {"type": "integer", "minimum": 1},
+            "sink_filter": {"type": "string"},
+            "min_num_calls": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "kcfi": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ignore_size": {"type": "boolean"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {"$ref": "#/$defs/evidenceItem"},
+          {
+            "type": "array",
+            "items": {"$ref": "#/$defs/evidenceItem"}
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "evidenceItem": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -48,6 +48,8 @@ struct zte_tp_device;
 struct tpd_data;
 struct zlog_client;
 struct zlog_mod_info;
+struct nubia_pcb_gpio_map;
+struct nubia_rf_band_gpio_map;
 #define PROBE __attribute__((__noinline__, __used__))
 """
 
@@ -166,6 +168,80 @@ def control_signatures() -> list[str]:
     ]
 
 
+def lookup_signatures() -> list[str]:
+    """Probe two-argument table lookups recovered from nubia_hw_version."""
+    signatures: list[str] = []
+    for return_type, table, count in itertools.product(
+        (
+            "void", "bool", "u8", "u16", "u32", "u64",
+            "int", "unsigned int", "long", "unsigned long",
+            "void *", "const void *", "u8 *", "const u8 *",
+            "u16 *", "const u16 *", "u32 *", "const u32 *",
+            "int *", "const int *", "long *", "const long *",
+            "unsigned long *", "const unsigned long *", "char *",
+            "const char *",
+            "struct nubia_pcb_gpio_map *",
+            "const struct nubia_pcb_gpio_map *",
+            "struct nubia_rf_band_gpio_map *",
+            "const struct nubia_rf_band_gpio_map *",
+        ),
+        (
+            "u8 *", "const u8 *", "u16 *", "const u16 *",
+            "u32 *", "const u32 *", "int *", "const int *",
+            "long *", "const long *", "unsigned long *",
+            "const unsigned long *", "void *", "const void *",
+            "long", "unsigned long", "int", "unsigned int",
+            "struct nubia_pcb_gpio_map *",
+            "const struct nubia_pcb_gpio_map *",
+            "struct nubia_rf_band_gpio_map *",
+            "const struct nubia_rf_band_gpio_map *",
+            "u8", "unsigned char", "u16", "unsigned short",
+            "u32", "unsigned int", "int", "signed int",
+            "long", "unsigned long", "long long", "unsigned long long",
+            "size_t", "ssize_t",
+        ),
+        (
+            "u8", "unsigned char", "u16", "unsigned short",
+            "u32", "unsigned int", "int", "signed int",
+            "long", "unsigned long", "long long", "unsigned long long",
+            "size_t", "ssize_t",
+        ),
+    ):
+        signatures.append(f"{return_type} ({table}, {count})")
+    return signatures
+
+
+def lookup_anonymous_preamble(count: int = 64) -> str:
+    """Define anonymous record aliases whose LLVM nominal IDs are probeable."""
+    lines = [
+        "/* Anonymous-record KCFI probes; fields only preserve a valid C type. */"
+    ]
+    for index in range(count):
+        lines.append(
+            f"typedef struct {{ u32 gpio1; u32 gpio2; u32 value; }} "
+            f"anon_nubia_pcb_{index:03d};"
+        )
+    for index in range(count):
+        lines.append(
+            f"typedef struct {{ u32 gpio1; u32 gpio2; char text[12]; }} "
+            f"anon_nubia_rf_{index:03d};"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def lookup_anonymous_signatures(count: int = 64) -> list[str]:
+    """Probe the two recovered lookup shapes using anonymous record aliases."""
+    signatures: list[str] = []
+    for index in range(count):
+        pcb = f"anon_nubia_pcb_{index:03d} *"
+        rf = f"anon_nubia_rf_{index:03d} *"
+        for count_type in ("u32", "unsigned int", "int", "size_t"):
+            signatures.append(f"{pcb} ({pcb}, {count_type})")
+            signatures.append(f"char * ({rf}, {count_type})")
+            signatures.append(f"u8 * ({rf}, {count_type})")
+    return signatures
+
+
 def suspend_signatures() -> list[str]:
     signatures: list[str] = []
     for return_type, device, state in itertools.product(
@@ -209,7 +285,10 @@ def render_probe(signatures: list[str]) -> tuple[str, dict[str, str]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "family", choices=("touch", "game", "string", "zlog", "control", "suspend")
+        "family", choices=(
+            "touch", "game", "string", "zlog", "control", "suspend",
+            "lookup", "lookup_anonymous",
+        )
     )
     parser.add_argument("target_type_id", help="KCFI hash such as 0xeb35dc7c")
     parser.add_argument("--engineering-root", type=Path,
@@ -229,6 +308,7 @@ def main() -> int:
     kcfi_path = work_dir / f"{args.family}_probe.kcfi.json"
     output = (args.output or work_dir / "match_report.json").resolve()
 
+    probe_preamble = TYPE_PREAMBLE
     if args.family == "touch":
         signatures = touch_signatures()
     elif args.family == "game":
@@ -239,9 +319,16 @@ def main() -> int:
         signatures = zlog_signatures()
     elif args.family == "suspend":
         signatures = suspend_signatures()
+    elif args.family == "lookup":
+        signatures = lookup_signatures()
+    elif args.family == "lookup_anonymous":
+        signatures = lookup_anonymous_signatures()
+        probe_preamble += lookup_anonymous_preamble()
     else:
         signatures = control_signatures()
     source, mapping = render_probe(signatures)
+    if probe_preamble != TYPE_PREAMBLE:
+        source = source.replace(TYPE_PREAMBLE, probe_preamble, 1)
     source_path.write_text(source, encoding="ascii")
     (work_dir / "Makefile").write_text(
         f"obj-m += {args.family}_probe.o\n", encoding="ascii"

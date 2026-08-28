@@ -225,11 +225,22 @@ def main() -> int:
         toolchain_volume=args.toolchain_volume,
         clang_revision=args.clang_revision,
     )
+    duplicate_counts: dict[str, int] = {}
+    for spec in specs:
+        duplicate_counts[spec["name"]] = duplicate_counts.get(spec["name"], 0) + 1
+    duplicate_indices: dict[str, int] = {}
     for index, spec in enumerate(specs):
         function = spec["name"]
         function_id = spec["function_id"]
+        duplicate_index = duplicate_indices.get(function, 0)
+        duplicate_indices[function] = duplicate_index + 1
+        resolved_function = function
+        if duplicate_counts.get(function, 0) > 1 and duplicate_index:
+            alias = f"{function}_{duplicate_index - 1}"
+            if alias in symbol_ranges:
+                resolved_function = alias
         symbol_range = select_symbol_range(
-            symbol_ranges.get(function, []),
+            symbol_ranges.get(resolved_function, []),
             spec.get("section"),
             spec.get("relative_entry"),
             spec.get("explicit_offset"),
@@ -252,7 +263,7 @@ def main() -> int:
             )
         else:
             start = symbol_size = 0
-            arguments.append(f"--disassemble-symbols={function}")
+            arguments.append(f"--disassemble-symbols={resolved_function}")
         command = docker_tool_command(
             module=module,
             tool=entrypoint,
@@ -272,7 +283,7 @@ def main() -> int:
             if (match := re.match(r"^\s*([0-9a-fA-F]+)\s+<([^>]+)>:$", line))
         ]
         found = completed.returncode == 0 and bool(addresses)
-        label_match = any(item["name"] == function for item in labels)
+        label_match = any(item["name"] == resolved_function for item in labels)
         complete = bool(
             found
             and symbol_range
@@ -289,6 +300,7 @@ def main() -> int:
             {
                 "function": function,
                 "function_id": function_id,
+                "resolved_symbol": resolved_function,
                 "ghidra_entry": spec.get("entry"),
                 "section": section if symbol_range else spec.get("section"),
                 "file": filename,

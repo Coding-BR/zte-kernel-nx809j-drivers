@@ -6,6 +6,7 @@ from pathlib import Path
 
 from workspace_tools.reconstruction_pipeline.bind_candidate_source_map import (
     bind_driver,
+    source_contains_function,
     source_file_name,
 )
 
@@ -53,6 +54,15 @@ class BindCandidateSourceMapTests(unittest.TestCase):
         self.assertEqual(
             source_file_name("gf_parse_dts", "fp_goodix", "fp_goodix.c"),
             "fp_goodix_platform.c",
+        )
+
+    def test_assembly_exact_global_label_is_a_valid_source_binding(self):
+        source = ".text\n.global syna_tcm_buf_alloc_0\n" "syna_tcm_buf_alloc_0:\n  .inst 0xd503233f\n"
+        self.assertTrue(
+            source_contains_function(source, "syna_tcm_buf_alloc_0_exact.S", "syna_tcm_buf_alloc_0")
+        )
+        self.assertFalse(
+            source_contains_function(source, "syna_tcm_buf_alloc_0_exact.S", "other_function")
         )
 
     def test_bind_driver_replaces_stale_monolithic_paths(self):
