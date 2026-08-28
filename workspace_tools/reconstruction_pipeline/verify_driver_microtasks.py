@@ -107,6 +107,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--curated-root", type=Path, default=curated_root)
     parser.add_argument("--evidence-root", type=Path, default=evidence_root)
     parser.add_argument(
+        "--manifest",
+        type=Path,
+        help="explicit microtask manifest; defaults to <curated-root>/<driver>/MICROTASKS.json",
+    )
+    parser.add_argument(
         "--function",
         action="append",
         dest="functions",
@@ -146,7 +151,11 @@ def main() -> int:
     args = parse_args()
     curated_root = args.curated_root.resolve()
     workspace_root = workspace_root_for_curated(curated_root)
-    manifest_path = curated_root / args.driver / "MICROTASKS.json"
+    manifest_path = (
+        args.manifest.resolve()
+        if args.manifest
+        else curated_root / args.driver / "MICROTASKS.json"
+    )
     output = args.evidence_root.resolve() / args.driver / "microtask_audit.json"
     if not manifest_path.is_file():
         raise ValueError("missing microtask manifest: " + str(manifest_path))

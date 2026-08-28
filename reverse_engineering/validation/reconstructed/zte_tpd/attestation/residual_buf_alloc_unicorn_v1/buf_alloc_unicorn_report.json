@@ -1,0 +1,1086 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_tcm_buf_alloc",
+  "identity": "syna_tcm_buf_alloc@0011d594",
+  "status": "PASS",
+  "source_file": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_buf_alloc_exact.S",
+  "driver_source_sha256": "e1c23d098d1f84335cee23e1a941505963a037228304f183e8f6a70a945d5dba",
+  "mode": "relational_aarch64_unicorn",
+  "passed": true,
+  "stock": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\stock\\zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "section": ".text",
+    "virtual_address": "0x16d0c",
+    "symbol_size": 232,
+    "raw_function_sha256": "2a90c8fe2fe9f7a64dd147cbe773104ac688bb28543633b0b184079fa31bbeb6",
+    "symbol_index": 968
+  },
+  "candidate": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_tpd\\cycle_1\\zte_tpd.ko",
+    "sha256": "820ed31ae04a27d2e9d4497d298ecbb2959e502f23078b56d5753aa7e3e2d15a",
+    "section": ".text",
+    "virtual_address": "0x2483c",
+    "symbol_size": 232,
+    "raw_function_sha256": "2a90c8fe2fe9f7a64dd147cbe773104ac688bb28543633b0b184079fa31bbeb6",
+    "symbol_index": 3702
+  },
+  "emulation_shim": {
+    "tool": "Unicorn 2.x",
+    "patched_instructions": [
+      "PACIASP",
+      "AUTIASP"
+    ],
+    "external_bl_zero": "instrumented by function offset",
+    "hardware": "not executed"
+  },
+  "cases": [
+    {
+      "name": "reuse_existing_buffer",
+      "stock": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00001003000000002000000000000000",
+        "old_buffer_sha256": "5f8e1817452b062f443ba17009bef692f4337f455138779709329ab59670518d",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 51380224,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00001003000000002000000000000000",
+        "old_buffer_sha256": "5f8e1817452b062f443ba17009bef692f4337f455138779709329ab59670518d",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 51380224,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "initial_allocation",
+      "stock": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00002003000000002000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "3665d657e3522d54edafa1b1308646bf512b21fd011c611a2e196b29a75bff0c",
+        "calls": [
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 0,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0x58",
+            "function": "devm_kmalloc",
+            "x0": 4096,
+            "x1": 32,
+            "x2": 3520
+          },
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 52428800,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00002003000000002000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "3665d657e3522d54edafa1b1308646bf512b21fd011c611a2e196b29a75bff0c",
+        "calls": [
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 0,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0x58",
+            "function": "devm_kmalloc",
+            "x0": 4096,
+            "x1": 32,
+            "x2": 3520
+          },
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 52428800,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "grow_existing_buffer",
+      "stock": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00002003000000002000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "3665d657e3522d54edafa1b1308646bf512b21fd011c611a2e196b29a75bff0c",
+        "calls": [
+          {
+            "offset": "0x34",
+            "function": "syna_request_managed_device",
+            "x0": 51380224,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0x40",
+            "function": "devm_kfree",
+            "x0": 4096,
+            "x1": 51380224,
+            "x2": 0
+          },
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 4096,
+            "x1": 51380224,
+            "x2": 0
+          },
+          {
+            "offset": "0x58",
+            "function": "devm_kmalloc",
+            "x0": 4096,
+            "x1": 32,
+            "x2": 3520
+          },
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 52428800,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00002003000000002000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "3665d657e3522d54edafa1b1308646bf512b21fd011c611a2e196b29a75bff0c",
+        "calls": [
+          {
+            "offset": "0x34",
+            "function": "syna_request_managed_device",
+            "x0": 51380224,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0x40",
+            "function": "devm_kfree",
+            "x0": 4096,
+            "x1": 51380224,
+            "x2": 0
+          },
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 4096,
+            "x1": 51380224,
+            "x2": 0
+          },
+          {
+            "offset": "0x58",
+            "function": "devm_kmalloc",
+            "x0": 4096,
+            "x1": 32,
+            "x2": 3520
+          },
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 52428800,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "device_missing_on_initial_alloc",
+      "stock": {
+        "return_u64": 4294967053,
+        "return_s32": -243,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 0,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0xbc",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xd8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967053,
+        "return_s32": -243,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 0,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0xbc",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xd8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "device_missing_on_free",
+      "stock": {
+        "return_u64": 4294967053,
+        "return_s32": -243,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x34",
+            "function": "syna_request_managed_device",
+            "x0": 51380224,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0xa0",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xa4",
+            "function": "syna_request_managed_device",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xbc",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xd8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967053,
+        "return_s32": -243,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x34",
+            "function": "syna_request_managed_device",
+            "x0": 51380224,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0xa0",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xa4",
+            "function": "syna_request_managed_device",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xbc",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 0
+          },
+          {
+            "offset": "0xd8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "allocation_failure",
+      "stock": {
+        "return_u64": 4294967053,
+        "return_s32": -243,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 0,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0x58",
+            "function": "devm_kmalloc",
+            "x0": 4096,
+            "x1": 32,
+            "x2": 3520
+          },
+          {
+            "offset": "0xd8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967053,
+        "return_s32": -243,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x44",
+            "function": "syna_request_managed_device",
+            "x0": 0,
+            "x1": 32,
+            "x2": 0
+          },
+          {
+            "offset": "0x58",
+            "function": "devm_kmalloc",
+            "x0": 4096,
+            "x1": 32,
+            "x2": 3520
+          },
+          {
+            "offset": "0xd8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "zero_length_request",
+      "stock": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 0,
+            "x1": 0,
+            "x2": 0
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00000000000000000000000000000000",
+        "old_buffer_sha256": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 0,
+            "x1": 0,
+            "x2": 0
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "same_size_reuse",
+      "stock": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00001003000000002000000000000000",
+        "old_buffer_sha256": "5f8e1817452b062f443ba17009bef692f4337f455138779709329ab59670518d",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 51380224,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 0,
+        "return_s32": 0,
+        "struct_hex": "00001003000000002000000000000000",
+        "old_buffer_sha256": "5f8e1817452b062f443ba17009bef692f4337f455138779709329ab59670518d",
+        "new_buffer_sha256": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9",
+        "calls": [
+          {
+            "offset": "0x70",
+            "function": "memset",
+            "x0": 51380224,
+            "x1": 0,
+            "x2": 32
+          }
+        ],
+        "patched_pac_offsets": [
+          0,
+          136
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    }
+  ],
+  "mutation_check": {
+    "detected": true,
+    "offset": 36,
+    "original_word": "0x54000222",
+    "mutated_word": "0x54000223",
+    "differences": [
+      {
+        "name": "reuse_existing_buffer",
+        "differences": {
+          "return_u64": {
+            "stock": 0,
+            "candidate": 4294967053
+          },
+          "return_s32": {
+            "stock": 0,
+            "candidate": -243
+          },
+          "struct_hex": {
+            "stock": "00001003000000002000000000000000",
+            "candidate": "00000000000000000000000000000000"
+          },
+          "old_buffer_sha256": {
+            "stock": "5f8e1817452b062f443ba17009bef692f4337f455138779709329ab59670518d",
+            "candidate": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb"
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 51380224,
+                "x1": 0,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x34",
+                "function": "syna_request_managed_device",
+                "x0": 51380224,
+                "x1": 16,
+                "x2": 0
+              },
+              {
+                "offset": "0xa0",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xa4",
+                "function": "syna_request_managed_device",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xbc",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xd8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 16
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "initial_allocation",
+        "differences": {
+          "struct_hex": {
+            "stock": "00002003000000002000000000000000",
+            "candidate": "00000000000000000000000000000000"
+          },
+          "new_buffer_sha256": {
+            "stock": "3665d657e3522d54edafa1b1308646bf512b21fd011c611a2e196b29a75bff0c",
+            "candidate": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9"
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x44",
+                "function": "syna_request_managed_device",
+                "x0": 0,
+                "x1": 32,
+                "x2": 0
+              },
+              {
+                "offset": "0x58",
+                "function": "devm_kmalloc",
+                "x0": 4096,
+                "x1": 32,
+                "x2": 3520
+              },
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 52428800,
+                "x1": 0,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 0,
+                "x1": 0,
+                "x2": 0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "grow_existing_buffer",
+        "differences": {
+          "struct_hex": {
+            "stock": "00002003000000002000000000000000",
+            "candidate": "00001003000000000800000000000000"
+          },
+          "old_buffer_sha256": {
+            "stock": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+            "candidate": "73999d859eb28ef79cc5d92506973d291e2fd243056f3791fa499df87bc0b794"
+          },
+          "new_buffer_sha256": {
+            "stock": "3665d657e3522d54edafa1b1308646bf512b21fd011c611a2e196b29a75bff0c",
+            "candidate": "6ad14641c5a4e06de99083f797b5cfb32728ff275dc0ac99058d6fbeb2f799e9"
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x34",
+                "function": "syna_request_managed_device",
+                "x0": 51380224,
+                "x1": 32,
+                "x2": 0
+              },
+              {
+                "offset": "0x40",
+                "function": "devm_kfree",
+                "x0": 4096,
+                "x1": 51380224,
+                "x2": 0
+              },
+              {
+                "offset": "0x44",
+                "function": "syna_request_managed_device",
+                "x0": 4096,
+                "x1": 51380224,
+                "x2": 0
+              },
+              {
+                "offset": "0x58",
+                "function": "devm_kmalloc",
+                "x0": 4096,
+                "x1": 32,
+                "x2": 3520
+              },
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 52428800,
+                "x1": 0,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 51380224,
+                "x1": 0,
+                "x2": 8
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "device_missing_on_initial_alloc",
+        "differences": {
+          "return_u64": {
+            "stock": 4294967053,
+            "candidate": 0
+          },
+          "return_s32": {
+            "stock": -243,
+            "candidate": 0
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x44",
+                "function": "syna_request_managed_device",
+                "x0": 0,
+                "x1": 32,
+                "x2": 0
+              },
+              {
+                "offset": "0xbc",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xd8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 0,
+                "x1": 0,
+                "x2": 0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "device_missing_on_free",
+        "differences": {
+          "return_u64": {
+            "stock": 4294967053,
+            "candidate": 0
+          },
+          "return_s32": {
+            "stock": -243,
+            "candidate": 0
+          },
+          "struct_hex": {
+            "stock": "00000000000000000000000000000000",
+            "candidate": "00001003000000000800000000000000"
+          },
+          "old_buffer_sha256": {
+            "stock": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb",
+            "candidate": "73999d859eb28ef79cc5d92506973d291e2fd243056f3791fa499df87bc0b794"
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x34",
+                "function": "syna_request_managed_device",
+                "x0": 51380224,
+                "x1": 32,
+                "x2": 0
+              },
+              {
+                "offset": "0xa0",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xa4",
+                "function": "syna_request_managed_device",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xbc",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xd8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 51380224,
+                "x1": 0,
+                "x2": 8
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "allocation_failure",
+        "differences": {
+          "return_u64": {
+            "stock": 4294967053,
+            "candidate": 0
+          },
+          "return_s32": {
+            "stock": -243,
+            "candidate": 0
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x44",
+                "function": "syna_request_managed_device",
+                "x0": 0,
+                "x1": 32,
+                "x2": 0
+              },
+              {
+                "offset": "0x58",
+                "function": "devm_kmalloc",
+                "x0": 4096,
+                "x1": 32,
+                "x2": 3520
+              },
+              {
+                "offset": "0xd8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 0,
+                "x1": 0,
+                "x2": 0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "zero_length_request",
+        "differences": {
+          "return_u64": {
+            "stock": 0,
+            "candidate": 4294967053
+          },
+          "return_s32": {
+            "stock": 0,
+            "candidate": -243
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 0,
+                "x1": 0,
+                "x2": 0
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x44",
+                "function": "syna_request_managed_device",
+                "x0": 0,
+                "x1": 0,
+                "x2": 0
+              },
+              {
+                "offset": "0xbc",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xd8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "same_size_reuse",
+        "differences": {
+          "return_u64": {
+            "stock": 0,
+            "candidate": 4294967053
+          },
+          "return_s32": {
+            "stock": 0,
+            "candidate": -243
+          },
+          "struct_hex": {
+            "stock": "00001003000000002000000000000000",
+            "candidate": "00000000000000000000000000000000"
+          },
+          "old_buffer_sha256": {
+            "stock": "5f8e1817452b062f443ba17009bef692f4337f455138779709329ab59670518d",
+            "candidate": "71d74dcbd5103bb256e4c50a65b40f80baf983506d9260d70870ba3dc1c4d5cb"
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x70",
+                "function": "memset",
+                "x0": 51380224,
+                "x1": 0,
+                "x2": 32
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x34",
+                "function": "syna_request_managed_device",
+                "x0": 51380224,
+                "x1": 32,
+                "x2": 0
+              },
+              {
+                "offset": "0xa0",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xa4",
+                "function": "syna_request_managed_device",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xbc",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 0
+              },
+              {
+                "offset": "0xd8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 32
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_buf_alloc_exact.S",
+      "sha256": "e1c23d098d1f84335cee23e1a941505963a037228304f183e8f6a70a945d5dba"
+    }
+  ]
+}
