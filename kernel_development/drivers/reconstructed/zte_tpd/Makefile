@@ -1164,3 +1164,10 @@ obj-files := $(filter-out cancel_report_lcd_state_delayed_work.o, $(obj-files))
 zte_tpd-objs := $(filter-out cancel_report_lcd_state_delayed_work.o, $(zte_tpd-objs))
 zte_tpd-objs += cancel_report_lcd_state_delayed_work_exact.o
 AFLAGS_cancel_report_lcd_state_delayed_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_notifier_cb
+src-files := $(filter-out $(src)/ufp_notifier_cb.c, $(src-files))
+obj-files := $(filter-out ufp_notifier_cb.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_notifier_cb.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_notifier_cb_exact.o
+AFLAGS_ufp_notifier_cb_exact.o := -g0 -I$(src)
