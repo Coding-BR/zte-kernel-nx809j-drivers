@@ -1024,3 +1024,24 @@ obj-files := $(filter-out syna_request_managed_device.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_request_managed_device.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_request_managed_device_exact.o
 AFLAGS_syna_request_managed_device_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_module_exit
+src-files := $(filter-out $(src)/syna_dev_module_exit.c, $(src-files))
+obj-files := $(filter-out syna_dev_module_exit.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_module_exit.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_module_exit_exact.o
+AFLAGS_syna_dev_module_exit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_hw_interface_exit
+src-files := $(filter-out $(src)/syna_hw_interface_exit.c, $(src-files))
+obj-files := $(filter-out syna_hw_interface_exit.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_hw_interface_exit.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_hw_interface_exit_exact.o
+AFLAGS_syna_hw_interface_exit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: cleanup_module
+src-files := $(filter-out $(src)/cleanup_module.c, $(src-files))
+obj-files := $(filter-out cleanup_module.o, $(obj-files))
+zte_tpd-objs := $(filter-out cleanup_module.o, $(zte_tpd-objs))
+zte_tpd-objs += cleanup_module_exact.o
+AFLAGS_cleanup_module_exact.o := -g0 -I$(src)
