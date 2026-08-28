@@ -40,8 +40,8 @@ static int mock_read_message(struct tcm_dev *tcm_dev, u8 *code)
   return read_return;
 }
 
-static int syna_tcm_buf_copy_2(struct tcm_buffer *destination,
-                               struct tcm_buffer *source)
+static int syna_tcm_buf_copy(struct tcm_buffer *destination,
+                             struct tcm_buffer *source)
 {
   ++copy_calls;
   copy_destination = destination;
