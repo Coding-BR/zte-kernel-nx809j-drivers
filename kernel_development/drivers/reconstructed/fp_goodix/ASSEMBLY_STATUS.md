@@ -37,3 +37,9 @@ Duas compilações limpas do snapshot canônico no Docker `nubia-sm8850-kernel-b
 Foi testada uma variante isolada de `gf_probe` que removeu os sentinelas iniciais de `irq_gpio/reset_gpio`, inicializou `irq_num` e reordenou `pdev`. Ela reproduziu a forma do `stur` de 64 bits observada no stock, mas gerou 258/260 instruções e 1032/1040 bytes; também permaneceu divergente na sequência de `list_add_tail`. O SHA-256 da variante foi `751744CA9913DD006E1D75B793A0B3192ED0176199C22A85DF65385E9E573814`. A variante foi rejeitada e não alterou a fonte canônica.
 
 Conclusão operacional: `gf_ioctl` exige reconstrução de CFG/cases; `gf_open` e `gf_parse_dts` exigem recuperação de idiomática de controle/cleanup; `gf_probe` exige separar inicialização de campos da expansão de lista. Nenhuma das quatro divergências está autorizada para patch pós-link por palavra isolada.
+
+## Protocolo H0-H8 — rechecagem 2026-08-28
+
+O job versionado `workspace_tools/reconstruction_pipeline/hard_driver_job.fp_goodix.example.json` foi executado com Joern pinado, Java 21 e Docker `nubia-sm8850-kernel-builder:latest`/`clang-r536225`. A onda `gf_open@00100de8` passou identidade, mapa, Joern estrito, slice, Docker reproduzível em dois ciclos e KCFI; Assembly continua aberto por ordenação de opcodes. A evidência detalhada está em `reverse_engineering/validation/reconstructed/fp_goodix/protocol_recheck_20260828.json`.
+
+Uma variante isolada de `gf_parse_dts` que inlinha o `pinctrl_select_state` observado no stock manteve 207 instruções e 84 relocations, mas não melhorou a comparação de opcodes; foi rejeitada e não promovida. O candidato canônico permanece inalterado. O protocolo não executou hardware e não autoriza declaração de equivalência total.

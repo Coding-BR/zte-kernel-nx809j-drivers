@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "generated_utc": "2026-08-28T16:15:00Z",
+  "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225",
+    "protocol_candidate_sha256": "418b605fda4fb22db575e36da06aa69f755727a1956a8a42868fb2ee476a7ec9",
+    "protocol_candidate_size": 730408,
+    "cycles": 2,
+    "reproducible": true,
+    "note": "The generic validator remains status-incomplete because the curated artifact was not rebuilt with its audit KCFLAGS and target vermagic manifest was not supplied; the protocol Docker gate now records the underlying reproducibility result separately."
+  },
+  "protocol_open_job": {
+    "identity": "gf_open@00100de8",
+    "joern_scoped": "PASS",
+    "joern_slice": "PASS",
+    "docker_reproducible": "PASS",
+    "kcfi": "PASS",
+    "assembly_relocations": "FAIL",
+    "assembly_result": "127/127 instructions and 59/59 relocations, with opcode ordering differences",
+    "candidate_ghidra_pcode": "NOT_EXECUTED"
+  },
+  "all_four_job_findings": {
+    "gf_ioctl": "Joern recovered three source-level fallback calls where stock mapping expects four inline-copy fragments; CFG/source-fragment identity remains unresolved.",
+    "gf_parse_dts": "Stock calls pinctrl_select_state directly; canonical source calls zte_goodix_pinctrl_select.",
+    "gf_probe": "Early field initialization and list insertion idioms remain compiler-sensitive.",
+    "gf_open": "Control-flow and value-materialization order remain compiler-sensitive."
+  },
+  "isolated_parse_variant": {
+    "candidate_sha256": "4349af478374a8771f0e8251b9d9d6ebc7166509834e53fad8b6338a7b066be0",
+    "candidate_size": 730896,
+    "change": "Inline the observed direct pinctrl_select_state path in gf_parse_dts.",
+    "assembly": "207/207 instructions and 84/84 relocations; 181 opcode positions equal to stock, no improvement over canonical baseline.",
+    "decision": "REJECTED_ISOLATED_VARIANT_NOT_PROMOTED"
+  },
+  "pipeline_fixes": [
+    "generic adapter accepts an explicit engineering run_root",
+    "generic Docker gate distinguishes reproducible build from static_verified status",
+    "Windows Joern slice uses a dedicated cwd and captures the actual slices.json artifact",
+    "Windows method filter avoids cmd.exe parenthesis parsing"
+  ],
+  "regression_tests": {
+    "command": "python -m unittest discover -s workspace_tools/reconstruction_pipeline/tests -p test_*.py",
+    "result": "287 tests OK"
+  },
+  "promotion": "NOT_AUTHORIZED",
+  "hardware": "DEFERRED",
+  "canonical_source_changed": false,
+  "canonical_candidate_changed": false
+}
