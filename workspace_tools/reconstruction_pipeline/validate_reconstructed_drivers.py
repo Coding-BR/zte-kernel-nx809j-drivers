@@ -366,7 +366,14 @@ def build_twice(
             "-w", "/work/src/kernel/kernel_platform/common",
             image,
             "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
-            f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd",
+            (
+                f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd "
+                "-fdebug-compilation-dir=/zte_tpd"
+            ),
+            (
+                f"KBUILD_AFLAGS=-fdebug-prefix-map={container_dir}=/zte_tpd "
+                "-fdebug-compilation-dir=/zte_tpd"
+            ),
         ]
         if (cycle_dir / "vendor.Module.symvers").is_file():
             base.append(f"KBUILD_EXTRA_SYMBOLS={container_dir}/vendor.Module.symvers")

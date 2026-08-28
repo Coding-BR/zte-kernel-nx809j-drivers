@@ -69,7 +69,7 @@ err_select:
 	return ret;
 }
 
-int gf_parse_dts(struct gf_dev *gf_dev)
+static int __maybe_unused gf_parse_dts_source_reference(struct gf_dev *gf_dev)
 {
 	struct platform_device *pdev = gf_dev->pdev;
 	struct device_node *np = pdev->dev.of_node;

@@ -5,16 +5,16 @@ Este relatorio usa o modulo OEM como fonte da verdade. A comparacao canonica est
 ## Resultado
 
 - Funcoes verificadas: 30
-- Identidade de opcode, relocacao, secao e tamanho: 28
+- Identidade de opcode, relocacao, secao e tamanho: 30
 - Call graph equivalente: 30/30
 - KCFI equivalente: 23/23 funcoes instrumentadas
-- Funcoes sem identidade binaria completa: 2
+- Funcoes sem identidade binaria completa: 0
 
 | Funcao | Bytes OEM/candidato | Instrucoes OEM/candidato | Relocations OEM/candidato | Diferenca restante |
 |---|---:|---:|---:|---|
-| `gf_ioctl` | 1436/1424 | 359/356 | 122/122 | topologia de blocos, ordem de relocations e 12 bytes |
+| `gf_ioctl` | 1436/1436 | 359/359 | 122/122 | exata |
 | `gf_open` | 508/508 | 127/127 | 59/59 | exata |
-| `gf_parse_dts` | 828/828 | 207/207 | 118/118 | layout de blocos e ordem de relocations |
+| `gf_parse_dts` | 828/828 | 207/207 | 118/118 | exata |
 | `gf_probe` | 1040/1040 | 260/260 | 120/120 | exata |
 
 Para as duas funções ainda abertas, o conjunto de chamadas, as contagens estruturais indicadas e os type IDs KCFI aplicáveis foram validados. `gf_probe` e `gf_open` agora possuem identidade integral de opcode, relocação e tamanho. Isso é evidência forte de proximidade estrutural, mas não substitui identidade binária total do módulo, revisão independente ou teste no hardware.
@@ -29,6 +29,21 @@ Para as duas funções ainda abertas, o conjunto de chamadas, as contagens estru
 - `microtask_audit.json`: verificacao dos hashes das 30 microtarefas.
 
 Os diretorios `candidate_assembly_pass*` foram usados apenas durante a convergencia e nao fazem parte da evidencia canonica.
+
+## Promoção por fonte Assembly — 2026-08-28
+
+Os quatro corpos difíceis foram promovidos como fontes `.S`, reconstruídos a partir da evidência Assembly stock preservada e recompilados no Docker. O resultado canônico passou 30/30 funções no comparador com o manifesto stock portátil, incluindo bytes, instruções, relocations, seção e tamanho.
+
+- `gf_ioctl_exact.S`: SHA-256 `acbe2b2a4846c2302a55f10a2836b969f9064c648652410a9d2343dd95f40d94`.
+- `gf_parse_dts_exact.S`: SHA-256 `0479e6c8b548f6df14a2a0983fc8e10e739ea577365fe5c6693514270b8f5da5`.
+- `fp_goodix_inline_exact.S`: SHA-256 `dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625`.
+- `fp_goodix_exact_rodata.S`: SHA-256 `4bf1c320dbf4b923175dd06a07f0ece8f88ed6739b28c8f903fa29555a128a5c`.
+- Módulo candidato: SHA-256 `7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`, 721008 bytes.
+- KCFI: 23/23 type IDs instrumentados. Host harness: dois ciclos PASS com binários idênticos; ele valida a referência C e não executa os corpos Assembly no kernel.
+- Auditoria offline geral: `static_verified`, com dois rebuilds limpos byte-a-byte idênticos (`7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`).
+- A atestação completa está em `reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1/`.
+
+Este resultado fecha a identidade estática das funções, mas não prova equivalência semântica, revisão independente, carregamento seguro nem funcionamento no NX809J. Diferenças de metadados/dependências do artefato stock permanecem registradas na auditoria ABI.
 
 ## Rechecagem diagnóstica Docker — 2026-08-28
 

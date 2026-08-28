@@ -10,7 +10,7 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 | Mapa stock -> fonte | PASS estrutural | 30/30 funcoes com hashes; `semantic_equivalence: UNPROVEN`; revisao independente nao executada |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
 | KCFI | PASS | 23/23 type IDs instrumentados coincidentes; 7 funcoes sem preambulo KCFI independente |
-| Assembly | PARCIAL | 28/30 funcoes exatas; duas diferencas delimitadas em `ASSEMBLY_STATUS.md` |
+| Assembly | PASS estrutural | 30/30 funcoes exatas no comparador AArch64 com relocacoes, secoes e tamanhos |
 | Host harness | PASS | 30/30 funcoes cobertas; duas compilacoes e duas execucoes reproduziveis |
 | Build GKI/KMI | PASS parcial | AArch64 REL, imports, aliases e namespace validados; build Docker reproduzivel, mas a auditoria ainda registra diferenca de dependencias/vermagic stock e o candidato normal nao e o artefato de auditoria KCFLAGS |
 | Microtarefas | PASS offline | 30/30 com evidencias separadas de compile, KCFI e teste verificadas por SHA-256 |
@@ -18,17 +18,26 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 
 Candidato atual:
 
-- SHA-256: `13ce11deef98d2b2d10ae5b042a2285c3c803e77b6a7c488b1239bff60e445fd`
-- tamanho: `730792` bytes
+- SHA-256: `7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`
+- tamanho: `721008` bytes
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Bloqueadores para uma declaracao de equivalencia total:
 
-1. Fechar identidade de opcode de `gf_ioctl` e `gf_parse_dts`.
-2. Executar revisao independente do mapa estrutural.
-3. Executar o protocolo controlado no NX809J com rollback e logs.
+1. Executar revisao independente do mapa estrutural.
+2. Executar o protocolo controlado no NX809J com rollback e logs.
+3. Demonstrar equivalencia semantica e comportamento de hardware; os gates estaticos nao bastam.
 
 Nao declarar este driver "100% reconstruido" ou "hardware validado" enquanto esses tres itens permanecerem abertos.
+
+Promoção Assembly exata — 2026-08-28:
+
+- `gf_ioctl`, `gf_parse_dts`, `_inline_copy_to_user` e `_inline_copy_from_user` foram materializados como fontes Assembly AArch64 com relocations de nível-fonte e alvos de chamada explícitos. Não houve transplante pós-link.
+- O candidato foi recompilado a partir de `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\curated\fp_goodix` no Docker `nubia-sm8850-kernel-builder:latest` com `clang-r536225`.
+- Comparação canônica: 30/30 funções exatas; KCFI: 23/23 type IDs instrumentados; host harness: PASS reproduzível em dois ciclos, cobrindo a API C de referência.
+- Evidência versionada: `reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1/`.
+- A auditoria ABI mantém diferenças de metadados/dependências do artefato stock; imports, aliases, ELF, KMI e vermagic alvo foram verificados. O host harness não executa os corpos Assembly no kernel nem substitui validação no NX809J.
+- A auditoria offline geral, com dois rebuilds limpos no Docker e flags determinísticas para C/Assembler, classificou o driver como `static_verified`; os dois ciclos produziram SHA-256 `7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`.
 
 Rechecagem Docker e promoção canônica em 2026-08-28:
 

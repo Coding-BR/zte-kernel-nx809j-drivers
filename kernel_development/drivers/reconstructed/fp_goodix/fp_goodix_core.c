@@ -10,6 +10,11 @@
 
 #include "fp_goodix_internal.h"
 
+#ifndef ZTE_FINGERPRINT_HOST_TEST
+extern long gf_ioctl(struct file *file, unsigned int cmd,
+			     unsigned long arg);
+#endif
+
 struct zlog_module_info goodix_zlog_fp_dev = {
 	.module_id = 7,
 	.name = "fingerprint",
@@ -30,7 +35,7 @@ static LIST_HEAD(device_list);
 static DEFINE_MUTEX(device_list_lock);
 
 /* Global static device reference (since original uses a fixed instance layout) */
-static struct gf_dev gf;
+struct gf_dev gf;
 
 static noinline void gf_probe_list_del(struct list_head *entry) __asm__("list_del");
 
@@ -151,7 +156,7 @@ static noinline void goodixfp_init_drm_notifier(struct work_struct *work)
 	}
 }
 
-static void gf_enable_irq(void)
+void gf_enable_irq(void)
 {
 	if (gf.irq_enabled == 0) {
 		enable_irq(gf.irq_num);
@@ -161,7 +166,7 @@ static void gf_enable_irq(void)
 	}
 }
 
-static void gf_disable_irq(struct gf_dev *gf_dev)
+void gf_disable_irq(struct gf_dev *gf_dev)
 {
 	if (!gf_dev->irq_enabled) {
 		pr_warn("fp_goodix: IRQ has been disabled.\n");
@@ -307,7 +312,7 @@ static int gf_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static void nav_event_input(int action)
+void nav_event_input(int action)
 {
 	u32 key_code = 0;
 
@@ -361,7 +366,9 @@ static void nav_event_input(int action)
 
 
 
-static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+static long __maybe_unused gf_ioctl_source_reference(struct file *file,
+						     unsigned int cmd,
+						     unsigned long arg)
 {
 	struct gf_key_event {
 		u32 key;
