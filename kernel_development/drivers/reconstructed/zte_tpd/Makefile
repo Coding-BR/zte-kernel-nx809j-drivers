@@ -1108,3 +1108,10 @@ obj-files := $(filter-out syna_tcm_clear_command_processing.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_clear_command_processing.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_clear_command_processing_exact.o
 AFLAGS_syna_tcm_clear_command_processing_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_set_post_reset_callback
+src-files := $(filter-out $(src)/syna_tcm_set_post_reset_callback.c, $(src-files))
+obj-files := $(filter-out syna_tcm_set_post_reset_callback.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_set_post_reset_callback.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_set_post_reset_callback_exact.o
+AFLAGS_syna_tcm_set_post_reset_callback_exact.o := -g0 -I$(src)
