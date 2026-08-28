@@ -1256,3 +1256,10 @@ zte_tpd-objs := $(filter-out syna_pm_suspend.o syna_pm_resume.o, $(zte_tpd-objs)
 zte_tpd-objs += syna_pm_suspend_exact.o syna_pm_resume_exact.o
 AFLAGS_syna_pm_suspend_exact.o := -g0 -I$(src)
 AFLAGS_syna_pm_resume_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zlog_register_work_deinit
+src-files := $(filter-out $(src)/zlog_register_work_deinit.c, $(src-files))
+obj-files := $(filter-out zlog_register_work_deinit.o, $(obj-files))
+zte_tpd-objs := $(filter-out zlog_register_work_deinit.o, $(zte_tpd-objs))
+zte_tpd-objs += zlog_register_work_deinit_exact.o
+AFLAGS_zlog_register_work_deinit_exact.o := -g0 -I$(src)
