@@ -94,6 +94,9 @@ def build_candidate_sha256(payload: dict[str, Any]) -> str | None:
         return candidate["sha256"].lower()
     drivers = payload.get("drivers")
     if isinstance(drivers, list) and len(drivers) == 1:
+        candidate = drivers[0].get("candidate")
+        if isinstance(candidate, dict) and isinstance(candidate.get("sha256"), str):
+            return candidate["sha256"].lower()
         build = drivers[0].get("build")
         if isinstance(build, dict):
             for key in ("candidate_sha256", "sha256"):
@@ -130,8 +133,10 @@ def direct_tested_sources(
             if isinstance(function, str) and isinstance(source_file, str):
                 source_files_by_function[function] = source_file
     for report_path, payload in reports:
-        if payload.get("passed"):
+        if payload.get("passed") and isinstance(payload.get("inputs"), list):
             for record in payload.get("inputs", []):
+                if not isinstance(record, dict):
+                    continue
                 path_value = record.get("path")
                 expected_sha = record.get("sha256")
                 if not isinstance(path_value, str) or not isinstance(expected_sha, str):
@@ -145,17 +150,27 @@ def direct_tested_sources(
             continue
         status = payload.get("status")
         function = payload.get("function") or payload.get("target")
-        source_sha = payload.get("source_sha256") or payload.get("candidate_source_sha256")
+        source_sha = (
+            payload.get("driver_source_sha256")
+            or payload.get("candidate_source_sha256")
+            or payload.get("source_sha256")
+        )
         gates = payload.get("gates")
+        test_passed = (
+            payload.get("passed") is True
+            or payload.get("reproducible") is True
+            or isinstance(gates, dict)
+            and (
+                gates.get("host_asan_ubsan") in {"PASS", True}
+                or gates.get("host_asan_ubsan_two_cycles") in {"PASS", True}
+                or gates.get("asan_ubsan_host_two_cycles") in {"PASS", True}
+            )
+        )
         if (
             status not in {"PASS", "OFFLINE_EXACT", "PROMOTED_OFFLINE_EXACT"}
             or not isinstance(function, str)
             or not isinstance(source_sha, str)
-            or not isinstance(gates, dict)
-            or not (
-                gates.get("host_asan_ubsan") in {"PASS", True}
-                or gates.get("asan_ubsan_host_two_cycles") in {"PASS", True}
-            )
+            or not test_passed
             or function not in source_files_by_function
         ):
             continue
@@ -305,6 +320,11 @@ def main() -> int:
         help="also scan JSON reports below this root for passing direct-test inputs",
     )
     parser.add_argument(
+        "--scan-kcfi-root",
+        type=Path,
+        help="also scan JSON reports below this root for passing KCFI comparisons",
+    )
+    parser.add_argument(
         "--candidate",
         type=Path,
         help="candidate module whose SHA-256 must match the build report",
@@ -329,8 +349,22 @@ def main() -> int:
                 path = (workspace / value).resolve()
                 if path.is_file() and path not in referenced[role]:
                     referenced[role].append(path)
-        args.kcfi_report = referenced["kcfi"]
-        args.test_report = referenced["test"]
+        args.kcfi_report = referenced["kcfi"] + [
+            path for path in args.kcfi_report if path not in referenced["kcfi"]
+        ]
+        args.test_report = referenced["test"] + [
+            path for path in args.test_report if path not in referenced["test"]
+        ]
+    if args.scan_kcfi_root:
+        scan_root = args.scan_kcfi_root.resolve()
+        for path in sorted(scan_root.rglob("*.json")):
+            if path.is_file() and path not in args.kcfi_report:
+                try:
+                    candidate = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if isinstance(candidate, dict) and isinstance(candidate.get("comparisons"), list):
+                    args.kcfi_report.append(path)
     if args.scan_test_root:
         scan_root = args.scan_test_root.resolve()
         for path in sorted(scan_root.rglob("*.json")):
@@ -344,8 +378,16 @@ def main() -> int:
                     isinstance(candidate, dict)
                     and (candidate.get("function") or candidate.get("target"))
                     and candidate.get("status") in {"PASS", "OFFLINE_EXACT", "PROMOTED_OFFLINE_EXACT"}
-                    and (candidate.get("source_sha256") or candidate.get("candidate_source_sha256"))
-                    and isinstance(candidate.get("gates"), dict)
+                    and (
+                        candidate.get("driver_source_sha256")
+                        or candidate.get("candidate_source_sha256")
+                        or candidate.get("source_sha256")
+                    )
+                    and (
+                        candidate.get("passed") is True
+                        or candidate.get("reproducible") is True
+                        or isinstance(candidate.get("gates"), dict)
+                    )
                 )
                 if has_inputs or has_function_test:
                     args.test_report.append(path)

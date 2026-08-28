@@ -367,7 +367,8 @@ def build_twice(
             image,
             "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
             (
-                f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd "
+                f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"
+                " "
                 "-fdebug-compilation-dir=/zte_tpd"
             ),
             (
