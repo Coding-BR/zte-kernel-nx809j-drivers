@@ -1136,3 +1136,10 @@ obj-files := $(filter-out ufp_report_lcd_state_work.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_report_lcd_state_work.o, $(zte_tpd-objs))
 zte_tpd-objs += ufp_report_lcd_state_work_exact.o
 AFLAGS_ufp_report_lcd_state_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_shutdown
+src-files := $(filter-out $(src)/syna_dev_shutdown.c, $(src-files))
+obj-files := $(filter-out syna_dev_shutdown.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_shutdown.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_shutdown_exact.o
+AFLAGS_syna_dev_shutdown_exact.o := -g0 -I$(src)
