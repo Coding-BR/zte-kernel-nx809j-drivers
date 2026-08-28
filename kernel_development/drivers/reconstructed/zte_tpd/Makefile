@@ -1178,3 +1178,10 @@ obj-files := $(filter-out zlog_register_work.o, $(obj-files))
 zte_tpd-objs := $(filter-out zlog_register_work.o, $(zte_tpd-objs))
 zte_tpd-objs += zlog_register_work_exact.o
 AFLAGS_zlog_register_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_release
+src-files := $(filter-out $(src)/syna_release.c, $(src-files))
+obj-files := $(filter-out syna_release.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_release.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_release_exact.o
+AFLAGS_syna_release_exact.o := -g0 -I$(src)
