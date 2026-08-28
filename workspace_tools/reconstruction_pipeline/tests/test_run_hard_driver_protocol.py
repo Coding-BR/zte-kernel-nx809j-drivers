@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import tempfile
 from pathlib import Path
 import unittest
@@ -9,6 +10,7 @@ from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
     find_map_bindings,
     required_gates,
     resolve_repo_path,
+    run_command,
     select_functions,
     validate_job,
 )
@@ -99,6 +101,18 @@ class HardDriverProtocolTests(unittest.TestCase):
     def test_function_selection_rejects_unknown_selector(self):
         with self.assertRaisesRegex(ValueError, "absent from job"):
             select_functions(validate_job(base_job()), ["missing_fn"])
+
+    def test_run_command_records_and_terminates_timeout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result = run_command(
+                "timeout",
+                [sys.executable, "-c", "import time; time.sleep(2)"],
+                output_dir=Path(directory),
+                timeout=1,
+            )
+
+        self.assertTrue(result["timed_out"])
+        self.assertEqual(result["returncode"], 124)
 
     def test_relative_path_cannot_escape_repository(self):
         with tempfile.TemporaryDirectory() as directory:

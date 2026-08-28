@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -494,6 +495,24 @@ def runnable_argv(argv: list[str]) -> list[str]:
     return argv
 
 
+def terminate_process_tree(process: subprocess.Popen[str]) -> None:
+    """Stop a timed-out command and children such as Java behind a .bat file."""
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    else:
+        try:
+            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+        except (OSError, ProcessLookupError):
+            process.kill()
+
+
 def run_command(
     name: str,
     argv: list[str],
@@ -507,30 +526,35 @@ def run_command(
     stdout_path = output_dir / "logs" / f"{name}.stdout.log"
     stderr_path = output_dir / "logs" / f"{name}.stderr.log"
     stdout_path.parent.mkdir(parents=True, exist_ok=True)
+    command = runnable_argv(argv)
+    popen_kwargs: dict[str, Any] = {
+        "text": True,
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.PIPE,
+        "env": env,
+        "cwd": str(cwd) if cwd else None,
+    }
+    if os.name != "nt":
+        popen_kwargs["start_new_session"] = True
+    process = subprocess.Popen(command, **popen_kwargs)
     try:
-        completed = subprocess.run(
-            runnable_argv(argv),
-            text=True,
-            capture_output=True,
-            check=False,
-            timeout=timeout,
-            env=env,
-            cwd=str(cwd) if cwd else None,
-        )
-        returncode = completed.returncode
-        stdout = completed.stdout
-        stderr = completed.stderr
+        stdout, stderr = process.communicate(timeout=timeout)
+        returncode = process.returncode
         timed_out = False
-    except subprocess.TimeoutExpired as error:
+    except subprocess.TimeoutExpired:
+        terminate_process_tree(process)
+        try:
+            stdout, stderr = process.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout, stderr = process.communicate()
         returncode = 124
-        stdout = error.stdout or ""
-        stderr = error.stderr or ""
-        if isinstance(stdout, bytes):
-            stdout = stdout.decode("utf-8", errors="replace")
-        if isinstance(stderr, bytes):
-            stderr = stderr.decode("utf-8", errors="replace")
         stderr += f"\nTIMEOUT after {timeout} seconds\n"
         timed_out = True
+    if isinstance(stdout, bytes):
+        stdout = stdout.decode("utf-8", errors="replace")
+    if isinstance(stderr, bytes):
+        stderr = stderr.decode("utf-8", errors="replace")
     stdout_path.write_text(stdout, encoding="utf-8", errors="replace")
     stderr_path.write_text(stderr, encoding="utf-8", errors="replace")
     return {
