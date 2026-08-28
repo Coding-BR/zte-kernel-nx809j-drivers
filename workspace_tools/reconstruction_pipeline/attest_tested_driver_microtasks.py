@@ -117,22 +117,52 @@ def kcfi_functions(reports: list[tuple[Path, dict[str, Any]]]) -> dict[str, Path
 def direct_tested_sources(
     source_dir: Path,
     reports: list[tuple[Path, dict[str, Any]]],
+    tasks: object = None,
 ) -> dict[str, Path]:
     sources: dict[str, Path] = {}
+    source_files_by_function: dict[str, str] = {}
+    if isinstance(tasks, list):
+        for task in tasks:
+            if not isinstance(task, dict):
+                continue
+            function = task.get("source_function")
+            source_file = task.get("source_file")
+            if isinstance(function, str) and isinstance(source_file, str):
+                source_files_by_function[function] = source_file
     for report_path, payload in reports:
-        if not payload.get("passed"):
+        if payload.get("passed"):
+            for record in payload.get("inputs", []):
+                path_value = record.get("path")
+                expected_sha = record.get("sha256")
+                if not isinstance(path_value, str) or not isinstance(expected_sha, str):
+                    continue
+                basename = Path(path_value).name
+                current = source_dir / basename
+                if current.suffix != ".c" or not current.is_file():
+                    continue
+                if sha256_file(current) == expected_sha:
+                    sources[basename] = report_path
             continue
-        for record in payload.get("inputs", []):
-            path_value = record.get("path")
-            expected_sha = record.get("sha256")
-            if not isinstance(path_value, str) or not isinstance(expected_sha, str):
-                continue
-            basename = Path(path_value).name
-            current = source_dir / basename
-            if current.suffix != ".c" or not current.is_file():
-                continue
-            if sha256_file(current) == expected_sha:
-                sources[basename] = report_path
+        status = payload.get("status")
+        function = payload.get("function") or payload.get("target")
+        source_sha = payload.get("source_sha256") or payload.get("candidate_source_sha256")
+        gates = payload.get("gates")
+        if (
+            status not in {"PASS", "OFFLINE_EXACT", "PROMOTED_OFFLINE_EXACT"}
+            or not isinstance(function, str)
+            or not isinstance(source_sha, str)
+            or not isinstance(gates, dict)
+            or not (
+                gates.get("host_asan_ubsan") in {"PASS", True}
+                or gates.get("asan_ubsan_host_two_cycles") in {"PASS", True}
+            )
+            or function not in source_files_by_function
+        ):
+            continue
+        basename = Path(source_files_by_function[function]).name
+        current = source_dir / basename
+        if current.is_file() and sha256_file(current) == source_sha:
+            sources[basename] = report_path
     return sources
 
 
@@ -309,7 +339,15 @@ def main() -> int:
                     candidate = json.loads(path.read_text(encoding="utf-8"))
                 except (OSError, json.JSONDecodeError):
                     continue
-                if isinstance(candidate, dict) and isinstance(candidate.get("inputs"), list):
+                has_inputs = isinstance(candidate, dict) and isinstance(candidate.get("inputs"), list)
+                has_function_test = (
+                    isinstance(candidate, dict)
+                    and (candidate.get("function") or candidate.get("target"))
+                    and candidate.get("status") in {"PASS", "OFFLINE_EXACT", "PROMOTED_OFFLINE_EXACT"}
+                    and (candidate.get("source_sha256") or candidate.get("candidate_source_sha256"))
+                    and isinstance(candidate.get("gates"), dict)
+                )
+                if has_inputs or has_function_test:
                     args.test_report.append(path)
     if not args.kcfi_report or not args.test_report:
         raise ValueError("at least one KCFI and one direct-test report are required")
@@ -334,7 +372,7 @@ def main() -> int:
     test_reports = [(path.resolve(), read_object(path.resolve())) for path in args.test_report]
     typed = kcfi_functions(kcfi_reports)
     joern = joern_functions(source_dir, joern_reports)
-    tested = direct_tested_sources(source_dir, test_reports)
+    tested = direct_tested_sources(source_dir, test_reports, manifest.get("tasks"))
     selected_functions = set(args.function)
     if args.preserve_unselected and not selected_functions:
         raise ValueError("--preserve-unselected requires at least one --function")
