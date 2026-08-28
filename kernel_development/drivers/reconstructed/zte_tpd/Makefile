@@ -1220,3 +1220,10 @@ obj-files := $(filter-out ztp_probe_work.o, $(obj-files))
 zte_tpd-objs := $(filter-out ztp_probe_work.o, $(zte_tpd-objs))
 zte_tpd-objs += ztp_probe_work_exact.o
 AFLAGS_ztp_probe_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zte_touch_remove
+src-files := $(filter-out $(src)/zte_touch_remove.c, $(src-files))
+obj-files := $(filter-out zte_touch_remove.o, $(obj-files))
+zte_tpd-objs := $(filter-out zte_touch_remove.o, $(zte_tpd-objs))
+zte_tpd-objs += zte_touch_remove_exact.o
+AFLAGS_zte_touch_remove_exact.o := -g0 -I$(src)
