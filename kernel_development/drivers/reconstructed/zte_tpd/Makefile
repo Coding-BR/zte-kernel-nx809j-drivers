@@ -1157,3 +1157,10 @@ obj-files := $(filter-out tpd_goodix_ts_suspend.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_goodix_ts_suspend.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_goodix_ts_suspend_exact.o
 AFLAGS_tpd_goodix_ts_suspend_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: cancel_report_lcd_state_delayed_work
+src-files := $(filter-out $(src)/cancel_report_lcd_state_delayed_work.c, $(src-files))
+obj-files := $(filter-out cancel_report_lcd_state_delayed_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out cancel_report_lcd_state_delayed_work.o, $(zte_tpd-objs))
+zte_tpd-objs += cancel_report_lcd_state_delayed_work_exact.o
+AFLAGS_cancel_report_lcd_state_delayed_work_exact.o := -g0 -I$(src)
