@@ -1115,3 +1115,10 @@ obj-files := $(filter-out syna_tcm_set_post_reset_callback.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_set_post_reset_callback.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_set_post_reset_callback_exact.o
 AFLAGS_syna_tcm_set_post_reset_callback_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_llseek
+src-files := $(filter-out $(src)/syna_cdev_llseek.c, $(src-files))
+obj-files := $(filter-out syna_cdev_llseek.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_llseek.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_llseek_exact.o
+AFLAGS_syna_cdev_llseek_exact.o := -g0 -I$(src)
