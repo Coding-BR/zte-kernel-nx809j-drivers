@@ -1122,3 +1122,10 @@ obj-files := $(filter-out syna_cdev_llseek.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_cdev_llseek.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_cdev_llseek_exact.o
 AFLAGS_syna_cdev_llseek_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_reset_fw_data_pos_and_size
+src-files := $(filter-out $(src)/tpd_reset_fw_data_pos_and_size.c, $(src-files))
+obj-files := $(filter-out tpd_reset_fw_data_pos_and_size.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_reset_fw_data_pos_and_size.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_reset_fw_data_pos_and_size_exact.o
+AFLAGS_tpd_reset_fw_data_pos_and_size_exact.o := -g0 -I$(src)
