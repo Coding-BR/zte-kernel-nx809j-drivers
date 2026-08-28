@@ -1073,3 +1073,10 @@ obj-files := $(filter-out tpd_set_game_partition.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_set_game_partition.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_game_partition_exact.o
 AFLAGS_tpd_set_game_partition_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_palm_mode
+src-files := $(filter-out $(src)/tpd_set_palm_mode.c, $(src-files))
+obj-files := $(filter-out tpd_set_palm_mode.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_palm_mode.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_palm_mode_exact.o
+AFLAGS_tpd_set_palm_mode_exact.o := -g0 -I$(src)
