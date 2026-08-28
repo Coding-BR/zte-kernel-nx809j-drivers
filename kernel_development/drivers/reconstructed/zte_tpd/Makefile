@@ -1356,3 +1356,10 @@ obj-files := $(filter-out tpd_enable_wakegesture.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_enable_wakegesture.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_enable_wakegesture_exact.o
 AFLAGS_tpd_enable_wakegesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_singleaodgesture
+src-files := $(filter-out $(src)/tpd_get_singleaodgesture.c, $(src-files))
+obj-files := $(filter-out tpd_get_singleaodgesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_singleaodgesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_singleaodgesture_exact.o
+AFLAGS_tpd_get_singleaodgesture_exact.o := -g0 -I$(src)
