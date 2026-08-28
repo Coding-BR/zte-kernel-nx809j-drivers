@@ -1199,3 +1199,10 @@ obj-files := $(filter-out syna_tcm_get_testing_0100.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_get_testing_0100.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_get_testing_0100_exact.o
 AFLAGS_syna_tcm_get_testing_0100_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_single_tap_work
+src-files := $(filter-out $(src)/ufp_single_tap_work.c, $(src-files))
+obj-files := $(filter-out ufp_single_tap_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_single_tap_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_single_tap_work_exact.o
+AFLAGS_ufp_single_tap_work_exact.o := -g0 -I$(src)
