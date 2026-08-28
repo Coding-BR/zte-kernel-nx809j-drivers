@@ -1206,3 +1206,10 @@ obj-files := $(filter-out ufp_single_tap_work.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_single_tap_work.o, $(zte_tpd-objs))
 zte_tpd-objs += ufp_single_tap_work_exact.o
 AFLAGS_ufp_single_tap_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_get_lcdstate
+src-files := $(filter-out $(src)/ufp_get_lcdstate.c, $(src-files))
+obj-files := $(filter-out ufp_get_lcdstate.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_get_lcdstate.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_get_lcdstate_exact.o
+AFLAGS_ufp_get_lcdstate_exact.o := -g0 -I$(src)
