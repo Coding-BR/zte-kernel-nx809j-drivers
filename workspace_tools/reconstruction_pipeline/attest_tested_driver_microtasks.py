@@ -143,7 +143,7 @@ def direct_tested_sources(
                     continue
                 basename = Path(path_value).name
                 current = source_dir / basename
-                if current.suffix != ".c" or not current.is_file():
+                if not current.is_file():
                     continue
                 if sha256_file(current) == expected_sha:
                     sources[basename] = report_path
