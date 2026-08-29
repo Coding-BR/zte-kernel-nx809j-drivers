@@ -2348,10 +2348,11 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_edge_report_limit_write\nEntrada Ghidra: 0010b690\nTamanho stock: 952 bytes\nCategoria: user_abi\nAlvo no fonte: tp_edge_report_limit_write.c:tp_edge_report_limit_write\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0053_0010b690_tp_edge_report_limit_write.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0053_0010b690_tp_edge_report_limit_write.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
@@ -2360,18 +2361,18 @@
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next443_tp_edge_report_limit_write_exact_v2/kcfi_status.json",
-          "sha256": "73431ddbc9a69e62f50a227f33e8b9550ccea3e6aa8026d2301d37c8cf11860d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next443_tp_edge_report_limit_write_exact_v2/kcfi_comparison.json",
+          "sha256": "b9cc4035c0a1e64dc6a5d431d3f54e5c25bd404bbae080508c0cc76e90129c44"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next443_tp_edge_report_limit_write_exact_v2/host_harness_report.json",
-          "sha256": "383683ce5cb6d32f77a3219c00f881c8d9bbaef4b396386d4f55b1f4a8d697a8"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_tp_edge_report_limit_write_current_v1/host_harness_report.json",
+          "sha256": "ce7290a04f064e4ec06f36fc7f2038fe83ea42ce5acc2bc949f704bcec60b525"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next443_tp_edge_report_limit_write_exact_v2/joern_gate_summary.json",
-          "sha256": "63897df1998f474d94f3eb2afd26031179d68b46b36afe521a082e1505070107"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_tp_edge_report_limit_write_current_v1/joern_gate_summary.json",
+          "sha256": "c239c8456fe6734ab10328113aabdb61d63d28e947b5bf0029a3d677cdf1b033"
         }
       ],
       "attestation": "OFFLINE_EXACT in attestation/next443_tp_edge_report_limit_write_exact_v2; Joern userspace-ingress findings are documented; hardware behavior remains deferred."
