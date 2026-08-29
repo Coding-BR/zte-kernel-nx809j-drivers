@@ -25,6 +25,16 @@ static unsigned int mutex_lock_calls;
 static unsigned int mutex_unlock_calls;
 static unsigned int input_event_calls;
 static unsigned int printk_calls;
+static unsigned int wake_up_calls;
+static unsigned int input_mt_calls;
+static int last_mt_active;
+static unsigned int touch_press_calls;
+static unsigned int touch_release_calls;
+static unsigned int one_key_calls;
+static unsigned int gesture_uevent_calls;
+static unsigned int report_ufp_calls;
+static uintptr_t last_report_ufp_value;
+static const char *last_gesture_uevent;
 
 static unsigned int test_parse_touch_report(uintptr_t tcm,
                                             const unsigned char *report,
@@ -67,17 +77,20 @@ static void test_input_mt_report_slot_state(void *input, unsigned int tool,
 {
     (void)input;
     (void)tool;
-    (void)active;
+    input_mt_calls++;
+    last_mt_active = active;
 }
 
 static void test_report_ufp_uevent(uintptr_t value)
 {
-    (void)value;
+    report_ufp_calls++;
+    last_report_ufp_value = value;
 }
 
 static void test_ufp_report_gesture_uevent(const char *value)
 {
-    (void)value;
+    gesture_uevent_calls++;
+    last_gesture_uevent = value;
 }
 
 static int test_kobject_uevent_env(struct kobject *kobj, int action,
@@ -94,22 +107,26 @@ static void test_tpd_touch_press(void *input, unsigned int x, unsigned int y,
                                  unsigned int flags)
 {
     (void)input; (void)x; (void)y; (void)slot; (void)major; (void)flags;
+    touch_press_calls++;
 }
 
 static void test_tpd_touch_release(void *input, uintptr_t slot, int mode)
 {
     (void)input; (void)slot; (void)mode;
+    touch_release_calls++;
 }
 
 static void test_one_key_report(int state, int x, int y, uintptr_t slot)
 {
     (void)state; (void)x; (void)y; (void)slot;
+    one_key_calls++;
 }
 
 static void test_wake_up(void *wait, unsigned int mode, unsigned int nr,
                          void *key)
 {
     (void)wait; (void)mode; (void)nr; (void)key;
+    wake_up_calls++;
 }
 
 static int test_printk(const char *format, ...)
@@ -193,9 +210,16 @@ static void reset_state(void)
     memset(context_area, 0, sizeof(context_area));
     memset(&test_tcm, 0, sizeof(test_tcm));
     memset(test_input, 0, sizeof(test_input));
+    memset(tpd_cdev_bytes, 0, sizeof(tpd_cdev_bytes));
     parse_result = 0;
     parse_calls = mutex_lock_calls = mutex_unlock_calls = 0;
     input_event_calls = printk_calls = 0;
+    wake_up_calls = input_mt_calls = 0;
+    last_mt_active = -1;
+    touch_press_calls = touch_release_calls = one_key_calls = 0;
+    gesture_uevent_calls = report_ufp_calls = 0;
+    last_report_ufp_value = 0;
+    last_gesture_uevent = NULL;
     large_area_ignore_count = 0;
     large_area_uevent_count = 0;
     ufp_tp_ops.pdev = NULL;
@@ -243,14 +267,108 @@ static int expect_empty_report(void)
            mutex_unlock_calls == 1 && input_event_calls == 3 && printk_calls == 0;
 }
 
+static void setup_one_contact(unsigned char type)
+{
+    uintptr_t input = (uintptr_t)test_input;
+    memcpy(context_area + 944, &input, sizeof(input));
+    context_area[24] = type;
+    memcpy(context_area + 28, &(uint32_t){100}, sizeof(uint32_t));
+    memcpy(context_area + 32, &(uint32_t){200}, sizeof(uint32_t));
+    memcpy(context_area + 36, &(uint32_t){12}, sizeof(uint32_t));
+    memcpy(context_area + 40, &(uint32_t){8}, sizeof(uint32_t));
+    memcpy(test_tcm.bytes + 24, &(uint32_t){1}, sizeof(uint32_t));
+}
+
+static int expect_saved_report(void)
+{
+    unsigned char report[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+    unsigned char saved[8] = {0};
+    uintptr_t saved_ptr = (uintptr_t)saved;
+
+    reset_state();
+    context_area[1504] = 1;
+    memcpy(context_area + 1120, &saved_ptr, sizeof(saved_ptr));
+    if (syna_dev_process_touch_report(17, report, sizeof(report),
+                                       context_area) != 0)
+        return 0;
+    return memcmp(saved, report, sizeof(report)) == 0 &&
+           *(unsigned int *)(context_area + 1080) == sizeof(report) &&
+           *(unsigned int *)(context_area + 1128) == 1 &&
+           wake_up_calls == 1 && parse_calls == 1;
+}
+
+static int expect_active_contact(void)
+{
+    reset_state();
+    setup_one_contact(1);
+    return syna_dev_process_touch_report(17, NULL, 4, context_area) == 0 &&
+           input_event_calls == 8 && input_mt_calls == 1 &&
+           last_mt_active == 1 && mutex_lock_calls == 1 &&
+           mutex_unlock_calls == 1 && context_area[612] == 1;
+}
+
+static int expect_one_key_contact(void)
+{
+    reset_state();
+    setup_one_contact(1);
+    tpd_cdev_bytes[27] = 1;
+    return syna_dev_process_touch_report(17, NULL, 4, context_area) == 0 &&
+           touch_press_calls == 1 && one_key_calls == 1 &&
+           input_event_calls == 1 && input_mt_calls == 0 &&
+           mutex_unlock_calls == 1;
+}
+
+static int expect_released_contact(void)
+{
+    reset_state();
+    setup_one_contact(0);
+    context_area[612] = 1;
+    return syna_dev_process_touch_report(17, NULL, 4, context_area) == 0 &&
+           input_event_calls == 4 && input_mt_calls == 1 &&
+           last_mt_active == 0 && touch_release_calls == 0 &&
+           mutex_unlock_calls == 1;
+}
+
+static int expect_low_power_gesture(void)
+{
+    reset_state();
+    memcpy(context_area + 1404, &(uint32_t){2}, sizeof(uint32_t));
+    context_area[756] = 1;
+    memcpy(context_area + 544, &(uint32_t){1}, sizeof(uint32_t));
+    {
+        uintptr_t input = (uintptr_t)test_input;
+        memcpy(context_area + 944, &input, sizeof(input));
+    }
+    return syna_dev_process_touch_report(17, NULL, 4, context_area) == 0 &&
+           gesture_uevent_calls == 1 && last_gesture_uevent != NULL &&
+           mutex_lock_calls == 1 && mutex_unlock_calls == 1 &&
+           input_event_calls == 0;
+}
+
+static int expect_ufp_report_event(void)
+{
+    reset_state();
+    memcpy(context_area + 544, &(uint32_t){128}, sizeof(uint32_t));
+    {
+        uintptr_t input = (uintptr_t)test_input;
+        memcpy(context_area + 944, &input, sizeof(input));
+    }
+    return syna_dev_process_touch_report(17, NULL, 4, context_area) == 0 &&
+           report_ufp_calls == 1 && last_report_ufp_value == 1 &&
+           input_event_calls == 3 && mutex_unlock_calls == 1;
+}
+
 int main(void)
 {
     if (!expect_null_context() || !expect_invalid_event() ||
         !expect_parse_failure() || !expect_no_input_device() ||
-        !expect_empty_report()) {
+        !expect_empty_report() || !expect_saved_report() ||
+        !expect_active_contact() || !expect_one_key_contact() ||
+        !expect_released_contact() || !expect_low_power_gesture() ||
+        !expect_ufp_report_event()) {
         fprintf(stderr, "syna_dev_process_touch_report contract mismatch\n");
         return 1;
     }
-    puts("PASS syna_dev_process_touch_report host tests (5 cases)");
+    puts("PASS syna_dev_process_touch_report host tests (11 cases)");
     return 0;
 }
