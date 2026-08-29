@@ -11293,34 +11293,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_v1_write_message\nEntrada Ghidra: 0011eeac\nTamanho stock: 2084 bytes\nCategoria: user_abi\nAlvo no fonte: syna_tcm_v1_write_message.c:syna_tcm_v1_write_message\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0257_0011eeac_syna_tcm_v1_write_message.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0257_0011eeac_syna_tcm_v1_write_message.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next542_syna_tcm_v1_write_message_exact_v1\\canonical_build_report.json",
-          "sha256": "a6b570e7e2e1ca61ef4e0725e9c5574cdfef0977b0b52e0fb8a84f97a5e31d5c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "78f6d03dcc37d764feb4fc0851656d9cae8635f4d6722d73bd1d1b09fe2cafa0"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next542_syna_tcm_v1_write_message_exact_v1\\kcfi_comparison.json",
-          "sha256": "4fc371549d55fad292078e35cc905cc93ae590955f06ab997298e6f0a53d793d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829/kcfi_comparison.json",
+          "sha256": "20147ed0234c9a33108fb868320c401eb269167db9a2080db24f42ab67850fb3"
         },
         {
           "role": "test",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next542_syna_tcm_v1_write_message_exact_v1\\host_harness_report.json",
-          "sha256": "122c2bbbad90c9f461ebec344b23d992d5e45c496d5ccf17960caa17c2129c9c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "6968b64d119fdb104574da24bf5e5f7625a9771e724a04f0e7139c6df021255c"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next542_syna_tcm_v1_write_message_exact_v1\\joern_gate_report.json",
-          "sha256": "c202ad22f3d41a6043381a405f291b44952b2ae55e9672dcccfe1463102ff0e0"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829/joern_gate_summary.json",
+          "sha256": "8f110721ae8bf4219036811a8ef2b635341dbf45a3b2da7f7c588f99d77ad684"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next542_syna_tcm_v1_write_message_exact_v1\\assembly_comparison.json",
-          "sha256": "53bd8c7371699df6568ab37901fd21b66c4edcd4812df043af7bf126bd6db48f"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "d8a34c97ef5152c2e1bfb119cde86a2b8eeddbe4cde29a1536cb2ca03830fba8"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "3fd0702da4ca4f6a5be1be24b3e5a395b368ca538328b552246c4cebc9ba28a8"
         }
-      ]
+      ],
+      "attestation": "PASS in attestation/next258_syna_tcm_v1_write_message_exact_v2/exact_revalidation_20260829; the 521-instruction opcode/control-flow sequence, symbol size, KCFI type ID, normalized dataflow and normalized relocation roles match. The direct host contract covers 8 cases under ASan/UBSan; physical hardware behavior remains unverified."
     },
     {
       "id": "259_syna_tcm_v1_parse_idinfo",
