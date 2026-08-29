@@ -59,7 +59,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 053_tp_edge_report_limit_read | tp_edge_report_limit_read | 0010b150 | user_abi | tp_edge_report_limit_read.c:tp_edge_report_limit_read | PASS |
 | 054_tp_edge_report_limit_write | tp_edge_report_limit_write | 0010b690 | user_abi | tp_edge_report_limit_write.c:tp_edge_report_limit_write | PASS |
 | 055_get_one_key | get_one_key | 0010ba4c | core_logic | get_one_key.c:get_one_key | PASS |
-| 056_set_one_key | set_one_key | 0010bb40 | core_logic | set_one_key.c:set_one_key | PROMOTED_OFFLINE_EXACT |
+| 056_set_one_key | set_one_key | 0010bb40 | core_logic | set_one_key.c:set_one_key | PASS |
 | 057_get_play_game | get_play_game | 0010bc14 | core_logic | get_play_game.c:get_play_game | PASS |
 | 058_set_play_game | set_play_game | 0010bd08 | core_logic | set_play_game.c:set_play_game | PROMOTED_OFFLINE_EXACT |
 | 059_get_tp_report_rate | get_tp_report_rate | 0010bdd0 | core_logic | get_tp_report_rate.c:get_tp_report_rate | PASS |
