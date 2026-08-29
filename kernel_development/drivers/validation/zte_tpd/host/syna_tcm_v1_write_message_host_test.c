@@ -43,6 +43,11 @@ static int unlock_calls;
 static int managed_available;
 static int write_result;
 static int read_message_result;
+static int write_calls;
+static int read_message_calls;
+static int irq_calls;
+static __int64 first_irq_arg;
+static __int64 last_irq_arg;
 
 static void __break(unsigned int code)
 {
@@ -91,6 +96,7 @@ static void devm_kfree(__int64 device, void *pointer)
 static __int64 syna_tcm_v1_read_message(struct tcm_dev *tcm, u8 *code)
 {
     (void)code;
+    read_message_calls++;
     if (tcm && read_message_result == 0)
         *(_DWORD *)((unsigned char *)tcm + 504) = 0;
     return read_message_result;
@@ -98,7 +104,18 @@ static __int64 syna_tcm_v1_read_message(struct tcm_dev *tcm, u8 *code)
 
 static __int64 write_callback(void)
 {
+    write_calls++;
     return write_result;
+}
+
+static __int64 enable_callback(__int64 platform, __int64 enable)
+{
+    (void)platform;
+    if (irq_calls == 0)
+        first_irq_arg = enable;
+    last_irq_arg = enable;
+    irq_calls++;
+    return 1;
 }
 
 static __int64 msecs_to_jiffies(unsigned int value)
@@ -137,6 +154,11 @@ static void reset_state(void)
     managed_available = 0;
     write_result = 0;
     read_message_result = 0;
+    write_calls = 0;
+    read_message_calls = 0;
+    irq_calls = 0;
+    first_irq_arg = -1;
+    last_irq_arg = -1;
 }
 
 static void test_null_handle(void)
@@ -229,6 +251,52 @@ static void test_transport_failure(void)
     free((void *)(uintptr_t)*(_QWORD *)(state + 648));
 }
 
+static void test_payload_write(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t platform[128] = {0};
+    uint8_t payload[] = {0xaa, 0xbb};
+    uint8_t result_code = 0xff;
+    uint8_t *buffer;
+    *(_QWORD *)(state + 72) = (uintptr_t)platform;
+    *(__int64 (**)(void))(platform + 40) = write_callback;
+    reset_state();
+    managed_available = 1;
+    if (syna_tcm_v1_write_message((struct tcm_dev *)(uintptr_t)state, 0x23,
+                                   payload, sizeof(payload), &result_code, 0) != 0 ||
+        result_code != 0 || write_calls != 1 || lock_calls != 3 || unlock_calls != 3 ||
+        *(_DWORD *)(state + 500) != 0 || *(_DWORD *)(state + 504) != 0 ||
+        *(_DWORD *)(state + 656) != 5 || !*(_QWORD *)(state + 648))
+        failures++;
+    buffer = (uint8_t *)(uintptr_t)*(_QWORD *)(state + 648);
+    if (!buffer || buffer[0] != 0x23 || buffer[1] != 2 || buffer[2] != 0 ||
+        buffer[3] != 0xaa || buffer[4] != 0xbb)
+        failures++;
+    free(buffer);
+}
+
+static void test_irq_enable_disable(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t platform[128] = {0};
+    uint8_t result_code = 0xff;
+    *(_QWORD *)(state + 72) = (uintptr_t)platform;
+    *(__int64 (**)(void))(platform + 40) = write_callback;
+    *(void (**)(__int64, __int64))(platform + 56) =
+        (void (*)(__int64, __int64))(uintptr_t)enable_callback;
+    reset_state();
+    managed_available = 1;
+    if (syna_tcm_v1_write_message((struct tcm_dev *)(uintptr_t)state, 7,
+                                   NULL, 0, &result_code, 1) != 0 ||
+        result_code != 0 || write_calls != 1 || read_message_calls != 1 ||
+        irq_calls != 2 || first_irq_arg != 0 || last_irq_arg != 1 ||
+        lock_calls != 5 || unlock_calls != 5 ||
+        *(_DWORD *)(state + 500) != 0 || *(_DWORD *)(state + 504) != 0 ||
+        !*(_QWORD *)(state + 648))
+        failures++;
+    free((void *)(uintptr_t)*(_QWORD *)(state + 648));
+}
+
 int main(void)
 {
     test_null_handle();
@@ -237,8 +305,10 @@ int main(void)
     test_successful_write();
     test_missing_write_callback();
     test_transport_failure();
+    test_payload_write();
+    test_irq_enable_disable();
     if (failures != 0)
         return 1;
-    puts("PASS syna_tcm_v1_write_message host tests (6 cases)");
+    puts("PASS syna_tcm_v1_write_message host tests (8 cases)");
     return 0;
 }

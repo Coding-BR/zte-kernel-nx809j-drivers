@@ -17,7 +17,7 @@ DRIVER_SOURCE = Path("kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_
 IMAGE = "nubia-sm8850-kernel-builder:latest"
 TOOLCHAIN_VOLUME = "nubia_sm8850_kernel_toolchains"
 CLANG = "/toolchains/clang-r536225/bin/clang"
-EXPECTED = "PASS syna_tcm_v1_write_message host tests (6 cases)\n"
+EXPECTED = "PASS syna_tcm_v1_write_message host tests (8 cases)\n"
 
 
 def sha256(path: Path) -> str:
@@ -53,7 +53,7 @@ def main() -> int:
             "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
             "-frandom-seed=zte-tpd-next542-syna-tcm-v1-write-message",
             "-ffile-prefix-map=/drivers=<drivers>", "-fsanitize=address,undefined", "-fno-sanitize=alignment",
-            "-Wl,--build-id=none",
+            "-fno-sanitize=function,alignment", "-Wl,--build-id=none",
             f"/drivers/{HOST_SOURCE.relative_to('kernel_development/drivers').as_posix()}",
             "-o", binary,
         ]
@@ -84,7 +84,7 @@ def main() -> int:
         "source_sha256": sha256(source), "compiler": CLANG,
         "compiler_version": run(["docker", "run", "--rm", "-v", f"{TOOLCHAIN_VOLUME}:/toolchains:ro", IMAGE, CLANG, "--version"]).stdout.strip(),
         "container_image": IMAGE, "toolchain_volume": TOOLCHAIN_VOLUME,
-        "sanitizers": ["address", "undefined"], "expected_cases": 6, "repetitions": 2,
+        "sanitizers": ["address", "undefined"], "expected_cases": 8, "repetitions": 2,
         "cycles": cycles,
         "inputs": [
             {"path": str(source), "size": source.stat().st_size, "sha256": sha256(source)},
@@ -96,6 +96,7 @@ def main() -> int:
         "limitations": [
             "The harness covers null handle, missing platform and internal buffer allocation failure with deterministic stubs.",
             "Module assembly, KCFI, Ghidra and Joern remain independent gates.",
+            "The decompiled platform callback is invoked with integer-returning enable and void-like disable prototypes; function-type UBSan is disabled for this ABI-compatible harness boundary.",
             "No Android device, firmware, bus or touch hardware interaction is used.",
         ],
     }
