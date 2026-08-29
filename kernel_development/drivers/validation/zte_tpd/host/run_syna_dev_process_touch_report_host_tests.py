@@ -21,8 +21,13 @@ def main() -> int:
     args = parser.parse_args()
     root = pathlib.Path(__file__).resolve().parents[5]
     source = root / "kernel_development" / "drivers" / "validation" / "zte_tpd" / "host" / "syna_dev_process_touch_report_host_test.c"
+    driver_source = root / "kernel_development" / "drivers" / "reconstructed" / "zte_tpd" / "syna_dev_process_touch_report.c"
     build_root = pathlib.Path(args.build_root).resolve()
     output = pathlib.Path(args.output).resolve()
+    if not source.is_file():
+        raise SystemExit(f"source not found: {source}")
+    if not driver_source.is_file():
+        raise SystemExit(f"driver source not found: {driver_source}")
     if build_root.exists():
         raise SystemExit(f"build root already exists: {build_root}")
     build_root.mkdir(parents=True)
@@ -75,6 +80,8 @@ def main() -> int:
         "covered_functions": ["syna_dev_process_touch_report"],
         "source": str(source),
         "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "driver_source": str(driver_source),
+        "driver_source_sha256": hashlib.sha256(driver_source.read_bytes()).hexdigest(),
         "compiler": "/toolchains/clang-r536225/bin/clang",
         "container_image": "nubia-sm8850-kernel-builder:latest",
         "toolchain_volume": "nubia_sm8850_kernel_toolchains",
