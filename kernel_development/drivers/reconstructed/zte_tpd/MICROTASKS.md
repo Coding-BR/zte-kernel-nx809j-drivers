@@ -5,7 +5,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |
 |---|---|---|---|---|---|
 | 001_tpd_zlog_register | tpd_zlog_register | 0010688c | core_logic | tpd_zlog_register.c:tpd_zlog_register | PROMOTED_OFFLINE_EXACT |
-| 002_tpd_zlog_record_notify | tpd_zlog_record_notify | 00106998 | core_logic | tpd_zlog_record_notify.c:tpd_zlog_record_notify | PROMOTED_OFFLINE_EXACT |
+| 002_tpd_zlog_record_notify | tpd_zlog_record_notify | 00106998 | core_logic | tpd_zlog_record_notify.c:tpd_zlog_record_notify | PASS |
 | 003_tpd_zlog_check | tpd_zlog_check | 00107718 | core_logic | tpd_zlog_check.c:tpd_zlog_check | PROMOTED_OFFLINE_EXACT |
 | 004_zlog_register_work_init | zlog_register_work_init | 001077c8 | lifecycle | zlog_register_work_init.c:zlog_register_work_init | PROMOTED_OFFLINE_EXACT |
 | 005_zlog_register_work | zlog_register_work | 00107844 | async_or_irq | zlog_register_work.c:zlog_register_work | PROMOTED_OFFLINE_EXACT |
