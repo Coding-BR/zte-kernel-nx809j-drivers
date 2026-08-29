@@ -11142,32 +11142,22 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_v1_detect\nEntrada Ghidra: 0011e914\nTamanho stock: 1236 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tcm_v1_detect.c:syna_tcm_v1_detect\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0254_0011e914_syna_tcm_v1_detect.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0254_0011e914_syna_tcm_v1_detect.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next541_syna_tcm_v1_detect_exact_v1\\canonical_build_report.json",
-          "sha256": "ae0546b1a81dba7ba7d47f5be4406685e62dc90b1c5ffb9f7050e757605982d1"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next255_syna_tcm_v1_detect_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "5438852f1a4d2de56c338ceec9ac8b2f06549a0e8735ec6eab975daf16b09fe2"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next541_syna_tcm_v1_detect_exact_v1\\kcfi_comparison.json",
-          "sha256": "97a01096ae6ea37f88e6ec206d09bb4875b56580b68fde51f81a76d679071140"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next255_syna_tcm_v1_detect_exact_v2/exact_revalidation_20260829/kcfi_comparison.json",
+          "sha256": "a26e87f35cdd22dfe60c8f3c6a072a7e9fe2f7bad8da15ea098bde420797cc69"
         },
         {
           "role": "test",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next541_syna_tcm_v1_detect_exact_v1\\host_harness_report.json",
-          "sha256": "bcc89fc01b60a61845437d11ad856e2c47e773b189bb97d0bcf0836659a3e86d"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next541_syna_tcm_v1_detect_exact_v1\\joern_gate_report.json",
-          "sha256": "511c8f1d7217cee41a8887bf2d4c166eed7f3fdbea11f962ee5b9cb70656e24d"
-        },
-        {
-          "role": "assembly",
-          "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\next541_syna_tcm_v1_detect_exact_v1\\assembly_comparison.json",
-          "sha256": "d9a9c5d62f7b1c445595eb03061d547bcde685ecd15003c6384dc2c51bf960f2"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next255_syna_tcm_v1_detect_exact_v2/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "326df10e4695eb2468d481e2e20725b4df973f27f45d38ba55ce10751aec9cc5"
         }
       ]
     },

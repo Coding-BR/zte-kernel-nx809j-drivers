@@ -258,7 +258,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 252_syna_tcm_testing_check_frame_data | syna_tcm_testing_check_frame_data | 0011e6d4 | core_logic | syna_tcm_testing_check_frame_data_0.c:syna_tcm_testing_check_frame_data_0 | PROMOTED_OFFLINE_EXACT |
 | 253_syna_tcm_testing_0500_check_upper_bound | syna_tcm_testing_0500_check_upper_bound | 0011e844 | core_logic | syna_tcm_testing_0500_check_upper_bound.c:syna_tcm_testing_0500_check_upper_bound | PASS |
 | 254_syna_tcm_testing_0500_check_lower_bound | syna_tcm_testing_0500_check_lower_bound | 0011e8ac | core_logic | syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound | PASS |
-| 255_syna_tcm_v1_detect | syna_tcm_v1_detect | 0011e914 | core_logic | syna_tcm_v1_detect.c:syna_tcm_v1_detect | PROMOTED_OFFLINE_EXACT |
+| 255_syna_tcm_v1_detect | syna_tcm_v1_detect | 0011e914 | core_logic | syna_tcm_v1_detect.c:syna_tcm_v1_detect | PASS |
 | 256_syna_tcm_buf_lock | syna_tcm_buf_lock | 0011ede8 | core_logic | syna_tcm_buf_lock.c:syna_tcm_buf_lock | PASS |
 | 257_syna_tcm_buf_unlock | syna_tcm_buf_unlock | 0011ee40 | core_logic | syna_tcm_buf_unlock.c:syna_tcm_buf_unlock | PASS |
 | 258_syna_tcm_v1_write_message | syna_tcm_v1_write_message | 0011eeac | user_abi | syna_tcm_v1_write_message.c:syna_tcm_v1_write_message | PASS |
