@@ -292,40 +292,45 @@
       "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
     },
     {
-      "id": "008_zte_reboot_ext_panic",
-      "stock_function": "zte_reboot_ext_panic",
-      "stock_entry": "001010bc",
-      "stock_body_bytes": 60,
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
       "category": "core_logic",
-      "source_file": "zte_reboot_ext.c",
-      "source_function": "zte_reboot_ext_panic",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0007_001010bc_zte_reboot_ext_panic.c",
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0007_001010bc_zte_reboot_ext_panic.jsonl",
+      "evidence": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/zte_reboot_ext/microtasks/008_zte_reboot_ext_panic/compile.json",
+          "role": "compile",
+          "sha256": "7a76fd1cb1bf6b91164c0816458440793b8af9917e1e1eb6ca4142b813d79bc0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/zte_reboot_ext/microtasks/008_zte_reboot_ext_panic/kcfi.json",
+          "role": "kcfi",
+          "sha256": "ceb9cfe340f591c3c0a256f9bc253488e603c65f5eb2194993854e95b96bf5ef"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/zte_reboot_ext/microtasks/008_zte_reboot_ext_panic/test.json",
+          "role": "test",
+          "sha256": "203f924f0f092a47e8d99e6996afd03c619592ef0267d473ffab18313afe8982"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/zte_reboot_ext/attestation/joern_full_current_v1/gate_zte_reboot_ext_panic/joern_gate_summary.json",
+          "role": "joern",
+          "sha256": "0f8c26075fe15e5e66066bde6faf582cab82998045504746372079ba2b79013b"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_stock/pcode/0007_001010bc_zte_reboot_ext_panic.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_stock/decompiled/0007_001010bc_zte_reboot_ext_panic.c",
+      "id": "008_zte_reboot_ext_panic",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: zte_reboot_ext_panic\nEntrada Ghidra: 001010bc\nTamanho stock: 60 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:zte_reboot_ext_panic\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_stock/decompiled/0007_001010bc_zte_reboot_ext_panic.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_stock/pcode/0007_001010bc_zte_reboot_ext_panic.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
         "compile",
         "kcfi",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_reboot_ext\nFuncao stock: zte_reboot_ext_panic\nEntrada Ghidra: 001010bc\nTamanho stock: 60 bytes\nCategoria: core_logic\nAlvo no fonte: zte_reboot_ext.c:zte_reboot_ext_panic\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\decompiled\\0007_001010bc_zte_reboot_ext_panic.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_reboot_ext.ko\\pcode\\0007_001010bc_zte_reboot_ext_panic.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "source_file": "zte_reboot_ext.c",
+      "source_function": "zte_reboot_ext_panic",
       "status": "PASS",
-      "evidence": [
-        {
-          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\008_zte_reboot_ext_panic\\compile.json",
-          "role": "compile",
-          "sha256": "eba859e7fc3db49abb86f0964f1190a9419f7c0e4048b3ed195cf418b6fcad61"
-        },
-        {
-          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\008_zte_reboot_ext_panic\\kcfi.json",
-          "role": "kcfi",
-          "sha256": "77a74572774c26ffc43f8ee3622ce527fc88301fc7ccc83aed2d55ca50a48850"
-        },
-        {
-          "path": "engenharia\\validation\\zte_reboot_ext\\microtasks\\008_zte_reboot_ext_panic\\test.json",
-          "role": "test",
-          "sha256": "b28b92e391b26063658ccfc95dfb46eb8bd73036671199f87c1cf5ac735a8712"
-        }
-      ],
-      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
+      "stock_body_bytes": 60,
+      "stock_entry": "001010bc",
+      "stock_function": "zte_reboot_ext_panic"
     },
     {
       "id": "009_attr_show",
