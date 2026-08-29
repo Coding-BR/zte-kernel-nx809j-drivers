@@ -14916,30 +14916,31 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_set_singlefpgesture\nEntrada Ghidra: 0012be48\nTamanho stock: 176 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_set_singlefpgesture.c:tpd_set_singlefpgesture\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0336_0012be48_tpd_set_singlefpgesture.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0336_0012be48_tpd_set_singlefpgesture.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_hard_final_exact_v1_20260828.json",
-          "sha256": "eaaebe1ff85ab3d8a877e5c1d9b8af6425c7cab7ba94d139338902730f7bfe44"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next337_tpd_set_singlefpgesture_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "1648634d0177c6b029bbf7507d6c181b236b08825355d95a26d9360a7b8ff06e"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/kcfi_current_comparison.json",
-          "sha256": "ec9bb4d30a6854fa4a429f19bacb848ea4d406be62402ed2b75f6cf61f290f67"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next337_tpd_set_singlefpgesture_exact_v1/exact_revalidation_20260829/kcfi_comparison.json",
+          "sha256": "9d429ead67780b13b3b1e12d311890a4b9242f3dda126050cf71cc6a5fb2d04a"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next337_tpd_set_singlefpgesture_v1/tpd_set_singlefpgesture_contract_harness_report.json",
-          "sha256": "fca58fe07e41647176ed85c45da64b4bd4a1699df774a18a31222714016b42dd"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next337_tpd_set_singlefpgesture_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "sha256": "996b39e9b54c43b6b040890df56741195529bee90d8de473ef3e9173d1ae9784"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next337_tpd_set_singlefpgesture_exact_v1/exact_revalidation_20260829/joern_gate_summary.json",
+          "sha256": "f990688d180a092ca71cacda173236f45d9c50b6cb16843a9a5c1079c32e90e6"
         }
       ]
     },
