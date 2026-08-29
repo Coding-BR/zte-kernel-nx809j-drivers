@@ -710,27 +710,37 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_copy_to_tp_firmware_data\nEntrada Ghidra: 00107eb8\nTamanho stock: 200 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0012_00107eb8_tpd_copy_to_tp_firmware_data.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0012_00107eb8_tpd_copy_to_tp_firmware_data.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next129_tpd_copy_to_tp_firmware_data_revalidated_v1/build_report.json",
-          "sha256": "7921226818641976a6e26425eaef28af0b7d1ee8ccfa2c97d199724d026645b2"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "e5d396392902c25820221875e7c7d2f5ab92de6070852550c038df950a9696b8"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "5ccbcad1e4ce85d2c3c8809b4c570eaa9b0c31724e23124381e9bfadae708fbe"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next129_tpd_copy_to_tp_firmware_data_revalidated_v1/kcfi_comparison.json",
-          "sha256": "6b1a5110b82475256b390bfedda81cff75114c02e5d8047430215401432d0379"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next129_tpd_copy_to_tp_firmware_data_revalidated_v1/host_harness_report.json",
-          "sha256": "656acb1c3d7030d375a5becb7f6ca5f163bfb8035d094961fce59fe56f2369a5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "e134575c253a351c0ca693d95360be4dbd5e98d2f7b750a5f3dae77c3979c31e"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next129_tpd_copy_to_tp_firmware_data_revalidated_v1/joern_gate_summary.json",
-          "sha256": "0cada875a3b7105189cb24e072230317e864e13cb4de1b667ce0a4a9737d0ff3"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "0909e69893a212aadc5f3a91c5436a9160322caf99e07788d992f4cded906097"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "76c9820060b6a5ccfb6e9466dbdb32dcac4b69ba9ded3170e0c57fd7e2b5ac5c"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "498296486d870c7da4bf8955f9fea7d17b75fe5b4adfbacb14a7c215340a6479"
         }
       ]
     },

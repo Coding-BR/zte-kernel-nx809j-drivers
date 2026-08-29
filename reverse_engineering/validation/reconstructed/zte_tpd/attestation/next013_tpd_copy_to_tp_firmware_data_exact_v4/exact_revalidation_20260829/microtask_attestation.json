@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "013_tpd_copy_to_tp_firmware_data",
+  "stock_function": "tpd_copy_to_tp_firmware_data",
+  "stock_entry": "00107eb8",
+  "stock_body_bytes": 200,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "644fcd8f6b9daa9c4ac56da20ffd718ce6d6e6a290fe299b26f90a276ca474d4",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 50,
+    "instruction_count_candidate": 50,
+    "symbol_size_stock": 200,
+    "symbol_size_candidate": 200,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0x7bff871d",
+    "candidate_type_id": "0x7bff871d",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 12,
+    "direct_cases": [
+      "copy_missing_descriptor",
+      "copy_missing_data",
+      "copy_zero_size",
+      "copy_at_end",
+      "copy_full_string",
+      "copy_truncated_string",
+      "copy_empty_string",
+      "copy_ignores_old_offsets"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "e5d396392902c25820221875e7c7d2f5ab92de6070852550c038df950a9696b8",
+    "aarch64_comparison.json": "5ccbcad1e4ce85d2c3c8809b4c570eaa9b0c31724e23124381e9bfadae708fbe",
+    "kcfi/comparison.json": "e134575c253a351c0ca693d95360be4dbd5e98d2f7b750a5f3dae77c3979c31e",
+    "joern/joern_gate_report.json": "0909e69893a212aadc5f3a91c5436a9160322caf99e07788d992f4cded906097",
+    "host_harness_report.json": "76c9820060b6a5ccfb6e9466dbdb32dcac4b69ba9ded3170e0c57fd7e2b5ac5c",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host harness uses controlled allocator and cdev stubs; it does not exercise physical hardware.",
+    "No smartphone, Android service, SPI, IRQ, MMIO or physical NX809J validation was performed.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}
