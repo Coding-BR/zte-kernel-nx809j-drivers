@@ -51,6 +51,8 @@ struct tcm_dev;
 #define unk_3D392 "%s"
 
 static unsigned int printk_calls;
+static int configured_read_result;
+static unsigned int read_calls;
 
 static int printk(const char *format, ...)
 {
@@ -99,9 +101,16 @@ static unsigned int syna_tcm_v1_read(__int64 device, unsigned int size,
 {
   (void)device;
   (void)size;
-  (void)buffer;
   (void)capacity;
-  return 0;
+  ++read_calls;
+  if (configured_read_result == 0 && buffer != 0) {
+    uint8_t *bytes = (uint8_t *)(uintptr_t)buffer;
+    bytes[0] = 0;
+    bytes[1] = 0;
+    bytes[2] = 0;
+    bytes[3] = 0;
+  }
+  return (unsigned int)configured_read_result;
 }
 
 static __int64 syna_tcm_v1_parse_idinfo(__int64 device, const void *data,
@@ -143,7 +152,9 @@ static int completion_done(__int64 completion)
 
 int main(void)
 {
-  uint8_t state[0x400] = {0};
+  uint8_t state[0x5200] = {0};
+  uint8_t device[64] = {0};
+  uint8_t primary_buffer[16] = {0};
   uint8_t code = 0;
 
   printk_calls = 0;
@@ -156,6 +167,34 @@ int main(void)
       printk_calls != 1)
     return 1;
 
-  puts("PASS syna_tcm_v1_read_message host tests (2 cases)");
+  memset(state, 0, sizeof(state));
+  memset(primary_buffer, 0, sizeof(primary_buffer));
+  *(uint64_t *)(state + 72) = (uintptr_t)device;
+  *(uint64_t *)(state + 576) = (uintptr_t)primary_buffer;
+  *(uint32_t *)(state + 584) = sizeof(primary_buffer);
+  configured_read_result = -5;
+  read_calls = 0;
+  code = 0;
+  if (syna_tcm_v1_read_message((struct tcm_dev *)(uintptr_t)state, &code) !=
+          -5 ||
+      code != 0xff || read_calls != 1 || state[640] != 0 ||
+      *(uint32_t *)(state + 512) != 0)
+    return 1;
+
+  memset(state, 0, sizeof(state));
+  memset(primary_buffer, 0, sizeof(primary_buffer));
+  *(uint64_t *)(state + 72) = (uintptr_t)device;
+  *(uint64_t *)(state + 576) = (uintptr_t)primary_buffer;
+  *(uint32_t *)(state + 584) = sizeof(primary_buffer);
+  configured_read_result = 0;
+  read_calls = 0;
+  code = 0xff;
+  if (syna_tcm_v1_read_message((struct tcm_dev *)(uintptr_t)state, &code) !=
+          0 ||
+      code != 0 || read_calls != 1 || state[640] != 0 ||
+      *(uint32_t *)(state + 512) != 0 || primary_buffer[0] != 0xa5)
+    return 1;
+
+  puts("PASS syna_tcm_v1_read_message host tests (4 cases)");
   return 0;
 }

@@ -22,7 +22,9 @@ def main() -> int:
     args = parser.parse_args()
 
     source = pathlib.Path(__file__).resolve()
-    repo_root = source.parents[5]
+    # The runner lives below repo/reverse_engineering/validation/reconstructed/
+    # zte_tpd/attestation/<target>; parents[6] is the repository root.
+    repo_root = source.parents[6]
     build_root = args.build_root.resolve()
     output = args.output.resolve()
     build_root.mkdir(parents=True, exist_ok=True)
@@ -70,7 +72,7 @@ def main() -> int:
         "target": "syna_tcm_v1_read_message",
         "mode": "direct_source_asan_ubsan_host_oracle",
         "stock_contract": "Ghidra Assembly 0011f838",
-        "expected_cases": 2,
+        "expected_cases": 4,
         "cycles": cycles,
         "sanitizer": {"asan": True, "ubsan": True, "alignment": False},
         "reproducible_binary": reproducible,

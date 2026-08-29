@@ -75,9 +75,11 @@ A atestação `next544_syna_tcm_v1_read_message_exact_v1` registra:
 - build Docker em dois ciclos e harness ASan/UBSan host em dois ciclos.
 
 Isso sustenta equivalência offline do objeto exact, não comportamento em
-hardware. O harness direto cobre somente dois casos determinísticos de retorno
-antecipado e não cobre falhas de alocação, leitura SPI, mensagens
-continuadas, dispatch de report/response ou teardown concorrente.
+hardware. O harness direto agora cobre quatro casos determinísticos: os dois
+retornos iniciais, um erro de leitura de transporte com unwind dos locks e o
+caminho de sucesso com mensagem vazia e reset do buffer. Ainda não cobre
+falhas de alocação, mensagens continuadas, dispatch de report/response ou
+teardown concorrente.
 
 ## Decisão e pendências
 
