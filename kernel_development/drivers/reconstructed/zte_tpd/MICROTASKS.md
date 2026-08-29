@@ -306,7 +306,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 300_syna_tcm_read_flash_boot_cs_config | syna_tcm_read_flash_boot_cs_config | 001254bc | user_abi | syna_tcm_read_flash_boot_cs_config.c:syna_tcm_read_flash_boot_cs_config | PROMOTED_OFFLINE_EXACT |
 | 301_syna_tcm_read_flash_mtp_config | syna_tcm_read_flash_mtp_config | 00125a18 | user_abi | syna_tcm_read_flash_mtp_config.c:syna_tcm_read_flash_mtp_config | PROMOTED_OFFLINE_EXACT |
 | 302_syna_tcm_do_fw_update_ex | syna_tcm_do_fw_update_ex | 00125c18 | core_logic | syna_tcm_do_fw_update_ex.c:syna_tcm_do_fw_update_ex | PROMOTED_OFFLINE_EXACT |
-| 303_syna_tcm_update_flash_block | syna_tcm_update_flash_block | 00125f38 | core_logic | syna_tcm_update_flash_block.c:syna_tcm_update_flash_block | PROMOTED_OFFLINE_EXACT |
+| 303_syna_tcm_update_flash_block | syna_tcm_update_flash_block | 00125f38 | core_logic | syna_tcm_update_flash_block.c:syna_tcm_update_flash_block | PASS |
 | 304_syna_tcm_do_fw_update | syna_tcm_do_fw_update | 001267b0 | core_logic | syna_tcm_do_fw_update.c:syna_tcm_do_fw_update | PROMOTED_OFFLINE_EXACT |
 | 305_syna_tcm_update_lockdown_config | syna_tcm_update_lockdown_config | 00126aec | core_logic | syna_tcm_update_lockdown_config.c:syna_tcm_update_lockdown_config | PROMOTED_OFFLINE_EXACT |
 | 306_syna_tcm_check_flash_block | syna_tcm_check_flash_block | 00126e70 | core_logic | syna_tcm_check_flash_block.c:syna_tcm_check_flash_block | PROMOTED_OFFLINE_EXACT |
