@@ -37,7 +37,7 @@ int queue_work_on(int cpu, struct workqueue_struct *wq,
     return 1;
 }
 
-#include "../../../../../kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_unexpected_reset.c"
+#include "../../../reconstructed/zte_tpd/syna_dev_process_unexpected_reset.c"
 
 static void check(int condition, const char *name, unsigned int *tests,
                   unsigned int *failures)
