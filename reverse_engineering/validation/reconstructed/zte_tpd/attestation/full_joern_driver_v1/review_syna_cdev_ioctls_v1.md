@@ -89,8 +89,11 @@ vazamento, double-free e uso após liberação em cada rota.
 
 A atestação `next726_syna_cdev_ioctls_exact_v4` registra 8584/8584 bytes,
 2146/2146 instruções, relocations normalizadas coincidentes e KCFI
-`0x2af6cdbb` coincidente. Os 14 harnesses de rota passaram em duas
-repetições sob ASan/UBSan host e o build Docker passou em dois ciclos.
+`0x2af6cdbb` coincidente. A repetição consolidada mais recente executou as
+14 rotas em duas repetições Docker; todas passaram e cada binário foi
+reproduzido identicamente entre os ciclos. O relatório é
+`syna_cdev_ioctls_host_current_v5.json` (SHA-256
+`441bde9b313e0aea09ea043b9cbb18e359ca8414553695da6bb66f2b23d1f6ca`).
 
 Esses gates validam equivalência offline e oráculos de rota, não integração
 ABI completa, temporização de kernel, firmware ou execução no NX809J.
