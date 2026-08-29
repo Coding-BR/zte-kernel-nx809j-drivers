@@ -1383,3 +1383,9 @@ obj-files := $(filter-out tpd_set_one_key.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_set_one_key.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_one_key_exact.o
 AFLAGS_tpd_set_one_key_exact.o := -g0 -I$(src)
+# Exact offline reconstruction: syna_tcm_remove_device
+src-files := $(filter-out $(src)/syna_tcm_remove_device.c, $(src-files))
+obj-files := $(filter-out syna_tcm_remove_device.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_remove_device.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_remove_device_exact.o
+AFLAGS_syna_tcm_remove_device_exact.o := -g0 -I$(src)

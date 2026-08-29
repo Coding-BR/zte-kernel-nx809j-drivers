@@ -29,7 +29,11 @@ continue with state cleanup, matching the stock control flow.
 
 ## Promotion status
 
-This is a host/static reconstruction attestation, not a claim of binary
-identity or hardware readiness. Canonical kernel build, KCFI/module ABI,
-independent review and eventual hardware validation remain pending. No
-smartphone test was performed.
+The exact static revalidation is recorded under
+`exact_revalidation_20260829/`: clean Docker Kbuild, AArch64 opcode/relocation
+comparison and KCFI type/size comparison all passed. The source integration is
+now versioned and promoted as an exact static reconstruction.
+
+This remains a static/offline result, not a claim of smartphone hardware
+readiness. No smartphone test was performed; SPI, IRQ, MMIO, firmware transport
+and module loading remain outside the available environment.
