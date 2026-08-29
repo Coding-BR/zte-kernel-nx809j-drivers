@@ -201,37 +201,47 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zlog_register_work_init\nEntrada Ghidra: 001077c8\nTamanho stock: 120 bytes\nCategoria: lifecycle\nAlvo no fonte: zlog_register_work_init.c:zlog_register_work_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0003_001077c8_zlog_register_work_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0003_001077c8_zlog_register_work_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "3f9a019fd762ce7f27e10e12e8e29466804bff5b2a18edaf5b01f6b04428597d"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "106e9bd2e7b4152c0950e7e79ca65f9b490d1145fba89a18c30fa6dc22320dcd"
+        },
+        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v2/canonical_build_report.json",
-          "sha256": "e1074fd288fbf1beeaabe629fdcdfab151072d07ff49458997218ca4c176c76c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "106e9bd2e7b4152c0950e7e79ca65f9b490d1145fba89a18c30fa6dc22320dcd"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "8edcc611ede9291bdeb057f0b3fb502b4b6b4d699e021b766cdaeac131c8028f"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v2/kcfi_comparison.json",
-          "sha256": "1d1020fa9a918a037c5224c16b285f8368eea36dd5a14f76ee13a9577d197e25"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "672f44dc2b0cfe56d6bdf33e5b3e56fd834e87f8ba6c5ed63d90c6e915046a03"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v2/joern/joern_gate_summary.json",
-          "sha256": "2be48ad90d57adab421519333849c8cbc8e8023be5d647dcb1563f7f571befc1"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "196225b9c02162892daf8050af0b0571f1246d74d31171f7642800cca1c17073"
+        },
+        {
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "d75a24f50708521a8face54edc19b987f5c6ef867b1aab8b289075c79c06b64d"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v2/host_harness_report.json",
-          "sha256": "9229a2c8abe93eefed5dcaa4b41b20a77233ea0a0846b730f97e70ea46d98a9c"
-        },
-        {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v2/assembly_comparison.json",
-          "sha256": "97129f391741f09ff7e30ddf6b99b4b2fb61e37974da8bccdd4f00182b720749"
-        },
-        {
-          "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v2/microtask_attestation.json",
-          "sha256": "43911fbfa2079849edbe28ff2de875d05a65354a82bebf1810f5609576d0067a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next004_zlog_register_work_init_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "d75a24f50708521a8face54edc19b987f5c6ef867b1aab8b289075c79c06b64d"
         }
       ]
     },
