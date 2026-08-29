@@ -24,7 +24,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 018_zte_touch_pdev_unregister | zte_touch_pdev_unregister | 001083b4 | core_logic | zte_touch_pdev_unregister.c:zte_touch_pdev_unregister | PASS |
 | 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PASS |
 | 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | PASS |
-| 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PROMOTED_OFFLINE_EXACT |
+| 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PASS |
 | 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | PROMOTED_OFFLINE_EXACT |
 | 023_tp_ghost_check_work | tp_ghost_check_work | 00108690 | async_or_irq | tp_ghost_check_work.c:tp_ghost_check_work | PROMOTED_OFFLINE_EXACT |
 | 024_tpd_workqueue_deinit | tpd_workqueue_deinit | 00108744 | lifecycle | tpd_workqueue_deinit.c:tpd_workqueue_deinit | PASS |
