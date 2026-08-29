@@ -68,11 +68,13 @@ vazamento de memória preservado pelo comportamento stock, não uma divergência
 introduzida pela reconstrução. O assembly exact mantém o mesmo comportamento
 por equivalência de bytes.
 
-O harness existente cobre cinco contratos, incluindo ausência do managed
-device, falha do primeiro buffer e falha da alocação do nó FIFO. Entretanto,
-`test_kmalloc_cache` força a falha da alocação do nó e `test_kmalloc` sempre
-retorna sucesso; não há caso direto que force somente a alocação do payload a
-falhar. Assim, o possível vazamento permanece sem teste direto.
+O harness agora cobre seis contratos, incluindo ausência do managed device,
+falha do primeiro buffer, falha da alocação do nó FIFO e falha somente da
+alocação do payload após o nó já existir. Esse último caso observa
+explicitamente que o nó permanece alocado no modelo stock; o teardown do
+harness o libera para que o sanitizador não confunda o comportamento
+observado com um vazamento do próprio teste. Isso confirma o risco residual,
+mas não o transforma em aprovação de segurança.
 
 Não se deve adicionar `kfree(node)` dentro desta reconstrução exact sem uma
 decisão explícita de hardening: isso mudaria a equivalência stock e exigiria
@@ -84,8 +86,14 @@ independente.
 A atestação `next692_syna_cdev_process_reports_exact_v1` registra 404/404
 instruções, 1616/1616 bytes, relocations e KCFI `0x9f93c40a` coincidentes. O
 build Docker passou em dois ciclos; o harness ASan/UBSan passou em dois ciclos
-com cinco casos. Smartphone, input subsystem, firmware e hardware NX809J não
+com seis casos. Smartphone, input subsystem, firmware e hardware NX809J não
 foram executados.
+
+O relatório reproduzível desta execução é
+`host_tests_current_v2_syna_cdev_process_reports_report.json` (SHA-256
+`5c4edf48413c4c93f63a4a5f48f48d0d02a51f120f505b501552dae0f79c8572`), com o
+mesmo binário (`2d4d0cdefaa397a77fc302418bc5d0acaeb5b78a7c1df0ba60a5297163bc3095`)
+nos dois ciclos.
 
 ## Decisão e pendências
 
@@ -97,8 +105,8 @@ Pendências:
 
 1. revisor independente decidir se o vazamento stock é aceitável ou requer um
    ramo de hardening separado;
-2. adicionar teste isolado de falha do segundo `_kmalloc_noprof` e documentar
-   a decisão de ownership;
+2. obter decisão explícita de ownership sobre o nó que sobrevive à falha do
+   segundo `_kmalloc_noprof`;
 3. verificar concorrência entre callback de reports, remoção do FIFO e
    `syna_cdev_ioctls` no dispositivo;
 4. executar validação Android/NX809J e registrar a decisão independente.

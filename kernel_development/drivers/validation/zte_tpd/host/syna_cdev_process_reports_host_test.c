@@ -8,8 +8,11 @@ static unsigned char payload_area[8];
 static unsigned char managed_device;
 static int managed_available;
 static int force_first_alloc_failure;
+static int allow_fifo_node_alloc;
+static int force_fifo_payload_failure;
 static unsigned int printk_calls;
 static unsigned int free_calls;
+static void *last_fifo_node;
 static unsigned long long qword_316D0;
 static unsigned long long qword_31700;
 static unsigned long long qword_31708;
@@ -54,11 +57,16 @@ static intptr_t test_kmalloc_cache(void *cache, unsigned int size,
                                     unsigned int flags)
 {
     (void)cache; (void)size; (void)flags;
-    return 0;
+    if (!allow_fifo_node_alloc)
+        return 0;
+    last_fifo_node = calloc(1, size ? size : 1);
+    return (intptr_t)last_fifo_node;
 }
 static intptr_t test_kmalloc(unsigned int size, unsigned int flags)
 {
     (void)flags;
+    if (force_fifo_payload_failure)
+        return 0;
     return (intptr_t)calloc(1, size ? size : 1);
 }
 static void test_ktime(intptr_t timestamp) { memset((void *)timestamp, 0, 16); }
@@ -160,8 +168,11 @@ static void reset_state(void)
     memset(payload_area, 0, sizeof(payload_area));
     managed_available = 1;
     force_first_alloc_failure = 0;
+    allow_fifo_node_alloc = 0;
+    force_fifo_payload_failure = 0;
     printk_calls = 0;
     free_calls = 0;
+    last_fifo_node = NULL;
     qword_316D0 = 0;
     qword_31700 = 0;
     qword_31708 = 0;
@@ -205,6 +216,22 @@ static int expect_initial_buffer_failure(void)
            free_calls == 0 && printk_calls >= 2;
 }
 
+static int expect_fifo_payload_allocation_failure(void)
+{
+    reset_state();
+    allow_fifo_node_alloc = 1;
+    force_fifo_payload_failure = 1;
+    ((unsigned long long *)context_area)[159] =
+        (uintptr_t)&((unsigned long long *)context_area)[159];
+    ((unsigned long long *)context_area)[160] =
+        (uintptr_t)&((unsigned long long *)context_area)[159];
+    int result = syna_cdev_process_reports(1, payload_area, 1, context_area);
+    int observed_stock_node_leak = last_fifo_node != NULL;
+    free(last_fifo_node);
+    last_fifo_node = NULL;
+    return result == -12 && observed_stock_node_leak && free_calls == 1;
+}
+
 int main(void)
 {
     int c1 = expect_null_context();
@@ -212,11 +239,13 @@ int main(void)
     int c3 = expect_missing_managed_device();
     int c4 = expect_fifo_allocation_failure();
     int c5 = expect_initial_buffer_failure();
-    if (!c1 || !c2 || !c3 || !c4 || !c5) {
-        fprintf(stderr, "cases: %d %d %d %d %d\n", c1, c2, c3, c4, c5);
+    int c6 = expect_fifo_payload_allocation_failure();
+    if (!c1 || !c2 || !c3 || !c4 || !c5 || !c6) {
+        fprintf(stderr, "cases: %d %d %d %d %d %d\n", c1, c2, c3, c4, c5,
+                c6);
         fprintf(stderr, "syna_cdev_process_reports contract mismatch\n");
         return 1;
     }
-    puts("PASS syna_cdev_process_reports host tests (5 cases)");
+    puts("PASS syna_cdev_process_reports host tests (6 cases)");
     return 0;
 }

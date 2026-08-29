@@ -10,7 +10,7 @@ import subprocess
 from datetime import datetime, timezone
 
 
-EXPECTED_STDOUT = "PASS syna_cdev_process_reports host tests (5 cases)\n"
+EXPECTED_STDOUT = "PASS syna_cdev_process_reports host tests (6 cases)\n"
 
 
 def main() -> int:
@@ -88,7 +88,7 @@ def main() -> int:
         "container_image": "nubia-sm8850-kernel-builder:latest",
         "toolchain_volume": "nubia_sm8850_kernel_toolchains",
         "sanitizers": ["address", "undefined"],
-        "expected_cases": 5,
+        "expected_cases": 6,
         "repetitions": 2,
         "cycles": cycles,
         "reproducible": all(c["passed"] for c in cycles) and cycles[0]["binary_sha256"] == cycles[1]["binary_sha256"],
