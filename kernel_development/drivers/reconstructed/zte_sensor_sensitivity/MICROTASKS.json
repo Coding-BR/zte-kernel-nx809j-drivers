@@ -138,25 +138,30 @@
       "category": "user_abi",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_sensor_sensitivity\\microtasks\\004_accel_enable_show\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtasks/004_accel_enable_show/compile.json",
           "role": "compile",
-          "sha256": "13a7607179bce872bb8a096edfb7b770f545d4b47c6f67857a097e5376463adc"
+          "sha256": "546d7f0d6198fba84d28547fb0e5b15967f7669ebb804d24dd9ceabdcaf22941"
         },
         {
-          "path": "engenharia\\validation\\zte_sensor_sensitivity\\microtasks\\004_accel_enable_show\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtasks/004_accel_enable_show/kcfi.json",
           "role": "kcfi",
-          "sha256": "45636a9d19a9d4d8eeb39da35fd7d54ee013381daf895d3c331a76223f31b7e1"
+          "sha256": "e7def1a849a433ff67f37a3f9e377750b47d9a3a9b584d91b4a3c978ce1f36a0"
         },
         {
-          "path": "engenharia\\validation\\zte_sensor_sensitivity\\microtasks\\004_accel_enable_show\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtasks/004_accel_enable_show/test.json",
           "role": "test",
-          "sha256": "7ecadb585c2c4950a35b921f5e0eb6c4d17a2f9e85b11ba05068ee7793851052"
+          "sha256": "7ec7a47152a2ff0a5b378940ea975714a1f24794f035e6d686e4b18bc456b308"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/attestation/joern_full_current_v1/gate_accel_enable_show/joern_gate_summary.json",
+          "role": "joern",
+          "sha256": "6042ed0fea2cda1bc531106ff7c9e66f63881b585c7ed3374f67435706474495"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\pcode\\0003_00100afc_accel_enable_show.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\decompiled\\0003_00100afc_accel_enable_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/pcode/0003_00100afc_accel_enable_show.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/decompiled/0003_00100afc_accel_enable_show.c",
       "id": "004_accel_enable_show",
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_sensor_sensitivity\nFuncao stock: accel_enable_show\nEntrada Ghidra: 00100afc\nTamanho stock: 128 bytes\nCategoria: user_abi\nAlvo no fonte: zte_sensor_sensitivity.c:accel_enable_show\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\decompiled\\0003_00100afc_accel_enable_show.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\pcode\\0003_00100afc_accel_enable_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_sensor_sensitivity\nFuncao stock: accel_enable_show\nEntrada Ghidra: 00100afc\nTamanho stock: 128 bytes\nCategoria: user_abi\nAlvo no fonte: zte_sensor_sensitivity.c:accel_enable_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/decompiled/0003_00100afc_accel_enable_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/pcode/0003_00100afc_accel_enable_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
         "compile",
         "kcfi",
