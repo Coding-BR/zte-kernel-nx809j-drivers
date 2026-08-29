@@ -31,7 +31,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 025_zte_touch_probe | zte_touch_probe | 001087e4 | binding | zte_touch_probe.c:zte_touch_probe | PROMOTED_OFFLINE_EXACT |
 | 026_zte_touch_remove | zte_touch_remove | 00109668 | binding | zte_touch_remove.c:zte_touch_remove | PASS |
 | 027_zte_touch_shutdown | zte_touch_shutdown | 001096a0 | core_logic | zte_touch_shutdown.c:zte_touch_shutdown | PASS |
-| 028_tp_module_info_read | tp_module_info_read | 00109784 | user_abi | tp_module_info_read.c:tp_module_info_read | PROMOTED_OFFLINE_EXACT |
+| 028_tp_module_info_read | tp_module_info_read | 00109784 | user_abi | tp_module_info_read.c:tp_module_info_read | PASS |
 | 029_tp_wake_gesture_read | tp_wake_gesture_read | 00109a28 | user_abi | tp_wake_gesture_read.c:tp_wake_gesture_read | PROMOTED_OFFLINE_EXACT |
 | 030_tp_wake_gesture_write | tp_wake_gesture_write | 00109b1c | user_abi | tp_wake_gesture_write.c:tp_wake_gesture_write | PROMOTED_OFFLINE_EXACT |
 | 031_tp_smart_cover_read | tp_smart_cover_read | 00109bf0 | user_abi | tp_smart_cover_read.c:tp_smart_cover_read | PROMOTED_OFFLINE_EXACT |

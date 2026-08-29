@@ -1448,32 +1448,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_module_info_read\nEntrada Ghidra: 00109784\nTamanho stock: 672 bytes\nCategoria: user_abi\nAlvo no fonte: tp_module_info_read.c:tp_module_info_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0027_00109784_tp_module_info_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0027_00109784_tp_module_info_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next390_tp_module_info_read_exact_v2/canonical_build_report.json",
-          "sha256": "80ce71e5fc4e4d4792fce656e446e48ff124e1ec7bb04939bbb332c32fb68998"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "3b8fd584b5d329010d26e57a1aed3dc6cc36ffec7aa86e73d3760b7483cb7155"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next390_tp_module_info_read_exact_v2/kcfi_comparison.json",
-          "sha256": "902c1e67b30bae26750f979ecdc1da2059ed5ca6eb5b8d00665c5d594d0426c0"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "49e698b63167a1318073ba1902490a87bd5e45339a530bb00152e8a18c4bb273"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next390_tp_module_info_read_exact_v2/host_harness_report.json",
-          "sha256": "2c7f40273aa7f3c41e8c03940db4cd4dd7f3e8f1bdd4902abfe85b0a17d63842"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "053ff4cedfa6429ce1e0c501228531cc159b710f4123f298ccb60c559b263762"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next390_tp_module_info_read_exact_v2/joern/joern_gate_summary.json",
-          "sha256": "40eb160c9f0e1867b9a9f79367460fff2ffa6f19d056da28cae7ff17eb9a83fa"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/joern/joern_gate_summary.json",
+          "sha256": "1a5fefd9e0b162867a555e4b4a6bbdf435049b2ec5c9cc499a7a46f2fc72dcc1"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next390_tp_module_info_read_exact_v2/assembly_comparison.json",
-          "sha256": "6c5b3cf42bbdf2e414f8b994acf4981055de36ab20ba2ab8fa46d4df7ede733e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "c266538a7435b87f29747196f965a7e3f776781d7ff380fd263d0faa28b3d455"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "dd20a0d2c016557eb72780fb811ebc2ff862eeee87837b6ed69c4c22fb78e88a"
         }
       ],
       "attestation": "Offline exact AArch64 instruction and normalized relocation parity promoted; canonical two-cycle build, KCFI and two-cycle ASan/UBSan host gates passed. Joern retains the userspace ABI review finding; hardware remains deferred."
