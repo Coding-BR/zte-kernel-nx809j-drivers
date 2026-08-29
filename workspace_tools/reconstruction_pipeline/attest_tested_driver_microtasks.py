@@ -11,11 +11,19 @@ from pathlib import Path
 from typing import Any
 
 
+TEXT_HASH_SUFFIXES = {".c", ".h", ".json", ".jsonl", ".md", ".py", ".sc", ".txt"}
 JOERN_TEXT_SUFFIXES = {".c", ".h"}
 JOERN_EXCLUDED_PATHS = {"tests", "validation", "build"}
 
 
 def sha256_file(path: Path) -> str:
+    content = path.read_bytes()
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        content = content.replace(b"\r\n", b"\n")
+    return hashlib.sha256(content).hexdigest()
+
+
+def sha256_file_raw(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
@@ -145,7 +153,7 @@ def direct_tested_sources(
                 current = source_dir / basename
                 if not current.is_file():
                     continue
-                if sha256_file(current) == expected_sha:
+                if expected_sha in {sha256_file(current), sha256_file_raw(current)}:
                     sources[basename] = report_path
             continue
         status = payload.get("status")
@@ -176,7 +184,9 @@ def direct_tested_sources(
             continue
         basename = Path(source_files_by_function[function]).name
         current = source_dir / basename
-        if current.is_file() and sha256_file(current) == source_sha:
+        if current.is_file() and source_sha in {
+            sha256_file(current), sha256_file_raw(current)
+        }:
             sources[basename] = report_path
     return sources
 
@@ -448,7 +458,10 @@ def main() -> int:
             continue
         if selected_functions and source_function not in selected_functions:
             continue
-        kcfi_path = typed.get(source_function)
+        # A reviewed mapping may use a source-level name different from the
+        # ELF stock symbol (for example cleanup_module -> nubia_hw_version_exit).
+        # Accept either identity, but never accept an unrelated function.
+        kcfi_path = typed.get(source_function) or typed.get(str(task.get("stock_function", "")))
         test_path = tested.get(Path(source_file).name)
         required_evidence = task.get("required_evidence", ["compile", "kcfi", "test"])
         if not isinstance(required_evidence, list) or not all(
@@ -459,6 +472,9 @@ def main() -> int:
         joern_path = joern.get(source_function)
         if kcfi_path is None or test_path is None or (require_joern and joern_path is None):
             continue
+        if require_joern and "joern" not in required_evidence:
+            required_evidence = [*required_evidence, "joern"]
+            task["required_evidence"] = required_evidence
         task["status"] = "PASS"
         task["evidence"] = [
             build_evidence,

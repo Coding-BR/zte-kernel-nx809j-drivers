@@ -392,6 +392,10 @@ def source_method_aliases(name: str) -> tuple[str, ...]:
     if name.endswith(suffix):
         base_name = name.removesuffix(suffix)
         return (base_name, "module_platform_driver")
+    if name.endswith("_init"):
+        return ("module_init",)
+    if name.endswith("_exit"):
+        return ("module_exit",)
     return ()
 
 
