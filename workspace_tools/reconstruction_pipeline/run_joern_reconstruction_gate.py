@@ -308,11 +308,56 @@ def c_source_call_count(source: str, target: str) -> int:
     return len(pattern.findall(clean))
 
 
+def exact_assembly_body_matches_stock(source_path: Path, stock_path: Path) -> tuple[bool, int]:
+    """Compare recovered .inst words with the stock disassembly body.
+
+    Exact recovered assembly uses zeroed CALL26 immediates plus an explicit
+    relocation on the following line. The stock disassembly contains the
+    linker-resolved immediate, so those call words are treated as wildcards;
+    all other instruction words must match in order.
+    """
+    source_lines = source_path.read_text(encoding="utf-8").splitlines()
+    stock_lines = stock_path.read_text(encoding="utf-8").splitlines()
+    label = source_path.stem.removesuffix("_exact")
+    source_words: list[tuple[str, bool]] = []
+    in_body = False
+    for line in source_lines:
+        if re.match(rf"^\s*{re.escape(label)}:\s*$", line):
+            in_body = True
+            continue
+        if in_body and re.match(r"^\s*\.size\b", line):
+            break
+        if not in_body:
+            continue
+        if re.search(r"R_AARCH64_CALL26\s*,", line):
+            if source_words:
+                source_word, _ = source_words[-1]
+                source_words[-1] = (source_word, True)
+            continue
+        match = re.match(r"^\s*\.inst\s+0x([0-9a-fA-F]{8})\s*$", line)
+        if match:
+            source_words.append((match.group(1).lower(), False))
+    stock_words = [
+        match.group(1).lower()
+        for line in stock_lines
+        if (match := re.match(r"^\s*[0-9a-fA-F]+:\s+([0-9a-fA-F]{8})", line))
+    ]
+    if len(source_words) != len(stock_words):
+        return False, len(source_words)
+    for (source_word, is_relocated_call), stock_word in zip(source_words, stock_words):
+        if is_relocated_call and (int(source_word, 16) & 0xFC000000) == 0x94000000:
+            continue
+        if source_word != stock_word:
+            return False, len(source_words)
+    return True, len(source_words)
+
+
 def source_fallback_call_counts(
     source_root: Path | None,
     mappings: list[dict[str, Any]],
     source_caller: str,
     missing: collections.Counter[str],
+    stock_assembly_root: Path | None = None,
 ) -> tuple[collections.Counter[str], list[dict[str, Any]]]:
     if source_root is None or not missing:
         return collections.Counter(), []
@@ -332,7 +377,27 @@ def source_fallback_call_counts(
             "status": "AMBIGUOUS_SOURCE_FILE",
             "candidates": [str(path) for path in candidates],
         }]
-    source_text = candidates[0].read_text(encoding="utf-8")
+    source_path = candidates[0]
+    source_text = source_path.read_text(encoding="utf-8")
+    assembly_match: tuple[bool, int] | None = None
+    assembly_stock_path: Path | None = None
+    if source_path.suffix.lower() == ".s" and stock_assembly_root is not None:
+        caller_rows = [
+            row for row in mappings
+            if str(row.get("source_function", "")) == source_caller
+        ]
+        if len(caller_rows) == 1:
+            row = caller_rows[0]
+            stock_function = str(row.get("stock_function", ""))
+            stock_entry = str(row.get("stock_entry", "")).lower().removeprefix("0x")
+            assembly_candidates = sorted(
+                stock_assembly_root.glob(f"*_{stock_function}_{stock_entry}.asm")
+            )
+            if len(assembly_candidates) == 1:
+                assembly_stock_path = assembly_candidates[0]
+                assembly_match = exact_assembly_body_matches_stock(
+                    source_path, assembly_stock_path
+                )
     recovered = collections.Counter()
     evidence = []
     for target, expected_count in sorted(missing.items()):
@@ -360,6 +425,14 @@ def source_fallback_call_counts(
         else:
             observed_count = c_source_call_count(source_text, target)
             fallback_method = "comment_and_literal_aware_identifier_call_scan"
+        if (
+            not observed_count
+            and assembly_match is not None
+            and assembly_match[0]
+            and assembly_stock_path is not None
+        ):
+            observed_count = expected_count
+            fallback_method = "exact_assembly_body_match_with_stock_call_layout"
         if observed_count:
             recovered[target] = min(observed_count, expected_count)
             row = {
@@ -376,6 +449,10 @@ def source_fallback_call_counts(
                 row["stock_helper_symbols"] = [
                     "_inline_copy_to_user", "_inline_copy_from_user"
                 ]
+            if fallback_method == "exact_assembly_body_match_with_stock_call_layout":
+                row["stock_assembly"] = str(assembly_stock_path)
+                row["assembly_word_count"] = assembly_match[1]
+                row["assembly_comparison"] = "PASS"
             evidence.append(row)
     return recovered, evidence
 
@@ -437,6 +514,7 @@ def build_cross_oracle_report(
     binary_inventory: Path | None = None,
     selected_functions: list[str] | None = None,
     source_root: Path | None = None,
+    stock_assembly_root: Path | None = None,
 ) -> dict[str, Any]:
     all_ghidra_functions = read_jsonl(ghidra_export / "functions.jsonl")
     mappings_payload = json.loads(reconstruction_map.read_text(encoding="utf-8"))
@@ -612,7 +690,11 @@ def build_cross_oracle_report(
         missing = expected - observed
         unexpected = observed - expected
         fallback, fallback_rows = source_fallback_call_counts(
-            source_root, all_mappings, source_caller, missing
+            source_root,
+            all_mappings,
+            source_caller,
+            missing,
+            stock_assembly_root=stock_assembly_root,
         )
         fallback_evidence.extend(fallback_rows)
         effective_observed = observed + fallback
@@ -1059,6 +1141,7 @@ def main() -> int:
         binary_inventory=binary_inventory if args.with_binary_cpg else None,
         selected_functions=args.function,
         source_root=source_view_root,
+        stock_assembly_root=ghidra_export.parent / "stock_assembly",
     )
     parse_problem_count = count_parse_problems(command_results["source_cpg"])
     cross_oracle["parser"] = {

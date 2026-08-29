@@ -54,10 +54,3 @@ gpio_keys_open:
     .inst 0xd50323bf
     .inst 0xd65f03c0
 .size gpio_keys_open, .-gpio_keys_open
-
-.local gpio_keys_open_padding
-.type gpio_keys_open_padding, %function
-gpio_keys_open_padding:
-.space 0x48
-.inst 0xd65f03c0
-.size gpio_keys_open_padding, .-gpio_keys_open_padding
