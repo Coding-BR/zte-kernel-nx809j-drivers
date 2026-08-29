@@ -33,12 +33,12 @@ static struct syna_tcm *seen_tcm;
 static unsigned int seen_screen_mode;
 static unsigned int seen_report_rate;
 static unsigned int printk_calls;
-static char unk_36640[8];
-static char unk_3B114[8];
-static char unk_375F8[8];
-static char unk_3C4B0[8];
-static char unk_3BEE4[8];
-static char unk_3A2DA[8];
+static char unk_36640[8] __attribute__((unused));
+static char unk_3B114[8] __attribute__((unused));
+static char unk_375F8[8] __attribute__((unused));
+static char unk_3C4B0[8] __attribute__((unused));
+static char unk_3BEE4[8] __attribute__((unused));
+static char unk_3A2DA[8] __attribute__((unused));
 
 unsigned long wait_for_completion_timeout(long long completion,
                                           unsigned long timeout)

@@ -20,5 +20,8 @@ deferred. This is an offline function-level claim, not a claim of complete
 driver or NX809J hardware equivalence.
 
 The semantic reconstruction and direct host contract source used by Joern and
-the harness are preserved as `semantic_source.c` and `host_contract_source.c`;
-the original working-tree WIPs remain separate from the exact linked source.
+the harness are preserved as `semantic_source.c` and `host_contract_source.c`.
+The refreshed source/harness validation is recorded in
+`host_harness_report_v2_20260829.json` and `joern_refresh_20260829/`; it covers
+the disabled, reflash-failure, app-firmware-failure, input-device-failure and
+full-success paths. The exact linked source remains `candidate_exact.S`.
