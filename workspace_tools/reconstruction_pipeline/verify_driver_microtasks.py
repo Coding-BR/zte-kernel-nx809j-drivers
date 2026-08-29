@@ -13,10 +13,14 @@ from typing import Any
 
 DEFAULT_REQUIRED_ROLES = {"compile", "kcfi", "test"}
 SUPPORTED_ROLES = DEFAULT_REQUIRED_ROLES | {"joern"}
+TEXT_HASH_SUFFIXES = {".c", ".h", ".json", ".jsonl", ".md", ".py", ".sc", ".txt"}
 
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
+        return digest.hexdigest()
     with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)

@@ -380,6 +380,21 @@ def source_fallback_call_counts(
     return recovered, evidence
 
 
+def source_method_aliases(name: str) -> tuple[str, ...]:
+    """Return explicit source anchors for compiler-generated source labels.
+
+    Ghidra can preserve ELF entry points emitted by a kernel macro expansion
+    while Joern only sees the macro invocation in the source CPG.  Keep this
+    translation narrow and auditable: only the known module-platform-driver
+    expansion labels may resolve to their base symbol or macro anchor.
+    """
+    suffix = " (module_platform_driver expansion)"
+    if name.endswith(suffix):
+        base_name = name.removesuffix(suffix)
+        return (base_name, "module_platform_driver")
+    return ()
+
+
 def classify_calls(
     records: list[dict[str, Any]], profile: dict[str, Any]
 ) -> list[dict[str, Any]]:
@@ -538,7 +553,21 @@ def build_cross_oracle_report(
         }
     else:
         actual_source = all_actual_source
-    missing_source_methods = sorted(expected_source - actual_source)
+    source_method_resolution = {
+        expected: next(
+            (
+                candidate
+                for candidate in (expected, *source_method_aliases(expected))
+                if candidate in actual_source
+            ),
+            None,
+        )
+        for expected in sorted(expected_source)
+    }
+    missing_source_methods = sorted(
+        expected for expected, resolved in source_method_resolution.items()
+        if resolved is None
+    )
     extra_source_methods = sorted(actual_source - expected_source)
 
     stock_to_source = {
@@ -679,6 +708,7 @@ def build_cross_oracle_report(
             "joern_total_internal_method_count": len(all_actual_source),
             "missing_source_methods": missing_source_methods,
             "extra_source_methods": extra_source_methods,
+            "source_method_resolution": source_method_resolution,
         },
         "graph": {
             "call_count": len(calls),
