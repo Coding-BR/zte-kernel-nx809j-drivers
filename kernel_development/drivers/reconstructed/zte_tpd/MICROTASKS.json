@@ -13509,37 +13509,47 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_update_cs_config\nEntrada Ghidra: 00127414\nTamanho stock: 996 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tcm_update_cs_config.c:syna_tcm_update_cs_config\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0307_00127414_syna_tcm_update_cs_config.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0307_00127414_syna_tcm_update_cs_config.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "0557f9a1825f882d5d51c038e3f76de78177fe437a418cb4fa3647050d036154"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "510e429581be7a3a4e58978d50cccdd96897cf90521999fd5df403f878732f5b"
+        },
+        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next604_syna_tcm_update_cs_config_exact_v1/canonical_build_report.json",
-          "sha256": "a686048b98b5d90f10b8e78d2d88ff1c6225fee1314a8834f9bff0b28fd7c3f2"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "510e429581be7a3a4e58978d50cccdd96897cf90521999fd5df403f878732f5b"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "3f374c932335db36fc9ee0c8cd7f5848b7e583b3a114324ecc72bd85d7664b21"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next604_syna_tcm_update_cs_config_exact_v1/kcfi/comparison.json",
-          "sha256": "b54edf77115f89ccae1acdf73d46c60c0440595e6f4e9b451b848f936f6bdd83"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next604_syna_tcm_update_cs_config_exact_v1/host_harness_report.json",
-          "sha256": "43dc6f8d871d7df448fee7ec5842fcfbcb73fb75a851605e3f5d0bc9e3c0f393"
-        },
-        {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next604_syna_tcm_update_cs_config_exact_v1/assembly/comparison.json",
-          "sha256": "ba533f53b318b25d8781b70a35793066f6a1cc5cecad17b1567ea74d1c341fef"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "65b79402296474c525947227725291cfe31469e5fc85ac56e928eeabe89c0b2d"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next604_syna_tcm_update_cs_config_exact_v1/joern/joern_gate_report.json",
-          "sha256": "ccd9a87a87ae52ce88c3f7a20821347a34747a3b6ecbd0fde7532ee641fec040"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "3837aefc7683ebcbf3d831463d58d287c902d94c6f54db32a399e73c6257e5c6"
         },
         {
-          "role": "aarch64",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next604_syna_tcm_update_cs_config_exact_v1/aarch64_validation_report.json",
-          "sha256": "8c7b98098fe803d81a62d71966242971fa8d7125cd49d6c7206d84d7047c3f05"
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "10cea38d95f39517129dedcbb4679c6874bb4a0a3cf85e033fab5d8321305732"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next308_syna_tcm_update_cs_config_exact_v2/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "10cea38d95f39517129dedcbb4679c6874bb4a0a3cf85e033fab5d8321305732"
         }
       ]
     },
