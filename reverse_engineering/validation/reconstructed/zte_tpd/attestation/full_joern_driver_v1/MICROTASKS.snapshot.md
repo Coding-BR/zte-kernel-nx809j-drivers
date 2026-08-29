@@ -198,7 +198,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 192_syna_cdev_release | syna_cdev_release | 001173e0 | user_abi | syna_cdev_release_exact.S:syna_cdev_release | PROMOTED_OFFLINE_EXACT |
 | 193_syna_cdev_ioctl_raw_read | syna_cdev_ioctl_raw_read | 00117558 | user_abi | syna_cdev_ioctl_raw_read_exact.S:syna_cdev_ioctl_raw_read | PROMOTED_OFFLINE_EXACT |
 | 194_syna_cdev_ioctl_raw_write | syna_cdev_ioctl_raw_write | 001178d8 | user_abi | syna_cdev_ioctl_raw_write_exact.S:syna_cdev_ioctl_raw_write | PROMOTED_OFFLINE_EXACT |
-| 195_syna_cdev_process_reports | syna_cdev_process_reports | 00117c90 | core_logic | syna_cdev_process_reports_exact.S:syna_cdev_process_reports | READY_FOR_IMPLEMENTATION |
+| 195_syna_cdev_process_reports | syna_cdev_process_reports | 00117c90 | core_logic | syna_cdev_process_reports_exact.S:syna_cdev_process_reports | PASS |
 | 196_syna_request_managed_device | syna_request_managed_device | 00118364 | core_logic | syna_request_managed_device.c:syna_request_managed_device | PASS |
 | 197_syna_spi_hw_reset | syna_spi_hw_reset | 00118384 | core_logic | syna_spi_hw_reset.c:syna_spi_hw_reset | PASS |
 | 198_syna_hw_interface_init | syna_hw_interface_init | 00118418 | lifecycle | syna_hw_interface_init.c:syna_hw_interface_init | PASS |
