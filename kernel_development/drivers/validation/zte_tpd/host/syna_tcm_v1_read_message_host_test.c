@@ -150,6 +150,25 @@ static int completion_done(__int64 completion)
 
 #include "../../../reconstructed/zte_tpd/syna_tcm_v1_read_message.c"
 
+static int expect_buffer_allocation_failure(void)
+{
+  uint8_t state[0x5200] = {0};
+  uint8_t device[64] = {0};
+  uint8_t code = 0;
+
+  *(uint64_t *)(state + 72) = (uintptr_t)device;
+  *(uint64_t *)(state + 576) = 0;
+  *(uint32_t *)(state + 584) = 0;
+  configured_read_result = 0;
+  read_calls = 0;
+  printk_calls = 0;
+  if (syna_tcm_v1_read_message((struct tcm_dev *)(uintptr_t)state, &code) !=
+          -243)
+    return 0;
+  return code == 0xff && read_calls == 0 && state[640] == 0 &&
+         *(uint32_t *)(state + 512) == 0 && printk_calls >= 2;
+}
+
 int main(void)
 {
   uint8_t state[0x5200] = {0};
@@ -195,6 +214,9 @@ int main(void)
       *(uint32_t *)(state + 512) != 0 || primary_buffer[0] != 0xa5)
     return 1;
 
-  puts("PASS syna_tcm_v1_read_message host tests (4 cases)");
+  if (!expect_buffer_allocation_failure())
+    return 1;
+
+  puts("PASS syna_tcm_v1_read_message host tests (5 cases)");
   return 0;
 }
