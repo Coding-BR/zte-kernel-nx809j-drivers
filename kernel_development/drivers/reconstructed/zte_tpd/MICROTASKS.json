@@ -14670,30 +14670,31 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_enable_wakegesture\nEntrada Ghidra: 0012bb4c\nTamanho stock: 76 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_enable_wakegesture.c:tpd_enable_wakegesture\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0330_0012bb4c_tpd_enable_wakegesture.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0330_0012bb4c_tpd_enable_wakegesture.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/docker_validation.json",
-          "sha256": "1d8fe41ce6d7157b346613faa3e80fe1d295a90d4222e8f094e91aaa5bcbed94"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next331_tpd_enable_wakegesture_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "cd6bfecae4295ce85cee16767fe5320fbba4510fe43e9a1fe7f6f5cfc1564910"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/kcfi_current_comparison.json",
-          "sha256": "ec9bb4d30a6854fa4a429f19bacb848ea4d406be62402ed2b75f6cf61f290f67"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next331_tpd_enable_wakegesture_exact_v1/exact_revalidation_20260829/kcfi_comparison.json",
+          "sha256": "333e81850d9f072c056e3452cfd85345350a5dc15e7c15f453d2e5756bef3ef5"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/host_tests_current_driver_bound_20260828/tpd_enable_wakegesture_report.json",
-          "sha256": "30626b42b99152181350d4f3e2b9432b4e56634b53ad72180331078062c749b4"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next331_tpd_enable_wakegesture_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "sha256": "3d1828ae348546da8681524c092be6a6708e455f93268293a2de806d5bf4c2c7"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next331_tpd_enable_wakegesture_exact_v1/exact_revalidation_20260829/joern_gate_summary.json",
+          "sha256": "e79315e031a0c6b1bd2945b616d531bffbd525c9509818ee160174da74b545e4"
         }
       ]
     },
