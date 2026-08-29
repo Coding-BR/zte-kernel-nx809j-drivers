@@ -33,21 +33,16 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=pathlib.Path,
                         default=pathlib.Path(__file__).with_name("zte_touch_init_host_test.c"))
-    parser.add_argument("--driver-source", type=pathlib.Path,
-                        default=pathlib.Path(__file__).parents[3] / "reconstructed" / "zte_tpd" / "zte_touch_init.c")
     parser.add_argument("--build-root", type=pathlib.Path, required=True)
     parser.add_argument("--output", type=pathlib.Path, required=True)
     args = parser.parse_args()
 
     source = args.source.resolve()
-    driver_source = args.driver_source.resolve()
     drivers = source.parents[3]
     build_root = args.build_root.resolve()
     output = args.output.resolve()
     if not source.is_file():
         parser.error(f"source not found: {source}")
-    if not driver_source.is_file():
-        parser.error(f"driver source not found: {driver_source}")
     if build_root.exists():
         parser.error(f"build root already exists: {build_root}")
 
@@ -101,8 +96,6 @@ def main() -> int:
         "covered_functions": ["zte_touch_init"],
         "source": str(source),
         "source_sha256": sha256(source),
-        "driver_source": str(driver_source),
-        "driver_source_sha256": sha256(driver_source),
         "expected_cases": 1,
         "repetitions": 2,
         "cycles": cycles,
