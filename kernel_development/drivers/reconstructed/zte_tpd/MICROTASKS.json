@@ -2147,7 +2147,7 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_single_game_read\nEntrada Ghidra: 0010adf4\nTamanho stock: 240 bytes\nCategoria: user_abi\nAlvo no fonte: tp_single_game_read.c:tp_single_game_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0048_0010adf4_tp_single_game_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0048_0010adf4_tp_single_game_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
@@ -2160,14 +2160,14 @@
           "sha256": "3ff6d30466c0f8dd314f032c2e0110d3d6916370baaae9980e6d09a06f8b8451"
         },
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next419_tp_single_game_read_exact_v1/joern_gate_summary.json",
-          "sha256": "4d3225e66326b418e297447be52e63fdcd8cb312a17a8ed70d65a174e3930589"
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_tp_single_game_read_current_v1/host_harness_report.json",
+          "sha256": "78158c8a980de472f6328729c5465a5a7f8880e47aced726da2acd2e9db0e66c"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next419_tp_single_game_read_exact_v1/host_harness_report.json",
-          "sha256": "78158c8a980de472f6328729c5465a5a7f8880e47aced726da2acd2e9db0e66c"
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_tp_single_game_read_current_v1/joern_gate_summary.json",
+          "sha256": "f64b6aad24c640abae484d5be81b95f398a87e138b7ba58e26ef7e98359c8a5b"
         }
       ]
     },
