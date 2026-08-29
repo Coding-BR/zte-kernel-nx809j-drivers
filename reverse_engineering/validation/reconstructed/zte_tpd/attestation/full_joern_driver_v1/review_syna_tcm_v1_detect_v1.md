@@ -64,8 +64,13 @@ ou que o device retornado para `devm_kfree` corresponde ao mesmo owner.
 
 A atestação `next541_syna_tcm_v1_detect_exact_v1` registra 1236/1236 bytes,
 equivalência AArch64 estrita, KCFI `0x24cba334`, build Docker em dois ciclos e
-harness ASan/UBSan em dois ciclos com quatro casos: handle nulo, fast path,
-falha de alocação e callback de startup bem-sucedido.
+harness ASan/UBSan em dois ciclos com nove casos: handle nulo, fast path,
+falha de alocação, startup bem-sucedido, callback de leitura ausente, leitura
+negativa, escrita negativa, parsing negativo e falha de
+`check_max_rw_size`. O relatório é `host_harness_report_v2.json` (SHA-256
+`c6fc05fd961e992debe6fdf0e382db355b4dcbbcdd22eee5effd83d68914a9dc`), com o
+mesmo binário (`1509ca3b8d00679d19eca7fb176c461afee4a4d71ac835d4f4f2488437b0a8b4`)
+nos dois ciclos.
 
 O harness não executa firmware, transporte físico, concorrência de callback ou
 hardware NX809J.
@@ -81,7 +86,7 @@ Pendências:
 1. revisão independente da pré-condição do fast path e da publicação dos
    callbacks;
 2. teste de corrida entre detect, read/write e teardown;
-3. injeção de falha no managed device, leitura e alocação durante o detect;
+3. injeção adicional de falha no managed device e alocação durante o detect;
 4. validação Android/NX809J e registro do revisor independente.
 
 `PROMOTED_OFFLINE_EXACT` continua significando apenas equivalência

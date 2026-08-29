@@ -17,7 +17,7 @@ DRIVER_SOURCE = Path("kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_
 IMAGE = "nubia-sm8850-kernel-builder:latest"
 TOOLCHAIN_VOLUME = "nubia_sm8850_kernel_toolchains"
 CLANG = "/toolchains/clang-r536225/bin/clang"
-EXPECTED = "PASS syna_tcm_v1_detect host tests (4 cases)\n"
+EXPECTED = "PASS syna_tcm_v1_detect host tests (9 cases)\n"
 
 
 def sha256(path: Path) -> str:
@@ -85,7 +85,7 @@ def main() -> int:
         "source": str(source), "source_sha256": sha256(source), "compiler": CLANG,
         "compiler_version": run(["docker", "run", "--rm", "-v", f"{TOOLCHAIN_VOLUME}:/toolchains:ro", IMAGE, CLANG, "--version"]).stdout.strip(),
         "container_image": IMAGE, "toolchain_volume": TOOLCHAIN_VOLUME,
-        "sanitizers": ["address", "undefined"], "expected_cases": 4, "repetitions": 2,
+        "sanitizers": ["address", "undefined"], "expected_cases": 9, "repetitions": 2,
         "cycles": cycles,
         "inputs": [
             {"path": str(source), "size": source.stat().st_size, "sha256": sha256(source)},

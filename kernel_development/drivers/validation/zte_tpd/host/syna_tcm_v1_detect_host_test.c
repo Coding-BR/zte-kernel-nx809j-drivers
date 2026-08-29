@@ -35,6 +35,11 @@ static int callback_calls;
 static int write_calls;
 static int parse_calls;
 static int max_size_calls;
+static int read_result;
+static int read_status;
+static int write_result;
+static int parse_result;
+static int max_size_result;
 
 static __int64 _ReadStatusReg(unsigned int selector)
 {
@@ -85,24 +90,24 @@ static __int64 syna_tcm_v1_read_message(void)
 {
     if (active_buffer) {
         active_buffer[0] = 0xa5;
-        active_buffer[1] = 16;
+        active_buffer[1] = (uint8_t)read_status;
     }
     callback_calls++;
-    return 0;
+    return read_result;
 }
 
 static __int64 syna_tcm_v1_write_message(__int64 device, ...)
 {
     (void)device;
     write_calls++;
-    return 0;
+    return write_result;
 }
 
 static __int64 syna_tcm_v1_parse_idinfo(__int64 device, ...)
 {
     (void)device;
     parse_calls++;
-    return 0;
+    return parse_result;
 }
 
 static __int64 syna_tcm_v1_set_up_max_rw_size(__int64 device)
@@ -115,7 +120,7 @@ static __int64 syna_tcm_v1_check_max_rw_size(__int64 device)
 {
     (void)device;
     max_size_calls++;
-    return 0;
+    return max_size_result;
 }
 
 static __int64 syna_tcm_v1_terminate(void)
@@ -148,6 +153,11 @@ static void reset_state(void)
     max_size_calls = 0;
     active_buffer = NULL;
     managed_device = 0;
+    read_result = 0;
+    read_status = 16;
+    write_result = 0;
+    parse_result = 0;
+    max_size_result = 0;
 }
 
 static void test_null_handle(void)
@@ -205,14 +215,103 @@ static void test_successful_startup(void)
     free(buffer);
 }
 
+static void test_missing_read_callback(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t ops[64] = {0};
+    __int64 result;
+    *(_QWORD *)(state + 72) = (uintptr_t)ops;
+    reset_state();
+    managed_device = 1;
+    result = syna_tcm_v1_detect((__int64)(uintptr_t)state, 0, 0);
+    if (result != 4294967051LL || callback_calls != 0 ||
+        *(_DWORD *)(state + 584) != 54)
+        failures++;
+    free((void *)(uintptr_t)*(_QWORD *)(state + 576));
+}
+
+static void test_read_failure(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t ops[64] = {0};
+    __int64 result;
+    *(_QWORD *)(ops + 32) = (uintptr_t)syna_tcm_v1_read_message;
+    *(_QWORD *)(state + 72) = (uintptr_t)ops;
+    reset_state();
+    managed_device = 1;
+    read_result = -5;
+    result = syna_tcm_v1_detect((__int64)(uintptr_t)state, 0, 0);
+    if (result != 4294967291LL || callback_calls != 1 ||
+        write_calls != 0 || parse_calls != 0)
+        failures++;
+    free((void *)(uintptr_t)*(_QWORD *)(state + 576));
+}
+
+static void test_write_failure(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t ops[64] = {0};
+    __int64 result;
+    *(_QWORD *)(ops + 32) = (uintptr_t)syna_tcm_v1_read_message;
+    *(_QWORD *)(state + 72) = (uintptr_t)ops;
+    reset_state();
+    managed_device = 1;
+    read_status = 1;
+    write_result = -5;
+    result = syna_tcm_v1_detect((__int64)(uintptr_t)state, 0, 0);
+    if (result != 4294967054LL || callback_calls != 1 || write_calls != 1 ||
+        parse_calls != 0)
+        failures++;
+    free((void *)(uintptr_t)*(_QWORD *)(state + 576));
+}
+
+static void test_parse_failure(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t ops[64] = {0};
+    __int64 result;
+    *(_QWORD *)(ops + 32) = (uintptr_t)syna_tcm_v1_read_message;
+    *(_QWORD *)(state + 72) = (uintptr_t)ops;
+    reset_state();
+    managed_device = 1;
+    parse_result = -5;
+    result = syna_tcm_v1_detect((__int64)(uintptr_t)state, 0, 0);
+    if (result != 4294967054LL || callback_calls != 1 || write_calls != 0 ||
+        parse_calls != 1 || max_size_calls != 0)
+        failures++;
+    free((void *)(uintptr_t)*(_QWORD *)(state + 576));
+}
+
+static void test_max_size_failure(void)
+{
+    uint8_t state[0x500] = {0};
+    uint8_t ops[64] = {0};
+    __int64 result;
+    *(_QWORD *)(ops + 32) = (uintptr_t)syna_tcm_v1_read_message;
+    *(_QWORD *)(state + 72) = (uintptr_t)ops;
+    reset_state();
+    managed_device = 1;
+    max_size_result = -5;
+    result = syna_tcm_v1_detect((__int64)(uintptr_t)state, 0, 0);
+    if (result != 4294967054LL || callback_calls != 1 || parse_calls != 1 ||
+        max_size_calls != 1)
+        failures++;
+    free((void *)(uintptr_t)*(_QWORD *)(state + 576));
+}
+
 int main(void)
 {
     test_null_handle();
     test_fast_path();
     test_missing_platform_allocation();
     test_successful_startup();
+    test_missing_read_callback();
+    test_read_failure();
+    test_write_failure();
+    test_parse_failure();
+    test_max_size_failure();
     if (failures != 0)
         return 1;
-    puts("PASS syna_tcm_v1_detect host tests (4 cases)");
+    puts("PASS syna_tcm_v1_detect host tests (9 cases)");
     return 0;
 }
