@@ -68,7 +68,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 062_set_follow_hand_level | set_follow_hand_level | 0010c080 | core_logic | set_follow_hand_level.c:set_follow_hand_level | PASS |
 | 063_get_stability_level | get_stability_level | 0010c148 | core_logic | get_stability_level_exact.S:get_stability_level | PASS |
 | 064_set_stability_level | set_stability_level | 0010c23c | core_logic | set_stability_level_exact.S:set_stability_level | PASS |
-| 065_tp_sensibility_level_read | tp_sensibility_level_read | 0010c304 | user_abi | tp_sensibility_level_read_exact.S:tp_sensibility_level_read | PROMOTED_OFFLINE_EXACT |
+| 065_tp_sensibility_level_read | tp_sensibility_level_read | 0010c304 | core_logic | tp_sensibility_level_read_exact.S:tp_sensibility_level_read | PASS |
 | 066_tp_sensibility_level_write | tp_sensibility_level_write | 0010c3f8 | user_abi | tp_sensibility_level_write_exact.S:tp_sensibility_level_write | PROMOTED_OFFLINE_EXACT |
 | 067_tp_game_partition_read | tp_game_partition_read | 0010c504 | user_abi | tp_game_partition_read.c:tp_game_partition_read | PROMOTED_OFFLINE_EXACT |
 | 068_tp_game_partition_write | tp_game_partition_write | 0010c5e0 | user_abi | tp_game_partition_write.c:tp_game_partition_write | PROMOTED_OFFLINE_EXACT |

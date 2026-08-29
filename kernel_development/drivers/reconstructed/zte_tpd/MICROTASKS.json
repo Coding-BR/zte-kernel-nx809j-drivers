@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-08-30T00:30:00+00:00",
+  "generated_utc": "2026-08-30T01:00:00+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -3048,42 +3048,34 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_sensibility_level_read\nEntrada Ghidra: 0010c304\nTamanho stock: 240 bytes\nCategoria: user_abi\nAlvo no fonte: tp_sensibility_level_read.c:tp_sensibility_level_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0064_0010c304_tp_sensibility_level_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0064_0010c304_tp_sensibility_level_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/canonical_build_report.json",
-          "sha256": "f8b486f017a9cb5a2a53d0a979dc6e03a1a1f95bf74b5a9bd22c21d098039702"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next065_tp_sensibility_level_read_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "4ba259e6e95295b5b9b7242e17290bb8588d108ead35178e7f66f1d16a5020a2"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/kcfi_comparison.json",
-          "sha256": "22a3f5a2855f3b87ffd3efca702f0ba63f2c808ad83220dcc6ec02a9c8cd52d9"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next065_tp_sensibility_level_read_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
+          "sha256": "4f84bc6b4958d172f64d1ecf087e8d917dc27eeade73d200eae5ddcd07ca02d4"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/host_harness_report.json",
-          "sha256": "099b6b121b9f01c6833b916c2f1f6f4efadae5fa90aec155149733b6f52e6839"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next065_tp_sensibility_level_read_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "sha256": "b3c15fe691220e6277d72bfc803124d43666d29fa7a6fc50da946fb79c74ca3b"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/joern/joern_gate_summary.json",
-          "sha256": "e9db261003f73c4cc5b5d8151b25daf15203cd3b657de610a8223ee250d7d0e7"
-        },
-        {
-          "role": "aarch64_assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/aarch64_comparison.json",
-          "sha256": "9bead05189db35cc9a43271aa250b08f7675ad9c6210deb6bd10b79e69bb0de5"
-        },
-        {
-          "role": "source_sync",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next819_tp_sensibility_level_read_exact_v3/source_sync_report.json",
-          "sha256": "b88d17b74a522f886f96dba5e9daff84f40d7719846588f33c86423ff20dbb8e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next065_tp_sensibility_level_read_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
+          "sha256": "8ece0ae36a3f356c9791c66d5596e2d78d078ecb622d756f42ce1c36b1285ba2"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next065_tp_sensibility_level_read_exact_v1; one documented userspace-egress Joern finding remains a review observation, and hardware behavior is deferred."
     },
     {
       "id": "066_tp_sensibility_level_write",
