@@ -14957,30 +14957,31 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_set_one_key\nEntrada Ghidra: 0012befc\nTamanho stock: 96 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_set_one_key.c:tpd_set_one_key\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0337_0012befc_tpd_set_one_key.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0337_0012befc_tpd_set_one_key.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_hard_final_exact_v1_20260828.json",
-          "sha256": "eaaebe1ff85ab3d8a877e5c1d9b8af6425c7cab7ba94d139338902730f7bfe44"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next338_tpd_set_one_key_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "0d67489f9c1690ae81b167a082e50d6d93cf9e5df54d59766e62e8e70bca64ef"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/kcfi_current_comparison.json",
-          "sha256": "ec9bb4d30a6854fa4a429f19bacb848ea4d406be62402ed2b75f6cf61f290f67"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next338_tpd_set_one_key_exact_v1/exact_revalidation_20260829/kcfi_comparison.json",
+          "sha256": "dc4c565837386bc8addf074e79bf39702dbe7761f99783fb88a2059134b55c1d"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next338_tpd_set_one_key_v1/tpd_set_one_key_contract_harness_report.json",
-          "sha256": "1ba7191d5216280d4d686c897685f2bf363aaa4becb96e7a93576f821797a544"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next338_tpd_set_one_key_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "sha256": "467d518e8b2ee8269a084f3efd3ec5d20c6ed78f421b78f9cea9477d8ecfb588"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next338_tpd_set_one_key_exact_v1/exact_revalidation_20260829/joern_gate_summary.json",
+          "sha256": "fe857df9370beb3b0b2c381716a71b9809dfbe30c81e218360cbf8a34c152543"
         }
       ]
     },
