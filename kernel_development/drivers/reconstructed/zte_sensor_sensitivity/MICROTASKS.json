@@ -97,25 +97,30 @@
       "category": "core_logic",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_sensor_sensitivity\\microtasks\\003_sensors_sensitivity_unregister\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtasks/003_sensors_sensitivity_unregister/compile.json",
           "role": "compile",
-          "sha256": "5922fd3d8b8d005873d9d9db7e19755d27744bb7a25696d84541c144dc36d288"
+          "sha256": "29331df49f21ca9a7a37e214350282075b7c105fde5995050602e042b53ec66a"
         },
         {
-          "path": "engenharia\\validation\\zte_sensor_sensitivity\\microtasks\\003_sensors_sensitivity_unregister\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtasks/003_sensors_sensitivity_unregister/kcfi.json",
           "role": "kcfi",
-          "sha256": "0cff508de4603c6801ae800ccfe0e5fcc2a727c77c97932d77d4c4b421ad2e7a"
+          "sha256": "ae7c3da326873174a69cadcabb1f3c42bfd2b2143c23cce6f39833d25a0bbd20"
         },
         {
-          "path": "engenharia\\validation\\zte_sensor_sensitivity\\microtasks\\003_sensors_sensitivity_unregister\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtasks/003_sensors_sensitivity_unregister/test.json",
           "role": "test",
-          "sha256": "a171304f78176840fec6a91579f3eb8d0ea26517437ec0dcd73c066deacbaf55"
+          "sha256": "f75ab14d9d3cc9154602982fb1b2ace6cc23e2f483d229646f7b696fcdcda439"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/attestation/joern_full_current_v1/gate_sensors_sensitivity_unregister/joern_gate_summary.json",
+          "role": "joern",
+          "sha256": "58c8c854983ac011601d326972a67d78fb2535f0b6575cdf0d99614252563962"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\pcode\\0002_00100a44_sensors_sensitivity_unregister.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\decompiled\\0002_00100a44_sensors_sensitivity_unregister.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/pcode/0002_00100a44_sensors_sensitivity_unregister.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/decompiled/0002_00100a44_sensors_sensitivity_unregister.c",
       "id": "003_sensors_sensitivity_unregister",
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_sensor_sensitivity\nFuncao stock: sensors_sensitivity_unregister\nEntrada Ghidra: 00100a44\nTamanho stock: 180 bytes\nCategoria: core_logic\nAlvo no fonte: zte_sensor_sensitivity.c:sensors_sensitivity_unregister\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\decompiled\\0002_00100a44_sensors_sensitivity_unregister.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_sensor_sensitivity.ko\\pcode\\0002_00100a44_sensors_sensitivity_unregister.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_sensor_sensitivity\nFuncao stock: sensors_sensitivity_unregister\nEntrada Ghidra: 00100a44\nTamanho stock: 180 bytes\nCategoria: core_logic\nAlvo no fonte: zte_sensor_sensitivity.c:sensors_sensitivity_unregister\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/decompiled/0002_00100a44_sensors_sensitivity_unregister.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock/pcode/0002_00100a44_sensors_sensitivity_unregister.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
         "compile",
         "kcfi",
