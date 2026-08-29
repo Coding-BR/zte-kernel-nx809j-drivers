@@ -547,32 +547,42 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_lcd_panel_name\nEntrada Ghidra: 00107ce0\nTamanho stock: 12 bytes\nCategoria: core_logic\nAlvo no fonte: get_lcd_panel_name.c:get_lcd_panel_name\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0009_00107ce0_get_lcd_panel_name.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0009_00107ce0_get_lcd_panel_name.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next126_get_lcd_panel_name_revalidated_v1/build_report.json",
-          "sha256": "19e7904cca044f3e7aac7529cd014bb24bc23857a2520252df9e5af54c37a963"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "a61e166892218a26495f26d2ffff02a0a38c9eac4338542270b51e177a1144e9"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "2f6a99934b2e0ad549fd7442e98ae84b724f9082975bdf19931fa3e5c3b5463d"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next126_get_lcd_panel_name_revalidated_v1/kcfi_comparison.json",
-          "sha256": "1f62dff26a2e64b4c61c99e01cb66b5d1ab53b550e4d660c45e0bf0bf1f4feda"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next126_get_lcd_panel_name_revalidated_v1/host_harness_report.json",
-          "sha256": "1600c03e7cb0b02f22f0a364f6377a268b912256fe5945fb7f06b889569aeac4"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "5abbb33c5dc33eb30331c3d2ef2e1998f9853f43ad2a547709553cfced0bf1b9"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next126_get_lcd_panel_name_revalidated_v1/joern_gate_summary.json",
-          "sha256": "776b2501185e201953289a701b8fe11887cfdc1dbd5bbac4b70b269d17181eaa"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "26c7ac3253784ec6500eaae414f3d57947fe4f0b1066edf84abfb16ff3fd7b5b"
         },
         {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next126_get_lcd_panel_name_revalidated_v1/assembly_comparison.json",
-          "sha256": "53544b1708506420ec3418d46e2992a90d2c0cd80a36243db74a104e169eff23"
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "7c4182ca86cb5a846ed8c3baf90dbab1a0679f00cc58f960d7cdbafcea2235b9"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "7c4182ca86cb5a846ed8c3baf90dbab1a0679f00cc58f960d7cdbafcea2235b9"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next010_get_lcd_panel_name_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "4fd75c49a709936ee01b9366db81dd8a2e900f3a0d4cdb5d379b74c2eb77a46d"
         }
       ]
     },
