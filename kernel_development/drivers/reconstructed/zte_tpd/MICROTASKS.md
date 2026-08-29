@@ -9,7 +9,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 003_tpd_zlog_check | tpd_zlog_check | 00107718 | core_logic | tpd_zlog_check.c:tpd_zlog_check | PASS |
 | 004_zlog_register_work_init | zlog_register_work_init | 001077c8 | lifecycle | zlog_register_work_init.c:zlog_register_work_init | PASS |
 | 005_zlog_register_work | zlog_register_work | 00107844 | async_or_irq | zlog_register_work.c:zlog_register_work | PASS |
-| 006_zlog_register_work_deinit | zlog_register_work_deinit | 00107874 | lifecycle | zlog_register_work_deinit.c:zlog_register_work_deinit | PROMOTED_OFFLINE_EXACT |
+| 006_zlog_register_work_deinit | zlog_register_work_deinit | 00107874 | lifecycle | zlog_register_work_deinit.c:zlog_register_work_deinit | PASS |
 | 007_tpd_zlog_init | tpd_zlog_init | 001078c8 | lifecycle | tpd_zlog_init.c:tpd_zlog_init | PROMOTED_OFFLINE_EXACT |
 | 008_get_tp_algo_item_id | get_tp_algo_item_id | 00107984 | core_logic | get_tp_algo_item_id.c:get_tp_algo_item_id | PROMOTED_OFFLINE_EXACT |
 | 009_get_tp_chip_id | get_tp_chip_id | 00107aec | core_logic | get_tp_chip_id.c:get_tp_chip_id | PROMOTED_OFFLINE_EXACT |
