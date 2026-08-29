@@ -26,7 +26,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | PASS |
 | 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PASS |
 | 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | PASS |
-| 023_tp_ghost_check_work | tp_ghost_check_work | 00108690 | async_or_irq | tp_ghost_check_work.c:tp_ghost_check_work | PROMOTED_OFFLINE_EXACT |
+| 023_tp_ghost_check_work | tp_ghost_check_work | 00108690 | async_or_irq | tp_ghost_check_work.c:tp_ghost_check_work | PASS |
 | 024_tpd_workqueue_deinit | tpd_workqueue_deinit | 00108744 | lifecycle | tpd_workqueue_deinit.c:tpd_workqueue_deinit | PASS |
 | 025_zte_touch_probe | zte_touch_probe | 001087e4 | binding | zte_touch_probe.c:zte_touch_probe | PROMOTED_OFFLINE_EXACT |
 | 026_zte_touch_remove | zte_touch_remove | 00109668 | binding | zte_touch_remove.c:zte_touch_remove | PROMOTED_OFFLINE_EXACT |
