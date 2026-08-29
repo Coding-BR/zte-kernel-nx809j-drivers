@@ -48,8 +48,8 @@ static unsigned int mutex_unlock_calls;
 static unsigned int queue_calls;
 static unsigned int gesture_calls;
 static unsigned int ghost_calls;
-static unsigned int break_calls;
 static unsigned int failures;
+static unsigned int break_calls;
 static const char *last_gesture;
 static unsigned long long last_queue_work;
 static unsigned long long last_queue_context;
@@ -70,13 +70,17 @@ unsigned int jiffies_to_msecs(unsigned long long value)
 
 void mutex_lock(long long lock)
 {
-	(void)lock;
+	if ((unsigned long long)lock !=
+	    (unsigned long long)(uintptr_t)(device_storage + 0xc90))
+		++failures;
 	++mutex_lock_calls;
 }
 
 int mutex_unlock(long long lock)
 {
-	(void)lock;
+	if ((unsigned long long)lock !=
+	    (unsigned long long)(uintptr_t)(device_storage + 0xc90))
+		++failures;
 	++mutex_unlock_calls;
 	return 0;
 }
