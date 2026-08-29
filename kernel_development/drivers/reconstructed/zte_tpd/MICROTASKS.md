@@ -35,7 +35,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 029_tp_wake_gesture_read | tp_wake_gesture_read | 00109a28 | user_abi | tp_wake_gesture_read.c:tp_wake_gesture_read | PASS |
 | 030_tp_wake_gesture_write | tp_wake_gesture_write | 00109b1c | user_abi | tp_wake_gesture_write.c:tp_wake_gesture_write | PASS |
 | 031_tp_smart_cover_read | tp_smart_cover_read | 00109bf0 | user_abi | tp_smart_cover_read.c:tp_smart_cover_read | PASS |
-| 032_tp_smart_cover_write | tp_smart_cover_write | 00109ce4 | user_abi | tp_smart_cover_write.c:tp_smart_cover_write | PROMOTED_OFFLINE_EXACT |
+| 032_tp_smart_cover_write | tp_smart_cover_write | 00109ce4 | user_abi | tp_smart_cover_write.c:tp_smart_cover_write | PASS |
 | 033_tp_glove_read | tp_glove_read | 00109db8 | user_abi | tp_glove_read.c:tp_glove_read | PROMOTED_OFFLINE_EXACT |
 | 034_tp_glove_write | tp_glove_write | 00109eac | user_abi | tp_glove_write.c:tp_glove_write | PROMOTED_OFFLINE_EXACT |
 | 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | PROMOTED_OFFLINE_EXACT |
