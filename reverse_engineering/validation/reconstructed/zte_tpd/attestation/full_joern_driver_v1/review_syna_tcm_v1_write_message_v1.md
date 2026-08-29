@@ -46,8 +46,13 @@ estática nova de lock, alocação ou chamada de transporte.
 A atestação `next542_syna_tcm_v1_write_message_exact_v1` registra 521/521
 instruções, 2084/2084 bytes, relocations e KCFI `0x24203a8e` coincidentes. O
 build Docker passou em dois ciclos e o harness ASan/UBSan host passou em dois
-ciclos. Hardware, firmware, transporte físico e concorrência real permanecem
-sem execução.
+ciclos com seis casos: retornos iniciais, falha de buffer, escrita bem-sucedida,
+callback ausente e erro de transporte. O relatório é
+`host_harness_report_v2.json` (SHA-256
+`174703a198567ad52323d919f439140825e2d662efdc4d22510500affc6a4cfe`), com o
+mesmo binário (`a315fbcbec9347539e3d9b8598d85ddad3db8c4b6f81cac7361ca0d56f4b99cb`)
+nos dois ciclos. Hardware, firmware, transporte físico e concorrência real
+permanecem sem execução.
 
 ## Decisão e pendências
 
@@ -59,7 +64,7 @@ Ainda são necessários:
 
 1. revisão independente do lock order durante callback de IRQ e da reentrada
    por `syna_tcm_v1_read_message`;
-2. injeção de falha em `devm_kmalloc`, transporte negativo, buffer nulo e
+2. injeção adicional de falha em `devm_kmalloc`, buffer nulo e
    fragmentação/limites CRC;
 3. teste Android/NX809J com firmware e concorrência real;
 4. registro da decisão do revisor independente.
