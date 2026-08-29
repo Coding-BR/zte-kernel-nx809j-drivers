@@ -257,12 +257,30 @@ static void test_failures_and_limits(void)
 	g_copy_fail = 0;
 }
 
+static void test_full_length_named_input_is_terminated(void)
+{
+	const char *name = "full_length_named_input_is_terminated";
+	unsigned char device[1200];
+	struct file file = {0};
+	char input[100];
+	loff_t offset = 0;
+
+	fixture_reset(device);
+	memset(input, ' ', sizeof(input));
+	memcpy(input, "algo_open:1", strlen("algo_open:1"));
+	expect(tp_edge_report_limit_write(&file, input, sizeof(input), &offset) == 100,
+	       name, "full-length named input return differs");
+	expect(device[27] == 1, name,
+	       "full-length named input was not parsed after bounded zeroing");
+}
+
 int main(void)
 {
 	test_recognized_fields();
 	test_long_press_vector();
 	test_pixel_limit();
 	test_failures_and_limits();
-	puts("PASS tp_edge_report_limit_write host tests (4 cases)");
+	test_full_length_named_input_is_terminated();
+	puts("PASS tp_edge_report_limit_write host tests (5 cases)");
 	return 0;
 }
