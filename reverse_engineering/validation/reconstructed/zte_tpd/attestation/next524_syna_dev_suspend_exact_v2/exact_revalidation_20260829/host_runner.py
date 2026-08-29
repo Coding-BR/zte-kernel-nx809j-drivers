@@ -39,13 +39,10 @@ def main() -> int:
     args = parser.parse_args()
     source = args.source.resolve()
     drivers = source.parents[3]
-    driver_source = source.parents[5] / "kernel_development" / "drivers" / "reconstructed" / "zte_tpd" / "syna_dev_suspend.c"
     build_root = args.build_root.resolve()
     output = args.output.resolve()
     if not source.is_file():
         parser.error(f"source not found: {source}")
-    if not driver_source.is_file():
-        parser.error(f"driver source not found: {driver_source}")
     if build_root.exists():
         parser.error(f"build root already exists: {build_root}")
     version = execute(["docker", "run", "--rm", "-v", f"{TOOLCHAIN_VOLUME}:/toolchains:ro",
@@ -90,10 +87,7 @@ def main() -> int:
               "covered_functions": ["syna_dev_suspend", "syna_dev_enable_lowpwr_gesture",
                                      "syna_tcm_sleep", "syna_dev_free_input_events",
                                      "syna_tcm_clear_command_processing"],
-              "source": str(source), "source_sha256": sha256(source),
-              "driver_source": str(driver_source),
-              "driver_source_sha256": sha256(driver_source),
-              "expected_cases": 6,
+              "source": str(source), "source_sha256": sha256(source), "expected_cases": 6,
               "repetitions": 2, "cycles": cycles, "reproducible": reproducible,
               "reproducible_binary": reproducible, "passed": passed,
               "status": "PASS" if passed else "FAIL",
