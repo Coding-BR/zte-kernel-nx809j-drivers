@@ -15,6 +15,15 @@ A repetição atual do harness foi preservada em
 `5cfc8cd8b8c285f7caa94786e1f88f14973463b50766191f2692206faa9109a9`). No
 Docker, os cinco casos passaram em dois ciclos com o mesmo binário
 `f49ad49775ad4309136472eaeda5a3b7fa5d29bfb2567c4ea67023bba1571091`.
+Uma repetição posterior também verifica que o recurso auxiliar em `spi + 960`
+é alocado depois de `spi_setup` e continua observável nos casos de falha de
+GPIO; o teardown do harness o libera depois do retorno para não atribuir ao
+teste um vazamento artificial.
+
+O relatório dessa repetição é `syna_spi_probe_host_current_v5.json` (SHA-256
+`454f1c9fef2c25211f4ba1e81ae8d67cb768538b42b1554e24530af02a267a6a`), com o
+binário `eb7ba059dfc9328ab983d4f2b48fd96a64fe38d427e7a8e25cbbd57782ad9db3`
+nos dois ciclos.
 
 ## Cruzamento de risco
 

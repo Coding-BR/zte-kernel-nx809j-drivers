@@ -190,6 +190,12 @@ static void run_case(const char *name, int mode, int setup, int alloc,
 	result = syna_spi_probe(&spi);
 	expect(result == expected, name);
 	expect((int)syna_spi_hw_if == (int)(uintptr_t)&spi, "hw interface assignment");
+	void *bus_resource = *(void **)((unsigned char *)&spi + 960);
+	expect((bus_resource != NULL) == (alloc && setup == 0),
+	       "bus resource allocation contract");
+	/* Reclaim the host-test allocation after the probe returns. */
+	free(bus_resource);
+	*(void **)((unsigned char *)&spi + 960) = NULL;
 }
 
 int main(void)
