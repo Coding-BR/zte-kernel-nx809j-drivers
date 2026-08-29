@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-29T17:00:00Z",
+  "mode": "offline_direct_source_tp_free_tp_firmware_data_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "tp_free_tp_firmware_data",
+  "passed": true,
+  "expected_cases": 3,
+  "repetitions": 2,
+  "toolchain": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225",
+    "sanitizers": ["address", "undefined"]
+  },
+  "inputs": [
+    {
+      "path": "host/next011_tp_free_tp_firmware_data_harness.c",
+      "sha256": "bbd16ddfc1ebf556e7fbfaf206692b1b24a4a5ccd6d77f8b1c64202c0c724e15",
+      "size": 2387
+    },
+    {
+      "path": "candidate_source.c",
+      "sha256": "0a3956df06f54b60ea2d08167b687dde6b308b4af9855032c36a0f86e91e0a8a",
+      "size": 476
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "binary_sha256": "8e56960241c48b0fe42767d0b7542da7f07cdfe96925a5ad21e577178ab9f420",
+      "stdout": "PASS test_descriptor_with_data_cleanup\nPASS test_descriptor_without_data_cleanup\nPASS test_null_descriptor_reset\nSUMMARY total=3 passed=3 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "binary_sha256": "8e56960241c48b0fe42767d0b7542da7f07cdfe96925a5ad21e577178ab9f420",
+      "stdout": "PASS test_descriptor_with_data_cleanup\nPASS test_descriptor_without_data_cleanup\nPASS test_null_descriptor_reset\nSUMMARY total=3 passed=3 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "limitations": [
+    "The dedicated harness covers descriptor-with-data, descriptor-without-data and null-descriptor paths; vfree, kfree and cdev memory are deterministic stubs.",
+    "The broader work_void harness was not used because unrelated ufp, platform-unregister and cleanup-module dependencies currently fail its compile gate.",
+    "No smartphone, Android service, SPI, IRQ, MMIO or physical hardware is exercised."
+  ]
+}
