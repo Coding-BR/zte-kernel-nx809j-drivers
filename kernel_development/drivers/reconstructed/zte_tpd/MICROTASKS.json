@@ -7262,32 +7262,47 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_set_up_app_fw\nEntrada Ghidra: 00112c90\nTamanho stock: 216 bytes\nCategoria: core_logic\nAlvo no fonte: syna_dev_set_up_app_fw.c:syna_dev_set_up_app_fw\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0161_00112c90_syna_dev_set_up_app_fw.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0161_00112c90_syna_dev_set_up_app_fw.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "96a6bfcdb8e16ff78cc1f44b7212992f28e464e4af155ad2119547f9fdbd1330"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "b1e29e44aeff98bc543532b7bf1ef2f35fce25b98dfc7ca2a24b34f6ba939668"
+        },
+        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next523_syna_dev_set_up_app_fw_exact_v1/canonical_build_report.json",
-          "sha256": "deac13e0f83a1b033fb05367f6fab444dd56085f37c2c79cb7742254b9e2adb7"
-        },
-        {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next523_syna_dev_set_up_app_fw_exact_v1/kcfi_comparison.json",
-          "sha256": "c3a120d75dd377057b6734a1b94d5d8b335b74ec24e7a54dcaf1ecf3656d6c99"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next523_syna_dev_set_up_app_fw_exact_v1/joern_gate_report.json",
-          "sha256": "6010d7a100bdfddcc4abf1a8d49e89b335e2dd688cb02d67ba5c0c2d117c2ec8"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next523_syna_dev_set_up_app_fw_exact_v1/host_harness_report.json",
-          "sha256": "e5b53ce41e9dff81f847f341a677a4961b94de00c8975312c9a941863fda77c5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "b1e29e44aeff98bc543532b7bf1ef2f35fce25b98dfc7ca2a24b34f6ba939668"
         },
         {
           "role": "aarch64_assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next523_syna_dev_set_up_app_fw_exact_v1/aarch64_validation_report.json",
-          "sha256": "3034032dfdaa7d0201e64b06cadc70df556669a0ed751e8e5e9679262841c495"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "29e9327c1ee87eea1cbb6356bb7303c4bca79a16a7d16bd50a3a16a2a03a6ca2"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "ab5ccdc068a5a95fd2be94edd0380654a2a491687015930d58a678fb37daf5bf"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "8986aae4ac6b3d6826dc40ff5664202eadb154d1da333a9e98dbab966644af24"
+        },
+        {
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "29a20a97937a2e6cba972bb4c7609b61ba07fb8abceaa6fb93a773dbd8e7cb11"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next162_syna_dev_set_up_app_fw_exact_v2/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "29a20a97937a2e6cba972bb4c7609b61ba07fb8abceaa6fb93a773dbd8e7cb11"
         }
       ]
     },
