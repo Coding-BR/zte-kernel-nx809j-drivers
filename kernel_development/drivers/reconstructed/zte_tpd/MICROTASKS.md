@@ -33,7 +33,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 027_zte_touch_shutdown | zte_touch_shutdown | 001096a0 | core_logic | zte_touch_shutdown.c:zte_touch_shutdown | PASS |
 | 028_tp_module_info_read | tp_module_info_read | 00109784 | user_abi | tp_module_info_read.c:tp_module_info_read | PASS |
 | 029_tp_wake_gesture_read | tp_wake_gesture_read | 00109a28 | user_abi | tp_wake_gesture_read.c:tp_wake_gesture_read | PASS |
-| 030_tp_wake_gesture_write | tp_wake_gesture_write | 00109b1c | user_abi | tp_wake_gesture_write.c:tp_wake_gesture_write | PROMOTED_OFFLINE_EXACT |
+| 030_tp_wake_gesture_write | tp_wake_gesture_write | 00109b1c | user_abi | tp_wake_gesture_write.c:tp_wake_gesture_write | PASS |
 | 031_tp_smart_cover_read | tp_smart_cover_read | 00109bf0 | user_abi | tp_smart_cover_read.c:tp_smart_cover_read | PROMOTED_OFFLINE_EXACT |
 | 032_tp_smart_cover_write | tp_smart_cover_write | 00109ce4 | user_abi | tp_smart_cover_write.c:tp_smart_cover_write | PROMOTED_OFFLINE_EXACT |
 | 033_tp_glove_read | tp_glove_read | 00109db8 | user_abi | tp_glove_read.c:tp_glove_read | PROMOTED_OFFLINE_EXACT |
