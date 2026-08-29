@@ -418,6 +418,12 @@ CFLAGS_point_report_reset.o := -fno-sanitize=kcfi
 CFLAGS_ghost_check_area.o := -fno-sanitize=kcfi
 # Stock syna_dev_enter_normal_sensing@00114294 has no valid KCFI entry preamble.
 CFLAGS_syna_dev_enter_normal_sensing.o := -fno-sanitize=kcfi
+# Exact offline reconstruction: syna_dev_enter_normal_sensing
+src-files := $(filter-out $(src)/syna_dev_enter_normal_sensing.c, $(src-files))
+obj-files := $(filter-out syna_dev_enter_normal_sensing.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_enter_normal_sensing.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_enter_normal_sensing_exact.o
+AFLAGS_syna_dev_enter_normal_sensing_exact.o := -g0 -I$(src)
 # Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
 CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
 # Stock syna_tcm_buf_unlock@0011ee40 has no valid KCFI entry preamble.
