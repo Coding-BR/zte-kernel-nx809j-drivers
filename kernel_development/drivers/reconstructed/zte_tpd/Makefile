@@ -10,6 +10,9 @@ src-files := $(filter-out $(src)/syna_tcm_buf_copy.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_identify.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_wait_for_report.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_switch_fw_mode.c, $(src-files))
+# The legacy base-unit include aliases syna_tcm_buf_copy_2 back to the
+# exported name and collides with the exact stock reconstruction below.
+src-files := $(filter-out $(src)/syna_tcm_func_base_unit.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_boot_info.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_app_info.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_dynamic_config.c, $(src-files))
