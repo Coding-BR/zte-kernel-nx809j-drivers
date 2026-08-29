@@ -1499,32 +1499,37 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_wake_gesture_read\nEntrada Ghidra: 00109a28\nTamanho stock: 240 bytes\nCategoria: user_abi\nAlvo no fonte: tp_wake_gesture_read.c:tp_wake_gesture_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0028_00109a28_tp_wake_gesture_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0028_00109a28_tp_wake_gesture_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next398_tp_wake_gesture_read_exact_v2/canonical_build_report.json",
-          "sha256": "8e9efbafff0be9f01e1a28bbc38d151039c238fa827e7b9a1fa62e260db1a08c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next029_tp_wake_gesture_read_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "8c6af920f2308f414806654e461fa6d7642a485313068672a5dc16b6455bae99"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next398_tp_wake_gesture_read_exact_v2/kcfi_comparison.json",
-          "sha256": "c425b289fa50f2b57f14ca51b6a372ca3977e29b8b1471f9dd0c44b8d3e231f0"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next029_tp_wake_gesture_read_exact_v1/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "cad23802c8bbc66568964ee2d8f84e37df25291254d5ac8071f0f26b9ddee2ba"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next398_tp_wake_gesture_read_exact_v2/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next029_tp_wake_gesture_read_exact_v1/exact_revalidation_20260829/host_harness_report.json",
           "sha256": "f6488164af9f34de5ac26999cfb1ee002e000acbcc5129c32dd645787ac98fc8"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next398_tp_wake_gesture_read_exact_v2/joern/joern_gate_summary.json",
-          "sha256": "e87d6ef1fb9d02d8352dd00b8f1a764e13f9ada920b1b56431719d153e74e4fc"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next029_tp_wake_gesture_read_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
+          "sha256": "a7bb2f87576952e84b2223a48d03129bd46975004473dc07fb767535d97b1f1a"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next398_tp_wake_gesture_read_exact_v2/assembly_comparison.json",
-          "sha256": "661dc5d0c5c3dca155ea8613d4d9415037307b0f8d6bbd37c43be4d9cfaffbfc"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next029_tp_wake_gesture_read_exact_v1/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "bbf86796254f4d3028883d2df7b22a5c33ad96e4ce34fa82e423e9685a7422fd"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next029_tp_wake_gesture_read_exact_v1/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "7d34a6f3c4fe980021d61ac9e62b4822061aac3efbab67305cbe79b31ab42f35"
         }
       ]
     },
