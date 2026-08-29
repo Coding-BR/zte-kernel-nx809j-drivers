@@ -1389,3 +1389,9 @@ obj-files := $(filter-out syna_tcm_remove_device.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_remove_device.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_remove_device_exact.o
 AFLAGS_syna_tcm_remove_device_exact.o := -g0 -I$(src)
+# Exact offline reconstruction: syna_tcm_reset
+src-files := $(filter-out $(src)/syna_tcm_reset.c, $(src-files))
+obj-files := $(filter-out syna_tcm_reset.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_reset.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_reset_exact.o
+AFLAGS_syna_tcm_reset_exact.o := -g0 -I$(src)
