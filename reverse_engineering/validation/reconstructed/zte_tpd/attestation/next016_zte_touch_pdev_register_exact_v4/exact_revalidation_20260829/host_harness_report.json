@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "mode": "offline_direct_source_zte_touch_pdev_register_asan_ubsan",
+  "generated_utc": "2026-08-29T19:20:46.852459+00:00",
+  "driver": "zte_tpd",
+  "microtask_id": "016_zte_touch_pdev_register",
+  "function": "zte_touch_pdev_register",
+  "expected_cases": 4,
+  "repetitions": 2,
+  "passed": true,
+  "coverage": {
+    "allocation_failure": true,
+    "platform_device_add_failure_and_release": true,
+    "zero_return_success": true,
+    "positive_add_return_normalized": true,
+    "callback_slot_cleanup_and_installation": true,
+    "hardware_paths_exercised": false
+  },
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/kernel_development/drivers/validation/zte_tpd/host",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer zte_touch_pdev_register_contract_test.c -o build/zte_touch_pdev_register_contract_test && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/zte_touch_pdev_register_contract_test"
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\zte_touch_pdev_register_contract_test.c",
+      "sha256": "4c4c320425bcec59c6cfce8d89049f8237365e4656e0dd2333670d488fa79ab4",
+      "size": 5299
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_touch_pdev_register.c",
+      "sha256": "77cd73ea6ac92654b25cf6d50061ab4eb649ec59a7f33155285c634ba9e61f23",
+      "size": 897
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "returncode": 0,
+      "stdout": "PASS zte_touch_pdev_register host tests (4 cases)\n",
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "returncode": 0,
+      "stdout": "PASS zte_touch_pdev_register host tests (4 cases)\n",
+      "stderr": "",
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "platform_device allocation, add, release and printk are stubbed.",
+    "The KCFI guard on dev.release is validated separately.",
+    "No smartphone, platform bus or physical hardware is exercised."
+  ]
+}
