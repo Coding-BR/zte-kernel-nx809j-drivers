@@ -41,7 +41,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | PASS |
 | 036_suspend_show | suspend_show | 0010a1b4 | binding | suspend_show.c:suspend_show | PASS |
 | 037_suspend_store | suspend_store | 0010a2ac | binding | suspend_store.c:suspend_store | PASS |
-| 038_headset_state_show | headset_state_show | 0010a3c4 | user_abi | headset_state_show.c:headset_state_show | PROMOTED_OFFLINE_EXACT |
+| 038_headset_state_show | headset_state_show | 0010a3c4 | user_abi | headset_state_show.c:headset_state_show | PASS |
 | 039_headset_state_store | headset_state_store | 0010a4bc | user_abi | headset_state_store.c:headset_state_store | PROMOTED_OFFLINE_EXACT |
 | 040_inline_copy_from_user | _inline_copy_from_user | 0010a5c8 | core_logic | _inline_copy_from_user.c:zte_inline_copy_from_user | PROMOTED_OFFLINE_EXACT |
 | 041_get_rotation_limit_level | get_rotation_limit_level | 0010a6c0 | core_logic | get_rotation_limit_level.c:get_rotation_limit_level | PROMOTED_OFFLINE_EXACT |

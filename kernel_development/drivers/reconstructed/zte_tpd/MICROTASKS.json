@@ -1917,27 +1917,32 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: headset_state_show\nEntrada Ghidra: 0010a3c4\nTamanho stock: 244 bytes\nCategoria: user_abi\nAlvo no fonte: headset_state_show.c:headset_state_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0037_0010a3c4_headset_state_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0037_0010a3c4_headset_state_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next407_headset_state_show_exact_v2/canonical_build_report.json",
-          "sha256": "5ee1dfe23ec8b2877133b38e8b8dd99fefa887071cccf2f549ac5c799c88c09e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next038_headset_state_show_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "bb0e8d2ed59b50fcec0c5b85c43748fd596dd649a1f2f70f7d3bed4414b5f13a"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next407_headset_state_show_exact_v2/kcfi_comparison.json",
-          "sha256": "70556160e6ba378b056d85721241cef3f639a4824e055ee6a0f8a22f875f5554"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next038_headset_state_show_exact_v1/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "3a6efcc715759e22c607c377bf47d4b388f38f7be601c263db6463edacec83da"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next407_headset_state_show_exact_v2/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next038_headset_state_show_exact_v1/exact_revalidation_20260829/host_harness_report.json",
           "sha256": "41e137a4061fd65a5661d365bd9a24b1d63e72a8d5832f5b75a345ba90a2f84a"
         },
         {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next038_headset_state_show_exact_v1/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "a4cb4f7d5e4fdafe86a553fa1388426105c2daf9c31ceea3ed3c54549fb539d4"
+        },
+        {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next407_headset_state_show_exact_v2/joern/joern_gate_report.json",
-          "sha256": "a36c289991a2b5f553db4cbf269ecc6d9568ac0df4219a5db3c77a5833aad073"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next038_headset_state_show_exact_v1/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "68b93c0f68d17568b8e7899c23ed557bf98b4ce7c73507a8332e39664f38f009"
         }
       ]
     },
