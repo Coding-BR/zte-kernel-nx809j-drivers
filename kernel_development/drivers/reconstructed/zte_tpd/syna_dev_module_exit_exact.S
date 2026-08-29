@@ -8,9 +8,9 @@ syna_dev_module_exit:
     .inst 0xa9bf7bfd
     .inst 0x910003fd
     .inst 0x90000000
-    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, .data+0x270
+    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, syna_dev_driver
     .inst 0x91000000
-    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, .data+0x270
+    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, syna_dev_driver
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, platform_driver_unregister
     .inst 0x94000000
@@ -19,3 +19,7 @@ syna_dev_module_exit:
     .inst 0xd50323bf
     .inst 0xd65f03c0
 .size syna_dev_module_exit, .-syna_dev_module_exit
+
+// Section anchor required by the stock .data-relative ADRP/ADD pair.
+.section .data,"aw",@progbits
+.org 0x270

@@ -12,9 +12,9 @@ syna_testing_remove_dir:
     .inst 0xf941d400
     .inst 0xb40000c0
     .inst 0x90000001
-    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, .data+0xb38
+    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, attr_testing_group
     .inst 0x91000021
-    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, .data+0xb38
+    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, attr_testing_group
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, sysfs_remove_group
     .inst 0xf941d660

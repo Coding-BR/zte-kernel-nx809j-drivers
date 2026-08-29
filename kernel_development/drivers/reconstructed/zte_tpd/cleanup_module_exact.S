@@ -10,14 +10,19 @@ cleanup_module:
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, syna_dev_module_exit
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, .text+0x7848
+    .reloc .-4, R_AARCH64_CALL26, zte_touch_deinit
     .inst 0x90000000
-    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, .data+0x150
+    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, zte_touch_device_driver
     .inst 0x91000000
-    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, .data+0x150
+    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, zte_touch_device_driver
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, platform_driver_unregister
     .inst 0xa8c17bfd
     .inst 0xd50323bf
     .inst 0xd65f03c0
 .size cleanup_module, .-cleanup_module
+
+// Keep the section-relative relocation target materialized for standalone
+// Kbuild assembly; the referenced bytes live in the aggregate module data.
+.section .data,"aw",@progbits
+.org 0x150

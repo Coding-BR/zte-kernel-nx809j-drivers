@@ -1,6 +1,7 @@
 # Diagnóstico de reproducibilidade — `HEAD` limpo
 
-Estado: `OPEN_BUILD_INTEGRATION_GAP` — diagnóstico, não promoção.
+Estado: `RESOLVED_BY_MINIMAL_SECTION_ANCHOR_FIX` — validação offline, não promoção
+de hardware.
 
 Foi executado o builder canônico Docker em dois ciclos a partir de um
 snapshot criado por `git archive HEAD`, sem alterações do worktree. Ambos
@@ -23,8 +24,24 @@ do branch porque depende dessas alterações fora do `HEAD`.
 
 ## Decisão
 
-O gap de integração deve ser resolvido pelo responsável pelas alterações
-paralelas: revisar, testar e commitar o conjunto mínimo de mudanças que
-define as seções e a composição do módulo. Até lá, os commits deste branch
-continuam comprovando apenas os blocos individuais já atestados; não declarar
-build canônico final reproduzível.
+## Correção mínima validada
+
+O conjunto mínimo foi isolado sobre um `git archive HEAD` e validado em dois
+ciclos Docker: os seis arquivos de relocação abaixo substituem referências
+diretas a `.bss/.data` por símbolos globais materializados e adicionam as
+âncoras de seção necessárias durante a montagem:
+
+- `cleanup_module_exact.S`
+- `syna_dev_module_exit_exact.S`
+- `syna_dev_module_init_exact.S`
+- `syna_hw_interface_exit_exact.S`
+- `syna_request_managed_device_exact.S`
+- `syna_testing_remove_dir_exact.S`
+
+O relatório hashado está em
+`canonical_build_section_anchor_fix_20260829.json`. Os dois ciclos terminaram
+com código zero, sem diagnósticos, e produziram o módulo idêntico
+`fdeb065f74505f6748b1d340c578c968826523094cd56bb745ddd978663e8f11`.
+Esta validação resolve o erro de montagem do `HEAD` limpo; a declaração de
+equivalência total do driver e a validação em hardware continuam fora do
+escopo.
