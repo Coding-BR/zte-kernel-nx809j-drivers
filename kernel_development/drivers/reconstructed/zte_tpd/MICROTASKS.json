@@ -2188,7 +2188,7 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_single_game_write\nEntrada Ghidra: 0010aee8\nTamanho stock: 212 bytes\nCategoria: user_abi\nAlvo no fonte: tp_single_game_write.c:tp_single_game_write\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0049_0010aee8_tp_single_game_write.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0049_0010aee8_tp_single_game_write.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
@@ -2202,13 +2202,13 @@
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next420_tp_single_game_write_exact_v1/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_tp_single_game_write_current_v1/host_harness_report.json",
           "sha256": "48d6f1100599e1230cf446a57e4bed2f54c9d4625e26d8708c18fa7f5823bec7"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next420_tp_single_game_write_exact_v1/joern_gate_summary.json",
-          "sha256": "59e12eb14b0c4336f379fe69ac678ab6081545129f66a1e9cdee239fb421892b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_tp_single_game_write_current_v1/joern_gate_summary.json",
+          "sha256": "922632edabd02e2c93ad03bb84ddc3c213f931aeeac84e8b3099466245d7df38"
         }
       ]
     },
