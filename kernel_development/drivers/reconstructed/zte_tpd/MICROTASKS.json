@@ -4156,29 +4156,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_touch_press\nEntrada Ghidra: 0010e254\nTamanho stock: 2116 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_touch_press.c:tpd_touch_press\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0095_0010e254_tpd_touch_press.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0095_0010e254_tpd_touch_press.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next821_tpd_touch_press_exact_v3/canonical_build_report.json",
-          "sha256": "5e698ab6589f91aa55161640616c3669b029054621f8bea8f3786eb5e1b90aa3"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "e7f1ac6997fea2d01064a289295447c7705173a23b08881328cdc9f593a1e163"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next821_tpd_touch_press_exact_v3/kcfi_comparison.json",
-          "sha256": "b391737ba0c35d9158d4412cf96f53dc970f9042142124aa4cfd5419f2283c3b"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next821_tpd_touch_press_exact_v3/host_harness_report.json",
-          "sha256": "bc5f0a0dd9e12b9e78715e3a6db3d01c7f6672b56f44b036e4090f94d1dd32c1"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829/kcfi_comparison.json",
+          "sha256": "6f1d659bb112f73e985a7950b6f06ccec303bffa9079339b9e1d4dbed2fd25c9"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next821_tpd_touch_press_exact_v3/joern/joern_gate_summary.json",
-          "sha256": "15e8671b59de6b31d9390f569196535d805353865b5d7603b2fbd2409b2a37c6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829/joern_gate_summary.json",
+          "sha256": "68db7379b0840334f034e9ec6488e6223681c209d35f6eca0f2d6d3b587d92ec"
+        },
+        {
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "f1e572761ce9d3b5fb057d9b0086f649fe34a85b400a185f9d8005ef3e1d8ec3"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "4e64652d5bf5884b49b36f3f4b1f06545cf085f81a04fb14a6a5783b343398ea"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "f591e231b9cae1e9be39d98e7052f0020c80079ecb15837c70bd291d1398cea4"
         }
-      ]
+      ],
+      "attestation": "PASS in attestation/next096_tpd_touch_press_exact_v4/exact_revalidation_20260829; the 529-instruction opcode/control-flow sequence, symbol size, KCFI, normalized dataflow and normalized relocation roles match. The direct host contract covers 4 cases under ASan/UBSan; physical hardware behavior remains unverified."
     },
     {
       "id": "097_point_report_reset",
