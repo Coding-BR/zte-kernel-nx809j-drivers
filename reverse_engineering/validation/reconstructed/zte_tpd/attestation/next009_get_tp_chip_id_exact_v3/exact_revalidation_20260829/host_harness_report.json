@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-29T15:30:00Z",
+  "mode": "offline_direct_source_get_tp_chip_id_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "get_tp_chip_id",
+  "passed": true,
+  "expected_cases": 2,
+  "repetitions": 2,
+  "toolchain": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225",
+    "sanitizers": ["address", "undefined"]
+  },
+  "inputs": [
+    {
+      "path": "host/next009_get_tp_chip_id_harness.c",
+      "sha256": "f7e9c86e6eee873a9cb0d53f835cdbe890dd43e761928aae73f2d65150e215ca",
+      "size": 2041
+    },
+    {
+      "path": "candidate_source.c",
+      "sha256": "ffac3834152e6f0bcb24faa7fa4930de8e4c5efa389d22eb1fbd4964c0470485",
+      "size": 1514
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "binary_sha256": "541d957a97010424c22fc6db1a5e89926c27b00c427f7e2f7d09c82b7dfa963a",
+      "stdout": "PASS test_all_vendor_indices_and_order\nPASS test_no_match_error_and_sentinel\nSUMMARY total=2 passed=2 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "binary_sha256": "541d957a97010424c22fc6db1a5e89926c27b00c427f7e2f7d09c82b7dfa963a",
+      "stdout": "PASS test_all_vendor_indices_and_order\nPASS test_no_match_error_and_sentinel\nSUMMARY total=2 passed=2 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "limitations": [
+    "The combined next_abi_harness was not used because an unrelated change_tp_state.c dependency is currently missing ZTE_TPD_BRK_5512 and gesture_complete stubs; the dedicated harness isolates this target.",
+    "The dedicated harness covers all eleven vendor indices, lookup order, the Unknown match and the no-match sentinel path; printk and cdev memory are deterministic stubs.",
+    "No smartphone, Android service, SPI, IRQ, MMIO or physical hardware is exercised."
+  ]
+}
