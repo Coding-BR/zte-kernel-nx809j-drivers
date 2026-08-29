@@ -10,9 +10,18 @@ struct work_struct { unsigned int marker; };
 struct completion { unsigned int done; };
 
 struct ufp_tp_ops_struct {
-	unsigned char reserved_0000[0x08];
-	int field_8;
-	unsigned char opaque_000c[0x9c];
+	union {
+		struct {
+			unsigned char reserved_0000[0x08];
+			int field_8;
+			unsigned char opaque_000c[0x9c];
+		};
+		struct {
+			unsigned char reserved_to_completion[0x80];
+			struct completion gesture_complete;
+			unsigned char opaque_a0[0x08];
+		};
+	};
 };
 static __int64 tpd_cdev;
 static struct ufp_tp_ops_struct ufp_tp_ops;
@@ -72,6 +81,7 @@ static int queue_work_on(int cpu, struct workqueue_struct *wq,
 #define pr_err(format, ...) record(EVENT_ERR, 0, 0)
 #define pr_warn(format, ...) record(EVENT_WARN, 0, 0)
 #define __break(value) record(EVENT_WARN, (value), 0)
+#define ZTE_TPD_HOST_TEST 1
 
 #include "../../../reconstructed/zte_tpd/change_tp_state.c"
 
@@ -83,6 +93,7 @@ static void reset_fixture(int state)
 	event_count = 0;
 	current_lcd_state = state;
 	dword_314A0.done = 7;
+	ufp_tp_ops.gesture_complete.done = 7;
 	tpd_cdev = (__int64)(uintptr_t)tpd_storage;
 	*(struct workqueue_struct **)(tpd_storage + 0x4b0) = &workqueue;
 }
@@ -112,6 +123,7 @@ static void test_screen_on_to_off(void)
 	change_tp_state(LCDCHANGE_OFF);
 	expect_int("screen on -> off state", current_lcd_state, 1);
 	expect_int("screen on -> off field", *(int *)((unsigned char *)&ufp_tp_ops + 8), 0);
+	expect_int("screen on -> off completion", ufp_tp_ops.gesture_complete.done, 0);
 	expect_event("screen on -> off lock", 0, EVENT_LOCK, 0xcc0, 0);
 	expect_event("screen on -> off queue", 2, EVENT_QUEUE, WORK_CPU_UNBOUND, 0x9a0);
 	expect_event("screen on -> off unlock", 3, EVENT_UNLOCK, 0xcc0, 0);

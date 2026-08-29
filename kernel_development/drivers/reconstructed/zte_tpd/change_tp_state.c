@@ -18,10 +18,15 @@ void change_tp_state(enum lcdchange state)
 
     mutex_lock(state_lock);
     if (state > LCDCHANGE_OFF || (unsigned int)current_lcd_state > 2U) {
-        /* Stock reaches a non-returning BRK here; keep cleanup deterministic. */
+#if defined(ZTE_TPD_HOST_TEST)
+        /* The host harness cannot continue past the stock non-returning BRK. */
         __break(0x5512u);
         mutex_unlock(state_lock);
         return;
+#else
+        ZTE_TPD_BRK_5512();
+        __builtin_unreachable();
+#endif
     }
 
     pr_info("tpd_ufp_info: current_lcd_state:%s, lcd change:%s\n\n",
@@ -82,6 +87,7 @@ enter_low_power:
 
 switch_off:
     current_lcd_state = 1;
+    ufp_tp_ops.gesture_complete.done = 0;
     ufp_tp_ops.field_8 = 0;
     queue_work_on(WORK_CPU_UNBOUND, workqueue,
                   (struct work_struct *)(tpd_cdev + 0x9a0));
