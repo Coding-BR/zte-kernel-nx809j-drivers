@@ -14,7 +14,7 @@
       "id": "001_tpd_zlog_register",
       "stock_function": "tpd_zlog_register",
       "stock_entry": "0010688c",
-      "stock_body_bytes": 224,
+      "stock_body_bytes": 264,
       "category": "core_logic",
       "source_file": "tpd_zlog_register.c",
       "source_function": "tpd_zlog_register",
@@ -25,38 +25,48 @@
         "kcfi",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_zlog_register\nEntrada Ghidra: 0010688c\nTamanho stock: 224 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_zlog_register.c:tpd_zlog_register\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0000_0010688c_tpd_zlog_register.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0000_0010688c_tpd_zlog_register.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_zlog_register\nEntrada Ghidra: 0010688c\nTamanho stock: 264 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_zlog_register.c:tpd_zlog_register\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0000_0010688c_tpd_zlog_register.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0000_0010688c_tpd_zlog_register.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "PASS",
       "evidence": [
         {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
+          "sha256": "f5e0f7c9966c3e3096482e2dc8b6635528d273678c4c2c890f342c73013f8b3a"
+        },
+        {
+          "role": "canonical_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "75735f5fce4d072f349eec6f02fd638ba2f3fe024fb808cbf29655ee3b2029c0"
+        },
+        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v2/canonical_build_report.json",
-          "sha256": "47cf217dbdace66a4205ea5deff055cad016ad41aca138095fda97c66f18e30c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "75735f5fce4d072f349eec6f02fd638ba2f3fe024fb808cbf29655ee3b2029c0"
+        },
+        {
+          "role": "aarch64_assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
+          "sha256": "6a0227c2d2f20d0b2f9d88c1c7f18cc9bde7d6ccafc0c833afdc7eefa282fcec"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v2/kcfi_comparison.json",
-          "sha256": "3d8e9b606f75481b5a6155a999fdff7c2c97d209658218d6910bfefbeb4f338f"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v2/host_harness_report.json",
-          "sha256": "02463b6216702bec3e718497f13b1fcd7ccf7e7895f4e1228265052fa542ddf6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/kcfi/comparison.json",
+          "sha256": "6b95a3f69008e7da2693202bea3a0d728c39b96479bf53980fec055e604f2173"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v2/joern/joern_gate_summary.json",
-          "sha256": "2d95528a9b964d965286d956b3a2e39c83501cfa42d32f622b836395bbf0ab66"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/joern/joern_gate_report.json",
+          "sha256": "986401b90c61d00adaf0d5b3cb2a65d02cf6b585536b84651d623619f314a745"
         },
         {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v2/assembly_comparison.json",
-          "sha256": "6580126003b35f8c0de2f96c4606b33d065264058267fda5bc16166afb4e3f64"
+          "role": "asan_ubsan_host",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "bfb400879502dccd9947add44020467d77c1dcf0ea8dddf911e1d640a300d418"
         },
         {
-          "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v2/microtask_attestation.json",
-          "sha256": "7b138a1981d5204cdcacd18c8b4518e6836e343fc9c49108c217a818530b01be"
+          "role": "test",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next001_tpd_zlog_register_exact_v3/exact_revalidation_20260829/host_harness_report.json",
+          "sha256": "bfb400879502dccd9947add44020467d77c1dcf0ea8dddf911e1d640a300d418"
         }
       ],
       "attestation": "OFFLINE_EXACT in attestation/next001_tpd_zlog_register_exact_v2; physical hardware validation remains deferred."
