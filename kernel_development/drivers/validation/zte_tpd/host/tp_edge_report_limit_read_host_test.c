@@ -185,11 +185,55 @@ static void test_allocation_failure(void)
 	g_alloc_fail = 0;
 }
 
+static void test_small_buffer_returns_stock_length(void)
+{
+	const char *name = "small_buffer_returns_stock_length";
+	uint8_t device[128];
+	char output[16];
+	struct file file = {0};
+	loff_t position = 0;
+	ssize_t result;
+
+	fixture_init(device);
+	tpd_cdev = (long long)(uintptr_t)device;
+	g_alloc_fail = 0;
+	g_alloc_calls = 0;
+	g_free_calls = 0;
+	memset(output, 0, sizeof(output));
+	result = tp_edge_report_limit_read(&file, output, sizeof(output), &position);
+	expect(result > (ssize_t)sizeof(output), name,
+	       "small buffer did not return total formatted length");
+	expect(position == (loff_t)sizeof(output), name,
+	       "small buffer cursor differs from copied length");
+	expect(g_alloc_calls == 1 && g_free_calls == 1, name,
+	       "small buffer allocation lifecycle differs");
+	expect(output[0] == '#', name, "small buffer did not receive output");
+}
+
+static void test_negative_cursor_is_eof(void)
+{
+	const char *name = "negative_cursor_is_eof";
+	uint8_t device[128];
+	char output[16];
+	struct file file = {0};
+	loff_t position = -1;
+
+	fixture_init(device);
+	tpd_cdev = (long long)(uintptr_t)device;
+	g_alloc_fail = 0;
+	g_alloc_calls = 0;
+	expect(tp_edge_report_limit_read(&file, output, sizeof(output), &position) == 0,
+	       name, "negative cursor did not return EOF");
+	expect(g_alloc_calls == 0, name, "negative cursor allocated memory");
+}
+
 int main(void)
 {
 	test_full_read();
 	test_nonzero_cursor_is_eof();
 	test_allocation_failure();
-	puts("PASS tp_edge_report_limit_read host tests (3 cases)");
+	test_small_buffer_returns_stock_length();
+	test_negative_cursor_is_eof();
+	puts("PASS tp_edge_report_limit_read host tests (5 cases)");
 	return 0;
 }
