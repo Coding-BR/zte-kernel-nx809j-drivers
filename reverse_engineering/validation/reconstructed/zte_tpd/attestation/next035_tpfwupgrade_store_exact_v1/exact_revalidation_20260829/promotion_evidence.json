@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask_id": "035_tpfwupgrade_store",
+  "decision": "PROMOTE_TO_PASS",
+  "decision_basis": [
+    "Two independent Docker canonical-build cycles produced the same zte_tpd.ko SHA-256.",
+    "Candidate and stock AArch64 assembly have identical 140 instructions, 560-byte symbol size and resolved relocations; the prior 468-byte Ghidra metadata is recorded as stale source evidence.",
+    "Candidate and stock KCFI type IDs are identical: 0xc3d43b4d.",
+    "Strict Joern gate passed with zero parse problems and one-to-one source/Ghidra identity coverage using the recorded compatibility defines.",
+    "The dedicated ASAN/UBSAN contract passed 5/5 cases in both reproducible cycles, covering parse failure, mutex/cleanup, allocation, zeroing, callback and ENOMEM behavior."
+  ],
+  "attestation": "microtask_attestation.json",
+  "status": "PASS",
+  "review_findings": [
+    "Joern retains three high-severity lifetime findings.",
+    "Joern retains two high-severity synchronization findings."
+  ]
+}

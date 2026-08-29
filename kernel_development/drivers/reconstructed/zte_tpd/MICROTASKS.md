@@ -38,7 +38,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 032_tp_smart_cover_write | tp_smart_cover_write | 00109ce4 | user_abi | tp_smart_cover_write.c:tp_smart_cover_write | PASS |
 | 033_tp_glove_read | tp_glove_read | 00109db8 | user_abi | tp_glove_read.c:tp_glove_read | PASS |
 | 034_tp_glove_write | tp_glove_write | 00109eac | user_abi | tp_glove_write.c:tp_glove_write | PASS |
-| 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | PROMOTED_OFFLINE_EXACT |
+| 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | PASS |
 | 036_suspend_show | suspend_show | 0010a1b4 | binding | suspend_show.c:suspend_show | PASS |
 | 037_suspend_store | suspend_store | 0010a2ac | binding | suspend_store.c:suspend_store | PROMOTED_OFFLINE_EXACT |
 | 038_headset_state_show | headset_state_show | 0010a3c4 | user_abi | headset_state_show.c:headset_state_show | PROMOTED_OFFLINE_EXACT |
