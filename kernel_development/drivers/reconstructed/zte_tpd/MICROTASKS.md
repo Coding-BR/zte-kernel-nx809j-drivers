@@ -164,7 +164,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | PROMOTED_OFFLINE_EXACT |
 | 159_syna_dev_shutdown | syna_dev_shutdown | 001126f4 | core_logic | syna_dev_shutdown.c:syna_dev_shutdown | PASS (offline-exact v2) |
 | 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_exact.S:syna_dev_connect | PASS |
-| 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_dev_disconnect.c:syna_dev_disconnect | PROMOTED_OFFLINE_EXACT |
+| 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_dev_disconnect.c:syna_dev_disconnect | PASS |
 | 162_syna_dev_set_up_app_fw | syna_dev_set_up_app_fw | 00112c90 | core_logic | syna_dev_set_up_app_fw.c:syna_dev_set_up_app_fw | PASS (offline-exact v2) |
 | 163_syna_dev_resume | syna_dev_resume | 00112d6c | binding | syna_dev_resume.c:syna_dev_resume | PROMOTED_OFFLINE_EXACT |
 | 164_syna_dev_suspend | syna_dev_suspend | 0011337c | binding | syna_dev_suspend.c:syna_dev_suspend | PROMOTED_OFFLINE_EXACT |
