@@ -1021,14 +1021,8 @@
         "ghidra-pseudocode:decompiled/0040_0010a6c0_get_rotation_limit_level.c:sha256:d8164ea393295bf9fbdf009d674a89b0eb4536e1903b5da299d1a449e0c65998",
         "ghidra-pcode:pcode/0040_0010a6c0_get_rotation_limit_level.jsonl:sha256:8f8ff1bd328889a8c313952f3fe55f5ad9ec1adef70700b2474775d2f5a4aa8e",
         "stock-assembly:0040_get_rotation_limit_level_0010a6c0.asm:sha256:3ec17fc5047b9858a7d4959ae019e6f0f41fb6b69b3fc6c4de75698f469a1273",
-        "attestation:next410_get_rotation_limit_level_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC",
-        "attestation:next410_get_rotation_limit_level_exact_v2/microtask_attestation.json",
-        "attestation:next410_get_rotation_limit_level_exact_v2/aarch64_validation_report.json",
-        "attestation:next410_get_rotation_limit_level_exact_v2/assembly_comparison.json",
-        "attestation:next410_get_rotation_limit_level_exact_v2/kcfi_comparison.json",
-        "attestation:next410_get_rotation_limit_level_exact_v2/canonical_build_report.json",
-        "attestation:next410_get_rotation_limit_level_exact_v2/host_harness_report.json",
-        "attestation:next410_get_rotation_limit_level_exact_v2/joern/joern_gate_report.json"
+        "attestation:next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/microtask_attestation.json",
+        "attestation:next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/aarch64_comparison.json"
       ],
       "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
       "review_scope": "offline_semantic_function_level",
@@ -1040,7 +1034,7 @@
       "stock_entry": "0010a6c0",
       "stock_function": "get_rotation_limit_level",
       "promotion_note": "Offline exact: 60 instructions and 240 bytes match byte-for-byte; KCFI 0xf4e9d97c, callback 0x73fc0d79 at tpd_cdev + 0xe88, zero-offset gate, value +0xc and snprintf size 10 are preserved. Joern, two-cycle Docker build and two-case two-cycle ASan/UBSan pass. Local .rodata link offsets are normalized; runtime remains unverified.",
-      "mapping_note": "Corrected the optional callback to tpd_cdev + 0xe88 with callback KCFI type 0x73fc0d79, read value offset +0xc and stock ten-byte snprintf contract. Candidate and stock both contain 60 instructions and a 240-byte .text body; function KCFI type 0xf4e9d97c matches, Joern parsed strictly with zero unresolved calls, and the two-case host contract passed in two ASan/UBSan cycles. Raw AArch64 differs only in local zero-initialization scheduling and reconstructed local .rodata relocation offsets. Procfs, concurrent lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Promoted to offline exact: candidate and stock match at 60 instructions and 240 bytes, with raw instruction sequence and normalized relocations aligned. Function KCFI type 0xf4e9d97c and callback type 0x6af8b499 at tpd_cdev + 0xe88 match; the rotation value remains at +0xc. Strict Joern, reproducible two-cycle Docker build and two-case two-cycle ASan/UBSan host contract passed. One high-severity userspace-egress finding remains for review; runtime procfs, concurrent callback lifetime and NX809J behavior remain unverified."
     },
     {
       "evidence": [
