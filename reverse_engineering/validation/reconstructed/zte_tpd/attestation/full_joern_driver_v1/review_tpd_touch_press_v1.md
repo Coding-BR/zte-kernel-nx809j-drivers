@@ -19,6 +19,10 @@ O assembly e o C coincidem nos caminhos de:
 4. debounce com chamada a `tpd_touch_release`;
 5. publicação do evento, `usleep_range_state` e atualização final do ponto.
 
+A repetição vinculada a esta revisão está preservada em
+`tpd_touch_press_host_current_v4.json` (SHA-256
+`c183a6309243345827bf861897ac808f96d8e5f70ce68682b091533070e86a1d`).
+
 ## Cobertura host reproduzida
 
 O harness cobre quatro contratos: entrada inválida, primeiro contato/movimento,
