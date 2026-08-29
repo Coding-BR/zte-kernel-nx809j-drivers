@@ -45,7 +45,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 039_headset_state_store | headset_state_store | 0010a4bc | user_abi | headset_state_store.c:headset_state_store | PASS |
 | 040_inline_copy_from_user | _inline_copy_from_user | 0010a5c8 | core_logic | _inline_copy_from_user.c:zte_inline_copy_from_user | PASS |
 | 041_get_rotation_limit_level | get_rotation_limit_level | 0010a6c0 | core_logic | get_rotation_limit_level.c:get_rotation_limit_level | PASS |
-| 042_set_rotation_limit_level | set_rotation_limit_level | 0010a7b4 | core_logic | set_rotation_limit_level.c:set_rotation_limit_level | PROMOTED_OFFLINE_EXACT |
+| 042_set_rotation_limit_level | set_rotation_limit_level | 0010a7b4 | core_logic | set_rotation_limit_level.c:set_rotation_limit_level | PASS |
 | 043_display_rotation_show | display_rotation_show | 0010a87c | user_abi | display_rotation_show.c:display_rotation_show | PASS |
 | 044_set_display_rotation | set_display_rotation | 0010a954 | core_logic | set_display_rotation.c:set_display_rotation | PASS |
 | 045_tp_single_tap_read | tp_single_tap_read | 0010aa5c | user_abi | tp_single_tap_read.c:tp_single_tap_read | PASS |
