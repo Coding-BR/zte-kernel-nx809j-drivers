@@ -27,6 +27,10 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_file_raw(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
@@ -80,6 +84,26 @@ def git_index_blob(workspace_root: Path, relative_path: Path) -> bytes:
             f"missing Git index blob {relative_path.as_posix()}: {detail}"
         )
     return result.stdout
+
+
+def index_hash_matches(
+    workspace_root: Path, relative_path: Path, expected: str
+) -> bool:
+    """Match normalized hashes and preserve compatibility with legacy CRLF hashes."""
+    indexed = git_index_blob(workspace_root, relative_path)
+    if sha256_bytes(indexed) == expected:
+        return True
+    candidate = (workspace_root / relative_path).resolve()
+    if (
+        candidate.is_file()
+        and candidate.suffix.lower() in TEXT_HASH_SUFFIXES
+    ):
+        working = candidate.read_bytes()
+        return (
+            working.replace(b"\r\n", b"\n") == indexed
+            and sha256_file_raw(candidate) == expected
+        )
+    return False
 
 
 def discover_layout() -> tuple[Path, Path]:
@@ -201,8 +225,8 @@ def main() -> int:
             else:
                 if args.git_index:
                     try:
-                        actual = sha256_bytes(
-                            git_index_blob(workspace_root, Path(path_value))
+                        matches = index_hash_matches(
+                            workspace_root, Path(path_value), expected
                         )
                     except ValueError as error:
                         failures.append(task["id"] + ": " + str(error))
@@ -211,8 +235,10 @@ def main() -> int:
                     failures.append(task["id"] + ": evidence file is missing")
                     continue
                 else:
-                    actual = sha256_file(candidate)
-                if actual != expected:
+                    matches = expected in {
+                        sha256_file(candidate), sha256_file_raw(candidate)
+                    }
+                if not matches:
                     failures.append(task["id"] + ": evidence SHA-256 mismatch")
                 else:
                     roles.add(role)
