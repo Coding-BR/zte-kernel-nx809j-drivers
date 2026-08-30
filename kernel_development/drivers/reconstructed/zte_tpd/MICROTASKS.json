@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-08-30T04:19:38.962596+00:00",
+  "generated_utc": "2026-08-30T04:28:40.501194+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -3789,27 +3789,27 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_zlog_debug_read\nEntrada Ghidra: 0010d408\nTamanho stock: 156 bytes\nCategoria: user_abi\nAlvo no fonte: tp_zlog_debug_read.c:tp_zlog_debug_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0082_0010d408_tp_zlog_debug_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0082_0010d408_tp_zlog_debug_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_batch_21_current_v2_20260828/joern_gate_report.json",
-          "sha256": "21fec4ccc3fca6c178c6c8ea1f772b72f6b87a4abbdbddb23fc7df8d83464fc8"
-        },
-        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next083_tp_zlog_debug_read_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "03533de63406053178773910f965f5ac343ef66c04ef8d99a0398a6a26076157"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next083_tp_zlog_debug_read_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
+          "sha256": "482185908a28d28154b12b66f734e466a56877e3e0b21af50a3e55bb884bd74d"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/zlog_harness_report.json",
-          "sha256": "f1df4e4ae5a474ba37f0f0dba5455f9110d3c276891090a380edd4842918329e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next083_tp_zlog_debug_read_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "sha256": "60b32b32fd28e7e8f9e73e75b476e27eef67b440b238cd47267e7bb9dacff9b7"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next083_tp_zlog_debug_read_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
+          "sha256": "969097caebfaaea3e9d72c83b64da53d593ceb69d784c3ba0521126cbf79e464"
         }
       ]
     },
