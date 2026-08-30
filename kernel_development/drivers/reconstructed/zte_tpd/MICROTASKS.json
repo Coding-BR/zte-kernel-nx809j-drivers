@@ -2912,30 +2912,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_play_game\nEntrada Ghidra: 0010bc14\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_play_game.c:get_play_game\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0056_0010bc14_get_play_game.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0056_0010bc14_get_play_game.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/canonical_build_report.json",
-          "sha256": "38699a2571824aa3bd237c472275c3177b6698154cb862073d38b9a175239e77"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "11ab0ad4f596d91ed5de6b36eebbcce27e46bea30213cfb8c707b527f18c0a3c"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "7267f515f5ba40b8ab10951790566638e6e7cc704102a562f9544b4045d35579"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next446_get_play_game_v1/microtask_attestation.json",
-          "sha256": "d700abf71539ece99cad905d900f3a0631f030a0c16eefb73826f1f6a057650d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "133c24e33c2cafbcb64badec3e111721f88c941230b32fdf9322baa03dd54bb3"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "dda7fce90727caf7e7435a97421b54cdedac3c60a6aa2cdd59dc4392c71149d8"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "621395ed55b5c239531969cda5dcccb4d19a44924c723ecefd55c0152aaae24f"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "ad577d3a04dc623a876069d696100dcd4c78055a3a63009a09b8cbee1b7ccdfb"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next446_get_play_game_exact_v2; hardware behavior remains deferred."
+      "attestation": "OFFLINE_EXACT em attestation/next057_get_play_game_exact_v4/exact_revalidation_20260830; um achado userspace-egress de alta severidade permanece para revisao de runtime."
     },
     {
       "id": "058_set_play_game",
