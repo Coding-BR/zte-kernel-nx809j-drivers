@@ -2705,29 +2705,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_edge_report_limit_read\nEntrada Ghidra: 0010b150\nTamanho stock: 1340 bytes\nCategoria: user_abi\nAlvo no fonte: tp_edge_report_limit_read.c:tp_edge_report_limit_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0052_0010b150_tp_edge_report_limit_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0052_0010b150_tp_edge_report_limit_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next506_tp_edge_report_limit_read_exact_v2/canonical_build_report.json",
-          "sha256": "f4b97014a9d1f849a47e7f70f3a81265f0799e4005685516363b6ff907bca0e9"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "0d5ad27d949bdee8c7f48cfbd94247c7092b9f603e25d14f4653f7b171649f60"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next506_tp_edge_report_limit_read_exact_v2/kcfi_comparison.json",
-          "sha256": "87b01b5eaff46e3df5809be78d48f66c5ee1cf396eb2dcd50579d8758cc6d7c8"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "c028999b2023db9666cef6696a27a285f57166dfd00d61568389dd5649bf199e"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_tp_edge_report_limit_read_current_v1/host_harness_report.json",
-          "sha256": "5faf7bd1c0f97fe9339a7318ce2a723d5d2f28a7f6558f471d18956ebeef4f7a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "28e9d960949b6d1b0e3585afb7f8dd5f99fff565576cb36606a970c20d9c287f"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_tp_edge_report_limit_read_current_v1/joern_gate_summary.json",
-          "sha256": "7e43a60205c23f0c2910c03cfcca4e105d6b8eca8fef0dc35a217856f68bb1aa"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "57935504e12f132dbeadd0dfffd33803f107d4c03a4dea74434d37519ec53232"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "65208fb953696ebb30641d782c0c010e6c30c9a8e83329e159caef363314f7b7"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "b87cbedb2f2da3892f365afba2065731859fffb7eb21884ddcd9d4b7647edf9a"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT em attestation/next053_tp_edge_report_limit_read_exact_v4/exact_revalidation_20260830; um achado de lifetime e um userspace-egress de alta severidade permanecem para revisao de runtime."
     },
     {
       "id": "054_tp_edge_report_limit_write",
