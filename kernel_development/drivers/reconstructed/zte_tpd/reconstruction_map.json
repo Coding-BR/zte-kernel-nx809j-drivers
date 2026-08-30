@@ -493,10 +493,16 @@
         "source:zte_touch_pdev_unregister.c:sha256:3671a9ef55d6c4c7d9922ab357cabacbb01e386b643b21bf82f7815f567d82ab",
         "ghidra-pseudocode:decompiled/0017_001083b4_zte_touch_pdev_unregister.c:sha256:a420b11a7b7ef2add2094f919ef4b1b83db856d2f9b88ef5254c429a48aadc52",
         "ghidra-pcode:pcode/0017_001083b4_zte_touch_pdev_unregister.jsonl:sha256:696d9d0dfefa8d0b3af22bc382e2ed68a9b83991cadb806776b94b97a668ce27",
-        "stock-assembly:0017_zte_touch_pdev_unregister_001083b4.asm:sha256:04c6509ef14e82b77f8e83832c2d51388aa2aefa18a7e2f58f0023e14ad84d20",
-        "attestation:next380_zte_touch_pdev_unregister_v1/microtask_attestation.json:status:OFFLINE_EXACT"
+        "stock-assembly:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/stock_assembly/0000_zte_touch_pdev_unregister.asm:sha256:04c6509ef14e82b77f8e83832c2d51388aa2aefa18a7e2f58f0023e14ad84d20",
+        "candidate-assembly:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_zte_touch_pdev_unregister.asm:sha256:2e889a367c666b0b2b339344bc0bae6cce825b62c3ef6e4cecadeb01a85b34fc",
+        "aarch64-validation:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:21f1fe8226c95ede3adb632e69c8783a1d972c07a7d6e02e0ed3388f1869fbcc",
+        "canonical-build:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:2b504cfd3412b58f429e59ef1258a2020c6df9d9d6825a1fe511bfd733aeb353",
+        "host-harness:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:bf51c7b6edbef752fd3d64dd448fd3501bca001d4c89b59cff9cced522bc818c",
+        "joern:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:cfd38116c76f846b9fc882d96990fb4be61f5a31f4ed195e7a01404eacc4152e",
+        "kcfi:attestation/next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:eb81c7722556899659c9c027c8068740f0a7937d250d9b8c670b2988993e54fc",
+        "attestation:next018_zte_touch_pdev_unregister_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:8e9226f0b1f99273f02290934b80cf049a3ac24f51afd86d0d7ccfc66dfdd728"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code plus Joern, contract harness, exact KCFI type/size and exact normalized AArch64 instruction/relocation evidence",
+      "mapping_basis": "Ghidra pseudocode/P-Code plus Docker canonical build, exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan contract evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "zte_touch_pdev_unregister.c",
@@ -505,7 +511,7 @@
       "stock_body_bytes": 96,
       "stock_entry": "001083b4",
       "stock_function": "zte_touch_pdev_unregister",
-      "mapping_note": "Offline exact function-level parity attested: 24 AArch64 instructions, 96-byte .text size, KCFI type/size, tpd_cdev + 0xdd0 access, absolute 0x338 callback load and relocations match. The observed null-slot unregister behavior is preserved; hardware runtime remains unverified."
+      "mapping_note": "Function-level offline exact parity is promoted from the Docker canonical two-cycle build. Stock and candidate contain 24 AArch64 instructions and 96-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xe5c47d60, .text section and symbol size match. The tpd_cdev + 0xdd0 test, stock null-slot guard call, platform_device_unregister call, and no-op nonzero-slot path are preserved; relocation addresses are layout-specific and normalized by the AArch64 gate. Joern is strict and parse-clean with one-to-one function identity and zero unresolved calls; ASan/UBSan host tests cover four direct cases across two reproducible Docker cycles. The observed null-slot behavior is not a safety approval; platform-bus lifecycle and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
