@@ -1020,20 +1020,28 @@
         "source:suspend_store.c:sha256:4fc41fd624044d5b6f6230fe1ceb8d5bf2f3116d2d5ae259051a134c4eda7680",
         "ghidra-pseudocode:decompiled/0036_0010a2ac_suspend_store.c:sha256:309f01b14f4bb23388603b9ce1418370f651987c76c227218008666dbdb21063",
         "ghidra-pcode:pcode/0036_0010a2ac_suspend_store.jsonl:sha256:6cea49e029acde46568a1be83c1a190771819c57756c2b60686964e205a11fe0",
-        "stock-assembly:0036_suspend_store_0010a2ac.asm:sha256:67878b848098ebcc0ecfec6206a69dbe0d887eac19ed18528411e6b2449595e3",
-        "attestation:next037_suspend_store_exact_v1/exact_revalidation_20260829/microtask_attestation.json",
-        "attestation:next037_suspend_store_exact_v1/exact_revalidation_20260829/aarch64_comparison.json"
+        "stock-assembly:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/stock_assembly/0000_suspend_store.asm:sha256:67878b848098ebcc0ecfec6206a69dbe0d887eac19ed18528411e6b2449595e3",
+        "candidate-assembly:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_suspend_store.asm:sha256:bd9fe079de1e4bbc3169459472d3726735af5c68eee57a3981e0db3f9e75a953",
+        "assembly-compare:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:8ffafda0b8afa3f9434c0b0c711d332ce92af4931399a9c22c84973377bd7df0",
+        "aarch64-validation:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:8ffafda0b8afa3f9434c0b0c711d332ce92af4931399a9c22c84973377bd7df0",
+        "kcfi-compare:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:7efec68a790fa1b1dfad5638309747a92f6fca30db2d74ffe02d0d1a7140d211",
+        "canonical-build:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:ca4f19b51b107bc6bf8999fe8d7191c62c879bae6c60df7a73f9f6dff1f3dc76",
+        "host-harness:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:af581b1cb4560df7c310d250b608587dcd0e169efd260b0a868decfe7c9f6adc",
+        "joern:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:9f6464305024523916477fb2b07cb2d9c3ea580017405d5ff6a9dc01947dd990",
+        "candidate-module:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "candidate-source:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:4fc41fd624044d5b6f6230fe1ceb8d5bf2f3116d2d5ae259051a134c4eda7680",
+        "attestation:attestation/next037_suspend_store_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:3813e7e7fbe0911f0c2fcb370ec9db757a8eb2b2810da9886920fc7c99ba261e"
       ],
-      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, inline KCFI literal, Joern, Docker build, and ASan/UBSan host contract",
-      "review_scope": "offline_semantic_function_level",
+      "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, inline KCFI literal, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
+      "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "suspend_store.c",
       "source_function": "suspend_store",
-      "status": "promoted_offline_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 276,
       "stock_entry": "0010a2ac",
       "stock_function": "suspend_store",
-      "mapping_note": "Promoted to offline exact: candidate and stock both contain 69 instructions and a 276-byte .text body; raw instructions and normalized relocations match, function KCFI type 0xc3d43b4d matches, and the inline AArch64 callback check is preserved. Strict Joern, reproducible two-cycle Docker build and four-case two-cycle ASan/UBSan host contract passed. Two high-severity synchronization findings remain for review; runtime procfs, concurrent lifetime, synchronization and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 69 AArch64 instructions and 276-byte .text size, normalized relocation roles, section and KCFI type ID 0xc3d43b4d/size; the inline callback KCFI literal is preserved. The C reconstruction preserves parse normalization, state comparison at tpd_cdev + 0x16, mutex at +0xc60, callback at +0xe60, no-op logging and count/-EINVAL behavior. Strict Joern is parse-clean with one-to-one identity, 42 calls, six control structures and zero unresolved calls; two high-severity synchronization findings remain for runtime review. ASan/UBSan host coverage exercises four direct cases. Procfs/sysfs integration, callback lifetime and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
