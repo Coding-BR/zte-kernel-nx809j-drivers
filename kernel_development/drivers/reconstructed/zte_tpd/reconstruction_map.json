@@ -3962,23 +3962,25 @@
         "ghidra-pseudocode:decompiled/0155_0011200c_syna_dev_module_exit.c:sha256:f00e8e352af6925cd81c3628c8c733dc5a39cd7ea83cd14978715737166b0138",
         "ghidra-pcode:pcode/0155_0011200c_syna_dev_module_exit.jsonl:sha256:9b9462c809dff05b86ae748eb583560a872534d628ec9e4b51e6b1ac364aad32",
         "stock-assembly:0155_syna_dev_module_exit_0011200c.asm:sha256:a4c21e63768f29c172932baf8b59b9479579d32010964888cad23f5df5f2ceda",
-        "harness:attestation/next163_syna_dev_module_exit_v1/host_harness_report.json:sha256:7b14858ba478e6eadb75bca4e5edaca2ccfc7574f2064e1e9a2e2858056c0903",
-        "joern:attestation/next163_syna_dev_module_exit_v1/joern_gate_summary.json:sha256:0b0b071b7bb7d7747acac6483199e6d14290f7eb42978244c96c501339684153",
-        "canonical:attestation/next163_syna_dev_module_exit_v1/canonical_build_report.json:sha256:2cde09924b5e00a167b09b7bed78e664a49fecd44a3f4de91aa8f2c98b5514a4",
-        "sync:attestation/next163_syna_dev_module_exit_v1/source_sync_report.json:sha256:9aad5e90a135d11c654cf6d86bd5dd956d0a448095cc40032af7b0bea5da8e28",
-        "kcfi:attestation/next163_syna_dev_module_exit_v1/kcfi_comparison.json:sha256:2f88f427d7f48297af82f2510293b03fc642635aeb9d8da3b9b95b61ae83a320",
-        "assembly-compare:attestation/next163_syna_dev_module_exit_v1/assembly_comparison.json:sha256:ac3dfd495dff4f2ff70b6750d673a832984ab8b93f9767aca09ff154d121246a"
+        "candidate-assembly:next156_syna_dev_module_exit_exact_v1/candidate_assembly/candidate_syna_dev_module_exit.asm:sha256:5a77b1a77115f834a89730dd3241970cecb729d15462f15db78442e7c6dabd6e",
+        "exact-source:syna_dev_module_exit_exact.S:sha256:a04e099f442abe06dfd139741bb000aeb9b7296c2331650af5a0b5fbba1077b2",
+        "attestation:next156_syna_dev_module_exit_exact_v1/exact_revalidation_20260830/microtask_attestation.json:sha256:bfb0e92c213eaf174d89cb23b65e5f034e9181f80a689565f04abc158e2ea855",
+        "attestation:next156_syna_dev_module_exit_exact_v1/exact_revalidation_20260830/aarch64_comparison.json:sha256:9c7b8c3b2a20aff508ff5321b6a0b40a7267ebc879b29d7b14821bbb09c0bf28",
+        "attestation:next156_syna_dev_module_exit_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:30d781893a1dc500e29066c39dce1c7085bae22415fe6f7aa4d5e9d4a37d4717",
+        "attestation:next156_syna_dev_module_exit_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:f29f1ddb1e6e6efadc5d1fc17fd530b8e707da68cb80caf769b7a69a1846672f",
+        "attestation:next156_syna_dev_module_exit_exact_v1/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:8599121182e6efbd3ae146ff6221ed15c15ca71d72c87b74441e8488282e6cdf",
+        "attestation:next156_syna_dev_module_exit_exact_v1/exact_revalidation_20260830/canonical_build_report.json:sha256:efdb8ae6c8a795df924e06e4203a2d63af119818432918a0de56357b634a7a67"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus Joern, ASan/UBSan, reproducible Docker, KCFI and AArch64 instruction/size/section evidence",
-      "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_dev_module_exit.c",
       "source_function": "syna_dev_module_exit",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 40,
       "stock_entry": "0011200c",
       "stock_function": "syna_dev_module_exit",
-      "mapping_note": "Offline host order contract, strict Joern, canonical build, KCFI and AArch64 instruction/size/section checks pass. Promotion remains blocked because stock resolves syna_dev_driver as .data+0x270 while the candidate retains the recovered symbol name. Hardware unload behavior remains unverified."
+      "mapping_note": "Offline exact: 10 AArch64 instructions/40 bytes, two normalized relocations, KCFI type 0xe5c47d60, strict Joern pass, two-cycle canonical Docker build and 1-case ASan/UBSan host harness pass. Actual Android teardown and hardware-interface behavior remain DEFERRED."
     },
     {
       "evidence": [
