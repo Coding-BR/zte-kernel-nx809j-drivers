@@ -1048,20 +1048,28 @@
         "source:headset_state_show.c:sha256:0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
         "ghidra-pseudocode:decompiled/0037_0010a3c4_headset_state_show.c:sha256:9fc75ce3590cf4fe02b6107f4c92cf637ae4ed847d6cc181d8e1526be7a16241",
         "ghidra-pcode:pcode/0037_0010a3c4_headset_state_show.jsonl:sha256:504d49bfe141f479262c51af4f07336527505811b29a89553cb57933d72caac4",
-        "stock-assembly:0037_headset_state_show_0010a3c4.asm:sha256:06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c",
-        "attestation:next038_headset_state_show_exact_v1/exact_revalidation_20260829/microtask_attestation.json",
-        "attestation:next038_headset_state_show_exact_v1/exact_revalidation_20260829/aarch64_comparison.json"
+        "stock-assembly:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/stock_assembly/0000_headset_state_show.asm:sha256:06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c",
+        "candidate-assembly:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_headset_state_show.asm:sha256:605cea1f7b9b863353b191e47ec433eae8d001368145ddde372d1e2bd94056d0",
+        "assembly-compare:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:c7c487d4b6d3eb6c01dcba22b0372d3a0d65e847d5012179b1be1ce2089b639c",
+        "aarch64-validation:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:c7c487d4b6d3eb6c01dcba22b0372d3a0d65e847d5012179b1be1ce2089b639c",
+        "kcfi-compare:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:e8019db6c734256c750ebbedd8963fa731ad4b19ef4fcefd08caace8a924d8ce",
+        "canonical-build:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:31fa68bd197a1f3b55406a440948d70852e81bc32fd1ccb900ca01f0155ba855",
+        "host-harness:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:c5183bbebd9920f5b50af43ca35224edb36490c1ff8b31cc60121213d22d3c84",
+        "joern:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:4cae2068c83095af5b4d62d270cc3d57e8e71ae4548a8d48b0961a21bc90e8c9",
+        "candidate-module:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "candidate-source:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
+        "attestation:attestation/next038_headset_state_show_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:a895ad650a0c6e5cc25afd60e4da906e4eabb7a9512ac90749d3a20512620de0"
       ],
-      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
-      "review_scope": "offline_semantic_function_level",
+      "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
+      "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "headset_state_show.c",
       "source_function": "headset_state_show",
-      "status": "promoted_offline_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 244,
       "stock_entry": "0010a3c4",
       "stock_function": "headset_state_show",
-      "mapping_note": "Promoted to offline exact: candidate and stock match at 61 instructions and 244 bytes, with raw instruction sequence and normalized relocations aligned. Function KCFI type 0xf4e9d97c and callback type 0x73fc0d79 at tpd_cdev + 0xe78 match; the device state byte remains at +0x17. Strict Joern, reproducible two-cycle Docker build and two-case two-cycle ASan/UBSan host contract passed. One high-severity userspace-egress finding remains for review; runtime procfs, concurrent callback lifetime, and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 61 AArch64 instructions and 244-byte .text size, normalized relocation roles, section and KCFI type ID 0xf4e9d97c/size. The C reconstruction preserves the zero-offset guard, callback at tpd_cdev + 0xe78, headset state byte at +0x17, stock printk/format string and simple_read_from_buffer flow. Strict Joern is parse-clean with one-to-one identity, 36 calls, two control structures and zero unresolved calls; one high-severity userspace ABI finding is retained for review. ASan/UBSan host coverage exercises two direct cases. Procfs/sysfs integration, callback lifetime and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
