@@ -2180,20 +2180,23 @@
       "stock_function": "tp_fold_state_write",
         "mapping_note": "Function-level offline parity is promoted after correcting the reconstructed C callback offset from 0xe08 to stock 0xfc0. Stock and candidate contain 52 AArch64 instructions and 208-byte ELF symbols; opcode sequence, section, symbol size, call targets and normalized relocations match. KCFI type 0xc3d43b4d matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed four cases in two Docker cycles. Android runtime and NX809J hardware behavior remain unverified."
     },
-    {
-      "evidence": [
-        "source:get_fake_sleep.c:sha256:345053c0b2b418c60ad54f067969e3ee1ec5d8000b48b102f2346b7418fda8d9",
-        "ghidra-pseudocode:decompiled/0078_0010d078_get_fake_sleep.c:sha256:db09c39bd148becfb8731842c9dad929a6c23743c399ccc465fa4380e4c507a8",
-        "ghidra-pcode:pcode/0078_0010d078_get_fake_sleep.jsonl:sha256:f3d21bfbc4c72606089957ee56342ffaee3ae4a790f67a7cd411c429a9ce5ce5",
-        "stock-assembly:get_fake_sleep.asm:sha256:c8b8e74677461faba95545fcf4c0e755140d0e31850fad6015d51ef71cd5cae7",
-        "candidate-assembly:get_fake_sleep.asm:sha256:d334816aad707b3974eef9dd24397df1fc71f98c6bd0e852154999f3da12a173",
-        "aarch64-comparison:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/aarch64_comparison.json:sha256:2f9252ddd009aff6429d2a3445dc677905d477128b17b0a8545964de0d59d1ce",
-        "kcfi-comparison:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json:sha256:202948dae66fd4656855a516295a509f0ab18cf506aa1fba3324797aacb21464",
-        "source-test:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json:sha256:c5d1a26d2a19d43270458138fe7a64fedbcd4a68c49fe5b3adcd6281058d7c80",
-        "joern-summary:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json:sha256:9a101252169b885b5a62fa2508421f2e327fcad62a5ed82a14544077983a7b52"
-      ],
-      "mapping_basis": "Ghidra pseudocode/P-Code/Assembly exact lift plus Joern, ASan/UBSan, reproducible Docker, KCFI type and AArch64 comparison evidence",
-      "review_scope": "offline_semantic_function_level",
+      {
+        "evidence": [
+          "source:get_fake_sleep.c:sha256:345053c0b2b418c60ad54f067969e3ee1ec5d8000b48b102f2346b7418fda8d9",
+          "ghidra-pseudocode:decompiled/0078_0010d078_get_fake_sleep.c:sha256:db09c39bd148becfb8731842c9dad929a6c23743c399ccc465fa4380e4c507a8",
+          "ghidra-pcode:pcode/0078_0010d078_get_fake_sleep.jsonl:sha256:f3d21bfbc4c72606089957ee56342ffaee3ae4a790f67a7cd411c429a9ce5ce5",
+          "stock-assembly:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/stock_assembly/0000_get_fake_sleep.asm:sha256:c8b8e74677461faba95545fcf4c0e755140d0e31850fad6015d51ef71cd5cae7",
+          "candidate-assembly:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_get_fake_sleep.asm:sha256:d334816aad707b3974eef9dd24397df1fc71f98c6bd0e852154999f3da12a173",
+          "aarch64-comparison:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:d3af83694f83b5d9ae730c91e4bd5dfcdb72731696de1d5827f595c03cac5840",
+          "canonical-build:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:df2546c3664ce1ed25920c0c4c925d0f952ae9d129b18918400f9ac9a755601b",
+          "kcfi-comparison:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:1d447a95e67a8a16913abcd67ea3f5eb1ab41aa5f26a4e21bb25ffb793c44711",
+          "source-test:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:c5d1a26d2a19d43270458138fe7a64fedbcd4a68c49fe5b3adcd6281058d7c80",
+          "joern-summary:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:f85c705a5e7328c8480f09ff0eea2322b972c10c3ac784b08692abba4aa6a99f",
+          "microtask-attestation:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:cf5c87b17195ad9f711e342c9fe56c989ec6de0b2e628b095c58258b3ea8d512",
+          "candidate-module:attestation/next079_get_fake_sleep_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        ],
+        "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+        "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "get_fake_sleep.c",
       "source_function": "get_fake_sleep",
@@ -2201,7 +2204,7 @@
       "stock_body_bytes": 240,
       "stock_entry": "0010d078",
       "stock_function": "get_fake_sleep",
-      "mapping_note": "Offline exact after correcting the reconstructed C callback offset from 0xe10 to stock 0xfc8: 60 AArch64 instructions/240 bytes, normalized relocations, KCFI type 0xf4e9d97c, strict Joern, two-cycle canonical Docker build and ASan/UBSan source harness pass. Hardware remains DEFERRED. Distinct from internal tpd_get_fake_sleep."
+        "mapping_note": "Function-level offline parity is promoted after correcting the reconstructed C callback offset from 0xe10 to stock 0xfc8. Stock and candidate contain 60 AArch64 instructions and 240-byte ELF symbols; opcode sequence, section, symbol size, call targets and normalized relocations match. KCFI type 0xf4e9d97c matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed four cases in two Docker cycles. Android runtime and NX809J hardware behavior remain unverified. This remains distinct from internal tpd_get_fake_sleep."
     },
     {
       "evidence": [
