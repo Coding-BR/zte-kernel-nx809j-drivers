@@ -3117,30 +3117,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_follow_hand_level\nEntrada Ghidra: 0010bf8c\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_follow_hand_level.c:get_follow_hand_level\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0060_0010bf8c_get_follow_hand_level.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0060_0010bf8c_get_follow_hand_level.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next200_syna_spi_release_exact_v1/exact_revalidation_20260830/canonical_build_report.json",
-      "sha256": "08adf84e62b2ce0c083ea2425156ba6955651ad7a515cd14aa142704732416d7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "d8ea06ad7492b407409c1733867f50f8feaabfa023d8af15bb259542a2ed9a8f"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "fecc28dcdd10b55daa8dfceedd0be0855ba79c6d53b8626682c24da0774282c1"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next450_get_follow_hand_level_v1/microtask_attestation.json",
-          "sha256": "27e52046bd8190dd56d5dc1a70fbfde5531f068ea83743c493d33d1a027d0cf5"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "a16398d242be1a64f1ac8cac26479efc35533c32eecd229ba5f232d196db6f18"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "6b527c9d0023e3a0dd99b359a2219f3d0984dc376709411e53130cc2dc62166f"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "2616acbc3d30151c6ff598f14a4ca1fc72c8f8dfe3ddda75de7af79c12410c10"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "95eb56d90835b19a3e768c05a0ee612c913005f9a1eb3c854318403eaefbedb3"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next450_get_follow_hand_level_exact_v2; one expected userspace-egress finding is documented; hardware behavior remains deferred."
+      "attestation": "OFFLINE_EXACT em attestation/next061_get_follow_hand_level_exact_v4/exact_revalidation_20260830; um achado userspace-egress de alta severidade permanece para revisao de runtime."
     },
     {
       "id": "062_set_follow_hand_level",
