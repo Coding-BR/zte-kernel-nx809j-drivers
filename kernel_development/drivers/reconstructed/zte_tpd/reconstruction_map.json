@@ -2233,19 +2233,22 @@
         "mapping_note": "Function-level offline parity is promoted after correcting the reconstructed C callback offset from 0xe18 to stock 0xfd0. Stock and candidate contain 52 AArch64 instructions and 208-byte ELF symbols; opcode sequence, section, symbol size, call targets and normalized relocations match. KCFI type 0xc3d43b4d matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed four cases in two Docker cycles. Android runtime and NX809J hardware behavior remain unverified."
     },
     {
-      "evidence": [
-        "source:get_screen_off_awake.c:sha256:3009bf043085fe3b8900f313c6c40347806729965d2a9330a717b24a75e615c5",
-        "ghidra-pseudocode:decompiled/0080_0010d240_get_screen_off_awake.c:sha256:7ec10473d6f4758efdb383819d6be227e9e8fd06f6c60207cc73745e77054133",
-        "ghidra-pcode:pcode/0080_0010d240_get_screen_off_awake.jsonl:sha256:a2bd8dc3cd12d8cc4200817133cd23290ab37e809d5fff33394de5dbef9e840f",
-        "stock-assembly:get_screen_off_awake.asm:sha256:e4eeaa559e2205b0f0af0527496f9b8a2f005c120aa13c95664b5c00fdb353c4",
-        "candidate-assembly:get_screen_off_awake.asm:sha256:2b7decce62de1b9cc9a3b22cbc16f687a8446a9499116d1d32cc5cde0445144f",
-        "aarch64-comparison:attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/aarch64_comparison.json:sha256:e314d8f604c9c276aa841e2fdd9b0837bc8b00822fcc40802d121bbe36ee553d",
-        "kcfi-comparison:attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json:sha256:24641213a644c55ec1fba336825a707ea7a05d7580b37de94838e346ee6b275c",
-        "source-test:attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json:sha256:c6606dfbad523741baac262ed43d46a3ceecc31d7c18e05fb24644dcc8c82159",
-        "joern-summary:attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json:sha256:dffff0f503ad8b2dd9a1aa94de6bd48430358ec675db28f2b63878523a6c7615"
-      ],
-      "mapping_basis": "Ghidra pseudocode/P-Code/Assembly exact lift plus Joern, ASan/UBSan, reproducible Docker, KCFI type and AArch64 comparison evidence",
-      "review_scope": "offline_semantic_function_level",
+    "evidence": [
+      "source:get_screen_off_awake.c:sha256:3009bf043085fe3b8900f313c6c40347806729965d2a9330a717b24a75e615c5",
+      "ghidra-pseudocode:decompiled/0080_0010d240_get_screen_off_awake.c:sha256:7ec10473d6f4758efdb383819d6be227e9e8fd06f6c60207cc73745e77054133",
+      "ghidra-pcode:pcode/0080_0010d240_get_screen_off_awake.jsonl:sha256:a2bd8dc3cd12d8cc4200817133cd23290ab37e809d5fff33394de5dbef9e840f",
+      "stock-assembly:get_screen_off_awake.asm:sha256:e4eeaa559e2205b0f0af0527496f9b8a2f005c120aa13c95664b5c00fdb353c4",
+      "candidate-assembly:get_screen_off_awake.asm:sha256:2b7decce62de1b9cc9a3b22cbc16f687a8446a9499116d1d32cc5cde0445144f",
+      "aarch64-comparison:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:27015652a1d4d0da3121bfba03d261b3aaef3d743bf787fed125947a9a8caa52",
+      "canonical-build:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:2c68a508b8a0dcec9ae51e3d180cffe046fccfb4275ad29e6168eef666a7a0d1",
+      "kcfi-comparison:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:bb522f20e7c112e72eb07490df019237f2f47ca10b8dbb178385c3f5cbcba0e7",
+      "source-test:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:c6606dfbad523741baac262ed43d46a3ceecc31d7c18e05fb24644dcc8c82159",
+      "joern-summary:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:c74b0013318d048c672930a65bd302201f04f76207dd00ddfdc4779735a3a25d",
+      "microtask-attestation:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:51533413f6e5963497b7fe060cf1abc064b9295add4463483936b056b54bfd60",
+      "candidate-module:attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+    ],
+    "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 comparison, KCFI, strict Joern, reproducible Docker and ASan/UBSan evidence",
+    "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "get_screen_off_awake.c",
       "source_function": "get_screen_off_awake",

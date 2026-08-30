@@ -4028,47 +4028,52 @@
   ],
   "attestation": "OFFLINE_EXACT in attestation/next080_set_fake_sleep_exact_v4/exact_revalidation_20260830; hardware behavior remains deferred."
     },
-    {
-      "id": "081_get_screen_off_awake",
-      "stock_function": "get_screen_off_awake",
-      "stock_entry": "0010d240",
-      "stock_body_bytes": 240,
-      "category": "core_logic",
-      "source_file": "get_screen_off_awake.c",
-      "source_function": "get_screen_off_awake",
-      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0080_0010d240_get_screen_off_awake.c",
-      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0080_0010d240_get_screen_off_awake.jsonl",
-      "required_evidence": [
-        "compile",
-        "kcfi",
-        "joern",
-        "test"
-      ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_screen_off_awake\nEntrada Ghidra: 0010d240\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_screen_off_awake.c:get_screen_off_awake\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0080_0010d240_get_screen_off_awake.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0080_0010d240_get_screen_off_awake.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
-      "evidence": [
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "7c12830a254ebb8b62e18c0bdf3b90d3ca45adbbf1856f207732e25246240f90"
-        },
-        {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
-          "sha256": "24641213a644c55ec1fba336825a707ea7a05d7580b37de94838e346ee6b275c"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
-          "sha256": "c6606dfbad523741baac262ed43d46a3ceecc31d7c18e05fb24644dcc8c82159"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "dffff0f503ad8b2dd9a1aa94de6bd48430358ec675db28f2b63878523a6c7615"
-        }
-      ]
-    },
+  {
+    "id": "081_get_screen_off_awake",
+    "stock_function": "get_screen_off_awake",
+    "stock_entry": "0010d240",
+    "stock_body_bytes": 240,
+    "category": "core_logic",
+    "source_file": "get_screen_off_awake.c",
+    "source_function": "get_screen_off_awake",
+    "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0080_0010d240_get_screen_off_awake.c",
+    "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0080_0010d240_get_screen_off_awake.jsonl",
+    "required_evidence": [
+      "compile",
+      "kcfi",
+      "joern",
+      "test"
+    ],
+    "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_screen_off_awake\nEntrada Ghidra: 0010d240\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_screen_off_awake.c:get_screen_off_awake\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0080_0010d240_get_screen_off_awake.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0080_0010d240_get_screen_off_awake.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+    "status": "PROMOTED_OFFLINE_EXACT",
+    "evidence": [
+      {
+        "role": "compile",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+        "sha256": "2c68a508b8a0dcec9ae51e3d180cffe046fccfb4275ad29e6168eef666a7a0d1"
+      },
+      {
+        "role": "kcfi",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
+        "sha256": "bb522f20e7c112e72eb07490df019237f2f47ca10b8dbb178385c3f5cbcba0e7"
+      },
+      {
+        "role": "test",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+        "sha256": "c6606dfbad523741baac262ed43d46a3ceecc31d7c18e05fb24644dcc8c82159"
+      },
+      {
+        "role": "joern",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+        "sha256": "c74b0013318d048c672930a65bd302201f04f76207dd00ddfdc4779735a3a25d"
+      },
+      {
+        "role": "attestation",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next081_get_screen_off_awake_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+        "sha256": "51533413f6e5963497b7fe060cf1abc064b9295add4463483936b056b54bfd60"
+      }
+    ]
+  },
     {
       "id": "082_set_screen_off_awake",
       "stock_function": "set_screen_off_awake",
