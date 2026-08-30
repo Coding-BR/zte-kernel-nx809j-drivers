@@ -3261,7 +3261,7 @@
       "stock_entry": "0010c23c",
       "stock_body_bytes": 196,
       "category": "core_logic",
-      "source_file": "set_stability_level_exact.S",
+      "source_file": "set_stability_level.c",
       "source_function": "set_stability_level",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0063_0010c23c_set_stability_level.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0063_0010c23c_set_stability_level.jsonl",
@@ -3272,30 +3272,40 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: set_stability_level\nEntrada Ghidra: 0010c23c\nTamanho stock: 196 bytes\nCategoria: core_logic\nAlvo no fonte: set_stability_level.c:set_stability_level\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0063_0010c23c_set_stability_level.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0063_0010c23c_set_stability_level.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "63500a48b077188640eee233007de22e94ea91461386c354473bf86b5ebcc527"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "524cc48d2cb5a2f11cd1380f979f316597d8a03fec2cd06eec9d9d793f1bce6f"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
-          "sha256": "2216cd990aab91ba6b3f9a04c875f55df7f4f41038a519aebd4303c6e59b6e56"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "21085d4705358e8024767a0895152118b3a96c1ef27891517623129b0bf97e5d"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
-          "sha256": "83c9b39d0d2913ddaf9518a2d68e21432c7c22c44404005f5a2555cf202dbf21"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "d415d2b8f225842c3c6122b033d1918db5cc528b3ba0b582714cd08ea47ca1a7"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "749173d67180038ba1326ab0ce82b0f50fd79953f1e33436597ced492707f24a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "38e811c3fea2635580a45dbbababbd002945fd45833f51ea249ba0850f53b292"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "ecaea317c3122ad4bd8c2d9c88ed3dfc78475be7637001ffc585802d08a7b7e8"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "91fc9863ede44eafecc070b4ac1e11c5d25c764f3e4f418a2f6c24d2ce00de31"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next064_set_stability_level_exact_v1; hardware behavior remains deferred."
+      "attestation": "OFFLINE_EXACT em attestation/next064_set_stability_level_exact_v4/exact_revalidation_20260830; sem achados Joern adicionais, e o comportamento de hardware permanece para validacao de runtime."
     },
     {
       "id": "065_tp_sensibility_level_read",
