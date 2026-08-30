@@ -964,20 +964,28 @@
         "source:tpfwupgrade_store.c:sha256:374e577e2e6263de67165bb61e574c5a6c458fff4dcfcf2069ed7e1c92a08b4f",
         "ghidra-pseudocode:decompiled/0034_00109f80_tpfwupgrade_store.c:sha256:e6e2975fc87e722a2e35472928b7e307c8a8b45ad0916fdc968a97836144efad",
         "ghidra-pcode:pcode/0034_00109f80_tpfwupgrade_store.jsonl:sha256:8668778865ad727a6575dd38d8ad7526dd7ad862771bf87c73f0b13ae2bd1548",
-        "stock-assembly:0034_tpfwupgrade_store_00109f80.asm:sha256:34f67170afd6d51847b74dc29f8afe188afd82d911ee6ac6cf0127f9ab2215c5",
-        "attestation:next035_tpfwupgrade_store_exact_v1/exact_revalidation_20260829/microtask_attestation.json",
-        "attestation:next035_tpfwupgrade_store_exact_v1/exact_revalidation_20260829/aarch64_comparison.json"
+        "stock-assembly:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/stock_assembly/0000_tpfwupgrade_store.asm:sha256:34f67170afd6d51847b74dc29f8afe188afd82d911ee6ac6cf0127f9ab2215c5",
+        "candidate-assembly:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_tpfwupgrade_store.asm:sha256:8630063ee33d40158817a76187eee3554fdc1649574d5e2935be6b3dd7056698",
+        "assembly-compare:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:438083a8716d854977961c8a7722bf84243430a9bab98b68e32377eb323cf770",
+        "aarch64-validation:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:438083a8716d854977961c8a7722bf84243430a9bab98b68e32377eb323cf770",
+        "kcfi-compare:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:abba310d0643eaa07a6774b92682def6c0bbdc23f894ec570183b5ebb85ace66",
+        "canonical-build:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:adb10f272bf26b8ebefab37065fa5d1717604bfc531d162c62f4038a11f8eb94",
+        "host-harness:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:57a6bfc37a60ad7a0845c1b093662cb62222a673c1076e2d93c4577cbd9e1915",
+        "joern:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:36b24f11a0a3c5317d2c5dd24416ca6ce043b1de28c5143f5073616d9fa733b2",
+        "candidate-module:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "candidate-source:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:374e577e2e6263de67165bb61e574c5a6c458fff4dcfcf2069ed7e1c92a08b4f",
+        "attestation:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:3beb3d69885d31b5a34352e3798972cdf0bd0ce60fe113a84461c37a35409aef"
       ],
-      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
-      "review_scope": "offline_semantic_function_level",
+      "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
+      "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tpfwupgrade_store.c",
       "source_function": "tpfwupgrade_store",
-      "status": "promoted_offline_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 560,
       "stock_entry": "00109f80",
       "stock_function": "tpfwupgrade_store",
-      "mapping_note": "Promoted to offline exact: candidate and stock both contain 140 instructions and a 560-byte .text body; raw instructions and normalized relocations match, function KCFI type 0xc3d43b4d matches, and the firmware callback at tpd_cdev + 0xe18 has type 0x4d7650a4. The historical Ghidra inventory reports 468 bytes, while the canonical ELF symbol and gate body are 560 bytes. Strict Joern, reproducible two-cycle Docker build and five-case two-cycle ASan/UBSan host contract passed. Runtime procfs, concurrent lifetime, synchronization and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 140 AArch64 instructions and 560-byte .text size, normalized relocation roles, section and KCFI type ID 0xc3d43b4d/size. The C reconstruction preserves the threshold at 0xb, mutex at tpd_cdev + 0xc60, firmware pointer at +0xc58, state reset at +0x448, callback at +0xe18, cleanup order, zeroing length and ENOMEM paths. Strict Joern is parse-clean with one-to-one identity, 122 calls, 13 control structures and zero unresolved calls; 3 high-severity lifetime and 2 high-severity synchronization findings remain for runtime review. ASan/UBSan host coverage exercises five direct cases. Procfs/userspace, concurrent runtime lifetime and NX809J behavior remain unverified."
     },
     {
       "evidence": [
