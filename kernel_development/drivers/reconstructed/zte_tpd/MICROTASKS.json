@@ -2809,30 +2809,40 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_one_key\nEntrada Ghidra: 0010ba4c\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_one_key.c:get_one_key\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0054_0010ba4c_get_one_key.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0054_0010ba4c_get_one_key.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "4be6b4a80ace93c4bf4d8bad9929aff4ef7a28ceb2eed49b4925263d3a2e86ef"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "9edbd67a770643661e44c7c60ac062c608e5b65f182225a4e4bfa396e1854d6e"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
-          "sha256": "6904e14a58e4fbabedfa3176b108917df5851950f2fd79a8e1dc84fb2628964c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "4e61168e07472e26815489c07852697ac17b811563bf8f8777dc29c13f0a844e"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
-          "sha256": "574622f02dd66663479e31d46ddba425e4e962a4e57867fafcefb4c11a19b683"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "7c2b9139e8800216e240d93ed2911fa915e6dc9b489e9b4f1087c3baa8a6eb01"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "fe2e160c7c4733fcb31e29d1dcb6cff9b092784dbb38c039218dbf4f7ac0783a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "54430267ab0ef67bbd092503146abf1e59364cf44ffa5f620c0c2ec64fa89acd"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "f7ef88df58ce468349615dd15f1986fdaa0799e82ce3753d65823b9150a1d5b0"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "ac5c248d6c6b055487b72ac5aff77d0ef022cd76a15398147c42835949d779d8"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next055_get_one_key_exact_v1; one documented userspace-egress Joern finding remains a review observation, and hardware behavior is deferred."
+      "attestation": "OFFLINE_EXACT em attestation/next055_get_one_key_exact_v4/exact_revalidation_20260830; um achado userspace-egress de alta severidade permanece para revisao de runtime."
     },
     {
       "id": "056_set_one_key",
