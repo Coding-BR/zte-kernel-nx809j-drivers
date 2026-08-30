@@ -2102,20 +2102,23 @@
       "stock_function": "tp_palm_mode_read",
         "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 60 AArch64 instructions and 240-byte ELF symbols; opcode sequence, section, symbol size, call targets, exact strings and normalized relocations match. KCFI type 0xf4e9d97c matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed three cases in two Docker cycles. One expected userspace-egress finding is documented. Android runtime and NX809J hardware behavior remain unverified."
     },
-    {
-      "evidence": [
-        "source:tp_palm_mode_write.c:sha256:aeb192ff05b16dc5eeab194e5d31f79798653275998d8c78e3633d7c85fdbc8e",
-        "ghidra-pseudocode:decompiled/0075_0010cddc_tp_palm_mode_write.c:sha256:264f12b02c064713c10e1a01eb90eb14a69d80f84c452439d5ab9bbeb2e16394",
-        "ghidra-pcode:pcode/0075_0010cddc_tp_palm_mode_write.jsonl:sha256:67209391330ec6161895c64459c07bb25ed43a45db605a22665b43b1cddea5d3",
-        "stock-assembly:tp_palm_mode_write.asm:sha256:12b9dbe9f22fb19241016553018f8280e12b2f6804368fbc3bc27e1d8bd36e44",
-        "candidate-assembly:tp_palm_mode_write.asm:sha256:e30a9b530b9060f1abb6b47ff3d73041fa358d604f5e29bc6e09ed5c4ffc72ff",
-        "aarch64-comparison:attestation/next076_tp_palm_mode_write_exact_v1/exact_revalidation_20260829/aarch64_comparison.json:sha256:5beb89c3d8a083effaf8c13f1710dfdf0a29855e144d3a7dc830ce974b93f160",
-        "kcfi-comparison:attestation/next076_tp_palm_mode_write_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json:sha256:b09bbeca50a627e71bf1803403621581bf2488f2e0d3f4c5ab8fd0e0152f1b3b",
-        "source-test:attestation/next076_tp_palm_mode_write_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json:sha256:0d74da7228cd2bac2f97207bc1ea53ab17a727fc3e83c5ebfd5b60b3c1b16a10",
-        "joern-summary:attestation/next076_tp_palm_mode_write_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json:sha256:37b399a423e50018cede6800ce4ebc4150d302f7aa967e41f2670ed95112af7c"
-      ],
-      "mapping_basis": "exact filename and function-token match plus AArch64 opcode, relocation and KCFI parity",
-      "review_scope": "offline_semantic_function_level",
+      {
+        "evidence": [
+          "source:tp_palm_mode_write.c:sha256:aeb192ff05b16dc5eeab194e5d31f79798653275998d8c78e3633d7c85fdbc8e",
+          "ghidra-pseudocode:decompiled/0075_0010cddc_tp_palm_mode_write.c:sha256:264f12b02c064713c10e1a01eb90eb14a69d80f84c452439d5ab9bbeb2e16394",
+          "ghidra-pcode:pcode/0075_0010cddc_tp_palm_mode_write.jsonl:sha256:67209391330ec6161895c64459c07bb25ed43a45db605a22665b43b1cddea5d3",
+          "stock-assembly:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/stock_assembly/0000_tp_palm_mode_write.asm:sha256:12b9dbe9f22fb19241016553018f8280e12b2f6804368fbc3bc27e1d8bd36e44",
+          "candidate-assembly:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_tp_palm_mode_write.asm:sha256:e30a9b530b9060f1abb6b47ff3d73041fa358d604f5e29bc6e09ed5c4ffc72ff",
+          "aarch64-comparison:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:eb3286dcf202a1323b791809931f72127e885075958ce1da00e27f53a73646dd",
+          "canonical-build:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:8281475ef919a4f7ff42a33d664fc511755a8b7db236395d907b9aa099659d6f",
+          "kcfi-comparison:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:068f1cd1d105ce7be292fdd0d704097a1a0b2cf50c0198b3835ce797f3ed901d",
+          "source-test:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:0d74da7228cd2bac2f97207bc1ea53ab17a727fc3e83c5ebfd5b60b3c1b16a10",
+          "joern-summary:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:72dcdec22698cd6f9759c097b540df83fa77b4963472421d531fc194891fcbd2",
+          "microtask-attestation:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:bbdb5a277b5695c8a4936d9d37f8002c794398a329528595c6b94add3b046e4d",
+          "candidate-module:attestation/next076_tp_palm_mode_write_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        ],
+        "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
+        "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_palm_mode_write.c",
       "source_function": "tp_palm_mode_write",
@@ -2123,7 +2126,7 @@
       "stock_body_bytes": 208,
       "stock_entry": "0010cddc",
       "stock_function": "tp_palm_mode_write",
-      "mapping_note": "Offline exact: 52 AArch64 instructions/208 bytes, normalized relocations and exact stock strings, KCFI type 0xc3d43b4d, strict Joern, two-cycle canonical Docker build and ASan/UBSan source harness pass. Hardware remains DEFERRED."
+        "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 52 AArch64 instructions and 208-byte ELF symbols; opcode sequence, section, symbol size, call targets, exact strings and normalized relocations match. KCFI type 0xc3d43b4d matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed three cases in two Docker cycles. Android runtime and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
