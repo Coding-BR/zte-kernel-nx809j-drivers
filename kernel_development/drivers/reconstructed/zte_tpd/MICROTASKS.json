@@ -1397,27 +1397,37 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_shutdown\nEntrada Ghidra: 001096a0\nTamanho stock: 224 bytes\nCategoria: core_logic\nAlvo no fonte: zte_touch_shutdown.c:zte_touch_shutdown\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0026_001096a0_zte_touch_shutdown.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0026_001096a0_zte_touch_shutdown.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_zte_touch_shutdown_current_v1/canonical_build_report.json",
-          "sha256": "37fbf9fc2968985796366f4d2630ef54c836636516fd5150e1f1535e07f05699"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "f27f70101dfcd6cb81641f498ac03f11f4ef64f5a79ec8fd380406d991d572c6"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_zte_touch_shutdown_current_v1/kcfi_comparison.json",
-          "sha256": "ee0917d4507f8c4af2823558a7b58625cfd357c464738ed6076a0b0775fbd237"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "4121d2a7e6f2cbffaa18f6049013a8edf8633e02b069e7d3477383ae5b9ecee5"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_zte_touch_shutdown_current_v1/host_harness_report.json",
-          "sha256": "03aa627fae22ce63cf779d4c4edc957761b75944d959476163303b4ddd0da1c0"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "30dbcfc201c554e513bc3052c25ebd9a16df58e2ef086726485c83291d8486d7"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_zte_touch_shutdown_current_v1/joern_gate_summary.json",
-          "sha256": "ed2ccf2c31575aac61df891164e06f134bb06b61ebca18d66f6b072cab598a0d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "ba552808d352b85ebea959dbfa4c9a0e2e29ed29ff21c18548a9ffd67422fb9f"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "0dbbd8ffe0fd6a97a0a40f4ddfa5a9755b1e484aa15667685037ab416237de5c"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "c87da9ed87ff139f3551eaa6fab978e97748addd0651d7f6ce55d62414e91814"
         }
       ]
     },

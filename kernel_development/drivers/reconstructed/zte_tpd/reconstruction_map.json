@@ -739,19 +739,28 @@
         "source:zte_touch_shutdown.c:sha256:a9539fc60293fbe8b44d421b19d9214cdb6d55767cc3ffe7a341eb63c0735653",
         "ghidra-pseudocode:decompiled/0026_001096a0_zte_touch_shutdown.c:sha256:b6e1ebcca2a3b71654faeec1eafaac3061d762cfc6b3902bc549b7bc80b7f14a",
         "ghidra-pcode:pcode/0026_001096a0_zte_touch_shutdown.jsonl:sha256:74bb1263ec137431ab14ae25071d3fa40109b85127b8f3a7e28853043fcbbfaf",
-        "stock-assembly:0026_zte_touch_shutdown_001096a0.asm:sha256:d3db62780a620a6c2be8a9662dba6dfcb8d0aba8849c77bb56e5647a18f13314",
-        "attestation:next389_zte_touch_shutdown_v1/microtask_attestation.json:status:OFFLINE_SEMANTIC_PARITY"
+        "stock-assembly:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/stock_assembly/0000_zte_touch_shutdown.asm:sha256:d3db62780a620a6c2be8a9662dba6dfcb8d0aba8849c77bb56e5647a18f13314",
+        "candidate-assembly:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_zte_touch_shutdown.asm:sha256:6e7f1973e5733fb933c88b7085e046facb537fe92e7aaf488f93a624919bc793",
+        "assembly-compare:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:0dbbd8ffe0fd6a97a0a40f4ddfa5a9755b1e484aa15667685037ab416237de5c",
+        "aarch64-validation:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:0dbbd8ffe0fd6a97a0a40f4ddfa5a9755b1e484aa15667685037ab416237de5c",
+        "kcfi-compare:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:4121d2a7e6f2cbffaa18f6049013a8edf8633e02b069e7d3477383ae5b9ecee5",
+        "canonical-build:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:f27f70101dfcd6cb81641f498ac03f11f4ef64f5a79ec8fd380406d991d572c6",
+        "host-harness:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:30dbcfc201c554e513bc3052c25ebd9a16df58e2ef086726485c83291d8486d7",
+        "joern:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:ba552808d352b85ebea959dbfa4c9a0e2e29ed29ff21c18548a9ffd67422fb9f",
+        "candidate-module:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "attestation:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:c87da9ed87ff139f3551eaa6fab978e97748addd0651d7f6ce55d62414e91814",
+        "candidate-source:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:a9539fc60293fbe8b44d421b19d9214cdb6d55767cc3ffe7a341eb63c0735653"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code plus exact AArch64 instruction count/size/call order, KCFI, Joern, Docker build and ASan/UBSan host evidence",
-      "review_scope": "offline_semantic_function_level",
-      "semantic_equivalence": "OFFLINE_SEMANTIC",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus Docker canonical two-cycle build, exact AArch64 instruction count/size/call order, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "zte_touch_shutdown.c",
       "source_function": "zte_touch_shutdown",
-      "status": "reviewed_semantic",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 224,
       "stock_entry": "001096a0",
       "stock_function": "zte_touch_shutdown",
-      "mapping_note": "Offline semantic parity is attested: 56 AArch64 instructions and 224-byte .text body match, KCFI type/size match, and the callback, workqueue teardown, vfree and delayed-work cancellation order matches the stock function. Raw relocation offsets differ only because the candidate module has a different local .rodata layout. Joern has no blockers or unresolved calls but reports three synchronization findings for cancel_delayed_work_sync; platform-bus teardown and NX809J runtime behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: 56 AArch64 instructions and 224-byte .text body match, KCFI type ID 0x24a11bb9/size match, and the callback, workqueue teardown, vfree and delayed-work cancellation order matches the stock function. Raw relocation offsets differ only because the candidate module has a different local .rodata layout. Strict Joern is parse-clean with one-to-one identity, 32 calls, one control structure and zero unresolved calls, while retaining three high-severity synchronization findings for runtime follow-up; platform-bus teardown and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
