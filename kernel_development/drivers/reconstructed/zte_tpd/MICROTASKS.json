@@ -3634,7 +3634,7 @@
       "attestation": "OFFLINE_EXACT em attestation/next071_get_finger_lock_flag_exact_v4/exact_revalidation_20260830; uma observacao Joern userspace-egress permanece documentada para revisao, e o comportamento de hardware permanece para validacao de runtime."
     },
     {
-      "id": "072_set_finger_lock_flag",
+  "id": "072_set_finger_lock_flag",
       "stock_function": "set_finger_lock_flag",
       "stock_entry": "0010ca00",
       "stock_body_bytes": 228,
@@ -3649,30 +3649,30 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: set_finger_lock_flag\nEntrada Ghidra: 0010ca00\nTamanho stock: 228 bytes\nCategoria: core_logic\nAlvo no fonte: set_finger_lock_flag.c:set_finger_lock_flag\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0071_0010ca00_set_finger_lock_flag.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0071_0010ca00_set_finger_lock_flag.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
-      "evidence": [
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "2b1300fa8c7bd3132fd029822985dd4a9d22a8b2f940868e07dc546eef0e4693"
-        },
-        {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
-          "sha256": "8a87373d6ece1c100c37313d6324a0b3111bc702a3d31b1b86be30e64d504808"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
-          "sha256": "53a537eb8192b0af4745318e3cdf97d093f4fc4186051d3900d8bb84c10b1e51"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "3e0831f3e469df930e9f7d3eb8e60f799252f79f65555da4005a09920132da29"
-        }
-      ],
-      "attestation": "OFFLINE_EXACT in attestation/next437_set_finger_lock_flag_exact_v2; hardware behavior remains deferred."
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "evidence": [
+    {
+      "role": "compile",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+      "sha256": "a862ee841d947f10753f06fcdc1de02d2d71535e99c27ed10096cd6a043091dc"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
+      "sha256": "6eb632709e9c06785bc67e1c8e79e2ba0976d93c8db79b887b1e95aec6dd9851"
+    },
+    {
+      "role": "test",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+      "sha256": "53a537eb8192b0af4745318e3cdf97d093f4fc4186051d3900d8bb84c10b1e51"
+    },
+    {
+      "role": "joern",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next072_set_finger_lock_flag_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+      "sha256": "5656749561e93c34e6700548a354f9170f8b31ae3f99181022ccaf1100615dfd"
+    }
+  ],
+  "attestation": "OFFLINE_EXACT in attestation/next072_set_finger_lock_flag_exact_v4/exact_revalidation_20260830; hardware behavior remains deferred."
     },
     {
       "id": "073_tp_self_test_read",
