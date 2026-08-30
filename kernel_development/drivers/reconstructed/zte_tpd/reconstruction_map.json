@@ -1953,27 +1953,19 @@
   "mapping_note": "Offline exact promotion: C-only candidate has no separate exact.S; its inline AArch64/KCFI sequence matches 60 stock instructions and 240 bytes with relocation parity and KCFI type 0xf4e9d97c; Docker canonical build and direct 4-case ASan/UBSan harness are reproducible; Joern reports 31 calls, 3 controls, 0 unresolved calls and one userspace-egress observation retained for review; hardware runtime remains deferred."
     },
     {
-      "evidence": [
-        "source:tp_pen_only_write.c:sha256:054fa1a15957117b27069098cf485fda929f3349ec11b86e8e5a2a8d582f442a",
-        "ghidra-pseudocode:decompiled/0069_0010c818_tp_pen_only_write.c:sha256:19e153ba40c85923aa74d0a487c889d06aca8629b9a0fd0f4cae2ee842ce1ef9",
-        "ghidra-pcode:pcode/0069_0010c818_tp_pen_only_write.jsonl:sha256:6ab3895c02f93afd7910b7b86b54db298b54311fc43b7626c5483218a0c1dbe1",
-        "stock-assembly:tp_pen_only_write.asm:sha256:4411000d3861b716f1aa3fe27ead43426c12b905d46ef6425657fb98e118bdbc",
-        "candidate-assembly:tp_pen_only_write.asm:sha256:2966250647560187e6f17f2f93b89c72791c5b29c28fe72952f61d14b87cd467",
-        "aarch64-comparison:",
-        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next070_tp_pen_only_write_exact_v1/exact_revalidation_20260829",
-        "/aarch64_comparison.json:sha256:fa4351ca8af00d1f1819e4867411e2a5c11e5eec6fc7bfc22b909556f7e81713",
-        "kcfi-comparison:",
-        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next070_tp_pen_only_write_exact_v1/exact_revalidation_20260829",
-        "/kcfi/kcfi_comparison.json:sha256:4a7bbf18fea142464432ea3734bddd82bc157f6dee80bcbd37167fa22eb1cc87",
-        "source-test:",
-        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next070_tp_pen_only_write_exact_v1/exact_revalidation_20260829",
-        "/host_harness_docker_report.json:sha256:a96463f205e370d6c949fbb5c6356c2f9ba69f718ba12e4988630705a82ae0c3",
-        "joern-summary:",
-        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next070_tp_pen_only_write_exact_v1/exact_revalidation_20260829",
-        "/joern/joern_gate_summary.json:sha256:8e5d96f73c5e8958c687b9431a9e6f18a916bdfee73b171475d059bcf3d9228f"
-      ],
-      "mapping_basis": "exact filename and function-token match plus AArch64 opcode and relocation parity",
-      "review_scope": "offline_semantic_function_level",
+    "evidence": [
+    "source:tp_pen_only_write.c:sha256:054fa1a15957117b27069098cf485fda929f3349ec11b86e8e5a2a8d582f442a",
+    "ghidra-pseudocode:decompiled/0069_0010c818_tp_pen_only_write.c:sha256:19e153ba40c85923aa74d0a487c889d06aca8629b9a0fd0f4cae2ee842ce1ef9",
+    "ghidra-pcode:pcode/0069_0010c818_tp_pen_only_write.jsonl:sha256:6ab3895c02f93afd7910b7b86b54db298b54311fc43b7626c5483218a0c1dbe1",
+    "stock-assembly:attestation/next070_tp_pen_only_write_exact_v4/exact_revalidation_20260830/stock_assembly/0000_tp_pen_only_write.asm:sha256:4411000d3861b716f1aa3fe27ead43426c12b905d46ef6425657fb98e118bdbc",
+    "candidate-assembly:attestation/next070_tp_pen_only_write_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_tp_pen_only_write.asm:sha256:2966250647560187e6f17f2f93b89c72791c5b29c28fe72952f61d14b87cd467",
+    "aarch64-comparison:attestation/next070_tp_pen_only_write_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:14434d874ecae5626342d4c9ab53071217c233f4c499b6ff8cfd25544a220903",
+    "kcfi-comparison:attestation/next070_tp_pen_only_write_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:0a07e17caa51598b6745073043aed1634a2db468c9d21d423153cb44d43ac16b",
+    "source-test:attestation/next070_tp_pen_only_write_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:26d55dcc3bd63ea1966dde39f3507cd876fd077b60686156f758c525f0bd9117",
+    "joern-summary:attestation/next070_tp_pen_only_write_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:04ab263118bc41fa4f2cfc5b0b9cfcba5811996572619fe31acd791d9f18d9f3"
+  ],
+      "mapping_basis": "Ghidra pseudocode/P-Code plus Docker canonical build, stock AArch64 opcode/relocation parity, KCFI, Joern and ASan/UBSan evidence",
+      "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "tp_pen_only_write.c",
       "source_function": "tp_pen_only_write",
@@ -1981,7 +1973,7 @@
       "stock_body_bytes": 272,
       "stock_entry": "0010c818",
       "stock_function": "tp_pen_only_write",
-      "mapping_note": "Offline exact: 68 AArch64 instructions/272 bytes, normalized relocations and exact stock strings, KCFI type 0xc3d43b4d, strict Joern, two-cycle canonical Docker build and ASan/UBSan source harness pass. Hardware remains DEFERRED."
+  "mapping_note": "Offline exact promotion: candidate matches 68 stock instructions and 272 bytes, .text section, relocation classes and KCFI type 0xc3d43b4d; Docker canonical build and direct 5-case ASan/UBSan harness are reproducible; Joern reports 54 calls, 6 controls, 0 unresolved calls and one userspace-ingress observation retained for review; hardware runtime remains deferred."
     },
     {
       "evidence": [
