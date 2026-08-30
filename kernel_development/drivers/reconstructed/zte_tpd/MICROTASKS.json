@@ -1293,35 +1293,40 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_probe\nEntrada Ghidra: 001087e4\nTamanho stock: 3712 bytes\nCategoria: binding\nAlvo no fonte: zte_touch_probe.c:zte_touch_probe\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0024_001087e4_zte_touch_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0024_001087e4_zte_touch_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next387_zte_touch_probe_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "8e2e8676cc2a18294ebdca75720e620f8ec82e37be7054dd1fad1abb8731fbe8"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "a13bc3ee148e075f8ffb3f9c36db329f803d1e0dbcffe0c3bbbe2d8780454af9"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next387_zte_touch_probe_exact_v3/exact_revalidation_20260829/kcfi_comparison.json",
-          "sha256": "b20ae71f391ebf6010b4658dd8e6aea9c5a364d85929fc4289b5b38592e47438"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "bfc50b4f126d7f30183656af683af7a48678c6d68b101ca189a7546bba05b5d9"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next387_zte_touch_probe_exact_v3/exact_revalidation_20260829/host_harness_report.json",
-          "sha256": "be3e3a51ddb27a6709d1a14ff692e814fc9d31f67e076279c66ee029d8034c8b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "4eb0e2d385a658242d99dd25bb7a4c5d1422c0ebc2f862cac31f04d5121af808"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next387_zte_touch_probe_exact_v3/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "5ba039f5a16dd791df3719aa85864612dfcbb5676cc80c3cbdcfe3a5021c1811"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "62100294c80f7c61512199a11920b40a6e7fb9161f735be969c0d341509aac7e"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next387_zte_touch_probe_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
-          "sha256": "0582e474f651aaa1fc84fcc83a0ceafaa2ad5b5c24c1fea495ed0cdbb80cb408"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "77b2df6551c4eca328ac038d6139f3d6ecd8367e723ecfb5dbe7d0e0f7f6e613"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "506dfbb79fb9c7a7282282a7a2d03d8a9a3bd288c678a9c1053dd9ca4b02ed6a"
         }
       ],
-      "attestation": "PASS in attestation/next387_zte_touch_probe_exact_v3/exact_revalidation_20260829; the 928-instruction opcode/control-flow sequence, symbol size, KCFI, normalized dataflow and normalized relocation roles match. Raw module-local relocation identities and physical hardware behavior remain unverified."
+      "attestation": "OFFLINE_EXACT in attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830; the 928-instruction opcode/control-flow sequence, 3712-byte symbol size, KCFI, normalized dataflow and normalized relocation roles match. Joern reports one high-severity lifetime finding and two high-severity synchronization findings for runtime follow-up; platform and hardware behavior remain unverified."
     },
     {
       "id": "026_zte_touch_remove",
