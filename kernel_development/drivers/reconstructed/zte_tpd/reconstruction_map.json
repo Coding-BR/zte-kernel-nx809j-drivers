@@ -1161,21 +1161,29 @@
         "source:set_rotation_limit_level.c:sha256:e1f51342884501031cd7a0c0a8eedadf3a5748369f7b927f3a25d26ef116910e",
         "ghidra-pseudocode:decompiled/0041_0010a7b4_set_rotation_limit_level.c:sha256:2cdbc712af7540212a40f0941705634dfd0e3df987d51e667e04650c706ee659",
         "ghidra-pcode:pcode/0041_0010a7b4_set_rotation_limit_level.jsonl:sha256:b46424d8cddbfdf52c469e5c1479b6d8a5ff9a03eedf3c7528513c0dcf09cd15",
-        "stock-assembly:0041_set_rotation_limit_level_0010a7b4.asm:sha256:3ec17fc5047b9858a7d4959ae019e6f0f41fb6b69b3fc6c4de75698f469a1273",
-        "attestation:next042_set_rotation_limit_level_exact_v1/exact_revalidation_20260829/microtask_attestation.json",
-        "attestation:next042_set_rotation_limit_level_exact_v1/exact_revalidation_20260829/aarch64_comparison.json"
+        "stock-assembly:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/stock_assembly/0000_set_rotation_limit_level.asm:sha256:5a3e4efa9dda2989339bde9585c7db8b2b59f95cbc6f98b30f4a3eea534f16b7",
+        "candidate-assembly:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_set_rotation_limit_level.asm:sha256:77923ce0a7539cc17a4fdf499be93df9bb3b734121356191e3f543c9d2059c13",
+        "assembly-compare:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:013a798ab12b2f82eeed4214b3b62df2758ec35ca30b6bceffe9d08aa55e0c6a",
+        "aarch64-validation:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:013a798ab12b2f82eeed4214b3b62df2758ec35ca30b6bceffe9d08aa55e0c6a",
+        "kcfi-compare:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:aaf96fc182bc4f86a26aae4fc28f030f7c4baf00de7de4fe7cb983c57c86ec90",
+        "canonical-build:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:91d77af55587bd7c6b12d7abf7c770e8e24ba7d1d15a47cfede4a12679b0e148",
+        "host-harness:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:d8d59e4b63497f2b64e8b3d7cd33d18f78abd24292b7fe4a22deb3dee4a9968f",
+        "joern:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:5c24954d50ed899fd3f148d07e1cd0fc83527fad5f52b0e58da7c7fad2e93196",
+        "candidate-module:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "candidate-source:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:e1f51342884501031cd7a0c0a8eedadf3a5748369f7b927f3a25d26ef116910e",
+        "attestation:attestation/next042_set_rotation_limit_level_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:395404ee15c256ca714fead6dfeac414ac20a478c09a9b83d20caafe746c86cd"
       ],
-      "mapping_basis": "Ghidra P-Code, normalized AArch64, KCFI, Joern, Docker build, and ASan/UBSan host contract",
-      "review_scope": "offline_semantic_function_level",
+      "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
+      "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "set_rotation_limit_level.c",
       "source_function": "set_rotation_limit_level",
-      "status": "promoted_offline_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 196,
       "stock_entry": "0010a7b4",
       "stock_function": "set_rotation_limit_level",
       "promotion_note": "Offline exact: 49 instructions and 196 bytes match byte-for-byte; KCFI 0xc3d43b4d, callback 0x6af8b499 at tpd_cdev + 0xe80, base-10 parse, -EINVAL and count-return contracts are preserved. Joern, two-cycle Docker build and three-case two-cycle ASan/UBSan pass. Local .rodata link offsets are normalized; runtime remains unverified.",
-      "mapping_note": "Promoted to offline exact: candidate and stock match at 49 instructions and 196 bytes, with raw instruction sequence and normalized relocations aligned. Function KCFI type 0xc3d43b4d and callback type 0x6af8b499 at tpd_cdev + 0xe80 match. Strict Joern, reproducible two-cycle Docker build and three-case two-cycle ASan/UBSan host contract passed. Runtime procfs, callback lifetime and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 49 AArch64 instructions and 196-byte .text size, normalized relocation roles and section. Function KCFI type 0xc3d43b4d and callback type 0x6af8b499 at tpd_cdev + 0xe80 match; base-10 parsing, -EINVAL and count-return behavior are preserved. Strict Joern is parse-clean with one-to-one identity, 23 calls, three control structures and zero unresolved calls. ASan/UBSan host coverage exercises three direct cases. Procfs integration, callback lifetime and NX809J runtime behavior remain unverified."
     },
     {
       "evidence": [
