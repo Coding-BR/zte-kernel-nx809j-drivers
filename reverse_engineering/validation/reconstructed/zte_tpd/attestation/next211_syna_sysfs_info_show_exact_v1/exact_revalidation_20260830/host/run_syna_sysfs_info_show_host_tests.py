@@ -13,7 +13,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[5]
 SOURCE = Path("kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_info_show_host_test.c")
 DRIVER = Path("kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_info_show.c")
-EXACT_SOURCE = Path("kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_info_show_exact.S")
 IMAGE = "nubia-sm8850-kernel-builder:latest"
 TOOLCHAIN = "nubia_sm8850_kernel_toolchains"
 CLANG = "/toolchains/clang-r536225/bin/clang"
@@ -32,7 +31,6 @@ def main() -> int:
     args.build_root.mkdir(parents=True, exist_ok=True)
     source = ROOT / SOURCE
     driver = ROOT / DRIVER
-    exact_source = ROOT / EXACT_SOURCE
     cycles = []
     for number in (1, 2):
         cycle = args.build_root / f"cycle{number}"
@@ -79,9 +77,7 @@ def main() -> int:
         "expected_cases": 8, "repetitions": 2, "cycles": cycles,
         "reproducible": reproducible, "reproducible_binary": reproducible,
         "passed": passed, "status": "PASS" if passed else "FAIL",
-        "driver_source": str(exact_source),
-        "driver_source_sha256": sha256(exact_source),
-        "inputs": [{"path": str(p), "size": p.stat().st_size, "sha256": sha256(p)} for p in (source, driver, exact_source)],
+        "inputs": [{"path": str(p), "size": p.stat().st_size, "sha256": sha256(p)} for p in (source, driver)],
         "limitations": [
             "The harness models kobject, tcm_dev and scnprintf while hardware and sysfs registration are stubbed.",
             "It covers disconnected, bare, connected firmware modes, metadata formatting and controlled formatter failures.",
