@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "task_id": "073_tp_self_test_read",
+  "driver": "zte_tpd",
+  "source_function": "tp_self_test_read",
+  "stock_function": "tp_self_test_read",
+  "stock_entry": "0010cae8",
+  "stock_body_bytes": 356,
+  "candidate_source": "tp_self_test_read.c (inline AArch64 assembly)",
+  "candidate_source_sha256": "88aab8e0df90933760df6d9fe7f82b1d7ef044392a09b04033d9ac090fd6173e",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "checks": {
+    "canonical_docker_build": true,
+    "aarch64_assembly_comparison": true,
+    "kcfi_comparison": true,
+    "direct_source_host_test": true,
+    "strict_joern_gate": true,
+    "microtask_attestation": true
+  },
+  "observations": {
+    "instruction_count": 89,
+    "body_bytes": 356,
+    "kcfi_type_id": "0xf4e9d97c",
+    "source_test_cases": 4,
+    "source_test_repetitions": 2,
+    "joern_review_finding": "allocation/cleanup and userspace-egress findings retained for review"
+  },
+  "limitations": [
+    "Offline static reconstruction only.",
+    "The host harness models fake allocation, device state and procfs helpers.",
+    "No Android runtime, physical hardware or insmod validation was available."
+  ]
+}
