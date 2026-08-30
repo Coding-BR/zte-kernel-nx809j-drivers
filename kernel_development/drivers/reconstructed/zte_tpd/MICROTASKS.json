@@ -9782,28 +9782,28 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_testing_pt0a_zte\nEntrada Ghidra: 0011b4c0\nTamanho stock: 800 bytes\nCategoria: core_logic\nAlvo no fonte: syna_testing_pt0a_zte.c:syna_testing_pt0a_zte\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0217_0011b4c0_syna_testing_pt0a_zte.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0217_0011b4c0_syna_testing_pt0a_zte.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
-      "evidence": [
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_hard_final_exact_v1_20260828.json",
-          "sha256": "eaaebe1ff85ab3d8a877e5c1d9b8af6425c7cab7ba94d139338902730f7bfe44"
-        },
-        {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_comparison_next47_pt0a.json",
-          "sha256": "6165aacdfeb371e1543d58abb05dc8673e9baaac2d1206131fb4849c0b338628"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/harness/next47_pt0a_host_test_report.json",
-          "sha256": "b86619d9a1cae1d74a92090943d53672cc965aa44f5c9af333d2bc799a9024e5"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
-        }
+    "status": "PROMOTED_OFFLINE_EXACT",
+    "evidence": [
+      {
+        "role": "compile",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next218_syna_testing_pt0a_zte_exact_v1/exact_revalidation_20260830/canonical_build_report.json",
+        "sha256": "6519a385ca715bc7475afb3936e4559b549b7405377aca26f7457f58bc2e10b1"
+      },
+      {
+        "role": "kcfi",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next218_syna_testing_pt0a_zte_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
+        "sha256": "ddb5e443a14b0496f716d6aa1bcfebf88fd0fae6154ae9a61f94c4294b8dc9e3"
+      },
+      {
+        "role": "test",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next218_syna_testing_pt0a_zte_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json",
+        "sha256": "dad45039a5bde12b77e070b0bcffbed1f0102fd446a392b568415fde618ba627"
+      },
+      {
+        "role": "joern",
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next218_syna_testing_pt0a_zte_exact_v1/exact_revalidation_20260830/joern/joern_gate_summary.json",
+        "sha256": "038b8cf4f6cebbaccadd9d61df4c726982d5073fdc840adc01080919dca97093"
+      }
       ]
     },
     {
