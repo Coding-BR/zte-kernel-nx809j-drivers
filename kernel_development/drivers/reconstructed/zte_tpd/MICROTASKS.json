@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-08-30T03:54:06.019066+00:00",
+  "generated_utc": "2026-08-30T04:02:19.110531+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -3666,27 +3666,27 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: set_fake_sleep\nEntrada Ghidra: 0010d16c\nTamanho stock: 208 bytes\nCategoria: core_logic\nAlvo no fonte: set_fake_sleep.c:set_fake_sleep\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0079_0010d16c_set_fake_sleep.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0079_0010d16c_set_fake_sleep.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "PASS",
       "evidence": [
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_batch_21_current_v2_20260828/joern_gate_report.json",
-          "sha256": "21fec4ccc3fca6c178c6c8ea1f772b72f6b87a4abbdbddb23fc7df8d83464fc8"
-        },
-        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/driver_audit_kcfi_syna_control_value_v2.json",
-          "sha256": "c536f7a8ba381f627a44d8e6e166712866c41a83004f00398b5e57ca6163f2d6"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next080_set_fake_sleep_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
+          "sha256": "e8d8ac977fa4749a038513269aac5de6088731582bebdf4fe5428ce2c778f653"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next080_set_fake_sleep_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json",
+          "sha256": "d3595716bd6a90892948d83c8d0f3700b9e900d1e8c5cb663a9218fcd23bb754"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/proc_scalar_harness_report.json",
-          "sha256": "07d63e3ff8c1d8b5e93b6477dd1f8c70a5dcd1593666b01f3c76eddadfbdfc91"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next080_set_fake_sleep_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "sha256": "1a73ca7ba6c7c2fe4f99f700e103398e78f7533761a09dcc9472040f1bbaf144"
+        },
+        {
+          "role": "joern",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next080_set_fake_sleep_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json",
+          "sha256": "6da2403555bad448566bd32c75df320cd67675f55e2c75c30b666637e1d5da7e"
         }
       ]
     },
