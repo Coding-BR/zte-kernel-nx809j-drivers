@@ -68,40 +68,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_zlog_record_notify\nEntrada Ghidra: 00106998\nTamanho stock: 3452 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_zlog_record_notify.c:tpd_zlog_record_notify\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0001_00106998_tpd_zlog_record_notify.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0001_00106998_tpd_zlog_record_notify.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
-      "evidence": [
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "0822f21861760b6e247f5e6393a958ad08e5ca7aa4a392ec25fb29d0f561911f"
-        },
-        {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/kcfi_comparison.json",
-          "sha256": "45411a30b242192adcd11577a4ff829424629d8e1a1ef8dcfeeb485103b99627"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "bb0c9a97fdbb58175ef4e13882a5b208c574be9ca6b49711bba4bdc2ff0b4772"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/host_harness_report.json",
-          "sha256": "9229a2c8abe93eefed5dcaa4b41b20a77233ea0a0846b730f97e70ea46d98a9c"
-        },
-        {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
-          "sha256": "1da7eced58a2cdd5b3213fb6a2a5a99636a3230ab323f1e41e12fa9205528d1b"
-        },
-        {
-          "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
-          "sha256": "6e123ce0e3fe84e0eae3b37295c1a6a5cb2b2bb15d823970cf858d7db992794e"
-        }
-      ],
-      "attestation": "PASS in attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829; the 863-instruction opcode/control-flow sequence, symbol size, KCFI, normalized dataflow and normalized relocation roles match. The offline zlog contract is covered by 10 direct ASan/UBSan cases; physical hardware behavior remains unverified."
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "evidence": [
+    {
+      "role": "compile",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+      "sha256": "92eaee226ee8db4f381028f66fa9f2543a2825464d901bdd892ada44dab69844"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
+      "sha256": "93f831681b72f3d121b8d01567e8ff597b510fd19e725c2888ecb6316414fca4"
+    },
+    {
+      "role": "joern",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+      "sha256": "ec9a808dace8da7f7aa171e5e85f8b51a1a2254008ce80c20cff2f6938aa6224"
+    },
+    {
+      "role": "test",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+      "sha256": "8bdd721fa1060a4a2c76571dd44357466f77da2486dbcbfdb8b6b70f9324e28a"
+    },
+    {
+      "role": "assembly",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+      "sha256": "f63299a07c1df46d8d1d5fcf2d505f16124e6e7886b572711e8877849416856a"
+    },
+    {
+      "role": "attestation",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+      "sha256": "0e34864f3bdb89e99bfbf0b89f54fbdbfd5d9fbd36e41fbc74adddfbb5de07c0"
+    }
+  ],
+  "attestation": "OFFLINE_EXACT in attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830; the 863-instruction opcode/control-flow sequence, symbol size, KCFI, normalized dataflow and normalized relocation roles match. The offline zlog contract is covered by 10 direct ASan/UBSan cases; physical hardware behavior remains unverified."
     },
     {
       "id": "003_tpd_zlog_check",
