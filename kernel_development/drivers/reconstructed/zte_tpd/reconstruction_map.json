@@ -544,18 +544,16 @@
         "source:ztp_probe_work.c:sha256:678aa9fdd5852294e4a5b285897975f80a419ddfe086774b0842646af2446ef3",
         "ghidra-pseudocode:decompiled/0019_00108494_ztp_probe_work.c:sha256:f4449ac35a04fdbfbea469a25f46ea556e21c2ed78d057da458cff17d06fc572",
         "ghidra-pcode:pcode/0019_00108494_ztp_probe_work.jsonl:sha256:2dfa5779f5bd3a0c4bb7b7595a74d7d01efe52788154e95b5880ef5bbc8b6cfa",
-        "stock-assembly:0019_ztp_probe_work_00108494.asm:sha256:613f7161f1e2bf0ea9e17dbe9ae3366067afe20ec57af03035c78af9db18e8a3",
-        "candidate-assembly:attestation/next382_ztp_probe_work_v1/candidate_assembly.asm:sha256:959612b756dd68c299428499c900d5b56bb550ddb9e72238165dbc089bdc8541",
-        "assembly-diagnostic:attestation/next382_ztp_probe_work_v1/assembly_comparison.json:sha256:d74ec7093677d55e4f81ef0a22292010a1702098a0640a8d40ab867b736a7b8c",
-        "aarch64-validation:attestation/next382_ztp_probe_work_v1/aarch64_validation_report.json:sha256:9df8dc0ef0b16ff2a3f06c3d620bfeab3b45f21c79326759f733a8a797d8154e",
-        "source-sync:attestation/next382_ztp_probe_work_v1/source_sync_report.json:sha256:776c3cd425333b445fe222433336bbb64e7e8833e6d697a2e3ba6ce5b33e99d1",
-        "canonical-build:attestation/next382_ztp_probe_work_v1/canonical_build_report.json:sha256:6eb08ae55d91b48caa255bbfaff8b5bb98a9ee5d3aed0d77e74cf6d8cfd92510",
-        "host-harness:attestation/next382_ztp_probe_work_v1/host_harness_report.json:sha256:5691c40cda63b1a0580da3cd9295b009ca69be06ca5e5792689f4fde6c63e68f",
-        "joern:attestation/next382_ztp_probe_work_v1/joern_gate_summary.json:sha256:0a15ccc8fe31048cef9cbf3a09e18c6e7d6aa8a549f5539d751803d002b6e465",
-        "kcfi:attestation/next382_ztp_probe_work_v1/kcfi_comparison.json:sha256:f8722c280f82a2c417920993f1d6df8ee0aeb6c56d3002dfcdbdee8c0b267b89",
-        "attestation:next382_ztp_probe_work_v1/microtask_attestation.json:sha256:a496ffadfccc0b469a508f2d9fbc701e8bf82cef3dc085d7eac1b3158023a09f"
+        "stock-assembly:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/stock_assembly/0000_ztp_probe_work.asm:sha256:613f7161f1e2bf0ea9e17dbe9ae3366067afe20ec57af03035c78af9db18e8a3",
+        "candidate-assembly:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/candidate_assembly/0000_ztp_probe_work.asm:sha256:c4e8e92d4706b51923bf7262fe4613475477cfeac55694dcf6a3ec06e1cf0fcb",
+        "aarch64-validation:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:745a9552ec80038d3326bbb69fce58efa7e7341653f8d310467b59e036626ee7",
+        "canonical-build:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:115607bdb30dad9047863550ddf6c9536199a6b3c1b241a1ffa7a026b35e6773",
+        "host-harness:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:39fa2d338d66c659cbde0c1d685a224e650f0a2a506e883b6476bd3f75ef7a74",
+        "joern:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:bfbe74531fa5bfc23b37c20d6c6f4531c825bd0880a27f7f9864296b7f16e624",
+        "kcfi:attestation/next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:8e0fdd9db10305dbd07c5122be923a79bfe3df17d3bd6cfa794d39b84a9d0552",
+        "attestation:next020_ztp_probe_work_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:1ec55dbd7db0143da7fa9005e3955845790b829b411561e4a10d8ec5c1db34fe"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, normalized relocation roles, Joern and ASan/UBSan harness evidence",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus Docker canonical build, exact function-level AArch64 instruction sequence, KCFI, normalized relocation roles, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "ztp_probe_work.c",
@@ -565,7 +563,7 @@
       "elf_symbol_bytes": 40,
       "stock_entry": "00108494",
       "stock_function": "ztp_probe_work",
-      "mapping_note": "Offline exact function-level parity attested: 10 AArch64 instructions and 40-byte .text size match; .text section, KCFI type/size, opcode/control-flow sequence and normalized relocation roles match. The body preserves the prefixed stock printk string and exactly one syna_dev_module_init call, while accepting and ignoring the workqueue callback argument. Raw relocation identity differs only because the candidate is separately linked and therefore has a module-local .rodata offset; workqueue scheduling, Synaptics transport and NX809J hardware behavior remain unverified."
+      "mapping_note": "Function-level offline exact parity is promoted from the Docker canonical two-cycle build. Stock and candidate contain 10 AArch64 instructions and 40-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xa607748c, .text section, symbol size, opcode/control-flow sequence and normalized relocation roles match. The body preserves the prefixed stock printk string, exactly one syna_dev_module_init call, and ignores the workqueue callback argument. Joern is strict and parse-clean with one-to-one function identity and zero unresolved calls; ASan/UBSan host tests cover three direct cases across two reproducible Docker cycles. Workqueue scheduling, Synaptics transport and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
