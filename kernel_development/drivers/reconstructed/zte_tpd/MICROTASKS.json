@@ -1447,40 +1447,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_module_info_read\nEntrada Ghidra: 00109784\nTamanho stock: 672 bytes\nCategoria: user_abi\nAlvo no fonte: tp_module_info_read.c:tp_module_info_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0027_00109784_tp_module_info_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0027_00109784_tp_module_info_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "3b8fd584b5d329010d26e57a1aed3dc6cc36ffec7aa86e73d3760b7483cb7155"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "57a3e0ea27c5d54c1d6f61bf8f67d00c050cc408bf9ec4cf4ff86158a096b48d"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/kcfi/comparison.json",
-          "sha256": "49e698b63167a1318073ba1902490a87bd5e45339a530bb00152e8a18c4bb273"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "b3b5d91b4c9b6e940b271cedcc807cc6c5983f6187c2c54fc0576efd29d49eb9"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/host_harness_report.json",
-          "sha256": "053ff4cedfa6429ce1e0c501228531cc159b710f4123f298ccb60c559b263762"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "9408dd7857e0cf4015e35a92214d278d6a52bb576f91370df3e99a7b075533d0"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/joern/joern_gate_summary.json",
-          "sha256": "1a5fefd9e0b162867a555e4b4a6bbdf435049b2ec5c9cc499a7a46f2fc72dcc1"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "bb1dabf40843cafc48e164d91169b8d8cb6c870299eec9847c39a3633d7bf6fa"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
-          "sha256": "c266538a7435b87f29747196f965a7e3f776781d7ff380fd263d0faa28b3d455"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "d1797a967dfc3ef358eafb50011d66863cc504f8e74d13f57b8b791f6fa59ce8"
         },
         {
           "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
-          "sha256": "dd20a0d2c016557eb72780fb811ebc2ff862eeee87837b6ed69c4c22fb78e88a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "9f20225164af2b1b7b4c7b0b58e0e6df8769a749c935c83bd87b91a3b39ce5a9"
         }
       ],
-      "attestation": "Offline exact AArch64 instruction and normalized relocation parity promoted; canonical two-cycle build, KCFI and two-cycle ASan/UBSan host gates passed. Joern retains the userspace ABI review finding; hardware remains deferred."
+      "attestation": "OFFLINE_EXACT in attestation/next028_tp_module_info_read_exact_v4/exact_revalidation_20260830; exact .S body, AArch64 instruction/relocation parity, canonical two-cycle build, KCFI and two-cycle ASan/UBSan host gates passed. Joern retains one high-severity userspace ABI finding; procfs and hardware remain deferred."
     },
     {
       "id": "029_tp_wake_gesture_read",
