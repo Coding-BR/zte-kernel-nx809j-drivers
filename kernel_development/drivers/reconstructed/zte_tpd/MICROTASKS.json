@@ -2097,34 +2097,35 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: get_rotation_limit_level\nEntrada Ghidra: 0010a6c0\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: get_rotation_limit_level.c:get_rotation_limit_level\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0040_0010a6c0_get_rotation_limit_level.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0040_0010a6c0_get_rotation_limit_level.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "e9cf8ffdb5b53271a0b2ef9126bf346c77a61db25a5e2775f6d0ee8f69ea05cf"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "3cd69081d45bbf7b2d7f0c45b34d8eeed2ff79edebca5fbd5fbdb82c7de376eb"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/kcfi/comparison.json",
-          "sha256": "d8b8d9eda7b03251c03c9271ef0b3ad34ca2800dfb03adb2f4f7d15b2f718150"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "c37361f5e48655a108493189beddef9bedba9b08cd3d4c8ab4de44b68cb0375b"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
           "sha256": "7a5843e8ec996bf27aacc7b279b83a7590d731d52aca7f71f5a1bbe4b794d2e8"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/aarch64_comparison.json",
-          "sha256": "88bdcc578acf632dc0b3bdc3e1bfe5686385c29b44497815508288e68407e818"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "2defbc8a5d6d10a7a4bb20efb593b1fd8db625b1ccb47a7f630150fcb233078e"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v1/exact_revalidation_20260829/joern/joern_gate_report.json",
-          "sha256": "9c83ba03112ece3ab6076b79553059e3535bef1849fd7f7b70180278d994a74c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next041_get_rotation_limit_level_exact_v4/exact_revalidation_20260830/joern/joern_gate_report.json",
+          "sha256": "508de4c3ef7eb9bbe664d0599d7a82a38f1d9f21b0b2a0be229760dba58cc347"
         }
-      ]
+      ],
+      "attestation": "OFFLINE_EXACT in attestation/next041_get_rotation_limit_level_exact_v4/exact_revalidation_20260830; one userspace-egress finding and runtime hardware remain unverified."
     },
     {
       "id": "042_set_rotation_limit_level",
