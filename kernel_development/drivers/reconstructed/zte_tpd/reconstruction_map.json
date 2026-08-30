@@ -1993,22 +1993,26 @@
     },
     {
       "evidence": [
-        "source:get_fake_sleep.c:sha256:5c993074d1c0759b4bc8deb895b3bda10293398e7121a588b72b067889b10993",
+        "source:get_fake_sleep.c:sha256:345053c0b2b418c60ad54f067969e3ee1ec5d8000b48b102f2346b7418fda8d9",
         "ghidra-pseudocode:decompiled/0078_0010d078_get_fake_sleep.c:sha256:db09c39bd148becfb8731842c9dad929a6c23743c399ccc465fa4380e4c507a8",
         "ghidra-pcode:pcode/0078_0010d078_get_fake_sleep.jsonl:sha256:f3d21bfbc4c72606089957ee56342ffaee3ae4a790f67a7cd411c429a9ce5ce5",
-        "stock-assembly:stock_function_assembly.asm:sha256:5c126e6f88e5b450682a9beccfc40f5673faf93179c150f6386d368125a30560",
-        "candidate-assembly:get_fake_sleep_exact.S:sha256:6e860700489b42d317dd2c5b82b6bb236c495f232c75332b631d5a16d4cf4509"
+        "stock-assembly:get_fake_sleep.asm:sha256:c8b8e74677461faba95545fcf4c0e755140d0e31850fad6015d51ef71cd5cae7",
+        "candidate-assembly:get_fake_sleep.asm:sha256:d334816aad707b3974eef9dd24397df1fc71f98c6bd0e852154999f3da12a173",
+        "aarch64-comparison:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/aarch64_comparison.json:sha256:2f9252ddd009aff6429d2a3445dc677905d477128b17b0a8545964de0d59d1ce",
+        "kcfi-comparison:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/kcfi/kcfi_comparison.json:sha256:202948dae66fd4656855a516295a509f0ab18cf506aa1fba3324797aacb21464",
+        "source-test:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json:sha256:c5d1a26d2a19d43270458138fe7a64fedbcd4a68c49fe5b3adcd6281058d7c80",
+        "joern-summary:attestation/next079_get_fake_sleep_exact_v1/exact_revalidation_20260829/joern/joern_gate_summary.json:sha256:9a101252169b885b5a62fa2508421f2e327fcad62a5ed82a14544077983a7b52"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code/Assembly exact lift plus Joern, ASan/UBSan, reproducible Docker, KCFI type and AArch64 comparison evidence",
-      "review_scope": "offline_exact_function_level",
+      "review_scope": "offline_semantic_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "get_fake_sleep.c",
       "source_function": "get_fake_sleep",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "promoted_offline_exact",
       "stock_body_bytes": 240,
       "stock_entry": "0010d078",
       "stock_function": "get_fake_sleep",
-      "mapping_note": "Offline exact: 60 AArch64 instructions/240 bytes, normalized relocations, PAC/stack-protection sequence and indirect callback guard 0x73fc0d79, KCFI type 0xf4e9d97c, strict Joern, two-cycle canonical Docker build and 4-case ASan/UBSan host harness pass. Hardware remains DEFERRED."
+      "mapping_note": "Offline exact after correcting the reconstructed C callback offset from 0xe10 to stock 0xfc8: 60 AArch64 instructions/240 bytes, normalized relocations, KCFI type 0xf4e9d97c, strict Joern, two-cycle canonical Docker build and ASan/UBSan source harness pass. Hardware remains DEFERRED. Distinct from internal tpd_get_fake_sleep."
     },
     {
       "evidence": [
