@@ -358,42 +358,42 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_zlog_init\nEntrada Ghidra: 001078c8\nTamanho stock: 184 bytes\nCategoria: lifecycle\nAlvo no fonte: tpd_zlog_init.c:tpd_zlog_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0006_001078c8_tpd_zlog_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0006_001078c8_tpd_zlog_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "9a074dd312325b4b7ddfb29f2bf55e7c18cea8c903968ff87058428c8491ea06"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "44881206f2695e44f2e203a590be10b2e924a0314b77ffd052d9d2e0b1d2aa50"
         },
         {
           "role": "aarch64_assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/aarch64_comparison.json",
-          "sha256": "7a958f647916fd698b43717f91e009eb6a83047dc43981badef71bbf58384772"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "ec404ebb36fb00d3312d40f0001b5c2aa1761f0c4ce8a88bbb1026e0795d38b7"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/kcfi/comparison.json",
-          "sha256": "c0d5dcca562280b0178b6a3be860596d3d0321c90b17fab62ecac0678e0260f7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
+          "sha256": "d896ecb32b2028150534bc48895e4767648b6162ff494f2fc375295703d1c5e7"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/joern/joern_gate_report.json",
-          "sha256": "b428ec584dbdb25ad811396fa8e8f6b5d8c6695514a710802bb71824db7b3273"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "44022d2efb15cb161890932d90b7765f2bbfa29e785b49a4bd5362ea0713fb94"
         },
         {
           "role": "asan_ubsan_host",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/host_harness_report.json",
-          "sha256": "9922911c067f1ac7c6dc70e239d3863d17fb3e3382c6cf1217c5f4327ac33af3"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "07ce424d8b14bbf1ac2a4d57a0d5e646f306c4cae572735cbfe8be940913c66a"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/host_harness_report.json",
-          "sha256": "9922911c067f1ac7c6dc70e239d3863d17fb3e3382c6cf1217c5f4327ac33af3"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "07ce424d8b14bbf1ac2a4d57a0d5e646f306c4cae572735cbfe8be940913c66a"
         },
         {
           "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v3/exact_revalidation_20260829/microtask_attestation.json",
-          "sha256": "cec9dd20e429f35a42a7a99b2894eb1f3a05ce221c12def626d63bfbe4da16cc"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next007_tpd_zlog_init_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "ce66a7ecfde17046df87886109b70dd5b6d352bff2d510fa482cbdc091af1202"
         }
       ]
     },
