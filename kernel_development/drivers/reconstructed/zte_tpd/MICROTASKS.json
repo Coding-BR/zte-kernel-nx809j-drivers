@@ -2291,27 +2291,37 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_single_tap_read\nEntrada Ghidra: 0010aa5c\nTamanho stock: 240 bytes\nCategoria: user_abi\nAlvo no fonte: tp_single_tap_read.c:tp_single_tap_read\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0044_0010aa5c_tp_single_tap_read.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0044_0010aa5c_tp_single_tap_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next414_tp_single_tap_read_exact_v1/canonical_build_report.json",
-          "sha256": "b27813d6ab252cad7f359cf424e437e421ce9aee95fccac7cfebc7e769bbfd13"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next045_tp_single_tap_read_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "0dbfe89c2c97197316749c75b3f2e1fed026808eb71e07e75c6dd311cdcbac5b"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next414_tp_single_tap_read_exact_v1/kcfi_comparison.json",
-          "sha256": "a04bb4ea01958775836904a9a66fe375cc5636c9ccdfbece55be742a71d29e38"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next045_tp_single_tap_read_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "16e1f28a3c24777d908bc92ccf2ebba41b5ff4343b367a1515e6a58c857ffd30"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_tp_single_tap_read_current_v1/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next045_tp_single_tap_read_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
           "sha256": "7ae0d937b0b295408abe857dd2d31e466699f3094be1cd277999624b6514d031"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_tp_single_tap_read_current_v1/joern_gate_summary.json",
-          "sha256": "54447755484b9ed42ec0605ca17ea263e83de7f875afe306eca958d977a15f7c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next045_tp_single_tap_read_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "0ffd6bf34f218b45e412d07e6ff6d7ac1527873533da763ae8234fcc9846e1b3"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next045_tp_single_tap_read_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "5aa57a4883c63e1ec49060c846c7d43a48f302a13e33142759ad2ad2699f6c4e"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next045_tp_single_tap_read_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "c0ba9b2278d38869d869f8739b5632818a0aa18b9915091811142b14cde9bf3e"
         }
       ]
     },
