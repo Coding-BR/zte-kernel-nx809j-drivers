@@ -2189,27 +2189,37 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: display_rotation_show\nEntrada Ghidra: 0010a87c\nTamanho stock: 212 bytes\nCategoria: user_abi\nAlvo no fonte: display_rotation_show.c:display_rotation_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0042_0010a87c_display_rotation_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0042_0010a87c_display_rotation_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/canonical_build_report.json",
-          "sha256": "9a0f381c61cdcf04832b9c48e36096007760b285d2adc578488a0dc8398e854f"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next043_display_rotation_show_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "0671987680e30a818afa121b18999015c5348a6a372a356e029e0814b8159733"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/kcfi_comparison.json",
-          "sha256": "55dd053273dad93c08508810091c6c7daf82228524aced8899441297b19ca00b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next043_display_rotation_show_exact_v4/exact_revalidation_20260830/kcfi/comparison.json",
+          "sha256": "26bc069a74110c32e6883489851563193059e63d97eee7d509423050263d6911"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next412_display_rotation_show_exact_v2/host_harness_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next043_display_rotation_show_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
           "sha256": "6c518ebc4c6df8711957519871ac8f9641e7f8faa4286dae3a95a375546d2acb"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_display_rotation_show_current_v2/joern_gate_summary.json",
-          "sha256": "145c3dafcd87f6d5af8d961b668c2091eb248ad7902b689d10f70c5d05dcf0ed"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next043_display_rotation_show_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "3b17a0d712fe979e3aad1aa7f9b985f7664c5be9009a60dcca118586c538ee07"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next043_display_rotation_show_exact_v4/exact_revalidation_20260830/aarch64_comparison.json",
+          "sha256": "dc40cd46933ea6498ac5246385aa9f7b1db0b19c905719852360ed6ffe202397"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next043_display_rotation_show_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
+          "sha256": "791152f6a401c86c9e31a66b96683c9ee83933b280adc173cec30edc4d6ba6d6"
         }
       ]
     },
