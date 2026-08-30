@@ -4365,28 +4365,28 @@
     },
     {
       "evidence": [
-        "source:syna_dev_enter_normal_sensing.c:sha256:f9ec49b4c5df77f074b1ab733612ae091520b50e3507566a24a565910d7a38db",
+        "source:syna_dev_enter_normal_sensing.c:sha256:656ce052d878be063954e565d01f6a25be8843569a8565a18ae53a8077da0d28",
         "ghidra-pseudocode:decompiled/0171_00114294_syna_dev_enter_normal_sensing.c:sha256:a28f4dde63fa98784587500ab9e11821aa96c445f09d717dd98920fda44ff937",
         "ghidra-pcode:pcode/0171_00114294_syna_dev_enter_normal_sensing.jsonl:sha256:9f5726278f409f44e54484dc7ceb963c3acaa5099bf8a63bee522d7492ee2fc3",
-        "stock-assembly:0171_syna_dev_enter_normal_sensing_00114294.asm:sha256:76e67e3461a7ca2ee2f3fe7589993214a3a399fa486d6c1e7ca2cf46276f5bb7",
-        "joern:attestation/next172_syna_dev_enter_normal_sensing_v1/joern_gate_report.json:sha256:90cf46ca95fa9df0c021e2d3aa024637fba8c89349aab6b002cac2faacb9ec96",
-        "canonical:attestation/next172_syna_dev_enter_normal_sensing_v1/canonical_build_report.json:sha256:5223d32f9f715d4521427fe0f02b4f4dbc2a97eccd7a7b046a2992bbdb1c6460",
-        "sync:attestation/next172_syna_dev_enter_normal_sensing_v1/source_sync_report.json:sha256:2f2aa29841cef7d0180f101b3d59dfc41a29434cb4df1f0051c56a1390110f39",
-        "kcfi:attestation/next172_syna_dev_enter_normal_sensing_v1/kcfi_comparison.json:sha256:3eb5bafdffce9f0347110ad4bbd71ebbdf6977f458cbe15924e0bb0af7fb9522",
-        "assembly-compare:attestation/next172_syna_dev_enter_normal_sensing_v1/assembly_comparison.json:sha256:472a21e2b7e6a78cffef0ddd3b28c1b5b531f3fd0a6c7db08f745892a11851c1",
-        "contract-model:attestation/next172_syna_dev_enter_normal_sensing_v1/contract_model_source.c:sha256:22c7d0e43828d0687184101181b77ecf5cc1ccfdcfcfb5b564b8ab4e75a317de",
-        "attestation:attestation/next172_syna_dev_enter_normal_sensing_v1/microtask_attestation.json:sha256:af2b164eed87e4527d2edaf49bcde8d6dfaa0874af59b574638126cedce58ac1"
+        "stock-assembly:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/stock_assembly/stock_syna_dev_enter_normal_sensing.asm:sha256:76e67e3461a7ca2ee2f3fe7589993214a3a399fa486d6c1e7ca2cf46276f5bb7",
+        "joern:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:7c8fc51f9061d238a2b8729dc8a0bd4d90d229cfc1cc9a449f6688f077e742bf",
+        "canonical-build:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/canonical_build_report.json:sha256:83644bd6de9037aea0e02b430b7cd0ad67cd48a00ec4b32913dcd9a32c0c9380",
+        "host-harness:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:19ff93cb6cfeb94e89d3d469bb22bfdae8b3dec8cc70832153be402a3769d9bc",
+        "kcfi-compare:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:a9de92fcb53e1bdce56d5881ca57d30c3c3b8677bdf208aa7b6558807533dde6",
+        "candidate-assembly:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/candidate_assembly/candidate_syna_dev_enter_normal_sensing.asm:sha256:9e16420816728e3eee6eba94a69e81793b7b6d1d34c9c9099e7df14c74ab2d0e",
+        "assembly-compare:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/aarch64_comparison.json:sha256:88ad2bd59656b5f085f12b76900dbf8db708ba13e477599794ee050437c0b7d0",
+        "attestation:attestation/next159_syna_dev_enter_normal_sensing_exact_v1/exact_revalidation_20260830/microtask_attestation.json:sha256:SELF_HASH_NOT_APPLICABLE:status:OFFLINE_EXACT"
       ],
       "mapping_basis": "Ghidra decompilation and P-Code plus Joern, canonical Docker build, KCFI and AArch64 comparison; contract model recorded separately",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "UNPROVEN",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_dev_enter_normal_sensing.c",
       "source_function": "syna_dev_enter_normal_sensing",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 180,
       "stock_entry": "00114294",
       "stock_function": "syna_dev_enter_normal_sensing",
-      "mapping_note": "Joern and two-cycle canonical Docker build pass; contract model passes five checks. Function size and instruction count match (180/45), but prologue opcode order and relocations differ. Both stock and candidate lack a valid KCFI preamble, and no direct-source harness or hardware test was run."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 45 AArch64 instructions and 180 bytes; the comparator reports matching instruction count, section, symbol size and six resolved data relocations. Joern strict analysis, two-cycle canonical Docker build and 8-case ASan/UBSan host harness pass. Both stock and candidate lack a valid KCFI preamble with no type ID; this is preserved as negative evidence. Hardware Android/NX809J validation remains deferred."
     },
     {
       "evidence": [
