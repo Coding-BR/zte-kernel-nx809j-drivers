@@ -9622,27 +9622,27 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_sysfs_reset_store\nEntrada Ghidra: 0011afa8\nTamanho stock: 384 bytes\nCategoria: user_abi\nAlvo no fonte: syna_sysfs_reset_store.c:syna_sysfs_reset_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0213_0011afa8_syna_sysfs_reset_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0213_0011afa8_syna_sysfs_reset_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_hard_final_exact_v1_20260828.json",
-          "sha256": "eaaebe1ff85ab3d8a877e5c1d9b8af6425c7cab7ba94d139338902730f7bfe44"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_syna_sysfs_reset_store_exact_v1/exact_revalidation_20260830/canonical_build_report.json",
+          "sha256": "1b4f7e35d850612cbd878bff21081ea1d378896b6a168be82c5c4163b3d4db9a"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/kcfi_current_comparison.json",
-          "sha256": "ec9bb4d30a6854fa4a429f19bacb848ea4d406be62402ed2b75f6cf61f290f67"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_syna_sysfs_reset_store_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
+          "sha256": "2eb71d313abf81cf8355723e79df3d50430018917ab06477614517929b2a733c"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next704_syna_sysfs_reset_store_exact_v1/microtask_attestation.json",
-          "sha256": "8db2b09db623293a901c5fb503b19068283455906f1f745a12c4f66217c7f04a"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_syna_sysfs_reset_store_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json",
+          "sha256": "de11634b433cc47a86d0ff9a257dd865d5974f0d80269ca0513ed93a408c9a97"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next214_syna_sysfs_reset_store_exact_v1/exact_revalidation_20260830/joern/joern_gate_summary.json",
+          "sha256": "4e0ba069a0d1bf2bb7a3a98fe2dc0b3935cffb2830d69170138bc40322260e4b"
         }
       ]
     },
