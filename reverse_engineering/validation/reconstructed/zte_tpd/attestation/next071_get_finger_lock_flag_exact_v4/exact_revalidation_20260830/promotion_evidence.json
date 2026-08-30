@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "function": "get_finger_lock_flag",
+  "stock_entry": "0010c92c",
+  "stock_body_bytes": 208,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "candidate_source": "candidate_source/get_finger_lock_flag.c",
+  "gates": {
+    "canonical_docker": {"cycles": 2, "passed": true},
+    "aarch64_assembly": {"instructions": 52, "bytes": 208, "passed": true},
+    "kcfi": {"type_id": "0xf4e9d97c", "section": ".text", "size": 208, "passed": true},
+    "joern": {"calls": 17, "control_structures": 1, "unresolved_calls": 0, "parser_problems": 0, "passed": true},
+    "host_asan_ubsan": {"cases": 4, "cycles": 2, "passed": true}
+  },
+  "review_findings": [
+    {"category": "userspace_egress", "severity": "high", "count": 1, "disposition": "documented_review_observation"}
+  ],
+  "limitations": [
+    "The direct harness exercises read, EOF, formatting and boundary behavior with fake device state.",
+    "No physical NX809J hardware execution.",
+    "No real procfs integration or concurrent lifetime proof."
+  ]
+}
