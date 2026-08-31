@@ -11800,30 +11800,41 @@
       "required_evidence": [
         "compile",
         "kcfi",
+        "joern",
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_testing_0500_check_lower_bound\nEntrada Ghidra: 0011e8ac\nTamanho stock: 100 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tcm_testing_0500_check_lower_bound.c:syna_tcm_testing_0500_check_lower_bound\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0253_0011e8ac_syna_tcm_testing_0500_check_lower_bound.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0253_0011e8ac_syna_tcm_testing_0500_check_lower_bound.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/build_hard_final_exact_v1_20260828.json",
-          "sha256": "eaaebe1ff85ab3d8a877e5c1d9b8af6425c7cab7ba94d139338902730f7bfe44"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next254_syna_tcm_testing_0500_lower_bound_exact_v1/exact_revalidation_20260831/canonical_build_report.json",
+          "sha256": "d74fada80e7bde16af5952ba3bc64ac7a0d18421a37813c3a52d3156eafaf92e"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/kcfi_direct_surface_final_comparison.json",
-          "sha256": "6599de1f2da45aa4510aad00973a935fbd58546497bd643592956b933e722bca"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next254_syna_tcm_testing_0500_lower_bound_exact_v1/exact_revalidation_20260831/kcfi/kcfi_comparison.json",
+          "sha256": "e262acd23d105d8e58d8ae036728276d5b4b4833ecea09cf4a1267100039c9f0"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/remaining_harness_report.json",
-          "sha256": "1c1c58506e5a1706e7c8455f1ffe7e03c7895cde857b8bb6924dc81cf60aae7d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next254_syna_tcm_testing_0500_lower_bound_exact_v1/exact_revalidation_20260831/host/host_harness_docker_report.json",
+          "sha256": "db83b55950477c553da0c3ecf7e22387f7c6c7e943850554815a8457b549493e"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/joern_gate_summary.json",
-          "sha256": "62afd810d33c9db6176b15e4ed23f33a618e85a0c98f46bae363a604085a4ba7"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next254_syna_tcm_testing_0500_lower_bound_exact_v1/exact_revalidation_20260831/joern/joern_gate_summary.json",
+          "sha256": "d3264318b21bca2aa526e39684e4e9bd982e77dc12a096ccc7b1a71f03517923"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next254_syna_tcm_testing_0500_lower_bound_exact_v1/exact_revalidation_20260831/aarch64_comparison.json",
+          "sha256": "fbcd66adbcc53b7b4957b67840e85b87cc0e4d98232eb7c17276996ad1baf013"
+        },
+        {
+          "role": "attestation",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next254_syna_tcm_testing_0500_lower_bound_exact_v1/exact_revalidation_20260831/microtask_attestation.json",
+          "sha256": "a24363e8d288100133bd38648bad1a0fc3f84bc390216a1483f4dfebbb919e84"
         }
       ]
     },
