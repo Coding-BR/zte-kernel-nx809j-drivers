@@ -8047,17 +8047,22 @@
     {
       "evidence": [
         "source:syna_tcm_read_flash_boot_config.c:sha256:e62d0319ea5a7771de2f9228af43b4012c03e631132b514ef7793e44e97cf3ac",
+        "exact-assembly:syna_tcm_read_flash_boot_config_exact.S:sha256:2565dafe7729cb2edd0c61449c087ad64f91226ad14caccf52551030c86f1089",
+        "host-harness:syna_tcm_read_flash_boot_config_host_test.c:sha256:51d291b6cae991fab4ce5aa6897ea117d22d1191ec960009fc02fc9a1d39dd49",
         "ghidra-pseudocode:decompiled/0298_00125290_syna_tcm_read_flash_boot_config.c:sha256:4cc53c2c0565633c811453bc369bd6e3e6a49d0a41e6434eddd0a2f067bbfd8e",
         "ghidra-pcode:pcode/0298_00125290_syna_tcm_read_flash_boot_config.jsonl:sha256:1dd7eae3bbe7f3d43549cea9b0bf9c5b4a5f7d997b6622b10990984acc8d4a82",
         "stock-assembly:0298_syna_tcm_read_flash_boot_config_00125290.asm:sha256:a5d872d73c7acd1dddfc60484a82d1e6af71ea1cddc0ac9c6541fd41ce9e5e04",
-        "aarch64:next588_syna_tcm_read_flash_boot_config_exact_v1/aarch64_validation_report.json:sha256:df4923f62c2902ccc3bda59b0437909dd75d01c3348d3c956c926beb1d74d3d8",
-        "assembly:next588_syna_tcm_read_flash_boot_config_exact_v1/assembly/comparison.json:sha256:63d98f65a0e9b956a3c362e36778ae4c0baea50b2c11e7709cb6776d388a0b8c",
-        "kcfi:next588_syna_tcm_read_flash_boot_config_exact_v1/kcfi/comparison.json:sha256:3f28313e3b7c1663fdd914af99114584287af70c7d3b78046500271586bc3239",
-        "joern:next588_syna_tcm_read_flash_boot_config_exact_v1/joern/joern_gate_report.json:sha256:8a49459882bb4bf3ddf99a3d13ebb87f0e3cf6d261d40ca7a6b936321c9e70c4",
-        "host:next588_syna_tcm_read_flash_boot_config_exact_v1/host_harness_report.json:sha256:434a8d6d50f0be2a1bd5a9dc16a9e404d34d13c81300aeb9815516d6d78412c8",
-        "compile:next588_syna_tcm_read_flash_boot_config_exact_v1/canonical_build_report.json:sha256:86e4b0e75a2dd50ef1770ca29e02c597055244ed4d2b5fbc8273ddaeb2fa6e44"
+        "candidate-assembly:candidate_assembly.asm:sha256:ee291fc3d28075c3772b577aa1f08769bd374b82aa7a7d7a3b6adfbeac6e3db5",
+        "aarch64-comparison:aarch64_comparison.json:sha256:eed2deccb3ab1f674183cadecdace3b227e324ed8145352bfeb0a33511ea49ca",
+        "canonical-build:canonical_build_report.json:sha256:a3825b895065b8591c5b1c9315d16799a54a8a3d74abd249644a9c4922d789dc",
+        "candidate-module:candidate_zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:kcfi_comparison.json:sha256:281abf8fd73d56e3cef7f7d24c892dbedf81ab399ce87174e295798c6781519e",
+        "joern-summary:joern_gate_summary.json:sha256:f12d67b0cafdd1959650ca4d43643b30338677cd5e2caca87036b0060fc12abf",
+        "host-test:host_harness_attestation_report.json:sha256:37fd7c88923b0ac80184ec835419726870f94280b66b8a61c90a4fd4bb907897",
+        "promotion-evidence:promotion_evidence.json",
+        "microtask-attestation:microtask_attestation.json:sha256:a814e0d3a376ad99fb7a6728b7e9d647c15d8daf22f6a35c02c243bd540e5e80"
       ],
-      "mapping_basis": "exact filename and function-token match",
+      "mapping_basis": "exact filename/function token plus exact AArch64 opcode, relocation, ELF symbol-size and KCFI parity; direct ASan/UBSan contract and strict Joern gate",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_read_flash_boot_config.c",
@@ -8066,7 +8071,7 @@
       "stock_body_bytes": 556,
       "stock_entry": "00125290",
       "stock_function": "syna_tcm_read_flash_boot_config",
-      "mapping_note": "Function-level offline parity is attested. Android runtime and NX809J hardware behavior remain unverified until controlled physical procedure runs."
+      "mapping_note": "Exact offline parity: 139 AArch64 instructions/556 ELF bytes, KCFI parity BOTH_NO_VALID_KCFI_PREAMBLE (stock and candidate), canonical Docker build reproducible in two cycles, 8-case ASan/UBSan contract in two repetitions, and strict Joern with 109 calls, 15 controls, zero unresolved calls and zero parser errors. Android runtime and NX809J hardware remain deferred."
     },
     {
       "evidence": [
