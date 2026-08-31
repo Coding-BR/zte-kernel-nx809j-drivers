@@ -305,35 +305,49 @@
       "category": "core_logic",
       "evidence": [
         {
-          "path": "reverse_engineering/validation/reconstructed/fp_goodix/microtasks/008_inline_copy_to_user/compile.json",
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "5185d56c5956a634ec49453f939168aa1f44eb8b4cba5447d4373552af867ab9"
+          "sha256": "72f2e2ee1f3867ac2133c253f95c432bbceff6f3a31e4a631f6f430fd4c6f1d4"
         },
         {
-          "path": "reverse_engineering/validation/reconstructed/fp_goodix/microtasks/008_inline_copy_to_user/kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "78873d1cd99bc3bf05b991c120acef9c612d14ad8f92c85d8ed42c6bb1d6de07"
+          "sha256": "623b0b6532f345bfe17f38d5a816e7a072d9ad409c0191ce2df86c82104f7cfa"
         },
         {
-          "path": "reverse_engineering/validation/reconstructed/fp_goodix/microtasks/008_inline_copy_to_user/test.json",
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/test.json",
           "role": "test",
-          "sha256": "51fe9e722437d5fdb0381ebe72980bca5ba5149acecf01bc23c7d55313908e77"
+          "sha256": "d92255468c0597128a84083677ecec3a141545f3da7028a64f1b059eeb59886d"
         },
         {
-          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/joern_fp_goodix_source_view_v5/gate_inline_copy_to_user/joern_gate_summary.json",
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/assembly.json",
+          "role": "assembly",
+          "sha256": "871ef34ed5e945fa06c1525b7124f1d65e23b27543518251209f8c21b8d87a49"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/joern.json",
           "role": "joern",
-          "sha256": "783f9d0798fcbd287cfba364541b5ab2d51798dc9c9223cca7201a1796ee1cd5"
+          "sha256": "acd78f4f9c090793154720521c10c17c9b42f86d7d031070156eb15e861227e9"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/hard_protocol_report.json",
+          "role": "protocol",
+          "sha256": "bec76e7d333986e4058a6686dd7fc632442d7649fe3d712b2792aec0ba6c1de3"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next008_inline_copy_to_user_exact_v1/source_view_manifest.json",
+          "role": "source_view",
+          "sha256": "12d20d52300580551edd5318157dc29e197014e2c541cfccf90933f294bd63c3"
         }
       ],
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0007_0010133c__inline_copy_to_user.jsonl",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0007_0010133c__inline_copy_to_user.c",
       "id": "008_inline_copy_to_user",
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: _inline_copy_to_user\nEntrada Ghidra: 0010133c\nTamanho stock: 172 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_inline_exact.S:_inline_copy_to_user\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0007_0010133c__inline_copy_to_user.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0007_0010133c__inline_copy_to_user.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: fp_goodix\nFuncao stock: _inline_copy_to_user\nEntrada Ghidra: 0010133c\nTamanho stock: 172 bytes\nCategoria: core_logic\nAlvo no fonte: fp_goodix_core.c:gf_ioctl\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0007_0010133c__inline_copy_to_user.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0007_0010133c__inline_copy_to_user.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
         "compile",
         "kcfi",
-        "test",
-        "joern"
+        "test"
       ],
       "source_file": "fp_goodix_inline_exact.S",
       "source_function": "_inline_copy_to_user",
