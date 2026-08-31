@@ -6782,18 +6782,26 @@
         "source:syna_tcm_testing_0500_check_upper_bound.c:sha256:04a2871925ad4b443a1df3d0d06f59de4f762045dea1243ca11615b376114b2a",
         "ghidra-pseudocode:decompiled/0252_0011e844_syna_tcm_testing_0500_check_upper_bound.c:sha256:13a44ced1e60c3fe5ab17c903573aff48192b8ea1ed594d78f58d1b83b1e1f11",
         "ghidra-pcode:pcode/0252_0011e844_syna_tcm_testing_0500_check_upper_bound.jsonl:sha256:f41711b6f03b1b4eb73e3c93b53bedc90dd4403dbe20c1e9f560205537e3fa49",
-        "stock-assembly:0252_syna_tcm_testing_0500_check_upper_bound_0011e844.asm:sha256:61d1cf78aa1c41b63315b386d15c00363fc3deffafd817ebab0c7fff2e1933c0"
+        "stock-assembly:0252_syna_tcm_testing_0500_check_upper_bound_0011e844.asm:sha256:61d1cf78aa1c41b63315b386d15c00363fc3deffafd817ebab0c7fff2e1933c0",
+        "candidate-assembly:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/candidate_assembly/0000_syna_tcm_testing_0500_check_upper_bound.asm:sha256:e3f4b7b586aef8a9795a9c2bf319c9033a90491cbe608c1b19a65f38bb0b87b2",
+        "assembly-comparison:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/aarch64_comparison.json:sha256:17a508b66e3d57ee291ed1a70ec1f9d28b5dfa4e2bb59311a77fc34b8d41a1f1",
+        "canonical-build:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/canonical_build_report.json:sha256:3c2256d1f09a498dd1de9b4a95f778c7e3feca3cb2c8fc36eaae14c03cba1e54",
+        "candidate-module:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/candidate_module/zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/kcfi/kcfi_comparison.json:sha256:e4de974daeee81b5794041a1ff83d0ad1c88672391b92ec324a7db28969c66e5",
+        "host-harness:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/host/host_harness_docker_report.json:sha256:8b861088319510b91c779c954bf7d4fbd4b196129dab60f0c60f7b4e3f7368ac",
+        "joern:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/joern/joern_gate_summary.json:sha256:8baf498457313d4160490a1b4262f4648fd5f47976dce61642c9a5cb7ca4d1b4",
+        "microtask-attestation:attestation/next253_syna_tcm_testing_0500_upper_bound_exact_v1/exact_revalidation_20260831/microtask_attestation.json:sha256:886af668d16bc0840ec51f6c462dd56b3817b745f7e87a0a0d023c4780fd9d05"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, relocation normalization, KCFI, Joern and direct ASan/UBSan unsigned-boundary harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_testing_0500_check_upper_bound.c",
       "source_function": "syna_tcm_testing_0500_check_upper_bound",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 100,
       "stock_entry": "0011e844",
       "stock_function": "syna_tcm_testing_0500_check_upper_bound",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 25 AArch64 instructions and 100-byte ELF symbols; unsigned loads, upper-bound predicate, error branch, printk argument order, call target and normalized error-string relocation match. The direct harness covers zero equality, maximum unsigned equality and the 65535 > 0 violation in reproducible ASan/UBSan runs. Android runtime, module loading and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
