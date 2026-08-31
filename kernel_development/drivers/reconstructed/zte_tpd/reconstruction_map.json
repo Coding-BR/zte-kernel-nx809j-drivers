@@ -6266,18 +6266,26 @@
         "source:syna_tcm_get_testing_0001.c:sha256:112fc65a12c89138c228d9d28a2c171c6c6124fc9ef4c00813bb64dbb561b262",
         "ghidra-pseudocode:decompiled/0233_0011d32c_syna_tcm_get_testing_0001.c:sha256:835628300be1fe388372d9e2b4126dd88f04d40694bf7dae8d7dc00265e3078d",
         "ghidra-pcode:pcode/0233_0011d32c_syna_tcm_get_testing_0001.jsonl:sha256:95d5d33c7849d13d48d4dc290e36d9bbda62a60f6544a5fe7d912e5806050cdf",
-        "stock-assembly:0233_syna_tcm_get_testing_0001_0011d32c.asm:sha256:143e322cf29988efd43ca8f85176c5a276c63b9df7e16aec1947ab253fee2a81"
+        "stock-assembly:0233_syna_tcm_get_testing_0001_0011d32c.asm:sha256:143e322cf29988efd43ca8f85176c5a276c63b9df7e16aec1947ab253fee2a81",
+        "candidate-assembly:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/candidate_assembly/0000_syna_tcm_get_testing_0001.asm:sha256:ebdea83ffb4934222a17586bf02f77f67b1df84d53505d99988365103ddcb317",
+        "assembly-comparison:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/aarch64_comparison.json:sha256:7cf8a3931afb921a28be43227f446c97b34768a75c61c9f54838ff0eaafaf7cd",
+        "canonical-build:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/canonical_build_report.json:sha256:c3490872ab88b5a2bed4cb782bdd22250820b7faaa93009fd3f8f117feb6000f",
+        "candidate-module:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/candidate_module/zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/kcfi/kcfi_comparison.json:sha256:35a597d8e43a2a32fe8be341318177445255572ac4184f52188d16d168047912",
+        "host-harness:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/host/host_harness_docker_report.json:sha256:112b1a544dbe3da48b064b7d25727a1542e58fab3d6808a146f554b338b58e48",
+        "joern:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/joern/joern_gate_summary.json:sha256:4ecc0683dfb3b7334ed442333168756f7c54aef65b31b04c98e99b5c9428a69c",
+        "microtask-attestation:attestation/next234_syna_tcm_get_testing_0001_exact_v1/exact_revalidation_20260831/microtask_attestation.json:sha256:fbf5275f2eaee55ba57866f9475eafd62b1f64682cf61e08a8245c99479147f9"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, relocation normalization, KCFI, Joern and direct ASan/UBSan object-identity harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_get_testing_0001.c",
       "source_function": "syna_tcm_get_testing_0001",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 12,
       "stock_entry": "0011d32c",
       "stock_function": "syna_tcm_get_testing_0001",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 3 AArch64 instructions and 12-byte ELF symbols; the test_0001 object relocation and return sequence match. The direct harness verifies returned-object identity and aliasing in reproducible ASan/UBSan runs. Android runtime, module loading and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
