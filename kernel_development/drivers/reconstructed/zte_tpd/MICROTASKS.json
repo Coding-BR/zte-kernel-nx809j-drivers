@@ -15440,27 +15440,37 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_get_wakegesture\nEntrada Ghidra: 0012bb30\nTamanho stock: 24 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_get_wakegesture.c:tpd_get_wakegesture\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0329_0012bb30_tpd_get_wakegesture.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0329_0012bb30_tpd_get_wakegesture.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "84056c052dde773155a3326a0d8e28ea3682996b3e8cc9f5fb32a5f223658a67"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v3/exact_revalidation_20260831/canonical_build_report.json",
+          "sha256": "32ad3de1319ad95d3e44dd23f2b4b5b1909e9203f11bcc92407ebaada3b5d4f9"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v1/exact_revalidation_20260829/kcfi_comparison.json",
-          "sha256": "2e214e63a69ea8da77c6cb152c45d5de2c1a40cf40301270e12e183902c7341b"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v3/exact_revalidation_20260831/kcfi_comparison.json",
+          "sha256": "5fe57369d39e26a33701cf1cc9a7636dd6064812770e79a56fe049e132ae809a"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
-          "sha256": "909d439e0b73d5c0dc7f552a7f122c68e9b841eb7297f9370056d6d11fca5751"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+          "sha256": "484acff9541816e5a2c27773060cfe497ef084aabfb7bb389e1def23c87a9a26"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v1/exact_revalidation_20260829/joern_gate_summary.json",
-          "sha256": "56ef5b101f45bc41c6755e890260485b2dca9ce1efb118c883d416796b173684"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v3/exact_revalidation_20260831/joern_gate_summary.json",
+          "sha256": "0ef8d80c267c797b4879cc0f328efee6d3c2c89817882bf9e89a02d0628c00ce"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v3/exact_revalidation_20260831/aarch64_comparison.json",
+          "sha256": "86ad77e69858f37723827aabae445266bbed590583c858b6c63758eaa9e04e58"
+        },
+        {
+          "role": "aarch64",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next330_tpd_get_wakegesture_exact_v3/exact_revalidation_20260831/aarch64_comparison.json",
+          "sha256": "86ad77e69858f37723827aabae445266bbed590583c858b6c63758eaa9e04e58"
         }
       ]
     },
