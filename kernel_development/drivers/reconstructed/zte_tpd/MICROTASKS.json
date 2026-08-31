@@ -13846,43 +13846,44 @@
       "required_evidence": [
         "compile",
         "kcfi",
-        "test"
+        "test",
+        "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tcm_read_flash_area\nEntrada Ghidra: 00124ab4\nTamanho stock: 2012 bytes\nCategoria: user_abi\nAlvo no fonte: syna_tcm_read_flash_area.c:syna_tcm_read_flash_area\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0297_00124ab4_syna_tcm_read_flash_area.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0297_00124ab4_syna_tcm_read_flash_area.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "67548a44905936af03516aecf02d0296459603f2508a3aa2f308b0f4167bb852"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831/canonical_build_report.json",
+          "sha256": "305c6d5137a12d54021b0fd349eb844a3ed20fb6097c3812304b69042387b5a8"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829/kcfi_comparison.json",
-          "sha256": "ae8b790197ff2869e943a95867fb0ba7a18fe7366bacb6a2e8b0773e971e9c87"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831/kcfi_comparison.json",
+          "sha256": "4f3302c8ba333e25c234ffcd9a70af8520324f69bc3d40821921e09f771053fb"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829/host_harness_report.json",
-          "sha256": "0ab36af4868e1fb95471f8d6fe375d4eb5669a89a98fa89176a37b8822675392"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+          "sha256": "d292ae1af93fa955db75a937306957016f303a14409e7f04f9e71a9232f68bd0"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829/joern_gate_summary.json",
-          "sha256": "d2cc051e05a1f0136b410cc312525d9dd5cd2e8e6e074597d12e8d87a2cc0070"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831/joern_gate_summary.json",
+          "sha256": "3d6739dcaf2d1f3a9bf11d2f2f1efb3410956c219e9b90a0ee8773ef39aafa4a"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829/aarch64_comparison.json",
-          "sha256": "3457aeaaaba260c19ad08357adc31e72859f55f857784bfbaa3138bd90f93462"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831/aarch64_comparison.json",
+          "sha256": "68d93a73ac7da98fabd4157a77ce5910bdfeed824e095f1c3f8ef42b85bae9d7"
         },
         {
           "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829/microtask_attestation.json",
-          "sha256": "b605396282a7a0833734bbfa782823bca01ca5e5d7bccb4c30aa27e33b416cd8"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831/microtask_attestation.json",
+          "sha256": "cf252f5809dd215d333aa82be598fb4b39d0ad2d49ac76171fc95dbc1e705c47"
         }
       ],
-      "attestation": "PASS in attestation/next298_syna_tcm_read_flash_area_exact_v2/exact_revalidation_20260829; the 503-instruction opcode/control-flow sequence, symbol size, KCFI type ID, normalized dataflow and normalized relocation roles match. The direct host contract covers 8 cases under ASan/UBSan; physical hardware behavior remains unverified."
+      "attestation": "PROMOTED_OFFLINE_EXACT in attestation/next298_syna_tcm_read_flash_area_exact_v3/exact_revalidation_20260831; 503 AArch64 instructions and 2,012 ELF bytes match, KCFI type ID 0xda19bd63 matches, the direct host contract covers 8 cases in 2 ASan/UBSan cycles, and strict Joern reports zero unresolved calls and zero parser errors. Android runtime and NX809J hardware remain deferred."
     },
     {
       "id": "299_syna_tcm_read_flash_boot_config",
