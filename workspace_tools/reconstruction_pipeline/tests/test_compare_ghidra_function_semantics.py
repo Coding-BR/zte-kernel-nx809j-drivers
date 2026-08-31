@@ -368,6 +368,18 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertEqual(result["failures"], ["normalized_decompiled_c"])
 
+    def test_pcode_fallback_accepts_truncated_void_return_against_value_return(self) -> None:
+        stock = "undefined8target(void){_printk();x=1;return0;}"
+        candidate = "voidtarget(void){_printk();return;}"
+
+        evidence = MODULE.lossy_decompiler_truncation(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_premature_return_decompiler_truncation"
+        )
+        self.assertEqual(evidence["omitted_stock_body_fragment"], "x=1;")
+
     def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
         stock = (
             'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'

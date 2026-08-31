@@ -519,16 +519,20 @@ def lossy_decompiler_truncation(
     return.  The caller additionally requires exact body bytes and P-Code shape.
     Assembly parity is an independent protocol gate.
     """
-    if not candidate_normalized.endswith("return;}") or not stock_normalized.endswith(
-        "return;}"
-    ):
+    candidate_match = re.match(
+        r"^(?P<header>void[^\{]*\{)(?P<body>.*)return;}$",
+        candidate_normalized,
+    )
+    stock_match = re.match(
+        r"^(?P<header>[^\{]*\{)(?P<body>.*)return(?:[^;]*);}$",
+        stock_normalized,
+    )
+    if candidate_match is None or stock_match is None:
         return None
-    if candidate_normalized.count("return;") != 1 or stock_normalized.count("return;") != 1:
+    if candidate_normalized.count("return;") != 1:
         return None
-    candidate_body = candidate_normalized.split("{", 1)[1][:-2]
-    stock_body = stock_normalized.split("{", 1)[1][:-2]
-    candidate_prefix = candidate_body[: -len("return;")]
-    stock_prefix = stock_body[: -len("return;")]
+    candidate_prefix = candidate_match.group("body")
+    stock_prefix = stock_match.group("body")
     if not candidate_prefix or candidate_prefix not in stock_prefix:
         return None
     omitted_suffix = stock_prefix.replace(candidate_prefix, "", 1)
