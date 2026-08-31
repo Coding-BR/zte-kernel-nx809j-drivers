@@ -8105,17 +8105,22 @@
     {
       "evidence": [
         "source:syna_tcm_read_flash_mtp_config.c:sha256:574f5ffb3c036c05efc0462f03522189bd4366c6f78ba87814b351c5256f6723",
+        "exact-assembly:syna_tcm_read_flash_mtp_config_exact.S:sha256:473149e9352980d1bf857068463af6f8fbcbeab49c69284cd94ef7a050369319",
+        "host-harness:syna_tcm_read_flash_mtp_config_host_test.c:sha256:023bd07c8ff3647e1996553d67625f923def438db7c39f38c83f65fbf1ffab62",
         "ghidra-pseudocode:decompiled/0300_00125a18_syna_tcm_read_flash_mtp_config.c:sha256:0794c9818695fb5016d32ded6761147f0785246f9d37b370cc68530713e195e2",
         "ghidra-pcode:pcode/0300_00125a18_syna_tcm_read_flash_mtp_config.jsonl:sha256:a35a64ea2a6fc118dad6773e704adead3b783c2ebf4009ee5ebc2e9c2f73e8f4",
         "stock-assembly:0300_syna_tcm_read_flash_mtp_config_00125a18.asm:sha256:55f1188a6c1792c8ac213668a01ebc853314d80b4061666d81d2baa0f5dc7d8d",
-        "aarch64:next590_syna_tcm_read_flash_mtp_config_exact_v1/aarch64_validation_report.json:sha256:70ceb54659f6f8cafb97162ae1b97bf0fbc93c43c10277014d71a2aa948b4ab0",
-        "assembly:next590_syna_tcm_read_flash_mtp_config_exact_v1/assembly/comparison.json:sha256:a7d24df948c67250639530428c402989f3737b30093d897726c69d3cfc39b3c4",
-        "kcfi:next590_syna_tcm_read_flash_mtp_config_exact_v1/kcfi/comparison.json:sha256:2ae566c85bb3c2460dddfe8a4850d7bedc736523010d5b67098b310cd0d9e603",
-        "joern:next590_syna_tcm_read_flash_mtp_config_exact_v1/joern/joern_gate_report.json:sha256:6cf4748f5e853b6543ae8d4dcc12fadde0f04bdea4e7781694f16a77f530ab08",
-        "host:next590_syna_tcm_read_flash_mtp_config_exact_v1/host_harness_report.json:sha256:34091fcea55cc5def687efa12b6eb36d485afdcb6a7db4d6954a3706a5856d55",
-        "compile:next590_syna_tcm_read_flash_mtp_config_exact_v1/canonical_build_report.json:sha256:86e4b0e75a2dd50ef1770ca29e02c597055244ed4d2b5fbc8273ddaeb2fa6e44"
+        "candidate-assembly:candidate_assembly.asm:sha256:45f0789960366b615597d4a382cce81a4a5c160a25b18fd34d256900aa26da9a",
+        "aarch64-comparison:aarch64_comparison.json:sha256:306448bea1955dd38d3ad0d7ed9034977100425c6151336c3f8958513e3e681a",
+        "canonical-build:canonical_build_report.json:sha256:05e44613ee60edfaae3cd51e409d44d32d1ebfee3409b9f9d90a22d855c5f1eb",
+        "candidate-module:candidate_zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:kcfi_comparison.json:sha256:b14daa5c568a56b9463483e47451faed0e79adf85c2c504725e5c2da251115d1",
+        "joern-summary:joern_gate_summary.json:sha256:35639674df98a3b317847845d812898e8401a6db56c91ccdd330cdac5757d07a",
+        "host-test:host_harness_attestation_report.json:sha256:b6775af7b7898f68a1f44e71284eed61b931a18fc83cd719eaa89ae1d843d6fa",
+        "promotion-evidence:promotion_evidence.json",
+        "microtask-attestation:microtask_attestation.json:sha256:246dbe9f187fe7d428da51e8135726764b535849826fe9c7f9b352ea41d68139"
       ],
-      "mapping_basis": "exact filename and function-token match",
+      "mapping_basis": "exact filename/function token plus exact AArch64 opcode, relocation, ELF symbol-size and KCFI parity; direct ASan/UBSan contract and strict Joern gate",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_read_flash_mtp_config.c",
@@ -8124,7 +8129,7 @@
       "stock_body_bytes": 508,
       "stock_entry": "00125a18",
       "stock_function": "syna_tcm_read_flash_mtp_config",
-      "mapping_note": "Function-level offline parity is attested. Android runtime and NX809J hardware behavior remain unverified until controlled physical procedure runs."
+      "mapping_note": "Exact offline parity: 127 AArch64 instructions/508 ELF bytes, KCFI parity BOTH_NO_VALID_KCFI_PREAMBLE (stock and candidate), canonical Docker build reproducible in two cycles, 8-case ASan/UBSan contract in two repetitions, and strict Joern with 77 calls, 14 controls, zero unresolved calls and zero parser errors. Android runtime and NX809J hardware remain deferred."
     },
     {
       "evidence": [
