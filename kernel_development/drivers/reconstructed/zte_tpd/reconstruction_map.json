@@ -8163,17 +8163,22 @@
     {
       "evidence": [
         "source:syna_tcm_update_flash_block.c:sha256:96886ff0ff1a3b728961be47842a99d31ad756c16e0d879e791cabc498115798",
+        "exact-assembly:syna_tcm_update_flash_block_exact.S:sha256:10d5fed89866fd69141ec2f8356464902ffd8597dd1ec8eae030d94f32c77f8e",
+        "host-harness:syna_tcm_update_flash_block_host_test.c:sha256:682eb5c19042e767ca7bc8bbfe0157fece52cef09b2cc2842c53dc3657f099d4",
         "ghidra-pseudocode:decompiled/0302_00125f38_syna_tcm_update_flash_block.c:sha256:52691ee8fa8f223598a9ef6b9cdd0d0975088b3a4952421665b5a4b3f54d7194",
         "ghidra-pcode:pcode/0302_00125f38_syna_tcm_update_flash_block.jsonl:sha256:eda379a8d11e20b14a393fc4de548b2d580e54c76f678c3aad8f353411b08621",
         "stock-assembly:0302_syna_tcm_update_flash_block_00125f38.asm:sha256:34481b6edba3348b895cb674f215d709e75111884dda1866b9a9bab006939c04",
-        "aarch64:attestation/next592_syna_tcm_update_flash_block_exact_v1/aarch64_validation_report.json:sha256:c972e1be42a3418d8e9972cb6b1a38a040b3d62eedd3235b31d0c956d56879c4",
-        "assembly:attestation/next592_syna_tcm_update_flash_block_exact_v1/assembly/comparison.json:sha256:42dd61ef6b5da749b8cba86b5919cb1ea63cb6736e11b2f056b18b2f41dad4b9",
-        "kcfi:attestation/next592_syna_tcm_update_flash_block_exact_v1/kcfi/comparison.json:sha256:caa520157f6b0b913088dce32b20b02f749277b31bedbf7804407e8262396849",
-        "joern:attestation/next592_syna_tcm_update_flash_block_exact_v1/joern/joern_gate_report.json:sha256:9d81311406bced3ef540d020179e260e83fdd649f15493bd00b82889ff2a9876",
-        "host:attestation/next592_syna_tcm_update_flash_block_exact_v1/host_harness_report.json:sha256:86411780020627d3c64bb27b39b642a3842ce2a3d14f58787fbdacc30dc50ad4",
-        "compile:attestation/next592_syna_tcm_update_flash_block_exact_v1/canonical_build_report.json:sha256:37819c0fa9ec92cf73b20c04fe7490e509cba0730202e13cf8b0f455288626af"
+        "candidate-assembly:candidate_assembly.asm:sha256:ed7cfa7ef5c0fbbe41dc33c342453bc11b7980786cac9a448f0b1dc9d71fe13b",
+        "aarch64-comparison:aarch64_comparison.json:sha256:5479b3ff1530d927218593f10b9c688f5e27ae6487f8a73b98c149b818cf7742",
+        "canonical-build:canonical_build_report.json:sha256:4eb4d772421b0c27a0f19662dc2fbcaabe511b25d3cc8ad2b97bcbbfbfd3de29",
+        "candidate-module:candidate_zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:kcfi_comparison.json:sha256:8f7ab1df3fb63a8d3620eb774e379a5ae4bd31d9eaa7c8b5fd3e9d94a7b32b95",
+        "joern-summary:joern_gate_summary.json:sha256:d3673364b9c4e75d84b5197d36e81927d65f96cf655ba46d9f3c2c686b2b652a",
+        "host-test:host_harness_attestation_report.json:sha256:1bf047518649e584cff172f570df597e683650973691748cb7c05b2fb9ca3c15",
+        "promotion-evidence:promotion_evidence.json",
+        "microtask-attestation:microtask_attestation.json:sha256:5f8394083e2f5341420c72d76fc15c7d5ddd91c71719d6ecf20bf83c85ca0116"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan harness evidence",
+      "mapping_basis": "exact filename/function token plus exact AArch64 opcode, relocation, ELF symbol-size and KCFI parity; direct ASan/UBSan contract and strict Joern gate",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_update_flash_block.c",
@@ -8182,7 +8187,7 @@
       "stock_body_bytes": 2164,
       "stock_entry": "00125f38",
       "stock_function": "syna_tcm_update_flash_block",
-      "mapping_note": "Function-level offline parity is attested. Android runtime and NX809J hardware behavior remain unverified until controlled physical procedure runs."
+      "mapping_note": "Exact offline parity: 541 AArch64 instructions/2,164 ELF bytes, KCFI parity BOTH_NO_VALID_KCFI_PREAMBLE (stock and candidate), canonical Docker build reproducible in two cycles, 8-case ASan/UBSan contract in two repetitions, and strict Joern with 391 calls, 64 controls, zero unresolved calls and zero parser errors. Android runtime and NX809J hardware remain deferred."
     },
     {
       "evidence": [
