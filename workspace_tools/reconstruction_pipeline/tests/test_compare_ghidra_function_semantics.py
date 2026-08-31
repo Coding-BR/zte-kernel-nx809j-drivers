@@ -296,6 +296,78 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertFalse(result["checks"]["normalized_decompiled_c"])
 
+    def test_explicit_pcode_fallback_records_lossy_decompiler_truncation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            for export, body in (
+                (
+                    stock,
+                    "void target(void) { x = 1; printk(); cleanup(); return; }\n",
+                ),
+                (
+                    candidate,
+                    "void target(void) { printk(); return; }\n",
+                ),
+            ):
+                record_path = export / "functions.jsonl"
+                records = [json.loads(line) for line in record_path.read_text().splitlines()]
+                records[0]["body_bytes"] = 8
+                write_jsonl(record_path, records)
+                (export / "decompiled" / "target.c").write_text(body, encoding="utf-8")
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+                allow_pcode_authoritative_decompiler_fallback=True,
+            )
+
+        self.assertTrue(result["passed"])
+        self.assertFalse(result["checks"]["normalized_decompiled_c"])
+        self.assertEqual(result["raw_failures"], ["normalized_decompiled_c"])
+        self.assertEqual(
+            result["decompiled_normalization"][
+                "pcode_authoritative_decompiler_fallback"
+            ]["kind"],
+            "ghidra_premature_return_decompiler_truncation",
+        )
+
+    def test_pcode_fallback_is_opt_in(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            for export, body in (
+                (stock, "void target(void) { x = 1; printk(); cleanup(); return; }\n"),
+                (candidate, "void target(void) { printk(); return; }\n"),
+            ):
+                record_path = export / "functions.jsonl"
+                records = [json.loads(line) for line in record_path.read_text().splitlines()]
+                records[0]["body_bytes"] = 8
+                write_jsonl(record_path, records)
+                (export / "decompiled" / "target.c").write_text(body, encoding="utf-8")
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+            )
+
+        self.assertFalse(result["passed"])
+        self.assertEqual(result["failures"], ["normalized_decompiled_c"])
+
     def test_synthetic_breakpoint_context_and_alloc_tag_are_normalized(self) -> None:
         stock = (
             "void target(void) { "

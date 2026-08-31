@@ -222,6 +222,15 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
     for key in ("source_root", "stock_module", "ghidra_export", "reconstruction_map"):
         if not isinstance(paths.get(key), str) or not paths[key]:
             raise ValueError(f"paths.{key} is required")
+    ghidra = job.get("ghidra", {})
+    if not isinstance(ghidra, dict):
+        raise ValueError("ghidra must be an object")
+    if ghidra.get("allow_pcode_authoritative_decompiler_fallback", False):
+        reason = ghidra.get("fallback_reason")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError(
+                "ghidra.fallback_reason is required when the P-Code fallback is enabled"
+            )
     docker = job.get("docker", {})
     if docker.get("adapter", "generic_driver_audit") not in {
         "zte_tpd_canonical",
@@ -769,6 +778,11 @@ def execute_post_candidate(
                 same_names = False
                 break
             ghidra_command.extend(["--function", item["stock_function"]])
+        ghidra_config = job.get("ghidra", {})
+        if isinstance(ghidra_config, dict) and ghidra_config.get(
+            "allow_pcode_authoritative_decompiler_fallback", False
+        ):
+            ghidra_command.append("--allow-pcode-authoritative-decompiler-fallback")
         if same_names:
             result = run_command(
                 "ghidra_semantics", ghidra_command,

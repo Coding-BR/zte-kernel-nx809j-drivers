@@ -172,6 +172,13 @@ class HardDriverProtocolTests(unittest.TestCase):
         self.assertIn("validate_reconstructed_drivers.py", " ".join(plan["docker"]))
         self.assertNotIn("--promote-fresh", plan["docker"])
 
+    def test_pcode_fallback_requires_an_audit_reason(self):
+        job = base_job(
+            ghidra={"allow_pcode_authoritative_decompiler_fallback": True}
+        )
+        with self.assertRaisesRegex(ValueError, "fallback_reason is required"):
+            validate_job(job)
+
 
 if __name__ == "__main__":
     unittest.main()

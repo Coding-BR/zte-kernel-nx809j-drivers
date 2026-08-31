@@ -500,6 +500,41 @@ def pcode_shape(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return shape
 
 
+def lossy_decompiler_truncation(
+    stock_normalized: str, candidate_normalized: str
+) -> dict[str, Any] | None:
+    """Identify Ghidra's premature-return/no-return decompiler truncation.
+
+    This is intentionally narrow.  The candidate must end in a single return,
+    the stock function must also have a single final return, and the candidate's
+    non-return body must occur contiguously in the stock body before that final
+    return.  The caller additionally requires exact body bytes and P-Code shape.
+    Assembly parity is an independent protocol gate.
+    """
+    if not candidate_normalized.endswith("return;}") or not stock_normalized.endswith(
+        "return;}"
+    ):
+        return None
+    if candidate_normalized.count("return;") != 1 or stock_normalized.count("return;") != 1:
+        return None
+    candidate_body = candidate_normalized.split("{", 1)[1][:-2]
+    stock_body = stock_normalized.split("{", 1)[1][:-2]
+    candidate_prefix = candidate_body[: -len("return;")]
+    stock_prefix = stock_body[: -len("return;")]
+    if not candidate_prefix or candidate_prefix not in stock_prefix:
+        return None
+    omitted_suffix = stock_prefix.replace(candidate_prefix, "", 1)
+    return {
+        "kind": "ghidra_premature_return_decompiler_truncation",
+        "candidate_body_fragment": candidate_prefix,
+        "omitted_stock_body_fragment": omitted_suffix,
+        "requirement": (
+            "exact body bytes and P-Code operation shape; independent assembly "
+            "parity remains mandatory"
+        ),
+    }
+
+
 def compare_function(
     function: str,
     stock_root: Path,
@@ -512,6 +547,7 @@ def compare_function(
     candidate_elf_strings: dict[int, str] | None = None,
     stock_symbol_strings: dict[str, str] | None = None,
     candidate_symbol_strings: dict[str, str] | None = None,
+    allow_pcode_authoritative_decompiler_fallback: bool = False,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -563,6 +599,7 @@ def compare_function(
     )
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
+    pcode_authoritative_fallback: dict[str, Any] | None = None
     if not direct_normalized_match and body_bytes_match and pcode_shape_match:
         fallback = fragmented_byte_flag_normalization(
             stock_normalized,
@@ -573,6 +610,13 @@ def compare_function(
         if fallback is not None:
             fallback_stock, fallback_candidate, fallback_evidence = fallback
             normalized_decompiled_match = fallback_stock == fallback_candidate
+        elif allow_pcode_authoritative_decompiler_fallback:
+            pcode_authoritative_fallback = lossy_decompiler_truncation(
+                stock_normalized, candidate_normalized
+            )
+            # Keep the raw C check false: this is an explicit low-level
+            # authority fallback, not a claim that the decompiled C matched.
+            normalized_decompiled_match = False
         else:
             normalized_decompiled_match = False
     else:
@@ -584,15 +628,20 @@ def compare_function(
         "normalized_decompiled_c": normalized_decompiled_match,
         "pcode_operation_shape": pcode_shape_match,
     }
-    failures = [name for name, passed in checks.items() if not passed]
+    raw_failures = [name for name, passed in checks.items() if not passed]
+    failures = list(raw_failures)
+    if pcode_authoritative_fallback is not None:
+        failures = [name for name in failures if name != "normalized_decompiled_c"]
     return {
         "function": function,
         "passed": not failures,
         "checks": checks,
+        "raw_failures": raw_failures,
         "failures": failures,
         "decompiled_normalization": {
             "direct_match": direct_normalized_match,
             "fragmented_byte_global_fallback": fallback_evidence,
+            "pcode_authoritative_decompiler_fallback": pcode_authoritative_fallback,
         },
         "stock": {
             "body_bytes": stock_record.get("body_bytes"),
@@ -631,6 +680,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--candidate-module", type=Path)
     parser.add_argument("--function", action="append", dest="functions", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--allow-pcode-authoritative-decompiler-fallback",
+        action="store_true",
+        help="allow the explicit narrow Ghidra premature-return fallback",
+    )
     return parser.parse_args()
 
 
@@ -669,6 +723,7 @@ def main() -> int:
             candidate_elf_strings,
             stock_symbol_strings,
             candidate_symbol_strings,
+            args.allow_pcode_authoritative_decompiler_fallback,
         )
         for function in args.functions
     ]
@@ -677,7 +732,11 @@ def main() -> int:
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "method": (
             "Ghidra normalized decompiled-C equality plus ordered instruction-mnemonic "
-            "and P-Code-operation shape equality"
+            "and P-Code-operation shape equality; optional explicit P-Code-authoritative "
+            "fallback records lossy premature-return decompilation"
+        ),
+        "pcode_authoritative_decompiler_fallback_allowed": (
+            args.allow_pcode_authoritative_decompiler_fallback
         ),
         "passed": len(results) == len(args.functions)
         and all(result["passed"] for result in results),

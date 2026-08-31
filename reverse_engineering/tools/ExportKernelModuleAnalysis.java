@@ -177,6 +177,7 @@ public class ExportKernelModuleAnalysis extends GhidraScript {
             FunctionManager functionManager,
             SymbolTable symbolTable) throws Exception {
         DecompileOptions options = new DecompileOptions();
+        options.setEliminateUnreachable(false);
         DecompInterface decompiler = new DecompInterface();
         decompiler.setOptions(options);
         decompiler.toggleCCode(true);
