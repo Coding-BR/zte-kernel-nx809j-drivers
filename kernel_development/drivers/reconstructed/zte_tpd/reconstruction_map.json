@@ -7959,16 +7959,23 @@
     {
       "evidence": [
         "source:syna_tcm_set_up_flash_access.c:sha256:a9e488eb89c0a92cafd27598ed62e94dd6dc28951120c1287831570dffb40249",
+        "exact-assembly:syna_tcm_set_up_flash_access_exact.S:sha256:1d3382e45d3ba15d4c0118da6c75d7bc980eb0365137fdde90dddc1dc59b8826",
+        "host-harness:syna_tcm_set_up_flash_access_host_test.c:sha256:1dc6abda0151346d781547d497c6c288d6997c2d4bc7ae1ffca6515756932b82",
+        "assembly-input:syna_tcm_set_up_flash_access_aarch64_assembly_input.c:sha256:671227e8157cf71b5e3db69d2ca50a85cb060b6f7f52cf95122d29f587ba290a",
         "ghidra-pseudocode:decompiled/0295_001244e4_syna_tcm_set_up_flash_access.c:sha256:25f5d8713198df6470b66184362c18cc1387f2bd00a268ea5e198a73bccf6dce",
         "ghidra-pcode:pcode/0295_001244e4_syna_tcm_set_up_flash_access.jsonl:sha256:4dd08518fa854d5c56d2afd9346a7bc9d191405d4d07e77146b78281136a4de8",
-        "stock-assembly:0295_syna_tcm_set_up_flash_access_001244e4.asm:sha256:43a8f535dfb176ae6f95c9932caee647131d939fd35b43609f8f846ddf4e8d60",
-        "candidate-assembly:next578_syna_tcm_set_up_flash_access_exact_v1.asm:sha256:408df9caa351a946c558b018cc43ff3dcaa9d77fc85ca26682939771bea04452",
-        "aarch64-comparison:assembly_comparison.json:sha256:374ee0cb259b17ef97bfba2b75b281c2f4be5eef97659b29f242ce8e356f22aa",
-        "kcfi-comparison:kcfi_comparison.json:sha256:21cab64772858c1a1a981d82c5673337a1fcbd18ef253b9c5f872d27720cd5c8",
-        "joern:joern_gate_report.json:sha256:5717e0033229b4a86fbbed9c56add913d9a8d15d89f498f4d6aef09ba2df2b69",
-        "host:host_harness_report.json:sha256:b9a6fe837c42fea3ead6e37c0902b6b5ec8f2a714b0a97ddd2253321395aaf87"
+        "stock-assembly:stock_assembly.asm:sha256:43a8f535dfb176ae6f95c9932caee647131d939fd35b43609f8f846ddf4e8d60",
+        "candidate-assembly:candidate_assembly.asm:sha256:daa5501d5e40f17a1739cdd7286fe6c4e016ffb978dd838249c858121f95a502",
+        "aarch64-comparison:aarch64_comparison.json:sha256:d8da887e236620ba5f3b74b7d5cf4a2bd3fbfcb21d4d485bec8005b54a69ba80",
+        "canonical-build:canonical_build_report.json:sha256:f48634d937732b4671adc96d3fb54d899dfb218c4dae1443241c1a0702cf8c36",
+        "candidate-module:candidate_zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:kcfi_comparison.json:sha256:1cb26aa83b842832253bd5e05de4042e0e453620a136332d51c4baf5cb21b593",
+        "host-test:host_harness_attestation_report.json:sha256:39e7d6ef95acb835fe35c1063e274053587e4589050b308cbde87bfbbf36edf5",
+        "joern-summary:joern_gate_summary.json:sha256:7650faa4e4d8d42b508253777b4b0ccaa61b75d9e154df3188ad7f79d380bb80",
+        "promotion-evidence:promotion_evidence.json",
+        "microtask-attestation:microtask_attestation.json:sha256:18fb57221dd560ac150f0e4db31b43ba2abcccf061eab491578e5b50bdb5c15d"
       ],
-      "mapping_basis": "exact filename and function-token match",
+      "mapping_basis": "exact filename/function token plus exact AArch64 opcode, relocation, ELF symbol-size and KCFI parity; direct ASan/UBSan contract and strict Joern gate",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_set_up_flash_access.c",
@@ -7977,7 +7984,7 @@
       "stock_body_bytes": 740,
       "stock_entry": "001244e4",
       "stock_function": "syna_tcm_set_up_flash_access",
-      "mapping_note": "Function-level offline parity is attested. Android runtime and NX809J hardware behavior remain unverified until controlled physical procedure runs."
+      "mapping_note": "Exact offline parity: 185 AArch64 instructions/740 ELF bytes, KCFI parity BOTH_NO_VALID_KCFI_PREAMBLE (stock and candidate), canonical Docker build reproducible in two cycles, 8-case ASan/UBSan contract in two repetitions, and strict Joern with 99 calls, 15 controls, zero unresolved calls and zero parser errors. Android runtime and NX809J hardware remain deferred."
     },
     {
       "evidence": [
