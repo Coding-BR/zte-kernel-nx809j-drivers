@@ -6077,20 +6077,29 @@
     {
       "evidence": [
         "source:syna_testing_pt0a_show.c:sha256:f577ee47d85f32854998f88f049e31bc6531fb181b295354e978ea2cd3f8326b",
+        "source-exact:syna_testing_pt0a_show_exact.S:sha256:b8d4005b3765f07dbb9c3b97040e7ee579d205688842cbad8f6db8ad6b9608b8",
         "ghidra-pseudocode:decompiled/0226_0011c944_syna_testing_pt0a_show.c:sha256:6b4b71f7acfc41875858b057c8b06d2bfed51f9d7f342ca04bf91bc5c71f7428",
         "ghidra-pcode:pcode/0226_0011c944_syna_testing_pt0a_show.jsonl:sha256:887968f7abbf5d10bf7a458a7996ab915c51e2608c59279bb957f8f4eac248af",
-        "stock-assembly:0226_syna_testing_pt0a_show_0011c944.asm:sha256:3b460d56c99bcb71ee655d2b94dd722b13879075038df038779be600bccd6ae3"
+        "stock-assembly:0000_syna_testing_pt0a_show.asm:sha256:3b460d56c99bcb71ee655d2b94dd722b13879075038df038779be600bccd6ae3",
+        "candidate-assembly:0000_syna_testing_pt0a_show.asm:sha256:95d44bfd7a6690267734a7f156993ba781bd614f67dd62424779fcbbc20e68f9",
+        "assembly-compare:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/aarch64_comparison.json:sha256:d8ed736c8174973750ed0046db7d69a2d978e9f503be5ff2adb42416bc8229a5",
+        "candidate-module:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/candidate_module/zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "canonical:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/canonical_build_report.json:sha256:7b5bcb603a1dc7a44b95d80545d857d444224ac0e450b8d2e053221f302936a3",
+        "kcfi:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/kcfi/kcfi_comparison.json:sha256:ace9d565992c0503d58a0fd80e6657c4d75b672d55dace1dc87f7422fc7afcf6",
+        "test:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/host/host_harness_docker_report.json:sha256:10bed37400abc7fb35a6100e2d932a381cab1e41b4e6a5cc03344a16cecbb822",
+        "joern-summary:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/joern/joern_gate_summary.json:sha256:ef62a83bd0f929f484691a2de854bc731a06ef23ed46e07acce793c52bb4a569",
+        "attestation:attestation/next227_syna_testing_pt0a_show_exact_v1/exact_revalidation_20260831/microtask_attestation.json:sha256:9dd2c400033ee7f8283b0f15ae522e90ffadde7766ede85a9c92cd49e6761db7"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra decompilation/P-Code, exact AArch64 object comparison, KCFI type-ID comparison, canonical Docker build, direct 8-case ASan/UBSan harness and strict Joern analysis",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_testing_pt0a_show.c",
       "source_function": "syna_testing_pt0a_show",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 724,
       "stock_entry": "0011c944",
       "stock_function": "syna_testing_pt0a_show",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Exact candidate has 181 instructions and 724 bytes matching stock, with KCFI type ID 0x4e31a072. Host ASan/UBSan passes eight direct cases in two Docker cycles; strict Joern resolves 117 calls and 14 control structures with zero parser or unresolved-call errors. A devm_kfree lifetime review finding is retained; Android sysfs integration and hardware behavior remain unverified."
     },
     {
       "evidence": [
