@@ -16768,27 +16768,37 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_get_palm_mode\nEntrada Ghidra: 0012c8e4\nTamanho stock: 24 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_get_palm_mode.c:tpd_get_palm_mode\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0357_0012c8e4_tpd_get_palm_mode.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0357_0012c8e4_tpd_get_palm_mode.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v1/exact_revalidation_20260829/canonical_build_report.json",
-          "sha256": "292f46ffb45efbfe56415c355564b0e1b9b4ea6834307f3df3943194764defaa"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v5/exact_revalidation_20260831/canonical_build_report.json",
+          "sha256": "0551114f26cf4eb50da96a9dbeb63898aa0005e34e0efe766f2cd56e220308cf"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v1/exact_revalidation_20260829/kcfi_comparison.json",
-          "sha256": "021c43030b12f3584ce620b40871f20036cea5fd7d73e54da18507ee0ff97409"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v5/exact_revalidation_20260831/kcfi/comparison.json",
+          "sha256": "0592463eaf58174ffc4ce8b25dca1e25a5f4ce5e5c8f951a21ffbfec936c7189"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v1/exact_revalidation_20260829/host_harness_docker_report.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v5/exact_revalidation_20260831/host/host_harness_docker_report.json",
           "sha256": "b47b819e7013b2824719ff4199e7faac5752cb37953a9134d3a4dbddd96132c2"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v1/exact_revalidation_20260829/joern_gate_summary.json",
-          "sha256": "79cfe882935af131e21f76b017e9d7c9b4475dfadae40a4e4f2eb1c4849cb9e2"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v5/exact_revalidation_20260831/joern/joern_gate_summary.json",
+          "sha256": "2b098b8978160fa6b03da8de1afc24c20dec449c0b0fea3fbd3b1bf28156eb09"
+        },
+        {
+          "role": "assembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v5/exact_revalidation_20260831/aarch64_comparison.json",
+          "sha256": "e0da43952c8a2bfcda85c959297b6e6fa0d8dd2e836d0f0c02bafa2fb805cb9b"
+        },
+        {
+          "role": "ghidra",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next358_tpd_get_palm_mode_exact_v5/exact_revalidation_20260831/ghidra_semantic_comparison.json",
+          "sha256": "1d5b54b340ba7ea9576de75a649979233ee68f75f80a398df6f17010090eb82f"
         }
       ]
     },
