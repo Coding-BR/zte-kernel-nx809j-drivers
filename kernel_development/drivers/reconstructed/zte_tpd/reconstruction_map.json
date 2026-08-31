@@ -4826,18 +4826,20 @@
     {
       "evidence": [
         "source:syna_open.c:sha256:b652e9be3dbee11e7101e5ef9f092f37fd38f1b9396279812d96392440ddb878",
+        "source-exact:syna_open_exact.S:sha256:6fc74818dbe2a297c539e93a3e8ecc86a196f7440028c68c228ca5e177dce088",
         "ghidra-pseudocode:decompiled/0176_001148a0_syna_open.c:sha256:7afbf8d65bf9462c36406c594195d4daef63c461c44dcee71ee1613e4e097cbd",
         "ghidra-pcode:pcode/0176_001148a0_syna_open.jsonl:sha256:3768358a069cb815bce55d94d0f6660fb2c6f1768e74a7a406cd6edcefe2b2cc",
-        "stock-assembly:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/stock_assembly/stock_syna_open.asm:sha256:083871a5abd00aaced0136b0013c23d0cd9208d6c143a976f916216b628f2dfc",
-        "joern:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:0a37f45740b3b7fbae17b72ac401276a2d93d2d650a614efb06a8ac556519147",
-        "host-harness:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:ece23089c7f03214fafcdf3e15e2abbf1da8fd65ba157fba5cd56a16f68f839b",
-        "canonical-build:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/canonical_build_report.json:sha256:38699a2571824aa3bd237c472275c3177b6698154cb862073d38b9a175239e77",
-        "kcfi-compare:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:1e5cf766c694bfe5ae2af3e11e446e8de4cfa3f54c3f394108d1401db24a16c2",
-        "candidate-assembly:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/candidate_assembly/candidate_syna_open.asm:sha256:73b60b57647ec9625513533c9bbbd19d5d122a9534e32a8f1ebd234e7834d486",
-        "assembly-compare:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/aarch64_comparison.json:sha256:429622ef1f2b2d0704b1a411177cec9f7b5484bb37be9257dfce2be275e5afc0",
-        "attestation:attestation/next177_syna_open_exact_v1/exact_revalidation_20260830/microtask_attestation.json:sha256:SELF_HASH_NOT_APPLICABLE:status:OFFLINE_EXACT"
+        "stock-assembly:0000_syna_open.asm:sha256:083871a5abd00aaced0136b0013c23d0cd9208d6c143a976f916216b628f2dfc",
+        "candidate-assembly:0000_syna_open.asm:sha256:73b60b57647ec9625513533c9bbbd19d5d122a9534e32a8f1ebd234e7834d486",
+        "aarch64-comparison:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:599a73ed82515e2d8bf920dbe66159cfec46ec7ff102421fcec3b6d6cfee2e25",
+        "canonical-build:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:3ceadf839e5e208e2f9cc5fa6cc297b068f5683a4b528704f3716a20d8c75016",
+        "kcfi-comparison:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:48ec9c121a1ba525e0bd784feec949263e8f014083f4b323bec87e6bfc4fe9bd",
+        "source-test:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:f0c33aee09d4a10646b6c8c0635971746f70d996a295d49925c54de9abfb1785",
+        "joern-summary:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:1e50827e521ea58fbb1a45448c6adeddd8e86cbd02bd8fcf09ee39734882f902",
+        "candidate-module:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "attestation:attestation/next177_syna_open_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:74a62b06626f54e3b9762b320595a54f6d0ea4c4d68f2e04506dce4b52d1aaa7"
       ],
-      "mapping_basis": "Ghidra decompilation and P-Code plus Joern, host sanitizer harness, canonical Docker build, KCFI and AArch64 comparison",
+      "mapping_basis": "Ghidra P-Code plus Joern, Docker canonical build, ASan/UBSan host harness, KCFI and AArch64 assembly comparison",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_open.c",
@@ -4846,7 +4848,7 @@
       "stock_body_bytes": 60,
       "stock_entry": "001148a0",
       "stock_function": "syna_open",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 15 AArch64 instructions and 60 bytes; KCFI type ID 0x9829071d, section, symbol size and four resolved data relocations match. Joern strict analysis, two-cycle canonical Docker build and 2-case ASan/UBSan host harness pass. Hardware Android/NX809J validation remains deferred."
+      "mapping_note": "Promoted by next177_syna_open_exact_v4 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware remains deferred."
     },
     {
       "evidence": [
