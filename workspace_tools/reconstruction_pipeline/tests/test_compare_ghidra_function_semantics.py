@@ -368,6 +368,36 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertEqual(result["failures"], ["normalized_decompiled_c"])
 
+    def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
+        stock = (
+            'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'
+            '_printk(GHIDRA_STRING["msg"],"get_tp_algo_item_id",*pbVar4);'
+            'return(ulong)*pbVar4;}'
+        )
+        candidate = (
+            'undefined8get_tp_algo_item_id(char*param_1){undefined8uVar4;'
+            'undefined1*puVar5;'
+            '_printk(GHIDRA_STRING["msg"],"get_tp_algo_item_id",*puVar5);'
+            'returnuVar4;}'
+        )
+
+        self.assertIsNone(
+            MODULE.decompiler_return_propagation_artifact(stock, candidate)
+        )
+        evidence = MODULE.decompiler_return_propagation_artifact(candidate, stock)
+        self.assertIsNone(evidence)
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+        self.assertIsNone(evidence)
+
+        # The candidate form must include the assignment to the external call;
+        # this guards against accepting an unrelated changed return expression.
+        candidate = candidate.replace(
+            '_printk(', 'uVar4=_printk(', 1
+        )
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+        self.assertIsNotNone(evidence)
+        self.assertEqual(evidence["kind"], "ghidra_call_return_propagation_artifact")
+
     def test_md5_file_is_stable_for_module_identity_binding(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             module = Path(temporary_directory) / "candidate.ko"

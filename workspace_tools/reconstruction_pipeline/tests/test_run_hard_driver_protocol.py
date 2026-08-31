@@ -179,6 +179,13 @@ class HardDriverProtocolTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fallback_reason is required"):
             validate_job(job)
 
+    def test_return_propagation_fallback_requires_an_audit_reason(self):
+        job = base_job(
+            ghidra={"allow_return_propagation_fallback": True}
+        )
+        with self.assertRaisesRegex(ValueError, "fallback_reason is required"):
+            validate_job(job)
+
 
 if __name__ == "__main__":
     unittest.main()
