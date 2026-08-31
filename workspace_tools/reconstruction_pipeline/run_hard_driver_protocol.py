@@ -659,7 +659,7 @@ def execute_post_candidate(
     candidate_args: list[str] = []
     for item in functions:
         stock_selector = item["stock_function"]
-        candidate_selector = item["source_function"]
+        candidate_selector = item.get("candidate_function", item["source_function"])
         if item.get("stock_symbol_offset") is not None:
             stock_selector += f"@{item['stock_symbol_offset']}"
         if item.get("candidate_symbol_offset") is not None:
@@ -715,7 +715,7 @@ def execute_post_candidate(
     pairs: list[str] = []
     for item in functions:
         stock_selector = item["stock_function"]
-        candidate_selector = item["source_function"]
+        candidate_selector = item.get("candidate_function", item["source_function"])
         if item.get("stock_symbol_offset") is not None:
             stock_selector += f"@{item['stock_symbol_offset']}"
         if item.get("candidate_symbol_offset") is not None:
