@@ -1,0 +1,116 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer point_report_reset_harness.c -o build/point_report_reset_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/point_report_reset_harness"
+  ],
+  "coverage": {
+    "active_slot_path": true,
+    "hardware_paths_exercised": false,
+    "inactive_slot_path": true,
+    "invalid_id_brk_path_executed": false
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS active_clears_flag\nPASS active_call_count\nPASS active_call_order\nPASS active_log_id\nPASS active_mutex_offset\nPASS active_input_pointer\nPASS active_slot_event\nPASS active_sync_event\nPASS active_sleep\nPASS inactive_no_calls\nPASS inactive_flag_unchanged\nSUMMARY tests=11 failures=0\n",
+      "summary": "SUMMARY tests=11 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "active_clears_flag",
+        "active_call_count",
+        "active_call_order",
+        "active_log_id",
+        "active_mutex_offset",
+        "active_input_pointer",
+        "active_slot_event",
+        "active_sync_event",
+        "active_sleep",
+        "inactive_no_calls",
+        "inactive_flag_unchanged"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS active_clears_flag\nPASS active_call_count\nPASS active_call_order\nPASS active_log_id\nPASS active_mutex_offset\nPASS active_input_pointer\nPASS active_slot_event\nPASS active_sync_event\nPASS active_sleep\nPASS inactive_no_calls\nPASS inactive_flag_unchanged\nSUMMARY tests=11 failures=0\n",
+      "summary": "SUMMARY tests=11 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "active_clears_flag",
+        "active_call_count",
+        "active_call_order",
+        "active_log_id",
+        "active_mutex_offset",
+        "active_input_pointer",
+        "active_slot_event",
+        "active_sync_event",
+        "active_sleep",
+        "inactive_no_calls",
+        "inactive_flag_unchanged"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-31T00:20:46.346085+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\point_report_reset.c",
+      "sha256": "cdda215f9a40aa79a3ceecacdf086b15286b533711a4524ca2e988031859e2e1",
+      "size": 719
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\point_report_reset_harness.c",
+      "sha256": "53afa9dfc7d9281431223eea0db3efb9c5ab641785104a8f5f5b3fa80d6ec449",
+      "size": 3581
+    }
+  ],
+  "limitations": [
+    "The invalid-ID BRK path is proven by assembly/P-Code and represented as a host trap, but is not executed.",
+    "The harness uses deterministic stubs; no smartphone, module load, input subsystem, SPI, IRQ, MMIO or physical hardware is exercised."
+  ],
+  "mode": "offline_hash_bound_point_report_reset_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 11,
+    "failed": [],
+    "passed": [
+      "active_clears_flag",
+      "active_call_count",
+      "active_call_order",
+      "active_log_id",
+      "active_mutex_offset",
+      "active_input_pointer",
+      "active_slot_event",
+      "active_sync_event",
+      "active_sleep",
+      "inactive_no_calls",
+      "inactive_flag_unchanged"
+    ],
+    "summary": "SUMMARY tests=11 failures=0"
+  },
+  "transformation": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\build\\point_report_reset_under_test.c",
+    "removed_prelude": "#include \"defs.h\"",
+    "replaced_instruction": "asm volatile(\"brk #1\");",
+    "replacement": "__builtin_trap();",
+    "sha256": "48d6a69d289bfa350bf4bc9222692b01c3fedcc95b45eb414d5588c35b0e99e6",
+    "size": 695
+  }
+}
