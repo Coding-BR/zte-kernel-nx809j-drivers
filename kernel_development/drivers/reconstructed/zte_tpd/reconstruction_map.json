@@ -7040,18 +7040,26 @@
         "source:syna_tcm_v1_terminate.c:sha256:ff9bad97f4af773888677f44f18dfd30fc9aa9eac8a2134340559288958fa784",
         "ghidra-pseudocode:decompiled/0262_00120e64_syna_tcm_v1_terminate.c:sha256:e9e6e0161aa32bb2218c94716a7689e1b05b73aa07d6d1fc905326411b5ad07b",
         "ghidra-pcode:pcode/0262_00120e64_syna_tcm_v1_terminate.jsonl:sha256:569044b7cefde76164adf2460e90223beb41583445fdc9075ff1f1a6afc3550a",
-        "stock-assembly:0262_syna_tcm_v1_terminate_00120e64.asm:sha256:cd380f2f2ea05e0d45a0836d72399fc14998c4125f279d7fd38591ac5139ac12"
+        "stock-assembly:0262_syna_tcm_v1_terminate_00120e64.asm:sha256:cd380f2f2ea05e0d45a0836d72399fc14998c4125f279d7fd38591ac5139ac12",
+        "candidate-assembly:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/candidate_assembly/0000_syna_tcm_v1_terminate.asm:sha256:b1116ceffe7d32159371b408c0ce3c89d528c77faaf1f437adfe0432375afe8e",
+        "assembly-comparison:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/aarch64_comparison.json:sha256:5277c8a8ff112afeaed7b80486c5ca155acded2e978b2bc34adf20ef93ee1a87",
+        "canonical-build:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/canonical_build_report.json:sha256:6d8ca9037fffd9cfd1d1745744002c397f41a518b2df8a8a0264a25d18e36323",
+        "candidate-module:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/candidate_module/zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "kcfi-comparison:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/kcfi/kcfi_comparison.json:sha256:26b2cda74510c9d8781d9cc9e3715ab7eff7962bdfc2b315ec5734025300fdaf",
+        "host-harness:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/host/host_harness_docker_report.json:sha256:80cb0d3c0414fd7e26a1efd1104b5eaf1710548c0af231127da36887c58a2db0",
+        "joern:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/joern/joern_gate_summary.json:sha256:f0e70bd8cf1ed4dc621fc6d7cb7cfcd56ab7c0f8a1cb4f6e5256221a55eb96d8",
+        "microtask-attestation:attestation/next263_syna_tcm_v1_terminate_exact_v1/exact_revalidation_20260831/microtask_attestation.json:sha256:2a0a5e0927e764d07c2e0c52e2f3c227749c036c6cf3c39d7d6835c3eb7da45f"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, relocation normalization, KCFI, Joern and direct ASan/UBSan lifecycle harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "syna_tcm_v1_terminate.c",
       "source_function": "syna_tcm_v1_terminate",
-      "status": "mapped_not_exact",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 136,
       "stock_entry": "00120e64",
       "stock_function": "syna_tcm_v1_terminate",
-      "mapping_note": "Candidate source contains the function; function-level parity and hardware behavior remain unproven."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 34 AArch64 instructions and 136-byte ELF symbols; NULL handling, state offset 0x1f8, mode offset 0x1fc, state transition to 2, completion offset 0x220, printk effects and completion branch match. The direct harness covers four lifecycle cases in reproducible ASan/UBSan runs. Android runtime, module loading and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
