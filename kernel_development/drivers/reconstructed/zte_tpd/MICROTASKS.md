@@ -10,7 +10,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 004_zlog_register_work_init | zlog_register_work_init | 001077c8 | lifecycle | zlog_register_work_init.c:zlog_register_work_init | PROMOTED_OFFLINE_EXACT |
 | 005_zlog_register_work | zlog_register_work | 00107844 | async_or_irq | zlog_register_work.c:zlog_register_work | PROMOTED_OFFLINE_EXACT |
 | 006_zlog_register_work_deinit | zlog_register_work_deinit | 00107874 | lifecycle | zlog_register_work_deinit.c:zlog_register_work_deinit | PASS |
-| 007_tpd_zlog_init | tpd_zlog_init | 001078c8 | lifecycle | tpd_zlog_init.c:tpd_zlog_init | PROMOTED_OFFLINE_EXACT |
+| 007_tpd_zlog_init | tpd_zlog_init | 001078c8 | lifecycle | tpd_zlog_init.c:tpd_zlog_init | PASS |
 | 008_get_tp_algo_item_id | get_tp_algo_item_id | 00107984 | core_logic | get_tp_algo_item_id.c:get_tp_algo_item_id | PROMOTED_OFFLINE_EXACT |
 | 009_get_tp_chip_id | get_tp_chip_id | 00107aec | core_logic | get_tp_chip_id.c:get_tp_chip_id | PROMOTED_OFFLINE_EXACT |
 | 010_get_lcd_panel_name | get_lcd_panel_name | 00107ce0 | core_logic | get_lcd_panel_name.c:get_lcd_panel_name | PROMOTED_OFFLINE_EXACT |

@@ -56,6 +56,14 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def md5_file(path: Path) -> str:
+    digest = hashlib.md5()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def read_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -710,6 +718,28 @@ def main() -> int:
     candidate_elf_strings = elf_data_string_resolver(candidate_root, candidate_module)
     stock_symbol_strings = symbol_string_index(stock_root, stock_elf_strings)
     candidate_symbol_strings = symbol_string_index(candidate_root, candidate_elf_strings)
+    module_identity: dict[str, dict[str, Any] | None] = {}
+    identity_failures: list[str] = []
+    for side, manifest, module in (
+        ("stock", stock_manifest, stock_module),
+        ("candidate", candidate_manifest, candidate_module),
+    ):
+        if module is None:
+            module_identity[side] = None
+            continue
+        expected = manifest.get("executable_md5")
+        observed = md5_file(module)
+        passed = isinstance(expected, str) and expected.lower() == observed
+        module_identity[side] = {
+            "module": str(module),
+            "manifest_executable_md5": expected,
+            "observed_executable_md5": observed,
+            "passed": passed,
+        }
+        if not passed:
+            identity_failures.append(
+                f"{side} module MD5 does not match the Ghidra export manifest"
+            )
     results = [
         compare_function(
             function,
@@ -738,8 +768,10 @@ def main() -> int:
         "pcode_authoritative_decompiler_fallback_allowed": (
             args.allow_pcode_authoritative_decompiler_fallback
         ),
-        "passed": len(results) == len(args.functions)
+        "passed": not identity_failures and len(results) == len(args.functions)
         and all(result["passed"] for result in results),
+        "identity_failures": identity_failures,
+        "module_identity": module_identity,
         "requested_functions": args.functions,
         "stock_export": {
             "path": str(stock_root),

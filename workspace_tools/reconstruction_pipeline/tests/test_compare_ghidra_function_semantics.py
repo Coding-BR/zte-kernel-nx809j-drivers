@@ -368,6 +368,15 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertEqual(result["failures"], ["normalized_decompiled_c"])
 
+    def test_md5_file_is_stable_for_module_identity_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            module = Path(temporary_directory) / "candidate.ko"
+            module.write_bytes(b"candidate-module")
+            self.assertEqual(
+                MODULE.md5_file(module),
+                "be1d206279229fd336a8f55419775610",
+            )
+
     def test_synthetic_breakpoint_context_and_alloc_tag_are_normalized(self) -> None:
         stock = (
             "void target(void) { "
