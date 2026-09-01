@@ -10,9 +10,9 @@ O SHA-256 do módulo candidato é
 - Exportação Ghidra headless: PASS, linguagem `AARCH64:LE:64:v8A`, 19 funções.
 - Comparação P-Code: 19/19 com forma de operações e contagem de corpo
   compatíveis.
-- C normalizado diretamente igual após normalizações estreitas: 16/19.
-- Três funções permanecem com diferença de decompilação:
-  `nubia_get_hw_id`, `nubia_get_hw_pcb_version` e `nubia_hw_ver_probe`.
+- C normalizado diretamente igual após normalizações estreitas: 18/19.
+- Uma função permanece com diferença de decompilação:
+  `nubia_get_hw_pcb_version`.
 
 As normalizações aceitas cobrem somente rótulos de controle relocados
 (`code_r0x...`/`joined_r0x...`), a forma de endereço de
@@ -21,7 +21,9 @@ aceitos quando a seção (`.bss`, `.data` ou `.rodata`) tem o mesmo tamanho nos
 dois exports e o deslocamento relativo coincide; layouts diferentes são
 rejeitados para evitar colisões de objetos. As diferenças restantes incluem
 aliases de símbolos em tabelas `.rodata` e uma fronteira de função emitida
-pelo decompilador. Strings nomeadas, como `charge_version`, só são
+pela decompilação. Bases de tabelas `PTR_*` são normalizadas somente na
+forma de endereço direto, preservando os índices em expressões indexadas.
+Strings nomeadas, como `charge_version`, só são
 normalizadas quando os bytes correspondentes do ELF confirmam o mesmo
 conteúdo (`V2A/V1A/V1B`). A comparação AArch64/relocações independente
 continua sendo obrigatória; este relatório não transforma uma diferença de C

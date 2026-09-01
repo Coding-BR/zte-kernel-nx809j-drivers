@@ -820,6 +820,26 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock_artifacts[0]["kind"], "elf_pointer_table_base_symbol")
         self.assertEqual(candidate_artifacts[0]["kind"], "elf_pointer_table_base_symbol")
 
+    def test_relocated_pointer_table_address_is_normalized_narrowly(self) -> None:
+        stock = "void target(void) { p = &PTR_hw_pcb_gpio_map_00101f38; }"
+        candidate = "void target(void) { p = &PTR_nubia_hw_exact_00101530; }"
+        changed = "void target(void) { p = &some_unrelated_object; }"
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed, {})
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertNotEqual(stock_normalized, changed_normalized)
+        self.assertEqual(
+            stock_artifacts[0]["kind"], "elf_pointer_table_address_symbol"
+        )
+        self.assertEqual(
+            candidate_artifacts[0]["kind"], "elf_pointer_table_address_symbol"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

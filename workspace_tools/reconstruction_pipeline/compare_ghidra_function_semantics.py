@@ -35,6 +35,7 @@ OPTIONAL_OBJECT_ADDRESS_RE = re.compile(
 POINTER_TABLE_BASE_RE = re.compile(
     r"\(&(?P<symbol>(?:PTR_[A-Za-z0-9_]+|[a-z][A-Za-z0-9_]*))\)(?P<index>\[[^\]]+\])"
 )
+POINTER_TABLE_ADDRESS_RE = re.compile(r"&(?P<symbol>PTR_[A-Za-z0-9_]+)\b")
 FRAGMENTED_BYTE_FLAG_STOCK_RE = re.compile(
     r"if\("
     r"(?P<high>GHIDRA_DATA_OBJECT_\d+)\._1_1_!='\\0'"
@@ -465,6 +466,20 @@ def normalize_decompiled(
         return f"GHIDRA_POINTER_TABLE{match.group('index')}"
 
     replaced = POINTER_TABLE_BASE_RE.sub(replace_pointer_table_base, replaced)
+
+    def replace_pointer_table_address(match: re.Match[str]) -> str:
+        artifact_evidence.append(
+            {
+                "kind": "elf_pointer_table_address_symbol",
+                "value": match.group(0),
+                "normalized": "GHIDRA_POINTER_TABLE",
+            }
+        )
+        return "GHIDRA_POINTER_TABLE"
+
+    replaced = POINTER_TABLE_ADDRESS_RE.sub(
+        replace_pointer_table_address, replaced
+    )
 
     local_labels: dict[str, str] = {}
 
