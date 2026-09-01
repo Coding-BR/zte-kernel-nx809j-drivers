@@ -143,17 +143,27 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0005_00101118_gf_enable_irq.c:sha256:f4b086e87239ea6dbc3976b601cbe22a8f6be5a5270d2abf8b59e1db824d5d6d",
         "ghidra-pcode:pcode/0005_00101118_gf_enable_irq.jsonl:sha256:e376cd9b8801c08f92627eb991699f6d5617ff6ca32f43a155691bd7313e37e6",
-        "stock-assembly:0005_gf_enable_irq_00101118.asm:sha256:10a8e52cb5d4c66c8f8ff1815d059bf15f185998aa1aa26ba518244a5ecabf70"
+        "stock-assembly:0005_gf_enable_irq_00101118.asm:sha256:10a8e52cb5d4c66c8f8ff1815d059bf15f185998aa1aa26ba518244a5ecabf70",
+        "candidate-ghidra-manifest:offline_static/ghidra_candidate_20260902_gf_enable_irq_repaired/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next009_gf_enable_irq_exact_v1/ghidra.json:sha256:3a112b8c51a9c779335c31856d07bbe619133b4531fa4d5d1bed32a903ef0b22",
+        "assembly-comparison:attestation/next009_gf_enable_irq_exact_v1/assembly.json:sha256:f295b136fdf2d957aa9871ec28fbd8b7310ede9e7a090fa3b40deec0fb2b4028",
+        "canonical-build:attestation/next009_gf_enable_irq_exact_v1/compile.json:sha256:dea00e32741db3e64c368c0f4a71ae248056fb5420bec59340f4f03430a901e1",
+        "kcfi-comparison:attestation/next009_gf_enable_irq_exact_v1/kcfi.json:sha256:b35e9e74085d997e94b7a01121dc77fbba329a91cb0315dfdb5095c2b4ecd467",
+        "joern:attestation/next009_gf_enable_irq_exact_v1/joern.json:sha256:d0dfa0e095aae72930133430ce8872b9f2b24f02f0e2a7b47b45fe3e544a0e58",
+        "host-harness:attestation/next009_gf_enable_irq_exact_v1/test.json:sha256:4e99779f7769fcd0689f3999a28bdeabd7a55ef42b58a4025b8e39bee10d9b08",
+        "hard-protocol:attestation/next009_gf_enable_irq_exact_v1/hard_protocol_report.json:sha256:de6ad3fa13b77b04b1fe3d45d2002ef8e391da77ac00734d9be0f80d3b6b1554",
+        "promotion-decision:attestation/next009_gf_enable_irq_exact_v1/decision.json:sha256:7e455ad35345092d4c71853725584d86ccd1ef295b18c38299fc05ac1352bec3"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope/slice, KCFI direct-call applicability check and direct helper harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_enable_irq",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 84,
       "stock_entry": "00101118",
-      "stock_function": "gf_enable_irq"
+      "stock_function": "gf_enable_irq",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 21 matching AArch64 instructions and 84-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The repaired candidate Ghidra body was extended to the exact 84-byte boundary; semantic comparison uses only the explicit candidate-side data-field-slice normalization and known global-warning removal after exact body/P-Code checks. Hardware behavior remains unverified."
     },
     {
       "evidence": [

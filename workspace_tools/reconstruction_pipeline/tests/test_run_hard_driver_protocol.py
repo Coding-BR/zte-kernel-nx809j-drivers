@@ -190,6 +190,13 @@ class HardDriverProtocolTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fallback_reason is required"):
             validate_job(job)
 
+    def test_data_field_slice_fallback_requires_an_audit_reason(self):
+        job = base_job(
+            ghidra={"allow_ghidra_data_field_slice_fallback": True}
+        )
+        with self.assertRaisesRegex(ValueError, "fallback_reason is required"):
+            validate_job(job)
+
     def test_direct_call_only_uses_explicit_kcfi_decision_path(self):
         job = base_job(kcfi={"direct_call_only": ["stock_fn"]})
         functions = validate_job(job)

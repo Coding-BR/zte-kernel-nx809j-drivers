@@ -15,7 +15,9 @@ from typing import Any
 
 
 DATA_REFERENCE_RE = re.compile(r"&(?:DAT|UNK)_([0-9a-fA-F]+)")
-GLOBAL_DATA_LABEL_RE = re.compile(r"\b(?:DAT|UNK)_[0-9a-fA-F]+\b")
+GLOBAL_DATA_LABEL_RE = re.compile(
+    r"(?<![A-Za-z0-9_])_?(?:DAT|UNK)_[0-9a-fA-F]+\b"
+)
 ABSOLUTE_ADDRESS_RE = re.compile(r"(?<![A-Za-z0-9_])0x([0-9a-fA-F]+)")
 SYMBOL_STRING_RE = re.compile(r"\b(?P<symbol>unk_[0-9a-fA-F]+)\b")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
@@ -50,6 +52,9 @@ FRAGMENTED_BYTE_FLAG_CANDIDATE_RE = re.compile(
     r"\)\{(?P<set>GHIDRA_DATA_OBJECT_\d+)=1;"
 )
 NORMALIZED_GLOBAL_LABEL_RE = re.compile(r"\bGHIDRA_DATA_OBJECT_\d+\b")
+GHIDRA_DATA_FIELD_SLICE_RE = re.compile(
+    r"\b(GHIDRA_DATA_OBJECT_\d+)\._\d+_\d+_"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -657,6 +662,39 @@ def named_data_address_syntax_fallback(
             "whole normalized C equality after removing address-of only from "
             "section-relative GHIDRA_DATA_BINDING tokens, with equal body bytes "
             "and P-Code shape"
+        ),
+    }
+
+
+def ghidra_data_field_slice_fallback(
+    stock: str, candidate: str
+) -> dict[str, Any] | None:
+    """Accept Ghidra's candidate-only ``obj._offset_size_`` global rendering.
+
+    This is deliberately narrower than general field normalization: only a
+    candidate-side Ghidra data-object slice may be removed, and the complete
+    normalized function must match afterward. Body size and P-Code shape are
+    checked by the caller; relocation-aware Assembly remains independent.
+    """
+    stock_fields = GHIDRA_DATA_FIELD_SLICE_RE.findall(stock)
+    candidate_fields = GHIDRA_DATA_FIELD_SLICE_RE.findall(candidate)
+    if stock_fields or not candidate_fields:
+        return None
+
+    stripped_candidate = GHIDRA_DATA_FIELD_SLICE_RE.sub(r"\1", candidate)
+    global_warning = "/*WARNING:Globalsstartingwith'_'overlapsmallersymbolsatthesameaddress*/"
+    stock_without_warning = stock.replace(global_warning, "")
+    candidate_without_warning = stripped_candidate.replace(global_warning, "")
+    if candidate_without_warning != stock_without_warning:
+        return None
+
+    return {
+        "kind": "ghidra_data_field_slice_artifact",
+        "candidate_fields": candidate_fields,
+        "stock_global_warning_removed": global_warning in stock,
+        "requirement": (
+            "candidate-only Ghidra obj._offset_size_ notation removed after "
+            "whole normalized C equality, exact body bytes and P-Code shape"
         ),
     }
 
@@ -1769,6 +1807,7 @@ def compare_function(
     stock_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_function: str | None = None,
+    allow_ghidra_data_field_slice_fallback: bool = False,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -1840,8 +1879,67 @@ def compare_function(
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
     named_data_address_syntax_evidence: dict[str, Any] | None = None
+    data_field_slice_evidence: dict[str, Any] | None = None
     pcode_authoritative_fallback: dict[str, Any] | None = None
     return_propagation_fallback: dict[str, Any] | None = None
+    normalized_decompiled_match = False
+
+    def collect_pcode_authoritative_fallback() -> dict[str, Any] | None:
+        fallback = (
+            decompiler_buf_lock_branch_loop_artifact(
+                function,
+                stock_normalized,
+                candidate_normalized,
+                stock_shape,
+                candidate_shape,
+            )
+            or decompiler_buf_unlock_shared_cleanup_artifact(
+                function,
+                stock_normalized,
+                candidate_normalized,
+                stock_shape,
+                candidate_shape,
+            )
+            or decompiler_get_features_printk_control_flow_artifact(
+                function,
+                stock_normalized,
+                candidate_normalized,
+                stock_shape,
+                candidate_shape,
+            )
+            or decompiler_status_return_control_flow_artifact(
+                function,
+                stock_normalized,
+                candidate_normalized,
+                stock_shape,
+                candidate_shape,
+            )
+        )
+        fallback = fallback or decompiler_symbol_resolution_artifact(
+            stock_normalized, candidate_normalized
+        )
+        fallback = fallback or decompiler_syna_pal_mem_cpy_branch_inversion_artifact(
+            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+        )
+        fallback = fallback or decompiler_branch_inversion_shared_return_artifact(
+            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+        )
+        fallback = fallback or external_label_call_decompiler_artifact(
+            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+        )
+        fallback = fallback or decompiler_cfg_restructuring_artifact(
+            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+        )
+        fallback = fallback or decompiler_cfg_early_return_cleanup_artifact(
+            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+        )
+        fallback = fallback or lossy_decompiler_truncation(
+            stock_normalized, candidate_normalized
+        )
+        return fallback or decompiler_bad_instruction_boundary_artifact(
+            stock_normalized, candidate_normalized
+        )
+
     if not direct_normalized_match and body_bytes_match and pcode_shape_match:
         if allow_named_data_address_syntax_fallback:
             named_data_address_syntax_evidence = named_data_address_syntax_fallback(
@@ -1850,103 +1948,39 @@ def compare_function(
         if named_data_address_syntax_evidence is not None:
             normalized_decompiled_match = True
         else:
-            fallback = fragmented_byte_flag_normalization(
-                stock_normalized,
-                candidate_normalized,
-                stock_artifact_evidence,
-                candidate_artifact_evidence,
-            )
-            if fallback is not None:
-                fallback_stock, fallback_candidate, fallback_evidence = fallback
-                normalized_decompiled_match = fallback_stock == fallback_candidate
-            elif allow_return_propagation_fallback:
-                return_propagation_fallback = decompiler_return_propagation_artifact(
+            if allow_ghidra_data_field_slice_fallback:
+                data_field_slice_evidence = ghidra_data_field_slice_fallback(
                     stock_normalized, candidate_normalized
                 )
-                if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = decompiler_buf_lock_branch_loop_artifact(
-                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    ) or decompiler_buf_unlock_shared_cleanup_artifact(
-                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    ) or decompiler_get_features_printk_control_flow_artifact(
-                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    ) or decompiler_status_return_control_flow_artifact(
-                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = pcode_authoritative_fallback or decompiler_syna_pal_mem_cpy_branch_inversion_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    ) or decompiler_branch_inversion_shared_return_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if return_propagation_fallback is None and pcode_authoritative_fallback is None and allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = external_label_call_decompiler_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                    if pcode_authoritative_fallback is None:
-                        pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
-                            stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                        )
-                    if pcode_authoritative_fallback is None:
-                        pcode_authoritative_fallback = decompiler_cfg_early_return_cleanup_artifact(
-                            stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                        )
-                    if pcode_authoritative_fallback is None:
-                        pcode_authoritative_fallback = lossy_decompiler_truncation(
-                            stock_normalized, candidate_normalized
-                        )
-                    if pcode_authoritative_fallback is None:
-                        pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
-                            stock_normalized, candidate_normalized
-                        )
-                normalized_decompiled_match = False
-            elif allow_pcode_authoritative_decompiler_fallback:
-                pcode_authoritative_fallback = decompiler_buf_lock_branch_loop_artifact(
-                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                ) or decompiler_buf_unlock_shared_cleanup_artifact(
-                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                ) or decompiler_get_features_printk_control_flow_artifact(
-                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                ) or decompiler_status_return_control_flow_artifact(
-                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = decompiler_symbol_resolution_artifact(
-                    stock_normalized, candidate_normalized
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = decompiler_syna_pal_mem_cpy_branch_inversion_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = decompiler_branch_inversion_shared_return_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = external_label_call_decompiler_artifact(
-                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = decompiler_cfg_early_return_cleanup_artifact(
-                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = lossy_decompiler_truncation(
-                        stock_normalized, candidate_normalized
-                    )
-                if pcode_authoritative_fallback is None:
-                    pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
-                        stock_normalized, candidate_normalized
-                    )
-                # Keep the raw C check false: this is an explicit low-level
-                # authority fallback, not a claim that the decompiled C matched.
-                normalized_decompiled_match = False
+            if data_field_slice_evidence is not None:
+                normalized_decompiled_match = True
             else:
-                normalized_decompiled_match = False
+                fallback = fragmented_byte_flag_normalization(
+                    stock_normalized,
+                    candidate_normalized,
+                    stock_artifact_evidence,
+                    candidate_artifact_evidence,
+                )
+                if fallback is not None:
+                    fallback_stock, fallback_candidate, fallback_evidence = fallback
+                    normalized_decompiled_match = fallback_stock == fallback_candidate
+                elif allow_return_propagation_fallback:
+                    return_propagation_fallback = decompiler_return_propagation_artifact(
+                        stock_normalized, candidate_normalized
+                    )
+                    if (
+                        return_propagation_fallback is None
+                        and allow_pcode_authoritative_decompiler_fallback
+                    ):
+                        pcode_authoritative_fallback = (
+                            collect_pcode_authoritative_fallback()
+                        )
+                    normalized_decompiled_match = False
+                elif allow_pcode_authoritative_decompiler_fallback:
+                    pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
+                    normalized_decompiled_match = False
+                else:
+                    normalized_decompiled_match = False
     else:
         normalized_decompiled_match = direct_normalized_match
     checks = {
@@ -1960,6 +1994,7 @@ def compare_function(
     failures = list(raw_failures)
     if (
         named_data_address_syntax_evidence is not None
+        or data_field_slice_evidence is not None
         or return_propagation_fallback is not None
         or pcode_authoritative_fallback is not None
     ):
@@ -1973,6 +2008,7 @@ def compare_function(
         "decompiled_normalization": {
             "direct_match": direct_normalized_match,
             "named_data_address_syntax_fallback": named_data_address_syntax_evidence,
+            "data_field_slice_fallback": data_field_slice_evidence,
             "fragmented_byte_global_fallback": fallback_evidence,
             "pcode_authoritative_decompiler_fallback": pcode_authoritative_fallback,
             "return_propagation_fallback": return_propagation_fallback,
@@ -2060,6 +2096,11 @@ def parse_args() -> argparse.Namespace:
         "--allow-section-address-normalization",
         action="store_true",
         help="normalize absolute addresses only when both exports resolve them to the same section-relative data offset",
+    )
+    parser.add_argument(
+        "--allow-ghidra-data-field-slice-fallback",
+        action="store_true",
+        help="accept only candidate-side Ghidra obj._offset_size_ notation after exact body/P-Code equality",
     )
     return parser.parse_args()
 
@@ -2155,6 +2196,7 @@ def main() -> int:
             stock_absolute_data_ranges,
             candidate_absolute_data_ranges,
             candidate_function,
+            args.allow_ghidra_data_field_slice_fallback,
         )
         for stock_function, candidate_function in function_pairs
     ]
@@ -2180,6 +2222,9 @@ def main() -> int:
         ),
         "section_address_normalization_allowed": (
             args.allow_section_address_normalization
+        ),
+        "ghidra_data_field_slice_fallback_allowed": (
+            args.allow_ghidra_data_field_slice_fallback
         ),
         "passed": not identity_failures and len(results) == len(function_pairs)
         and all(result["passed"] for result in results),

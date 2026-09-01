@@ -107,6 +107,40 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
         self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
 
+    def test_leading_underscore_global_labels_compare_equal(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "if (_DAT_0010405c == 0) enable_irq(_DAT_00104058);",
+            {},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00103e0c == 0) enable_irq(DAT_00103e04);",
+            {},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(
+            [artifact["kind"] for artifact in stock_artifacts],
+            ["ghidra_global_data_address", "ghidra_global_data_address"],
+        )
+        self.assertEqual(
+            [artifact["kind"] for artifact in candidate_artifacts],
+            ["ghidra_global_data_address", "ghidra_global_data_address"],
+        )
+
+    def test_candidate_data_field_slice_fallback_is_narrow(self) -> None:
+        stock = "if (GHIDRA_DATA_OBJECT_0 == 0) enable_irq(GHIDRA_DATA_OBJECT_1);"
+        candidate = "if (GHIDRA_DATA_OBJECT_0 == 0) enable_irq(GHIDRA_DATA_OBJECT_1._4_4_);"
+
+        evidence = MODULE.ghidra_data_field_slice_fallback(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(evidence["kind"], "ghidra_data_field_slice_artifact")
+        self.assertIsNone(
+            MODULE.ghidra_data_field_slice_fallback(
+                stock, "if (GHIDRA_DATA_OBJECT_0 == 1) enable_irq(GHIDRA_DATA_OBJECT_1._4_4_);"
+            )
+        )
+
     def test_resolved_symbol_string_address_syntax_is_normalized_narrowly(self) -> None:
         stock, _, stock_artifacts = MODULE.normalize_decompiled(
             "printk(unk_00101000);",
