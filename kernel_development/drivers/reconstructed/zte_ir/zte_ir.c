@@ -202,7 +202,15 @@ static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
 	return 0;
 }
 
-static ssize_t zte_ir_write(struct file *file, const char __user *buffer,
+#ifdef ZTE_IR_HOST_TEST
+#define ZTE_IR_SAFE_WRITE zte_ir_write
+#define ZTE_IR_MAYBE_UNUSED
+#else
+#define ZTE_IR_SAFE_WRITE zte_ir_write_safe
+#define ZTE_IR_MAYBE_UNUSED __maybe_unused
+#endif
+
+static ssize_t ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_WRITE(struct file *file, const char __user *buffer,
 			    size_t count, loff_t *position)
 {
 	struct zte_ir_runtime *runtime;
@@ -324,6 +332,11 @@ unlock_buf:
 	mutex_unlock(&runtime->stock.buf_lock);
 	return ret;
 }
+
+#ifndef ZTE_IR_HOST_TEST
+extern ssize_t zte_ir_write(struct file *file, const char __user *buffer,
+			    size_t count, loff_t *position);
+#endif
 
 static const struct file_operations zte_ir_fops = {
 	.owner = THIS_MODULE,

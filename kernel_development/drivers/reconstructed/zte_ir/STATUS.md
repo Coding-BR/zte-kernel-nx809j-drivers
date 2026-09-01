@@ -11,7 +11,7 @@ Modo de trabalho: **offline; sem ADB, fastboot ou carregamento de módulo neste 
 | Artefato | SHA-256 |
 |---|---|
 | Stock `zte_ir.ko` | `b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1` |
-| Candidato canônico `zte_ir.ko` | `1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc` |
+| Candidato canônico `zte_ir.ko` | `f91d5fdb6883e704c00e36cc35cbd1416f86b5b39365d4934f1280bdfcf91b1a` |
 
 O fonte canônico é `zte_ir.c`. O diretório `implementation/` conserva
 microtarefas e evidências históricas; seu `.ko` integrado não é o candidato
@@ -19,7 +19,8 @@ atual e não deve ser usado para atestar este hash.
 
 ## Resultado verificável
 
-- O0–O9: `PASS` na auditoria offline.
+- O0–O9: `PASS` na auditoria offline; `zte_ir_write@0010036c` também possui
+  atestação exact independente.
 - O10: `INCOMPLETE`, aguardando revisor independente diferente do implementador.
 - Hardware: `DEFERRED`, aguardando teste controlado no NX809J.
 - Veredito correto: **candidato alinhado estaticamente, ainda não comprovado no hardware**.
@@ -41,9 +42,16 @@ estado atual.
   aprovados; somente O10 permanece incompleto.
 - `GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md`: procedimento de teste e rollback.
 
+## Ilha exact atestada
+
+`zte_ir_write@0010036c` é materializada de 203 instruções stock, com 812 bytes
+de corpo, relocamentos AArch64 e KCFI `0xc3d43b4d` iguais ao módulo OEM. A
+atestação está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_write_exact_v1/exact_revalidation_20260902`.
+
 ## Diferenças deliberadas
 
-O candidato mantém o contrato válido de transmissão e controle, mas adiciona
-checagens de tamanho, overflow, carrier, dispositivo removido e limpeza de
-falhas. Essas diferenças estão registradas no relatório de paridade e não são
-tratadas como equivalência binária com o módulo OEM.
+As demais funções do candidato mantêm o contrato válido de transmissão e
+controle, mas adicionam checagens de tamanho, overflow, carrier, dispositivo
+removido e limpeza de falhas. Essas diferenças não são tratadas como
+equivalência binária com o módulo OEM.

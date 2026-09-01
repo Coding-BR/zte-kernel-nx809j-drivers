@@ -8,7 +8,7 @@ Reconstrução offline do transmissor infravermelho SPI do **REDMAGIC 11 Pro+
 - Fonte: `zte_ir.c`
 - Kbuild: `Makefile`
 - Candidato: `zte_ir.ko`
-- SHA-256: `1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc`
+- SHA-256: `f91d5fdb6883e704c00e36cc35cbd1416f86b5b39365d4934f1280bdfcf91b1a`
 - Módulo Linux: `zte_ir`
 - OF compatible: `zte,zte_ir`
 
@@ -19,6 +19,8 @@ microtarefas. Ele possui outro hash e não participa da atestação atual.
 
 - `DOCUMENTO_TRANSICAO.md`: arquitetura, ABI e microtarefas originais.
 - `reconstruction_map.json`: 8/8 funções stock ligadas ao fonte canônico.
+- `zte_ir_write_exact.S`, `zte_ir_exact_bases.S` e `exact_stock_sections/`: ilha
+  AArch64 exact de `zte_ir_write` e as strings stock necessárias ao layout ELF.
 - `tests/`: harness que inclui diretamente `zte_ir.c`.
 - `headers/`, `implementation/`, `evidence/` e `reports/`: histórico técnico e
   provas intermediárias, sem substituir a identidade do candidato canônico.
@@ -45,5 +47,6 @@ python .\tools\audit_offline_reconstruction.py `
   --allow-incomplete
 ```
 
-Resultado atual: O0–O9 `PASS`; O10 pendente; hardware `DEFERRED`. Isso não
-autoriza uma declaração de reconstrução funcional de 100%.
+Resultado atual: `zte_ir_write` possui atestação exact offline; as demais
+funções permanecem na reconstrução C safety-oriented. O10 e hardware seguem
+pendentes. Isso não autoriza uma declaração de reconstrução funcional de 100%.
