@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask_id": "363_tpd_set_screen_off_awake",
+  "function": "tpd_set_screen_off_awake",
+  "stock_entry": "0012ca1c",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "generated_utc": "2026-09-01T01:05:11Z",
+  "candidate_source_sha256_normalized_lf": "ffea4d2b065d384dac9206447bd76cc5fa45a09a19f2a8bf56523f46b897a7e7",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "stock_body_bytes": 88,
+  "candidate_body_bytes": 88,
+  "stock_instruction_count": 22,
+  "candidate_instruction_count": 22,
+  "checks": {
+    "candidate_ghidra_normalized_decompiled_c": "PASS_WITH_NARROW_RETURN_ZERO_PROPAGATION_FALLBACK",
+    "candidate_ghidra_pcode_operation_shape": true,
+    "assembly_relocations": true,
+    "docker_reproducible": true,
+    "kcfi": true,
+    "joern_scoped": true,
+    "joern_slice": true,
+    "host_asan_ubsan": true,
+    "hardware_runtime": "OUT_OF_SCOPE"
+  },
+  "evidence": [
+    "candidate_source.c",
+    "candidate_zte_tpd.ko",
+    "ghidra_semantic_comparison.json",
+    "ghidra/candidate_manifest.json",
+    "ghidra/candidate_decompiled.c",
+    "ghidra/candidate_pcode.jsonl",
+    "aarch64_comparison.json",
+    "canonical_build_report.json",
+    "kcfi/comparison.json",
+    "joern/joern_gate_summary.json",
+    "host_harness_docker_report.json",
+    "hard_protocol_report.json"
+  ],
+  "limitations": [
+    "Ghidra C output has a documented external-call return-zero propagation artifact; the narrow fallback is opt-in and all independent binary/assembly gates remain mandatory.",
+    "The first Ghidra repair encountered an auto-created nested function; the versioned repair script removes only nested entries inside the ELF-proven body interval.",
+    "Offline evidence does not verify Android runtime or NX809J hardware behavior.",
+    "Host contract uses deterministic stubs and does not exercise transport, IRQ, MMIO, flash, or module loading."
+  ]
+}
