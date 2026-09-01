@@ -723,6 +723,27 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             evidence["kind"], "ghidra_call_return_zero_propagation_artifact"
         )
 
+    def test_bad_instruction_boundary_fallback_requires_stock_marker(self) -> None:
+        stock = (
+            "voidtarget(void){__fortify_panic(2,0xc,x);__fortify_panic(4,0xc,x);"
+            "/*WARNING:Badinstruction-Truncatingcontrolflowhere*/halt_baddata();}"
+        )
+        candidate = (
+            "voidtarget(void){__fortify_panic(2,0xc,x);__fortify_panic(4,0xc);"
+            "if(y){return0;}return1;}"
+        )
+
+        evidence = MODULE.decompiler_bad_instruction_boundary_artifact(
+            stock, candidate
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(evidence["kind"], "ghidra_bad_instruction_boundary_artifact")
+        self.assertIsNone(
+            MODULE.decompiler_bad_instruction_boundary_artifact(
+                stock.replace("halt_baddata();", "return0;"), candidate
+            )
+        )
+
     def test_md5_file_is_stable_for_module_identity_binding(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             module = Path(temporary_directory) / "candidate.ko"

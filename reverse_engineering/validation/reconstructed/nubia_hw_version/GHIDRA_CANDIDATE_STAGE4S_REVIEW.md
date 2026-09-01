@@ -31,3 +31,15 @@ em equivalência semântica e não autoriza validação de hardware.
 
 Relatório completo: `ghidra_candidate_stage4s_semantic_comparison.json`.
 O driver permanece `PASS` no manifesto até revisão semântica independente.
+
+## Vista opcional P-Code-authoritative
+
+Com `--allow-pcode-authoritative-decompiler-fallback`, a comparação passa
+19/19. A única aceitação adicional é explicitamente registrada como
+`ghidra_bad_instruction_boundary_artifact`: o stock contém o marcador
+`halt_baddata()` emitido após uma instrução que o Ghidra não decodificou,
+enquanto o candidato continua a decompilação do mesmo corpo. O modo estrito
+continua sendo a referência e permanece em 18/19; esta vista não converte o
+artefato em igualdade de C.
+
+Relatório do fallback: `ghidra_candidate_stage4s_semantic_comparison_pcode_fallback.json`.

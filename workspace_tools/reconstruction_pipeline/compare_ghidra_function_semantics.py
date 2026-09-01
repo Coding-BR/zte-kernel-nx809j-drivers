@@ -678,6 +678,49 @@ def lossy_decompiler_truncation(
     }
 
 
+def decompiler_bad_instruction_boundary_artifact(
+    stock_normalized: str, candidate_normalized: str
+) -> dict[str, Any] | None:
+    """Identify a stock-only bad-instruction tail marker.
+
+    Ghidra may stop a stock decompilation at an instruction it cannot decode
+    and emit ``halt_baddata()``, while a byte-identical candidate export keeps
+    decoding the same tail into ordinary C.  This is deliberately an explicit
+    P-Code-authoritative fallback: the caller still requires equal body size
+    and P-Code shape, and the independent AArch64/relocation gate remains
+    mandatory.  A warning marker in the stock export and its absence from the
+    candidate are required; this is not a general C-equivalence relaxation.
+    """
+    warning = "Badinstruction-Truncatingcontrolflowhere"
+    if warning not in stock_normalized or "halt_baddata();" not in stock_normalized:
+        return None
+    if warning in candidate_normalized or "halt_baddata();" in candidate_normalized:
+        return None
+    if stock_normalized.count("__fortify_panic(") != candidate_normalized.count(
+        "__fortify_panic("
+    ):
+        return None
+    if stock_normalized.count("__fortify_panic(") < 2:
+        return None
+    stock_function = re.search(r"(?:void|undefined\d+\s*\*)?([A-Za-z_]\w*)\(", stock_normalized)
+    candidate_function = re.search(
+        r"(?:void|undefined\d+\s*\*)?([A-Za-z_]\w*)\(", candidate_normalized
+    )
+    if stock_function is None or candidate_function is None:
+        return None
+    if stock_function.group(1) != candidate_function.group(1):
+        return None
+    return {
+        "kind": "ghidra_bad_instruction_boundary_artifact",
+        "stock_marker": "halt_baddata()",
+        "candidate_marker": "decoded_tail_without_halt_baddata",
+        "requirement": (
+            "exact body size and P-Code operation shape; independent AArch64 "
+            "assembly and relocation parity remain mandatory"
+        ),
+    }
+
+
 def decompiler_return_propagation_artifact(
     stock_normalized: str, candidate_normalized: str
 ) -> dict[str, Any] | None:
@@ -1142,6 +1185,10 @@ def compare_function(
                     pcode_authoritative_fallback = lossy_decompiler_truncation(
                         stock_normalized, candidate_normalized
                     )
+                if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
+                        stock_normalized, candidate_normalized
+                    )
             normalized_decompiled_match = False
         elif allow_pcode_authoritative_decompiler_fallback:
             pcode_authoritative_fallback = external_label_call_decompiler_artifact(
@@ -1157,6 +1204,10 @@ def compare_function(
                 )
             if pcode_authoritative_fallback is None:
                 pcode_authoritative_fallback = lossy_decompiler_truncation(
+                    stock_normalized, candidate_normalized
+                )
+            if pcode_authoritative_fallback is None:
+                pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
                     stock_normalized, candidate_normalized
                 )
             # Keep the raw C check false: this is an explicit low-level
