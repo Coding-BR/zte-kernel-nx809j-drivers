@@ -174,6 +174,32 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             {"ghidra_named_data_binding"},
         )
 
+    def test_named_data_address_syntax_fallback_is_token_scoped(self) -> None:
+        stock, _, _ = MODULE.normalize_decompiled(
+            "zlog_register_client(stock_dev);", {},
+            named_data_bindings={"stock_dev": "GHIDRA_DATA_BINDING__data_00000000"},
+        )
+        candidate, _, _ = MODULE.normalize_decompiled(
+            "zlog_register_client(&candidate_dev);", {},
+            named_data_bindings={"candidate_dev": "GHIDRA_DATA_BINDING__data_00000000"},
+        )
+        evidence = MODULE.named_data_address_syntax_fallback(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_named_data_address_syntax_artifact"
+        )
+        self.assertIsNone(
+            MODULE.named_data_address_syntax_fallback(
+                stock, candidate.replace("GHIDRA_DATA_BINDING__data_00000000", "other")
+            )
+        )
+        self.assertIsNone(
+            MODULE.named_data_address_syntax_fallback(
+                "zlog_register_client(&arbitrary_pointer);", candidate
+            )
+        )
+
     def test_elf_backed_named_string_symbol_is_normalized_without_rewriting_literals(
         self,
     ) -> None:

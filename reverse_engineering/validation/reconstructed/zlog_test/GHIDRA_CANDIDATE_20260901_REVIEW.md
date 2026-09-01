@@ -5,10 +5,13 @@ O candidato versionado `zlog_test.ko` tem SHA-256
 
 Foi gerado um export headless independente com Ghidra 12.1.2 para AArch64 e
 preservado em `offline_static/ghidra_candidate_20260901`. A comparação com o
-export stock cobre as 11 funções: 10/11 passam estritamente; somente
-`zlog_enable_test_set` permanece diferente no C normalizado. Os 11/11 corpos
-passam em tamanho e forma operacional do P-Code. Os fallbacks autorizados não
-reduzem essa única divergência.
+export stock cobre as 11 funções: 10/11 passam no C normalizado direto; somente
+`zlog_enable_test_set` apresenta a variação de Ghidra `test_dev_n` versus
+`&test_dev_n`. Os 11/11 corpos passam em tamanho e forma operacional do P-Code.
+Após a prova de bindings de dados section-relative, o novo fallback explícito
+`--allow-named-data-address-syntax-fallback` aceita somente essa variação e
+registra `ghidra_named_data_address_syntax_artifact`; o resultado autorizado é
+11/11, sem normalizar ponteiros arbitrários.
 
 O protocolo Docker atual foi executado em três ciclos limpos. Os ciclos 1 e 2,
 com caminho canônico e `-ffile-prefix-map`, produziram o mesmo módulo

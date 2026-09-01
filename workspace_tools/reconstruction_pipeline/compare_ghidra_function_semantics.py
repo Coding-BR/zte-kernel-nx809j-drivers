@@ -593,6 +593,40 @@ def normalize_decompiled(
     return re.sub(r"\s+", "", replaced), evidence, artifact_evidence
 
 
+def named_data_address_syntax_fallback(
+    stock: str, candidate: str
+) -> dict[str, Any] | None:
+    """Accept only Ghidra's ``obj`` versus ``&obj`` syntax for proven globals.
+
+    The comparison is whole-function and token-scoped. The caller additionally
+    requires equal body size and P-Code shape, while the
+    ``GHIDRA_DATA_BINDING__`` token exists only after section-relative shared
+    data binding proof. This does not normalize arbitrary pointer syntax.
+    """
+    binding_re = re.compile(r"&(?P<symbol>GHIDRA_DATA_BINDING__[A-Za-z0-9_]+)")
+    stock_symbols = binding_re.findall(stock)
+    candidate_symbols = binding_re.findall(candidate)
+    if not stock_symbols and not candidate_symbols:
+        return None
+
+    def strip_address_of(value: str) -> str:
+        return binding_re.sub(r"\g<symbol>", value)
+
+    if stock == candidate or strip_address_of(stock) != strip_address_of(candidate):
+        return None
+
+    return {
+        "kind": "ghidra_named_data_address_syntax_artifact",
+        "stock_address_of_symbols": stock_symbols,
+        "candidate_address_of_symbols": candidate_symbols,
+        "requirement": (
+            "whole normalized C equality after removing address-of only from "
+            "section-relative GHIDRA_DATA_BINDING tokens, with equal body bytes "
+            "and P-Code shape"
+        ),
+    }
+
+
 def fragmented_byte_flag_normalization(
     stock: str,
     candidate: str,
@@ -1232,6 +1266,7 @@ def compare_function(
     allow_return_propagation_fallback: bool = False,
     stock_named_data_bindings: dict[str, str] | None = None,
     candidate_named_data_bindings: dict[str, str] | None = None,
+    allow_named_data_address_syntax_fallback: bool = False,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -1300,23 +1335,52 @@ def compare_function(
     body_bytes_match = stock_record.get("body_bytes") == effective_candidate_body_bytes
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
+    named_data_address_syntax_evidence: dict[str, Any] | None = None
     pcode_authoritative_fallback: dict[str, Any] | None = None
     return_propagation_fallback: dict[str, Any] | None = None
     if not direct_normalized_match and body_bytes_match and pcode_shape_match:
-        fallback = fragmented_byte_flag_normalization(
-            stock_normalized,
-            candidate_normalized,
-            stock_artifact_evidence,
-            candidate_artifact_evidence,
-        )
-        if fallback is not None:
-            fallback_stock, fallback_candidate, fallback_evidence = fallback
-            normalized_decompiled_match = fallback_stock == fallback_candidate
-        elif allow_return_propagation_fallback:
-            return_propagation_fallback = decompiler_return_propagation_artifact(
+        if allow_named_data_address_syntax_fallback:
+            named_data_address_syntax_evidence = named_data_address_syntax_fallback(
                 stock_normalized, candidate_normalized
             )
-            if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
+        if named_data_address_syntax_evidence is not None:
+            normalized_decompiled_match = True
+        else:
+            fallback = fragmented_byte_flag_normalization(
+                stock_normalized,
+                candidate_normalized,
+                stock_artifact_evidence,
+                candidate_artifact_evidence,
+            )
+            if fallback is not None:
+                fallback_stock, fallback_candidate, fallback_evidence = fallback
+                normalized_decompiled_match = fallback_stock == fallback_candidate
+            elif allow_return_propagation_fallback:
+                return_propagation_fallback = decompiler_return_propagation_artifact(
+                    stock_normalized, candidate_normalized
+                )
+                if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
+                    pcode_authoritative_fallback = external_label_call_decompiler_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    )
+                    if pcode_authoritative_fallback is None:
+                        pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
+                            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                        )
+                    if pcode_authoritative_fallback is None:
+                        pcode_authoritative_fallback = decompiler_cfg_early_return_cleanup_artifact(
+                            stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                        )
+                    if pcode_authoritative_fallback is None:
+                        pcode_authoritative_fallback = lossy_decompiler_truncation(
+                            stock_normalized, candidate_normalized
+                        )
+                    if pcode_authoritative_fallback is None:
+                        pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
+                            stock_normalized, candidate_normalized
+                        )
+                normalized_decompiled_match = False
+            elif allow_pcode_authoritative_decompiler_fallback:
                 pcode_authoritative_fallback = external_label_call_decompiler_artifact(
                     stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 )
@@ -1336,32 +1400,11 @@ def compare_function(
                     pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
                         stock_normalized, candidate_normalized
                     )
-            normalized_decompiled_match = False
-        elif allow_pcode_authoritative_decompiler_fallback:
-            pcode_authoritative_fallback = external_label_call_decompiler_artifact(
-                stock_normalized, candidate_normalized, stock_shape, candidate_shape
-            )
-            if pcode_authoritative_fallback is None:
-                pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
-                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                )
-            if pcode_authoritative_fallback is None:
-                pcode_authoritative_fallback = decompiler_cfg_early_return_cleanup_artifact(
-                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
-                )
-            if pcode_authoritative_fallback is None:
-                pcode_authoritative_fallback = lossy_decompiler_truncation(
-                    stock_normalized, candidate_normalized
-                )
-            if pcode_authoritative_fallback is None:
-                pcode_authoritative_fallback = decompiler_bad_instruction_boundary_artifact(
-                    stock_normalized, candidate_normalized
-                )
-            # Keep the raw C check false: this is an explicit low-level
-            # authority fallback, not a claim that the decompiled C matched.
-            normalized_decompiled_match = False
-        else:
-            normalized_decompiled_match = False
+                # Keep the raw C check false: this is an explicit low-level
+                # authority fallback, not a claim that the decompiled C matched.
+                normalized_decompiled_match = False
+            else:
+                normalized_decompiled_match = False
     else:
         normalized_decompiled_match = direct_normalized_match
     checks = {
@@ -1373,7 +1416,11 @@ def compare_function(
     }
     raw_failures = [name for name, passed in checks.items() if not passed]
     failures = list(raw_failures)
-    if return_propagation_fallback is not None or pcode_authoritative_fallback is not None:
+    if (
+        named_data_address_syntax_evidence is not None
+        or return_propagation_fallback is not None
+        or pcode_authoritative_fallback is not None
+    ):
         failures = [name for name in failures if name != "normalized_decompiled_c"]
     return {
         "function": function,
@@ -1383,6 +1430,7 @@ def compare_function(
         "failures": failures,
         "decompiled_normalization": {
             "direct_match": direct_normalized_match,
+            "named_data_address_syntax_fallback": named_data_address_syntax_evidence,
             "fragmented_byte_global_fallback": fallback_evidence,
             "pcode_authoritative_decompiler_fallback": pcode_authoritative_fallback,
             "return_propagation_fallback": return_propagation_fallback,
@@ -1447,6 +1495,11 @@ def parse_args() -> argparse.Namespace:
         "--allow-shared-data-binding-normalization",
         action="store_true",
         help="normalize named data labels only when section-relative bindings match on both exports",
+    )
+    parser.add_argument(
+        "--allow-named-data-address-syntax-fallback",
+        action="store_true",
+        help="accept only Ghidra obj versus &obj syntax for proven shared data bindings after body/P-Code equality",
     )
     return parser.parse_args()
 
@@ -1520,6 +1573,7 @@ def main() -> int:
             args.allow_ghidra_return_propagation_fallback,
             stock_named_data_bindings,
             candidate_named_data_bindings,
+            args.allow_named_data_address_syntax_fallback,
         )
         for function in args.functions
     ]
@@ -1539,6 +1593,9 @@ def main() -> int:
         ),
         "shared_data_binding_normalization_allowed": (
             args.allow_shared_data_binding_normalization
+        ),
+        "named_data_address_syntax_fallback_allowed": (
+            args.allow_named_data_address_syntax_fallback
         ),
         "passed": not identity_failures and len(results) == len(args.functions)
         and all(result["passed"] for result in results),
