@@ -513,6 +513,7 @@ def build_cross_oracle_report(
     strict: bool,
     binary_inventory: Path | None = None,
     selected_functions: list[str] | None = None,
+    assembly_only_functions: list[str] | None = None,
     source_root: Path | None = None,
     stock_assembly_root: Path | None = None,
 ) -> dict[str, Any]:
@@ -610,10 +611,12 @@ def build_cross_oracle_report(
     missing_map_entries = sorted(expected_identities - mapped_identities)
     unexpected_map_entries = sorted(mapped_identities - expected_identities)
 
-    expected_source = {
+    assembly_only = set(assembly_only_functions or [])
+    expected_source_all = {
         str(row.get("source_function", "")) for row in mappings
         if row.get("source_function")
     }
+    expected_source = expected_source_all - assembly_only
     all_actual_source = {
         str(row.get("name", "")) for row in methods
         if not row.get("is_external") and not str(row.get("name", "")).startswith("<")
@@ -645,6 +648,9 @@ def build_cross_oracle_report(
             None,
         )
         for expected in sorted(expected_source)
+    }
+    assembly_only_source_resolution = {
+        expected: None for expected in sorted(expected_source_all & assembly_only)
     }
     missing_source_methods = sorted(
         expected for expected, resolved in source_method_resolution.items()
@@ -740,7 +746,7 @@ def build_cross_oracle_report(
         blockers.append("mapped source functions are absent from the Joern source CPG")
     if unresolved_requests:
         blockers.append("requested function scope could not be resolved")
-    if not actual_source:
+    if not actual_source and expected_source:
         blockers.append("Joern source CPG contains no internal methods")
     if strict and any(row["effective_missing_mapped_calls"] for row in call_deltas):
         blockers.append("strict mode found mapped stock calls absent from the source CPG")
@@ -778,6 +784,7 @@ def build_cross_oracle_report(
                 str(row.get("name", "")) for row in ghidra_functions
             ),
             "resolved_source_functions": sorted(expected_source),
+            "assembly_only_source_functions": sorted(expected_source_all & assembly_only),
             "unresolved_requests": unresolved_requests,
         },
         "coverage": {
@@ -790,12 +797,28 @@ def build_cross_oracle_report(
                 {"name": name, "entry": entry} for name, entry in unexpected_map_entries
             ],
             "expected_source_method_count": len(expected_source),
+            "assembly_only_source_method_count": len(expected_source_all & assembly_only),
             "joern_internal_method_count": len(actual_source),
             "joern_total_internal_method_count": len(all_actual_source),
             "missing_source_methods": missing_source_methods,
             "extra_source_methods": extra_source_methods,
-            "source_method_resolution": source_method_resolution,
+            "source_method_resolution": {
+                **source_method_resolution,
+                **assembly_only_source_resolution,
+            },
         },
+        "analysis_exemptions": [
+            {
+                "kind": "ASSEMBLY_ONLY_SOURCE_METHOD",
+                "source_function": name,
+                "reason": (
+                    "compiler-generated Assembly helper is compiled from a .S source "
+                    "unit and has no independent C method for Joern resolution"
+                ),
+                "effect": "Joern method-presence and source-CFG requirements are not applicable",
+            }
+            for name in sorted(expected_source_all & assembly_only)
+        ],
         "graph": {
             "call_count": len(calls),
             "control_structure_count": len(controls),
@@ -896,6 +919,15 @@ def parse_args() -> argparse.Namespace:
             "source function, stock function, or exact STOCK_FUNCTION@GHIDRA_ENTRY "
             "to gate; repeat for a bounded microtask while retaining the complete "
             "map for outgoing-call resolution"
+        ),
+    )
+    parser.add_argument(
+        "--assembly-only",
+        action="append",
+        default=[],
+        help=(
+            "source function compiled from an Assembly-only source unit; Joern "
+            "records context but does not require a C method for this symbol"
         ),
     )
     parser.add_argument("--source-root", type=Path, required=True)
@@ -1140,6 +1172,7 @@ def main() -> int:
         strict=args.strict,
         binary_inventory=binary_inventory if args.with_binary_cpg else None,
         selected_functions=args.function,
+        assembly_only_functions=args.assembly_only,
         source_root=source_view_root,
         stock_assembly_root=ghidra_export.parent / "stock_assembly",
     )

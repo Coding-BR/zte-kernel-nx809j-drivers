@@ -205,21 +205,31 @@
     {
       "evidence": [
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
+        "source:fp_goodix_inline_exact.S:sha256:dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625",
         "ghidra-pseudocode:decompiled/0007_0010133c__inline_copy_to_user.c:sha256:d98817c18af3bc880ef6235cadbeb04b35620eb8af82caef102f227c6f11c432",
         "ghidra-pcode:pcode/0007_0010133c__inline_copy_to_user.jsonl:sha256:c6a3071cb61e335aa044c586f3bb96302de1c1e40ac16f583378b890b6564625",
         "stock-assembly:0007__inline_copy_to_user_0010133c.asm:sha256:d86761d5dd9f7729f35a046023098cf32945840f361e0234023d126fb747f05c",
-        "source:fp_goodix_inline_exact.s:sha256:dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625"
+        "candidate-ghidra-manifest:offline_static/ghidra_candidate_20260902_inline_copy_to_user_repaired/fp_goodix.ko/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next011_inline_copy_to_user_exact_v1/ghidra.json:sha256:d04c5f6f09e454557d4288ffa802f600a077bd3c78ada6ee24563dc11c67f5ed",
+        "assembly-comparison:attestation/next011_inline_copy_to_user_exact_v1/assembly.json:sha256:0ce2539ae574f1a333a83a8bb0377bff137bd92362411abced5cf38066aadb79",
+        "canonical-build:attestation/next011_inline_copy_to_user_exact_v1/compile.json:sha256:a8beff0113bbf2dab1fc62594a5528f44693bc20b1caa69c9d3e6bb5932e0650",
+        "kcfi-comparison:attestation/next011_inline_copy_to_user_exact_v1/kcfi.json:sha256:eced1e79c036fb983defada14f2c5cea75d609122358d0866e11c8b25083a151",
+        "joern:attestation/next011_inline_copy_to_user_exact_v1/joern.json:sha256:6724adca8326508b729f363aef6b90f7775c3d757712cf603f532d0da8dc62c3",
+        "host-harness:attestation/next011_inline_copy_to_user_exact_v1/test.json:sha256:ab947ed3b1c125cae0f9826ac550a469659fd0400cf353de2bf60383562a5c57",
+        "hard-protocol:attestation/next011_inline_copy_to_user_exact_v1/hard_protocol_report.json:sha256:60861f364174a4e9d0c578b262ae8a0be61bb6b46811c167d5523387f5c9eb9f",
+        "promotion-decision:attestation/next011_inline_copy_to_user_exact_v1/decision.json:sha256:51e2189554f74505dd7bb8e3e147c8834a6a516c780ab8fc420abd6ec1a1bad6"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope with an explicit Assembly-only source-method exemption, KCFI parity and host helper coverage",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_kind": "ASSEMBLY_ONLY_COMPILER_HELPER",
       "source_file": "fp_goodix_inline_exact.S",
       "source_function": "_inline_copy_to_user",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 172,
       "stock_entry": "0010133c",
       "stock_function": "_inline_copy_to_user",
-      "mapping_note": "Exact compiler-generated AArch64 copy helper materialized from preserved stock assembly; semantic equivalence remains unproven."
+      "mapping_note": "Function-level offline parity is promoted. The helper is compiler-generated Assembly, so Joern records the selected context with an explicit target-scoped source-method exemption; KCFI compares equal because stock and candidate both have no valid KCFI preamble. Two Docker builds are reproducible, Ghidra/P-Code and relocations match, and the host ioctl version path covers the helper. Hardware behavior remains unverified."
     },
     {
       "evidence": [

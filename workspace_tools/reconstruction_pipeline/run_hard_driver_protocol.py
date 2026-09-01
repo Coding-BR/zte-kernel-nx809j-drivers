@@ -204,6 +204,8 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError(f"functions[{index}].source_function is required")
         if not isinstance(stock_entry, str) or not ENTRY_RE.fullmatch(stock_entry):
             raise ValueError(f"functions[{index}].stock_entry must be hexadecimal")
+        if not isinstance(item.get("assembly_only", False), bool):
+            raise ValueError(f"functions[{index}].assembly_only must be boolean")
         identity = f"{stock_function}@{normalize_entry(stock_entry)}"
         if identity in identities:
             raise ValueError(f"duplicate function identity: {identity}")
@@ -394,6 +396,8 @@ def build_command_plan(
     )
     for function in functions:
         joern.extend(["--function", f"{function['stock_function']}@{function['stock_entry']}"])
+        if function.get("assembly_only", False):
+            joern.extend(["--assembly-only", str(function["source_function"])])
     if joern_home:
         joern.extend(["--joern-home", str(joern_home)])
     if java_home:

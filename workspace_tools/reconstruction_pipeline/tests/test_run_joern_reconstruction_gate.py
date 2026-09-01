@@ -187,6 +187,33 @@ class JoernGateTests(unittest.TestCase):
             )
             self.assertEqual(report["review_findings"][0]["category"], "hardware_write")
 
+    def test_assembly_only_function_can_be_scoped_without_a_c_method(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ghidra, reconstruction_map, inventory, profile = self.make_fixture(root)
+            payload = json.loads(reconstruction_map.read_text(encoding="utf-8"))
+            payload["mappings"][1]["source_function"] = "_asm_helper"
+            payload["mappings"][1]["source_file"] = "helper.S"
+            reconstruction_map.write_text(json.dumps(payload), encoding="utf-8")
+            report = GATE.build_cross_oracle_report(
+                ghidra,
+                reconstruction_map,
+                inventory,
+                profile,
+                strict=True,
+                selected_functions=["stock_b"],
+                assembly_only_functions=["_asm_helper"],
+            )
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["coverage"]["joern_internal_method_count"], 0)
+            self.assertEqual(
+                report["scope"]["assembly_only_source_functions"], ["_asm_helper"]
+            )
+            self.assertEqual(
+                report["analysis_exemptions"][0]["kind"],
+                "ASSEMBLY_ONLY_SOURCE_METHOD",
+            )
+
     def test_function_scope_keeps_duplicate_stock_entries_separate(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
