@@ -666,6 +666,8 @@ def execute_post_candidate(
     python: Path,
     stock_module: Path,
     candidate_module: Path,
+    stock_ghidra_export: Path | None,
+    candidate_ghidra_export: Path | None,
     docker_config: dict[str, Any],
     command_timeout: int,
 ) -> tuple[dict[str, Any], dict[str, str]]:
@@ -673,6 +675,7 @@ def execute_post_candidate(
     commands: dict[str, Any] = {}
     gates: dict[str, str] = {}
     aliases = [item["alias"] for item in functions]
+    (output_dir / "kcfi").mkdir(parents=True, exist_ok=True)
     stock_kcfi = output_dir / "kcfi" / "stock.json"
     candidate_kcfi = output_dir / "kcfi" / "candidate.json"
     kcfi_comparison = output_dir / "kcfi" / "comparison.json"
@@ -697,26 +700,65 @@ def execute_post_candidate(
             "--output", str(candidate_kcfi),
         ),
     }
-    compare = python_command(
-        python,
-        tools_root / "compare_kcfi_reports.py",
-        str(stock_kcfi),
-        str(candidate_kcfi),
-        "--output", str(kcfi_comparison),
-    )
-    for alias in aliases:
-        compare.extend(["--require-function", alias])
-    if job.get("kcfi", {}).get("ignore_size", False):
-        compare.append("--ignore-size")
-    kcfi_commands["kcfi_compare"] = compare
-    kcfi_ok = True
-    for name, argv in kcfi_commands.items():
-        result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
-        commands[name] = result
-        if result["returncode"] != 0:
-            kcfi_ok = False
-            break
-    gates["KCFI"] = "PASS" if kcfi_ok and report_passed(kcfi_comparison) else "FAIL"
+    kcfi_config = job.get("kcfi", {})
+    direct_call_only = {
+        str(name) for name in kcfi_config.get("direct_call_only", [])
+    } if isinstance(kcfi_config, dict) else set()
+    selected_functions = {str(item["stock_function"]) for item in functions}
+    if direct_call_only and selected_functions <= direct_call_only:
+        direct_ok = bool(stock_ghidra_export and candidate_ghidra_export)
+        for item in functions:
+            alias = str(item["alias"])
+            direct_report = output_dir / "kcfi" / f"direct_call_{alias}.json"
+            direct_argv = python_command(
+                python,
+                tools_root / "build_kcfi_direct_call_decision.py",
+                "--driver", job["driver"],
+                "--function", item["stock_function"],
+                "--stock-kcfi-report", str(stock_kcfi),
+                "--candidate-kcfi-report", str(candidate_kcfi),
+                "--stock-calls", str(stock_ghidra_export / "calls.jsonl")
+                if stock_ghidra_export else "",
+                "--candidate-calls", str(candidate_ghidra_export / "calls.jsonl")
+                if candidate_ghidra_export else "",
+                "--stock", str(stock_module),
+                "--candidate", str(candidate_module),
+                "--workspace", str(repo_root),
+                "--output", str(direct_report),
+            )
+            name = f"kcfi_direct_call_{alias}"
+            if direct_ok:
+                result = run_command(name, direct_argv, output_dir=output_dir, timeout=command_timeout)
+                commands[name] = result
+                direct_ok = result["returncode"] == 0 and report_passed(direct_report)
+            else:
+                commands[name] = {
+                    "argv": direct_argv,
+                    "returncode": 2,
+                    "stderr_tail": "stock/candidate Ghidra calls exports are required for direct-call KCFI proof",
+                }
+        gates["KCFI"] = "PASS" if direct_ok else "FAIL"
+    else:
+        compare = python_command(
+            python,
+            tools_root / "compare_kcfi_reports.py",
+            str(stock_kcfi),
+            str(candidate_kcfi),
+            "--output", str(kcfi_comparison),
+        )
+        for alias in aliases:
+            compare.extend(["--require-function", alias])
+        if isinstance(kcfi_config, dict) and kcfi_config.get("ignore_size", False):
+            compare.append("--ignore-size")
+        kcfi_commands["kcfi_compare"] = compare
+        kcfi_ok = True
+        for name, argv in kcfi_commands.items():
+            result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
+            commands[name] = result
+            if result["returncode"] != 0:
+                kcfi_ok = False
+                break
+        gates["KCFI"] = "PASS" if kcfi_ok and report_passed(kcfi_comparison) else "FAIL"
 
     image = str(docker_config.get("image", "nubia-sm8850-kernel-builder:latest"))
     toolchain_volume = str(docker_config.get("toolchain_volume", "nubia_sm8850_kernel_toolchains"))
@@ -1038,6 +1080,13 @@ def main() -> int:
             python=args.python.resolve(),
             stock_module=stock_module,
             candidate_module=candidate_module,
+            stock_ghidra_export=resolve_repo_path(
+                repo_root, job["paths"]["ghidra_export"], label="paths.ghidra_export"
+            ),
+            candidate_ghidra_export=resolve_repo_path(
+                repo_root, job["paths"].get("candidate_ghidra_export", ""),
+                label="paths.candidate_ghidra_export",
+            ) if job["paths"].get("candidate_ghidra_export") else None,
             docker_config=job.get("docker", {}),
             command_timeout=args.post_timeout,
         )
