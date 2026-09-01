@@ -10,17 +10,19 @@ O SHA-256 do módulo candidato é
 - Exportação Ghidra headless: PASS, linguagem `AARCH64:LE:64:v8A`, 19 funções.
 - Comparação P-Code: 19/19 com forma de operações e contagem de corpo
   compatíveis.
-- C normalizado diretamente igual: 12/19.
-- Sete funções permanecem com diferença de decompilação:
+- C normalizado diretamente igual após normalizações estreitas: 14/19.
+- Cinco funções permanecem com diferença de decompilação:
   `nubia_get_pcb_table_item_by_gpio`, `nubia_get_hw_id`,
-  `nubia_get_hw_pcb_version`, `nubia_hw_ver_probe`, `nubia_hw_rf_band_show`,
-  `nubia_charge_version_show` e `init_module`.
+  `nubia_get_hw_pcb_version`, `nubia_hw_ver_probe` e
+  `nubia_charge_version_show`.
 
-As diferenças incluem aliases de símbolos entre `.bss`/`.rodata`, rótulos de
-controle e uma fronteira de função emitida pelo decompilador. A comparação
-AArch64/relocações independente continua sendo obrigatória; este relatório
-não transforma uma diferença de C em equivalência semântica e não autoriza
-validação de hardware.
+As normalizações aceitas cobrem somente rótulos de controle relocados
+(`code_r0x...`/`joined_r0x...`) e a forma de endereço de
+`hardware_ver_driver`, com testes de regressão. As diferenças restantes
+incluem aliases de símbolos entre `.bss`/`.rodata` e uma fronteira de função
+emitida pelo decompilador. A comparação AArch64/relocações independente
+continua sendo obrigatória; este relatório não transforma uma diferença de C
+em equivalência semântica e não autoriza validação de hardware.
 
 Relatório completo: `ghidra_candidate_stage4s_semantic_comparison.json`.
 O driver permanece `PASS` no manifesto até revisão semântica independente.

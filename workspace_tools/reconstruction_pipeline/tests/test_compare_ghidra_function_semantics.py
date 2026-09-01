@@ -128,6 +128,26 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(candidate_artifacts[0]["kind"], "ghidra_string_pointer_address_syntax")
         self.assertEqual(stock_artifacts, [])
 
+    def test_kernel_driver_address_and_joined_labels_are_normalized_narrowly(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "__platform_driver_register(hardware_ver_driver, &__this_module); goto code_r0x00101244;",
+            {},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "__platform_driver_register(&hardware_ver_driver, &__this_module); goto code_r0x0010045c;",
+            {},
+        )
+        unrelated, _, _ = MODULE.normalize_decompiled(
+            "__platform_driver_register(&unrelated_driver, &__this_module); goto code_r0x0010045c;",
+            {},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(stock, unrelated)
+        self.assertEqual(candidate_artifacts[0]["kind"], "elf_object_binding_address_syntax")
+        self.assertEqual(candidate_artifacts[1]["kind"], "ghidra_local_label_address")
+        self.assertEqual(stock_artifacts[0]["kind"], "ghidra_local_label_address")
+
     def test_relocated_global_data_labels_preserve_aliasing(self) -> None:
         stock = "void target(void) { DAT_00101000 = DAT_00101008; DAT_00101008 = DAT_00101000; }"
         candidate = "void target(void) { DAT_00202000 = DAT_00202008; DAT_00202008 = DAT_00202000; }"

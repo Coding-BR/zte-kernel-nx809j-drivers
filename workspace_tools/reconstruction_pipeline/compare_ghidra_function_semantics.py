@@ -22,13 +22,15 @@ SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
     r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
     r"0x[0-9a-fA-F]+(\s*\))"
 )
-LOCAL_LABEL_RE = re.compile(r"\bLAB_[0-9a-fA-F]+\b")
+LOCAL_LABEL_RE = re.compile(
+    r"\b(?:LAB_[0-9a-fA-F]+|code_r0x[0-9a-fA-F]+|joined_r0x[0-9a-fA-F]+)\b"
+)
 ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
     r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
 )
 OPTIONAL_OBJECT_ADDRESS_RE = re.compile(
-    r"&(?P<symbol>syna_spi_device|attr_group)\b"
+    r"&(?P<symbol>syna_spi_device|attr_group|hardware_ver_driver)\b"
 )
 POINTER_TABLE_BASE_RE = re.compile(
     r"\(&(?P<symbol>(?:PTR_[A-Za-z0-9_]+|[a-z][A-Za-z0-9_]*))\)(?P<index>\[[^\]]+\])"
