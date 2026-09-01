@@ -8,7 +8,7 @@ Reconstrução offline do transmissor infravermelho SPI do **REDMAGIC 11 Pro+
 - Fonte: `zte_ir.c`
 - Kbuild: `Makefile`
 - Candidato: `zte_ir.ko`
-- SHA-256: `6edf27d53408ed1ef28886493b8d6cab49cefb0f5c5f1435bcbb5df9afa4b133`
+- SHA-256: `cc0a7dfe46caa27544bdcff2e358646a4a914159845bf5cb700c23d50632204f`
 - Módulo Linux: `zte_ir`
 - OF compatible: `zte,zte_ir`
 
@@ -20,8 +20,9 @@ microtarefas. Ele possui outro hash e não participa da atestação atual.
 - `DOCUMENTO_TRANSICAO.md`: arquitetura, ABI e microtarefas originais.
 - `reconstruction_map.json`: 8/8 funções stock ligadas ao fonte canônico.
 - `zte_ir_write_exact.S`, `zte_ir_ioctl_exact.S`, `zte_ir_open_exact.S`,
+  `zte_ir_release_exact.S`,
   `zte_ir_exact_bases.S` e `exact_stock_sections/`: ilhas AArch64 exact de
-  `zte_ir_write`, `zte_ir_ioctl` e `zte_ir_open`, além das strings stock
+  `zte_ir_write`, `zte_ir_ioctl`, `zte_ir_open` e `zte_ir_release`, além das strings stock
   necessárias ao layout ELF.
 - `tests/`: harness que inclui diretamente `zte_ir.c`.
 - `headers/`, `implementation/`, `evidence/` e `reports/`: histórico técnico e
@@ -49,7 +50,7 @@ python .\tools\audit_offline_reconstruction.py `
   --allow-incomplete
 ```
 
-Resultado atual: `zte_ir_write`, `zte_ir_ioctl` e `zte_ir_open` possuem
+Resultado atual: `zte_ir_write`, `zte_ir_ioctl`, `zte_ir_open` e `zte_ir_release` possuem
 atestação exact offline; as demais funções permanecem na reconstrução C
 safety-oriented. O10 e hardware seguem pendentes. Isso não autoriza uma
 declaração de reconstrução funcional de 100%.

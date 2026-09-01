@@ -11,7 +11,7 @@ Modo de trabalho: **offline; sem ADB, fastboot ou carregamento de módulo neste 
 | Artefato | SHA-256 |
 |---|---|
 | Stock `zte_ir.ko` | `b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1` |
-| Candidato canônico `zte_ir.ko` | `6edf27d53408ed1ef28886493b8d6cab49cefb0f5c5f1435bcbb5df9afa4b133` |
+| Candidato canônico `zte_ir.ko` | `cc0a7dfe46caa27544bdcff2e358646a4a914159845bf5cb700c23d50632204f` |
 
 O fonte canônico é `zte_ir.c`. O diretório `implementation/` conserva
 microtarefas e evidências históricas; seu `.ko` integrado não é o candidato
@@ -20,8 +20,8 @@ atual e não deve ser usado para atestar este hash.
 ## Resultado verificável
 
 - O0–O9: `PASS` na auditoria offline; `zte_ir_write@0010036c`,
-  `zte_ir_ioctl@0010069c` e `zte_ir_open@00100804` também possuem atestação
-  exact independente.
+  `zte_ir_ioctl@0010069c`, `zte_ir_open@00100804` e
+  `zte_ir_release@001008c4` também possuem atestação exact independente.
 - O10: `INCOMPLETE`, aguardando revisor independente diferente do implementador.
 - Hardware: `DEFERRED`, aguardando teste controlado no NX809J.
 - Veredito correto: **candidato alinhado estaticamente, ainda não comprovado no hardware**.
@@ -60,6 +60,11 @@ estática/offline e está em
 de corpo, relocações AArch64 para `device_list_lock`/`device_list` e KCFI
 `0x9829071d` iguais ao módulo OEM. A atestação estática/offline está em
 `reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_release@001008c4` é materializada de 20 instruções stock, com 80
+bytes de corpo, relocação para `device_list_lock` e KCFI `0x9829071d` iguais ao
+módulo OEM. A atestação estática/offline está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_release_exact_v1/exact_revalidation_20260902`.
 
 ## Diferenças deliberadas
 
