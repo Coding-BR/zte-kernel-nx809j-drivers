@@ -441,6 +441,29 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_collapsed_cfg_fallback_requires_strong_shape(self) -> None:
+        stock = (
+            "void target(void){_printk();of_find_property();of_get_named_gpio();"
+            "of_property_read_variable_u32_array();gpio_free();spi_setup();"
+            "return0;return1;}"
+        )
+        candidate = "void target(void){_printk();return;}"
+        shape = [{"operation": "CALL"}] * 6
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_cfg_collapsed_external_label_artifact"
+        )
+        self.assertEqual(evidence["candidate_call_operation_count"], 6)
+        self.assertIsNone(
+            MODULE.external_label_call_decompiler_artifact(
+                stock, candidate, shape, shape[:-1]
+            )
+        )
+
     def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
         stock = (
             'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'

@@ -697,6 +697,32 @@ def external_label_call_decompiler_artifact(
     if len(missing_calls) < 2 or stock_call_ops != candidate_call_ops:
         return None
     return_statement_re = re.compile(r"\breturn(?:[^;]*);" )
+    candidate_return_count = len(return_statement_re.findall(candidate_normalized))
+    stock_return_count = len(return_statement_re.findall(stock_normalized))
+    # Exact .inst/relocation-backed functions can retain the complete P-Code
+    # while Ghidra's C emitter collapses the whole CFG to the entry log call.
+    # Accept that shape only when the candidate has exactly that one known
+    # external call, the stock has a materially larger call surface, and the
+    # candidate C is shorter.  This is a diagnostic authority fallback, never
+    # textual C equivalence.
+    if (
+        candidate_calls == {"_printk"}
+        and len(stock_calls) >= 5
+        and candidate_return_count <= stock_return_count
+        and len(candidate_normalized) * 4 < len(stock_normalized)
+    ):
+        return {
+            "kind": "ghidra_cfg_collapsed_external_label_artifact",
+            "missing_stock_call_names": missing_calls,
+            "stock_call_operation_count": stock_call_ops,
+            "candidate_call_operation_count": candidate_call_ops,
+            "candidate_return_count": candidate_return_count,
+            "stock_return_count": stock_return_count,
+            "requirement": (
+                "exact body bytes and P-Code instruction/operation shape; relocation-aware "
+                "assembly parity remains mandatory"
+            ),
+        }
     if len(return_statement_re.findall(candidate_normalized)) <= len(
         return_statement_re.findall(stock_normalized)
     ):
