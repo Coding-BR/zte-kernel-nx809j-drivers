@@ -677,13 +677,15 @@ def external_label_call_decompiler_artifact(
     protocol requirement.
     """
     call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
-    control_names = {"if", "for", "while", "switch"}
+    control_names = {"if", "for", "while", "switch", "elseif"}
+    stock_body = stock_normalized[stock_normalized.find("{") + 1:]
+    candidate_body = candidate_normalized[candidate_normalized.find("{") + 1:]
     stock_calls = {
-        name for name in call_name_re.findall(stock_normalized)
+        name for name in call_name_re.findall(stock_body)
         if name not in control_names
     }
     candidate_calls = {
-        name for name in call_name_re.findall(candidate_normalized)
+        name for name in call_name_re.findall(candidate_body)
         if name not in control_names
     }
     missing_calls = sorted(stock_calls - candidate_calls)
@@ -694,7 +696,10 @@ def external_label_call_decompiler_artifact(
     # on the older, narrower premature-return path below.
     if len(missing_calls) < 2 or stock_call_ops != candidate_call_ops:
         return None
-    if candidate_normalized.count("return;") <= stock_normalized.count("return;"):
+    return_statement_re = re.compile(r"\breturn(?:[^;]*);" )
+    if len(return_statement_re.findall(candidate_normalized)) <= len(
+        return_statement_re.findall(stock_normalized)
+    ):
         return None
     return {
         "kind": "ghidra_external_label_control_flow_artifact",
