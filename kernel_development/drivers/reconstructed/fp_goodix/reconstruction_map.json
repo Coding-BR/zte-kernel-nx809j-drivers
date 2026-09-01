@@ -363,17 +363,24 @@
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0016_00101f1c_sendnlmsg.c:sha256:0b63836df7de6f605323bd68d559f1a11b749f1c6da495761044bc4c53465f34",
         "ghidra-pcode:pcode/0016_00101f1c_sendnlmsg.jsonl:sha256:e6a4316738f9c398e6ccafc8e343477b009dc74d25a97eb204b09d70737d9ce8",
-        "stock-assembly:0016_sendnlmsg_00101f1c.asm:sha256:e26ab4be784d19cd4845689eda1bffb861f87007a96cf5a811fb4732d8e63a00"
+        "stock-assembly:0016_sendnlmsg_00101f1c.asm:sha256:e26ab4be784d19cd4845689eda1bffb861f87007a96cf5a811fb4732d8e63a00",
+        "assembly-comparison:attestation/next017_sendnlmsg_exact_v1/assembly.json:sha256:a4f6c89dadc3965b42f2f7cb111aeb51d6dae0770a619713832f93e1ce99ea93",
+        "canonical-build:attestation/next017_sendnlmsg_exact_v1/compile.json:sha256:c09e7b5a21dd82ac89977f112f2fa3f9d1d4380aa69979a425a458528380a7b1",
+        "kcfi-comparison:attestation/next017_sendnlmsg_exact_v1/kcfi.json:sha256:af35c12046440b65aca3acdff2f67b2f32bc6ce22c9f5e8491e7c7a87d357d15",
+        "host-harness:attestation/next017_sendnlmsg_exact_v1/test.json:sha256:e8e4e8e78361bec9cb2bfd870da8c4ca1d67a7d9d5f037b5165602133718d5e3",
+        "joern:attestation/next017_sendnlmsg_exact_v1/joern.json:sha256:080ed01db60d661e2c815dfef3b22e0cbd2f882dc42189c4d77e024b051365f0",
+        "hard-protocol:attestation/next017_sendnlmsg_exact_v1/hard_protocol_report.json:sha256:fcb8d1036c5bed6427d3ec4b00a573afb4e0390ee816a7855329d739c8bbf6ff"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "sendnlmsg",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 268,
       "stock_entry": "00101f1c",
-      "stock_function": "sendnlmsg"
+      "stock_function": "sendnlmsg",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 67 matching AArch64 instructions and 268-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x7bff871d, strict Joern scope, and direct netlink-send tests. This is static/offline evidence; netlink and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
