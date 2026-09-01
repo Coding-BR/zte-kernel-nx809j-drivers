@@ -1014,10 +1014,14 @@ int zte_power_supply_get_battery_info(struct zte_power_supply *psy,
 
 		tab_len = size / (2 * sizeof(__be32));
 		info->ocv_table_size[index] = tab_len;
+		if (tab_len < 0) {
+			info->ocv_table[index] = NULL;
+			goto out_nomem_ocv;
+		}
 		table = info->ocv_table[index] =
 			devm_kcalloc(&psy->dev, tab_len, sizeof(*table), GFP_KERNEL);
 		if (!info->ocv_table[index])
-			goto out_nomem_ocv;
+			goto out_nomem_ocv_alloc;
 
 		for (i = 0; i < tab_len; i++) {
 			table[i].ocv = be32_to_cpu(*list);
@@ -1057,6 +1061,7 @@ out_bad_ocv:
 
 out_nomem_ocv:
 	info->ocv_table[index] = NULL;
+out_nomem_ocv_alloc:
 	for (index = 0; index < POWER_SUPPLY_OCV_TEMP_MAX; index++)
 		if (info->ocv_table[index])
 			devm_kfree(&psy->dev, info->ocv_table[index]);
