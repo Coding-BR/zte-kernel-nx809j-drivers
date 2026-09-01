@@ -627,6 +627,86 @@ def named_data_address_syntax_fallback(
     }
 
 
+def decompiler_symbol_resolution_artifact(
+    stock_normalized: str, candidate_normalized: str
+) -> dict[str, Any] | None:
+    """Identify equivalent calls rendered with different Ghidra symbols.
+
+    Ghidra can retain a call as ``FUN_<address>`` in one export while resolving
+    the same relocation to its imported symbol in the other.  This fallback
+    compares call positions and the complete remaining normalized C text; it
+    accepts only synthetic candidate names and leaves target identity to the
+    independent relocation-aware assembly gate.
+    """
+    call_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
+    control_names = {"if", "for", "while", "switch", "elseif", "return"}
+
+    def body_calls(value: str) -> list[str]:
+        body = value[value.find("{") + 1 :]
+        return [
+            name for name in call_re.findall(body) if name not in control_names
+        ]
+
+    stock_calls = body_calls(stock_normalized)
+    candidate_calls = body_calls(candidate_normalized)
+    if len(stock_calls) != len(candidate_calls) or not stock_calls:
+        return None
+    synthetic_re = re.compile(
+        r"(?:FUN_[0-9a-fA-F]+|SUB_[0-9a-fA-F]+|func_0x[0-9a-fA-F]+)"
+    )
+    mismatches = [
+        (stock_name, candidate_name)
+        for stock_name, candidate_name in zip(stock_calls, candidate_calls)
+        if stock_name != candidate_name
+    ]
+    if not mismatches or not all(
+        synthetic_re.fullmatch(candidate_name) for _, candidate_name in mismatches
+    ):
+        return None
+
+    def canonicalize_calls(value: str) -> str:
+        body_start = value.find("{") + 1
+        prefix, body = value[:body_start], value[body_start:]
+        index = 0
+
+        def replace(match: re.Match[str]) -> str:
+            nonlocal index
+            name = match.group(1)
+            if name in control_names:
+                return match.group(0)
+            token = f"GHIDRA_CALL_{index}"
+            index += 1
+            return f"{token}("
+
+        return prefix + call_re.sub(replace, body)
+
+    string_pointer_re = re.compile(
+        r'GHIDRA_STRING\[(?P<literal>"(?:\\.|[^"\\])*")\]'
+    )
+
+    def canonicalize(value: str) -> str:
+        return string_pointer_re.sub(
+            lambda match: match.group("literal"), canonicalize_calls(value)
+        )
+
+    if canonicalize(stock_normalized) != canonicalize(candidate_normalized):
+        return None
+    return {
+        "kind": "ghidra_synthetic_call_symbol_resolution_artifact",
+        "call_position_mappings": [
+            {"stock": stock_name, "candidate": candidate_name}
+            for stock_name, candidate_name in mismatches
+        ],
+        "call_count": len(stock_calls),
+        "requirement": (
+            "same ordered call positions and whole normalized C equality after "
+            "canonicalizing only synthetic candidate call names and the proven "
+            "GHIDRA_STRING wrapper; exact body bytes, P-Code shape and relocation "
+            "parity remain mandatory"
+        ),
+    }
+
+
 def fragmented_byte_flag_normalization(
     stock: str,
     candidate: str,
@@ -1440,9 +1520,13 @@ def compare_function(
                         )
                 normalized_decompiled_match = False
             elif allow_pcode_authoritative_decompiler_fallback:
-                pcode_authoritative_fallback = decompiler_branch_inversion_shared_return_artifact(
-                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                pcode_authoritative_fallback = decompiler_symbol_resolution_artifact(
+                    stock_normalized, candidate_normalized
                 )
+                if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = decompiler_branch_inversion_shared_return_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    )
                 if pcode_authoritative_fallback is None:
                     pcode_authoritative_fallback = external_label_call_decompiler_artifact(
                     stock_normalized, candidate_normalized, stock_shape, candidate_shape

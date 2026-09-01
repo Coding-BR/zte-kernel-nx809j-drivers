@@ -493,6 +493,31 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             "ghidra_premature_return_decompiler_truncation",
         )
 
+    def test_pcode_fallback_records_synthetic_call_symbol_resolution(self) -> None:
+        stock = (
+            'void target(void){_inline_copy_from_user();gf_enable_irq();'
+            '_printk("gf_ioctl");return;}'
+        )
+        candidate = (
+            'void target(void){FUN_00102a00();FUN_00100728();'
+            '_printk(GHIDRA_STRING["gf_ioctl"]);return;}'
+        )
+
+        evidence = MODULE.decompiler_symbol_resolution_artifact(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_synthetic_call_symbol_resolution_artifact"
+        )
+        self.assertEqual(evidence["call_count"], 3)
+        self.assertEqual(
+            evidence["call_position_mappings"],
+            [
+                {"stock": "_inline_copy_from_user", "candidate": "FUN_00102a00"},
+                {"stock": "gf_enable_irq", "candidate": "FUN_00100728"},
+            ],
+        )
+
     def test_pcode_fallback_is_opt_in(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
