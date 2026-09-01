@@ -744,6 +744,26 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_unresolved_internal_call_multiset_fallback_is_explicit(self) -> None:
+        stock = (
+            "intresume(void){gpio_keys_gpio_report_event(a);"
+            "gpio_keys_gpio_report_event(b);input_event();return0;}"
+        )
+        candidate = (
+            "intresume(void){func_0x000fff34(a);func_0x000ffedc(b);"
+            "input_event();return0;}"
+        )
+        shape = [{"operation": "CALL"}] * 3
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_unresolved_internal_call_multiset_artifact"
+        )
+
     def test_decimal_breakpoint_opcode_keeps_opcode_and_normalizes_context(self) -> None:
         stock, _, stock_artifacts = MODULE.normalize_decompiled(
             "SoftwareBreakpoint(1,0x10151c);", {}

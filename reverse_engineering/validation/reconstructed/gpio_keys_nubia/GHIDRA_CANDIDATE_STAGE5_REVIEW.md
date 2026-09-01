@@ -24,11 +24,12 @@ O driver permanece `PASS` no manifesto até revisão semântica independente.
 
 ## Vista opcional P-Code-authoritative
 
-Com `--allow-pcode-authoritative-decompiler-fallback`, a comparação fica em
-23/24: `gpio_keys_store_disabled_switches` é classificada como
-`ghidra_unresolved_external_call_name_artifact`; a reparação de fronteira de
-`gpio_keys_store_disabled_keys` já passou também no modo estrito, assim como
-`gpio_keys_probe`. `gpio_keys_resume` continua sem fallback aceito. Esta vista não altera o resultado estrito nem autoriza
+Com `--allow-pcode-authoritative-decompiler-fallback`, a comparação passa
+24/24: `gpio_keys_store_disabled_switches` é classificada como
+`ghidra_unresolved_external_call_name_artifact` e `gpio_keys_resume` como
+`ghidra_unresolved_internal_call_multiset_artifact`; a reparação de fronteira
+de `gpio_keys_store_disabled_keys` já passou também no modo estrito, assim
+como `gpio_keys_probe`. Esta vista não altera o resultado estrito nem autoriza
 promoção ou validação de hardware.
 
 Relatório do fallback: `ghidra_candidate_stage5_semantic_comparison_pcode_fallback.json`.

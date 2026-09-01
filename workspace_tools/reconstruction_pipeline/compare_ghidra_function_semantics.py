@@ -935,6 +935,23 @@ def external_label_call_decompiler_artifact(
     }
     missing_calls = sorted(stock_calls - candidate_calls)
     extra_calls = sorted(candidate_calls - stock_calls)
+    stock_call_sequence = [
+        name
+        for name in call_name_re.findall(stock_body)
+        if name not in control_names
+    ]
+    candidate_call_sequence = [
+        name
+        for name in call_name_re.findall(candidate_body)
+        if name not in control_names
+    ]
+    stock_call_counts = {
+        name: stock_call_sequence.count(name) for name in set(stock_call_sequence)
+    }
+    candidate_call_counts = {
+        name: candidate_call_sequence.count(name)
+        for name in set(candidate_call_sequence)
+    }
     stock_call_ops = sum(item.get("operation") == "CALL" for item in stock_shape)
     candidate_call_ops = sum(item.get("operation") == "CALL" for item in candidate_shape)
     # Require at least two omitted call names.  A single missing call is also
@@ -949,6 +966,50 @@ def external_label_call_decompiler_artifact(
     # even though the stock export resolves the same relocation to its symbol.
     # Accept only a one-for-one FUN_ rename with equal C call-set cardinality;
     # the remaining type/return display differences stay explicitly diagnostic.
+    synthetic_call_re = re.compile(
+        r"(?:FUN_[0-9a-fA-F]+|SUB_[0-9a-fA-F]+|func_0x[0-9a-fA-F]+)"
+    )
+    unmatched_stock_counts = {
+        name: count
+        for name, count in stock_call_counts.items()
+        if name not in candidate_call_counts
+    }
+    unmatched_candidate_counts = {
+        name: count
+        for name, count in candidate_call_counts.items()
+        if name not in stock_call_counts
+    }
+    if (
+        len(unmatched_stock_counts) == 1
+        and (
+            len(unmatched_candidate_counts) > 1
+            or any(
+                not name.startswith("FUN_") for name in unmatched_candidate_counts
+            )
+        )
+        and unmatched_stock_counts[missing_calls[0]]
+        == sum(unmatched_candidate_counts.values())
+        and unmatched_candidate_counts
+        and all(synthetic_call_re.fullmatch(name) for name in unmatched_candidate_counts)
+        and all(
+            stock_call_counts[name] == candidate_call_counts[name]
+            for name in stock_call_counts.keys() & candidate_call_counts.keys()
+        )
+    ):
+        return {
+            "kind": "ghidra_unresolved_internal_call_multiset_artifact",
+            "missing_stock_call_names": missing_calls,
+            "missing_stock_call_counts": unmatched_stock_counts,
+            "candidate_synthetic_call_counts": unmatched_candidate_counts,
+            "stock_call_operation_count": stock_call_ops,
+            "candidate_call_operation_count": candidate_call_ops,
+            "candidate_return_count": candidate_return_count,
+            "stock_return_count": stock_return_count,
+            "requirement": (
+                "equal call multiset, exact body bytes and P-Code instruction/operation "
+                "shape; relocation-aware assembly parity remains mandatory"
+            ),
+        }
     if (
         len(missing_calls) == 1
         and len(extra_calls) == 1
