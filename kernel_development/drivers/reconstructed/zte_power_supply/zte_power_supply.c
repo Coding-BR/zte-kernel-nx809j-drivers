@@ -919,6 +919,7 @@ void zte_power_supply_put_battery_info(struct zte_power_supply *psy,
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_put_battery_info);
 
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 int zte_power_supply_get_battery_info(struct zte_power_supply *psy,
 				      struct power_supply_battery_info *info)
 {
@@ -1075,6 +1076,7 @@ out_put_node:
 	return err;
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_get_battery_info);
+#endif
 
 struct power_supply_battery_ocv_table *
 zte_power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
