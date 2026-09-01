@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_tpd",
+  "function": "syna_tcm_buf_unlock",
+  "stock_entry": "0011ee40",
+  "stock_symbol_offset": "0x185b8",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "body": {
+    "instructions": 26,
+    "bytes": 104,
+    "kcfi_type_id": null,
+    "kcfi_decision": "BOTH_NO_VALID_KCFI_PREAMBLE"
+  },
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "host_harness": {
+    "passed": true,
+    "cycles": 2,
+    "expected_tests": 14,
+    "asan_ubsan_stderr_empty": true,
+    "reproducible_binary": true
+  },
+  "ghidra_repair": {
+    "clear_no_return": "_printk",
+    "extended_function_body_bytes": 104,
+    "fallback": "ghidra_syna_tcm_buf_unlock_shared_cleanup_artifact",
+    "body_bytes_equal": true,
+    "pcode_operation_shape_equal": true,
+    "normalized_decompiled_c_textual_match": false
+  },
+  "limitations": [
+    "No hardware, SPI, IRQ, firmware transport, or module-loading validation was performed.",
+    "The Docker candidate is the canonical rebuilt module; the external binary is referenced by its SHA-256.",
+    "The Ghidra C export has a documented shared-cleanup CFG artifact; independent low-level gates remain mandatory."
+  ],
+  "evidence": {
+    "hard_protocol_report_sha256": "06d4ca70d3dfb189041b3c6a766c4ea2e9077e208fd46b765dba9287d3439e3a",
+    "docker_reproducibility_sha256": "833543613ba6d9fd986e4d50c52850c5541224f82fc91e87ed1ad570e4993d48",
+    "assembly_comparison_sha256": "fd794df7b26b9f710389a111bf9fa4ab7903d333d2ee13d341eff71aff2a958b",
+    "kcfi_comparison_sha256": "53313d217ddb62557317f4454f67822ead63f2e08cc80ff4200f36cc6c18bdbd",
+    "joern_gate_report_sha256": "a64ca921a07ef38e1cad20da29c9aad4c0f48bec2f3f5c0ee0de51ee168a4180",
+    "semantic_comparison_sha256": "2310d6e085a7e07495235df950585d53d9be9594220b9de9e8f1a8593bd1e79a",
+    "host_harness_report_sha256": "bc8f9f0a40c26642a8c276bc77e419cba1333defab4b3ef99d93ad375c518048"
+  }
+}

@@ -1263,6 +1263,60 @@ def decompiler_buf_lock_branch_loop_artifact(
     }
 
 
+def decompiler_buf_unlock_shared_cleanup_artifact(
+    function: str,
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify Ghidra's early-return rendering of ``syna_tcm_buf_unlock``.
+
+    The stock AArch64 body joins both depth branches before the byte store and
+    ``mutex_unlock``.  A Ghidra import can instead duplicate the cleanup in
+    the balanced branch and emit an early return after ``_printk``.  Accept
+    only this exact helper shape; body bytes, P-Code and relocation-aware
+    assembly remain independent mandatory gates.
+    """
+    if function != "syna_tcm_buf_unlock":
+        return None
+    if "syna_tcm_buf_unlock(" not in stock_normalized or "syna_tcm_buf_unlock(" not in candidate_normalized:
+        return None
+    if stock_normalized.count("_printk(") != 1 or candidate_normalized.count("_printk(") != 1:
+        return None
+    if stock_normalized.count("mutex_unlock(") != 1 or candidate_normalized.count("mutex_unlock(") != 1:
+        return None
+    if sum(item.get("operation") == "CALL" for item in stock_shape) != sum(
+        item.get("operation") == "CALL" for item in candidate_shape
+    ):
+        return None
+    stock_fragments = (
+        "if(*(char*)(param_1+0x40)=='\\x01'){cVar1='\\0';}else{_printk(",
+        "cVar1=*(char*)(param_1+0x40)+-1;",
+        "*(char*)(param_1+0x40)=cVar1;mutex_unlock(param_1+0x10);return;}",
+    )
+    candidate_fragments = (
+        "if(*(char*)(param_1+0x40)=='\\x01'){*(undefined1*)(param_1+0x40)=0;mutex_unlock(param_1+0x10);return;}",
+        "_printk(",
+        "return;}",
+    )
+    if not all(fragment in stock_normalized for fragment in stock_fragments):
+        return None
+    if not all(fragment in candidate_normalized for fragment in candidate_fragments):
+        return None
+    return {
+        "kind": "ghidra_syna_tcm_buf_unlock_shared_cleanup_artifact",
+        "stock_shape": "both depth branches join at the byte-store and mutex-unlock epilogue",
+        "candidate_shape": "balanced branch duplicates cleanup and diagnostic branch is rendered as early return",
+        "call_counts": {"stock": {"_printk": 1, "mutex_unlock": 1}, "candidate": {"_printk": 1, "mutex_unlock": 1}},
+        "field_offsets": {"lock_depth": "0x40", "mutex": "0x10"},
+        "requirement": (
+            "function-specific offsets, equal ELF body bytes and P-Code operation "
+            "shape; independent AArch64 assembly and relocation parity remain mandatory"
+        ),
+    }
+
+
 def decompiler_branch_inversion_shared_return_artifact(
     stock_normalized: str,
     candidate_normalized: str,
@@ -1742,6 +1796,8 @@ def compare_function(
                 if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
                     pcode_authoritative_fallback = decompiler_buf_lock_branch_loop_artifact(
                         function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    ) or decompiler_buf_unlock_shared_cleanup_artifact(
+                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     ) or decompiler_get_features_printk_control_flow_artifact(
                         function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     ) or decompiler_status_return_control_flow_artifact(
@@ -1774,6 +1830,8 @@ def compare_function(
                 normalized_decompiled_match = False
             elif allow_pcode_authoritative_decompiler_fallback:
                 pcode_authoritative_fallback = decompiler_buf_lock_branch_loop_artifact(
+                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                ) or decompiler_buf_unlock_shared_cleanup_artifact(
                     function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 ) or decompiler_get_features_printk_control_flow_artifact(
                     function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
