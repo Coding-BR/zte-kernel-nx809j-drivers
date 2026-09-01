@@ -1011,7 +1011,7 @@ def external_label_call_decompiler_artifact(
     protocol requirement.
     """
     call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
-    control_names = {"if", "for", "while", "switch", "elseif"}
+    control_names = {"if", "for", "while", "switch", "elseif", "return"}
     stock_body = stock_normalized[stock_normalized.find("{") + 1:]
     candidate_body = candidate_normalized[candidate_normalized.find("{") + 1:]
     stock_calls = {
@@ -1179,7 +1179,7 @@ def decompiler_cfg_restructuring_artifact(
     independent relocation-aware assembly gate remain mandatory.
     """
     call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
-    control_names = {"if", "for", "while", "switch", "elseif"}
+    control_names = {"if", "for", "while", "switch", "elseif", "return"}
 
     def call_counts(value: str) -> dict[str, int]:
         body = value[value.find("{") + 1 :]
@@ -1243,7 +1243,7 @@ def decompiler_cfg_early_return_cleanup_artifact(
     mandatory at the caller/protocol level.
     """
     call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
-    control_names = {"if", "for", "while", "switch", "elseif"}
+    control_names = {"if", "for", "while", "switch", "elseif", "return"}
 
     def call_sequence(value: str) -> list[str]:
         body = value[value.find("{") + 1 :]
