@@ -249,17 +249,25 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0011_00101968_gf_remove.c:sha256:0d0a26ac2425f70b142bbe2f9074cc74a63fcdfde584826a98651f3fe818cd62",
         "ghidra-pcode:pcode/0011_00101968_gf_remove.jsonl:sha256:1f1cdb1ad767db8ba1923ae4a34d60ad349c797d0e505518f82b6bc246aa217c",
-        "stock-assembly:0011_gf_remove_00101968.asm:sha256:13fd570f353b7bb5825a7b3700d74770974288ea8ea0bc0b69ef16663e0622ed"
+        "stock-assembly:0011_gf_remove_00101968.asm:sha256:13fd570f353b7bb5825a7b3700d74770974288ea8ea0bc0b69ef16663e0622ed",
+        "assembly-comparison:attestation/next012_gf_remove_exact_v1/assembly.json:sha256:c954199cf5523bc5d2e67c3ec43afc143dd6005bbcd68a44843d30f5fc69d1e3",
+        "canonical-build:attestation/next012_gf_remove_exact_v1/compile.json:sha256:510a25b3d67f4f1db9d96c7ca51b72708fe0109e02f36125a212d9b1b3508864",
+        "kcfi-comparison:attestation/next012_gf_remove_exact_v1/kcfi.json:sha256:37b8cc5556045ccb2dc334b88e5063e6c13b1569c7d59d306f3e51ec2b12417e",
+        "host-harness:attestation/next012_gf_remove_exact_v1/test.json:sha256:d3eea8ae01f900cc697ee1d7038f15ac8db483bff7dbfbd689b1fe9557686f25",
+        "joern:attestation/next012_gf_remove_exact_v1/joern.json:sha256:2e3053857399d4e1e0c6eaf14e31039c343b47688af8ab309338622eacc9e9fc",
+        "hard-protocol:attestation/next012_gf_remove_exact_v1/hard_protocol_report.json:sha256:d6dee55ef728a0ed6f378b005e260ade6e2ab7f073fef5db099f73c7d1362fa5"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_remove",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 324,
       "stock_entry": "00101968",
-      "stock_function": "gf_remove"
+      "stock_function": "gf_remove",
+      "elf_symbol_bytes": 340,
+      "mapping_note": "Function-level offline parity is promoted. The preserved Ghidra mapping records 324 body bytes, while the ELF symbol and candidate comparison record 85 matching AArch64 instructions and 340 symbol bytes; both measurements are retained. Docker builds are reproducible, KCFI type ID 0x24a11bb9 matches, Joern is strict, and the direct remove/teardown harness passes. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
