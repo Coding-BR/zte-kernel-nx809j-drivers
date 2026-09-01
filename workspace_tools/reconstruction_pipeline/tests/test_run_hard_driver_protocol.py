@@ -217,6 +217,8 @@ class HardDriverProtocolTests(unittest.TestCase):
 
         self.assertEqual(gates["KCFI"], "PASS")
         command_names = [call.args[0] for call in run_mock.call_args_list]
+        self.assertIn("kcfi_stock", command_names)
+        self.assertIn("kcfi_candidate", command_names)
         self.assertIn("kcfi_direct_call_f000", command_names)
         self.assertNotIn("kcfi_compare", command_names)
 

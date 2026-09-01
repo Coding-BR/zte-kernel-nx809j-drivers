@@ -707,6 +707,11 @@ def execute_post_candidate(
     selected_functions = {str(item["stock_function"]) for item in functions}
     if direct_call_only and selected_functions <= direct_call_only:
         direct_ok = bool(stock_ghidra_export and candidate_ghidra_export)
+        for name, argv in kcfi_commands.items():
+            result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
+            commands[name] = result
+            if result["returncode"] != 0:
+                direct_ok = False
         for item in functions:
             alias = str(item["alias"])
             direct_report = output_dir / "kcfi" / f"direct_call_{alias}.json"
