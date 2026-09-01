@@ -1207,6 +1207,62 @@ def decompiler_get_features_printk_control_flow_artifact(
     }
 
 
+def decompiler_buf_lock_branch_loop_artifact(
+    function: str,
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify Ghidra's inverted-branch rendering of ``syna_tcm_buf_lock``.
+
+    The exact candidate uses a diagnostic branch that jumps back to the common
+    mutex/ increment path.  Ghidra can instead render that back-edge as an
+    ``if/else`` whose diagnostic arm returns.  This is accepted only for the
+    exact field offsets and call set observed here; low-level parity remains
+    independently mandatory.
+    """
+    if function != "syna_tcm_buf_lock":
+        return None
+    if "syna_tcm_buf_lock(" not in stock_normalized or "syna_tcm_buf_lock(" not in candidate_normalized:
+        return None
+    if stock_normalized.count("_printk(") != 1 or candidate_normalized.count("_printk(") != 1:
+        return None
+    if stock_normalized.count("mutex_lock(") != 1 or candidate_normalized.count("mutex_lock(") != 1:
+        return None
+    if sum(item.get("operation") == "CALL" for item in stock_shape) != sum(
+        item.get("operation") == "CALL" for item in candidate_shape
+    ):
+        return None
+    stock_fragments = (
+        "if(*(char*)(param_1+0x40)!='\\0'){_printk(",
+        "mutex_lock(param_1+0x10);",
+        "*(char*)(param_1+0x40)=*(char*)(param_1+0x40)+'\\x01';",
+        "return;}",
+    )
+    candidate_fragments = (
+        "if(*(char*)(param_1+0x40)=='\\0'){mutex_lock(param_1+0x10);",
+        "*(char*)(param_1+0x40)=*(char*)(param_1+0x40)+'\\x01';",
+        "return;}_printk(",
+        "syna_tcm_buf_lock",
+    )
+    if not all(fragment in stock_normalized for fragment in stock_fragments):
+        return None
+    if not all(fragment in candidate_normalized for fragment in candidate_fragments):
+        return None
+    return {
+        "kind": "ghidra_syna_tcm_buf_lock_back_edge_branch_artifact",
+        "stock_shape": "diagnostic printk branch falls through a backward edge to common lock/increment path",
+        "candidate_shape": "inverted conditional renders diagnostic arm as early return",
+        "call_counts": {"stock": {"_printk": 1, "mutex_lock": 1}, "candidate": {"_printk": 1, "mutex_lock": 1}},
+        "field_offsets": {"lock_depth": "0x40", "mutex": "0x10"},
+        "requirement": (
+            "function-specific offsets, equal ELF body bytes and P-Code operation "
+            "shape; independent AArch64 assembly and relocation parity remain mandatory"
+        ),
+    }
+
+
 def decompiler_branch_inversion_shared_return_artifact(
     stock_normalized: str,
     candidate_normalized: str,
@@ -1684,7 +1740,9 @@ def compare_function(
                     stock_normalized, candidate_normalized
                 )
                 if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = decompiler_get_features_printk_control_flow_artifact(
+                    pcode_authoritative_fallback = decompiler_buf_lock_branch_loop_artifact(
+                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    ) or decompiler_get_features_printk_control_flow_artifact(
                         function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     ) or decompiler_status_return_control_flow_artifact(
                         function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
@@ -1715,7 +1773,9 @@ def compare_function(
                         )
                 normalized_decompiled_match = False
             elif allow_pcode_authoritative_decompiler_fallback:
-                pcode_authoritative_fallback = decompiler_get_features_printk_control_flow_artifact(
+                pcode_authoritative_fallback = decompiler_buf_lock_branch_loop_artifact(
+                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                ) or decompiler_get_features_printk_control_flow_artifact(
                     function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 ) or decompiler_status_return_control_flow_artifact(
                     function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
