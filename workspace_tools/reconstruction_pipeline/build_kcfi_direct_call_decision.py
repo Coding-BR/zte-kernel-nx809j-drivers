@@ -71,7 +71,8 @@ def matching_records(
     return [
         value
         for value in values
-        if isinstance(value, dict) and value.get("function") == function
+        if isinstance(value, dict)
+        and (value.get("function") == function or value.get("symbol_name") == function)
     ]
 
 

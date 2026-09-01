@@ -132,6 +132,37 @@ class BuildKcfiDirectCallDecisionTests(unittest.TestCase):
                 candidate_module=candidate,
             )
 
+    def test_matches_kcfi_alias_by_symbol_name(self) -> None:
+        (
+            stock_kcfi,
+            candidate_kcfi,
+            stock_calls,
+            candidate_calls,
+            stock,
+            candidate,
+            temporary,
+        ) = self.make_inputs()
+        self.addCleanup(temporary.cleanup)
+        stock_kcfi["excluded"] = [{"function": "f000", "symbol_name": "target", "reason": "overlap"}]
+        candidate_kcfi["records"] = [{
+            "function": "f000",
+            "symbol_name": "target",
+            "type_id": "0x12345678",
+        }]
+
+        report = MODULE.build_decision(
+            driver="sample",
+            function="target",
+            stock_kcfi=stock_kcfi,
+            candidate_kcfi=candidate_kcfi,
+            stock_calls=stock_calls,
+            candidate_calls=candidate_calls,
+            stock_module=stock,
+            candidate_module=candidate,
+        )
+
+        self.assertTrue(report["passed"])
+
     def test_rejects_module_hash_mismatch(self) -> None:
         (
             stock_kcfi,

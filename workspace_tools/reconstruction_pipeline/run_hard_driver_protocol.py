@@ -721,7 +721,7 @@ def execute_post_candidate(
                 python,
                 tools_root / "build_kcfi_direct_call_decision.py",
                 "--driver", job["driver"],
-                "--function", alias,
+                "--function", item["stock_function"],
                 "--stock-kcfi-report", str(stock_kcfi),
                 "--candidate-kcfi-report", str(candidate_kcfi),
                 "--stock-calls", str(stock_ghidra_export / "calls.jsonl")
