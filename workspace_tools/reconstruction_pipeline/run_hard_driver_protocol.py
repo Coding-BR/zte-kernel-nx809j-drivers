@@ -780,7 +780,11 @@ def execute_post_candidate(
         )
         same_names = True
         for item in functions:
-            if item["stock_function"] != item["source_function"]:
+            # init_module/cleanup_module are ELF entry aliases emitted by
+            # module_init/module_exit; compare the stock and candidate Ghidra
+            # symbols, while keeping source_function for Joern/map identity.
+            candidate_function = item.get("candidate_function", item["source_function"])
+            if item["stock_function"] != candidate_function:
                 same_names = False
                 break
             ghidra_command.extend(["--function", item["stock_function"]])

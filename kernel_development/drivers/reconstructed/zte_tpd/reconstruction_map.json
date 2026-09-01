@@ -9838,23 +9838,23 @@
         "ghidra-pseudocode:decompiled/0365_0013159c_init_module.c:sha256:d28e0b05b3b37eccb1a11e23ebca3b7acafb2d664940768e913578370a41eb50",
         "ghidra-pcode:pcode/0365_0013159c_init_module.jsonl:sha256:83c5e66274faf350421e67d77c20691ae72dd41402fb8af99462f57904244c05",
         "stock-assembly:0365_init_module_0013159c.asm:sha256:15c6a530b08cbe7ad796a882019e52920bb9b3bfc146b8973f543b5e1f30e13a",
-        "harness:attestation/next161_zte_touch_init_v2/host_harness_report.json:sha256:111241b8cba4868e01d2d8c222a30e87f72b4d0ae2f53718a306540da58261b0",
-        "joern:attestation/next161_zte_touch_init_v2/joern_gate_summary.json:sha256:eb4a70cf8a48eaefbd30fa910603ab56517e9a933bd2adb06ac10c40f284448f",
-        "canonical:attestation/next161_zte_touch_init_v2/canonical_build_report.json:sha256:442b9248425de45dd4a88441115a0eb7e7ae84f0339c2b66b9f03dc30af9c37a",
-        "sync:attestation/next161_zte_touch_init_v2/source_sync_report.json:sha256:6fa4cab07e42e6c3ec7d2abd84f61b0c49b8106cdc0e819b81b576a1aa050999",
-        "kcfi:attestation/next161_zte_touch_init_v2/kcfi_comparison_normalized.json:sha256:6ad02913e5128df8ed5238901f89a352a4d212733fd1b498b209d82889ff5925",
-        "assembly-compare:attestation/next161_zte_touch_init_v2/assembly_comparison.json:sha256:0479d37d612930f515537d0166205cf38290501a83c5037c0dcd149d6d8ea8b5"
+    "harness:attestation/next366_init_module_exact_v5/exact_revalidation_20260831/host_harness_report.json:sha256:111241b8cba4868e01d2d8c222a30e87f72b4d0ae2f53718a306540da58261b0",
+    "joern:attestation/next366_init_module_exact_v5/exact_revalidation_20260831/joern/joern_gate_summary.json:sha256:73c1cbbf7fabf0c033328b206343a48cc6183223ea70db9b670b13f37f9b133c",
+    "canonical:attestation/next366_init_module_exact_v5/exact_revalidation_20260831/canonical_build_report.json:sha256:e635547247e770915b40e5add6a206a3f0338fcf7fa388f3a1285f0289ea1ed2",
+    "ghidra-candidate:attestation/next366_init_module_exact_v5/exact_revalidation_20260831/ghidra_semantic_comparison.json:sha256:e9f5ae8c2c0121478b88fb3118ffadd70d31e3bea5dd37b8747c02748c207f77",
+    "protocol:attestation/next366_init_module_exact_v5/exact_revalidation_20260831/hard_protocol_report.json:sha256:58ff7fd9cae90a41d15c27d4eca0a54fae2f9a4a489728d8542e7e71f558b5ef",
+    "candidate-module:attestation/next366_init_module_exact_v5/exact_revalidation_20260831/candidate_zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce"
       ],
       "mapping_basis": "module_init(zte_touch_init) emits the ELF init_module entry point",
       "review_scope": "offline_static_attestation",
-      "semantic_equivalence": "UNPROVEN",
+  "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "zte_touch_init.c",
       "source_function": "zte_touch_init",
-      "status": "mapped_not_exact",
+  "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 64,
       "stock_entry": "0013159c",
       "stock_function": "init_module",
-      "mapping_note": "Kernel module entrypoint is emitted by module_init(zte_touch_init). Source sync, strict Joern, canonical Docker build, ASan/UBSan host harness, normalized KCFI and instruction/size/section checks pass; AArch64 promotion is blocked because stock resolves the driver pointer as .data+0x150 while the candidate retains zte_touch_device_driver. Hardware behavior remains unverified."
+  "mapping_note": "Offline exact promotion: module_init(zte_touch_init) emits the init_module alias; the 64-byte/16-instruction relocation-resolved AArch64 body, P-Code operation shape, KCFI, two-cycle Docker reproducibility, strict Joern and Joern slice pass. The .data+0x150 versus symbol-name difference is an approved relocation identity normalization; hardware runtime remains unvalidated."
     },
     {
       "evidence": [
