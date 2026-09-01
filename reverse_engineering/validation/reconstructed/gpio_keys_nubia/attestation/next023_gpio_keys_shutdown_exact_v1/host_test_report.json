@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "gpio_keys_nubia",
+  "target": ["gpio_keys_shutdown"],
+  "mode": "docker_host_model",
+  "status": "PASS",
+  "passed": true,
+  "covered_functions": ["gpio_keys_shutdown"],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_shutdown_exact.S",
+      "sha256": "8af8fbb9fab21a23d1f2ecfe26e34a59b5fc391bea054b0a9a5e091a2c812ba3",
+      "size": 887
+    },
+    {
+      "path": "kernel_development/drivers/validation/gpio_keys_nubia/host/gpio_keys_shutdown_host_test.c",
+      "sha256": "f9488efd42c52bb56db8689b11d07380551140cd9fd31baf147f1dbb5c847bfc",
+      "size": 1736
+    }
+  ],
+  "tests": {
+    "gpio_keys_shutdown": {
+      "command": [
+        "docker", "run", "--rm", "nubia-sm8850-kernel-builder:latest",
+        "clang -std=gnu11 -Wall -Wextra -Werror /work/test.c -o test_harness && ./test_harness"
+      ],
+      "passed": true,
+      "returncode": 0,
+      "source_sha256": "f9488efd42c52bb56db8689b11d07380551140cd9fd31baf147f1dbb5c847bfc",
+      "stdout": "PASS gpio_keys shutdown host tests (2 scenarios)\n",
+      "stderr": ""
+    }
+  },
+  "limitations": [
+    "This is a host semantic model of the observed callback and does not exercise physical GPIO or kernel shutdown ordering."
+  ]
+}

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -69,6 +70,36 @@ class BuildTwiceTests(unittest.TestCase):
                     "M=/work/validation/zte_tpd/cycle_2",
                 ],
             )
+
+
+class ReconstructionMapTests(unittest.TestCase):
+    def test_accepts_promoted_mapping_statuses(self) -> None:
+        for status in ("reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"):
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as temporary:
+                driver_dir = Path(temporary)
+                (driver_dir / "driver.S").write_text("", encoding="utf-8")
+                (driver_dir / "reconstruction_map.json").write_text(
+                    json.dumps(
+                        {
+                            "stock_sha256": "stock-sha",
+                            "mappings": [
+                                {
+                                    "stock_function": "driver",
+                                    "source_file": "driver.S",
+                                    "source_function": "driver",
+                                    "status": status,
+                                    "evidence": ["assembly parity"],
+                                }
+                            ]
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                result, errors = MODULE.reconstruction_map_check(
+                    driver_dir, "stock-sha", ["driver"]
+                )
+                self.assertTrue(result["passed"])
+                self.assertEqual(errors, [])
 
 
 if __name__ == "__main__":

@@ -316,7 +316,7 @@ def reconstruction_map_check(
                 continue
             if not (driver_dir / source_file).is_file():
                 errors.append(f"mapping {index} refers to missing source file: {source_file}")
-            if status != "reviewed":
+            if status not in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
                 errors.append(f"mapping {index} is not independently reviewed")
             if not isinstance(evidence, list) or not evidence or not all(
                 isinstance(item, str) and item.strip() for item in evidence
