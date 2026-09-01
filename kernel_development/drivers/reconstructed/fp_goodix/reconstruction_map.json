@@ -436,17 +436,24 @@
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0019_001021a8_netlink_exit.c:sha256:5ea87f13428874489ce56598541c7609136a4981f8df2c708888cc4011b355c8",
         "ghidra-pcode:pcode/0019_001021a8_netlink_exit.jsonl:sha256:abdb17fbb7c8f9a508f3e975ec5d6757c79ec8b9810b60a820bb78afe98481b4",
-        "stock-assembly:0019_netlink_exit_001021a8.asm:sha256:63f0569cf433e64cc00c16f303c616e9a9201ff5fa2987c54c17d2564afd78b7"
+        "stock-assembly:0019_netlink_exit_001021a8.asm:sha256:63f0569cf433e64cc00c16f303c616e9a9201ff5fa2987c54c17d2564afd78b7",
+        "assembly-comparison:attestation/next020_netlink_exit_exact_v1/assembly.json:sha256:a27162269bc9aa48b87c050ae89651d27a44c5a53cd7249c6cf03f29235ba711",
+        "canonical-build:attestation/next020_netlink_exit_exact_v1/compile.json:sha256:69270df6cf97a55cac21332dcf6ab5ab43788d4d9114ba806afc0ce0401f107c",
+        "kcfi-comparison:attestation/next020_netlink_exit_exact_v1/kcfi.json:sha256:48af6fcc4f4007e5563c94e1b64ca361ea528bb70fca732301abf99d54e7635b",
+        "host-harness:attestation/next020_netlink_exit_exact_v1/test.json:sha256:ab06d2d23a21303c10e4aee454d42e83cbbdefba78457ff1ca2ba0b1698ca16b",
+        "joern:attestation/next020_netlink_exit_exact_v1/joern.json:sha256:6adc7e6d687ebc221bc745f2f1c8b706c27833a5d83d790a8fac680d11d711d4",
+        "hard-protocol:attestation/next020_netlink_exit_exact_v1/hard_protocol_report.json:sha256:2b585d8804cf99e90efcb638678f9e55850c288de06e3e8a0017a7b5003dcf75"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "netlink_exit",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 64,
       "stock_entry": "001021a8",
-      "stock_function": "netlink_exit"
+      "stock_function": "netlink_exit",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 16 matching AArch64 instructions and 64-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xe5c47d60, strict Joern scope, and direct netlink teardown tests. This is static/offline evidence; networking and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
