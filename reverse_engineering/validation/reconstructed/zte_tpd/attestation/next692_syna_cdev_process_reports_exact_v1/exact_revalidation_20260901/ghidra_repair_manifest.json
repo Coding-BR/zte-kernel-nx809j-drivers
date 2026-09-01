@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-09-01T00:11:12-03:00",
+  "driver": "zte_tpd",
+  "target": "syna_cdev_process_reports",
+  "stock_entry": "00117c90",
+  "stock_body_bytes": 1616,
+  "candidate_body_bytes": 1616,
+  "ghidra_version": "12.1.2_PUBLIC",
+  "repair_scripts": [
+    "reverse_engineering/tools/ClearGhidraNoReturn.java",
+    "reverse_engineering/tools/ExtendGhidraFunctionBody.java"
+  ],
+  "repair_actions": [
+    "clear no-return metadata for _printk",
+    "extend stock and candidate syna_cdev_process_reports to the exact 1616-byte ELF symbol body",
+    "export candidate and repaired-stock C and P-Code for independent comparison"
+  ],
+  "candidate_manifest_sha256": "2c06e9a711473fb74ad39ceb3bb01e1a441edfbdb3e2089304cfabd73af1a224",
+  "candidate_decompiled_sha256": "367c72a6f742eace94bc7d437f521eba5639a5a9bd8470917ca687533fd26196",
+  "candidate_pcode_sha256": "5fd1de2b573bfed5faeee948611088daf86220fcf0e053990e09c12e74b27dfe",
+  "stock_decompiled_sha256": "3e37fb83d07b94c809f6ff0fdf9ac5850a26599b361320e09338fb97f9f23410",
+  "stock_pcode_sha256": "35d9b0d829d64b2eba9a7d51f3493213925b3dffcc9fa364c6fe2373cb2a3a7f",
+  "semantic_outcome": "PCODE_SHAPE_PASS_WITH_CFG_RESTRUCTURING_ARTIFACT_FALLBACK",
+  "direct_normalized_c_equal": false,
+  "fallback": {
+    "kind": "ghidra_cfg_restructuring_external_call_artifact",
+    "candidate_return_count": 19,
+    "stock_return_count": 3,
+    "candidate_call_operation_count": 50,
+    "stock_call_operation_count": 50,
+    "independent_gate_required": "relocation-aware AArch64 assembly parity"
+  }
+}

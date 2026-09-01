@@ -765,6 +765,71 @@ def external_label_call_decompiler_artifact(
     }
 
 
+def decompiler_cfg_restructuring_artifact(
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify CFG restructuring caused by different external-call inference.
+
+    Ghidra may emit shared cleanup blocks with ``goto`` in one import and
+    duplicate the same cleanup as early returns in another.  When that occurs,
+    the C text can have different call multiplicities even though the decoded
+    instructions and P-Code are identical.  This fallback is deliberately
+    conservative: the call-name set must be identical, the candidate may only
+    lose call occurrences (never gain one), the function must have a meaningful
+    call surface, and the candidate must be a moderately sized CFG rather than
+    a collapsed/truncated fragment.  Exact body bytes, P-Code shape and the
+    independent relocation-aware assembly gate remain mandatory.
+    """
+    call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
+    control_names = {"if", "for", "while", "switch", "elseif"}
+
+    def call_counts(value: str) -> dict[str, int]:
+        body = value[value.find("{") + 1 :]
+        counts: dict[str, int] = {}
+        for name in call_name_re.findall(body):
+            if name in control_names:
+                continue
+            counts[name] = counts.get(name, 0) + 1
+        return counts
+
+    stock_calls = call_counts(stock_normalized)
+    candidate_calls = call_counts(candidate_normalized)
+    stock_call_ops = sum(item.get("operation") == "CALL" for item in stock_shape)
+    candidate_call_ops = sum(item.get("operation") == "CALL" for item in candidate_shape)
+    return_statement_re = re.compile(r"\breturn(?:[^;]*);")
+    stock_return_count = len(return_statement_re.findall(stock_normalized))
+    candidate_return_count = len(return_statement_re.findall(candidate_normalized))
+
+    if (
+        not stock_calls
+        or stock_call_ops != candidate_call_ops
+        or set(stock_calls) != set(candidate_calls)
+        or len(stock_calls) < 8
+        or candidate_return_count <= stock_return_count
+        or len(candidate_normalized) * 4 < len(stock_normalized) * 3
+        or any(candidate_calls[name] > stock_calls[name] for name in stock_calls)
+        or candidate_calls == stock_calls
+    ):
+        return None
+
+    return {
+        "kind": "ghidra_cfg_restructuring_external_call_artifact",
+        "stock_call_counts": stock_calls,
+        "candidate_call_counts": candidate_calls,
+        "stock_call_operation_count": stock_call_ops,
+        "candidate_call_operation_count": candidate_call_ops,
+        "stock_return_count": stock_return_count,
+        "candidate_return_count": candidate_return_count,
+        "requirement": (
+            "exact body bytes and P-Code instruction/operation shape; relocation-aware "
+            "assembly parity remains mandatory"
+        ),
+    }
+
+
 def compare_function(
     function: str,
     stock_root: Path,
@@ -851,6 +916,10 @@ def compare_function(
                     stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 )
                 if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    )
+                if pcode_authoritative_fallback is None:
                     pcode_authoritative_fallback = lossy_decompiler_truncation(
                         stock_normalized, candidate_normalized
                     )
@@ -859,6 +928,10 @@ def compare_function(
             pcode_authoritative_fallback = external_label_call_decompiler_artifact(
                 stock_normalized, candidate_normalized, stock_shape, candidate_shape
             )
+            if pcode_authoritative_fallback is None:
+                pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
+                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                )
             if pcode_authoritative_fallback is None:
                 pcode_authoritative_fallback = lossy_decompiler_truncation(
                     stock_normalized, candidate_normalized

@@ -489,6 +489,32 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_cfg_restructuring_fallback_requires_exact_call_set_and_shape(self) -> None:
+        stock = (
+            "void target(void){_printk();syna_request_managed_device();"
+            "devm_kmalloc();mutex_lock();kfree();memcpy();"
+            "ktime_get_real_ts64();syna_request_managed_device();mutex_unlock();return0;}"
+        )
+        candidate = (
+            "void target(void){_printk();syna_request_managed_device();"
+            "devm_kmalloc();mutex_lock();kfree();memcpy();"
+            "ktime_get_real_ts64();mutex_unlock();return;return;}"
+        )
+        shape = [{"operation": "CALL"}] * 8
+
+        evidence = MODULE.decompiler_cfg_restructuring_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_cfg_restructuring_external_call_artifact"
+        )
+        self.assertIsNone(
+            MODULE.decompiler_cfg_restructuring_artifact(
+                stock, candidate + "changed();", shape, shape
+            )
+        )
+
     def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
         stock = (
             'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'
