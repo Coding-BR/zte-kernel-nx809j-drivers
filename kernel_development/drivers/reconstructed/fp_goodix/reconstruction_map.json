@@ -291,17 +291,24 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0013_00101bf8_list_del.c:sha256:2ee0c90d3a8134235c302fac59a2b5d171d986e542461af7d93f67d76505f8c9",
         "ghidra-pcode:pcode/0013_00101bf8_list_del.jsonl:sha256:ac9e7263461d2875873b1d2ef43944ca1f97de39fd86b72e4adca53ec436805c",
-        "stock-assembly:0013_list_del_00101bf8.asm:sha256:017ec01d5e3cdf234a5d152f0f96a5a78b2d455937127265525c5f6ae71da81b"
+        "stock-assembly:0013_list_del_00101bf8.asm:sha256:017ec01d5e3cdf234a5d152f0f96a5a78b2d455937127265525c5f6ae71da81b",
+        "assembly-comparison:attestation/next014_list_del_exact_v1/assembly.json:sha256:e40bf6ba9a6f1aa5a6ef06fb9123ecdb3e2252ad94cdb2ed19ebf08ab28b3585",
+        "canonical-build:attestation/next014_list_del_exact_v1/compile.json:sha256:50f08d350e31a6cac92b0b8a3bca34f69167272b2dc6e01918ae29158e8565ea",
+        "kcfi-decision:attestation/next014_list_del_exact_v1/kcfi.json:sha256:0fbbcfa97b6738d4a4e3f57622ae199cd47de726a4788b22d22155179045014a",
+        "host-harness:attestation/next014_list_del_exact_v1/test.json:sha256:b2a333aa877a522eecbd9ee7ad5c6a6023305cbdc7423fe225ceb2b014cc856f",
+        "joern:attestation/next014_list_del_exact_v1/joern.json:sha256:ddc2157b1aff611f830161de564fa3e33a882fb7616fbbda9040178f428c159a",
+        "hard-protocol:attestation/next014_list_del_exact_v1/hard_protocol_report.json:sha256:e911f9cf8d19f441c0fbaa20e551c4855ebbc870f21877c275cc92e1bb100097"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, explicit direct-call KCFI decision, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_probe_list_del",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 108,
       "stock_entry": "00101bf8",
-      "stock_function": "list_del"
+      "stock_function": "list_del",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 27 matching AArch64 instructions and 108-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope, and direct list teardown tests. KCFI is explicitly not applicable because incoming references are unconditional direct calls in both call graphs; the direct-call decision is preserved instead of fabricating a type ID. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
