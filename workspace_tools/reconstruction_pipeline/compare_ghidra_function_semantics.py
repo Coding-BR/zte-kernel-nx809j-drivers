@@ -740,6 +740,10 @@ def compare_function(
             return_propagation_fallback = decompiler_return_propagation_artifact(
                 stock_normalized, candidate_normalized
             )
+            if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
+                pcode_authoritative_fallback = lossy_decompiler_truncation(
+                    stock_normalized, candidate_normalized
+                )
             normalized_decompiled_match = False
         elif allow_pcode_authoritative_decompiler_fallback:
             pcode_authoritative_fallback = lossy_decompiler_truncation(
