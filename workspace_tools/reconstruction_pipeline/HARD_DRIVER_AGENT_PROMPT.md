@@ -59,6 +59,16 @@ Regras inviolaveis:
   com `audit_kcfi_artifact_stability.py` antes de reutilizar qualquer evidencia;
 - um slice Joern deve ser filtrado, hashado, limitado e ter timeout; reduza a
   source view antes de ampliar o limite;
+- para uma funcao dominada por divergencia de codegen, uma ilha AArch64 exata
+  pode ser considerada somente quando for materializada de Assembly stock
+  hashado, com contagem de instrucoes, corpo, relocacoes, KCFI e build Docker
+  reproduzivel. Use `materialize_stock_function_assembly.py` como gerador e
+  nunca invente `.inst` nem use bytes opacos para encobrir uma divergencia;
+- se o Ghidra emitir `FUN_<endereco>`, `SUB_<endereco>` ou
+  `GHIDRA_STRING[...]`, o fallback P-Code deve registrar o artefato nomeado,
+  comparar a ordem das chamadas e o C normalizado inteiro, e continuar
+  exigindo paridade independente de Assembly/relocacoes. O fallback nunca
+  transforma body-size, P-Code, KCFI, Joern ou Docker em PASS;
 - procure contraexemplos de retorno, stores, calls, ordem, errno e cleanup;
 - nao modele MMIO, IRQ, DMA, firmware ou bus como se o modelo provasse o efeito
   fisico;
@@ -89,6 +99,20 @@ Joern lock, Java ou Docker, corrija a entrada; nao edite C ainda.
 
 Depois produza MP0-MP6 e o contrato de teste. Somente quando nao houver
 contradicao, proponha um patch atomico. Execute o nucleo em pasta vazia:
+
+Para uma ilha exata, preserve também o vínculo de proveniência no pacote:
+
+```powershell
+python .\workspace_tools\reconstruction_pipeline\materialize_stock_function_assembly.py `
+  --assembly "<STOCK_ASSEMBLY>" `
+  --function "<STOCK_FUNCTION>" `
+  --output "<EXACT_SOURCE>"
+```
+
+O comando acima é apenas a materialização inicial. Antes de compilar, ajuste
+somente relocations comprovadas para símbolos/sections do candidato e registre
+cada ajuste no `decision.json`; o comparador de Assembly deve continuar vendo
+o mesmo corpo e a mesma ordem de relocations do stock.
 
 ```powershell
 python .\workspace_tools\reconstruction_pipeline\run_hard_driver_protocol.py `
