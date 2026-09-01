@@ -204,9 +204,11 @@ static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
 
 #ifdef ZTE_IR_HOST_TEST
 #define ZTE_IR_SAFE_WRITE zte_ir_write
+#define ZTE_IR_SAFE_IOCTL zte_ir_ioctl
 #define ZTE_IR_MAYBE_UNUSED
 #else
 #define ZTE_IR_SAFE_WRITE zte_ir_write_safe
+#define ZTE_IR_SAFE_IOCTL zte_ir_ioctl_safe
 #define ZTE_IR_MAYBE_UNUSED __maybe_unused
 #endif
 
@@ -290,7 +292,8 @@ unlock_buf:
 	return ret;
 }
 
-static long zte_ir_ioctl(struct file *file, unsigned int command, unsigned long argument)
+static long ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_IOCTL(struct file *file,
+						 unsigned int command, unsigned long argument)
 {
 	struct zte_ir_runtime *runtime;
 	int carrier_hz;
@@ -336,15 +339,17 @@ unlock_buf:
 #ifndef ZTE_IR_HOST_TEST
 extern ssize_t zte_ir_write(struct file *file, const char __user *buffer,
 			    size_t count, loff_t *position);
+extern long zte_ir_ioctl(struct file *file, unsigned int command,
+				 unsigned long argument);
 #endif
 
 static const struct file_operations zte_ir_fops = {
 	.owner = THIS_MODULE,
 	.open = zte_ir_open,
 	.release = zte_ir_release,
-	.write = zte_ir_write,
-	.unlocked_ioctl = zte_ir_ioctl,
-	.compat_ioctl = zte_ir_ioctl,
+	.write = ZTE_IR_SAFE_WRITE,
+	.unlocked_ioctl = ZTE_IR_SAFE_IOCTL,
+	.compat_ioctl = ZTE_IR_SAFE_IOCTL,
 	.llseek = noop_llseek,
 };
 

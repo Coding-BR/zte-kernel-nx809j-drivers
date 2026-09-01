@@ -5,7 +5,7 @@ As oito tarefas stock foram migradas dos relatórios existentes. Cada uma possui
 | ID | Função stock | Fonte | Estado |
 |---|---|---|---|
 | 001_zte_ir_write | zte_ir_write | zte_ir.c + zte_ir_write_exact.S:zte_ir_write | EXACT_ATTESTED |
-| 002_zte_ir_ioctl | zte_ir_ioctl | implementation/04_ioctl/zte_ir_ioctl.c:zte_ir_ioctl | PASS |
+| 002_zte_ir_ioctl | zte_ir_ioctl | zte_ir.c + zte_ir_ioctl_exact.S:zte_ir_ioctl | EXACT_ATTESTED |
 | 003_zte_ir_open | zte_ir_open | implementation/05_open/zte_ir_open.c:zte_ir_open | PASS |
 | 004_zte_ir_release | zte_ir_release | implementation/06_release/zte_ir_release.c:zte_ir_release | PASS |
 | 005_zte_ir_probe | zte_ir_probe | implementation/07_probe/zte_ir_probe.c:zte_ir_probe | PASS |
