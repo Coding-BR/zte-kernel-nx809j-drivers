@@ -605,17 +605,24 @@
         "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0026_001028b4_gf_hw_reset.c:sha256:a0d2c7517b65056ddb22b1747e5e73187b9238a93ae279025db0c46f0a3fe971",
         "ghidra-pcode:pcode/0026_001028b4_gf_hw_reset.jsonl:sha256:e95b1d906cd15a8b1de2c86f2180e7bf03ccb3ae40846362a06d6fd4b8490788",
-        "stock-assembly:0026_gf_hw_reset_001028b4.asm:sha256:a4e5b6f58a8da6d98374b04567b967e1007d714aa4bdc719b61efed0e22633dc"
+        "stock-assembly:0026_gf_hw_reset_001028b4.asm:sha256:a4e5b6f58a8da6d98374b04567b967e1007d714aa4bdc719b61efed0e22633dc",
+        "assembly-comparison:attestation/next027_gf_hw_reset_exact_v1/assembly.json:sha256:feb4f0ebde4ab6f6f075bc2cbf182361498238d3d76e86ceca0cbb6641633a0d",
+        "canonical-build:attestation/next027_gf_hw_reset_exact_v1/compile.json:sha256:e46cdf03d4a04f3568686482a32bd0083cc5de2273a6f7208d986126216d399a",
+        "kcfi-comparison:attestation/next027_gf_hw_reset_exact_v1/kcfi.json:sha256:17fbc087a19ddfdc9ba4cbf580af4c0f0d7cf20f3011206a9699ecededffaf3f",
+        "host-harness:attestation/next027_gf_hw_reset_exact_v1/test.json:sha256:4f2d8fb04307d396e17eb9ea35d46351b3cd8c2cd48bd2913e9319fef805b533",
+        "joern:attestation/next027_gf_hw_reset_exact_v1/joern.json:sha256:c460f292a2d12328a577a1341dc349df6c86d5ef2d2c6b697cc3091d4793aa26",
+        "hard-protocol:attestation/next027_gf_hw_reset_exact_v1/hard_protocol_report.json:sha256:27736912dceea40a80a32cca53f7ae7484602c24cc65f3821c61e3976260bb14"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_hw_reset",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 184,
       "stock_entry": "001028b4",
-      "stock_function": "gf_hw_reset"
+      "stock_function": "gf_hw_reset",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 46 matching AArch64 instructions and 184-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xb4d8f609, strict Joern scope, and direct hardware-reset state/error-path tests. This is static/offline evidence; GPIO timing and physical sensor reset behavior remain unverified."
     },
     {
       "evidence": [
