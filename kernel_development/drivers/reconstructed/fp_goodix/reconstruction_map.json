@@ -315,17 +315,24 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0014_00101c64_goodixfp_drm_get_pannel.c:sha256:f9b7a7b8487303dd02fbd69a22c0b93b746d54e45312aeab516f8edf134d668e",
         "ghidra-pcode:pcode/0014_00101c64_goodixfp_drm_get_pannel.jsonl:sha256:27fbd3bf5a5e5b92f60cba740ec05a833f5126d44f58735800b37004964689b0",
-        "stock-assembly:0014_goodixfp_drm_get_pannel_00101c64.asm:sha256:620bb7f95a3be76948757fcfc243c7fd10146b40337f8d2350755655b7167aaa"
+        "stock-assembly:0014_goodixfp_drm_get_pannel_00101c64.asm:sha256:620bb7f95a3be76948757fcfc243c7fd10146b40337f8d2350755655b7167aaa",
+        "assembly-comparison:attestation/next015_goodixfp_drm_get_pannel_exact_v1/assembly.json:sha256:ffc7a761a2533b76c804919c2c26e5586d4cdfef08f2787c79e1a9a51e530cc5",
+        "canonical-build:attestation/next015_goodixfp_drm_get_pannel_exact_v1/compile.json:sha256:d8ec015a0df7c745419e773f588d17ee618eca5fc3b4d14603b9f0d048f2f2af",
+        "kcfi-decision:attestation/next015_goodixfp_drm_get_pannel_exact_v1/kcfi.json:sha256:aacacda731f1449a91db7c369202fefe6809c98191f4def76dc914b31eee1660",
+        "host-harness:attestation/next015_goodixfp_drm_get_pannel_exact_v1/test.json:sha256:6bff449a5c3d45c394a826bd38881f2a252a6a4823fef494252717b80e634376",
+        "joern:attestation/next015_goodixfp_drm_get_pannel_exact_v1/joern.json:sha256:eabcdeb9c53bef54f334db52ea434a210a3737f59c3e4fbd43710d612a817339",
+        "hard-protocol:attestation/next015_goodixfp_drm_get_pannel_exact_v1/hard_protocol_report.json:sha256:a63205dca6ac2263051e7ec3b7d6ea5f770aced4bd6483a82283a9fdb49cc6c0"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, explicit direct-call KCFI decision, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "goodixfp_drm_get_pannel",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 336,
       "stock_entry": "00101c64",
-      "stock_function": "goodixfp_drm_get_pannel"
+      "stock_function": "goodixfp_drm_get_pannel",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records matching AArch64 section and 336-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope, and direct DRM-panel helper tests. KCFI is explicitly not applicable because both modules have no valid KCFI preamble and the incoming references are direct calls; this is not a fabricated type match. This is static/offline evidence; hardware/DRM runtime behavior remains unverified."
     },
     {
       "evidence": [
