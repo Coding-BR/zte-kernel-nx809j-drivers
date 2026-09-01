@@ -60,12 +60,23 @@ def repository_root_for_curated(curated_root: Path) -> Path | None:
 
 def public_evidence_paths(repository_root: Path, driver: str) -> tuple[Path, Path, Path]:
     """Resolve immutable public stock/Ghidra evidence without a private run tree."""
+    transition = (
+        repository_root / "kernel_development" / "drivers" / "reconstructed"
+        / driver / "DOCUMENTO_TRANSICAO.md"
+    )
+    # Auxiliary drivers may have a STATUS.md instead of a separate transition
+    # document.  It is still a versioned provenance document and is sufficient
+    # for the offline existence/hash gate; the report preserves the exact path.
+    if not transition.is_file():
+        transition = transition.with_name("STATUS.md")
+    stock = repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko"
+    if not stock.is_file():
+        stock = repository_root / "reference_modules" / "stock" / f"{driver}.ko"
     return (
-        repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko",
+        stock,
         repository_root / "reverse_engineering" / "validation" / "reconstructed"
         / driver / "offline_static" / "ghidra_stock",
-        repository_root / "kernel_development" / "drivers" / "reconstructed"
-        / driver / "DOCUMENTO_TRANSICAO.md",
+        transition,
     )
 
 

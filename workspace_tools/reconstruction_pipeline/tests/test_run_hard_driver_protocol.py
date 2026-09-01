@@ -170,6 +170,7 @@ class HardDriverProtocolTests(unittest.TestCase):
 
         self.assertIn("run_joern_reconstruction_gate.py", " ".join(plan["joern"]))
         self.assertIn("validate_reconstructed_drivers.py", " ".join(plan["docker"]))
+        self.assertIn(str(root), plan["docker"])
         self.assertNotIn("--promote-fresh", plan["docker"])
 
     def test_pcode_fallback_requires_an_audit_reason(self):

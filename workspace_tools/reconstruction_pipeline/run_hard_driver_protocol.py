@@ -429,10 +429,16 @@ def build_command_plan(
         )
     else:
         docker_report = output_dir / "docker" / "driver_audit.json"
+        # Generic modules live in the repository's reconstructed tree.  The
+        # validator must receive that tree so it can resolve public stock and
+        # Ghidra evidence from the same immutable repository root; using the
+        # engineering curated snapshot here silently audits an unrelated or
+        # empty directory for auxiliary drivers.
+        curated_root = source_root.parent
         docker = python_command(
             python,
             tools_root / "validate_reconstructed_drivers.py",
-            "--curated-root", str(engineering_root / "curated"),
+            "--curated-root", str(curated_root),
             "--driver", job["driver"],
             "--rebuild",
             "--work-root", str(output_dir / "docker" / "work"),
