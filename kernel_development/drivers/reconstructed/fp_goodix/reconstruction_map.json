@@ -653,17 +653,24 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0028_001029b0_init_module.c:sha256:72ce1f88a1ed9df520a42ba208117b380b1b7840bf96b279e9f1249b5f2ddd43",
         "ghidra-pcode:pcode/0028_001029b0_init_module.jsonl:sha256:afae2522c50dc024c0bfe5090f24a04c32225021c3115aa3168770a47827ab21",
-        "stock-assembly:0028_init_module_001029b0.asm:sha256:9dbddb0f824d590b17c0aca8b90f6e7fe056a8cf995e77e35ccf51e3a3529491"
+        "stock-assembly:0028_init_module_001029b0.asm:sha256:9dbddb0f824d590b17c0aca8b90f6e7fe056a8cf995e77e35ccf51e3a3529491",
+        "assembly-comparison:attestation/next029_init_module_exact_v1/assembly.json:sha256:de890318539c6212165c44494966773047a7a0449c14d9334b9d9d5837346768",
+        "canonical-build:attestation/next029_init_module_exact_v1/compile.json:sha256:21b67b1cdeafabbd9898c59d3ec8bc56c5851c9d89fb5c9af427e1a46aca81a8",
+        "kcfi-comparison:attestation/next029_init_module_exact_v1/kcfi.json:sha256:cbbe560b64e19150c09e300c6a5b58ff62e3255990565351dcea80d45038d885",
+        "host-harness:attestation/next029_init_module_exact_v1/test.json:sha256:94c6983529db6c4ac17917ec4049b4afc88ec291fa406d1f1cf42ebc488e1c02",
+        "joern:attestation/next029_init_module_exact_v1/joern.json:sha256:324f00c495f0fd1cf3764717891b81e7b5eb9c83a0e516b377608f061eafa226",
+        "hard-protocol:attestation/next029_init_module_exact_v1/hard_protocol_report.json:sha256:1695de27ef34d48cdb8ccd626d6dcaf0cfed86033d30ac02c53cd44ce1252874"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence; stock init_module alias is bound to source zte_fp_init",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "zte_fp_init",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 276,
       "stock_entry": "001029b0",
-      "stock_function": "init_module"
+      "stock_function": "init_module",
+      "mapping_note": "Function-level offline parity is promoted for the module-init alias. The attestation records 69 matching AArch64 instructions and 276-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x6fbb3035, strict Joern scope, and direct module initialization tests. The stock ELF alias init_module is explicitly mapped to source zte_fp_init. This is static/offline evidence; hardware initialization remains unverified."
     },
     {
       "evidence": [
