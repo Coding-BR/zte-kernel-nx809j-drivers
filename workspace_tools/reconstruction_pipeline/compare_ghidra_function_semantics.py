@@ -1280,7 +1280,10 @@ def decompiler_buf_unlock_shared_cleanup_artifact(
     """
     if function != "syna_tcm_buf_unlock":
         return None
-    if "syna_tcm_buf_unlock(" not in stock_normalized or "syna_tcm_buf_unlock(" not in candidate_normalized:
+    if "syna_tcm_buf_unlock(" not in stock_normalized or not any(
+        name in candidate_normalized
+        for name in ("syna_tcm_buf_unlock(", "syna_tcm_buf_unlock_0(")
+    ):
         return None
     if stock_normalized.count("_printk(") != 1 or candidate_normalized.count("_printk(") != 1:
         return None
@@ -1765,6 +1768,7 @@ def compare_function(
     allow_named_data_address_syntax_fallback: bool = False,
     stock_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
+    candidate_function: str | None = None,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -2017,7 +2021,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--candidate-export", type=Path, required=True)
     parser.add_argument("--stock-module", type=Path)
     parser.add_argument("--candidate-module", type=Path)
-    parser.add_argument("--function", action="append", dest="functions", required=True)
+    parser.add_argument(
+        "--function",
+        action="append",
+        dest="functions",
+        default=[],
+        help="function name shared by stock and candidate exports",
+    )
+    parser.add_argument(
+        "--function-pair",
+        action="append",
+        dest="function_pairs",
+        default=[],
+        help="explicit stock=candidate function names for symbol aliases",
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--allow-pcode-authoritative-decompiler-fallback",
@@ -2049,6 +2066,16 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    function_pairs: list[tuple[str, str]] = [(name, name) for name in args.functions]
+    for pair in args.function_pairs:
+        if pair.count("=") != 1:
+            raise ValueError(f"invalid --function-pair (expected stock=candidate): {pair}")
+        stock_name, candidate_name = pair.split("=", 1)
+        if not stock_name or not candidate_name:
+            raise ValueError(f"invalid --function-pair (empty name): {pair}")
+        function_pairs.append((stock_name, candidate_name))
+    if not function_pairs:
+        raise ValueError("at least one --function or --function-pair is required")
     stock_root = args.stock_export.resolve()
     candidate_root = args.candidate_export.resolve()
     for root in (stock_root, candidate_root):
@@ -2109,11 +2136,11 @@ def main() -> int:
             )
     results = [
         compare_function(
-            function,
+            stock_function,
             stock_root,
             candidate_root,
-            stock_functions.get(function),
-            candidate_functions.get(function),
+            stock_functions.get(stock_function),
+            candidate_functions.get(candidate_function),
             string_index(stock_root),
             string_index(candidate_root),
             stock_elf_strings,
@@ -2127,8 +2154,9 @@ def main() -> int:
             args.allow_named_data_address_syntax_fallback,
             stock_absolute_data_ranges,
             candidate_absolute_data_ranges,
+            candidate_function,
         )
-        for function in args.functions
+        for stock_function, candidate_function in function_pairs
     ]
     payload = {
         "schema_version": "1.0",
@@ -2153,11 +2181,14 @@ def main() -> int:
         "section_address_normalization_allowed": (
             args.allow_section_address_normalization
         ),
-        "passed": not identity_failures and len(results) == len(args.functions)
+        "passed": not identity_failures and len(results) == len(function_pairs)
         and all(result["passed"] for result in results),
         "identity_failures": identity_failures,
         "module_identity": module_identity,
-        "requested_functions": args.functions,
+        "requested_functions": [
+            stock if stock == candidate else f"{stock}={candidate}"
+            for stock, candidate in function_pairs
+        ],
         "stock_export": {
             "path": str(stock_root),
             "manifest_sha256": sha256_file(stock_root / "manifest.json"),

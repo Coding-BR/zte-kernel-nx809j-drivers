@@ -1,0 +1,120 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer syna_tcm_buf_unlock_0_harness.c -o build/syna_tcm_buf_unlock_0_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/syna_tcm_buf_unlock_0_harness"
+  ],
+  "coverage": {
+    "balanced_path": true,
+    "depth_offset_0x40": true,
+    "direct_source_functions": 1,
+    "hardware_paths_exercised": false,
+    "mutex_offset_0x10": true,
+    "u8_wrap_path": true,
+    "unbalanced_path": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS unlock_once\nPASS mutex_offset\nPASS depth_transition\nPASS log_transition\nPASS unlock_once\nPASS mutex_offset\nPASS depth_transition\nPASS log_transition\nPASS log_depth\nPASS unlock_once\nPASS mutex_offset\nPASS depth_transition\nPASS log_transition\nPASS log_depth\nSUMMARY tests=14 failures=0\n",
+      "summary": "SUMMARY tests=14 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "unlock_once",
+        "mutex_offset",
+        "depth_transition",
+        "log_transition",
+        "unlock_once",
+        "mutex_offset",
+        "depth_transition",
+        "log_transition",
+        "log_depth",
+        "unlock_once",
+        "mutex_offset",
+        "depth_transition",
+        "log_transition",
+        "log_depth"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS unlock_once\nPASS mutex_offset\nPASS depth_transition\nPASS log_transition\nPASS unlock_once\nPASS mutex_offset\nPASS depth_transition\nPASS log_transition\nPASS log_depth\nPASS unlock_once\nPASS mutex_offset\nPASS depth_transition\nPASS log_transition\nPASS log_depth\nSUMMARY tests=14 failures=0\n",
+      "summary": "SUMMARY tests=14 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "unlock_once",
+        "mutex_offset",
+        "depth_transition",
+        "log_transition",
+        "unlock_once",
+        "mutex_offset",
+        "depth_transition",
+        "log_transition",
+        "log_depth",
+        "unlock_once",
+        "mutex_offset",
+        "depth_transition",
+        "log_transition",
+        "log_depth"
+      ]
+    }
+  ],
+  "generated_utc": "2026-09-01T17:37:52.561110+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_buf_unlock_0.c",
+      "sha256": "b4c3b9aa444216443dcc1238090b75eccd37f9826a622ce34d23b3a192c010f6",
+      "size": 504
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\syna_tcm_buf_unlock_0_harness.c",
+      "sha256": "07873720b61c73abf222bef7738c04439e74a3762c94f147d80212c67994f1d5",
+      "size": 1430
+    }
+  ],
+  "limitations": [
+    "The harness uses deterministic host stubs for mutex_unlock and printk.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_direct_source_syna_tcm_buf_unlock_0_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 14,
+    "failed": [],
+    "passed": [
+      "unlock_once",
+      "mutex_offset",
+      "depth_transition",
+      "log_transition",
+      "unlock_once",
+      "mutex_offset",
+      "depth_transition",
+      "log_transition",
+      "log_depth",
+      "unlock_once",
+      "mutex_offset",
+      "depth_transition",
+      "log_transition",
+      "log_depth"
+    ],
+    "summary": "SUMMARY tests=14 failures=0"
+  }
+}

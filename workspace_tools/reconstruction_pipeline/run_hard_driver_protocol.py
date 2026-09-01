@@ -784,16 +784,15 @@ def execute_post_candidate(
             "--candidate-module", str(candidate_module),
             "--output", str(ghidra_report),
         )
-        same_names = True
         for item in functions:
             # init_module/cleanup_module are ELF entry aliases emitted by
             # module_init/module_exit; compare the stock and candidate Ghidra
             # symbols, while keeping source_function for Joern/map identity.
             candidate_function = item.get("candidate_function", item["source_function"])
             if item["stock_function"] != candidate_function:
-                same_names = False
-                break
-            ghidra_command.extend(["--function", item["stock_function"]])
+                ghidra_command.extend(["--function-pair", f"{item['stock_function']}={candidate_function}"])
+            else:
+                ghidra_command.extend(["--function", item["stock_function"]])
         ghidra_config = job.get("ghidra", {})
         if isinstance(ghidra_config, dict) and ghidra_config.get(
             "allow_pcode_authoritative_decompiler_fallback", False
@@ -807,17 +806,14 @@ def execute_post_candidate(
             "allow_section_address_normalization", False
         ):
             ghidra_command.append("--allow-section-address-normalization")
-        if same_names:
-            result = run_command(
-                "ghidra_semantics", ghidra_command,
-                output_dir=output_dir, timeout=command_timeout,
-            )
-            commands["ghidra_semantics"] = result
-            gates["CANDIDATE_GHIDRA_PCODE"] = (
-                "PASS" if result["returncode"] == 0 and report_passed(ghidra_report) else "FAIL"
-            )
-        else:
-            gates["CANDIDATE_GHIDRA_PCODE"] = "MANUAL_FUNCTION_PAIR_REQUIRED"
+        result = run_command(
+            "ghidra_semantics", ghidra_command,
+            output_dir=output_dir, timeout=command_timeout,
+        )
+        commands["ghidra_semantics"] = result
+        gates["CANDIDATE_GHIDRA_PCODE"] = (
+            "PASS" if result["returncode"] == 0 and report_passed(ghidra_report) else "FAIL"
+        )
     return commands, gates
 
 
