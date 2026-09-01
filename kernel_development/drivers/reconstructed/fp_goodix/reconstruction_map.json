@@ -411,17 +411,25 @@
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0018_001020c8_nl_data_ready.c:sha256:bf2454af7741e8849daec311f9141c5bbb3b78eed807e48b700d9940d0f35537",
         "ghidra-pcode:pcode/0018_001020c8_nl_data_ready.jsonl:sha256:c9e0beb7ea837c65267b6e8a11803aa1757c27b1f819f533525d523c096889f3",
-        "stock-assembly:0018_nl_data_ready_001020c8.asm:sha256:dff3da2ed6c0db821642e6d1229f659c1c6fc5969fc06f8848e4caa88f5a94f9"
+        "stock-assembly:0018_nl_data_ready_001020c8.asm:sha256:dff3da2ed6c0db821642e6d1229f659c1c6fc5969fc06f8848e4caa88f5a94f9",
+        "assembly-comparison:attestation/next019_nl_data_ready_exact_v1/assembly.json:sha256:300a3aad6f824d8250263efedf42da9e9b9d27b38b680d9e27a56e71a90d8140",
+        "canonical-build:attestation/next019_nl_data_ready_exact_v1/compile.json:sha256:425b474adfe88ba2d9499397edadc8b3dbffb18692320d588519da75bbcee8b2",
+        "kcfi-comparison:attestation/next019_nl_data_ready_exact_v1/kcfi.json:sha256:9d5b341c8bf99abe01cead9a8b840aa7aa5f32ccb73cd1dd2886658ab2683fbc",
+        "host-harness:attestation/next019_nl_data_ready_exact_v1/test.json:sha256:836501c71646e684610c632f5cdede368b0741ee9c999d8978928accd76f9d79",
+        "joern:attestation/next019_nl_data_ready_exact_v1/joern.json:sha256:8718eae983324d0d33b2112e64594778d0b33eb35bc706f9d2289f61c7c813d9b",
+        "hard-protocol:attestation/next019_nl_data_ready_exact_v1/hard_protocol_report.json:sha256:e6b7ac2df2cc604d8a8c629270a600c020b40c359516928bd0d618bb7ea27cc8"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "nl_data_ready",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 208,
       "stock_entry": "001020c8",
-      "stock_function": "nl_data_ready"
+      "stock_function": "nl_data_ready",
+      "elf_symbol_bytes": 220,
+      "mapping_note": "Function-level offline parity is promoted. The preserved Ghidra mapping records 208 body bytes, while the ELF symbol and candidate comparison record 55 matching AArch64 instructions and 220 symbol bytes; both measurements are retained. Docker builds are reproducible, KCFI type ID 0x121b693e matches, Joern is strict, and the direct netlink receive-path tests pass. This is static/offline evidence; networking and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
