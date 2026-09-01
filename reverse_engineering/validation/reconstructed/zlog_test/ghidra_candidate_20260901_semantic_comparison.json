@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-01T06:14:00+00:00",
+  "driver": "zlog_test",
+  "stock_export": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock",
+  "candidate_export": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_candidate_20260901",
+  "stock_module": "reference_modules/full_vendor_boot/zlog_test.ko",
+  "stock_module_sha256": "e595c91cb5ef517c620d362c82eb05bca98cd5726757b9a6cb7cb96a788747e1",
+  "candidate_module": "kernel_development/drivers/reconstructed/zlog_test/zlog_test.ko",
+  "candidate_module_sha256": "d1a19d632dd9039fa1b6c63e1d453d552a8dca95cec2143735e5f98ebe3e6fb9",
+  "candidate_module_size": 160448,
+  "candidate_ghidra_executable_md5": "3cbd690c3ddcc6f80867febcd00feef3",
+  "candidate_ghidra_manifest_sha256": "a70653f5c620249bc6f3333fa6b84eed0af798999650112a208d8743f096ba5c",
+  "stock_ghidra_manifest_sha256": "f9aca0b97faeaac45bdabb4fb8c0187e919b00433456fa757cc44b9773c6b284",
+  "checked_functions": 11,
+  "strict": {
+    "passed_functions": 10,
+    "body_size_passed": 11,
+    "pcode_operation_shape_passed": 11,
+    "failed_functions": ["zlog_enable_test_set"],
+    "passed": false
+  },
+  "authorized_fallbacks": {
+    "passed_functions": 10,
+    "remaining_functions": ["zlog_enable_test_set"],
+    "passed": false
+  },
+  "docker_rebuild_evidence": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_digest": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "toolchain": "clang-r536225",
+    "cycles": [
+      {
+        "cycle": 1,
+        "sha256": "39cd0c7360c133f9ec271976deafe8b61674e69d9259bc8c2a99a07455c5d753",
+        "size": 160448,
+        "path": "validation/zlog_test_rebuild_20260901/artifacts/zlog_test_cycle_1.ko"
+      },
+      {
+        "cycle": 2,
+        "sha256": "39cd0c7360c133f9ec271976deafe8b61674e69d9259bc8c2a99a07455c5d753",
+        "size": 160448,
+        "path": "validation/zlog_test_rebuild_20260901/artifacts/zlog_test_cycle_2.ko"
+      },
+      {
+        "cycle": 3,
+        "sha256": "fb8a6f7d198fcd5d44b1284c5aaec478d8e6679e02799d922d2be0ce6f9f9364",
+        "size": 160448,
+        "path": "validation/zlog_test_rebuild_20260901/artifacts/zlog_test_cycle_3.ko"
+      }
+    ],
+    "reproducible_by_protocol": false,
+    "current_cycles_1_2_reproducible": true,
+    "matches_candidate_bitwise": false,
+    "candidate_vs_docker_code_level": {
+      "checked_functions": 11,
+      "instruction_body_passed": 11,
+      "symbol_size_passed": 11,
+      "section_passed": 11,
+      "relocation_passed": 0,
+      "interpretation": "The relocation comparator did not normalize all local .rodata representations; no bitwise ELF equality is claimed."
+    }
+  },
+  "interpretation": "Static Ghidra/Docker checkpoint only. zlog_enable_test_set remains open in normalized decompiled-C equality, and the current Docker source snapshot does not reproduce the candidate ELF hash bit-for-bit. Independent review, hardware validation and promotion remain open."
+}
