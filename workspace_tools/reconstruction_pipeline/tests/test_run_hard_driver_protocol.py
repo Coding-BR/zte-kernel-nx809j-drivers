@@ -202,6 +202,7 @@ class HardDriverProtocolTests(unittest.TestCase):
         job = base_job(
             ghidra={"allow_shared_data_binding_normalization": True}
         )
+        job["paths"]["candidate_ghidra_export"] = "candidate-ghidra"
         functions = validate_job(job)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
