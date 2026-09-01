@@ -198,6 +198,43 @@ class HardDriverProtocolTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fallback_reason is required"):
             validate_job(job)
 
+    def test_shared_data_binding_normalization_is_forwarded_to_ghidra(self):
+        job = base_job(
+            ghidra={"allow_shared_data_binding_normalization": True}
+        )
+        functions = validate_job(job)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch(
+                "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.run_command",
+                return_value={"returncode": 0},
+            ) as run_mock, patch(
+                "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.report_passed",
+                return_value=True,
+            ):
+                _, gates = execute_post_candidate(
+                    job=job,
+                    functions=functions,
+                    repo_root=root,
+                    output_dir=root / "output",
+                    python=Path("python"),
+                    stock_module=root / "stock.ko",
+                    candidate_module=root / "candidate.ko",
+                    stock_ghidra_export=root / "stock-ghidra",
+                    candidate_ghidra_export=root / "candidate-ghidra",
+                    docker_config={},
+                    command_timeout=1,
+                )
+
+        self.assertEqual(gates["CANDIDATE_GHIDRA_PCODE"], "PASS")
+        ghidra_calls = [
+            call.args[1]
+            for call in run_mock.call_args_list
+            if call.args[0] == "ghidra_semantics"
+        ]
+        self.assertEqual(len(ghidra_calls), 1)
+        self.assertIn("--allow-shared-data-binding-normalization", ghidra_calls[0])
+
     def test_direct_call_only_uses_explicit_kcfi_decision_path(self):
         job = base_job(kcfi={"direct_call_only": ["stock_fn"]})
         functions = validate_job(job)
