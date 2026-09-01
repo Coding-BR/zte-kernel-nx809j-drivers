@@ -11,7 +11,7 @@ Modo de trabalho: **offline; sem ADB, fastboot ou carregamento de módulo neste 
 | Artefato | SHA-256 |
 |---|---|
 | Stock `zte_ir.ko` | `b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1` |
-| Candidato canônico `zte_ir.ko` | `14d7ab4f8696d422e6c300fd4c4d8a6a67d0af939de4a954c0f0f542797ef9bc` |
+| Candidato canônico `zte_ir.ko` | `4fa1ae637acde49f4b74062fc63a22a98f35c5b94573574dc532e3bee850b2cd` |
 
 O fonte canônico é `zte_ir.c`. O diretório `implementation/` conserva
 microtarefas e evidências históricas; seu `.ko` integrado não é o candidato
@@ -21,7 +21,7 @@ atual e não deve ser usado para atestar este hash.
 
 - O0–O9: `PASS` na auditoria offline; `zte_ir_write@0010036c`,
   `zte_ir_ioctl@0010069c`, `zte_ir_open@00100804` e
-  `zte_ir_release@001008c4` e `zte_ir_probe@00100918` também possuem atestação exact independente.
+  `zte_ir_release@001008c4`, `zte_ir_probe@00100918` e `zte_ir_remove@00100b50` também possuem atestação exact independente.
 - O10: `INCOMPLETE`, aguardando revisor independente diferente do implementador.
 - Hardware: `DEFERRED`, aguardando teste controlado no NX809J.
 - Veredito correto: **candidato alinhado estaticamente, ainda não comprovado no hardware**.
@@ -70,6 +70,11 @@ módulo OEM. A atestação estática/offline está em
 bytes de corpo, relocations de `.data/.bss` e KCFI `0xba1082a1` iguais ao
 módulo OEM. A atestação está em
 `reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_probe_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_remove@00100b50` é materializada de 69 instruções stock, com 276
+bytes de corpo, relocations de `.data/.bss` e KCFI `0x509a2353` iguais ao
+módulo OEM. A atestação está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902`.
 
 ## Diferenças deliberadas
 

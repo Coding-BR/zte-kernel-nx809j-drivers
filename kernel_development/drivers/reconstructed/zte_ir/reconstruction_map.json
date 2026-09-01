@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "driver": "zte_ir",
   "stock_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
-  "candidate_sha256": "14d7ab4f8696d422e6c300fd4c4d8a6a67d0af939de4a954c0f0f542797ef9bc",
+  "candidate_sha256": "4fa1ae637acde49f4b74062fc63a22a98f35c5b94573574dc532e3bee850b2cd",
   "scope": "Traceability map for the canonical zte_ir.c candidate. Behavioral hardening differences are tracked by the parity report.",
   "reviewed_by": "Codex static Ghidra/source review",
   "independent_review": "pending; tracked separately by gate O10",
@@ -133,8 +133,16 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "Remove callback maps device destruction and minor cleanup while adding synchronized lifetime handling.",
-      "status": "reviewed"
+      "review_notes": "Remove callback promoted as an AArch64 exact island from the hashed stock body. The .data/.bss relocations preserve device_list_lock, zte_ir_class and minors; static/offline only, with no hardware or safety claim.",
+      "status": "exact_attested",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902/assembly/comparison.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902/kcfi/comparison.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902/joern/joern_gate_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902/docker_reproducibility.json"
+      ]
     },
     {
       "stock_function": "init_module",
