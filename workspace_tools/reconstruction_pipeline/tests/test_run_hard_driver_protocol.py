@@ -172,6 +172,7 @@ class HardDriverProtocolTests(unittest.TestCase):
 
         self.assertIn("run_joern_reconstruction_gate.py", " ".join(plan["joern"]))
         self.assertIn("validate_reconstructed_drivers.py", " ".join(plan["docker"]))
+        self.assertIn("--target-kernel-manifest", plan["docker"])
         self.assertIn(str(root), plan["docker"])
         self.assertNotIn("--promote-fresh", plan["docker"])
 
@@ -221,6 +222,14 @@ class HardDriverProtocolTests(unittest.TestCase):
         self.assertIn("kcfi_candidate", command_names)
         self.assertIn("kcfi_direct_call_f000", command_names)
         self.assertNotIn("kcfi_compare", command_names)
+        direct_call = next(
+            call for call in run_mock.call_args_list
+            if call.args[0] == "kcfi_direct_call_f000"
+        )
+        self.assertEqual(
+            direct_call.args[1][direct_call.args[1].index("--function") + 1],
+            "f000",
+        )
 
 
 if __name__ == "__main__":

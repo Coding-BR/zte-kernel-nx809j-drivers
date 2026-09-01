@@ -448,6 +448,8 @@ def build_command_plan(
             "--source-volume", source_volume,
             "--toolchain-volume", toolchain_volume,
             "--clang-revision", clang_revision,
+            "--target-kernel-manifest",
+            str((repo_root / "kernel_development" / "config" / "target_kernel.json").resolve()),
             "--strict",
         )
         run_root = docker_config.get("run_root")
@@ -719,7 +721,7 @@ def execute_post_candidate(
                 python,
                 tools_root / "build_kcfi_direct_call_decision.py",
                 "--driver", job["driver"],
-                "--function", item["stock_function"],
+                "--function", alias,
                 "--stock-kcfi-report", str(stock_kcfi),
                 "--candidate-kcfi-report", str(candidate_kcfi),
                 "--stock-calls", str(stock_ghidra_export / "calls.jsonl")
