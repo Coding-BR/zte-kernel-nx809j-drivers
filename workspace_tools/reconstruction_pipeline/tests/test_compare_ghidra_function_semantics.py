@@ -464,6 +464,31 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_unresolved_fun_call_name_fallback_is_one_for_one(self) -> None:
+        stock = (
+            "void target(void){_printk();syna_tcm_v1_read_message();"
+            "mutex_lock();mutex_unlock();return;}"
+        )
+        candidate = (
+            "void target(void){_printk();FUN_0014565c();"
+            "mutex_lock();mutex_unlock();return;}"
+        )
+        shape = [{"operation": "CALL"}] * 4
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_unresolved_external_call_name_artifact"
+        )
+        self.assertEqual(evidence["candidate_extra_call_names"], ["FUN_0014565c"])
+        self.assertIsNone(
+            MODULE.external_label_call_decompiler_artifact(
+                stock, candidate, shape, shape[:-1]
+            )
+        )
+
     def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
         stock = (
             'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'

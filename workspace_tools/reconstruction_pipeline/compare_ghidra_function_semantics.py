@@ -689,16 +689,42 @@ def external_label_call_decompiler_artifact(
         if name not in control_names
     }
     missing_calls = sorted(stock_calls - candidate_calls)
+    extra_calls = sorted(candidate_calls - stock_calls)
     stock_call_ops = sum(item.get("operation") == "CALL" for item in stock_shape)
     candidate_call_ops = sum(item.get("operation") == "CALL" for item in candidate_shape)
     # Require at least two omitted call names.  A single missing call is also
     # compatible with an ordinary lossy/truncated decompilation and must stay
     # on the older, narrower premature-return path below.
-    if len(missing_calls) < 2 or stock_call_ops != candidate_call_ops:
+    if stock_call_ops != candidate_call_ops:
         return None
     return_statement_re = re.compile(r"\breturn(?:[^;]*);" )
     candidate_return_count = len(return_statement_re.findall(candidate_normalized))
     stock_return_count = len(return_statement_re.findall(stock_normalized))
+    # An unresolved internal call is emitted as FUN_<address> in one import
+    # even though the stock export resolves the same relocation to its symbol.
+    # Accept only a one-for-one FUN_ rename with equal C call-set cardinality;
+    # the remaining type/return display differences stay explicitly diagnostic.
+    if (
+        len(missing_calls) == 1
+        and len(extra_calls) == 1
+        and extra_calls[0].startswith("FUN_")
+        and len(stock_calls) == len(candidate_calls)
+    ):
+        return {
+            "kind": "ghidra_unresolved_external_call_name_artifact",
+            "missing_stock_call_names": missing_calls,
+            "candidate_extra_call_names": extra_calls,
+            "stock_call_operation_count": stock_call_ops,
+            "candidate_call_operation_count": candidate_call_ops,
+            "candidate_return_count": candidate_return_count,
+            "stock_return_count": stock_return_count,
+            "requirement": (
+                "exact body bytes and P-Code instruction/operation shape; relocation-aware "
+                "assembly parity remains mandatory"
+            ),
+        }
+    if len(missing_calls) < 2:
+        return None
     # Exact .inst/relocation-backed functions can retain the complete P-Code
     # while Ghidra's C emitter collapses the whole CFG to the entry log call.
     # Accept that shape only when the candidate has exactly that one known
