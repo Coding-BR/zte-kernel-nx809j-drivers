@@ -16,6 +16,7 @@ from typing import Any
 
 DATA_REFERENCE_RE = re.compile(r"&(?:DAT|UNK)_([0-9a-fA-F]+)")
 GLOBAL_DATA_LABEL_RE = re.compile(r"\b(?:DAT|UNK)_[0-9a-fA-F]+\b")
+ABSOLUTE_ADDRESS_RE = re.compile(r"(?<![A-Za-z0-9_])0x([0-9a-fA-F]+)")
 SYMBOL_STRING_RE = re.compile(r"\b(?P<symbol>unk_[0-9a-fA-F]+)\b")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
 SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
@@ -199,6 +200,15 @@ def memory_blocks(root: Path) -> list[tuple[str, int, int, bool]]:
     return result
 
 
+def section_address_ranges(root: Path) -> list[tuple[str, int, int]]:
+    """Return initialized-data address ranges eligible for address normalization."""
+    return [
+        (name, start, end)
+        for name, start, end, _initialized in memory_blocks(root)
+        if name == ".bss" or name == ".data" or name.startswith(".rodata")
+    ]
+
+
 def named_data_symbol_bindings(root: Path) -> dict[str, str]:
     """Map non-function ELF/Ghidra labels to section-relative identities."""
     blocks = memory_blocks(root)
@@ -380,6 +390,7 @@ def normalize_decompiled(
     elf_strings: dict[int, str] | None = None,
     symbol_strings: dict[str, str] | None = None,
     named_data_bindings: dict[str, str] | None = None,
+    absolute_data_ranges: list[tuple[str, int, int]] | None = None,
 ) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
     artifact_evidence: list[dict[str, Any]] = []
@@ -486,6 +497,29 @@ def normalize_decompiled(
         return normalized
 
     replaced = GLOBAL_DATA_LABEL_RE.sub(replace_global_data_label, replaced)
+
+    if absolute_data_ranges:
+        def replace_absolute_data_address(match: re.Match[str]) -> str:
+            address = int(match.group(1), 16)
+            for section, start, end in absolute_data_ranges:
+                if start <= address <= end:
+                    normalized = (
+                        f"GHIDRA_SECTION_ADDRESS_{re.sub(r'[^A-Za-z0-9_]', '_', section)}_"
+                        f"{address - start:08x}"
+                    )
+                    artifact_evidence.append(
+                        {
+                            "kind": "ghidra_absolute_data_address",
+                            "value": match.group(0),
+                            "normalized": normalized,
+                            "section": section,
+                            "section_offset": f"0x{address - start:x}",
+                        }
+                    )
+                    return normalized
+            return match.group(0)
+
+        replaced = ABSOLUTE_ADDRESS_RE.sub(replace_absolute_data_address, replaced)
 
     def replace_breakpoint_context(match: re.Match[str]) -> str:
         artifact_evidence.append(
@@ -1402,6 +1436,8 @@ def compare_function(
     stock_named_data_bindings: dict[str, str] | None = None,
     candidate_named_data_bindings: dict[str, str] | None = None,
     allow_named_data_address_syntax_fallback: bool = False,
+    stock_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
+    candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -1435,6 +1471,7 @@ def compare_function(
         stock_elf_strings,
         stock_symbol_strings,
         stock_named_data_bindings,
+        stock_absolute_data_ranges,
     )
     (
         candidate_normalized,
@@ -1446,6 +1483,7 @@ def compare_function(
         candidate_elf_strings,
         candidate_symbol_strings,
         candidate_named_data_bindings,
+        candidate_absolute_data_ranges,
     )
     stock_pcode_records = read_jsonl(paths["stock"]["pcode"])
     candidate_pcode_paths = [paths["candidate"]["pcode"]]
@@ -1648,6 +1686,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="accept only Ghidra obj versus &obj syntax for proven shared data bindings after body/P-Code equality",
     )
+    parser.add_argument(
+        "--allow-section-address-normalization",
+        action="store_true",
+        help="normalize absolute addresses only when both exports resolve them to the same section-relative data offset",
+    )
     return parser.parse_args()
 
 
@@ -1673,6 +1716,14 @@ def main() -> int:
     candidate_elf_strings = elf_data_string_resolver(candidate_root, candidate_module)
     stock_symbol_strings = symbol_string_index(stock_root, stock_elf_strings)
     candidate_symbol_strings = symbol_string_index(candidate_root, candidate_elf_strings)
+    stock_absolute_data_ranges = (
+        section_address_ranges(stock_root)
+        if args.allow_section_address_normalization else None
+    )
+    candidate_absolute_data_ranges = (
+        section_address_ranges(candidate_root)
+        if args.allow_section_address_normalization else None
+    )
     if args.allow_shared_data_binding_normalization:
         (
             stock_named_data_bindings,
@@ -1721,6 +1772,8 @@ def main() -> int:
             stock_named_data_bindings,
             candidate_named_data_bindings,
             args.allow_named_data_address_syntax_fallback,
+            stock_absolute_data_ranges,
+            candidate_absolute_data_ranges,
         )
         for function in args.functions
     ]
@@ -1743,6 +1796,9 @@ def main() -> int:
         ),
         "named_data_address_syntax_fallback_allowed": (
             args.allow_named_data_address_syntax_fallback
+        ),
+        "section_address_normalization_allowed": (
+            args.allow_section_address_normalization
         ),
         "passed": not identity_failures and len(results) == len(args.functions)
         and all(result["passed"] for result in results),

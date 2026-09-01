@@ -803,6 +803,10 @@ def execute_post_candidate(
             "allow_return_propagation_fallback", False
         ):
             ghidra_command.append("--allow-ghidra-return-propagation-fallback")
+        if isinstance(ghidra_config, dict) and ghidra_config.get(
+            "allow_section_address_normalization", False
+        ):
+            ghidra_command.append("--allow-section-address-normalization")
         if same_names:
             result = run_command(
                 "ghidra_semantics", ghidra_command,
