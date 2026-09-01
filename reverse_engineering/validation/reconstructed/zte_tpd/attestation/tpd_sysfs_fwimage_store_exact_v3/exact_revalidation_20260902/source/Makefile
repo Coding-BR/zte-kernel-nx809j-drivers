@@ -1,0 +1,1475 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Compile all C files in the directory except offset_test.c
+src-files := $(wildcard $(src)/*.c)
+# Ghidra-only unnamed helper drafts are retained as evidence but are not part
+# of the 367-function stock module surface; none is referenced by the build.
+src-files := $(filter-out $(src)/sub_%.c, $(src-files))
+src-files := $(filter-out $(src)/offset_test.c, $(src-files))
+src-files := $(filter-out $(src)/globals.c, $(src-files))
+src-files := $(filter-out $(src)/trim.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_copy_2.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_copy.c, $(src-files))
+# The legacy base-unit include aliases syna_tcm_buf_copy_2 back to the
+# exported name and collides with the exact stock reconstruction below.
+src-files := $(filter-out $(src)/syna_tcm_func_base_unit.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_identify.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_wait_for_report.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_switch_fw_mode.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_boot_info.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_app_info.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_dynamic_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_dynamic_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_sleep.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_features.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_unlock.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_run_production_test.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_game_partition_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_static_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_static_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_rezero.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_reset.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_send_command.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash_address.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_up_flash_access.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash_area.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash_boot_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash_boot_cs_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_flash_mtp_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_do_fw_update_ex.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_do_fw_update.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_update_lockdown_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_check_flash_block.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_write_flash.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_update_cs_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_update_mtp_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_cs_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_update_flash_block.c, $(src-files))
+src-files := $(filter-out $(src)/syna_pal_mem_alloc.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_read_mtp_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_erase_mtp_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_pal_mem_free.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_touch_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_parse_touch_report.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_touch_report_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_preserve_touch_report_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_partition_id_string.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_parse_fw_image.c, $(src-files))
+src-files := $(filter-out $(src)/string_change.c, $(src-files))
+src-files := $(filter-out $(src)/tp_edge_report_limit_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_edge_report_limit_read.c, $(src-files))
+src-files := $(filter-out $(src)/get_one_key.c, $(src-files))
+src-files := $(filter-out $(src)/set_one_key.c, $(src-files))
+src-files := $(filter-out $(src)/one_key_report.c, $(src-files))
+src-files := $(filter-out $(src)/uf_touch_report.c, $(src-files))
+src-files := $(filter-out $(src)/ufp_report_lcd_state.c, $(src-files))
+src-files := $(filter-out $(src)/get_play_game.c, $(src-files))
+src-files := $(filter-out $(src)/set_play_game.c, $(src-files))
+src-files := $(filter-out $(src)/get_tp_report_rate.c, $(src-files))
+src-files := $(filter-out $(src)/set_tp_report_rate.c, $(src-files))
+src-files := $(filter-out $(src)/get_follow_hand_level.c, $(src-files))
+src-files := $(filter-out $(src)/set_follow_hand_level.c, $(src-files))
+src-files := $(filter-out $(src)/get_stability_level.c, $(src-files))
+src-files := $(filter-out $(src)/set_stability_level.c, $(src-files))
+src-files := $(filter-out $(src)/tp_sensibility_level_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_sensibility_level_write.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_set_sensibility_level.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_set_follow_hand_level.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_set_stability_level.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_set_display_rotation.c, $(src-files))
+src-files := $(filter-out $(src)/syna_recovery_game_mode_after_reset.c, $(src-files))
+src-files := $(filter-out $(src)/tp_game_partition_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_game_partition_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_fold_state_read.c, $(src-files))
+src-files := $(filter-out $(src)/syna_ts_check_dt.c, $(src-files))
+src-files := $(filter-out $(src)/tp_fold_state_write.c, $(src-files))
+src-files := $(filter-out $(src)/get_fake_sleep.c, $(src-files))
+src-files := $(filter-out $(src)/set_fake_sleep.c, $(src-files))
+src-files := $(filter-out $(src)/get_screen_off_awake.c, $(src-files))
+src-files := $(filter-out $(src)/set_screen_off_awake.c, $(src-files))
+src-files := $(filter-out $(src)/tp_zlog_debug_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_zlog_debug_write.c, $(src-files))
+src-files := $(filter-out $(src)/syna_cdev_open.c, $(src-files))
+src-files := $(filter-out $(src)/set_lcd_reset_processing.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_debug_read.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_debug_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_BBAT_test_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_BBAT_test_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_test_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_test_write.c, $(src-files))
+src-files := $(filter-out $(src)/tp_frame_data_read.c, $(src-files))
+src-files := $(filter-out $(src)/tp_frame_data_write.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_sysfs_fwimage_show.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_sysfs_fwimage_store.c, $(src-files))
+src-files := $(filter-out $(src)/zte_touch_deinit.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_touch_press.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_touch_release.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_check_area.c, $(src-files))
+src-files := $(filter-out $(src)/tp_ghost_check.c, $(src-files))
+src-files := $(filter-out $(src)/ghost_check_reset.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_clean_all_event.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_report_work_init.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id0_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id1_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id2_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id3_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id4_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id5_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id6_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id7_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id8_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_id9_report_work.c, $(src-files))
+src-files := $(filter-out $(src)/tpd_report_work_deinit.c, $(src-files))
+src-files := $(filter-out $(src)/point_is_in_limit_area.c, $(src-files))
+src-files := $(filter-out $(src)/edge_long_press_up.c, $(src-files))
+src-files := $(filter-out $(src)/change_tp_state.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_set_up_app_fw.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_suspend.c, $(src-files))
+src-files := $(filter-out $(src)/syna_dev_resume.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_0001_check_device_id.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_testing_0A00.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_testing_0001.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_testing_0002.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_config_id.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_alloc_0.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_0002_check_config_id.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_trx_trx_short.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_copy_0.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_check_array_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_0100_check_data.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_testing_0500.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_full_raw.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_buf_copy_1.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_testing_check_frame_data_0.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_detect.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_write_message.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_parse_idinfo.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_read_message.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_set_up_max_rw_size.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_v1_read.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_config_timings.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_allocate_device.c, $(src-files))
+src-files := $(filter-out $(src)/%.mod.c, $(src-files))
+obj-files := $(patsubst $(src)/%.c, %.o, $(src-files))
+obj-files += syna_dev_set_up_app_fw_exact.o
+obj-files += syna_dev_suspend_exact.o
+obj-files += syna_dev_resume_exact.o
+obj-files += syna_tcm_testing_0001_check_device_id_exact.o
+obj-files += syna_tcm_get_testing_0A00_exact.o
+obj-files += syna_tcm_get_testing_0001_exact.o
+obj-files += syna_tcm_get_testing_0002_exact.o
+obj-files += syna_tcm_testing_config_id_exact.o
+obj-files += syna_tcm_buf_alloc_0_exact.o
+obj-files += syna_tcm_testing_0002_check_config_id_exact.o
+obj-files += syna_tcm_buf_copy_0_exact.o
+obj-files += syna_tcm_testing_check_array_data_exact.o
+obj-files += syna_tcm_testing_0100_check_data_exact.o
+obj-files += syna_tcm_get_testing_0500_exact.o
+obj-files += syna_tcm_buf_copy_1_exact.o
+obj-files += syna_tcm_testing_check_frame_data_0_exact.o
+obj-files += syna_tcm_v1_detect_exact.o
+obj-files += syna_tcm_v1_write_message_exact.o
+obj-files += syna_tcm_v1_parse_idinfo_exact.o
+obj-files += syna_tcm_v1_read_message_exact.o
+obj-files += syna_tcm_v1_set_up_max_rw_size_exact.o
+obj-files += syna_tcm_v1_read_exact.o
+obj-files += syna_tcm_config_timings_exact.o
+obj-files += syna_tcm_allocate_device_exact.o
+obj-files += syna_tcm_buf_copy_2_exact.o
+obj-files += syna_tcm_identify_exact.o
+obj-files += syna_tcm_buf_unlock.o
+obj-files += syna_tcm_wait_for_report_exact.o
+obj-files += syna_tcm_switch_fw_mode_exact.o
+obj-files += syna_tcm_get_boot_info_exact.o
+obj-files += syna_tcm_get_app_info_exact.o
+obj-files += syna_tcm_get_dynamic_config_exact.o
+obj-files += syna_tcm_set_dynamic_config_exact.o
+obj-files += syna_tcm_sleep_exact.o
+obj-files += syna_tcm_get_features_exact.o
+obj-files += syna_tcm_rezero_exact.o
+obj-files += syna_tcm_reset_exact.o
+obj-files += syna_tcm_run_production_test_exact.o
+obj-files += syna_tcm_set_game_partition_config_exact.o
+obj-files += syna_tcm_set_static_config_exact.o
+obj-files += syna_tcm_get_static_config_exact.o
+obj-files += tp_edge_report_limit_write_exact.o
+obj-files += tp_edge_report_limit_read_exact.o
+obj-files += get_one_key_exact.o
+obj-files += syna_tcm_send_command_exact.o
+obj-files += syna_cdev_open_exact.o
+obj-files += set_lcd_reset_processing_exact.o
+obj-files += set_one_key_exact.o
+obj-files += get_play_game_exact.o
+obj-files += set_play_game_exact.o
+obj-files += get_tp_report_rate_exact.o
+obj-files += set_tp_report_rate_exact.o
+obj-files += get_follow_hand_level_exact.o
+obj-files += set_follow_hand_level_exact.o
+obj-files += get_stability_level_exact.o
+obj-files += set_stability_level_exact.o
+obj-files += tp_sensibility_level_read_exact.o
+obj-files += tp_sensibility_level_write_exact.o
+obj-files += syna_dev_set_follow_hand_level_exact.o
+obj-files += syna_dev_set_stability_level_exact.o
+obj-files += syna_dev_set_display_rotation_exact.o
+obj-files += syna_recovery_game_mode_after_reset_exact.o
+obj-files += tp_game_partition_read_exact.o
+obj-files += tp_game_partition_write_exact.o
+obj-files += tp_fold_state_read_exact.o
+obj-files += tp_fold_state_write_exact.o
+obj-files += get_fake_sleep_exact.o
+obj-files += set_fake_sleep_exact.o
+obj-files += get_screen_off_awake_exact.o
+obj-files += set_screen_off_awake_exact.o
+obj-files += tp_zlog_debug_read_exact.o
+obj-files += tp_zlog_debug_write_exact.o
+obj-files += ghost_debug_read_exact.o
+obj-files += ghost_debug_write_exact.o
+obj-files += tp_BBAT_test_read_exact.o
+obj-files += tp_BBAT_test_write_exact.o
+obj-files += tp_test_read_exact.o
+obj-files += tp_test_write_exact.o
+obj-files += tp_frame_data_read_exact.o
+obj-files += tp_frame_data_write_exact.o
+obj-files += tpd_sysfs_fwimage_show_exact.o
+obj-files += tpd_sysfs_fwimage_store_exact.o
+obj-files += zte_touch_deinit_exact.o
+obj-files += tpd_touch_press_exact.o
+obj-files += tpd_touch_release_exact.o
+obj-files += ghost_check_area_exact.o
+obj-files += tp_ghost_check_exact.o
+obj-files += ghost_check_reset_exact.o
+obj-files += tpd_clean_all_event_exact.o
+obj-files += tpd_report_work_init_exact.o
+obj-files += tpd_resume_work_init_exact.o
+obj-files += tpd_id0_report_work_exact.o
+obj-files += tpd_id1_report_work_exact.o
+obj-files += tpd_id2_report_work_exact.o
+obj-files += tpd_id3_report_work_exact.o
+obj-files += tpd_id4_report_work_exact.o
+obj-files += tpd_id5_report_work_exact.o
+obj-files += tpd_id6_report_work_exact.o
+obj-files += tpd_id7_report_work_exact.o
+obj-files += tpd_id8_report_work_exact.o
+obj-files += tpd_id9_report_work_exact.o
+obj-files += tpd_report_work_deinit_exact.o
+obj-files += one_key_report_exact.o
+obj-files += uf_touch_report_exact.o
+obj-files += ufp_report_lcd_state_exact.o
+obj-files += point_is_in_limit_area_exact.o
+obj-files += edge_long_press_up_exact.o
+obj-files += change_tp_state_exact.o
+obj-files += syna_ts_check_dt_exact.o
+obj-files += syna_tcm_preserve_touch_report_config_exact.o
+obj-files += syna_tcm_get_partition_id_string_exact.o
+obj-files += syna_tcm_parse_fw_image_exact.o
+obj-files += syna_string_change_exact.o
+
+# The lifted Assembly is validated from its opcodes/relocations; suppress
+# path-dependent assembler debug records so the canonical M= path gate stays
+# byte-identical across independent cycles.
+AFLAGS_tp_edge_report_limit_write_exact.o := -g0
+AFLAGS_syna_tcm_v1_parse_idinfo_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_v1_read_message_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_v1_set_up_max_rw_size_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_v1_read_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_config_timings_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_allocate_device_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_buf_copy_2_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_run_production_test_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_game_partition_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_static_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_static_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_identify_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_wait_for_report_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_switch_fw_mode_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_boot_info_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_app_info_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_dynamic_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_dynamic_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_sleep_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_features_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_send_command_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_address_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_up_flash_access_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_area_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_boot_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_boot_cs_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_mtp_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_do_fw_update_ex_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_do_fw_update_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_update_lockdown_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_check_flash_block_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_write_flash_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_update_cs_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_update_mtp_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_cs_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_update_flash_block_exact.o := -g0 -I$(src)
+AFLAGS_syna_pal_mem_alloc_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_mtp_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_erase_mtp_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_pal_mem_free_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_touch_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_parse_touch_report_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_touch_report_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_read_flash_boot_config_mem_alloc_pad.o := -g0
+AFLAGS_syna_tcm_read_flash_boot_config_mem_free_pad.o := -g0
+
+# The lifted Assembly is validated from its opcodes/relocations; suppress
+# path-dependent assembler debug records so the canonical M= path gate stays
+# byte-identical across independent cycles.
+AFLAGS_tp_edge_report_limit_read_exact.o := -g0
+AFLAGS_syna_cdev_open_exact.o := -g0
+AFLAGS_set_lcd_reset_processing_exact.o := -g0
+AFLAGS_get_one_key_exact.o := -g0
+AFLAGS_set_one_key_exact.o := -g0
+AFLAGS_get_play_game_exact.o := -g0
+AFLAGS_set_play_game_exact.o := -g0
+AFLAGS_get_tp_report_rate_exact.o := -g0
+AFLAGS_set_tp_report_rate_exact.o := -g0
+AFLAGS_get_follow_hand_level_exact.o := -g0
+AFLAGS_set_follow_hand_level_exact.o := -g0
+AFLAGS_get_stability_level_exact.o := -g0
+AFLAGS_set_stability_level_exact.o := -g0
+AFLAGS_tp_sensibility_level_read_exact.o := -g0
+AFLAGS_tp_sensibility_level_write_exact.o := -g0
+AFLAGS_syna_dev_set_sensibility_level_exact.o := -g0
+AFLAGS_syna_dev_set_follow_hand_level_exact.o := -g0
+AFLAGS_syna_dev_set_stability_level_exact.o := -g0
+AFLAGS_syna_dev_set_display_rotation_exact.o := -g0
+AFLAGS_syna_recovery_game_mode_after_reset_exact.o := -g0
+AFLAGS_tp_game_partition_read_exact.o := -g0
+AFLAGS_tp_game_partition_write_exact.o := -g0
+AFLAGS_tp_fold_state_read_exact.o := -g0
+AFLAGS_tp_fold_state_write_exact.o := -g0
+AFLAGS_get_fake_sleep_exact.o := -g0
+AFLAGS_set_fake_sleep_exact.o := -g0
+AFLAGS_get_screen_off_awake_exact.o := -g0
+AFLAGS_set_screen_off_awake_exact.o := -g0
+AFLAGS_tp_zlog_debug_read_exact.o := -g0
+AFLAGS_tp_zlog_debug_write_exact.o := -g0
+AFLAGS_ghost_debug_read_exact.o := -g0 -I$(src)
+AFLAGS_ghost_debug_write_exact.o := -g0 -I$(src)
+AFLAGS_tp_BBAT_test_read_exact.o := -g0 -I$(src)
+AFLAGS_tp_BBAT_test_write_exact.o := -g0 -I$(src)
+AFLAGS_tp_test_read_exact.o := -g0 -I$(src)
+AFLAGS_tp_test_write_exact.o := -g0 -I$(src)
+AFLAGS_tp_frame_data_read_exact.o := -g0 -I$(src)
+AFLAGS_tp_frame_data_write_exact.o := -g0 -I$(src)
+AFLAGS_tpd_sysfs_fwimage_show_exact.o := -g0 -I$(src)
+AFLAGS_tpd_sysfs_fwimage_store_exact.o := -g0 -I$(src)
+AFLAGS_zte_touch_deinit_exact.o := -g0 -I$(src)
+AFLAGS_tpd_touch_press_exact.o := -g0 -I$(src)
+AFLAGS_tpd_touch_release_exact.o := -g0 -I$(src)
+AFLAGS_ghost_check_area_exact.o := -g0 -I$(src)
+AFLAGS_tp_ghost_check_exact.o := -g0 -I$(src)
+AFLAGS_ghost_check_reset_exact.o := -g0 -I$(src)
+AFLAGS_tpd_clean_all_event_exact.o := -g0 -I$(src)
+AFLAGS_tpd_resume_work_init_exact.o := -g0 -I$(src)
+AFLAGS_one_key_report_exact.o := -g0 -I$(src)
+AFLAGS_uf_touch_report_exact.o := -g0 -I$(src)
+AFLAGS_ufp_report_lcd_state_exact.o := -g0 -I$(src)
+AFLAGS_tpd_report_work_init_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id0_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id1_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id2_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id3_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id4_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id5_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id6_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id7_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id8_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_id9_report_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_report_work_deinit_exact.o := -g0 -I$(src)
+AFLAGS_point_is_in_limit_area_exact.o := -g0 -I$(src)
+AFLAGS_edge_long_press_up_exact.o := -g0 -I$(src)
+AFLAGS_change_tp_state_exact.o := -g0 -I$(src)
+AFLAGS_syna_dev_set_up_app_fw_exact.o := -g0
+AFLAGS_syna_dev_suspend_exact.o := -g0
+AFLAGS_syna_dev_resume_exact.o := -g0
+AFLAGS_syna_tcm_rezero_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_reset_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_0001_check_device_id_exact.o := -g0
+AFLAGS_syna_ts_check_dt_exact.o := -g0
+
+obj-m += zte_tpd.o
+zte_tpd-objs := syna_tcm_read_flash_address_exact.o syna_tcm_set_up_flash_access_exact.o syna_tcm_read_flash_exact.o syna_tcm_read_flash_area_exact.o syna_tcm_read_flash_boot_config_exact.o syna_tcm_read_flash_boot_cs_config_exact.o syna_tcm_read_flash_mtp_config_exact.o syna_tcm_do_fw_update_ex_exact.o syna_tcm_update_flash_block_exact.o syna_tcm_do_fw_update_exact.o syna_tcm_update_lockdown_config_exact.o syna_tcm_check_flash_block_exact.o syna_tcm_write_flash_exact.o syna_tcm_update_cs_config_exact.o syna_tcm_update_mtp_data_exact.o syna_tcm_read_cs_data_exact.o syna_tcm_read_flash_boot_config_mem_alloc_pad.o syna_pal_mem_alloc_exact.o syna_tcm_read_mtp_data_exact.o syna_tcm_erase_mtp_data_exact.o syna_tcm_read_flash_boot_config_mem_free_pad.o syna_pal_mem_free_exact.o syna_tcm_get_touch_data_exact.o syna_tcm_parse_touch_report_exact.o syna_tcm_set_touch_report_config_exact.o syna_dev_set_sensibility_level_exact.o syna_tcm_testing_full_raw_exact.o syna_tcm_testing_trx_trx_short_exact.o globals.o $(obj-files)
+
+# Exact offline reconstruction: tpd_resume_work_init
+src-files := $(filter-out $(src)/tpd_resume_work_init.c, $(src-files))
+obj-files := $(filter-out tpd_resume_work_init.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_resume_work_init.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_resume_work_init_exact.o
+
+# Exact offline reconstruction: one_key_report
+obj-files := $(filter-out one_key_report.o, $(obj-files))
+zte_tpd-objs := $(filter-out one_key_report.o, $(zte_tpd-objs))
+zte_tpd-objs += one_key_report_exact.o
+
+# Exact offline reconstruction: uf_touch_report
+obj-files := $(filter-out uf_touch_report.o, $(obj-files))
+zte_tpd-objs := $(filter-out uf_touch_report.o, $(zte_tpd-objs))
+zte_tpd-objs += uf_touch_report_exact.o
+
+# Exact offline reconstruction: ufp_report_lcd_state
+obj-files := $(filter-out ufp_report_lcd_state.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_lcd_state.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_lcd_state_exact.o
+
+CFLAGS_globals.o := -DGLOBALS_C
+# Stock syna_pal_mem_free@001284c0 has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_free.o := -fno-sanitize=kcfi
+# Stock syna_pal_mem_free@0012a4ec has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_free_0.o := -fno-sanitize=kcfi
+# Stock syna_pal_mem_cpy@0011da1c has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_cpy_0.o := -fno-sanitize=kcfi
+# Stock syna_pal_mem_cpy@0012a478 has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_cpy_1.o := -fno-sanitize=kcfi
+# Stock syna_pal_mem_cpy@0011d67c has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_cpy.o := -fno-sanitize=kcfi
+# Stock syna_pal_mem_alloc@00127e18 has no valid KCFI entry preamble.
+CFLAGS_syna_pal_mem_alloc.o := -fno-sanitize=kcfi
+# Stock tpd_touch_report@0010eb70 has no valid KCFI entry preamble.
+CFLAGS_tpd_touch_report.o := -fno-sanitize=kcfi
+# Stock _inline_copy_from_user@0010a5c8 has no valid KCFI entry preamble.
+CFLAGS__inline_copy_from_user.o := -fno-sanitize=kcfi
+# Stock point_report_reset@0010ea98 has no valid KCFI entry preamble.
+CFLAGS_point_report_reset.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: point_report_reset
+src-files := $(filter-out $(src)/point_report_reset.c, $(src-files))
+obj-files := $(filter-out point_report_reset.o, $(obj-files))
+zte_tpd-objs := $(filter-out point_report_reset.o, $(zte_tpd-objs))
+zte_tpd-objs += point_report_reset_exact.o
+AFLAGS_point_report_reset_exact.o := -g0 -I$(src)
+# Stock ghost_check_area@0010f2ac has no valid KCFI entry preamble.
+CFLAGS_ghost_check_area.o := -fno-sanitize=kcfi
+# Stock syna_dev_enter_normal_sensing@00114294 has no valid KCFI entry preamble.
+CFLAGS_syna_dev_enter_normal_sensing.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: syna_dev_enter_normal_sensing
+src-files := $(filter-out $(src)/syna_dev_enter_normal_sensing.c, $(src-files))
+obj-files := $(filter-out syna_dev_enter_normal_sensing.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_enter_normal_sensing.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_enter_normal_sensing_exact.o
+AFLAGS_syna_dev_enter_normal_sensing_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_sysfs_fw_update_store
+src-files := $(filter-out $(src)/syna_sysfs_fw_update_store.c, $(src-files))
+obj-files := $(filter-out syna_sysfs_fw_update_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_sysfs_fw_update_store.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_sysfs_fw_update_store_exact.o
+AFLAGS_syna_sysfs_fw_update_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: suspend_show
+src-files := $(filter-out $(src)/suspend_show.c, $(src-files))
+obj-files := $(filter-out suspend_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out suspend_show.o, $(zte_tpd-objs))
+zte_tpd-objs += suspend_show_exact.o
+AFLAGS_suspend_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_report_uevent
+src-files := $(filter-out $(src)/tpd_report_uevent.c, $(src-files))
+obj-files := $(filter-out tpd_report_uevent.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_report_uevent.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_report_uevent_exact.o
+AFLAGS_tpd_report_uevent_exact.o := -g0 -I$(src)
+# Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
+CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
+# Stock syna_tcm_buf_unlock@0011ee40 has no valid KCFI entry preamble.
+CFLAGS_syna_tcm_buf_unlock.o := -fno-sanitize=kcfi
+# Stock syna_tcm_buf_unlock@00122140 has no valid KCFI entry preamble.
+CFLAGS_syna_tcm_buf_unlock_0.o := -fno-sanitize=kcfi
+# Stock syna_ts_register_for_panel_events@00113504 has no valid KCFI entry preamble.
+CFLAGS_syna_ts_register_for_panel_events.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: suspend_tp_need_awake
+AFLAGS_syna_tcm_testing_config_id_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_buf_alloc_0_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_0002_check_config_id_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_trx_trx_short_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_buf_copy_0_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_check_array_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_0100_check_data_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_testing_0A00_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_testing_0001_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_testing_0500_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_full_raw_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_buf_copy_1_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_testing_check_frame_data_0_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_v1_detect_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_v1_write_message_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_testing_0002_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_preserve_touch_report_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_partition_id_string_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_parse_fw_image_exact.o := -g0 -I$(src)
+AFLAGS_syna_string_change_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tpd_register_fw_class
+src-files := $(filter-out $(src)/syna_tpd_register_fw_class.c, $(src-files))
+obj-files := $(filter-out syna_tpd_register_fw_class.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tpd_register_fw_class.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tpd_register_fw_class_exact.o
+AFLAGS_syna_tpd_register_fw_class_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_work_charger_detect_work
+src-files := $(filter-out $(src)/syna_work_charger_detect_work.c, $(src-files))
+obj-files := $(filter-out syna_work_charger_detect_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_work_charger_detect_work.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_work_charger_detect_work_exact.o
+AFLAGS_syna_work_charger_detect_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_set_tp_report_rate
+src-files := $(filter-out $(src)/syna_dev_set_tp_report_rate.c, $(src-files))
+obj-files := $(filter-out syna_dev_set_tp_report_rate.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_set_tp_report_rate.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_set_tp_report_rate_exact.o
+AFLAGS_syna_dev_set_tp_report_rate_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_report_gesture_uevent
+src-files := $(filter-out $(src)/ufp_report_gesture_uevent.c, $(src-files))
+obj-files := $(filter-out ufp_report_gesture_uevent.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_gesture_uevent.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_gesture_uevent_exact.o
+AFLAGS_ufp_report_gesture_uevent_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: report_ufp_uevent
+src-files := $(filter-out $(src)/report_ufp_uevent.c, $(src-files))
+obj-files := $(filter-out report_ufp_uevent.o, $(obj-files))
+zte_tpd-objs := $(filter-out report_ufp_uevent.o, $(zte_tpd-objs))
+zte_tpd-objs += report_ufp_uevent_exact.o
+AFLAGS_report_ufp_uevent_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: suspend_tp_need_awake
+src-files := $(filter-out $(src)/suspend_tp_need_awake.c, $(src-files))
+obj-files += suspend_tp_need_awake_exact.o
+AFLAGS_suspend_tp_need_awake_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_test_cmd_store
+src-files := $(filter-out $(src)/tpd_test_cmd_store.c, $(src-files))
+obj-files := $(filter-out tpd_test_cmd_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_test_cmd_store.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_test_cmd_store_exact.o
+AFLAGS_tpd_test_cmd_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_tp_report_rate
+src-files := $(filter-out $(src)/tpd_set_tp_report_rate.c, $(src-files))
+obj-files := $(filter-out tpd_set_tp_report_rate.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_tp_report_rate.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_tp_report_rate_exact.o
+AFLAGS_tpd_set_tp_report_rate_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_sensibility_level
+src-files := $(filter-out $(src)/tpd_get_sensibility_level.c, $(src-files))
+obj-files := $(filter-out tpd_get_sensibility_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_sensibility_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_sensibility_level_exact.o
+AFLAGS_tpd_get_sensibility_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_sensibility_level
+src-files := $(filter-out $(src)/tpd_set_sensibility_level.c, $(src-files))
+obj-files := $(filter-out tpd_set_sensibility_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_sensibility_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_sensibility_level_exact.o
+AFLAGS_tpd_set_sensibility_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_follow_hand_level
+src-files := $(filter-out $(src)/tpd_get_follow_hand_level.c, $(src-files))
+obj-files := $(filter-out tpd_get_follow_hand_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_follow_hand_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_follow_hand_level_exact.o
+AFLAGS_tpd_get_follow_hand_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_follow_hand_level
+src-files := $(filter-out $(src)/tpd_set_follow_hand_level.c, $(src-files))
+obj-files := $(filter-out tpd_set_follow_hand_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_follow_hand_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_follow_hand_level_exact.o
+AFLAGS_tpd_set_follow_hand_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_stability_level
+src-files := $(filter-out $(src)/tpd_get_stability_level.c, $(src-files))
+obj-files := $(filter-out tpd_get_stability_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_stability_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_stability_level_exact.o
+AFLAGS_tpd_get_stability_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_stability_level
+src-files := $(filter-out $(src)/tpd_set_stability_level.c, $(src-files))
+obj-files := $(filter-out tpd_set_stability_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_stability_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_stability_level_exact.o
+AFLAGS_tpd_set_stability_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_rotation_limit_level
+src-files := $(filter-out $(src)/tpd_get_rotation_limit_level.c, $(src-files))
+obj-files := $(filter-out tpd_get_rotation_limit_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_rotation_limit_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_rotation_limit_level_exact.o
+AFLAGS_tpd_get_rotation_limit_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_rotation_limit_level
+src-files := $(filter-out $(src)/tpd_set_rotation_limit_level.c, $(src-files))
+obj-files := $(filter-out tpd_set_rotation_limit_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_rotation_limit_level.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_rotation_limit_level_exact.o
+AFLAGS_tpd_set_rotation_limit_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_display_rotation
+src-files := $(filter-out $(src)/tpd_set_display_rotation.c, $(src-files))
+obj-files := $(filter-out tpd_set_display_rotation.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_display_rotation.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_display_rotation_exact.o
+AFLAGS_tpd_set_display_rotation_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_play_game
+src-files := $(filter-out $(src)/tpd_set_play_game.c, $(src-files))
+obj-files := $(filter-out tpd_set_play_game.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_play_game.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_play_game_exact.o
+AFLAGS_tpd_set_play_game_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_frame_data
+src-files := $(filter-out $(src)/tpd_set_frame_data.c, $(src-files))
+obj-files := $(filter-out tpd_set_frame_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_frame_data.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_frame_data_exact.o
+AFLAGS_tpd_set_frame_data_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_disconnect
+src-files := $(filter-out $(src)/syna_dev_disconnect.c, $(src-files))
+obj-files := $(filter-out syna_dev_disconnect.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_disconnect.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_disconnect_exact.o
+AFLAGS_syna_dev_disconnect_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_mmap
+src-files := $(filter-out $(src)/syna_mmap.c, $(src-files))
+obj-files := $(filter-out syna_mmap.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_mmap.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_mmap_exact.o
+AFLAGS_syna_mmap_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_isr
+src-files := $(filter-out $(src)/syna_dev_isr.c, $(src-files))
+obj-files := $(filter-out syna_dev_isr.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_isr.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_isr_exact.o
+AFLAGS_syna_dev_isr_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_probe
+src-files := $(filter-out $(src)/syna_dev_probe.c, $(src-files))
+obj-files := $(filter-out syna_dev_probe.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_probe.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_probe_exact.o
+AFLAGS_syna_dev_probe_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_process_touch_report
+src-files := $(filter-out $(src)/syna_dev_process_touch_report.c, $(src-files))
+obj-files := $(filter-out syna_dev_process_touch_report.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_process_touch_report.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_process_touch_report_exact.o
+AFLAGS_syna_dev_process_touch_report_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_enable_lowpwr_gesture
+src-files := $(filter-out $(src)/syna_dev_enable_lowpwr_gesture.c, $(src-files))
+obj-files := $(filter-out syna_dev_enable_lowpwr_gesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_enable_lowpwr_gesture.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_enable_lowpwr_gesture_exact.o
+AFLAGS_syna_dev_enable_lowpwr_gesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_release
+src-files := $(filter-out $(src)/syna_cdev_release.c, $(src-files))
+obj-files := $(filter-out syna_cdev_release.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_release.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_release_exact.o
+AFLAGS_syna_cdev_release_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_ioctl_raw_read
+src-files := $(filter-out $(src)/syna_cdev_ioctl_raw_read.c, $(src-files))
+obj-files := $(filter-out syna_cdev_ioctl_raw_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_ioctl_raw_read.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_ioctl_raw_read_exact.o
+AFLAGS_syna_cdev_ioctl_raw_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_ioctl_raw_write
+src-files := $(filter-out $(src)/syna_cdev_ioctl_raw_write.c, $(src-files))
+obj-files := $(filter-out syna_cdev_ioctl_raw_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_ioctl_raw_write.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_ioctl_raw_write_exact.o
+AFLAGS_syna_cdev_ioctl_raw_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_process_reports
+src-files := $(filter-out $(src)/syna_cdev_process_reports.c, $(src-files))
+obj-files := $(filter-out syna_cdev_process_reports.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_process_reports.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_process_reports_exact.o
+AFLAGS_syna_cdev_process_reports_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_reflash_startup_work
+src-files := $(filter-out $(src)/syna_dev_reflash_startup_work.c, $(src-files))
+obj-files := $(filter-out syna_dev_reflash_startup_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_reflash_startup_work.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_reflash_startup_work_exact.o
+AFLAGS_syna_dev_reflash_startup_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_buf_alloc
+src-files := $(filter-out $(src)/syna_tcm_buf_alloc.c, $(src-files))
+obj-files := $(filter-out syna_tcm_buf_alloc.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_buf_alloc.o syna_tcm_buf_alloc_exact.o, $(zte_tpd-objs))
+AFLAGS_syna_tcm_buf_alloc_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_testing_check_frame_data
+src-files := $(filter-out $(src)/syna_tcm_testing_check_frame_data.c, $(src-files))
+obj-files := $(filter-out syna_tcm_testing_check_frame_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_testing_check_frame_data.o syna_tcm_testing_check_frame_data_exact.o, $(zte_tpd-objs))
+AFLAGS_syna_tcm_testing_check_frame_data_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_sysfs_reset_store
+src-files := $(filter-out $(src)/syna_sysfs_reset_store.c, $(src-files))
+obj-files := $(filter-out syna_sysfs_reset_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_sysfs_reset_store.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_sysfs_reset_store_exact.o
+AFLAGS_syna_sysfs_reset_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_remove
+src-files := $(filter-out $(src)/syna_spi_remove.c, $(src-files))
+obj-files := $(filter-out syna_spi_remove.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_remove.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_remove_exact.o
+AFLAGS_syna_spi_remove_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_sysfs_irq_en_store
+src-files := $(filter-out $(src)/syna_sysfs_irq_en_store.c, $(src-files))
+obj-files := $(filter-out syna_sysfs_irq_en_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_sysfs_irq_en_store.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_sysfs_irq_en_store_exact.o
+AFLAGS_syna_sysfs_irq_en_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_testing_check_dev_id_show
+src-files := $(filter-out $(src)/syna_testing_check_dev_id_show.c, $(src-files))
+obj-files := $(filter-out syna_testing_check_dev_id_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_check_dev_id_show.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_check_dev_id_show_exact.o
+AFLAGS_syna_testing_check_dev_id_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_connect
+src-files := $(filter-out $(src)/syna_dev_connect.c, $(src-files))
+obj-files := $(filter-out syna_dev_connect.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_connect.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_connect_exact.o
+AFLAGS_syna_dev_connect_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_ioctls
+src-files := $(filter-out $(src)/syna_cdev_ioctls.c, $(src-files))
+obj-files := $(filter-out syna_cdev_ioctls.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_ioctls.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_ioctls_exact.o
+AFLAGS_syna_cdev_ioctls_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_probe
+src-files := $(filter-out $(src)/syna_spi_probe.c, $(src-files))
+obj-files := $(filter-out syna_spi_probe.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_probe.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_probe_exact.o
+AFLAGS_syna_spi_probe_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_read
+src-files := $(filter-out $(src)/syna_spi_read.c, $(src-files))
+obj-files := $(filter-out syna_spi_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_read.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_read_exact.o
+AFLAGS_syna_spi_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_write
+src-files := $(filter-out $(src)/syna_spi_write.c, $(src-files))
+obj-files := $(filter-out syna_spi_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_write.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_write_exact.o
+AFLAGS_syna_spi_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_power_on
+src-files := $(filter-out $(src)/syna_spi_power_on.c, $(src-files))
+obj-files := $(filter-out syna_spi_power_on.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_power_on.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_power_on_exact.o
+AFLAGS_syna_spi_power_on_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_alloc_mem
+src-files := $(filter-out $(src)/syna_spi_alloc_mem.c, $(src-files))
+obj-files := $(filter-out syna_spi_alloc_mem.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_alloc_mem.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_alloc_mem_exact.o
+AFLAGS_syna_spi_alloc_mem_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_sysfs_info_show
+src-files := $(filter-out $(src)/syna_sysfs_info_show.c, $(src-files))
+obj-files := $(filter-out syna_sysfs_info_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_sysfs_info_show.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_sysfs_info_show_exact.o
+AFLAGS_syna_sysfs_info_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_sysfs_get_delta_show
+src-files := $(filter-out $(src)/syna_sysfs_get_delta_show.c, $(src-files))
+obj-files := $(filter-out syna_sysfs_get_delta_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_sysfs_get_delta_show.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_sysfs_get_delta_show_exact.o
+AFLAGS_syna_sysfs_get_delta_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_testing_check_config_id_show
+src-files := $(filter-out $(src)/syna_testing_check_config_id_show.c, $(src-files))
+obj-files := $(filter-out syna_testing_check_config_id_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_check_config_id_show.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_check_config_id_show_exact.o
+AFLAGS_syna_testing_check_config_id_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_testing_pt01_show
+src-files := $(filter-out $(src)/syna_testing_pt01_show.c, $(src-files))
+obj-files := $(filter-out syna_testing_pt01_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_pt01_show.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_pt01_show_exact.o
+AFLAGS_syna_testing_pt01_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_testing_noise
+src-files := $(filter-out $(src)/syna_tcm_testing_noise.c, $(src-files))
+obj-files := $(filter-out syna_tcm_testing_noise.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_testing_noise.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_testing_noise_exact.o
+AFLAGS_syna_tcm_testing_noise_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_buf_copy
+src-files := $(filter-out $(src)/syna_tcm_buf_copy.c, $(src-files))
+obj-files := $(filter-out syna_tcm_buf_copy.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_buf_copy.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_buf_copy_exact.o
+zte_tpd-objs += syna_tcm_testing_check_frame_data_exact.o
+AFLAGS_syna_tcm_buf_copy_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_testing_build_id
+src-files := $(filter-out $(src)/syna_tcm_testing_build_id.c, $(src-files))
+obj-files := $(filter-out syna_tcm_testing_build_id.o, $(obj-files))
+src-files := $(filter-out $(src)/syna_pal_mem_cpy.c, $(src-files))
+obj-files := $(filter-out syna_pal_mem_cpy.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_testing_build_id.o syna_pal_mem_cpy.o syna_tcm_testing_0001_check_device_id_exact.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_testing_build_id_exact.o
+zte_tpd-objs += syna_tcm_buf_alloc_exact.o
+zte_tpd-objs += syna_pal_mem_cpy.o
+zte_tpd-objs += syna_tcm_testing_0001_check_device_id_exact.o
+AFLAGS_syna_tcm_testing_build_id_exact.o := -g0 -I$(src)
+
+# The build entrypoints pass the same map through KCFLAGS for generated *.mod.c.
+ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd \
+	-I$(src) -include $(src)/defs.h -Wno-self-assign \
+	-Wno-int-conversion -Wno-incompatible-pointer-types \
+	-Wno-void-pointer-to-int-cast -Wno-int-to-void-pointer-cast \
+	-Wno-strict-prototypes -Wno-uninitialized \
+	-Wno-pointer-to-int-cast -Wno-incompatible-pointer-types-discards-qualifiers \
+	-Wno-bitwise-op-parentheses -Wno-logical-op-parentheses \
+	-Wno-compare-distinct-pointer-types -Wno-implicit-function-declaration \
+	-Wno-incompatible-library-redeclaration -Wno-return-type \
+	-Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label \
+	-Wframe-larger-than=8192
+CFLAGS_syna_dev_set_up_input_device.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: tp_module_info_read
+src-files := $(filter-out $(src)/tp_module_info_read.c, $(src-files))
+obj-files := $(filter-out tp_module_info_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_module_info_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_module_info_read_exact.o
+AFLAGS_tp_module_info_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_wake_gesture_read
+src-files := $(filter-out $(src)/tp_wake_gesture_read.c, $(src-files))
+obj-files := $(filter-out tp_wake_gesture_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_wake_gesture_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_wake_gesture_read_exact.o
+AFLAGS_tp_wake_gesture_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_smart_cover_read
+src-files := $(filter-out $(src)/tp_smart_cover_read.c, $(src-files))
+obj-files := $(filter-out tp_smart_cover_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_smart_cover_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_smart_cover_read_exact.o
+AFLAGS_tp_smart_cover_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_smart_cover_write
+src-files := $(filter-out $(src)/tp_smart_cover_write.c, $(src-files))
+obj-files := $(filter-out tp_smart_cover_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_smart_cover_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_smart_cover_write_exact.o
+AFLAGS_tp_smart_cover_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_glove_read
+src-files := $(filter-out $(src)/tp_glove_read.c, $(src-files))
+obj-files := $(filter-out tp_glove_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_glove_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_glove_read_exact.o
+AFLAGS_tp_glove_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_glove_write
+src-files := $(filter-out $(src)/tp_glove_write.c, $(src-files))
+obj-files := $(filter-out tp_glove_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_glove_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_glove_write_exact.o
+AFLAGS_tp_glove_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpfwupgrade_store
+src-files := $(filter-out $(src)/tpfwupgrade_store.c, $(src-files))
+obj-files := $(filter-out tpfwupgrade_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpfwupgrade_store.o, $(zte_tpd-objs))
+zte_tpd-objs += tpfwupgrade_store_exact.o
+AFLAGS_tpfwupgrade_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: headset_state_show
+src-files := $(filter-out $(src)/headset_state_show.c, $(src-files))
+obj-files := $(filter-out headset_state_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out headset_state_show.o, $(zte_tpd-objs))
+zte_tpd-objs += headset_state_show_exact.o
+AFLAGS_headset_state_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: headset_state_store
+src-files := $(filter-out $(src)/headset_state_store.c, $(src-files))
+obj-files := $(filter-out headset_state_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out headset_state_store.o, $(zte_tpd-objs))
+zte_tpd-objs += headset_state_store_exact.o
+AFLAGS_headset_state_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_rotation_limit_level
+src-files := $(filter-out $(src)/get_rotation_limit_level.c, $(src-files))
+obj-files := $(filter-out get_rotation_limit_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_rotation_limit_level.o, $(zte_tpd-objs))
+zte_tpd-objs += get_rotation_limit_level_exact.o
+AFLAGS_get_rotation_limit_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: set_rotation_limit_level
+src-files := $(filter-out $(src)/set_rotation_limit_level.c, $(src-files))
+obj-files := $(filter-out set_rotation_limit_level.o, $(obj-files))
+zte_tpd-objs := $(filter-out set_rotation_limit_level.o, $(zte_tpd-objs))
+zte_tpd-objs += set_rotation_limit_level_exact.o
+AFLAGS_set_rotation_limit_level_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: display_rotation_show
+src-files := $(filter-out $(src)/display_rotation_show.c, $(src-files))
+obj-files := $(filter-out display_rotation_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out display_rotation_show.o, $(zte_tpd-objs))
+zte_tpd-objs += display_rotation_show_exact.o
+AFLAGS_display_rotation_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: set_display_rotation
+src-files := $(filter-out $(src)/set_display_rotation.c, $(src-files))
+obj-files := $(filter-out set_display_rotation.o, $(obj-files))
+zte_tpd-objs := $(filter-out set_display_rotation.o, $(zte_tpd-objs))
+zte_tpd-objs += set_display_rotation_exact.o
+AFLAGS_set_display_rotation_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_tap_read
+src-files := $(filter-out $(src)/tp_single_tap_read.c, $(src-files))
+obj-files := $(filter-out tp_single_tap_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_tap_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_tap_read_exact.o
+AFLAGS_tp_single_tap_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_tap_write
+src-files := $(filter-out $(src)/tp_single_tap_write.c, $(src-files))
+obj-files := $(filter-out tp_single_tap_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_tap_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_tap_write_exact.o
+AFLAGS_tp_single_tap_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_aod_read
+src-files := $(filter-out $(src)/tp_single_aod_read.c, $(src-files))
+obj-files := $(filter-out tp_single_aod_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_aod_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_aod_read_exact.o
+AFLAGS_tp_single_aod_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_aod_write
+src-files := $(filter-out $(src)/tp_single_aod_write.c, $(src-files))
+obj-files := $(filter-out tp_single_aod_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_aod_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_aod_write_exact.o
+AFLAGS_tp_single_aod_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_game_read
+src-files := $(filter-out $(src)/tp_single_game_read.c, $(src-files))
+obj-files := $(filter-out tp_single_game_read.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_game_read.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_game_read_exact.o
+AFLAGS_tp_single_game_read_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_single_game_write
+src-files := $(filter-out $(src)/tp_single_game_write.c, $(src-files))
+obj-files := $(filter-out tp_single_game_write.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_single_game_write.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_single_game_write_exact.o
+AFLAGS_tp_single_game_write_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_tp_noise_show
+src-files := $(filter-out $(src)/get_tp_noise_show.c, $(src-files))
+obj-files := $(filter-out get_tp_noise_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_tp_noise_show.o, $(zte_tpd-objs))
+zte_tpd-objs += get_tp_noise_show_exact.o
+AFLAGS_get_tp_noise_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_tp_noise_store
+src-files := $(filter-out $(src)/get_tp_noise_store.c, $(src-files))
+obj-files := $(filter-out get_tp_noise_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_tp_noise_store.o, $(zte_tpd-objs))
+zte_tpd-objs += get_tp_noise_store_exact.o
+AFLAGS_get_tp_noise_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_wakegesture
+src-files := $(filter-out $(src)/tpd_get_wakegesture.c, $(src-files))
+obj-files := $(filter-out tpd_get_wakegesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_wakegesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_wakegesture_exact.o
+AFLAGS_tpd_get_wakegesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_one_key
+src-files := $(filter-out $(src)/tpd_get_one_key.c, $(src-files))
+obj-files := $(filter-out tpd_get_one_key.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_one_key.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_one_key_exact.o
+AFLAGS_tpd_get_one_key_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_tp_report_rate
+src-files := $(filter-out $(src)/tpd_get_tp_report_rate.c, $(src-files))
+obj-files := $(filter-out tpd_get_tp_report_rate.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_tp_report_rate.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_tp_report_rate_exact.o
+AFLAGS_tpd_get_tp_report_rate_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_play_game
+src-files := $(filter-out $(src)/tpd_get_play_game.c, $(src-files))
+obj-files := $(filter-out tpd_get_play_game.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_play_game.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_play_game_exact.o
+AFLAGS_tpd_get_play_game_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_frame_data
+src-files := $(filter-out $(src)/tpd_get_frame_data.c, $(src-files))
+obj-files := $(filter-out tpd_get_frame_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_frame_data.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_frame_data_exact.o
+AFLAGS_tpd_get_frame_data_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_palm_mode
+src-files := $(filter-out $(src)/tpd_get_palm_mode.c, $(src-files))
+obj-files := $(filter-out tpd_get_palm_mode.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_palm_mode.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_palm_mode_exact.o
+AFLAGS_tpd_get_palm_mode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_fake_sleep
+src-files := $(filter-out $(src)/tpd_get_fake_sleep.c, $(src-files))
+obj-files := $(filter-out tpd_get_fake_sleep.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_fake_sleep.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_fake_sleep_exact.o
+AFLAGS_tpd_get_fake_sleep_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_screen_off_awake
+src-files := $(filter-out $(src)/tpd_get_screen_off_awake.c, $(src-files))
+obj-files := $(filter-out tpd_get_screen_off_awake.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_screen_off_awake.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_screen_off_awake_exact.o
+AFLAGS_tpd_get_screen_off_awake_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_request_managed_device
+src-files := $(filter-out $(src)/syna_request_managed_device.c, $(src-files))
+obj-files := $(filter-out syna_request_managed_device.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_request_managed_device.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_request_managed_device_exact.o
+AFLAGS_syna_request_managed_device_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_testing_remove_dir
+src-files := $(filter-out $(src)/syna_testing_remove_dir.c, $(src-files))
+obj-files := $(filter-out syna_testing_remove_dir.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_remove_dir.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_remove_dir_exact.o
+AFLAGS_syna_testing_remove_dir_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_module_exit
+src-files := $(filter-out $(src)/syna_dev_module_exit.c, $(src-files))
+obj-files := $(filter-out syna_dev_module_exit.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_module_exit.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_module_exit_exact.o
+AFLAGS_syna_dev_module_exit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_hw_interface_exit
+src-files := $(filter-out $(src)/syna_hw_interface_exit.c, $(src-files))
+obj-files := $(filter-out syna_hw_interface_exit.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_hw_interface_exit.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_hw_interface_exit_exact.o
+AFLAGS_syna_hw_interface_exit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: cleanup_module
+src-files := $(filter-out $(src)/cleanup_module.c, $(src-files))
+obj-files := $(filter-out cleanup_module.o, $(obj-files))
+zte_tpd-objs := $(filter-out cleanup_module.o, $(zte_tpd-objs))
+zte_tpd-objs += cleanup_module_exact.o
+AFLAGS_cleanup_module_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_spi_release
+src-files := $(filter-out $(src)/syna_spi_release.c, $(src-files))
+obj-files := $(filter-out syna_spi_release.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_spi_release.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_spi_release_exact.o
+AFLAGS_syna_spi_release_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_module_init
+src-files := $(filter-out $(src)/syna_dev_module_init.c, $(src-files))
+obj-files := $(filter-out syna_dev_module_init.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_module_init.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_module_init_exact.o
+AFLAGS_syna_dev_module_init_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_open
+src-files := $(filter-out $(src)/syna_open.c, $(src-files))
+obj-files := $(filter-out syna_open.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_open.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_open_exact.o
+AFLAGS_syna_open_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_game_partition
+src-files := $(filter-out $(src)/tpd_set_game_partition.c, $(src-files))
+obj-files := $(filter-out tpd_set_game_partition.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_game_partition.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_game_partition_exact.o
+AFLAGS_tpd_set_game_partition_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_palm_mode
+src-files := $(filter-out $(src)/tpd_set_palm_mode.c, $(src-files))
+obj-files := $(filter-out tpd_set_palm_mode.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_palm_mode.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_palm_mode_exact.o
+AFLAGS_tpd_set_palm_mode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_fake_sleep
+src-files := $(filter-out $(src)/tpd_set_fake_sleep.c, $(src-files))
+obj-files := $(filter-out tpd_set_fake_sleep.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_fake_sleep.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_fake_sleep_exact.o
+AFLAGS_tpd_set_fake_sleep_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_screen_off_awake
+src-files := $(filter-out $(src)/tpd_set_screen_off_awake.c, $(src-files))
+obj-files := $(filter-out tpd_set_screen_off_awake.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_screen_off_awake.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_screen_off_awake_exact.o
+AFLAGS_tpd_set_screen_off_awake_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_testing_remove_dir
+src-files := $(filter-out $(src)/syna_testing_remove_dir.c, $(src-files))
+obj-files := $(filter-out syna_testing_remove_dir.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_remove_dir.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_remove_dir_exact.o
+AFLAGS_syna_testing_remove_dir_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_clear_command_processing
+src-files := $(filter-out $(src)/syna_tcm_clear_command_processing.c, $(src-files))
+obj-files := $(filter-out syna_tcm_clear_command_processing.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_clear_command_processing.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_clear_command_processing_exact.o
+AFLAGS_syna_tcm_clear_command_processing_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_set_post_reset_callback
+src-files := $(filter-out $(src)/syna_tcm_set_post_reset_callback.c, $(src-files))
+obj-files := $(filter-out syna_tcm_set_post_reset_callback.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_set_post_reset_callback.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_set_post_reset_callback_exact.o
+AFLAGS_syna_tcm_set_post_reset_callback_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_llseek
+src-files := $(filter-out $(src)/syna_cdev_llseek.c, $(src-files))
+obj-files := $(filter-out syna_cdev_llseek.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_llseek.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_llseek_exact.o
+AFLAGS_syna_cdev_llseek_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_reset_fw_data_pos_and_size
+src-files := $(filter-out $(src)/tpd_reset_fw_data_pos_and_size.c, $(src-files))
+obj-files := $(filter-out tpd_reset_fw_data_pos_and_size.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_reset_fw_data_pos_and_size.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_reset_fw_data_pos_and_size_exact.o
+AFLAGS_tpd_reset_fw_data_pos_and_size_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_report_lcd_state_work
+src-files := $(filter-out $(src)/ufp_report_lcd_state_work.c, $(src-files))
+obj-files := $(filter-out ufp_report_lcd_state_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_lcd_state_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_lcd_state_work_exact.o
+AFLAGS_ufp_report_lcd_state_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_dev_shutdown
+src-files := $(filter-out $(src)/syna_dev_shutdown.c, $(src-files))
+obj-files := $(filter-out syna_dev_shutdown.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_dev_shutdown.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_dev_shutdown_exact.o
+AFLAGS_syna_dev_shutdown_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_goodix_ts_resume
+src-files := $(filter-out $(src)/tpd_goodix_ts_resume.c, $(src-files))
+obj-files := $(filter-out tpd_goodix_ts_resume.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_goodix_ts_resume.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_goodix_ts_resume_exact.o
+AFLAGS_tpd_goodix_ts_resume_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_goodix_ts_suspend
+src-files := $(filter-out $(src)/tpd_goodix_ts_suspend.c, $(src-files))
+obj-files := $(filter-out tpd_goodix_ts_suspend.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_goodix_ts_suspend.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_goodix_ts_suspend_exact.o
+AFLAGS_tpd_goodix_ts_suspend_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: cancel_report_lcd_state_delayed_work
+src-files := $(filter-out $(src)/cancel_report_lcd_state_delayed_work.c, $(src-files))
+obj-files := $(filter-out cancel_report_lcd_state_delayed_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out cancel_report_lcd_state_delayed_work.o, $(zte_tpd-objs))
+zte_tpd-objs += cancel_report_lcd_state_delayed_work_exact.o
+AFLAGS_cancel_report_lcd_state_delayed_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_notifier_cb
+src-files := $(filter-out $(src)/ufp_notifier_cb.c, $(src-files))
+obj-files := $(filter-out ufp_notifier_cb.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_notifier_cb.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_notifier_cb_exact.o
+AFLAGS_ufp_notifier_cb_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zlog_register_work
+src-files := $(filter-out $(src)/zlog_register_work.c, $(src-files))
+obj-files := $(filter-out zlog_register_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out zlog_register_work.o, $(zte_tpd-objs))
+zte_tpd-objs += zlog_register_work_exact.o
+AFLAGS_zlog_register_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_release
+src-files := $(filter-out $(src)/syna_release.c, $(src-files))
+obj-files := $(filter-out syna_release.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_release.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_release_exact.o
+AFLAGS_syna_release_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: get_lcd_panel_name
+src-files := $(filter-out $(src)/get_lcd_panel_name.c, $(src-files))
+obj-files := $(filter-out get_lcd_panel_name.o, $(obj-files))
+zte_tpd-objs := $(filter-out get_lcd_panel_name.o, $(zte_tpd-objs))
+zte_tpd-objs += get_lcd_panel_name_exact.o
+AFLAGS_get_lcd_panel_name_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_get_testing_0100
+src-files := $(filter-out $(src)/syna_tcm_get_testing_0100.c, $(src-files))
+obj-files := $(filter-out syna_tcm_get_testing_0100.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_get_testing_0100.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_get_testing_0100_exact.o
+AFLAGS_syna_tcm_get_testing_0100_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_single_tap_work
+src-files := $(filter-out $(src)/ufp_single_tap_work.c, $(src-files))
+obj-files := $(filter-out ufp_single_tap_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_single_tap_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_single_tap_work_exact.o
+AFLAGS_ufp_single_tap_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_get_lcdstate
+src-files := $(filter-out $(src)/ufp_get_lcdstate.c, $(src-files))
+obj-files := $(filter-out ufp_get_lcdstate.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_get_lcdstate.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_get_lcdstate_exact.o
+AFLAGS_ufp_get_lcdstate_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ztp_probe_work
+src-files := $(filter-out $(src)/ztp_probe_work.c, $(src-files))
+obj-files := $(filter-out ztp_probe_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ztp_probe_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ztp_probe_work_exact.o
+AFLAGS_ztp_probe_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zte_touch_remove
+src-files := $(filter-out $(src)/zte_touch_remove.c, $(src-files))
+obj-files := $(filter-out zte_touch_remove.o, $(obj-files))
+zte_tpd-objs := $(filter-out zte_touch_remove.o, $(zte_tpd-objs))
+zte_tpd-objs += zte_touch_remove_exact.o
+AFLAGS_zte_touch_remove_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_probe_work_deinit
+src-files := $(filter-out $(src)/tpd_probe_work_deinit.c, $(src-files))
+obj-files := $(filter-out tpd_probe_work_deinit.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_probe_work_deinit.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_probe_work_deinit_exact.o
+AFLAGS_tpd_probe_work_deinit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_report_lcd_state_delayed_work
+src-files := $(filter-out $(src)/ufp_report_lcd_state_delayed_work.c, $(src-files))
+obj-files := $(filter-out ufp_report_lcd_state_delayed_work.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_report_lcd_state_delayed_work.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_report_lcd_state_delayed_work_exact.o
+AFLAGS_ufp_report_lcd_state_delayed_work_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_cdev_devnode
+src-files := $(filter-out $(src)/syna_cdev_devnode.c, $(src-files))
+obj-files := $(filter-out syna_cdev_devnode.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_cdev_devnode.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_cdev_devnode_exact.o
+AFLAGS_syna_cdev_devnode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_pm_suspend and syna_pm_resume
+src-files := $(filter-out $(src)/syna_pm_suspend.c $(src)/syna_pm_resume.c, $(src-files))
+obj-files := $(filter-out syna_pm_suspend.o syna_pm_resume.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_pm_suspend.o syna_pm_resume.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_pm_suspend_exact.o syna_pm_resume_exact.o
+AFLAGS_syna_pm_suspend_exact.o := -g0 -I$(src)
+AFLAGS_syna_pm_resume_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zlog_register_work_deinit
+src-files := $(filter-out $(src)/zlog_register_work_deinit.c, $(src-files))
+obj-files := $(filter-out zlog_register_work_deinit.o, $(obj-files))
+zte_tpd-objs := $(filter-out zlog_register_work_deinit.o, $(zte_tpd-objs))
+zte_tpd-objs += zlog_register_work_deinit_exact.o
+AFLAGS_zlog_register_work_deinit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_free_tp_firmware_data
+src-files := $(filter-out $(src)/tp_free_tp_firmware_data.c, $(src-files))
+obj-files := $(filter-out tp_free_tp_firmware_data.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_free_tp_firmware_data.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_free_tp_firmware_data_exact.o
+AFLAGS_tp_free_tp_firmware_data_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zte_touch_pdev_unregister
+src-files := $(filter-out $(src)/zte_touch_pdev_unregister.c, $(src-files))
+obj-files := $(filter-out zte_touch_pdev_unregister.o, $(obj-files))
+zte_tpd-objs := $(filter-out zte_touch_pdev_unregister.o, $(zte_tpd-objs))
+zte_tpd-objs += zte_touch_pdev_unregister_exact.o
+AFLAGS_zte_touch_pdev_unregister_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tp_esd_check
+src-files := $(filter-out $(src)/tp_esd_check.c, $(src-files))
+obj-files := $(filter-out tp_esd_check.o, $(obj-files))
+zte_tpd-objs := $(filter-out tp_esd_check.o, $(zte_tpd-objs))
+zte_tpd-objs += tp_esd_check_exact.o
+AFLAGS_tp_esd_check_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: set_gpio_mode
+src-files := $(filter-out $(src)/set_gpio_mode.c, $(src-files))
+obj-files := $(filter-out set_gpio_mode.o, $(obj-files))
+zte_tpd-objs := $(filter-out set_gpio_mode.o, $(zte_tpd-objs))
+zte_tpd-objs += set_gpio_mode_exact.o
+AFLAGS_set_gpio_mode_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_reset_gpio_output
+src-files := $(filter-out $(src)/tpd_reset_gpio_output.c, $(src-files))
+obj-files := $(filter-out tpd_reset_gpio_output.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_reset_gpio_output.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_reset_gpio_output_exact.o
+AFLAGS_tpd_reset_gpio_output_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd work callbacks
+src-files := $(filter-out $(src)/tpd_resume_work.c $(src)/tpd_suspend_work.c $(src)/tpd_resume_work_deinit.c, $(src-files))
+obj-files := $(filter-out tpd_resume_work.o tpd_suspend_work.o tpd_resume_work_deinit.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_resume_work.o tpd_suspend_work.o tpd_resume_work_deinit.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_resume_work_exact.o tpd_suspend_work_exact.o tpd_resume_work_deinit_exact.o
+AFLAGS_tpd_resume_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_suspend_work_exact.o := -g0 -I$(src)
+AFLAGS_tpd_resume_work_deinit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: ufp_mac_exit
+src-files := $(filter-out $(src)/ufp_mac_exit.c, $(src-files))
+obj-files := $(filter-out ufp_mac_exit.o, $(obj-files))
+zte_tpd-objs := $(filter-out ufp_mac_exit.o, $(zte_tpd-objs))
+zte_tpd-objs += ufp_mac_exit_exact.o
+AFLAGS_ufp_mac_exit_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_pal_mem_cpy_0 (stock symbol syna_pal_mem_cpy)
+src-files := $(filter-out $(src)/syna_pal_mem_cpy_0.c, $(src-files))
+obj-files := $(filter-out syna_pal_mem_cpy_0.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_pal_mem_cpy_0.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_pal_mem_cpy_0_exact.o
+AFLAGS_syna_pal_mem_cpy_0_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_buf_lock
+src-files := $(filter-out $(src)/syna_tcm_buf_lock.c, $(src-files))
+obj-files := $(filter-out syna_tcm_buf_lock.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_buf_lock.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_buf_lock_exact.o
+AFLAGS_syna_tcm_buf_lock_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_set_data_duplicator
+src-files := $(filter-out $(src)/syna_tcm_set_data_duplicator.c, $(src-files))
+obj-files := $(filter-out syna_tcm_set_data_duplicator.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_set_data_duplicator.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_set_data_duplicator_exact.o
+AFLAGS_syna_tcm_set_data_duplicator_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_clear_data_duplicator
+src-files := $(filter-out $(src)/syna_tcm_clear_data_duplicator.c, $(src-files))
+obj-files := $(filter-out syna_tcm_clear_data_duplicator.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_clear_data_duplicator.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_clear_data_duplicator_exact.o
+AFLAGS_syna_tcm_clear_data_duplicator_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_pal_mem_free_0 (stock symbol syna_pal_mem_free)
+src-files := $(filter-out $(src)/syna_pal_mem_free_0.c, $(src-files))
+obj-files := $(filter-out syna_pal_mem_free_0.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_pal_mem_free_0.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_pal_mem_free_0_exact.o
+AFLAGS_syna_pal_mem_free_0_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_enable_wakegesture
+src-files := $(filter-out $(src)/tpd_enable_wakegesture.c, $(src-files))
+obj-files := $(filter-out tpd_enable_wakegesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_enable_wakegesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_enable_wakegesture_exact.o
+AFLAGS_tpd_enable_wakegesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_singleaodgesture
+src-files := $(filter-out $(src)/tpd_get_singleaodgesture.c, $(src-files))
+obj-files := $(filter-out tpd_get_singleaodgesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_singleaodgesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_singleaodgesture_exact.o
+AFLAGS_tpd_get_singleaodgesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_get_singlefpgesture
+src-files := $(filter-out $(src)/tpd_get_singlefpgesture.c, $(src-files))
+obj-files := $(filter-out tpd_get_singlefpgesture.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_get_singlefpgesture.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_get_singlefpgesture_exact.o
+AFLAGS_tpd_get_singlefpgesture_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_one_key
+src-files := $(filter-out $(src)/tpd_set_one_key.c, $(src-files))
+obj-files := $(filter-out tpd_set_one_key.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_one_key.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_one_key_exact.o
+AFLAGS_tpd_set_one_key_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_ts_panel_notifier_callback
+src-files := $(filter-out $(src)/syna_ts_panel_notifier_callback.c, $(src-files))
+obj-files := $(filter-out syna_ts_panel_notifier_callback.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_ts_panel_notifier_callback.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_ts_panel_notifier_callback_exact.o
+AFLAGS_syna_ts_panel_notifier_callback_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_tcm_remove_device
+src-files := $(filter-out $(src)/syna_tcm_remove_device.c, $(src-files))
+obj-files := $(filter-out syna_tcm_remove_device.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_tcm_remove_device.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_tcm_remove_device_exact.o
+AFLAGS_syna_tcm_remove_device_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: paired PT05/PT0A testing helpers
+src-files := $(filter-out $(src)/syna_testing_pt05_show.c $(src)/syna_testing_pt05_zte.c $(src)/syna_testing_pt0a_show.c $(src)/syna_testing_pt0a_zte.c, $(src-files))
+obj-files := $(filter-out syna_testing_pt05_show.o syna_testing_pt05_zte.o syna_testing_pt0a_show.o syna_testing_pt0a_zte.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_pt05_show.o syna_testing_pt05_zte.o syna_testing_pt0a_show.o syna_testing_pt0a_zte.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_pt05_show_exact.o syna_testing_pt05_zte_exact.o syna_testing_pt0a_show_exact.o syna_testing_pt0a_zte_exact.o
+AFLAGS_syna_testing_pt05_show_exact.o := -g0 -I$(src)
+AFLAGS_syna_testing_pt05_zte_exact.o := -g0 -I$(src)
+AFLAGS_syna_testing_pt0a_show_exact.o := -g0 -I$(src)
+AFLAGS_syna_testing_pt0a_zte_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zte_touch_probe
+src-files := $(filter-out $(src)/zte_touch_probe.c, $(src-files))
+obj-files := $(filter-out zte_touch_probe.o, $(obj-files))
+zte_tpd-objs := $(filter-out zte_touch_probe.o, $(zte_tpd-objs))
+zte_tpd-objs += zte_touch_probe_exact.o
+AFLAGS_zte_touch_probe_exact.o := -g0 -I$(src)
