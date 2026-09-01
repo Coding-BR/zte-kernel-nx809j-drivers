@@ -19,7 +19,7 @@ GLOBAL_DATA_LABEL_RE = re.compile(r"\b(?:DAT|UNK)_[0-9a-fA-F]+\b")
 SYMBOL_STRING_RE = re.compile(r"\b(?P<symbol>unk_[0-9a-fA-F]+)\b")
 PCODE_OP_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\b")
 SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
-    r"(SoftwareBreakpoint\(\s*0x[0-9a-fA-F]+\s*,\s*)"
+    r"(SoftwareBreakpoint\(\s*(?:0x[0-9a-fA-F]+|[0-9]+)\s*,\s*)"
     r"0x[0-9a-fA-F]+(\s*\))"
 )
 LOCAL_LABEL_RE = re.compile(

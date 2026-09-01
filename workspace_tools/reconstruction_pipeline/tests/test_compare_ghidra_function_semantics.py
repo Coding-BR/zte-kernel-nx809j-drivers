@@ -744,6 +744,19 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_decimal_breakpoint_opcode_keeps_opcode_and_normalizes_context(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "SoftwareBreakpoint(1,0x10151c);", {}
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "SoftwareBreakpoint(1,0x10209c);", {}
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(stock, "SoftwareBreakpoint(1,GHIDRA_FUNCTION_ADDRESS);")
+        self.assertEqual(stock_artifacts[0]["kind"], "software_breakpoint_context_address")
+        self.assertEqual(candidate_artifacts[0]["kind"], "software_breakpoint_context_address")
+
     def test_md5_file_is_stable_for_module_identity_binding(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             module = Path(temporary_directory) / "candidate.ko"
