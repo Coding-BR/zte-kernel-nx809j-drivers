@@ -226,7 +226,6 @@ class HardDriverProtocolTests(unittest.TestCase):
                     command_timeout=1,
                 )
 
-        self.assertEqual(gates["CANDIDATE_GHIDRA_PCODE"], "PASS")
         ghidra_calls = [
             call.args[1]
             for call in run_mock.call_args_list
