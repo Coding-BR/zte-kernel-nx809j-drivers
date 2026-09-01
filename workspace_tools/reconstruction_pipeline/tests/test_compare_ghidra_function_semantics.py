@@ -861,6 +861,45 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             candidate_artifacts[0]["kind"], "elf_pointer_table_address_symbol"
         )
 
+    def test_split_candidate_function_boundary_is_repaired_only_when_contiguous(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_jsonl(
+                root / "functions.jsonl",
+                [
+                    {
+                        "name": "target",
+                        "entry": "1000",
+                        "body_bytes": 28,
+                        "pcode_file": "target.jsonl",
+                    },
+                    {
+                        "name": "FUN_0000101c",
+                        "entry": "101c",
+                        "body_bytes": 32,
+                        "pcode_file": "continuation.jsonl",
+                    },
+                ],
+            )
+            write_jsonl(
+                root / "target.jsonl",
+                [{"instruction": "mov x0,x1", "pcode": "COPY"}],
+            )
+            write_jsonl(
+                root / "continuation.jsonl",
+                [{"instruction": "ret", "pcode": "RETURN"}],
+            )
+            record = MODULE.function_index(root)["target"]
+
+            merged = MODULE.merge_split_candidate_function(root, record, 60)
+            rejected = MODULE.merge_split_candidate_function(root, record, 59)
+
+        self.assertIsNotNone(merged)
+        records, evidence = merged
+        self.assertEqual(len(records), 2)
+        self.assertEqual(evidence["kind"], "ghidra_split_function_boundary_repair")
+        self.assertIsNone(rejected)
+
 
 if __name__ == "__main__":
     unittest.main()

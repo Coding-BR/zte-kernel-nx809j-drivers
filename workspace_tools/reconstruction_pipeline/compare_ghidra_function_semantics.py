@@ -93,6 +93,77 @@ def function_index(root: Path) -> dict[str, dict[str, Any]]:
     }
 
 
+def merge_split_candidate_function(
+    root: Path,
+    record: dict[str, Any],
+    expected_body_bytes: Any,
+) -> tuple[list[dict[str, Any]], dict[str, Any]] | None:
+    """Join a contiguous unnamed Ghidra fragment split from a function.
+
+    An AArch64 type-ID word or a mid-function analysis boundary can make
+    Ghidra emit the first part under the exported symbol and the contiguous
+    remainder as ``FUN_<address>``.  The repair is accepted only when the
+    unnamed fragment starts exactly at the recorded end and the combined byte
+    count equals the stock function size.  P-Code shape is then recomputed on
+    the merged records; no C or assembly check is weakened.
+    """
+    try:
+        entry = int(str(record.get("entry")), 16)
+        body_bytes = int(record.get("body_bytes"))
+        expected = int(expected_body_bytes)
+    except (TypeError, ValueError):
+        return None
+    if body_bytes >= expected:
+        return None
+    continuation_entry = entry + body_bytes
+    continuation = None
+    for candidate in function_index(root).values():
+        name = candidate.get("name")
+        try:
+            candidate_entry = int(str(candidate.get("entry")), 16)
+            candidate_bytes = int(candidate.get("body_bytes"))
+        except (TypeError, ValueError):
+            continue
+        if (
+            isinstance(name, str)
+            and name.startswith("FUN_")
+            and candidate_entry == continuation_entry
+            and body_bytes + candidate_bytes == expected
+        ):
+            continuation = candidate
+            break
+    if continuation is None:
+        return None
+    primary_path = root / str(record.get("pcode_file", ""))
+    continuation_path = root / str(continuation.get("pcode_file", ""))
+    if not primary_path.is_file() or not continuation_path.is_file():
+        return None
+    records = read_jsonl(primary_path) + read_jsonl(continuation_path)
+    return records, {
+        "kind": "ghidra_split_function_boundary_repair",
+        "primary_function": record.get("name"),
+        "continuation_function": continuation.get("name"),
+        "primary_entry": f"{entry:08x}",
+        "continuation_entry": f"{continuation_entry:08x}",
+        "primary_body_bytes": body_bytes,
+        "continuation_body_bytes": int(continuation.get("body_bytes")),
+        "effective_body_bytes": expected,
+        "requirement": (
+            "contiguous boundary, combined stock-sized body and equal merged "
+            "P-Code shape; independent AArch64/relocation parity remains mandatory"
+        ),
+    }
+
+
+def sha256_concatenated_files(paths: list[Path]) -> str:
+    digest = hashlib.sha256()
+    for path in paths:
+        with path.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+    return digest.hexdigest()
+
+
 def string_index(root: Path) -> dict[int, str]:
     result = {}
     for record in read_jsonl(root / "strings.jsonl"):
@@ -1145,12 +1216,27 @@ def compare_function(
         candidate_symbol_strings,
         candidate_named_data_bindings,
     )
-    stock_shape = pcode_shape(read_jsonl(paths["stock"]["pcode"]))
-    candidate_shape = pcode_shape(read_jsonl(paths["candidate"]["pcode"]))
-    direct_normalized_match = stock_normalized == candidate_normalized
-    body_bytes_match = stock_record.get("body_bytes") == candidate_record.get(
-        "body_bytes"
+    stock_pcode_records = read_jsonl(paths["stock"]["pcode"])
+    candidate_pcode_paths = [paths["candidate"]["pcode"]]
+    candidate_pcode_records = read_jsonl(paths["candidate"]["pcode"])
+    candidate_boundary_repair = None
+    merged_candidate = merge_split_candidate_function(
+        candidate_root, candidate_record, stock_record.get("body_bytes")
     )
+    if merged_candidate is not None:
+        candidate_pcode_records, candidate_boundary_repair = merged_candidate
+        continuation_name = candidate_boundary_repair["continuation_function"]
+        continuation_record = function_index(candidate_root)[continuation_name]
+        candidate_pcode_paths.append(
+            candidate_root / str(continuation_record.get("pcode_file", ""))
+        )
+    stock_shape = pcode_shape(stock_pcode_records)
+    candidate_shape = pcode_shape(candidate_pcode_records)
+    direct_normalized_match = stock_normalized == candidate_normalized
+    effective_candidate_body_bytes = candidate_record.get("body_bytes")
+    if candidate_boundary_repair is not None:
+        effective_candidate_body_bytes = candidate_boundary_repair["effective_body_bytes"]
+    body_bytes_match = stock_record.get("body_bytes") == effective_candidate_body_bytes
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
     pcode_authoritative_fallback: dict[str, Any] | None = None
@@ -1254,17 +1340,26 @@ def compare_function(
             "normalized_ghidra_artifacts": stock_artifact_evidence,
         },
         "candidate": {
-            "body_bytes": candidate_record.get("body_bytes"),
+            "body_bytes": effective_candidate_body_bytes,
             "decompiled_path": str(paths["candidate"]["decompiled"]),
             "decompiled_sha256": sha256_file(paths["candidate"]["decompiled"]),
             "normalized_decompiled_sha256": hashlib.sha256(
                 candidate_normalized.encode("utf-8")
             ).hexdigest(),
             "pcode_path": str(paths["candidate"]["pcode"]),
-            "pcode_sha256": sha256_file(paths["candidate"]["pcode"]),
+            "pcode_sha256": (
+                sha256_concatenated_files(candidate_pcode_paths)
+                if candidate_boundary_repair is not None
+                else sha256_file(paths["candidate"]["pcode"])
+            ),
             "pcode_records": len(candidate_shape),
             "resolved_strings": candidate_string_evidence,
             "normalized_ghidra_artifacts": candidate_artifact_evidence,
+            **(
+                {"boundary_repair": candidate_boundary_repair}
+                if candidate_boundary_repair is not None
+                else {}
+            ),
         },
     }
 
