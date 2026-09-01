@@ -515,6 +515,37 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_cfg_early_return_shared_cleanup_fallback_is_narrow(self) -> None:
+        stock = (
+            "void target(void){_printk();scnprintf();syna_tcm_get_testing();"
+            "__mutex_init();__mutex_init();scnprintf();scnprintf();"
+            "_printk();syna_request_managed_device();devm_kfree();"
+            "syna_request_managed_device();devm_kfree();"
+            "if(x){foo();}elseif(y){bar();}gotoGHIDRA_LOCAL_LABEL_0;return;}"
+        )
+        candidate = (
+            "void target(void){_printk();scnprintf();syna_tcm_get_testing();"
+            "__mutex_init();__mutex_init();scnprintf();scnprintf();"
+            "_printk();syna_request_managed_device();devm_kfree();"
+            "syna_request_managed_device();devm_kfree();"
+            "if(x){foo();return;}if(y){bar();return;}"
+            "gotoGHIDRA_LOCAL_LABEL_0;return;}"
+        )
+        shape = [{"operation": "CALL"}] * 13
+
+        evidence = MODULE.decompiler_cfg_early_return_cleanup_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_cfg_early_return_shared_cleanup_artifact"
+        )
+        self.assertIsNone(
+            MODULE.decompiler_cfg_early_return_cleanup_artifact(
+                stock, candidate.replace("return;}goto", "return 1;}goto"), shape, shape
+            )
+        )
+
     def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
         stock = (
             'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'

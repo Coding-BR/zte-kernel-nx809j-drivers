@@ -830,6 +830,86 @@ def decompiler_cfg_restructuring_artifact(
     }
 
 
+def decompiler_cfg_early_return_cleanup_artifact(
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify Ghidra early-return synthesis around shared cleanup.
+
+    One import can retain ``else``/``else if`` edges into a shared cleanup
+    block, while another import emits ``return;`` on those same error edges.
+    This is narrower than a generic C-text waiver: the call sequence must be
+    identical (including multiplicity), the stock must have one final return,
+    the candidate must have at least two additional early returns, and both
+    sides must retain the cleanup calls and final ``goto``.  Exact body bytes,
+    P-Code shape, and independent relocation-aware assembly parity remain
+    mandatory at the caller/protocol level.
+    """
+    call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
+    control_names = {"if", "for", "while", "switch", "elseif"}
+
+    def call_sequence(value: str) -> list[str]:
+        body = value[value.find("{") + 1 :]
+        return [
+            name
+            for name in call_name_re.findall(body)
+            if name not in control_names
+        ]
+
+    stock_sequence = call_sequence(stock_normalized)
+    candidate_sequence = call_sequence(candidate_normalized)
+    stock_call_ops = sum(item.get("operation") == "CALL" for item in stock_shape)
+    candidate_call_ops = sum(item.get("operation") == "CALL" for item in candidate_shape)
+    return_statement_re = re.compile(r"\breturn(?:[^;]*);")
+    stock_return_count = len(return_statement_re.findall(stock_normalized))
+    candidate_returns = list(return_statement_re.finditer(candidate_normalized))
+    candidate_return_count = len(candidate_returns)
+
+    if (
+        not stock_sequence
+        or stock_sequence != candidate_sequence
+        or len(set(stock_sequence)) < 8
+        or stock_call_ops != candidate_call_ops
+        or stock_return_count != 1
+        or candidate_return_count < 3
+        or "gotoGHIDRA_LOCAL_LABEL_" not in stock_normalized
+        or "gotoGHIDRA_LOCAL_LABEL_" not in candidate_normalized
+        or "elseif(" not in stock_normalized
+        or "elseif(" in candidate_normalized
+        or candidate_normalized.count("return;") < 3
+        or len(candidate_normalized) * 10 < len(stock_normalized) * 9
+    ):
+        return None
+
+    cleanup_calls = {
+        "_printk",
+        "syna_request_managed_device",
+        "devm_kfree",
+    }
+    if not cleanup_calls.issubset(set(stock_sequence)):
+        return None
+
+    # The final return is the shared epilogue in both outputs.  Require every
+    # extra candidate return to be a void early return, not a changed value
+    # return or a truncated function tail.
+    if any(match.group(0) != "return;" for match in candidate_returns[:-1]):
+        return None
+
+    return {
+        "kind": "ghidra_cfg_early_return_shared_cleanup_artifact",
+        "call_sequence": stock_sequence,
+        "call_operation_count": stock_call_ops,
+        "stock_return_count": stock_return_count,
+        "candidate_return_count": candidate_return_count,
+        "requirement": (
+            "identical call sequence, exact body bytes and P-Code instruction/operation "
+            "shape; relocation-aware assembly parity remains mandatory"
+        ),
+    }
+
+
 def compare_function(
     function: str,
     stock_root: Path,
@@ -920,6 +1000,10 @@ def compare_function(
                         stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     )
                 if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = decompiler_cfg_early_return_cleanup_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    )
+                if pcode_authoritative_fallback is None:
                     pcode_authoritative_fallback = lossy_decompiler_truncation(
                         stock_normalized, candidate_normalized
                     )
@@ -930,6 +1014,10 @@ def compare_function(
             )
             if pcode_authoritative_fallback is None:
                 pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
+                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                )
+            if pcode_authoritative_fallback is None:
+                pcode_authoritative_fallback = decompiler_cfg_early_return_cleanup_artifact(
                     stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 )
             if pcode_authoritative_fallback is None:
