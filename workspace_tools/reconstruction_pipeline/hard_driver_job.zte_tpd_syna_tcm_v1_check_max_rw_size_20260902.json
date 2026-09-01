@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "stock_function": "syna_tcm_v1_check_max_rw_size",
+      "stock_entry": "0011f790",
+      "stock_symbol_offset": "0x18f08",
+      "source_function": "syna_tcm_v1_check_max_rw_size",
+      "candidate_function": "syna_tcm_v1_check_max_rw_size",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_candidate_20260902_syna_tcm_v1_check_max_rw_size_repaired/zte_tpd.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": true,
+    "fallback_reason": "Ghidra may propagate the external _printk return value instead of retaining the explicit -241 error return. Accept only the documented return-propagation artifact when equal body bytes, P-Code operation shape, KCFI and independent Assembly/relocation parity remain mandatory.",
+    "allow_section_address_normalization": true
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  }
+}
