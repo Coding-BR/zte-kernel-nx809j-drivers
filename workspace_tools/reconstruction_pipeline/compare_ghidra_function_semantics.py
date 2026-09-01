@@ -1129,6 +1129,84 @@ def decompiler_status_return_control_flow_artifact(
     }
 
 
+def decompiler_get_features_printk_control_flow_artifact(
+    function: str,
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify the exact ``syna_tcm_get_features`` printk CFG artifact.
+
+    On the current candidate import, Ghidra treats several ``_printk`` calls as
+    returning values and emits early returns.  The stock import keeps the same
+    calls in a shared status/cleanup CFG.  This detector is deliberately tied
+    to the observed function, field offsets, constants, and call multiplicity;
+    equal ELF body bytes, P-Code shape, and independent assembly parity remain
+    mandatory outside this detector.
+    """
+    if function != "syna_tcm_get_features":
+        return None
+    if "syna_tcm_get_features(" not in stock_normalized or "syna_tcm_get_features(" not in candidate_normalized:
+        return None
+    if stock_normalized.count("_printk(") != 9 or candidate_normalized.count("_printk(") != 8:
+        return None
+    if stock_normalized.count("mutex_unlock(") != 2 or candidate_normalized.count("mutex_unlock(") != 1:
+        return None
+    if sum(item.get("operation") == "CALL" for item in stock_shape) != sum(
+        item.get("operation") == "CALL" for item in candidate_shape
+    ):
+        return None
+
+    stock_fragments = (
+        "if(param_1==0){_printk(",
+        "uVar3=0xffffff0f;",
+        "param_3=*(int*)(param_1+0x20c);",
+        "elseif(param_2!=(void*)0x0)",
+        "return0;",
+        "uVar3=0xffffffea;",
+        "param_1+0x398",
+        "param_1+0x148",
+        "param_1+0x150",
+        "param_1+0x154",
+        "param_1+0x158",
+        "param_1+0x188",
+        "0x24203a8e",
+    )
+    candidate_fragments = (
+        "if(param_1==0){uVar3=_printk(",
+        "returnuVar3;",
+        "param_3=0;",
+        "if(param_2!=(void*)0x0)",
+        "if(*(void**)(param_1+0x148)==(void*)0x0){uVar3=_printk(",
+        "if(*(uint*)(param_1+0x150)<uVar1)",
+        "*(undefined1*)(param_1+0x188)=0;",
+        "uVar3=0;",
+        "param_1+0x398",
+        "param_1+0x150",
+        "param_1+0x154",
+        "param_1+0x158",
+        "param_1+0x188",
+        "0x24203a8e",
+    )
+    if not all(fragment in stock_normalized for fragment in stock_fragments):
+        return None
+    if not all(fragment in candidate_normalized for fragment in candidate_fragments):
+        return None
+    return {
+        "kind": "ghidra_syna_tcm_get_features_printk_cleanup_cfg_artifact",
+        "stock_shape": "shared status and mutex cleanup CFG with nine printk calls",
+        "candidate_shape": "early printk-return CFG with one visible mutex unlock",
+        "printk_call_counts": {"stock": 9, "candidate": 8},
+        "mutex_unlock_call_counts": {"stock": 2, "candidate": 1},
+        "requirement": (
+            "function-specific offsets/constants, equal ELF body bytes and P-Code "
+            "operation shape; independent AArch64 assembly and relocation parity "
+            "remain mandatory"
+        ),
+    }
+
+
 def decompiler_branch_inversion_shared_return_artifact(
     stock_normalized: str,
     candidate_normalized: str,
@@ -1606,7 +1684,9 @@ def compare_function(
                     stock_normalized, candidate_normalized
                 )
                 if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = decompiler_status_return_control_flow_artifact(
+                    pcode_authoritative_fallback = decompiler_get_features_printk_control_flow_artifact(
+                        function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    ) or decompiler_status_return_control_flow_artifact(
                         function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     )
                 if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
@@ -1635,7 +1715,9 @@ def compare_function(
                         )
                 normalized_decompiled_match = False
             elif allow_pcode_authoritative_decompiler_fallback:
-                pcode_authoritative_fallback = decompiler_status_return_control_flow_artifact(
+                pcode_authoritative_fallback = decompiler_get_features_printk_control_flow_artifact(
+                    function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                ) or decompiler_status_return_control_flow_artifact(
                     function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 )
                 if pcode_authoritative_fallback is None:
