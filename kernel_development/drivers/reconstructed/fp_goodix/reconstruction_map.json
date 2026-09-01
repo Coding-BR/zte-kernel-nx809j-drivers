@@ -629,17 +629,24 @@
         "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0027_00102970_gf_irq_num.c:sha256:567d9daa9110f7bdcad84ad7b3a0ea0f8c67f42601416c10f70a8defedfccd5a",
         "ghidra-pcode:pcode/0027_00102970_gf_irq_num.jsonl:sha256:6ecc6d40273b41dccff740dbd50efc844fdc053a16718492040322fc40212a14",
-        "stock-assembly:0027_gf_irq_num_00102970.asm:sha256:82061c1195de88294e09d005ad99002323424db179bafc385f4d04e93a57806c"
+        "stock-assembly:0027_gf_irq_num_00102970.asm:sha256:82061c1195de88294e09d005ad99002323424db179bafc385f4d04e93a57806c",
+        "assembly-comparison:attestation/next028_gf_irq_num_exact_v1/assembly.json:sha256:ae2d6dcab80b4fccdc838fdfdece9dd7302d9e4e006e22d635dc736befa273dc",
+        "canonical-build:attestation/next028_gf_irq_num_exact_v1/compile.json:sha256:87c5d2810ea9cc9b6dd44afcfa55a7d8c4aa5c376de817261c1cf62e9ceb9032",
+        "kcfi-comparison:attestation/next028_gf_irq_num_exact_v1/kcfi.json:sha256:f21f40ceb7bec5963193afa11096a1bc299da980aaea7996c4a0f223ecbf282a",
+        "host-harness:attestation/next028_gf_irq_num_exact_v1/test.json:sha256:9bb8c77be14b7abc22e91946d955bec1ecbe9549627a82ad2fd6c98e396fd8ed",
+        "joern:attestation/next028_gf_irq_num_exact_v1/joern.json:sha256:a666fb39c3a3edbf6fb6130ee54bc6051e0ea391f2229d997204e106350d2ab1",
+        "hard-protocol:attestation/next028_gf_irq_num_exact_v1/hard_protocol_report.json:sha256:61b321b0070d59c6d139778f4109cf9c1083f83dd70b8eaa686a2753b4dfb6a1"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_irq_num",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 60,
       "stock_entry": "00102970",
-      "stock_function": "gf_irq_num"
+      "stock_function": "gf_irq_num",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 15 matching AArch64 instructions and 60-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct IRQ-number/error-path tests. This is static/offline evidence; board IRQ routing and hardware behavior remain unverified."
     },
     {
       "evidence": [
