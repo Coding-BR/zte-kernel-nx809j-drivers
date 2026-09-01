@@ -1368,6 +1368,72 @@ def decompiler_branch_inversion_shared_return_artifact(
     }
 
 
+def decompiler_syna_pal_mem_cpy_branch_inversion_artifact(
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify the observed Ghidra CFG inversion for ``syna_pal_mem_cpy``.
+
+    The stock export keeps the outer non-null guard and renders the invalid
+    size path before the valid ``memcpy`` path.  The candidate export inverts
+    both conditions and emits early returns.  This is accepted only for this
+    exact helper shape, with the two imported calls, body bytes and P-Code
+    operation shape still checked independently by ``compare_function``.
+    """
+    if "syna_pal_mem_cpy(" not in stock_normalized or "syna_pal_mem_cpy(" not in candidate_normalized:
+        return None
+
+    call_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
+    control_names = {"if", "for", "while", "switch", "elseif", "return"}
+
+    def call_counts(value: str) -> dict[str, int]:
+        body = value[value.find("{") + 1 :]
+        counts: dict[str, int] = {}
+        for name in call_re.findall(body):
+            if name in control_names:
+                continue
+            counts[name] = counts.get(name, 0) + 1
+        return counts
+
+    stock_calls = call_counts(stock_normalized)
+    candidate_calls = call_counts(candidate_normalized)
+    if stock_calls != {"_printk": 1, "memcpy": 1} or candidate_calls != stock_calls:
+        return None
+    if sum(item.get("operation") == "CALL" for item in stock_shape) != 2:
+        return None
+    if sum(item.get("operation") == "CALL" for item in candidate_shape) != 2:
+        return None
+
+    stock_fragments = (
+        "if((param_1!=(void*)0x0)&&(param_3!=(void*)0x0)){",
+        "if((param_2<param_5)||(param_4<param_5)){_printk(",
+        "}else{memcpy(",
+    )
+    candidate_fragments = (
+        "if((param_1==(void*)0x0)||(param_3==(void*)0x0)){return;}",
+        "if((param_5<=param_2)&&(param_5<=param_4)){memcpy(",
+        "return;}_printk(",
+    )
+    if not all(fragment in stock_normalized for fragment in stock_fragments):
+        return None
+    if not all(fragment in candidate_normalized for fragment in candidate_fragments):
+        return None
+
+    return {
+        "kind": "ghidra_syna_pal_mem_cpy_branch_inversion_artifact",
+        "stock_shape": "outer non-null guard with invalid-size printk and valid-size memcpy branches",
+        "candidate_shape": "null early return with inverted valid-size memcpy and printk branches",
+        "call_counts": {"stock": stock_calls, "candidate": candidate_calls},
+        "call_operation_count": 2,
+        "requirement": (
+            "function-specific CFG shape, exact body bytes and P-Code instruction/operation "
+            "shape; independent AArch64 assembly and relocation parity remain mandatory"
+        ),
+    }
+
+
 def external_label_call_decompiler_artifact(
     stock_normalized: str,
     candidate_normalized: str,
@@ -1804,7 +1870,9 @@ def compare_function(
                         function, stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     )
                 if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = pcode_authoritative_fallback or decompiler_branch_inversion_shared_return_artifact(
+                    pcode_authoritative_fallback = pcode_authoritative_fallback or decompiler_syna_pal_mem_cpy_branch_inversion_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    ) or decompiler_branch_inversion_shared_return_artifact(
                         stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     )
                 if return_propagation_fallback is None and pcode_authoritative_fallback is None and allow_pcode_authoritative_decompiler_fallback:
@@ -1841,6 +1909,10 @@ def compare_function(
                 if pcode_authoritative_fallback is None:
                     pcode_authoritative_fallback = decompiler_symbol_resolution_artifact(
                     stock_normalized, candidate_normalized
+                    )
+                if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = decompiler_syna_pal_mem_cpy_branch_inversion_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     )
                 if pcode_authoritative_fallback is None:
                     pcode_authoritative_fallback = decompiler_branch_inversion_shared_return_artifact(
