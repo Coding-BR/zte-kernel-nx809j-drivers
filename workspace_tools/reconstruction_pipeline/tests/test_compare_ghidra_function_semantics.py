@@ -148,6 +148,98 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(candidate_artifacts[1]["kind"], "ghidra_local_label_address")
         self.assertEqual(stock_artifacts[0]["kind"], "ghidra_local_label_address")
 
+    def test_named_data_binding_is_opt_in_and_preserves_alias_identity(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "x = stock_bss_base; y = stock_bss_base;",
+            {},
+            named_data_bindings={
+                "stock_bss_base": "GHIDRA_DATA_BINDING__bss_00000000"
+            },
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "x = candidate_bss_base; y = candidate_bss_base;",
+            {},
+            named_data_bindings={
+                "candidate_bss_base": "GHIDRA_DATA_BINDING__bss_00000000"
+            },
+        )
+        strict, _, _ = MODULE.normalize_decompiled(
+            "x = candidate_bss_base; y = candidate_bss_base;", {}
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(stock, strict)
+        self.assertEqual(
+            {artifact["kind"] for artifact in stock_artifacts + candidate_artifacts},
+            {"ghidra_named_data_binding"},
+        )
+
+    def test_shared_named_data_binding_rejects_changed_section_layout(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            for export in (stock, candidate):
+                export.mkdir()
+            write_jsonl(
+                stock / "memory_blocks.jsonl",
+                [
+                    {
+                        "name": ".bss",
+                        "start": "1000",
+                        "end": "101f",
+                        "initialized": False,
+                    },
+                    {
+                        "name": ".data",
+                        "start": "2000",
+                        "end": "201f",
+                        "initialized": True,
+                    },
+                ],
+            )
+            write_jsonl(
+                candidate / "memory_blocks.jsonl",
+                [
+                    {
+                        "name": ".bss",
+                        "start": "3000",
+                        "end": "301f",
+                        "initialized": False,
+                    },
+                    {
+                        "name": ".data",
+                        "start": "4000",
+                        "end": "402f",
+                        "initialized": True,
+                    },
+                ],
+            )
+            write_jsonl(
+                stock / "symbols.jsonl",
+                [
+                    {"name": "stock_bss", "address": "1000", "type": "Label"},
+                    {"name": "stock_data", "address": "2000", "type": "Label"},
+                ],
+            )
+            write_jsonl(
+                candidate / "symbols.jsonl",
+                [
+                    {"name": "candidate_bss", "address": "3000", "type": "Label"},
+                    {"name": "candidate_data", "address": "4000", "type": "Label"},
+                ],
+            )
+
+            stock_bindings, candidate_bindings = MODULE.shared_named_data_bindings(
+                stock, candidate
+            )
+
+        self.assertEqual(stock_bindings, {"stock_bss": "GHIDRA_DATA_BINDING__bss_00000000"})
+        self.assertEqual(
+            candidate_bindings,
+            {"candidate_bss": "GHIDRA_DATA_BINDING__bss_00000000"},
+        )
+
     def test_relocated_global_data_labels_preserve_aliasing(self) -> None:
         stock = "void target(void) { DAT_00101000 = DAT_00101008; DAT_00101008 = DAT_00101000; }"
         candidate = "void target(void) { DAT_00202000 = DAT_00202008; DAT_00202008 = DAT_00202000; }"

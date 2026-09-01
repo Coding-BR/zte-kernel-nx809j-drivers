@@ -127,6 +127,71 @@ def memory_blocks(root: Path) -> list[tuple[str, int, int, bool]]:
     return result
 
 
+def named_data_symbol_bindings(root: Path) -> dict[str, str]:
+    """Map non-function ELF/Ghidra labels to section-relative identities."""
+    blocks = memory_blocks(root)
+    bindings: dict[str, str] = {}
+    for record in read_jsonl(root / "symbols.jsonl"):
+        name = record.get("name")
+        address = record.get("address")
+        symbol_type = record.get("type")
+        if (
+            not isinstance(name, str)
+            or not isinstance(address, str)
+            or symbol_type in {"Function", "Thunk"}
+        ):
+            continue
+        try:
+            numeric_address = int(address, 16)
+        except ValueError:
+            continue
+        for section, start, end, _ in blocks:
+            if section not in {".bss", ".data", ".rodata"}:
+                continue
+            if start <= numeric_address <= end:
+                safe_section = re.sub(r"[^A-Za-z0-9_]", "_", section)
+                bindings[name] = (
+                    f"GHIDRA_DATA_BINDING_{safe_section}_"
+                    f"{numeric_address - start:08x}"
+                )
+                break
+    return bindings
+
+
+def shared_named_data_bindings(
+    stock_root: Path, candidate_root: Path
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Return bindings only when the complete section layout is also stable."""
+    stock = named_data_symbol_bindings(stock_root)
+    candidate = named_data_symbol_bindings(candidate_root)
+    stock_sizes = {
+        section: end - start + 1
+        for section, start, end, _ in memory_blocks(stock_root)
+        if section in {".bss", ".data", ".rodata"}
+    }
+    candidate_sizes = {
+        section: end - start + 1
+        for section, start, end, _ in memory_blocks(candidate_root)
+        if section in {".bss", ".data", ".rodata"}
+    }
+    stable_prefixes = {
+        "GHIDRA_DATA_BINDING_"
+        + re.sub(r"[^A-Za-z0-9_]", "_", section)
+        + "_"
+        for section, size in stock_sizes.items()
+        if candidate_sizes.get(section) == size
+    }
+    shared_tokens = {
+        token
+        for token in set(stock.values()) & set(candidate.values())
+        if any(token.startswith(prefix) for prefix in stable_prefixes)
+    }
+    return (
+        {name: token for name, token in stock.items() if token in shared_tokens},
+        {name: token for name, token in candidate.items() if token in shared_tokens},
+    )
+
+
 def elf_sections(module: Path) -> tuple[bytes, dict[str, tuple[int, int]]]:
     data = module.read_bytes()
     if len(data) < 0x40 or data[:4] != b"\x7fELF":
@@ -242,11 +307,13 @@ def normalize_decompiled(
     strings: dict[int, str],
     elf_strings: dict[int, str] | None = None,
     symbol_strings: dict[str, str] | None = None,
+    named_data_bindings: dict[str, str] | None = None,
 ) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
     artifact_evidence: list[dict[str, Any]] = []
     elf_strings = elf_strings or {}
     symbol_strings = symbol_strings or {}
+    named_data_bindings = named_data_bindings or {}
 
     def string_token(value: str, source: str, identity: str) -> str:
         fingerprint = hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -390,6 +457,26 @@ def normalize_decompiled(
         return normalized
 
     replaced = LOCAL_LABEL_RE.sub(replace_local_label, replaced)
+
+    if named_data_bindings:
+        named_symbol_re = re.compile(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+
+        def replace_named_data_symbol(match: re.Match[str]) -> str:
+            symbol = match.group(0)
+            normalized = named_data_bindings.get(symbol)
+            if normalized is None:
+                return symbol
+            artifact_evidence.append(
+                {
+                    "kind": "ghidra_named_data_binding",
+                    "value": symbol,
+                    "normalized": normalized,
+                }
+            )
+            return normalized
+
+        replaced = named_symbol_re.sub(replace_named_data_symbol, replaced)
+
     return re.sub(r"\s+", "", replaced), evidence, artifact_evidence
 
 
@@ -926,6 +1013,8 @@ def compare_function(
     candidate_symbol_strings: dict[str, str] | None = None,
     allow_pcode_authoritative_decompiler_fallback: bool = False,
     allow_return_propagation_fallback: bool = False,
+    stock_named_data_bindings: dict[str, str] | None = None,
+    candidate_named_data_bindings: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -958,6 +1047,7 @@ def compare_function(
         stock_strings,
         stock_elf_strings,
         stock_symbol_strings,
+        stock_named_data_bindings,
     )
     (
         candidate_normalized,
@@ -968,6 +1058,7 @@ def compare_function(
         candidate_strings,
         candidate_elf_strings,
         candidate_symbol_strings,
+        candidate_named_data_bindings,
     )
     stock_shape = pcode_shape(read_jsonl(paths["stock"]["pcode"]))
     candidate_shape = pcode_shape(read_jsonl(paths["candidate"]["pcode"]))
@@ -1103,6 +1194,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="allow the explicit narrow external-call return propagation fallback",
     )
+    parser.add_argument(
+        "--allow-shared-data-binding-normalization",
+        action="store_true",
+        help="normalize named data labels only when section-relative bindings match on both exports",
+    )
     return parser.parse_args()
 
 
@@ -1128,6 +1224,14 @@ def main() -> int:
     candidate_elf_strings = elf_data_string_resolver(candidate_root, candidate_module)
     stock_symbol_strings = symbol_string_index(stock_root, stock_elf_strings)
     candidate_symbol_strings = symbol_string_index(candidate_root, candidate_elf_strings)
+    if args.allow_shared_data_binding_normalization:
+        (
+            stock_named_data_bindings,
+            candidate_named_data_bindings,
+        ) = shared_named_data_bindings(stock_root, candidate_root)
+    else:
+        stock_named_data_bindings = None
+        candidate_named_data_bindings = None
     module_identity: dict[str, dict[str, Any] | None] = {}
     identity_failures: list[str] = []
     for side, manifest, module in (
@@ -1165,6 +1269,8 @@ def main() -> int:
             candidate_symbol_strings,
             args.allow_pcode_authoritative_decompiler_fallback,
             args.allow_ghidra_return_propagation_fallback,
+            stock_named_data_bindings,
+            candidate_named_data_bindings,
         )
         for function in args.functions
     ]
@@ -1181,6 +1287,9 @@ def main() -> int:
         ),
         "ghidra_return_propagation_fallback_allowed": (
             args.allow_ghidra_return_propagation_fallback
+        ),
+        "shared_data_binding_normalization_allowed": (
+            args.allow_shared_data_binding_normalization
         ),
         "passed": not identity_failures and len(results) == len(args.functions)
         and all(result["passed"] for result in results),
