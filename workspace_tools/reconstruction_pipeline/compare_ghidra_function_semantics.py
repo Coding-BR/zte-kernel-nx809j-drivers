@@ -561,6 +561,61 @@ def decompiler_return_propagation_artifact(
     P-Code shape, plus the independent assembly gate, remain mandatory.
     """
     stock_call = stock_normalized.find("_printk(")
+
+    # Ghidra can preserve the full CFG yet assign the external printk return
+    # value to the enclosing function on one branch, even when the machine code
+    # immediately overwrites w0 with zero.  Accept only this narrow shape: an
+    # undefined8 compiler temporary assigned directly from _printk and returned
+    # on the logging branch, while stock returns constant zero.  Exact body
+    # bytes and P-Code shape, plus the independent assembly gate, remain
+    # mandatory.
+    propagated = re.search(r"(?P<temporary>uVar[0-9]+)=_printk\(", candidate_normalized)
+    if stock_call >= 0 and propagated is not None:
+        temporary = propagated.group("temporary")
+        stock_suffix = stock_normalized[stock_call:]
+        candidate_suffix = candidate_normalized[propagated.start():]
+        candidate_tail = f";return{temporary};}}"
+        if stock_suffix.endswith(";return0;}") and candidate_suffix.endswith(
+            candidate_tail
+        ):
+            stock_call_text = stock_suffix[: -len(";return0;}")]
+            candidate_call_text = candidate_suffix[: -len(candidate_tail)]
+            candidate_call_text = candidate_call_text.replace(f"{temporary}=", "", 1)
+            stock_prefix = stock_normalized[:stock_call]
+            candidate_prefix = candidate_normalized[:propagated.start()]
+            if f"undefined8{temporary};" not in candidate_prefix:
+                return None
+            candidate_prefix = candidate_prefix.replace(f"undefined8{temporary};", "", 1)
+            def canonicalize_locals(value: str) -> str:
+                names: dict[str, str] = {}
+
+                def replace(match: re.Match[str]) -> str:
+                    name = match.group(0)
+                    if name not in names:
+                        names[name] = f"lVar{len(names) + 1}"
+                    return names[name]
+
+                return re.sub(r"lVar[0-9]+", replace, value)
+
+            stock_prefix = canonicalize_locals(stock_prefix)
+            candidate_prefix = canonicalize_locals(candidate_prefix)
+            stock_prefix = re.sub(r"PTR_(.+?)_[0-9a-f]{8}", r"PTR_\1", stock_prefix)
+            candidate_prefix = re.sub(
+                r"PTR_(.+?)_[0-9a-f]{8}", r"PTR_\1", candidate_prefix
+            )
+            if candidate_prefix == stock_prefix and candidate_call_text == stock_call_text:
+                return {
+                    "kind": "ghidra_call_return_zero_propagation_artifact",
+                    "candidate_rewrite": (
+                        f"undefined8{temporary}=_printk(...);return{temporary};"
+                    ),
+                    "stock_semantics": "_printk(...);return0;",
+                    "requirement": (
+                        "exact body bytes and P-Code operation shape; independent assembly "
+                        "parity remains mandatory"
+                    ),
+                }
+
     candidate_call = candidate_normalized.find("uVar4=_printk(")
     if stock_call < 0 or candidate_call < 0:
         return None

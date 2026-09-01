@@ -410,6 +410,25 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertIsNotNone(evidence)
         self.assertEqual(evidence["kind"], "ghidra_call_return_propagation_artifact")
 
+    def test_return_zero_propagation_fallback_is_narrow_and_explicit(self) -> None:
+        stock = (
+            'undefined8target(void){longlVar1;lVar1=*(long*)(param_1+0xdb8);'
+            '*(undefined4*)(lVar1+0x5ec)=param_2;_printk(GHIDRA_STRING["msg"],'
+            '"target");return0;}'
+        )
+        candidate = (
+            'undefined8target(void){undefined8uVar1;longlVar2;'
+            'lVar2=*(long*)(param_1+0xdb8);*(undefined4*)(lVar2+0x5ec)=param_2;'
+            'uVar1=_printk(GHIDRA_STRING["msg"],"target");returnuVar1;}'
+        )
+
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_call_return_zero_propagation_artifact"
+        )
+
     def test_md5_file_is_stable_for_module_identity_binding(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             module = Path(temporary_directory) / "candidate.ko"
