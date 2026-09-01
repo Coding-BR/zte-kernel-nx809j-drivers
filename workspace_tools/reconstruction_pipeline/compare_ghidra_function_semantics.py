@@ -352,6 +352,33 @@ def normalize_decompiled(
 
     replaced = SYMBOL_STRING_RE.sub(replace_symbol_string, replaced)
 
+    # Some exports retain a meaningful ELF data symbol (for example
+    # ``charge_version``) while the other export emits a DAT_ label.  Resolve
+    # only symbols whose bytes were independently decoded as strings; quoted
+    # C literals are kept opaque so a coincidental word match cannot rewrite
+    # source text.
+    named_string_symbols = sorted(
+        (symbol for symbol in symbol_strings if re.fullmatch(r"[A-Za-z_]\w*", symbol)),
+        key=len,
+        reverse=True,
+    )
+    if named_string_symbols:
+        named_string_re = re.compile(
+            r'"(?:\\.|[^"\\])*"|(?P<symbol>\b(?:'
+            + "|".join(re.escape(symbol) for symbol in named_string_symbols)
+            + r")\b)"
+        )
+
+        def replace_named_symbol_string(match: re.Match[str]) -> str:
+            literal = match.group(0)
+            if literal.startswith('"'):
+                return literal
+            symbol = match.group("symbol")
+            value = symbol_strings[symbol]
+            return string_token(value, "elf_symbol_bytes", symbol)
+
+        replaced = named_string_re.sub(replace_named_symbol_string, replaced)
+
     # Ghidra can express a resolved string pointer either as GHIDRA_STRING[...] or
     # &GHIDRA_STRING[...]. Both forms denote the same string-address expression;
     # preserve the byte-backed string evidence while removing this decompiler-only

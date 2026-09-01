@@ -174,6 +174,22 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             {"ghidra_named_data_binding"},
         )
 
+    def test_elf_backed_named_string_symbol_is_normalized_without_rewriting_literals(
+        self,
+    ) -> None:
+        stock, _, _ = MODULE.normalize_decompiled(
+            'printk(&DAT_00101000, "charge_version");',
+            {0x00101000: "V2A"},
+        )
+        candidate, evidence, _ = MODULE.normalize_decompiled(
+            'printk(charge_version, "charge_version");',
+            {},
+            symbol_strings={"charge_version": "V2A"},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(evidence[0]["source"], "elf_symbol_bytes")
+
     def test_shared_named_data_binding_rejects_changed_section_layout(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
