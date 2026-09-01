@@ -749,6 +749,24 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             evidence["kind"], "ghidra_call_return_zero_propagation_artifact"
         )
 
+    def test_return_status_constant_propagation_fallback_is_narrow_and_explicit(self) -> None:
+        stock = (
+            'undefined8target(void){_printk(GHIDRA_STRING["msg"],"target");'
+            'return0xffffff0f;}'
+        )
+        candidate = (
+            'undefined8target(void){undefined8uVar1;'
+            'uVar1=_printk(GHIDRA_STRING["msg"],"target");returnuVar1;}'
+        )
+
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_call_return_constant_propagation_artifact"
+        )
+        self.assertEqual(evidence["stock_semantics"], "_printk(...);return0xffffff0f;")
+
     def test_bad_instruction_boundary_fallback_requires_stock_marker(self) -> None:
         stock = (
             "voidtarget(void){__fortify_panic(2,0xc,x);__fortify_panic(4,0xc,x);"

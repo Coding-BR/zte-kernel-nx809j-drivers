@@ -843,21 +843,20 @@ def decompiler_return_propagation_artifact(
 
     # Ghidra can preserve the full CFG yet assign the external printk return
     # value to the enclosing function on one branch, even when the machine code
-    # immediately overwrites w0 with zero.  Accept only this narrow shape: an
-    # undefined8 compiler temporary assigned directly from _printk and returned
-    # on the logging branch, while stock returns constant zero.  Exact body
-    # bytes and P-Code shape, plus the independent assembly gate, remain
-    # mandatory.
+    # immediately overwrites w0 with a literal status code.  Accept only this
+    # narrow shape: an undefined8 compiler temporary assigned directly from
+    # _printk and returned on the logging branch, while stock returns one
+    # hexadecimal/integer literal.  Exact body bytes and P-Code shape, plus the
+    # independent assembly gate, remain mandatory.
     propagated = re.search(r"(?P<temporary>uVar[0-9]+)=_printk\(", candidate_normalized)
     if stock_call >= 0 and propagated is not None:
         temporary = propagated.group("temporary")
         stock_suffix = stock_normalized[stock_call:]
         candidate_suffix = candidate_normalized[propagated.start():]
         candidate_tail = f";return{temporary};}}"
-        if stock_suffix.endswith(";return0;}") and candidate_suffix.endswith(
-            candidate_tail
-        ):
-            stock_call_text = stock_suffix[: -len(";return0;}")]
+        stock_return = re.search(r";return(?P<literal>(?:0|0x[0-9a-f]+));}$", stock_suffix)
+        if stock_return is not None and candidate_suffix.endswith(candidate_tail):
+            stock_call_text = stock_suffix[: stock_return.start()]
             candidate_call_text = candidate_suffix[: -len(candidate_tail)]
             candidate_call_text = candidate_call_text.replace(f"{temporary}=", "", 1)
             stock_prefix = stock_normalized[:stock_call]
@@ -883,12 +882,17 @@ def decompiler_return_propagation_artifact(
                 r"PTR_(.+?)_[0-9a-f]{8}", r"PTR_\1", candidate_prefix
             )
             if candidate_prefix == stock_prefix and candidate_call_text == stock_call_text:
+                literal = stock_return.group("literal")
                 return {
-                    "kind": "ghidra_call_return_zero_propagation_artifact",
+                    "kind": (
+                        "ghidra_call_return_zero_propagation_artifact"
+                        if literal == "0"
+                        else "ghidra_call_return_constant_propagation_artifact"
+                    ),
                     "candidate_rewrite": (
                         f"undefined8{temporary}=_printk(...);return{temporary};"
                     ),
-                    "stock_semantics": "_printk(...);return0;",
+                    "stock_semantics": f"_printk(...);return{literal};",
                     "requirement": (
                         "exact body bytes and P-Code operation shape; independent assembly "
                         "parity remains mandatory"
