@@ -677,17 +677,24 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0029_00102ac8_cleanup_module.c:sha256:4e7e0f6f674dace58930c7136b97b2dd1c52cb41d9f701f20c8d060fcd6532cf",
         "ghidra-pcode:pcode/0029_00102ac8_cleanup_module.jsonl:sha256:a667c234c47fb9b73cf47df70224933bb7904e7fe0656415bc50aa113a024e46",
-        "stock-assembly:0029_cleanup_module_00102ac8.asm:sha256:34391ad3d1e02d2a32fdae5c037d267385bf0da9ddb7aadf64ac5f620863de0b"
+        "stock-assembly:0029_cleanup_module_00102ac8.asm:sha256:34391ad3d1e02d2a32fdae5c037d267385bf0da9ddb7aadf64ac5f620863de0b",
+        "assembly-comparison:attestation/next030_cleanup_module_exact_v1/assembly.json:sha256:86b4aea5bfa028f7f23266b1cd00ab346a39ebb75e20d82c44ef6b4e76cd8235",
+        "canonical-build:attestation/next030_cleanup_module_exact_v1/compile.json:sha256:4280cec9ce497652eb0b050d7219c1cf3c1f7721673d522e432441882a2fc1ae",
+        "kcfi-comparison:attestation/next030_cleanup_module_exact_v1/kcfi.json:sha256:af4128c57f7c21f75891f246a2acc4f39eb84aa12484c2d6ec938c9d274a0b78",
+        "host-harness:attestation/next030_cleanup_module_exact_v1/test.json:sha256:5d908d29c7a54212af80a6f076172cd6a5ecd06835710c455b127e32a4393fb7",
+        "joern:attestation/next030_cleanup_module_exact_v1/joern.json:sha256:03ffdb3c1965b742bf669de8da0a46fa2a9f1a614470445ed905e50e1117c17b",
+        "hard-protocol:attestation/next030_cleanup_module_exact_v1/hard_protocol_report.json:sha256:5de9ebc4066b220d193135ea87ddea7e7600f1428ee2d7a6a21521082c0c54bb"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence; stock cleanup_module alias is bound to source zte_fp_exit",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "zte_fp_exit",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 88,
       "stock_entry": "00102ac8",
-      "stock_function": "cleanup_module"
+      "stock_function": "cleanup_module",
+      "mapping_note": "Function-level offline parity is promoted for the module-exit alias. The attestation records 22 matching AArch64 instructions and 88-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xe5c47d60, strict Joern scope, and direct module teardown tests. The stock ELF alias cleanup_module is explicitly mapped to source zte_fp_exit. This is static/offline evidence; hardware teardown remains unverified."
     }
   ],
   "override_count": 0,
