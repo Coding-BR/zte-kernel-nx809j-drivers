@@ -999,7 +999,7 @@ int zte_power_supply_get_battery_info(struct zte_power_supply *psy,
 	for (index = 0; index < len; index++) {
 		struct power_supply_battery_ocv_table *table;
 		char *propname;
-		int i, size;
+		int i, tab_len, size;
 
 		propname = kasprintf(GFP_KERNEL, "ocv-capacity-table-%d", index);
 		if (!propname)
@@ -1012,16 +1012,18 @@ int zte_power_supply_get_battery_info(struct zte_power_supply *psy,
 		}
 		kfree(propname);
 
-		info->ocv_table_size[index] = size / (2 * sizeof(__be32));
-		table = devm_kcalloc(&psy->dev, info->ocv_table_size[index],
-				      sizeof(*table), GFP_KERNEL);
-		info->ocv_table[index] = table;
-		if (!table)
+		tab_len = size / (2 * sizeof(__be32));
+		info->ocv_table_size[index] = tab_len;
+		table = info->ocv_table[index] =
+			devm_kcalloc(&psy->dev, tab_len, sizeof(*table), GFP_KERNEL);
+		if (!info->ocv_table[index])
 			goto out_nomem_ocv;
 
-		for (i = 0; i < info->ocv_table_size[index]; i++) {
-			table[i].ocv = be32_to_cpu(*list++);
-			table[i].capacity = be32_to_cpu(*list++);
+		for (i = 0; i < tab_len; i++) {
+			table[i].ocv = be32_to_cpu(*list);
+			list++;
+			table[i].capacity = be32_to_cpu(*list);
+			list++;
 		}
 	}
 
