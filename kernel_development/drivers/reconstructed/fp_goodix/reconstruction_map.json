@@ -299,17 +299,26 @@
         "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0012_00101ac0_goodixfp_init_drm_notifier.c:sha256:fbc42272ac7b9c839f9dcf972544e59cf7d1c430160a34fb6df88c3e94086494",
         "ghidra-pcode:pcode/0012_00101ac0_goodixfp_init_drm_notifier.jsonl:sha256:79adb567d96449d2fd01fbf34c6e32a93cbe5699d98224035ac5df3aae2308c6",
-        "stock-assembly:0012_goodixfp_init_drm_notifier_00101ac0.asm:sha256:2bd669cd18ff7d7a490a3e35e2f0a0ded665ced9f623959d13003a1592caa35d"
+        "stock-assembly:0012_goodixfp_init_drm_notifier_00101ac0.asm:sha256:2bd669cd18ff7d7a490a3e35e2f0a0ded665ced9f623959d13003a1592caa35d",
+        "assembly-comparison:attestation/next008_goodixfp_init_drm_notifier_exact_v1/assembly.json:sha256:471f11eda0009d37bcdc29e4a557b0b1330f006e4a29c1d3c8c4038bd294295b",
+        "canonical-build:attestation/next008_goodixfp_init_drm_notifier_exact_v1/compile.json:sha256:8703116dfe498d625e17ceda9cbff020fdf9499bc8c7db2cc6ec6c8d64d76384",
+        "candidate-ghidra:attestation/next008_goodixfp_init_drm_notifier_exact_v1/ghidra.json:sha256:b7fd2025548420cc63af9b036dbc9932da8c5f9505c24d247524e9600cd01c19",
+        "hard-protocol:attestation/next008_goodixfp_init_drm_notifier_exact_v1/hard_protocol_report.json:sha256:5852b109f465db404c99d3fcdabecde6b14d654240a636de502bfa39bc595c30",
+        "joern:attestation/next008_goodixfp_init_drm_notifier_exact_v1/joern.json:sha256:32bd35a354c969441702e486c6396781db4220aca72c4e5981a285bd221a6264",
+        "joern-source-view:attestation/next008_goodixfp_init_drm_notifier_exact_v1/joern_source_view_engineering_report.json:sha256:3baed1b8e54dd87436754b3a4922cfb6bb863ece22c8d98de4672948df37404c",
+        "kcfi:attestation/next008_goodixfp_init_drm_notifier_exact_v1/kcfi.json:sha256:e98d2a7980a6bdf21688f81643b363ce5848ce26c6b9cab5b510920211c7ad8d",
+        "host-harness:attestation/next008_goodixfp_init_drm_notifier_exact_v1/test.json:sha256:b9f1097be2ed50c828d94fe8f0e1eec9d5822d1a01297ef22054e985366df784"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "exact filename and function-token match; fresh offline protocol equality",
+      "review_scope": "offline_static_function_exact",
+      "semantic_equivalence": "PROMOTED_OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "goodixfp_init_drm_notifier",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 312,
       "stock_entry": "00101ac0",
-      "stock_function": "goodixfp_init_drm_notifier"
+      "stock_function": "goodixfp_init_drm_notifier",
+      "mapping_note": "Function-level offline parity is promoted. Candidate and stock have 78 matching AArch64 instructions, 312 symbol bytes, exact relocation parity, matching KCFI type ID 0xa607748c, reproducible Docker builds, strict Joern scope/slice, and passing existing host coverage. Joern required an analysis-only source view derived from the Docker source tree with noinline removed from two declarations because c2cpg 4.0.548 otherwise omits both display-panel helpers; the view is hash-attested and prohibited from build input. Hardware behavior remains unverified."
     },
     {
       "evidence": [
