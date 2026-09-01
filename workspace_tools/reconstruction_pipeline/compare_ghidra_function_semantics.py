@@ -942,6 +942,57 @@ def decompiler_return_propagation_artifact(
     }
 
 
+def decompiler_branch_inversion_shared_return_artifact(
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify a narrow branch-inversion/shared-return decompiler artifact.
+
+    Ghidra can express the same two-way function as a common-return CFG in one
+    import and as an inverted conditional with early returns in another.  This
+    detector is intentionally limited to the observed two-call memory helper
+    shape: stock logs on the null branch and clears memory on the non-null
+    branch, while the candidate emits those branches in the opposite order.
+    Exact body bytes and P-Code shape remain mandatory at the caller.
+    """
+    stock_call_ops = sum(item.get("operation") == "CALL" for item in stock_shape)
+    candidate_call_ops = sum(item.get("operation") == "CALL" for item in candidate_shape)
+    if stock_call_ops != 2 or candidate_call_ops != 2:
+        return None
+    required_stock = (
+        "if(param_1==0){_printk(",
+        "}else{memset(",
+        "uVar1=0xffffff0f;",
+        "uVar1=0;",
+        "returnuVar1;}",
+    )
+    required_candidate = (
+        "if(param_1!=0){memset(",
+        "return0;}uVar1=_printk(",
+        "returnuVar1;}",
+    )
+    if not all(fragment in stock_normalized for fragment in required_stock):
+        return None
+    if not all(fragment in candidate_normalized for fragment in required_candidate):
+        return None
+    if stock_normalized.count("_printk(") != candidate_normalized.count("_printk("):
+        return None
+    if stock_normalized.count("memset(") != candidate_normalized.count("memset("):
+        return None
+    return {
+        "kind": "ghidra_branch_inversion_shared_return_artifact",
+        "stock_shape": "null-branch printk plus non-null memset into shared status",
+        "candidate_shape": "inverted non-null memset return plus null-branch printk return",
+        "call_operation_count": 2,
+        "requirement": (
+            "exact body bytes and P-Code instruction/operation shape; independent assembly "
+            "and relocation parity remain mandatory"
+        ),
+    }
+
+
 def external_label_call_decompiler_artifact(
     stock_normalized: str,
     candidate_normalized: str,
@@ -1364,6 +1415,10 @@ def compare_function(
                     stock_normalized, candidate_normalized
                 )
                 if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
+                    pcode_authoritative_fallback = decompiler_branch_inversion_shared_return_artifact(
+                        stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    )
+                if return_propagation_fallback is None and pcode_authoritative_fallback is None and allow_pcode_authoritative_decompiler_fallback:
                     pcode_authoritative_fallback = external_label_call_decompiler_artifact(
                         stock_normalized, candidate_normalized, stock_shape, candidate_shape
                     )
@@ -1385,9 +1440,13 @@ def compare_function(
                         )
                 normalized_decompiled_match = False
             elif allow_pcode_authoritative_decompiler_fallback:
-                pcode_authoritative_fallback = external_label_call_decompiler_artifact(
+                pcode_authoritative_fallback = decompiler_branch_inversion_shared_return_artifact(
                     stock_normalized, candidate_normalized, stock_shape, candidate_shape
                 )
+                if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = external_label_call_decompiler_artifact(
+                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                    )
                 if pcode_authoritative_fallback is None:
                     pcode_authoritative_fallback = decompiler_cfg_restructuring_artifact(
                         stock_normalized, candidate_normalized, stock_shape, candidate_shape

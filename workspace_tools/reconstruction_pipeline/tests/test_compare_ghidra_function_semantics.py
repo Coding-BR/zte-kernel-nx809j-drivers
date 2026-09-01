@@ -767,6 +767,30 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         )
         self.assertEqual(evidence["stock_semantics"], "_printk(...);return0xffffff0f;")
 
+    def test_branch_inversion_shared_return_fallback_is_narrow_and_explicit(self) -> None:
+        shape = [{"operation": "CALL"}, {"operation": "CALL"}]
+        stock = (
+            'undefined8target(longparam_1){undefined8uVar1;'
+            'if(param_1==0){_printk(GHIDRA_STRING["msg"],"target");'
+            'uVar1=0xffffff0f;}else{memset((void*)(param_1+0x13d8),0,0x1000);'
+            'uVar1=0;}returnuVar1;}'
+        )
+        candidate = (
+            'undefined8target(longparam_1){undefined8uVar1;'
+            'if(param_1!=0){memset((void*)(param_1+0x13d8),0,0x1000);'
+            'return0;}uVar1=_printk(GHIDRA_STRING["msg"],"target");'
+            'returnuVar1;}'
+        )
+
+        evidence = MODULE.decompiler_branch_inversion_shared_return_artifact(
+            stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_branch_inversion_shared_return_artifact"
+        )
+
     def test_bad_instruction_boundary_fallback_requires_stock_marker(self) -> None:
         stock = (
             "voidtarget(void){__fortify_panic(2,0xc,x);__fortify_panic(4,0xc,x);"
