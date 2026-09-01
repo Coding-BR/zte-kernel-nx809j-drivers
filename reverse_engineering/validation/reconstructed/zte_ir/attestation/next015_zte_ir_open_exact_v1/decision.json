@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_ir",
+  "function": "zte_ir_open",
+  "stock_function": "zte_ir_open",
+  "stock_entry": "00100804",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "basis": "Fresh Ghidra export bound to the current Docker candidate, normalized Ghidra C and P-Code equality, exact 47-instruction AArch64 and relocation parity, two reproducible Docker builds, strict Joern scope/slice, matching KCFI type ID and lifecycle host coverage.",
+  "gates": {
+    "candidate_ghidra_pcode": "PASS",
+    "assembly_relocations": "PASS",
+    "docker_reproducible": "PASS",
+    "kcfi": "PASS_TYPE_ID_COMPARISON",
+    "joern_scoped": "PASS",
+    "joern_slice": "PASS",
+    "host_harness": "PASS"
+  },
+  "body_bytes": 188,
+  "instruction_count": 47,
+  "candidate_module_sha256": "4fa1ae637acde49f4b74062fc63a22a98f35c5b94573574dc532e3bee850b2cd",
+  "stock_module_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_ghidra_export": "offline_static/ghidra_candidate_20260902_exact_open_fresh",
+  "limitations": [
+    "This is static/offline function-level evidence; IR hardware behavior remains unverified.",
+    "The exact island preserves the stock open callback and does not claim the surrounding C safety implementation is behaviorally identical.",
+    "The host harness uses kernel and SPI stubs; live kernel, DMA and bus-fault behavior require runtime validation.",
+    "The promotion does not claim that the remaining unpromoted zte_ir functions are complete."
+  ]
+}
