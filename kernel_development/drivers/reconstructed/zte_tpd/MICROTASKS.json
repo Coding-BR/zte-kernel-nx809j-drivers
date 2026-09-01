@@ -68,40 +68,40 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_zlog_record_notify\nEntrada Ghidra: 00106998\nTamanho stock: 3452 bytes\nCategoria: core_logic\nAlvo no fonte: tpd_zlog_record_notify.c:tpd_zlog_record_notify\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0001_00106998_tpd_zlog_record_notify.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0001_00106998_tpd_zlog_record_notify.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/compile.json",
-          "sha256": "3ab8b3c6bc6ec0126253fce7f6f6f071771d015acb0817bf88e66512957cdb8e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831/compile.json",
+          "sha256": "3b7b186cb8d2d93c6aa6e18847caec9fadc756ee6dd7d592d72450b37140dbe7"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/kcfi.json",
-          "sha256": "3b53c4fd5ab5bd32ef37af7e054a3553ea17d9c7e1b0c9478ab095658daaf788"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831/kcfi.json",
+          "sha256": "e932227de8d694dde766ac8de7850399a5d1885a2452cb7d3a55f4714847bae3"
         },
         {
           "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/joern.json",
-          "sha256": "13bdc589ee592e5f73189aadb0746ad853875ace457e285013d70b27ae300b94"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831/joern.json",
+          "sha256": "f90b9e216e0941d452f116377e1893b623ed6f3f2ad1bbec14f3767e10a5b882"
         },
         {
           "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/test.json",
-          "sha256": "ee0feec854777557eaabdf1808cdf081e8c4eb1482d1aebd695b6e0d6f832d52"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831/test.json",
+          "sha256": "8bdd721fa1060a4a2c76571dd44357466f77da2486dbcbfdb8b6b70f9324e28a"
         },
         {
           "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/assembly.json",
-          "sha256": "3ac25e9df4e761734c42dab178b57c4bd916ed8964cd1253997bf7c3d55e7a1f"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831/assembly.json",
+          "sha256": "ef607fa1fecc4a42a406f53907e0d558564ae83a3c24f4cbdb5f36a22267ec37"
         },
         {
           "role": "attestation",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v4/exact_revalidation_20260830/microtask_attestation.json",
-          "sha256": "0e34864f3bdb89e99bfbf0b89f54fbdbfd5d9fbd36e41fbc74adddfbb5de07c0"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831/microtask_attestation.json",
+          "sha256": "b119865f4144e3a2243c7c53715e7966d9db5c29ee4ceac9433bec4f08ebd65b"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next002_tpd_zlog_record_notify_exact_v5; the 863-instruction opcode/control-flow sequence, symbol size, KCFI, normalized dataflow and normalized relocation roles match. The offline zlog contract is covered by 10 direct ASan/UBSan cases; physical hardware behavior remains unverified."
+      "attestation": "OFFLINE_EXACT in attestation/next002_tpd_zlog_record_notify_exact_v5/exact_revalidation_20260831; the 863-instruction opcode/control-flow sequence, symbol size, KCFI, P-Code operation shape, Joern scope and normalized relocation roles match. Ghidra's external-label control-flow artifact is explicitly recorded and is accepted only with independent assembly parity. The offline zlog contract is covered by 10 direct ASan/UBSan cases; physical hardware behavior remains unverified."
     },
     {
       "id": "003_tpd_zlog_check",

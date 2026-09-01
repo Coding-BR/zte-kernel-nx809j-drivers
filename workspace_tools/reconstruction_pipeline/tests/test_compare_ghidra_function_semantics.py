@@ -415,6 +415,32 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         )
         self.assertEqual(evidence["omitted_stock_body_fragment"], "x=1;")
 
+    def test_external_label_fallback_requires_equal_pcode_call_count(self) -> None:
+        stock = "void target(void){_printk();zlog_client_record();zlog_client_notify();return;}"
+        candidate = "void target(void){_printk();return;return;}"
+        shape = [
+            {"operation": "CALL"},
+            {"operation": "CALL"},
+            {"operation": "CALL"},
+        ]
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_external_label_control_flow_artifact"
+        )
+        self.assertEqual(
+            evidence["missing_stock_call_names"],
+            ["zlog_client_notify", "zlog_client_record"],
+        )
+        self.assertIsNone(
+            MODULE.external_label_call_decompiler_artifact(
+                stock, candidate, shape, shape[:-1]
+            )
+        )
+
     def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
         stock = (
             'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'

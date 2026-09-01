@@ -659,6 +659,55 @@ def decompiler_return_propagation_artifact(
     }
 
 
+def external_label_call_decompiler_artifact(
+    stock_normalized: str,
+    candidate_normalized: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Identify Ghidra control-flow loss caused by imported external labels.
+
+    A relocatable kernel module can import an undefined call target as a memory
+    label in one Ghidra load and as an external function in another.  The
+    decompiler then drops the call and may synthesize an early ``return`` even
+    though the decoded P-Code still contains the call.  This fallback is
+    intentionally constrained to the case where the normalized C loses one or
+    more calls, while the P-Code instruction/operation shape and call count are
+    identical.  Relocation-aware assembly parity remains an independent
+    protocol requirement.
+    """
+    call_name_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
+    control_names = {"if", "for", "while", "switch"}
+    stock_calls = {
+        name for name in call_name_re.findall(stock_normalized)
+        if name not in control_names
+    }
+    candidate_calls = {
+        name for name in call_name_re.findall(candidate_normalized)
+        if name not in control_names
+    }
+    missing_calls = sorted(stock_calls - candidate_calls)
+    stock_call_ops = sum(item.get("operation") == "CALL" for item in stock_shape)
+    candidate_call_ops = sum(item.get("operation") == "CALL" for item in candidate_shape)
+    # Require at least two omitted call names.  A single missing call is also
+    # compatible with an ordinary lossy/truncated decompilation and must stay
+    # on the older, narrower premature-return path below.
+    if len(missing_calls) < 2 or stock_call_ops != candidate_call_ops:
+        return None
+    if candidate_normalized.count("return;") <= stock_normalized.count("return;"):
+        return None
+    return {
+        "kind": "ghidra_external_label_control_flow_artifact",
+        "missing_stock_call_names": missing_calls,
+        "stock_call_operation_count": stock_call_ops,
+        "candidate_call_operation_count": candidate_call_ops,
+        "requirement": (
+            "exact body bytes and P-Code instruction/operation shape; relocation-aware "
+            "assembly parity remains mandatory"
+        ),
+    }
+
+
 def compare_function(
     function: str,
     stock_root: Path,
@@ -741,14 +790,22 @@ def compare_function(
                 stock_normalized, candidate_normalized
             )
             if return_propagation_fallback is None and allow_pcode_authoritative_decompiler_fallback:
+                pcode_authoritative_fallback = external_label_call_decompiler_artifact(
+                    stock_normalized, candidate_normalized, stock_shape, candidate_shape
+                )
+                if pcode_authoritative_fallback is None:
+                    pcode_authoritative_fallback = lossy_decompiler_truncation(
+                        stock_normalized, candidate_normalized
+                    )
+            normalized_decompiled_match = False
+        elif allow_pcode_authoritative_decompiler_fallback:
+            pcode_authoritative_fallback = external_label_call_decompiler_artifact(
+                stock_normalized, candidate_normalized, stock_shape, candidate_shape
+            )
+            if pcode_authoritative_fallback is None:
                 pcode_authoritative_fallback = lossy_decompiler_truncation(
                     stock_normalized, candidate_normalized
                 )
-            normalized_decompiled_match = False
-        elif allow_pcode_authoritative_decompiler_fallback:
-            pcode_authoritative_fallback = lossy_decompiler_truncation(
-                stock_normalized, candidate_normalized
-            )
             # Keep the raw C check false: this is an explicit low-level
             # authority fallback, not a claim that the decompiled C matched.
             normalized_decompiled_match = False
