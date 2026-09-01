@@ -8,7 +8,7 @@ Reconstrução offline do transmissor infravermelho SPI do **REDMAGIC 11 Pro+
 - Fonte: `zte_ir.c`
 - Kbuild: `Makefile`
 - Candidato: `zte_ir.ko`
-- SHA-256: `d95aa976258f24d9337feb40bd4c9d775d416d707f35cdec9fadc2bd0fbe8b08`
+- SHA-256: `6edf27d53408ed1ef28886493b8d6cab49cefb0f5c5f1435bcbb5df9afa4b133`
 - Módulo Linux: `zte_ir`
 - OF compatible: `zte,zte_ir`
 
@@ -19,9 +19,10 @@ microtarefas. Ele possui outro hash e não participa da atestação atual.
 
 - `DOCUMENTO_TRANSICAO.md`: arquitetura, ABI e microtarefas originais.
 - `reconstruction_map.json`: 8/8 funções stock ligadas ao fonte canônico.
-- `zte_ir_write_exact.S`, `zte_ir_ioctl_exact.S`, `zte_ir_exact_bases.S` e
-  `exact_stock_sections/`: ilhas AArch64 exact de `zte_ir_write` e
-  `zte_ir_ioctl`, além das strings stock necessárias ao layout ELF.
+- `zte_ir_write_exact.S`, `zte_ir_ioctl_exact.S`, `zte_ir_open_exact.S`,
+  `zte_ir_exact_bases.S` e `exact_stock_sections/`: ilhas AArch64 exact de
+  `zte_ir_write`, `zte_ir_ioctl` e `zte_ir_open`, além das strings stock
+  necessárias ao layout ELF.
 - `tests/`: harness que inclui diretamente `zte_ir.c`.
 - `headers/`, `implementation/`, `evidence/` e `reports/`: histórico técnico e
   provas intermediárias, sem substituir a identidade do candidato canônico.
@@ -48,7 +49,7 @@ python .\tools\audit_offline_reconstruction.py `
   --allow-incomplete
 ```
 
-Resultado atual: `zte_ir_write` e `zte_ir_ioctl` possuem atestação exact
-offline; as demais funções permanecem na reconstrução C safety-oriented. O10 e
-hardware seguem pendentes. Isso não autoriza uma declaração de reconstrução
-funcional de 100%.
+Resultado atual: `zte_ir_write`, `zte_ir_ioctl` e `zte_ir_open` possuem
+atestação exact offline; as demais funções permanecem na reconstrução C
+safety-oriented. O10 e hardware seguem pendentes. Isso não autoriza uma
+declaração de reconstrução funcional de 100%.

@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "driver": "zte_ir",
   "stock_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
-  "candidate_sha256": "d95aa976258f24d9337feb40bd4c9d775d416d707f35cdec9fadc2bd0fbe8b08",
+  "candidate_sha256": "6edf27d53408ed1ef28886493b8d6cab49cefb0f5c5f1435bcbb5df9afa4b133",
   "scope": "Traceability map for the canonical zte_ir.c candidate. Behavioral hardening differences are tracked by the parity report.",
   "reviewed_by": "Codex static Ghidra/source review",
   "independent_review": "pending; tracked separately by gate O10",
@@ -65,8 +65,16 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "Open callback maps the stock device-list lookup to the reconstructed runtime list and reference count.",
-      "status": "reviewed"
+      "review_notes": "Open callback promoted as an AArch64 exact island from the hashed stock body. The .data relocations are bound to the reconstructed device_list_lock at offset 0 and device_list at offset 0x30; exact stock semantics do not include the C safety layer's users/removed lifetime hardening. Static/offline only, with no hardware or safety claim.",
+      "status": "exact_attested",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902/assembly/comparison.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902/kcfi/comparison.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902/joern/joern_gate_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902/docker_reproducibility.json"
+      ]
     },
     {
       "stock_function": "zte_ir_release",
