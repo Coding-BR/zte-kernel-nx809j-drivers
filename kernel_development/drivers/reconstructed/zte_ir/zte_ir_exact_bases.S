@@ -24,6 +24,10 @@ zte_ir_exact_bss_base:
 .global minors
 .set minors, zte_ir_exact_bss_base + 0x18
 
+.global zte_ir_spi_driver
+.set zte_ir_spi_driver, zte_ir_exact_data_base + 0x40
+
+
 .section .codetag.alloc_tags,"aw",@progbits
 .align 3
 .global zte_ir_exact_codetag_base

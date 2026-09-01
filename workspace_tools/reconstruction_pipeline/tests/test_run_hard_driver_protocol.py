@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
+    assembly_only_ghidra_exemption,
     build_command_plan,
     execute_post_candidate,
     find_map_bindings,
@@ -229,6 +230,34 @@ class HardDriverProtocolTests(unittest.TestCase):
         self.assertIn("kcfi_candidate", command_names)
         self.assertIn("kcfi_direct_call_f000", command_names)
         self.assertNotIn("kcfi_compare", command_names)
+
+    def test_assembly_only_ghidra_exemption_requires_fresh_body_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "semantic.json"
+            report.write_text(
+                '{"identity_failures": [], "results": [{"checks": {"body_bytes": true}}]}',
+                encoding="utf-8",
+            )
+            functions = [{"source_function": "island", "assembly_only": True}]
+            exemption = assembly_only_ghidra_exemption(functions, report)
+
+        self.assertIsNotNone(exemption)
+        self.assertEqual(exemption["kind"], "ASSEMBLY_ONLY_GHIDRA_SEMANTIC_EXEMPTION")
+
+    def test_assembly_only_ghidra_exemption_rejects_mixed_scope(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "semantic.json"
+            report.write_text(
+                '{"identity_failures": [], "results": [{"checks": {"body_bytes": true}}]}',
+                encoding="utf-8",
+            )
+            functions = [
+                {"source_function": "island", "assembly_only": True},
+                {"source_function": "c_fn", "assembly_only": False},
+            ]
+            exemption = assembly_only_ghidra_exemption(functions, report)
+
+        self.assertIsNone(exemption)
 
 
 if __name__ == "__main__":

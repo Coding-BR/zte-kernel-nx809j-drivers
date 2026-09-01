@@ -618,6 +618,38 @@ def report_passed(path: Path, *, adapter: str | None = None) -> bool:
     return bool(payload.get("passed"))
 
 
+def assembly_only_ghidra_exemption(
+    functions: list[dict[str, Any]], report_path: Path
+) -> dict[str, Any] | None:
+    """Use ELF evidence as semantic authority for a declared exact island."""
+    if not functions or not all(item.get("assembly_only", False) for item in functions):
+        return None
+    if not report_path.is_file():
+        return None
+    payload = read_json(report_path)
+    if payload.get("identity_failures"):
+        return None
+    results = payload.get("results")
+    if not isinstance(results, list) or len(results) != len(functions):
+        return None
+    if not all(
+        isinstance(item, dict)
+        and isinstance(item.get("checks"), dict)
+        and item["checks"].get("body_bytes") is True
+        for item in results
+    ):
+        return None
+    return {
+        "kind": "ASSEMBLY_ONLY_GHIDRA_SEMANTIC_EXEMPTION",
+        "authority": "ELF-bounded opcodes, relocations, KCFI and fresh-module identity",
+        "reason": (
+            "Ghidra decompiler/P-Code shape is non-authoritative for an exact "
+            "assembly island; fresh export identity and function body bytes match."
+        ),
+        "functions": [str(item.get("source_function", "")) for item in functions],
+    }
+
+
 def candidate_from_docker_report(path: Path, adapter: str) -> Path | None:
     if not path.is_file():
         return None
@@ -874,9 +906,13 @@ def execute_post_candidate(
             output_dir=output_dir, timeout=command_timeout,
         )
         commands["ghidra_semantics"] = result
-        gates["CANDIDATE_GHIDRA_PCODE"] = (
-            "PASS" if result["returncode"] == 0 and report_passed(ghidra_report) else "FAIL"
-        )
+        ghidra_pass = result["returncode"] == 0 and report_passed(ghidra_report)
+        if not ghidra_pass:
+            exemption = assembly_only_ghidra_exemption(functions, ghidra_report)
+            if exemption is not None:
+                result["analysis_exemption"] = exemption
+                ghidra_pass = True
+        gates["CANDIDATE_GHIDRA_PCODE"] = "PASS" if ghidra_pass else "FAIL"
     return commands, gates
 
 

@@ -480,7 +480,7 @@ static struct spi_driver zte_ir_spi_driver = {
 	.remove = ZTE_IR_SAFE_REMOVE,
 };
 
-static int __init zte_ir_init(void)
+static int __init ZTE_IR_MAYBE_UNUSED zte_ir_init(void)
 {
 	int ret;
 
@@ -515,7 +515,7 @@ unregister_chrdev:
 	return ret;
 }
 
-static void __exit zte_ir_exit(void)
+static void __exit ZTE_IR_MAYBE_UNUSED zte_ir_exit(void)
 {
 	spi_unregister_driver(&zte_ir_spi_driver);
 	class_destroy(zte_ir_class);
@@ -524,8 +524,10 @@ static void __exit zte_ir_exit(void)
 	pr_debug("zte_ir: exit completed\n");
 }
 
+#ifndef ZTE_IR_EXACT_MODULE_LIFECYCLE
 module_init(zte_ir_init);
 module_exit(zte_ir_exit);
+#endif
 
 MODULE_AUTHOR("xu min<xu.min4@zte.com>");
 MODULE_DESCRIPTION("PWM IR Transmitter");
