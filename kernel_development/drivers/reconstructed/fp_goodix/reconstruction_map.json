@@ -581,17 +581,24 @@
         "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0025_00102810_gf_power_off.c:sha256:cc9e2fbd5668ed8620b669166afb276ee76f48b0c4ed5411871552cb843061ba",
         "ghidra-pcode:pcode/0025_00102810_gf_power_off.jsonl:sha256:1d9708b94f67319223f6eb20b5a789bc3e08f7902b3da5e8746f889351ee0518",
-        "stock-assembly:0025_gf_power_off_00102810.asm:sha256:85c84e788b9232c217ecfdffc98f7135de58dccd393e4a87e03c93cf7b8acf35"
+        "stock-assembly:0025_gf_power_off_00102810.asm:sha256:85c84e788b9232c217ecfdffc98f7135de58dccd393e4a87e03c93cf7b8acf35",
+        "assembly-comparison:attestation/next026_gf_power_off_exact_v1/assembly.json:sha256:515b12213973b08589477ae69ddc32dfa6fa090ebf21be25f4f18143eba7de70",
+        "canonical-build:attestation/next026_gf_power_off_exact_v1/compile.json:sha256:bda0f465411d8e8e9b92cc13c4bf5819251d5e9ac937ecba4fb200c9db3a3932",
+        "kcfi-comparison:attestation/next026_gf_power_off_exact_v1/kcfi.json:sha256:3e944d2110a4445fd24d53c1de2b9e558b74e27d3172a3ac32f8da695af41a0b",
+        "host-harness:attestation/next026_gf_power_off_exact_v1/test.json:sha256:adc4339a848faf68d4b4af79802ac1b49b5d790b62accca5768344bc2a455303",
+        "joern:attestation/next026_gf_power_off_exact_v1/joern.json:sha256:76f0a7a80981834751e29f2d495e7c49c679b47468235e451bfde1cbfa7959b7",
+        "hard-protocol:attestation/next026_gf_power_off_exact_v1/hard_protocol_report.json:sha256:3bf7529765bd656727b2bcbe0cb925c5956a30813a6c681033f028db0a3f27cb"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_power_off",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 160,
       "stock_entry": "00102810",
-      "stock_function": "gf_power_off"
+      "stock_function": "gf_power_off",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 40 matching AArch64 instructions and 160-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct power-off resource/error-path tests. This is static/offline evidence; regulator/GPIO and hardware power sequencing remain unverified."
     },
     {
       "evidence": [
