@@ -1099,13 +1099,14 @@ struct power_supply_battery_ocv_table *
 zte_power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
 				    int temp, int *table_len)
 {
-	int i, best_delta = INT_MAX, best_idx = 0;
+	int i, best_delta = INT_MAX;
+	unsigned char best_idx = 0;
 
 	if (!info->ocv_table[0])
 		return NULL;
 
 	for (i = 0; i < POWER_SUPPLY_OCV_TEMP_MAX; i++) {
-		int delta = abs(temp - info->ocv_temp[i]);
+		int delta = abs(info->ocv_temp[i] - temp);
 
 		if (delta < best_delta) {
 			best_delta = delta;
