@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["HARDWARE_BUS", "STATEFUL_MEMORY", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "aw22xxx_led_imax_cfg",
+    "stock_entry": "0010188c",
+    "source_function": "aw22xxx_led_imax_cfg",
+    "candidate_function": "aw22xxx_led_imax_cfg",
+    "kcfi_required": false,
+    "assembly_only": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "C:/Users/adria/Desktop/drivers/ghidra_nav_repair_20260902/zte_led_imax_cfg_candidate_ghidra_20260902_p7/export/zte_led.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "kcfi": {},
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "Ghidra 12.1.2 emits the exact ELF control-prefixed printk format byte as a C escape in the candidate while the stock import resolves the same byte-backed string through GHIDRA_STRING. The fallback is limited to aw22xxx_led_imax_cfg and is accepted only with equal 112-byte body, equal P-Code shape, exact relocations and Docker reproducibility.",
+    "fallback_evidence": "Fresh candidate export p7 records the repaired void varargs _printk signature and 112-byte function body; the ELF section bytes and relocation-aware assembly remain authoritative."
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_led",
+    "define": [],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

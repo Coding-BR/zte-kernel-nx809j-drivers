@@ -170,7 +170,11 @@ extern int kthread_status;
 #else
 static int kthread_status = 0;
 #endif
+#ifdef ZTE_LED_IMAX_EXACT_ISLAND
+extern char **aw22xxx_cfg_name;
+#else
 static char **aw22xxx_cfg_name = NULL;
+#endif
 
 static const u8 aw22xxx_imax_code[13] = {
 	0x08, 0x00, 0x09, 0x01, 0x02, 0x0b, 0x03, 0x0c, 0x04, 0x0e, 0x05, 0x06, 0x07
@@ -354,14 +358,17 @@ err:
 	return -EIO;
 }
 
+#ifndef ZTE_LED_IMAX_EXACT_ISLAND
 static noinline __used int aw22xxx_led_imax_cfg(struct aw22xxx *aw22xxx)
 {
 	aw22xxx_i2c_write(aw22xxx, 255, 0);
 	aw22xxx_i2c_write(aw22xxx, 11, 7);
 	aw22xxx->imax = 7;
-	pr_info("aw22xxx: %s imax=7\n", __func__);
+	pr_info("%s: nubia set %s imax_level=%d.\n", __func__,
+		aw22xxx_cfg_name[aw22xxx->effect], 7);
 	return 0;
 }
+#endif
 
 static noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 {

@@ -944,6 +944,35 @@ def decompiler_aw22xxx_init_signature_artifact(
     }
 
 
+def decompiler_aw22xxx_imax_string_artifact(
+    function: str,
+    stock: str,
+    candidate: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Normalize the control-prefixed format string emitted by Ghidra."""
+    if function != "aw22xxx_led_imax_cfg":
+        return None
+    stock_literal = 'GHIDRA_STRING["6%s:nubiaset%simax_level=%d.\\n"]'
+    candidate_literal = '"\\x016%s:nubiaset%simax_level=%d.\\n"'
+    if stock_literal not in stock or candidate_literal not in candidate:
+        return None
+    rewritten = candidate.replace(candidate_literal, stock_literal, 1)
+    if rewritten != stock:
+        return None
+    return {
+        "kind": "ghidra_aw22xxx_imax_control_prefixed_string_artifact",
+        "candidate_rewrites": [
+            "candidate C control-prefixed literal -> stock ELF-resolved GHIDRA_STRING",
+        ],
+        "requirement": (
+            "exact aw22xxx_led_imax_cfg body bytes, equal P-Code operation shape "
+            "and independent relocation-aware Assembly gate"
+        ),
+    }
+
+
 def decompiler_symbol_resolution_artifact(
     stock_normalized: str, candidate_normalized: str
 ) -> dict[str, Any] | None:
@@ -2143,6 +2172,13 @@ def compare_function(
             )
             or
             decompiler_aw22xxx_init_signature_artifact(
+                function,
+                stock_normalized,
+                candidate_normalized,
+                stock_shape,
+                candidate_shape,
+            )
+            or decompiler_aw22xxx_imax_string_artifact(
                 function,
                 stock_normalized,
                 candidate_normalized,

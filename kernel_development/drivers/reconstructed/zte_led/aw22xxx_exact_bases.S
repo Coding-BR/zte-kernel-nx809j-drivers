@@ -71,6 +71,10 @@ aw22xxx_exact_bss_base:
 .set write_idx, aw22xxx_exact_bss_base+0x61b4
 .global kthread_status
 .set kthread_status, aw22xxx_exact_bss_base+0x61b8
+.global aw22xxx_cfg_name
+.set aw22xxx_cfg_name, aw22xxx_exact_bss_base+0x61c0
+.global cfg_update_kthread
+.set cfg_update_kthread, aw22xxx_exact_bss_base+0x61c8
 .global aw22xxx_fw_name
 aw22xxx_fw_name:
 .zero 0x40
