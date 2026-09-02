@@ -1851,23 +1851,23 @@
       "category": "async_or_irq",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\052_aw22xxx_recover_work_routine\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next064_aw22xxx_recover_work_routine_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "3c56d68f381b7b397e7f126faecddfe70e935bc86799c9a9248a10d7716cecc3"
+          "sha256": "9ff03dfa7b20137da905ebfba3b0c6e2ebf96c0fabd181766307cf8e74fc506f"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\052_aw22xxx_recover_work_routine\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next064_aw22xxx_recover_work_routine_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "957831791b7efb333946bbff0070fff7d92e6429cee83deea22c49f568cf0440"
+          "sha256": "68dd7dbf79916b4d43a63a333aa3448fcc8e85c885525d38379fb28e8b3cfa2f"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\052_aw22xxx_recover_work_routine\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next064_aw22xxx_recover_work_routine_exact_v1/test.json",
           "role": "test",
-          "sha256": "5e18a30ba0dbbc42084a4187f2d3159ffe562468be7104440840268699971981"
+          "sha256": "b785ffac4a240fc595da531cce9d92b3f5bdb3f7d82cc0b5e59cb0b7377b1418"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0051_001053b8_aw22xxx_recover_work_routine.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0051_001053b8_aw22xxx_recover_work_routine.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next064_aw22xxx_recover_work_routine_exact_v1/stock_ghidra/stock_recover_work_routine.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next064_aw22xxx_recover_work_routine_exact_v1/stock_ghidra/stock_recover_work_routine.c",
       "id": "052_aw22xxx_recover_work_routine",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_recover_work_routine\nEntrada Ghidra: 001053b8\nTamanho stock: 524 bytes\nCategoria: async_or_irq\nAlvo no fonte: zte_led.c:aw22xxx_recover_work_routine\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0051_001053b8_aw22xxx_recover_work_routine.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0051_001053b8_aw22xxx_recover_work_routine.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
@@ -1877,7 +1877,7 @@
       ],
       "source_file": "zte_led.c",
       "source_function": "aw22xxx_recover_work_routine",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 524,
       "stock_entry": "001053b8",
       "stock_function": "aw22xxx_recover_work_routine"

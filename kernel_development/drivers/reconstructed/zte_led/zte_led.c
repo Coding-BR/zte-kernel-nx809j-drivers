@@ -159,8 +159,13 @@ static union {
 	u64 id;
 	char text[32];
 } g_chip_id;
+#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
+u32 lamp_effect;
+u32 fan_effect;
+#else
 static u32 lamp_effect;
 static u32 fan_effect;
+#endif
 
 #ifdef ZTE_LED_PLAY_EXACT_ISLAND
 extern int write_idx;
@@ -364,7 +369,11 @@ extern void aw22xxx_fw_work_routine(struct work_struct *work);
 #endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
+#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
+void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
+#else
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
+#endif
 
 /* ======================================================================
  * I2C and Hardware Operations
@@ -1036,7 +1045,11 @@ static noinline int aw22xxx_set_cfg_run_state(u32 effect)
 	return 0;
 }
 
+#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
+void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
+#else
 static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
+#endif
 {
 	const struct firmware *fw = NULL;
 	const char *name;
@@ -1266,6 +1279,11 @@ __used void aw22xxx_cfg_work_routine(struct work_struct *work)
 }
 #endif
 
+#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
+extern void aw22xxx_recover_work_routine(struct work_struct *work);
+#endif
+
+#ifndef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
 __used void aw22xxx_recover_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, recover_work);
@@ -1298,6 +1316,7 @@ __used void aw22xxx_recover_work_routine(struct work_struct *work)
 	aw22xxx->effect = fan_effect;
 	aw22xxx_cfg_recover_update_wait(aw22xxx);
 }
+#endif
 
 #ifndef ZTE_LED_FW_TIMER_FUNC_EXACT_ISLAND
 __used enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
