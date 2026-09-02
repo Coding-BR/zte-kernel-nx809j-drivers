@@ -117,7 +117,11 @@ extern void *zlog_register_client(struct zlog_module_info *module_info);
 extern void zlog_client_record(void *client, const char *format, ...);
 extern void zlog_client_notify(void *client, u32 event);
 
+#ifdef ZTE_LED_I2C_PROBE_EXACT_ISLAND
+struct zlog_module_info zlog_aw22xxx_dev = {
+#else
 static struct zlog_module_info zlog_aw22xxx_dev = {
+#endif
 	.module_id = 25,
 	.name = "aw22xxx_led",
 	.device = "Unknown",
@@ -229,7 +233,10 @@ extern int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
 #else
 int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
 #endif
-static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
+#ifdef ZTE_LED_I2C_PROBE_EXACT_ISLAND
+extern int aw22xxx_i2c_probe(struct i2c_client *client);
+#endif
+int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
 int aw22xxx_led_init(struct aw22xxx *aw22xxx);
 #ifdef ZTE_LED_PLAY_EXACT_ISLAND
 int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
@@ -304,7 +311,7 @@ noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 }
 #endif
 
-static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
+int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 {
 	struct gpio_desc *desc;
 	pr_info("aw22xxx: %s\n", __func__);
@@ -322,7 +329,7 @@ static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 	return 0;
 }
 
-static noinline int aw22xxx_read_chipid(struct aw22xxx *aw22xxx)
+__used noinline int aw22xxx_read_chipid(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
 	int ret;
@@ -382,7 +389,7 @@ static noinline __used int aw22xxx_led_imax_cfg(struct aw22xxx *aw22xxx)
 }
 #endif
 
-static noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
+__used noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
 
@@ -396,7 +403,7 @@ static noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 	return aw22xxx_i2c_write(aw22xxx, 9, val | 0x10);
 }
 
-static noinline irqreturn_t aw22xxx_irq(int irq, void *data)
+__used noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 {
 	struct aw22xxx *aw22xxx = data;
 	u8 status = 0;
@@ -416,7 +423,7 @@ static noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
-static noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
+__used noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
 {
 	struct aw22xxx *aw22xxx = data;
 	u8 status = 0;
@@ -1164,7 +1171,7 @@ static enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
 	return HRTIMER_NORESTART;
 }
 
-static void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
+__used void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 {
 	hrtimer_init(&aw22xxx->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	aw22xxx->timer.function = aw22xxx_fw_timer_func;
@@ -1180,7 +1187,7 @@ static void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 	hrtimer_start(&aw22xxx->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
 }
 
-static int aw22xxx_alloc_name_array(void)
+__used int aw22xxx_alloc_name_array(void)
 {
 	int i;
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1782,7 +1789,7 @@ static void aw22xxx_set_brightness(struct led_classdev *cdev, enum led_brightnes
 	schedule_work(&aw22xxx->brightness_work);
 }
 
-static noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
+__used noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
 					   struct device_node *np)
 {
 	struct device_node *child;
@@ -1866,7 +1873,7 @@ static const struct proc_ops proc_ops_awid = {
 	.proc_read = get_aw22xxx_id,
 };
 
-static int aw22xxx_create_proc_entry(void)
+__used int aw22xxx_create_proc_entry(void)
 {
 	pr_info("aw22xxx: %s\n", __func__);
 	if (proc_create("driver/colorleds_id", 0444, NULL, &proc_ops_awid)) {
@@ -1881,6 +1888,7 @@ static int aw22xxx_create_proc_entry(void)
  * Probe & Remove
  * ====================================================================== */
 
+#ifndef ZTE_LED_I2C_PROBE_EXACT_ISLAND
 static int aw22xxx_i2c_probe(struct i2c_client *client)
 {
 	struct device *dev = &client->dev;
@@ -2058,6 +2066,7 @@ free_device:
 	devm_kfree(dev, aw22xxx);
 	return ret;
 }
+#endif
 
 static void aw22xxx_i2c_remove(struct i2c_client *client)
 {

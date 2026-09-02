@@ -1821,10 +1821,10 @@ def canonicalize_single_stripped_mutex_key(
     """Match one local static mutex key proved by a single initializer.
 
     LTO/stripping may expose a local ``static struct lock_class_key`` as an
-    anonymous ``.bss+offset`` in stock while Clang retains a
-    ``function.__key`` symbol in the reconstruction.  This rule is deliberately
-    limited to exact instruction parity, one ``__mutex_init`` call, and an
-    adjacent ADRP/ADD pair feeding that call.
+    anonymous ``.bss+offset`` in either module while the other side retains a
+    ``function.__key`` symbol. This rule is deliberately limited to exact
+    instruction parity, one ``__mutex_init`` call, and an adjacent ADRP/ADD
+    pair feeding that call.
     """
     stock = list(stock_relocations)
     candidate = list(candidate_relocations)
@@ -1878,7 +1878,10 @@ def canonicalize_single_stripped_mutex_key(
             continue
         stock_target = stock_typed[0][1]
         candidate_target = candidate_typed[0][1]
-        if not (anonymous_bss(stock_target) and compiler_local_key(candidate_target)):
+        if not (
+            (anonymous_bss(stock_target) and compiler_local_key(candidate_target))
+            or (compiler_local_key(stock_target) and anonymous_bss(candidate_target))
+        ):
             continue
         alias = "<single_local_mutex_class_key>"
         for offset, relocation_type in enumerate(relocation_types):
@@ -1889,8 +1892,8 @@ def canonicalize_single_stripped_mutex_key(
                 "kind": "single_stripped_mutex_key",
                 "reason": (
                     "one exact ADRP/ADD pair feeding the sole __mutex_init maps "
-                    "a stripped local .bss lock_class_key to the compiler-named "
-                    "function.__key"
+                    "the stripped local .bss lock_class_key to the compiler-named "
+                    "function.__key in either stock/candidate direction"
                 ),
                 "stock_target": stock_target,
                 "candidate_target": candidate_target,
@@ -2971,7 +2974,6 @@ def canonicalize_named_bss_to_stripped_mapping(
                 "instruction_indices": matching_indices,
             }
         )
-        break
     return stock, candidate, evidence
 
 
