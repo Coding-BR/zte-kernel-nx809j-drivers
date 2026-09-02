@@ -412,6 +412,7 @@ __used noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 }
 #endif
 
+#ifndef ZTE_LED_IRQ_EXACT_ISLAND
 __used noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 {
 	struct aw22xxx *aw22xxx = data;
@@ -431,6 +432,7 @@ __used noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 	pr_info("aw22xxx: %s exit\n", __func__);
 	return IRQ_HANDLED;
 }
+#endif
 
 #ifndef ZTE_LED_IRQ_V15_EXACT_ISLAND
 __used noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)

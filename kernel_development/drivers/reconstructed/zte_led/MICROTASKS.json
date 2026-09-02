@@ -447,23 +447,23 @@
       "category": "async_or_irq",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\013_aw22xxx_irq\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next035_aw22xxx_irq_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "a2f94d362d9bd094fb343ea80c5c8a6af3d4dd0491c3b53a10a706c87df34261"
+          "sha256": "9276747c8a88c45b500ea5437e8a05c3641f63f31b4e44a57de402e78900e6a4"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\013_aw22xxx_irq\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next035_aw22xxx_irq_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "18737fe37664c648cea1bfd2692189856b9237541ead9aae2e1eb6e446accfed"
+          "sha256": "f075d71b77e5447ecc9152ae39022d1316055a936058fdaebb258474fb383b00"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\013_aw22xxx_irq\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next035_aw22xxx_irq_exact_v1/test.json",
           "role": "test",
-          "sha256": "d85fef0ae2facbc23298b6a0ef5e710cfaea9381ed1dea9bcac5cd25be180610"
+          "sha256": "4c137fa5497b1d3b140d6255875e80e29f698a00598fb235ebdf46c84999ab97"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0012_00102880_aw22xxx_irq.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0012_00102880_aw22xxx_irq.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next035_aw22xxx_irq_exact_v1/candidate_ghidra/pcode/0037_00103530_aw22xxx_irq.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next035_aw22xxx_irq_exact_v1/candidate_ghidra/decompiled/0037_00103530_aw22xxx_irq.c",
       "id": "013_aw22xxx_irq",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_irq\nEntrada Ghidra: 00102880\nTamanho stock: 260 bytes\nCategoria: async_or_irq\nAlvo no fonte: zte_led.c:aw22xxx_irq\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0012_00102880_aw22xxx_irq.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0012_00102880_aw22xxx_irq.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
