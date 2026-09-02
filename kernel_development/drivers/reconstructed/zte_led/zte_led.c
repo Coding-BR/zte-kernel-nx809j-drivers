@@ -224,7 +224,11 @@ extern int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
 #else
 int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
 #endif
+#ifdef ZTE_LED_I2C_READ_EXACT_ISLAND
+extern int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
+#else
 int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
+#endif
 static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
 int aw22xxx_led_init(struct aw22xxx *aw22xxx);
 #ifdef ZTE_LED_PLAY_EXACT_ISLAND
@@ -274,6 +278,7 @@ noinline int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val)
 }
 #endif
 
+#ifndef ZTE_LED_I2C_READ_EXACT_ISLAND
 noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 {
 	struct i2c_client *client = aw22xxx->i2c;
@@ -297,6 +302,7 @@ noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 	}
 	return ret;
 }
+#endif
 
 static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 {

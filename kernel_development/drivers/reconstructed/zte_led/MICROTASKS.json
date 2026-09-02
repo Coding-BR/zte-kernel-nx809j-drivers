@@ -195,23 +195,23 @@
       "category": "user_abi",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\006_aw22xxx_i2c_read\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next028_aw22xxx_i2c_read_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "447d10c925e3c72d46963cdcc0c9b6566277656e8ddf73a5e1206f0f785e2117"
+          "sha256": "cd4b924e01e7d57cc1d583ff77e7cb8f90d21c36089dc8db31da93be1a2aaed0"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\006_aw22xxx_i2c_read\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next028_aw22xxx_i2c_read_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "2b46a02f38b1d2d173066e19b6aff474503dd87b448ee6c4de3910a1595129b8"
+          "sha256": "015f0d109d8bddb471c596cec775c2b32ceb985bcd887cd6200b70feb43237c6"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\006_aw22xxx_i2c_read\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next028_aw22xxx_i2c_read_exact_v1/test.json",
           "role": "test",
-          "sha256": "c423b433d512227dcd5b593f8e4e2097c07772fa61f7cb4ace27108c1e966b78"
+          "sha256": "ecfad31c087cd3e4bb7552b3646c8b8b237ea55f1ee6c24d1c50b9148fd4c725"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0005_00101a2c_aw22xxx_i2c_read.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0005_00101a2c_aw22xxx_i2c_read.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next028_aw22xxx_i2c_read_exact_v1/candidate_ghidra/pcode/0009_00102854_aw22xxx_i2c_read.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next028_aw22xxx_i2c_read_exact_v1/candidate_ghidra/decompiled/0009_00102854_aw22xxx_i2c_read.c",
       "id": "006_aw22xxx_i2c_read",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_i2c_read\nEntrada Ghidra: 00101a2c\nTamanho stock: 312 bytes\nCategoria: user_abi\nAlvo no fonte: zte_led.c:aw22xxx_i2c_read\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0005_00101a2c_aw22xxx_i2c_read.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0005_00101a2c_aw22xxx_i2c_read.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [

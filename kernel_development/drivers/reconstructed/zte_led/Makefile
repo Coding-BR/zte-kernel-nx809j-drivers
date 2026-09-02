@@ -1,6 +1,6 @@
 obj-m += zte_led.o
-zte_led-y := aw22xxx_exact_bases.o aw22xxx_fw_loaded_exact.o aw22xxx_init_cfg_update_array_exact.o aw22xxx_set_breath_data_exact.o aw22xxx_play_exact.o aw22xxx_led_imax_cfg_exact.o aw22xxx_i2c_write_exact.o zte_led_main.o
-ccflags-y += -DZTE_LED_SET_BREATH_DATA_EXACT_ISLAND -DZTE_LED_PLAY_EXACT_ISLAND -DZTE_LED_IMAX_EXACT_ISLAND -DZTE_LED_I2C_WRITE_EXACT_ISLAND
+zte_led-y := aw22xxx_exact_bases.o aw22xxx_fw_loaded_exact.o aw22xxx_init_cfg_update_array_exact.o aw22xxx_set_breath_data_exact.o aw22xxx_play_exact.o aw22xxx_led_imax_cfg_exact.o aw22xxx_i2c_write_exact.o aw22xxx_i2c_read_exact.o zte_led_main.o
+ccflags-y += -DZTE_LED_SET_BREATH_DATA_EXACT_ISLAND -DZTE_LED_PLAY_EXACT_ISLAND -DZTE_LED_IMAX_EXACT_ISLAND -DZTE_LED_I2C_WRITE_EXACT_ISLAND -DZTE_LED_I2C_READ_EXACT_ISLAND
 AFLAGS_aw22xxx_exact_bases.o := -g0 -I$(src)
 AFLAGS_aw22xxx_fw_loaded_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_init_cfg_update_array_exact.o := -g0 -I$(src)
@@ -8,3 +8,4 @@ AFLAGS_aw22xxx_set_breath_data_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_play_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_led_imax_cfg_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_i2c_write_exact.o := -g0 -I$(src)
+AFLAGS_aw22xxx_i2c_read_exact.o := -g0 -I$(src)
