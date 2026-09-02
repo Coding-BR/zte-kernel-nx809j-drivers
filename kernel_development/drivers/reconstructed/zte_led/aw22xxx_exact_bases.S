@@ -13,6 +13,10 @@ aw22xxx_exact_data_base:
 .global aw22xxx_exact_rodata_base
 aw22xxx_exact_rodata_base:
 .incbin "exact_stock_sections/stock_rodata.bin"
+.global aw22xxx_imax_code
+.type aw22xxx_imax_code, %object
+.set aw22xxx_imax_code, aw22xxx_exact_rodata_base+0x140
+.size aw22xxx_imax_code, 0xd
 .global proc_ops_awid
 .type proc_ops_awid, %object
 .set proc_ops_awid, aw22xxx_exact_rodata_base+0x150

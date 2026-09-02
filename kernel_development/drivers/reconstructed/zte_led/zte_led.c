@@ -180,9 +180,13 @@ extern char **aw22xxx_cfg_name;
 static char **aw22xxx_cfg_name = NULL;
 #endif
 
+#ifdef ZTE_LED_IMAX_STORE_EXACT_ISLAND
+extern const u8 aw22xxx_imax_code[13];
+#else
 static const u8 aw22xxx_imax_code[13] = {
 	0x08, 0x00, 0x09, 0x01, 0x02, 0x0b, 0x03, 0x0c, 0x04, 0x0e, 0x05, 0x06, 0x07
 };
+#endif
 
 static const char * const aw22xxx_imax_name[] = {
 	"AW22XXX_IMAX_2mA", "AW22XXX_IMAX_3mA", "AW22XXX_IMAX_4mA",
@@ -280,6 +284,11 @@ extern ssize_t aw22xxx_hwen_store(struct device *dev,
 #ifdef ZTE_LED_IMAX_SHOW_EXACT_ISLAND
 extern ssize_t aw22xxx_imax_show(struct device *dev,
 				 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_IMAX_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_imax_store(struct device *dev,
+				  struct device_attribute *attr, const char *buf,
+				  size_t count);
 #endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
@@ -1529,6 +1538,7 @@ static ssize_t aw22xxx_imax_show(struct device *dev, struct device_attribute *at
 }
 #endif
 
+#ifndef ZTE_LED_IMAX_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_imax_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1551,6 +1561,7 @@ static ssize_t aw22xxx_imax_store(struct device *dev, struct device_attribute *a
 	aw22xxx_i2c_write(aw22xxx, 11, code);
 	return count;
 }
+#endif
 
 static ssize_t aw22xxx_para_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
