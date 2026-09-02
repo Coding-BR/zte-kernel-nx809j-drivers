@@ -192,6 +192,9 @@ static const char * const aw22xxx_imax_name[] = {
 	"AW22XXX_IMAX_75mA"
 };
 
+#ifdef ZTE_LED_REG_SHOW_EXACT_ISLAND
+extern const u8 aw22xxx_reg_access[256];
+#else
 static const u8 aw22xxx_reg_access[256] = {
 	[0x00] = 0x01, [0x01] = 0x03, [0x02] = 0x03, [0x03] = 0x03, [0x04] = 0x03, [0x05] = 0x03, [0x06] = 0x03, [0x07] = 0x01,
 	[0x08] = 0x03, [0x09] = 0x03, [0x0A] = 0x03, [0x0B] = 0x03, [0x0C] = 0x03, [0x0D] = 0x03, [0x0E] = 0x01, [0x0F] = 0x03,
@@ -201,6 +204,7 @@ static const u8 aw22xxx_reg_access[256] = {
 	[0x38] = 0x03, [0x39] = 0x03,
 	[0xFF] = 0x03
 };
+#endif
 
 #ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
 extern u8 aw22xxx_blink_cfg[148];
@@ -254,6 +258,10 @@ extern ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2);
 #endif
 #ifdef ZTE_LED_PLAY_EXACT_ISLAND
 extern int aw22xxx_play(void *data);
+#endif
+#ifdef ZTE_LED_REG_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_reg_show(struct device *dev,
+				struct device_attribute *attr, char *buf);
 #endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
@@ -1578,12 +1586,13 @@ out:
 	return ret;
 }
 
+#ifndef ZTE_LED_REG_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
-	u8 reg_255 = 0;
 	u8 val = 0;
+	u8 reg_255 = 0;
 	int i;
 	size_t len = 0;
 
@@ -1594,9 +1603,6 @@ static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *att
 			continue;
 
 		aw22xxx_i2c_read(aw22xxx, i, &val);
-		if (PAGE_SIZE - len <= 32)
-			break;
-
 		if (snprintf(buf + len, PAGE_SIZE - len,
 			     "reg:0x%02x=0x%02x \n", i, val) >= PAGE_SIZE - len)
 			return -EFAULT;
@@ -1604,6 +1610,7 @@ static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *att
 	}
 	return len;
 }
+#endif
 
 static ssize_t aw22xxx_reg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
