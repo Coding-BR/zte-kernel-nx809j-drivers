@@ -1106,7 +1106,7 @@ __used void aw22xxx_task_work(struct work_struct *work)
 	}
 }
 
-static void aw22xxx_fw_work_routine(struct work_struct *work)
+__used void aw22xxx_fw_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, fw_work);
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1116,7 +1116,7 @@ static void aw22xxx_fw_work_routine(struct work_struct *work)
 				GFP_KERNEL, aw22xxx, aw22xxx_fw_loaded);
 }
 
-static void aw22xxx_cfg_work_routine(struct work_struct *work)
+__used void aw22xxx_cfg_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, cfg_work);
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1143,7 +1143,7 @@ static void aw22xxx_cfg_work_routine(struct work_struct *work)
 				GFP_KERNEL, aw22xxx, aw22xxx_cfg_loaded);
 }
 
-static void aw22xxx_recover_work_routine(struct work_struct *work)
+__used void aw22xxx_recover_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, recover_work);
 	u8 val = 0;
@@ -1176,7 +1176,7 @@ static void aw22xxx_recover_work_routine(struct work_struct *work)
 	aw22xxx_cfg_recover_update_wait(aw22xxx);
 }
 
-static enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
+__used enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
 {
 	struct aw22xxx *aw22xxx = container_of(timer, struct aw22xxx, timer);
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1184,6 +1184,7 @@ static enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
 	return HRTIMER_NORESTART;
 }
 
+#ifndef ZTE_LED_FW_INIT_EXACT_ISLAND
 __used void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 {
 	hrtimer_init(&aw22xxx->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
@@ -1199,6 +1200,7 @@ __used void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 	pr_info("aw22xxx: %s starting timer\n", __func__);
 	hrtimer_start(&aw22xxx->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
 }
+#endif
 
 #ifndef ZTE_LED_ALLOC_NAME_ARRAY_EXACT_ISLAND
 __used int aw22xxx_alloc_name_array(void)
