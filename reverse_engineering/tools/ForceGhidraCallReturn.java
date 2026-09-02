@@ -1,5 +1,5 @@
-// Marks directly observed call sites as returning when an imported ELF symbol
-// was incorrectly inferred as non-returning by Ghidra.
+// Marks directly observed call sites as ordinary calls when an imported ELF
+// symbol was incorrectly inferred as a call terminator by Ghidra.
 // @category AndroidKernel
 
 import ghidra.app.script.GhidraScript;
@@ -38,7 +38,10 @@ public class ForceGhidraCallReturn extends GhidraScript {
                 }
                 for (Reference reference : instruction.getReferencesFrom()) {
                     if (reference.getReferenceType().isCall()) {
-                        instruction.setFlowOverride(FlowOverride.CALL_RETURN);
+                        // CALL_RETURN leaves AArch64 BL classified as
+                        // CALL_TERMINATOR in Ghidra 12.1.2.  CALL is the
+                        // effective returning-flow repair for this case.
+                        instruction.setFlowOverride(FlowOverride.CALL);
                         changed++;
                         break;
                     }

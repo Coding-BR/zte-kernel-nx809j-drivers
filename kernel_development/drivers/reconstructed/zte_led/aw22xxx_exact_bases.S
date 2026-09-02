@@ -63,6 +63,14 @@ aw22xxx_exact_bss_base:
 .zero 0x61d8
 .global duration
 .set duration, aw22xxx_exact_bss_base+0x4
+.global user_para_data
+.set user_para_data, aw22xxx_exact_bss_base+0x5
+.global read_idx
+.set read_idx, aw22xxx_exact_bss_base+0x61b0
+.global write_idx
+.set write_idx, aw22xxx_exact_bss_base+0x61b4
+.global kthread_status
+.set kthread_status, aw22xxx_exact_bss_base+0x61b8
 .global aw22xxx_fw_name
 aw22xxx_fw_name:
 .zero 0x40

@@ -150,16 +150,26 @@ static union {
 static u32 lamp_effect;
 static u32 fan_effect;
 
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+extern int write_idx;
+extern int read_idx;
+extern int user_para_data[25000];
+#else
 static int write_idx = 0;
 static int read_idx = 0;
 static int user_para_data[25000];
+#endif
 #ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
 extern u8 duration;
 #else
 static u8 duration = 0;
 #endif
 static struct task_struct *cfg_update_kthread = NULL;
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+extern int kthread_status;
+#else
 static int kthread_status = 0;
+#endif
 static char **aw22xxx_cfg_name = NULL;
 
 static const u8 aw22xxx_imax_code[13] = {
@@ -209,12 +219,19 @@ int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
 int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
 static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
 int aw22xxx_led_init(struct aw22xxx *aw22xxx);
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
+#else
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
+#endif
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
 static void aw22xxx_fw_loaded_c(const struct firmware *fw, void *context);
 extern void aw22xxx_fw_loaded(const struct firmware *fw, void *context);
 #ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
 extern ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2);
+#endif
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+extern int aw22xxx_play(void *data);
 #endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
@@ -451,6 +468,7 @@ int aw22xxx_led_init(struct aw22xxx *aw22xxx)
 	return 0;
 }
 
+#ifndef ZTE_LED_PLAY_EXACT_ISLAND
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
@@ -474,6 +492,7 @@ static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)
 
 	return 0;
 }
+#endif
 
 /* ======================================================================
  * Firmware Loading & Configuration
@@ -1221,6 +1240,7 @@ static ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2)
 }
 #endif
 
+#ifndef ZTE_LED_PLAY_EXACT_ISLAND
 static int aw22xxx_play(void *data)
 {
 	struct aw22xxx *aw22xxx = data;
@@ -1255,6 +1275,7 @@ static int aw22xxx_play(void *data)
 
 	return 0;
 }
+#endif
 
 /* ======================================================================
  * Sysfs Callbacks
