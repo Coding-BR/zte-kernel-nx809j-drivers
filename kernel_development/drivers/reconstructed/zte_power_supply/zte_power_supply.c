@@ -102,7 +102,12 @@ static_assert(offsetof(struct power_supply_attr, dev_attr) == 0x28);
 static_assert(offsetof(struct power_supply_attr, text_values) == 0x48);
 
 static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf);
+#ifdef ZTE_POWER_SUPPLY_EXACT_ISLAND
+extern ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr,
+							const char *buf, size_t count);
+#else
 static ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#endif
 
 #ifdef ZTE_POWER_SUPPLY_HOST_TEST
 #define _ZTE_PSY_ATTR(_name, _text, _len) \
@@ -161,7 +166,7 @@ static struct power_supply_attr zte_power_supply_attrs[] = {
 		.attr_name = #_name, \
 	}
 
-static struct power_supply_attr zte_power_supply_attrs[] = {
+struct power_supply_attr zte_power_supply_attrs[] = {
 	ZTE_PSY_CUSTOM_ATTR(0, USB_HC),
 	ZTE_PSY_CUSTOM_ATTR(1, USB_OTG),
 	ZTE_PSY_CUSTOM_ATTR(2, CHARGE_ENABLED),
@@ -252,6 +257,7 @@ static ssize_t zte_power_supply_show_property(struct device *dev, struct device_
 	return sprintf(buf, "%d\n", val.intval);
 }
 
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 static ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
@@ -279,6 +285,7 @@ static ssize_t zte_power_supply_store_property(struct device *dev, struct device
 
 	return count;
 }
+#endif
 
 /* Visibility Callback */
 static umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribute *attr, int attrno)

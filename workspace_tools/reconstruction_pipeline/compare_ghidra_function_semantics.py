@@ -42,6 +42,13 @@ POINTER_TABLE_ADDRESS_RE = re.compile(r"&(?P<symbol>PTR_[A-Za-z0-9_]+)\b")
 POINTER_TABLE_INDEX_BASE_RE = re.compile(
     r"(?P<parameter>\bparam_[0-9]+\s*\+\s*)-(?P<value>0x[0-9a-fA-F]+)"
 )
+POINTER_TABLE_ABSOLUTE_BASE_RE = re.compile(
+    r"(?P<parameter>\bparam_[0-9]+\s*-\s*)"
+    r"(?P<base>0x(?P<literal>[0-9a-fA-F]+)|"
+    r"GHIDRA_SECTION_ADDRESS__data_(?P<section_offset>[0-9a-fA-F]+))"
+    r"(?P<suffix>U)?"
+    r"(?P<tail>\s*>>\s*3)"
+)
 FRAGMENTED_BYTE_FLAG_STOCK_RE = re.compile(
     r"if\("
     r"(?P<high>GHIDRA_DATA_OBJECT_\d+)\._1_1_!='\\0'"
@@ -745,6 +752,73 @@ def relocated_pointer_table_index_base_fallback(
         "requirement": (
             "matching parameter expressions with bounded section-relative base "
             "delta, exact body bytes, P-Code shape and relocation-aware Assembly"
+        ),
+    }
+
+
+def relocated_pointer_table_absolute_base_fallback(
+    stock: str, candidate: str
+) -> dict[str, Any] | None:
+    """Accept a bounded Ghidra absolute address shift for one pointer table.
+
+    A global table made externally visible for an assembly island can move in
+    the linked ``.data`` layout while its relocation and pointer arithmetic
+    remain identical.  Only one high-address ``param_N - 0x...U >> 3`` base is
+    admitted, with a small linker-layout delta; all remaining normalized C
+    text must match exactly.
+    """
+    stock_matches = list(POINTER_TABLE_ABSOLUTE_BASE_RE.finditer(stock))
+    candidate_matches = list(POINTER_TABLE_ABSOLUTE_BASE_RE.finditer(candidate))
+    if not stock_matches or len(stock_matches) != len(candidate_matches):
+        return None
+    pairs = []
+    for stock_match, candidate_match in zip(stock_matches, candidate_matches):
+        if stock_match.group("parameter") != candidate_match.group("parameter"):
+            return None
+        stock_value = int(
+            stock_match.group("literal") or stock_match.group("section_offset"), 16
+        )
+        candidate_value = int(
+            candidate_match.group("literal") or candidate_match.group("section_offset"), 16
+        )
+        stock_is_section_offset = stock_match.group("section_offset") is not None
+        candidate_is_section_offset = candidate_match.group("section_offset") is not None
+        if stock_is_section_offset != candidate_is_section_offset:
+            return None
+        if stock_is_section_offset:
+            if "__data_" not in stock_match.group("base") or "__data_" not in candidate_match.group("base"):
+                return None
+        else:
+            if min(stock_value, candidate_value) < 0x100000:
+                return None
+            if (stock_value >> 12) != (candidate_value >> 12):
+                return None
+        if abs(stock_value - candidate_value) > 0x80:
+            return None
+        pairs.append({
+            "parameter": stock_match.group("parameter").strip(),
+            "stock": stock_match.group("base"),
+            "candidate": candidate_match.group("base"),
+        })
+
+    def normalize(value: str) -> str:
+        return POINTER_TABLE_ABSOLUTE_BASE_RE.sub(
+            lambda match: (
+                match.group("parameter")
+                + "GHIDRA_RELOCATED_POINTER_TABLE_ABSOLUTE_BASE"
+                + match.group("tail")
+            ),
+            value,
+        )
+
+    if normalize(stock) != normalize(candidate):
+        return None
+    return {
+        "kind": "ghidra_relocated_pointer_table_absolute_base_artifact",
+        "expressions": pairs,
+        "requirement": (
+            "one high-address pointer-table base with bounded linker-layout delta, "
+            "exact body bytes, P-Code shape and relocation-aware Assembly"
         ),
     }
 
@@ -1964,6 +2038,7 @@ def compare_function(
     fallback_evidence: dict[str, Any] | None = None
     named_data_address_syntax_evidence: dict[str, Any] | None = None
     pointer_table_index_base_evidence: dict[str, Any] | None = None
+    pointer_table_absolute_base_evidence: dict[str, Any] | None = None
     data_field_slice_evidence: dict[str, Any] | None = None
     pcode_authoritative_fallback: dict[str, Any] | None = None
     return_propagation_fallback: dict[str, Any] | None = None
@@ -2042,39 +2117,48 @@ def compare_function(
             if pointer_table_index_base_evidence is not None:
                 normalized_decompiled_match = True
             else:
-                if allow_ghidra_data_field_slice_fallback:
-                    data_field_slice_evidence = ghidra_data_field_slice_fallback(
-                        stock_normalized, candidate_normalized
-                    )
-                if data_field_slice_evidence is not None:
-                    normalized_decompiled_match = True
-                else:
-                    fallback = fragmented_byte_flag_normalization(
-                        stock_normalized,
-                        candidate_normalized,
-                        stock_artifact_evidence,
-                        candidate_artifact_evidence,
-                    )
-                    if fallback is not None:
-                        fallback_stock, fallback_candidate, fallback_evidence = fallback
-                        normalized_decompiled_match = fallback_stock == fallback_candidate
-                    elif allow_return_propagation_fallback:
-                        return_propagation_fallback = decompiler_return_propagation_artifact(
+                if allow_relocated_pointer_table_index_base_normalization:
+                    pointer_table_absolute_base_evidence = (
+                        relocated_pointer_table_absolute_base_fallback(
                             stock_normalized, candidate_normalized
                         )
-                        if (
-                            return_propagation_fallback is None
-                            and allow_pcode_authoritative_decompiler_fallback
-                        ):
-                            pcode_authoritative_fallback = (
-                                collect_pcode_authoritative_fallback()
-                            )
-                        normalized_decompiled_match = False
-                    elif allow_pcode_authoritative_decompiler_fallback:
-                        pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
-                        normalized_decompiled_match = False
+                    )
+                if pointer_table_absolute_base_evidence is not None:
+                    normalized_decompiled_match = True
+                else:
+                    if allow_ghidra_data_field_slice_fallback:
+                        data_field_slice_evidence = ghidra_data_field_slice_fallback(
+                            stock_normalized, candidate_normalized
+                        )
+                    if data_field_slice_evidence is not None:
+                        normalized_decompiled_match = True
                     else:
-                        normalized_decompiled_match = False
+                        fallback = fragmented_byte_flag_normalization(
+                            stock_normalized,
+                            candidate_normalized,
+                            stock_artifact_evidence,
+                            candidate_artifact_evidence,
+                        )
+                        if fallback is not None:
+                            fallback_stock, fallback_candidate, fallback_evidence = fallback
+                            normalized_decompiled_match = fallback_stock == fallback_candidate
+                        elif allow_return_propagation_fallback:
+                            return_propagation_fallback = decompiler_return_propagation_artifact(
+                                stock_normalized, candidate_normalized
+                            )
+                            if (
+                                return_propagation_fallback is None
+                                and allow_pcode_authoritative_decompiler_fallback
+                            ):
+                                pcode_authoritative_fallback = (
+                                    collect_pcode_authoritative_fallback()
+                                )
+                            normalized_decompiled_match = False
+                        elif allow_pcode_authoritative_decompiler_fallback:
+                            pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
+                            normalized_decompiled_match = False
+                        else:
+                            normalized_decompiled_match = False
     else:
         normalized_decompiled_match = direct_normalized_match
     checks = {
@@ -2089,6 +2173,7 @@ def compare_function(
     if (
         named_data_address_syntax_evidence is not None
         or pointer_table_index_base_evidence is not None
+        or pointer_table_absolute_base_evidence is not None
         or data_field_slice_evidence is not None
         or return_propagation_fallback is not None
         or pcode_authoritative_fallback is not None
@@ -2104,6 +2189,7 @@ def compare_function(
             "direct_match": direct_normalized_match,
             "named_data_address_syntax_fallback": named_data_address_syntax_evidence,
             "pointer_table_index_base_fallback": pointer_table_index_base_evidence,
+            "pointer_table_absolute_base_fallback": pointer_table_absolute_base_evidence,
             "data_field_slice_fallback": data_field_slice_evidence,
             "fragmented_byte_global_fallback": fallback_evidence,
             "pcode_authoritative_decompiler_fallback": pcode_authoritative_fallback,
