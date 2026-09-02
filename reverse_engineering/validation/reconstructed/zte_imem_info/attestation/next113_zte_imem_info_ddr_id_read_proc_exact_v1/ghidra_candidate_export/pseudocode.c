@@ -1,0 +1,241 @@
+/* 00100134 ddr_id_read_proc */
+
+undefined8 ddr_id_read_proc(undefined8 param_1)
+
+{
+  uint uVar1;
+  uint uVar2;
+  long lVar3;
+  undefined *puVar4;
+  int iVar5;
+  char *pcVar6;
+  char *pcVar7;
+  
+  lVar3 = of_find_compatible_node(0,0,"qcom,msm-imem-ddr_memory_manufacture");
+  if (lVar3 == 0) {
+    puVar4 = &DAT_001008ca;
+LAB_0010018c:
+    _printk(puVar4,"qcom,msm-imem-ddr_memory_manufacture");
+switchD_00100284_caseD_a:
+    pcVar6 = "UNKNOWN";
+  }
+  else {
+    vendor_imem_info_addr = (uint *)of_iomap(lVar3,0);
+    if (vendor_imem_info_addr == (uint *)0x0) {
+      puVar4 = &DAT_0010085b;
+      goto LAB_0010018c;
+    }
+    uVar1 = *vendor_imem_info_addr;
+    _printk(&DAT_0010084b,"qcom,msm-imem-ddr_memory_manufacture",uVar1);
+    pcVar6 = "SAMSUNG";
+    switch(uVar1) {
+    case 1:
+      break;
+    case 2:
+      pcVar6 = "QIMONDA";
+      break;
+    case 3:
+      pcVar6 = "ELPIDA";
+      break;
+    case 4:
+      pcVar6 = "ETRON";
+      break;
+    case 5:
+      pcVar6 = "NANYA";
+      break;
+    case 6:
+      pcVar6 = "HYNIX";
+      break;
+    case 7:
+      pcVar6 = "MOSEL";
+      break;
+    case 8:
+      pcVar6 = "WINBOND";
+      break;
+    case 9:
+      pcVar6 = "ESMT";
+      break;
+    case 10:
+      goto switchD_00100284_caseD_a;
+    case 0xb:
+      pcVar6 = "SPANSION";
+      break;
+    case 0xc:
+      pcVar6 = "SST";
+      break;
+    case 0xd:
+      pcVar6 = "ZMOS";
+      break;
+    case 0xe:
+      pcVar6 = "INTEL";
+      break;
+    default:
+      if (uVar1 == 0xfe) {
+        pcVar6 = "NUMONYX";
+      }
+      else {
+        if (uVar1 != 0xff) goto switchD_00100284_caseD_a;
+        pcVar6 = "MICRON";
+      }
+    }
+  }
+  lVar3 = of_find_compatible_node(0,0,"qcom,msm-imem-ddr_memory_type");
+  if (lVar3 == 0) {
+    puVar4 = &DAT_001008ca;
+LAB_001001dc:
+    _printk(puVar4,"qcom,msm-imem-ddr_memory_type");
+LAB_001001e8:
+    pcVar7 = "UNKNOWN";
+  }
+  else {
+    vendor_imem_info_addr = (uint *)of_iomap(lVar3,0);
+    if (vendor_imem_info_addr == (uint *)0x0) {
+      puVar4 = &DAT_0010085b;
+      goto LAB_001001dc;
+    }
+    uVar1 = *vendor_imem_info_addr;
+    _printk(&DAT_0010084b,"qcom,msm-imem-ddr_memory_type",uVar1);
+    if (9 < uVar1) goto LAB_001001e8;
+    pcVar7 = (&PTR_s_LPDDR1_00100678)[uVar1];
+  }
+  lVar3 = of_find_compatible_node(0,0,"qcom,msm-imem-ddr_memory_size");
+  if (lVar3 == 0) {
+    puVar4 = &DAT_001008ca;
+  }
+  else {
+    vendor_imem_info_addr = (uint *)of_iomap(lVar3,0);
+    if (vendor_imem_info_addr != (uint *)0x0) {
+      uVar2 = *vendor_imem_info_addr;
+      _printk(&DAT_0010084b,"qcom,msm-imem-ddr_memory_size",uVar2);
+      uVar1 = uVar2 + 0x3ff;
+      if (-1 < (int)uVar2) {
+        uVar1 = uVar2;
+      }
+      iVar5 = (int)uVar1 >> 10;
+      goto LAB_001002f4;
+    }
+    puVar4 = &DAT_0010085b;
+  }
+  _printk(puVar4,"qcom,msm-imem-ddr_memory_size");
+  iVar5 = 0;
+LAB_001002f4:
+  seq_printf(param_1,"%s-NA-NA-%dGB-%s\n",pcVar6,iVar5,pcVar7);
+  return 0;
+}
+
+
+
+/* 001003d4 request_board_id */
+
+undefined4 request_board_id(void)
+
+{
+  undefined4 uVar1;
+  long lVar2;
+  undefined *puVar3;
+  
+  lVar2 = of_find_compatible_node(0,0,"qcom,msm-imem-board-id");
+  if (lVar2 == 0) {
+    puVar3 = &DAT_001009da;
+  }
+  else {
+    vendor_imem_info_addr = (undefined4 *)of_iomap(lVar2,0);
+    if (vendor_imem_info_addr != (undefined4 *)0x0) {
+      uVar1 = *vendor_imem_info_addr;
+      _printk(&DAT_00100989,"qcom,msm-imem-board-id",uVar1);
+      return uVar1;
+    }
+    puVar3 = &DAT_00100995;
+    vendor_imem_info_addr = (undefined4 *)0x0;
+  }
+  _printk(puVar3,"qcom,msm-imem-board-id");
+  return 0xffffffff;
+}
+
+
+
+/* 0010046c ddr_id_proc_open */
+
+void ddr_id_proc_open(undefined8 param_1,undefined8 param_2)
+
+{
+  single_open(param_2,ddr_id_read_proc,0);
+  return;
+}
+
+
+
+/* 0010049c board_id_proc_open */
+
+void board_id_proc_open(undefined8 param_1,undefined8 param_2)
+
+{
+  single_open(param_2,board_id_read_proc,0);
+  return;
+}
+
+
+
+/* 001004cc board_id_read_proc */
+
+undefined8 board_id_read_proc(undefined8 param_1)
+
+{
+  long lVar1;
+  undefined *puVar2;
+  undefined4 uVar3;
+  
+  lVar1 = of_find_compatible_node(0,0,"qcom,msm-imem-board-id");
+  if (lVar1 == 0) {
+    puVar2 = &DAT_001009da;
+  }
+  else {
+    vendor_imem_info_addr = (undefined4 *)of_iomap(lVar1,0);
+    if (vendor_imem_info_addr != (undefined4 *)0x0) {
+      uVar3 = *vendor_imem_info_addr;
+      _printk(&DAT_00100989,"qcom,msm-imem-board-id",uVar3);
+      goto LAB_00100554;
+    }
+    puVar2 = &DAT_00100995;
+  }
+  _printk(puVar2,"qcom,msm-imem-board-id");
+  uVar3 = 0xffffffff;
+LAB_00100554:
+  seq_printf(param_1,&DAT_00100962,uVar3);
+  return 0;
+}
+
+
+
+/* 00100a2c init_module */
+
+undefined8 init_module(void)
+
+{
+  long lVar1;
+  
+  lVar1 = proc_mkdir("vendor_imem",0);
+  if (lVar1 != 0) {
+    lVar1 = proc_create("vendor_imem/ddr_id",0x124,0,&ddr_id_proc_fops);
+    if (lVar1 != 0) {
+      lVar1 = proc_create("vendor_imem/board_id",0x124,0,board_id_proc_fops);
+      if (lVar1 != 0) {
+        lVar1 = proc_create("driver/ddr_id",0x124,0,&ddr_id_proc_fops);
+        if (lVar1 != 0) {
+          lVar1 = proc_create("driver/board_id",0x124,0,board_id_proc_fops);
+          if (lVar1 != 0) {
+            return 0;
+          }
+          remove_proc_entry("driver/ddr_id",0);
+        }
+        remove_proc_entry("vendor_imem/board_id",0);
+      }
+      remove_proc_entry("vendor_imem/ddr_id",0);
+    }
+    remove_proc_entry("vendor_imem",0);
+  }
+  return 0;
+}
+
+
+

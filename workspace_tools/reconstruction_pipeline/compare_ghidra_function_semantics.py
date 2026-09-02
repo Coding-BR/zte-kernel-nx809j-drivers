@@ -26,7 +26,8 @@ SOFTWARE_BREAKPOINT_CONTEXT_RE = re.compile(
     r"0x[0-9a-fA-F]+(\s*\))"
 )
 LOCAL_LABEL_RE = re.compile(
-    r"\b(?:LAB_[0-9a-fA-F]+|code_r0x[0-9a-fA-F]+|joined_r0x[0-9a-fA-F]+)\b"
+    r"\b(?:LAB_[0-9a-fA-F]+|switchD_[0-9a-fA-F]+_caseD_[0-9a-fA-F]+|"
+    r"code_r0x[0-9a-fA-F]+|joined_r0x[0-9a-fA-F]+)\b"
 )
 ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
