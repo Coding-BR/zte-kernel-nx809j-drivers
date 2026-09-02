@@ -432,6 +432,7 @@ __used noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+#ifndef ZTE_LED_IRQ_V15_EXACT_ISLAND
 __used noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
 {
 	struct aw22xxx *aw22xxx = data;
@@ -467,6 +468,7 @@ __used noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
 	}
 	return IRQ_HANDLED;
 }
+#endif
 
 int aw22xxx_led_init(struct aw22xxx *aw22xxx)
 {
