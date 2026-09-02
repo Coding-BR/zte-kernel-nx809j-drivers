@@ -1134,16 +1134,15 @@ zte_devm_power_supply_get_by_phandle(struct device *dev, const char *property)
 {
 	struct zte_power_supply **devres_ptr;
 	struct zte_power_supply *psy;
-	struct device_node *np = dev->of_node;
 
-	if (!np)
+	if (!dev->of_node)
 		return ERR_PTR(-ENODEV);
 
 	devres_ptr = devres_alloc(zte_devm_power_supply_put, sizeof(*devres_ptr), GFP_KERNEL);
 	if (!devres_ptr)
 		return ERR_PTR(-ENOMEM);
 
-	psy = zte_power_supply_get_by_phandle(np, property);
+	psy = zte_power_supply_get_by_phandle(dev->of_node, property);
 	if (IS_ERR_OR_NULL(psy)) {
 		devres_free(devres_ptr);
 		return psy;
