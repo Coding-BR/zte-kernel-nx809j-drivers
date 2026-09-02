@@ -87,7 +87,7 @@ static_assert(offsetof(struct zte_power_supply, use_cnt) == 0x458);
 
 struct class *zte_power_supply_class;
 EXPORT_SYMBOL_GPL(zte_power_supply_class);
-static ATOMIC_NOTIFIER_HEAD(zte_power_supply_notifier);
+ATOMIC_NOTIFIER_HEAD(zte_power_supply_notifier);
 
 struct power_supply_attr {
 	const char *prop_name;
@@ -406,13 +406,13 @@ void zte_power_supply_changed(struct zte_power_supply *psy)
 EXPORT_SYMBOL_GPL(zte_power_supply_changed);
 
 /* Deferred probe e Check supplies */
-static int __zte_power_supply_find_supply_from_node(struct device *dev, void *data)
+int __zte_power_supply_find_supply_from_node(struct device *dev, void *data)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	return psy->of_node == data;
 }
 
-static int __zte_power_supply_populate_supplied_from(struct device *dev, void *data)
+int __zte_power_supply_populate_supplied_from(struct device *dev, void *data)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	struct zte_power_supply *target = data;
@@ -434,7 +434,8 @@ static int __zte_power_supply_populate_supplied_from(struct device *dev, void *d
 	} while (true);
 }
 
-static noinline int zte_power_supply_check_supplies(struct zte_power_supply *psy)
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
+static int zte_power_supply_check_supplies(struct zte_power_supply *psy)
 {
 	struct of_phandle_args args;
 	int count = 0, ret;
@@ -478,6 +479,9 @@ static noinline int zte_power_supply_check_supplies(struct zte_power_supply *psy
 		 "zte_power_supply_populate_supplied_from", ret);
 	return 0;
 }
+#else
+extern int zte_power_supply_check_supplies(struct zte_power_supply *psy);
+#endif
 
 static void zte_power_supply_deferred_register_work(struct work_struct *work)
 {
