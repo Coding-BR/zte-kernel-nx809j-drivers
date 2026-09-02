@@ -101,6 +101,10 @@ static_assert(sizeof(struct power_supply_attr) == 0x58);
 static_assert(offsetof(struct power_supply_attr, dev_attr) == 0x28);
 static_assert(offsetof(struct power_supply_attr, text_values) == 0x48);
 
+static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf);
+static ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+
+#ifdef ZTE_POWER_SUPPLY_HOST_TEST
 #define _ZTE_PSY_ATTR(_name, _text, _len) \
 	[POWER_SUPPLY_PROP_ ## _name] = { \
 		.prop_name = #_name, \
@@ -108,32 +112,23 @@ static_assert(offsetof(struct power_supply_attr, text_values) == 0x48);
 		.text_values = _text, \
 		.text_values_len = _len, \
 	}
-
 #define ZTE_PSY_ATTR(_name) _ZTE_PSY_ATTR(_name, NULL, 0)
 #define ZTE_PSY_ENUM_ATTR(_name, _text) \
 	_ZTE_PSY_ATTR(_name, _text, ARRAY_SIZE(_text))
 
-static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf);
-static ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
-
-/* Array estático de atributos mapeando as 19 principais propriedades */
-/* Mapeamento de strings para enums do sysfs */
 static const char *const status_text[] = {
 	"Unknown", "Charging", "Discharging", "Not charging", "Full"
 };
-
 static const char *const charge_type_text[] = {
 	"Unknown", "N/A", "Trickle", "Fast", "Standard",
 	"Adaptive", "Custom", "Long Life", "Bypass", "Taper"
 };
-
 static const char *const health_text[] = {
 	"Unknown", "Good", "Overheat", "Dead", "Over voltage",
 	"Unspecified failure", "Cold", "Watchdog timer expire",
-	"Safety timer expire", "Over current", "Calibration required",
-	"Warm", "Cool", "Hot", "No battery"
+	"Safety timer expire", "Calibration required", "Warm", "Cool",
+	"Hot", "No battery"
 };
-
 static const char *const technology_text[] = {
 	"Unknown", "NiMH", "Li-ion", "Li-poly", "LiFe", "NiCd", "LiMn"
 };
@@ -159,6 +154,35 @@ static struct power_supply_attr zte_power_supply_attrs[] = {
 	ZTE_PSY_ATTR(CURRENT_NOW),
 	ZTE_PSY_ATTR(CURRENT_AVG),
 };
+#else
+#define ZTE_PSY_CUSTOM_ATTR(_index, _name) \
+	[_index] = { \
+		.prop_name = #_name, \
+		.attr_name = #_name, \
+	}
+
+static struct power_supply_attr zte_power_supply_attrs[] = {
+	ZTE_PSY_CUSTOM_ATTR(0, USB_HC),
+	ZTE_PSY_CUSTOM_ATTR(1, USB_OTG),
+	ZTE_PSY_CUSTOM_ATTR(2, CHARGE_ENABLED),
+	ZTE_PSY_CUSTOM_ATTR(3, CHARGING_ENABLED),
+	ZTE_PSY_CUSTOM_ATTR(4, BATTERY_CHARGING_ENABLED),
+	ZTE_PSY_CUSTOM_ATTR(5, SET_SHIP_MODE),
+	ZTE_PSY_CUSTOM_ATTR(6, RESISTANCE_ID),
+	ZTE_PSY_CUSTOM_ATTR(7, INPUT_SUSPEND),
+	ZTE_PSY_CUSTOM_ATTR(8, RECHARGE_SOC),
+	ZTE_PSY_CUSTOM_ATTR(9, CAPACITY_RAW),
+	ZTE_PSY_CUSTOM_ATTR(10, CURRENT_COUNTER_ZTE),
+	ZTE_PSY_CUSTOM_ATTR(11, BATTERY_ID),
+	ZTE_PSY_CUSTOM_ATTR(12, TUNING_VINDPM),
+	ZTE_PSY_CUSTOM_ATTR(13, FEED_WATCHDOG),
+	ZTE_PSY_CUSTOM_ATTR(14, SET_WATCHDOG_TIMER),
+	ZTE_PSY_CUSTOM_ATTR(15, CHARGE_DONE),
+	ZTE_PSY_CUSTOM_ATTR(16, LPM_USB_DISCON),
+	ZTE_PSY_CUSTOM_ATTR(17, USB_SUSPEND),
+	ZTE_PSY_CUSTOM_ATTR(18, USB_PRESENT),
+};
+#endif
 
 #define MAX_PSY_ATTRS ((int)ARRAY_SIZE(zte_power_supply_attrs))
 
@@ -281,12 +305,12 @@ static umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribu
 static struct device_type zte_power_supply_dev_type;
 static struct attribute *__zte_power_supply_attrs[MAX_PSY_ATTRS + 1];
 
-static const struct attribute_group zte_power_supply_attr_group = {
+static struct attribute_group zte_power_supply_attr_group = {
 	.attrs = __zte_power_supply_attrs,
 	.is_visible = power_supply_attr_is_visible,
 };
 
-static const struct attribute_group *zte_power_supply_groups[] = {
+static const struct attribute_group *zte_power_supply_attr_groups[] = {
 	&zte_power_supply_attr_group,
 	NULL,
 };
@@ -302,8 +326,8 @@ noinline void zte_power_supply_init_attrs(struct device_type *dev_type)
 {
 	int i;
 
-	dev_type->groups = zte_power_supply_groups;
-	pr_info("zte_power_supply: initializing %zu attributes\n",
+	dev_type->groups = zte_power_supply_attr_groups;
+	pr_info("zte_power_supply_attrs array_size:%lu\n",
 		ARRAY_SIZE(zte_power_supply_attrs));
 
 	for (i = 0; i < ARRAY_SIZE(zte_power_supply_attrs); i++) {
@@ -311,7 +335,8 @@ noinline void zte_power_supply_init_attrs(struct device_type *dev_type)
 		char *name;
 
 		if (!zte_power_supply_attrs[i].prop_name) {
-			pr_warn("%s: property %d has no attribute name\n", __func__, i);
+			pr_warn("%s: ZTE Property %d skipped because is missing from zte_power_supply_attrs\n",
+				__func__, i);
 			sprintf(zte_power_supply_attrs[i].attr_name, "_err_%d", i);
 		} else {
 			for (name = zte_power_supply_attrs[i].attr_name; *name; name++)
