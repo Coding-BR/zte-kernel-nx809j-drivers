@@ -375,23 +375,23 @@
       "category": "core_logic",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\011_aw22xxx_interrupt_setup\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next033_aw22xxx_interrupt_setup_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "48e446e951b3c46f4c16dd47990eef9f6878d9a8741e92a03b9e6e0eacdcd3fb"
+          "sha256": "c95162be6baa5d1331a9a5caeec9c2649e2ffc1de6aefbe6899561676168e8b1"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\011_aw22xxx_interrupt_setup\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next033_aw22xxx_interrupt_setup_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "55f6218ee8dd05ba1fb4fdd4a30d35c434e3dbc2ebc1a065f0d78ed9f5becdfe"
+          "sha256": "ed54d7e34f47ea5a3874649bb1f172377449af6360b369a08176e3ada887587c"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\011_aw22xxx_interrupt_setup\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next033_aw22xxx_interrupt_setup_exact_v1/test.json",
           "role": "test",
-          "sha256": "a673a626d98fa4a7a1c8de3a158ef4d11db6f46b48684b0a1af5164796a130c0"
+          "sha256": "7807795c14eb992387d87fc713dff70c5ffd25e405860a1690cad31750f32ba8"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0010_00102530_aw22xxx_interrupt_setup.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0010_00102530_aw22xxx_interrupt_setup.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next033_aw22xxx_interrupt_setup_exact_v1/candidate_ghidra/pcode/0013_00103248_aw22xxx_interrupt_setup.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next033_aw22xxx_interrupt_setup_exact_v1/candidate_ghidra/decompiled/0013_00103248_aw22xxx_interrupt_setup.c",
       "id": "011_aw22xxx_interrupt_setup",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_interrupt_setup\nEntrada Ghidra: 00102530\nTamanho stock: 260 bytes\nCategoria: core_logic\nAlvo no fonte: zte_led.c:aw22xxx_interrupt_setup\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0010_00102530_aw22xxx_interrupt_setup.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0010_00102530_aw22xxx_interrupt_setup.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [

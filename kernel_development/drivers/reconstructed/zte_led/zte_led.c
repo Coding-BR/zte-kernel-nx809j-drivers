@@ -396,6 +396,7 @@ static noinline __used int aw22xxx_led_imax_cfg(struct aw22xxx *aw22xxx)
 }
 #endif
 
+#ifndef ZTE_LED_INTERRUPT_SETUP_EXACT_ISLAND
 __used noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
@@ -409,6 +410,7 @@ __used noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 	aw22xxx_i2c_read(aw22xxx, 9, &val);
 	return aw22xxx_i2c_write(aw22xxx, 9, val | 0x10);
 }
+#endif
 
 __used noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 {
