@@ -884,32 +884,37 @@ int zte_power_supply_ocv2cap_simple(struct power_supply_battery_ocv_table *table
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_ocv2cap_simple);
 
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 int zte_power_supply_temp2resist_simple(struct power_supply_resistance_temp_table *table,
 					int table_len, int temp)
 {
+	int *ptr;
 	int i;
 
-	if (table_len <= 0)
-		return table[0].resistance;
+	if (table_len > 0) {
+		i = 0;
+		ptr = (int *)table;
+		while (temp <= *ptr) {
+			i++;
+			ptr += 2;
+			if (table_len == i)
+				return ((int *)table)[table_len * 2 - 1];
+		}
+		if (i != 0) {
+			int dt = ptr[-2] - *ptr;
+			int result = 0;
 
-	for (i = 0; i < table_len; i++) {
-		if (temp >= table[i].temp)
-			break;
+			if (dt != 0)
+				result = ((temp - *ptr) * (ptr[-1] - ptr[1])) / dt;
+			return result + ptr[1];
+		}
 	}
-
-	if (i > 0 && i < table_len) {
-		int dt = table[i - 1].temp - table[i].temp;
-		int dr = table[i - 1].resistance - table[i].resistance;
-
-		return table[i].resistance +
-			(dt ? (temp - table[i].temp) * dr / dt : 0);
-	}
-
-	if (i == 0)
-		return table[0].resistance;
-
-	return table[table_len - 1].resistance;
+	return ((int *)table)[1];
 }
+#else
+extern int zte_power_supply_temp2resist_simple(
+	struct power_supply_resistance_temp_table *table, int table_len, int temp);
+#endif
 EXPORT_SYMBOL_GPL(zte_power_supply_temp2resist_simple);
 
 void zte_power_supply_put_battery_info(struct zte_power_supply *psy,
