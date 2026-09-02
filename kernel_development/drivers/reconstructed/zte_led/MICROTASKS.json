@@ -771,23 +771,23 @@
       "category": "user_abi",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\022_aw22xxx_reg_store\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next044_aw22xxx_reg_store_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "163cd9467e29fd948fb82c68d90dac6acb083b88bf417387cc534e8d1e073832"
+          "sha256": "e22c03bc59ff8783f1681a1651abbcd0d3ad620645ad7d8fd8b37fbf9bd5c820"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\022_aw22xxx_reg_store\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next044_aw22xxx_reg_store_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "a4fe8122f308a303c8a641240cb98ab492b604c03a0a0ce0302077bd78d701fe"
+          "sha256": "a309ab4659e938bf9dc23484a92ca6cde03ca4cd92c6e05882458d8674892d39"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\022_aw22xxx_reg_store\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next044_aw22xxx_reg_store_exact_v1/test.json",
           "role": "test",
-          "sha256": "3972da779bca37d7fd0379181e04c6ebcb5a66b583b0b0ecc817e0c4499cbdc2"
+          "sha256": "c13cae1be430e6aef602dc7fce1d3c24d1959076393bf72b12c163a1a9b4f98a"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0021_00103528_aw22xxx_reg_store.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0021_00103528_aw22xxx_reg_store.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next044_aw22xxx_reg_store_exact_v1/stock_ghidra_reg_store.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next044_aw22xxx_reg_store_exact_v1/stock_ghidra_reg_store.c",
       "id": "022_aw22xxx_reg_store",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_reg_store\nEntrada Ghidra: 00103528\nTamanho stock: 188 bytes\nCategoria: user_abi\nAlvo no fonte: zte_led.c:aw22xxx_reg_store\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0021_00103528_aw22xxx_reg_store.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0021_00103528_aw22xxx_reg_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [

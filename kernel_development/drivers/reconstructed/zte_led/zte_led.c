@@ -262,6 +262,9 @@ extern int aw22xxx_play(void *data);
 #ifdef ZTE_LED_REG_SHOW_EXACT_ISLAND
 extern ssize_t aw22xxx_reg_show(struct device *dev,
 				struct device_attribute *attr, char *buf);
+extern ssize_t aw22xxx_reg_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count);
 #endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
@@ -1612,20 +1615,26 @@ static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *att
 }
 #endif
 
+#ifndef ZTE_LED_REG_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_reg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
-	u32 reg = 0, val = 0;
+	union {
+		u64 packed;
+		u32 words[2];
+	} reg_val = { .packed = 0 };
 
-	if (sscanf(buf, "%x %x", &reg, &val) != 2 || reg >= 256) {
+	if (sscanf(buf, "%x %x", &reg_val.words[0], &reg_val.words[1]) != 2 ||
+	    reg_val.words[0] >= 256) {
 		pr_err("aw22xxx: %s invalid register request\n", __func__);
 		return -EINVAL;
 	}
 
-	aw22xxx_i2c_write(aw22xxx, reg, val);
+	aw22xxx_i2c_write(aw22xxx, reg_val.words[0], reg_val.words[1]);
 	return count;
 }
+#endif
 
 static ssize_t aw22xxx_rgb_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
