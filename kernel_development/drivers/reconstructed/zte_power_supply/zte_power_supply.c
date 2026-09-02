@@ -101,7 +101,12 @@ static_assert(sizeof(struct power_supply_attr) == 0x58);
 static_assert(offsetof(struct power_supply_attr, dev_attr) == 0x28);
 static_assert(offsetof(struct power_supply_attr, text_values) == 0x48);
 
+#ifdef ZTE_POWER_SUPPLY_UEVENT_EXACT_ISLAND
+ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf);
+extern int zte_power_supply_uevent(const struct device *dev, struct kobj_uevent_env *env);
+#else
 static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf);
+#endif
 #ifdef ZTE_POWER_SUPPLY_EXACT_ISLAND
 extern ssize_t zte_power_supply_store_property(struct device *dev, struct device_attribute *attr,
 							const char *buf, size_t count);
@@ -229,7 +234,11 @@ static struct power_supply_attr *to_psy_attr(struct device_attribute *attr)
 	return container_of(attr, struct power_supply_attr, dev_attr);
 }
 
+#ifdef ZTE_POWER_SUPPLY_UEVENT_EXACT_ISLAND
+ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf)
+#else
 static ssize_t zte_power_supply_show_property(struct device *dev, struct device_attribute *attr, char *buf)
+#endif
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
 	struct power_supply_attr *psy_attr = to_psy_attr(attr);
@@ -829,6 +838,7 @@ void *zte_power_supply_get_drvdata(struct zte_power_supply *psy)
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_get_drvdata);
 
+#ifndef ZTE_POWER_SUPPLY_UEVENT_EXACT_ISLAND
 /* Uevent Callback */
 int zte_power_supply_uevent(const struct device *dev, struct kobj_uevent_env *env)
 {
@@ -874,6 +884,7 @@ out:
 	free_page((unsigned long)prop_buf);
 	return ret;
 }
+#endif
 
 /* Additional exported API functions discovered via dynamic validation */
 void zte_power_supply_external_power_changed(struct zte_power_supply *psy)
