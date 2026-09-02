@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-only
 obj-m += zte_power_supply.o
-zte_power_supply-objs := zte_power_supply_core.o zte_power_supply_get_battery_info_exact.o zte_power_supply_match_device_by_name_exact.o zte_power_supply_temp2resist_simple_exact.o
+zte_power_supply-objs := zte_power_supply_core.o zte_power_supply_get_battery_info_exact.o zte_power_supply_match_device_by_name_exact.o zte_power_supply_temp2resist_simple_exact.o zte_power_supply_ocv2cap_simple_exact.o
 
 # Compile the preserved C source as the module core while the difficult target
 # function is supplied by the mechanically lifted AArch64 island.

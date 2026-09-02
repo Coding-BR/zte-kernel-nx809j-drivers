@@ -856,6 +856,7 @@ int zte_power_supply_powers(struct zte_power_supply *psy, struct device *dev)
 EXPORT_SYMBOL_GPL(zte_power_supply_powers);
 
 /* OCV / Temperature interpolation helpers (from power_supply_core) */
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 int zte_power_supply_ocv2cap_simple(struct power_supply_battery_ocv_table *table,
 				    int table_len, int ocv)
 {
@@ -882,6 +883,10 @@ int zte_power_supply_ocv2cap_simple(struct power_supply_battery_ocv_table *table
 
 	return table[table_len - 1].capacity;
 }
+#else
+extern int zte_power_supply_ocv2cap_simple(
+	struct power_supply_battery_ocv_table *table, int table_len, int ocv);
+#endif
 EXPORT_SYMBOL_GPL(zte_power_supply_ocv2cap_simple);
 
 #ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
