@@ -1119,6 +1119,7 @@ zte_power_supply_find_ocv2cap_table(struct power_supply_battery_info *info,
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_find_ocv2cap_table);
 
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 int zte_power_supply_batinfo_ocv2cap(struct power_supply_battery_info *info,
 				     int ocv, int temp)
 {
@@ -1131,6 +1132,10 @@ int zte_power_supply_batinfo_ocv2cap(struct power_supply_battery_info *info,
 
 	return zte_power_supply_ocv2cap_simple(table, table_len, ocv);
 }
+#else
+extern int zte_power_supply_batinfo_ocv2cap(
+	struct power_supply_battery_info *info, int ocv, int temp);
+#endif
 EXPORT_SYMBOL_GPL(zte_power_supply_batinfo_ocv2cap);
 
 /* Devres get_by_phandle */
