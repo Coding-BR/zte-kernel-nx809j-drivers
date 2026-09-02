@@ -147,10 +147,14 @@ u32 g_ver_var = 11;
 extern u32 g_ver_var;
 #endif
 static u32 g_custom_en = 0;
+#ifdef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
+extern u32 g_cfgarray_count;
+#else
 static u32 g_cfgarray_count = 4500;
+#endif
 static u8 init_flag = 0;
-#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
-u8 g_init_flg = 0;
+#if defined(ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
+extern u8 g_init_flg;
 #else
 static u8 g_init_flg = 0;
 #endif
@@ -159,9 +163,9 @@ static union {
 	u64 id;
 	char text[32];
 } g_chip_id;
-#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
-u32 lamp_effect;
-u32 fan_effect;
+#if defined(ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
+extern u32 lamp_effect;
+extern u32 fan_effect;
 #else
 static u32 lamp_effect;
 static u32 fan_effect;
@@ -187,7 +191,7 @@ extern int kthread_status;
 #else
 static int kthread_status = 0;
 #endif
-#ifdef ZTE_LED_IMAX_EXACT_ISLAND
+#if defined(ZTE_LED_IMAX_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
 extern char **aw22xxx_cfg_name;
 #else
 static char **aw22xxx_cfg_name = NULL;
@@ -367,11 +371,12 @@ extern enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer);
 #ifdef ZTE_LED_FW_WORK_ROUTINE_EXACT_ISLAND
 extern void aw22xxx_fw_work_routine(struct work_struct *work);
 #endif
+#ifdef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
+extern void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
+#endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
-#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
-void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
-#else
+#ifndef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
 #endif
 
@@ -1051,11 +1056,8 @@ static noinline int aw22xxx_set_cfg_run_state(u32 effect)
 	return 0;
 }
 
-#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
-void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
-#else
+#ifndef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
-#endif
 {
 	const struct firmware *fw = NULL;
 	const char *name;
@@ -1140,6 +1142,7 @@ static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
 	pr_info("aw22xxx: recovery count=%u\n", aw22xxx->task_irq);
 	msleep(20);
 }
+#endif
 
 /* ======================================================================
  * Workqueues & Timers & Kthreads

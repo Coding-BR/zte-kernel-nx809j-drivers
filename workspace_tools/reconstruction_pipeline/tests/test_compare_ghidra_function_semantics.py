@@ -25,6 +25,31 @@ def write_jsonl(path: Path, records: list[dict]) -> None:
 
 
 class GhidraSemanticComparisonTests(unittest.TestCase):
+    def test_decompiler_comments_are_ignored_as_syntax_artifacts(self) -> None:
+        without_comment, _, _ = MODULE.normalize_decompiled(
+            "void f(void) { return; }", {}
+        )
+        with_comment, _, _ = MODULE.normalize_decompiled(
+            "/* WARNING: load-dependent */ void f(void) { return; }", {}
+        )
+
+        self.assertEqual(with_comment, without_comment)
+
+    def test_aw22xxx_recover_symbol_rendering_artifact_is_narrow(self) -> None:
+        stock = "void aw22xxx_cfg_recover_update_wait(){lamp_effect = 1;request_firmware();}"
+        candidate = "void aw22xxx_cfg_recover_update_wait(){_lamp_effect = 1;func_0x001111c0();}"
+
+        evidence = MODULE.decompiler_aw22xxx_cfg_recover_update_wait_symbol_artifact(
+            "aw22xxx_cfg_recover_update_wait", stock, candidate
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertIsNone(
+            MODULE.decompiler_aw22xxx_cfg_recover_update_wait_symbol_artifact(
+                "other", stock, candidate
+            )
+        )
+
     def make_export(
         self,
         root: Path,

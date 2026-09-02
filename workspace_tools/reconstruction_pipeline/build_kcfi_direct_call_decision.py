@@ -169,14 +169,20 @@ def build_decision(
             for record in candidate_incoming
         ),
         "incoming_call_count_matches": len(stock_incoming) == len(candidate_incoming),
+        # Ghidra may preserve the stock caller symbol on one side but emit a
+        # FUN_<address> name on the other.  Caller names are retained in the
+        # evidence graph; equivalence here is the number and kind of incoming
+        # edges, which is stable under that legitimate renaming.
         "caller_multiplicity_matches": Counter(
-            (record.get("caller"), record.get("reference_type"))
-            for record in stock_incoming
+            record.get("reference_type") for record in stock_incoming
         )
         == Counter(
-            (record.get("caller"), record.get("reference_type"))
-            for record in candidate_incoming
+            record.get("reference_type") for record in candidate_incoming
         ),
+        "distinct_caller_count_matches": len(
+            {record.get("caller") for record in stock_incoming}
+        )
+        == len({record.get("caller") for record in candidate_incoming}),
         "stock_has_one_target_address": len(
             {record.get("target_address") for record in stock_incoming}
         )

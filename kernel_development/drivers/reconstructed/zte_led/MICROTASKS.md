@@ -58,7 +58,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 052_aw22xxx_recover_work_routine | aw22xxx_recover_work_routine | 001053b8 | async_or_irq | zte_led.c:aw22xxx_recover_work_routine | PASS |
 | 053_aw22xxx_fw_loaded | aw22xxx_fw_loaded | 001055c8 | core_logic | zte_led.c:aw22xxx_fw_loaded | PASS |
 | 054_aw22xxx_led_init | aw22xxx_led_init | 00106204 | lifecycle | zte_led.c:aw22xxx_led_init | PROMOTED_OFFLINE_EXACT |
-| 055_aw22xxx_cfg_recover_update_wait | aw22xxx_cfg_recover_update_wait | 00106394 | core_logic | zte_led.c:aw22xxx_cfg_recover_update_wait | PASS |
+| 055_aw22xxx_cfg_recover_update_wait | aw22xxx_cfg_recover_update_wait | 00106394 | core_logic | zte_led.c:aw22xxx_cfg_recover_update_wait | PROMOTED_OFFLINE_EXACT |
 | 056_get_aw22xxx_id | get_aw22xxx_id | 00106760 | core_logic | zte_led.c:get_aw22xxx_id | PASS |
 | 057_init_module | init_module | 00106824 | lifecycle | zte_led.c:aw22xxx_driver_init | PASS |
 | 058_cleanup_module | cleanup_module | 001068a0 | lifecycle | zte_led.c:aw22xxx_driver_exit | PASS |

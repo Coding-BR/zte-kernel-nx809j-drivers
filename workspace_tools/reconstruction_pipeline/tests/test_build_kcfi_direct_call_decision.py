@@ -132,6 +132,53 @@ class BuildKcfiDirectCallDecisionTests(unittest.TestCase):
                 candidate_module=candidate,
             )
 
+    def test_accepts_renamed_direct_caller_with_same_multiplicity(self) -> None:
+        (
+            stock_kcfi,
+            candidate_kcfi,
+            stock_calls,
+            candidate_calls,
+            stock,
+            candidate,
+            temporary,
+        ) = self.make_inputs()
+        self.addCleanup(temporary.cleanup)
+        candidate_calls[0]["caller"] = "FUN_00105ca0"
+        stock_calls.extend(
+            [
+                {
+                    "caller": "probe",
+                    "target": "target",
+                    "target_address": "00100000",
+                    "reference_type": MODULE.DIRECT_REFERENCE_TYPE,
+                }
+            ]
+        )
+        candidate_calls.extend(
+            [
+                {
+                    "caller": "FUN_00105ca0",
+                    "target": "target",
+                    "target_address": "00200000",
+                    "reference_type": MODULE.DIRECT_REFERENCE_TYPE,
+                }
+            ]
+        )
+
+        report = MODULE.build_decision(
+            driver="sample",
+            function="target",
+            stock_kcfi=stock_kcfi,
+            candidate_kcfi=candidate_kcfi,
+            stock_calls=stock_calls,
+            candidate_calls=candidate_calls,
+            stock_module=stock,
+            candidate_module=candidate,
+        )
+
+        self.assertTrue(report["passed"])
+        self.assertTrue(report["checks"]["distinct_caller_count_matches"])
+
     def test_matches_kcfi_alias_by_symbol_name(self) -> None:
         (
             stock_kcfi,

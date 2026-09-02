@@ -86,6 +86,14 @@ aw22xxx_exact_bss_base:
 .set kthread_status, aw22xxx_exact_bss_base+0x61b8
 .global aw22xxx_cfg_name
 .set aw22xxx_cfg_name, aw22xxx_exact_bss_base+0x61c0
+.global g_init_flg
+.set g_init_flg, aw22xxx_exact_bss_base+0x6218
+.global lamp_effect
+.set lamp_effect, aw22xxx_exact_bss_base+0x6260
+.global fan_effect
+.set fan_effect, aw22xxx_exact_bss_base+0x6264
+.global g_cfgarray_count
+.set g_cfgarray_count, aw22xxx_exact_bss_base+0x6268
 .global cfg_update_kthread
 .set cfg_update_kthread, aw22xxx_exact_bss_base+0x61c8
 .global aw22xxx_fw_name

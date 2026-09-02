@@ -58,3 +58,6 @@ AFLAGS_aw22xxx_recover_work_routine_exact.o := -g0 -I$(src)
 zte_led-y += aw22xxx_led_init_exact.o
 ccflags-y += -DZTE_LED_LED_INIT_EXACT_ISLAND
 AFLAGS_aw22xxx_led_init_exact.o := -g0 -I$(src)
+zte_led-y += aw22xxx_cfg_recover_update_wait_exact.o
+ccflags-y += -DZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
+AFLAGS_aw22xxx_cfg_recover_update_wait_exact.o := -g0 -I$(src)
