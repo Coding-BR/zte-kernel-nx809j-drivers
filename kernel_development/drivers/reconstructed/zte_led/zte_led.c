@@ -236,6 +236,9 @@ int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
 #ifdef ZTE_LED_I2C_PROBE_EXACT_ISLAND
 extern int aw22xxx_i2c_probe(struct i2c_client *client);
 #endif
+#ifdef ZTE_LED_I2C_REMOVE_EXACT_ISLAND
+extern void aw22xxx_i2c_remove(struct i2c_client *client);
+#endif
 int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
 int aw22xxx_led_init(struct aw22xxx *aw22xxx);
 #ifdef ZTE_LED_PLAY_EXACT_ISLAND
@@ -2068,6 +2071,7 @@ free_device:
 }
 #endif
 
+#ifndef ZTE_LED_I2C_REMOVE_EXACT_ISLAND
 static void aw22xxx_i2c_remove(struct i2c_client *client)
 {
 	struct aw22xxx *aw22xxx = i2c_get_clientdata(client);
@@ -2083,6 +2087,7 @@ static void aw22xxx_i2c_remove(struct i2c_client *client)
 	devm_kfree(&client->dev, aw22xxx);
 	g_cfgarray_count = g_custom_en ? 11 : 4500;
 }
+#endif
 
 static const struct of_device_id aw22xxx_dt_match[] = {
 	{ .compatible = "awinic,aw22xxx_led" },

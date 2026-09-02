@@ -2866,10 +2866,10 @@ def canonicalize_named_bss_to_stripped_mapping(
     candidate_instruction_indices: list[int],
     instructions_match: bool,
 ) -> tuple[list[str], list[str], list[dict[str, Any]]]:
-    """Bind a named stock ``.bss`` object to an anonymous candidate target.
+    """Bind a named stock storage object to an anonymous candidate target.
 
     The mapping is accepted only when an ADRP/load pair in both ELF symbol
-    tables resolves to the same ``.bss`` byte and the instruction sites and
+    tables resolves to the same ``.bss`` or ``.data`` byte and the instruction sites and
     relocation types are identical.  The pair may contain intervening
     instructions because AArch64 permits the loaded register to remain live
     across those instructions.  This handles compiler mapping-symbol or
@@ -2896,10 +2896,11 @@ def canonicalize_named_bss_to_stripped_mapping(
     def anonymous_candidate_storage(target: str) -> bool:
         return bool(
             re.fullmatch(r"\$d\.[0-9]+", target)
-            or re.fullmatch(r"\.bss(?:\+0x[0-9a-fA-F]+)?", target)
+            or re.fullmatch(r"\.(?:bss|data)(?:\+0x[0-9a-fA-F]+)?", target)
         )
 
     load_types = {
+        "R_AARCH64_ADD_ABS_LO12_NC",
         "R_AARCH64_LDST8_ABS_LO12_NC",
         "R_AARCH64_LDST16_ABS_LO12_NC",
         "R_AARCH64_LDST32_ABS_LO12_NC",
@@ -2934,14 +2935,14 @@ def canonicalize_named_bss_to_stripped_mapping(
             continue
         positions = stock_instruction_indices[index : index + 2]
         if (
-            stock_location[0] != ".bss"
+            stock_location[0] not in {".bss", ".data"}
             or stock_location != candidate_location
             or positions != candidate_instruction_indices[index : index + 2]
             or len(positions) != 2
             or positions[1] <= positions[0]
         ):
             continue
-        alias = f"<named_bss_mapping:{stock_location[0]}+0x{stock_location[1]:x}>"
+        alias = f"<named_storage_mapping:{stock_location[0]}+0x{stock_location[1]:x}>"
         matching_indices: list[int] = []
         for follow_index, (stock_value, candidate_value) in enumerate(
             zip(stock_relocations, candidate_relocations, strict=True)
@@ -2963,7 +2964,7 @@ def canonicalize_named_bss_to_stripped_mapping(
             matching_indices.append(stock_instruction_indices[follow_index])
         evidence.append(
             {
-                "kind": "named_stock_bss_to_stripped_mapping_symbol",
+                "kind": "named_stock_storage_to_stripped_mapping_symbol",
                 "reason": (
                     "same .bss ELF location, relocation types, and adjacent instruction "
                     "sites bind the named stock object to the candidate mapping symbol"
