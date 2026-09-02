@@ -135,7 +135,11 @@ char aw22xxx_fw_name[64];
 #else
 extern char aw22xxx_fw_name[64];
 #endif
+#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+char aw22xxx_dyn_name[64];
+#else
 static char aw22xxx_dyn_name[64];
+#endif
 u32 multicolor_led;
 #ifdef ZTE_LED_HOST_TEST
 u32 g_ver_var = 11;
@@ -145,7 +149,11 @@ extern u32 g_ver_var;
 static u32 g_custom_en = 0;
 static u32 g_cfgarray_count = 4500;
 static u8 init_flag = 0;
+#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+u8 g_init_flg = 0;
+#else
 static u8 g_init_flg = 0;
+#endif
 static u8 g_cfg_cur_state = 0;
 static union {
 	u64 id;
@@ -254,7 +262,11 @@ int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
 #else
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
 #endif
+#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
+#else
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
+#endif
 static void aw22xxx_fw_loaded_c(const struct firmware *fw, void *context);
 extern void aw22xxx_fw_loaded(const struct firmware *fw, void *context);
 #ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
@@ -669,7 +681,11 @@ invalid:
 	return -EINVAL;
 }
 
+#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
+#else
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
+#endif
 {
 	struct aw22xxx *aw22xxx = context;
 	size_t offset = 0;
@@ -1217,6 +1233,11 @@ __used void aw22xxx_fw_work_routine(struct work_struct *work)
 }
 #endif
 
+#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+extern void aw22xxx_cfg_work_routine(struct work_struct *work);
+#endif
+
+#ifndef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
 __used void aw22xxx_cfg_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, cfg_work);
@@ -1243,6 +1264,7 @@ __used void aw22xxx_cfg_work_routine(struct work_struct *work)
 	request_firmware_nowait(THIS_MODULE, 1, aw22xxx_dyn_name, aw22xxx->dev,
 				GFP_KERNEL, aw22xxx, aw22xxx_cfg_loaded);
 }
+#endif
 
 __used void aw22xxx_recover_work_routine(struct work_struct *work)
 {

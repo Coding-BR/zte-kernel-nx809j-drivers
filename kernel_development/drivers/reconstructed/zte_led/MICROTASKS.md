@@ -54,7 +54,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 048_aw22xxx_multi_breath_pattern_store | aw22xxx_multi_breath_pattern_store | 00105054 | user_abi | zte_led.c:aw22xxx_multi_breath_pattern_store | PASS |
 | 049_aw22xxx_fw_timer_func | aw22xxx_fw_timer_func | 001051e8 | async_or_irq | zte_led.c:aw22xxx_fw_timer_func | PASS |
 | 050_aw22xxx_fw_work_routine | aw22xxx_fw_work_routine | 0010523c | async_or_irq | zte_led.c:aw22xxx_fw_work_routine | PROMOTED_OFFLINE_EXACT |
-| 051_aw22xxx_cfg_work_routine | aw22xxx_cfg_work_routine | 001052d0 | async_or_irq | zte_led.c:aw22xxx_cfg_work_routine | PASS |
+| 051_aw22xxx_cfg_work_routine | aw22xxx_cfg_work_routine | 001052d0 | async_or_irq | zte_led.c:aw22xxx_cfg_work_routine | PROMOTED_OFFLINE_EXACT |
 | 052_aw22xxx_recover_work_routine | aw22xxx_recover_work_routine | 001053b8 | async_or_irq | zte_led.c:aw22xxx_recover_work_routine | PASS |
 | 053_aw22xxx_fw_loaded | aw22xxx_fw_loaded | 001055c8 | core_logic | zte_led.c:aw22xxx_fw_loaded | PASS |
 | 054_aw22xxx_led_init | aw22xxx_led_init | 00106204 | lifecycle | zte_led.c:aw22xxx_led_init | PASS |

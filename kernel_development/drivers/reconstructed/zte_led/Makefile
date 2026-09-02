@@ -49,3 +49,6 @@ AFLAGS_aw22xxx_fw_timer_func_exact.o := -g0 -I$(src)
 zte_led-y += aw22xxx_fw_work_routine_exact.o
 ccflags-y += -DZTE_LED_FW_WORK_ROUTINE_EXACT_ISLAND
 AFLAGS_aw22xxx_fw_work_routine_exact.o := -g0 -I$(src)
+zte_led-y += aw22xxx_cfg_work_routine_exact.o
+ccflags-y += -DZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+AFLAGS_aw22xxx_cfg_work_routine_exact.o := -g0 -I$(src)
