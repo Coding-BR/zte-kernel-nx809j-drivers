@@ -272,6 +272,11 @@ extern ssize_t aw22xxx_reg_store(struct device *dev,
 extern ssize_t aw22xxx_hwen_show(struct device *dev,
 				 struct device_attribute *attr, char *buf);
 #endif
+#ifdef ZTE_LED_HWEN_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_hwen_store(struct device *dev,
+				  struct device_attribute *attr, const char *buf,
+				  size_t count);
+#endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
@@ -1472,6 +1477,7 @@ static ssize_t aw22xxx_hwen_show(struct device *dev, struct device_attribute *at
 }
 #endif
 
+#ifndef ZTE_LED_HWEN_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_hwen_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1497,6 +1503,7 @@ static ssize_t aw22xxx_hwen_store(struct device *dev, struct device_attribute *a
 	}
 	return count;
 }
+#endif
 
 static ssize_t aw22xxx_imax_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
