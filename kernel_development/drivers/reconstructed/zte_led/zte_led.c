@@ -314,6 +314,7 @@ noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 }
 #endif
 
+#ifndef ZTE_LED_HW_RESET_EXACT_ISLAND
 int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 {
 	struct gpio_desc *desc;
@@ -331,6 +332,7 @@ int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 	usleep_range(1000, 1500);
 	return 0;
 }
+#endif
 
 __used noinline int aw22xxx_read_chipid(struct aw22xxx *aw22xxx)
 {
