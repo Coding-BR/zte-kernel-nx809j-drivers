@@ -740,14 +740,15 @@ static int zte_power_supply_match_device_node_array(struct device *dev,
 						     void *data)
 {
 	struct zte_match_device_node_array_param *param = data;
+	struct zte_power_supply **psy_array = param->psy;
 
 	if (!dev->parent || dev->parent->of_node != param->parent_of_node)
 		return 0;
 	if (param->psy_count >= param->psy_size)
 		return -EOVERFLOW;
 
-	param->psy[param->psy_count] = dev_get_drvdata(dev);
-	atomic_inc(&param->psy[param->psy_count]->use_cnt);
+	psy_array[param->psy_count] = dev_get_drvdata(dev);
+	atomic_inc(&psy_array[param->psy_count]->use_cnt);
 	param->psy_count++;
 	return 0;
 }
