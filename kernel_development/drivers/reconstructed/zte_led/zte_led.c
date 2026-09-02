@@ -344,6 +344,9 @@ extern ssize_t aw22xxx_multi_breath_pattern_store(struct device *dev,
 						 struct device_attribute *attr, const char *buf,
 						 size_t count);
 #endif
+#ifdef ZTE_LED_FW_TIMER_FUNC_EXACT_ISLAND
+extern enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer);
+#endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
@@ -1269,6 +1272,7 @@ __used void aw22xxx_recover_work_routine(struct work_struct *work)
 	aw22xxx_cfg_recover_update_wait(aw22xxx);
 }
 
+#ifndef ZTE_LED_FW_TIMER_FUNC_EXACT_ISLAND
 __used enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
 {
 	struct aw22xxx *aw22xxx = container_of(timer, struct aw22xxx, timer);
@@ -1276,6 +1280,7 @@ __used enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
 	schedule_work(&aw22xxx->fw_work);
 	return HRTIMER_NORESTART;
 }
+#endif
 
 #ifndef ZTE_LED_FW_INIT_EXACT_ISLAND
 __used void aw22xxx_fw_init(struct aw22xxx *aw22xxx)

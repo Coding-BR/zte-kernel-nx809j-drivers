@@ -1743,23 +1743,23 @@
       "category": "async_or_irq",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\049_aw22xxx_fw_timer_func\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next061_aw22xxx_fw_timer_func_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "ae3fb7f40cf1d88cca14f65cafcf0a064c1c7b0cc9b08c4b1495b400d7ff054d"
+          "sha256": "01f1f2c523d8ce0064802e3b89f2469be13838c00061965e31f7b0e05e0049aa"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\049_aw22xxx_fw_timer_func\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next061_aw22xxx_fw_timer_func_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "761561bad24955376b4a5d9c7b198d0103989ca4cbafbab0d2f1248b20305cd0"
+          "sha256": "308fe4ad6e7bc45b2d750e83a03193e2fda6eb1f6ef7569fcf3568a0c68a302b"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\049_aw22xxx_fw_timer_func\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next061_aw22xxx_fw_timer_func_exact_v1/test.json",
           "role": "test",
-          "sha256": "51f54b7efddb775d40a194720ebec578ded80edfff2c98a09ea60da68774ba34"
+          "sha256": "c347f496a074b03321262fbb33d6efc12304dbb2bc5cfc68ca70fe2ba300e365"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0048_001051e8_aw22xxx_fw_timer_func.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0048_001051e8_aw22xxx_fw_timer_func.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next061_aw22xxx_fw_timer_func_exact_v1/stock_ghidra/aw22xxx_fw_timer_func.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next061_aw22xxx_fw_timer_func_exact_v1/stock_ghidra/aw22xxx_fw_timer_func.c",
       "id": "049_aw22xxx_fw_timer_func",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_fw_timer_func\nEntrada Ghidra: 001051e8\nTamanho stock: 80 bytes\nCategoria: async_or_irq\nAlvo no fonte: zte_led.c:aw22xxx_fw_timer_func\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0048_001051e8_aw22xxx_fw_timer_func.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0048_001051e8_aw22xxx_fw_timer_func.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
@@ -1769,7 +1769,7 @@
       ],
       "source_file": "zte_led.c",
       "source_function": "aw22xxx_fw_timer_func",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 80,
       "stock_entry": "001051e8",
       "stock_function": "aw22xxx_fw_timer_func"
