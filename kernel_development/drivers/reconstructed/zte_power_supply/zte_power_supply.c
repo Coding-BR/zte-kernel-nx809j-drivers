@@ -416,6 +416,7 @@ int __zte_power_supply_find_supply_from_node(struct device *dev, void *data)
 	return psy->of_node == data;
 }
 
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 int __zte_power_supply_populate_supplied_from(struct device *dev, void *data)
 {
 	struct zte_power_supply *psy = dev_get_drvdata(dev);
@@ -437,6 +438,9 @@ int __zte_power_supply_populate_supplied_from(struct device *dev, void *data)
 		}
 	} while (true);
 }
+#else
+extern int __zte_power_supply_populate_supplied_from(struct device *dev, void *data);
+#endif
 
 #ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 static int zte_power_supply_check_supplies(struct zte_power_supply *psy)
