@@ -1872,7 +1872,7 @@ __used noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
  * Procfs Entry Callbacks
  * ====================================================================== */
 
-static ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
+__used ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
 			     size_t count, loff_t *ppos)
 {
 	size_t len;
@@ -1888,10 +1888,13 @@ static ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
 	return simple_read_from_buffer(user_buf, count, ppos, g_chip_id.text, len);
 }
 
+#ifndef ZTE_LED_CREATE_PROC_EXACT_ISLAND
 static const struct proc_ops proc_ops_awid = {
 	.proc_read = get_aw22xxx_id,
 };
+#endif
 
+#ifndef ZTE_LED_CREATE_PROC_EXACT_ISLAND
 __used int aw22xxx_create_proc_entry(void)
 {
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1902,6 +1905,7 @@ __used int aw22xxx_create_proc_entry(void)
 	pr_err("aw22xxx: failed to create proc entry\n");
 	return -ENOMEM;
 }
+#endif
 
 /* ======================================================================
  * Probe & Remove

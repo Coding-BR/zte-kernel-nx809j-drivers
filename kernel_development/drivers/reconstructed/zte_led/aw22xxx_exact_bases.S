@@ -13,6 +13,11 @@ aw22xxx_exact_data_base:
 .global aw22xxx_exact_rodata_base
 aw22xxx_exact_rodata_base:
 .incbin "exact_stock_sections/stock_rodata.bin"
+.global proc_ops_awid
+.type proc_ops_awid, %object
+.set proc_ops_awid, aw22xxx_exact_rodata_base+0x150
+.size proc_ops_awid, 0x60
+.reloc aw22xxx_exact_rodata_base+0x160, R_AARCH64_ABS64, get_aw22xxx_id
 
 .section .rodata.str1.1,"a",@progbits
 .align 1
