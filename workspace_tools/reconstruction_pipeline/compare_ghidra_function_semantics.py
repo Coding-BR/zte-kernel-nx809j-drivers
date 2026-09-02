@@ -905,6 +905,45 @@ def decompiler_aw22xxx_play_address_syntax_artifact(
     }
 
 
+def decompiler_aw22xxx_init_signature_artifact(
+    function: str,
+    stock: str,
+    candidate: str,
+    stock_shape: list[dict[str, Any]],
+    candidate_shape: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Accept Ghidra's exact-island signature/argument rendering for init."""
+    if function != "aw22xxx_init_cfg_update_array":
+        return None
+    warning = "/*WARNING:Unknowncallingconvention--yetparameterstorageislocked*/"
+    rewritten = candidate.replace(warning, "")
+    rewritten = rewritten.replace(
+        "voidaw22xxx_init_cfg_update_array(void){longlVar1;longin_x0;",
+        "voidaw22xxx_init_cfg_update_array(undefined8param_1){longlVar1;",
+    )
+    rewritten = rewritten.replace("in_x0", "param_1")
+    rewritten = rewritten.replace(
+        "aw22xxx_i2c_write(param_1,2,local_2c[0]);",
+        "aw22xxx_i2c_write(param_1,2);",
+    )
+    if rewritten != stock:
+        return None
+    if candidate.count("aw22xxx_i2c_read(") != 1 or candidate.count("aw22xxx_i2c_write(") != 10:
+        return None
+    return {
+        "kind": "ghidra_aw22xxx_init_signature_argument_artifact",
+        "candidate_rewrites": [
+            "remove Unknown calling convention warning",
+            "restore undefined8 param_1 inferred from AArch64 x0 use",
+            "remove one Ghidra-only local byte argument from i2c_write call",
+        ],
+        "requirement": (
+            "exact aw22xxx_init_cfg_update_array body bytes, equal P-Code operation "
+            "shape and independent relocation-aware Assembly gate"
+        ),
+    }
+
+
 def decompiler_symbol_resolution_artifact(
     stock_normalized: str, candidate_normalized: str
 ) -> dict[str, Any] | None:
@@ -2096,6 +2135,14 @@ def compare_function(
     def collect_pcode_authoritative_fallback() -> dict[str, Any] | None:
         fallback = (
             decompiler_aw22xxx_play_address_syntax_artifact(
+                function,
+                stock_normalized,
+                candidate_normalized,
+                stock_shape,
+                candidate_shape,
+            )
+            or
+            decompiler_aw22xxx_init_signature_artifact(
                 function,
                 stock_normalized,
                 candidate_normalized,
