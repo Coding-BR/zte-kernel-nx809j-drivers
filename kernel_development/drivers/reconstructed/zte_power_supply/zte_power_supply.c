@@ -671,10 +671,16 @@ zte_devm_power_supply_register_no_ws(struct device *parent, const struct zte_pow
 EXPORT_SYMBOL_GPL(zte_devm_power_supply_register_no_ws);
 
 /* Lookup / get por nome ou phandle */
+#ifdef ZTE_POWER_SUPPLY_HOST_TEST
 static int zte_power_supply_match_device_by_name(struct device *dev, const void *data)
 {
 	return strcmp(dev_name(dev), data) == 0;
 }
+#else
+/* The production callback is supplied by the stock-layout assembly island. */
+extern int zte_power_supply_match_device_by_name(struct device *dev,
+							 const void *data);
+#endif
 
 struct zte_power_supply *zte_power_supply_get_by_name(const char *name)
 {
