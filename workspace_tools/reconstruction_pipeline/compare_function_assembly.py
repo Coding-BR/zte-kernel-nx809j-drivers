@@ -512,7 +512,11 @@ def normalized_symbol_target(
         current = inverse.get((section, symbol_offset))
         if current is None or (
             symbol.startswith("__") and not current.startswith("__")
-        ) or (len(symbol) < len(current) and current.startswith("__")):
+        ) or (
+            len(symbol) < len(current)
+            and current.startswith("__")
+            and not symbol.startswith("$")
+        ):
             inverse[(section, symbol_offset)] = symbol
     symbol = inverse.get((section, offset))
     if symbol is not None:

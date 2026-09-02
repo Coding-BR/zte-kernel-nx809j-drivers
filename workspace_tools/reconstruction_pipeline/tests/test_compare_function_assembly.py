@@ -636,6 +636,17 @@ class NormalizedRelocationTests(unittest.TestCase):
 
         self.assertEqual(result, "R_AARCH64_LDST32_ABS_LO12_NC debug_value")
 
+    def test_section_offset_prefers_named_function_over_mapping_symbol(self) -> None:
+        result = MODULE.normalized_symbol_target(
+            ".text+0x40",
+            {
+                "__local_callback": (".text", 0x40),
+                "$x.102": (".text", 0x40),
+            },
+        )
+
+        self.assertEqual(result, "__local_callback")
+
     def test_rodata_pointer_slot_uses_relocation_fingerprint(self) -> None:
         result = MODULE.normalized_relocation(
             "R_AARCH64_ADR_PREL_PG_HI21",
