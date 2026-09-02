@@ -544,6 +544,23 @@ def normalize_decompiled(
 
     replaced = GLOBAL_DATA_LABEL_RE.sub(replace_global_data_label, replaced)
 
+    def replace_breakpoint_context(match: re.Match[str]) -> str:
+        artifact_evidence.append(
+            {
+                "kind": "software_breakpoint_context_address",
+                "value": match.group(0),
+            }
+        )
+        return f"{match.group(1)}GHIDRA_FUNCTION_ADDRESS{match.group(2)}"
+
+    # Classify the second argument before absolute-address normalization.  A
+    # Ghidra layout may place a breakpoint context address immediately after a
+    # function in a section that another layout labels as rodata; it remains a
+    # function-local decompiler artifact, not a data reference.
+    replaced = SOFTWARE_BREAKPOINT_CONTEXT_RE.sub(
+        replace_breakpoint_context, replaced
+    )
+
     if absolute_data_ranges:
         def replace_absolute_data_address(match: re.Match[str]) -> str:
             address = int(match.group(1), 16)
@@ -566,19 +583,6 @@ def normalize_decompiled(
             return match.group(0)
 
         replaced = ABSOLUTE_ADDRESS_RE.sub(replace_absolute_data_address, replaced)
-
-    def replace_breakpoint_context(match: re.Match[str]) -> str:
-        artifact_evidence.append(
-            {
-                "kind": "software_breakpoint_context_address",
-                "value": match.group(0),
-            }
-        )
-        return f"{match.group(1)}GHIDRA_FUNCTION_ADDRESS{match.group(2)}"
-
-    replaced = SOFTWARE_BREAKPOINT_CONTEXT_RE.sub(
-        replace_breakpoint_context, replaced
-    )
 
     def replace_alloc_tag(match: re.Match[str]) -> str:
         artifact_evidence.append(

@@ -297,6 +297,9 @@ static ssize_t zte_power_supply_store_property(struct device *dev, struct device
 #endif
 
 /* Visibility Callback */
+#ifdef ZTE_POWER_SUPPLY_ATTR_VISIBLE_EXACT_ISLAND
+extern umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribute *attr, int attrno);
+#else
 static umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribute *attr, int attrno)
 {
 	struct device *dev = kobj_to_dev(kobj);
@@ -318,6 +321,7 @@ static umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribu
 	}
 	return 0;
 }
+#endif
 
 static struct device_type zte_power_supply_dev_type;
 static struct attribute *__zte_power_supply_attrs[MAX_PSY_ATTRS + 1];
