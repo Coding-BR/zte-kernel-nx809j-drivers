@@ -83,7 +83,7 @@
       "stock_function": "zte_power_supply_set_battery_charged"
     },
     {
-      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next108_zte_power_supply_init_module_v1/decision.json",
       "category": "core_logic",
       "evidence": [
         {
@@ -1653,23 +1653,23 @@
       "category": "lifecycle",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_power_supply\\microtasks\\046_init_module\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next108_zte_power_supply_init_module_v1/hard_protocol_report.json",
           "role": "compile",
-          "sha256": "016e342e656250b63f00784c2e040abe4abefc278f6aab8fc0f3eae02d2ed436"
+          "sha256": "1beb2d78e254f6d0f09e3cd33885e65e6a5e4233c40ac60ce5fde35536ef0159"
         },
         {
-          "path": "engenharia\\validation\\zte_power_supply\\microtasks\\046_init_module\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next108_zte_power_supply_init_module_v1/kcfi_comparison.json",
           "role": "kcfi",
-          "sha256": "1cf008ea579a89b40b4c616621ba010a51d951a1e807996af8947b1de3d37d71"
+          "sha256": "f0277add052e3e35f35c2dfe663a8772966ecb25c747a2336f00dcd27a494a05"
         },
         {
-          "path": "engenharia\\validation\\zte_power_supply\\microtasks\\046_init_module\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next108_zte_power_supply_init_module_v1/test.json",
           "role": "test",
-          "sha256": "e872d05512b06e1bd525f7a2f58ea6766d73fd822e1c1382153d37ac92a1e06a"
+          "sha256": "bcc8db51db5d81acc8ab59266bf2399b9e04d8c9a41c9cbfe74c603807b47d4b"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_power_supply.ko\\pcode\\0045_001033e8_init_module.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_power_supply.ko\\decompiled\\0045_001033e8_init_module.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next108_zte_power_supply_init_module_v1/ghidra_candidate_export/pcode/0045_00103158_init_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next108_zte_power_supply_init_module_v1/ghidra_candidate_export/pseudocode.c",
       "id": "046_init_module",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_power_supply\nFuncao stock: init_module\nEntrada Ghidra: 001033e8\nTamanho stock: 80 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_power_supply.c:zte_power_supply_init\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_power_supply.ko\\decompiled\\0045_001033e8_init_module.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_power_supply.ko\\pcode\\0045_001033e8_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
