@@ -905,6 +905,10 @@ def execute_post_candidate(
             "allow_shared_data_binding_normalization", False
         ):
             ghidra_command.append("--allow-shared-data-binding-normalization")
+        if isinstance(ghidra_config, dict) and ghidra_config.get(
+            "allow_relocated_same_name_data_normalization", False
+        ):
+            ghidra_command.append("--allow-relocated-same-name-data-normalization")
         result = run_command(
             "ghidra_semantics", ghidra_command,
             output_dir=output_dir, timeout=command_timeout,

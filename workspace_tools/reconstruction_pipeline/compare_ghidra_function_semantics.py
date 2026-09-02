@@ -246,9 +246,19 @@ def named_data_symbol_bindings(root: Path) -> dict[str, str]:
 
 
 def shared_named_data_bindings(
-    stock_root: Path, candidate_root: Path
+    stock_root: Path,
+    candidate_root: Path,
+    allow_relocated_same_name: bool = False,
 ) -> tuple[dict[str, str], dict[str, str]]:
-    """Return bindings only when the complete section layout is also stable."""
+    """Return bindings proven shared by section layout or retained symbol name.
+
+    The normal path requires equal section-relative offsets.  The optional
+    relocated-name path is for compiler/linker layouts that reorder globals:
+    it admits only the same non-synthetic data symbol in the same section on
+    both exports, and gives both sides a canonical name token.  Exact body
+    bytes, P-Code shape and relocation-aware Assembly remain independent
+    requirements at the caller.
+    """
     stock = named_data_symbol_bindings(stock_root)
     candidate = named_data_symbol_bindings(candidate_root)
     stock_sizes = {
@@ -273,9 +283,30 @@ def shared_named_data_bindings(
         for token in set(stock.values()) & set(candidate.values())
         if any(token.startswith(prefix) for prefix in stable_prefixes)
     }
+    stock_bindings = {
+        name: token for name, token in stock.items() if token in shared_tokens
+    }
+    candidate_bindings = {
+        name: token for name, token in candidate.items() if token in shared_tokens
+    }
+    if allow_relocated_same_name:
+        for name in sorted(set(stock) & set(candidate)):
+            if name.startswith(("DAT_", "UNK_")):
+                continue
+            stock_token = stock[name]
+            candidate_token = candidate[name]
+            stock_section, _ = stock_token.rsplit("_", 1)
+            candidate_section, _ = candidate_token.rsplit("_", 1)
+            if stock_section != candidate_section or stock_token == candidate_token:
+                continue
+            canonical = "GHIDRA_DATA_SHARED_" + re.sub(
+                r"[^A-Za-z0-9_]", "_", name
+            )
+            stock_bindings[name] = canonical
+            candidate_bindings[name] = canonical
     return (
-        {name: token for name, token in stock.items() if token in shared_tokens},
-        {name: token for name, token in candidate.items() if token in shared_tokens},
+        stock_bindings,
+        candidate_bindings,
     )
 
 
@@ -2088,6 +2119,11 @@ def parse_args() -> argparse.Namespace:
         help="normalize named data labels only when section-relative bindings match on both exports",
     )
     parser.add_argument(
+        "--allow-relocated-same-name-data-normalization",
+        action="store_true",
+        help="also normalize identical non-synthetic data symbol names when linkers relocated them within the same section",
+    )
+    parser.add_argument(
         "--allow-named-data-address-syntax-fallback",
         action="store_true",
         help="accept only Ghidra obj versus &obj syntax for proven shared data bindings after body/P-Code equality",
@@ -2149,7 +2185,11 @@ def main() -> int:
         (
             stock_named_data_bindings,
             candidate_named_data_bindings,
-        ) = shared_named_data_bindings(stock_root, candidate_root)
+        ) = shared_named_data_bindings(
+            stock_root,
+            candidate_root,
+            args.allow_relocated_same_name_data_normalization,
+        )
     else:
         stock_named_data_bindings = None
         candidate_named_data_bindings = None
@@ -2216,6 +2256,9 @@ def main() -> int:
         ),
         "shared_data_binding_normalization_allowed": (
             args.allow_shared_data_binding_normalization
+        ),
+        "relocated_same_name_data_normalization_allowed": (
+            args.allow_relocated_same_name_data_normalization
         ),
         "named_data_address_syntax_fallback_allowed": (
             args.allow_named_data_address_syntax_fallback

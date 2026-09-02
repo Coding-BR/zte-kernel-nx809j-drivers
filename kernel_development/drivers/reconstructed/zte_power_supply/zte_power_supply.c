@@ -31,8 +31,7 @@ struct zte_power_supply;
 
 enum zte_power_supply_property {
 	ZTE_POWER_SUPPLY_PROP_STATUS = POWER_SUPPLY_PROP_STATUS,
-	ZTE_POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX =
-		POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX,
+	ZTE_POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX = 65,
 	ZTE_POWER_SUPPLY_PROP_TYPE = POWER_SUPPLY_PROP_TYPE,
 };
 
@@ -279,10 +278,11 @@ static umode_t power_supply_attr_is_visible(struct kobject *kobj, struct attribu
 	return 0;
 }
 
-static struct attribute *zte_power_supply_dev_attrs[MAX_PSY_ATTRS + 1];
+static struct device_type zte_power_supply_dev_type;
+static struct attribute *__zte_power_supply_attrs[MAX_PSY_ATTRS + 1];
 
 static const struct attribute_group zte_power_supply_attr_group = {
-	.attrs = zte_power_supply_dev_attrs,
+	.attrs = __zte_power_supply_attrs,
 	.is_visible = power_supply_attr_is_visible,
 };
 
@@ -297,11 +297,6 @@ static void zte_power_supply_dev_release(struct device *dev)
 	struct zte_power_supply *psy = to_zte_power_supply(dev);
 	kfree(psy);
 }
-
-static struct device_type zte_power_supply_dev_type = {
-	.name = "zte_power_supply",
-	.release = zte_power_supply_dev_release,
-};
 
 noinline void zte_power_supply_init_attrs(struct device_type *dev_type)
 {
@@ -327,7 +322,7 @@ noinline void zte_power_supply_init_attrs(struct device_type *dev_type)
 		attr->attr.name = zte_power_supply_attrs[i].attr_name;
 		attr->show = zte_power_supply_show_property;
 		attr->store = zte_power_supply_store_property;
-		zte_power_supply_dev_attrs[i] = &attr->attr;
+		__zte_power_supply_attrs[i] = &attr->attr;
 	}
 }
 
@@ -513,7 +508,7 @@ __zte_power_supply_register(struct device *parent, const struct zte_power_supply
 
 	if (!parent)
 		pr_warn("%s: Expected proper parent device for '%s'\n",
-			__func__, desc ? desc->name : NULL);
+			__func__, desc->name);
 
 	if (!desc || !desc->name || !desc->properties || desc->num_properties == 0)
 		return ERR_PTR(-EINVAL);
@@ -533,6 +528,7 @@ __zte_power_supply_register(struct device *parent, const struct zte_power_supply
 	device_initialize(&psy->dev);
 	psy->dev.class = zte_power_supply_class;
 	psy->dev.type = &zte_power_supply_dev_type;
+	psy->dev.release = zte_power_supply_dev_release;
 	psy->dev.parent = parent;
 	dev_set_drvdata(&psy->dev, psy);
 	psy->desc = desc;
@@ -540,9 +536,14 @@ __zte_power_supply_register(struct device *parent, const struct zte_power_supply
 	if (cfg) {
 		psy->dev.groups = cfg->attr_grp;
 		psy->drvdata = cfg->drv_data;
-		psy->of_node = cfg->of_node;
-		if (cfg->fwnode && is_of_node(cfg->fwnode))
-			psy->of_node = to_of_node(cfg->fwnode);
+		if (cfg->fwnode) {
+			if (is_of_node(cfg->fwnode))
+				psy->of_node = to_of_node(cfg->fwnode);
+			else
+				psy->of_node = NULL;
+		} else {
+			psy->of_node = cfg->of_node;
+		}
 		psy->supplied_to = cfg->supplied_to;
 		psy->num_supplicants = cfg->num_supplicants;
 	}

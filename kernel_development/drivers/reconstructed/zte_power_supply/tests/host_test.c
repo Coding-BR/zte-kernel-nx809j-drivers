@@ -170,17 +170,17 @@ void device_unregister(struct device *dev)
 	}
 	dev->added = false;
 	host.device_unregisters++;
-	if (dev->type && dev->type->release) {
+	if (dev->release) {
 		host.device_releases++;
-		dev->type->release(dev);
+		dev->release(dev);
 	}
 }
 
 void put_device(struct device *dev)
 {
-	if (!dev->added && dev->type && dev->type->release) {
+	if (!dev->added && dev->release) {
 		host.device_releases++;
-		dev->type->release(dev);
+		dev->release(dev);
 	}
 }
 

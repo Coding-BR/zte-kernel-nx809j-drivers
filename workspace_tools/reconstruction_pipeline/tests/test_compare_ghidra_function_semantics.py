@@ -316,6 +316,40 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             {"candidate_bss": "GHIDRA_DATA_BINDING__bss_00000000"},
         )
 
+    def test_relocated_same_named_data_binding_requires_explicit_opt_in(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            for export in (stock, candidate):
+                export.mkdir()
+                write_jsonl(
+                    export / "memory_blocks.jsonl",
+                    [{"name": ".bss", "start": "1000", "end": "101f", "initialized": False}],
+                )
+            write_jsonl(
+                stock / "symbols.jsonl",
+                [{"name": "shared_object", "address": "1008", "type": "Label"}],
+            )
+            write_jsonl(
+                candidate / "symbols.jsonl",
+                [{"name": "shared_object", "address": "1010", "type": "Label"}],
+            )
+
+            without_opt_in = MODULE.shared_named_data_bindings(stock, candidate)
+            with_opt_in = MODULE.shared_named_data_bindings(
+                stock, candidate, allow_relocated_same_name=True
+            )
+
+        self.assertEqual(without_opt_in, ({}, {}))
+        self.assertEqual(
+            with_opt_in,
+            (
+                {"shared_object": "GHIDRA_DATA_SHARED_shared_object"},
+                {"shared_object": "GHIDRA_DATA_SHARED_shared_object"},
+            ),
+        )
+
     def test_relocated_global_data_labels_preserve_aliasing(self) -> None:
         stock = "void target(void) { DAT_00101000 = DAT_00101008; DAT_00101008 = DAT_00101000; }"
         candidate = "void target(void) { DAT_00202000 = DAT_00202008; DAT_00202008 = DAT_00202000; }"
