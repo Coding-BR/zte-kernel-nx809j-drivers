@@ -334,6 +334,7 @@ int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 }
 #endif
 
+#ifndef ZTE_LED_READ_CHIPID_EXACT_ISLAND
 __used noinline int aw22xxx_read_chipid(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
@@ -381,6 +382,7 @@ err:
 	dev_err(aw22xxx->dev, "aw22xxx: failed to read AW22XXX_REG_ID: %d\n", ret);
 	return -EIO;
 }
+#endif
 
 #ifndef ZTE_LED_IMAX_EXACT_ISLAND
 static noinline __used int aw22xxx_led_imax_cfg(struct aw22xxx *aw22xxx)
