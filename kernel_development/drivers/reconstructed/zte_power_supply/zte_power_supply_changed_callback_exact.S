@@ -1,0 +1,70 @@
+.section .text,"ax",@progbits
+.align 2
+.global __zte_power_supply_changed_work
+.type __zte_power_supply_changed_work, %function
+    .word 0x329a67bc
+__zte_power_supply_changed_work:
+    .inst 0xd503233f
+    .inst 0xa9bc7bfd
+    .inst 0xa9015ff8
+    .inst 0xa90257f6
+    .inst 0xa9034ff4
+    .inst 0x910003fd
+    .inst 0xf9404c13
+    .inst 0xf9400e75
+    .inst 0xb4000235
+    .inst 0xf9400028
+    .inst 0xf9400114
+    .inst 0xb4000574
+    .inst 0xf9401276
+    .inst 0xb4000536
+    .inst 0xaa1f03e8
+    .inst 0x52800037
+    .inst 0xf8687aa1
+    .inst 0xaa1403e0
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, strcmp
+    .inst 0x34000300
+    .inst 0x93407ee8
+    .inst 0x110006f7
+    .inst 0xeb0802df
+    .inst 0x54ffff28
+    .inst 0x1400001e
+    .inst 0xf9400436
+    .inst 0xb4000396
+    .inst 0xf9400275
+    .inst 0xf94002b4
+    .inst 0xb4000334
+    .inst 0xf9400837
+    .inst 0xb40002f7
+    .inst 0xaa1f03e8
+    .inst 0x52800038
+    .inst 0xf8687ac0
+    .inst 0xaa1403e1
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, strcmp
+    .inst 0x340000e0
+    .inst 0x93407f08
+    .inst 0x11000718
+    .inst 0xeb0802ff
+    .inst 0x54ffff28
+    .inst 0x1400000c
+    .inst 0xf9400275
+    .inst 0xf94026a8
+    .inst 0xb4000128
+    .inst 0xaa1303e0
+    .inst 0xb85fc110
+    .inst 0x7295bdf1
+    .inst 0x72ade731
+    .inst 0x6b11021f
+    .inst 0x54000040
+    .inst 0xd4304500
+    .inst 0xd63f0100
+    .inst 0x2a1f03e0
+    .inst 0xa9434ff4
+    .inst 0xa94257f6
+    .inst 0xa9415ff8
+    .inst 0xa8c47bfd
+    .inst 0xd50323bf
+    .inst 0xd65f03c0
+.size __zte_power_supply_changed_work, .-__zte_power_supply_changed_work

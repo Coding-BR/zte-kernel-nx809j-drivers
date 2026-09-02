@@ -339,6 +339,7 @@ void zte_power_supply_unreg_notifier(struct notifier_block *nb)
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_unreg_notifier);
 
+#ifndef ZTE_POWER_SUPPLY_EXACT_ISLAND
 /* Changed Work e Notificações de Eventos */
 static int __zte_power_supply_changed_work(struct device *dev, void *data)
 {
@@ -368,6 +369,9 @@ changed:
 		psy->desc->external_power_changed(psy);
 	return 0;
 }
+#else
+extern int __zte_power_supply_changed_work(struct device *dev, void *data);
+#endif
 
 static void zte_power_supply_changed_work(struct work_struct *work)
 {
