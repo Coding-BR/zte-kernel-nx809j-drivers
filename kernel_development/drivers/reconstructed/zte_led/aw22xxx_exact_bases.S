@@ -29,6 +29,10 @@ aw22xxx_exact_codetag_base:
 .set aw22xxx_fw_loaded._alloc_tag, aw22xxx_exact_codetag_base+0x78
 .global aw22xxx_i2c_writes._alloc_tag
 .set aw22xxx_i2c_writes._alloc_tag, aw22xxx_exact_codetag_base+0xa0
+.global aw22xxx_alloc_name_array._alloc_tag.171
+.set aw22xxx_alloc_name_array._alloc_tag.171, aw22xxx_exact_codetag_base+0x50
+.global aw22xxx_alloc_name_array._alloc_tag
+.set aw22xxx_alloc_name_array._alloc_tag, aw22xxx_exact_codetag_base+0x28
 .reloc aw22xxx_exact_codetag_base+0x8, R_AARCH64_ABS64, aw22xxx_exact_rodata_str_base+0x16e4
 .reloc aw22xxx_exact_codetag_base+0x10, R_AARCH64_ABS64, aw22xxx_exact_rodata_str_base+0xf68
 .reloc aw22xxx_exact_codetag_base+0x18, R_AARCH64_ABS64, aw22xxx_exact_rodata_str_base+0x17e4

@@ -1200,6 +1200,7 @@ __used void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 	hrtimer_start(&aw22xxx->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
 }
 
+#ifndef ZTE_LED_ALLOC_NAME_ARRAY_EXACT_ISLAND
 __used int aw22xxx_alloc_name_array(void)
 {
 	int i;
@@ -1235,8 +1236,9 @@ err:
 	aw22xxx_cfg_name = NULL;
 	return -ENOMEM;
 }
+#endif
 
-#ifndef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+	#ifndef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
 static ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2)
 {
 	int i;
