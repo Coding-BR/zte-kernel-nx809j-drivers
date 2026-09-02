@@ -5,6 +5,8 @@ aw22xxx_exact_data_base:
 .incbin "exact_stock_sections/stock_data.bin"
 .global g_ver_var
 .set g_ver_var, aw22xxx_exact_data_base+0x370
+.global aw22xxx_blink_cfg
+.set aw22xxx_blink_cfg, aw22xxx_exact_data_base+0x38
 
 .section .rodata,"a",@progbits
 .align 3
@@ -59,6 +61,8 @@ aw22xxx_exact_percpu_base:
 .global aw22xxx_exact_bss_base
 aw22xxx_exact_bss_base:
 .zero 0x61d8
+.global duration
+.set duration, aw22xxx_exact_bss_base+0x4
 .global aw22xxx_fw_name
 aw22xxx_fw_name:
 .zero 0x40

@@ -485,10 +485,11 @@ def normalized_symbol_target(
         return aliased if not addend else f"{aliased}+0x{addend:x}"
     location = symbol_locations.get(name)
     base_match = re.fullmatch(
-        r"(?P<prefix>.+)_(?P<section>rodata_str|rodata|bss|codetag)_base", name
+        r"(?P<prefix>.+)_(?P<section>data|rodata_str|rodata|bss|codetag)_base", name
     )
     if location is not None and base_match and location[1] == 0:
         section = {
+            "data": ".data",
             "rodata_str": ".rodata.str1.1",
             "rodata": ".rodata",
             "bss": ".bss",

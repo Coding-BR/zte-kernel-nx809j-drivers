@@ -153,7 +153,11 @@ static u32 fan_effect;
 static int write_idx = 0;
 static int read_idx = 0;
 static int user_para_data[25000];
+#ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+extern u8 duration;
+#else
 static u8 duration = 0;
+#endif
 static struct task_struct *cfg_update_kthread = NULL;
 static int kthread_status = 0;
 static char **aw22xxx_cfg_name = NULL;
@@ -180,6 +184,9 @@ static const u8 aw22xxx_reg_access[256] = {
 	[0xFF] = 0x03
 };
 
+#ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+extern u8 aw22xxx_blink_cfg[148];
+#else
 static u8 aw22xxx_blink_cfg[] = {
 	0xFF, 0x00, 0x0C, 0x00, 0x05, 0x00, 0x06, 0xFF, 0x04, 0x07, 0x05, 0x00,
 	0x06, 0x00, 0x04, 0x07, 0x05, 0x00, 0x06, 0x00, 0x04, 0x07, 0x05, 0x00,
@@ -195,6 +202,7 @@ static u8 aw22xxx_blink_cfg[] = {
 	0x06, 0xFF, 0x04, 0x07, 0x05, 0x00, 0x06, 0xFF, 0x04, 0x07, 0x05, 0x00,
 	0x06, 0xFF, 0x04, 0x07, 0x05, 0x00, 0x06, 0xFF, 0x04, 0x07
 };
+#endif
 
 /* Prototypes */
 int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
@@ -205,6 +213,9 @@ static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
 static void aw22xxx_fw_loaded_c(const struct firmware *fw, void *context);
 extern void aw22xxx_fw_loaded(const struct firmware *fw, void *context);
+#ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+extern ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2);
+#endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
@@ -1167,6 +1178,7 @@ err:
 	return -ENOMEM;
 }
 
+#ifndef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
 static ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2)
 {
 	int i;
@@ -1207,6 +1219,7 @@ static ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2)
 	}
 	return 0;
 }
+#endif
 
 static int aw22xxx_play(void *data)
 {
