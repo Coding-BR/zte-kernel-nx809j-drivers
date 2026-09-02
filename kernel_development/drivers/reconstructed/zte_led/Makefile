@@ -40,3 +40,6 @@ AFLAGS_aw22xxx_task_irq_store_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_para_show_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_para_store_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_multi_breath_pattern_show_exact.o := -g0 -I$(src)
+zte_led-y += aw22xxx_multi_breath_pattern_store_exact.o
+ccflags-y += -DZTE_LED_MULTI_BREATH_PATTERN_STORE_EXACT_ISLAND
+AFLAGS_aw22xxx_multi_breath_pattern_store_exact.o := -g0 -I$(src)
