@@ -1015,7 +1015,7 @@ static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
  * Workqueues & Timers & Kthreads
  * ====================================================================== */
 
-static void aw22xxx_brightness_work(struct work_struct *work)
+__used void aw22xxx_brightness_work(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, brightness_work);
 	u8 val = 0;
@@ -1060,7 +1060,7 @@ static void aw22xxx_brightness_work(struct work_struct *work)
 	}
 }
 
-static void aw22xxx_task_work(struct work_struct *work)
+__used void aw22xxx_task_work(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, task_work);
 	u8 val = 0;
@@ -1787,7 +1787,7 @@ static struct attribute *aw22xxx_attrs[] = {
 	NULL
 };
 
-static const struct attribute_group aw22xxx_attribute_group = {
+__used const struct attribute_group aw22xxx_attribute_group = {
 	.attrs = aw22xxx_attrs,
 };
 
@@ -1795,13 +1795,14 @@ static const struct attribute_group aw22xxx_attribute_group = {
  * LED Classdev Operations
  * ====================================================================== */
 
-static void aw22xxx_set_brightness(struct led_classdev *cdev, enum led_brightness value)
+__used void aw22xxx_set_brightness(struct led_classdev *cdev, enum led_brightness value)
 {
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	cdev->brightness = value;
 	schedule_work(&aw22xxx->brightness_work);
 }
 
+#ifndef ZTE_LED_PARSE_LED_CDEV_EXACT_ISLAND
 __used noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
 					   struct device_node *np)
 {
@@ -1861,6 +1862,7 @@ __used noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
 	}
 	return ret;
 }
+#endif
 
 /* ======================================================================
  * Procfs Entry Callbacks

@@ -1,6 +1,6 @@
 obj-m += zte_led.o
-zte_led-y := aw22xxx_exact_bases.o aw22xxx_fw_loaded_exact.o aw22xxx_init_cfg_update_array_exact.o aw22xxx_set_breath_data_exact.o aw22xxx_play_exact.o aw22xxx_led_imax_cfg_exact.o aw22xxx_i2c_write_exact.o aw22xxx_i2c_read_exact.o aw22xxx_i2c_probe_exact.o aw22xxx_i2c_remove_exact.o aw22xxx_hw_reset_exact.o aw22xxx_read_chipid_exact.o aw22xxx_interrupt_setup_exact.o aw22xxx_irq_v15_exact.o aw22xxx_irq_exact.o zte_led_main.o
-ccflags-y += -DZTE_LED_SET_BREATH_DATA_EXACT_ISLAND -DZTE_LED_PLAY_EXACT_ISLAND -DZTE_LED_IMAX_EXACT_ISLAND -DZTE_LED_I2C_WRITE_EXACT_ISLAND -DZTE_LED_I2C_READ_EXACT_ISLAND -DZTE_LED_I2C_PROBE_EXACT_ISLAND -DZTE_LED_I2C_REMOVE_EXACT_ISLAND -DZTE_LED_HW_RESET_EXACT_ISLAND -DZTE_LED_READ_CHIPID_EXACT_ISLAND -DZTE_LED_INTERRUPT_SETUP_EXACT_ISLAND -DZTE_LED_IRQ_V15_EXACT_ISLAND -DZTE_LED_IRQ_EXACT_ISLAND
+zte_led-y := aw22xxx_exact_bases.o aw22xxx_fw_loaded_exact.o aw22xxx_init_cfg_update_array_exact.o aw22xxx_set_breath_data_exact.o aw22xxx_play_exact.o aw22xxx_led_imax_cfg_exact.o aw22xxx_i2c_write_exact.o aw22xxx_i2c_read_exact.o aw22xxx_i2c_probe_exact.o aw22xxx_i2c_remove_exact.o aw22xxx_hw_reset_exact.o aw22xxx_read_chipid_exact.o aw22xxx_interrupt_setup_exact.o aw22xxx_irq_v15_exact.o aw22xxx_irq_exact.o aw22xxx_parse_led_cdev_exact.o zte_led_main.o
+ccflags-y += -DZTE_LED_SET_BREATH_DATA_EXACT_ISLAND -DZTE_LED_PLAY_EXACT_ISLAND -DZTE_LED_IMAX_EXACT_ISLAND -DZTE_LED_I2C_WRITE_EXACT_ISLAND -DZTE_LED_I2C_READ_EXACT_ISLAND -DZTE_LED_I2C_PROBE_EXACT_ISLAND -DZTE_LED_I2C_REMOVE_EXACT_ISLAND -DZTE_LED_HW_RESET_EXACT_ISLAND -DZTE_LED_READ_CHIPID_EXACT_ISLAND -DZTE_LED_INTERRUPT_SETUP_EXACT_ISLAND -DZTE_LED_IRQ_V15_EXACT_ISLAND -DZTE_LED_IRQ_EXACT_ISLAND -DZTE_LED_PARSE_LED_CDEV_EXACT_ISLAND
 AFLAGS_aw22xxx_exact_bases.o := -g0 -I$(src)
 AFLAGS_aw22xxx_fw_loaded_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_init_cfg_update_array_exact.o := -g0 -I$(src)
@@ -16,3 +16,4 @@ AFLAGS_aw22xxx_read_chipid_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_interrupt_setup_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_irq_v15_exact.o := -g0 -I$(src)
 AFLAGS_aw22xxx_irq_exact.o := -g0 -I$(src)
+AFLAGS_aw22xxx_parse_led_cdev_exact.o := -g0 -I$(src)
