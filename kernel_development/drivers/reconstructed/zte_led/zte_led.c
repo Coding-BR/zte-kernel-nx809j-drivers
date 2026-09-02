@@ -1062,6 +1062,7 @@ __used void aw22xxx_brightness_work(struct work_struct *work)
 }
 #endif
 
+#ifndef ZTE_LED_TASK_WORK_EXACT_ISLAND
 __used void aw22xxx_task_work(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, task_work);
@@ -1107,6 +1108,7 @@ __used void aw22xxx_task_work(struct work_struct *work)
 		aw22xxx_i2c_write(aw22xxx, 4, val);
 	}
 }
+#endif
 
 __used void aw22xxx_fw_work_routine(struct work_struct *work)
 {
