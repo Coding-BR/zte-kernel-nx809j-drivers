@@ -347,6 +347,9 @@ extern ssize_t aw22xxx_multi_breath_pattern_store(struct device *dev,
 #ifdef ZTE_LED_FW_TIMER_FUNC_EXACT_ISLAND
 extern enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer);
 #endif
+#ifdef ZTE_LED_FW_WORK_ROUTINE_EXACT_ISLAND
+extern void aw22xxx_fw_work_routine(struct work_struct *work);
+#endif
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
@@ -1202,6 +1205,7 @@ __used void aw22xxx_task_work(struct work_struct *work)
 }
 #endif
 
+#ifndef ZTE_LED_FW_WORK_ROUTINE_EXACT_ISLAND
 __used void aw22xxx_fw_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, fw_work);
@@ -1211,6 +1215,7 @@ __used void aw22xxx_fw_work_routine(struct work_struct *work)
 	request_firmware_nowait(THIS_MODULE, 1, aw22xxx_fw_name, aw22xxx->dev,
 				GFP_KERNEL, aw22xxx, aw22xxx_fw_loaded);
 }
+#endif
 
 __used void aw22xxx_cfg_work_routine(struct work_struct *work)
 {
