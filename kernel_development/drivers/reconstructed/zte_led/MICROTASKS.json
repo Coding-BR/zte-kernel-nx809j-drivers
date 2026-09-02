@@ -627,23 +627,23 @@
       "category": "async_or_irq",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\018_aw22xxx_brightness_work\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next040_aw22xxx_brightness_work_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "2fca81b39cc36a5e3b011da059c6ab6b258887ef75f675c88c3a63217db5407f"
+          "sha256": "564eeff7d4a17ced7de8f1874b960e7ec6150caf2251a282a0d53b8838399234"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\018_aw22xxx_brightness_work\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next040_aw22xxx_brightness_work_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "4d0c51e72f89541f722ab8854c1f40758c3061efd8afe838f3e86318a9f200c6"
+          "sha256": "ea9d5280a4125cbec7b74d033da9fab4b62be37e42a23b40c204442e7941e818"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\018_aw22xxx_brightness_work\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next040_aw22xxx_brightness_work_exact_v1/test.json",
           "role": "test",
-          "sha256": "1922b0b661c9da5040aa139bfabef23cf7e928b95ec357737cbc45e18f843f1c"
+          "sha256": "9ac9b3156b30095a3fe8c2b68488b3cedf4bc9799133b49f1576705b48bc8331"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0017_00102f28_aw22xxx_brightness_work.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0017_00102f28_aw22xxx_brightness_work.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next040_aw22xxx_brightness_work_exact_v1/stock_ghidra_brightness_work.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next040_aw22xxx_brightness_work_exact_v1/stock_ghidra_brightness_work.c",
       "id": "018_aw22xxx_brightness_work",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_brightness_work\nEntrada Ghidra: 00102f28\nTamanho stock: 588 bytes\nCategoria: async_or_irq\nAlvo no fonte: zte_led.c:aw22xxx_brightness_work\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0017_00102f28_aw22xxx_brightness_work.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0017_00102f28_aw22xxx_brightness_work.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
