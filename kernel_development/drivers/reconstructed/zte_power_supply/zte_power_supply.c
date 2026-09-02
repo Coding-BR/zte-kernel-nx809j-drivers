@@ -240,14 +240,15 @@ static ssize_t zte_power_supply_show_property(struct device *dev, struct device_
 			if (ret != -ENODATA && ret != -ENODEV && ret != -EAGAIN)
 				dev_err_ratelimited(dev,
 					"driver failed to report `%s' property: %zd\n",
-					psy_attr->prop_name, ret);
+					attr->attr.name, ret);
 			return ret;
 		}
 	}
 
-	if (psy_attr->text_values_len > 0 && val.intval >= 0 &&
-	    val.intval < psy_attr->text_values_len)
-		return sprintf(buf, "%s\n", psy_attr->text_values[val.intval]);
+	if (psy_attr->text_values_len > 0 &&
+	    (unsigned int)val.intval < (unsigned int)psy_attr->text_values_len)
+		return sprintf(buf, "%s\n",
+			psy_attr->text_values[(unsigned int)val.intval]);
 	return sprintf(buf, "%d\n", val.intval);
 }
 

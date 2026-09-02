@@ -234,6 +234,26 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_relocated_pointer_table_index_base_fallback_is_bounded(self) -> None:
+        stock = "idx=(int)((ulong)(param_2 + -0x20056) >> 3) * -0x45d1745d;"
+        candidate = "idx=(int)((ulong)(param_2 + -0x20055) >> 3) * -0x45d1745d;"
+        evidence = MODULE.relocated_pointer_table_index_base_fallback(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_relocated_pointer_table_index_base_artifact"
+        )
+        self.assertIsNone(
+            MODULE.relocated_pointer_table_index_base_fallback(
+                stock.replace("0x20056", "0x21056"), candidate
+            )
+        )
+        self.assertIsNone(
+            MODULE.relocated_pointer_table_index_base_fallback(
+                stock, candidate.replace("param_2", "param_3")
+            )
+        )
+
     def test_elf_backed_named_string_symbol_is_normalized_without_rewriting_literals(
         self,
     ) -> None:

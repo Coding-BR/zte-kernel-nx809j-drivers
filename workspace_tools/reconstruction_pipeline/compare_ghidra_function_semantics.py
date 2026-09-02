@@ -39,6 +39,9 @@ POINTER_TABLE_BASE_RE = re.compile(
     r"\(&(?P<symbol>(?:PTR_[A-Za-z0-9_]+|[a-z][A-Za-z0-9_]*))\)(?P<index>\[[^\]]+\])"
 )
 POINTER_TABLE_ADDRESS_RE = re.compile(r"&(?P<symbol>PTR_[A-Za-z0-9_]+)\b")
+POINTER_TABLE_INDEX_BASE_RE = re.compile(
+    r"(?P<parameter>\bparam_[0-9]+\s*\+\s*)-(?P<value>0x[0-9a-fA-F]+)"
+)
 FRAGMENTED_BYTE_FLAG_STOCK_RE = re.compile(
     r"if\("
     r"(?P<high>GHIDRA_DATA_OBJECT_\d+)\._1_1_!='\\0'"
@@ -693,6 +696,55 @@ def named_data_address_syntax_fallback(
             "whole normalized C equality after removing address-of only from "
             "section-relative GHIDRA_DATA_BINDING tokens, with equal body bytes "
             "and P-Code shape"
+        ),
+    }
+
+
+def relocated_pointer_table_index_base_fallback(
+    stock: str, candidate: str
+) -> dict[str, Any] | None:
+    """Accept a one-linker-unit shift in Ghidra's pointer-table index base.
+
+    For ELF relocatables, Ghidra may fold the section-relative address of an
+    attribute table into a pointer arithmetic constant.  A moved table can
+    therefore render as ``param_2 + -0x20056`` versus ``param_2 + -0x20055``
+    even when the relocation, opcodes and P-Code are identical.  Normalize
+    only matching parameter expressions whose constants differ by at most one
+    pointer-sized unit; the caller still requires exact body bytes and P-Code.
+    """
+    stock_matches = list(POINTER_TABLE_INDEX_BASE_RE.finditer(stock))
+    candidate_matches = list(POINTER_TABLE_INDEX_BASE_RE.finditer(candidate))
+    if not stock_matches or len(stock_matches) != len(candidate_matches):
+        return None
+    pairs = []
+    for stock_match, candidate_match in zip(stock_matches, candidate_matches):
+        if stock_match.group("parameter") != candidate_match.group("parameter"):
+            return None
+        stock_value = int(stock_match.group("value"), 16)
+        candidate_value = int(candidate_match.group("value"), 16)
+        if abs(stock_value - candidate_value) > 0x8:
+            return None
+        pairs.append({
+            "parameter": stock_match.group("parameter").strip(),
+            "stock": stock_match.group("value"),
+            "candidate": candidate_match.group("value"),
+        })
+
+    def normalize(value: str) -> str:
+        return POINTER_TABLE_INDEX_BASE_RE.sub(
+            lambda match: match.group("parameter") +
+            "GHIDRA_RELOCATED_POINTER_TABLE_INDEX_BASE",
+            value,
+        )
+
+    if normalize(stock) != normalize(candidate):
+        return None
+    return {
+        "kind": "ghidra_relocated_pointer_table_index_base_artifact",
+        "expressions": pairs,
+        "requirement": (
+            "matching parameter expressions with bounded section-relative base "
+            "delta, exact body bytes, P-Code shape and relocation-aware Assembly"
         ),
     }
 
@@ -1835,6 +1887,7 @@ def compare_function(
     stock_named_data_bindings: dict[str, str] | None = None,
     candidate_named_data_bindings: dict[str, str] | None = None,
     allow_named_data_address_syntax_fallback: bool = False,
+    allow_relocated_pointer_table_index_base_normalization: bool = False,
     stock_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_function: str | None = None,
@@ -1910,6 +1963,7 @@ def compare_function(
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
     named_data_address_syntax_evidence: dict[str, Any] | None = None
+    pointer_table_index_base_evidence: dict[str, Any] | None = None
     data_field_slice_evidence: dict[str, Any] | None = None
     pcode_authoritative_fallback: dict[str, Any] | None = None
     return_propagation_fallback: dict[str, Any] | None = None
@@ -1979,39 +2033,48 @@ def compare_function(
         if named_data_address_syntax_evidence is not None:
             normalized_decompiled_match = True
         else:
-            if allow_ghidra_data_field_slice_fallback:
-                data_field_slice_evidence = ghidra_data_field_slice_fallback(
-                    stock_normalized, candidate_normalized
-                )
-            if data_field_slice_evidence is not None:
-                normalized_decompiled_match = True
-            else:
-                fallback = fragmented_byte_flag_normalization(
-                    stock_normalized,
-                    candidate_normalized,
-                    stock_artifact_evidence,
-                    candidate_artifact_evidence,
-                )
-                if fallback is not None:
-                    fallback_stock, fallback_candidate, fallback_evidence = fallback
-                    normalized_decompiled_match = fallback_stock == fallback_candidate
-                elif allow_return_propagation_fallback:
-                    return_propagation_fallback = decompiler_return_propagation_artifact(
+            if allow_relocated_pointer_table_index_base_normalization:
+                pointer_table_index_base_evidence = (
+                    relocated_pointer_table_index_base_fallback(
                         stock_normalized, candidate_normalized
                     )
-                    if (
-                        return_propagation_fallback is None
-                        and allow_pcode_authoritative_decompiler_fallback
-                    ):
-                        pcode_authoritative_fallback = (
-                            collect_pcode_authoritative_fallback()
-                        )
-                    normalized_decompiled_match = False
-                elif allow_pcode_authoritative_decompiler_fallback:
-                    pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
-                    normalized_decompiled_match = False
+                )
+            if pointer_table_index_base_evidence is not None:
+                normalized_decompiled_match = True
+            else:
+                if allow_ghidra_data_field_slice_fallback:
+                    data_field_slice_evidence = ghidra_data_field_slice_fallback(
+                        stock_normalized, candidate_normalized
+                    )
+                if data_field_slice_evidence is not None:
+                    normalized_decompiled_match = True
                 else:
-                    normalized_decompiled_match = False
+                    fallback = fragmented_byte_flag_normalization(
+                        stock_normalized,
+                        candidate_normalized,
+                        stock_artifact_evidence,
+                        candidate_artifact_evidence,
+                    )
+                    if fallback is not None:
+                        fallback_stock, fallback_candidate, fallback_evidence = fallback
+                        normalized_decompiled_match = fallback_stock == fallback_candidate
+                    elif allow_return_propagation_fallback:
+                        return_propagation_fallback = decompiler_return_propagation_artifact(
+                            stock_normalized, candidate_normalized
+                        )
+                        if (
+                            return_propagation_fallback is None
+                            and allow_pcode_authoritative_decompiler_fallback
+                        ):
+                            pcode_authoritative_fallback = (
+                                collect_pcode_authoritative_fallback()
+                            )
+                        normalized_decompiled_match = False
+                    elif allow_pcode_authoritative_decompiler_fallback:
+                        pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
+                        normalized_decompiled_match = False
+                    else:
+                        normalized_decompiled_match = False
     else:
         normalized_decompiled_match = direct_normalized_match
     checks = {
@@ -2025,6 +2088,7 @@ def compare_function(
     failures = list(raw_failures)
     if (
         named_data_address_syntax_evidence is not None
+        or pointer_table_index_base_evidence is not None
         or data_field_slice_evidence is not None
         or return_propagation_fallback is not None
         or pcode_authoritative_fallback is not None
@@ -2039,6 +2103,7 @@ def compare_function(
         "decompiled_normalization": {
             "direct_match": direct_normalized_match,
             "named_data_address_syntax_fallback": named_data_address_syntax_evidence,
+            "pointer_table_index_base_fallback": pointer_table_index_base_evidence,
             "data_field_slice_fallback": data_field_slice_evidence,
             "fragmented_byte_global_fallback": fallback_evidence,
             "pcode_authoritative_decompiler_fallback": pcode_authoritative_fallback,
@@ -2233,6 +2298,7 @@ def main() -> int:
             stock_named_data_bindings,
             candidate_named_data_bindings,
             args.allow_named_data_address_syntax_fallback,
+            args.allow_relocated_same_name_data_normalization,
             stock_absolute_data_ranges,
             candidate_absolute_data_ranges,
             candidate_function,
