@@ -34,7 +34,8 @@ ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
 )
 OPTIONAL_OBJECT_ADDRESS_RE = re.compile(
-    r"&(?P<symbol>syna_spi_device|attr_group|hardware_ver_driver)\b"
+    r"&(?P<symbol>syna_spi_device|attr_group|hardware_ver_driver|"
+    r"ddr_id_proc_fops)\b"
 )
 POINTER_TABLE_BASE_RE = re.compile(
     r"\(&(?P<symbol>(?:PTR_[A-Za-z0-9_]+|[a-z][A-Za-z0-9_]*))\)(?P<index>\[[^\]]+\])"

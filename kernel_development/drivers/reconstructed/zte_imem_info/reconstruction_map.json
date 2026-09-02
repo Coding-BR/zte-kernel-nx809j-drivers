@@ -101,11 +101,17 @@
       "source_file": "zte_imem_info.c",
       "source_function": "zte_imem_info_init",
       "evidence": [
-        "runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_imem_info.ko/decompiled/0005_001005f0_init_module.c",
-        "runs/NX809J-20260711T011653Z/02_normalized/modules/zte_imem_info.ko/readelf.txt"
+        "attestation/next115_zte_imem_info_init_module_exact_v1/hard_protocol_report.json",
+        "attestation/next115_zte_imem_info_init_module_exact_v1/assembly.json",
+        "attestation/next115_zte_imem_info_init_module_exact_v1/kcfi_comparison.json",
+        "attestation/next115_zte_imem_info_init_module_exact_v1/joern_gate_summary.json",
+        "attestation/next115_zte_imem_info_init_module_exact_v1/ghidra.json",
+        "attestation/next115_zte_imem_info_init_module_exact_v1/test.json"
       ],
-      "review_notes": "module_init expands to init_module. The proc creation and failure cleanup sequence match the stock control flow, and no cleanup_module is emitted.",
-      "status": "reviewed"
+      "attestation": "attestation/next115_zte_imem_info_init_module_exact_v1/decision.json",
+      "review_notes": "Promoted after exact assembly/relocation parity (60 instructions, 240 bytes in .init.text), matching KCFI type ID 0x6fbb3035, direct Ghidra normalized-C and P-Code shape equality, strict Joern gates, reproducible Docker cycle pair and reproducible host tests. The proc creation failure cleanup sequence is preserved.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "promotion_basis": "Exact offline static parity; no hardware claim."
     }
   ],
   "extra_source_functions": [
