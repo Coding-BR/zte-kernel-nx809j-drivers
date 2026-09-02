@@ -219,7 +219,11 @@ static u8 aw22xxx_blink_cfg[] = {
 #endif
 
 /* Prototypes */
+#ifdef ZTE_LED_I2C_WRITE_EXACT_ISLAND
+extern int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
+#else
 int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
+#endif
 int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
 static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
 int aw22xxx_led_init(struct aw22xxx *aw22xxx);
@@ -245,6 +249,7 @@ static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
  * I2C and Hardware Operations
  * ====================================================================== */
 
+#ifndef ZTE_LED_I2C_WRITE_EXACT_ISLAND
 noinline int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val)
 {
 	struct i2c_client *client = aw22xxx->i2c;
@@ -267,6 +272,7 @@ noinline int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val)
 	}
 	return ret;
 }
+#endif
 
 noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 {
