@@ -1047,6 +1047,24 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(len(stock_artifacts), 2)
         self.assertEqual(len(candidate_artifacts), 2)
 
+    def test_stack_local_type_spelling_is_normalized_by_offset(self) -> None:
+        stock = "byte local_30[4]; local_30[0] = 0;"
+        candidate = "byte abStack_30[4]; abStack_30[0] = 0;"
+        changed = "byte abStack_2c[4]; abStack_2c[0] = 0;"
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed, {})
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertNotEqual(stock_normalized, changed_normalized)
+        self.assertEqual(
+            {artifact["kind"] for artifact in stock_artifacts + candidate_artifacts},
+            {"ghidra_stack_local_name"},
+        )
+
     def test_changed_local_label_graph_is_rejected(self) -> None:
         baseline = (
             "void target(void) { goto LAB_00101020; "

@@ -193,7 +193,7 @@ extern char **aw22xxx_cfg_name;
 static char **aw22xxx_cfg_name = NULL;
 #endif
 
-#ifdef ZTE_LED_IMAX_STORE_EXACT_ISLAND
+#if defined(ZTE_LED_IMAX_STORE_EXACT_ISLAND) || defined(ZTE_LED_LED_INIT_EXACT_ISLAND)
 extern const u8 aw22xxx_imax_code[13];
 #else
 static const u8 aw22xxx_imax_code[13] = {
@@ -588,6 +588,11 @@ __used noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
 }
 #endif
 
+#ifdef ZTE_LED_LED_INIT_EXACT_ISLAND
+extern int aw22xxx_led_init(struct aw22xxx *aw22xxx);
+#endif
+
+#ifndef ZTE_LED_LED_INIT_EXACT_ISLAND
 int aw22xxx_led_init(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
@@ -622,6 +627,7 @@ int aw22xxx_led_init(struct aw22xxx *aw22xxx)
 
 	return 0;
 }
+#endif
 
 #ifndef ZTE_LED_PLAY_EXACT_ISLAND
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)

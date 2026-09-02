@@ -152,8 +152,10 @@ def build_decision(
     checks = {
         "stock_has_no_kcfi_record": not stock_records,
         "stock_exclusion_is_recorded": len(stock_excluded) == 1,
-        "candidate_has_single_kcfi_record": len(candidate_records) == 1,
-        "candidate_has_no_kcfi_exclusion": not candidate_excluded,
+        "candidate_kcfi_status_is_unambiguous": (
+            (len(candidate_records) == 1 and not candidate_excluded)
+            or (not candidate_records and len(candidate_excluded) == 1)
+        ),
         "stock_has_incoming_calls": bool(stock_incoming),
         "candidate_has_incoming_calls": bool(candidate_incoming),
         "stock_incoming_calls_are_direct": bool(stock_incoming)
@@ -201,13 +203,16 @@ def build_decision(
         "applicable": False,
         "decision": DECISION,
         "reason": (
-            "The stock ELF has no valid KCFI preamble for this function, and every "
-            "incoming stock and candidate reference is a direct UNCONDITIONAL_CALL."
+            "The stock ELF has no valid KCFI preamble for this function; the candidate "
+            "either has one unambiguous KCFI record or the same recorded non-KCFI "
+            "exclusion, and every incoming stock and candidate reference is a direct "
+            "UNCONDITIONAL_CALL."
         ),
         "stock_kcfi_record": None,
         "stock_kcfi_exclusion": stock_excluded[0],
-        "candidate_kcfi_record": candidate_records[0],
-        "candidate_extra_instrumentation": True,
+        "candidate_kcfi_record": candidate_records[0] if candidate_records else None,
+        "candidate_kcfi_exclusion": candidate_excluded[0] if candidate_excluded else None,
+        "candidate_extra_instrumentation": bool(candidate_records),
         "stock_call_graph": summarize_calls(stock_incoming),
         "candidate_call_graph": summarize_calls(candidate_incoming),
     }

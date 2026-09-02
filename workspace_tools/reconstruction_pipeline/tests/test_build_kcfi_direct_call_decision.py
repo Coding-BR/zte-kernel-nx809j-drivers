@@ -163,6 +163,68 @@ class BuildKcfiDirectCallDecisionTests(unittest.TestCase):
 
         self.assertTrue(report["passed"])
 
+    def test_accepts_recorded_non_kcfi_candidate_for_exact_direct_call(self) -> None:
+        (
+            stock_kcfi,
+            candidate_kcfi,
+            stock_calls,
+            candidate_calls,
+            stock,
+            candidate,
+            temporary,
+        ) = self.make_inputs()
+        self.addCleanup(temporary.cleanup)
+        candidate_kcfi["records"] = []
+        candidate_kcfi["excluded"] = [
+            {"function": "target", "reason": "overlap"}
+        ]
+
+        report = MODULE.build_decision(
+            driver="sample",
+            function="target",
+            stock_kcfi=stock_kcfi,
+            candidate_kcfi=candidate_kcfi,
+            stock_calls=stock_calls,
+            candidate_calls=candidate_calls,
+            stock_module=stock,
+            candidate_module=candidate,
+        )
+
+        self.assertTrue(report["passed"])
+        self.assertIsNone(report["comparisons"][0]["candidate_kcfi_record"])
+        self.assertEqual(
+            report["comparisons"][0]["candidate_kcfi_exclusion"]["reason"],
+            "overlap",
+        )
+
+    def test_rejects_ambiguous_candidate_kcfi_status(self) -> None:
+        (
+            stock_kcfi,
+            candidate_kcfi,
+            stock_calls,
+            candidate_calls,
+            stock,
+            candidate,
+            temporary,
+        ) = self.make_inputs()
+        self.addCleanup(temporary.cleanup)
+        candidate_kcfi["records"] = []
+        candidate_kcfi["excluded"] = []
+
+        with self.assertRaisesRegex(
+            ValueError, "candidate_kcfi_status_is_unambiguous"
+        ):
+            MODULE.build_decision(
+                driver="sample",
+                function="target",
+                stock_kcfi=stock_kcfi,
+                candidate_kcfi=candidate_kcfi,
+                stock_calls=stock_calls,
+                candidate_calls=candidate_calls,
+                stock_module=stock,
+                candidate_module=candidate,
+            )
+
     def test_rejects_module_hash_mismatch(self) -> None:
         (
             stock_kcfi,

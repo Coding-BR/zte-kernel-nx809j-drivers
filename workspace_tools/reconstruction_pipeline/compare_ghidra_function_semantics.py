@@ -29,6 +29,9 @@ LOCAL_LABEL_RE = re.compile(
     r"\b(?:LAB_[0-9a-fA-F]+|switchD_[0-9a-fA-F]+_caseD_[0-9a-fA-F]+|"
     r"code_r0x[0-9a-fA-F]+|joined_r0x[0-9a-fA-F]+)\b"
 )
+STACK_LOCAL_RE = re.compile(
+    r"\b(?:local|[a-z]{1,4}Stack)_(?P<offset>[0-9a-fA-F]+)\b"
+)
 ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
     r"([A-Za-z_][A-Za-z0-9_]*)(\s*,)"
@@ -656,6 +659,26 @@ def normalize_decompiled(
         return normalized
 
     replaced = LOCAL_LABEL_RE.sub(replace_local_label, replaced)
+
+    # Ghidra can choose a type-derived stack spelling (for example
+    # ``abStack_30``) in one export and the generic ``local_30`` spelling in
+    # another.  The hexadecimal stack offset is the stable identity; exact
+    # body bytes, ordered P-Code and independent assembly/relocation checks
+    # remain mandatory.
+    def replace_stack_local(match: re.Match[str]) -> str:
+        offset = match.group("offset").lower()
+        normalized = f"GHIDRA_STACK_LOCAL_{offset}"
+        artifact_evidence.append(
+            {
+                "kind": "ghidra_stack_local_name",
+                "value": match.group(0),
+                "normalized": normalized,
+                "stack_offset": f"0x{offset}",
+            }
+        )
+        return normalized
+
+    replaced = STACK_LOCAL_RE.sub(replace_stack_local, replaced)
 
     if named_data_bindings:
         named_symbol_re = re.compile(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
