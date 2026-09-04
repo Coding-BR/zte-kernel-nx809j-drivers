@@ -18,8 +18,8 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 
 Candidato atual:
 
-- SHA-256: `7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`
-- tamanho: `721008` bytes
+- SHA-256: `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`
+- tamanho: `721560` bytes
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Bloqueadores para uma declaracao de equivalencia total:
@@ -37,7 +37,7 @@ Promoção Assembly exata — 2026-08-28:
 - Comparação canônica: 30/30 funções exatas; KCFI: 23/23 type IDs instrumentados; host harness: PASS reproduzível em dois ciclos, cobrindo a API C de referência.
 - Evidência versionada: `reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1/`.
 - A auditoria ABI mantém diferenças de metadados/dependências do artefato stock; imports, aliases, ELF, KMI e vermagic alvo foram verificados. O host harness não executa os corpos Assembly no kernel nem substitui validação no NX809J.
-- A auditoria offline geral, com dois rebuilds limpos no Docker e flags determinísticas para C/Assembler, classificou o driver como `static_verified`; os dois ciclos produziram SHA-256 `7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`.
+- A auditoria offline geral, com dois rebuilds limpos no Docker e flags determinísticas para C/Assembler, classificou o driver como `static_verified`; os dois ciclos produziram SHA-256 `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`.
 
 Rechecagem Docker e promoção canônica em 2026-08-28:
 
