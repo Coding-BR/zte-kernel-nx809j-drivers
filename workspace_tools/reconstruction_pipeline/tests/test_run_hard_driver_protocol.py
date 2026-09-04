@@ -177,6 +177,49 @@ class HardDriverProtocolTests(unittest.TestCase):
         self.assertIn(str(root), plan["docker"])
         self.assertNotIn("--promote-fresh", plan["docker"])
 
+    def test_per_function_slices_are_literal_and_independent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "source").mkdir()
+            (root / "ghidra").mkdir()
+            job = base_job(
+                profiles=["CONCURRENCY_LIFETIME"],
+                functions=[
+                    {
+                        "stock_function": "stock_a",
+                        "stock_entry": "00100010",
+                        "source_function": "source_a",
+                    },
+                    {
+                        "stock_function": "stock_b",
+                        "stock_entry": "00100020",
+                        "source_function": "source_b",
+                    },
+                ],
+                joern={"slice": {"mode": "data-flow", "per_function": True, "sink_filter": "(memcpy|memset)"}},
+            )
+            functions = validate_job(job)
+            plan = build_command_plan(
+                job=job,
+                functions=functions,
+                repo_root=root,
+                output_dir=root / "output",
+                python=Path("python"),
+                engineering_root=root / "engineering",
+                source_root=root / "source",
+                stock_module=root / "stock.ko",
+                ghidra_export=root / "ghidra",
+                reconstruction_map=root / "map.json",
+                joern_home=root / "joern",
+                java_home=root / "java",
+            )
+
+        self.assertEqual(len(plan["joern_slices"]), 2)
+        self.assertIsNone(plan["joern_slice"])
+        self.assertIn("^source_a$", plan["joern_slices"][0])
+        self.assertIn("^source_b$", plan["joern_slices"][1])
+        self.assertIn("(memcpy|memset)", plan["joern_slices"][0])
+
     def test_pcode_fallback_requires_an_audit_reason(self):
         job = base_job(
             ghidra={"allow_pcode_authoritative_decompiler_fallback": True}

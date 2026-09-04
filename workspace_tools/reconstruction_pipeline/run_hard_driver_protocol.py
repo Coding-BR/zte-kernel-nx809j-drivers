@@ -15,6 +15,7 @@ import json
 import os
 import re
 import signal
+import shutil
 import subprocess
 import sys
 import time
@@ -473,43 +474,76 @@ def build_command_plan(
     slice_config = joern_config.get("slice", {})
     slice_mode = slice_config.get("mode", "off")
     slice_command: list[str] | None = None
+    slice_commands: list[list[str]] | None = None
     if slice_mode != "off":
-        launcher = (
-            joern_home / "joern-cli" / ("joern-slice.bat" if os.name == "nt" else "joern-slice")
-            if joern_home else Path("joern-slice")
-        )
+        use_posix_launcher = False
+        if joern_home:
+            if os.name == "nt" and shutil.which("bash"):
+                launcher = [
+                    shutil.which("bash") or "bash",
+                    str(joern_home / "joern-cli" / "bin" / "joern-slice"),
+                ]
+                use_posix_launcher = True
+            else:
+                launcher = [str(joern_home / "joern-cli" / (
+                    "joern-slice.bat" if os.name == "nt" else "joern-slice"
+                ))]
+        else:
+            launcher = ["joern-slice"]
         # Windows batch launchers re-parse regex metacharacters.  Use the
         # longest literal prefix shared by the selected methods, which avoids
         # cmd.exe treating `|` as a shell pipe while keeping the slice scoped
         # to this driver's method family (gf_ for fp_goodix).
-        if os.name == "nt":
+        per_function = bool(slice_config.get("per_function", False))
+        if per_function:
+            slice_commands = []
+            method_filters = [
+                (str(item["source_function"]), f"f{index:03d}")
+                for index, item in enumerate(functions)
+            ]
+        elif os.name == "nt" and not use_posix_launcher:
             source_names = [str(item["source_function"]) for item in functions]
             common_prefix = os.path.commonprefix(source_names)
-            method_filter = "^" + re.escape(common_prefix) if common_prefix else ".*"
+            method_filters = [("^" + re.escape(common_prefix) if common_prefix else ".*", "all")]
         else:
-            method_filter = "^" + "|".join(
-                re.escape(item["source_function"]) for item in functions
-            ) + "$"
-        slice_command = [
-            str(launcher),
-            slice_mode,
-            "--method-name-filter", method_filter,
-            "--parallelism", str(int(slice_config.get("parallelism", parallelism))),
-        ]
-        if slice_mode == "data-flow":
-            slice_command.extend(["--slice-depth", str(int(slice_config.get("depth", 12)))])
-            sink_filter = slice_config.get("sink_filter")
-            if sink_filter:
-                slice_command.extend([
-                    "--sink-filter", ".*" if os.name == "nt" else str(sink_filter)
-                ])
-        else:
-            slice_command.extend(["--min-num-calls", str(int(slice_config.get("min_num_calls", 1)))])
-        slice_command.append(str(joern_dir / "source.cpg.bin"))
+            method_filters = [
+                ("^" + "|".join(
+                    re.escape(item["source_function"]) for item in functions
+                ) + "$", "all")
+            ]
+
+        for method_filter, output_label in method_filters:
+            command = [
+                *launcher,
+                slice_mode,
+                "--method-name-filter", (
+                    f"^{re.escape(method_filter)}$" if per_function else method_filter
+                ),
+                "--parallelism", str(int(slice_config.get("parallelism", parallelism))),
+                "-o", f"slices_{output_label}",
+            ]
+            if slice_mode == "data-flow":
+                command.extend(["--slice-depth", str(int(slice_config.get("depth", 12)))])
+                sink_filter = slice_config.get("sink_filter")
+                if sink_filter:
+                    command.extend([
+                        "--sink-filter", (
+                            str(sink_filter)
+                            if os.name != "nt" or use_posix_launcher else ".+"
+                        )
+                    ])
+            else:
+                command.extend(["--min-num-calls", str(int(slice_config.get("min_num_calls", 1)))])
+            command.append(str(joern_dir / "source.cpg.bin"))
+            if per_function:
+                slice_commands.append(command)
+            else:
+                slice_command = command
 
     return {
         "joern": joern,
         "joern_slice": slice_command,
+        "joern_slices": slice_commands,
         "docker": docker,
         "docker_adapter": adapter,
         "docker_report": str(docker_report),
@@ -1097,22 +1131,32 @@ def main() -> int:
     gate_status["JOERN_SCOPED"] = (
         "PASS" if joern_result["returncode"] == 0 and report_passed(joern_report) else "FAIL"
     )
-    if command_plan["joern_slice"] is not None:
+    slice_commands = command_plan.get("joern_slices")
+    if slice_commands is not None or command_plan["joern_slice"] is not None:
         if gate_status["JOERN_SCOPED"] == "PASS":
             (output_dir / "joern" / "slices").mkdir(parents=True, exist_ok=True)
-            slice_result = run_command(
-                "joern_slice", command_plan["joern_slice"], output_dir=output_dir,
-                timeout=args.slice_timeout, env=env,
-                cwd=output_dir / "joern" / "slices",
+            commands_to_run = (
+                slice_commands if slice_commands is not None
+                else [command_plan["joern_slice"]]
             )
-            command_results["joern_slice"] = slice_result
+            slice_results = []
+            for index, command in enumerate(commands_to_run):
+                slice_results.append(run_command(
+                    f"joern_slice_{index:03d}" if len(commands_to_run) > 1 else "joern_slice",
+                    command, output_dir=output_dir,
+                    timeout=args.slice_timeout, env=env,
+                    cwd=output_dir / "joern" / "slices",
+                ))
             slice_files = [
                 file_record(path)
                 for path in sorted((output_dir / "joern" / "slices").rglob("*"))
                 if path.is_file()
             ]
             gate_status["JOERN_SLICE"] = (
-                "PASS" if slice_result["returncode"] == 0 and slice_files else "FAIL"
+                "PASS" if all(item["returncode"] == 0 for item in slice_results) and slice_files else "FAIL"
+            )
+            command_results["joern_slice"] = (
+                slice_results[0] if len(slice_results) == 1 else {"commands": slice_results}
             )
             command_results["joern_slice"]["artifacts"] = slice_files
         else:
