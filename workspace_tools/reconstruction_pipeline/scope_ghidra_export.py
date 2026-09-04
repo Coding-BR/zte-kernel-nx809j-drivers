@@ -12,6 +12,7 @@ from typing import Any
 
 
 GENERATED_FILES = ("functions.jsonl", "calls.jsonl", "strings.jsonl", "manifest.json")
+OPTIONAL_FILES = ("memory_blocks.jsonl", "externals.jsonl")
 GENERATED_DIRECTORIES = ("decompiled", "pcode")
 
 
@@ -53,6 +54,10 @@ def clean_generated_output(output: Path) -> None:
         if path.is_dir():
             shutil.rmtree(path)
     for name in GENERATED_FILES:
+        path = output / name
+        if path.is_file():
+            path.unlink()
+    for name in OPTIONAL_FILES:
         path = output / name
         if path.is_file():
             path.unlink()
@@ -112,6 +117,10 @@ def materialize_scoped_export(
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source / relative, destination)
     shutil.copy2(strings_path, output / "strings.jsonl")
+    for name in OPTIONAL_FILES:
+        source_artifact = source / name
+        if source_artifact.is_file():
+            shutil.copy2(source_artifact, output / name)
     write_text(
         output / "functions.jsonl",
         "".join(json.dumps(row, separators=(",", ":")) + "\n" for row in selected),

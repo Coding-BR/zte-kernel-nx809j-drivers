@@ -43,6 +43,8 @@ def test_materializes_only_requested_function(tmp_path: Path) -> None:
     ]
     write(source / "calls.jsonl", "".join(json.dumps(row) + "\n" for row in calls))
     write(source / "strings.jsonl", '{"address":"1","value":"x"}\n')
+    write(source / "memory_blocks.jsonl", '{"name":".data","start":"1","end":"2","initialized":true}\n')
+    write(source / "externals.jsonl", '{"name":"helper"}\n')
     for row in rows:
         write(source / row["decompiled_file"], row["name"] + " C\n")
         write(source / row["pcode_file"], row["name"] + " P\n")
@@ -64,6 +66,8 @@ def test_materializes_only_requested_function(tmp_path: Path) -> None:
     assert scoped_calls == calls[:2]
     assert result["call_reference_count"] == 2
     assert result["source_export_calls_sha256"]
+    assert (output / "memory_blocks.jsonl").is_file()
+    assert (output / "externals.jsonl").is_file()
     assert (output / "manifest.json").read_bytes()[:3] != b"\xef\xbb\xbf"
 
 
