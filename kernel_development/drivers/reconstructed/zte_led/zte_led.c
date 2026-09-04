@@ -1588,6 +1588,9 @@ static ssize_t aw22xxx_fw_show(struct device *dev, struct device_attribute *attr
 }
 #endif
 
+#ifdef ZTE_LED_FW_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#else
 static ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1602,6 +1605,7 @@ static ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *att
 	g_init_flg = 0;
 	return count;
 }
+#endif
 
 #ifndef ZTE_LED_HWEN_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_hwen_show(struct device *dev, struct device_attribute *attr, char *buf)
