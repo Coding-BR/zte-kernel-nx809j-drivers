@@ -38,7 +38,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 032_aw22xxx_cfg_update_wait_from_dyn_name | aw22xxx_cfg_update_wait_from_dyn_name | 00103ea4 | core_logic | zte_led.c:aw22xxx_cfg_update_wait_from_dyn_name | PROMOTED_OFFLINE_EXACT |
 | 033_aw22xxx_set_cfg_run_state | aw22xxx_set_cfg_run_state | 00103fa8 | core_logic | zte_led.c:aw22xxx_set_cfg_run_state | PROMOTED_OFFLINE_EXACT |
 | 034_aw22xxx_cfg_loaded | aw22xxx_cfg_loaded | 001040cc | core_logic | zte_led.c:aw22xxx_cfg_loaded | PROMOTED_OFFLINE_EXACT |
-| 035_aw22xxx_imax_show | aw22xxx_imax_show | 001042ac | user_abi | zte_led.c:aw22xxx_imax_show | PASS |
+| 035_aw22xxx_imax_show | aw22xxx_imax_show | 001042ac | user_abi | zte_led.c:aw22xxx_imax_show | PROMOTED_OFFLINE_EXACT |
 | 036_aw22xxx_imax_store | aw22xxx_imax_store | 00104498 | user_abi | zte_led.c:aw22xxx_imax_store | PASS |
 | 037_aw22xxx_rgb_show | aw22xxx_rgb_show | 0010458c | user_abi | zte_led.c:aw22xxx_rgb_show | PASS |
 | 038_aw22xxx_rgb_store | aw22xxx_rgb_store | 001046d0 | user_abi | zte_led.c:aw22xxx_rgb_store | PASS |
