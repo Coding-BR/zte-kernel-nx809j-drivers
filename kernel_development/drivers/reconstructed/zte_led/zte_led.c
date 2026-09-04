@@ -1579,10 +1579,14 @@ static ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute 
 	return count;
 }
 
+#ifdef ZTE_LED_FW_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_fw_show(struct device *dev, struct device_attribute *attr, char *buf);
+#else
 static ssize_t aw22xxx_fw_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	return snprintf(buf, PAGE_SIZE, "firmware name = %s\n", aw22xxx_fw_name);
 }
+#endif
 
 static ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
