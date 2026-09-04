@@ -924,10 +924,16 @@ def execute_post_candidate(
             # module_init/module_exit; compare the stock and candidate Ghidra
             # symbols, while keeping source_function for Joern/map identity.
             candidate_function = item.get("candidate_function", item["source_function"])
-            if item["stock_function"] != candidate_function:
-                ghidra_command.extend(["--function-pair", f"{item['stock_function']}={candidate_function}"])
+            stock_selector = item["stock_function"]
+            if item.get("stock_symbol_offset") is not None:
+                stock_selector += f"@{item['stock_symbol_offset']}"
+            candidate_selector = candidate_function
+            if item.get("candidate_symbol_offset") is not None:
+                candidate_selector += f"@{item['candidate_symbol_offset']}"
+            if stock_selector != candidate_selector:
+                ghidra_command.extend(["--function-pair", f"{stock_selector}={candidate_selector}"])
             else:
-                ghidra_command.extend(["--function", item["stock_function"]])
+                ghidra_command.extend(["--function", stock_selector])
         ghidra_config = job.get("ghidra", {})
         if isinstance(ghidra_config, dict) and ghidra_config.get(
             "allow_pcode_authoritative_decompiler_fallback", False

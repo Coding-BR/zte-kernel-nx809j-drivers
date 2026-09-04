@@ -12,7 +12,7 @@ from typing import Any
 
 
 GENERATED_FILES = ("functions.jsonl", "calls.jsonl", "strings.jsonl", "manifest.json")
-OPTIONAL_FILES = ("memory_blocks.jsonl", "externals.jsonl")
+OPTIONAL_FILES = ("memory_blocks.jsonl", "externals.jsonl", "symbols.jsonl")
 GENERATED_DIRECTORIES = ("decompiled", "pcode")
 
 

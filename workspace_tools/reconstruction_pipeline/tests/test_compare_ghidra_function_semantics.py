@@ -118,6 +118,25 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertTrue(result["checks"]["normalized_decompiled_c"])
         self.assertTrue(result["checks"]["pcode_operation_shape"])
 
+    def test_function_selector_index_preserves_duplicate_symbol_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_jsonl(
+                root / "functions.jsonl",
+                [
+                    {"name": "duplicate", "entry": "00100000", "body_bytes": 4},
+                    {"name": "duplicate", "entry": "00100020", "body_bytes": 8},
+                ],
+            )
+
+            index = MODULE.function_selector_index(root)
+
+        self.assertEqual(index["duplicate@00100000"]["body_bytes"], 4)
+        self.assertEqual(
+            index[MODULE.normalize_function_selector("duplicate@0x100020")]["body_bytes"],
+            8,
+        )
+
     def test_relocated_unk_string_compares_equal(self) -> None:
         stock, stock_evidence, _ = MODULE.normalize_decompiled(
             "printk(&UNK_00101000);",

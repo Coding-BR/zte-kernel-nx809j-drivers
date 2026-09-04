@@ -70,6 +70,9 @@ NORMALIZED_GLOBAL_LABEL_RE = re.compile(r"\bGHIDRA_DATA_OBJECT_\d+\b")
 GHIDRA_DATA_FIELD_SLICE_RE = re.compile(
     r"\b(GHIDRA_DATA_OBJECT_\d+)\._\d+_\d+_"
 )
+FUNCTION_SELECTOR_RE = re.compile(
+    r"^(?P<name>.+)@(?P<entry>(?:0x)?[0-9a-fA-F]+)$"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -112,6 +115,27 @@ def function_index(root: Path) -> dict[str, dict[str, Any]]:
         str(record["name"]): record
         for record in read_jsonl(root / "functions.jsonl")
     }
+
+
+def normalize_function_selector(value: str) -> str:
+    """Normalize an exact Ghidra function selector to name@8-digit-entry."""
+    match = FUNCTION_SELECTOR_RE.fullmatch(value)
+    if match is None:
+        return value
+    return f"{match.group('name')}@{int(match.group('entry'), 16):08x}"
+
+
+def function_selector_index(root: Path) -> dict[str, dict[str, Any]]:
+    """Index names and exact name@entry selectors, preserving duplicate symbols."""
+    records = read_jsonl(root / "functions.jsonl")
+    index = {str(record["name"]): record for record in records}
+    for record in records:
+        index[
+            normalize_function_selector(
+                f"{record['name']}@{record.get('entry', '')}"
+            )
+        ] = record
+    return index
 
 
 def merge_split_candidate_function(
@@ -2561,8 +2585,8 @@ def main() -> int:
 
     stock_manifest = read_json(stock_root / "manifest.json")
     candidate_manifest = read_json(candidate_root / "manifest.json")
-    stock_functions = function_index(stock_root)
-    candidate_functions = function_index(candidate_root)
+    stock_functions = function_selector_index(stock_root)
+    candidate_functions = function_selector_index(candidate_root)
     stock_module = args.stock_module.resolve() if args.stock_module else None
     candidate_module = args.candidate_module.resolve() if args.candidate_module else None
     for module in (stock_module, candidate_module):
@@ -2619,8 +2643,8 @@ def main() -> int:
             stock_function,
             stock_root,
             candidate_root,
-            stock_functions.get(stock_function),
-            candidate_functions.get(candidate_function),
+            stock_functions.get(normalize_function_selector(stock_function)),
+            candidate_functions.get(normalize_function_selector(candidate_function)),
             string_index(stock_root),
             string_index(candidate_root),
             stock_elf_strings,
