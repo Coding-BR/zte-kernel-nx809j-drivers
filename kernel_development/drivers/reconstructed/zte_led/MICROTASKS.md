@@ -4,7 +4,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 
 | ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |
 |---|---|---|---|---|---|
-| 001_aw22xxx_set_breath_data | aw22xxx_set_breath_data | 001014e4 | core_logic | zte_led.c:aw22xxx_set_breath_data | PASS |
+| 001_aw22xxx_set_breath_data | aw22xxx_set_breath_data | 001014e4 | core_logic | zte_led.c:aw22xxx_set_breath_data | PROMOTED_OFFLINE_EXACT |
 | 002_aw22xxx_play | aw22xxx_play | 001015f4 | core_logic | zte_led.c:aw22xxx_play | PASS |
 | 003_aw22xxx_init_cfg_update_array | aw22xxx_init_cfg_update_array | 00101738 | lifecycle | zte_led.c:aw22xxx_init_cfg_update_array | PASS |
 | 004_aw22xxx_led_imax_cfg | aw22xxx_led_imax_cfg | 0010188c | core_logic | zte_led.c:aw22xxx_led_imax_cfg | PASS |
