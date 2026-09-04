@@ -50,6 +50,31 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             )
         )
 
+    def test_syna_tcm_sleep_status_artifact_accepts_elf_selector(self) -> None:
+        stock = (
+            "int syna_tcm_sleep(long param_1){"
+            "if(param_1==0){_printk(a);iVar4=-0xf1;}"
+            "else{param_3=*(int*)(param_1+0x20c);param_2=param_2&0xffffffff;"
+            "_printk(b);uVar3=0x2c;if((param_2&1)==0){uVar3=0x2d;}"
+            "_printk(c);if(*(int*)(param_1+0x398)!=0){}returniVar4;}}"
+        )
+        candidate = (
+            "int syna_tcm_sleep(long param_1){"
+            "if(param_1==0){uVar3=_printk(a);returnuVar3;}"
+            "else{param_3=0;uVar4=0x2c;if((param_2&1)==0){uVar4=0x2d;}"
+            "_printk(b);_printk(c);if(*(int*)(param_1+0x398)!=0){}return0;}}"
+        )
+        shape = [{"operation": "CALL"}] * 3
+
+        evidence = MODULE.decompiler_status_return_control_flow_artifact(
+            "syna_tcm_sleep@001238fc", stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_multi_branch_printk_status_control_flow_artifact"
+        )
+
     def make_export(
         self,
         root: Path,

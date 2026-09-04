@@ -1439,7 +1439,10 @@ def decompiler_status_return_control_flow_artifact(
     operation shape, while the independent relocation-aware Assembly gate
     remains mandatory.
     """
-    if function != "syna_tcm_sleep":
+    # The protocol passes the stock selector as ``name@entry`` whenever the
+    # candidate uses a renamed or relocated entry.  Keep the artifact tied to
+    # this one function while accepting that identity-preserving selector.
+    if function.split("@", 1)[0] != "syna_tcm_sleep":
         return None
     if "syna_tcm_sleep(" not in stock_normalized or "syna_tcm_sleep(" not in candidate_normalized:
         return None
