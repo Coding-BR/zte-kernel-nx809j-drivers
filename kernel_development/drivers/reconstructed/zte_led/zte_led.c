@@ -135,7 +135,7 @@ char aw22xxx_fw_name[64];
 #else
 extern char aw22xxx_fw_name[64];
 #endif
-#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+#if defined(ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_GET_FWNAME_EXACT_ISLAND)
 char aw22xxx_dyn_name[64];
 #else
 static char aw22xxx_dyn_name[64];
@@ -204,7 +204,7 @@ extern int kthread_status;
 #else
 static int kthread_status = 0;
 #endif
-#if defined(ZTE_LED_IMAX_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
+#if defined(ZTE_LED_IMAX_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND) || defined(ZTE_LED_GET_FWNAME_EXACT_ISLAND)
 extern char **aw22xxx_cfg_name;
 #else
 static char **aw22xxx_cfg_name = NULL;
@@ -682,7 +682,10 @@ static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)
  * Firmware Loading & Configuration
  * ====================================================================== */
 
-#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+#ifdef ZTE_LED_GET_FWNAME_EXACT_ISLAND
+extern int aw22xxx_get_fwname(u32 index);
+#else
+#if defined(ZTE_LED_EFFECT_STORE_EXACT_ISLAND)
 noinline int aw22xxx_get_fwname(u32 index)
 #else
 static __used noinline int aw22xxx_get_fwname(u32 index)
@@ -722,6 +725,7 @@ invalid:
 	pr_err("aw22xxx: %s invalid firmware selector\n", __func__);
 	return -EINVAL;
 }
+#endif
 
 #ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
 void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
