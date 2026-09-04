@@ -284,7 +284,7 @@ int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
 #else
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
 #endif
-#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+#ifdef ZTE_LED_CFG_LOADED_EXACT_ISLAND
 void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
 #else
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
@@ -727,11 +727,10 @@ invalid:
 }
 #endif
 
-#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
-void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
+#ifdef ZTE_LED_CFG_LOADED_EXACT_ISLAND
+extern void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
 #else
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
-#endif
 {
 	struct aw22xxx *aw22xxx = context;
 	size_t offset = 0;
@@ -784,6 +783,7 @@ static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
 	aw22xxx_i2c_write(aw22xxx, 11, imax_code);
 	pr_info("aw22xxx: %s complete\n", __func__);
 }
+#endif
 
 static void __maybe_unused aw22xxx_fw_loaded_c(const struct firmware *fw, void *context)
 {
