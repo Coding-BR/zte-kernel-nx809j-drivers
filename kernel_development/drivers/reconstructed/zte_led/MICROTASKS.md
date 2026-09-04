@@ -41,7 +41,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 035_aw22xxx_imax_show | aw22xxx_imax_show | 001042ac | user_abi | zte_led.c:aw22xxx_imax_show | PROMOTED_OFFLINE_EXACT |
 | 036_aw22xxx_imax_store | aw22xxx_imax_store | 00104498 | user_abi | zte_led.c:aw22xxx_imax_store | PROMOTED_OFFLINE_EXACT |
 | 037_aw22xxx_rgb_show | aw22xxx_rgb_show | 0010458c | user_abi | zte_led.c:aw22xxx_rgb_show | PROMOTED_OFFLINE_EXACT |
-| 038_aw22xxx_rgb_store | aw22xxx_rgb_store | 001046d0 | user_abi | zte_led.c:aw22xxx_rgb_store | PASS |
+| 038_aw22xxx_rgb_store | aw22xxx_rgb_store | 001046d0 | user_abi | zte_led.c:aw22xxx_rgb_store | PROMOTED_OFFLINE_EXACT |
 | 039_aw22xxx_task0_show | aw22xxx_task0_show | 00104790 | user_abi | zte_led.c:aw22xxx_task0_show | PASS |
 | 040_aw22xxx_task0_store | aw22xxx_task0_store | 001047cc | user_abi | zte_led.c:aw22xxx_task0_store | PASS |
 | 041_aw22xxx_task1_show | aw22xxx_task1_show | 001048a4 | user_abi | zte_led.c:aw22xxx_task1_show | PASS |
