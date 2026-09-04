@@ -245,6 +245,16 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError(
                 "ghidra.fallback_reason is required when the Ghidra data-field slice fallback is enabled"
             )
+    if ghidra.get("allow_exact_assembly_island_decompiler_fallback", False):
+        reason = ghidra.get("fallback_reason")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError(
+                "ghidra.fallback_reason is required when the exact assembly-island fallback is enabled"
+            )
+        if not all(item.get("assembly_only", False) for item in normalized):
+            raise ValueError(
+                "exact assembly-island fallback requires assembly_only=true for every job function"
+            )
     docker = job.get("docker", {})
     if docker.get("adapter", "generic_driver_audit") not in {
         "zte_tpd_canonical",
@@ -951,6 +961,10 @@ def execute_post_candidate(
             "allow_ghidra_data_field_slice_fallback", False
         ):
             ghidra_command.append("--allow-ghidra-data-field-slice-fallback")
+        if isinstance(ghidra_config, dict) and ghidra_config.get(
+            "allow_exact_assembly_island_decompiler_fallback", False
+        ):
+            ghidra_command.append("--allow-exact-assembly-island-decompiler-fallback")
         if isinstance(ghidra_config, dict) and ghidra_config.get(
             "allow_shared_data_binding_normalization", False
         ):

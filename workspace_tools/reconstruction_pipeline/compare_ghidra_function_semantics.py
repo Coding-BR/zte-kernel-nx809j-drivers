@@ -2212,6 +2212,7 @@ def compare_function(
     candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_function: str | None = None,
     allow_ghidra_data_field_slice_fallback: bool = False,
+    allow_exact_assembly_island_decompiler_fallback: bool = False,
 ) -> dict[str, Any]:
     if stock_record is None or candidate_record is None:
         return {
@@ -2288,6 +2289,7 @@ def compare_function(
     data_field_slice_evidence: dict[str, Any] | None = None
     pcode_authoritative_fallback: dict[str, Any] | None = None
     return_propagation_fallback: dict[str, Any] | None = None
+    exact_assembly_island_fallback: dict[str, Any] | None = None
     normalized_decompiled_match = False
 
     def collect_pcode_authoritative_fallback() -> dict[str, Any] | None:
@@ -2429,6 +2431,19 @@ def compare_function(
                         elif allow_pcode_authoritative_decompiler_fallback:
                             pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
                             normalized_decompiled_match = False
+                        elif allow_exact_assembly_island_decompiler_fallback:
+                            exact_assembly_island_fallback = {
+                                "kind": "ghidra_decompiler_non_authoritative_exact_assembly_island",
+                                "authority": (
+                                    "ELF-bounded AArch64 opcodes and relocations, fresh module identity, "
+                                    "and equal P-Code operation shape"
+                                ),
+                                "requirement": (
+                                    "caller must independently require relocation-aware assembly parity; "
+                                    "this does not claim normalized C equivalence"
+                                ),
+                            }
+                            normalized_decompiled_match = False
                         else:
                             normalized_decompiled_match = False
     else:
@@ -2449,6 +2464,7 @@ def compare_function(
         or data_field_slice_evidence is not None
         or return_propagation_fallback is not None
         or pcode_authoritative_fallback is not None
+        or exact_assembly_island_fallback is not None
     ):
         failures = [name for name in failures if name != "normalized_decompiled_c"]
     return {
@@ -2466,6 +2482,7 @@ def compare_function(
             "fragmented_byte_global_fallback": fallback_evidence,
             "pcode_authoritative_decompiler_fallback": pcode_authoritative_fallback,
             "return_propagation_fallback": return_propagation_fallback,
+            "exact_assembly_island_decompiler_fallback": exact_assembly_island_fallback,
         },
         "stock": {
             "body_bytes": stock_record.get("body_bytes"),
@@ -2560,6 +2577,11 @@ def parse_args() -> argparse.Namespace:
         "--allow-ghidra-data-field-slice-fallback",
         action="store_true",
         help="accept only candidate-side Ghidra obj._offset_size_ notation after exact body/P-Code equality",
+    )
+    parser.add_argument(
+        "--allow-exact-assembly-island-decompiler-fallback",
+        action="store_true",
+        help="treat Ghidra C text as non-authoritative only for a declared exact assembly island",
     )
     return parser.parse_args()
 
@@ -2661,6 +2683,7 @@ def main() -> int:
             candidate_absolute_data_ranges,
             candidate_function,
             args.allow_ghidra_data_field_slice_fallback,
+            args.allow_exact_assembly_island_decompiler_fallback,
         )
         for stock_function, candidate_function in function_pairs
     ]
@@ -2692,6 +2715,9 @@ def main() -> int:
         ),
         "ghidra_data_field_slice_fallback_allowed": (
             args.allow_ghidra_data_field_slice_fallback
+        ),
+        "exact_assembly_island_decompiler_fallback_allowed": (
+            args.allow_exact_assembly_island_decompiler_fallback
         ),
         "passed": not identity_failures and len(results) == len(function_pairs)
         and all(result["passed"] for result in results),

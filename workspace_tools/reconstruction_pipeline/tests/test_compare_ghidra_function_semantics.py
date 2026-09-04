@@ -137,6 +137,37 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             8,
         )
 
+    def test_exact_assembly_island_fallback_keeps_c_text_non_authoritative(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            (candidate / "decompiled" / "target.c").write_text(
+                "void target(void) { y = relocated + 7; printk(&DAT_00202001); }\n",
+                encoding="utf-8",
+            )
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+                allow_exact_assembly_island_decompiler_fallback=True,
+            )
+
+        self.assertTrue(result["passed"])
+        self.assertIn("normalized_decompiled_c", result["raw_failures"])
+        self.assertEqual(
+            result["decompiled_normalization"][
+                "exact_assembly_island_decompiler_fallback"
+            ]["kind"],
+            "ghidra_decompiler_non_authoritative_exact_assembly_island",
+        )
+
     def test_relocated_unk_string_compares_equal(self) -> None:
         stock, stock_evidence, _ = MODULE.normalize_decompiled(
             "printk(&UNK_00101000);",
