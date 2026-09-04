@@ -9,7 +9,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 003_aw22xxx_init_cfg_update_array | aw22xxx_init_cfg_update_array | 00101738 | lifecycle | zte_led.c:aw22xxx_init_cfg_update_array | PROMOTED_OFFLINE_EXACT |
 | 004_aw22xxx_led_imax_cfg | aw22xxx_led_imax_cfg | 0010188c | core_logic | zte_led.c:aw22xxx_led_imax_cfg | PROMOTED_OFFLINE_EXACT |
 | 005_aw22xxx_i2c_write | aw22xxx_i2c_write | 001018fc | user_abi | zte_led.c:aw22xxx_i2c_write | PROMOTED_OFFLINE_EXACT |
-| 006_aw22xxx_i2c_read | aw22xxx_i2c_read | 00101a2c | user_abi | zte_led.c:aw22xxx_i2c_read | PASS |
+| 006_aw22xxx_i2c_read | aw22xxx_i2c_read | 00101a2c | user_abi | zte_led.c:aw22xxx_i2c_read | PROMOTED_OFFLINE_EXACT |
 | 007_aw22xxx_i2c_probe | aw22xxx_i2c_probe | 00101b68 | binding | zte_led.c:aw22xxx_i2c_probe | PASS |
 | 008_aw22xxx_i2c_remove | aw22xxx_i2c_remove | 00102204 | binding | zte_led.c:aw22xxx_i2c_remove | PASS |
 | 009_aw22xxx_hw_reset | aw22xxx_hw_reset | 001022c8 | core_logic | zte_led.c:aw22xxx_hw_reset | PASS |
