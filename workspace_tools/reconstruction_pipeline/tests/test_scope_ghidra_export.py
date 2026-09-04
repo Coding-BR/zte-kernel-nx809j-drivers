@@ -73,6 +73,29 @@ def test_materializes_only_requested_function(tmp_path: Path) -> None:
     assert (output / "manifest.json").read_bytes()[:3] != b"\xef\xbb\xbf"
 
 
+def test_materializes_exact_duplicate_function_selector(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    output = tmp_path / "output"
+    source.mkdir()
+    write(source / "manifest.json", json.dumps({"program": "x", "function_count": 2}))
+    write(source / "strings.jsonl", "")
+    rows = [
+        {"name": "duplicate", "entry": "00100000", "decompiled_file": "decompiled/a.c", "pcode_file": "pcode/a.jsonl"},
+        {"name": "duplicate", "entry": "00100020", "decompiled_file": "decompiled/b.c", "pcode_file": "pcode/b.jsonl"},
+    ]
+    write(source / "functions.jsonl", "".join(json.dumps(row) + "\n" for row in rows))
+    for row in rows:
+        write(source / row["decompiled_file"], row["entry"] + " C\n")
+        write(source / row["pcode_file"], row["entry"] + " P\n")
+
+    result = materialize_scoped_export(
+        source, output, ["duplicate@0x100020"]
+    )
+
+    assert result["function_count"] == 1
+    assert "00100020 C" in (output / "decompiled/b.c").read_text()
+
+
 def test_rejects_ambiguous_function_name(tmp_path: Path) -> None:
     source = tmp_path / "full"
     row = {

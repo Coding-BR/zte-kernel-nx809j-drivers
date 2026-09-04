@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import shutil
+import re
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,7 @@ from typing import Any
 GENERATED_FILES = ("functions.jsonl", "calls.jsonl", "strings.jsonl", "manifest.json")
 OPTIONAL_FILES = ("memory_blocks.jsonl", "externals.jsonl", "symbols.jsonl")
 GENERATED_DIRECTORIES = ("decompiled", "pcode")
+FUNCTION_SELECTOR_RE = re.compile(r"^(?P<name>.+)@(?P<entry>(?:0x)?[0-9a-fA-F]+)$")
 
 
 def sha256_file(path: Path) -> str:
@@ -41,6 +43,13 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
             raise ValueError(f"JSONL row {line_number} is not an object: {path}")
         rows.append(row)
     return rows
+
+
+def normalize_function_selector(value: str) -> tuple[str, int | None]:
+    match = FUNCTION_SELECTOR_RE.fullmatch(value)
+    if match is None:
+        return value, None
+    return match.group("name"), int(match.group("entry"), 16)
 
 
 def write_text(path: Path, text: str) -> None:
@@ -94,10 +103,19 @@ def materialize_scoped_export(
             by_name.setdefault(name, []).append(row)
 
     selected = []
-    for name in requested_functions:
+    for selector in requested_functions:
+        name, requested_entry = normalize_function_selector(selector)
         matches = by_name.get(name, [])
+        if requested_entry is not None:
+            matches = [
+                row for row in matches
+                if isinstance(row.get("entry"), str)
+                and int(row["entry"], 16) == requested_entry
+            ]
         if len(matches) != 1:
-            raise ValueError(f"expected one Ghidra row for {name}, found {len(matches)}")
+            raise ValueError(
+                f"expected one Ghidra row for {selector}, found {len(matches)}"
+            )
         row = matches[0]
         for key in ("decompiled_file", "pcode_file"):
             relative = row.get(key)
@@ -127,7 +145,7 @@ def materialize_scoped_export(
     )
     selected_calls: list[dict[str, Any]] = []
     if calls_path.is_file():
-        requested = set(requested_functions)
+        requested = {str(row.get("name")) for row in selected}
         selected_calls = [
             row
             for row in read_jsonl(calls_path)
