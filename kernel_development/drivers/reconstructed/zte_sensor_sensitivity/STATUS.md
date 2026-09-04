@@ -2,7 +2,7 @@
 
 O driver concluiu os gates estaticos 0 a 7: stock rastreado, 21 funcoes reconstruidas e mapeadas, imports/aliases exatos, build reproduzivel, KCFI 18/18, comparacao Ghidra 21/21, harness comportamental reproduzivel e 21 microtarefas atestadas.
 
-O `.ko` de SHA-256 `f3dddeecac42f78adaa2dffa58f4030c1e53ba161f0649bb14c01afaa0a6871e` foi promovido somente como candidato estatico validado em `curated`.
+O `.ko` de SHA-256 `4ad83649da870bc907fbea8cdbef3e4973e7f115c34656bcec1e3db2d7cb732e` (229192 bytes) foi promovido somente como candidato estatico validado em `curated`.
 
 Nao e permitido declarar 100% concluido. Faltam revisao independente, validacao supervisionada no hardware e promocao final (gates 8 a 10).
 

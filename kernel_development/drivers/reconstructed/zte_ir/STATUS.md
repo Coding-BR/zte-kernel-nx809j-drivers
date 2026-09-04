@@ -11,7 +11,7 @@ Modo de trabalho: **offline; sem ADB, fastboot ou carregamento de módulo neste 
 | Artefato | SHA-256 |
 |---|---|
 | Stock `zte_ir.ko` | `b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1` |
-| Candidato canônico `zte_ir.ko` | `4fa1ae637acde49f4b74062fc63a22a98f35c5b94573574dc532e3bee850b2cd` |
+| Candidato canônico `zte_ir.ko` | `c407065234817f1f3269b9a70f5777b4be6461a3cd3d2531818a27e59d432966` (117776 bytes) |
 
 O fonte canônico é `zte_ir.c`. O diretório `implementation/` conserva
 microtarefas e evidências históricas; seu `.ko` integrado não é o candidato

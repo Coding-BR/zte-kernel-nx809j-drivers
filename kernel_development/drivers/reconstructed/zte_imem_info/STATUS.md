@@ -7,13 +7,13 @@ validation remain open**.
 |---|---|---|
 | Stock provenance | PASS | SHA-256 `6a0fff182e40e9676a321e6c55796ed94d382faf3ec1e1999a53e5076ffd3e65` |
 | Ghidra/P-Code coverage | PASS | 6/6 stock functions mapped |
-| Clean target build | PASS | Docker `2/2` at the same output path, byte-identical normal-build SHA-256 `0b96a3db42d1d439e68c4442a672eb31c2db0379a35bc036d940c3ba6c6ffec1` |
+| Clean target build | PASS | Docker `2/2` at the same output path, byte-identical candidate SHA-256 `1a733a506ea3853bec428f7482c6633c4744bf50cecdbc21c6d53ac17e9411a3` (196472 bytes) |
 | Target vermagic | PASS | `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k` |
 | KCFI | PASS | 6/6 type IDs, sections and function sizes match |
 | Strict AArch64 comparison | PASS | 6/6 functions exact after two-word deterministic materialization |
 | AArch64 semantic predicate | PASS | `x >= 10` and `x > 9` use the same register and branch target |
 | Host harness | PASS | two reproducible runs; all six functions and DDR type IDs `0..10`, `UINT_MAX` covered |
-| Independent review | PENDING | no second reviewer attestation for candidate SHA-256 `df1e2304a98b22e604eb786f52f971914615fbefae6028ef4c5d5eabb168426d` |
+| Independent review | PENDING | no second reviewer attestation for candidate SHA-256 `1a733a506ea3853bec428f7482c6633c4744bf50cecdbc21c6d53ac17e9411a3` |
 | Hardware | DEFERRED | no smartphone operation was requested for this stage |
 
 The sparse DDR type `switch` is lowered by Clang to the same anonymous pointer

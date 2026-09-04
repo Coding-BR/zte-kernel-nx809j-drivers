@@ -17,7 +17,7 @@ Nao esta autorizado declarar reconstrucao 100% concluida. Faltam:
 ## Evidencia estatica
 
 - Stock SHA-256: `6455a3c97f10d10914248c4a92b0f92b06a8e06921def9c56c6a57a863703f9d`.
-- Candidato final SHA-256: `91ad71bf9559a553a8711139208afc1c7ece86592e2dd7ffbe7b58dc7981ce5f`.
+- Candidato final SHA-256: `b7979b0fdf0cd71cc3db19341bfc65747cdf6e4c1d056d01c43c44f1302afd8d` (256544 bytes).
 - Build normal antes da materializacao exata SHA-256: `e899682b1f995d53bcc53135184efc8c3d204515c998a74b5b9ae09ef9e30a7c`.
 - Ghidra: inventario 14/14 e multiplicidade de chamadas por funcao em paridade.
 - KCFI: 8/8 callbacks indiretos em paridade.

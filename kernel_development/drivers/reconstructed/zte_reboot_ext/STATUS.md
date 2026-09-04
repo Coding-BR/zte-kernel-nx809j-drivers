@@ -5,7 +5,7 @@ O driver concluiu os gates estaticos 0 a 7: stock e dependencia vendor rastreado
 Nao e permitido declarar 100% concluido. Faltam revisao independente, validacao supervisionada no hardware e promocao final (gates 8 a 10).
 
 - Stock: `1e5b8e9e91f304236802d52a316570f6649b8f504b58558b28909d48c62d910f`.
-- Candidato: `e6146dfb5cf51b0ec46e1f32bfd7b5f7315d089eebc96beef6fadf6eb79bf17f`.
+- Candidato: `c806028b78b69d9aa4ec63594e3962b73563d0eb6e29b1cca3bfb51ad8589633` (236064 bytes).
 - Dependencia: `get_ss_panic_buf_byte`, CRC `0x6462cbe7`, exportado por `qcom_q6v5`.
 - Restricao: nao executar panic, unload ou substituicao automatica no aparelho.
 

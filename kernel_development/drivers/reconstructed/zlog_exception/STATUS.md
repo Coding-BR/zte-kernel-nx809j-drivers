@@ -2,7 +2,7 @@
 
 - Target: `NX809J (RedMagic 11 Pro+)`
 - Stock SHA-256: `30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372`
-- Candidate SHA-256 (rechecked Docker cycle, 2026-08-28): `93ddac9f92973e0c8e13c438ccca8fca68ccd5334303de2f1a7baac2dd073d41`
+- Candidate SHA-256 (reconsolidated Docker cycle, 2026-09-04): `a38b3fccb92c47ab8203821ae7f9f67d5d1529577512cbafe61d2e6fa75038f5`
 - Source SHA-256: `0aabf5ee8ae768c72a4935c209f5c1096a7e331c30dad2837fadf4faafeb5da5`
 - Kernel target: Android 16 / GKI `6.12.23` / AArch64 / `vendor_dlkm`
 - Overall verdict: **INCOMPLETE - not authorized as a 100% reconstruction**

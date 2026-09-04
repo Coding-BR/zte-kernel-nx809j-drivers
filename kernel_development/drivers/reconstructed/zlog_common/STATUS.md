@@ -1,7 +1,7 @@
 # zlog_common reconstruction status
 
 - Stock SHA-256: `cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0`
-- Candidate SHA-256 (exact promoted Docker cycle, 2026-08-28): `4df05370ac748ab830a32b57029d7f3f8f2dda291718ab5be1c93d092a118297`
+- Candidate SHA-256 (reconsolidated Docker cycle, 2026-09-04): `f8666e5c1cbbf446407c5488074fa33f973e206e02a7d54bf6e14a1f5b642457`
 - Source SHA-256: `56079b4a64b5a0183bcb8286a72236030fc225a6cefbbc4eca1ed777c75f9145`
 - Kernel target: Android 16 / GKI `6.12.23` / AArch64 / `vendor_dlkm`
 - Overall verdict: **INCOMPLETE - not authorized as a 100% reconstruction**
@@ -10,7 +10,7 @@
 |---|---|---|
 | Stock/Ghidra corpus | PASS | 13 pseudocode exports, 13 P-Code streams and 13 stock assembly functions |
 | Stock-to-source map | PASS | 13/13 reviewed mappings |
-| Reproducible build | PASS | Dois containers Docker limpos produziram `4DF053…` (237.440 bytes) |
+| Reproducible build | PASS | Dois containers Docker limpos produziram `F8666E…` (237.440 bytes) |
 | ELF/KMI inventory | PASS | Imports/exports/aliases/dependências/modversions/vermagic e 13/13 símbolos passam |
 | KCFI | PASS | 13/13 decisões KCFI, incluindo os quatro corpos materializados |
 | Host harness | PASS | 13/13 functions covered; two runs and two host binaries are identical |
