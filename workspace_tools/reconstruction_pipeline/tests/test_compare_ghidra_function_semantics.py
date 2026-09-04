@@ -75,6 +75,30 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
             evidence["kind"], "ghidra_multi_branch_printk_status_control_flow_artifact"
         )
 
+    def test_syna_tcm_buf_lock_artifact_accepts_elf_selector(self) -> None:
+        stock = (
+            "void syna_tcm_buf_lock(long param_1){"
+            "if(*(char*)(param_1+0x40)!='\\0'){_printk(a);}"
+            "mutex_lock(param_1+0x10);"
+            "*(char*)(param_1+0x40)=*(char*)(param_1+0x40)+'\\x01';return;}"
+        )
+        candidate = (
+            "void syna_tcm_buf_lock(long param_1){"
+            "if(*(char*)(param_1+0x40)=='\\0'){mutex_lock(param_1+0x10);"
+            "*(char*)(param_1+0x40)=*(char*)(param_1+0x40)+'\\x01';return;}"
+            "_printk(a);return;}"
+        )
+        shape = [{"operation": "CALL"}] * 2
+
+        evidence = MODULE.decompiler_buf_lock_branch_loop_artifact(
+            "syna_tcm_buf_lock@0011ede8", stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_syna_tcm_buf_lock_back_edge_branch_artifact"
+        )
+
     def make_export(
         self,
         root: Path,

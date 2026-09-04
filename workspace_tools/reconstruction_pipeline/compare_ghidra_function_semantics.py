@@ -932,7 +932,7 @@ def decompiler_aw22xxx_play_address_syntax_artifact(
     convention warning and rewriting the two exact call arguments; body bytes,
     P-Code shape and relocation-aware assembly remain independent requirements.
     """
-    if function != "aw22xxx_play":
+    if function.split("@", 1)[0] != "aw22xxx_play":
         return None
     warning = "/*WARNING:Unknowncallingconvention--yetparameterstorageislocked*/"
     rewritten = candidate.replace(warning, "")
@@ -967,7 +967,7 @@ def decompiler_aw22xxx_init_signature_artifact(
     candidate_shape: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
     """Accept Ghidra's exact-island signature/argument rendering for init."""
-    if function != "aw22xxx_init_cfg_update_array":
+    if function.split("@", 1)[0] != "aw22xxx_init_cfg_update_array":
         return None
     warning = "/*WARNING:Unknowncallingconvention--yetparameterstorageislocked*/"
     rewritten = candidate.replace(warning, "")
@@ -1006,7 +1006,7 @@ def decompiler_aw22xxx_imax_string_artifact(
     candidate_shape: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
     """Normalize the control-prefixed format string emitted by Ghidra."""
-    if function != "aw22xxx_led_imax_cfg":
+    if function.split("@", 1)[0] != "aw22xxx_led_imax_cfg":
         return None
     stock_literal = 'GHIDRA_STRING["6%s:nubiaset%simax_level=%d.\\n"]'
     candidate_literal = '"\\x016%s:nubiaset%simax_level=%d.\\n"'
@@ -1514,7 +1514,7 @@ def decompiler_get_features_printk_control_flow_artifact(
     equal ELF body bytes, P-Code shape, and independent assembly parity remain
     mandatory outside this detector.
     """
-    if function != "syna_tcm_get_features":
+    if function.split("@", 1)[0] != "syna_tcm_get_features":
         return None
     if "syna_tcm_get_features(" not in stock_normalized or "syna_tcm_get_features(" not in candidate_normalized:
         return None
@@ -1591,7 +1591,7 @@ def decompiler_buf_lock_branch_loop_artifact(
     exact field offsets and call set observed here; low-level parity remains
     independently mandatory.
     """
-    if function != "syna_tcm_buf_lock":
+    if function.split("@", 1)[0] != "syna_tcm_buf_lock":
         return None
     if "syna_tcm_buf_lock(" not in stock_normalized or "syna_tcm_buf_lock(" not in candidate_normalized:
         return None
@@ -1647,7 +1647,7 @@ def decompiler_buf_unlock_shared_cleanup_artifact(
     only this exact helper shape; body bytes, P-Code and relocation-aware
     assembly remain independent mandatory gates.
     """
-    if function != "syna_tcm_buf_unlock":
+    if function.split("@", 1)[0] != "syna_tcm_buf_unlock":
         return None
     if "syna_tcm_buf_unlock(" not in stock_normalized or not any(
         name in candidate_normalized
@@ -1986,7 +1986,7 @@ def decompiler_aw22xxx_cfg_recover_update_wait_symbol_artifact(
     stock.  Exact body bytes, P-Code shape, and relocation-aware Assembly are
     still independent gates.
     """
-    if function != "aw22xxx_cfg_recover_update_wait":
+    if function.split("@", 1)[0] != "aw22xxx_cfg_recover_update_wait":
         return None
     call_re = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\(")
     control_names = {"if", "for", "while", "switch", "elseif", "return"}

@@ -1,0 +1,18 @@
+
+undefined8 tpd_set_fake_sleep(long param_1,undefined4 param_2)
+
+{
+  undefined8 uVar1;
+  long lVar2;
+  
+  lVar2 = *(long *)(param_1 + 0xdb8);
+  *(undefined4 *)(lVar2 + 0x5ec) = param_2;
+  if (*(int *)(lVar2 + 0x57c) == 1) {
+    *(undefined4 *)(lVar2 + 0x5e8) = param_2;
+    is_fake_sleep_mode = param_2;
+    return 0;
+  }
+  uVar1 = _printk(&DAT_0017105e,"tpd_set_fake_sleep");
+  return uVar1;
+}
+
