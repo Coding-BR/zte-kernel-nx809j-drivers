@@ -32,7 +32,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 026_aw22xxx_fw_store | aw22xxx_fw_store | 001037a0 | user_abi | zte_led.c:aw22xxx_fw_store | PASS |
 | 027_aw22xxx_cfg_show | aw22xxx_cfg_show | 0010384c | user_abi | zte_led.c:aw22xxx_cfg_show | PROMOTED_OFFLINE_EXACT |
 | 028_aw22xxx_cfg_store | aw22xxx_cfg_store | 001038d4 | user_abi | zte_led.c:aw22xxx_cfg_store | PROMOTED_OFFLINE_EXACT |
-| 029_aw22xxx_effect_show | aw22xxx_effect_show | 00103998 | user_abi | zte_led.c:aw22xxx_effect_show | PASS |
+| 029_aw22xxx_effect_show | aw22xxx_effect_show | 00103998 | user_abi | zte_led.c:aw22xxx_effect_show | PROMOTED_OFFLINE_EXACT |
 | 030_aw22xxx_effect_store | aw22xxx_effect_store | 001039d4 | user_abi | zte_led.c:aw22xxx_effect_store | PASS |
 | 031_aw22xxx_get_fwname | aw22xxx_get_fwname | 00103ca8 | core_logic | zte_led.c:aw22xxx_get_fwname | PASS |
 | 032_aw22xxx_cfg_update_wait_from_dyn_name | aw22xxx_cfg_update_wait_from_dyn_name | 00103ea4 | core_logic | zte_led.c:aw22xxx_cfg_update_wait_from_dyn_name | PASS |

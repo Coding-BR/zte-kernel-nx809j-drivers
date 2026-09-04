@@ -1520,12 +1520,16 @@ static ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *at
 }
 #endif
 
+#ifdef ZTE_LED_EFFECT_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_effect_show(struct device *dev, struct device_attribute *attr, char *buf);
+#else
 static ssize_t aw22xxx_effect_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	return snprintf(buf, PAGE_SIZE, "effect = 0x%02x\n", aw22xxx->effect);
 }
+#endif
 
 static ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {

@@ -1023,23 +1023,23 @@
       "category": "user_abi",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\029_aw22xxx_effect_show\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next078_aw22xxx_effect_show_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "80de8ad197735af9dc4e3fe9b7ddcf8d00f99d8e6da19a0bf3ae83f553540cff"
+          "sha256": "4490bfc8a3602ab43dbecb8ce1d4821d92d1de51d65af20b0756342569ebcda6"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\029_aw22xxx_effect_show\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next078_aw22xxx_effect_show_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "b44cc664710dd22f8158a852afc6d77c7c85d9bb420a7ba0cc14c81b7a66b012"
+          "sha256": "7c6c54cf2bb50ecd362d92e4a6c91db2213f806baf2d23f7d445d7fd902c8ed9"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\029_aw22xxx_effect_show\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next078_aw22xxx_effect_show_exact_v1/test.json",
           "role": "test",
-          "sha256": "6ad3cb831284a5cae1b9c879156ad66af02cf9828ec96c3bcbbb9644749bfa06"
+          "sha256": "c3712bc9c478b4952e676694ee151289acef3075bcbd648215a9ffdac8a79abb"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0028_00103998_aw22xxx_effect_show.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0028_00103998_aw22xxx_effect_show.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next078_aw22xxx_effect_show_exact_v1/candidate_ghidra_export/pcode/0053_00105308_aw22xxx_effect_show.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next078_aw22xxx_effect_show_exact_v1/candidate_ghidra_export/decompiled/0053_00105308_aw22xxx_effect_show.c",
       "id": "029_aw22xxx_effect_show",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: aw22xxx_effect_show\nEntrada Ghidra: 00103998\nTamanho stock: 56 bytes\nCategoria: user_abi\nAlvo no fonte: zte_led.c:aw22xxx_effect_show\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0028_00103998_aw22xxx_effect_show.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0028_00103998_aw22xxx_effect_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
@@ -1049,7 +1049,7 @@
       ],
       "source_file": "zte_led.c",
       "source_function": "aw22xxx_effect_show",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 56,
       "stock_entry": "00103998",
       "stock_function": "aw22xxx_effect_show"
