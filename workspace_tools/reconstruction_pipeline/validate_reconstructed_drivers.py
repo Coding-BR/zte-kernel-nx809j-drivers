@@ -13,6 +13,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import shutil
 import struct
@@ -348,6 +349,7 @@ def build_twice(
     source_volume: str,
     toolchain_volume: str,
     clang_revision: str,
+    parallelism: int = 8,
 ) -> tuple[dict[str, Any], Path | None, list[str]]:
     errors: list[str] = []
     work_dir = work_root / driver
@@ -356,6 +358,7 @@ def build_twice(
     work_dir.mkdir(parents=True)
     toolchain_bin = f"/work/toolchains/{clang_revision}/bin"
     commands: dict[str, Any] = {}
+    source_epoch = 946684800
 
     def clean_build(cycle: str, command_prefix: str) -> tuple[Path, dict[str, Any]]:
         cycle_dir = work_dir / cycle
@@ -367,6 +370,10 @@ def build_twice(
                 "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
             ),
         )
+        for path in cycle_dir.rglob("*"):
+            if path.is_file():
+                path.touch()
+                os.utime(path, (source_epoch, source_epoch))
         container_dir = f"/work/validation/{driver}/{cycle}"
         base = [
             "docker", "run", "--rm",
@@ -379,18 +386,14 @@ def build_twice(
             "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
             (
                 f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"
-                " "
-                "-fdebug-compilation-dir=/zte_tpd"
-            ),
-            (
-                f"KBUILD_AFLAGS=-fdebug-prefix-map={container_dir}=/zte_tpd "
-                "-fdebug-compilation-dir=/zte_tpd"
             ),
         ]
         if (cycle_dir / "vendor.Module.symvers").is_file():
             base.append(f"KBUILD_EXTRA_SYMBOLS={container_dir}/vendor.Module.symvers")
         commands[f"clean_{command_prefix}"] = command_record([*base, "clean"])
-        commands[f"build_{command_prefix}"] = command_record([*base, "modules"])
+        commands[f"build_{command_prefix}"] = command_record(
+            [*base, "-j", str(parallelism), "modules"]
+        )
         return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
 
     first_module, first = clean_build("cycle_1", "first")
@@ -432,6 +435,7 @@ def validate_regular_driver(
     source_volume: str,
     toolchain_volume: str,
     clang_revision: str,
+    parallelism: int,
     target_kernel: dict[str, Any] | None,
     promote_fresh: bool,
 ) -> dict[str, Any]:
@@ -476,6 +480,7 @@ def validate_regular_driver(
             source_volume=source_volume,
             toolchain_volume=toolchain_volume,
             clang_revision=clang_revision,
+            parallelism=parallelism,
         )
         errors.extend(build_errors)
     elif not rebuild:
@@ -627,6 +632,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
     parser.add_argument(
+        "--parallelism",
+        type=int,
+        default=8,
+        help="parallel make jobs for each clean Docker rebuild",
+    )
+    parser.add_argument(
         "--target-kernel-manifest",
         type=Path,
         default=None,
@@ -707,6 +718,7 @@ def main() -> int:
                 source_volume=args.source_volume,
                 toolchain_volume=args.toolchain_volume,
                 clang_revision=args.clang_revision,
+                parallelism=args.parallelism,
                 target_kernel=target_kernel,
                 promote_fresh=args.promote_fresh,
             )

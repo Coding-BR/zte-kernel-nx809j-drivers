@@ -33,7 +33,7 @@ class BuildTwiceTests(unittest.TestCase):
             def fake_command(command: list[str], *, timeout: int = 900) -> dict[str, object]:
                 del timeout
                 commands.append(command)
-                if command[-1] == "modules":
+                if "modules" in command:
                     mount = next(argument for argument in command if argument.startswith("M=/work/validation/"))
                     relative = mount.removeprefix("M=/work/validation/")
                     module = work_root / Path(relative) / "zte_tpd.ko"
@@ -57,6 +57,14 @@ class BuildTwiceTests(unittest.TestCase):
             self.assertEqual(module, work_root / "zte_tpd" / "cycle_2" / "zte_tpd.ko")
             self.assertTrue((work_root / "zte_tpd" / "cycle_1" / "driver.c").is_file())
             self.assertTrue((work_root / "zte_tpd" / "cycle_2" / "driver.c").is_file())
+            self.assertEqual(
+                (work_root / "zte_tpd" / "cycle_1" / "driver.c").stat().st_mtime,
+                946684800,
+            )
+            self.assertEqual(
+                (work_root / "zte_tpd" / "cycle_2" / "driver.c").stat().st_mtime,
+                946684800,
+            )
             mounts = [
                 next(argument for argument in command if argument.startswith("M=/work/validation/"))
                 for command in commands
@@ -70,6 +78,16 @@ class BuildTwiceTests(unittest.TestCase):
                     "M=/work/validation/zte_tpd/cycle_2",
                 ],
             )
+            build_commands = [command for command in commands if "modules" in command]
+            self.assertTrue(all("-j" in command for command in build_commands))
+            first_build_flags = next(
+                argument for argument in build_commands[0] if argument.startswith("KCFLAGS=")
+            )
+            self.assertEqual(
+                first_build_flags,
+                "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd",
+            )
+            self.assertFalse(any(argument.startswith("KBUILD_AFLAGS=") for argument in build_commands[0]))
 
 
 class ReconstructionMapTests(unittest.TestCase):
