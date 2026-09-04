@@ -1062,6 +1062,9 @@ error:
 }
 #endif
 
+#ifdef ZTE_LED_SET_CFG_RUN_STATE_EXACT_ISLAND
+extern int aw22xxx_set_cfg_run_state(u32 effect);
+#else
 #ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
 noinline int aw22xxx_set_cfg_run_state(u32 effect)
 #else
@@ -1093,6 +1096,7 @@ static __used noinline int aw22xxx_set_cfg_run_state(u32 effect)
 	g_cfg_cur_state = next_state;
 	return 0;
 }
+#endif
 
 #ifndef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
