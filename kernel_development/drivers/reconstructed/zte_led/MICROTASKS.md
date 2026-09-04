@@ -21,7 +21,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 015_aw22xxx_alloc_name_array | aw22xxx_alloc_name_array | 00102b8c | core_logic | zte_led.c:aw22xxx_alloc_name_array | PROMOTED_OFFLINE_EXACT |
 | 016_aw22xxx_fw_init | aw22xxx_fw_init | 00102df0 | lifecycle | zte_led.c:aw22xxx_fw_init | PROMOTED_OFFLINE_EXACT |
 | 017_aw22xxx_create_proc_entry | aw22xxx_create_proc_entry | 00102ec4 | core_logic | zte_led.c:aw22xxx_create_proc_entry | PROMOTED_OFFLINE_EXACT |
-| 018_aw22xxx_brightness_work | aw22xxx_brightness_work | 00102f28 | async_or_irq | zte_led.c:aw22xxx_brightness_work | PASS |
+| 018_aw22xxx_brightness_work | aw22xxx_brightness_work | 00102f28 | async_or_irq | zte_led.c:aw22xxx_brightness_work | PROMOTED_OFFLINE_EXACT |
 | 019_aw22xxx_task_work | aw22xxx_task_work | 00103178 | async_or_irq | zte_led.c:aw22xxx_task_work | PASS |
 | 020_aw22xxx_set_brightness | aw22xxx_set_brightness | 001033dc | core_logic | zte_led.c:aw22xxx_set_brightness | PROMOTED_OFFLINE_EXACT |
 | 021_aw22xxx_reg_show | aw22xxx_reg_show | 00103414 | user_abi | zte_led.c:aw22xxx_reg_show | PROMOTED_OFFLINE_EXACT |
