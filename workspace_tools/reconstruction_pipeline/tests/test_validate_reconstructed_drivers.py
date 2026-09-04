@@ -85,7 +85,8 @@ class BuildTwiceTests(unittest.TestCase):
             )
             self.assertEqual(
                 first_build_flags,
-                "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd",
+                "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd "
+                "-fdebug-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd",
             )
             self.assertFalse(any(argument.startswith("KBUILD_AFLAGS=") for argument in build_commands[0]))
 
