@@ -12,7 +12,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 006_aw22xxx_i2c_read | aw22xxx_i2c_read | 00101a2c | user_abi | zte_led.c:aw22xxx_i2c_read | PROMOTED_OFFLINE_EXACT |
 | 007_aw22xxx_i2c_probe | aw22xxx_i2c_probe | 00101b68 | binding | zte_led.c:aw22xxx_i2c_probe | PROMOTED_OFFLINE_EXACT |
 | 008_aw22xxx_i2c_remove | aw22xxx_i2c_remove | 00102204 | binding | zte_led.c:aw22xxx_i2c_remove | PROMOTED_OFFLINE_EXACT |
-| 009_aw22xxx_hw_reset | aw22xxx_hw_reset | 001022c8 | core_logic | zte_led.c:aw22xxx_hw_reset | PASS |
+| 009_aw22xxx_hw_reset | aw22xxx_hw_reset | 001022c8 | core_logic | zte_led.c:aw22xxx_hw_reset | PROMOTED_OFFLINE_EXACT |
 | 010_aw22xxx_read_chipid | aw22xxx_read_chipid | 00102364 | user_abi | zte_led.c:aw22xxx_read_chipid | PASS |
 | 011_aw22xxx_interrupt_setup | aw22xxx_interrupt_setup | 00102530 | core_logic | zte_led.c:aw22xxx_interrupt_setup | PASS |
 | 012_aw22xxx_irq_v15 | aw22xxx_irq_v15 | 00102638 | async_or_irq | zte_led.c:aw22xxx_irq_v15 | PASS |
