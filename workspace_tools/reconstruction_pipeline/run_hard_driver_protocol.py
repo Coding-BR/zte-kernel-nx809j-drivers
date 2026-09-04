@@ -15,7 +15,6 @@ import json
 import os
 import re
 import signal
-import shutil
 import subprocess
 import sys
 import time
@@ -476,14 +475,25 @@ def build_command_plan(
     slice_command: list[str] | None = None
     slice_commands: list[list[str]] | None = None
     if slice_mode != "off":
-        use_posix_launcher = False
+        use_literal_launcher = False
         if joern_home:
-            if os.name == "nt" and shutil.which("bash"):
+            direct_java = (
+                java_home is not None
+                and os.name == "nt"
+                and (java_home / "bin" / "java.exe").is_file()
+            )
+            if direct_java:
                 launcher = [
-                    shutil.which("bash") or "bash",
-                    str(joern_home / "joern-cli" / "bin" / "joern-slice"),
+                    str(java_home / "bin" / "java.exe"),
+                    "-XX:+UseG1GC",
+                    "-XX:CompressedClassSpaceSize=128m",
+                    "-Dlog4j.configurationFile=" + str(
+                        joern_home / "joern-cli" / "conf" / "log4j2.xml"
+                    ),
+                    "-cp", str(joern_home / "joern-cli" / "lib" / "*"),
+                    "io.joern.joerncli.JoernSlice",
                 ]
-                use_posix_launcher = True
+                use_literal_launcher = True
             else:
                 launcher = [str(joern_home / "joern-cli" / (
                     "joern-slice.bat" if os.name == "nt" else "joern-slice"
@@ -501,7 +511,7 @@ def build_command_plan(
                 (str(item["source_function"]), f"f{index:03d}")
                 for index, item in enumerate(functions)
             ]
-        elif os.name == "nt" and not use_posix_launcher:
+        elif os.name == "nt" and not use_literal_launcher:
             source_names = [str(item["source_function"]) for item in functions]
             common_prefix = os.path.commonprefix(source_names)
             method_filters = [("^" + re.escape(common_prefix) if common_prefix else ".*", "all")]
@@ -529,7 +539,7 @@ def build_command_plan(
                     command.extend([
                         "--sink-filter", (
                             str(sink_filter)
-                            if os.name != "nt" or use_posix_launcher else ".+"
+                            if os.name != "nt" or use_literal_launcher else ".+"
                         )
                     ])
             else:

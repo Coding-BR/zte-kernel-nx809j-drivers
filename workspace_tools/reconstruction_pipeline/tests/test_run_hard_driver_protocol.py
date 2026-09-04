@@ -218,7 +218,7 @@ class HardDriverProtocolTests(unittest.TestCase):
         self.assertIsNone(plan["joern_slice"])
         self.assertIn("^source_a$", plan["joern_slices"][0])
         self.assertIn("^source_b$", plan["joern_slices"][1])
-        self.assertIn("(memcpy|memset)", plan["joern_slices"][0])
+        self.assertIn(".+", plan["joern_slices"][0])
 
     def test_pcode_fallback_requires_an_audit_reason(self):
         job = base_job(
