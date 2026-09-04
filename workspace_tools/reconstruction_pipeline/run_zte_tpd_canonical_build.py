@@ -37,6 +37,11 @@ def module_path_for_cycle(audit_name: str, cycle: int) -> str:
     return f"/work/engineering/validation/{audit_name}/{path_label}/zte_tpd"
 
 
+def host_artifact_label(label: str) -> str:
+    """Keep Windows artifact paths short without losing deterministic identity."""
+    return hashlib.sha256(label.encode("utf-8")).hexdigest()[:12]
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -201,7 +206,10 @@ def main() -> int:
         return 1
 
     run_id = generated.strftime("%Y%m%dT%H%M%SZ")
-    run_root = artifact_root / "zte_tpd" / "canonical_builds" / args.label / run_id
+    # The full protocol label remains in the report and container M= path, but
+    # using it again on the host can exceed Windows MAX_PATH when the caller's
+    # temporary output root is already nested deeply.
+    run_root = artifact_root / "zte_tpd" / "canonical_builds" / host_artifact_label(args.label) / run_id
     run_root.mkdir(parents=True, exist_ok=False)
     module_paths = [
         module_path_for_cycle(args.audit_name, cycle)

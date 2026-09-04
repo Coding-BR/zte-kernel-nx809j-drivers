@@ -65,6 +65,18 @@ def test_canonical_cycles_use_deliberately_different_paths() -> None:
     assert second.endswith("/zte_tpd")
 
 
+def test_host_artifact_label_is_short_and_deterministic() -> None:
+    builder = load_canonical_builder()
+    label = "hard_protocol_zte_tpd_syna_tcm_clear_data_duplicator_core_v1"
+
+    first = builder.host_artifact_label(label)
+    second = builder.host_artifact_label(label)
+
+    assert first == second
+    assert len(first) == 12
+    assert first != label
+
+
 def test_target_kernel_manifest_defaults_next_to_curated_root(tmp_path: Path) -> None:
     auditor = load_independent_auditor()
     curated_root = tmp_path / "engineering" / "curated"
