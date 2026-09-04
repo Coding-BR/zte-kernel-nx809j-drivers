@@ -934,12 +934,11 @@ def execute_post_candidate(
             # module_init/module_exit; compare the stock and candidate Ghidra
             # symbols, while keeping source_function for Joern/map identity.
             candidate_function = item.get("candidate_function", item["source_function"])
-            stock_selector = item["stock_function"]
-            if item.get("stock_symbol_offset") is not None:
-                stock_selector += f"@{item['stock_symbol_offset']}"
+            # Ghidra selectors use the actual function entry.  The separate
+            # stock_symbol_offset field is an ELF/KCFI/assembly selector and
+            # must not be reused here.
+            stock_selector = f"{item['stock_function']}@{item['stock_entry']}"
             candidate_selector = candidate_function
-            if item.get("candidate_symbol_offset") is not None:
-                candidate_selector += f"@{item['candidate_symbol_offset']}"
             if stock_selector != candidate_selector:
                 ghidra_command.extend(["--function-pair", f"{stock_selector}={candidate_selector}"])
             else:
