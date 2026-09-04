@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "function": "aw22xxx_cfg_store",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "stock_entry": "001038d4",
+  "stock_body_bytes": 192,
+  "candidate_body_bytes": 192,
+  "instruction_count": 48,
+  "kcfi_applicable": true,
+  "kcfi_decision": "TYPE_ID_COMPARISON",
+  "kcfi_type_id": "0x95c41a97",
+  "candidate_module_sha256": "98e2913731ce98d6bd88c8e7730be04d1f2333747118256cfbd0524cd6b76b27",
+  "candidate_source_sha256": "502007daf36b16f4fd14a93cc772d8dc24688caf789ee0905f703a86a2ab0ba4",
+  "candidate_assembly_sha256": "d093c4685f2abc62f8fa23347dfe8d4e580a3845c2557a792146996ef5085b08",
+  "stock_assembly_sha256": "ac85941f1bc9a9d1d6f7275b40a843b4e68f380b454bc85d5009db74618641c6",
+  "protocol": "hard_protocol_report.json",
+  "promotion_basis": "Exact 192-byte/48-instruction AArch64 body and relocation parity, matching KCFI type ID and size, fresh Ghidra body/P-Code operation-shape gate, strict Joern scope/slice, two reproducible Docker cycles and 58/58 host coverage. The callback preserves sscanf validation, low-nibble configuration update, success/error printk branches and the stack-canary path.",
+  "limitations": [
+    "Offline/static evidence only; physical AW22xxx LED behavior remains unverified.",
+    "Strict normalized decompiled-C equality was false for this candidate; the exact Assembly/relocation and P-Code operation-shape gates passed, so this is an assembly-only promotion.",
+    "The module-level audit retains the pre-existing stock-only mem_alloc_profiling_key import difference documented in earlier promoted zte_led exact islands; no new unexpected import was introduced by this function.",
+    "Sanitizers, lock/lifetime ledger, semantic counterexample search and independent runtime review remain deferred."
+  ]
+}

@@ -1501,6 +1501,9 @@ static ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *att
 }
 #endif
 
+#ifdef ZTE_LED_CFG_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#else
 static ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1515,6 +1518,7 @@ static ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *at
 	pr_info("aw22xxx: %s cfg=%u\n", __func__, aw22xxx->cfg_custom_en);
 	return count;
 }
+#endif
 
 static ssize_t aw22xxx_effect_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
