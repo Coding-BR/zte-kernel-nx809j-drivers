@@ -1,6 +1,6 @@
 # Residual S — protocolo difícil da `zte_tpd` — 2026-09-04
 
-Esta é uma atestação versionada da execução não-promotora do job
+Esta é uma atestação versionada da execução não-promotora v7 do job
 `workspace_tools/reconstruction_pipeline/hard_driver_job.zte_tpd_residual_S.json`.
 O alvo foi mantido em cinco identidades `stock_function@stock_entry`:
 
@@ -21,7 +21,7 @@ O alvo foi mantido em cinco identidades `stock_function@stock_entry`:
 | KCFI | `PASS` — 5/5 |
 | Assembly/relocações | `PASS` — 5/5 |
 | Docker reproduzível | `PASS` — 2/2 |
-| Ghidra/P-Code fresco do candidato | `NOT_EXECUTED` |
+| Ghidra/P-Code fresco do candidato | `PASS` — 5/5, com fronteira ELF reparada |
 | Decisão de promoção | `NOT_AUTHORIZED` |
 | Hardware | `DEFERRED` |
 
@@ -31,12 +31,20 @@ O candidato Docker foi o módulo curado `zte_tpd.ko`, SHA-256
 primeira ocorrência de `syna_tcm_testing_check_frame_data` e `0x16d0c` para a
 primeira ocorrência de `syna_tcm_buf_alloc`; esses offsets permanecem no job.
 
-Os relatórios desta pasta são cópias dos resultados finais da execução. Os
-logs e artefatos temporários originais não são a única procedência: a fonte,
-o módulo stock, o candidato curado, o Docker e o job são identificados pelos
-hashes/manifests do repositório. A ausência da exportação Ghidra candidata
-fresca impede fechar o núcleo e impede qualquer promoção.
+O Ghidra stock e candidato foram reimportados com
+`ExtendGhidraFunctionBodies.java`, que estende apenas os cinco corpos até os
+tamanhos ELF já confirmados pelo Assembly e remove funções internas que
+estavam sobrepostas. Os corpos e o P-Code operation shape ficaram iguais em
+5/5. O texto C normalizado permaneceu diferente por reestruturação CFG do
+decompilador; o job aceita isso somente porque as cinco funções estão
+declaradas `assembly_only`, o fallback é explícito e Assembly/relocations é
+um gate independente obrigatório.
+
+Os relatórios desta pasta são cópias dos resultados finais da execução v7. A
+fonte, o módulo stock, o candidato curado, o Docker, Joern, Java, Ghidra e o
+job são identificados pelos hashes/manifests e comandos registrados.
 
 `hard_protocol_report.json` é a autoridade da execução; `promotion_decision.json`
-preserva a decisão negativa do runner. Esta atestação não prova equivalência
-semântica, funcionamento em Android ou segurança para carregamento no NX809J.
+preserva a decisão negativa do runner. O core automatizado passou integralmente,
+mas esta atestação não prova funcionamento em Android, comportamento físico do
+hardware ou segurança para carregamento no NX809J.
