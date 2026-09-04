@@ -7,6 +7,10 @@ aw22xxx_exact_data_base:
 .set g_ver_var, aw22xxx_exact_data_base+0x370
 .global aw22xxx_blink_cfg
 .set aw22xxx_blink_cfg, aw22xxx_exact_data_base+0x38
+.global g_chip_id
+.type g_chip_id, %object
+.set g_chip_id, aw22xxx_exact_data_base+0x378
+.size g_chip_id, 0x20
 
 .section .rodata,"a",@progbits
 .align 3

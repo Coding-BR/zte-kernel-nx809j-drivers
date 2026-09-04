@@ -159,10 +159,15 @@ extern u8 g_init_flg;
 static u8 g_init_flg = 0;
 #endif
 static u8 g_cfg_cur_state = 0;
-static union {
+union aw22xxx_chip_id {
 	u64 id;
 	char text[32];
-} g_chip_id;
+};
+#ifdef ZTE_LED_GET_AW22XXX_ID_EXACT_ISLAND
+extern union aw22xxx_chip_id g_chip_id;
+#else
+static union aw22xxx_chip_id g_chip_id;
+#endif
 #if defined(ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
 extern u32 lamp_effect;
 extern u32 fan_effect;
@@ -2062,6 +2067,7 @@ __used noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
  * Procfs Entry Callbacks
  * ====================================================================== */
 
+#ifndef ZTE_LED_GET_AW22XXX_ID_EXACT_ISLAND
 __used ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
 			     size_t count, loff_t *ppos)
 {
@@ -2077,6 +2083,7 @@ __used ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
 		__fortify_panic(4, sizeof(g_chip_id.text), checked_len);
 	return simple_read_from_buffer(user_buf, count, ppos, g_chip_id.text, len);
 }
+#endif
 
 #ifndef ZTE_LED_CREATE_PROC_EXACT_ISLAND
 static const struct proc_ops proc_ops_awid = {
