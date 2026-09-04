@@ -1016,6 +1016,9 @@ static void __maybe_unused aw22xxx_fw_loaded_c(const struct firmware *fw, void *
 	pr_info("aw22xxx: firmware callback leaving\n");
 }
 
+#ifdef ZTE_LED_CFG_UPDATE_WAIT_FROM_DYN_NAME_EXACT_ISLAND
+extern int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
+#else
 #ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
 noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
 #else
@@ -1057,6 +1060,7 @@ error:
 	pr_err("aw22xxx: %s failed: %d\n", __func__, ret);
 	return ret;
 }
+#endif
 
 #ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
 noinline int aw22xxx_set_cfg_run_state(u32 effect)
