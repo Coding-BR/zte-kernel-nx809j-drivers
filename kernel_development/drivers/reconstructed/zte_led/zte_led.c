@@ -152,13 +152,21 @@ extern u32 g_cfgarray_count;
 #else
 static u32 g_cfgarray_count = 4500;
 #endif
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+u8 init_flag = 0;
+#else
 static u8 init_flag = 0;
+#endif
 #if defined(ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
 extern u8 g_init_flg;
 #else
 static u8 g_init_flg = 0;
 #endif
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+u8 g_cfg_cur_state = 0;
+#else
 static u8 g_cfg_cur_state = 0;
+#endif
 union aw22xxx_chip_id {
 	u64 id;
 	char text[32];
@@ -379,8 +387,13 @@ extern void aw22xxx_fw_work_routine(struct work_struct *work);
 #ifdef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 extern void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
 #endif
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
+int aw22xxx_set_cfg_run_state(u32 effect);
+#else
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
+#endif
 #ifndef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
 #endif
@@ -669,7 +682,11 @@ static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)
  * Firmware Loading & Configuration
  * ====================================================================== */
 
-static noinline int aw22xxx_get_fwname(u32 index)
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+noinline int aw22xxx_get_fwname(u32 index)
+#else
+static __used noinline int aw22xxx_get_fwname(u32 index)
+#endif
 {
 	u8 mode = (index >> 24) & 0xFF;
 	u32 v3 = (index >> 12) & 0xFFF;
@@ -995,7 +1012,11 @@ static void __maybe_unused aw22xxx_fw_loaded_c(const struct firmware *fw, void *
 	pr_info("aw22xxx: firmware callback leaving\n");
 }
 
-static noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
+#else
+static __used noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
+#endif
 {
 	const struct firmware *fw = NULL;
 	int ret;
@@ -1033,7 +1054,11 @@ error:
 	return ret;
 }
 
-static noinline int aw22xxx_set_cfg_run_state(u32 effect)
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+noinline int aw22xxx_set_cfg_run_state(u32 effect)
+#else
+static __used noinline int aw22xxx_set_cfg_run_state(u32 effect)
+#endif
 {
 	u8 mode = (effect >> 24) & 0xFF;
 	u32 sub_mode = (effect >> 12) & 0xFFF;
@@ -1531,6 +1556,9 @@ static ssize_t aw22xxx_effect_show(struct device *dev, struct device_attribute *
 }
 #endif
 
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#else
 static ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1590,6 +1618,7 @@ static ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute 
 	mutex_unlock(&aw22xxx->cfg_lock);
 	return count;
 }
+#endif
 
 #ifdef ZTE_LED_FW_SHOW_EXACT_ISLAND
 extern ssize_t aw22xxx_fw_show(struct device *dev, struct device_attribute *attr, char *buf);
