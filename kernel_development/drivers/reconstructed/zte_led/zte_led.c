@@ -2328,6 +2328,7 @@ static struct i2c_driver aw22xxx_i2c_driver = {
 	.id_table = aw22xxx_i2c_id,
 };
 
+#ifndef ZTE_LED_INIT_MODULE_EXACT_ISLAND
 static int __init aw22xxx_driver_init(void)
 {
 	int ret;
@@ -2340,13 +2341,16 @@ static int __init aw22xxx_driver_init(void)
 		pr_err("aw22xxx: I2C registration failed: %d\n", ret);
 	return ret;
 }
+#endif
 
 static void __exit aw22xxx_driver_exit(void)
 {
 	i2c_del_driver(&aw22xxx_i2c_driver);
 }
 
+#ifndef ZTE_LED_INIT_MODULE_EXACT_ISLAND
 module_init(aw22xxx_driver_init);
+#endif
 module_exit(aw22xxx_driver_exit);
 
 MODULE_AUTHOR("Antigravity <google-deepmind>");
