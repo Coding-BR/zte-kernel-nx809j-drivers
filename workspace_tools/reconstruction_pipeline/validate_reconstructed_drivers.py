@@ -340,6 +340,22 @@ def reconstruction_map_check(
     return result, errors
 
 
+PROMOTION_PARITY_KEYS = (
+    "aarch64_rel",
+    "alias_match",
+    "namespace_match",
+    "undefined_symbols_match",
+    "vermagic_accepted",
+)
+
+
+def fresh_build_is_promotable(build_result: dict[str, Any], metadata: dict[str, Any]) -> bool:
+    """Allow promotion only after reproducible rebuild and module parity gates pass."""
+    return bool(build_result.get("passed")) and all(
+        bool(metadata.get(key)) for key in PROMOTION_PARITY_KEYS
+    )
+
+
 def build_twice(
     *,
     driver: str,
@@ -525,16 +541,7 @@ def validate_regular_driver(
                 ),
                 "candidate_matches_fresh": candidate_record.get("sha256") == sha256_file(fresh_module),
             }
-            promotable = all(
-                metadata[key]
-                for key in (
-                    "aarch64_rel",
-                    "alias_match",
-                    "namespace_match",
-                    "undefined_symbols_match",
-                    "vermagic_accepted",
-                )
-            )
+            promotable = fresh_build_is_promotable(build_result, metadata)
             if promote_fresh and promotable:
                 shutil.copy2(fresh_module, candidate)
                 candidate_record = file_record(candidate)

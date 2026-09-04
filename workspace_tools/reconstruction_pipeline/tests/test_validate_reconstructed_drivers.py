@@ -120,5 +120,20 @@ class ReconstructionMapTests(unittest.TestCase):
                 self.assertEqual(errors, [])
 
 
+class PromotionGateTests(unittest.TestCase):
+    def test_requires_reproducible_build(self) -> None:
+        metadata = {key: True for key in MODULE.PROMOTION_PARITY_KEYS}
+        self.assertTrue(MODULE.fresh_build_is_promotable({"passed": True}, metadata))
+        self.assertFalse(MODULE.fresh_build_is_promotable({"passed": False}, metadata))
+
+    def test_requires_all_module_parity_gates(self) -> None:
+        build = {"passed": True}
+        for missing in MODULE.PROMOTION_PARITY_KEYS:
+            with self.subTest(missing=missing):
+                metadata = {key: True for key in MODULE.PROMOTION_PARITY_KEYS}
+                metadata[missing] = False
+                self.assertFalse(MODULE.fresh_build_is_promotable(build, metadata))
+
+
 if __name__ == "__main__":
     unittest.main()
