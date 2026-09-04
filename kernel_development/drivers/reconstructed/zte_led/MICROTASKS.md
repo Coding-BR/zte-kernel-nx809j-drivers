@@ -46,7 +46,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 040_aw22xxx_task0_store | aw22xxx_task0_store | 001047cc | user_abi | zte_led.c:aw22xxx_task0_store | PROMOTED_OFFLINE_EXACT |
 | 041_aw22xxx_task1_show | aw22xxx_task1_show | 001048a4 | user_abi | zte_led.c:aw22xxx_task1_show | PROMOTED_OFFLINE_EXACT |
 | 042_aw22xxx_task1_store | aw22xxx_task1_store | 001048e0 | user_abi | zte_led.c:aw22xxx_task1_store | PROMOTED_OFFLINE_EXACT |
-| 043_aw22xxx_task_irq_show | aw22xxx_task_irq_show | 001049a4 | user_abi | zte_led.c:aw22xxx_task_irq_show | PASS |
+| 043_aw22xxx_task_irq_show | aw22xxx_task_irq_show | 001049a4 | user_abi | zte_led.c:aw22xxx_task_irq_show | PROMOTED_OFFLINE_EXACT |
 | 044_aw22xxx_task_irq_store | aw22xxx_task_irq_store | 001049e0 | user_abi | zte_led.c:aw22xxx_task_irq_store | PASS |
 | 045_aw22xxx_para_show | aw22xxx_para_show | 00104aa0 | user_abi | zte_led.c:aw22xxx_para_show | PASS |
 | 046_aw22xxx_para_store | aw22xxx_para_store | 00104bc0 | user_abi | zte_led.c:aw22xxx_para_store | PASS |
