@@ -2343,6 +2343,7 @@ static int __init aw22xxx_driver_init(void)
 }
 #endif
 
+#ifndef ZTE_LED_CLEANUP_MODULE_EXACT_ISLAND
 static void __exit aw22xxx_driver_exit(void)
 {
 	i2c_del_driver(&aw22xxx_i2c_driver);
@@ -2352,6 +2353,7 @@ static void __exit aw22xxx_driver_exit(void)
 module_init(aw22xxx_driver_init);
 #endif
 module_exit(aw22xxx_driver_exit);
+#endif
 
 MODULE_AUTHOR("Antigravity <google-deepmind>");
 MODULE_DESCRIPTION("Awinic AW22XXX RGB LED smart controller driver reconstruction");

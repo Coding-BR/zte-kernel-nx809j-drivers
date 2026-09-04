@@ -2067,23 +2067,23 @@
       "category": "lifecycle",
       "evidence": [
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\058_cleanup_module\\compile.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next069_cleanup_module_exact_v1/compile.json",
           "role": "compile",
-          "sha256": "9caff826953f432e5e3ed1666f0a35ead5888aa1d73354600293ba414dd03397"
+          "sha256": "9537d6b87bba2a076f88e5ecc0563f0a9bdcf5eccc09d787a65e5721d6850236"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\058_cleanup_module\\kcfi.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next069_cleanup_module_exact_v1/kcfi.json",
           "role": "kcfi",
-          "sha256": "cee61ca1b2e291f6a816362c6fab8d1ab027462715ee9647cc8fabe552914224"
+          "sha256": "04b6d4069c1745af67992cfcd2c92e9dd205f178e7707444234e35a46cbfd702"
         },
         {
-          "path": "engenharia\\validation\\zte_led\\microtasks\\058_cleanup_module\\test.json",
+          "path": "reverse_engineering/validation/reconstructed/zte_led/attestation/next069_cleanup_module_exact_v1/test.json",
           "role": "test",
-          "sha256": "614b5dc0c858c3edfcfc83dbf2f4ce630aff5929a767524be4d75110dec010e8"
+          "sha256": "4e7dc09d3c5a3b7d938149adf61552b7484d4d4fa2fc350fe762f355652c2f28"
         }
       ],
-      "ghidra_pcode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0057_001068a0_cleanup_module.jsonl",
-      "ghidra_pseudocode": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0057_001068a0_cleanup_module.c",
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next069_cleanup_module_exact_v1/candidate_ghidra_export/pcode/0059_0010e550_cleanup_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_led/attestation/next069_cleanup_module_exact_v1/stock_ghidra/decompiled/0057_001068a0_cleanup_module.c",
       "id": "058_cleanup_module",
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_led\nFuncao stock: cleanup_module\nEntrada Ghidra: 001068a0\nTamanho stock: 36 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_led.c:aw22xxx_driver_exit\nPseudocodigo Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\decompiled\\0057_001068a0_cleanup_module.c\nP-Code Ghidra: C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\03_ghidra\\exports\\zte_led.ko\\pcode\\0057_001068a0_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
       "required_evidence": [
@@ -2093,7 +2093,7 @@
       ],
       "source_file": "zte_led.c",
       "source_function": "aw22xxx_driver_exit",
-      "status": "PASS",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 36,
       "stock_entry": "001068a0",
       "stock_function": "cleanup_module"

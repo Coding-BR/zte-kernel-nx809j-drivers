@@ -61,4 +61,4 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 055_aw22xxx_cfg_recover_update_wait | aw22xxx_cfg_recover_update_wait | 00106394 | core_logic | zte_led.c:aw22xxx_cfg_recover_update_wait | PROMOTED_OFFLINE_EXACT |
 | 056_get_aw22xxx_id | get_aw22xxx_id | 00106760 | core_logic | zte_led.c:get_aw22xxx_id | PROMOTED_OFFLINE_EXACT |
 | 057_init_module | init_module | 00106824 | lifecycle | zte_led.c:aw22xxx_driver_init | PROMOTED_OFFLINE_EXACT |
-| 058_cleanup_module | cleanup_module | 001068a0 | lifecycle | zte_led.c:aw22xxx_driver_exit | PASS |
+| 058_cleanup_module | cleanup_module | 001068a0 | lifecycle | zte_led.c:aw22xxx_driver_exit | PROMOTED_OFFLINE_EXACT |
