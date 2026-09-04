@@ -24,7 +24,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 018_aw22xxx_brightness_work | aw22xxx_brightness_work | 00102f28 | async_or_irq | zte_led.c:aw22xxx_brightness_work | PASS |
 | 019_aw22xxx_task_work | aw22xxx_task_work | 00103178 | async_or_irq | zte_led.c:aw22xxx_task_work | PASS |
 | 020_aw22xxx_set_brightness | aw22xxx_set_brightness | 001033dc | core_logic | zte_led.c:aw22xxx_set_brightness | PROMOTED_OFFLINE_EXACT |
-| 021_aw22xxx_reg_show | aw22xxx_reg_show | 00103414 | user_abi | zte_led.c:aw22xxx_reg_show | PASS |
+| 021_aw22xxx_reg_show | aw22xxx_reg_show | 00103414 | user_abi | zte_led.c:aw22xxx_reg_show | PROMOTED_OFFLINE_EXACT |
 | 022_aw22xxx_reg_store | aw22xxx_reg_store | 00103528 | user_abi | zte_led.c:aw22xxx_reg_store | PASS |
 | 023_aw22xxx_hwen_show | aw22xxx_hwen_show | 001035e8 | user_abi | zte_led.c:aw22xxx_hwen_show | PASS |
 | 024_aw22xxx_hwen_store | aw22xxx_hwen_store | 0010363c | user_abi | zte_led.c:aw22xxx_hwen_store | PASS |
