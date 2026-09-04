@@ -15,7 +15,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 009_aw22xxx_hw_reset | aw22xxx_hw_reset | 001022c8 | core_logic | zte_led.c:aw22xxx_hw_reset | PROMOTED_OFFLINE_EXACT |
 | 010_aw22xxx_read_chipid | aw22xxx_read_chipid | 00102364 | user_abi | zte_led.c:aw22xxx_read_chipid | PROMOTED_OFFLINE_EXACT |
 | 011_aw22xxx_interrupt_setup | aw22xxx_interrupt_setup | 00102530 | core_logic | zte_led.c:aw22xxx_interrupt_setup | PROMOTED_OFFLINE_EXACT |
-| 012_aw22xxx_irq_v15 | aw22xxx_irq_v15 | 00102638 | async_or_irq | zte_led.c:aw22xxx_irq_v15 | PASS |
+| 012_aw22xxx_irq_v15 | aw22xxx_irq_v15 | 00102638 | async_or_irq | zte_led.c:aw22xxx_irq_v15 | PROMOTED_OFFLINE_EXACT |
 | 013_aw22xxx_irq | aw22xxx_irq | 00102880 | async_or_irq | zte_led.c:aw22xxx_irq | PASS |
 | 014_aw22xxx_parse_led_cdev | aw22xxx_parse_led_cdev | 00102984 | core_logic | zte_led.c:aw22xxx_parse_led_cdev | PASS |
 | 015_aw22xxx_alloc_name_array | aw22xxx_alloc_name_array | 00102b8c | core_logic | zte_led.c:aw22xxx_alloc_name_array | PASS |
