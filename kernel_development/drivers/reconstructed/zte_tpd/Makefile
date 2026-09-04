@@ -2,17 +2,20 @@
 
 # Compile all C files in the directory except offset_test.c
 src-files := $(wildcard $(src)/*.c)
+# Ghidra-only unnamed helper drafts are retained as evidence but are not part
+# of the 367-function stock module surface; none is referenced by the build.
+src-files := $(filter-out $(src)/sub_%.c, $(src-files))
 src-files := $(filter-out $(src)/offset_test.c, $(src-files))
 src-files := $(filter-out $(src)/globals.c, $(src-files))
 src-files := $(filter-out $(src)/trim.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_copy_2.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_copy.c, $(src-files))
-src-files := $(filter-out $(src)/syna_tcm_identify.c, $(src-files))
-src-files := $(filter-out $(src)/syna_tcm_wait_for_report.c, $(src-files))
-src-files := $(filter-out $(src)/syna_tcm_switch_fw_mode.c, $(src-files))
 # The legacy base-unit include aliases syna_tcm_buf_copy_2 back to the
 # exported name and collides with the exact stock reconstruction below.
 src-files := $(filter-out $(src)/syna_tcm_func_base_unit.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_identify.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_wait_for_report.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_switch_fw_mode.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_boot_info.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_app_info.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_dynamic_config.c, $(src-files))
@@ -21,6 +24,11 @@ src-files := $(filter-out $(src)/syna_tcm_sleep.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_get_features.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_buf_unlock.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_run_production_test.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_game_partition_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_set_static_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_get_static_config.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_rezero.c, $(src-files))
+src-files := $(filter-out $(src)/syna_tcm_reset.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_send_command.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_read_flash_address.c, $(src-files))
 src-files := $(filter-out $(src)/syna_tcm_set_up_flash_access.c, $(src-files))
@@ -179,6 +187,12 @@ obj-files += syna_tcm_get_dynamic_config_exact.o
 obj-files += syna_tcm_set_dynamic_config_exact.o
 obj-files += syna_tcm_sleep_exact.o
 obj-files += syna_tcm_get_features_exact.o
+obj-files += syna_tcm_rezero_exact.o
+obj-files += syna_tcm_reset_exact.o
+obj-files += syna_tcm_run_production_test_exact.o
+obj-files += syna_tcm_set_game_partition_config_exact.o
+obj-files += syna_tcm_set_static_config_exact.o
+obj-files += syna_tcm_get_static_config_exact.o
 obj-files += tp_edge_report_limit_write_exact.o
 obj-files += tp_edge_report_limit_read_exact.o
 obj-files += get_one_key_exact.o
@@ -263,6 +277,10 @@ AFLAGS_syna_tcm_v1_read_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_config_timings_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_allocate_device_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_buf_copy_2_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_run_production_test_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_game_partition_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_set_static_config_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_get_static_config_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_identify_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_wait_for_report_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_switch_fw_mode_exact.o := -g0 -I$(src)
@@ -371,6 +389,8 @@ AFLAGS_change_tp_state_exact.o := -g0 -I$(src)
 AFLAGS_syna_dev_set_up_app_fw_exact.o := -g0
 AFLAGS_syna_dev_suspend_exact.o := -g0
 AFLAGS_syna_dev_resume_exact.o := -g0
+AFLAGS_syna_tcm_rezero_exact.o := -g0 -I$(src)
+AFLAGS_syna_tcm_reset_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_testing_0001_check_device_id_exact.o := -g0
 AFLAGS_syna_ts_check_dt_exact.o := -g0
 
@@ -417,16 +437,45 @@ CFLAGS_tpd_touch_report.o := -fno-sanitize=kcfi
 CFLAGS__inline_copy_from_user.o := -fno-sanitize=kcfi
 # Stock point_report_reset@0010ea98 has no valid KCFI entry preamble.
 CFLAGS_point_report_reset.o := -fno-sanitize=kcfi
+
+# Exact offline reconstruction: point_report_reset
+src-files := $(filter-out $(src)/point_report_reset.c, $(src-files))
+obj-files := $(filter-out point_report_reset.o, $(obj-files))
+zte_tpd-objs := $(filter-out point_report_reset.o, $(zte_tpd-objs))
+zte_tpd-objs += point_report_reset_exact.o
+AFLAGS_point_report_reset_exact.o := -g0 -I$(src)
 # Stock ghost_check_area@0010f2ac has no valid KCFI entry preamble.
 CFLAGS_ghost_check_area.o := -fno-sanitize=kcfi
 # Stock syna_dev_enter_normal_sensing@00114294 has no valid KCFI entry preamble.
 CFLAGS_syna_dev_enter_normal_sensing.o := -fno-sanitize=kcfi
+
 # Exact offline reconstruction: syna_dev_enter_normal_sensing
 src-files := $(filter-out $(src)/syna_dev_enter_normal_sensing.c, $(src-files))
 obj-files := $(filter-out syna_dev_enter_normal_sensing.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_dev_enter_normal_sensing.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_dev_enter_normal_sensing_exact.o
 AFLAGS_syna_dev_enter_normal_sensing_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_sysfs_fw_update_store
+src-files := $(filter-out $(src)/syna_sysfs_fw_update_store.c, $(src-files))
+obj-files := $(filter-out syna_sysfs_fw_update_store.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_sysfs_fw_update_store.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_sysfs_fw_update_store_exact.o
+AFLAGS_syna_sysfs_fw_update_store_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: suspend_show
+src-files := $(filter-out $(src)/suspend_show.c, $(src-files))
+obj-files := $(filter-out suspend_show.o, $(obj-files))
+zte_tpd-objs := $(filter-out suspend_show.o, $(zte_tpd-objs))
+zte_tpd-objs += suspend_show_exact.o
+AFLAGS_suspend_show_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_report_uevent
+src-files := $(filter-out $(src)/tpd_report_uevent.c, $(src-files))
+obj-files := $(filter-out tpd_report_uevent.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_report_uevent.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_report_uevent_exact.o
+AFLAGS_tpd_report_uevent_exact.o := -g0 -I$(src)
 # Stock syna_tcm_buf_lock@0011ede8 has no valid KCFI entry preamble.
 CFLAGS_syna_tcm_buf_lock.o := -fno-sanitize=kcfi
 # Stock syna_tcm_buf_unlock@0011ee40 has no valid KCFI entry preamble.
@@ -1034,6 +1083,13 @@ zte_tpd-objs := $(filter-out syna_request_managed_device.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_request_managed_device_exact.o
 AFLAGS_syna_request_managed_device_exact.o := -g0 -I$(src)
 
+# Exact offline reconstruction: syna_testing_remove_dir
+src-files := $(filter-out $(src)/syna_testing_remove_dir.c, $(src-files))
+obj-files := $(filter-out syna_testing_remove_dir.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_remove_dir.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_remove_dir_exact.o
+AFLAGS_syna_testing_remove_dir_exact.o := -g0 -I$(src)
+
 # Exact offline reconstruction: syna_dev_module_exit
 src-files := $(filter-out $(src)/syna_dev_module_exit.c, $(src-files))
 obj-files := $(filter-out syna_dev_module_exit.o, $(obj-files))
@@ -1386,15 +1442,34 @@ obj-files := $(filter-out tpd_set_one_key.o, $(obj-files))
 zte_tpd-objs := $(filter-out tpd_set_one_key.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_one_key_exact.o
 AFLAGS_tpd_set_one_key_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: syna_ts_panel_notifier_callback
+src-files := $(filter-out $(src)/syna_ts_panel_notifier_callback.c, $(src-files))
+obj-files := $(filter-out syna_ts_panel_notifier_callback.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_ts_panel_notifier_callback.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_ts_panel_notifier_callback_exact.o
+AFLAGS_syna_ts_panel_notifier_callback_exact.o := -g0 -I$(src)
+
 # Exact offline reconstruction: syna_tcm_remove_device
 src-files := $(filter-out $(src)/syna_tcm_remove_device.c, $(src-files))
 obj-files := $(filter-out syna_tcm_remove_device.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tcm_remove_device.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_tcm_remove_device_exact.o
 AFLAGS_syna_tcm_remove_device_exact.o := -g0 -I$(src)
-# Exact offline reconstruction: syna_tcm_reset
-src-files := $(filter-out $(src)/syna_tcm_reset.c, $(src-files))
-obj-files := $(filter-out syna_tcm_reset.o, $(obj-files))
-zte_tpd-objs := $(filter-out syna_tcm_reset.o, $(zte_tpd-objs))
-zte_tpd-objs += syna_tcm_reset_exact.o
-AFLAGS_syna_tcm_reset_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: paired PT05/PT0A testing helpers
+src-files := $(filter-out $(src)/syna_testing_pt05_show.c $(src)/syna_testing_pt05_zte.c $(src)/syna_testing_pt0a_show.c $(src)/syna_testing_pt0a_zte.c, $(src-files))
+obj-files := $(filter-out syna_testing_pt05_show.o syna_testing_pt05_zte.o syna_testing_pt0a_show.o syna_testing_pt0a_zte.o, $(obj-files))
+zte_tpd-objs := $(filter-out syna_testing_pt05_show.o syna_testing_pt05_zte.o syna_testing_pt0a_show.o syna_testing_pt0a_zte.o, $(zte_tpd-objs))
+zte_tpd-objs += syna_testing_pt05_show_exact.o syna_testing_pt05_zte_exact.o syna_testing_pt0a_show_exact.o syna_testing_pt0a_zte_exact.o
+AFLAGS_syna_testing_pt05_show_exact.o := -g0 -I$(src)
+AFLAGS_syna_testing_pt05_zte_exact.o := -g0 -I$(src)
+AFLAGS_syna_testing_pt0a_show_exact.o := -g0 -I$(src)
+AFLAGS_syna_testing_pt0a_zte_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: zte_touch_probe
+src-files := $(filter-out $(src)/zte_touch_probe.c, $(src-files))
+obj-files := $(filter-out zte_touch_probe.o, $(obj-files))
+zte_tpd-objs := $(filter-out zte_touch_probe.o, $(zte_tpd-objs))
+zte_tpd-objs += zte_touch_probe_exact.o
+AFLAGS_zte_touch_probe_exact.o := -g0 -I$(src)

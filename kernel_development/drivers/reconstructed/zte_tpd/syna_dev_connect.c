@@ -1,157 +1,164 @@
 int syna_dev_connect(struct syna_tcm *tcm)
 {
+  struct syna_dev_connect_hw_view {
+    unsigned char reserved_0000[0x180];
+    int (*power_on)(struct syna_hw_interface *, bool);
+    void (*hw_reset)(struct syna_hw_interface *);
+  };
   __int64 *a1 = (__int64 *)tcm;
   __int64 v3; // x20
   __int64 v5; // x21
-  __int64 (__fastcall *v6)(__int64, __int64); // x8
-  __int64 v7; // x0
-  void *v9; // x0
-  __int64 v10; // x0
-  void (__fastcall *v11)(_QWORD); // x8
-  unsigned int v12; // w0
-  __int64 v13; // x2
-  void *v14; // x8
-  unsigned int v15; // w19
-  __int64 v16; // x2
-  __int64 v17; // x2
-  __int64 v18; // x2
-  __int64 v19; // x0
-  __int64 v20; // x2
+  int (*v6)(struct syna_hw_interface *, bool); // x8
+  int v12; // w0
+  const char *v14; // x8
+  int v15; // w19
+  unsigned char v16; // w2
+  int v19; // w0
   __int64 v21; // x21
   __int64 v22; // x0
-  __int64 v23; // x2
-  unsigned int v24; // w20
-  void *v25; // x0
-  unsigned int v26; // w8
+  int v24; // w20
+  const char *v25; // x0
+  int v26; // w8
   __int64 v27; // x20
-  __int64 v28; // x0
+  void *v28; // x0
   unsigned int v29; // w0
-  __int64 v30; // x4
   unsigned int v31; // w0
-  __int64 v32; // x2
-  __int64 v33; // x8
   const char *v34; // x2
 
   v3 = *a1;
   if ( !*a1 )
   {
-    printk(unk_32430, "syna_dev_connect");
+    printk("\0013[error] %s: Invalid tcm_dev\n", "syna_dev_connect");
     return -22;
   }
   if ( *((_BYTE *)a1 + 1410) == 1 )
   {
-    v9 = unk_3A284;
-    goto LABEL_11;
+    printk("\0016[info ] %s: Device %s already connected\n",
+           "syna_dev_connect", "synaptics_tcm");
+    return 0;
   }
+
   v5 = a1[78];
-  v6 = *(__int64 (__fastcall **)(__int64, __int64))(v5 + 384);
+  v6 = ((struct syna_dev_connect_hw_view *)v5)->power_on;
   if ( v6 )
   {
-    v7 = a1[78];
-    /* CFI check removed */
-    if ( (v6(v7, 1) & 0x80000000) != 0 )
+    if ( (v6((struct syna_hw_interface *)v5, true) & 0x80000000) != 0 )
       return -19;
-    v10 = *(unsigned int *)(v5 + 340);
-    if ( (int)v10 >= 1 )
-      msleep(v10);
+    if ( *(int *)(v5 + 340) >= 1 )
+      msleep(*(int *)(v5 + 340));
   }
-  v11 = *(void (__fastcall **)(_QWORD))(v5 + 392);
-  if ( v11 )
   {
-    /* CFI check removed */
-    v11(v5);
+    void (*hw_reset)(struct syna_hw_interface *) =
+        ((struct syna_dev_connect_hw_view *)v5)->hw_reset;
+    if ( hw_reset )
+      hw_reset((struct syna_hw_interface *)v5);
   }
+
   v12 = syna_tcm_detect_device(*a1, 1, 0);
-  if ( (v12 & 0x80000000) != 0 )
+  if ( (int)v12 < 0 )
   {
-    v14 = unk_340F1;
-LABEL_20:
+    v14 = "\0013[error] %s: Fail to detect the device\n";
     v15 = v12;
-    printk(v14, "syna_dev_connect", v13);
+    printk(v14, "syna_dev_connect");
     return v15;
   }
-  v16 = *(unsigned __int8 *)(v3 + 9);
-  if ( (_DWORD)v16 == 1 )
+  v16 = *(unsigned char *)(v3 + 9);
+  if ( v16 == 1 )
   {
-    if ( (syna_dev_set_up_app_fw(tcm) & 0x80000000) != 0 )
+    v12 = syna_dev_set_up_app_fw(tcm);
+    if ( __builtin_expect((int)v12 < 0, 1) )
     {
-      printk(unk_392F3, "syna_dev_connect", v17);
-      printk(unk_3CB1F, "syna_dev_connect", v18);
+      printk("\0013[error] %s: Fail to set up application firmware\n",
+             "syna_dev_connect");
+      printk("\0016[info ] %s: Switch device to bootloader mode instead\n",
+             "syna_dev_connect");
       syna_tcm_switch_fw_mode(v3, 11, *(unsigned int *)(v3 + 488));
     }
     else
     {
-      v12 = syna_dev_set_up_input_device(a1);
-      if ( (v12 & 0x80000000) != 0 )
+      v12 = syna_dev_set_up_input_device(tcm);
+      if ( (int)v12 < 0 )
       {
-        v14 = unk_3A2AF;
-        goto LABEL_20;
+        v14 = "\0013[error] %s: Fail to set up input device\n";
+        v15 = v12;
+        printk(v14, "syna_dev_connect");
+        return v15;
       }
     }
   }
   else
   {
-    printk(unk_32EDC, "syna_dev_connect", v16);
-    if ( *(_BYTE *)(v3 + 9) == 11
+    printk("\0015[info ] %s: Application firmware not running, current mode: %02x\n",
+           "syna_dev_connect", v16);
+    if ( *(unsigned char *)(v3 + 9) == 11
       && (syna_tcm_get_boot_info((struct tcm_dev *)v3, NULL, 20) & 0x80000000) == 0 )
-      printk(unk_39879, "syna_dev_connect", *(unsigned __int8 *)(v3 + 225));
+      printk("\0016[info ] %s: Bootloader status: 0x%x\n",
+             "syna_dev_connect", *(unsigned char *)(v3 + 225));
   }
   v19 = syna_tcm_set_report_dispatcher(
       (struct tcm_dev *)v3, 16, syna_dev_process_unexpected_reset, a1);
   if ( (v19 & 0x80000000) != 0 )
-    v19 = printk(unk_3244F, "syna_dev_connect", v20);
+    printk("\0013[error] %s: Fail to register the handling function of unexpected reset\n",
+           "syna_dev_connect");
+
   v21 = a1[78];
   v22 = syna_request_managed_device();
   if ( v22 )
   {
     v26 = *(_DWORD *)(v21 + 168);
-    if ( (v26 & 0x80000000) != 0 )
+    if ( (int)v26 >= 0 )
+    {
+      v27 = v22;
+      v28 = gpio_to_desc(v26);
+      v29 = gpiod_to_irq(v28);
+      *(_DWORD *)(v21 + 184) = v29;
+      v31 = devm_request_threaded_irq(
+          v27, v29, 0, syna_dev_isr, *(_QWORD *)(v21 + 176),
+          "synaptics_tcm", a1);
+      if ( (int)v31 >= 0 )
+      {
+        *(_BYTE *)(v21 + 188) = 1;
+        printk("\0016[info ] %s: Interrupt handler registered\n",
+               "syna_dev_request_irq");
+        a1[134] = (__int64)alloc_workqueue("%s", 393226, 1, "syna_reflash");
+        a1[121] = 0xFFFFFFFE00000LL;
+        a1[122] = (__int64)(a1 + 122);
+        a1[123] = (__int64)(a1 + 122);
+        a1[124] = (__int64)syna_dev_reflash_startup_work;
+        init_timer_key(a1 + 125, &delayed_work_timer_fn, 0x200000, 0, 0);
+        queue_delayed_work_on(32, a1[134], a1 + 121, 50);
+        *((_DWORD *)a1 + 351) = 1;
+        *((_BYTE *)a1 + 1410) = 1;
+        printk("\0016[info ] %s: Config: max. write size(%d), max. read size(%d)\n",
+               "syna_dev_show_info", *(unsigned int *)(v3 + 56),
+               *(unsigned int *)(v3 + 60));
+        v34 = *(_QWORD *)(v21 + 392) ? "yes" : "no";
+        printk("\0016[info ] %s: Config: startup reflash(%s), hw reset(%s), rst on resume(%s)\n",
+               "syna_dev_show_info", "yes", v34, "yes");
+        v34 = *((_BYTE *)a1 + 1409) ? "yes" : "no";
+        printk("\0016[info ] %s: Config: lpwg mode(%s), custom tp config(%s) helper work(%s)\n",
+               "syna_dev_show_info", v34, "no", "yes");
+        printk("\0016[info ] %s: Device %s connected\n",
+               "syna_dev_connect", "synaptics_tcm");
+        return 0;
+      }
+      v24 = v31;
+      v25 = "\0013[error] %s: Fail to request threaded irq\n";
+    }
+    else
     {
       v24 = -22;
-      v25 = unk_398A0;
-      goto LABEL_37;
+      v25 = "\0013[error] %s: Invalid IRQ GPIO\n";
     }
-    v27 = v22;
-    v28 = gpio_to_desc(v26);
-    v29 = gpiod_to_irq(v28);
-    v30 = *(_QWORD *)(v21 + 176);
-    *(_DWORD *)(v21 + 184) = v29;
-    v31 = devm_request_threaded_irq(v27, v29, 0, syna_dev_isr, v30, "synaptics_tcm", a1);
-    if ( (v31 & 0x80000000) != 0 )
-    {
-      v24 = v31;
-      v25 = unk_3B7BA;
-      goto LABEL_37;
-    }
-    *(_BYTE *)(v21 + 188) = 1;
-    printk(unk_3601F, "syna_dev_request_irq", v23);
-    a1[134] = alloc_workqueue(unk_364AC, 393226, 1, "syna_reflash");
-    a1[121] = 0xFFFFFFFE00000LL;
-    a1[122] = (__int64)(a1 + 122);
-    a1[123] = (__int64)(a1 + 122);
-    a1[124] = (__int64)syna_dev_reflash_startup_work;
-    init_timer_key(a1 + 125, &delayed_work_timer_fn, 0x200000, 0, 0);
-    queue_delayed_work_on(32, a1[134], a1 + 121, 50);
-    v33 = *a1;
-    *((_DWORD *)a1 + 351) = 1;
-    *((_BYTE *)a1 + 1410) = 1;
-    printk(unk_39326, "syna_dev_show_info", *(unsigned int *)(v33 + 56));
-    printk(unk_34D1D, "syna_dev_show_info", "yes");
-    if ( *((_BYTE *)a1 + 1409) )
-      v34 = "yes";
-    else
-      v34 = (const char *)unk_398C0;
-    printk(unk_3A30A, "syna_dev_show_info", v34);
-    v9 = unk_39D58;
-LABEL_11:
-    printk(v9, "syna_dev_connect", "synaptics_tcm");
-    return 0;
   }
-  v24 = -22;
-  v25 = unk_3BE43;
-LABEL_37:
-  printk(v25, "syna_dev_request_irq", v23);
-  printk(unk_3A8CE, "syna_dev_connect", v32);
+  else
+  {
+    v24 = -22;
+    v25 = "\0013[error] %s: Invalid managed device\n";
+  }
+  printk(v25, "syna_dev_request_irq");
+  printk("\0013[error] %s: Fail to request the interrupt line\n",
+         "syna_dev_connect");
   if ( a1[118] )
   {
     input_unregister_device((struct input_dev *)a1[118]);

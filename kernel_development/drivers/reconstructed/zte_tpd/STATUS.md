@@ -1,40 +1,83 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-30
+## Estado Atual - 2026-08-28
 
 - **Classificacao do build:** `static_verified`
-- **Veredito do protocolo offline:** `INCOMPLETE`
+- **Veredito do protocolo offline:** `STATIC_STRUCTURAL_REBASE_PASS_SEMANTIC_AND_HARDWARE_GATES_OPEN`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`
-- **Candidato:** `24681560` bytes
+- **Candidato SHA-256:** `55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce`
+- **Candidato:** `6309176` bytes
 - **Teste em hardware desta revisao:** nao executado
+
+## Reconsolidação atual — 2026-09-04
+
+O candidato rastreado foi reconsolidado a partir da árvore curada usada pelo
+Docker. O SHA-256 atual é
+`55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce`.
+
+- Docker canônico: `2/2` ciclos reproduzíveis, sem diagnósticos;
+- KCFI recuperável: `322/322` funções stock compatíveis;
+- decomposição publicada: `367/367` funções Ghidra/P-Code/Assembly;
+- microtarefas: `367/367` em `PROMOTED_OFFLINE_EXACT`;
+- atestação: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/reconsolidation_20260904_v1/`;
+- revisão independente, semântica integral e hardware: ainda `DEFERRED`/`PENDING`.
+
+Esta reconsolidação não é uma declaração de equivalência comportamental
+integral nem de validação no NX809J.
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
 estrutural. Nao significa equivalencia semantica integral nem validacao de
 hardware.
 
-## Gates Offline
+## Gates Offline — lote `hard_final_exact_v1_20260828`
 
 PASS:
 
-- O0 identidade e escopo;
-- O1 ELF stock local;
-- O2 assembly stock integral;
-- O3 exports Ghidra, pseudocodigo e P-Code;
-- O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
-- O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `176/176`, incluindo as oito familias
-  recuperadas `143/143`.
+- Docker: 2/2 ciclos limpos e reprodutiveis; candidato igual aos dois builds;
+- Assembly estrito: `367/367`, zero falhas;
+- Mapa estrutural: `367/367`, incluindo nomes duplicados por endereco;
+- ABI/KMI: PASS, com imports, exports, aliases, modversions e vermagic compativeis;
+- KCFI integral recuperavel: `322/322`, zero divergencias e zero candidato ausente;
+- Inventario ELF: cobertura de fonte completa e simbolos stock presentes;
+- Testes da pipeline: `272/272`.
 
-INCOMPLETE:
+GATES ABERTOS:
 
-- O6: `208/367` microtarefas possuem build, decisao KCFI, Joern estrito e
-  teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
-- O10: revisao independente ainda nao foi realizada.
+- O6: `58 PASS + 247 PROMOTED_OFFLINE_EXACT`; `36` funcoes receberam o gate
+  Joern estrito completo nesta revisao. Permanecem `62` microtarefas sem teste
+  direto atual compatível para uma atestacao integral;
+- O10: revisao independente por pessoa que nao implementou a reconstrucao;
+- Joern: achados de usercopy, locks e lifetime ainda exigem revisao humana;
+- Semantica: identidade estrutural de assembly nao prova equivalencia semantica;
+- Hardware: validacao controlada no NX809J permanece `DEFERRED`.
 
-Hardware permanece `DEFERRED`.
+## Gate Joern completo - atestacao `full_joern_driver_v1`
+
+O gate Joern estrito de escopo integral passou com `367/367` funcoes de fonte e
+`367/367` funcoes stock resolvidas, zero problemas de parsing e arvore de fonte
+hash-bound `375a6fd12af05cd8ad3639f2adc3f17d90155cb4f98845fdef07b34fd2682311`.
+Foi necessario um `source view` de analise com `defs.h` forcado para que o
+decompilado `tpd_touch_report.c` fosse parseavel; essa arvore e explicitamente
+proibida como entrada de build.
+
+O relatorio produziu `783` achados de revisao estatica, sobretudo de lifetime,
+sincronizacao e usercopy. Eles permanecem pendentes de revisao humana e nao
+representam uma aprovacao de seguranca. A evidencia versionada esta em
+`../../../../reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/`.
+
+O mapa canonico foi rebased para o candidato final e validado por
+`bind_candidate_source_map.py --check`. O mapa anterior foi preservado em
+`C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers\reverse_engineering\validation\reconstructed\zte_tpd\attestation\hard_final_exact_v16_20260828\canonical_before_rebase_reconstruction_map.json`.
+
+## Checkpoint Final v16 — Resolucao dos dois gaps de assembly
+
+O lote final resolveu `syna_tcm_buf_copy` e `zte_touch_probe`, elevando a
+comparacao global de `365/367` para `367/367`. A evidencia hash-bound esta em
+`C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers\reverse_engineering\validation\reconstructed\zte_tpd\attestation\hard_final_exact_v16_20260828\`.
+
+O resultado continua sendo parcial: nao declara 100%, equivalencia semantica,
+revisao independente ou validacao em hardware.
 
 ## Checkpoint Next105 - Copia PAL Fixa de 16 Bytes
 
