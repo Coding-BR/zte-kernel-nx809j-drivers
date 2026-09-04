@@ -30,7 +30,7 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 024_aw22xxx_hwen_store | aw22xxx_hwen_store | 0010363c | user_abi | zte_led.c:aw22xxx_hwen_store | PROMOTED_OFFLINE_EXACT |
 | 025_aw22xxx_fw_show | aw22xxx_fw_show | 00103764 | user_abi | zte_led.c:aw22xxx_fw_show | PROMOTED_OFFLINE_EXACT |
 | 026_aw22xxx_fw_store | aw22xxx_fw_store | 001037a0 | user_abi | zte_led.c:aw22xxx_fw_store | PASS |
-| 027_aw22xxx_cfg_show | aw22xxx_cfg_show | 0010384c | user_abi | zte_led.c:aw22xxx_cfg_show | PASS |
+| 027_aw22xxx_cfg_show | aw22xxx_cfg_show | 0010384c | user_abi | zte_led.c:aw22xxx_cfg_show | PROMOTED_OFFLINE_EXACT |
 | 028_aw22xxx_cfg_store | aw22xxx_cfg_store | 001038d4 | user_abi | zte_led.c:aw22xxx_cfg_store | PASS |
 | 029_aw22xxx_effect_show | aw22xxx_effect_show | 00103998 | user_abi | zte_led.c:aw22xxx_effect_show | PASS |
 | 030_aw22xxx_effect_store | aw22xxx_effect_store | 001039d4 | user_abi | zte_led.c:aw22xxx_effect_store | PASS |

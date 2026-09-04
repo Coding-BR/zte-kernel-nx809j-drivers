@@ -1482,6 +1482,9 @@ static int aw22xxx_play(void *data)
  * Sysfs Callbacks
  * ====================================================================== */
 
+#ifdef ZTE_LED_CFG_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *attr, char *buf);
+#else
 static ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1496,6 +1499,7 @@ static ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *att
 		return -EFAULT;
 	return strlen(buf);
 }
+#endif
 
 static ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
