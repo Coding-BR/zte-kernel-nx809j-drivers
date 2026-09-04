@@ -129,6 +129,15 @@ Sempre siga esta escada antes de criar uma ilha de assembly:
 6. Só depois avalie uma ilha de assembly mínima, isolada, comentada e coberta
    por evidência independente de assembly/P-Code/relocation.
 
+Para uma ilha `.S` exata cuja análise Ghidra perca blocos por fronteira CFG,
+reimporte stock e candidato com `ExtendGhidraFunctionBodies.java`, usando o
+tamanho do símbolo ELF obtido independentemente do Ghidra. Se houver símbolos
+duplicados, selecione por `nome@entry`, nunca apenas pelo nome. O reparo pode
+remover apenas funções internas sobrepostas dentro do símbolo; depois disso,
+corpo e P-Code operation shape devem ser iguais. Somente uma configuração
+explícita de `assembly_only` pode tornar o C normalizado não autoritativo, e
+isso ainda exige Assembly/relocations, KCFI, Joern e Docker independentes.
+
 Uma ilha não pode mascarar uma função inteira nem alterar a ABI. Um anchor de
 ABI só é permitido quando a relocation/importação ausente está comprovada no
 stock e o anchor é data-only, sem chamadas ou efeitos laterais inventados.
@@ -235,4 +244,3 @@ Referências primárias consultadas:
 - Linux — [Building External Modules](https://kernel.org/doc/html/next/kbuild/modules.html)
 - Linux — [Kbuild Makefiles](https://cdn.kernel.org/doc/html/latest/kbuild/makefiles.html)
 - Clang — [Command Line Reference](https://clang.llvm.org/docs/ClangCommandLineReference.html)
-

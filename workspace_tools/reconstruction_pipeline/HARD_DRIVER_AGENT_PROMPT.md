@@ -64,6 +64,13 @@ Regras inviolaveis:
   hashado, com contagem de instrucoes, corpo, relocacoes, KCFI e build Docker
   reproduzivel. Use `materialize_stock_function_assembly.py` como gerador e
   nunca invente `.inst` nem use bytes opacos para encobrir uma divergencia;
+- quando a ilha exata fizer o Ghidra perder blocos por fronteira CFG, reimporte
+  stock e candidato com `ExtendGhidraFunctionBodies.java`, usando tamanhos de
+  símbolo ELF obtidos independentemente do Ghidra. Compare ocorrências por
+  `nome@entry`; remova somente funções internas sobrepostas dentro do símbolo,
+  exija corpo e P-Code iguais e registre o reparo. O fallback de C não
+  autoriza a função sozinho: Assembly/relocations, KCFI, Joern e Docker seguem
+  obrigatórios e independentes;
 - se o Ghidra emitir `FUN_<endereco>`, `SUB_<endereco>` ou
   `GHIDRA_STRING[...]`, o fallback P-Code deve registrar o artefato nomeado,
   comparar a ordem das chamadas e o C normalizado inteiro, e continuar
