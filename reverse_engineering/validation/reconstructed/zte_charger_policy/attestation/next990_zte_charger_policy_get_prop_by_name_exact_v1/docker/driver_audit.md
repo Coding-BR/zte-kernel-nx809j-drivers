@@ -2,7 +2,7 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-09-05T12:29:58.751938+00:00`
+- Gerado em: `2026-09-05T12:09:54.182366+00:00`
 - Run de evidência: `C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\runs\zte_charger_policy_get_prop_by_name_protocol_20260905`
 - Rebuild limpo: `sim`
 - Manifesto do kernel alvo: `C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers\kernel_development\config\target_kernel.json`
