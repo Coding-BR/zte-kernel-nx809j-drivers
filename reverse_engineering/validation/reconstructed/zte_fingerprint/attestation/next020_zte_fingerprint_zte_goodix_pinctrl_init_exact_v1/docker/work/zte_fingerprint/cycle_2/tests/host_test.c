@@ -413,7 +413,7 @@ static void test_direct_helpers(void)
 	CHECK(gf_irq_num(&gf_dev_static) >= 0);
 	gf_enable_irq();
 	gf_disable_irq(&gf_dev_static);
-	CHECK(zte_goodix_pinctrl_init((struct gf_dev *)&gf_dev_static) == 0);
+	CHECK(zte_goodix_pinctrl_init(&gf_dev_static) == 0);
 	CHECK(zte_goodix_pinctrl_select(&gf_dev_static, true) == 0);
 	CHECK(gf_cleanup(&gf_dev_static) == 0);
 	nav_event_input(1);
