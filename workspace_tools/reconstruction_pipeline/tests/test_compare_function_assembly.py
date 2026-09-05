@@ -12,6 +12,31 @@ SPEC.loader.exec_module(MODULE)
 
 
 class NormalizedRelocationTests(unittest.TestCase):
+    def test_conditional_direct_branches_ignore_function_load_address(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            stock = root / "stock.asm"
+            candidate = root / "candidate.asm"
+            stock.write_text(
+                "0000000000000000 <fn>:\n"
+                "       0: 5400004a      b.ge 0x8 <fn+0x8>\n",
+                encoding="utf-8",
+            )
+            candidate.write_text(
+                "0000000000000100 <fn>:\n"
+                "     100: 5400004a      b.ge 0x108 <fn+0x8>\n",
+                encoding="utf-8",
+            )
+
+            stock_instructions, _, _ = MODULE.normalized_assembly(
+                stock, {}, {"fn": (".text", 0)}, {}
+            )
+            candidate_instructions, _, _ = MODULE.normalized_assembly(
+                candidate, {}, {"fn": (".text", 0x100)}, {}
+            )
+
+        self.assertEqual(stock_instructions, candidate_instructions)
+
     def test_function_pair_preserves_the_stock_entry_identity(self) -> None:
         self.assertEqual(
             MODULE.parse_function_pair(

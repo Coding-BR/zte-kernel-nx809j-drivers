@@ -627,11 +627,16 @@ def normalized_assembly(
             mnemonic = instruction.group(2).lower()
             operands = instruction.group(3) or ""
             target = SYMBOL_TARGET_RE.search(operands)
-            # A local B/BL has no ELF relocation. Its imm26 changes whenever the
-            # helper moves, although the generated instruction and destination
-            # are otherwise identical. Preserve the opcode for every other
-            # instruction and bind direct branches to their resolved symbol.
-            if mnemonic in {"b", "bl"}:
+            # Direct branches have PC-relative encodings. Their printed absolute
+            # destinations change whenever the function moves, even when the
+            # generated instruction and relative destination are identical. Keep
+            # the symbolic target for all direct AArch64 branch forms (including
+            # conditional branches, CBZ/CBNZ and TBZ/TBNZ), not only B/BL.
+            direct_branch = (
+                mnemonic in {"b", "bl", "cbz", "cbnz", "tbz", "tbnz"}
+                or mnemonic.startswith("b.")
+            )
+            if direct_branch:
                 if target:
                     branch_target = normalized_symbol_target(
                         target.group(1), symbol_locations, target_aliases
