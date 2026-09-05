@@ -1,14 +1,12 @@
-# zte_charger_policy — charger_policy_get_prop_by_name
+# `zte_charger_policy_get_prop_by_name` exact attestation
 
-Status: `CORE_GATES_PASS`; host harness passed and was reproducible. Hardware remains deferred and this package is an offline/static attestation, not authorization for loading the module.
-
-- Identity: `charger_policy_get_prop_by_name@0x00101bd8`
-- Stock body: 260 bytes / 65 AArch64 instructions
-- Stock module SHA-256: `0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c`
-- Candidate module SHA-256: `23391fc9deff1815a2213f6a6f2c6a80eae40aa8f7984a340cc2660e39159d9a`
-- Candidate module size: 318456 bytes
-- KCFI: absent in stock and candidate; both reports record no valid preamble
-
-Assembly, relocations, KCFI absence parity, Joern scope/slice, Docker reproducibility, and map identity passed in `hard_protocol_report.json`. The exact body was materialized from stock Assembly with `materialize_stock_function_assembly.py`; all five referenced stock string records were preserved as explicit bytes.
-
-The Docker audit uses the pinned image `nubia-sm8850-kernel-builder:latest`, source volume `nubia_sm8850_kernel_src`, toolchain volume `nubia_sm8850_kernel_toolchains`, and `clang-r536225`. Hardware testing remains `DEFERRED`.
+- Identity: `zte_charger_policy_get_prop_by_name@0x00102020`.
+- Stock body: 260 bytes / 65 instructions.
+- Stock module SHA-256: `0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c`.
+- Candidate module SHA-256: `9f2079e1227ef6912144662fca723e1fd40026e766cca9d5c6f9a9a4eb431424`.
+- Candidate module size: 323440 bytes.
+- KCFI: stock and candidate both have no valid preamble; the stock extractor records the overlap with `charger_policy_ctrl_charging_enable`.
+- Static assembly, relocation, input identity, Joern scope/slice, KCFI, map identity, and Docker reproducibility gates: PASS.
+- The exact inline assembly preserves the ZTE power-supply calls, error paths, stack-canary path, and referenced `.rodata.str1.1` bytes.
+- Docker used `nubia-sm8850-kernel-builder:latest`, volumes `nubia_sm8850_kernel_src` / `nubia_sm8850_kernel_toolchains`, and `clang-r536225`.
+- Hardware/runtime validation remains intentionally outside this offline promotion.

@@ -1054,6 +1054,9 @@ deps_/work/validation/zte_charger_policy/cycle_2/zte_charger_policy.o := \
   arch/arm64/include/generated/asm/delay.h \
   include/asm-generic/delay.h \
   /work/validation/zte_charger_policy/cycle_2/charger_policy_get_prop_by_name_exact.inc \
+  /work/validation/zte_charger_policy/cycle_2/zte_charger_policy_get_prop_by_name_exact.inc \
+  /work/validation/zte_charger_policy/cycle_2/charger_policy_ctrl_charging_enable_exact.inc \
+  /work/validation/zte_charger_policy/cycle_2/charger_policy_disable_cas_exact.inc \
   /work/validation/zte_charger_policy/cycle_2/charger_policy_status_runchging_exact.inc \
   /work/validation/zte_charger_policy/cycle_2/charger_policy_status_ide_exact.inc \
   /work/validation/zte_charger_policy/cycle_2/charger_policy_status_rundischging_exact.inc \

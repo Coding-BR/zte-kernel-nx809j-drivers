@@ -216,7 +216,7 @@ extern int charger_policy_get_prop_by_name(const char *name, unsigned int prop, 
 #endif
 
 /* Get property by name (for custom ZTE power supplies) */
-static int zte_charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val)
+static __used int zte_charger_policy_get_prop_by_name_model(const char *name, unsigned int prop, u32 *val)
 {
 	struct zte_power_supply *psy;
 	union power_supply_propval pval;
@@ -243,6 +243,13 @@ static int zte_charger_policy_get_prop_by_name(const char *name, unsigned int pr
 	zte_power_supply_put(psy);
 	return 0;
 }
+
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define zte_charger_policy_get_prop_by_name zte_charger_policy_get_prop_by_name_model
+#else
+extern int zte_charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val);
+#include "zte_charger_policy_get_prop_by_name_exact.inc"
+#endif
 
 /* Set property by name (for custom ZTE power supplies) */
 static int zte_charger_policy_set_prop_by_name(const char *name, unsigned int prop, u32 val)
@@ -273,7 +280,7 @@ static int zte_charger_policy_set_prop_by_name(const char *name, unsigned int pr
 }
 
 /* Control charging state through ZTE battery power supply properties */
-static int charger_policy_ctrl_charging_enable(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg)
+static __used int charger_policy_ctrl_charging_enable_model(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg)
 {
 	u32 status_val = 0;
 	u32 cur_chg_enabled = 0;
@@ -331,8 +338,15 @@ static int charger_policy_ctrl_charging_enable(struct charger_policy_info *polic
 	return 1;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_ctrl_charging_enable charger_policy_ctrl_charging_enable_model
+#else
+extern int charger_policy_ctrl_charging_enable(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg);
+#include "charger_policy_ctrl_charging_enable_exact.inc"
+#endif
+
 /* Disable or enable CAS (Charge Arbitration System) */
-static int charger_policy_disable_cas(struct charger_policy_info *policy, u32 disable)
+static __used int charger_policy_disable_cas_model(struct charger_policy_info *policy, u32 disable)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -364,6 +378,13 @@ static int charger_policy_disable_cas(struct charger_policy_info *policy, u32 di
 	power_supply_put(psy);
 	return ret;
 }
+
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_disable_cas charger_policy_disable_cas_model
+#else
+extern int charger_policy_disable_cas(struct charger_policy_info *policy, u32 disable);
+#include "charger_policy_disable_cas_exact.inc"
+#endif
 
 /* Check USB presence and online status across interfaces */
 static bool charger_policy_check_usb_present(struct charger_policy_info *policy)

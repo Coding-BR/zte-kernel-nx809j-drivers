@@ -23,6 +23,10 @@ __used __section("__versions") = {
 	{ 0xf15b050c, "power_supply_put" },
 	{ 0x16b5b21d, "_printk" },
 	{ 0xd272d446, "__stack_chk_fail" },
+	{ 0x9e2746ce, "zte_power_supply_get_by_name" },
+	{ 0xb8286b5c, "zte_power_supply_get_property" },
+	{ 0xbe37a6a1, "zte_power_supply_put" },
+	{ 0x1d343ab5, "power_supply_set_property" },
 	{ 0x9d1dd621, "ktime_get_with_offset" },
 	{ 0xb219cb65, "ns_to_timespec64" },
 	{ 0xefa2bcf5, "alarm_try_to_cancel" },
@@ -31,13 +35,9 @@ __used __section("__versions") = {
 	{ 0x788be0c4, "__pm_relax" },
 	{ 0x92339a9b, "queue_delayed_work_on" },
 	{ 0xf4386284, "snprintf" },
-	{ 0x1d343ab5, "power_supply_set_property" },
+	{ 0x3659ace3, "zte_power_supply_set_property" },
 	{ 0x58997344, "__platform_driver_register" },
 	{ 0xbd0cdbf7, "platform_driver_unregister" },
-	{ 0x9e2746ce, "zte_power_supply_get_by_name" },
-	{ 0xb8286b5c, "zte_power_supply_get_property" },
-	{ 0xbe37a6a1, "zte_power_supply_put" },
-	{ 0x3659ace3, "zte_power_supply_set_property" },
 	{ 0x7851be11, "zte_poweroff_charging_status" },
 	{ 0x1445db3f, "devm_kmalloc" },
 	{ 0x4ebccdb7, "of_property_read_variable_u32_array" },
@@ -67,6 +67,10 @@ __used __section("__version_ext_crcs") = {
 	0xf15b050c,
 	0x16b5b21d,
 	0xd272d446,
+	0x9e2746ce,
+	0xb8286b5c,
+	0xbe37a6a1,
+	0x1d343ab5,
 	0x9d1dd621,
 	0xb219cb65,
 	0xefa2bcf5,
@@ -75,13 +79,9 @@ __used __section("__version_ext_crcs") = {
 	0x788be0c4,
 	0x92339a9b,
 	0xf4386284,
-	0x1d343ab5,
+	0x3659ace3,
 	0x58997344,
 	0xbd0cdbf7,
-	0x9e2746ce,
-	0xb8286b5c,
-	0xbe37a6a1,
-	0x3659ace3,
 	0x7851be11,
 	0x1445db3f,
 	0x4ebccdb7,
@@ -110,6 +110,10 @@ __used __section("__version_ext_names") =
 	"power_supply_put\0"
 	"_printk\0"
 	"__stack_chk_fail\0"
+	"zte_power_supply_get_by_name\0"
+	"zte_power_supply_get_property\0"
+	"zte_power_supply_put\0"
+	"power_supply_set_property\0"
 	"ktime_get_with_offset\0"
 	"ns_to_timespec64\0"
 	"alarm_try_to_cancel\0"
@@ -118,13 +122,9 @@ __used __section("__version_ext_names") =
 	"__pm_relax\0"
 	"queue_delayed_work_on\0"
 	"snprintf\0"
-	"power_supply_set_property\0"
+	"zte_power_supply_set_property\0"
 	"__platform_driver_register\0"
 	"platform_driver_unregister\0"
-	"zte_power_supply_get_by_name\0"
-	"zte_power_supply_get_property\0"
-	"zte_power_supply_put\0"
-	"zte_power_supply_set_property\0"
 	"zte_poweroff_charging_status\0"
 	"devm_kmalloc\0"
 	"of_property_read_variable_u32_array\0"

@@ -216,7 +216,7 @@ extern int charger_policy_get_prop_by_name(const char *name, unsigned int prop, 
 #endif
 
 /* Get property by name (for custom ZTE power supplies) */
-static int zte_charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val)
+static __used int zte_charger_policy_get_prop_by_name_model(const char *name, unsigned int prop, u32 *val)
 {
 	struct zte_power_supply *psy;
 	union power_supply_propval pval;
@@ -243,6 +243,13 @@ static int zte_charger_policy_get_prop_by_name(const char *name, unsigned int pr
 	zte_power_supply_put(psy);
 	return 0;
 }
+
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define zte_charger_policy_get_prop_by_name zte_charger_policy_get_prop_by_name_model
+#else
+extern int zte_charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val);
+#include "zte_charger_policy_get_prop_by_name_exact.inc"
+#endif
 
 /* Set property by name (for custom ZTE power supplies) */
 static int zte_charger_policy_set_prop_by_name(const char *name, unsigned int prop, u32 val)
