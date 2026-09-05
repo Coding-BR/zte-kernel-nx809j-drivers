@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_charger_policy",
+  "stock_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+  "profiles": ["CALLBACK_ABI", "STATEFUL_MEMORY", "CONCURRENCY_LIFETIME"],
+  "functions": [{
+    "stock_function": "cleanup_module",
+    "stock_entry": "001037a4",
+    "source_function": "cleanup_module",
+    "candidate_function": "cleanup_module",
+    "kcfi_required": true,
+    "assembly_only": false
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_charger_policy",
+    "stock_module": "reference_modules/stock/zte_charger_policy.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_charger_policy_cleanup_module_protocol_20260905"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_charger_policy",
+    "define": ["__user", "__init", "__exit", "noinline", "__used"],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}
