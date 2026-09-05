@@ -356,7 +356,7 @@ static void test_full_lifecycle(void)
 
 	nl_sk = &host.sock_object;
 	pid = 42;
-	CHECK(sendnlmsg((char[]){ 2 }) == 0);
+	CHECK(sendnlmsg((const char[]){ 2 }) == 0);
 	packet = alloc_skb(64, GFP_KERNEL);
 	packet->len = NLMSG_SPACE(0);
 	packet->portid = 42;
