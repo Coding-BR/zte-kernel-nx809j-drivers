@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_reboot_ext",
+  "stock_sha256": "1e5b8e9e91f304236802d52a316570f6649b8f504b58558b28909d48c62d910f",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "functions": [
+    {
+      "stock_function": "zte_reboot_ext_probe",
+      "stock_entry": "00100acc",
+      "source_function": "zte_reboot_ext_probe",
+      "candidate_function": "zte_reboot_ext_probe",
+      "kcfi_required": true,
+      "assembly_only": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_reboot_ext",
+    "stock_module": "reference_modules/full_vendor_boot/zte_reboot_ext.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_reboot_ext/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_reboot_ext_probe_protocol_20260905"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_reboot_ext",
+    "define": ["__user", "__init", "__exit", "noinline"],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}
