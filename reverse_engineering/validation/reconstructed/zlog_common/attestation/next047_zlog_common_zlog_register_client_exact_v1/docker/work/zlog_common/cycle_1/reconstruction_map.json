@@ -63,24 +63,7 @@
       "source_file": "zlog_common.c",
       "source_function": "zlog_register_client",
       "status": "reviewed",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 00100644 reviewed",
-        "exact 207-instruction/828-byte AArch64 body matched stock",
-        "KCFI type ID 0x09fbc74f matched",
-        "historical 816-byte candidate discrepancy no longer present in the current source build",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "host harness passed reproducibly",
-        "direct duplicate, allocation-failure and 32-slot-limit paths passed",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 828,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/next047_zlog_common_zlog_register_client_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 207 matching AArch64 instructions and 828-byte symbols, matching KCFI type ID 0x09fbc74f, resolving the historical 816-byte candidate note, two reproducible Docker builds, strict Joern scope and direct duplicate/allocation/slot-limit tests. This is static/offline evidence; live mutex, client lifetime and concurrent registration behavior remain unverified."
+      "evidence": ["KCFI 0x09fbc74f", "same external call multiplicity", "candidate 816 bytes versus stock 828", "host duplicate, allocation and 32-slot limit paths"]
     },
     {
       "stock_function": "zlog_unregister_client",
