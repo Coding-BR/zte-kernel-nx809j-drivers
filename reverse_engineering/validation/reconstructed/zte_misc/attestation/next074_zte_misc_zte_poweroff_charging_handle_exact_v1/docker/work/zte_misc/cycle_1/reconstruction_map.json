@@ -57,29 +57,7 @@
       "semantic_equivalence": "OFFLINE_EXACT",
       "mapping_note": "Function-level offline parity is promoted after correcting the setup-callback parameter qualification from const char * to char *, which changed the candidate KCFI from 0x7d0afc77 to the stock 0x7bff871d. The final attestation records 26 matching instructions/104 bytes, two reproducible Docker builds, strict Joern scope/slice and valid/invalid kstrtoll tests. Live boot-argument execution and hardware behavior remain unverified."
     },
-    {
-      "stock_function": "zte_poweroff_charging_handle",
-      "stock_entry": "001018a0",
-      "source_file": "zte_misc.c",
-      "source_function": "zte_poweroff_charging_handle",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 001018a0 reviewed",
-        "exact 22-instruction/88-byte AArch64 body matched stock",
-        "stock and candidate KCFI type ID 0x7bff871d matched",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "ABI correction validated: setup callback uses char * parameter, not const char *",
-        "direct host-test receipt covers charger and non-charger paths",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 88,
-      "attestation": "reverse_engineering/validation/reconstructed/zte_misc/attestation/next074_zte_misc_zte_poweroff_charging_handle_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, corrected callback ABI, KCFI, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted after correcting the setup-callback parameter qualification from const char * to char *, which changed the candidate KCFI from 0x7d0afc77 to the stock 0x7bff871d. The final attestation records 22 matching instructions/88 bytes, two reproducible Docker builds, strict Joern scope/slice and charger/non-charger host tests. Live boot-argument execution and hardware behavior remain unverified."
-    },
+    {"stock_function":"zte_poweroff_charging_handle","stock_entry":"001018a0","source_file":"zte_misc.c","source_function":"zte_poweroff_charging_handle","evidence":["decompiled/0011_001018a0_zte_poweroff_charging_handle.c"],"status":"reviewed"},
     {"stock_function":"init_module","stock_entry":"001018fc","source_file":"zte_misc.c","source_function":"init_module","evidence":["decompiled/0012_001018fc_init_module.c"],"status":"reviewed"},
     {"stock_function":"cleanup_module","stock_entry":"00101940","source_file":"zte_misc.c","source_function":"cleanup_module","evidence":["decompiled/0013_00101940_cleanup_module.c"],"status":"reviewed"}
   ]
