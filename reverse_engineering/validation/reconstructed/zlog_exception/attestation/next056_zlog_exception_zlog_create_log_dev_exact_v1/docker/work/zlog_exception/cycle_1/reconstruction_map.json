@@ -169,22 +169,13 @@
       "stock_pseudocode": "decompiled/0008_00100d3c_zlog_create_log_dev.c",
       "source_file": "zlog_exception.c",
       "source_function": "zlog_create_log_dev",
+      "status": "reviewed",
       "evidence": [
-        "Ghidra stock pseudocode/P-Code at 00100d3c reviewed",
-        "exact 44-instruction/176-byte AArch64 body matched stock",
-        "direct-call-only boundary reviewed; no independent KCFI preamble is claimed",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "host harness passed reproducibly with direct registration success and failure tests",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 176,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_exception/attestation/next056_zlog_exception_zlog_create_log_dev_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, direct-call-only KCFI exception handling, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The new attestation records 44 matching AArch64 instructions and 176-byte symbols, with the direct-call-only KCFI exception preserved, two reproducible Docker builds, strict Joern scope and direct misc-device registration success/failure tests. This supersedes the older 140-byte receipt for this function. Static/offline evidence does not prove live registration or teardown behavior."
+        "stock Ghidra pseudocode and P-Code reviewed",
+        "ghidra_stock_candidate_comparison.json: imports and call multiplicity match",
+        "KCFI not applicable: direct-call-only function; extractor proves overlap with init_module instead of a preamble",
+        "host_test_report.json: registration success and failure"
+      ]
     },
     {
       "stock_function": "cleanup_module",
