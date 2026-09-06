@@ -171,24 +171,8 @@
       "stock_entry": "00101060",
       "source_file": "zte_stats_info.c",
       "source_function": "zte_taskstats_init_early",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 00101060 reviewed",
-        "exact 55-instruction/220-byte AArch64 init_module body matched stock",
-        "KCFI type ID 0x6fbb3035 matched at the module-init boundary",
-        "module_init(zte_taskstats_init_early) symbol mapping reviewed",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "host harness passed reproducibly",
-        "direct per-CPU listener initialization and Genetlink registration tests passed",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 220,
-      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next037_zte_stats_info_init_module_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, module-init callback KCFI, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted for the generated module-init symbol. The source identity is zte_taskstats_init_early, whose module_init macro generates the ELF init_module symbol. The attestation records 55 matching AArch64 instructions and 220-byte symbols, matching KCFI type ID 0x6fbb3035, two reproducible Docker builds, strict Joern scope and direct init/registration tests. This is static/offline evidence; live kernel registration, per-CPU state and scheduler behavior remain unverified."
+      "evidence": ["decompiled/0007_00101060_init_module.c", "pcode/0007_00101060_init_module.jsonl"],
+      "status": "reviewed"
     }
   ]
 }
