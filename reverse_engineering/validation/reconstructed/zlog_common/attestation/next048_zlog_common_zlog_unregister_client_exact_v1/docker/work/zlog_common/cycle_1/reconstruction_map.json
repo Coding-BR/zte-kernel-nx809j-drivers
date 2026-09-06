@@ -89,23 +89,7 @@
       "source_file": "zlog_common.c",
       "source_function": "zlog_unregister_client",
       "status": "reviewed",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 00100984 reviewed",
-        "exact 78-instruction/312-byte AArch64 body matched stock",
-        "KCFI type ID 0xd56e2c54 matched",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "host harness passed reproducibly",
-        "direct unregister, dangling-buffer and duplicate-clear paths passed",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 312,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/next048_zlog_common_zlog_unregister_client_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 78 matching AArch64 instructions and 312-byte symbols, matching KCFI type ID 0xd56e2c54, two reproducible Docker builds, strict Joern scope and direct unregister/dangling-buffer/duplicate-clear tests. This is static/offline evidence; concurrent client ownership and live buffer lifetime behavior remain unverified."
+      "evidence": ["exact 312-byte symbol", "KCFI 0xd56e2c54", "stock dangling-buffer and duplicate-clear behavior retained"]
     },
     {
       "stock_function": "zlog_reset_client",
