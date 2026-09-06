@@ -185,23 +185,7 @@
       "source_file": "zlog_common.c",
       "source_function": "zlog_comm_create_ctrl_dev",
       "status": "reviewed",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 0010136c reviewed",
-        "exact 35-instruction/140-byte AArch64 body matched stock",
-        "stock and candidate both report NO_VALID_KCFI_PREAMBLE for this direct helper",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "host harness passed reproducibly",
-        "direct misc-device registration success and failure tests passed",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 140,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/next042_zlog_common_zlog_comm_create_ctrl_dev_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI exception handling, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 35 matching AArch64 instructions and 140-byte symbols, matching the NO_VALID_KCFI_PREAMBLE exception status, two reproducible Docker builds, strict Joern scope and direct misc-device registration/error-path tests. This is static/offline evidence; live device registration and teardown behavior remain unverified."
+      "evidence": ["exact 140-byte direct-call symbol", "no KCFI preamble", "host misc registration success and failure"]
     }
   ]
 }
