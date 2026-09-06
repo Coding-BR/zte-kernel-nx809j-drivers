@@ -1,0 +1,411 @@
+{
+  "attestation_tool": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\attest_driver_microtasks.py",
+  "driver": "zlog_test",
+  "generated_utc": "2026-07-16T16:24:17.120066+00:00",
+  "ghidra_export": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock",
+  "schema_version": "1.0",
+  "status": "PASS",
+  "stock": {
+    "path": "private_acquisition/zlog_test.ko",
+    "published": false,
+    "sha256": "e595c91cb5ef517c620d362c82eb05bca98cd5726757b9a6cb7cb96a788747e1"
+  },
+  "tasks": [
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\001_zlog_enable_test_set\\compile.json",
+          "role": "compile",
+          "sha256": "5e33d3a18a7443ae62b249f01808148fef0257c53918da0bc2a6c9de6ff483c7"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\001_zlog_enable_test_set\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "5a62b5ea26b21f57db85e4a1ac25e55f0f1294df139a45326439ee7c7ae10383"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\001_zlog_enable_test_set\\test.json",
+          "role": "test",
+          "sha256": "11d6e8517c71739d4d3d59205273dd5e8ce8550038ae0d7fc93c149119a6f2fb"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0000_0010036c_zlog_enable_test_set.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0000_0010036c_zlog_enable_test_set.c",
+      "id": "001_zlog_enable_test_set",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_enable_test_set\nEntrada Ghidra: 0010036c\nTamanho stock: 836 bytes\nCategoria: core_logic\nAlvo no fonte: zlog_test_main.c:zlog_enable_test_set\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0000_0010036c_zlog_enable_test_set.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0000_0010036c_zlog_enable_test_set.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_enable_test_set",
+      "status": "PASS",
+      "stock_body_bytes": 836,
+      "stock_entry": "0010036c",
+      "stock_function": "zlog_enable_test_set"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\002_zlog_enable_test_get\\compile.json",
+          "role": "compile",
+          "sha256": "6adf8af7a56b553a0f6bc08abb87049ead1b862da6304d786e1a7c9d2765e591"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\002_zlog_enable_test_get\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "704ff82025c03e4b9074e07efae01b5c3cec6e18dbd5f628caecf05e80274d5b"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\002_zlog_enable_test_get\\test.json",
+          "role": "test",
+          "sha256": "6ee82e76b7b1820cb4f50c684ba9c9e91ae9c538f2750a585bf31627c906b907"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0001_001006b4_zlog_enable_test_get.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0001_001006b4_zlog_enable_test_get.c",
+      "id": "002_zlog_enable_test_get",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_enable_test_get\nEntrada Ghidra: 001006b4\nTamanho stock: 48 bytes\nCategoria: core_logic\nAlvo no fonte: zlog_test_main.c:zlog_enable_test_get\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0001_001006b4_zlog_enable_test_get.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0001_001006b4_zlog_enable_test_get.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_enable_test_get",
+      "status": "PASS",
+      "stock_body_bytes": 48,
+      "stock_entry": "001006b4",
+      "stock_function": "zlog_enable_test_get"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\003_poll\\compile.json",
+          "role": "compile",
+          "sha256": "edcb9fe1d7bce2719cebc36b8f6da8f38f8b60a0ac7f3865593238c006e2461d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\003_poll\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "53427f1c6150b7da07c789c446344cfbb58afcef6cf430cad4360cf8fa9d93ad"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\003_poll\\test.json",
+          "role": "test",
+          "sha256": "5f26c9f33a6bd97f8d1a7cd6355f2c70bdbe9b97f641c8c9cb271983a55eaf90"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0002_001006e8_poll.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0002_001006e8_poll.c",
+      "id": "003_poll",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: poll\nEntrada Ghidra: 001006e8\nTamanho stock: 84 bytes\nCategoria: core_logic\nAlvo no fonte: zlog_test_main.c:poll\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0002_001006e8_poll.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0002_001006e8_poll.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "poll",
+      "status": "PASS",
+      "stock_body_bytes": 84,
+      "stock_entry": "001006e8",
+      "stock_function": "poll"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\004_dump\\compile.json",
+          "role": "compile",
+          "sha256": "684bedb9da8bf1104ead5c09941ca1700c1c84478953206b299639aea7f33ec1"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\004_dump\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "5edf29c2b339acff70407d97befe09ff3c81d984663335466499fc640dbe515e"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\004_dump\\test.json",
+          "role": "test",
+          "sha256": "d6818825379f8ba3c49177e2bc1e1e0092d576f08aa6c11359b09517a518f388"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0003_00100740_dump.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0003_00100740_dump.c",
+      "id": "004_dump",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: dump\nEntrada Ghidra: 00100740\nTamanho stock: 188 bytes\nCategoria: core_logic\nAlvo no fonte: zlog_test_main.c:dump\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0003_00100740_dump.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0003_00100740_dump.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "dump",
+      "status": "PASS",
+      "stock_body_bytes": 188,
+      "stock_entry": "00100740",
+      "stock_function": "dump"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\005_zlog_test1_thread\\compile.json",
+          "role": "compile",
+          "sha256": "914c5c9da819b6859997af4d09526289438983563fb0b6bd9a8db00e26cfa88f"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\005_zlog_test1_thread\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "684a6146417acaab81015b3963e5a6503b545c459e4fdcf8e15cb6c27c4275c7"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\005_zlog_test1_thread\\test.json",
+          "role": "test",
+          "sha256": "01bede35c45245a2fda63840782128a77ed0ed4ae32a754754161b022294e83c"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0004_00100800_zlog_test1_thread.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0004_00100800_zlog_test1_thread.c",
+      "id": "005_zlog_test1_thread",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_test1_thread\nEntrada Ghidra: 00100800\nTamanho stock: 236 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_test_main.c:zlog_test1_thread\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0004_00100800_zlog_test1_thread.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0004_00100800_zlog_test1_thread.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test1_thread",
+      "status": "PASS",
+      "stock_body_bytes": 236,
+      "stock_entry": "00100800",
+      "stock_function": "zlog_test1_thread"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\006_zlog_test2_thread\\compile.json",
+          "role": "compile",
+          "sha256": "bfcc02000b5beaa82519254c126e53d23496b9b269e7e2d74c606dcd12e28c98"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\006_zlog_test2_thread\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "4373e0c66c2883976e66a2ee872abc41455cf22ec79c3bbbc609807d7aee656c"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\006_zlog_test2_thread\\test.json",
+          "role": "test",
+          "sha256": "f031ff13492b9dcee1156616ada7c846ac00e9b6c6600f0f8003586edd0e680b"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0005_001008f0_zlog_test2_thread.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0005_001008f0_zlog_test2_thread.c",
+      "id": "006_zlog_test2_thread",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_test2_thread\nEntrada Ghidra: 001008f0\nTamanho stock: 236 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_test_main.c:zlog_test2_thread\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0005_001008f0_zlog_test2_thread.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0005_001008f0_zlog_test2_thread.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test2_thread",
+      "status": "PASS",
+      "stock_body_bytes": 236,
+      "stock_entry": "001008f0",
+      "stock_function": "zlog_test2_thread"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\007_zlog_test3_thread\\compile.json",
+          "role": "compile",
+          "sha256": "81d79c215d40a2885744625b8034a2b8d7140f8015c4531686d5a9bb5bf28227"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\007_zlog_test3_thread\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "1eaa3258877b4fcddae27e7b18b5a70d765b8066f21631370f7fb82e121b5b0b"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\007_zlog_test3_thread\\test.json",
+          "role": "test",
+          "sha256": "c78ff93391ba174b655ed4410b88d7daa215f4ffb1ac5b566c85365ef08152a2"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0006_001009e0_zlog_test3_thread.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0006_001009e0_zlog_test3_thread.c",
+      "id": "007_zlog_test3_thread",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_test3_thread\nEntrada Ghidra: 001009e0\nTamanho stock: 236 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_test_main.c:zlog_test3_thread\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0006_001009e0_zlog_test3_thread.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0006_001009e0_zlog_test3_thread.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test3_thread",
+      "status": "PASS",
+      "stock_body_bytes": 236,
+      "stock_entry": "001009e0",
+      "stock_function": "zlog_test3_thread"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\008_zlog_test4_thread\\compile.json",
+          "role": "compile",
+          "sha256": "b074d7272f96f777b18c7b99dd8c60f3298ee25bf7d4efadc5565f73e60f8773"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\008_zlog_test4_thread\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "ef2b0f983a500c34fe996de71a8233c240bb8a91a0c04119468627c6ea0f8b67"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\008_zlog_test4_thread\\test.json",
+          "role": "test",
+          "sha256": "e30d47ab1fc7b8e08e8a9beb9d456ed5953e094e4dc01f826a03a45829cefc17"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0007_00100ad0_zlog_test4_thread.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0007_00100ad0_zlog_test4_thread.c",
+      "id": "008_zlog_test4_thread",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_test4_thread\nEntrada Ghidra: 00100ad0\nTamanho stock: 236 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_test_main.c:zlog_test4_thread\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0007_00100ad0_zlog_test4_thread.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0007_00100ad0_zlog_test4_thread.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test4_thread",
+      "status": "PASS",
+      "stock_body_bytes": 236,
+      "stock_entry": "00100ad0",
+      "stock_function": "zlog_test4_thread"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\009_zlog_test5_thread\\compile.json",
+          "role": "compile",
+          "sha256": "896a8d85929c6bfd8a96bd51f32ccd135a526624fe8c8124db0832ea5633c869"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\009_zlog_test5_thread\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "6de58a86087ef6053cc6596519da1ad684d7e14506e73d2e2715d7805564da21"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\009_zlog_test5_thread\\test.json",
+          "role": "test",
+          "sha256": "e96f733f24c5934ec139010544bde2f8dd8f6ca7775838777d6f416feb995a1f"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0008_00100bc0_zlog_test5_thread.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0008_00100bc0_zlog_test5_thread.c",
+      "id": "009_zlog_test5_thread",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: zlog_test5_thread\nEntrada Ghidra: 00100bc0\nTamanho stock: 236 bytes\nCategoria: user_abi\nAlvo no fonte: zlog_test_main.c:zlog_test5_thread\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0008_00100bc0_zlog_test5_thread.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0008_00100bc0_zlog_test5_thread.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test5_thread",
+      "status": "PASS",
+      "stock_body_bytes": 236,
+      "stock_entry": "00100bc0",
+      "stock_function": "zlog_test5_thread"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\010_init_module\\compile.json",
+          "role": "compile",
+          "sha256": "c276c15e33e30e743d3242c9b7358627d620757068776ed646052ef4a4d14ebd"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\010_init_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "d8e4d444b5bf94637bc8074f40969c59dc7747acfb6dd6cc236c46e7c5d4efa4"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\010_init_module\\test.json",
+          "role": "test",
+          "sha256": "fab744459c32891655f24e51c99021bb1d6b9310e52ce4ba70898cb0d2442a33"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0009_00100cb0_init_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0009_00100cb0_init_module.c",
+      "id": "010_init_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: init_module\nEntrada Ghidra: 00100cb0\nTamanho stock: 616 bytes\nCategoria: lifecycle\nAlvo no fonte: zlog_test_main.c:zlog_test_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0009_00100cb0_init_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0009_00100cb0_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test_init",
+      "status": "PASS",
+      "stock_body_bytes": 616,
+      "stock_entry": "00100cb0",
+      "stock_function": "init_module"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\011_cleanup_module\\compile.json",
+          "role": "compile",
+          "sha256": "46a34ff4876779dd7d7ca5ad883ca2e5777f730d80537fd35e5749c89f074e2f"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\011_cleanup_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "356852b73e75bbcd5ceacfbf0e812484bedc3c0d1e6189f857cf9abcdabc9f57"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zlog_test\\microtasks\\011_cleanup_module\\test.json",
+          "role": "test",
+          "sha256": "e2c514d20909a7350f39818b3b0498079e209fdc12ed636c70b9eb9cf458bc5a"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0010_00100f1c_cleanup_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0010_00100f1c_cleanup_module.c",
+      "id": "011_cleanup_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zlog_test\nFuncao stock: cleanup_module\nEntrada Ghidra: 00100f1c\nTamanho stock: 44 bytes\nCategoria: lifecycle\nAlvo no fonte: zlog_test_main.c:zlog_test_exit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/decompiled/0010_00100f1c_cleanup_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zlog_test/offline_static/ghidra_stock/pcode/0010_00100f1c_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "test"
+      ],
+      "source_file": "zlog_test_main.c",
+      "source_function": "zlog_test_exit",
+      "status": "PASS",
+      "stock_body_bytes": 44,
+      "stock_entry": "00100f1c",
+      "stock_function": "cleanup_module"
+    }
+  ]
+}
