@@ -1,0 +1,190 @@
+{
+  "blockers": [],
+  "command_plan": {
+    "after_candidate": {
+      "assembly": "extract_module_assembly.py stock/candidate, then compare_function_assembly.py",
+      "candidate_ghidra": "compare_ghidra_function_semantics.py when a fresh candidate export is supplied",
+      "kcfi": "extract_kcfi.py stock/candidate, then compare_kcfi_reports.py"
+    },
+    "docker": [
+      "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\validate_reconstructed_drivers.py",
+      "--curated-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed",
+      "--driver",
+      "zlog_exception",
+      "--rebuild",
+      "--work-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260906\\hard_protocol_zlog_exception_zlog_poll_core_v1\\docker\\work",
+      "--output",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260906\\hard_protocol_zlog_exception_zlog_poll_core_v1\\docker\\driver_audit.json",
+      "--markdown",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260906\\hard_protocol_zlog_exception_zlog_poll_core_v1\\docker\\driver_audit.md",
+      "--image",
+      "nubia-sm8850-kernel-builder:latest",
+      "--source-volume",
+      "nubia_sm8850_kernel_src",
+      "--toolchain-volume",
+      "nubia_sm8850_kernel_toolchains",
+      "--clang-revision",
+      "clang-r536225",
+      "--target-kernel-manifest",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json",
+      "--run-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zlog_exception_zlog_poll_protocol_20260906",
+      "--strict"
+    ],
+    "docker_adapter": "generic_driver_audit",
+    "docker_report": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260906\\hard_protocol_zlog_exception_zlog_poll_core_v1\\docker\\driver_audit.json",
+    "joern": [
+      "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\run_joern_reconstruction_gate.py",
+      "--driver",
+      "zlog_exception",
+      "--source-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zlog_exception",
+      "--source-view-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zlog_exception",
+      "--ghidra-export",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zlog_exception\\offline_static\\ghidra_stock",
+      "--reconstruction-map",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zlog_exception\\reconstruction_map.json",
+      "--output-dir",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260906\\hard_protocol_zlog_exception_zlog_poll_core_v1\\joern",
+      "--strict",
+      "--function",
+      "zlog_poll@00100b08",
+      "--joern-home",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548",
+      "--java-home",
+      "C:\\Program Files\\Microsoft\\jdk-21.0.12.8-hotspot",
+      "--define",
+      "__user",
+      "--define",
+      "__init",
+      "--define",
+      "__exit",
+      "--define",
+      "noinline",
+      "--define",
+      "__used"
+    ],
+    "joern_slice": [
+      "C:\\Program Files\\Microsoft\\jdk-21.0.12.8-hotspot\\bin\\java.exe",
+      "-XX:+UseG1GC",
+      "-XX:CompressedClassSpaceSize=128m",
+      "-Dlog4j.configurationFile=C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548\\joern-cli\\conf\\log4j2.xml",
+      "-cp",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548\\joern-cli\\lib\\*",
+      "io.joern.joerncli.JoernSlice",
+      "usages",
+      "--method-name-filter",
+      "^zlog_poll$",
+      "--parallelism",
+      "1",
+      "-o",
+      "slices_all",
+      "--min-num-calls",
+      "1",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260906\\hard_protocol_zlog_exception_zlog_poll_core_v1\\joern\\source.cpg.bin"
+    ],
+    "joern_slices": null
+  },
+  "driver": "zlog_exception",
+  "functions": [
+    {
+      "alias": "f000",
+      "candidate_function": "zlog_poll",
+      "identity": "zlog_poll@100b08",
+      "kcfi_required": true,
+      "source_function": "zlog_poll",
+      "stock_entry": "00100b08",
+      "stock_function": "zlog_poll"
+    }
+  ],
+  "generated_utc": "2026-09-06T01:11:49.655304+00:00",
+  "profiles": [
+    "CALLBACK_ABI",
+    "CONCURRENCY_LIFETIME",
+    "STATEFUL_MEMORY"
+  ],
+  "ready_for_core_execution": true,
+  "required_gates": {
+    "ASSEMBLY_RELOCATIONS": {
+      "kind": "AUTOMATED",
+      "reason": "compare function opcodes, sizes, sections and relocations"
+    },
+    "BOUNDED_MODEL": {
+      "kind": "EVIDENCE",
+      "reason": "bounded pointer, array, overflow and loop checks"
+    },
+    "CALLBACK_TABLE": {
+      "kind": "EVIDENCE",
+      "reason": "callback slot, prototype, section and relocation audit"
+    },
+    "DOCKER_REPRODUCIBLE": {
+      "kind": "AUTOMATED",
+      "reason": "two clean pinned-container builds with identical bytes"
+    },
+    "HOST_HARNESS": {
+      "kind": "EVIDENCE",
+      "reason": "exercise observed success, error, boundary and teardown paths"
+    },
+    "INDEPENDENT_REVIEW": {
+      "kind": "EVIDENCE",
+      "reason": "review from stock evidence by a different executor"
+    },
+    "INPUT_IDENTITY": {
+      "kind": "AUTOMATED",
+      "reason": "hash stock, source tree, Ghidra index, map and runners"
+    },
+    "JOERN_SCOPED": {
+      "kind": "AUTOMATED",
+      "reason": "strict source CPG gate scoped to the selected functions"
+    },
+    "JOERN_SLICE": {
+      "kind": "AUTOMATED",
+      "reason": "usage or data-flow slice for each state source and sink"
+    },
+    "KCFI": {
+      "kind": "AUTOMATED",
+      "reason": "at least one selected function explicitly requires KCFI"
+    },
+    "KMI_TYPES": {
+      "kind": "EVIDENCE",
+      "reason": "GENDWARFKSYMS/BTF/DWARF type evidence where available"
+    },
+    "KUNIT_LOCKDEP_KCSAN": {
+      "kind": "EVIDENCE",
+      "reason": "isolated kernel-lab test; never inferred from host only"
+    },
+    "LOCK_LIFETIME": {
+      "kind": "EVIDENCE",
+      "reason": "owner, lock order, context, refcount and teardown contract"
+    },
+    "MAP_IDENTITY": {
+      "kind": "AUTOMATED",
+      "reason": "bind every stock_function@entry to one source function"
+    },
+    "SANITIZERS": {
+      "kind": "EVIDENCE",
+      "reason": "ASan/UBSan host harness with deterministic replay corpus"
+    },
+    "SEMANTIC_COUNTEREXAMPLE": {
+      "kind": "EVIDENCE",
+      "reason": "search for divergent return, writes or call trace"
+    },
+    "STATE_EFFECT_LEDGER": {
+      "kind": "EVIDENCE",
+      "reason": "ordered loads, stores, widths, aliases and conditions"
+    }
+  },
+  "safety": {
+    "curated_sync": false,
+    "hardware_execution": false,
+    "microtask_status_changes": false,
+    "promotion": false,
+    "source_edits": false
+  },
+  "schema_version": "1.0"
+}
