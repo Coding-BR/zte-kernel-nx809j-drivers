@@ -1,0 +1,116 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer syna_pal_mem_cpy_harness.c -o build/syna_pal_mem_cpy_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/syna_pal_mem_cpy_harness"
+  ],
+  "coverage": {
+    "destination_limit": true,
+    "hardware_paths_exercised": false,
+    "null_destination": true,
+    "null_source": true,
+    "source_limit": true,
+    "valid_copy": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS null_destination_no_log\nPASS null_source_no_log\nPASS valid_copy\nPASS valid_copy_no_log\nPASS source_limit_log\nPASS source_limit_log_arguments\nPASS source_limit_log_copy_size\nPASS destination_limit_log\nPASS destination_limit_log_arguments\nPASS destination_limit_log_copy_size\nPASS stock_log_format_and_name\nSUMMARY tests=11 failures=0\n",
+      "summary": "SUMMARY tests=11 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "null_destination_no_log",
+        "null_source_no_log",
+        "valid_copy",
+        "valid_copy_no_log",
+        "source_limit_log",
+        "source_limit_log_arguments",
+        "source_limit_log_copy_size",
+        "destination_limit_log",
+        "destination_limit_log_arguments",
+        "destination_limit_log_copy_size",
+        "stock_log_format_and_name"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS null_destination_no_log\nPASS null_source_no_log\nPASS valid_copy\nPASS valid_copy_no_log\nPASS source_limit_log\nPASS source_limit_log_arguments\nPASS source_limit_log_copy_size\nPASS destination_limit_log\nPASS destination_limit_log_arguments\nPASS destination_limit_log_copy_size\nPASS stock_log_format_and_name\nSUMMARY tests=11 failures=0\n",
+      "summary": "SUMMARY tests=11 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "null_destination_no_log",
+        "null_source_no_log",
+        "valid_copy",
+        "valid_copy_no_log",
+        "source_limit_log",
+        "source_limit_log_arguments",
+        "source_limit_log_copy_size",
+        "destination_limit_log",
+        "destination_limit_log_arguments",
+        "destination_limit_log_copy_size",
+        "stock_log_format_and_name"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T03:40:51.358983+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_pal_mem_cpy.c",
+      "sha256": "59b475444d25bd8de2bedd793e2b430079c1f5caeccb4b61ef1388091fd7c530",
+      "size": 470
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\syna_pal_mem_cpy_harness.c",
+      "sha256": "5b5b47abb9c9ddb0129cdc03a7a09505053da4746117c3cc21982ab717260a23",
+      "size": 2367
+    }
+  ],
+  "limitations": [
+    "The harness uses the host memcpy and deterministic printk stub.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_hash_bound_syna_pal_mem_cpy_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 11,
+    "failed": [],
+    "passed": [
+      "null_destination_no_log",
+      "null_source_no_log",
+      "valid_copy",
+      "valid_copy_no_log",
+      "source_limit_log",
+      "source_limit_log_arguments",
+      "source_limit_log_copy_size",
+      "destination_limit_log",
+      "destination_limit_log_arguments",
+      "destination_limit_log_copy_size",
+      "stock_log_format_and_name"
+    ],
+    "summary": "SUMMARY tests=11 failures=0"
+  },
+  "transformation": {
+    "identity_copy": true,
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\build\\syna_pal_mem_cpy_under_test.c",
+    "sha256": "59b475444d25bd8de2bedd793e2b430079c1f5caeccb4b61ef1388091fd7c530",
+    "size": 470
+  }
+}

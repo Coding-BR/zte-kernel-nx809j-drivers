@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"zlog_write_internal","type":"IF","code":"if (g_zlog_info.fragment_count > ZLOG_FRAGMENT_LIMIT) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: zlog cache is full\\n\", __func__);\n\t\treturn -ENOMEM;\n\t}","filename":"zlog_exception.c","line":33},
+    {"method":"zlog_write_internal","type":"IF","code":"if (!fragment) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: falied to kzalloc fragment info\\n\",\n\t\t       __func__);\n\t\treturn -ENOMEM;\n\t}","filename":"zlog_exception.c","line":39},
+    {"method":"zlog_write_internal","type":"IF","code":"if (!fragment->data) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: falied to vzalloc fragment info\\n\",\n\t\t       __func__);\n\t\tif (fragment->data)\n\t\t\tkfree(fragment->data);\n\t\tkfree(fragment);\n\t\treturn 0;\n\t}","filename":"zlog_exception.c","line":47},
+    {"method":"zlog_write_internal","type":"IF","code":"if (fragment->data)\n\t\t\tkfree(fragment->data);","filename":"zlog_exception.c","line":50},
+    {"method":"zlog_read","type":"IF","code":"if (ret) {\n\t\tg_zlog_info.data_ready = 0;\n\t\tret = wait_event_interruptible(g_zlog_info.poll_wq,\n\t\t\t\t\t       g_zlog_info.data_ready);\n\t\tif (ret) {\n\t\t\tpr_err(\"ZLOG_EXCEPTION: %s: wait event interruptible failed\\n\",\n\t\t\t       __func__);\n\t\t\treturn -EAGAIN;\n\t\t}\n\t}","filename":"zlog_exception.c","line":81},
+    {"method":"zlog_read","type":"IF","code":"if (ret) {\n\t\t\tpr_err(\"ZLOG_EXCEPTION: %s: wait event interruptible failed\\n\",\n\t\t\t       __func__);\n\t\t\treturn -EAGAIN;\n\t\t}","filename":"zlog_exception.c","line":85},
+    {"method":"zlog_read","type":"IF","code":"if (!list_empty(&g_zlog_info.fragments)) {\n\t\tfragment = list_last_entry(&g_zlog_info.fragments,\n\t\t\t\t\t   struct zlog_fragment, node);\n\t\tlist_del(&fragment->node);\n\t\tg_zlog_info.fragment_count--;\n\t}","filename":"zlog_exception.c","line":93},
+    {"method":"zlog_read","type":"IF","code":"if (!fragment) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: log_msg is null\\n\", __func__);\n\t\treturn -EAGAIN;\n\t}","filename":"zlog_exception.c","line":101},
+    {"method":"zlog_read","type":"IF","code":"if (copy_to_user(buffer, fragment->data, length)) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: %s copy_to_user failed!\\n\",\n\t\t       __func__, __func__);\n\t\tlength = -EFAULT;\n\t}","filename":"zlog_exception.c","line":107},
+    {"method":"zlog_read","type":"IF","code":"if (fragment->data)\n\t\tkfree(fragment->data);","filename":"zlog_exception.c","line":113},
+    {"method":"zlog_write","type":"IF","code":"if (unlikely(g_zlog_info.fragment_count >= ZLOG_FRAGMENT_LIMIT + 1)) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: zlog cache is full\\n\", __func__);\n\t\treturn -ENOMEM;\n\t}","filename":"zlog_exception.c","line":125},
+    {"method":"zlog_write","type":"IF","code":"if (!fragment) {\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: falied to kzalloc fragment info\\n\",\n\t\t       __func__);\n\t\treturn -ENOMEM;\n\t}","filename":"zlog_exception.c","line":131},
+    {"method":"zlog_write","type":"IF","code":"if (!fragment->data) {\n\t\tret = 0;\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: falied to vzalloc fragment info\\n\",\n\t\t       __func__);\n\t\tgoto fragment_error;\n\t}","filename":"zlog_exception.c","line":139},
+    {"method":"zlog_write","type":"GOTO","code":"goto fragment_error;","filename":"zlog_exception.c","line":143},
+    {"method":"zlog_write","type":"IF","code":"if (copy_from_user(fragment->data, buffer, count)) {\n\t\tret = -ENOMEM;\n\t\tpr_err(\"ZLOG_EXCEPTION: %s: copy from user failed\\n\", __func__);\n\t\tgoto fragment_error;\n\t}","filename":"zlog_exception.c","line":146},
+    {"method":"zlog_write","type":"GOTO","code":"goto fragment_error;","filename":"zlog_exception.c","line":149},
+    {"method":"zlog_write","type":"IF","code":"if (fragment->data)\n\t\tkfree(fragment->data);","filename":"zlog_exception.c","line":163},
+    {"method":"zlog_poll","type":"IF","code":"if (!(file->f_mode & FMODE_READ))\n\t\treturn 0;","filename":"zlog_exception.c","line":173},
+    {"method":"zlog_poll","type":"IF","code":"if (!list_empty(&g_zlog_info.fragments))\n\t\tmask = EPOLLIN | EPOLLRDNORM;","filename":"zlog_exception.c","line":178},
+    {"method":"zlog_create_log_dev","type":"IF","code":"if (!g_zlog_info.miscdev.name)\n\t\treturn -ENOMEM;","filename":"zlog_exception.c","line":224},
+    {"method":"zlog_create_log_dev","type":"IF","code":"if (unlikely(ret))\n\t\tgoto register_failed;","filename":"zlog_exception.c","line":230},
+    {"method":"zlog_create_log_dev","type":"GOTO","code":"goto register_failed;","filename":"zlog_exception.c","line":231},
+    {"method":"zlog_init","type":"IF","code":"if (unlikely(ret))\n\t\tgoto create_failed;","filename":"zlog_exception.c","line":248},
+    {"method":"zlog_init","type":"GOTO","code":"goto create_failed;","filename":"zlog_exception.c","line":249}
+  ]
+}

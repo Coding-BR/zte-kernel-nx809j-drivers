@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "kind": "guided_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "271_syna_tcm_identify",
+  "stock_function": "syna_tcm_identify",
+  "stock_entry": "00121f54",
+  "status": "HOST_JOERN_MICROPROOFS_PASS",
+  "promotion_allowed": false,
+  "promotion_blockers": [
+    "full canonical zte_tpd module build and KCFI evidence were not run for this isolated candidate",
+    "independent L4 review has not been recorded",
+    "smartphone validation was intentionally not run"
+  ],
+  "evidence": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_identify.c",
+      "sha256": "38fc79cc9bde3e9cf3c3d5f2bff53f9db6c847d580f557aec059e1df6545e190"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0270_syna_tcm_identify_00121f54.asm",
+      "sha256": "590f1891ee67825594232d775a6113065b94ccbb87c97d35d660addb5bb5ba98"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next271_syna_tcm_identify_v1/candidate_assembly/syna_tcm_identify_candidate.s",
+      "sha256": "adf7e7587389d7ad941e56d76bf8fb0723843c1954340328d14becb645b7bdc8"
+    },
+    "host_harness": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next271_syna_tcm_identify_v1/host_harness_report.json"
+    },
+    "joern_gate_summary": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next271_syna_tcm_identify_v1/joern_final/joern_gate_summary.json",
+      "sha256": "81b7fb5f7169008e83ce9ea2176d2127a6afb6530d849b41e4c1b3d579c8ecfc"
+    }
+  },
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_STATE_EFFECT_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_TEST_ORACLE": "PASS",
+    "MP7_CANDIDATE_PATCH": "PENDING_CANONICAL_BUILD",
+    "MP8_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "joern_gate": {
+    "release": "v4.0.548",
+    "strict": true,
+    "passed": true,
+    "promotion_claim": false,
+    "mapped_identity_count": 1,
+    "call_count": 85,
+    "control_structure_count": 13,
+    "unresolved_call_count": 0,
+    "mapped_call_deltas": []
+  },
+  "observed_contract": {
+    "command": "0x02",
+    "null_device_return_raw": "-241",
+    "copy_error_return_raw": "-22",
+    "identification_copy_limit": "min(response.data_length, sizeof(struct tcm_identification_info))",
+    "mapped_unlock_symbol": "syna_tcm_buf_unlock_0",
+    "hardware_access": false
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible_binary": true,
+    "asan_ubsan_stderr_empty": true,
+    "cycles": 2,
+    "cases": 10,
+    "alignment_sanitizer_disabled": true
+  }
+}

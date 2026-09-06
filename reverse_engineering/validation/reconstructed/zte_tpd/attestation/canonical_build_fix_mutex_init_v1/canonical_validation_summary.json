@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "fix_scope": [
+    "Remove macro-colliding extern declarations for mutex_init, devm_kfree, printk, memcpy and memset.",
+    "Use the three-argument stock signature for syna_tcm_testing_0100_check_data.",
+    "Use the typed syna_tcm_buf_copy_2 prototype in syna_tcm_send_command.",
+    "Map mutex_init to the exported __mutex_init path used by the reconstruction."
+  ],
+  "canonical_build": {
+    "status": "PASS",
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256_cycle_1": "afafe8284bf2477b82a816da7c6519de61d7d268390c0c6bc4b36afbf4885002",
+    "module_sha256_cycle_2": "afafe8284bf2477b82a816da7c6519de61d7d268390c0c6bc4b36afbf4885002",
+    "module_size": 29362304,
+    "reproducible_module": true,
+    "report": "canonical_build_report.json"
+  },
+  "kcfi": {
+    "candidate_extraction": "PASS",
+    "candidate_report": "candidate_kcfi.json",
+    "target_type_ids": {
+      "tpd_get_singleaodgesture": "0x73fc0d79",
+      "tpd_get_wakegesture": "0x73fc0d79",
+      "tpd_enable_wakegesture": "0x6af8b499",
+      "tpd_set_singlegamegesture": "0x6af8b499"
+    },
+    "stock_type_id_parity": "NOT_ESTABLISHED",
+    "stock_type_id_parity_reason": "No stock ELF/module with KCFI preambles is present in the offline evidence set."
+  },
+  "hardware_execution": "NOT_PERFORMED_BY_REQUEST",
+  "status": "CANONICAL_BUILD_PASS_KCFI_STOCK_PARITY_PENDING"
+}

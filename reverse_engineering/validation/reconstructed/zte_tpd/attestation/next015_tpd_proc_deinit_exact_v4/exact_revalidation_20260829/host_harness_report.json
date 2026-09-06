@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "mode": "offline_direct_source_proc_deinit_host_harness_asan_ubsan",
+  "generated_utc": "2026-08-29T19:12:55.840079+00:00",
+  "driver": "zte_tpd",
+  "microtask_id": "015_tpd_proc_deinit",
+  "function": "tpd_proc_deinit",
+  "passed": true,
+  "repetitions": 2,
+  "expected_tests": 3,
+  "coverage": {
+    "direct_source_function": "tpd_proc_deinit",
+    "null_directory_guard": true,
+    "all_proc_entries": 30,
+    "removal_order": true,
+    "parent_pointer_propagation": true,
+    "touchscreen_root_parent_null": true,
+    "hardware_paths_exercised": false
+  },
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -I/work/workspace/kernel_development/drivers/reconstructed/zte_tpd next015_tpd_proc_deinit_harness.c -o build/next015_tpd_proc_deinit_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next015_tpd_proc_deinit_harness"
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\next015_tpd_proc_deinit_harness.c",
+      "sha256": "1fbadc15d9ab5a5f11391030dc5dedef6c6a569d12d3aae999c292d64006398e",
+      "size": 3022
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_proc_deinit.c",
+      "sha256": "0a8cfd93efb8f6926b52c823a1792fa8a4b914f2fec6e8f4b596cca5e7c5e4a6",
+      "size": 1627
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stdout": "PASS null_directory_logs_and_returns\nPASS all_entries_are_removed_in_order\nPASS deinit_is_repeatable_without_directory_mutation\nSUMMARY 3/3 passed\n",
+      "stderr": "",
+      "tests_passed": [
+        "null_directory_logs_and_returns",
+        "all_entries_are_removed_in_order",
+        "deinit_is_repeatable_without_directory_mutation"
+      ],
+      "tests_failed": [],
+      "summary": "SUMMARY 3/3 passed"
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stdout": "PASS null_directory_logs_and_returns\nPASS all_entries_are_removed_in_order\nPASS deinit_is_repeatable_without_directory_mutation\nSUMMARY 3/3 passed\n",
+      "stderr": "",
+      "tests_passed": [
+        "null_directory_logs_and_returns",
+        "all_entries_are_removed_in_order",
+        "deinit_is_repeatable_without_directory_mutation"
+      ],
+      "tests_failed": [],
+      "summary": "SUMMARY 3/3 passed"
+    }
+  ],
+  "limitations": [
+    "The harness models proc-entry removal and printk in user space.",
+    "No physical NX809J, Android procfs implementation or scheduler path is exercised."
+  ]
+}

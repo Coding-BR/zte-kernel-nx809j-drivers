@@ -12,8 +12,8 @@ void tp_ghost_check_work(struct work_struct *work)
 		printk("\0015tpd: may be ghost point");
 		ghost_rst_num = *(int *)(cdev + 0x4a8);
 #ifdef __aarch64__
-		asm goto("cmp %w0, #2\n\tb.gt %l[ghost_reset_limit]"
-			 : : "r"(ghost_rst_num) : "cc" : ghost_reset_limit);
+		if (ghost_rst_num > 2)
+			goto ghost_reset_limit;
 #else
 		if (ghost_rst_num > 2)
 			goto ghost_reset_limit;

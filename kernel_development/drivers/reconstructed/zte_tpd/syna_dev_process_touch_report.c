@@ -15,7 +15,6 @@ int syna_dev_process_touch_report(unsigned char a1, const unsigned char *a2,
   __int64 v18; // x23
   _DWORD *v19; // x22
   char v20; // w8
-  int v21; // w9
   unsigned int v22; // w25
   signed int v23; // w28
   signed int v24; // w24
@@ -29,9 +28,11 @@ int syna_dev_process_touch_report(unsigned char a1, const unsigned char *a2,
   __int64 v34; // x2
   __int64 v35; // [xsp+8h] [xbp-28h]
   __int64 v36; // [xsp+10h] [xbp-20h]
-  _QWORD v37[3]; // [xsp+18h] [xbp-18h] BYREF
+  struct {
+    char *v37;
+    char *v38;
+  } v37_pair __attribute__((uninitialized)); // [xsp+18h] [xbp-18h]
 
-  v37[2] = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   if ( !a4 )
   {
     printk(unk_3411A, "syna_dev_process_touch_report");
@@ -57,7 +58,7 @@ int syna_dev_process_touch_report(unsigned char a1, const unsigned char *a2,
     memcpy(*(void **)(a4 + 1120), a2, v7);
     *(_DWORD *)(a4 + 1080) = v7;
     *(_DWORD *)(a4 + 1128) = 1;
-    _wake_up(a4 + 1096, 1, 1, 0);
+    __wake_up((wait_queue_head_t *)(a4 + 1096), 1, 1, 0);
     a2 = v6;
     a3 = v5;
   }
@@ -121,14 +122,14 @@ LABEL_18:
     {
       if ( ufp_tp_ops.pdev )
       {
-        v21 = large_area_ignore_count;
         if ( large_area_ignore_count < 0 )
         {
           if ( large_area_uevent_count <= 2 )
           {
-            v37[0] = "large_area=true";
-            v37[1] = 0;
-            kobject_uevent_env(&ufp_tp_ops.pdev->dev.kobj, 2, v37);
+            v37_pair.v37 = "large_area=true";
+            v37_pair.v38 = 0;
+            kobject_uevent_env(&ufp_tp_ops.pdev->dev.kobj, 2,
+                               (char **)&v37_pair);
             printk(unk_32F20);
             ++large_area_uevent_count;
           }
@@ -145,7 +146,7 @@ LABEL_18:
       }
     }
     if ( v16 == 10 )
-      __break(0x5512u);
+      ZTE_TPD_BRK_5512();
     if ( *(_BYTE *)(v18 + v16) || *((_BYTE *)v19 - 16) )
     {
       if ( (unsigned int)*((unsigned __int8 *)v19 - 16) - 1 < 2 )
@@ -227,6 +228,5 @@ LABEL_58:
 LABEL_59:
   result = 0;
 LABEL_60:
-  _ReadStatusReg(SP_EL0);
   return result;
 }

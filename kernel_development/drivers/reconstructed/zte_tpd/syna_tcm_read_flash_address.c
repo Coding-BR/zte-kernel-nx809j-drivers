@@ -1,159 +1,115 @@
-__int64 __fastcall syna_tcm_read_flash_address(__int64 a1, unsigned int a2, __int64 a3, __int64 a4, unsigned int a5)
-{
-  unsigned int v7; // w21
-  __int64 v10; // x3
-  int v11; // w25
-  unsigned int v12; // w24
-  __int64 v13; // x2
-  size_t v14; // x24
-  void *v15; // x0
-  void *v16; // x24
-  __int64 v17; // x0
-  __int64 v18; // x2
-  __int64 v19; // x0
-  __int64 v20; // x2
-  void *v21; // x2
-  unsigned int flash; // w0
-  __int64 v23; // x19
-  __int64 v24; // x0
-  __int64 v25; // x2
-  void *v27; // x0
-  void *v28; // x0
-  __int64 v29; // x2
-  _QWORD v30[8]; // [xsp+0h] [xbp-A0h] BYREF
-  __int64 v31; // [xsp+40h] [xbp-60h]
-  __int64 v32; // [xsp+48h] [xbp-58h]
-  _QWORD v33[6]; // [xsp+50h] [xbp-50h] BYREF
-  __int64 v34; // [xsp+80h] [xbp-20h]
-  __int64 v35; // [xsp+88h] [xbp-18h]
-  __int64 v36; // [xsp+90h] [xbp-10h]
-  __int64 v37; // [xsp+98h] [xbp-8h]
+extern int syna_tcm_set_up_flash_access(__int64 tcm,
+					__int64 access_context,
+					__int64 delay_ms,
+					unsigned int timeout_ms);
+extern int syna_tcm_read_flash(__int64 tcm, unsigned int address,
+			       __int64 destination, unsigned int length,
+			       int delay_ms);
+extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
+				    unsigned int delay_ms);
+extern struct device *syna_request_managed_device(void);
 
-  v37 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  v35 = 0;
-  v36 = 0;
-  v34 = 0;
-  v32 = 0;
-  memset(v33, 0, sizeof(v33));
-  v31 = 0;
-  memset(v30, 0, sizeof(v30));
-  if ( !a1 )
-  {
-    v27 = unk_3365A;
-LABEL_30:
-    printk(v27, "syna_tcm_read_flash_address", a3);
-    v12 = -241;
-    goto LABEL_27;
-  }
-  if ( !a4 )
-  {
-    v27 = unk_3ADA8;
-    goto LABEL_30;
-  }
-  v7 = a3;
-  if ( a5 )
-    v10 = *(unsigned int *)(a1 + 488);
-  else
-    v10 = 0;
-  v11 = *(unsigned __int8 *)(a1 + 9);
-  if ( v11 == 11 )
-  {
-    v12 = 0;
-  }
-  else
-  {
-    v12 = syna_tcm_set_up_flash_access(a1, v30, a5, v10);
-    if ( (v12 & 0x80000000) != 0 )
-    {
-      printk(unk_32BC8, "syna_tcm_read_flash_address", v13);
-      goto LABEL_27;
-    }
-  }
-  LOBYTE(v34) = 0;
-  v31 = 0;
-  v32 = 0;
-  _mutex_init(v33, "(struct mutex *)ptr", &syna_pal_mutex_alloc___key_8);
-  if ( !v7 )
-    goto LABEL_20;
-  v14 = *(unsigned int *)(a4 + 8);
-  v15 = *(void **)a4;
-  if ( (unsigned int)v14 >= v7 )
-    goto LABEL_18;
-  if ( !v15 )
-  {
-LABEL_14:
-    v19 = syna_request_managed_device();
-    if ( v19 )
-      goto LABEL_15;
-LABEL_36:
-    v28 = unk_3BE43;
-    goto LABEL_37;
-  }
-  v16 = *(void **)a4;
-  v17 = syna_request_managed_device();
-  if ( v17 )
-  {
-    devm_kfree(v17, v16);
-    goto LABEL_14;
-  }
-  printk(unk_3BE43, "syna_pal_mem_free", v18);
-  v19 = syna_request_managed_device();
-  if ( !v19 )
-    goto LABEL_36;
-LABEL_15:
-  if ( (int)v7 <= 0 )
-  {
-    v28 = unk_38286;
-LABEL_37:
-    printk(v28, "syna_pal_mem_alloc", v20);
-    *(_QWORD *)a4 = 0;
-    goto LABEL_38;
-  }
-  v14 = v7;
-  v15 = (void *)devm_kmalloc(v19, v7, 3520);
-  *(_QWORD *)a4 = v15;
-  if ( v15 )
-  {
-    *(_DWORD *)(a4 + 8) = v7;
-LABEL_18:
-    memset(v15, 0, v14);
-    v21 = *(void **)a4;
-    *(_DWORD *)(a4 + 12) = 0;
-    flash = syna_tcm_read_flash(a1, a2, v21, v7, a5);
-    if ( (flash & 0x80000000) != 0 )
-    {
-      v12 = flash;
-      printk(unk_39B25, "syna_tcm_read_flash_address", v7);
-    }
-    else
-    {
-      v12 = 0;
-      *(_DWORD *)(a4 + 12) = v7;
-    }
-    goto LABEL_20;
-  }
-LABEL_38:
-  printk(unk_3703C, "syna_tcm_buf_alloc", v7);
-  *(_QWORD *)(a4 + 8) = 0;
-  printk(unk_33E5C, "syna_tcm_read_flash_address", v29);
-  v12 = -243;
-LABEL_20:
-  if ( v11 == 1 )
-    syna_tcm_switch_fw_mode(a1, 1, a5);
-  if ( (_BYTE)v34 )
-    printk(unk_34845, "syna_tcm_buf_release", (unsigned __int8)v34);
-  v23 = v31;
-  v24 = syna_request_managed_device();
-  if ( v24 )
-  {
-    if ( v23 )
-      devm_kfree(v24, v23);
-  }
-  else
-  {
-    printk(unk_3BE43, "syna_pal_mem_free", v25);
-  }
-LABEL_27:
-  _ReadStatusReg(SP_EL0);
-  return v12;
+__int64 __fastcall syna_tcm_read_flash_address(__int64 raw_tcm,
+					       unsigned int address,
+					       __int64 raw_length,
+					       __int64 raw_buffer,
+					       unsigned int delay_ms)
+{
+	struct tcm_dev *tcm = (struct tcm_dev *)(unsigned long)raw_tcm;
+	struct tcm_buffer *buffer =
+		(struct tcm_buffer *)(unsigned long)raw_buffer;
+	struct syna_tcm_flash_access_context access = {};
+	struct device *managed_device;
+	u32 length = (u32)raw_length;
+	u32 timeout_ms;
+	u8 initial_mode;
+	int retval = 0;
+
+	if (!tcm || !buffer) {
+		printk("\0013[error] %s: Invalid parameter\n",
+		       "syna_tcm_read_flash_address");
+		return -241;
+	}
+
+	initial_mode = tcm->firmware_mode;
+	timeout_ms = delay_ms ? tcm->timing_01e8 : 0;
+	if (initial_mode != 0x0b) {
+		retval = syna_tcm_set_up_flash_access(
+			(__int64)(unsigned long)tcm,
+			(__int64)(unsigned long)&access,
+			delay_ms, timeout_ms);
+		if (retval < 0) {
+			printk("\0013[error] %s: Failed to set up flash access\n",
+			       "syna_tcm_read_flash_address");
+			return retval;
+		}
+	}
+
+	if (length) {
+		if (buffer->buf_size < length) {
+			if (buffer->data) {
+				managed_device = syna_request_managed_device();
+				if (managed_device)
+					devm_kfree(managed_device, buffer->data);
+				else {
+					printk("\0013[error] %s: Failed to release flash buffer\n",
+					       "syna_tcm_read_flash_address");
+					managed_device = syna_request_managed_device();
+					if (!managed_device) {
+						printk("\0013[error] %s: Failed to allocate flash buffer\n",
+						       "syna_tcm_read_flash_address");
+						retval = -243;
+						goto out;
+					}
+				}
+			}
+
+			managed_device = syna_request_managed_device();
+			if (!managed_device) {
+				printk("\0013[error] %s: Failed to allocate flash buffer\n",
+				       "syna_tcm_read_flash_address");
+				retval = -243;
+				goto out;
+			}
+
+			if (buffer->data)
+				buffer->data = NULL;
+
+			buffer->data = devm_kmalloc(managed_device, length, 3520);
+			if (!buffer->data) {
+				buffer->buf_size = 0;
+				printk("\0013[error] %s: Failed to allocate flash buffer\n",
+				       "syna_tcm_read_flash_address");
+				retval = -243;
+				goto out;
+			}
+			buffer->buf_size = length;
+		}
+
+		memset(buffer->data, 0, length);
+		buffer->data_length = 0;
+		retval = syna_tcm_read_flash(
+			(__int64)(unsigned long)tcm, address,
+			(__int64)(unsigned long)buffer->data, length,
+			(int)delay_ms);
+		if (retval < 0) {
+			printk("\0013[error] %s: Failed to read flash address\n",
+			       "syna_tcm_read_flash_address");
+			goto out;
+		}
+		buffer->data_length = length;
+	}
+
+out:
+	if (initial_mode == 0x01)
+		syna_tcm_switch_fw_mode(tcm, 0x01, delay_ms);
+
+	managed_device = syna_request_managed_device();
+	if (managed_device && access.managed_allocation)
+		devm_kfree(managed_device, access.managed_allocation);
+	else if (!managed_device && access.managed_allocation)
+		printk("\0013[error] %s: Failed to release flash context\n",
+		       "syna_tcm_read_flash_address");
+
+	return retval;
 }

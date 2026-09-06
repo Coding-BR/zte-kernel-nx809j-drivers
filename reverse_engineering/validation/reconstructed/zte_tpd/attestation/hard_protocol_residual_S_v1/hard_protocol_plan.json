@@ -1,0 +1,238 @@
+{
+  "blockers": [],
+  "command_plan": {
+    "after_candidate": {
+      "assembly": "extract_module_assembly.py stock/candidate, then compare_function_assembly.py",
+      "candidate_ghidra": "compare_ghidra_function_semantics.py when a fresh candidate export is supplied",
+      "kcfi": "extract_kcfi.py stock/candidate, then compare_kcfi_reports.py"
+    },
+    "docker": [
+      "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\run_zte_tpd_canonical_build.py",
+      "--engineering-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia",
+      "--label",
+      "hard_protocol_zte_tpd_3de9c219d1fd",
+      "--audit-name",
+      "hard_protocol_zte_tpd_3de9c219d1fd",
+      "--cycles",
+      "2",
+      "--parallelism",
+      "4",
+      "--image",
+      "nubia-sm8850-kernel-builder:latest",
+      "--source-volume",
+      "nubia_sm8850_kernel_src",
+      "--toolchain-volume",
+      "nubia_sm8850_kernel_toolchains",
+      "--clang-revision",
+      "clang-r536225",
+      "--candidate-source",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd",
+      "--artifact-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\hard_protocol_residual_S_v1\\docker\\artifacts",
+      "--output",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\hard_protocol_residual_S_v1\\docker\\canonical_build_report.json"
+    ],
+    "docker_adapter": "zte_tpd_canonical",
+    "docker_report": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\hard_protocol_residual_S_v1\\docker\\canonical_build_report.json",
+    "joern": [
+      "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\run_joern_reconstruction_gate.py",
+      "--driver",
+      "zte_tpd",
+      "--source-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd",
+      "--source-view-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd",
+      "--ghidra-export",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock",
+      "--reconstruction-map",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\reconstruction_map.json",
+      "--output-dir",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\hard_protocol_residual_S_v1\\joern",
+      "--strict",
+      "--function",
+      "syna_cdev_process_reports@00117c90",
+      "--function",
+      "syna_spi_alloc_mem@0011a0e4",
+      "--function",
+      "syna_testing_check_dev_id_show@0011bf08",
+      "--function",
+      "syna_tcm_testing_check_frame_data@0011d0ec",
+      "--function",
+      "syna_tcm_buf_alloc@0011d594",
+      "--joern-home",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548",
+      "--java-home",
+      "C:\\Program Files\\Microsoft\\jdk-21.0.12.8-hotspot"
+    ],
+    "joern_slice": [
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548\\joern-cli\\joern-slice.bat",
+      "data-flow",
+      "--method-name-filter",
+      "^syna_",
+      "--parallelism",
+      "2",
+      "--slice-depth",
+      "12",
+      "--sink-filter",
+      ".*",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\hard_protocol_residual_S_v1\\joern\\source.cpg.bin"
+    ]
+  },
+  "driver": "zte_tpd",
+  "functions": [
+    {
+      "alias": "f000",
+      "identity": "syna_cdev_process_reports@117c90",
+      "kcfi_required": true,
+      "source_function": "syna_cdev_process_reports",
+      "stock_entry": "00117c90",
+      "stock_function": "syna_cdev_process_reports"
+    },
+    {
+      "alias": "f001",
+      "identity": "syna_spi_alloc_mem@11a0e4",
+      "kcfi_required": true,
+      "source_function": "syna_spi_alloc_mem",
+      "stock_entry": "0011a0e4",
+      "stock_function": "syna_spi_alloc_mem"
+    },
+    {
+      "alias": "f002",
+      "identity": "syna_testing_check_dev_id_show@11bf08",
+      "kcfi_required": true,
+      "source_function": "syna_testing_check_dev_id_show",
+      "stock_entry": "0011bf08",
+      "stock_function": "syna_testing_check_dev_id_show"
+    },
+    {
+      "alias": "f003",
+      "identity": "syna_tcm_testing_check_frame_data@11d0ec",
+      "kcfi_required": true,
+      "source_function": "syna_tcm_testing_check_frame_data",
+      "stock_entry": "0011d0ec",
+      "stock_function": "syna_tcm_testing_check_frame_data"
+    },
+    {
+      "alias": "f004",
+      "identity": "syna_tcm_buf_alloc@11d594",
+      "kcfi_required": true,
+      "source_function": "syna_tcm_buf_alloc",
+      "stock_entry": "0011d594",
+      "stock_function": "syna_tcm_buf_alloc"
+    }
+  ],
+  "generated_utc": "2026-08-28T22:40:01.079517+00:00",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS",
+    "DISPATCHER_PARSER",
+    "COMPILER_SENSITIVE"
+  ],
+  "ready_for_core_execution": true,
+  "required_gates": {
+    "ASSEMBLY_RELOCATIONS": {
+      "kind": "AUTOMATED",
+      "reason": "compare function opcodes, sizes, sections and relocations"
+    },
+    "BOUNDED_MODEL": {
+      "kind": "EVIDENCE",
+      "reason": "CBMC checks for lengths, indexes, loops and postconditions"
+    },
+    "CANDIDATE_GHIDRA_PCODE": {
+      "kind": "AUTOMATED",
+      "reason": "fresh candidate Ghidra/P-Code comparison"
+    },
+    "CFG_SEGMENTATION": {
+      "kind": "EVIDENCE",
+      "reason": "case/path inventory tied to Assembly and P-Code"
+    },
+    "DOCKER_REPRODUCIBLE": {
+      "kind": "AUTOMATED",
+      "reason": "two clean pinned-container builds with identical bytes"
+    },
+    "DT_CONTEXT": {
+      "kind": "EVIDENCE",
+      "reason": "hash-bound local DTS/DTBO and resource provenance"
+    },
+    "FUZZ_CORPUS": {
+      "kind": "EVIDENCE",
+      "reason": "deterministic libFuzzer corpus and minimized counterexamples"
+    },
+    "HARDWARE_RUNTIME": {
+      "kind": "EVIDENCE",
+      "reason": "controlled device A/B validation with rollback"
+    },
+    "HOST_HARNESS": {
+      "kind": "EVIDENCE",
+      "reason": "exercise observed success, error, boundary and teardown paths"
+    },
+    "INDEPENDENT_REVIEW": {
+      "kind": "EVIDENCE",
+      "reason": "review from stock evidence by a different executor"
+    },
+    "INPUT_IDENTITY": {
+      "kind": "AUTOMATED",
+      "reason": "hash stock, source tree, Ghidra index, map and runners"
+    },
+    "JOERN_SCOPED": {
+      "kind": "AUTOMATED",
+      "reason": "strict source CPG gate scoped to the selected functions"
+    },
+    "JOERN_SLICE": {
+      "kind": "AUTOMATED",
+      "reason": "sink-filtered data-flow slices for user/bus controlled data"
+    },
+    "KCFI": {
+      "kind": "AUTOMATED",
+      "reason": "at least one selected function explicitly requires KCFI"
+    },
+    "KUNIT_LOCKDEP_KCSAN": {
+      "kind": "EVIDENCE",
+      "reason": "isolated kernel-lab test; never inferred from host only"
+    },
+    "LLVM_IR_DIAGNOSIS": {
+      "kind": "EVIDENCE",
+      "reason": "IR-level diagnosis before any assembly island"
+    },
+    "LOCK_LIFETIME": {
+      "kind": "EVIDENCE",
+      "reason": "owner, lock order, context, refcount and teardown contract"
+    },
+    "MAP_IDENTITY": {
+      "kind": "AUTOMATED",
+      "reason": "bind every stock_function@entry to one source function"
+    },
+    "MUTATION_TEST": {
+      "kind": "EVIDENCE",
+      "reason": "branch, length and cleanup mutants must be detected"
+    },
+    "REGISTER_BUS_LEDGER": {
+      "kind": "EVIDENCE",
+      "reason": "base, offset, width, mask, order and barrier evidence"
+    },
+    "SANITIZERS": {
+      "kind": "EVIDENCE",
+      "reason": "ASan/UBSan host harness with deterministic replay corpus"
+    },
+    "SEMANTIC_COUNTEREXAMPLE": {
+      "kind": "EVIDENCE",
+      "reason": "search for divergent return, writes or call trace"
+    },
+    "STATE_EFFECT_LEDGER": {
+      "kind": "EVIDENCE",
+      "reason": "ordered loads, stores, widths, aliases and conditions"
+    }
+  },
+  "safety": {
+    "curated_sync": false,
+    "hardware_execution": false,
+    "microtask_status_changes": false,
+    "promotion": false,
+    "source_edits": false
+  },
+  "schema_version": "1.0"
+}

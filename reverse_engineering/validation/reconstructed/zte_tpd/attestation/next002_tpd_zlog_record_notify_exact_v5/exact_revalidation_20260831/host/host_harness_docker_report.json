@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-08-30T10:13:47.6631200Z",
+  "mode": "offline_direct_source_zlog_record_notify_asan_ubsan_docker_current",
+  "driver": "zte_tpd",
+  "target": "tpd_zlog_record_notify",
+  "covered_functions": [
+    "tpd_zlog_record_notify",
+    "tpd_zlog_register",
+    "tpd_zlog_check",
+    "zlog_register_work_init",
+    "zlog_register_work",
+    "zlog_register_work_deinit",
+    "tpd_zlog_init",
+    "tp_zlog_debug_read",
+    "tp_zlog_debug_write"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_zlog_record_notify.c",
+      "sha256": "a2a2d72ecb28e09e82046619020a70413fe08536bd5af92570a980ed8f17ab4a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next002_tpd_zlog_record_notify_exact_v3/exact_revalidation_20260829/host/zlog_harness.c",
+      "sha256": "72b513d3dc90a997cc988142ac1fc468a2c60b2074fe3608b57d1bb7faf9cea8"
+    }
+  ],
+  "expected_cases": 10,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_output": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS test_layout_and_init\nPASS test_register_paths\nPASS test_throttle_check\nPASS test_all_notify_mappings\nPASS test_tenth_error_escalation\nPASS test_notify_gates\nPASS test_debug_read\nPASS test_debug_write_mask_and_errors\nPASS test_work_lifecycle\nPASS test_unregistered_notify\nSUMMARY total=10 passed=10 failed=0",
+      "run_stderr": "",
+      "binary_sha256": "e99314ea637aba77395b93d836eab4776f2535c20c4bac0866bf5194d325e2dd",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_output": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS test_layout_and_init\nPASS test_register_paths\nPASS test_throttle_check\nPASS test_all_notify_mappings\nPASS test_tenth_error_escalation\nPASS test_notify_gates\nPASS test_debug_read\nPASS test_debug_write_mask_and_errors\nPASS test_work_lifecycle\nPASS test_unregistered_notify\nSUMMARY total=10 passed=10 failed=0",
+      "run_stderr": "",
+      "binary_sha256": "e99314ea637aba77395b93d836eab4776f2535c20c4bac0866bf5194d325e2dd",
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "limitations": [
+    "The harness validates direct reconstructed zlog control flow and records the stock memset(NULL, ...) path without dereferencing NULL in userspace.",
+    "zlog client, vmalloc, printk, scheduler and notification transport are stubbed.",
+    "No smartphone, Android zlog service, SPI, IRQ, touch-controller or physical hardware is exercised."
+  ]
+}

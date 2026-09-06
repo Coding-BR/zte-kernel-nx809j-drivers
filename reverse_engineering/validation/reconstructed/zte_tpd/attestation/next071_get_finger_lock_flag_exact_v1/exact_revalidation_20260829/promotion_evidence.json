@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "task_id": "071_get_finger_lock_flag",
+  "driver": "zte_tpd",
+  "source_function": "get_finger_lock_flag",
+  "stock_function": "get_finger_lock_flag",
+  "stock_entry": "0010c92c",
+  "stock_body_bytes": 208,
+  "candidate_source": "get_finger_lock_flag.c (inline AArch64 assembly)",
+  "candidate_source_sha256": "45b53024cf76f1a21274373edb62bd6d1827bab2989e80a22808e4710d6b51c8",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "checks": {
+    "canonical_docker_build": true,
+    "aarch64_assembly_comparison": true,
+    "kcfi_comparison": true,
+    "direct_source_host_test": true,
+    "strict_joern_gate": true,
+    "microtask_attestation": true
+  },
+  "observations": {
+    "instruction_count": 52,
+    "body_bytes": 208,
+    "kcfi_type_id": "0xf4e9d97c",
+    "source_test_cases": 4,
+    "source_test_repetitions": 2,
+    "joern_review_finding": "userspace_egress via simple_read_from_buffer"
+  },
+  "limitations": [
+    "Offline static reconstruction only.",
+    "The host harness models fake device memory and procfs helpers.",
+    "No Android runtime, physical hardware or insmod validation was available."
+  ]
+}

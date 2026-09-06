@@ -14,6 +14,17 @@ Para trabalho sem smartphone, siga tambem
 `reverse_engineering/docs/NX809J_DOSSIE_HARDWARE_REVERSO.md`. Evidencia runtime
 fica `DEFERRED`; ela nao pode ser substituida por inferencia estatica.
 
+Quando C semanticamente correto ainda produzir Assembly, P-Code ou KCFI
+divergente, siga obrigatoriamente
+`reverse_engineering/docs/PROTOCOLO_EQUIVALENCIA_BINARIA_COMPILADOR.md`. Uma ilha
+de assembly so e permitida depois da escada de diagnostico e deve passar todos
+os gates novamente; ela nunca autoriza uma promocao por semelhanca visual.
+
+Quando o trabalho for dividido entre pessoas ou LLMs de capacidades diferentes,
+siga tambem
+`reverse_engineering/docs/PIPELINE_DELEGACAO_LLM_E_MICROPROVAS.md`. O planejador
+de delegacao roteia trabalho, mas nao prova equivalencia e nunca concede `PASS`.
+
 "100%" significa 100% dos requisitos observáveis, exports Ghidra e validações definidos aqui possuem evidência reproduzível. Não significa equivalência matemática de comportamento que não foi observado.
 
 ## Regra de Ouro
@@ -130,6 +141,53 @@ Não deixe todo, FUN_*, thunks, callbacks, init_module ou cleanup_module sem dec
 Evidencia local: `input_manifest.json`, inventarios CPG e
 `joern_gate_report.json`. Evidencia publica: `joern_gate_summary.json`, gerada
 conforme `workspace_tools/reconstruction_pipeline/JOERN_RUNTIME_GATE.md`.
+
+### Gate 3B: Roteamento por Capacidade, Dependencias e Microprovas
+
+1. Gere um plano atual a partir de `MICROTASKS.json`,
+   `FUNCTION_EVIDENCE_INDEX.jsonl` e `calls.jsonl`.
+2. Exija que os hashes do indice coincidam com pseudocodigo, P-Code e Assembly.
+3. Resolva primeiro as ondas de callee; SCCs e fluxo indireto exigem revisao
+   conjunta.
+4. Divida a funcao em `MP0` a `MP8`; modelos L0/L1 nunca editam C.
+5. Permita patch L2 somente quando
+   `lower_capability_c_edit_allowed=true` no plano atual.
+6. Contradicao entre microprovas bloqueia implementacao e escala para L4.
+7. Implementador e revisor devem ser agentes ou pessoas diferentes.
+8. Score e rota nunca alteram status nem substituem os gates seguintes.
+
+~~~powershell
+python .\workspace_tools\reconstruction_pipeline\plan_llm_reconstruction_work.py `
+  --manifest <curated-driver>\MICROTASKS.json `
+  --function-index <validation-driver>\offline_static\FUNCTION_EVIDENCE_INDEX.jsonl `
+  --calls <validation-driver>\offline_static\ghidra_stock\calls.jsonl `
+  --output <validation-driver>\LLM_DELEGATION_PLAN.json `
+  --markdown <validation-driver>\LLM_DELEGATION_PLAN.md `
+  --check
+~~~
+
+Evidencia: plano JSON/Markdown preso aos hashes de entrada, pacote minimo da
+microprova e relatorio de contradicoes. Plano ausente ou stale bloqueia `MP7`.
+
+### Gate 3C: Pacote para LLM de menor capacidade
+
+Para uma tarefa com rota `BOUNDED_LLM_WITH_INDEPENDENT_REVIEW`, gere o pacote
+deterministico antes de delegar. O pacote precisa conter `TASK.json`,
+`CONTRACT.md`, `PROMPT.md`, `SUBMISSION_TEMPLATE.json`, candidato atual e
+evidencia individual hashada.
+Uma tarefa de outra rota nao pode ser forcada para L2 por solicitacao humana ou
+por uma LLM.
+
+~~~powershell
+python .\workspace_tools\reconstruction_pipeline\generate_llm_task_packets.py `
+  --plan .\reverse_engineering\validation\reconstructed\zte_tpd\LLM_DELEGATION_PLAN.json `
+  --output .\reverse_engineering\validation\reconstructed\zte_tpd\llm_small_tasks
+~~~
+
+O pacote e material de trabalho, nao atestacao. A LLM menor pode entregar
+MP0-MP4 e, somente com essas provas aprovadas, propor MP7 no unico arquivo
+permitido. MP8 deve ser executada por revisor independente; divergencia de hash,
+evidencia ou comportamento bloqueia e escala para L4.
 
 ### Gate 4: Arquitetura e ABI Antes do C
 

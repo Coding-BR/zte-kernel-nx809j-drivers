@@ -22,9 +22,17 @@
 
 extern ssize_t zlog_write_internal(const char *buffer, size_t count);
 
+#ifdef ZLOG_COMMON_EXACT
+extern struct zlog_server g_zlog_server;
+#else
 static struct zlog_server g_zlog_server;
+#endif
 
+#ifdef ZLOG_COMMON_EXACT
+extern void zlog_handle_work(struct work_struct *work);
+#else
 static void zlog_handle_work(struct work_struct *work);
+#endif
 static noinline void __init zlog_comm_create_ctrl_dev(void);
 
 void zlog_client_notify(struct zlog_client *client, int event)
@@ -50,6 +58,7 @@ void zlog_client_notify(struct zlog_client *client, int event)
 }
 EXPORT_SYMBOL(zlog_client_notify);
 
+#ifndef ZLOG_COMMON_EXACT
 int zlog_client_record(struct zlog_client *client, const char *format, ...)
 {
 	va_list args;
@@ -93,6 +102,7 @@ out_unlock:
 	return written;
 }
 EXPORT_SYMBOL(zlog_client_record);
+#endif
 
 static bool zlog_same_client(const struct zlog_client *client,
 			     struct zlog_mod_info *module)
@@ -147,6 +157,7 @@ static __always_inline int zlog_get_unused_client(void)
 	return client_id;
 }
 
+#ifndef ZLOG_COMMON_EXACT
 struct zlog_client *zlog_register_client(struct zlog_mod_info *module)
 {
 	struct zlog_client *client;
@@ -217,7 +228,9 @@ struct zlog_client *zlog_register_client(struct zlog_mod_info *module)
 	return client;
 }
 EXPORT_SYMBOL(zlog_register_client);
+#endif
 
+#ifndef ZLOG_COMMON_EXACT
 void zlog_unregister_client(struct zlog_client *client)
 {
 	int client_id = client->client_id;
@@ -252,6 +265,7 @@ void zlog_unregister_client(struct zlog_client *client)
 	pr_info("ZLOG_COMM: %s: client %d unregister success\n", __func__, client_id);
 }
 EXPORT_SYMBOL(zlog_unregister_client);
+#endif
 
 void zlog_reset_client(struct zlog_client *client)
 {
@@ -280,6 +294,7 @@ static __always_inline char *zlog_create_event(size_t capacity)
 	return kzalloc(capacity, GFP_KERNEL);
 }
 
+#ifndef ZLOG_COMMON_EXACT
 static void zlog_handle_work(struct work_struct *work)
 {
 	struct zlog_client *client;
@@ -375,6 +390,7 @@ finish_client:
 	}
 	pr_info("ZLOG_COMM: %s: %s exit\n", __func__, __func__);
 }
+#endif
 
 static ssize_t zlog_comm_read(struct file *file, char __user *buffer,
 			      size_t count, loff_t *offset)

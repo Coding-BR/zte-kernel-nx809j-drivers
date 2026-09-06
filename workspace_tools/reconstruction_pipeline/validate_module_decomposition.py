@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import struct
 import sys
 from pathlib import Path, PurePosixPath
@@ -231,7 +232,7 @@ def require_published(
 def analyze_target(repo: Path, target: dict[str, Any]) -> dict[str, Any]:
     driver = target.get("driver")
     role = target.get("role")
-    if not isinstance(driver, str) or not driver.startswith(("zte_", "zlog_")):
+    if not isinstance(driver, str) or re.fullmatch(r"[a-z0-9_]+", driver) is None:
         raise DecompositionError(f"invalid driver target: {driver!r}")
     if not isinstance(role, str) or not role:
         raise DecompositionError(f"{driver}: role is required")

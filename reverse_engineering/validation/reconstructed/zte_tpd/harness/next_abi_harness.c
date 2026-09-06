@@ -41,20 +41,19 @@ struct ufp_tp_ops_struct {
 };
 static struct ufp_tp_ops_struct ufp_tp_ops;
 
-static char ztp_algo_info_l;
-static char byte_4A0;
-static char byte_4B0;
-static char byte_4C0;
-static char byte_4D0;
-static char byte_4E0;
-static char byte_4F0;
-static const char *off_498 = "algo_498";
-static const char *off_4A8 = "algo_4A8";
-static const char *off_4B8 = "algo_4B8";
-static const char *off_4C8 = "algo_4C8";
-static const char *off_4D8 = "algo_4D8";
-static const char *off_4E8 = "algo_4E8";
-static const char *off_4F8 = "algo_4F8";
+struct ztp_algo_item {
+	u8 id;
+	u8 reserved[7];
+	const char *keyword;
+};
+static struct ztp_algo_item ztp_algo_info_l[7];
+
+struct tp_ic_vendor_item {
+	u8 id;
+	u8 reserved[7];
+	const char *keyword;
+};
+static struct tp_ic_vendor_item tp_ic_vendor_info_l[11];
 static char unk_39C9D[8];
 
 static void mutex_lock(struct mutex *lock)
@@ -105,16 +104,24 @@ static const char *strnstr(const char *haystack, const char *needle,
 }
 
 #include "../../../curated/zte_tpd/get_tp_algo_item_id.c"
+#include "../../../curated/zte_tpd/get_tp_chip_id.c"
+#include "../../../curated/zte_tpd/get_lcd_panel_name.c"
 #include "../../../curated/zte_tpd/set_gpio_mode.c"
 #include "../../../curated/zte_tpd/change_tp_state.c"
 
 typedef int (*get_tp_algo_item_id_fn)(char *name);
+typedef int (*get_tp_chip_id_fn)(void);
+typedef const char *(*get_lcd_panel_name_fn)(void);
 typedef int (*set_gpio_mode_fn)(u8 mode);
 typedef void (*change_tp_state_fn)(enum lcdchange state);
 typedef int (*set_gpio_mode_callback_fn)(struct ztp_device *context, u8 mode);
 
 _Static_assert(__builtin_types_compatible_p(typeof(&get_tp_algo_item_id),
 						 get_tp_algo_item_id_fn), "get ABI");
+_Static_assert(__builtin_types_compatible_p(typeof(&get_tp_chip_id),
+						 get_tp_chip_id_fn), "chip ABI");
+_Static_assert(__builtin_types_compatible_p(typeof(&get_lcd_panel_name),
+						 get_lcd_panel_name_fn), "panel ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&set_gpio_mode),
 						 set_gpio_mode_fn), "gpio ABI");
 _Static_assert(__builtin_types_compatible_p(typeof(&change_tp_state),
@@ -151,21 +158,67 @@ static bool test_signature_contract(void)
 
 static bool test_algo_lookup_order_and_failure(void)
 {
-	char first[] = "prefix-algo_498-suffix";
-	char last[] = "algo_4F8";
+	char first[] = "prefix-algo_open-suffix";
+	char last[] = "long_press_pixel";
 	char unknown[] = "no-match";
 	reset_state();
-	ztp_algo_info_l = 11;
-	byte_4A0 = 22;
-	byte_4B0 = 33;
-	byte_4C0 = 44;
-	byte_4D0 = 55;
-	byte_4E0 = 66;
-	byte_4F0 = 77;
+	ztp_algo_info_l[0] = (struct ztp_algo_item){ .id = 11, .keyword = "algo_open" };
+	ztp_algo_info_l[1] = (struct ztp_algo_item){ .id = 22, .keyword = "jitter_pixel" };
+	ztp_algo_info_l[2] = (struct ztp_algo_item){ .id = 33, .keyword = "jitter_timer" };
+	ztp_algo_info_l[3] = (struct ztp_algo_item){ .id = 44, .keyword = "click_pixel" };
+	ztp_algo_info_l[4] = (struct ztp_algo_item){ .id = 55, .keyword = "long_press_open" };
+	ztp_algo_info_l[5] = (struct ztp_algo_item){ .id = 66, .keyword = "long_press_timer" };
+	ztp_algo_info_l[6] = (struct ztp_algo_item){ .id = 77, .keyword = "long_press_pixel" };
 	REQUIRE(get_tp_algo_item_id(first) == 11);
 	REQUIRE(get_tp_algo_item_id(last) == 77);
 	REQUIRE(get_tp_algo_item_id(unknown) == -EIO);
 	REQUIRE(printk_calls == 2);
+	return true;
+}
+
+static bool test_chip_lookup_and_failure_marker(void)
+{
+	unsigned int index;
+
+	reset_state();
+	for (index = 0; index < 11; index++)
+		tp_ic_vendor_info_l[index] = (struct tp_ic_vendor_item){
+			.id = (u8)(0x20 + index), .keyword = "no-match"
+		};
+	tp_ic_vendor_info_l[0].id = 0x42;
+	tp_ic_vendor_info_l[0].keyword = "Unknown";
+	REQUIRE(get_tp_chip_id() == 0);
+	REQUIRE(cdev_memory[0x446] == 0x42);
+	REQUIRE(printk_calls == 3);
+
+	reset_state();
+	for (index = 0; index < 11; index++)
+		tp_ic_vendor_info_l[index] = (struct tp_ic_vendor_item){
+			.id = (u8)(0x40 + index), .keyword = "no-match"
+		};
+	tp_ic_vendor_info_l[10].id = 0x7e;
+	tp_ic_vendor_info_l[10].keyword = "Unknown";
+	REQUIRE(get_tp_chip_id() == 0);
+	REQUIRE(cdev_memory[0x446] == 0x7e);
+	REQUIRE(printk_calls == 3);
+
+	reset_state();
+	for (index = 0; index < 11; index++)
+		tp_ic_vendor_info_l[index] = (struct tp_ic_vendor_item){
+			.id = (u8)index, .keyword = "no-match"
+		};
+	REQUIRE(get_tp_chip_id() == -EIO);
+	REQUIRE(cdev_memory[0x446] == 0xff);
+	REQUIRE(printk_calls == 2);
+	return true;
+}
+
+static bool test_lcd_panel_name_contract(void)
+{
+	const char *name = get_lcd_panel_name();
+
+	REQUIRE(name != NULL);
+	REQUIRE(strcmp(name, "Unknown_lcd") == 0);
 	return true;
 }
 
@@ -260,6 +313,8 @@ int main(void)
 #define RUN(test) do { total++; failures += run_test(#test, test); } while (0)
 	RUN(test_signature_contract);
 	RUN(test_algo_lookup_order_and_failure);
+	RUN(test_chip_lookup_and_failure_marker);
+	RUN(test_lcd_panel_name_contract);
 	RUN(test_gpio_null_callback);
 	RUN(test_state_screen_in_doze_to_on);
 	RUN(test_state_screen_in_doze_to_off);

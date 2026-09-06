@@ -1,0 +1,46 @@
+{
+  "target": "tp_game_partition_write",
+  "status": "PASS",
+  "limitations": [
+    "The host harness replaces usercopy, callback and object-size helpers with deterministic contracts.",
+    "The indirect callback guard is represented by the stock AArch64 sequence; physical callback behavior is not executed.",
+    "Assembly, KCFI, Ghidra, Joern, canonical build and hardware gates remain separate."
+  ],
+  "schema_version": "1.0",
+  "reproducible_binary": true,
+  "passed": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/tp_game_partition_write_host_test.c",
+      "sha256": "2ede92b70b4b578e323e73fb25fe129a6d910aa85bac7510b701c7120dd0ca56"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tp_game_partition_write.c",
+      "sha256": "be542787f03c85d6951aef0f386ad9b544ad538ce4e375aa3f2db2ea5770be9a"
+    }
+  ],
+  "driver": "zte_tpd",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "expected_cases": 5,
+  "runs": [
+    {
+      "passed": true,
+      "stdout": "PASS tp_game_partition_write: 5 cases",
+      "cycle": 1
+    },
+    {
+      "passed": true,
+      "stdout": "PASS tp_game_partition_write: 5 cases",
+      "cycle": 2
+    }
+  ],
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "binary_sha256": "6286923dd63f085c91a2f1fcf42bbd72e67484198cb68ffa87eb1291f1b7e48c",
+  "mode": "offline_direct_source_tp_game_partition_write_asan_ubsan",
+  "repetitions": 2
+}

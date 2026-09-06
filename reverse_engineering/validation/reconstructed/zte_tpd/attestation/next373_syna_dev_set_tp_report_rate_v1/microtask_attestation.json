@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_dev_set_tp_report_rate",
+  "source_function": "syna_dev_set_tp_report_rate",
+  "stock_function": "syna_dev_set_tp_report_rate",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "PASS",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_and_relocation_parity": "BLOCKED"
+  },
+  "semantic_contract": [
+    "Reject a null tcm with -22.",
+    "Map requested values 0..4 to dynamic-config values 0, 5, 4, 3 and 1 using id 230.",
+    "Return zero for invalid values and propagate negative transport errors."
+  ],
+  "unverified": [
+    "Exact opcode parity with the 352-byte stock body.",
+    "Physical touch-controller behavior and firmware side effects."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

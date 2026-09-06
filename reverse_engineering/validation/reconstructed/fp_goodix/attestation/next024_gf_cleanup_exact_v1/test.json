@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "gf_cleanup",
+  "stock_function": "gf_cleanup",
+  "stock_entry": "001026bc",
+  "source_file": "fp_goodix_platform.c",
+  "source_function": "gf_cleanup",
+  "source_sha256": "6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
+  "test_source": "kernel_development/drivers/reconstructed/fp_goodix/tests/host_test.c",
+  "test_source_sha256": "b35be14d110231a165a9f62934912663a6e6f0e62d1f42328e40abb84891807a",
+  "host_report": "kernel_development/drivers/validation/fp_goodix/host_test_report.json",
+  "host_report_sha256": "84e5b653049ffbf033011ab7faf47d2c1eb6c620f0e91434149b0cc8337f79c4",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain": "clang-r536225",
+  "cycles": 2,
+  "covered_functions": ["gf_cleanup"],
+  "coverage_test_id": "test_direct_helpers/cleanup;test_failure_paths/rollback",
+  "cases": [
+    "valid irq GPIO is freed before valid reset GPIO",
+    "valid reset GPIO is freed and logged",
+    "enabled regulator is disabled",
+    "already-disabled regulator follows the observed warning path",
+    "invalid GPIOs and error regulator are skipped safely"
+  ],
+  "passed": true,
+  "reproducible": true,
+  "status": "PASS",
+  "limitations": [
+    "The host harness validates cleanup with GPIO/regulator stubs; it does not remove a real platform device on NX809J.",
+    "GPIO ownership, regulator reference lifetime and concurrent remove/IRQ races remain separate runtime gates."
+  ]
+}

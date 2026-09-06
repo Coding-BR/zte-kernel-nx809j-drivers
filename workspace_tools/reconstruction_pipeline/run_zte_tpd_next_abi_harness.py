@@ -13,10 +13,12 @@ from pathlib import Path
 
 SOURCE_FILES = (
     "get_tp_algo_item_id.c",
+    "get_tp_chip_id.c",
+    "get_lcd_panel_name.c",
     "set_gpio_mode.c",
     "change_tp_state.c",
 )
-EXPECTED_TESTS = 8
+EXPECTED_TESTS = 10
 
 
 def sha256_file(path: Path) -> str:
@@ -112,7 +114,7 @@ def main() -> int:
             "summary": executions[0]["summary"],
         },
         "coverage": {
-            "direct_source_functions": 3,
+            "direct_source_functions": len(SOURCE_FILES),
             "source_files": list(SOURCE_FILES),
             "hardware_paths_exercised": False,
         },
@@ -129,7 +131,7 @@ def main() -> int:
     }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(output), "passed": passed,
                       "repetitions": args.repetitions,
-                      "tests": EXPECTED_TESTS, "functions": 3}))
+                      "tests": EXPECTED_TESTS, "functions": len(SOURCE_FILES)}))
     return 0 if passed else 1
 
 

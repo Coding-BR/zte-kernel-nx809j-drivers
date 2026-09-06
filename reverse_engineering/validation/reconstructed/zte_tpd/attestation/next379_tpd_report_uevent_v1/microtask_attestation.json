@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tpd_report_uevent",
+  "attestation_id": "next379_tpd_report_uevent_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_LAYOUT_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "FAIL",
+    "aarch64_dispatch_form": "PASS",
+    "aarch64_external_call_multiset": "PASS",
+    "aarch64_function_layout_exact": "FAIL"
+  },
+  "semantic_contract": [
+    "value 0 logs the single-tap event and emits single_tap=true",
+    "value 1 logs the double-tap event and emits double_tap=true",
+    "value 2 logs the pen-capacity event and emits pen_capacity_low=true",
+    "other byte values log the unknown event and emit no uevent",
+    "the uevent target is the platform-device kobject at tpd_cdev + 0xdd0 + 16",
+    "the uevent action is 2 and the environment is one terminated string"
+  ],
+  "evidence": {
+    "stock_body_bytes": 260,
+    "candidate_body_bytes": 264,
+    "layout_delta_bytes": 4,
+    "stock_instruction_count": 65,
+    "candidate_instruction_count": 66,
+    "kcfi_type_id": "0xa2fce979",
+    "raw_kcfi_comparison": "FAIL_SIZE_ONLY",
+    "raw_assembly_comparison": "FAIL_LAYOUT",
+    "normalized_comparison": "PASS_SEMANTIC"
+  },
+  "follow_up_required": [
+    "Reduce the candidate unknown-value path by one branch or otherwise match the stock 260-byte layout before claiming byte-level equivalence."
+  ],
+  "unverified": [
+    "runtime behavior on NX809J hardware",
+    "the physical touchscreen controller and kernel uevent subsystem",
+    "full module integration and boot behavior"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, Joern strict gate, reproducible Docker build, two-cycle host sanitizer harness, exact KCFI type ID, normalized AArch64 dispatch and external-call evidence. No smartphone test was performed."
+}

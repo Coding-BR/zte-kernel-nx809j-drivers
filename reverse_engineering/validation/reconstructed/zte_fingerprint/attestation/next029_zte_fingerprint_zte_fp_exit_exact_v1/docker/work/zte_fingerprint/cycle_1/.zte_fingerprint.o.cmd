@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_fingerprint/cycle_1/zte_fingerprint.o := ld.lld -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack   -r -o /work/validation/zte_fingerprint/cycle_1/zte_fingerprint.o @/work/validation/zte_fingerprint/cycle_1/zte_fingerprint.mod 

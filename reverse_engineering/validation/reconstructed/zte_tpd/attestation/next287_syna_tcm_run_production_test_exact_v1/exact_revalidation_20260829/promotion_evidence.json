@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "task_id": "287_syna_tcm_run_production_test",
+  "source_function": "syna_tcm_run_production_test",
+  "stock_function": "syna_tcm_run_production_test",
+  "stock_entry": "00123c34",
+  "stock_body_bytes": 392,
+  "candidate_source": "syna_tcm_run_production_test_exact.S",
+  "candidate_source_sha256": "bd47b6ea0b5c29c537a83b63e3dfed399e9b41b182caef430efa48d7572c7261",
+  "candidate_module": "candidate_zte_tpd.ko",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "checks": {
+    "canonical_build_two_cycles": true,
+    "aarch64_opcode_and_relocation_comparison": true,
+    "kcfi_type_id_and_size": true,
+    "host_asan_ubsan_two_cycles": true,
+    "joern_strict": true
+  },
+  "artifacts": {
+    "canonical_build": {
+      "path": "canonical_build_report.json",
+      "sha256": "8600e6c2632965a98d16475e0fc92b072e5ef937670a4cb976f17d39c447de6d"
+    },
+    "aarch64_comparison": {
+      "path": "aarch64_comparison.json",
+      "sha256": "e1120e506f58cbf6a4d884bb006326ffa8e00a264bacd18c68aba615f6d9c53c"
+    },
+    "kcfi_comparison": {
+      "path": "kcfi_comparison.json",
+      "sha256": "0e9c5456b38f5c8b34f730df6bf16f62362f58bb2f8e86cd104040474f9582f5"
+    },
+    "host_harness": {
+      "path": "host_harness_docker_report.json",
+      "sha256": "05867ab820a340a6234bf088bcc0f3cc048dff94f2adfe86bda4a75825802674"
+    },
+    "joern": {
+      "path": "joern_gate_summary.json",
+      "sha256": "16c087e97b657211bcbf8c5360084a576174f926b96b4c6ff9e90b69bc5348cd"
+    },
+    "microtask_attestation": {
+      "path": "microtask_attestation.json",
+      "sha256": "eec6482c565fcc19868e72dc059f634b46e63209113eb48e31c3a2a9d8fd8b56"
+    }
+  },
+  "limitations": [
+    "Offline/static validation only; hardware, ADB, insmod, firmware, and device behavior remain unverified.",
+    "The build used the synchronized Docker snapshot recorded by canonical_build_report.json; unrelated dirty worktree changes were not promoted."
+  ]
+}

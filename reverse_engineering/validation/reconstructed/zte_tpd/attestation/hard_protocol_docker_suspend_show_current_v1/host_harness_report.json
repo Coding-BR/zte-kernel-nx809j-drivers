@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "suspend_show",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\suspend_show.c",
+  "source_sha256": "2b1c033afe50eadf032f2173ce41a00b930ff8cccabca241bd7e51e7c60a9217",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\suspend_show_host_test.c",
+  "harness_sha256": "fab558aa015a3f802de964d75f4c805f36d883690ecded53d230b1a295f4f253",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 2,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS suspend_show host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "ae584e6b145189d17ab355480725ae604c24e7eef40a5fd8e250d3d953a00bc5",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS suspend_show host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "ae584e6b145189d17ab355480725ae604c24e7eef40a5fd8e250d3d953a00bc5",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness validates the +0xe58 callback offset, +0x15 state byte, formatting, partial read and EOF contracts with fake memory.",
+    "It does not execute the real procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

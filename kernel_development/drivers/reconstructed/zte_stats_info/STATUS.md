@@ -10,7 +10,8 @@ Estado: **INCOMPLETO - nao autorizado a declarar 100%**.
 | 10 - Promocao | INCOMPLETO | Depende dos Gates 8 e 9. |
 
 Comprovado para o candidato SHA-256
-`22f93083062922e5a2932e387d91db714e123896818e13a2ef853948308349e7`:
+`51894b326a94465c3189fff6f3c1c72b409f4e9eb23e950ab8654478f1c7cd54`
+(329608 bytes):
 
 - 8/8 funcoes passam no comparador AArch64 de instrucoes normalizadas,
   relocacoes, secao e tamanho do simbolo;

@@ -1,0 +1,58 @@
+{
+  "schema_version": "host_harness_attestation_v1",
+  "mode": "offline_direct_source_tpd_goodix_ts_suspend_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "<repo>/kernel_development/drivers:/drivers:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -frandom-seed=zte-tpd-next181-goodix-suspend -fsanitize=address,undefined -Wl,--build-id=none /drivers/validation/zte_tpd/host/tpd_goodix_ts_suspend_host_test.c -o /tmp/tpd_goodix_ts_suspend_host_test && /tmp/tpd_goodix_ts_suspend_host_test"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_goodix_ts_suspend.c",
+      "sha256": "d72a0089f5ef9b7d9b1f44926cc8aae21caed7c6f9a8de60b55f97b0a667a148",
+      "size": 144
+    },
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/tpd_goodix_ts_suspend_host_test.c",
+      "sha256": "a906ddfc0e4340ea2520870b7166bd92e675bd191910aa76646ce209141a2d47",
+      "size": 1935
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS tpd_goodix_ts_suspend host tests (2 cases)\n",
+      "stderr": ""
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS tpd_goodix_ts_suspend host tests (2 cases)\n",
+      "stderr": ""
+    }
+  ],
+  "coverage": {
+    "forward_success_result": true,
+    "forward_error_result": true,
+    "pdev_plus_0x8_read": true,
+    "device_plus_0x10_forwarding": true,
+    "hardware_paths_exercised": false
+  },
+  "limitations": [
+    "The harness verifies pointer arithmetic and return-value forwarding only.",
+    "It does not load the module or communicate with touch, display, or power hardware."
+  ]
+}

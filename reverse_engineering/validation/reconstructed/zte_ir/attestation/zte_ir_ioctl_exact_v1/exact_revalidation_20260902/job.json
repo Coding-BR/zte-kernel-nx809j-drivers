@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_ir",
+  "stock_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS",
+    "STATEFUL_MEMORY"
+  ],
+  "functions": [
+    {
+      "stock_function": "zte_ir_ioctl",
+      "stock_entry": "0010069c",
+      "source_function": "zte_ir_ioctl",
+      "candidate_function": "zte_ir_ioctl",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_ir",
+    "stock_module": "reference_modules/full_vendor_boot/zte_ir.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_ir/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_ir/offline_static/ghidra_candidate_20260902_exact_ioctl/zte_ir.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_ir/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_ir_ioctl_protocol_20260902"
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_ir",
+    "define": [
+      "ZTE_IR_HOST_TEST"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1
+    }
+  }
+}

@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_sensor_sensitivity/cycle_1/Module.symvers :=  ./scripts/mod/modpost -M -m -b -x  -E     -o /work/validation/zte_sensor_sensitivity/cycle_1/Module.symvers -T /work/validation/zte_sensor_sensitivity/cycle_1/modules.order -i ./Module.symvers -e  -p protected_module_names_list

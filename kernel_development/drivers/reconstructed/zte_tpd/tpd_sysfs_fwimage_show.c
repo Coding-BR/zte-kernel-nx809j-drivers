@@ -7,6 +7,11 @@ ssize_t tpd_sysfs_fwimage_show(struct file *file, struct kobject *kobj,
   u32 position;
   size_t fw_size;
 
+  (void)file;
+  (void)kobj;
+  (void)attr;
+  (void)offset;
+
   cdev = tpd_cdev;
   fw_data = *(struct tpd_firmware_data **)(tpd_cdev + 0xc58);
   if ( !fw_data || !fw_data->data )

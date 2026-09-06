@@ -1,0 +1,59 @@
+{
+  "schema_version": "host_harness_attestation_v1",
+  "mode": "offline_direct_source_syna_release_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "<repo>/kernel_development/drivers:/drivers:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -frandom-seed=zte-tpd-next178-syna-release -fsanitize=address,undefined -Wl,--build-id=none /drivers/validation/zte_tpd/host/syna_release_host_test.c -o /tmp/syna_release_host_test && /tmp/syna_release_host_test"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_release.c",
+      "sha256": "a46d71c107e38105386d0612811911b52a202d666cd67de08027a94310dfc2e2",
+      "size": 171
+    },
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_release_host_test.c",
+      "sha256": "965b2946bfe57029d8ce8ba202f46df462275aff8003530c4b6465695e00590b",
+      "size": 1456
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS syna_release host tests (3 cases)\n",
+      "stderr": ""
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS syna_release host tests (3 cases)\n",
+      "stderr": ""
+    }
+  ],
+  "coverage": {
+    "null_arguments": true,
+    "inode_only": true,
+    "both_arguments": true,
+    "printk_contract": true,
+    "zero_return": true,
+    "hardware_paths_exercised": false
+  },
+  "limitations": [
+    "The harness verifies only the logger contract and zero return.",
+    "It does not load the module or communicate with touch hardware, firmware, display, or storage."
+  ]
+}

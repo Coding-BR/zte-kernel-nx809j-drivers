@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "target": "tpd_set_display_rotation",
+  "candidate_module_sha256": "c674eb3f7f27d4868fff38eb1ac1ff69ebc9d57914b5dca92e7c2228858f67f2",
+  "function": "tpd_set_display_rotation",
+  "type_id": "0x6af8b499",
+  "symbol_size": 444,
+  "stock_body_bytes": 444,
+  "stock_reference_available": true,
+  "stock_reference": "0351_tpd_set_display_rotation_0012c50c.asm",
+  "critical_offsets": {
+    "device_context": "param_1 + 0xdb8",
+    "hardware_context": "plVar2 + 0x270",
+    "hardware_ready": "hardware_context + 0xb8",
+    "hardware_flags": "hardware_context + 0xbc",
+    "hardware_value": "(*plVar2) + 0x20c",
+    "display_rotation": "param_1 + 0x10",
+    "rotation_state": "plVar2 + 0x608",
+    "controller_state": "plVar2 + 0x57c"
+  },
+  "retry_contract": {
+    "attempts": 5,
+    "delay_ms": 200,
+    "success_state": 1,
+    "failure_return": -22
+  },
+  "checks": {
+    "paciasp_autiasp_present_in_module": true,
+    "null_context_returns_einval": true,
+    "hardware_value_load_offset": true,
+    "rotation_state_store_offset": true,
+    "five_retry_delays": true,
+    "setter_error_logged": true,
+    "symbol_size_matches_stock_body": true,
+    "stock_instruction_sequence_byte_identical": false
+  },
+  "status": "PASS_WITH_STOCK_PARITY_PENDING",
+  "limitations": [
+    "The isolated AArch64 object omits module PAC prologue/epilogue and external relocation resolution.",
+    "Stock comparison is based on Ghidra-derived assembly and body length; the original stock ELF bytes are unavailable."
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "cancel_report_lcd_state_delayed_work"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "329c34a1fc2e18501be1f5b9638313d1bdadef3067ba9d30ad597a3a263a6cc7",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next125_cancel_report_lcd_state_delayed_work\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next113-cancel-report-lcd-state-delayed-work",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/cancel_report_lcd_state_delayed_work_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next125_cancel_report_lcd_state_delayed_work\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS cancel_report_lcd_state_delayed_work host tests (1 case)\n"
+      }
+    },
+    {
+      "binary_sha256": "329c34a1fc2e18501be1f5b9638313d1bdadef3067ba9d30ad597a3a263a6cc7",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next125_cancel_report_lcd_state_delayed_work\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next113-cancel-report-lcd-state-delayed-work",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/cancel_report_lcd_state_delayed_work_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next125_cancel_report_lcd_state_delayed_work\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS cancel_report_lcd_state_delayed_work host tests (1 case)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 1,
+  "generated_utc": "2026-08-27T09:31:34.687188+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\cancel_report_lcd_state_delayed_work_host_test.c",
+      "sha256": "f652f93c183293f2eba6a9f23a6ec16f756eee964017e7acc1ec14ff29d2e369",
+      "size": 1240
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\cancel_report_lcd_state_delayed_work.c",
+      "sha256": "137efb02e70c3745d604bcd793678f97b344e7449879eb88fe88c99f501b5ed0",
+      "size": 97
+    }
+  ],
+  "limitations": [
+    "The harness validates the single cancel_delayed_work_sync call and the delayed_work offset 0x9e0.",
+    "It does not load the module on an Android device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_cancel_report_lcd_state_delayed_work_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "cancel_report_lcd_state_delayed_work",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

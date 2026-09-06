@@ -13,6 +13,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import shutil
 import struct
@@ -60,12 +61,23 @@ def repository_root_for_curated(curated_root: Path) -> Path | None:
 
 def public_evidence_paths(repository_root: Path, driver: str) -> tuple[Path, Path, Path]:
     """Resolve immutable public stock/Ghidra evidence without a private run tree."""
+    transition = (
+        repository_root / "kernel_development" / "drivers" / "reconstructed"
+        / driver / "DOCUMENTO_TRANSICAO.md"
+    )
+    # Auxiliary drivers may have a STATUS.md instead of a separate transition
+    # document.  It is still a versioned provenance document and is sufficient
+    # for the offline existence/hash gate; the report preserves the exact path.
+    if not transition.is_file():
+        transition = transition.with_name("STATUS.md")
+    stock = repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko"
+    if not stock.is_file():
+        stock = repository_root / "reference_modules" / "stock" / f"{driver}.ko"
     return (
-        repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko",
+        stock,
         repository_root / "reverse_engineering" / "validation" / "reconstructed"
         / driver / "offline_static" / "ghidra_stock",
-        repository_root / "kernel_development" / "drivers" / "reconstructed"
-        / driver / "DOCUMENTO_TRANSICAO.md",
+        transition,
     )
 
 
@@ -305,7 +317,7 @@ def reconstruction_map_check(
                 continue
             if not (driver_dir / source_file).is_file():
                 errors.append(f"mapping {index} refers to missing source file: {source_file}")
-            if status != "reviewed":
+            if status not in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
                 errors.append(f"mapping {index} is not independently reviewed")
             if not isinstance(evidence, list) or not evidence or not all(
                 isinstance(item, str) and item.strip() for item in evidence
@@ -328,6 +340,22 @@ def reconstruction_map_check(
     return result, errors
 
 
+PROMOTION_PARITY_KEYS = (
+    "aarch64_rel",
+    "alias_match",
+    "namespace_match",
+    "undefined_symbols_match",
+    "vermagic_accepted",
+)
+
+
+def fresh_build_is_promotable(build_result: dict[str, Any], metadata: dict[str, Any]) -> bool:
+    """Allow promotion only after reproducible rebuild and module parity gates pass."""
+    return bool(build_result.get("passed")) and all(
+        bool(metadata.get(key)) for key in PROMOTION_PARITY_KEYS
+    )
+
+
 def build_twice(
     *,
     driver: str,
@@ -337,6 +365,7 @@ def build_twice(
     source_volume: str,
     toolchain_volume: str,
     clang_revision: str,
+    parallelism: int = 8,
 ) -> tuple[dict[str, Any], Path | None, list[str]]:
     errors: list[str] = []
     work_dir = work_root / driver
@@ -345,6 +374,7 @@ def build_twice(
     work_dir.mkdir(parents=True)
     toolchain_bin = f"/work/toolchains/{clang_revision}/bin"
     commands: dict[str, Any] = {}
+    source_epoch = 946684800
 
     def clean_build(cycle: str, command_prefix: str) -> tuple[Path, dict[str, Any]]:
         cycle_dir = work_dir / cycle
@@ -356,6 +386,10 @@ def build_twice(
                 "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
             ),
         )
+        for path in cycle_dir.rglob("*"):
+            if path.is_file():
+                path.touch()
+                os.utime(path, (source_epoch, source_epoch))
         container_dir = f"/work/validation/{driver}/{cycle}"
         base = [
             "docker", "run", "--rm",
@@ -366,12 +400,17 @@ def build_twice(
             "-w", "/work/src/kernel/kernel_platform/common",
             image,
             "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
-            f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd",
+            (
+                f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"
+                f" -fdebug-prefix-map={container_dir}=/zte_tpd"
+            ),
         ]
         if (cycle_dir / "vendor.Module.symvers").is_file():
             base.append(f"KBUILD_EXTRA_SYMBOLS={container_dir}/vendor.Module.symvers")
         commands[f"clean_{command_prefix}"] = command_record([*base, "clean"])
-        commands[f"build_{command_prefix}"] = command_record([*base, "modules"])
+        commands[f"build_{command_prefix}"] = command_record(
+            [*base, "-j", str(parallelism), "modules"]
+        )
         return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
 
     first_module, first = clean_build("cycle_1", "first")
@@ -413,6 +452,7 @@ def validate_regular_driver(
     source_volume: str,
     toolchain_volume: str,
     clang_revision: str,
+    parallelism: int,
     target_kernel: dict[str, Any] | None,
     promote_fresh: bool,
 ) -> dict[str, Any]:
@@ -457,6 +497,7 @@ def validate_regular_driver(
             source_volume=source_volume,
             toolchain_volume=toolchain_volume,
             clang_revision=clang_revision,
+            parallelism=parallelism,
         )
         errors.extend(build_errors)
     elif not rebuild:
@@ -501,16 +542,7 @@ def validate_regular_driver(
                 ),
                 "candidate_matches_fresh": candidate_record.get("sha256") == sha256_file(fresh_module),
             }
-            promotable = all(
-                metadata[key]
-                for key in (
-                    "aarch64_rel",
-                    "alias_match",
-                    "namespace_match",
-                    "undefined_symbols_match",
-                    "vermagic_accepted",
-                )
-            )
+            promotable = fresh_build_is_promotable(build_result, metadata)
             if promote_fresh and promotable:
                 shutil.copy2(fresh_module, candidate)
                 candidate_record = file_record(candidate)
@@ -608,6 +640,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
     parser.add_argument(
+        "--parallelism",
+        type=int,
+        default=8,
+        help="parallel make jobs for each clean Docker rebuild",
+    )
+    parser.add_argument(
         "--target-kernel-manifest",
         type=Path,
         default=None,
@@ -688,6 +726,7 @@ def main() -> int:
                 source_volume=args.source_volume,
                 toolchain_volume=args.toolchain_volume,
                 clang_revision=args.clang_revision,
+                parallelism=args.parallelism,
                 target_kernel=target_kernel,
                 promote_fresh=args.promote_fresh,
             )

@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_testing_pt05_show",
+  "stock_entry": "0011c66c",
+  "stock_body_bytes": 724,
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "canonical_build": {
+    "passed": true,
+    "cycles": 2,
+    "module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce"
+  },
+  "aarch64": {
+    "passed": true,
+    "stock_instruction_count": 181,
+    "candidate_instruction_count": 181,
+    "stock_symbol_size": 724,
+    "candidate_symbol_size": 724
+  },
+  "kcfi": {
+    "passed": true,
+    "decision": "TYPE_ID_COMPARISON",
+    "stock_type_id": "0x4e31a072",
+    "candidate_type_id": "0x4e31a072"
+  },
+  "host": {
+    "passed": true,
+    "cycles": 2,
+    "cases_per_cycle": 8,
+    "sanitizers": ["ASan", "UBSan"]
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "call_count": 117,
+    "control_structure_count": 14,
+    "unresolved_call_count": 0,
+    "parse_problem_count": 0,
+    "review_findings": [
+      {
+        "category": "lifetime",
+        "severity": "high",
+        "call": "devm_kfree"
+      }
+    ]
+  },
+  "limitations": [
+    "The host harness uses controlled kernel API stubs and does not replace Android sysfs integration.",
+    "The stock-preserving devm_kfree lifetime finding remains for independent review.",
+    "Physical hardware and runtime behavior remain unverified offline."
+  ]
+}

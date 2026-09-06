@@ -26,6 +26,14 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def portable_path(path: Path, repository_root: Path) -> str:
+    """Serialize repository inputs without leaking the local host prefix."""
+    try:
+        return path.resolve().relative_to(repository_root.resolve()).as_posix()
+    except ValueError:
+        return path.resolve().as_posix()
+
+
 def read_json(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -69,6 +77,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    repository_root = Path(__file__).resolve().parents[2]
     source_dir = args.source_dir.resolve()
     ghidra_dir = args.ghidra_dir.resolve()
     assembly_dir = args.assembly_dir.resolve()
@@ -138,7 +147,12 @@ def main() -> int:
             failures.append(f"{identity}: source file is missing: {source_file}")
             continue
         source_text = source_path.read_text(encoding="utf-8", errors="replace")
-        if not re.search(rf"\b{re.escape(token)}\s*\(", source_text):
+        source_token_found = re.search(rf"\b{re.escape(token)}\s*\(", source_text)
+        assembly_label_found = any(
+            re.search(rf"(?m)^\s*{re.escape(label)}\s*:", source_text)
+            for label in {token, source_function}
+        )
+        if source_token_found is None and assembly_label_found is None:
             failures.append(f"{identity}: token {token!r} not found in {source_file}")
             continue
         if not pseudocode_path.is_file() or not pcode_path.is_file():
@@ -191,13 +205,13 @@ def main() -> int:
         "function_count": len(rows),
         "override_count": len(used_overrides),
         "inputs": {
-            "draft_map": str(args.draft_map.resolve()),
+            "draft_map": portable_path(args.draft_map, repository_root),
             "draft_map_sha256": sha256_file(args.draft_map.resolve()),
-            "ghidra_functions": str(functions_path),
+            "ghidra_functions": portable_path(functions_path, repository_root),
             "ghidra_functions_sha256": sha256_file(functions_path),
-            "assembly_manifest": str(assembly_manifest_path),
+            "assembly_manifest": portable_path(assembly_manifest_path, repository_root),
             "assembly_manifest_sha256": sha256_file(assembly_manifest_path),
-            "overrides": str(args.overrides.resolve()),
+            "overrides": portable_path(args.overrides, repository_root),
             "overrides_sha256": sha256_file(args.overrides.resolve()),
         },
         "limitations": [

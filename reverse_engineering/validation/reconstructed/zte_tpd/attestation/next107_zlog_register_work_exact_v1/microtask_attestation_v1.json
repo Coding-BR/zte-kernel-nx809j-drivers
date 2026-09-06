@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T16:47:00Z",
+  "driver": "zte_tpd",
+  "microtask": "005_zlog_register_work",
+  "function": "zlog_register_work",
+  "stock_entry": "00107844",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zlog_register_work.c",
+    "sha256": "c98fe4bb0227f5fca30ba6a91e1acb03d04490780df09eaab2d66c424593b1c7"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "cc976c5f4202556d9e9430f5b40ea3d94847341679b5bb493b96999c0c08d81f",
+    "size": 24696416
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 44,
+    "candidate_symbol_bytes": 44,
+    "stock_instructions": 11,
+    "candidate_instructions": 11,
+    "stock_relocations": 3,
+    "candidate_relocations": 3,
+    "stock_cfg_blocks": 3,
+    "candidate_cfg_blocks": 3,
+    "stock_direct_calls": 1,
+    "candidate_direct_calls": 1
+  },
+  "kcfi": {
+    "function_type_id": "0xa607748c",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "efefb00a1b3d317833063c3a26a9c52da2c2782a9f11babdaa2da0f7790a2852"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next107_zlog_register_work_exact_v1/build_report.json",
+      "sha256": "a7a07955d7055362aabcdd14577fd87466b4d3c62abc6c3491892c36ff214609"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next107_zlog_register_work_exact_v1/host_harness_report.json",
+      "sha256": "712993638122511f1e0f706305f39879de700674b393bdb01eaf098b9c6fce36"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next107_zlog_register_work_exact_v1/joern_gate_summary.json",
+      "sha256": "dabb7345103bfd75caad4defd7614000d02cf9629981eec8e1aa597f2aa234b5"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next107_zlog_register_work_exact_v1/assembly_comparison.json",
+      "sha256": "49bbb4602a678c35b5af937b85078881b020d2fa7695be935f0ce78e6bebe345"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next107_zlog_register_work_exact_v1/kcfi_comparison.json",
+      "sha256": "83d7e97b84bd0353928f14d4fe83d8d1fa3392f322a98cb22e4569db5d6def49"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next107_zlog_register_work_exact_v1/cfg_comparison.json",
+      "sha256": "4b19efac04f0524a02472faac0c993b613857912e83e3d3b1ac5cb2b10834ac2"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only zlog_register_work.",
+    "The stock callback intentionally has no null guard before reading tpd_cdev + 0xbf0; the exact reconstruction preserves that precondition.",
+    "No ADB, fastboot, module load, scheduler timing, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "The blocked syna_cdev_ioctl_raw_read and syna_cdev_ioctl_raw_write candidates are not part of this build or commit."
+  ]
+}

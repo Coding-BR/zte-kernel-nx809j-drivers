@@ -1,40 +1,330 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-07-26
+## Estado Atual - 2026-08-28
 
 - **Classificacao do build:** `static_verified`
-- **Veredito do protocolo offline:** `INCOMPLETE`
+- **Veredito do protocolo offline:** `STATIC_STRUCTURAL_REBASE_PASS_SEMANTIC_AND_HARDWARE_GATES_OPEN`
 - **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64
 - **Stock SHA-256:** `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`
-- **Candidato SHA-256:** `b61147c14f3db7f69f1ef705f63379cd96219a923763854d46c0c8142246c5ea`
-- **Candidato:** `24714984` bytes
+- **Candidato SHA-256:** `55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce`
+- **Candidato:** `6309176` bytes
 - **Teste em hardware desta revisao:** nao executado
+
+## Reconsolidação atual — 2026-09-04
+
+O candidato rastreado foi reconsolidado a partir da árvore curada usada pelo
+Docker. O SHA-256 atual é
+`55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce`.
+
+- Docker canônico: `2/2` ciclos reproduzíveis, sem diagnósticos;
+- KCFI recuperável: `322/322` funções stock compatíveis;
+- decomposição publicada: `367/367` funções Ghidra/P-Code/Assembly;
+- microtarefas: `367/367` em `PROMOTED_OFFLINE_EXACT`;
+- atestação: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/reconsolidation_20260904_v1/`;
+- revisão independente, semântica integral e hardware: ainda `DEFERRED`/`PENDING`.
+
+Esta reconsolidação não é uma declaração de equivalência comportamental
+integral nem de validação no NX809J.
 
 `static_verified` descreve build, ELF, KMI, layouts e rastreabilidade
 estrutural. Nao significa equivalencia semantica integral nem validacao de
 hardware.
 
-## Gates Offline
+## Gates Offline — lote `hard_final_exact_v1_20260828`
 
 PASS:
 
-- O0 identidade e escopo;
-- O1 ELF stock local;
-- O2 assembly stock integral;
-- O3 exports Ghidra, pseudocodigo e P-Code;
-- O4 mapa estrutural `367/367`, incluindo nomes duplicados por endereco;
-- O5 ABI/layout com probe compilado no Clang `r536225`;
-- O8 KCFI da superficie selecionada `176/176`, incluindo as oito familias
-  recuperadas `143/143`.
+- Docker: 2/2 ciclos limpos e reprodutiveis; candidato igual aos dois builds;
+- Assembly estrito: `367/367`, zero falhas;
+- Mapa estrutural: `367/367`, incluindo nomes duplicados por endereco;
+- ABI/KMI: PASS, com imports, exports, aliases, modversions e vermagic compativeis;
+- KCFI integral recuperavel: `322/322`, zero divergencias e zero candidato ausente;
+- Inventario ELF: cobertura de fonte completa e simbolos stock presentes;
+- Testes da pipeline: `272/272`.
 
-INCOMPLETE:
+GATES ABERTOS:
 
-- O6: `200/367` microtarefas possuem build, decisao KCFI, Joern estrito e
-  teste direto atestados;
-- O8/O9: a superficie KCFI integral recuperavel esta em `311/322`;
-- O10: revisao independente ainda nao foi realizada.
+- O6: `58 PASS + 247 PROMOTED_OFFLINE_EXACT`; `36` funcoes receberam o gate
+  Joern estrito completo nesta revisao. Permanecem `62` microtarefas sem teste
+  direto atual compatível para uma atestacao integral;
+- O10: revisao independente por pessoa que nao implementou a reconstrucao;
+- Joern: achados de usercopy, locks e lifetime ainda exigem revisao humana;
+- Semantica: identidade estrutural de assembly nao prova equivalencia semantica;
+- Hardware: validacao controlada no NX809J permanece `DEFERRED`.
 
-Hardware permanece `DEFERRED`.
+## Gate Joern completo - atestacao `full_joern_driver_v1`
+
+O gate Joern estrito de escopo integral passou com `367/367` funcoes de fonte e
+`367/367` funcoes stock resolvidas, zero problemas de parsing e arvore de fonte
+hash-bound `375a6fd12af05cd8ad3639f2adc3f17d90155cb4f98845fdef07b34fd2682311`.
+Foi necessario um `source view` de analise com `defs.h` forcado para que o
+decompilado `tpd_touch_report.c` fosse parseavel; essa arvore e explicitamente
+proibida como entrada de build.
+
+O relatorio produziu `783` achados de revisao estatica, sobretudo de lifetime,
+sincronizacao e usercopy. Eles permanecem pendentes de revisao humana e nao
+representam uma aprovacao de seguranca. A evidencia versionada esta em
+`../../../../reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_joern_driver_v1/`.
+
+O mapa canonico foi rebased para o candidato final e validado por
+`bind_candidate_source_map.py --check`. O mapa anterior foi preservado em
+`C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers\reverse_engineering\validation\reconstructed\zte_tpd\attestation\hard_final_exact_v16_20260828\canonical_before_rebase_reconstruction_map.json`.
+
+## Checkpoint Final v16 — Resolucao dos dois gaps de assembly
+
+O lote final resolveu `syna_tcm_buf_copy` e `zte_touch_probe`, elevando a
+comparacao global de `365/367` para `367/367`. A evidencia hash-bound esta em
+`C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers\reverse_engineering\validation\reconstructed\zte_tpd\attestation\hard_final_exact_v16_20260828\`.
+
+O resultado continua sendo parcial: nao declara 100%, equivalencia semantica,
+revisao independente ou validacao em hardware.
+
+## Checkpoint Next105 - Copia PAL Fixa de 16 Bytes
+
+`242_syna_pal_mem_cpy` foi promovida para `PASS` somente pelo protocolo
+offline. A identidade stock e `syna_pal_mem_cpy@0011da1c`; a funcao retorna
+imediatamente para ponteiros nulos, registra o tamanho invalido abaixo de 16
+e copia exatamente dois words de 64 bits nos demais casos. O formato stock de
+log e seus tres argumentos foram recuperados do assembly e relocacoes.
+
+O candidato preserva os `84` bytes e as `21` instrucoes AArch64, incluindo o
+par `ldp/stp`, e ambos os lados possuem `NO_VALID_KCFI_PREAMBLE`. O harness
+ASan/UBSan passou duas repeticoes de quatro contratos. Joern estrito passou
+para a entrada exata, sem deltas de chamadas ou problemas de parsing. Dois
+builds canonicos produziram o SHA-256
+`6e31ce7cc7a96090987c2cf13d1372e89596f29984653fb2cba0438a1284e010`.
+
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `211 PASS / 156 restantes`; o
+driver continua `INCOMPLETE`. A evidencia esta em
+`../../validation/zte_tpd/attestation/next105_pal_mem_cpy_0_v1/`.
+
+## Checkpoint Next104 - Liberacao PAL com Guarda de Memoria
+
+`314_syna_pal_mem_free` foi promovida para `PASS` somente pelo protocolo
+offline. O alvo stock foi selecionado pela identidade
+`syna_pal_mem_free@001284c0`, pois o modulo contem outra funcao com o mesmo
+nome. Ghidra/P-Code e assembly confirmam a sequencia: obter o dispositivo
+gerenciado, registrar `Invalid managed device` quando ele for nulo e chamar
+`devm_kfree` somente quando dispositivo e memoria forem nao nulos.
+
+O candidato preserva exatamente os `80` bytes e as `19` instrucoes AArch64 do
+corpo stock. Ambos os lados possuem `NO_VALID_KCFI_PREAMBLE`; portanto, esta
+microtarefa nao declara um type ID KCFI. O harness ASan/UBSan passou duas
+repeticoes de tres contratos: liberar memoria valida, ignorar memoria nula e
+registrar a falha de dispositivo nulo.
+
+O Joern estrito passou com o seletor de identidade exata, uma funcao stock e
+uma funcao-fonte, sem deltas de chamadas ou problemas de parsing. A revisao
+estatistica de lifetime para `devm_kfree` permanece registrada como achado de
+revisao e nao como confirmacao de hardware. Dois builds canonicos produziram
+o mesmo modulo SHA-256
+`37c4f1e3cff2ba79d5ea42a028dd65f0ecc6577a2f2e4d64504a36139df9dc5b`.
+
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `210 PASS / 157 restantes`; o
+driver continua `INCOMPLETE`. A evidencia esta em
+`../../validation/zte_tpd/attestation/next104_pal_mem_free_base_v1/`.
+
+## Checkpoint Next103 - Liberacao de Memoria PAL Synaptics
+
+`319_syna_pal_mem_free` foi promovida para `PASS` somente pelo protocolo
+offline. O alvo stock foi selecionado pela identidade
+`syna_pal_mem_free@0012a4ec`, pois o modulo contem outra funcao com o mesmo
+nome. Ghidra, P-Code e assembly comprovam a sequencia: obter o dispositivo
+gerenciado, chamar `devm_kfree(dispositivo, memoria)` quando ele existe e, no
+ramo nulo, registrar exatamente `"[error] %s: Invalid managed device\\n"`
+com o nome `syna_pal_mem_free`.
+
+O candidato preserva `76` bytes, `19` instrucoes, secao `.text`, chamadas e
+relocacoes de strings. O preambulo KCFI esta ausente nos dois lados porque os
+quatro bytes anteriores ao alvo stock pertencem a funcao anterior; a decisao
+hashada e `BOTH_NO_VALID_KCFI_PREAMBLE`, nao uma equivalencia de type ID. O
+harness de producao passou tres contratos em dois ciclos ASAN/UBSAN com
+binarios identicos, inclusive o encaminhamento de um ponteiro de memoria nulo
+para `devm_kfree` quando o dispositivo existe.
+
+O Joern 4.0.548 passou no modo estrito, sem delta de chamadas e sem problema
+de parser. Ele mantem `devm_kfree(managed_device, memory)` como achado de
+revisao de ciclo de vida de severidade alta; isso e um ponto de auditoria
+estatica, nao uma prova de erro ou de comportamento no hardware.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next103_pal_mem_free_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `209 PASS / 158 restantes`; o
+driver continua `INCOMPLETE`.
+
+## Checkpoint Next102 - Callback Customizado de Gestos TCM
+
+`322_syna_tcm_set_custom_gesture_callback` foi promovida para `PASS` somente
+pelo protocolo offline. Ghidra e P-Code comprovam contexto em `+0x3c8`,
+callback em `+0x3d0`, retorno zero para `tcm` nao nulo e log com retorno
+`-241` no ramo nulo.
+
+Dois builds canonicos independentes produziram o modulo
+`1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+Assembly AArch64 confirmou `72` bytes e `18` instrucoes, KCFI
+`0x1e333d0b` e Joern v4.0.548 estrito passaram. O harness usa padding
+explicito, valida armazenamento, sobrescrita, log e retorno em dois ciclos
+ASAN/UBSAN com binarios identicos.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next102_custom_gesture_callback_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+gesto, touch, firmware ou display foi executado. O contador global e `208 PASS
+/ 159 restantes`; o driver continua `INCOMPLETE`.
+
+## Checkpoint Next101 - Callback Customizado de Entidade Touch TCM
+
+`321_syna_tcm_set_custom_touch_entity_callback` foi promovida para `PASS`
+somente pelo protocolo offline. Ghidra e P-Code comprovam callback em `+0x3c0`,
+contexto em `+0x3b8`, retorno zero para `tcm` nao nulo e log com retorno `-241`
+no ramo nulo.
+
+Dois builds canonicos independentes produziram o modulo
+`1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+Assembly AArch64, KCFI `0x1e333d0b` e Joern v4.0.548 estrito passaram. O
+harness usa padding explicito, valida armazenamento, sobrescrita, log e retorno
+em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next101_custom_touch_callback_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+touch, firmware ou display foi executado. O contador global e `207 PASS / 160
+restantes`; o driver continua `INCOMPLETE`.
+
+## Checkpoint Next100 - Registro de Dispatcher de Relatorio TCM
+
+`290_syna_tcm_set_report_dispatcher` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra e P-Code comprovam indexacao `u8 * 0x10`, contexto
+em `+0x3d8`, callback em `+0x3e0`, aviso para codigos menores que `0x10`, log
+de registro em todos os codigos e erro `-241` quando `tcm` e nulo.
+
+Dois builds canonicos independentes produziram o modulo
+`1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+Assembly AArch64, KCFI `0x6f1c1b70` e Joern v4.0.548 estrito passaram. O
+harness valida os indices `0x0f` e `0xff`, os dois stores, os tres contratos
+de log e o caminho nulo em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next100_report_dispatcher_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+touch, firmware ou display foi executado. O contador global e `206 PASS / 161
+restantes`; o driver continua `INCOMPLETE`.
+
+## Checkpoint Next99 - Limpeza de Duplicadores de Dados TCM
+
+`292_syna_tcm_clear_data_duplicator` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra e P-Code comprovam `memset` de exatamente `0x1000`
+bytes a partir de `tcm + 0x13d8`, retorno zero para `tcm` nao nulo e, no ramo
+nulo, o log stock e retorno `-241`.
+
+Dois builds canonicos independentes produziram o modulo
+`1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+Assembly AArch64, KCFI `0xd57a6509` e Joern v4.0.548 estrito passaram. O
+harness usa padding explicito, 256 entradas e guardas de fronteira para provar
+que apenas o intervalo de `0x1000` bytes e apagado em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next99_clear_data_duplicator_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+touch, firmware ou display foi executado. O contador global e `205 PASS / 162
+restantes`; o driver continua `INCOMPLETE`.
+
+## Checkpoint Next98 - Registrador de Duplicador de Dados TCM
+
+`291_syna_tcm_set_data_duplicator` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra, P-Code e assembly stock comprovam que, com `tcm`
+nao nulo, `report_code` e estendido como `u8`, multiplicado por `0x10`, e
+endereca uma entrada cujo contexto recebe `callback_data` em `+0x13d8` e cujo
+callback recebe `callback` em `+0x13e0`, nesta ordem. O retorno e zero. Com
+`tcm` nulo, a funcao registra o erro e retorna `-241`.
+
+Dois builds canonicos independentes, com caminhos `M=` diferentes, produziram
+o modulo `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+O confronto AArch64 confirmou exatamente `76` bytes, `19` instrucoes e quatro
+relocacoes de strings equivalentes ao stock; KCFI confirmou o type ID
+`0x6f1c1b70`. O Joern v4.0.548 passou em modo estrito, sem problemas de parser
+ou chamadas nao resolvidas. O harness host inclui a fonte de producao sob uma
+`struct tcm_dev` com padding explicito e 256 entradas de 16 bytes; cobriu os
+indices `0` e `0xff`, preservacao da entrada zero, caminho nulo, log e retorno
+em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next98_data_duplicator_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real,
+touch, firmware ou display foi executado. O contador global e `204 PASS / 163
+restantes`; o driver continua `INCOMPLETE`.
+
+## Checkpoint Next97 - Callback Pos-Reset TCM
+
+`294_syna_tcm_set_post_reset_callback` foi promovida para `PASS` somente pelo
+protocolo offline. Ghidra, P-Code e assembly stock comprovam que, quando `tcm`
+nao e nulo, o callback e escrito em `+0x23e0`, o contexto em `+0x23d8` e o
+retorno e zero. Para `tcm` nulo, a funcao registra o erro e retorna `-241`.
+
+Dois builds canonicos independentes, com caminhos `M=` diferentes, produziram
+o modulo `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+O confronto AArch64 confirmou exatamente `72` bytes e `18` instrucoes; KCFI
+confirmou o type ID `0xef5efc68`. O Joern v4.0.548 passou em modo estrito, sem
+problemas de parser ou chamadas nao resolvidas. O harness host inclui a fonte
+de producao sob um layout de `struct tcm_dev` com padding explicito, e cobriu
+armazenamento, sobrescrita, caminho nulo, log e retorno em dois ciclos
+ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next97_post_reset_callback_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, callback real, touch,
+firmware ou display foi executado. O contador global e `203 PASS / 164
+restantes`; o driver continua `INCOMPLETE`.
+
+## Checkpoint Next96 - Abertura do Character Device
+
+`177_syna_open` foi promovida para `PASS` somente pelo protocolo offline. O
+pseudocodigo, P-Code e assembly stock comprovam a leitura de
+`file->private_data` no offset `0x20`, a subtracao de `0x4a0`, a escrita no
+mesmo offset, a chamada a `_printk` e retorno zero. A fonte reproduz o formato
+`KERN_INFO "[info ] %s: zte_evice open\\n"` com o nome `"syna_open"`, sem
+introduzir estado, alocacao, lock ou acesso ao hardware.
+
+Dois builds canonicos independentes, com caminhos `M=` diferentes, produziram
+o modulo `1b8a371bf85ec62a65381fce06cdb8e720625f1aa60b9a2280fb167de78251ef`.
+O confronto AArch64 confirmou exatamente `60` bytes, `15` instrucoes e quatro
+relocacoes de strings equivalentes ao stock; KCFI confirmou o type ID
+`0x9829071d`. O Joern v4.0.548 passou em modo estrito, sem problemas de parser
+ou chamadas nao resolvidas. O harness host inclui `syna_open.c` sob stubs
+minimos e cobriu `inode` nulo e nao nulo, o ajuste de `private_data`, formato
+de log e retorno em dois ciclos ASAN/UBSAN.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next96_syna_open_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `202 PASS / 165 restantes`; o
+driver continua `INCOMPLETE`.
+
+## Checkpoint Next95 - Release do Character Device
+
+`178_syna_release` foi promovida para `PASS` somente pelo protocolo offline.
+O pseudocodigo e P-Code stock do Ghidra mostram uma unica chamada a `_printk`
+com o nivel `KERN_INFO`, a mensagem `"[info ] %s: zte_evice close\n"`, o nome
+`"syna_release"` e retorno zero. A fonte agora reproduz esse contrato sem
+adicionar estado, alocacao, lock ou acesso ao hardware.
+
+Dois builds canonicos independentes da arvore limpa produziram o modulo
+`3e474fe04f58561048794ccbc4f36e9d88df25aa1d7d3486c6d2618b76bf82ab`.
+O confronto AArch64 confirmou 48 bytes, 12 instrucoes e quatro relocacoes de
+strings equivalentes ao stock; KCFI confirmou o type ID `0x9829071d`. O Joern
+v4.0.548 passou em modo estrito, sem problemas de parser, sobre a arvore de
+fonte hashada. O harness host inclui o arquivo de producao `syna_release.c`
+sob stubs minimos e cobriu argumentos nulos, apenas `inode` e ambos os
+argumentos em dois ciclos ASAN/UBSAN, validando o formato de log e retorno.
+
+A evidencia hashada esta em
+`reverse_engineering/validation/reconstructed/zte_tpd/attestation/next95_syna_release_v1/`.
+Nenhum modulo foi carregado e nenhum teste em smartphone, touch, firmware ou
+display foi executado. O contador global e `201 PASS / 166 restantes`; o
+driver continua `INCOMPLETE`.
 
 ## Checkpoint Next94 - Modo de Fingerprint com Tela Ligada
 

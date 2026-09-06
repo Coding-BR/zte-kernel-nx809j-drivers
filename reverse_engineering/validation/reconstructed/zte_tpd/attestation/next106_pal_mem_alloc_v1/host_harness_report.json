@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "syna_pal_mem_alloc"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "765500d383e8ef9d7754a22133f7d3970dd989a68a87ea3ab0b0069986a17c1e",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next106-pal-mem-alloc-v2\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next106-pal-mem-alloc",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_pal_mem_alloc_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next106-pal-mem-alloc-v2\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_pal_mem_alloc host tests (3 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "765500d383e8ef9d7754a22133f7d3970dd989a68a87ea3ab0b0069986a17c1e",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next106-pal-mem-alloc-v2\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next106-pal-mem-alloc",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_pal_mem_alloc_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next106-pal-mem-alloc-v2\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_pal_mem_alloc host tests (3 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 3,
+  "generated_utc": "2026-07-30T23:41:50.159330+00:00",
+  "inputs": [
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_pal_mem_alloc_host_test.c",
+      "sha256": "830dd541a294bf01bdc2eea2adfb1d9b49467345eeca84db163483aa5412ee8b",
+      "size": 2902
+    },
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_pal_mem_alloc.c",
+      "sha256": "8fa3e57bd3fdd793861a70834c8e0433a3401ae701292b70750ce49badc2da9c",
+      "size": 425
+    }
+  ],
+  "limitations": [
+    "The harness validates the managed-device branch, signed size guard, allocation arguments, and logger contracts.",
+    "It does not load the module on an Android device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_pal_mem_alloc_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "syna_pal_mem_alloc",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

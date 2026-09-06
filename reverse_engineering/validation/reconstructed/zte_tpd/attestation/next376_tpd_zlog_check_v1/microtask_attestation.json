@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tpd_zlog_check",
+  "source_function": "tpd_zlog_check",
+  "stock_function": "tpd_zlog_check",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "PASS",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_and_normalized_relocation_parity": "PASS"
+  },
+  "semantic_contract": [
+    "Trap with brk #0x5512 when error_no is outside the 0..18 valid range.",
+    "If the error was previously counted less than 60000 milliseconds ago, log the repeat, increment the count and return -EIO.",
+    "At or beyond the 60000 millisecond boundary, increment the count and return zero.",
+    "Use the proven ztp_device zlog_item count and timer offsets without adding a runtime bounds policy that stock does not have."
+  ],
+  "unverified": [
+    "Actual kernel jiffies conversion and concurrent access behavior.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "tpd_zlog_check_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "aarch64_validation_report.json"
+  }
+}

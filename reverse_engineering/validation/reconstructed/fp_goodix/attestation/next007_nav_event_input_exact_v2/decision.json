@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "nav_event_input",
+  "stock_function": "nav_event_input",
+  "stock_entry": "0010116c",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "basis": "Fresh candidate Ghidra boundary repair followed by exact normalized Ghidra/P-Code comparison, AArch64 instruction and relocation parity, two reproducible Docker builds, direct-call KCFI decision, strict Joern scope and navigation host tests.",
+  "gates": {
+    "candidate_ghidra_pcode": "PASS",
+    "assembly_relocations": "PASS",
+    "docker_reproducible": "PASS",
+    "kcfi": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+    "joern_scoped": "PASS",
+    "joern_slice": "PASS",
+    "host_harness": "PASS"
+  },
+  "body_bytes": 464,
+  "instruction_count": 116,
+  "candidate_module_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+  "stock_module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "ghidra_boundary_repair": {
+    "script": "reverse_engineering/tools/ExtendGhidraFunctionBody.java",
+    "function": "nav_event_input",
+    "requested_body_bytes": 464,
+    "candidate_export": "offline_static/ghidra_candidate_20260902_nav_repaired",
+    "candidate_manifest_sha256": "6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23"
+  },
+  "limitations": [
+    "The KCFI decision records that the stock function has no valid indirect KCFI boundary; the candidate preamble is extra compiler instrumentation and is not claimed as a stock type-ID match.",
+    "This is static/offline function-level evidence; hardware behavior on NX809J remains unverified.",
+    "The promotion does not claim that the remaining unpromoted fp_goodix functions are complete."
+  ]
+}

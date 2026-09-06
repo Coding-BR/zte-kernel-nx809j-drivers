@@ -1,0 +1,1 @@
+savedcmd_/work/engineering/curated/fp_goodix/fp_goodix.mod := printf '%s\n'   fp_goodix_core.o fp_goodix_netlink.o fp_goodix_platform.o gf_ioctl_exact.o gf_parse_dts_exact.o fp_goodix_exact_rodata.o fp_goodix_inline_exact.o | awk '!x[$$0]++ { print("/work/engineering/curated/fp_goodix/"$$0) }' > /work/engineering/curated/fp_goodix/fp_goodix.mod

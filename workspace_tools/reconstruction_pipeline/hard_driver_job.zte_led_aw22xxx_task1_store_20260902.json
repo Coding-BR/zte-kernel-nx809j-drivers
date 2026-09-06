@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["HARDWARE_BUS", "STATEFUL_MEMORY", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "aw22xxx_task1_store",
+    "stock_entry": "001048e0",
+    "source_function": "aw22xxx_task1_store",
+    "candidate_function": "aw22xxx_task1_store",
+    "kcfi_required": true,
+    "assembly_only": false
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "C:/Users/adria/Desktop/drivers/ghidra_nav_repair_20260902/zte_led_task1_store_candidate_ghidra_20260902_v1/export/zte_led.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "kcfi": {
+    "stock_type_id": "0x95c41a97",
+    "stock_body_bytes": 192
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "fallback_reason": "aw22xxx_task1_store is a 192-byte KCFI-protected sysfs parser/store; strict Assembly/relocation, KCFI and fresh Ghidra C/P-Code evidence must preserve sscanf parsing, task1 byte offset 0x2ed, printk branches and return propagation.",
+    "fallback_evidence": "No semantic fallback is authorized unless fresh candidate C/P-Code proves a named Ghidra rendering artifact while binary identity, exact P-Code and independent gates remain exact."
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_led",
+    "define": [],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

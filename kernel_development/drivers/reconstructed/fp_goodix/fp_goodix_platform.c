@@ -69,28 +69,34 @@ err_select:
 	return ret;
 }
 
-int gf_parse_dts(struct gf_dev *gf_dev)
+static int __maybe_unused gf_parse_dts_source_reference(struct gf_dev *gf_dev)
 {
 	struct platform_device *pdev = gf_dev->pdev;
 	struct device_node *np = pdev->dev.of_node;
 	int ret;
 
 	ret = zte_goodix_pinctrl_init(gf_dev);
-	if (!ret && gf_dev->pinctrl)
-		goto parse_pinctrl;
-
-	pr_err("%s: failed to init pinctrl, rc=%d\n", __func__, ret);
-err_parse:
-	pr_err("%s: gf_dev-gf_parse_dts. failed to parse dt, rc=%d\n",
-		__func__, ret);
-	return ret;
-
-parse_pinctrl:
-	ret = zte_goodix_pinctrl_select(gf_dev, false);
-	if (ret < 0) {
-		pr_err("%s: Failed to select pin to suspend state.\n", __func__);
+	if (ret || !gf_dev->pinctrl) {
+		pr_err("%s: failed to init pinctrl, rc=%d\n", __func__, ret);
 		goto err_parse;
 	}
+
+	pr_info("%s: enter, state=%d\n", "zte_goodix_pinctrl_select", 0);
+	if (IS_ERR_OR_NULL(gf_dev->pins_suspend)) {
+		dev_err(&gf_dev->pdev->dev, "not a valid '%s' pinstate\n",
+			"goodix_suspend");
+		ret = -EINVAL;
+		goto err_select;
+	}
+
+	ret = pinctrl_select_state(gf_dev->pinctrl, gf_dev->pins_suspend);
+	if (ret) {
+		dev_err(&gf_dev->pdev->dev, "can not set %s pins\n",
+			"goodix_suspend");
+		if (ret < 0)
+			goto err_select;
+	}
+
 	pr_info("%s, gf_dev-gf_parse_dts. set reset gpio suspend state\n",
 		__func__);
 	usleep_range(10000, 10100);
@@ -162,11 +168,20 @@ parse_pinctrl:
 	pr_info("%s: end, gf_dev-gf_parse_dts. rc=%d\n", __func__, ret);
 	return ret;
 
+err_select:
+	pr_err("%s: Failed to select pin to suspend state.\n", __func__);
+	goto err_parse;
+
 err_reset:
 	pr_err("%s: gf_dev-gf_parse_dts. err_reset\n", __func__);
 err_pwr:
 	pr_err("%s: gf_dev-gf_parse_dts. err_pwr\n", __func__);
 	goto err_parse;
+
+err_parse:
+	pr_err("%s: gf_dev-gf_parse_dts. failed to parse dt, rc=%d\n",
+		__func__, ret);
+	return ret;
 }
 
 void gf_cleanup(struct gf_dev *gf_dev)

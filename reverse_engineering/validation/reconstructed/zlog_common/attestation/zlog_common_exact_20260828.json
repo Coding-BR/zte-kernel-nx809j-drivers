@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "generated_local": "2026-08-28T11:27:41-03:00",
+  "driver": "zlog_common",
+  "verdict": "STATIC_STRONG_PARITY_REVIEW_AND_HARDWARE_PENDING",
+  "not_authorized_for_100_percent_claim": true,
+  "stock": {
+    "path": "reference_modules/full_vendor_boot/zlog_common.ko",
+    "sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+    "size": 34712
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zlog_common/zlog_common.ko",
+    "sha256": "4df05370ac748ab830a32b57029d7f3f8f2dda291718ab5be1c93d092a118297",
+    "size": 237440
+  },
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zlog_common/zlog_common.c",
+    "sha256": "56079b4a64b5a0183bcb8286a72236030fc225a6cefbbc4eca1ed777c75f9145",
+    "reconstruction_map_sha256": "f7b5048c7ea0eb80bf22bb4561112d6014073fa5c8d2da1f36103d1cab35b970"
+  },
+  "method": {
+    "exact_materialization": [
+      "zlog_client_record",
+      "zlog_register_client",
+      "zlog_unregister_client",
+      "zlog_handle_work"
+    ],
+    "preserved_sections": [
+      ".rodata.str1.1",
+      ".codetag.alloc_tags",
+      ".data..percpu",
+      "__jump_table"
+    ],
+    "support_asset_sha256": {
+      "stock_rodata_str.bin": "60060888e974544380194137f0b6bdaf03737787573ba7636e74eb33f18078d9",
+      "stock_codetag.bin": "dcdd6d8b83c8ec00f4c6661cf3a1593ab19a3736681d75c7b502496da32b327b",
+      "stock_percpu.bin": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925",
+      "stock_jump_table.bin": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925"
+    }
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+  },
+  "gates": {
+    "clean_build_cycle_1": {
+      "sha256": "4df05370ac748ab830a32b57029d7f3f8f2dda291718ab5be1c93d092a118297",
+      "size": 237440
+    },
+    "clean_build_cycle_2": {
+      "sha256": "4df05370ac748ab830a32b57029d7f3f8f2dda291718ab5be1c93d092a118297",
+      "size": 237440
+    },
+    "assembly": {
+      "passed": true,
+      "checked_functions": 13,
+      "manifest_sha256": "5661482ea9ebbfe3a8fdd3ffc185ff2878b21c8d766307c7f9a3285552522b0a",
+      "report_sha256": "785f9a32cc05f7dd9aa08716d5a3c35f630367488d62c9e2c651c2afb9cc26a5"
+    },
+    "kcfi": {
+      "passed": true,
+      "checked_functions": 13,
+      "report_sha256": "61b67d1a5243938d548a24f7b9dea3a77b57226c1559b21b7570270b17226bbf"
+    },
+    "abi": {
+      "passed": true,
+      "report_sha256": "f7f6d17914ae984c682ce39a91bdd0463e4d478fc48bcc330fab14981f7c14f0"
+    },
+    "symbol_inventory": {
+      "passed": true,
+      "source_coverage": "13/13",
+      "report_sha256": "db0ef32ffa79a36bb841445c4b437325af97b78c90caaf0bb49549402a35275"
+    },
+    "host_harness": {
+      "passed": true,
+      "reproducible": true,
+      "report_sha256": "819a42f1f51fe37f8be2965c7568bc92ea926417f93de55c83fc3c96b72c92aa"
+    }
+  },
+  "remaining_gates": {
+    "independent_review": "PENDING",
+    "controlled_hardware": "DEFERRED",
+    "semantic_unobservable_behavior": "NOT_PROVEN"
+  },
+  "repository_evidence": {
+    "candidate_assembly": "reverse_engineering/validation/reconstructed/zlog_common/offline_static/candidate_assembly_exact_20260828",
+    "reports": [
+      "reverse_engineering/validation/reconstructed/zlog_common/attestation/assembly_comparison_exact_20260828.json",
+      "reverse_engineering/validation/reconstructed/zlog_common/attestation/kcfi_comparison_exact_20260828.json",
+      "reverse_engineering/validation/reconstructed/zlog_common/attestation/abi_audit_exact_20260828.json",
+      "reverse_engineering/validation/reconstructed/zlog_common/attestation/symbol_inventory_exact_20260828.json",
+      "reverse_engineering/validation/reconstructed/zlog_common/attestation/host_test_report_exact_20260828.json"
+    ]
+  }
+}

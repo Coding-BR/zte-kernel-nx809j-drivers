@@ -1,0 +1,117 @@
+{
+  "aarch64": {
+    "compile_command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target367\\harness:/work/output",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+      "nubia-sm8850-kernel-builder:latest",
+      "sh",
+      "-lc",
+      "/toolchains/clang-r536225/bin/clang -target aarch64-linux-gnu -std=gnu11 -O2 -ffreestanding -fno-builtin -Wall -Wextra -Werror -c /work/output/cleanup_module_under_test.c -o /work/output/aarch64/cleanup_module.o"
+    ],
+    "compile_returncode": 0,
+    "compile_stderr": "",
+    "compile_stdout": "",
+    "objdump_command": [
+      "docker",
+      "run",
+      "--rm",
+      "--entrypoint",
+      "/toolchains/clang-r536225/bin/llvm-objdump",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target367\\harness:/work/output:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+      "nubia-sm8850-kernel-builder:latest",
+      "-dr",
+      "/work/output/aarch64/cleanup_module.o"
+    ],
+    "objdump_returncode": 0,
+    "objdump_stderr": "",
+    "objdump_stdout": "\n/work/output/aarch64/cleanup_module.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .text:\n\n0000000000000000 <cleanup_module>:\n       0: a9bf7bfd     \tstp\tx29, x30, [sp, #-0x10]!\n       4: 910003fd     \tmov\tx29, sp\n       8: 94000000     \tbl\t0x8 <cleanup_module+0x8>\n\t\t0000000000000008:  R_AARCH64_CALL26\tsyna_dev_module_exit\n       c: aa1f03e0     \tmov\tx0, xzr\n      10: aa1f03e1     \tmov\tx1, xzr\n      14: aa1f03e2     \tmov\tx2, xzr\n      18: 94000000     \tbl\t0x18 <cleanup_module+0x18>\n\t\t0000000000000018:  R_AARCH64_CALL26\tzte_touch_deinit\n      1c: 90000000     \tadrp\tx0, 0x0 <cleanup_module>\n\t\t000000000000001c:  R_AARCH64_ADR_GOT_PAGE\tzte_touch_device_driver\n      20: f9400000     \tldr\tx0, [x0]\n\t\t0000000000000020:  R_AARCH64_LD64_GOT_LO12_NC\tzte_touch_device_driver\n      24: a8c17bfd     \tldp\tx29, x30, [sp], #0x10\n      28: 14000000     \tb\t0x28 <cleanup_module+0x28>\n\t\t0000000000000028:  R_AARCH64_JUMP26\tplatform_driver_unregister\n",
+    "object": {
+      "exists": true,
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target367\\harness\\aarch64\\cleanup_module.o",
+      "sha256": "6b882d84fae7b5045ca3922a7a9624a14bcf3e1459cb74f1752d278a22c365cc"
+    },
+    "passed": true
+  },
+  "coverage": {
+    "driver_unregister_last": true,
+    "hardware_paths_exercised": false,
+    "module_exit_first": true,
+    "touch_deinit_second": true,
+    "zero_arguments": true
+  },
+  "driver": "zte_tpd",
+  "function": "cleanup_module",
+  "generated_utc": "2026-08-13T04:26:37.884341+00:00",
+  "host": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target367\\harness:/work/output",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+      "nubia-sm8850-kernel-builder:latest",
+      "sh",
+      "-lc",
+      "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -fsanitize=address,undefined -Wl,--build-id=none /work/workspace/kernel_development/drivers/validation/zte_tpd/host/cleanup_module_contract_test.c /work/output/cleanup_module_under_test.c -o /work/output/cleanup_module_host_test && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /work/output/cleanup_module_host_test"
+    ],
+    "executions": [
+      {
+        "cycle": 1,
+        "passed": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS cleanup_module host tests (1 case)\n"
+      },
+      {
+        "cycle": 2,
+        "passed": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS cleanup_module host tests (1 case)\n"
+      }
+    ],
+    "passed": true,
+    "repetitions": 2
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\cleanup_module.c",
+      "sha256": "4b0c005c1e6243ec181bdcc82c223f074e55ed8c68789b56c0a4688b3dd76288",
+      "size": 268
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\cleanup_module_contract_test.c",
+      "sha256": "8bd22ab2a277bd6c2ec5326f1945104da81c29392317406c30f067d2c5c75df4",
+      "size": 1577
+    }
+  ],
+  "limitations": [
+    "The host gate uses deterministic stubs for teardown calls.",
+    "The AArch64 gate verifies compilation and relocations only; it does not execute ARM64 code.",
+    "No smartphone, module unloading, SPI, IRQ, MMIO, firmware transport or hardware is exercised."
+  ],
+  "mode": "offline_cleanup_module_contract_and_aarch64_asan_ubsan",
+  "passed": true,
+  "schema_version": "1.0",
+  "transformation": {
+    "added_prelude": "#define __int64 long long\n#define __exit\nstruct platform_driver { unsigned long marker; };\nextern struct platform_driver zte_touch_device_driver;\nextern void platform_driver_unregister(struct platform_driver *);\n",
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target367\\harness\\cleanup_module_under_test.c",
+    "removed_prelude": "#include \"defs.h\"",
+    "sha256": "1afeae04f9d098d27c2ce25f021cdc8c777d3de295c90ca648b14c58fba9c46c",
+    "size": 462
+  }
+}

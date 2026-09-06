@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "target": "tpd_set_frame_data",
+  "candidate_module_sha256": "b3846357fa28119d1b6e05d825cbfd95758921b0ae3a00a780b8cff725741722",
+  "function": "tpd_set_frame_data",
+  "type_id": "0x6af8b499",
+  "symbol_size": 200,
+  "stock_body_bytes": 200,
+  "stock_reference_available": true,
+  "stock_reference": "0356_tpd_set_frame_data_0012c818.asm",
+  "critical_offsets": {
+    "device_context": "param_1 + 0xdb8",
+    "hardware_context": "plVar3 + 0x270",
+    "hardware_ready": "hardware_context + 0xb8",
+    "hardware_flags": "hardware_context + 0xbc",
+    "hardware_value": "(*plVar3) + 0x20c",
+    "controller_state": "plVar3 + 0x57c",
+    "frame_data": "plVar3 + 0x5e0"
+  },
+  "checks": {
+    "paciasp_autiasp_present_in_module": true,
+    "null_context_returns_einval": true,
+    "inactive_path_does_not_reset_or_call_getter": true,
+    "frame_data_stored_before_reset": true,
+    "reset_called_before_getter": true,
+    "hardware_flag_zero_path": true,
+    "getter_error_logged": true,
+    "symbol_size_matches_stock_body": true,
+    "stock_instruction_sequence_byte_identical": false
+  },
+  "status": "PASS_WITH_STOCK_PARITY_PENDING",
+  "limitations": [
+    "The isolated AArch64 object omits module PAC prologue/epilogue and external relocation resolution.",
+    "Stock comparison is based on Ghidra-derived assembly and body length; the original stock ELF bytes are unavailable."
+  ]
+}

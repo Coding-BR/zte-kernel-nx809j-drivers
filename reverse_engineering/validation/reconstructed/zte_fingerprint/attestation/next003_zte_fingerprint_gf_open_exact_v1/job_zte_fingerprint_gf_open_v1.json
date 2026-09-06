@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_fingerprint",
+  "stock_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "functions": [
+    {
+      "alias": "f000",
+      "identity": "gf_open@100de8",
+      "stock_function": "gf_open",
+      "source_function": "gf_open",
+      "stock_entry": "00100de8",
+      "kcfi_required": true,
+      "kcfi_type_id": "0x9829071d"
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_fingerprint",
+    "stock_module": "reference_modules/stock/zte_fingerprint.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_fingerprint/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_fingerprint/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/runs/zte_fingerprint_gf_open_protocol_20260905"
+  },
+  "kcfi": {"ignore_size": true},
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_fingerprint",
+    "define": ["__user", "__init", "__exit", "noinline"],
+    "slice": {"mode": "usages", "depth": 12, "parallelism": 1, "sink_filter": "(mutex|list|printk|request_threaded_irq|zlog|work)"}
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "040_inline_copy_from_user",
+  "stock_function": "_inline_copy_from_user",
+  "source_function": "zte_inline_copy_from_user",
+  "stock_entry": "0010a5c8",
+  "stock_body_bytes": 244,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "82d7d10642b1aafe251edab2f21bf6100ab6176e5e684c7fcf67d42252f58ae4",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 61,
+    "instruction_count_candidate": 61,
+    "symbol_size_stock": 244,
+    "symbol_size_candidate": 244,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+    "candidate_decision": "NO_VALID_KCFI_PREAMBLE",
+    "stock_type_id": null,
+    "candidate_type_id": null,
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "compatibility_defines": ["__user", "__init", "__exit"],
+    "excluded_paths": ["validation", "build"],
+    "review_findings": [],
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 5,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "normal_success",
+      "masked_success_skips_access_ok",
+      "access_denied_zeroes_destination",
+      "partial_copy_zeroes_tail",
+      "forced_failure_zeroes_destination"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "8f3152174a7ee1d71b40be966bff762f304d12bb0b20011bd059abd29d4c5eff",
+    "aarch64_comparison.json": "234f7d73f08a009427f6258414b0d2336dd83a30f65ec101aac93850ee26e24a",
+    "kcfi/comparison.json": "9e41d34da89515fd8855c3c76e0af122753dd386018c7fb0a2da328ce0859f2b",
+    "joern/joern_gate_report.json": "c70bfb033b1676df355264061275bbf1844be9d1ebc726b0c25220600c604595",
+    "host_harness_report.json": "afa0c46a4206673e55b200f902ddda4060e3193a9920c1b1f6f3766f28a97eda",
+    "candidate_source.c": "82d7d10642b1aafe251edab2f21bf6100ab6176e5e684c7fcf67d42252f58ae4",
+    "ghidra/decompiled.c": "a8297bcbbaa7e557d6f78db01ab20a6e9b296e79ec97dd4ad74159b2eaaa3df5",
+    "ghidra/pcode.jsonl": "0f482c17482a06ac031d98a8d7a67add8afed0a995b8625e3375fe8e18fef384",
+    "host/inline_copy_from_user_host_test.c": "ccbf372a683b81c738bc1b2f097dae8d025b42b5cda99ff7099e66e5e50f1eb1",
+    "pipeline/runner.py": "0fa34387148c4d6b2a74758fc3b58bc0ad99febd2813b783a91f72acd33d174b",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host harness replaces privileged TTBR/DAIF behavior with deterministic usercopy contracts.",
+    "No privileged AArch64 system-register instruction or physical NX809J hardware path is executed.",
+    "No valid KCFI preamble exists in either function, so there is no type ID to compare."
+  ]
+}

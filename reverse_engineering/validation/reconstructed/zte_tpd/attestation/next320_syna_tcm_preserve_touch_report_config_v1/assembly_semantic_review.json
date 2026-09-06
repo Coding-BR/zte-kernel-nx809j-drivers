@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_preserve_touch_report_config",
+  "stock_entry": "0012a53c",
+  "stock_assembly": "0319_syna_tcm_preserve_touch_report_config_0012a53c.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_preserve_touch_report_config_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "The typed transition preserves null/mode validation, command 0x25, transport-delay selection and write-error propagation.",
+    "The transition names the preserved buffer, response buffer and parser-state offsets proven by the stock Assembly/P-Code.",
+    "The transition preserves buffer reuse, managed reallocation, zeroing, response copy and the four format-state accumulators.",
+    "The host harness exercises both lock domains and verifies they are released on allocation and bounds failures in the typed transition.",
+    "The AArch64 Assembly fixture emits the complete typed target function and probe wrapper with Android clang target aarch64-linux-android34.",
+    "Joern confirms one mapped identity, zero mapped call deltas, zero unresolved calls and zero parser problems."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "joern_lifetime",
+      "finding": "Joern reports high-severity lifetime findings for devm_kfree and devm_kmalloc. The managed-device ownership and reallocation contract require independent confirmation against the stock lifecycle."
+    },
+    {
+      "severity": "high",
+      "category": "lock_cleanup",
+      "finding": "The typed transition releases both locks on allocation/copy failures; the stock control flow must be compared at instruction level to decide whether this is a faithful correction or an intentional safety deviation."
+    },
+    {
+      "severity": "high",
+      "category": "parser_bounds",
+      "finding": "Format entities above 4 read a following width byte without a local truncation guard, matching the observed stock loop but leaving malformed records dependent on upstream validation."
+    },
+    {
+      "severity": "medium",
+      "category": "state_semantics",
+      "finding": "The stale format_offset behavior when entity 3 is absent is preserved and needs differential state-transition review across repeated calls."
+    }
+  ],
+  "promotion_allowed": false
+}

@@ -89,6 +89,10 @@ int zte_touch_pdev_register(void);
 // Map Ghidra's __break calls to a safe kernel warning instead of panicking
 #define __break(x) pr_warn("zte_tpd CFI/assert warning: 0x%x at %s:%d\n", (unsigned int)(x), __FILE__, __LINE__)
 
+#ifndef ZTE_TPD_BRK_5512
+#define ZTE_TPD_BRK_5512() asm volatile("brk #0x5512")
+#endif
+
 // Cast wrappers for standard kernel functions called with __int64 / long long arguments
 #undef simple_read_from_buffer
 #define simple_read_from_buffer(to, count, ppos, from, available) \
@@ -168,7 +172,8 @@ int zte_touch_pdev_register(void);
 #define mutex_unlock(lock) mutex_unlock((struct mutex *)(lock))
 
 #undef mutex_init
-#define mutex_init(lock) mutex_init((struct mutex *)(lock))
+#define mutex_init(lock) \
+    __mutex_init((struct mutex *)(lock), "(struct mutex *)ptr", &dummy_lock_key)
 
 #define _mutex_init(lock, name, key) __mutex_init((struct mutex *)(lock), name, key)
 
@@ -294,7 +299,7 @@ extern int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
 extern void syna_tcm_clear_command_processing(struct tcm_dev *tcm);
 extern void syna_tcm_remove_device(struct tcm_dev *tcm);
 extern void syna_tcm_v1_terminate(struct tcm_dev *tcm);
-extern __int64 syna_tcm_buf_unlock(__int64 buffer);
+extern void syna_tcm_buf_unlock(__int64 buffer);
 extern int syna_dev_process_touch_report(unsigned char report_code,
                                          const unsigned char *payload,
                                          unsigned int length, void *context);
@@ -313,10 +318,12 @@ extern int syna_tcm_do_fw_update(struct tcm_dev *tcm_dev,
 extern int syna_dev_do_reflash(struct syna_tcm *tcm, bool force);
 extern int syna_tcm_detect_device(struct tcm_dev *tcm_dev,
 				  unsigned int protocol, bool reinit);
-extern __int64 syna_tcm_parse_fw_image(__int64 a1, _QWORD a2, _QWORD *a3);
+struct partition_info;
+extern int syna_tcm_parse_fw_image(const u8 *image, u32 image_size,
+                                   void *parsed_image);
 extern int syna_tcm_switch_fw_mode(struct tcm_dev *tcm, u8 mode,
 				   unsigned int delay_ms);
-extern __int64 syna_dev_set_up_input_device(__int64 a1);
+extern int syna_dev_set_up_input_device(struct syna_tcm *tcm);
 extern int syna_tcm_get_boot_info(struct tcm_dev *tcm,
                                   struct tcm_boot_info *boot_info,
                                   unsigned int timeout_ms);
@@ -443,7 +450,7 @@ extern int syna_tcm_run_production_test(struct tcm_dev *tcm_dev,
 					unsigned int response_mode);
 extern int syna_tcm_sleep(struct tcm_dev *tcm, bool enable,
 			  unsigned int delay_ms);
-extern __int64 syna_dev_enable_lowpwr_gesture(_QWORD *a1, char a2, unsigned int a3);
+extern int syna_dev_enable_lowpwr_gesture(_QWORD *a1, unsigned long a2, unsigned int a3);
 extern __int64 tpd_touch_release(__int64 result, unsigned __int16 a2, int a3);
 extern struct ufp_tp_ops_struct ufp_tp_ops;
 
@@ -503,7 +510,8 @@ struct tpd_firmware_data {
 
 static_assert(offsetof(struct tpd_firmware_data, data) == 0x08);
 static_assert(sizeof(struct tpd_firmware_data) == 0x18);
-extern __int64 edge_long_press_up(struct input_dev *input, int index);
+extern __int64 edge_long_press_up(struct input_dev *input,
+                                  unsigned short index);
 
 extern int large_area_ignore_count;
 extern int large_area_uevent_count;
@@ -555,7 +563,7 @@ extern int syna_ghost_check_reset(struct ztp_device *cdev);
 
 // Testing check and helper functions
 bool syna_tcm_testing_0100_check_data(void *data, void *limit,
-                                      int column, int row);
+                                      int column);
 bool syna_tcm_testing_0500_check_upper_bound(void *data, void *limit,
                                              int column, int row);
 bool syna_tcm_testing_0500_check_lower_bound(void *data, void *limit,
@@ -594,7 +602,7 @@ extern ssize_t tpd_sysfs_fwimage_store(struct file *file, struct kobject *kobj,
 extern void tp_ghost_check_work(struct work_struct *work);
 extern void ufp_single_tap_work(struct work_struct *work);
 extern void set_lcd_reset_processing(unsigned char value);
-extern void tpd_report_uevent(unsigned char value);
+extern void tpd_report_uevent(char value);
 extern void tpd_reset_gpio_output(unsigned char value);
 
 

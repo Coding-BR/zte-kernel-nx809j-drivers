@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "target": "tpd_workqueue_deinit",
+  "mode": "offline_aarch64_exact_instruction_and_normalized_relocation_comparison",
+  "instruction_count": { "stock": 39, "candidate": 39, "exact": true },
+  "symbol_size": { "stock": 156, "candidate": 156, "exact": true, "delta_bytes": 0 },
+  "section": { "stock": ".text", "candidate": ".text", "match": true },
+  "function_kcfi_type_id": { "stock": "0xe5c47d60", "candidate": "0xe5c47d60", "match": true },
+  "instruction_sequence": {
+    "normalized_match": true,
+    "comparison": "opcode sequence, register flow, offsets, calls and teardown order are exact"
+  },
+  "call_targets": {
+    "stock": ["_printk", "tpd_report_work_deinit", "tpd_resume_work_deinit", "cancel_delayed_work_sync", "_printk", "cancel_delayed_work_sync", "vfree", "cancel_delayed_work_sync"],
+    "candidate": ["_printk", "tpd_report_work_deinit", "tpd_resume_work_deinit", "cancel_delayed_work_sync", "_printk", "cancel_delayed_work_sync", "vfree", "cancel_delayed_work_sync"],
+    "normalized_match": true
+  },
+  "offset_contract": {
+    "probe_work": "cdev + 0x8d0",
+    "zlog_work": "cdev + 0xa50",
+    "zlog_buffer": "cdev + 0xbe8",
+    "ghost_work": "original_cdev + 0x938",
+    "normalized_match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The candidate names the recovered printk format object unk_322AA and places local strings at different separately linked .rodata offsets; all resolved strings, calls, opcodes and offsets match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw ELF relocation identity is not byte-level equal across independently linked modules.",
+    "The host harness stubs printk, helper deinitializers, cancellation and vfree.",
+    "No smartphone, scheduler or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "879da7b74b2da57d2955efc9018eadc268da62911ae3ab25c41057b5a831e8f0",
+    "candidate_assembly_sha256": "cbd47cfa1fc735662fee69737a7bb02f957045bc2ff9c9b6364f6e2afdd425b7",
+    "candidate_module_sha256": "3ba6661e500cdd7c47dbdcb8e87ad7eebcaa7d075f6aaea2b3c0f8fb9eea2932"
+  }
+}

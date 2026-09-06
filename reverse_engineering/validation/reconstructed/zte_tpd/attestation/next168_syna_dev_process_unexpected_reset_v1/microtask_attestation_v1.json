@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-14T06:00:00Z",
+  "driver": "zte_tpd",
+  "function": "syna_dev_process_unexpected_reset",
+  "stock_entry": "00113a9c",
+  "task_id": "168_syna_dev_process_unexpected_reset",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "source_sha256": "d00d86b0fee0d1e47c1c46e6ee7459d66109fccf31370434e1cb3c95f5ad5332",
+  "candidate_module_sha256": "5c6008ee853cd694599ad30495eced01097bb37acd4aaeff77c6d4730480169d",
+  "candidate_module_size": 30037704,
+  "offline_gates": {
+    "source_sync": "PASS",
+    "joern": "PASS",
+    "host_harness": "PASS",
+    "canonical_build": "PASS",
+    "kcfi": "PASS",
+    "aarch64_opcode_parity": "PASS",
+    "aarch64_relocation_parity": "BLOCKED",
+    "hardware": "NOT_RUN"
+  },
+  "evidence_hashes": {
+    "source_sync_report.json": "ef295feadf0732c260236bdc5ccb708fcde90aeec1967582829d23e8217fc562",
+    "joern_gate_report.json": "90d8e525bf116f2dba27dc7762e16b24ef590a4e2a8c14a441405d8347e36029",
+    "host_harness_report.json": "59e0b7406cd0587afda4401f8f819e8a6ad19b874aca94d59344913620e62967",
+    "canonical_build_report.json": "a2eb8f63e95d9b7adc229a298f81be41dfd35ea2f0bec36314697a28d4168b69",
+    "kcfi_comparison.json": "f94c9472b429ad2bb3f866d5ac19316261e80dff59ebd5997e2c09bc4c0027bf",
+    "assembly_comparison.json": "e16d5792e686201c7bccabea775f95663d39ae4ed52c60aa99ba2019a15d6e08"
+  },
+  "joern": {
+    "report": "joern_gate_report.json",
+    "passed": true,
+    "tool_version": "4.0.548"
+  },
+  "host_harness": {
+    "report": "host_harness_report.json",
+    "passed": true,
+    "cases": 10,
+    "repetitions": 2,
+    "reproducible": true,
+    "mode": "offline_direct_source_unexpected_reset_asan_ubsan"
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "clang_revision": "clang-r536225"
+  },
+  "static_comparison": {
+    "candidate_kcfi_type_id": "0x9f93c40a",
+    "stock_kcfi_type_id": "0x9f93c40a",
+    "candidate_symbol_size": 160,
+    "stock_symbol_size": 160,
+    "candidate_instruction_count": 40,
+    "stock_instruction_count": 40,
+    "kcfi_report": "kcfi_comparison.json",
+    "assembly_report": "assembly_comparison.json",
+    "opcode_parity": true,
+    "relocation_parity": false
+  },
+  "evidence": {
+    "stock_decompiled": "stock_decompiled.c",
+    "stock_pcode": "stock_pcode.jsonl",
+    "stock_assembly": "stock_assembly.asm",
+    "candidate_assembly": "candidate_assembly.asm",
+    "candidate_source": "candidate_source.c",
+    "host_harness_source": "host_harness_source.c",
+    "host_harness_runner": "host_harness_runner.py"
+  },
+  "blockers": [
+    "The AArch64 opcode stream, symbol size and KCFI type ID match the stock function.",
+    "Relocation identity remains different for recovered rodata strings and cannot be promoted to exact relocation parity.",
+    "No smartphone or hardware validation was run by request."
+  ]
+}

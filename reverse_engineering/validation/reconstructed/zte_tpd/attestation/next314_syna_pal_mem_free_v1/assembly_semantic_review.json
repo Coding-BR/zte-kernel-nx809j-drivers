@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_pal_mem_free",
+  "stock_entry": "001284c0",
+  "stock_assembly": "0313_syna_pal_mem_free_001284c0.asm",
+  "candidate_assembly": "candidate_assembly/syna_pal_mem_free_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34.",
+    "The candidate requests the managed device before examining the memory pointer.",
+    "The candidate skips devm_kfree for a null pointer and for an unavailable managed device.",
+    "The candidate forwards the original pointer unchanged to devm_kfree when both prerequisites are present."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "The managed-device lifetime and devm_kfree ownership contract require independent kernel review."
+    }
+  ],
+  "promotion_allowed": false
+}

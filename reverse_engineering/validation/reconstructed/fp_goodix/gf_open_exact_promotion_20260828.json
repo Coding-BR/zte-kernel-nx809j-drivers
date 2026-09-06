@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-28T18:43:01.480391+00:00",
+  "driver": "fp_goodix",
+  "scope": "isolated gf_open reconstruction promoted after independent Docker recompile",
+  "source": {
+    "file": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix_core.c",
+    "sha256": "d12c977c8ad16131e96b745872e751d3ea304c5ca7c7434599ce7d400cf04de2",
+    "changes": [
+      "converge parse and IRQ failures on the stock common unlock/return label",
+      "materialize the IRQ wake argument from the device_entry base observed in stock",
+      "preserve the stock opened/ret store ordering with a compiler barrier",
+      "retain the stock format string and target-only diagnostic behavior while keeping the host harness portable"
+    ]
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "independent_recompile": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\fp_goodix_canonical_recompile_open_exact_20260828",
+    "canonical_candidate": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix.ko",
+    "canonical_sha256": "13ce11deef98d2b2d10ae5b042a2285c3c803e77b6a7c488b1239bff60e445fd",
+    "canonical_size": 730792,
+    "build": "PASS"
+  },
+  "gf_open": {
+    "stock_entry": "00100de8",
+    "stock": "508 bytes / 127 instructions",
+    "candidate": "508 bytes / 127 instructions",
+    "stock_assembly_sha256": "0ce3dfcade85a5dcb7809c8c4ee4eb9b67d11d92d8d52562fc1d22c6c105ecd2",
+    "candidate_assembly_sha256": "ba49a0e1fc69afe56639bbc9a5ffe90c38b57665a45295af592af890c0cb8a2a",
+    "instruction_identity": true,
+    "relocation_identity": true,
+    "symbol_size_identity": true,
+    "comparison": "reverse_engineering/validation/reconstructed/fp_goodix/assembly_comparison.json"
+  },
+  "full_module_recheck": {
+    "extracted_functions": 30,
+    "exact_functions": 28,
+    "remaining_open_functions": [
+      "gf_ioctl@00100824",
+      "gf_parse_dts@0010237c"
+    ],
+    "regression_check": "gf_open removed from the failure set; no regression in the other 27 previously exact functions",
+    "comparison": "reverse_engineering/validation/reconstructed/fp_goodix/assembly_comparison.json"
+  },
+  "tests": {
+    "host_harness": "PASS; reproducible; 30 functions covered",
+    "hardware": "DEFERRED"
+  },
+  "decision": "PROMOTE_SOURCE_AND_CANONICAL_ARTIFACT; DO_NOT_CLAIM_100_PERCENT"
+}

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-30T11:54:40.940832+00:00",
+  "mode": "offline_direct_source_next61_tp_free_tp_firmware_data_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "tp_free_tp_firmware_data",
+  "covered_functions": [
+    "tp_free_tp_firmware_data"
+  ],
+  "source": "/workspace/kernel_development/drivers/validation/zte_tpd/host/tp_free_tp_firmware_data_host_test.c",
+  "source_sha256": "df8438f0ce6ec6bcb64f23d8c762841e38f84a3d326e9ec5e930401ac45693b1",
+  "compiler": "gcc",
+  "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 3,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_command": [
+        "gcc",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-next61-tp-free-firmware-data",
+        "-ffile-prefix-map=/workspace/<prior-temp-root>/host/build=<build>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/workspace/kernel_development/drivers/validation/zte_tpd/host/tp_free_tp_firmware_data_host_test.c",
+        "-o",
+        "/workspace/<prior-temp-root>/host/build/cycle1/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS test_descriptor_with_data_cleanup\nPASS test_descriptor_without_data_cleanup\nPASS test_null_descriptor_reset\nSUMMARY total=3 passed=3 failed=0\n",
+      "run_stderr": "",
+      "binary_sha256": "1e93b90b53e4d2fee101f4b57d72645ffd50cbeb1c8e3f420e27d3de3cc79efe",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_command": [
+        "gcc",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-next61-tp-free-firmware-data",
+        "-ffile-prefix-map=/workspace/<prior-temp-root>/host/build=<build>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/workspace/kernel_development/drivers/validation/zte_tpd/host/tp_free_tp_firmware_data_host_test.c",
+        "-o",
+        "/workspace/<prior-temp-root>/host/build/cycle2/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS test_descriptor_with_data_cleanup\nPASS test_descriptor_without_data_cleanup\nPASS test_null_descriptor_reset\nSUMMARY total=3 passed=3 failed=0\n",
+      "run_stderr": "",
+      "binary_sha256": "1e93b90b53e4d2fee101f4b57d72645ffd50cbeb1c8e3f420e27d3de3cc79efe",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/workspace/kernel_development/drivers/validation/zte_tpd/host/tp_free_tp_firmware_data_host_test.c",
+      "size": 2378,
+      "sha256": "df8438f0ce6ec6bcb64f23d8c762841e38f84a3d326e9ec5e930401ac45693b1"
+    },
+    {
+      "path": "/workspace/kernel_development/drivers/reconstructed/zte_tpd/tp_free_tp_firmware_data.c",
+      "size": 476,
+      "sha256": "0a3956df06f54b60ea2d08167b687dde6b308b4af9855032c36a0f86e91e0a8a"
+    }
+  ],
+  "reproducible": true,
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness directly exercises descriptor, data and null cleanup branches.",
+    "Module assembly, KCFI, Ghidra and Joern remain independent gates.",
+    "No smartphone, firmware or physical transport interaction is used."
+  ]
+}

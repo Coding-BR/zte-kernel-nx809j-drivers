@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tpfwupgrade_store",
+  "attestation_id": "next404_tpfwupgrade_store_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_LOCAL_RELOCATION_AND_RUNTIME_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "kcfi_indirect_callback_type": "PASS_0x4d7650a4",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "PASS",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_AND_ALLOCATION_TAG_LAYOUT_ONLY",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "parse the userspace value with base 10 through kstrtouint_from_user",
+    "return -EINVAL on parse failure without logging or taking the mutex",
+    "log the parsed firmware operation value before taking the mutex",
+    "for values below 11, invoke the optional callback at tpd_cdev + 0xe18 with NULL and zero, free data and firmware, clear tpd_cdev + 0xc58 and reset tpd_cdev + 0x448",
+    "for values at least 11, free the previous firmware, allocate a 24-byte firmware object, allocate value + 24 bytes, store the value, and zero the data buffer",
+    "return -ENOMEM on either allocation failure and always release the mutex"
+  ],
+  "evidence": {
+    "stock_body_bytes": 560,
+    "candidate_body_bytes": 560,
+    "stock_instruction_count": 140,
+    "candidate_instruction_count": 140,
+    "function_kcfi_type_id": "0xc3d43b4d",
+    "indirect_callback_kcfi_type_id": "0x4d7650a4",
+    "candidate_module_sha256": "4b2ac16b5e37778db4770a028b373d71150d84b589210cb6b80766cf6833e404",
+    "candidate_function_assembly_sha256": "7ab638e4026828c9ecbab158ef0897c4c46d7ae4048a7b7acab77fc5253ba95f",
+    "stock_function_assembly_sha256": "34f67170afd6d51847b74dc29f8afe188afd82d911ee6ac6cf0127f9ab2215c5",
+    "host_cases": 5,
+    "host_repetitions": 2,
+    "host_binary_sha256": "89c0b00f9146acd88602e19ee7ff22ae0ca58acccc49e82c355b461c75d2072b",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_relocation_difference": "The candidate preserves instruction sequence and relocation kinds but uses reconstructed local .rodata and allocation-tag symbols with different generated offsets than stock."
+  },
+  "follow_up_required": [
+    "Review local .rodata and allocation-tag placement only if exact relocation parity is required.",
+    "Run controlled procfs/userspace, concurrent lifetime, and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent firmware callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 140-instruction/560-byte AArch64 body, matching function and callback KCFI contracts, strict Joern with zero unresolved calls, reproducible Docker build, and five-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

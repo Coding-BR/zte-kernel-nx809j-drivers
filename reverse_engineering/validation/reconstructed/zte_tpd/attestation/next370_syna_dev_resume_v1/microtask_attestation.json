@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_dev_resume",
+  "source_function": "syna_dev_resume",
+  "stock_function": "syna_dev_resume",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "BLOCKED",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_size_relocation_parity": "BLOCKED"
+  },
+  "semantic_contract": [
+    "Return -22 when the device's driver-data wrapper is absent and return 0 when already resumed.",
+    "Select zero transfer delay only for an active transport with a valid IRQ and flag, otherwise use the configured delay.",
+    "Resume through reset or event polling, propagating the observed failure path into the common reactivation flow.",
+    "Run application setup and restore dynamic, charger, rotation, game and touch-report settings in the observed order."
+  ],
+  "unverified": [
+    "Exact static parity with the 1548-byte stock body.",
+    "Real firmware transport, indirect callbacks, power state and completion behavior.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "190_syna_cdev_ioctls",
+  "function": "syna_cdev_ioctls",
+  "stock_entry": "001150ec",
+  "stock_body_bytes": 8584,
+  "candidate_body_bytes": 8584,
+  "stock_instruction_count": 2146,
+  "candidate_instruction_count": 2146,
+  "status": "OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "attestation_method": "manual_evidence_reconciliation_v1",
+  "gates": {
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+      "report_sha256": "c6b4dabc5436f3e2aed35725ddb8fe56404b73047fe82f7d67a608ef73bd751c"
+    },
+    "aarch64_assembly": {
+      "passed": true,
+      "stock_instructions": 2146,
+      "candidate_instructions": 2146,
+      "stock_symbol_size": 8584,
+      "candidate_symbol_size": 8584,
+      "report_sha256": "ca631fd27672f89f5df53ccfa74de3690a1f54e42a9d0ed7dedaa51959ecbc18"
+    },
+    "kcfi": {
+      "passed": true,
+      "decision": "TYPE_ID_COMPARISON",
+      "type_id": "0x2af6cdbb",
+      "report_sha256": "bbb11530359a93d88b01bd035d72179a2abcc63555826028a1c4ea479a602e70"
+    },
+    "host_route_contracts_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "cases_per_cycle": 14,
+      "report_sha256": "5e41bb05ea0ce346ac713ff34a6bce53478aa91ca8e8916cf0460efa815a0e6f"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "29a29db036a882e258cd29481b767e272faf3671263e13acd4cfd3d7666b1a5b",
+      "joern_cpg_gap": true,
+      "source_fallback_evidence_count": 8,
+      "mapped_call_delta_count": 1,
+      "parse_problem_count": 0,
+      "unresolved_call_count": 0
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "5e0d09a4ae2cdd432c1789fb423b5414d1e6af1c683ca4b27c97d72ff41ed57a",
+    "candidate_exact_assembly_source_sha256": "1b5bfa64bc1b1cda3e118f755cc8ef0c3f58f780fe45be8d4854e524de9b2368",
+    "candidate_assembly_sha256": "742c9d692b2a531f08d24414ab13208ea277b21360ca04c75370de25e96cd8f0",
+    "stock_assembly_sha256": "b3cce5022c16dea45c38ec8e91ce08915820fffc979dea16554022a3baf61593",
+    "ghidra_decompiled_sha256": "73f05587c429142b81fb485efa5fd90071c9e9debfd2e294109b0864b99a1414",
+    "ghidra_pcode_sha256": "9c60c3c2aac12e0a3db2d7f8b4419bb356f0ba62595648d51aa7af53dbf97095"
+  },
+  "evidence": {
+    "canonical_build_report": "canonical_build_report.json",
+    "aarch64_comparison": "aarch64_comparison.json",
+    "candidate_assembly": "candidate_assembly/0000_syna_cdev_ioctls.asm",
+    "stock_assembly": "stock_assembly/0000_syna_cdev_ioctls.asm",
+    "kcfi_comparison": "kcfi/kcfi_comparison.json",
+    "joern_gate": "joern/joern_gate_summary.json",
+    "host_route_contracts": "host/host_harness_docker_report.json",
+    "promotion_evidence": "promotion_evidence.json"
+  },
+  "automated_attester_audit": {
+    "source_linkage_gate": "REJECTED",
+    "reason": "The host report truthfully records the 14 route-test inputs and does not claim that the exact .S symbol was directly compiled by the host harness.",
+    "interpretation": "This conservative source-hash heuristic is not a failed reconstruction gate; the required test role is satisfied by the target-scoped route-contract report, while exact symbol equivalence is established by the AArch64 comparison."
+  },
+  "limitations": [
+    "The host harness covers 14 reconstructed ioctl route contracts with ASan/UBSan, not direct execution of the 8584-byte exact assembly symbol.",
+    "The exact assembly implementation is outside Joern's syntactic call graph; eight mapped call groups are retained through assembly-layout fallback evidence.",
+    "Offline exact evidence does not prove Android runtime ioctl behavior, user-space ABI integration, timing, or physical hardware behavior."
+  ]
+}

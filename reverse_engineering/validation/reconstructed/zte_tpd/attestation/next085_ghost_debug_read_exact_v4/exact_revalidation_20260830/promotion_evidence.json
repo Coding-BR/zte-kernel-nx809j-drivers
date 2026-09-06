@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "function": "ghost_debug_read",
+  "stock_entry": "0010d57c",
+  "stock_body_bytes": 848,
+  "instruction_count": 212,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "canonical_build": {"passed": true, "cycles": 2},
+    "aarch64": {"passed": true, "instruction_count_stock": 212, "instruction_count_candidate": 212, "symbol_size_stock": 848, "symbol_size_candidate": 848},
+    "kcfi": {"passed": true, "stock_type_id": "0xf4e9d97c", "candidate_type_id": "0xf4e9d97c"},
+    "joern": {"passed": true, "strict": true, "resolved_methods": 1, "unresolved_calls": 0, "call_deltas": 0, "review_findings": [{"category": "lifetime", "count": 4, "severity": "high"}, {"category": "userspace_egress", "count": 2, "severity": "high"}]},
+    "host_asan_ubsan": {"passed": true, "cycles": 2, "cases": 4}
+  },
+  "limitations": [
+    "Offline static and userspace evidence does not prove Android runtime, procfs behavior or NX809J hardware behavior.",
+    "Joern lifetime and userspace-egress findings remain subject to runtime review of allocation, copyout and teardown behavior.",
+    "The exact implementation is retained in the dedicated AArch64 source path."
+  ]
+}

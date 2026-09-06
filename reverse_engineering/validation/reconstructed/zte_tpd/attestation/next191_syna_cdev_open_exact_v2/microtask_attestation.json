@@ -1,0 +1,79 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "191_syna_cdev_open",
+  "function": "syna_cdev_open",
+  "stock_entry": "00117278",
+  "stock_body_bytes": 356,
+  "candidate_body_bytes": 356,
+  "stock_instruction_count": 89,
+  "candidate_instruction_count": 89,
+  "status": "OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "gates": {
+    "ghidra_decompilation": {
+      "passed": true,
+      "decompiled_sha256": "8a5c8a090fa35a9b72e0cd2609c65fd4e5458acbaeb00e1f682bc993a291b64d",
+      "pcode_sha256": "594c1622133f91bc3d71b301aa02ed9e03c2dfc1ffb8d8d5d7092073d49404fe",
+      "semantic_report_sha256": "e4bcacfb575b7e6094e95997b62b63d66b24ffbbbe12fd8ee82d86fb9716b710"
+    },
+    "source_sync": {
+      "passed": true,
+      "report_sha256": "258d8bdf7b33a4aa5b980f7fcc652e66014c1b2c01e04320b4129e9a695c4125"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "92e27afe563a155a02a50d59020bde5ac72832264b93bbafc22d24fc3cb07404"
+    },
+    "host_harness_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "report_sha256": "679ce7a24a7aff0d235df5f09eb0ef87aeb0c79c8977e20316c1ef547fa696d6"
+    },
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "d21d355bf1c5952fbb199d02e70f455fdf0a4f79c30a7ad4e51b65eedddfb38b",
+      "module_size": 17912080,
+      "report_sha256": "36c63053f0f19bf0a7e0e75a9f2e3e409152acea552bcbb9139a112e0ec97fe5"
+    },
+    "kcfi": {
+      "passed": true,
+      "type_id": "0x9829071d",
+      "stock_size": 356,
+      "candidate_size": 356,
+      "report_sha256": "e6504420ea626b42df3dc9665685a0dc35450ca62fd558fc763ff5888fd8ec80"
+    },
+    "aarch64_assembly": {
+      "passed": true,
+      "stock_instructions": 89,
+      "candidate_instructions": 89,
+      "opcode_parity": true,
+      "relocation_parity": true,
+      "report_sha256": "f78790cbf299548b3dbfd5d75ab82fbfd33b44a20379f7de6e546eeb4dc15cc1"
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "eace5239b9c5e39776c1afce33f3e8595478d702e1c78c7aec8c7b6ffb1e2aa2",
+    "candidate_exact_assembly_source_sha256": "8910eb8d7b809eaade75b41fbfc2a9cd494679a781ec17096838e8521e27b497",
+    "candidate_assembly_sha256": "c95fa7925d08d31819c989c6e70353c6c0c63d580d18a9f0b2beaf4911839162",
+    "candidate_kcfi_sha256": "78cd78f66b1b9f6b2500c0e6c19448e3fa31e55c7c43c4746c6ac64ddcd7953e",
+    "stock_assembly_sha256": "e2d7d891af62f8d077bd43e09879c7ab77950fe361cfb08e02c53f3e77ec92e3",
+    "stock_kcfi_sha256": "3fea685bc472df894f1a25fd76bd0bd07321c699834acbdff3104ee0a728cd1c"
+  },
+  "evidence": {
+    "canonical_build_report": "canonical_build_report.json",
+    "source_sync_report": "source_sync_report.json",
+    "assembly_comparison": "assembly_comparison_v3.json",
+    "candidate_assembly": "candidate_assembly_single_v3/0000_syna_cdev_open.asm",
+    "candidate_kcfi": "candidate_kcfi_v3.json",
+    "ghidra_semantic": "ghidra_semantic.json",
+    "joern_gate": "joern_gate_report.json",
+    "host_harness": "host_harness_report.json"
+  },
+  "limitations": [
+    "The exact AArch64 gate proves the captured offline body and relocation shape; source-level Ghidra evidence proves semantic correspondence for the reconstructed C implementation.",
+    "The smartphone was intentionally not used in this microtask; runtime and hardware behavior remain unproven."
+  ]
+}

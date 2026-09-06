@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "syna_pal_mem_free"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "84c05ff659fd6930289c457ca6dfe2ce84965d0f881634bb86ef2dc5679833e8",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next104-pal-mem-free-base-v1\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next104-pal-mem-free-base",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_pal_mem_free_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next104-pal-mem-free-base-v1\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_pal_mem_free host tests (3 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "84c05ff659fd6930289c457ca6dfe2ce84965d0f881634bb86ef2dc5679833e8",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next104-pal-mem-free-base-v1\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next104-pal-mem-free-base",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_pal_mem_free_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\harness-runs\\20260730-next104-pal-mem-free-base-v1\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_pal_mem_free host tests (3 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 3,
+  "generated_utc": "2026-07-30T22:04:10.905826+00:00",
+  "inputs": [
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_pal_mem_free_host_test.c",
+      "sha256": "f111364db9b8282fab4e7a3263a8ec6bf0d4257bb9222f5b63f9765915fc1617",
+      "size": 2709
+    },
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_pal_mem_free.c",
+      "sha256": "31859d479244cb3b5f59d5a6f668520cad8f209d14bc82bd002b7e408346d92f",
+      "size": 290
+    }
+  ],
+  "limitations": [
+    "The harness validates the managed-device decision, null-memory guard, devm_kfree call contract, and logger contract.",
+    "It does not free host memory and does not load the module on an Android device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_pal_mem_free_base_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "syna_pal_mem_free",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

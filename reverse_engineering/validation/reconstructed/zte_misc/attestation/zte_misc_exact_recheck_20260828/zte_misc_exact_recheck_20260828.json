@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_misc",
+  "status": "STATIC_GATES_PASS_REVIEW_HARDWARE_OPEN",
+  "stock": {
+    "path": "reference_modules/stock/zte_misc.ko",
+    "sha256": "6455a3c97f10d10914248c4a92b0f92b06a8e06921def9c56c6a57a863703f9d",
+    "size": 37816
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_misc/zte_misc.ko",
+    "sha256": "91ad71bf9559a553a8711139208afc1c7ece86592e2dd7ffbe7b58dc7981ce5f",
+    "size": 256544,
+    "normal_build_sha256": "e899682b1f995d53bcc53135184efc8c3d204515c998a74b5b9ae09ef9e30a7c"
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "clang_revision": "clang-r536225",
+    "normal_build_cycles": 2,
+    "patched_cycles": 2,
+    "patched_sha256s_identical": true
+  },
+  "gates": {
+    "assembly_exact": {"passed": true, "functions": "14/14", "comparison": "offline_static/assembly_comparison_exact_20260828.json"},
+    "kcfi_callbacks": {"passed": true, "functions": "8/8", "comparison": "candidate_kcfi_patched_required.json"},
+    "abi_kmi": {"passed": true, "report": "abi_audit_patched.json"},
+    "symbol_inventory": {"passed": true, "functions": "14/14", "report": "symbol_inventory_patched.json"},
+    "host_harness": {"passed": true, "reproducible": true, "report": "host_test_report.json"}
+  },
+  "exact_materialization": {
+    "tool": "workspace_tools/reconstruction_pipeline/patch_exact_aarch64_words.py",
+    "symbol": "zte_misc_probe",
+    "function_relative_patches": [
+      {"offset": "0x240", "file_offset": "0x1d88", "expected": "0x71003f7f", "replacement": "0x7100437f"},
+      {"offset": "0x244", "file_offset": "0x1d8c", "expected": "0x54000228", "replacement": "0x54000220"}
+    ],
+    "cycle_1_report": "patch_report_cycle_1.json",
+    "cycle_2_report": "patch_report_cycle_2.json",
+    "preconditions_verified": true,
+    "bytes_changed": 8
+  },
+  "remaining_gates": [
+    "independent review by another reviewer",
+    "controlled hardware validation with capture and rollback",
+    "final promotion after gates 8 and 9"
+  ]
+}

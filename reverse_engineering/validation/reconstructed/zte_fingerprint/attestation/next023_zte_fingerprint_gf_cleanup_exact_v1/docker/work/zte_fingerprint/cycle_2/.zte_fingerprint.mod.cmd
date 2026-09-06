@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_fingerprint/cycle_2/zte_fingerprint.mod := printf '%s\n'   zte_fingerprint_main.o gf_parse_dts_exact.o fp_goodix_exact_rodata.o | awk '!x[$$0]++ { print("/work/validation/zte_fingerprint/cycle_2/"$$0) }' > /work/validation/zte_fingerprint/cycle_2/zte_fingerprint.mod

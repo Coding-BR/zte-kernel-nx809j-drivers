@@ -1,0 +1,78 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "126_tpd_resume_work_init",
+  "function": "tpd_resume_work_init",
+  "stock_entry": "00110698",
+  "stock_body_bytes": 176,
+  "candidate_body_bytes": 176,
+  "stock_instruction_count": 44,
+  "candidate_instruction_count": 44,
+  "status": "OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "gates": {
+    "ghidra_decompilation": {
+      "passed": true,
+      "decompiled_sha256": "e8ba28c454e1bbe3c332e60da13ca33cbd382d0768abe8395d6444ca397ff1bc",
+      "pcode_sha256": "bb45f01bed3c9e0338bd53f5a1b05632160df1c563ff7d608955c1e3fe47c755",
+      "stock_assembly_sha256": "8ed23100b4e583c3ce10d4f8029f58f4efd32acf65c861be57f03da72598a62e"
+    },
+    "source_sync": {
+      "passed": true,
+      "report_sha256": "d1d2767fdd6b1d98a8a38ef7928650ff9e2d5ca7ccd864c9da2d3d03d37c5c77"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "4a3d83686add35410bb040f214335d6994c5b6df987ec6c473e2950a9c2860e7"
+    },
+    "host_harness_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "report_sha256": "bc741b61a156c926f4cccdf375cd2dbe21d082ce06fc26c395eae6292606c7ec"
+    },
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "b3f4480bc76eece577e6629d73097e071773be4e28d7bfbd4d64ef994154aeda",
+      "module_size": 17908232,
+      "report_sha256": "f0f1cd9f382a513488ae541162c554d01cd563ce11dbf5e772cd8bed833abb58"
+    },
+    "kcfi": {
+      "passed": true,
+      "type_id": "0xe5c47d60",
+      "stock_size": 176,
+      "candidate_size": 176,
+      "report_sha256": "1e5eb53a264798c1d7794c95fd21a8868b2f7f1412f4f4847f9ff23cebb751f6"
+    },
+    "aarch64_assembly": {
+      "passed": true,
+      "stock_instructions": 44,
+      "candidate_instructions": 44,
+      "opcode_parity": true,
+      "relocation_parity": true,
+      "report_sha256": "56b436e9771024fd4961dd5ac79f5e372dd6d7e80b3a330f67217646bde89f1d"
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "9bd5385570a6ba6a9e3dc56ebda64d0d2be36e35332f0596a5df27ff318c3fa7",
+    "candidate_exact_assembly_source_sha256": "18db6292e51910de39768057c64e9b248ab7705c09e6d680a671001cca645373",
+    "candidate_assembly_sha256": "af2defde061dc64db81d2231b5708f5e2ade6a59fd673bf020909464ff023593",
+    "candidate_kcfi_sha256": "04b6b341fe1ce763b112baaa1ada5fdba0d8e988f05edf50297c261b9acdf561",
+    "stock_kcfi_sha256": "20275cd90bc510c0d8f51a9457f550c03748ed8d0f3dbb7804efbea0392070bd"
+  },
+  "evidence": {
+    "canonical_build_report": "canonical_build_report.json",
+    "source_sync_report": "source_sync_report.json",
+    "assembly_comparison": "assembly_comparison.json",
+    "candidate_assembly": "candidate_assembly/0000_tpd_resume_work_init.asm",
+    "kcfi_comparison": "kcfi_comparison.json",
+    "joern_gate": "joern/joern_gate_report.json",
+    "joern_summary": "joern/joern_gate_summary.json",
+    "host_harness": "host_harness_report.json"
+  },
+  "limitations": [
+    "The offline gates prove the three work layouts, callbacks, KCFI and machine-code parity; they do not prove runtime suspend/resume behavior on the handset.",
+    "No smartphone, touch controller or runtime kernel integration was exercised."
+  ]
+}

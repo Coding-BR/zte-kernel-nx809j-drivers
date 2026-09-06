@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_touch_probe",
+  "attestation_id": "next387_zte_touch_probe_exact_v2",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_opcode_and_control_flow": "PASS",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_AND_RELOCATION_LAYOUT_ONLY",
+    "aarch64_relocations_normalized": "PASS",
+    "aarch64_dataflow_normalized": "PASS",
+    "aarch64_section": "PASS",
+    "binary_layout_followup": "PASS"
+  },
+  "semantic_contract": [
+    "allocate the ztp device with devm_kmalloc and return -ENOMEM on failure",
+    "store the pdev back-reference at cdev + 0xdc8, publish tpd_cdev and pdev + 0xa8, then register the platform device",
+    "parse the tp_algo, long-press, ghost-check, jitter, edge-suppression and ufp Device Tree properties with stock defaults",
+    "initialize the three probe-local mutexes with distinct lockdep keys and create the proc/sysfs interface paths",
+    "run event cleanup, ghost reset, ufp initialization and workqueue initialization; return -ENOMEM when workqueue setup fails",
+    "on success initialize delayed work, zlog/timestamp fields, waitqueue state and return zero"
+  ],
+  "evidence": {
+    "stock_body_bytes": 3712,
+    "candidate_body_bytes": 3712,
+    "stock_instruction_count": 928,
+    "candidate_instruction_count": 928,
+    "function_kcfi_type_id": "0xc7f8c87c",
+    "raw_candidate_assembly_sha256": "5322cd4ff82760be849e7167488e758b780348ba45756d6c8fa719af6f65c7a8",
+    "raw_stock_assembly_sha256": "265ceb8cef3a461dd0afd23eaa301eddf93c745a760a68fab2afe01b945f276f",
+    "raw_instruction_differences": 0,
+    "stock_relocation_count": 385,
+    "candidate_relocation_count": 385,
+    "host_cases": 4,
+    "host_repetitions": 2,
+    "joern_status": "PASS"
+  },
+  "follow_up_required": [
+    "Runtime platform-bus, procfs/sysfs and NX809J hardware validation remains deferred until the offline driver set is complete.",
+    "Raw module-local relocation identity is not a promotion blocker because normalized relocation roles and resolved targets match."
+  ],
+  "unverified": [
+    "actual devm allocator, platform bus and procfs/sysfs behavior in the target kernel",
+    "mutex lockdep class behavior under concurrent access",
+    "workqueue scheduler and timer behavior",
+    "runtime behavior on NX809J hardware",
+    "complete module integration and boot behavior"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 928-instruction AArch64 opcode/control-flow sequence, matching symbol size/section/KCFI, normalized dataflow and relocation roles, Joern strict graph gate, reproducible Docker build and four-case two-cycle ASan/UBSan host contract. The default ghost-config sequence now matches through source reordering and an empty compiler barrier; no smartphone test was performed."
+}

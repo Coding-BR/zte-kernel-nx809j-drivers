@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"change_tp_state","type":"IF","code":"if (state > LCDCHANGE_OFF || (unsigned int)current_lcd_state > 2U) {\n        /* Stock reaches a non-returning BRK here; keep cleanup deterministic. */\n        __break(0x5512u);\n        mutex_unlock(state_lock);\n        return;\n    }","filename":"change_tp_state.c","line":20},
+    {"method":"change_tp_state","type":"IF","code":"if (current_lcd_state == 2) {\n        if (state == LCDCHANGE_EXIT_LP)\n            goto unlock;\n        if (state == LCDCHANGE_ON) {\n            current_lcd_state = 0;\n            queue_work_on(WORK_CPU_UNBOUND, workqueue,\n                          (struct work_struct *)(tpd_cdev + 0x9c0));\n            ufp_tp_ops.field_8 = 0;\n            goto unlock;\n        }\n        if (state == LCDCHANGE_OFF) {\n            current_lcd_state = 1;\n            ufp_tp_ops.field_8 = 0;\n            queue_work_on(WORK_CPU_UNBOUND, workqueue,\n                          (struct work_struct *)(tpd_cdev + 0x9a0));\n            goto unlock;\n        }\n        goto invalid_change;\n    }","filename":"change_tp_state.c","line":32},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_EXIT_LP)\n            goto unlock;","filename":"change_tp_state.c","line":33},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":34},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_ON) {\n            current_lcd_state = 0;\n            queue_work_on(WORK_CPU_UNBOUND, workqueue,\n                          (struct work_struct *)(tpd_cdev + 0x9c0));\n            ufp_tp_ops.field_8 = 0;\n            goto unlock;\n        }","filename":"change_tp_state.c","line":35},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":40},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_OFF) {\n            current_lcd_state = 1;\n            ufp_tp_ops.field_8 = 0;\n            queue_work_on(WORK_CPU_UNBOUND, workqueue,\n                          (struct work_struct *)(tpd_cdev + 0x9a0));\n            goto unlock;\n        }","filename":"change_tp_state.c","line":42},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":47},
+    {"method":"change_tp_state","type":"GOTO","code":"goto invalid_change;","filename":"change_tp_state.c","line":49},
+    {"method":"change_tp_state","type":"IF","code":"if (current_lcd_state == 1) {\n        if (state == LCDCHANGE_ENTER_LP) {\n            current_lcd_state = 2;\n            goto enter_low_power;\n        }\n        if (state == LCDCHANGE_ON)\n            goto switch_on;\n        goto invalid_change;\n    }","filename":"change_tp_state.c","line":52},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_ENTER_LP) {\n            current_lcd_state = 2;\n            goto enter_low_power;\n        }","filename":"change_tp_state.c","line":53},
+    {"method":"change_tp_state","type":"GOTO","code":"goto enter_low_power;","filename":"change_tp_state.c","line":55},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_ON)\n            goto switch_on;","filename":"change_tp_state.c","line":57},
+    {"method":"change_tp_state","type":"GOTO","code":"goto switch_on;","filename":"change_tp_state.c","line":58},
+    {"method":"change_tp_state","type":"GOTO","code":"goto invalid_change;","filename":"change_tp_state.c","line":59},
+    {"method":"change_tp_state","type":"IF","code":"if (current_lcd_state == 0) {\n        if (state == LCDCHANGE_OFF)\n            goto switch_off;\n        if (state == LCDCHANGE_ENTER_LP)\n            goto enter_low_power;\n        goto invalid_change;\n    }","filename":"change_tp_state.c","line":62},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_OFF)\n            goto switch_off;","filename":"change_tp_state.c","line":63},
+    {"method":"change_tp_state","type":"GOTO","code":"goto switch_off;","filename":"change_tp_state.c","line":64},
+    {"method":"change_tp_state","type":"IF","code":"if (state == LCDCHANGE_ENTER_LP)\n            goto enter_low_power;","filename":"change_tp_state.c","line":65},
+    {"method":"change_tp_state","type":"GOTO","code":"goto enter_low_power;","filename":"change_tp_state.c","line":66},
+    {"method":"change_tp_state","type":"GOTO","code":"goto invalid_change;","filename":"change_tp_state.c","line":67},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":75},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":81},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":88},
+    {"method":"change_tp_state","type":"GOTO","code":"goto unlock;","filename":"change_tp_state.c","line":95}
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_imem_info",
+  "stock_sha256": "6a0fff182e40e9676a321e6c55796ed94d382faf3ec1e1999a53e5076ffd3e65",
+  "profiles": ["CALLBACK_ABI", "STATEFUL_MEMORY", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "ddr_id_read_proc",
+    "stock_entry": "0010025c",
+    "source_function": "ddr_id_read_proc",
+    "candidate_function": "ddr_id_read_proc",
+    "kcfi_required": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_imem_info",
+    "stock_module": "reference_modules/full_vendor_boot/zte_imem_info.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_imem_info/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "C:/Users/adria/Desktop/drivers/ghidra_nav_repair_20260902/imem_ddr_read_candidate_ghidra_exact_20260902/export/zte_imem_info.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_imem_info/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_imem_info_ddr_id_read_proc_protocol_20260902"
+  },
+  "ghidra": {"allow_pcode_authoritative_decompiler_fallback": false},
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_imem_info",
+    "define": ["ZTE_IMEM_INFO_HOST_TEST"],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

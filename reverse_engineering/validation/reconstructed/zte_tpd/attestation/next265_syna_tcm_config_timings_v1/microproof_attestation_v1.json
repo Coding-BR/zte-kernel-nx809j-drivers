@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "kind": "guided_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "265_syna_tcm_config_timings",
+  "stock_function": "syna_tcm_config_timings",
+  "stock_entry": "00121034",
+  "status": "HOST_JOERN_MICROPROOFS_PASS",
+  "promotion_allowed": false,
+  "promotion_blockers": [
+    "full canonical zte_tpd module build and KCFI evidence were not run for this isolated candidate",
+    "independent L4 review has not been recorded",
+    "smartphone validation was intentionally not run"
+  ],
+  "evidence": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_config_timings.c",
+      "sha256": "ecc8c030cade8619d8376c95515c1131cf2308ae178a21c4ffdaed198dd1d3d6"
+    },
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0264_00121034_syna_tcm_config_timings.c",
+      "sha256": "52c13dcc7b48bca878f56ce599578326cabecf67e3135056003bcf40b5f27416"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0264_00121034_syna_tcm_config_timings.jsonl",
+      "sha256": "28aff67f5d890022fa5282f4db11c1932457a881d1cc67323b686180e17bf48b"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0264_syna_tcm_config_timings_00121034.asm",
+      "sha256": "b6c30b0e35eb664c9431857c3c4e2f2bb7c59e27add16daec8821229c3dbaae8"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next265_syna_tcm_config_timings_v1/candidate_assembly/config_timings_candidate.s",
+      "sha256": "4822d9762572d6ea4205c4e2be27fbaddefc7be0e43d6a2a40ad6832e507f10c"
+    },
+    "host_harness": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next265_syna_tcm_config_timings_v1/host_harness_report.json",
+      "sha256": "86aa5ee88188f734a96537d8bca0947a5de25be2036ff51eee95cbd7de62cd5a"
+    },
+    "joern_gate_summary": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next265_syna_tcm_config_timings_v1/joern_gate_summary.json",
+      "sha256": "d8a08da6f50149b850c42c9fd9e80fee85a393507e113c798f2464efd49a74fc"
+    }
+  },
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_STATE_EFFECT_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_TEST_ORACLE": "PASS",
+    "MP7_CANDIDATE_PATCH": "PENDING_CANONICAL_BUILD",
+    "MP8_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "joern_gate": {
+    "release": "v4.0.548",
+    "strict": true,
+    "passed": true,
+    "promotion_claim": false,
+    "mapped_identity_count": 1,
+    "unresolved_call_count": 0,
+    "mapped_call_deltas": []
+  },
+  "observed_contract": {
+    "invalid_timings_with_ffff_fields_return": -241,
+    "fields": ["0x1", "0x2", "0x4", "0x8", "0x100", "0x200"],
+    "timing_offsets": {
+      "0x1": "tcm + 0x208",
+      "0x2": "tcm + 0x20c",
+      "0x4": ["tcm + 0x210", "tcm + 0x214"],
+      "0x8": "tcm + 0x218",
+      "0x100": "tcm + 0x1e8",
+      "0x200": "tcm + 0x1ec"
+    },
+    "allocations": 0,
+    "hardware_access": false,
+    "indirect_calls": false
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible_binary": true,
+    "asan_ubsan_stderr_empty": true,
+    "cycles": 2,
+    "cases": 8
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "one_key_report"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "480e3bc8e4a1e198df5ada636ceeaf521771fb6ba8b88a8a3f53d9fc4b669896",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_one_key_report_exact\\host_v3\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next134-one-key-report",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/one_key_report_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_one_key_report_exact\\host_v3\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS one_key_report host tests (3 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "480e3bc8e4a1e198df5ada636ceeaf521771fb6ba8b88a8a3f53d9fc4b669896",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_one_key_report_exact\\host_v3\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next134-one-key-report",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/one_key_report_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_one_key_report_exact\\host_v3\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS one_key_report host tests (3 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 3,
+  "generated_utc": "2026-08-27T10:30:59.716209+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\one_key_report_host_test.c",
+      "sha256": "c360a81468820ad3d30e34bd3bbf1840a68032f5084f0100bef8cf37a12792fe",
+      "size": 2816
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\one_key_report.c",
+      "sha256": "ba93f685a5dad5270b70e5880ba249a2368613b2294cacf8d149c4111265f1d9",
+      "size": 1647
+    }
+  ],
+  "limitations": [
+    "The harness exercises the C reconstruction with controlled UFP and uevent stubs.",
+    "The exact assembly preserves the stock invalid-index trap; the C safety guard is tested separately as a non-trapping host safety path.",
+    "It does not load the module on an Android device."
+  ],
+  "mode": "offline_direct_source_one_key_report_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "one_key_report",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

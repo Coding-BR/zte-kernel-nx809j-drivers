@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-27T08:29:20.070987+00:00",
+  "mode": "offline_direct_source_tp_esd_check_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "tp_esd_check",
+  "covered_functions": [
+    "tp_esd_check"
+  ],
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_esd_check_host_test.c",
+  "source_sha256": "f41d23caa8920b02ba6a7cbc765a27fdcc20d3291114ec773d5b92f8f8d8e05d",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 3,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+        "-v",
+        ".tmp_next120_probe\\host_build\\cycle1:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-target120-esd-check",
+        "-ffile-prefix-map=/drivers=<drivers>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/drivers/validation/zte_tpd/host/tp_esd_check_host_test.c",
+        "-o",
+        "/output/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        ".tmp_next120_probe\\host_build\\cycle1:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_asan_ubsan"
+      ],
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_esd_check host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "786aaf2ea67c99e8042696b563bb830b1d75ae5a1ed7aab04223ab71378d08c5",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+        "-v",
+        ".tmp_next120_probe\\host_build\\cycle2:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-target120-esd-check",
+        "-ffile-prefix-map=/drivers=<drivers>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/drivers/validation/zte_tpd/host/tp_esd_check_host_test.c",
+        "-o",
+        "/output/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        ".tmp_next120_probe\\host_build\\cycle2:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_asan_ubsan"
+      ],
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_esd_check host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "786aaf2ea67c99e8042696b563bb830b1d75ae5a1ed7aab04223ab71378d08c5",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_esd_check_host_test.c",
+      "size": 2193,
+      "sha256": "f41d23caa8920b02ba6a7cbc765a27fdcc20d3291114ec773d5b92f8f8d8e05d"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_esd_check.c",
+      "size": 275,
+      "sha256": "1315ee94b7fb0382ed8393fbba53f03697e246fb2939644e0e0b4706b5e9e493"
+    }
+  ],
+  "reproducible": true,
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness proves the null-callback, callback invocation and boolean propagation contract.",
+    "Module assembly, KCFI, Ghidra and Joern remain independent gates.",
+    "No smartphone, touch hardware or ESD recovery path is exercised."
+  ]
+}

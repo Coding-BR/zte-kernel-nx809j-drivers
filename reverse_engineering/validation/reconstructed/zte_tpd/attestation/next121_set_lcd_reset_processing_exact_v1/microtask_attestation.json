@@ -1,0 +1,78 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "121_set_lcd_reset_processing",
+  "function": "set_lcd_reset_processing",
+  "stock_entry": "00110544",
+  "stock_body_bytes": 56,
+  "candidate_body_bytes": 56,
+  "stock_instruction_count": 14,
+  "candidate_instruction_count": 14,
+  "status": "OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "gates": {
+    "ghidra_decompilation": {
+      "passed": true,
+      "decompiled_sha256": "7dde3203ee7f922f1e47dd97463ff64e8524ac6b683dcf84cb0b2a34501ccc1e",
+      "pcode_sha256": "8bd682747771ade9742eefa1aaf6104ee980629fbb7eadab82fdb15696911e83",
+      "stock_assembly_sha256": "5ec2a9a3ad7866cc366592863f3828652dcae0f457153972c790e603fd6f1219"
+    },
+    "source_sync": {
+      "passed": true,
+      "report_sha256": "d906c81e407abf5cec0002dacecf8a9312894d36fa2f3dfffdc635f0449df3f8"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "f715c51167adbca00ad6cf7be3ba791ac13b3f947178b333608bec5782dea1b1"
+    },
+    "host_harness_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "report_sha256": "613d3d03960355ea8ff2970455147f938f08856ed93db9c1fa51d4e6a15db8d5"
+    },
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "951aaf4081dbc2d98288e34f64b0483e50a2c027aeb32880b97a84cefbfd8515",
+      "module_size": 17910872,
+      "report_sha256": "f0c2a9d7b3caa960c2d32cf7ed175f549e1743b31fc59a6b563876ad567eee66"
+    },
+    "kcfi": {
+      "passed": true,
+      "type_id": "0xa2fce979",
+      "stock_size": 56,
+      "candidate_size": 56,
+      "report_sha256": "ca96187eb6094a16aad7f5208fb5e1e35a506b7c3682b416d72b29f7519d4d39"
+    },
+    "aarch64_assembly": {
+      "passed": true,
+      "stock_instructions": 14,
+      "candidate_instructions": 14,
+      "opcode_parity": true,
+      "relocation_parity": true,
+      "report_sha256": "f6c01695fd55557f1b7ad0874475d539b7ed8f2c8f808045fb579b486e7215ba"
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "726395e315fe7220ed9565215df38a2e1796c03e5a541fec469abaf056733200",
+    "candidate_exact_assembly_source_sha256": "e13f6bf6b1f59072c105eba5a5afd946866fdcc0b60f7caba460e1b1586724c7",
+    "candidate_assembly_sha256": "a4abfc9cf33a900c5de74506d5bd96d4e334e68dfc7494f89a6d61ae0e8795de",
+    "candidate_kcfi_sha256": "57989f7ebfbcbec7471c355c60329652b78a0ddc52268c0b7a11012883244ac4",
+    "stock_kcfi_sha256": "aca765f39118558d6bf5046a1198aab5f0e888c6bc34c6a85bbcf245ac2c7ffb"
+  },
+  "evidence": {
+    "canonical_build_report": "canonical_build_report.json",
+    "source_sync_report": "source_sync_report.json",
+    "assembly_comparison": "assembly_comparison.json",
+    "candidate_assembly": "candidate_assembly/0000_set_lcd_reset_processing.asm",
+    "kcfi_comparison": "kcfi_comparison.json",
+    "joern_gate": "joern/joern_gate_report.json",
+    "joern_summary": "joern/joern_gate_summary.json",
+    "host_harness": "host_harness_report.json"
+  },
+  "limitations": [
+    "The offline gates prove the captured callback ABI, KCFI and machine-code parity; they do not prove physical touch-controller behavior.",
+    "No smartphone, kernel runtime or hardware integration was exercised."
+  ]
+}

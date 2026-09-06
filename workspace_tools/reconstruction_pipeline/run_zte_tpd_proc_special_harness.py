@@ -173,6 +173,7 @@ def main() -> int:
             "No ADB, fastboot, module loading, SPI, IRQ, MMIO or partition operation is performed.",
         ],
     }
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({
         "output": str(output),

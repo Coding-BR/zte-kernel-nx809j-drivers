@@ -19,14 +19,10 @@ ssize_t ghost_debug_write(struct file *file, const char __user *buffer, size_t c
   char v16; // w14
   char v17; // w15
   char v18; // w16
-  int v20; // [xsp+Ch] [xbp-A4h] BYREF
+  unsigned int v20; // [xsp+Ch] [xbp-A4h] BYREF
   char *stringp; // [xsp+10h] [xbp-A0h] BYREF
-  __int64 v22; // [xsp+18h] [xbp-98h]
-  __int64 v23; // [xsp+20h] [xbp-90h]
-  __int64 v24; // [xsp+28h] [xbp-88h]
-  __int64 v25; // [xsp+30h] [xbp-80h]
-  __int64 v26; // [xsp+38h] [xbp-78h]
-  _QWORD v27[12]; // [xsp+40h] [xbp-70h] BYREF
+  unsigned short parsed[20]; // [xsp+18h] [xbp-98h], contiguous stock parser area
+  _QWORD v27[13]; // [xsp+40h] [xbp-70h] BYREF; stock local_b0 is 104 bytes
   int v28; // [xsp+A0h] [xbp-10h]
   __int64 v29; // [xsp+A8h] [xbp-8h]
 
@@ -39,11 +35,7 @@ ssize_t ghost_debug_write(struct file *file, const char __user *buffer, size_t c
     v4 = a3;
   memset(v27, 0, sizeof(v27));
   v20 = 0;
-  v25 = 0;
-  v26 = 0;
-  v23 = 0;
-  v24 = 0;
-  v22 = 0;
+  memset(parsed, 0, sizeof(parsed));
   if ( a2 && zte_inline_copy_from_user(v27, (const void __user *)a2, v4) )
   {
     printk(unk_31DF8);
@@ -59,19 +51,19 @@ ssize_t ghost_debug_write(struct file *file, const char __user *buffer, size_t c
       do
       {
         if ( !(unsigned int)kstrtouint(v8, 10, &v20) )
-          *((_WORD *)&v22 + v9++) = v20;
+          parsed[v9++] = (unsigned short)v20;
         v8 = strsep(&stringp, ",");
       }
       while ( v8 && v9 < 0xA );
-      v10 = WORD1(v23);
-      v11 = WORD2(v23);
-      v12 = HIWORD(v23);
-      v13 = (unsigned __int16)v24;
-      v14 = v23;
-      v15 = BYTE6(v22);
-      v16 = BYTE4(v22);
-      v17 = BYTE2(v22);
-      v18 = v22;
+      v10 = parsed[5];
+      v11 = parsed[6];
+      v12 = parsed[7];
+      v13 = parsed[8];
+      v14 = (char)parsed[4];
+      v15 = (char)parsed[3];
+      v16 = (char)parsed[2];
+      v17 = (char)parsed[1];
+      v18 = (char)parsed[0];
     }
     else
     {

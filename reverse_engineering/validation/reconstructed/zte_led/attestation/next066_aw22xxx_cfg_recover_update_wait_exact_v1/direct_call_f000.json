@@ -1,0 +1,172 @@
+{
+  "applicable": false,
+  "checks": {
+    "caller_multiplicity_matches": true,
+    "candidate_has_incoming_calls": true,
+    "candidate_has_one_target_address": true,
+    "candidate_incoming_calls_are_direct": true,
+    "candidate_kcfi_status_is_unambiguous": true,
+    "candidate_module_matches_kcfi_report": true,
+    "distinct_caller_count_matches": true,
+    "incoming_call_count_matches": true,
+    "stock_exclusion_is_recorded": true,
+    "stock_has_incoming_calls": true,
+    "stock_has_no_kcfi_record": true,
+    "stock_has_one_target_address": true,
+    "stock_incoming_calls_are_direct": true,
+    "stock_module_matches_kcfi_report": true
+  },
+  "comparisons": [
+    {
+      "applicable": false,
+      "candidate_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "FUN_00105ca0",
+            "count": 2,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "FUN_00105ca0",
+            "caller_entry": "00105ca0",
+            "callsite": "00105ca4",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_cfg_recover_update_wait",
+            "target_address": "00105d84"
+          },
+          {
+            "caller": "FUN_00105ca0",
+            "caller_entry": "00105ca0",
+            "callsite": "00105cc0",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_cfg_recover_update_wait",
+            "target_address": "00105d84"
+          }
+        ],
+        "count": 2,
+        "target_addresses": [
+          "00105d84"
+        ]
+      },
+      "candidate_extra_instrumentation": false,
+      "candidate_kcfi_exclusion": {
+        "decision": "NO_VALID_KCFI_PREAMBLE",
+        "function": "f000",
+        "reason": "candidate preamble overlaps function body: aw22xxx_led_init+0x18c",
+        "section": ".text",
+        "symbol_name": "aw22xxx_cfg_recover_update_wait",
+        "symbol_offset": "0x4f44",
+        "symbol_size": 968
+      },
+      "candidate_kcfi_record": null,
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "function": "aw22xxx_cfg_recover_update_wait",
+      "passed": true,
+      "reason": "The stock ELF has no valid KCFI preamble for this function; the candidate either has one unambiguous KCFI record or the same recorded non-KCFI exclusion, and every incoming stock and candidate reference is a direct UNCONDITIONAL_CALL.",
+      "stock_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "aw22xxx_recover_work_routine",
+            "count": 2,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "aw22xxx_recover_work_routine",
+            "caller_entry": "001053b8",
+            "callsite": "00105574",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_cfg_recover_update_wait",
+            "target_address": "00106394"
+          },
+          {
+            "caller": "aw22xxx_recover_work_routine",
+            "caller_entry": "001053b8",
+            "callsite": "00105590",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_cfg_recover_update_wait",
+            "target_address": "00106394"
+          }
+        ],
+        "count": 2,
+        "target_addresses": [
+          "00106394"
+        ]
+      },
+      "stock_kcfi_exclusion": {
+        "decision": "NO_VALID_KCFI_PREAMBLE",
+        "function": "f000",
+        "reason": "candidate preamble overlaps function body: aw22xxx_led_init+0x18c",
+        "section": ".text",
+        "symbol_name": "aw22xxx_cfg_recover_update_wait",
+        "symbol_offset": "0x4eb4",
+        "symbol_size": 968
+      },
+      "stock_kcfi_record": null
+    }
+  ],
+  "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "driver": "zte_led",
+  "function": "aw22xxx_cfg_recover_update_wait",
+  "generated_utc": "2026-09-02T20:52:11.974669+00:00",
+  "inputs": {
+    "candidate_calls": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_cfg_recover_update_wait_candidate_ghidra_20260902_v5\\export\\zte_led.ko\\calls.jsonl",
+      "sha256": "58a6a2576f69c944d27003561e7270e2f52fd483df708a0b2e7fd6e509aa1fd2",
+      "size": 38306
+    },
+    "candidate_kcfi_report": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_cfg_recover_update_wait_protocol_20260902_v8\\kcfi\\candidate.json",
+      "sha256": "14a55a87d4a26998c991d080c2536fef1918fb6070b7ddcccd387db0970a9583",
+      "size": 765
+    },
+    "candidate_module": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_cfg_recover_update_wait_protocol_20260902_v8\\docker\\work\\zte_led\\cycle_2\\zte_led.ko",
+      "sha256": "284b7eca64448d971b42c91f989213fd5838ed4641dbd223c84c43e022b4b8ed",
+      "size": 348488
+    },
+    "stock_calls": {
+      "path": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock/calls.jsonl",
+      "sha256": "9b0456f7410701b0e0f6626eca8581f81c94a525527c567196715108f74676ff",
+      "size": 124590
+    },
+    "stock_kcfi_report": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_cfg_recover_update_wait_protocol_20260902_v8\\kcfi\\stock.json",
+      "sha256": "6617fbb9575947ebbeb41ad5ef0ad90280f1a1911e10367065fcab9bd8c298fb",
+      "size": 703
+    },
+    "stock_module": {
+      "path": "reference_modules/stock/zte_led.ko",
+      "sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+      "size": 99424
+    }
+  },
+  "limitations": [
+    "This decision proves only that no stock indirect KCFI boundary was observed.",
+    "The candidate compiler emitted an extra KCFI preamble; it is not claimed as a stock type-ID match.",
+    "Direct-call equivalence does not replace Assembly, P-Code, host, or hardware validation."
+  ],
+  "modules": {
+    "candidate": {
+      "sha256": "284b7eca64448d971b42c91f989213fd5838ed4641dbd223c84c43e022b4b8ed",
+      "sha256_matches": true,
+      "size": 348488,
+      "size_matches": true
+    },
+    "stock": {
+      "sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+      "sha256_matches": true,
+      "size": 99424,
+      "size_matches": true
+    }
+  },
+  "passed": true,
+  "schema_version": "1.0"
+}

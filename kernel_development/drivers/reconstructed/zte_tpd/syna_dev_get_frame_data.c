@@ -7,7 +7,8 @@ int syna_dev_get_frame_data(struct syna_tcm *tcm, int value,
   __int64 v6; // x2
   int v7; // w0
 
-  printk(unk_35F27, "syna_dev_get_frame_data", a2);
+  printk("\0016[info ] %s: enter,state is %d\n",
+         "syna_dev_get_frame_data", a2);
   if ( !a1 )
     return -22;
   if ( a2 )

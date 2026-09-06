@@ -9,8 +9,8 @@ ssize_t tp_BBAT_test_read(struct file *file, char __user *buffer, size_t count, 
   __int64 v5; // x8
   __int64 (*v9)(void); // x8
   int v10; // w0
-  __int64 v11; // x1
-  __int64 v12; // x2
+  __int64 v11 = 0; // x1 (unused printk vararg in the lifted call)
+  __int64 v12 = 0; // x2 (unused printk vararg in the lifted call)
   int v13; // w3
   int v14; // w0
   int v15; // w22
