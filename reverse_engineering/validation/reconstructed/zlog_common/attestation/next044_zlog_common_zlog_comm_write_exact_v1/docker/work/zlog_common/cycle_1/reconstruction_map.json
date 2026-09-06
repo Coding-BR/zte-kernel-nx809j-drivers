@@ -108,24 +108,7 @@
       "source_file": "zlog_common.c",
       "source_function": "zlog_comm_write",
       "status": "reviewed",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 00100f9c reviewed",
-        "exact 116-instruction/464-byte AArch64 body matched stock",
-        "KCFI type ID 0xc3d43b4d matched",
-        "callback KCFI 0xc2a6c845 retained as int (void *, int) in the reconstructed ABI",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed, including the indirect callback path",
-        "host harness passed reproducibly",
-        "direct count, copy and callback paths passed",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 464,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/next044_zlog_common_zlog_comm_write_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, callback ABI/KCFI, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 116 matching AArch64 instructions and 464-byte symbols, matching KCFI type ID 0xc3d43b4d, preserving callback type 0xc2a6c845, two reproducible Docker builds, strict Joern scope and direct count/copy/callback tests. This is static/offline evidence; live character-device I/O, callback lifetime and scheduler behavior remain unverified."
+      "evidence": ["exact 464-byte symbol", "KCFI 0xc3d43b4d", "callback KCFI 0xc2a6c845 resolved as int (void *, int)", "host count, copy and callback paths"]
     },
     {
       "stock_function": "zlog_comm_ioctl",
