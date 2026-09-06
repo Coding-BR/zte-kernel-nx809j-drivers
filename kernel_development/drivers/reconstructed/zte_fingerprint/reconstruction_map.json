@@ -227,15 +227,25 @@
                      },
                      {
                          "evidence":  [
-                                          "Ghidra stock pseudocode/P-Code reviewed",
-                                          "final ELF call-graph comparison"
+                                          "Ghidra stock pseudocode and P-Code at 00101bf8 reviewed",
+                                          "exact 27-instruction/108-byte AArch64 body matched stock; source alias gf_probe_list_del binds to ELF symbol list_del",
+                                          "stock extractor recorded NO_VALID_KCFI_PREAMBLE; KCFI is explicitly N/A for this direct helper",
+                                          "Docker hard-protocol core passed assembly, reproducibility, KCFI exception handling, Joern and map gates",
+                                          "host harness covers list_del/gf_probe_list_del with reproducible result",
+                                          "no hardware execution claim"
                                       ],
                          "source_file":  "zte_fingerprint.c",
                          "source_function":  "gf_probe_list_del",
-                         "status":  "reviewed",
+                         "status":  "PROMOTED_OFFLINE_EXACT",
                          "stock_entry":  "00101bf8",
                          "stock_function":  "list_del",
-                         "stock_pseudocode":  "decompiled/0013_00101bf8_list_del.c"
+                         "stock_pseudocode":  "decompiled/0013_00101bf8_list_del.c",
+                         "stock_body_bytes":  108,
+                         "attestation":  "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next001_zte_fingerprint_list_del_exact_v1",
+                         "mapping_basis":  "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, Joern and direct harness evidence; source alias is bound to the stock list_del symbol",
+                         "review_scope":  "offline_exact_function_level",
+                         "semantic_equivalence":  "OFFLINE_EXACT",
+                         "mapping_note":  "Function-level offline parity is promoted for the direct list helper. KCFI is not claimed because the stock extractor reports NO_VALID_KCFI_PREAMBLE for the overlapping helper preamble. This is static/offline evidence; hardware behavior remains unverified."
                      },
                      {
                          "evidence":  [
