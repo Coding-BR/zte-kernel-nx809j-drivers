@@ -1,0 +1,219 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_charger_policy/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_charger_policy/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zte_charger_policy/cycle_1=/zte_tpd",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "WARNING: modpost: \"charger_policy_get_prop_by_name.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"zte_charger_policy_get_prop_by_name.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"zte_charger_policy_set_prop_by_name.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_ctrl_charging_enable.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_disable_cas.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_check_soc_reach_min.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_runchging.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_ide.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_rundischging.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_forcedischging.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_timeout_handler_work.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_demo_sts_set.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_demo_sts_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_expired_sts_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_expired_sec_set.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_expired_sec_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_force_disching_sec_set.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_force_disching_sec_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_min_set.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_min_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_max_set.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_max_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_enable_status_set.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_enable_status_get.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_get_status.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_probe_work.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_probe.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_remove.__key\" [/work/validation/zte_charger_policy/cycle_1/zte_charger_policy] is COMMON symbol\n",
+            "stdout": "  CC [M]  /work/validation/zte_charger_policy/cycle_1/zte_charger_policy.o\n  MODPOST /work/validation/zte_charger_policy/cycle_1/Module.symvers\n  CC [M]  /work/validation/zte_charger_policy/cycle_1/zte_charger_policy.mod.o\n  CC [M]  /work/validation/zte_charger_policy/cycle_1/.module-common.o\n  LD [M]  /work/validation/zte_charger_policy/cycle_1/zte_charger_policy.ko\n  BTF [M] /work/validation/zte_charger_policy/cycle_1/zte_charger_policy.ko\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_charger_policy/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_charger_policy/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zte_charger_policy/cycle_2=/zte_tpd",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "WARNING: modpost: \"charger_policy_get_prop_by_name.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"zte_charger_policy_get_prop_by_name.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"zte_charger_policy_set_prop_by_name.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_ctrl_charging_enable.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_disable_cas.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_check_soc_reach_min.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_runchging.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_ide.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_rundischging.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_status_forcedischging.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_timeout_handler_work.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_demo_sts_set.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_demo_sts_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_expired_sts_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_expired_sec_set.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_expired_sec_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_force_disching_sec_set.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_force_disching_sec_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_min_set.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_min_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_max_set.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_cap_max_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_enable_status_set.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_enable_status_get.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_get_status.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_probe_work.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_probe.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\nWARNING: modpost: \"charger_policy_remove.__key\" [/work/validation/zte_charger_policy/cycle_2/zte_charger_policy] is COMMON symbol\n",
+            "stdout": "  CC [M]  /work/validation/zte_charger_policy/cycle_2/zte_charger_policy.o\n  MODPOST /work/validation/zte_charger_policy/cycle_2/Module.symvers\n  CC [M]  /work/validation/zte_charger_policy/cycle_2/zte_charger_policy.mod.o\n  CC [M]  /work/validation/zte_charger_policy/cycle_2/.module-common.o\n  LD [M]  /work/validation/zte_charger_policy/cycle_2/zte_charger_policy.ko\n  BTF [M] /work/validation/zte_charger_policy/cycle_2/zte_charger_policy.ko\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_charger_policy/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_charger_policy/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zte_charger_policy/cycle_1=/zte_tpd",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_charger_policy/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_charger_policy/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zte_charger_policy/cycle_2=/zte_tpd",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work\\zte_charger_policy\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work\\zte_charger_policy\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work\\zte_charger_policy\\cycle_1\\zte_charger_policy.ko",
+          "sha256": "b5ad899823b2ec690d7ab647e62eac066aa94bc6e9e1e6a5a120847b726dfa77",
+          "size": 343296
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work\\zte_charger_policy\\cycle_2\\zte_charger_policy.ko",
+          "sha256": "b5ad899823b2ec690d7ab647e62eac066aa94bc6e9e1e6a5a120847b726dfa77",
+          "size": 343296
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zte_charger_policy_timeout_handler_work_core_v2\\docker\\work\\zte_charger_policy"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_charger_policy\\zte_charger_policy.ko",
+        "sha256": "04f4a2aec2a9dcc1a98313e60eedcba05d34419ef82721bb8b7fece9840a8d5b",
+        "size": 300960
+      },
+      "checks": {
+        "aarch64_rel": false,
+        "alias_match": false,
+        "candidate_matches_fresh": false,
+        "function_traceability": false,
+        "ghidra_export": false,
+        "makefile": true,
+        "namespace_match": false,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 2,
+        "undefined_symbols_match": false,
+        "vermagic_accepted": false
+      },
+      "driver": "zte_charger_policy",
+      "errors": [
+        "acquired stock module is missing from the selected evidence source",
+        "Ghidra export missing: manifest.json",
+        "Ghidra export missing: functions.jsonl",
+        "Ghidra export missing: calls.jsonl",
+        "Ghidra export missing: externals.jsonl",
+        "Ghidra export missing: symbols.jsonl",
+        "Ghidra export missing: strings.jsonl",
+        "Ghidra export missing: memory_blocks.jsonl",
+        "Ghidra export missing: pseudocode.c",
+        "transition document is missing"
+      ],
+      "ghidra": {
+        "document": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zte_charger_policy_timeout_handler_work_protocol_20260905\\04_documents\\zte_charger_policy.ko\\DOCUMENTO_TRANSICAO.md",
+        "export": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zte_charger_policy_timeout_handler_work_protocol_20260905\\03_ghidra\\exports\\zte_charger_policy.ko",
+        "function_count": 0,
+        "function_names": [],
+        "manifest": {},
+        "passed": false
+      },
+      "hardware_verified": false,
+      "metadata": {},
+      "status": "incomplete_or_failed",
+      "stock": {
+        "exists": false,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zte_charger_policy_timeout_handler_work_protocol_20260905\\01_acquisition\\modules\\zte_charger_policy.ko"
+      },
+      "traceability": {
+        "exists": true,
+        "mapped_functions": 38,
+        "passed": false,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_charger_policy\\reconstruction_map.json",
+        "stock_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+        "unmapped_functions": []
+      },
+      "warnings": [
+        "reconstruction map stock SHA-256 does not match acquired module"
+      ]
+    }
+  ],
+  "generated_utc": "2026-09-05T13:11:42.967465+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": false,
+  "rebuild_requested": true,
+  "run_root": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zte_charger_policy_timeout_handler_work_protocol_20260905",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "zte_charger_policy"
+    ],
+    "static_verified": []
+  },
+  "target_kernel_manifest": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json"
+}

@@ -7,12 +7,15 @@ import argparse
 import hashlib
 import json
 import shutil
+import re
 from pathlib import Path
 from typing import Any
 
 
 GENERATED_FILES = ("functions.jsonl", "calls.jsonl", "strings.jsonl", "manifest.json")
+OPTIONAL_FILES = ("memory_blocks.jsonl", "externals.jsonl", "symbols.jsonl")
 GENERATED_DIRECTORIES = ("decompiled", "pcode")
+FUNCTION_SELECTOR_RE = re.compile(r"^(?P<name>.+)@(?P<entry>(?:0x)?[0-9a-fA-F]+)$")
 
 
 def sha256_file(path: Path) -> str:
@@ -42,6 +45,13 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def normalize_function_selector(value: str) -> tuple[str, int | None]:
+    match = FUNCTION_SELECTOR_RE.fullmatch(value)
+    if match is None:
+        return value, None
+    return match.group("name"), int(match.group("entry"), 16)
+
+
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8", newline="\n")
@@ -53,6 +63,10 @@ def clean_generated_output(output: Path) -> None:
         if path.is_dir():
             shutil.rmtree(path)
     for name in GENERATED_FILES:
+        path = output / name
+        if path.is_file():
+            path.unlink()
+    for name in OPTIONAL_FILES:
         path = output / name
         if path.is_file():
             path.unlink()
@@ -89,10 +103,19 @@ def materialize_scoped_export(
             by_name.setdefault(name, []).append(row)
 
     selected = []
-    for name in requested_functions:
+    for selector in requested_functions:
+        name, requested_entry = normalize_function_selector(selector)
         matches = by_name.get(name, [])
+        if requested_entry is not None:
+            matches = [
+                row for row in matches
+                if isinstance(row.get("entry"), str)
+                and int(row["entry"], 16) == requested_entry
+            ]
         if len(matches) != 1:
-            raise ValueError(f"expected one Ghidra row for {name}, found {len(matches)}")
+            raise ValueError(
+                f"expected one Ghidra row for {selector}, found {len(matches)}"
+            )
         row = matches[0]
         for key in ("decompiled_file", "pcode_file"):
             relative = row.get(key)
@@ -112,13 +135,17 @@ def materialize_scoped_export(
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source / relative, destination)
     shutil.copy2(strings_path, output / "strings.jsonl")
+    for name in OPTIONAL_FILES:
+        source_artifact = source / name
+        if source_artifact.is_file():
+            shutil.copy2(source_artifact, output / name)
     write_text(
         output / "functions.jsonl",
         "".join(json.dumps(row, separators=(",", ":")) + "\n" for row in selected),
     )
     selected_calls: list[dict[str, Any]] = []
     if calls_path.is_file():
-        requested = set(requested_functions)
+        requested = {str(row.get("name")) for row in selected}
         selected_calls = [
             row
             for row in read_jsonl(calls_path)

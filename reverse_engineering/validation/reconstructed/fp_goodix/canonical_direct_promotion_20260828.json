@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-28T16:30:00Z",
+  "driver": "fp_goodix",
+  "scope": "canonical source and normal Docker artifact promotion; offline static only",
+  "stock": {
+    "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  },
+  "source": {
+    "core_file": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix_core.c",
+    "core_sha256": "e3b3b339189690be3e3589b449df4488c82fece029a69ef68ba5b907702df11c",
+    "platform_file": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix_platform.c",
+    "sha256": "6ae2f637f74f957c05cf5d94ac18d833c176d8e3ccb520c1eb2157e149045b5d",
+    "change": "inline direct pinctrl_select_state path in gf_parse_dts; rewrite gf_ioctl power_offset condition to stock-equivalent branch form"
+  },
+  "canonical_candidate": {
+    "path": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix.ko",
+    "sha256": "1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c",
+    "size": 730720,
+    "normal_build_reproducible": true,
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225"
+  },
+  "gates": {
+    "assembly": "26/30 exact; four known functions remain open",
+    "call_graph": "30/30",
+    "kcfi": "23/23; gf_ioctl size ignored explicitly in protocol comparison",
+    "joern_gf_parse_dts": "PASS direct pinctrl_select_state topology",
+    "joern_full_scope": "PASS with explicit public copy API equivalence for compiler-generated helpers",
+    "joern_slice": "LIMITED_BY_WINDOWS_JOERN_RUNTIME",
+    "docker_protocol_reproducible": "PASS two clean audit builds",
+    "hardware": "DEFERRED"
+  },
+  "remaining_functions": [
+    "gf_ioctl",
+    "gf_open",
+    "gf_parse_dts",
+    "gf_probe"
+  ],
+  "decision": "PROMOTE_SOURCE_AND_CANONICAL_NORMAL_ARTIFACT; DO_NOT_CLAIM_100_PERCENT",
+  "protocol_evidence": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/validation/hard_protocol_fp_goodix_full8_20260828"
+}

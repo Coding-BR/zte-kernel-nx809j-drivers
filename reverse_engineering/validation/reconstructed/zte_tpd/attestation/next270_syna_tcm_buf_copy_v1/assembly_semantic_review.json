@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "270_syna_tcm_buf_copy",
+  "stock_entry": "00121c10",
+  "stock_symbol": "syna_tcm_buf_copy",
+  "candidate_symbol": "syna_tcm_buf_copy_2",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0269_00121c10_syna_tcm_buf_copy.c",
+      "sha256": "25358990ba19f17f391f9bb16c6221a36367fed0541404c67c9c5a0c2dfeb5da"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0269_00121c10_syna_tcm_buf_copy.jsonl",
+      "sha256": "6d3364713f2d8c6dba8fcf686ae207f3a54128aa8ab842d5ab88b0f860294abe"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0269_syna_tcm_buf_copy_00121c10.asm",
+      "sha256": "2a2d60a8ddebe9bd97e9a4daf38d275f6337d40dd02d47dec81942cc5e5fd40c"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_buf_copy_2.c",
+      "sha256": "2e5ecaa36be6bfa8905cd8047cdda6d87e11636fbf9227251267bacf0c146cca"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next270_syna_tcm_buf_copy_v1/candidate_assembly/syna_tcm_buf_copy_2_candidate.s",
+      "sha256": "e8446e079fe690b92ae5fa19677b3f5616dae98b2207c35373338e213c9ae31a"
+    }
+  },
+  "checks": {
+    "dual_buffer_lock_order": "PASS",
+    "growth_to_source_length_plus_one": "PASS",
+    "copy_and_length_propagation": "PASS",
+    "allocation_failure_cleanup": "PASS",
+    "capacity_and_null_data_error": "PASS",
+    "nested_lock_depth_restore": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation context that does not establish final module equivalence.",
+    "Candidate assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "This review does not establish kernel ABI, KCFI, module relocation or physical hardware behavior.",
+    "The stock function has no safe early null-object guard; null buffer objects remain outside the tested precondition."
+  ]
+}

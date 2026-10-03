@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "139",
+  "function": "ufp_single_tap_work",
+  "stock_entry": "0011108c",
+  "stock_body_bytes": 12,
+  "candidate_symbol_bytes": 12,
+  "stock_instruction_count": 3,
+  "candidate_instruction_count": 3,
+  "stock_relocation_count": 2,
+  "candidate_relocation_count": 2,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "fbd11769d87fda516aa0033c7ee58e4d488d8a5fcc6cd011f02efd571d9b48d9",
+    "candidate_module_size": 29310992,
+    "candidate_source_sha256": "5941fa951b32c3d3bca5bdf15442dd4c3bee3708fbab2e4cac87bc1128fd1a5e",
+    "ghidra_pseudocode_sha256": "e6afa32c6d4f63b9dc02bfd5396f2e540a98df5f8dc3af02d36d1c82ad076941",
+    "ghidra_pcode_sha256": "bd2652c04df5e75f881198bf20b591e83f17f904a92f913ebe527b2f38012e74",
+    "candidate_assembly_sha256": "46d61e0e1e7de1435dd097a8141aae7f187aa951c9c43c52dc1fb00bec04a30d",
+    "stock_assembly_sha256": "c10a1ae6e2437275e99141c5ef4a8f7cce0e1948f76dbf72579ab46c27a6149c",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0xa607748c"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "Kernel workqueue and UFP runtime state are represented by deterministic host stubs.",
+    "The preserved host report has no corresponding host-test source file in the current host tree.",
+    "Android runtime and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

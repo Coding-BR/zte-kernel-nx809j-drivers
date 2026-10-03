@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_glove_write",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_glove_write.c",
+  "source_sha256": "6bee2616e247ca0b342b4ca93b6d6811eebd156393d3149d33235c3eb8b4f294",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_glove_write_host_test.c",
+  "harness_sha256": "1ad607f09d6e6de9e76c8c9d20baf66836160abddb30f0f1926fe310537ee328",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 3,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_glove_write host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "454a81c489fff68522841f9d3740358c0a8df1eb6800f4ec6eca9d37b61b1fd3",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_glove_write host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "454a81c489fff68522841f9d3740358c0a8df1eb6800f4ec6eca9d37b61b1fd3",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness validates the +0xe50 callback offset, bool normalization, -EINVAL and count-return contracts with fake memory.",
+    "It does not execute the real procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

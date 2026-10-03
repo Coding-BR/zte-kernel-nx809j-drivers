@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "006_zlog_register_work_deinit",
+  "stock_function": "zlog_register_work_deinit",
+  "stock_entry": "00107874",
+  "stock_body_bytes": 80,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "1c6bf9b8a22af8df5c930d3f8b70858b63b674ed08223046f9289e84e8b38f4f",
+  "candidate_exact_assembly_sha256": "f1b9fe6d4469f581ea32398489da5e06a225fffcb0c02ed5cba2a5997f8ecc54",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 20,
+    "instruction_count_candidate": 20,
+    "symbol_size_stock": 80,
+    "symbol_size_candidate": 80,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 10,
+    "direct_case": "test_work_lifecycle",
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "b396b27f1363e91d97f2ae3c1e8a41f2a8720919eff8b4fe36745e4478f6a8fe",
+    "aarch64_comparison.json": "c3554bacdb6cdc2f3a43fcab1ebaa586270f5ef6aa9d081405ce1d9d77691211",
+    "kcfi/comparison.json": "f597fb431e26692b4a76c290c8d4e2b05cb6d125290f01802b70699fe096a1e1",
+    "joern/joern_gate_report.json": "db8c59f2e8df8ab5e2627b2be9d8d0340f7680cf36e45d76b437b8eed1ebdac6",
+    "host_harness_report.json": "68ea5d2463d968ff1cafab3e4937ef2b22793ccbeb3fc9de07fc11601dc880bc",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host harness exercises the shared zlog lifecycle and directly covers test_work_lifecycle; kernel workqueue, vfree and printk are stubbed.",
+    "No smartphone, Android zlog service, SPI, IRQ, touch-controller or physical hardware is exercised.",
+    "The exact assembly gate proves stock opcode/relocation identity; semantic and hardware equivalence remain bounded by the listed evidence."
+  ]
+}

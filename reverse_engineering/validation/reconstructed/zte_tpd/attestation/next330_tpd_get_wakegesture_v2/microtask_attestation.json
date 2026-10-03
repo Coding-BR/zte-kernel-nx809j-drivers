@@ -1,0 +1,41 @@
+﻿{
+    "schema_version":  "1.0",
+    "generated_utc":  "2026-08-12T21:03:43.5268232Z",
+    "driver":  "zte_tpd",
+    "target":  "tpd_get_wakegesture",
+    "function":  "tpd_get_wakegesture",
+    "source":  "kernel_development/drivers/reconstructed/zte_tpd/tpd_get_wakegesture.c",
+    "source_sha256":  "b5dd52fc16d2bc140bf44c9f7e68d16bc966817d178b51d2c7f1ced1aa7aee07",
+    "gates":  {
+                  "host_contract":  {
+                                        "status":  "PASS",
+                                        "passed":  true,
+                                        "report":  "tpd_get_wakegesture_contract_harness_report.json"
+                                    },
+                  "aarch64":  {
+                                  "status":  "PASS_WITH_CANONICAL_BLOCKER",
+                                  "passed":  true,
+                                  "report":  "candidate_aarch64/aarch64_validation_report.json"
+                              },
+                  "joern":  {
+                                "status":  "PASS",
+                                "passed":  true,
+                                "strict":  true,
+                                "report":  "joern_gate/joern_gate_summary.json"
+                            },
+                  "canonical_build":  {
+                                          "status":  "BLOCKED",
+                                          "passed":  false,
+                                          "cycles_requested":  2,
+                                          "cycles_accepted":  0,
+                                          "report":  "canonical_build_report.json"
+                                      }
+              },
+    "promotion":  "BLOCKED",
+    "promotion_reason":  "The corrected function passes isolated gates, but final promotion requires two clean canonical module builds; both are blocked in syna_tcm_erase_mtp_data.c.",
+    "limitations":  [
+                        "No smartphone execution was performed.",
+                        "Standalone AArch64 object checks target instruction shape but does not replace final .ko parity."
+                    ],
+    "status":  "BLOCKED_BY_SHARED_CANONICAL_BUILD"
+}

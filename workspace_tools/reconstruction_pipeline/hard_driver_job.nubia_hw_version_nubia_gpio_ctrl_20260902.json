@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "driver": "nubia_hw_version",
+  "stock_sha256": "b24e66e189267f240d637d826169d1bcb28abda390260a88cf52124dbbabfc6c",
+  "profiles": ["STATEFUL_MEMORY", "CALLBACK_ABI", "HARDWARE_BUS", "COMPILER_SENSITIVE"],
+  "functions": [{"stock_function": "nubia_gpio_ctrl", "stock_entry": "00100604", "source_function": "nubia_gpio_ctrl", "kcfi_required": true}],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/nubia_hw_version",
+    "stock_module": "reference_modules/full_vendor_boot/nubia_hw_version.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_candidate_20260902_nubia_gpio_ctrl1",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/nubia_hw_version/reconstruction_map.json"
+  },
+  "docker": {"adapter": "generic_driver_audit", "cycles": 2, "parallelism": 4, "image": "nubia-sm8850-kernel-builder:latest", "source_volume": "nubia_sm8850_kernel_src", "toolchain_volume": "nubia_sm8850_kernel_toolchains", "clang_revision": "clang-r536225"},
+  "joern": {"slice": {"mode": "usages", "parallelism": 2, "min_num_calls": 1}},
+  "ghidra": {"allow_pcode_authoritative_decompiler_fallback": true, "fallback_reason": "This compiler-sensitive AArch64/MMIO function may expose bounded synthetic symbol or type-rendering artifacts; only a named narrow fallback is allowed after direct P-Code, Assembly/relocation, KCFI and Docker gates pass.", "fallback_evidence": "Retain stock and candidate Ghidra exports, exact Assembly, KCFI, Joern and harness evidence. No binary or hardware gate may be waived by fallback."}
+}

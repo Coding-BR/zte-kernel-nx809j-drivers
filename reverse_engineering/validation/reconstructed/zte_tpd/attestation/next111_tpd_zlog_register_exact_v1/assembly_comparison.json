@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T17:42:23.314103+00:00",
+  "mode": "aarch64_opcode_relocation_and_validated_semantic_comparison",
+  "stock_module": {
+    "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\runs\\NX809J-20260711T011653Z\\01_acquisition\\modules\\zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "path": "F:\\drivers\\workspaces\\zte_tpd_next111_tpd_zlog_register_exact_r2_clean_canonical\\next111_tpd_zlog_register_exact_r2\\zte_tpd\\zte_tpd.ko",
+    "sha256": "15ba01b87c62e3568fbe0945a6b67fc1d217075632083d26d1076bc38ec6acc4"
+  },
+  "checked_functions": 1,
+  "strict_matches": 1,
+  "semantic_matches": 1,
+  "strict_passed": true,
+  "passed": true,
+  "failures": [],
+  "results": [
+    {
+      "function": "tpd_zlog_register",
+      "strict_match": true,
+      "semantic_match": true,
+      "checks": {
+        "instructions": true,
+        "relocations": true,
+        "section": true,
+        "symbol_size": true,
+        "printk_formats": true
+      },
+      "exception": null,
+      "printk": {
+        "stock_call_count": 3,
+        "candidate_call_count": 3,
+        "stock_unresolved_count": 0,
+        "candidate_unresolved_count": 0,
+        "format_differences": [],
+        "stock_calls": [
+          {
+            "address": "0xa4",
+            "format": "\u00015tpd_zlog: ztp zlog already registered, no need register again!",
+            "format_candidates": [
+              "\u00015tpd_zlog: ztp zlog already registered, no need register again!"
+            ],
+            "format_resolution": "static"
+          },
+          {
+            "address": "0xbc",
+            "format": "\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\n",
+            "format_candidates": [
+              "\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\n"
+            ],
+            "format_resolution": "static"
+          },
+          {
+            "address": "0xf4",
+            "format": "\u00015tpd_zlog: ztp_zlog_buffer",
+            "format_candidates": [
+              "\u00015tpd_zlog: ztp_zlog_buffer"
+            ],
+            "format_resolution": "static"
+          }
+        ],
+        "candidate_calls": [
+          {
+            "address": "0x24ad8",
+            "format": "\u00015tpd_zlog: ztp zlog already registered, no need register again!",
+            "format_candidates": [
+              "\u00015tpd_zlog: ztp zlog already registered, no need register again!"
+            ],
+            "format_resolution": "static"
+          },
+          {
+            "address": "0x24af0",
+            "format": "\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\n",
+            "format_candidates": [
+              "\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\n"
+            ],
+            "format_resolution": "static"
+          },
+          {
+            "address": "0x24b28",
+            "format": "\u00015tpd_zlog: ztp_zlog_buffer",
+            "format_candidates": [
+              "\u00015tpd_zlog: ztp_zlog_buffer"
+            ],
+            "format_resolution": "static"
+          }
+        ]
+      },
+      "stock": {
+        "path": "F:\\drivers\\worktrees\\zte-tpd-next106-zlog-clean-20260801\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\stock_assembly\\0000_tpd_zlog_register_0010688c.asm",
+        "sha256": "0273e82df981ec4e1dbda11af9759b441ed9c72c9562b1f13434ea0d23fc7e58",
+        "section": ".text",
+        "instruction_count": 66,
+        "relocations_raw": [
+          "R_AARCH64_ADR_PREL_PG_HI21\tzlog_tp_dev",
+          "R_AARCH64_ADD_ABS_LO12_NC\tzlog_tp_dev",
+          "R_AARCH64_CALL26\tzlog_register_client",
+          "R_AARCH64_CALL26\tvmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21\ttpd_cdev",
+          "R_AARCH64_LDST64_ABS_LO12_NC\ttpd_cdev",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x8a40",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x8a40",
+          "R_AARCH64_CALL26\tsnprintf",
+          "R_AARCH64_CALL26\ttpd_zlog_record_notify",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x72a8",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x72a8",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x4ffd",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x4ffd",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0xab2d",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0xab2d",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.codetag.alloc_tags",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.codetag.alloc_tags",
+          "R_AARCH64_CALL26\tvmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x3021",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x3021",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_CALL26\tmemset"
+        ],
+        "relocations": [
+          "R_AARCH64_ADR_PREL_PG_HI21 zlog_tp_dev",
+          "R_AARCH64_ADD_ABS_LO12_NC zlog_tp_dev",
+          "R_AARCH64_CALL26 zlog_register_client",
+          "R_AARCH64_CALL26 vmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev",
+          "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"tp probe fail, chip id:%d\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"tp probe fail, chip id:%d\"",
+          "R_AARCH64_CALL26 snprintf",
+          "R_AARCH64_CALL26 tpd_zlog_record_notify",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp zlog already registered, no need register again!\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp zlog already registered, no need register again!\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"tpd_zlog_register\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"tpd_zlog_register\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_ADR_PREL_PG_HI21 tpd_zlog_register._alloc_tag",
+          "R_AARCH64_ADD_ABS_LO12_NC tpd_zlog_register._alloc_tag",
+          "R_AARCH64_CALL26 vmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp_zlog_buffer\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp_zlog_buffer\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_CALL26 memset"
+        ],
+        "symbol_size": 264
+      },
+      "candidate": {
+        "path": "F:\\drivers\\analysis\\zte_tpd\\20260801_next111_tpd_zlog_register_baseline\\exact_candidate_assembly_r2\\0000_tpd_zlog_register.asm",
+        "sha256": "096c8038480eb405fc62b3bb32c5ffd8b292fc0aa68c8ee6e31a15d86d7e8cde",
+        "section": ".text",
+        "instruction_count": 66,
+        "relocations_raw": [
+          "R_AARCH64_ADR_PREL_PG_HI21\tzlog_tp_dev",
+          "R_AARCH64_ADD_ABS_LO12_NC\tzlog_tp_dev",
+          "R_AARCH64_CALL26\tzlog_register_client",
+          "R_AARCH64_CALL26\tvmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21\ttpd_cdev",
+          "R_AARCH64_LDST64_ABS_LO12_NC\ttpd_cdev",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x40e9",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x40e9",
+          "R_AARCH64_CALL26\tsnprintf",
+          "R_AARCH64_CALL26\ttpd_zlog_record_notify",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x358c",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x358c",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x26b6",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x26b6",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x4fb3",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x4fb3",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.codetag.alloc_tags+0x2a8",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.codetag.alloc_tags+0x2a8",
+          "R_AARCH64_CALL26\tvmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x1a98",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x1a98",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_CALL26\tmemset"
+        ],
+        "relocations": [
+          "R_AARCH64_ADR_PREL_PG_HI21 zlog_tp_dev",
+          "R_AARCH64_ADD_ABS_LO12_NC zlog_tp_dev",
+          "R_AARCH64_CALL26 zlog_register_client",
+          "R_AARCH64_CALL26 vmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev",
+          "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"tp probe fail, chip id:%d\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"tp probe fail, chip id:%d\"",
+          "R_AARCH64_CALL26 snprintf",
+          "R_AARCH64_CALL26 tpd_zlog_record_notify",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp zlog already registered, no need register again!\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp zlog already registered, no need register again!\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00015tpd_zlog: %s zlog register client zlog_tp_dev fail\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"tpd_zlog_register\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"tpd_zlog_register\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_ADR_PREL_PG_HI21 tpd_zlog_register._alloc_tag",
+          "R_AARCH64_ADD_ABS_LO12_NC tpd_zlog_register._alloc_tag",
+          "R_AARCH64_CALL26 vmalloc_noprof",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp_zlog_buffer\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00015tpd_zlog: ztp_zlog_buffer\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_CALL26 memset"
+        ],
+        "symbol_size": 264
+      },
+      "opcode_mismatches": []
+    }
+  ]
+}

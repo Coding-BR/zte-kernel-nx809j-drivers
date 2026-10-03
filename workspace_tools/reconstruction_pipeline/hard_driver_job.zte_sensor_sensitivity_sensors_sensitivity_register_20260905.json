@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_sensor_sensitivity",
+  "stock_sha256": "1f1340bea19dddf3aa5d5b48028c47611f8a222f025b43dde883950573c64032",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "functions": [
+    {
+      "stock_function": "sensors_sensitivity_register",
+      "stock_entry": "001005b4",
+      "source_function": "sensors_sensitivity_register",
+      "candidate_function": "sensors_sensitivity_register",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_sensor_sensitivity",
+    "stock_module": "reference_modules/stock/zte_sensor_sensitivity.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_sensor_sensitivity/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_sensor_sensitivity_sensors_sensitivity_register_protocol_20260905"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_sensor_sensitivity",
+    "define": ["__user", "__init", "__exit", "noinline"],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "function": "tp_pen_only_write",
+  "stock_entry": "0010c818",
+  "stock_body_bytes": 272,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "candidate_source": "candidate_source/tp_pen_only_write.c",
+  "gates": {
+    "canonical_docker": {"cycles": 2, "passed": true},
+    "aarch64_assembly": {"instructions": 68, "bytes": 272, "passed": true},
+    "kcfi": {"type_id": "0xc3d43b4d", "section": ".text", "size": 272, "passed": true},
+    "joern": {"calls": 54, "control_structures": 6, "unresolved_calls": 0, "parser_problems": 0, "passed": true},
+    "host_asan_ubsan": {"cases": 5, "cycles": 2, "passed": true}
+  },
+  "review_findings": [
+    {"category": "userspace_ingress", "severity": "high", "count": 1, "disposition": "documented_review_observation"}
+  ],
+  "limitations": [
+    "The direct harness exercises write, parsing, short input, callback and boundary behavior with host fixtures.",
+    "No physical NX809J hardware execution.",
+    "No real procfs integration or concurrent lifetime proof."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "275_syna_tcm_wait_for_report",
+  "stock_entry": "0012248c",
+  "stock_symbol": "syna_tcm_wait_for_report",
+  "candidate_symbol": "syna_tcm_wait_for_report",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0274_0012248c_syna_tcm_wait_for_report.c",
+      "sha256": "7d392b7ebd7e4d167d00f5a380d874c103e6f5e14a3fcc05ecb930edc6f5e5ff"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0274_0012248c_syna_tcm_wait_for_report.jsonl",
+      "sha256": "476d236a0ee7272d69defe234d2711e289ba7defcd286b11494b29c465243530"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0274_syna_tcm_wait_for_report_0012248c.asm",
+      "sha256": "1edc9442d6c4d0b682acdc06d68d94152630515de5ca55768090987f0091d5e4"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_wait_for_report.c",
+      "sha256": "c0d7da2d65335dd648964f3d4c6944610d3d5163406be58cabf2257357a81143"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next275_syna_tcm_wait_for_report_v1/candidate_assembly/syna_tcm_wait_for_report_candidate.s",
+      "sha256": "946aa3834c6ef1fd204d3b4bacd8759c3338955d286eb556a6a2939390b1f541"
+    }
+  },
+  "checks": {
+    "null_device_and_event_validation": "PASS",
+    "application_mode_validation": "PASS",
+    "event_data_call_and_report_match": "PASS",
+    "polling_retry_and_timeout": "PASS",
+    "irq_disable_and_restore": "PASS",
+    "mutex_balance": "PASS",
+    "timeout_return_minus_244": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation context that does not establish final module equivalence.",
+    "Candidate assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "This review does not establish kernel ABI, KCFI, module relocation or physical hardware behavior.",
+    "The raw dump uses compiler-generated names and does not prove the semantic names of all transport internals beyond the recovered callback offset."
+  ]
+}

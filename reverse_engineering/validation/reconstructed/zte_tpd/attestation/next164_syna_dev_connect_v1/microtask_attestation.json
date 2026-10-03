@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_dev_connect",
+  "source_function": "syna_dev_connect",
+  "stock_function": "syna_dev_connect",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS_WITH_AUDITED_CPG_FALLBACK",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "BLOCKED",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_size_relocation_parity": "BLOCKED"
+  },
+  "joern_cpg_gap": {
+    "missing_cpg_call": "syna_tcm_get_boot_info",
+    "recovered_count": 1,
+    "expected_count": 1,
+    "method": "comment_and_literal_aware_identifier_call_scan",
+    "promotion_effect": "The fallback is evidence only; it does not claim the call is present in the Joern CPG."
+  },
+  "semantic_contract": [
+    "Reject a non-null tcm wrapper whose first handle is null with -22.",
+    "Return 0 immediately when the connected flag at offset 1410 is set.",
+    "Propagate device-detection, managed-device and threaded-IRQ failures.",
+    "On the success path, register the report dispatcher, request the IRQ, initialize reflash work and mark connected."
+  ],
+  "unverified": [
+    "Exact static parity with the 1004-byte stock body.",
+    "Firmware setup and indirect transport callback behavior.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

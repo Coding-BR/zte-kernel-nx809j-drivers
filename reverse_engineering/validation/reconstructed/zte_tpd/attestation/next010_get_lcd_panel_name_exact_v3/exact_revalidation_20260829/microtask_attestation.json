@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "010_get_lcd_panel_name",
+  "stock_function": "get_lcd_panel_name",
+  "stock_entry": "00107ce0",
+  "stock_body_bytes": 12,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "14685c00cf4292e675c2f5783369984feea4dafbd13ed2511c1543bb342c6a6a",
+  "candidate_exact_assembly_sha256": "e28fe183e257def4a26f3986364be14643fb6a9ed781bedcc0fa1aaa5501c08d",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 3,
+    "instruction_count_candidate": 3,
+    "symbol_size_stock": 12,
+    "symbol_size_candidate": 12,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0x51b8bc5f",
+    "candidate_type_id": "0x51b8bc5f",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 2,
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "a61e166892218a26495f26d2ffff02a0a38c9eac4338542270b51e177a1144e9",
+    "aarch64_comparison.json": "2f6a99934b2e0ad549fd7442e98ae84b724f9082975bdf19931fa3e5c3b5463d",
+    "kcfi/comparison.json": "5abbb33c5dc33eb30331c3d2ef2e1998f9853f43ad2a547709553cfced0bf1b9",
+    "joern/joern_gate_report.json": "26c7ac3253784ec6500eaae414f3d57947fe4f0b1066edf84abfb16ff3fd7b5b",
+    "host_harness_report.json": "7c4182ca86cb5a846ed8c3baf90dbab1a0679f00cc58f960d7cdbafcea2235b9",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host test is an isolated userspace harness and does not exercise a physical LCD panel.",
+    "The combined ABI harness remains blocked by unrelated change_tp_state.c stub drift and is documented in host_harness_report.json.",
+    "The exact AArch64 gate proves opcode/relocation identity; hardware behavior remains untested."
+  ]
+}

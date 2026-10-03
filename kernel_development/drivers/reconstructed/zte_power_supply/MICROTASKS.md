@@ -1,6 +1,6 @@
 # Microtarefas Obrigatorias: zte_power_supply
 
-Cada linha representa uma funcao stock com fonte revisado e evidencias de compilacao, KCFI e teste.
+Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida sem mapeamento, compilacao, KCFI, Joern e teste com hash verificavel.
 
 | ID | Funcao stock | Entrada | Categoria | Fonte mapeada | Estado |
 |---|---|---|---|---|---|
@@ -51,3 +51,5 @@ Cada linha representa uma funcao stock com fonte revisado e evidencias de compil
 | 045_power_supply_attr_is_visible | power_supply_attr_is_visible | 001032dc | core_logic | zte_power_supply.c:power_supply_attr_is_visible | PASS |
 | 046_init_module | init_module | 001033e8 | lifecycle | zte_power_supply.c:zte_power_supply_init | PASS |
 | 047_cleanup_module | cleanup_module | 0010343c | lifecycle | zte_power_supply.c:zte_power_supply_exit | PASS |
+
+O estado exibido e gerado do mesmo manifesto JSON pelo atestador. PASS exige as evidencias declaradas no manifesto, incluindo Joern para novas microtarefas.

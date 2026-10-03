@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "suspend_tp_need_awake",
+  "stock_entry": "0x0011049c",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "scope": "function_level",
+  "packaged_utc": "2026-09-01",
+  "evidence_generated": "2026-08-26",
+  "candidate_module": {
+    "sha256": "cde17ecf4a56d898acce6f0efd65754ce0c560f5bb45546cf5159a039adf96a4",
+    "size": 20234792
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "size": 633536
+  },
+  "function": {
+    "candidate_symbol_size": 80,
+    "stock_symbol_size": 80,
+    "candidate_instruction_count": 20,
+    "stock_instruction_count": 20,
+    "kcfi_type_id": "0x6fbb3035",
+    "relocations": [
+      "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev",
+      "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev"
+    ]
+  },
+  "gates": {
+    "docker_canonical_build": "PASS_TWO_REPRODUCIBLE_CYCLES",
+    "aarch64_opcode_and_relocation_comparison": "PASS",
+    "kcfi_presence_type_and_size": "PASS",
+    "joern_strict_scoped": "PASS",
+    "host_asan_ubsan": "PASS_TWO_REPRODUCIBLE_CYCLES",
+    "fresh_candidate_ghidra_semantic_report": "NOT_CLAIMED",
+    "hardware_runtime": "DEFERRED"
+  },
+  "excluded_evidence": [
+    "manifest_validation.json: dry-run/stale temporary report"
+  ],
+  "limitations": [
+    "Offline function-level claim only.",
+    "No Android hardware load or runtime callback test was performed.",
+    "The candidate .ko is reproducible from the committed curated source and is represented here by its hash rather than copied into the attestation."
+  ]
+}

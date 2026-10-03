@@ -121,6 +121,33 @@ struct tcm_buffer {
 	u8 reserved_41[0x07];
 };
 
+/* Touch-report preservation state proven at tcm_dev+0x190. */
+struct tcm_touch_report_config {
+	struct tcm_buffer buffer;
+	u32 format_offset;
+	u32 report_offset;
+	u32 report_size;
+	u32 header_bits;
+};
+
+/* Scratch overlay shared by the flash-access setup and read helpers. */
+struct syna_tcm_flash_access_context {
+	u8 reserved_0000[0x20];
+	struct tcm_boot_info *boot_info;
+	u32 erase_page_size_bytes;
+	u32 write_block_size_bytes;
+	u32 max_write_payload_size;
+	u8 reserved_0034[0x08];
+	u32 v3_page_size_bytes;
+	void *managed_allocation;
+	u8 reserved_0048[0x08];
+	u8 mutex[0x30];
+	u8 release_required;
+	u8 reserved_0081[0x07];
+	u8 setup_release_required;
+	u8 reserved_0089[0x07];
+};
+
 /* Partial overlay containing only offsets proven by the NX809J stock ELF. */
 struct tcm_dev {
 	u8 reserved_0000[0x08];
@@ -163,7 +190,10 @@ struct tcm_dev {
 		/* Legacy name retained while older reconstructed callers migrate. */
 		struct tcm_buffer response;
 	};
-	u8 reserved_0190[0x58];
+	union {
+		u8 reserved_0190[0x58];
+		struct tcm_touch_report_config touch_report_config;
+	};
 	u32 timing_01e8;
 	u32 timing_01ec;
 	u8 reserved_01f0[0x18];
@@ -178,7 +208,8 @@ struct tcm_dev {
 	u8 predict_reading_enabled;
 	u8 reserved_037b;
 	u32 predict_reading_offset;
-	u8 reserved_0380[0x10];
+	u8 reserved_0380[0x0c];
+	u32 touch_report_parser_mode;
 	tcm_read_message_fn read_message;
 	tcm_write_message_fn write_message;
 	tcm_lifecycle_fn terminate;
@@ -222,6 +253,22 @@ static_assert(offsetof(struct tcm_dev, response.buf_size) == 0x150);
 static_assert(offsetof(struct tcm_dev, response.data_length) == 0x154);
 static_assert(offsetof(struct tcm_dev, response.mutex) == 0x158);
 static_assert(offsetof(struct tcm_dev, response.lock_depth) == 0x188);
+static_assert(offsetof(struct tcm_touch_report_config, buffer) == 0x00);
+static_assert(offsetof(struct tcm_touch_report_config, format_offset) == 0x48);
+static_assert(offsetof(struct tcm_touch_report_config, report_offset) == 0x4c);
+static_assert(offsetof(struct tcm_touch_report_config, report_size) == 0x50);
+static_assert(offsetof(struct tcm_touch_report_config, header_bits) == 0x54);
+static_assert(sizeof(struct tcm_touch_report_config) == 0x58);
+static_assert(offsetof(struct tcm_dev, touch_report_config) == 0x190);
+static_assert(offsetof(struct tcm_dev, touch_report_config.buffer.data) == 0x190);
+static_assert(offsetof(struct tcm_dev, touch_report_config.buffer.buf_size) == 0x198);
+static_assert(offsetof(struct tcm_dev, touch_report_config.buffer.data_length) == 0x19c);
+static_assert(offsetof(struct tcm_dev, touch_report_config.buffer.mutex) == 0x1a0);
+static_assert(offsetof(struct tcm_dev, touch_report_config.buffer.lock_depth) == 0x1d0);
+static_assert(offsetof(struct tcm_dev, touch_report_config.format_offset) == 0x1d8);
+static_assert(offsetof(struct tcm_dev, touch_report_config.report_offset) == 0x1dc);
+static_assert(offsetof(struct tcm_dev, touch_report_config.report_size) == 0x1e0);
+static_assert(offsetof(struct tcm_dev, touch_report_config.header_bits) == 0x1e4);
 static_assert(offsetof(struct tcm_dev, timing_01e8) == 0x1e8);
 static_assert(offsetof(struct tcm_dev, timing_01ec) == 0x1ec);
 static_assert(offsetof(struct tcm_dev, timing_0208) == 0x208);
@@ -237,6 +284,7 @@ static_assert(offsetof(struct tcm_dev, message_buf.mutex) == 0x250);
 static_assert(offsetof(struct tcm_dev, message_buf.lock_depth) == 0x280);
 static_assert(offsetof(struct tcm_dev, predict_reading_enabled) == 0x37a);
 static_assert(offsetof(struct tcm_dev, predict_reading_offset) == 0x37c);
+static_assert(offsetof(struct tcm_dev, touch_report_parser_mode) == 0x38c);
 static_assert(offsetof(struct tcm_dev, read_message) == 0x390);
 static_assert(offsetof(struct tcm_dev, write_message) == 0x398);
 static_assert(offsetof(struct tcm_dev, terminate) == 0x3a0);
@@ -270,6 +318,22 @@ static_assert(offsetof(struct tcm_boot_info, max_write_payload_size) == 0x07);
 static_assert(offsetof(struct tcm_boot_info, v3_page_size_words) == 0x14);
 static_assert(sizeof(struct tcm_features_info) == 0x10);
 static_assert(sizeof(struct tcm_buffer) == 0x48);
+static_assert(offsetof(struct syna_tcm_flash_access_context, boot_info) == 0x20);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   erase_page_size_bytes) == 0x28);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   write_block_size_bytes) == 0x2c);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   max_write_payload_size) == 0x30);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   v3_page_size_bytes) == 0x3c);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   managed_allocation) == 0x40);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   release_required) == 0x80);
+static_assert(offsetof(struct syna_tcm_flash_access_context,
+			   setup_release_required) == 0x88);
+static_assert(sizeof(struct syna_tcm_flash_access_context) == 0x90);
 static_assert(sizeof(struct tcm_dev) == 0x23e8);
 
 #endif

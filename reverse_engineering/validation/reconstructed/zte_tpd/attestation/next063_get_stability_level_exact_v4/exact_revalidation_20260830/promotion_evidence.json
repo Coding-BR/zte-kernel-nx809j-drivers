@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "function": "get_stability_level",
+  "stock_entry": "0010c148",
+  "stock_body_bytes": 240,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "candidate_source": "candidate_source/get_stability_level.c",
+  "candidate_exact_source": "candidate_source/get_stability_level_exact.S",
+  "gates": {
+    "canonical_docker": {"cycles": 2, "passed": true},
+    "aarch64_assembly": {"instructions": 60, "bytes": 240, "passed": true},
+    "kcfi": {"type_id": "0xf4e9d97c", "section": ".text", "size": 240, "passed": true},
+    "joern": {"calls": 42, "control_structures": 2, "unresolved_calls": 0, "parser_problems": 0, "passed": true},
+    "host_asan_ubsan": {"cases": 2, "cycles": 2, "passed": true}
+  },
+  "review_findings": [
+    {"category": "userspace_egress", "severity": "high", "count": 1, "disposition": "documented_review_observation"}
+  ],
+  "limitations": [
+    "The direct harness exercises read, EOF, formatting, callback and boundary behavior with fake device state.",
+    "No physical NX809J hardware execution.",
+    "No real sysfs integration or concurrent lifetime proof."
+  ]
+}

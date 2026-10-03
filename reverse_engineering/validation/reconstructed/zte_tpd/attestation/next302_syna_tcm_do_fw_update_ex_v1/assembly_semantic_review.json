@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "302_syna_tcm_do_fw_update_ex",
+  "stock_entry": "00125c18",
+  "stock_symbol": "syna_tcm_do_fw_update_ex",
+  "candidate_symbol": "syna_tcm_do_fw_update_ex",
+  "candidate_compiler": "GCC aarch64-linux-gnu cross-compiler in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0301_00125c18_syna_tcm_do_fw_update_ex.c",
+      "sha256": "134ac197de133e8b5504a1602d5386190e086278ad4977dac37ef0266b54475e"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0301_00125c18_syna_tcm_do_fw_update_ex.jsonl",
+      "sha256": "881bb6451dc8eefd2dee6f50073ebf01d558b76c48301c0ad158e3176f0282e4"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0301_syna_tcm_do_fw_update_ex_00125c18.asm",
+      "sha256": "f8f28e1dd7ebefcbd77131ddb5016d9155f5be5d9e47a070b2a3042b64659f7c"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_do_fw_update_ex.c",
+      "sha256": "ef1e9249e4a6b14aa679bf65a11d4882522a8e184ad4fa83bcc602a80d079ecd"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next302_syna_tcm_do_fw_update_ex_v1/candidate_assembly/syna_tcm_do_fw_update_ex_candidate.s",
+      "sha256": "4811e6a0898d2fc1c7f3b519d7e097ad29a8dfc8c1b6c412fc13d2b84f99f1ef"
+    }
+  },
+  "checks": {
+    "image_and_mode_validation": "PASS",
+    "partition_descriptor_offsets": "PASS",
+    "flag_normalization_and_byte_offset": "PASS",
+    "primary_then_secondary_update_order": "PASS",
+    "reset_and_managed_cleanup": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The stock local mutex initialization is not reproduced because the current access-layout header keeps the mutex opaque; canonical build review must resolve this before promotion.",
+    "The candidate explicitly rejects null pointers and empty image flags before the stock dereference path.",
+    "Offsets +0x8c and TCM +0x388 are accessed through proven byte regions rather than newly naming unproven header fields.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}

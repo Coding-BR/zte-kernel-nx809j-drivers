@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "mode": "offline_direct_source_next324_parse_fw_image_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "syna_tcm_parse_fw_image",
+  "covered_functions": ["syna_tcm_parse_fw_image"],
+  "source_sha256": "dd6e52cbb2c770afa154af6085c18f4b4307430f26773527c2d1bb3595237cfd",
+  "harness_sha256": "e4977ab76974b36acd216b6e084d3899b0b8529003df03c9b70ca7e920c1f8c8",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": ["address", "undefined"],
+  "expected_cases": 24,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "binary_sha256": "9414f6065c8c0d6ba2444dee2dbf311952056a862dea4b2786ae1b1792465b8f",
+      "stdout": "PASS syna_tcm_parse_fw_image host tests (24 assertions)\n",
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "binary_sha256": "9414f6065c8c0d6ba2444dee2dbf311952056a862dea4b2786ae1b1792465b8f",
+      "stdout": "PASS syna_tcm_parse_fw_image host tests (24 assertions)\n",
+      "stderr": "",
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "passed": true,
+  "status": "PASS",
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_parse_fw_image.c",
+      "sha256": "dd6e52cbb2c770afa154af6085c18f4b4307430f26773527c2d1bb3595237cfd"
+    }
+  ],
+  "limitations": [
+    "The harness covers invalid inputs, bad magic, zero partitions, standard partition lookup, checksum rejection, unknown partition names and JSON partition parsing.",
+    "It does not prove physical touchscreen or firmware-flash behavior.",
+    "Whole-module build, KCFI and exact ELF relocation parity remain independent gates."
+  ]
+}

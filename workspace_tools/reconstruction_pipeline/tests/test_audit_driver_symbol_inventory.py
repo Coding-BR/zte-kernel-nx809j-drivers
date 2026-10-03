@@ -4,6 +4,8 @@ import unittest
 from pathlib import Path
 
 from workspace_tools.reconstruction_pipeline.audit_driver_symbol_inventory import (
+    classify_extra_symbol,
+    exported_names,
     mapped_source_path,
     read_reconstruction_map,
     source_coverage,
@@ -12,6 +14,21 @@ from workspace_tools.reconstruction_pipeline.audit_driver_symbol_inventory impor
 
 
 class AuditDriverSymbolInventoryTests(unittest.TestCase):
+    def test_exported_names_are_derived_from_ksymtab_records(self):
+        symbols = [
+            {"name": "__ksymtab_public_one", "type": "r"},
+            {"name": "__ksymtab_gpl_public_two", "type": "r"},
+            {"name": "public_one", "type": "T"},
+            {"name": "internal", "type": "t"},
+        ]
+
+        self.assertEqual(exported_names(symbols), {"public_one", "public_two"})
+
+    def test_internal_symbol_classes_cover_known_reconstruction_artifacts(self):
+        self.assertEqual(classify_extra_symbol("device_read"), "local_file_operations_adapter")
+        self.assertEqual(classify_extra_symbol("syna_pal_mem_free_kcfi_guard"), "compiler_kcfi_guard")
+        self.assertEqual(classify_extra_symbol("syna_tcm_buf_copy_0"), "duplicate_renamed")
+
     def test_reviewed_map_supports_monolithic_source(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -42,6 +59,31 @@ class AuditDriverSymbolInventoryTests(unittest.TestCase):
             self.assertEqual(coverage["extra_source_units"], [])
             self.assertEqual(generated[0]["source_file"], "driver.c")
             self.assertEqual(generated[0]["source_function"], "source_probe")
+
+    def test_reviewed_map_supports_assembly_exact_source_label(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source_probe_exact.S"
+            source.write_text(
+                ".text\n.global source_probe\nsource_probe:\n  .inst 0xd503233f\n",
+                encoding="ascii",
+            )
+            rows = [{"name": "stock_probe", "entry": "00100000", "body_bytes": 4}]
+            mappings = {
+                "stock_probe@00100000": {
+                    "stock_function": "stock_probe",
+                    "stock_entry": "00100000",
+                    "source_file": "source_probe_exact.S",
+                    "source_function": "source_probe",
+                    "status": "reviewed",
+                }
+            }
+
+            coverage, generated = source_coverage(root, rows, mappings)
+
+            self.assertTrue(coverage["complete"])
+            self.assertEqual(coverage["function_token_matches"], 1)
+            self.assertEqual(generated[0]["source_file"], "source_probe_exact.S")
 
     def test_reconstruction_map_rejects_duplicate_functions(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -129,6 +171,21 @@ class AuditDriverSymbolInventoryTests(unittest.TestCase):
 
             self.assertTrue(coverage["complete"])
             self.assertEqual(coverage["function_token_matches"], 1)
+
+    def test_module_lifecycle_aliases_are_backed_by_module_macros(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "driver.c"
+            source.write_text(
+                "static int driver_init(void) { return 0; }\n"
+                "static void driver_exit(void) {}\n"
+                "module_init(driver_init);\n"
+                "module_exit(driver_exit);\n",
+                encoding="ascii",
+            )
+
+            self.assertTrue(source_has_function(source, "init_module"))
+            self.assertTrue(source_has_function(source, "cleanup_module"))
+            self.assertFalse(source_has_function(source, "unrelated_generated_symbol"))
 
     def test_mapped_source_path_rejects_parent_escape(self):
         with tempfile.TemporaryDirectory() as temporary:

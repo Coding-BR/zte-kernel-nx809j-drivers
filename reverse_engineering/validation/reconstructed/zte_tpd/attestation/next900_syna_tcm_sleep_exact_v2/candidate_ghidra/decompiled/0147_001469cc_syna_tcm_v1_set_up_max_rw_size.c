@@ -1,0 +1,48 @@
+
+undefined8 syna_tcm_v1_set_up_max_rw_size(long param_1,uint param_2,uint param_3)
+
+{
+  uint uVar1;
+  ushort uVar2;
+  undefined1 *puVar3;
+  undefined8 uVar4;
+  uint uVar5;
+  
+  if (param_1 == 0) {
+    puVar3 = &DAT_00168a84;
+  }
+  else {
+    if (*(char *)(param_1 + 0x80) == '\x01') {
+      uVar2 = *(ushort *)(param_1 + 0x96);
+      uVar1 = *(uint *)(param_1 + 0x40);
+      if (param_2 <= uVar2) {
+        uVar5 = (uint)uVar2;
+        if (uVar1 <= uVar2) {
+          uVar5 = uVar1;
+        }
+        if (param_2 <= uVar5) {
+          uVar5 = param_2;
+        }
+        if (uVar1 != 0) {
+          param_2 = uVar5;
+        }
+        if (*(uint *)(param_1 + 0x38) != param_2) {
+          *(uint *)(param_1 + 0x38) = param_2;
+        }
+      }
+      uVar5 = param_3;
+      if ((uVar1 != 0) && (uVar5 = *(uint *)(param_1 + 0x44), param_3 <= *(uint *)(param_1 + 0x44)))
+      {
+        uVar5 = param_3;
+      }
+      if (*(uint *)(param_1 + 0x3c) != uVar5) {
+        *(uint *)(param_1 + 0x3c) = uVar5;
+      }
+      return 0;
+    }
+    puVar3 = &DAT_0016c2b0;
+  }
+  uVar4 = _printk(puVar3,"syna_tcm_v1_set_up_max_rw_size");
+  return uVar4;
+}
+

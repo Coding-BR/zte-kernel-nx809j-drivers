@@ -1,5 +1,5 @@
 bool __fastcall syna_tcm_testing_0100_check_data(void *data, void *limit,
-                                                int column, int row)
+                                                int column)
 {
   unsigned __int8 *a1 = data;
   unsigned __int8 *a2 = limit;
@@ -8,7 +8,6 @@ bool __fastcall syna_tcm_testing_0100_check_data(void *data, void *limit,
   unsigned int v5; // w19
   _BOOL8 result; // x0
 
-  (void)row;
   v3 = *a1;
   v4 = *a2;
   v5 = 8 * column;

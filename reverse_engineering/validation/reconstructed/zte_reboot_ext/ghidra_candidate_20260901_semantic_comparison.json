@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-01T06:31:00+00:00",
+  "driver": "zte_reboot_ext",
+  "stock_export": "reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_stock",
+  "candidate_export": "reverse_engineering/validation/reconstructed/zte_reboot_ext/offline_static/ghidra_candidate_20260901",
+  "stock_module": "reference_modules/full_vendor_boot/zte_reboot_ext.ko",
+  "stock_module_sha256": "1e5b8e9e91f304236802d52a316570f6649b8f504b58558b28909d48c62d910f",
+  "candidate_module": "kernel_development/drivers/reconstructed/zte_reboot_ext/zte_reboot_ext.ko",
+  "candidate_module_sha256": "e6146dfb5cf51b0ec46e1f32bfd7b5f7315d089eebc96beef6fadf6eb79bf17f",
+  "candidate_module_size": 236096,
+  "candidate_ghidra_executable_md5": "17678f6b81bb577fd1b00f13b44a641c",
+  "candidate_ghidra_manifest_sha256": "a71c2ea3905e5aa7814ab65d5d7c3cd90b40b18e4d6a457665b4040d9a089560",
+  "stock_ghidra_manifest_sha256": "aba4c4ab7cecf6f0faee280bfd687b62965f6e61bebe35dd8fd7374574ed9d23",
+  "checked_functions": 14,
+  "strict": {
+    "passed_functions": 8,
+    "body_size_passed": 11,
+    "pcode_operation_shape_passed": 8,
+    "normalized_decompiled_c_passed": 9,
+    "failed_functions": [
+      "fill_nvmem_buf",
+      "count_format_args",
+      "entry_panic",
+      "zte_reboot_ext_probe",
+      "save_panic_buf_data_to_nvmem",
+      "boot_nvmem_show"
+    ],
+    "passed": false
+  },
+  "authorized_fallbacks": {
+    "passed_functions": 8,
+    "remaining_functions": [
+      "fill_nvmem_buf",
+      "count_format_args",
+      "entry_panic",
+      "zte_reboot_ext_probe",
+      "save_panic_buf_data_to_nvmem",
+      "boot_nvmem_show"
+    ],
+    "passed": false
+  },
+  "docker_rebuild_evidence": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_digest": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "kernel_volume": "nubia_sm8850_kernel_src",
+    "toolchain": "clang-r536225",
+    "cycles": [
+      {
+        "cycle": 1,
+        "sha256": "e6146dfb5cf51b0ec46e1f32bfd7b5f7315d089eebc96beef6fadf6eb79bf17f",
+        "size": 236096,
+        "path": "validation/zte_reboot_ext_rebuild_20260901/artifacts/zte_reboot_ext_cycle_1.ko"
+      },
+      {
+        "cycle": 2,
+        "sha256": "e6146dfb5cf51b0ec46e1f32bfd7b5f7315d089eebc96beef6fadf6eb79bf17f",
+        "size": 236096,
+        "path": "validation/zte_reboot_ext_rebuild_20260901/artifacts/zte_reboot_ext_cycle_2.ko"
+      }
+    ],
+    "reproducible": true,
+    "matches_candidate": true
+  },
+  "interpretation": "Static Ghidra/Docker checkpoint only. Docker bitwise reproducibility is confirmed, while six functions remain materially open in the independent Ghidra comparison. Review, hardware validation and promotion remain open."
+}

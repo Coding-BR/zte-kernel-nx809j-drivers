@@ -1,0 +1,19 @@
+Function: init_module @ 0x0013159c
+Source identity: module_init(zte_touch_init) -> zte_touch_init
+Stock body: 64 bytes, 16 instructions, .init.text
+
+Observed AArch64 sequence from the Ghidra stock P-Code/export:
+stp x29,x30,[sp,#-0x10]!
+mov x29,sp
+adrp/add x0, printk format "\0015tpd: %s into\n"
+adrp/add x1, string "zte_touch_init"
+bl printk
+adrp/add x0, zte_touch_device_driver
+adrp/add x1, __this_module
+bl __platform_driver_register
+ldp x29,x30,[sp],#0x10
+ret
+
+The original stock ELF bytes are unavailable. This text is a structured reference
+derived from the Ghidra decompilation, P-Code and preserved relocation intent; it
+does not prove byte identity.

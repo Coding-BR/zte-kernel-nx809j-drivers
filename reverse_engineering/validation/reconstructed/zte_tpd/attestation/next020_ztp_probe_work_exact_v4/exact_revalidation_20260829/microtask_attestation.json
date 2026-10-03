@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "020_ztp_probe_work",
+  "stock_function": "ztp_probe_work",
+  "stock_entry": "00108494",
+  "stock_body_bytes": 40,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "678aa9fdd5852294e4a5b285897975f80a419ddfe086774b0842646af2446ef3",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 10,
+    "instruction_count_candidate": 10,
+    "symbol_size_stock": 40,
+    "symbol_size_candidate": 40,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xa607748c",
+    "candidate_type_id": "0xa607748c",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 3,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "valid_work_calls_module_init",
+      "null_work_calls_module_init",
+      "repeated_work_calls_module_init"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "b18fc4e75f4795483391e77f50e4fc933c04ed2ce3c29d352d85a85f52f5527a",
+    "aarch64_comparison.json": "18b7f1dd6ecbd42adfd79652a45609b7f2bc620bdb9f23efd94d1362d435dffe",
+    "kcfi/comparison.json": "15eb30a58098945fe35ad52c6bc1df12482c39b0b63ce67ae2cc1739fc861ac7",
+    "joern/joern_gate_report.json": "232a88b5af29381be25484a6e545b87b1bf2e8177406dca02a9d74c3091ccd45",
+    "host_harness_report.json": "81099c3f52f823801b9abba48f7edf6f87ef799cb8d312fd2bf957cbd728ff20",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host contract stubs syna_dev_module_init and printk.",
+    "No physical NX809J, scheduler, Android service, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

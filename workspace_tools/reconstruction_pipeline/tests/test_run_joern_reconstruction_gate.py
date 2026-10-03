@@ -50,7 +50,12 @@ class JoernGateTests(unittest.TestCase):
             {"name": "stock_b", "entry": "00100040"},
         ])
         write_jsonl(ghidra / "calls.jsonl", [
-            {"caller": "stock_a", "target": "stock_b"},
+            {
+                "caller": "stock_a",
+                "caller_entry": "00100000",
+                "target": "stock_b",
+                "target_address": "00100040",
+            },
         ])
         write_json(reconstruction_map, {
             "mappings": [
@@ -123,6 +128,28 @@ class JoernGateTests(unittest.TestCase):
                 report["blockers"],
             )
 
+    def test_source_fallback_recovers_joern_nested_call_gap(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture = self.make_fixture(root, include_call=False)
+            (root / "a.c").write_text(
+                "int source_a(void) { /* source_b() */ return source_b(); }\n",
+                encoding="utf-8",
+            )
+            report = GATE.build_cross_oracle_report(
+                *fixture, strict=True, source_root=root
+            )
+            self.assertTrue(report["passed"])
+            self.assertTrue(report["graph"]["joern_cpg_gap"])
+            self.assertEqual(
+                report["graph"]["source_fallback_evidence"][0]["target"],
+                "source_b",
+            )
+            self.assertEqual(
+                report["graph"]["mapped_call_deltas"][0]["effective_missing_mapped_calls"],
+                {},
+            )
+
     def test_function_scope_keeps_full_map_for_outgoing_call_resolution(self):
         with tempfile.TemporaryDirectory() as temporary:
             fixture = self.make_fixture(Path(temporary))
@@ -159,6 +186,165 @@ class JoernGateTests(unittest.TestCase):
                 report["scope"]["resolved_stock_functions"], ["stock_b"]
             )
             self.assertEqual(report["review_findings"][0]["category"], "hardware_write")
+
+    def test_assembly_only_function_can_be_scoped_without_a_c_method(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ghidra, reconstruction_map, inventory, profile = self.make_fixture(root)
+            payload = json.loads(reconstruction_map.read_text(encoding="utf-8"))
+            payload["mappings"][1]["source_function"] = "_asm_helper"
+            payload["mappings"][1]["source_file"] = "helper.S"
+            reconstruction_map.write_text(json.dumps(payload), encoding="utf-8")
+            report = GATE.build_cross_oracle_report(
+                ghidra,
+                reconstruction_map,
+                inventory,
+                profile,
+                strict=True,
+                selected_functions=["stock_b"],
+                assembly_only_functions=["_asm_helper"],
+            )
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["coverage"]["joern_internal_method_count"], 0)
+            self.assertEqual(
+                report["scope"]["assembly_only_source_functions"], ["_asm_helper"]
+            )
+            self.assertEqual(
+                report["analysis_exemptions"][0]["kind"],
+                "ASSEMBLY_ONLY_SOURCE_METHOD",
+            )
+
+    def test_function_scope_keeps_duplicate_stock_entries_separate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ghidra = root / "ghidra"
+            inventory = root / "inventory"
+            reconstruction_map = root / "reconstruction_map.json"
+            profile = root / "profile.json"
+            write_jsonl(ghidra / "functions.jsonl", [
+                {"name": "stock_dup", "entry": "00100000"},
+                {"name": "stock_dup", "entry": "00100040"},
+                {"name": "stock_target", "entry": "00100080"},
+            ])
+            write_jsonl(ghidra / "calls.jsonl", [
+                {
+                    "caller": "stock_dup",
+                    "caller_entry": "00100000",
+                    "target": "stock_target",
+                    "target_address": "00100080",
+                },
+                {
+                    "caller": "stock_dup",
+                    "caller_entry": "00100040",
+                    "target": "stock_target",
+                    "target_address": "00100080",
+                },
+            ])
+            write_json(reconstruction_map, {"mappings": [
+                {
+                    "stock_function": "stock_dup",
+                    "stock_entry": "00100000",
+                    "source_function": "source_first",
+                    "source_file": "first.c",
+                },
+                {
+                    "stock_function": "stock_dup",
+                    "stock_entry": "00100040",
+                    "source_function": "source_second",
+                    "source_file": "second.c",
+                },
+                {
+                    "stock_function": "stock_target",
+                    "stock_entry": "00100080",
+                    "source_function": "source_target",
+                    "source_file": "target.c",
+                },
+            ]})
+            write_json(inventory / "methods.json", {"records": [
+                {"name": "source_first", "filename": "first.c", "is_external": False},
+                {"name": "source_second", "filename": "second.c", "is_external": False},
+                {"name": "source_target", "filename": "target.c", "is_external": False},
+            ]})
+            write_json(inventory / "calls.json", {"records": [
+                {
+                    "caller": "source_first",
+                    "name": "source_target",
+                    "method_full_name": "source_target",
+                    "code": "source_target()",
+                    "filename": "first.c",
+                    "line": 1,
+                },
+                {
+                    "caller": "source_second",
+                    "name": "source_target",
+                    "method_full_name": "source_target",
+                    "code": "source_target()",
+                    "filename": "second.c",
+                    "line": 1,
+                },
+            ]})
+            write_json(inventory / "control_structures.json", {"records": []})
+            write_json(profile, {"categories": []})
+
+            report = GATE.build_cross_oracle_report(
+                ghidra,
+                reconstruction_map,
+                inventory,
+                profile,
+                strict=True,
+                selected_functions=["source_second"],
+            )
+
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["coverage"]["ghidra_function_count"], 1)
+            self.assertEqual(report["graph"]["mapped_call_deltas"], [])
+
+    def test_function_scope_accepts_exact_duplicate_stock_identity(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ghidra = root / "ghidra"
+            inventory = root / "inventory"
+            reconstruction_map = root / "reconstruction_map.json"
+            profile = root / "profile.json"
+            write_jsonl(ghidra / "functions.jsonl", [
+                {"name": "stock_dup", "entry": "00100000"},
+                {"name": "stock_dup", "entry": "00100040"},
+            ])
+            write_jsonl(ghidra / "calls.jsonl", [])
+            write_json(reconstruction_map, {"mappings": [
+                {
+                    "stock_function": "stock_dup",
+                    "stock_entry": "00100000",
+                    "source_function": "source_first",
+                    "source_file": "first.c",
+                },
+                {
+                    "stock_function": "stock_dup",
+                    "stock_entry": "00100040",
+                    "source_function": "source_second",
+                    "source_file": "second.c",
+                },
+            ]})
+            write_json(inventory / "methods.json", {"records": [
+                {"name": "source_first", "filename": "first.c", "is_external": False},
+                {"name": "source_second", "filename": "second.c", "is_external": False},
+            ]})
+            write_json(inventory / "calls.json", {"records": []})
+            write_json(inventory / "control_structures.json", {"records": []})
+            write_json(profile, {"categories": []})
+
+            report = GATE.build_cross_oracle_report(
+                ghidra,
+                reconstruction_map,
+                inventory,
+                profile,
+                strict=True,
+                selected_functions=["stock_dup@00100040"],
+            )
+
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["coverage"]["ghidra_function_count"], 1)
+            self.assertEqual(report["scope"]["resolved_source_functions"], ["source_second"])
 
     def test_function_scope_rejects_unknown_name(self):
         with tempfile.TemporaryDirectory() as temporary:

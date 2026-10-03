@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "mode": "offline_direct_source_reset_host_harness_asan_ubsan",
+  "generated_utc": "2026-08-29T19:03:57.448177+00:00",
+  "driver": "zte_tpd",
+  "microtask_id": "014_tpd_reset_fw_data_pos_and_size",
+  "function": "tpd_reset_fw_data_pos_and_size",
+  "passed": true,
+  "repetitions": 2,
+  "expected_tests": 4,
+  "coverage": {
+    "direct_source_function": "tpd_reset_fw_data_pos_and_size",
+    "position_written_to_firmware_size": true,
+    "position_cleared": true,
+    "zero_position": true,
+    "uint32_max_position": true,
+    "repeated_reset": true,
+    "hardware_paths_exercised": false
+  },
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -I/work/workspace/kernel_development/drivers/reconstructed/zte_tpd next014_reset_fw_data_pos_and_size_harness.c -o build/next014_reset_fw_data_pos_and_size_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/next014_reset_fw_data_pos_and_size_harness"
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\next014_reset_fw_data_pos_and_size_harness.c",
+      "sha256": "36b1566d7816c1bdeea43a203507e17bd0829b3491c7f50b1d96eea8b7dce9c3",
+      "size": 2608
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_reset_fw_data_pos_and_size.c",
+      "sha256": "704d8773a2c21d18c4c73b7b61fec273962f9e7ef66f3810516f7a51275a9427",
+      "size": 188
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stdout": "PASS position_is_committed_and_cleared\nPASS zero_position_is_idempotent\nPASS unsigned_position_width\nPASS repeated_reset_uses_current_position\nSUMMARY 4/4 passed\n",
+      "stderr": "",
+      "tests_passed": [
+        "position_is_committed_and_cleared",
+        "zero_position_is_idempotent",
+        "unsigned_position_width",
+        "repeated_reset_uses_current_position"
+      ],
+      "tests_failed": [],
+      "summary": "SUMMARY 4/4 passed"
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stdout": "PASS position_is_committed_and_cleared\nPASS zero_position_is_idempotent\nPASS unsigned_position_width\nPASS repeated_reset_uses_current_position\nSUMMARY 4/4 passed\n",
+      "stderr": "",
+      "tests_passed": [
+        "position_is_committed_and_cleared",
+        "zero_position_is_idempotent",
+        "unsigned_position_width",
+        "repeated_reset_uses_current_position"
+      ],
+      "tests_failed": [],
+      "summary": "SUMMARY 4/4 passed"
+    }
+  ],
+  "limitations": [
+    "The harness models the cdev memory layout and firmware-size slot in user space.",
+    "No physical NX809J, Android service, SPI, IRQ or MMIO path is exercised."
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "target": "zte_touch_pdev_register",
+  "mode": "offline_aarch64_opcode_and_relocation_normalized_comparison",
+  "instruction_count": {
+    "stock": 56,
+    "candidate": 56,
+    "match": true
+  },
+  "opcode_sha256": {
+    "stock": "c10d2ad1c7c1bded575b4806cfb306cd232613848a790a927ce334d8c47e3a2c",
+    "candidate": "c10d2ad1c7c1bded575b4806cfb306cd232613848a790a927ce334d8c47e3a2c",
+    "match": true
+  },
+  "symbol_size": {
+    "stock": 224,
+    "candidate": 224,
+    "match": true
+  },
+  "section": {
+    "stock": ".text",
+    "candidate": ".text",
+    "match": true
+  },
+  "kcfi_type_id": {
+    "stock": "0x6fbb3035",
+    "candidate": "0x6fbb3035",
+    "match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "code_call_targets_match": true,
+    "callback_resolution": "stock .text+0x1a24 resolves to candidate symbol tpd_report_uevent",
+    "string_resolution": "stock .rodata offsets resolve to the same printk format strings and zte_touch literal used by the candidate",
+    "reason": "Raw offsets and one callback symbol spelling differ by module layout; relocation kinds, order, call targets and resolved semantic targets match."
+  },
+  "decision": "OFFLINE_EXACT_FUNCTION_LEVEL",
+  "promotion_allowed": true,
+  "limitations": [
+    "platform_device allocation/add/release and printk are stubbed in the host contract harness.",
+    "The stock KCFI guard is compared statically; no indirect callback was executed in the host harness.",
+    "No smartphone, platform bus or physical hardware was used."
+  ]
+}

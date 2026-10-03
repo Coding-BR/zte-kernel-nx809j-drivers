@@ -1,0 +1,107 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address -fno-omit-frame-pointer zte_reset_frame_list_harness.c -o build/zte_reset_frame_list_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 ./build/zte_reset_frame_list_harness"
+  ],
+  "coverage": {
+    "buffer_clear_bytes_0x32000": true,
+    "buffer_offset_0x460": true,
+    "counter_offset_0x43c": true,
+    "hardware_paths_exercised": false,
+    "lock_offset_0x470": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS lock_once\nPASS unlock_once\nPASS mutex_offset_0x470\nPASS counter_offset_0x43c_zeroed\nPASS buffer_pointer_offset_0x460\nPASS full_0x32000_buffer_zeroed\nPASS log_once\nPASS stock_log\nSUMMARY tests=8 failures=0\n",
+      "summary": "SUMMARY tests=8 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "lock_once",
+        "unlock_once",
+        "mutex_offset_0x470",
+        "counter_offset_0x43c_zeroed",
+        "buffer_pointer_offset_0x460",
+        "full_0x32000_buffer_zeroed",
+        "log_once",
+        "stock_log"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS lock_once\nPASS unlock_once\nPASS mutex_offset_0x470\nPASS counter_offset_0x43c_zeroed\nPASS buffer_pointer_offset_0x460\nPASS full_0x32000_buffer_zeroed\nPASS log_once\nPASS stock_log\nSUMMARY tests=8 failures=0\n",
+      "summary": "SUMMARY tests=8 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "lock_once",
+        "unlock_once",
+        "mutex_offset_0x470",
+        "counter_offset_0x43c_zeroed",
+        "buffer_pointer_offset_0x460",
+        "full_0x32000_buffer_zeroed",
+        "log_once",
+        "stock_log"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T03:27:30.512986+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_reset_frame_list.c",
+      "sha256": "323d809f3534941136a65b7f7094d676306a31f2e64b041e476d6ce70fb12a4c",
+      "size": 307
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\zte_reset_frame_list_harness.c",
+      "sha256": "ef4bf973ee0db457204837022a34c3a7030da4fc28f0ec9c5d1b6f4985bc7ad8",
+      "size": 1992
+    }
+  ],
+  "limitations": [
+    "The stock AArch64 body performs an unaligned 64-bit store at offset 0x43c; UBSan is intentionally omitted while ASan checks bounds and lifetime.",
+    "The harness uses deterministic host stubs for mutex and printk.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_hash_bound_zte_reset_frame_list_asan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 8,
+    "failed": [],
+    "passed": [
+      "lock_once",
+      "unlock_once",
+      "mutex_offset_0x470",
+      "counter_offset_0x43c_zeroed",
+      "buffer_pointer_offset_0x460",
+      "full_0x32000_buffer_zeroed",
+      "log_once",
+      "stock_log"
+    ],
+    "summary": "SUMMARY tests=8 failures=0"
+  },
+  "transformation": {
+    "identity_copy": true,
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\build\\zte_reset_frame_list_under_test.c",
+    "sha256": "323d809f3534941136a65b7f7094d676306a31f2e64b041e476d6ce70fb12a4c",
+    "size": 307
+  }
+}

@@ -27,6 +27,7 @@ CMP_RE = re.compile(
     r"^(?P<register>[wx][0-9]+),\s*#0x(?P<immediate>[0-9a-f]+)$",
     re.IGNORECASE,
 )
+SELF_BRANCH_RE = re.compile(r"^0x[0-9a-f]+\s+<(?P<name>[^+>]+)\+(?P<offset>0x[0-9a-f]+)>$", re.IGNORECASE)
 
 
 def sha256_file(path: Path) -> str:
@@ -68,6 +69,14 @@ def parse_compare(instruction: dict[str, str]) -> tuple[str, int] | None:
     return match.group("register").lower(), int(match.group("immediate"), 16)
 
 
+def normalized_branch_target(operands: str) -> tuple[str, str] | None:
+    """Keep only a function-relative target when absolute ELF addresses differ."""
+    match = SELF_BRANCH_RE.fullmatch(operands)
+    if match is not None:
+        return ("self", match.group("offset").lower())
+    return None
+
+
 def unsigned_ge(value: int, limit: int) -> bool:
     return value >= limit
 
@@ -86,7 +95,13 @@ def classify_pair(
     right = parse_compare(right_cmp)
     if left is None or right is None or left[0] != right[0]:
         return None
-    if left_branch["operands"] != right_branch["operands"]:
+    left_target = normalized_branch_target(left_branch["operands"])
+    right_target = normalized_branch_target(right_branch["operands"])
+    if left_branch["operands"] == right_branch["operands"]:
+        branch_target: tuple[str, str] | str = left_branch["operands"]
+    elif left_target is not None and left_target == right_target:
+        branch_target = left_target
+    else:
         return None
 
     candidates = [
@@ -131,7 +146,7 @@ def classify_pair(
             "width_bits": width,
             "ge_limit": ge_limit,
             "gt_limit": gt_limit,
-            "branch_target": left_branch["operands"],
+            "branch_target": branch_target,
             "identity": f"x >= {ge_limit} iff x > {gt_limit}",
             "boundary_samples": samples,
         }

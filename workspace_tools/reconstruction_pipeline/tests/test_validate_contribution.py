@@ -90,6 +90,33 @@ class ContributionGateTests(unittest.TestCase):
             ("validate_module_decomposition.py", "--check"),
         )
 
+    def test_pal_mem_free_harness_is_optional_and_requires_a_json_report(self) -> None:
+        self.assertIn("pal_mem_free_harness", MODULE.OPTIONAL_DRIVER_CHECKS)
+        self.assertNotIn("pal_mem_free_harness", MODULE.DRIVER_CHECKS)
+        self.assertIn("pal_mem_free_harness", MODULE.REPORT_CHECKS)
+        self.assertEqual(
+            MODULE.CHECK_MARKERS["pal_mem_free_harness"],
+            ("run_zte_tpd_pal_mem_free_harness.py", "--repetitions"),
+        )
+
+    def test_pal_mem_free_base_harness_is_optional_and_requires_a_json_report(self) -> None:
+        self.assertIn("pal_mem_free_base_harness", MODULE.OPTIONAL_DRIVER_CHECKS)
+        self.assertNotIn("pal_mem_free_base_harness", MODULE.DRIVER_CHECKS)
+        self.assertIn("pal_mem_free_base_harness", MODULE.REPORT_CHECKS)
+        self.assertEqual(
+            MODULE.CHECK_MARKERS["pal_mem_free_base_harness"],
+            ("run_zte_tpd_pal_mem_free_base_harness.py", "--repetitions"),
+        )
+
+    def test_pal_mem_cpy_0_harness_is_optional_and_requires_a_json_report(self) -> None:
+        self.assertIn("pal_mem_cpy_0_harness", MODULE.OPTIONAL_DRIVER_CHECKS)
+        self.assertNotIn("pal_mem_cpy_0_harness", MODULE.DRIVER_CHECKS)
+        self.assertIn("pal_mem_cpy_0_harness", MODULE.REPORT_CHECKS)
+        self.assertEqual(
+            MODULE.CHECK_MARKERS["pal_mem_cpy_0_harness"],
+            ("run_zte_tpd_pal_mem_cpy_0_harness.py", "--repetitions"),
+        )
+
     def test_cloud_build_commands_are_rejected(self) -> None:
         self.assertEqual(MODULE.forbidden_workflow_operations("run: make LLVM=1"), ["kernel build tool"])
         self.assertEqual(

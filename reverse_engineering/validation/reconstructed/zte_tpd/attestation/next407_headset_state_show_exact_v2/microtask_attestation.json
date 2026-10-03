@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "038_headset_state_show",
+  "stock_function": "headset_state_show",
+  "stock_entry": "0010a3c4",
+  "ghidra_body_bytes": 244,
+  "elf_symbol_bytes": 244,
+  "selected_functions": ["headset_state_show"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
+  "candidate_module_sha256": "4c53de1c78e5aa434ba12346b016a1d2751e6efd9f9a49ad8bf89456efa8d95c",
+  "candidate_module_size": 16934584,
+  "evidence": [
+    {"role": "stock_assembly", "path": "0037_headset_state_show_0010a3c4.asm", "sha256": "06fc95a9246e94f5b95715fc746e997703c91cbfdd720a41d54639dd10aa9a8c"},
+    {"role": "candidate_assembly", "path": "0000_headset_state_show.asm", "sha256": "4abf38f3520511204dacdd6ff9a5d9b69fe7df83fefa93de5cb623195be81233"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "87cc679ba8e3fda52ede6f409be09dd7ca78d5b80817c9df1882426277ca4552"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "568e8f5a50e65bf1991423ddd166e574ce5bc485992c4e0d5fcc9dc568c23b4a"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "6d085ad7a4b9b3786031b275975c9a3aff481d3d053724c213224c69b5485616"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "70556160e6ba378b056d85721241cef3f639a4824e055ee6a0f8a22f875f5554"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "5ee1dfe23ec8b2877133b38e8b8dd99fefa887071cccf2f549ac5c799c88c09e"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "b2c09e23f9930e9fe8beb4fea176d4fe9dca7342e858c167837c0db32d939c9a"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "41e137a4061fd65a5661d365bd9a24b1d63e72a8d5832f5b75a345ba90a2f84a"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "a36c289991a2b5f553db4cbf269ecc6d9568ac0df4219a5db3c77a5833aad073"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "d612ebdb42e8aa6baa0c5f74b427a5a634f6e34d3cec17ec6d15a8e3e1d3d633"}
+  ],
+  "findings": [
+    "The candidate reproduces all 61 AArch64 instructions and 12 relocation sites; normalized relocation comparison passes, including the local .rodata string targets.",
+    "KCFI function type ID matches at 0xf4e9d97c in .text and the indirect callback contract matches 0x73fc0d79 at tpd_cdev + 0xe78.",
+    "The device state byte offset +0x17, callback path, formatting size 30, and simple_read_from_buffer contract are preserved.",
+    "Strict Joern, canonical Docker build, and two-case two-cycle ASan/UBSan host contract all pass."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ]
+}

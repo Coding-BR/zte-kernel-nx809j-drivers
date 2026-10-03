@@ -11,7 +11,7 @@ Modo de trabalho: **offline; sem ADB, fastboot ou carregamento de módulo neste 
 | Artefato | SHA-256 |
 |---|---|
 | Stock `zte_ir.ko` | `b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1` |
-| Candidato canônico `zte_ir.ko` | `1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc` |
+| Candidato canônico `zte_ir.ko` | `c407065234817f1f3269b9a70f5777b4be6461a3cd3d2531818a27e59d432966` (117776 bytes) |
 
 O fonte canônico é `zte_ir.c`. O diretório `implementation/` conserva
 microtarefas e evidências históricas; seu `.ko` integrado não é o candidato
@@ -19,7 +19,9 @@ atual e não deve ser usado para atestar este hash.
 
 ## Resultado verificável
 
-- O0–O9: `PASS` na auditoria offline.
+- O0–O9: `PASS` na auditoria offline; `zte_ir_write@0010036c`,
+  `zte_ir_ioctl@0010069c`, `zte_ir_open@00100804` e
+  `zte_ir_release@001008c4`, `zte_ir_probe@00100918` e `zte_ir_remove@00100b50` também possuem atestação exact independente.
 - O10: `INCOMPLETE`, aguardando revisor independente diferente do implementador.
 - Hardware: `DEFERRED`, aguardando teste controlado no NX809J.
 - Veredito correto: **candidato alinhado estaticamente, ainda não comprovado no hardware**.
@@ -41,9 +43,42 @@ estado atual.
   aprovados; somente O10 permanece incompleto.
 - `GUIA_TESTE_CONTROLADO_OUTRO_AMBIENTE.md`: procedimento de teste e rollback.
 
+## Ilha exact atestada
+
+`zte_ir_write@0010036c` é materializada de 203 instruções stock, com 812 bytes
+de corpo, relocamentos AArch64 e KCFI `0xc3d43b4d` iguais ao módulo OEM. A
+atestação está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_write_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_ioctl@0010069c` é materializada de 89 instruções stock, com 356 bytes
+de corpo, relocamentos AArch64 e KCFI `0x2af6cdbb` iguais ao módulo OEM. O
+corpo preserva instruções privilegiadas observadas no stock; a atestação é
+estática/offline e está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_ioctl_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_open@00100804` é materializada de 47 instruções stock, com 188 bytes
+de corpo, relocações AArch64 para `device_list_lock`/`device_list` e KCFI
+`0x9829071d` iguais ao módulo OEM. A atestação estática/offline está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_open_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_release@001008c4` é materializada de 20 instruções stock, com 80
+bytes de corpo, relocação para `device_list_lock` e KCFI `0x9829071d` iguais ao
+módulo OEM. A atestação estática/offline está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_release_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_probe@00100918` é materializada de 141 instruções stock, com 564
+bytes de corpo, relocations de `.data/.bss` e KCFI `0xba1082a1` iguais ao
+módulo OEM. A atestação está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_probe_exact_v1/exact_revalidation_20260902`.
+
+`zte_ir_remove@00100b50` é materializada de 69 instruções stock, com 276
+bytes de corpo, relocations de `.data/.bss` e KCFI `0x509a2353` iguais ao
+módulo OEM. A atestação está em
+`reverse_engineering/validation/reconstructed/zte_ir/attestation/zte_ir_remove_exact_v1/exact_revalidation_20260902`.
+
 ## Diferenças deliberadas
 
-O candidato mantém o contrato válido de transmissão e controle, mas adiciona
-checagens de tamanho, overflow, carrier, dispositivo removido e limpeza de
-falhas. Essas diferenças estão registradas no relatório de paridade e não são
-tratadas como equivalência binária com o módulo OEM.
+As demais funções do candidato mantêm o contrato válido de transmissão e
+controle, mas adicionam checagens de tamanho, overflow, carrier, dispositivo
+removido e limpeza de falhas. Essas diferenças não são tratadas como
+equivalência binária com o módulo OEM.

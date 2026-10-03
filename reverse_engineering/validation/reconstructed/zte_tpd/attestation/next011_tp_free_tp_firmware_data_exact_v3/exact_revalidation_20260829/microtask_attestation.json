@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "011_tp_free_tp_firmware_data",
+  "stock_function": "tp_free_tp_firmware_data",
+  "stock_entry": "00107cf0",
+  "stock_body_bytes": 96,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "0a3956df06f54b60ea2d08167b687dde6b308b4af9855032c36a0f86e91e0a8a",
+  "candidate_exact_assembly_sha256": "b123f9e025d0eb121300a6dbfb61b1167680baea892ecbd91aafccbe4c28ec52",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 24,
+    "instruction_count_candidate": 24,
+    "symbol_size_stock": 96,
+    "symbol_size_candidate": 96,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 3,
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "c69e13041920c1aeb2884ec7f038462ce902cafbd40925568b7e193815ce6206",
+    "aarch64_comparison.json": "4ae5f7abcb54c3fb8cfe79f3ce9ebec6c7c839a771667e1678fe9f3a4e00b5e0",
+    "kcfi/comparison.json": "959fa265491286d9520eca39e0aa276cc4ca0f86c2478df76e23fa2df0921ff2",
+    "joern/joern_gate_report.json": "ae27b5221f2c74f3588de06c4ae66c672a25cc114734966eaf519ac26638e551",
+    "host_harness_report.json": "e8fbaf26dd40e7d7a61e0e090792082c6b683b266203da4ebe52763d3a9202f3",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host test is an isolated userspace harness and does not exercise real vmalloc or kernel allocator behavior.",
+    "The broader work_void harness remains blocked by unrelated stub drift and is documented in host_harness_report.json.",
+    "The exact AArch64 gate proves opcode/relocation identity; hardware behavior remains untested."
+  ]
+}

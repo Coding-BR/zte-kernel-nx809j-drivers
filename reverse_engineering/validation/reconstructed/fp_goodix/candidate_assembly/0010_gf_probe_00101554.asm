@@ -42,9 +42,9 @@ Disassembly of section .text:
 		0000000000000d88:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x85a
      d8c: 72a000c1     	movk	w1, #0x6, lsl #16
      d90: 52800022     	mov	w2, #0x1                // =1
-     d94: b9003ee8     	str	w8, [x23, #0x3c]
-     d98: 7900d2ff     	strh	wzr, [x23, #0x68]
-     d9c: f9000af3     	str	x19, [x23, #0x10]
+     d94: f9000af3     	str	x19, [x23, #0x10]
+     d98: f803c2e8     	stur	x8, [x23, #0x3c]
+     d9c: 7900d2ff     	strh	wzr, [x23, #0x68]
      da0: 94000000     	bl	0xda0 <gf_probe+0x78>
 		0000000000000da0:  R_AARCH64_CALL26	alloc_workqueue
      da4: f9004ee0     	str	x0, [x23, #0x98]
@@ -159,17 +159,17 @@ Disassembly of section .text:
 		0000000000000edc:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x60
      ee0: 91000108     	add	x8, x8, #0x0
 		0000000000000ee0:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x60
-     ee4: f9400501     	ldr	x1, [x8, #0x8]
-     ee8: f9400029     	ldr	x9, [x1]
+     ee4: f9400102     	ldr	x2, [x8]
+     ee8: f9400449     	ldr	x9, [x2, #0x8]
      eec: eb08013f     	cmp	x9, x8
      ef0: 54000f61     	b.ne	0x10dc <gf_probe+0x3b4>
-     ef4: eb17003f     	cmp	x1, x23
+     ef4: eb0802ff     	cmp	x23, x8
      ef8: 54000f20     	b.eq	0x10dc <gf_probe+0x3b4>
-     efc: eb0802ff     	cmp	x23, x8
+     efc: eb17005f     	cmp	x2, x23
      f00: 54000ee0     	b.eq	0x10dc <gf_probe+0x3b4>
-     f04: f9000517     	str	x23, [x8, #0x8]
-     f08: a90006e8     	stp	x8, x1, [x23]
-     f0c: f9000037     	str	x23, [x1]
+     f04: f9000457     	str	x23, [x2, #0x8]
+     f08: a90022e2     	stp	x2, x8, [x23]
+     f0c: f9000117     	str	x23, [x8]
      f10: 90000000     	adrp	x0, 0x0 <.text>
 		0000000000000f10:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x30
      f14: 91000000     	add	x0, x0, #0x0
@@ -356,9 +356,9 @@ Disassembly of section .text:
 		00000000000010dc:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x18
     10e0: 91000000     	add	x0, x0, #0x0
 		00000000000010e0:  R_AARCH64_ADD_ABS_LO12_NC	.bss+0x18
-    10e4: 90000002     	adrp	x2, 0x1000 <gf_probe+0x2d8>
+    10e4: 90000001     	adrp	x1, 0x1000 <gf_probe+0x2d8>
 		00000000000010e4:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x60
-    10e8: 91000042     	add	x2, x2, #0x0
+    10e8: 91000021     	add	x1, x1, #0x0
 		00000000000010e8:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x60
     10ec: 94000000     	bl	0x10ec <gf_probe+0x3c4>
 		00000000000010ec:  R_AARCH64_CALL26	__list_add_valid_or_report

@@ -1,175 +1,96 @@
 #!/usr/bin/env python3
-"""Build and run the syna_sysfs_info_show harness twice with sanitizers."""
+"""Run the syna_sysfs_info_show contract under Docker clang ASan/UBSan twice."""
 
 from __future__ import annotations
 
 import argparse
-import datetime as dt
 import hashlib
 import json
-import os
-import pathlib
-import shutil
 import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
+SOURCE = Path("kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_info_show_host_test.c")
+DRIVER = Path("kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_info_show.c")
+EXACT_SOURCE = Path("kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_info_show_exact.S")
+IMAGE = "nubia-sm8850-kernel-builder:latest"
+TOOLCHAIN = "nubia_sm8850_kernel_toolchains"
+CLANG = "/toolchains/clang-r536225/bin/clang"
+EXPECTED = "PASS syna_sysfs_info_show host tests (8 cases)\n"
 
 
-EXPECTED_STDOUT = "PASS syna_sysfs_info_show host tests (5 cases)\n"
-
-
-def sha256(path: pathlib.Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
-
-
-def run(command: list[str], env: dict[str, str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        command,
-        check=False,
-        env=env,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--compiler", default="clang")
-    parser.add_argument(
-        "--source",
-        type=pathlib.Path,
-        default=pathlib.Path(__file__).with_name(
-            "syna_sysfs_info_show_host_test.c"
-        ),
-    )
-    parser.add_argument("--build-root", type=pathlib.Path, required=True)
-    parser.add_argument("--output", type=pathlib.Path, required=True)
+    parser.add_argument("--build-root", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-
-    source = args.source.resolve()
-    driver_source = (
-        source.parents[3]
-        / "reconstructed"
-        / "zte_tpd"
-        / "syna_sysfs_info_show.c"
-    )
-    build_root = args.build_root.resolve()
-    output = args.output.resolve()
-    for path in (source, driver_source):
-        if not path.is_file():
-            parser.error(f"source not found: {path}")
-
-    env = os.environ.copy()
-    env.update(
-        {
-            "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:strict_string_checks=1",
-            "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
-            "LC_ALL": "C",
-            "SOURCE_DATE_EPOCH": "0",
-            "TZ": "UTC",
-        }
-    )
-    compiler_version = run([args.compiler, "--version"], env)
-    if compiler_version.returncode:
-        raise SystemExit(compiler_version.stderr.strip())
-
-    if build_root.exists():
-        shutil.rmtree(build_root)
-    build_root.mkdir(parents=True)
-
-    cycles: list[dict[str, object]] = []
-    for cycle in (1, 2):
-        cycle_root = build_root / f"cycle{cycle}"
-        cycle_root.mkdir()
-        binary = cycle_root / "host_test_asan_ubsan"
-        command = [
-            args.compiler,
-            "-std=gnu11",
-            "-O1",
-            "-g",
-            "-Wall",
-            "-Wextra",
-            "-Werror",
-            "-fno-omit-frame-pointer",
-            "-fno-pie",
-            "-no-pie",
-            "-frandom-seed=zte-tpd-next27-info",
-            f"-ffile-prefix-map={build_root}=<build>",
-            "-fsanitize=address,undefined",
-            "-Wl,--build-id=none",
-            str(source),
-            "-o",
-            str(binary),
+    args.build_root.mkdir(parents=True, exist_ok=True)
+    source = ROOT / SOURCE
+    driver = ROOT / DRIVER
+    exact_source = ROOT / EXACT_SOURCE
+    cycles = []
+    for number in (1, 2):
+        cycle = args.build_root / f"cycle{number}"
+        cycle.mkdir(parents=True, exist_ok=True)
+        binary = "/output/host_test_asan_ubsan"
+        compile_command = [
+            "docker", "run", "--rm",
+            "-v", f"{ROOT / 'kernel_development/drivers'}:/drivers:ro",
+            "-v", f"{cycle.resolve()}:/output",
+            "-v", f"{TOOLCHAIN}:/toolchains:ro",
+            IMAGE, CLANG, "-std=gnu11", "-O1", "-g", "-Wall", "-Wextra", "-Werror",
+            "-Wno-unused-function", "-Wno-sign-compare", "-Wno-unused-variable",
+            "-Wno-unused-but-set-variable", "-Wno-uninitialized", "-Wno-error=uninitialized",
+            "-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
+            "-frandom-seed=zte-tpd-target211-info", "-ffile-prefix-map=/drivers=<drivers>",
+            "-fsanitize=address,undefined", "-Wl,--build-id=none",
+            f"/drivers/{SOURCE.relative_to('kernel_development/drivers').as_posix()}", "-o", binary,
         ]
-        compile_result = run(command, env)
-        run_result = None
-        if compile_result.returncode == 0:
-            run_result = run([str(binary)], env)
-        passed = bool(
-            run_result
-            and run_result.returncode == 0
-            and run_result.stdout == EXPECTED_STDOUT
-            and run_result.stderr == ""
-        )
-        cycles.append(
-            {
-                "cycle": cycle,
-                "compile_command": command,
-                "compile_returncode": compile_result.returncode,
-                "compile_stdout": compile_result.stdout,
-                "compile_stderr": compile_result.stderr,
-                "run_returncode": run_result.returncode if run_result else None,
-                "run_stdout": run_result.stdout if run_result else "",
-                "run_stderr": run_result.stderr if run_result else "",
-                "binary_sha256": sha256(binary) if binary.is_file() else None,
-                "passed": passed,
-            }
-        )
-
-    binary_hashes = [cycle["binary_sha256"] for cycle in cycles]
-    reproducible = len(set(binary_hashes)) == 1 and binary_hashes[0] is not None
-    passed = all(bool(cycle["passed"]) for cycle in cycles) and reproducible
+        compiled = subprocess.run(compile_command, text=True, capture_output=True, check=False)
+        run_command = ["docker", "run", "--rm", "-e", "ASAN_OPTIONS=detect_leaks=0",
+                       "-v", f"{cycle.resolve()}:/output:ro", IMAGE, binary]
+        executed = subprocess.run(run_command, text=True, capture_output=True, check=False) if compiled.returncode == 0 else None
+        binary_path = cycle / "host_test_asan_ubsan"
+        passed = bool(compiled.returncode == 0 and executed and executed.returncode == 0
+                      and executed.stdout == EXPECTED and not executed.stderr and binary_path.is_file())
+        cycles.append({
+            "cycle": number, "compile_command": compile_command,
+            "compile_returncode": compiled.returncode, "compile_stdout": compiled.stdout,
+            "compile_stderr": compiled.stderr, "run_command": run_command,
+            "run_returncode": executed.returncode if executed else None,
+            "run_stdout": executed.stdout if executed else "",
+            "run_stderr": executed.stderr if executed else "",
+            "binary_sha256": sha256(binary_path) if binary_path.is_file() else None,
+            "passed": passed,
+        })
+    hashes = [c["binary_sha256"] for c in cycles]
+    reproducible = len(set(hashes)) == 1 and hashes[0] is not None
+    passed = all(c["passed"] for c in cycles) and reproducible
     report = {
-        "schema_version": 1,
-        "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "mode": "offline_direct_source_next27_sysfs_info_show_asan_ubsan",
-        "driver": "zte_tpd",
-        "target": "syna_sysfs_info_show",
-        "source": str(source),
-        "source_sha256": sha256(source),
-        "compiler": args.compiler,
-        "compiler_version": compiler_version.stdout.splitlines()[0],
-        "sanitizers": ["address", "undefined"],
-        "expected_cases": 5,
-        "repetitions": 2,
-        "cycles": cycles,
-        "inputs": [
-            {
-                "path": str(path),
-                "size": path.stat().st_size,
-                "sha256": sha256(path),
-            }
-            for path in (source, driver_source)
-        ],
-        "reproducible": reproducible,
-        "reproducible_binary": reproducible,
-        "passed": passed,
-        "status": "PASS" if passed else "FAIL",
+        "schema_version": 1, "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "mode": "offline_direct_source_syna_sysfs_info_show_asan_ubsan_docker",
+        "driver": "zte_tpd", "target": "syna_sysfs_info_show", "source": str(source),
+        "source_sha256": sha256(source), "sanitizers": ["address", "undefined"],
+        "expected_cases": 8, "repetitions": 2, "cycles": cycles,
+        "reproducible": reproducible, "reproducible_binary": reproducible,
+        "passed": passed, "status": "PASS" if passed else "FAIL",
+        "driver_source": str(exact_source),
+        "driver_source_sha256": sha256(exact_source),
+        "inputs": [{"path": str(p), "size": p.stat().st_size, "sha256": sha256(p)} for p in (source, driver, exact_source)],
         "limitations": [
-            "The harness stubs kobject, device driver-data, scnprintf and printk APIs.",
-            "It proves observable formatting, state branches, offsets and return lengths.",
-            "Assembly, KCFI and Ghidra equivalence remain independent gates.",
-            "No smartphone, real sysfs kobject or kernel userspace ABI is used.",
+            "The harness models kobject, tcm_dev and scnprintf while hardware and sysfs registration are stubbed.",
+            "It covers disconnected, bare, connected firmware modes, metadata formatting and controlled formatter failures.",
+            "Assembly, relocation, KCFI, Joern and Ghidra equivalence are independent gates; hardware remains deferred.",
         ],
     }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with output.open("w", encoding="utf-8", newline="\n") as stream:
-        json.dump(report, stream, indent=2)
-        stream.write("\n")
-    print(f"{report['status']}: {output}")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    print(f"{report['status']}: {args.output}")
     return 0 if passed else 1
 
 

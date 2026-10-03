@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "kind": "bounded_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "327_syna_tpd_register_fw_class",
+  "stock_function": "syna_tpd_register_fw_class",
+  "stock_entry": "0012b55c",
+  "status": "MICROPROOFS_PASS_PROMOTION_BLOCKED",
+  "promotion_allowed": false,
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_OFFSET_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_FAKE_MEMORY_CONTRACT": "PASS",
+    "MP5_JOERN_STRICT": "PASS",
+    "MP6_AARCH64_INPUT": "PASS",
+    "MP7_HOST_ASAN_UBSAN": "PASS",
+    "MP8_KBUILD_CANONICAL": "BLOCKED_UNRELATED_TRANSLATION_UNITS",
+    "MP9_KCFI_EXACT_PARITY": "PENDING",
+    "MP10_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "observed_contract": {
+    "alloc_workqueue_failure_is_nonfatal": true,
+    "charger_status_cache_is_initialized": true,
+    "timer_and_notifier_are_registered_only_after_workqueue": true,
+    "tpd_cdev_callback_offsets_match_stock": true,
+    "tcm_pointer_and_dimensions_are_stored": true,
+    "hardware_access": false
+  },
+  "promotion_blockers": [
+    "canonical build fails in syna_tcm_erase_mtp_data.c due macro-expanded declarations",
+    "canonical build fails on duplicate syna_tcm_buf_copy_2 definition",
+    "KCFI and exact opcode/relocation parity require a linked .ko",
+    "independent L3 review is not recorded"
+  ],
+  "evidence": {
+    "candidate_source_sha256": "9fd76a12d46283c129ec440dc364813a8727f6ac70b6b6d2f355a262cb265ea4",
+    "host_report": "host_harness_report.json",
+    "joern_report": "joern/joern_gate_report.json",
+    "aarch64_report": "aarch64_compile_report.json",
+    "build_report": "build_report.json",
+    "assembly_review": "assembly_semantic_review.json"
+  }
+}

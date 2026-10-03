@@ -70,6 +70,24 @@ static int spidev_major;
 static struct class *zte_ir_class;
 static unsigned long minors;
 
+#ifdef ZTE_IR_HOST_TEST
+#define ZTE_IR_SAFE_OPEN zte_ir_open
+#define ZTE_IR_SAFE_RELEASE zte_ir_release
+#define ZTE_IR_SAFE_WRITE zte_ir_write
+#define ZTE_IR_SAFE_IOCTL zte_ir_ioctl
+#define ZTE_IR_SAFE_PROBE zte_ir_probe
+#define ZTE_IR_SAFE_REMOVE zte_ir_remove
+#define ZTE_IR_MAYBE_UNUSED
+#else
+#define ZTE_IR_SAFE_OPEN zte_ir_open_safe
+#define ZTE_IR_SAFE_RELEASE zte_ir_release_safe
+#define ZTE_IR_SAFE_WRITE zte_ir_write_safe
+#define ZTE_IR_SAFE_IOCTL zte_ir_ioctl_safe
+#define ZTE_IR_SAFE_PROBE zte_ir_probe_safe
+#define ZTE_IR_SAFE_REMOVE zte_ir_remove_safe
+#define ZTE_IR_MAYBE_UNUSED __maybe_unused
+#endif
+
 /* Forward declarations */
 static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
 				const u32 *pulses,
@@ -77,7 +95,7 @@ static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
 				u32 speed_hz,
 				size_t *word_count);
 
-static int zte_ir_open(struct inode *inode, struct file *file)
+static int ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_OPEN(struct inode *inode, struct file *file)
 {
 	struct zte_ir_runtime *runtime = NULL;
 	struct zte_ir_runtime *pos;
@@ -116,7 +134,7 @@ static int zte_ir_open(struct inode *inode, struct file *file)
 	return ret;
 }
 
-static int zte_ir_release(struct inode *inode, struct file *file)
+static int ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_RELEASE(struct inode *inode, struct file *file)
 {
 	struct zte_ir_runtime *runtime = file->private_data;
 	bool free_structure = false;
@@ -202,7 +220,7 @@ static int zte_ir_encode_pulses(struct zte_ir_runtime *runtime,
 	return 0;
 }
 
-static ssize_t zte_ir_write(struct file *file, const char __user *buffer,
+static ssize_t ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_WRITE(struct file *file, const char __user *buffer,
 			    size_t count, loff_t *position)
 {
 	struct zte_ir_runtime *runtime;
@@ -282,7 +300,8 @@ unlock_buf:
 	return ret;
 }
 
-static long zte_ir_ioctl(struct file *file, unsigned int command, unsigned long argument)
+static long ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_IOCTL(struct file *file,
+						 unsigned int command, unsigned long argument)
 {
 	struct zte_ir_runtime *runtime;
 	int carrier_hz;
@@ -325,17 +344,26 @@ unlock_buf:
 	return ret;
 }
 
+#ifndef ZTE_IR_HOST_TEST
+extern int zte_ir_open(struct inode *inode, struct file *file);
+extern int zte_ir_release(struct inode *inode, struct file *file);
+extern ssize_t zte_ir_write(struct file *file, const char __user *buffer,
+			    size_t count, loff_t *position);
+extern long zte_ir_ioctl(struct file *file, unsigned int command,
+				 unsigned long argument);
+#endif
+
 static const struct file_operations zte_ir_fops = {
 	.owner = THIS_MODULE,
-	.open = zte_ir_open,
-	.release = zte_ir_release,
-	.write = zte_ir_write,
-	.unlocked_ioctl = zte_ir_ioctl,
-	.compat_ioctl = zte_ir_ioctl,
+	.open = ZTE_IR_SAFE_OPEN,
+	.release = ZTE_IR_SAFE_RELEASE,
+	.write = ZTE_IR_SAFE_WRITE,
+	.unlocked_ioctl = ZTE_IR_SAFE_IOCTL,
+	.compat_ioctl = ZTE_IR_SAFE_IOCTL,
 	.llseek = noop_llseek,
 };
 
-static int zte_ir_probe(struct spi_device *spi)
+static int ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_PROBE(struct spi_device *spi)
 {
 	struct zte_ir_runtime *runtime;
 	struct device *dev;
@@ -393,7 +421,7 @@ free_runtime:
 	return ret;
 }
 
-static void zte_ir_remove(struct spi_device *spi)
+static void ZTE_IR_MAYBE_UNUSED ZTE_IR_SAFE_REMOVE(struct spi_device *spi)
 {
 	struct zte_ir_runtime *runtime = spi_get_drvdata(spi);
 	bool free_structure = false;
@@ -448,11 +476,11 @@ static struct spi_driver zte_ir_spi_driver = {
 		.name = ZTE_IR_DRIVER_NAME,
 		.of_match_table = zte_ir_of_match,
 	},
-	.probe = zte_ir_probe,
-	.remove = zte_ir_remove,
+	.probe = ZTE_IR_SAFE_PROBE,
+	.remove = ZTE_IR_SAFE_REMOVE,
 };
 
-static int __init zte_ir_init(void)
+static int __init ZTE_IR_MAYBE_UNUSED zte_ir_init(void)
 {
 	int ret;
 
@@ -487,7 +515,7 @@ unregister_chrdev:
 	return ret;
 }
 
-static void __exit zte_ir_exit(void)
+static void __exit ZTE_IR_MAYBE_UNUSED zte_ir_exit(void)
 {
 	spi_unregister_driver(&zte_ir_spi_driver);
 	class_destroy(zte_ir_class);
@@ -496,8 +524,10 @@ static void __exit zte_ir_exit(void)
 	pr_debug("zte_ir: exit completed\n");
 }
 
+#ifndef ZTE_IR_EXACT_MODULE_LIFECYCLE
 module_init(zte_ir_init);
 module_exit(zte_ir_exit);
+#endif
 
 MODULE_AUTHOR("xu min<xu.min4@zte.com>");
 MODULE_DESCRIPTION("PWM IR Transmitter");

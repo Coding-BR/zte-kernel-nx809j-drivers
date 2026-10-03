@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_touch_probe",
+  "stock_entry": "001087e4",
+  "protocol": "offline_reconstruction_attestation_v1",
+  "gates": {
+    "host_contract_harness": true,
+    "host_reproducible": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "canonical_reproducible": true,
+    "kcfi_type_section_size": true,
+    "candidate_aarch64_assembly_extracted": true,
+    "stock_instruction_relocation_parity": false
+  },
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "smartphone_test": "NOT_RUN_BY_DESIGN",
+  "canonical_module_sha256": "f4c58cb9b14dccc6253c1848ffc84d0ee4208f89304452e6cd029137fea936cf",
+  "canonical_module_size": 29350144,
+  "joern_findings": [
+    "high lifetime: devm_kmalloc at zte_touch_probe.c:141",
+    "high synchronization: queue_delayed_work_on at zte_touch_probe.c:377",
+    "high synchronization: queue_delayed_work_on at zte_touch_probe.c:401"
+  ],
+  "notes": [
+    "The four-case ASAN/UBSAN host harness passed in two reproducible cycles.",
+    "Docker canonical builds passed in two cycles with identical module SHA-256.",
+    "Joern strict parsing passed with one mapped source method, 594 calls, 61 control structures and zero unresolved calls.",
+    "KCFI type ID, section and symbol size match the preserved stock reference.",
+    "The candidate body size matches 3712 bytes, but instruction and relocation parity failed.",
+    "No smartphone, module loading, SPI, IRQ, MMIO or firmware execution was performed."
+  ]
+}

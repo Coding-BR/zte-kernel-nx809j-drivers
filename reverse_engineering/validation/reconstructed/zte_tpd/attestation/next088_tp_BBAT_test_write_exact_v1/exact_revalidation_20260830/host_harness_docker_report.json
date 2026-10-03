@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_BBAT_test_write",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_BBAT_test_write.c",
+  "source_sha256": "9799de162376379d798160d83ec49efd747d2173f26cd402ef41fb5ebe71a076",
+  "driver_source_sha256": "9799de162376379d798160d83ec49efd747d2173f26cd402ef41fb5ebe71a076",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_BBAT_test_write_host_test.c",
+  "harness_sha256": "007dcac6b942136f15fc8b1ccec6527a750d304455cdebbb14208bedf28fb1f9",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 4,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "tp_BBAT_test_write host contract: PASS (4 printk calls)\n",
+      "run_stderr": "",
+      "binary_sha256": "db2574dd561a5257c1d28a67d0a0c1b55a53820c4cfd8c6416966835457c0b63",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "tp_BBAT_test_write host contract: PASS (4 printk calls)\n",
+      "run_stderr": "",
+      "binary_sha256": "db2574dd561a5257c1d28a67d0a0c1b55a53820c4cfd8c6416966835457c0b63",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness includes the reconstructed C source and uses userspace stubs.",
+    "It does not execute a real kernel procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

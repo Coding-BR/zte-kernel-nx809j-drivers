@@ -1,0 +1,9 @@
+
+void set_lcd_reset_processing(byte param_1)
+
+{
+  *(byte *)(tpd_cdev + 0x18) = param_1;
+                    /* WARNING: Subroutine does not return */
+  _printk(&DAT_00181402,param_1 & 1);
+}
+

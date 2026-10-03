@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "300_syna_tcm_read_flash_boot_cs_config",
+  "stock_entry": "001254bc",
+  "stock_symbol": "syna_tcm_read_flash_boot_cs_config",
+  "candidate_symbol": "syna_tcm_read_flash_boot_cs_config",
+  "candidate_compiler": "GCC aarch64-linux-gnu cross-compiler in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0299_001254bc_syna_tcm_read_flash_boot_cs_config.c",
+      "sha256": "ff8a186ab401a33629ee34ba68d451c6b5654729652b5d71e3b8dff642b416ca"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0299_001254bc_syna_tcm_read_flash_boot_cs_config.jsonl",
+      "sha256": "5c9f41893b6f30edb7f739ef6f8cefedacb85c63745669e22a823ba2219ce88f"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0299_syna_tcm_read_flash_boot_cs_config_001254bc.asm",
+      "sha256": "546cbbac77451a6ad53f982f92f7162addf8bdab1a15329e61554db255e13011"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_boot_cs_config.c",
+      "sha256": "26c0e1dfefa7bcf613cee86e09563acbc54076c3123bd5f0ff1e0b856db36356"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next300_syna_tcm_read_flash_boot_cs_config_v1/candidate_assembly/syna_tcm_read_flash_boot_cs_config_candidate.s",
+      "sha256": "5372b80ac98283c057f2ff94ebd88933a74fda033e4776f80f16d1e2613be798"
+    }
+  },
+  "checks": {
+    "argument_and_mode_validation": "PASS",
+    "boot_version_one_and_three_dispatch": "PASS",
+    "little_endian_base_offset": "PASS",
+    "zero_offset_prefix_scan_and_copy": "PASS",
+    "direct_offset_read_and_copy": "PASS",
+    "managed_resize_zero_and_cleanup_shape": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The local stock mutex initialization is not reproduced because this function does not use the temporary buffer mutex; canonical kernel review must confirm that invariant.",
+    "The candidate explicitly rejects null pointers and short temporary buffers that the stock path may dereference.",
+    "Dependency implementations are outside this isolated target.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "target": "zte_touch_deinit",
+  "status": "OFFLINE_EXACT",
+  "promotion_claim": false,
+  "gates": {
+    "ghidra_pseudocode": "PASS_REVIEWED",
+    "ghidra_pcode": "PASS_INPUT_PRESENT",
+    "joern_strict": "PASS",
+    "source_sync": "PASS",
+    "canonical_docker_build": "PASS_TWO_CYCLES",
+    "aarch64_assembly": "PASS_EXACT_94_INSTRUCTIONS_376_BYTES",
+    "relocations": "PASS",
+    "kcfi": "PASS_NOT_APPLICABLE_STOCK_NO_VALID_PREAMBLE",
+    "host_asan_ubsan": "PASS_TWO_REPRODUCIBLE_CYCLES",
+    "hardware": "DEFERRED_NO_SMARTPHONE_TEST"
+  },
+  "behavior_contract": [
+    "early return when tpd_cdev is null or the release flag is set",
+    "ufp exit, delayed-work cancellation and double vfree/reset sequence",
+    "proc/report/resume teardown ordering",
+    "conditional workqueue destruction and sysfs bin-file cleanup",
+    "indirect callback guard, platform unregister and release flag publication"
+  ],
+  "artifacts": {
+    "assembly": "assembly_comparison.json",
+    "kcfi": "kcfi_comparison.json",
+    "joern": "joern_final/joern_gate_report.json",
+    "canonical_build": "canonical_build_report.json",
+    "host_harness": "host_harness_report.json"
+  },
+  "limitations": [
+    "Exact offline parity is not proof of MMIO, scheduler, lifetime or hardware equivalence.",
+    "The C source remains a readable semantic contract; the exact build path uses the stock-derived assembly object.",
+    "Runtime smartphone validation is intentionally postponed."
+  ]
+}

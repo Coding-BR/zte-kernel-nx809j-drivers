@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-12T23:05:00Z",
+  "driver": "zte_tpd",
+  "target": "tpd_set_singleaodgesture",
+  "function": "tpd_set_singleaodgesture",
+  "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_set_singleaodgesture.c",
+  "source_sha256": "27354dd966048513de4a1be2aeec7fe33c2ce0284a13f0dfa33eab862873aec4",
+  "gates": {
+    "host_contract": {"status": "PASS", "passed": true, "report": "tpd_set_singleaodgesture_contract_harness_report.json"},
+    "aarch64": {"status": "PASS_WITH_STOCK_PARITY_PENDING", "passed": true, "report": "candidate_aarch64/aarch64_validation_report.json"},
+    "joern": {"status": "PASS", "passed": true, "strict": true, "report": "joern_gate/joern_gate_summary.json"},
+    "kcfi": {"status": "CANDIDATE_PASS_STOCK_PARITY_NOT_ESTABLISHED", "passed": false, "report": "kcfi_status.json"},
+    "canonical_build": {"status": "PASS", "passed": true, "cycles_requested": 2, "cycles_accepted": 2, "report": "canonical_build_report.json"}
+  },
+  "canonical_artifact": {
+    "sha256": "15a31a5a55c94d533587c821b9f09b3727a065ce65b048dbc27bba1a1d3fdb0c",
+    "size": 29349784,
+    "reproducible_across_cycles": true
+  },
+  "promotion": "BLOCKED",
+  "promotion_reason": "The corrected function passes host, AArch64, Joern and canonical build gates. Strict promotion remains blocked until the stock KCFI type ID and full stock ELF parity are available for comparison.",
+  "limitations": [
+    "No smartphone execution was performed.",
+    "The offline AArch64 object validates the observed dataflow and critical instruction order but does not replace full stock ELF relocation parity."
+  ],
+  "status": "BLOCKED_BY_STOCK_REFERENCE_PARITY"
+}

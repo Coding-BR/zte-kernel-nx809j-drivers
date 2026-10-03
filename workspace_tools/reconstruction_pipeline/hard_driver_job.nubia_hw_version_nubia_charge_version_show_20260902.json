@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "driver": "nubia_hw_version",
+  "stock_sha256": "b24e66e189267f240d637d826169d1bcb28abda390260a88cf52124dbbabfc6c",
+  "profiles": ["CALLBACK_ABI", "STATEFUL_MEMORY", "COMPILER_SENSITIVE"],
+  "functions": [{"stock_function": "nubia_charge_version_show", "stock_entry": "001012b4", "source_function": "nubia_charge_version_show", "kcfi_required": true}],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/nubia_hw_version",
+    "stock_module": "reference_modules/full_vendor_boot/nubia_hw_version.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/nubia_hw_version/offline_static/ghidra_candidate_20260902_nubia_gpio_ctrl1",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/nubia_hw_version/reconstruction_map.json"
+  },
+  "docker": {"adapter": "generic_driver_audit", "cycles": 2, "parallelism": 4, "image": "nubia-sm8850-kernel-builder:latest", "source_volume": "nubia_sm8850_kernel_src", "toolchain_volume": "nubia_sm8850_kernel_toolchains", "clang_revision": "clang-r536225"},
+  "joern": {"slice": {"mode": "usages", "parallelism": 2, "min_num_calls": 1}},
+  "ghidra": {"allow_pcode_authoritative_decompiler_fallback": true, "allow_shared_data_binding_normalization": true, "fallback_reason": "This compiler-sensitive sysfs callback reads charger state and formats a string; bounded Ghidra symbol, data-binding or type-rendering artifacts may be considered only when direct P-Code shape, exact Assembly/relocation, KCFI, Joern and Docker gates all pass. Shared bindings are accepted only for equal section-relative offsets.", "fallback_evidence": "Retain stock and candidate Ghidra exports, exact Assembly, KCFI, Joern and harness evidence. No binary or callback ABI gate may be waived by fallback."}
+}

@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-25T06:44:07.487580+00:00",
+  "mode": "aarch64_opcode_relocation_and_validated_semantic_comparison",
+  "stock_module": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\stock\\zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target238_current\\canonical_builds\\target238-syna-tcm-testing-0001-check-device-id-exact\\zte_tpd\\zte_tpd.ko",
+    "sha256": "445562cf1ad2bfbc59b5e1166374e39a925700afd84ffcacd76bd72e6c9e503c"
+  },
+  "checked_functions": 1,
+  "strict_matches": 1,
+  "semantic_matches": 1,
+  "strict_passed": true,
+  "passed": true,
+  "failures": [],
+  "results": [
+    {
+      "function": "syna_tcm_testing_0001_check_device_id",
+      "strict_match": true,
+      "semantic_match": true,
+      "checks": {
+        "instructions": true,
+        "relocations": true,
+        "section": true,
+        "symbol_size": true,
+        "printk_formats": true
+      },
+      "exception": null,
+      "printk": {
+        "stock_call_count": 1,
+        "candidate_call_count": 1,
+        "stock_unresolved_count": 0,
+        "candidate_unresolved_count": 0,
+        "format_differences": [],
+        "stock_calls": [
+          {
+            "address": "0x16f04",
+            "format": "\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\n",
+            "format_candidates": [
+              "\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\n"
+            ],
+            "format_resolution": "static"
+          }
+        ],
+        "candidate_calls": [
+          {
+            "address": "0x20388",
+            "format": "\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\n",
+            "format_candidates": [
+              "\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\n"
+            ],
+            "format_resolution": "static"
+          }
+        ]
+      },
+      "stock": {
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\stock_assembly\\0237_syna_tcm_testing_0001_check_device_id_0011d6e4.asm",
+        "sha256": "3705fd4982f619ff65f65a7948d8aa9d3c72432aa3b534f924880d3475158053",
+        "section": ".text",
+        "instruction_count": 45,
+        "relocations_raw": [
+          "R_AARCH64_CALL26\tstrncmp",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0xbbbf",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0xbbbf",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x9988",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x9988",
+          "R_AARCH64_CALL26\t_printk"
+        ],
+        "relocations": [
+          "R_AARCH64_CALL26 strncmp",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_tcm_testing_0001_check_device_id\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_tcm_testing_0001_check_device_id\"",
+          "R_AARCH64_CALL26 _printk"
+        ],
+        "symbol_size": 180
+      },
+      "candidate": {
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target238_current\\candidate_assembly\\0000_syna_tcm_testing_0001_check_device_id.asm",
+        "sha256": "3b92ba4a107a90e1f40ec25a74be25b911d62ffd43c80f936cfc920ec5e90b01",
+        "section": ".text",
+        "instruction_count": 45,
+        "relocations_raw": [
+          "R_AARCH64_CALL26\tstrncmp",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x1d988",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x1d988",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x1b60e",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x1b60e",
+          "R_AARCH64_CALL26\t_printk"
+        ],
+        "relocations": [
+          "R_AARCH64_CALL26 strncmp",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Device ID mismatched, FW: %s (limit: %s)\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_tcm_testing_0001_check_device_id\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_tcm_testing_0001_check_device_id\"",
+          "R_AARCH64_CALL26 _printk"
+        ],
+        "symbol_size": 180
+      },
+      "opcode_mismatches": []
+    }
+  ]
+}

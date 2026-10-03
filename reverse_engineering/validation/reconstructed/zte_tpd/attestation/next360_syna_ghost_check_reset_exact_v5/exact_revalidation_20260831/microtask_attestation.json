@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask_id": "360_syna_ghost_check_reset",
+  "function": "syna_ghost_check_reset",
+  "stock_entry": "0012c940",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "generated_utc": "2026-09-01T01:22:00Z",
+  "candidate_source_sha256_normalized_lf": "1fa9a8db92f1a6db2c78d97534b2849608aa7615b38c81086c336aad411ed262",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "stock_body_bytes": 96,
+  "candidate_body_bytes": 96,
+  "stock_instruction_count": 24,
+  "candidate_instruction_count": 24,
+  "checks": {
+    "candidate_ghidra_normalized_decompiled_c": "PASS_WITH_NARROW_PREMATURE_RETURN_FALLBACK",
+    "candidate_ghidra_pcode_operation_shape": true,
+    "assembly_relocations": true,
+    "docker_reproducible": true,
+    "kcfi": true,
+    "joern_scoped": true,
+    "joern_slice": true,
+    "host_asan_ubsan": true,
+    "hardware_runtime": "OUT_OF_SCOPE"
+  },
+  "evidence": [
+    "candidate_source.c",
+    "candidate_zte_tpd.ko",
+    "ghidra_semantic_comparison.json",
+    "ghidra/candidate_manifest.json",
+    "ghidra/candidate_decompiled.c",
+    "ghidra/candidate_pcode.jsonl",
+    "aarch64_comparison.json",
+    "canonical_build_report.json",
+    "kcfi/comparison.json",
+    "joern/joern_gate_summary.json",
+    "host_harness_docker_report.json",
+    "hard_protocol_report.json"
+  ],
+  "limitations": [
+    "Ghidra C output has a documented void-return/premature-return artifact; the narrow fallback is opt-in and all independent binary/assembly gates remain mandatory.",
+    "Offline evidence does not verify Android runtime or NX809J hardware behavior.",
+    "Host contract uses deterministic stubs and does not exercise transport, IRQ, MMIO, flash, or module loading."
+  ]
+}

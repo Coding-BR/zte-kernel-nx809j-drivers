@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "303_syna_tcm_update_flash_block",
+  "stock_entry": "00125f38",
+  "stock_symbol": "syna_tcm_update_flash_block",
+  "candidate_symbol": "syna_tcm_update_flash_block",
+  "candidate_compiler": "Android clang r536225 in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0302_00125f38_syna_tcm_update_flash_block.c",
+      "sha256": "52691ee8fa8f223598a9ef6b9cdd0d0975088b3a4952421665b5a4b3f54d7194"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0302_00125f38_syna_tcm_update_flash_block.jsonl",
+      "sha256": "eda379a8d11e20b14a393fc4de548b2d580e54c76f678c3aad8f353411b08621"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0302_syna_tcm_update_flash_block_00125f38.asm",
+      "sha256": "34481b6edba3348b895cb674f215d709e75111884dda1866b9a9bab006939c04"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_flash_block.c",
+      "sha256": "d2112ba72f2aef016e25a412ac43a6f5cb173fd735e8dc26e21573ee365fed9"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next303_syna_tcm_update_flash_block_v1/candidate_assembly/syna_tcm_update_flash_block_candidate.s",
+      "sha256": "8c2f3cab587d4060ed76e1a9026f8b14260aa5e585ae527b06d31102597a23dc"
+    }
+  },
+  "checks": {
+    "flash_block_validation_and_early_return": "PASS",
+    "erase_geometry_and_command_0x11": "PASS",
+    "normal_write_forwarding": "PASS",
+    "optimized_header_and_chunk_copy": "PASS",
+    "lock_depth_rollback_on_failure": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The +0x90 byte counter is not persisted in the opaque shared header.",
+    "The candidate uses explicit null and geometry checks at boundaries where stock dereferences or divides directly.",
+    "This review does not establish kernel ABI, KCFI, module relocation, canonical build or physical hardware behavior."
+  ]
+}

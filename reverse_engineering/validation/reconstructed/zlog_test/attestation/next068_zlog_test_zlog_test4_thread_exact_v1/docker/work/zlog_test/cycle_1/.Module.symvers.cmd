@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zlog_test/cycle_1/Module.symvers :=  ./scripts/mod/modpost -M -m -b -x  -E     -o /work/validation/zlog_test/cycle_1/Module.symvers -T /work/validation/zlog_test/cycle_1/modules.order -i ./Module.symvers -e -i /work/validation/zlog_test/cycle_1/vendor.Module.symvers -p protected_module_names_list

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "target": "tp_ghost_check_work",
+  "mode": "offline_aarch64_normalized_control_flow_and_relocation_comparison",
+  "instruction_count": { "stock": 44, "candidate": 44, "exact": false, "normalized_match": true },
+  "symbol_size": { "stock": 176, "candidate": 176, "exact": true, "delta_bytes": 0 },
+  "section": { "stock": ".text", "candidate": ".text", "match": true },
+  "function_kcfi_type_id": { "stock": "0xa607748c", "candidate": "0xa607748c", "match": true },
+  "callback_kcfi_guard": { "stock": "0x73fc0d79", "candidate": "0x73fc0d79", "match": true },
+  "instruction_sequence": {
+    "normalized_match": true,
+    "comparison": "same opcode count, calls, predicates and control-flow contract; branch block placement differs"
+  },
+  "branch_contract": {
+    "odd_bit_gate": "calls tp_ghost_check and enters the ghost branch only when bit 0 is set",
+    "counter_limit": "reads cdev + 0x4a8 and takes the limit path when the count is greater than 2",
+    "callback_path": "loads cdev + 0xff0, applies the KCFI guard, invokes callback(cdev), logs and increments",
+    "common_tail": "calls ghost_check_reset and clears cdev + 0x488",
+    "normalized_match": true
+  },
+  "offset_contract": {
+    "reset_counter": "cdev + 0x4a8",
+    "callback": "cdev + 0xff0",
+    "ghost_flag": "cdev + 0x488",
+    "normalized_match": true
+  },
+  "call_targets": {
+    "stock": ["tp_ghost_check", "ghost_check_reset", "_printk"],
+    "candidate": ["tp_ghost_check", "ghost_check_reset", "_printk"],
+    "normalized_match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The separately linked module places local strings at different .rodata offsets and the compiler lays out the limit block after the callback block; resolved strings, call targets, predicates, offsets and common-tail behavior match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": true,
+  "limitations": [
+    "Raw ELF relocation and instruction-byte identity is not exact across independently linked modules.",
+    "The host harness stubs tp_ghost_check, ghost_check_reset, printk and the valid callback.",
+    "The invalid KCFI path is statically inspected and intentionally not invoked by the host harness.",
+    "No smartphone, scheduler or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "e5ce2a469c55fabd8af796755847d9fbab090c784e535be9eee29b0836d25cf8",
+    "candidate_assembly_sha256": "fc40fa6a2af2313d3ea2a8c082a0f0d281bcc5e127e0563ce869cedbc486382b",
+    "candidate_module_sha256": "2b7e2d930e65dd710671c22b6d224ce7dc6adcf20e81bbb389eb2103af5c35b8"
+  }
+}

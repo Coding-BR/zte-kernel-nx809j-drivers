@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "target": "syna_tcm_set_touch_report_config",
+  "stock_contract": "Ghidra decompilation, P-Code and Assembly entry 0012a264",
+  "mode": "typed_transition_asan_ubsan_host_oracle",
+  "expected_assertions": 21,
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "container_image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "clang": "Android clang version 19.0.1 (r536225)",
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_set_touch_report_config host contract\n",
+      "stderr": "",
+      "binary_sha256": "95a7103aed30e8021584c247d1f236b358a9815535f9afba0d1665d9871856ff",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_set_touch_report_config host contract\n",
+      "stderr": "",
+      "binary_sha256": "95a7103aed30e8021584c247d1f236b358a9815535f9afba0d1665d9871856ff",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "asan_ubsan_stderr_empty": true,
+  "aarch64_syntax_check": true,
+  "candidate_body_assembly_emitted": true,
+  "typed_layout_probe": true,
+  "passed": true,
+  "status": "PASS_WITH_REVIEW_BLOCKERS",
+  "limitations": [
+    "The transition uses the proven tcm_dev overlay, but the semantic names of the two application-info words at offsets 0xb0 and 0xbc still require independent layout review against the stock protocol model.",
+    "The harness covers 21 assertions across validation, allocation, copy, delay, write and cleanup paths; a relocation-equivalent full module build and KCFI comparison were not run for this isolated target.",
+    "Joern reports a high-severity lifetime review finding for the devm_kmalloc call even though the local flow releases the allocation after copy and write paths; this requires independent review rather than suppression.",
+    "Hardware behavior and smartphone validation remain intentionally deferred."
+  ]
+}

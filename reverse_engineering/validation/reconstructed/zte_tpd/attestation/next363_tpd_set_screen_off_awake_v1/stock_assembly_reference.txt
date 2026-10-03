@@ -1,0 +1,19 @@
+Ghidra-derived stock assembly reference: 0362_tpd_set_screen_off_awake_0012ca1c.asm
+
+ldr x8, [x0, #0xdb8]
+ldr w9, [x8, #0x57c]
+str w1, [x8, #0x5f4]
+cmp w9, #1
+b.ne inactive
+str w1, [x8, #0x5f0]
+str w1, [is_screen_off_awake_mode]
+mov w0, wzr
+ret
+inactive:
+printk("tpd_set_screen_off_awake")
+mov w0, wzr
+ret
+
+The original stock ELF bytes are unavailable. This text records the
+Ghidra-derived control/data-flow used for structural comparison and does not
+claim byte identity.

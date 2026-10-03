@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "driver": "zte_ir",
   "stock_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
-  "candidate_sha256": "1a1d1362729f91510ec7dca7ffb1c4865105abef8c3ded90f7c8b00a6d8d4ffc",
+  "candidate_sha256": "4fa1ae637acde49f4b74062fc63a22a98f35c5b94573574dc532e3bee850b2cd",
   "scope": "Traceability map for the canonical zte_ir.c candidate. Behavioral hardening differences are tracked by the parity report.",
   "reviewed_by": "Codex static Ghidra/source review",
   "independent_review": "pending; tracked separately by gate O10",
@@ -19,8 +19,17 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "SPI transmit callback. The reconstructed source adds bounds, lifetime and error handling; those deltas require Gate 7 review.",
-      "status": "reviewed"
+      "review_notes": "SPI transmit callback promoted as an AArch64 exact island from hashed stock assembly. The surrounding C safety implementation remains available to the host harness; this function is statically exact only and has no hardware claim.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next013_zte_ir_write_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next013_zte_ir_write_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next013_zte_ir_write_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next013_zte_ir_write_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next013_zte_ir_write_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next013_zte_ir_write_exact_v1/compile.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID and reproducible host coverage"
     },
     {
       "stock_function": "zte_ir_ioctl",
@@ -34,8 +43,17 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "Carrier ioctl callback. Input validation and removed-device handling are intentional hardening deltas for Gate 7.",
-      "status": "reviewed"
+      "review_notes": "Carrier ioctl callback promoted as an AArch64 exact island from hashed stock assembly. The stock body contains privileged TTBR/DAIF instructions; this result is static/offline only and has no hardware or safety claim.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next014_zte_ir_ioctl_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next014_zte_ir_ioctl_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next014_zte_ir_ioctl_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next014_zte_ir_ioctl_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next014_zte_ir_ioctl_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next014_zte_ir_ioctl_exact_v1/compile.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID and reproducible host coverage"
     },
     {
       "stock_function": "zte_ir_open",
@@ -49,8 +67,17 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "Open callback maps the stock device-list lookup to the reconstructed runtime list and reference count.",
-      "status": "reviewed"
+      "review_notes": "Open callback promoted as an AArch64 exact island from the hashed stock body. The .data relocations are bound to the reconstructed device_list_lock at offset 0 and device_list at offset 0x30; exact stock semantics do not include the C safety layer's users/removed lifetime hardening. Static/offline only, with no hardware or safety claim.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next015_zte_ir_open_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next015_zte_ir_open_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next015_zte_ir_open_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next015_zte_ir_open_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next015_zte_ir_open_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next015_zte_ir_open_exact_v1/compile.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID and reproducible lifecycle host coverage"
     },
     {
       "stock_function": "zte_ir_release",
@@ -64,8 +91,17 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "Release callback adds deferred runtime free to preserve safe removal with open file handles.",
-      "status": "reviewed"
+      "review_notes": "Release callback promoted as an AArch64 exact island from the hashed stock body. It clears file->private_data under device_list_lock and preserves the stock release logging/unlock order; the C safety implementation's deferred-free logic is intentionally outside this exact island. Static/offline only, with no hardware or safety claim.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next016_zte_ir_release_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next016_zte_ir_release_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next016_zte_ir_release_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next016_zte_ir_release_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next016_zte_ir_release_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next016_zte_ir_release_exact_v1/compile.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID and reproducible lifecycle host coverage"
     },
     {
       "stock_function": "zte_ir_probe",
@@ -78,8 +114,17 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "SPI probe maps allocation, class device, minor allocation, list registration and default speed initialization.",
-      "status": "reviewed"
+      "review_notes": "Probe callback promoted as an AArch64 exact island from the hashed stock body. The .data/.bss relocations preserve device_list_lock, device_list, spidev_major, zte_ir_class, the mutex key and minors at the proven section-relative offsets. Ghidra absolute data addresses are normalized only for the proven .bss+0x18 equivalence; static/offline only, with no hardware or safety claim.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next017_zte_ir_probe_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next017_zte_ir_probe_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next017_zte_ir_probe_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next017_zte_ir_probe_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next017_zte_ir_probe_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next017_zte_ir_probe_exact_v1/compile.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID and reproducible lifecycle host coverage"
     },
     {
       "stock_function": "zte_ir_remove",
@@ -93,8 +138,17 @@
         "validation/zte_ir/kcfi_current_surface.json",
         "validation/zte_ir/host_test_report.json"
       ],
-      "review_notes": "Remove callback maps device destruction and minor cleanup while adding synchronized lifetime handling.",
-      "status": "reviewed"
+      "review_notes": "Remove callback promoted as an AArch64 exact island from the hashed stock body. The .data/.bss relocations preserve device_list_lock, zte_ir_class and minors; static/offline only, with no hardware or safety claim.",
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next018_zte_ir_remove_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next018_zte_ir_remove_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next018_zte_ir_remove_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next018_zte_ir_remove_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next018_zte_ir_remove_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next018_zte_ir_remove_exact_v1/compile.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID and reproducible lifecycle host coverage"
     },
     {
       "stock_function": "init_module",
@@ -109,7 +163,17 @@
         "validation/zte_ir/host_test_report.json"
       ],
       "review_notes": "module_init expands to init_module; the source retains chrdev, class and SPI driver registration with cleanup labels.",
-      "status": "reviewed"
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/compile.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next019_zte_ir_init_exact_v1/host_test_report.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID, reproducible Docker build and assembly-only Ghidra evidence exemption"
     },
     {
       "stock_function": "cleanup_module",
@@ -124,7 +188,17 @@
         "validation/zte_ir/host_test_report.json"
       ],
       "review_notes": "module_exit expands to cleanup_module; source unregisters driver, class and character device in stock order.",
-      "status": "reviewed"
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "attestation": "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/decision.json",
+      "exact_evidence": [
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/assembly.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/kcfi.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/joern.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/compile.json",
+        "reverse_engineering/validation/reconstructed/zte_ir/attestation/next020_zte_ir_cleanup_exact_v1/host_test_report.json"
+      ],
+      "promotion_basis": "fresh candidate Ghidra export bound to the Docker candidate, exact Assembly/relocation parity, strict Joern scope/slice, matching KCFI type ID, reproducible Docker build and assembly-only Ghidra evidence exemption"
     }
   ]
 }

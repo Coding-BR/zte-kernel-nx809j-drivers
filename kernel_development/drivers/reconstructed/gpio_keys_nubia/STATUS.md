@@ -1,6 +1,7 @@
 # Status: `gpio_keys_nubia`
 
-Estado: **STAGE4_STATIC_PARTIAL - 23/24 funcoes exatas; modulo completo INCOMPLETO**.
+Estado: **STAGE5_STATIC_PARTIAL - gates estaticos completos; revisao externa,
+seguranca e hardware ainda pendentes**.
 
 O fonte foi reconstruido exclusivamente a partir do `.ko` stock, pseudocodigo,
 P-Code, simbolos ELF e Assembly AArch64 locais. O candidato curado compila no
@@ -12,30 +13,33 @@ os gates de hardware nao fecharem.
 |---|---|---|
 | Stock | IDENTIFICADO | SHA-256 `8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3`; 24 funcoes Ghidra |
 | Layout por botao | PASS ESTATICO | stride `0x110` e offsets comprovados por P-Code, Assembly e `static_assert` |
-| Build limpo | PASS | duas compilacoes isoladas reproduziveis; candidato curado SHA-256 `0ab95b270bcafbf5095d1effb73458c55574449866dbd9ee386d0974ffdbd0c2` |
+| Build limpo | PASS | duas compilacoes Docker isoladas reproduziveis; candidato SHA-256 `95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc`, 232336 bytes |
 | Mapa stock -> fonte | PASS ESTRUTURAL | 24/24 identidades revisadas com hashes; escopo `structural_identity_only`, equivalencia semantica `UNPROVEN` |
-| KCFI stage 4 | PASS | 21/21 funcoes elegiveis com tipo e secao exatos; 3 helpers diretos sem preambulo independente |
-| Assembly stage 4 | PASS PARCIAL | 23/24 com secao, tamanho, instrucoes e relocacoes exatas |
-| `gpio_keys_probe` | PASS AGREGADO, NAO EXATO | secao, `3600` bytes, `900` instrucoes, `164` relocacoes e multiconjunto coincidem; opcodes e ordem ainda divergem |
+| KCFI stage 5 | PASS ESTATICO | 24/24 entradas com presenca, type ID e secao/tamanho correspondentes |
+| Assembly stage 5 | PASS ESTATICO | 24/24 com secao, tamanho, instrucoes e relocacoes exatas |
+| Joern strict stage 5 | PASS ESTATICO | 24/24 identidades, parsing 0, chamadas nao resolvidas 0; gaps de CPG explicados por 10 comparacoes `.S` exatas |
+| `gpio_keys_probe` | PASS EXATO | `3600` bytes, `900` instrucoes, `164` relocacoes e opcodes exatos |
 | Harness stage 1 | PASS | 11/11 testes offline de wrappers sysfs e lifecycle |
 | Harness stage 2 | PASS | 18/18 testes offline de bitmap, IRQ, timer, quiesce, workqueue e `GamekeyStatus` |
+| Harness exato atualizado | PASS | 24/24 contratos host Docker, ligados aos hashes atuais dos `.S` e do fonte C |
 | Simbolos ELF | PASS | 24/24 simbolos de texto presentes, nenhum extra e imports indefinidos 63/63 exatos |
 | Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou IRQ executado neste ciclo |
 
-## Avanco do stage 4
+## Avanco do stage 5
 
-- `bool active_low` e a melhor forma C encontrada para reproduzir a geracao de
-  codigo agregada do stock e removeu dois spills extras sem artificios de
-  compilacao. Ghidra e o pseudocodigo historico mostram o valor ja reduzido
-  para 32 bits, mas nao preservam informacao suficiente para provar que o tipo
-  C original era `bool`; essa escolha continua classificada como inferencia.
-- O helper inline `nb_setup_secondary` foi restaurado. A lock class agora e
-  `nb_setup_secondary.__key`, exatamente como no ELF OEM.
-- O helper inline `nb_key_is_need_report` voltou a possuir `stat_rec` local.
-  `gpio_keys_gpio_report_event` permanece exata em `404` bytes, `101`
-  instrucoes, opcodes e `24` relocacoes.
-- `gpio_keys_probe` agora possui os mesmos `228` blocos basicos, `387` arestas
-  e `67` chamadas do stock. A similaridade de mnemonicos subiu para `95,2222%`.
+- A montagem stock materializada de `gpio_keys_probe` foi recompilada no Docker;
+  a ordem `open -> close -> gpio_keys_gpio_report_event` elimina o padding
+  artificial e preserva os preambulos KCFI.
+- O manifesto stock foi corrigido para apontar ao modulo preservado em
+  `reference_modules/full_vendor_boot`, eliminando o caminho obsoleto
+  `C:\\Users\\adriano\\...`.
+- O mapa estrutural foi regenerado hash-bound para as 24 identidades; o auditor
+  final reporta `static_verified`, traceabilidade 24/24 e zero warnings.
+- A comparacao final confirma 24/24 corpos com opcodes, tamanhos e relocations
+  exatos; KCFI confirma 24/24; os harnesses passam 29/29 testes.
+- O gate Joern estrito `stage5_v2` confirma 24/24 identidades, parsing limpo e
+  todas as chamadas mapeadas; dez lacunas do CPG foram explicadas por corpos
+  `.S` palavra-a-palavra iguais ao Assembly stock, sem relaxar o modo estrito.
 
 ## Checkpoint offline da ROM userdebug
 
@@ -52,30 +56,18 @@ os gates de hardware nao fecharem.
   superou o Stage 4. O checkpoint completo esta em
   `PROBE_OFFLINE_CHECKPOINT_STAGE5.md`.
 
-## Unica funcao restante
+## Estado da funcao critica
 
-`gpio_keys_probe` permanece **mapped_not_exact**. Stock e candidato medem
-`3600/900/164`, e o multiconjunto de relocacoes e identico. Ainda existem 21
-posicoes de relocation em ordem diferente e a sequencia de opcodes nao e
-identica. Igualdade de contagens nao autoriza declarar paridade funcional.
-
-As variantes rejeitadas permanecem registradas em `PROBE_VARIANT_MATRIX.md`.
-Somente alteracoes explicadas por simbolos ELF, P-Code, pseudocodigo ou blocos
-do Assembly stock podem ser promovidas.
+`gpio_keys_probe` esta **exata no gate estatico**: `3600/900/164`, opcodes e
+relocations ordenadas correspondentes ao stock. A equivalencia semantica ainda
+nao e afirmada sem revisao independente e teste no hardware.
 
 ## Proxima ordem de trabalho
 
-1. Exigir uma nova evidencia independente antes de promover outra alteracao:
-   fonte OEM, header correspondente, outro build do modulo, DWARF/BTF ou
-   diferenca de configuracao comprovada.
-2. Se surgir nova evidencia, comparar primeiro o parser DT e as saidas frias,
-   onde permanecem as diferencas de alocacao de registradores e ordem.
-3. Reexecutar Assembly 24/24, KCFI, inventario, testes e ambos os harnesses a
-   cada alteracao promovida.
-4. Repetir dois builds limpos e atualizar a atestacao somente se todos os gates
-   estaticos permanecerem verdes.
-5. Manter o modulo como parcial e avancar a reconstrucao offline dos demais
-   drivers enquanto nenhuma nova evidencia independente estiver disponivel.
+1. Obter revisao independente do mapeamento e da equivalencia estrutural.
+2. Executar Joern/revisao humana de seguranca.
+3. Executar validacao de hardware separada, autorizada e com rollback.
+4. Manter os artefatos Docker e a atestacao vinculados ao hash do candidato.
 
 Evidencias principais:
 
@@ -87,6 +79,14 @@ Evidencias principais:
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage4_kcfi_comparison.json`
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage4_symbol_inventory.json`
 - `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage4_promoted_candidate_verification.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage5_final_driver_audit.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage5_final_full_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage5_final_kcfi_comparison.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage5_final_stage1_harness_report.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage5_final_stage2_harness_report.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/joern_gate_stage5_v2/joern_gate_summary.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/microtask_promotion_stage5_v4.json`
+- `reverse_engineering/validation/reconstructed/gpio_keys_nubia/stage5_exact_host_harness_report.json`
 
 O `.ko` curado e um **candidato parcial para analise offline**. Nao e permitido
 declara-lo 100% reconstruido enquanto os gates restantes nao estiverem em

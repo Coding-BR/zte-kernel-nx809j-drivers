@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "target": "cleanup_module",
+  "mode": "offline_aarch64_assembly_comparison",
+  "instruction_count": {
+    "stock": 11,
+    "candidate": 11,
+    "match": true
+  },
+  "symbol_size": {
+    "stock": 44,
+    "candidate": 44,
+    "match": true
+  },
+  "section": {
+    "stock": ".exit.text",
+    "candidate": ".exit.text",
+    "match": true
+  },
+  "unresolved_aliases": [
+    {
+      "role": "zte_touch_deinit call",
+      "stock": ".text+0x7848",
+      "candidate": "zte_touch_deinit",
+      "ghidra_mapping": "stock function 0010e0d0_zte_touch_deinit"
+    },
+    {
+      "role": "platform driver object",
+      "stock": ".data+0x150",
+      "candidate": "zte_touch_device_driver",
+      "ghidra_mapping": "decompiled cleanup_module references zte_touch_device_driver"
+    }
+  ],
+  "decision": "BLOCKED_BY_STOCK_SYMBOL_ALIAS_PARITY",
+  "promotion_allowed": false,
+  "comparison": "assembly_comparison.json",
+  "limitations": [
+    "The offline stock export does not retain the symbol names for the two referenced objects/call target.",
+    "No smartphone, module unload or physical hardware was used."
+  ]
+}

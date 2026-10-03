@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_ir",
+  "function": "zte_ir_remove",
+  "stock_entry": "00100b50",
+  "stock_module_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_module_sha256": "4fa1ae637acde49f4b74062fc63a22a98f35c5b94573574dc532e3bee850b2cd",
+  "body": {
+    "instructions": 69,
+    "bytes": 276,
+    "kcfi_type_id": "0x509a2353",
+    "stock_assembly_sha256": "b0c68dd73433679c6eff290c262b03354a3cc8a848b0ebd65c865371572a5517",
+    "candidate_assembly_sha256": "099d063b01317018034aa2fd818e5f0323e532f875e5b856a87d96a559c5be33"
+  },
+  "data_layout": {
+    "device_list_lock": ".data+0x0",
+    "zte_ir_class": ".bss+0x8",
+    "minors": ".bss+0x18",
+    "evidence": "assembly/comparison.json, candidate Ghidra symbols and section-address normalization proof"
+  },
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "host_harness": {"passed": true, "reproducible": true, "report": "host_test_report.json"},
+  "limitations": [
+    "The result is static/offline and has no hardware claim.",
+    "The exact island preserves stock spinlock, list removal, device destruction, minor release, free and mutex-unlock ordering; the C safety implementation remains outside this island.",
+    "Ghidra absolute data addresses are normalized only when both exports prove the same section-relative offset; Assembly and P-Code remain independent gates.",
+    "Independent review O10 and controlled NX809J runtime validation remain pending."
+  ],
+  "evidence": {
+    "hard_protocol": "hard_protocol_report.json",
+    "assembly": "assembly/comparison.json",
+    "kcfi": "kcfi/comparison.json",
+    "ghidra": "semantic_comparison.json",
+    "joern": "joern/joern_gate_report.json",
+    "docker": "docker_reproducibility.json",
+    "audit": "docker/driver_audit.json"
+  }
+}

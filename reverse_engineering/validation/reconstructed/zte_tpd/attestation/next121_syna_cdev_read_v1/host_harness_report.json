@@ -1,0 +1,159 @@
+{
+  "build_root": "F:\\drivers\\harness-runs\\zte_tpd\\20260731_next121_syna_cdev_read_v3\\build",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "syna_cdev_read"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "8f0540d89eb4f69dcbbd87ffc7341d7bbe2458068879fd0d7e18577cc17ad9f0",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\harness-runs\\zte_tpd\\20260731_next121_syna_cdev_read_v3\\build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-Wno-int-conversion",
+          "-Wno-compare-distinct-pointer-types",
+          "-Wno-unused-but-set-variable",
+          "-Wno-sign-compare",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next121-syna-cdev-read",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_cdev_read_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\harness-runs\\zte_tpd\\20260731_next121_syna_cdev_read_v3\\build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_cdev_read host tests (4 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "8f0540d89eb4f69dcbbd87ffc7341d7bbe2458068879fd0d7e18577cc17ad9f0",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\harness-runs\\zte_tpd\\20260731_next121_syna_cdev_read_v3\\build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-Wno-int-conversion",
+          "-Wno-compare-distinct-pointer-types",
+          "-Wno-unused-but-set-variable",
+          "-Wno-sign-compare",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next121-syna-cdev-read",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_cdev_read_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\harness-runs\\zte_tpd\\20260731_next121_syna_cdev_read_v3\\build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_cdev_read host tests (4 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 4,
+  "generated_utc": "2026-07-31T21:17:49.204257+00:00",
+  "inputs": [
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_cdev_read_host_test.c",
+      "sha256": "d0628183f884ad102812900732e897a684565898cec9e42efd055955c2fc30dd",
+      "size": 6277
+    },
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_cdev_read.c",
+      "sha256": "73a7e0b67baeb2e511d6d570657de0727819bcc9b303930a97a8d12ca515f878",
+      "size": 675
+    }
+  ],
+  "limitations": [
+    "The harness validates direct-source cdev read control flow and ABI-visible arguments only.",
+    "It does not load the module or emulate a physical Synaptics TCM device.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build remain separate gates.",
+    "Only decompiler-origin pointer and unused-register diagnostics are suppressed; ASan and UBSan remain enabled."
+  ],
+  "mode": "offline_direct_source_syna_cdev_read_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "syna_cdev_read",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

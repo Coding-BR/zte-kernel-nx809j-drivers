@@ -1,0 +1,116 @@
+{
+  "aarch64": {
+    "compile_command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target365\\harness:/work/output",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+      "nubia-sm8850-kernel-builder:latest",
+      "sh",
+      "-lc",
+      "/toolchains/clang-r536225/bin/clang -target aarch64-linux-gnu -std=gnu11 -O2 -ffreestanding -fno-builtin -Wall -Wextra -Werror -c /work/workspace/kernel_development/drivers/validation/zte_tpd/host/zte_touch_init_aarch64_assembly_input.c -o /work/output/aarch64/zte_touch_init.o"
+    ],
+    "compile_returncode": 0,
+    "compile_stderr": "",
+    "compile_stdout": "",
+    "objdump_command": [
+      "docker",
+      "run",
+      "--rm",
+      "--entrypoint",
+      "/toolchains/clang-r536225/bin/llvm-objdump",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target365\\harness:/work/output:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+      "nubia-sm8850-kernel-builder:latest",
+      "-dr",
+      "/work/output/aarch64/zte_touch_init.o"
+    ],
+    "objdump_returncode": 0,
+    "objdump_stderr": "",
+    "objdump_stdout": "\n/work/output/aarch64/zte_touch_init.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .text:\n\n0000000000000000 <printk>:\n       0: d10303ff     \tsub\tsp, sp, #0xc0\n       4: 2a1f03e0     \tmov\tw0, wzr\n       8: a9088be1     \tstp\tx1, x2, [sp, #0x88]\n       c: a90993e3     \tstp\tx3, x4, [sp, #0x98]\n      10: a90a9be5     \tstp\tx5, x6, [sp, #0xa8]\n      14: f9005fe7     \tstr\tx7, [sp, #0xb8]\n      18: ad0007e0     \tstp\tq0, q1, [sp]\n      1c: ad010fe2     \tstp\tq2, q3, [sp, #0x20]\n      20: ad0217e4     \tstp\tq4, q5, [sp, #0x40]\n      24: ad031fe6     \tstp\tq6, q7, [sp, #0x60]\n      28: 910303ff     \tadd\tsp, sp, #0xc0\n      2c: d65f03c0     \tret\n\n0000000000000030 <_platform_driver_register>:\n      30: 2a1f03e0     \tmov\tw0, wzr\n      34: d65f03c0     \tret\n\n0000000000000038 <zte_touch_init>:\n      38: 2a1f03e0     \tmov\tw0, wzr\n      3c: d65f03c0     \tret\n",
+    "object": {
+      "exists": true,
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target365\\harness\\aarch64\\zte_touch_init.o",
+      "sha256": "66d6a2bb401b2e1082ad731f63999b4a7ad7e89a35b947a678b9f276d5df335c"
+    },
+    "passed": true
+  },
+  "coverage": {
+    "hardware_paths_exercised": false,
+    "module_owner_argument": true,
+    "platform_driver_argument": true,
+    "printk_format_and_label": true,
+    "registration_return_propagation": true
+  },
+  "driver": "zte_tpd",
+  "function": "zte_touch_init",
+  "generated_utc": "2026-08-13T04:12:10.680724+00:00",
+  "host": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target365\\harness:/work/output",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+      "nubia-sm8850-kernel-builder:latest",
+      "sh",
+      "-lc",
+      "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -fsanitize=address,undefined -Wl,--build-id=none /work/workspace/kernel_development/drivers/validation/zte_tpd/host/zte_touch_init_host_test.c -o /work/output/zte_touch_init_host_test && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 /work/output/zte_touch_init_host_test"
+    ],
+    "executions": [
+      {
+        "cycle": 1,
+        "passed": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS zte_touch_init host tests (1 case)\n"
+      },
+      {
+        "cycle": 2,
+        "passed": true,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS zte_touch_init host tests (1 case)\n"
+      }
+    ],
+    "passed": true,
+    "repetitions": 2
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_touch_init.c",
+      "sha256": "9896ca02fce43b05a9a24531e27c14bcdad047e8c8d6e46edcdccdb14961e372",
+      "size": 228
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\zte_touch_init_host_test.c",
+      "sha256": "04e84b2a3a0d47b8a58da2e6e2022e8382096564a9e3348b3f4e97fc66882ed0",
+      "size": 1987
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\zte_touch_init_aarch64_assembly_input.c",
+      "sha256": "9ac836e5bc48d3d388ab853df6eb6d58ee78f5e8338d4230381e28e06146a8c0",
+      "size": 565
+    }
+  ],
+  "limitations": [
+    "The host gate uses deterministic stubs for printk and platform registration.",
+    "The AArch64 gate verifies compilation and relocations only; it does not execute ARM64 code.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or hardware is exercised."
+  ],
+  "mode": "offline_zte_touch_init_contract_and_aarch64_asan_ubsan",
+  "passed": true,
+  "schema_version": "1.0",
+  "stock_function": "init_module"
+}

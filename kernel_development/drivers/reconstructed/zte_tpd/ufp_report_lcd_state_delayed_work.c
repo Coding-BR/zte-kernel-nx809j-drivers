@@ -1,11 +1,12 @@
-void ufp_report_lcd_state_delayed_work(unsigned int a1)
+void ufp_report_lcd_state_delayed_work(unsigned int delay_ms)
 {
-  __int64 v0; // x20
-  __int64 v1; // x19
-  __int64 v2; // x0
+  long long cdev;
+  struct workqueue_struct *workqueue;
+  unsigned long delay;
 
-  v0 = tpd_cdev;
-  v1 = *(_QWORD *)(tpd_cdev + 1200);
-  v2 = msecs_to_jiffies(a1);
-  mod_delayed_work_on(32, v1, v0 + 2528, v2);
+  cdev = tpd_cdev;
+  workqueue = *(struct workqueue_struct **)(cdev + 0x4b0);
+  delay = msecs_to_jiffies(delay_ms);
+  mod_delayed_work_on(32, workqueue,
+                      (struct delayed_work *)(cdev + 0x9e0), delay);
 }

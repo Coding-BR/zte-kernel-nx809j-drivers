@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS",
+    "DISPATCHER_PARSER",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "syna_cdev_process_reports",
+      "stock_entry": "00117c90",
+      "source_function": "syna_cdev_process_reports",
+      "assembly_only": true,
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "syna_spi_alloc_mem",
+      "stock_entry": "0011a0e4",
+      "source_function": "syna_spi_alloc_mem",
+      "assembly_only": true,
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "syna_testing_check_dev_id_show",
+      "stock_entry": "0011bf08",
+      "source_function": "syna_testing_check_dev_id_show",
+      "assembly_only": true,
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "syna_tcm_testing_check_frame_data",
+      "stock_entry": "0011d0ec",
+      "source_function": "syna_tcm_testing_check_frame_data",
+      "stock_symbol_offset": "0x16864",
+      "assembly_only": true,
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "syna_tcm_buf_alloc",
+      "stock_entry": "0011d594",
+      "source_function": "syna_tcm_buf_alloc",
+      "stock_symbol_offset": "0x16d0c",
+      "assembly_only": true,
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/residual_S_protocol_20260904/ghidra_stock_force",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/residual_S_protocol_20260904/ghidra_candidate_force",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "per_function": false,
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  },
+  "ghidra": {
+    "allow_exact_assembly_island_decompiler_fallback": true,
+    "fallback_reason": "These five functions are reconstructed as exact assembly islands. Fresh Ghidra body bounds and P-Code shape are required, but Ghidra normalized C CFG is non-authoritative; relocation-aware ELF assembly remains an independent mandatory gate."
+  },
+  "evidence": {
+    "direct_test_required": true,
+    "assembly_bound_required": true,
+    "hardware_runtime": "deferred"
+  }
+}

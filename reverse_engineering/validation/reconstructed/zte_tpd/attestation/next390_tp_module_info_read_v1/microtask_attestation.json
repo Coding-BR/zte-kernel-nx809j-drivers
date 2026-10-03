@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_module_info_read",
+  "attestation_id": "next390_tp_module_info_read_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_SCHEDULE_AND_USERSPACE_EGRESS_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS_WITH_REVIEW_FINDINGS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "FAIL_REGISTER_SCHEDULE_AND_TERMINAL_BLOCK_LAYOUT_ONLY",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_LAYOUT_ONLY",
+    "aarch64_control_flow_and_dataflow_normalized": "PASS",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero without formatting when *ppos is nonzero",
+    "clear the 200-byte local output buffer and invoke the optional callback at cdev + 0xe20 with the KCFI type preserved",
+    "format TP module, IC type, I2C address, SPI number, firmware, config, display, chip-hard and firmware-update fields using the stock offsets and conditional guards",
+    "reject lengths greater than 200 through the stock non-returning brk #0x5512 path",
+    "copy the generated output through simple_read_from_buffer and preserve the stack-canary check"
+  ],
+  "evidence": {
+    "stock_body_bytes": 672,
+    "candidate_body_bytes": 672,
+    "stock_instruction_count": 168,
+    "candidate_instruction_count": 168,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "candidate_module_sha256": "3ba6661e500cdd7c47dbdcb8e87ad7eebcaa7d075f6aaea2b3c0f8fb9eea2932",
+    "candidate_function_assembly_sha256": "173b1f905f319f9d320639c2a4a59b7c8d2d5f23e8365661fb28af1bbe06b199",
+    "stock_function_assembly_sha256": "8bb318bddaba5fcfdc7a849ff859e6fe69f10afcd4d4c69fa9ef86d1349931fb",
+    "host_cases": 2,
+    "host_repetitions": 2,
+    "host_binary_sha256": "68e2c3168c9b4767fe161edacec7452b263ef2bed1ae6f3152f522eb85e801b7",
+    "joern_unresolved_calls": 0,
+    "joern_userspace_egress_high_findings": 1,
+    "normalized_instruction_differences": [
+      "callback pointer load is scheduled after local-buffer zeroing in the candidate",
+      "the overflow brk block and stack-check failure call are emitted in opposite physical order while preserving their branch destinations and effects",
+      "module-local branch and rodata relocation addresses differ"
+    ]
+  },
+  "follow_up_required": [
+    "Review the Joern userspace_egress finding for simple_read_from_buffer against the target 6.12 ABI before hardware promotion.",
+    "Keep register scheduling and terminal-block layout differences separate from semantic parity; require a dedicated compiler-layout investigation if byte-level parity becomes mandatory.",
+    "Run controlled procfs/userspace read and NX809J runtime validation only after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual userspace copy and fault behavior in the target kernel",
+    "callback lifetime and KCFI trap behavior under concurrent teardown",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, matching 168-instruction/672-byte body size and normalized control/data flow, matching KCFI type and size, strict Joern graph gate with one explicit userspace-egress finding, reproducible Docker build, and two-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

@@ -168,15 +168,28 @@ class Elf64:
                     size=size,
                 )
 
-    def function(self, name: str) -> Symbol:
+    def symbol_offset(self, symbol: Symbol) -> int:
+        section = self.sections[symbol.section_index]
+        return symbol.value if self.elf_type == ET_REL else symbol.value - section.address
+
+    def function(self, name: str, symbol_offset: int | None = None) -> Symbol:
         matches = self._defined_functions_by_name.get(name, [])
+        if symbol_offset is not None:
+            matches = [
+                symbol for symbol in matches
+                if self.symbol_offset(symbol) == symbol_offset
+            ]
         if len(matches) != 1:
-            raise ValueError(f"expected one defined function named {name!r}, got {len(matches)}")
+            detail = (
+                f" named {name!r} at offset 0x{symbol_offset:x}"
+                if symbol_offset is not None else f" named {name!r}"
+            )
+            raise ValueError(f"expected one defined function{detail}, got {len(matches)}")
         return matches[0]
 
-    def kcfi_record(self, symbol: Symbol) -> dict[str, object]:
+    def kcfi_record(self, symbol: Symbol, record_name: str | None = None) -> dict[str, object]:
         section = self.sections[symbol.section_index]
-        symbol_offset = symbol.value if self.elf_type == ET_REL else symbol.value - section.address
+        symbol_offset = self.symbol_offset(symbol)
         preamble_offset = symbol_offset - 4
         if preamble_offset < 0 or symbol_offset > section.size:
             raise ValueError(f"function {symbol.name} has no in-section 4-byte preamble")
@@ -184,7 +197,8 @@ class Elf64:
         if len(preamble) != 4:
             raise ValueError(f"function {symbol.name} has a truncated KCFI preamble")
         return {
-            "function": symbol.name,
+            "function": record_name or symbol.name,
+            "symbol_name": symbol.name,
             "section": section.name,
             "symbol_offset": f"0x{symbol_offset:x}",
             "symbol_size": symbol.size,
@@ -230,26 +244,64 @@ def parse_args() -> argparse.Namespace:
         dest="functions",
         help="function to inspect; repeat for multiple names (default: all functions)",
     )
+    parser.add_argument(
+        "--record",
+        action="append",
+        default=[],
+        metavar="ALIAS=FUNCTION[@OFFSET]",
+        help=(
+            "emit FUNCTION under ALIAS; OFFSET selects one duplicate symbol by "
+            "its section-relative offset, for example stock_free=syna_pal_mem_free@0x23c64"
+        ),
+    )
     parser.add_argument("-o", "--output", type=Path, help="JSON output path")
     return parser.parse_args()
 
 
+def parse_record_selector(value: str) -> tuple[str, str, int | None]:
+    alias, separator, selector = value.partition("=")
+    if not separator or not alias or not selector:
+        raise ValueError("--record must be ALIAS=FUNCTION[@OFFSET]")
+    function, marker, offset_text = selector.rpartition("@")
+    if marker:
+        if not function or not offset_text:
+            raise ValueError("--record has an invalid function offset selector")
+        try:
+            return alias, function, int(offset_text, 0)
+        except ValueError as error:
+            raise ValueError("--record offset must be an integer literal") from error
+    return alias, selector, None
+
+
 def main() -> int:
     args = parse_args()
+    if args.functions and args.record:
+        raise ValueError("use either --function or --record, not both")
     elf = Elf64(args.elf)
-    if args.functions:
-        symbols = [elf.function(name) for name in args.functions]
+    if args.record:
+        selected = []
+        aliases = set()
+        for raw_selector in args.record:
+            alias, name, symbol_offset = parse_record_selector(raw_selector)
+            if alias in aliases:
+                raise ValueError(f"duplicate --record alias: {alias}")
+            aliases.add(alias)
+            selected.append((alias, elf.function(name, symbol_offset)))
+    elif args.functions:
+        selected = [(name, elf.function(name)) for name in args.functions]
     else:
-        symbols = sorted(
-            (
+        selected = [
+            (symbol.name, symbol) for symbol in sorted(
+                (
                 symbol
                 for symbol in elf.symbols
                 if symbol.symbol_type == STT_FUNC
                 and symbol.section_index != SHN_UNDEF
                 and symbol.section_index < SHN_LORESERVE
-            ),
-            key=lambda symbol: (symbol.section_index, symbol.value, symbol.name),
-        )
+                ),
+                key=lambda symbol: (symbol.section_index, symbol.value, symbol.name),
+            )
+        ]
 
     all_function_symbols = [
         symbol
@@ -260,15 +312,24 @@ def main() -> int:
     ]
     records = []
     excluded = []
-    for symbol in symbols:
+    for record_name, symbol in selected:
         reason = elf.kcfi_exclusion_reason(symbol, all_function_symbols)
         if reason:
-            excluded.append({"function": symbol.name, "reason": reason})
+            section = elf.sections[symbol.section_index]
+            excluded.append({
+                "function": record_name,
+                "symbol_name": symbol.name,
+                "section": section.name,
+                "symbol_offset": f"0x{elf.symbol_offset(symbol):x}",
+                "symbol_size": symbol.size,
+                "reason": reason,
+                "decision": "NO_VALID_KCFI_PREAMBLE",
+            })
         else:
-            records.append(elf.kcfi_record(symbol))
+            records.append(elf.kcfi_record(symbol, record_name))
 
     payload = {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "source": {
             "path": str(args.elf),

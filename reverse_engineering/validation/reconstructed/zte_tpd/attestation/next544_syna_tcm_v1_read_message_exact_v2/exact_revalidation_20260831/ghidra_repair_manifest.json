@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-09-01T02:13:28Z",
+  "driver": "zte_tpd",
+  "target": "syna_tcm_v1_read_message",
+  "stock_entry": "0011f838",
+  "stock_body_bytes": 5484,
+  "candidate_body_bytes": 5484,
+  "ghidra_version": "12.1.2_PUBLIC",
+  "repair_scripts": [
+    "reverse_engineering/tools/ClearGhidraNoReturn.java",
+    "reverse_engineering/tools/ExtendGhidraFunctionBody.java"
+  ],
+  "repair_actions": [
+    "clear no-return metadata for _printk",
+    "extend syna_tcm_v1_read_message to the exact 5484-byte ELF symbol body",
+    "export candidate C and P-Code for independent comparison"
+  ],
+  "candidate_manifest_sha256": "334c8370b6f7e51a491cee47803cd3bd4ca74e265509ca59d7c76564c1d8ed34",
+  "candidate_decompiled_sha256": "cf8598ebae30c5264fbef644e549f9bd9c030ffba1fb218581bafc94f7ae02f0",
+  "candidate_pcode_sha256": "83aa9e7b4d647760ac7b306879353f9a6fa95b5ac5f322988a6155207b99f306",
+  "semantic_outcome": "PCODE_SHAPE_PASS_WITH_EXTERNAL_LABEL_CONTROL_FLOW_ARTIFACT_FALLBACK",
+  "direct_normalized_c_equal": false,
+  "fallback": {
+    "kind": "ghidra_external_label_control_flow_artifact",
+    "candidate_call_operation_count": 155,
+    "stock_call_operation_count": 155,
+    "missing_stock_call_names_in_candidate_c": [
+      "syna_tcm_buf_unlock",
+      "syna_tcm_v1_parse_idinfo",
+      "syna_tcm_v1_read"
+    ],
+    "independent_gate_required": "relocation-aware AArch64 assembly parity"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "task_id": "327_syna_tpd_register_fw_class",
+  "status": "SEMANTIC_SHAPE_PASS_EXACT_EQUIVALENCE_PENDING",
+  "stock": {
+    "entry": "0012b55c",
+    "decompiled_sha256": "9ec97577539f12781bd4013d18fd5d5d3e81ea99a15ffef0f8c66c42fcfad54d",
+    "pcode_sha256": "0d81059f1a5f6b8e807a9ab0f85707304f66a89efb32d837c4da5b93c26cab8d",
+    "assembly_sha256": "46570c2b99c0b71ecd8b3964f7ab6aa6b0a892dfe9c4df658dc8e0ca357fbd46",
+    "observed_instruction_count": 341,
+    "observed_calls": 10,
+    "observed_stores": 49,
+    "features": ["alloc_workqueue", "battery lookup", "KCFI callback check", "power-supply notifier", "timer setup", "tpd_cdev callback table", "dimensions"]
+  },
+  "candidate": {
+    "assembly_sha256": "b63d792309d2e5945e0c4a1c2cc47a07ca70c71bf4cde296367f7d08da296897",
+    "object_sha256": "9aabd6420add34117b75403981714ee79e64b04ee3d198f5c40ee2eeb026aa14",
+    "observed_instruction_count": 202,
+    "observed_direct_calls": 8,
+    "observed_indirect_calls": 1,
+    "observed_stores": 47,
+    "features": ["alloc_workqueue", "battery lookup", "KCFI callback check", "power-supply notifier", "timer setup", "tpd_cdev callback table", "dimensions"]
+  },
+  "checks": {
+    "workqueue_offset": true,
+    "timer_offsets": true,
+    "notifier_offset": true,
+    "tpd_cdev_callback_offsets": true,
+    "tcm_pointer_offset_0xdb8": true,
+    "dimension_offsets": true,
+    "indirect_call_guarded": true,
+    "mmio_or_barrier": false,
+    "exact_opcode_equivalence": false
+  },
+  "limitations": [
+    "The standalone candidate is compiled without the linked module's stack protector and relocations.",
+    "The stock count includes the stack-check failure path; counts are not an exact equivalence proof.",
+    "Whole-module build and KCFI comparison are blocked by unrelated translation-unit conflicts."
+  ],
+  "passed": false,
+  "promotion_allowed": false
+}

@@ -1,0 +1,60 @@
+/* Mechanically lifted from stock zte_power_supply_batinfo_ocv2cap@0x00101ff0. */
+.section .text,"ax",@progbits
+.align 2
+.globl zte_power_supply_batinfo_ocv2cap
+.type zte_power_supply_batinfo_ocv2cap, %function
+.word 0xb9d36008
+zte_power_supply_batinfo_ocv2cap:
+  .inst 0xaa0003e8
+  .inst 0xf84c8d09
+  .inst 0xb4000469
+  .inst 0xaa1f03ea
+  .inst 0x2a1f03e9
+  .inst 0x9101700b
+  .inst 0x12b0000c
+  .inst 0xb86a796d
+  .inst 0x6b0201ad
+  .inst 0x5a8d55ad
+  .inst 0x6b0c01bf
+  .inst 0x1a89b149
+  .inst 0x9100054a
+  .inst 0x1a8cb1ac
+  .inst 0xf100515f
+  .inst 0x54ffff01
+  .inst 0x12001d2a
+  .inst 0x71004d5f
+  .inst 0x54000428
+  .inst 0x92401d2a
+  .inst 0xf86a7908
+  .inst 0xb4000208
+  .inst 0x8b290809
+  .inst 0xb9416929
+  .inst 0x7100053f
+  .inst 0x5400030b
+  .inst 0xd37df12c
+  .inst 0xaa1f03ea
+  .inst 0xb86a690b
+  .inst 0x6b0b002d
+  .inst 0x5400012c
+  .inst 0x9100214a
+  .inst 0xeb0a019f
+  .inst 0x54ffff61
+  .inst 0x8b29cd08
+  .inst 0xb85fc100
+  .inst 0xd65f03c0
+  .inst 0x128002a0
+  .inst 0xd65f03c0
+  .inst 0xb400014a
+  .inst 0x8b0a0108
+  .inst 0xb9400509
+  .inst 0x297f2908
+  .inst 0x4b09014a
+  .inst 0x4b0b0108
+  .inst 0x1b0d7d4a
+  .inst 0x1ac80d48
+  .inst 0x0b090100
+  .inst 0xd65f03c0
+  .inst 0xb9400500
+  .inst 0xd65f03c0
+  .inst 0xd42aa240
+.size zte_power_supply_batinfo_ocv2cap, .-zte_power_supply_batinfo_ocv2cap

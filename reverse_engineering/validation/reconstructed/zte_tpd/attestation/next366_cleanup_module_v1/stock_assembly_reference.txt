@@ -1,0 +1,12 @@
+Function: cleanup_module @ 0x001315e0
+Stock body: 44 bytes, .exit.text
+
+Observed AArch64/P-Code teardown order:
+1. syna_dev_module_exit()
+2. zte_touch_deinit()
+3. platform_driver_unregister(zte_touch_device_driver)
+4. return
+
+The Ghidra P-Code preserves the call order and the driver-unregister relocation.
+The original stock ELF bytes are unavailable; this is a structured reference,
+not proof of byte identity.

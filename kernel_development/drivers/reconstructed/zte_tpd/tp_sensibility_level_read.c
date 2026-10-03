@@ -11,7 +11,7 @@ ssize_t tp_sensibility_level_read(struct file *file, char __user *buffer, size_t
   void (__fastcall *v10)(_QWORD); // x8
   __int64 v11; // x0
   int v12; // w0
-  char s[32]; // [xsp+8h] [xbp-18h] BYREF
+  char s[16]; // [xsp+8h] [xbp-18h] BYREF
   __int16 v14; // [xsp+10h] [xbp-10h]
   __int64 v15; // [xsp+18h] [xbp-8h]
 
@@ -30,7 +30,7 @@ ssize_t tp_sensibility_level_read(struct file *file, char __user *buffer, size_t
       /* CFI check removed */
       v10(v11);
     }
-    printk(unk_3CFBE, "tp_sensibility_level_read", *(unsigned __int8 *)(v8 + 64));
+    printk("\x01\x35%s:ensibility level:val %d.\n", "tp_sensibility_level_read", *(unsigned __int8 *)(v8 + 64));
     v12 = snprintf(s, 0xAu, "%u\n", *(unsigned __int8 *)(v8 + 64));
     result = simple_read_from_buffer(a2, a3, a4, s, v12);
   }

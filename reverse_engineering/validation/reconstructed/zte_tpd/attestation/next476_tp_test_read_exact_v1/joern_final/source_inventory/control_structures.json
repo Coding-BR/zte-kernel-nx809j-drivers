@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"tp_test_read","type":"IF","code":"if (*offset == 0) {\n\t\tconst unsigned char fw_ready = tpd_cdev[0xc00];\n\n\t\tif (fw_ready == 0xffU) {\n\t\t\tprintk(\"tpd: TP probe success,chip_id = 0x%02x\",\n\t\t\t       tpd_cdev[0x446]);\n\t\t\tif ((tpd_cdev[0x1d] & 1U) != 0U) {\n\t\t\t\tprintk(\"tpd: cdev->fw_ready is true\");\n\t\t\t\tstate = 0;\n\t\t\t} else {\n\t\t\t\tprintk(\"tpd: err:cdev->fw_ready is false\");\n\t\t\t\tstate = 2;\n\t\t\t}\n\t\t} else {\n\t\t\tprintk(\"tpd: TP probe failed,chip_id = 0x%02x\",\n\t\t\t       tpd_cdev[0x446]);\n\t\t\tstate = 1;\n\t\t}\n\t\tlength = snprintf(state_text, 10, \"%d\\n\", state);\n\t\treturn simple_read_from_buffer(buffer, count, offset, state_text,\n\t\t\t\t\t      (size_t)length);\n\t}","filename":"tp_test_read.c","line":23},
+    {"method":"tp_test_read","type":"IF","code":"if (fw_ready == 0xffU) {\n\t\t\tprintk(\"tpd: TP probe success,chip_id = 0x%02x\",\n\t\t\t       tpd_cdev[0x446]);\n\t\t\tif ((tpd_cdev[0x1d] & 1U) != 0U) {\n\t\t\t\tprintk(\"tpd: cdev->fw_ready is true\");\n\t\t\t\tstate = 0;\n\t\t\t} else {\n\t\t\t\tprintk(\"tpd: err:cdev->fw_ready is false\");\n\t\t\t\tstate = 2;\n\t\t\t}\n\t\t} else {\n\t\t\tprintk(\"tpd: TP probe failed,chip_id = 0x%02x\",\n\t\t\t       tpd_cdev[0x446]);\n\t\t\tstate = 1;\n\t\t}","filename":"tp_test_read.c","line":26},
+    {"method":"tp_test_read","type":"IF","code":"if ((tpd_cdev[0x1d] & 1U) != 0U) {\n\t\t\t\tprintk(\"tpd: cdev->fw_ready is true\");\n\t\t\t\tstate = 0;\n\t\t\t} else {\n\t\t\t\tprintk(\"tpd: err:cdev->fw_ready is false\");\n\t\t\t\tstate = 2;\n\t\t\t}","filename":"tp_test_read.c","line":29},
+    {"method":"tp_test_read","type":"ELSE","code":"else","filename":"tp_test_read.c","line":32},
+    {"method":"tp_test_read","type":"ELSE","code":"else","filename":"tp_test_read.c","line":36}
+  ]
+}

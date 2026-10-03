@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": ["CALLBACK_ABI", "COMPILER_SENSITIVE", "STATEFUL_MEMORY"],
+  "functions": [{
+    "stock_function": "tpd_set_one_key",
+    "stock_entry": "0012befc",
+    "source_function": "tpd_set_one_key",
+    "candidate_function": "tpd_set_one_key",
+    "kcfi_required": false,
+    "assembly_only": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "candidate_attestation": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next898_tpd_set_one_key_exact_v2",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "canonical_driver_build",
+    "cycles": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "evidence_root": ".tmp_next338_set_one_key_build"
+  },
+  "gates": ["docker_reproducible", "aarch64_relocations", "kcfi_surface", "joern_strict", "host_asan_ubsan"],
+  "hardware_validation": "DEFERRED"
+}

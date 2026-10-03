@@ -1,40 +1,31 @@
-#include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct testing_item {
-    uint32_t marker;
+	unsigned long sentinel;
 };
 
 struct testing_item test_0001;
 
 #include "../../../reconstructed/zte_tpd/syna_tcm_get_testing_0001.c"
 
-static int failures;
-
-static void test_testing_item(const char *name, uint32_t marker)
+static void expect(bool condition, const char *message)
 {
-    struct testing_item *item;
-
-    test_0001.marker = marker;
-    item = syna_tcm_get_testing_0001();
-    if (item != &test_0001) {
-        fprintf(stderr, "%s: wrong testing item address\n", name);
-        failures++;
-        return;
-    }
-    if (item->marker != marker) {
-        fprintf(stderr, "%s: got %u expected %u\n", name, item->marker, marker);
-        failures++;
-    }
+	if (condition)
+		return;
+	fprintf(stderr, "FAIL syna_tcm_get_testing_0001: %s\n", message);
+	exit(EXIT_FAILURE);
 }
 
 int main(void)
 {
-    test_testing_item("zero", 0);
-    test_testing_item("one", 1);
-    test_testing_item("maximum", UINT32_MAX);
-    if (failures != 0)
-        return 1;
-    puts("PASS syna_tcm_get_testing_0001 host tests (3 cases)");
-    return 0;
+	struct testing_item *item;
+
+	test_0001.sentinel = 0x10001UL;
+	item = syna_tcm_get_testing_0001();
+	expect(item == &test_0001, "returned object identity differs");
+	expect(item->sentinel == 0x10001UL, "returned object does not alias test_0001");
+	puts("PASS syna_tcm_get_testing_0001 host tests (1 case)");
+	return EXIT_SUCCESS;
 }

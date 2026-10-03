@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "089",
+  "function": "tp_test_read",
+  "stock_entry": "0010dbd0",
+  "stock_body_bytes": 264,
+  "candidate_symbol_bytes": 264,
+  "stock_instruction_count": 66,
+  "candidate_instruction_count": 66,
+  "stock_relocation_count": 12,
+  "candidate_relocation_count": 12,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs and four cases",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "5490a10247e9441768a886cafa1243442d2edca0f0394f513c9d73c56d541ae7",
+    "candidate_module_size": 27037072,
+    "candidate_source_sha256": "ef454d9aebf57c101cb080ee1553ef0e2aae694783ebdc59f93c39a3e2cf7c54",
+    "readable_source_sha256": "9ad6a7f72e433aca1d2cf21d1021f1d483314be6faf3ce20dc0f07fc13fbb774",
+    "rodata_include_sha256": "2bac5e90d9b01d69242bfd533d515db19ddacda3e22d831bb05f918b7f89cb96",
+    "candidate_assembly_sha256": "d0e449f3b2679fb2054138dac4bd5e004b29dc1db8d3c36d22f7f0c2027e901b",
+    "stock_assembly_sha256": "3f09f504b4d185c1f6762079f804d95288af32da151c320632c0538f705abf56",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0xf4e9d97c"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "Kernel fw-ready state and simple_read_from_buffer are represented by deterministic host stubs.",
+    "DT, DRM, MMIO and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

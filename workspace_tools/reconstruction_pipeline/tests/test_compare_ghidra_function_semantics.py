@@ -25,6 +25,80 @@ def write_jsonl(path: Path, records: list[dict]) -> None:
 
 
 class GhidraSemanticComparisonTests(unittest.TestCase):
+    def test_decompiler_comments_are_ignored_as_syntax_artifacts(self) -> None:
+        without_comment, _, _ = MODULE.normalize_decompiled(
+            "void f(void) { return; }", {}
+        )
+        with_comment, _, _ = MODULE.normalize_decompiled(
+            "/* WARNING: load-dependent */ void f(void) { return; }", {}
+        )
+
+        self.assertEqual(with_comment, without_comment)
+
+    def test_aw22xxx_recover_symbol_rendering_artifact_is_narrow(self) -> None:
+        stock = "void aw22xxx_cfg_recover_update_wait(){lamp_effect = 1;request_firmware();}"
+        candidate = "void aw22xxx_cfg_recover_update_wait(){_lamp_effect = 1;func_0x001111c0();}"
+
+        evidence = MODULE.decompiler_aw22xxx_cfg_recover_update_wait_symbol_artifact(
+            "aw22xxx_cfg_recover_update_wait", stock, candidate
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertIsNone(
+            MODULE.decompiler_aw22xxx_cfg_recover_update_wait_symbol_artifact(
+                "other", stock, candidate
+            )
+        )
+
+    def test_syna_tcm_sleep_status_artifact_accepts_elf_selector(self) -> None:
+        stock = (
+            "int syna_tcm_sleep(long param_1){"
+            "if(param_1==0){_printk(a);iVar4=-0xf1;}"
+            "else{param_3=*(int*)(param_1+0x20c);param_2=param_2&0xffffffff;"
+            "_printk(b);uVar3=0x2c;if((param_2&1)==0){uVar3=0x2d;}"
+            "_printk(c);if(*(int*)(param_1+0x398)!=0){}returniVar4;}}"
+        )
+        candidate = (
+            "int syna_tcm_sleep(long param_1){"
+            "if(param_1==0){uVar3=_printk(a);returnuVar3;}"
+            "else{param_3=0;uVar4=0x2c;if((param_2&1)==0){uVar4=0x2d;}"
+            "_printk(b);_printk(c);if(*(int*)(param_1+0x398)!=0){}return0;}}"
+        )
+        shape = [{"operation": "CALL"}] * 3
+
+        evidence = MODULE.decompiler_status_return_control_flow_artifact(
+            "syna_tcm_sleep@001238fc", stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_multi_branch_printk_status_control_flow_artifact"
+        )
+
+    def test_syna_tcm_buf_lock_artifact_accepts_elf_selector(self) -> None:
+        stock = (
+            "void syna_tcm_buf_lock(long param_1){"
+            "if(*(char*)(param_1+0x40)!='\\0'){_printk(a);}"
+            "mutex_lock(param_1+0x10);"
+            "*(char*)(param_1+0x40)=*(char*)(param_1+0x40)+'\\x01';return;}"
+        )
+        candidate = (
+            "void syna_tcm_buf_lock(long param_1){"
+            "if(*(char*)(param_1+0x40)=='\\0'){mutex_lock(param_1+0x10);"
+            "*(char*)(param_1+0x40)=*(char*)(param_1+0x40)+'\\x01';return;}"
+            "_printk(a);return;}"
+        )
+        shape = [{"operation": "CALL"}] * 2
+
+        evidence = MODULE.decompiler_buf_lock_branch_loop_artifact(
+            "syna_tcm_buf_lock@0011ede8", stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_syna_tcm_buf_lock_back_edge_branch_artifact"
+        )
+
     def make_export(
         self,
         root: Path,
@@ -93,6 +167,56 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertTrue(result["checks"]["normalized_decompiled_c"])
         self.assertTrue(result["checks"]["pcode_operation_shape"])
 
+    def test_function_selector_index_preserves_duplicate_symbol_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_jsonl(
+                root / "functions.jsonl",
+                [
+                    {"name": "duplicate", "entry": "00100000", "body_bytes": 4},
+                    {"name": "duplicate", "entry": "00100020", "body_bytes": 8},
+                ],
+            )
+
+            index = MODULE.function_selector_index(root)
+
+        self.assertEqual(index["duplicate@00100000"]["body_bytes"], 4)
+        self.assertEqual(
+            index[MODULE.normalize_function_selector("duplicate@0x100020")]["body_bytes"],
+            8,
+        )
+
+    def test_exact_assembly_island_fallback_keeps_c_text_non_authoritative(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            (candidate / "decompiled" / "target.c").write_text(
+                "void target(void) { y = relocated + 7; printk(&DAT_00202001); }\n",
+                encoding="utf-8",
+            )
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+                allow_exact_assembly_island_decompiler_fallback=True,
+            )
+
+        self.assertTrue(result["passed"])
+        self.assertIn("normalized_decompiled_c", result["raw_failures"])
+        self.assertEqual(
+            result["decompiled_normalization"][
+                "exact_assembly_island_decompiler_fallback"
+            ]["kind"],
+            "ghidra_decompiler_non_authoritative_exact_assembly_island",
+        )
+
     def test_relocated_unk_string_compares_equal(self) -> None:
         stock, stock_evidence, _ = MODULE.normalize_decompiled(
             "printk(&UNK_00101000);",
@@ -106,6 +230,292 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(stock, candidate)
         self.assertEqual(stock_evidence[0]["string_address_delta"], 1)
         self.assertEqual(candidate_evidence[0]["string_address_delta"], 1)
+
+    def test_leading_underscore_global_labels_compare_equal(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "if (_DAT_0010405c == 0) enable_irq(_DAT_00104058);",
+            {},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00103e0c == 0) enable_irq(DAT_00103e04);",
+            {},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(
+            [artifact["kind"] for artifact in stock_artifacts],
+            ["ghidra_global_data_address", "ghidra_global_data_address"],
+        )
+        self.assertEqual(
+            [artifact["kind"] for artifact in candidate_artifacts],
+            ["ghidra_global_data_address", "ghidra_global_data_address"],
+        )
+
+    def test_candidate_data_field_slice_fallback_is_narrow(self) -> None:
+        stock = "if (GHIDRA_DATA_OBJECT_0 == 0) enable_irq(GHIDRA_DATA_OBJECT_1);"
+        candidate = "if (GHIDRA_DATA_OBJECT_0 == 0) enable_irq(GHIDRA_DATA_OBJECT_1._4_4_);"
+
+        evidence = MODULE.ghidra_data_field_slice_fallback(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(evidence["kind"], "ghidra_data_field_slice_artifact")
+        self.assertIsNone(
+            MODULE.ghidra_data_field_slice_fallback(
+                stock, "if (GHIDRA_DATA_OBJECT_0 == 1) enable_irq(GHIDRA_DATA_OBJECT_1._4_4_);"
+            )
+        )
+
+    def test_resolved_symbol_string_address_syntax_is_normalized_narrowly(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "printk(unk_00101000);",
+            {},
+            symbol_strings={"unk_00101000": "message"},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "printk(&unk_00202000);",
+            {},
+            symbol_strings={"unk_00202000": "message"},
+        )
+        unrelated, _, _ = MODULE.normalize_decompiled(
+            "printk(&some_other_pointer);",
+            {},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(stock, unrelated)
+        self.assertEqual(candidate_artifacts[0]["kind"], "ghidra_string_pointer_address_syntax")
+        self.assertEqual(stock_artifacts, [])
+
+    def test_kernel_driver_address_and_joined_labels_are_normalized_narrowly(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "__platform_driver_register(hardware_ver_driver, &__this_module); goto code_r0x00101244;",
+            {},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "__platform_driver_register(&hardware_ver_driver, &__this_module); goto code_r0x0010045c;",
+            {},
+        )
+        unrelated, _, _ = MODULE.normalize_decompiled(
+            "__platform_driver_register(&unrelated_driver, &__this_module); goto code_r0x0010045c;",
+            {},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(stock, unrelated)
+        self.assertEqual(candidate_artifacts[0]["kind"], "elf_object_binding_address_syntax")
+        self.assertEqual(candidate_artifacts[1]["kind"], "ghidra_local_label_address")
+        self.assertEqual(stock_artifacts[0]["kind"], "ghidra_local_label_address")
+
+    def test_named_data_binding_is_opt_in_and_preserves_alias_identity(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "x = stock_bss_base; y = stock_bss_base;",
+            {},
+            named_data_bindings={
+                "stock_bss_base": "GHIDRA_DATA_BINDING__bss_00000000"
+            },
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "x = candidate_bss_base; y = candidate_bss_base;",
+            {},
+            named_data_bindings={
+                "candidate_bss_base": "GHIDRA_DATA_BINDING__bss_00000000"
+            },
+        )
+        strict, _, _ = MODULE.normalize_decompiled(
+            "x = candidate_bss_base; y = candidate_bss_base;", {}
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertNotEqual(stock, strict)
+        self.assertEqual(
+            {artifact["kind"] for artifact in stock_artifacts + candidate_artifacts},
+            {"ghidra_named_data_binding"},
+        )
+
+    def test_named_data_address_syntax_fallback_is_token_scoped(self) -> None:
+        stock, _, _ = MODULE.normalize_decompiled(
+            "zlog_register_client(stock_dev);", {},
+            named_data_bindings={"stock_dev": "GHIDRA_DATA_BINDING__data_00000000"},
+        )
+        candidate, _, _ = MODULE.normalize_decompiled(
+            "zlog_register_client(&candidate_dev);", {},
+            named_data_bindings={"candidate_dev": "GHIDRA_DATA_BINDING__data_00000000"},
+        )
+        evidence = MODULE.named_data_address_syntax_fallback(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_named_data_address_syntax_artifact"
+        )
+        self.assertIsNone(
+            MODULE.named_data_address_syntax_fallback(
+                stock, candidate.replace("GHIDRA_DATA_BINDING__data_00000000", "other")
+            )
+        )
+        self.assertIsNone(
+            MODULE.named_data_address_syntax_fallback(
+                "zlog_register_client(&arbitrary_pointer);", candidate
+            )
+        )
+
+    def test_relocated_pointer_table_index_base_fallback_is_bounded(self) -> None:
+        stock = "idx=(int)((ulong)(param_2 + -0x20056) >> 3) * -0x45d1745d;"
+        candidate = "idx=(int)((ulong)(param_2 + -0x20055) >> 3) * -0x45d1745d;"
+        evidence = MODULE.relocated_pointer_table_index_base_fallback(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_relocated_pointer_table_index_base_artifact"
+        )
+        self.assertIsNone(
+            MODULE.relocated_pointer_table_index_base_fallback(
+                stock.replace("0x20056", "0x21056"), candidate
+            )
+        )
+        self.assertIsNone(
+            MODULE.relocated_pointer_table_index_base_fallback(
+                stock, candidate.replace("param_2", "param_3")
+            )
+        )
+
+    def test_relocated_pointer_table_absolute_base_fallback_is_bounded(self) -> None:
+        stock = "idx=(int)((ulong)(param_2 - 0x1002b0U >> 3)) * -0x45d1745d;"
+        candidate = "idx=(int)((ulong)(param_2 - 0x100270U >> 3)) * -0x45d1745d;"
+        evidence = MODULE.relocated_pointer_table_absolute_base_fallback(
+            stock, candidate
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"],
+            "ghidra_relocated_pointer_table_absolute_base_artifact",
+        )
+        self.assertIsNone(
+            MODULE.relocated_pointer_table_absolute_base_fallback(
+                stock.replace("0x1002b0", "0x2002b0"), candidate
+            )
+        )
+        self.assertIsNone(
+            MODULE.relocated_pointer_table_absolute_base_fallback(
+                stock, candidate.replace("param_2", "param_3")
+            )
+        )
+
+    def test_elf_backed_named_string_symbol_is_normalized_without_rewriting_literals(
+        self,
+    ) -> None:
+        stock, _, _ = MODULE.normalize_decompiled(
+            'printk(&DAT_00101000, "charge_version");',
+            {0x00101000: "V2A"},
+        )
+        candidate, evidence, _ = MODULE.normalize_decompiled(
+            'printk(charge_version, "charge_version");',
+            {},
+            symbol_strings={"charge_version": "V2A"},
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(evidence[0]["source"], "elf_symbol_bytes")
+
+    def test_shared_named_data_binding_rejects_changed_section_layout(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            for export in (stock, candidate):
+                export.mkdir()
+            write_jsonl(
+                stock / "memory_blocks.jsonl",
+                [
+                    {
+                        "name": ".bss",
+                        "start": "1000",
+                        "end": "101f",
+                        "initialized": False,
+                    },
+                    {
+                        "name": ".data",
+                        "start": "2000",
+                        "end": "201f",
+                        "initialized": True,
+                    },
+                ],
+            )
+            write_jsonl(
+                candidate / "memory_blocks.jsonl",
+                [
+                    {
+                        "name": ".bss",
+                        "start": "3000",
+                        "end": "301f",
+                        "initialized": False,
+                    },
+                    {
+                        "name": ".data",
+                        "start": "4000",
+                        "end": "402f",
+                        "initialized": True,
+                    },
+                ],
+            )
+            write_jsonl(
+                stock / "symbols.jsonl",
+                [
+                    {"name": "stock_bss", "address": "1000", "type": "Label"},
+                    {"name": "stock_data", "address": "2000", "type": "Label"},
+                ],
+            )
+            write_jsonl(
+                candidate / "symbols.jsonl",
+                [
+                    {"name": "candidate_bss", "address": "3000", "type": "Label"},
+                    {"name": "candidate_data", "address": "4000", "type": "Label"},
+                ],
+            )
+
+            stock_bindings, candidate_bindings = MODULE.shared_named_data_bindings(
+                stock, candidate
+            )
+
+        self.assertEqual(stock_bindings, {"stock_bss": "GHIDRA_DATA_BINDING__bss_00000000"})
+        self.assertEqual(
+            candidate_bindings,
+            {"candidate_bss": "GHIDRA_DATA_BINDING__bss_00000000"},
+        )
+
+    def test_relocated_same_named_data_binding_requires_explicit_opt_in(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            for export in (stock, candidate):
+                export.mkdir()
+                write_jsonl(
+                    export / "memory_blocks.jsonl",
+                    [{"name": ".bss", "start": "1000", "end": "101f", "initialized": False}],
+                )
+            write_jsonl(
+                stock / "symbols.jsonl",
+                [{"name": "shared_object", "address": "1008", "type": "Label"}],
+            )
+            write_jsonl(
+                candidate / "symbols.jsonl",
+                [{"name": "shared_object", "address": "1010", "type": "Label"}],
+            )
+
+            without_opt_in = MODULE.shared_named_data_bindings(stock, candidate)
+            with_opt_in = MODULE.shared_named_data_bindings(
+                stock, candidate, allow_relocated_same_name=True
+            )
+
+        self.assertEqual(without_opt_in, ({}, {}))
+        self.assertEqual(
+            with_opt_in,
+            (
+                {"shared_object": "GHIDRA_DATA_SHARED_shared_object"},
+                {"shared_object": "GHIDRA_DATA_SHARED_shared_object"},
+            ),
+        )
 
     def test_relocated_global_data_labels_preserve_aliasing(self) -> None:
         stock = "void target(void) { DAT_00101000 = DAT_00101008; DAT_00101008 = DAT_00101000; }"
@@ -123,6 +533,57 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(len(stock_artifacts), 2)
         self.assertEqual(len(candidate_artifacts), 2)
         self.assertEqual(stock_artifacts[0]["kind"], "ghidra_global_data_address")
+
+    def test_fragmented_contiguous_byte_flag_is_normalized_only_with_layout_proof(
+        self,
+    ) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00101001._1_1_ != '\\0' || (char)DAT_00101001 != '\\0') { "
+            "DAT_00101003 = 1; _printk(&DAT_00102000); }",
+            {},
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00203002 != '\\0' || DAT_00203001 != '\\0') { "
+            "DAT_00203003 = 1; _printk(&DAT_00204000); }",
+            {},
+        )
+
+        result = MODULE.fragmented_byte_flag_normalization(
+            stock, candidate, stock_artifacts, candidate_artifacts
+        )
+
+        self.assertIsNotNone(result)
+        normalized_stock, normalized_candidate, evidence = result
+        self.assertEqual(normalized_stock, normalized_candidate)
+        self.assertEqual(evidence["kind"], "ghidra_fragmented_contiguous_byte_flag")
+
+    def test_fragmented_byte_flag_rejects_changed_operator_or_offset(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00101001._1_1_ != '\\0' || (char)DAT_00101001 != '\\0') { "
+            "DAT_00101003 = 1; }",
+            {},
+        )
+        changed_operator, _, changed_operator_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00203002 != '\\0' && DAT_00203001 != '\\0') { "
+            "DAT_00203003 = 1; }",
+            {},
+        )
+        changed_offset, _, changed_offset_artifacts = MODULE.normalize_decompiled(
+            "if (DAT_00203003 != '\\0' || DAT_00203001 != '\\0') { "
+            "DAT_00203004 = 1; }",
+            {},
+        )
+
+        self.assertIsNone(
+            MODULE.fragmented_byte_flag_normalization(
+                stock, changed_operator, stock_artifacts, changed_operator_artifacts
+            )
+        )
+        self.assertIsNone(
+            MODULE.fragmented_byte_flag_normalization(
+                stock, changed_offset, stock_artifacts, changed_offset_artifacts
+            )
+        )
 
     def test_elf_string_resolver_ignores_uninitialized_memory(self) -> None:
         payload = b"untrusted\x00trusted\x00"
@@ -224,6 +685,435 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertFalse(result["passed"])
         self.assertFalse(result["checks"]["normalized_decompiled_c"])
 
+    def test_explicit_pcode_fallback_records_lossy_decompiler_truncation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            for export, body in (
+                (
+                    stock,
+                    "void target(void) { x = 1; printk(); cleanup(); return; }\n",
+                ),
+                (
+                    candidate,
+                    "void target(void) { printk(); return; }\n",
+                ),
+            ):
+                record_path = export / "functions.jsonl"
+                records = [json.loads(line) for line in record_path.read_text().splitlines()]
+                records[0]["body_bytes"] = 8
+                write_jsonl(record_path, records)
+                (export / "decompiled" / "target.c").write_text(body, encoding="utf-8")
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+                allow_pcode_authoritative_decompiler_fallback=True,
+            )
+
+        self.assertTrue(result["passed"])
+        self.assertFalse(result["checks"]["normalized_decompiled_c"])
+        self.assertEqual(result["raw_failures"], ["normalized_decompiled_c"])
+        self.assertEqual(
+            result["decompiled_normalization"][
+                "pcode_authoritative_decompiler_fallback"
+            ]["kind"],
+            "ghidra_premature_return_decompiler_truncation",
+        )
+
+    def test_pcode_fallback_records_synthetic_call_symbol_resolution(self) -> None:
+        stock = (
+            'void target(void){_inline_copy_from_user();gf_enable_irq();'
+            '_printk("gf_ioctl");return;}'
+        )
+        candidate = (
+            'void target(void){FUN_00102a00();FUN_00100728();'
+            '_printk(GHIDRA_STRING["gf_ioctl"]);return;}'
+        )
+
+        evidence = MODULE.decompiler_symbol_resolution_artifact(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_synthetic_call_symbol_resolution_artifact"
+        )
+        self.assertEqual(evidence["call_count"], 3)
+        self.assertEqual(
+            evidence["call_position_mappings"],
+            [
+                {"stock": "_inline_copy_from_user", "candidate": "FUN_00102a00"},
+                {"stock": "gf_enable_irq", "candidate": "FUN_00100728"},
+            ],
+        )
+
+    def test_pcode_fallback_is_opt_in(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            for export, body in (
+                (stock, "void target(void) { x = 1; printk(); cleanup(); return; }\n"),
+                (candidate, "void target(void) { printk(); return; }\n"),
+            ):
+                record_path = export / "functions.jsonl"
+                records = [json.loads(line) for line in record_path.read_text().splitlines()]
+                records[0]["body_bytes"] = 8
+                write_jsonl(record_path, records)
+                (export / "decompiled" / "target.c").write_text(body, encoding="utf-8")
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+            )
+
+        self.assertFalse(result["passed"])
+        self.assertEqual(result["failures"], ["normalized_decompiled_c"])
+
+    def test_both_fallbacks_try_premature_return_when_propagation_does_not_match(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            stock = root / "stock"
+            candidate = root / "candidate"
+            self.make_export(stock, "00100000", "00101001", "message")
+            self.make_export(candidate, "00200000", "00202001", "message")
+            for export, body in (
+                (stock, "undefined8 target(void) { x = 1; return 0; }\n"),
+                (candidate, "void target(void) { x = 1; return; }\n"),
+            ):
+                record_path = export / "functions.jsonl"
+                records = [json.loads(line) for line in record_path.read_text().splitlines()]
+                records[0]["body_bytes"] = 8
+                write_jsonl(record_path, records)
+                (export / "decompiled" / "target.c").write_text(body, encoding="utf-8")
+            result = MODULE.compare_function(
+                "target",
+                stock,
+                candidate,
+                MODULE.function_index(stock)["target"],
+                MODULE.function_index(candidate)["target"],
+                MODULE.string_index(stock),
+                MODULE.string_index(candidate),
+                allow_pcode_authoritative_decompiler_fallback=True,
+                allow_return_propagation_fallback=True,
+            )
+
+        self.assertTrue(result["passed"])
+        self.assertIsNone(result["decompiled_normalization"]["return_propagation_fallback"])
+        self.assertEqual(
+            result["decompiled_normalization"]["pcode_authoritative_decompiler_fallback"]["kind"],
+            "ghidra_premature_return_decompiler_truncation",
+        )
+
+    def test_pcode_fallback_accepts_truncated_void_return_against_value_return(self) -> None:
+        stock = "undefined8target(void){_printk();x=1;return0;}"
+        candidate = "voidtarget(void){_printk();return;}"
+
+        evidence = MODULE.lossy_decompiler_truncation(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_premature_return_decompiler_truncation"
+        )
+        self.assertEqual(evidence["omitted_stock_body_fragment"], "x=1;")
+
+    def test_external_label_fallback_requires_equal_pcode_call_count(self) -> None:
+        stock = "void target(void){_printk();zlog_client_record();zlog_client_notify();return;}"
+        candidate = "void target(void){_printk();return;return;}"
+        shape = [
+            {"operation": "CALL"},
+            {"operation": "CALL"},
+            {"operation": "CALL"},
+        ]
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_external_label_control_flow_artifact"
+        )
+        self.assertEqual(
+            evidence["missing_stock_call_names"],
+            ["zlog_client_notify", "zlog_client_record"],
+        )
+        self.assertIsNone(
+            MODULE.external_label_call_decompiler_artifact(
+                stock, candidate, shape, shape[:-1]
+            )
+        )
+
+    def test_collapsed_cfg_fallback_requires_strong_shape(self) -> None:
+        stock = (
+            "void target(void){_printk();of_find_property();of_get_named_gpio();"
+            "of_property_read_variable_u32_array();gpio_free();spi_setup();"
+            "return0;return1;}"
+        )
+        candidate = "void target(void){_printk();return;}"
+        shape = [{"operation": "CALL"}] * 6
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_cfg_collapsed_external_label_artifact"
+        )
+        self.assertEqual(evidence["candidate_call_operation_count"], 6)
+        self.assertIsNone(
+            MODULE.external_label_call_decompiler_artifact(
+                stock, candidate, shape, shape[:-1]
+            )
+        )
+
+    def test_unresolved_fun_call_name_fallback_is_one_for_one(self) -> None:
+        stock = (
+            "void target(void){_printk();syna_tcm_v1_read_message();"
+            "mutex_lock();mutex_unlock();return;}"
+        )
+        candidate = (
+            "void target(void){_printk();FUN_0014565c();"
+            "mutex_lock();mutex_unlock();return;}"
+        )
+        shape = [{"operation": "CALL"}] * 4
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_unresolved_external_call_name_artifact"
+        )
+        self.assertEqual(evidence["candidate_extra_call_names"], ["FUN_0014565c"])
+        self.assertIsNone(
+            MODULE.external_label_call_decompiler_artifact(
+                stock, candidate, shape, shape[:-1]
+            )
+        )
+
+    def test_cfg_restructuring_fallback_requires_exact_call_set_and_shape(self) -> None:
+        stock = (
+            "void target(void){_printk();syna_request_managed_device();"
+            "devm_kmalloc();mutex_lock();kfree();memcpy();"
+            "ktime_get_real_ts64();syna_request_managed_device();mutex_unlock();return0;}"
+        )
+        candidate = (
+            "void target(void){_printk();syna_request_managed_device();"
+            "devm_kmalloc();mutex_lock();kfree();memcpy();"
+            "ktime_get_real_ts64();mutex_unlock();return;return;}"
+        )
+        shape = [{"operation": "CALL"}] * 8
+
+        evidence = MODULE.decompiler_cfg_restructuring_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_cfg_restructuring_external_call_artifact"
+        )
+        self.assertIsNone(
+            MODULE.decompiler_cfg_restructuring_artifact(
+                stock, candidate + "changed();", shape, shape
+            )
+        )
+
+    def test_cfg_early_return_shared_cleanup_fallback_is_narrow(self) -> None:
+        stock = (
+            "void target(void){_printk();scnprintf();syna_tcm_get_testing();"
+            "__mutex_init();__mutex_init();scnprintf();scnprintf();"
+            "_printk();syna_request_managed_device();devm_kfree();"
+            "syna_request_managed_device();devm_kfree();"
+            "if(x){foo();}elseif(y){bar();}gotoGHIDRA_LOCAL_LABEL_0;return;}"
+        )
+        candidate = (
+            "void target(void){_printk();scnprintf();syna_tcm_get_testing();"
+            "__mutex_init();__mutex_init();scnprintf();scnprintf();"
+            "_printk();syna_request_managed_device();devm_kfree();"
+            "syna_request_managed_device();devm_kfree();"
+            "if(x){foo();return;}if(y){bar();return;}"
+            "gotoGHIDRA_LOCAL_LABEL_0;return;}"
+        )
+        shape = [{"operation": "CALL"}] * 13
+
+        evidence = MODULE.decompiler_cfg_early_return_cleanup_artifact(
+            stock, candidate, shape, shape
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_cfg_early_return_shared_cleanup_artifact"
+        )
+        self.assertIsNone(
+            MODULE.decompiler_cfg_early_return_cleanup_artifact(
+                stock, candidate.replace("return;}goto", "return 1;}goto"), shape, shape
+            )
+        )
+
+    def test_return_propagation_fallback_is_narrow_and_explicit(self) -> None:
+        stock = (
+            'ulongget_tp_algo_item_id(char*param_1){byte*pbVar4;'
+            '_printk(GHIDRA_STRING["msg"],"get_tp_algo_item_id",*pbVar4);'
+            'return(ulong)*pbVar4;}'
+        )
+        candidate = (
+            'undefined8get_tp_algo_item_id(char*param_1){undefined8uVar4;'
+            'undefined1*puVar5;'
+            '_printk(GHIDRA_STRING["msg"],"get_tp_algo_item_id",*puVar5);'
+            'returnuVar4;}'
+        )
+
+        self.assertIsNone(
+            MODULE.decompiler_return_propagation_artifact(stock, candidate)
+        )
+        evidence = MODULE.decompiler_return_propagation_artifact(candidate, stock)
+        self.assertIsNone(evidence)
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+        self.assertIsNone(evidence)
+
+        # The candidate form must include the assignment to the external call;
+        # this guards against accepting an unrelated changed return expression.
+        candidate = candidate.replace(
+            '_printk(', 'uVar4=_printk(', 1
+        )
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+        self.assertIsNotNone(evidence)
+        self.assertEqual(evidence["kind"], "ghidra_call_return_propagation_artifact")
+
+    def test_return_zero_propagation_fallback_is_narrow_and_explicit(self) -> None:
+        stock = (
+            'undefined8target(void){longlVar1;lVar1=*(long*)(param_1+0xdb8);'
+            '*(undefined4*)(lVar1+0x5ec)=param_2;_printk(GHIDRA_STRING["msg"],'
+            '"target");return0;}'
+        )
+        candidate = (
+            'undefined8target(void){undefined8uVar1;longlVar2;'
+            'lVar2=*(long*)(param_1+0xdb8);*(undefined4*)(lVar2+0x5ec)=param_2;'
+            'uVar1=_printk(GHIDRA_STRING["msg"],"target");returnuVar1;}'
+        )
+
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_call_return_zero_propagation_artifact"
+        )
+
+    def test_return_status_constant_propagation_fallback_is_narrow_and_explicit(self) -> None:
+        stock = (
+            'undefined8target(void){_printk(GHIDRA_STRING["msg"],"target");'
+            'return0xffffff0f;}'
+        )
+        candidate = (
+            'undefined8target(void){undefined8uVar1;'
+            'uVar1=_printk(GHIDRA_STRING["msg"],"target");returnuVar1;}'
+        )
+
+        evidence = MODULE.decompiler_return_propagation_artifact(stock, candidate)
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_call_return_constant_propagation_artifact"
+        )
+        self.assertEqual(evidence["stock_semantics"], "_printk(...);return0xffffff0f;")
+
+    def test_branch_inversion_shared_return_fallback_is_narrow_and_explicit(self) -> None:
+        shape = [{"operation": "CALL"}, {"operation": "CALL"}]
+        stock = (
+            'undefined8target(longparam_1){undefined8uVar1;'
+            'if(param_1==0){_printk(GHIDRA_STRING["msg"],"target");'
+            'uVar1=0xffffff0f;}else{memset((void*)(param_1+0x13d8),0,0x1000);'
+            'uVar1=0;}returnuVar1;}'
+        )
+        candidate = (
+            'undefined8target(longparam_1){undefined8uVar1;'
+            'if(param_1!=0){memset((void*)(param_1+0x13d8),0,0x1000);'
+            'return0;}uVar1=_printk(GHIDRA_STRING["msg"],"target");'
+            'returnuVar1;}'
+        )
+
+        evidence = MODULE.decompiler_branch_inversion_shared_return_artifact(
+            stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_branch_inversion_shared_return_artifact"
+        )
+
+    def test_bad_instruction_boundary_fallback_requires_stock_marker(self) -> None:
+        stock = (
+            "voidtarget(void){__fortify_panic(2,0xc,x);__fortify_panic(4,0xc,x);"
+            "/*WARNING:Badinstruction-Truncatingcontrolflowhere*/halt_baddata();}"
+        )
+        candidate = (
+            "voidtarget(void){__fortify_panic(2,0xc,x);__fortify_panic(4,0xc);"
+            "if(y){return0;}return1;}"
+        )
+
+        evidence = MODULE.decompiler_bad_instruction_boundary_artifact(
+            stock, candidate
+        )
+        self.assertIsNotNone(evidence)
+        self.assertEqual(evidence["kind"], "ghidra_bad_instruction_boundary_artifact")
+        self.assertIsNone(
+            MODULE.decompiler_bad_instruction_boundary_artifact(
+                stock.replace("halt_baddata();", "return0;"), candidate
+            )
+        )
+
+    def test_unresolved_internal_call_multiset_fallback_is_explicit(self) -> None:
+        stock = (
+            "intresume(void){gpio_keys_gpio_report_event(a);"
+            "gpio_keys_gpio_report_event(b);input_event();return0;}"
+        )
+        candidate = (
+            "intresume(void){func_0x000fff34(a);func_0x000ffedc(b);"
+            "input_event();return0;}"
+        )
+        shape = [{"operation": "CALL"}] * 3
+
+        evidence = MODULE.external_label_call_decompiler_artifact(
+            stock, candidate, shape, shape
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_unresolved_internal_call_multiset_artifact"
+        )
+
+    def test_decimal_breakpoint_opcode_keeps_opcode_and_normalizes_context(self) -> None:
+        stock, _, stock_artifacts = MODULE.normalize_decompiled(
+            "SoftwareBreakpoint(1,0x10151c);", {}
+        )
+        candidate, _, candidate_artifacts = MODULE.normalize_decompiled(
+            "SoftwareBreakpoint(1,0x10209c);", {}
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(stock, "SoftwareBreakpoint(1,GHIDRA_FUNCTION_ADDRESS);")
+        self.assertEqual(stock_artifacts[0]["kind"], "software_breakpoint_context_address")
+        self.assertEqual(candidate_artifacts[0]["kind"], "software_breakpoint_context_address")
+
+    def test_md5_file_is_stable_for_module_identity_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            module = Path(temporary_directory) / "candidate.ko"
+            module.write_bytes(b"candidate-module")
+            self.assertEqual(
+                MODULE.md5_file(module),
+                "be1d206279229fd336a8f55419775610",
+            )
+
     def test_synthetic_breakpoint_context_and_alloc_tag_are_normalized(self) -> None:
         stock = (
             "void target(void) { "
@@ -281,6 +1171,24 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertEqual(len(stock_artifacts), 2)
         self.assertEqual(len(candidate_artifacts), 2)
 
+    def test_stack_local_type_spelling_is_normalized_by_offset(self) -> None:
+        stock = "byte local_30[4]; local_30[0] = 0;"
+        candidate = "byte abStack_30[4]; abStack_30[0] = 0;"
+        changed = "byte abStack_2c[4]; abStack_2c[0] = 0;"
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed, {})
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertNotEqual(stock_normalized, changed_normalized)
+        self.assertEqual(
+            {artifact["kind"] for artifact in stock_artifacts + candidate_artifacts},
+            {"ghidra_stack_local_name"},
+        )
+
     def test_changed_local_label_graph_is_rejected(self) -> None:
         baseline = (
             "void target(void) { goto LAB_00101020; "
@@ -311,6 +1219,65 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         self.assertNotEqual(stock_normalized, changed_normalized)
         self.assertEqual(stock_artifacts[0]["kind"], "elf_pointer_table_base_symbol")
         self.assertEqual(candidate_artifacts[0]["kind"], "elf_pointer_table_base_symbol")
+
+    def test_relocated_pointer_table_address_is_normalized_narrowly(self) -> None:
+        stock = "void target(void) { p = &PTR_hw_pcb_gpio_map_00101f38; }"
+        candidate = "void target(void) { p = &PTR_nubia_hw_exact_00101530; }"
+        changed = "void target(void) { p = &some_unrelated_object; }"
+
+        stock_normalized, _, stock_artifacts = MODULE.normalize_decompiled(stock, {})
+        candidate_normalized, _, candidate_artifacts = MODULE.normalize_decompiled(
+            candidate, {}
+        )
+        changed_normalized, _, _ = MODULE.normalize_decompiled(changed, {})
+
+        self.assertEqual(stock_normalized, candidate_normalized)
+        self.assertNotEqual(stock_normalized, changed_normalized)
+        self.assertEqual(
+            stock_artifacts[0]["kind"], "elf_pointer_table_address_symbol"
+        )
+        self.assertEqual(
+            candidate_artifacts[0]["kind"], "elf_pointer_table_address_symbol"
+        )
+
+    def test_split_candidate_function_boundary_is_repaired_only_when_contiguous(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_jsonl(
+                root / "functions.jsonl",
+                [
+                    {
+                        "name": "target",
+                        "entry": "1000",
+                        "body_bytes": 28,
+                        "pcode_file": "target.jsonl",
+                    },
+                    {
+                        "name": "FUN_0000101c",
+                        "entry": "101c",
+                        "body_bytes": 32,
+                        "pcode_file": "continuation.jsonl",
+                    },
+                ],
+            )
+            write_jsonl(
+                root / "target.jsonl",
+                [{"instruction": "mov x0,x1", "pcode": "COPY"}],
+            )
+            write_jsonl(
+                root / "continuation.jsonl",
+                [{"instruction": "ret", "pcode": "RETURN"}],
+            )
+            record = MODULE.function_index(root)["target"]
+
+            merged = MODULE.merge_split_candidate_function(root, record, 60)
+            rejected = MODULE.merge_split_candidate_function(root, record, 59)
+
+        self.assertIsNotNone(merged)
+        records, evidence = merged
+        self.assertEqual(len(records), 2)
+        self.assertEqual(evidence["kind"], "ghidra_split_function_boundary_repair")
+        self.assertIsNone(rejected)
 
 
 if __name__ == "__main__":

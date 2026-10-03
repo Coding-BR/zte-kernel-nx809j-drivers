@@ -1,0 +1,147 @@
+{
+  "build": {
+    "commands": {
+      "build_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_sensor_sensitivity",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "make[2]: Warning: File '/work/validation/zte_sensor_sensitivity/modules.order' has modification time 0.4 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\nmake[2]: Warning: File '/work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.o' has modification time 0.27 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n",
+        "stdout": "  CC [M]  /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.o\n  MODPOST /work/validation/zte_sensor_sensitivity/Module.symvers\n  CC [M]  /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.mod.o\n  CC [M]  /work/validation/zte_sensor_sensitivity/.module-common.o\n  LD [M]  /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.ko\n  BTF [M] /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.ko\n"
+      },
+      "build_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_sensor_sensitivity",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.o\n  MODPOST /work/validation/zte_sensor_sensitivity/Module.symvers\n  CC [M]  /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.mod.o\n  CC [M]  /work/validation/zte_sensor_sensitivity/.module-common.o\n  LD [M]  /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.ko\n  BTF [M] /work/validation/zte_sensor_sensitivity/zte_sensor_sensitivity.ko\n"
+      },
+      "clean_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_sensor_sensitivity",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "clean_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_sensor_sensitivity",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CLEAN   /work/validation/zte_sensor_sensitivity/Module.symvers\n"
+      }
+    },
+    "first_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_sensor_sensitivity\\zte_sensor_sensitivity.ko",
+      "sha256": "f3dddeecac42f78adaa2dffa58f4030c1e53ba161f0649bb14c01afaa0a6871e",
+      "size": 229296
+    },
+    "passed": true,
+    "reproducible": true,
+    "second_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_sensor_sensitivity\\zte_sensor_sensitivity.ko",
+      "sha256": "f3dddeecac42f78adaa2dffa58f4030c1e53ba161f0649bb14c01afaa0a6871e",
+      "size": 229296
+    },
+    "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_sensor_sensitivity"
+  },
+  "checks": {
+    "aarch64_rel": true,
+    "alias_match": true,
+    "build_passed": true,
+    "function_traceability": true,
+    "namespace_match": true,
+    "reproducible_build": true,
+    "undefined_symbols_match": true
+  },
+  "driver": "zte_sensor_sensitivity",
+  "function": "sensors_sensitivity_unregister",
+  "generated_utc": "2026-08-29T03:22:04.323346+00:00",
+  "passed": true,
+  "schema_version": "1.0",
+  "source_report": "reverse_engineering\\validation\\reconstructed\\zte_sensor_sensitivity\\driver_audit_final.json",
+  "source_report_sha256": "ba559666274cc1b8be3a76aa42e3752f1216d6f588fdad1a586f39d3a8177334",
+  "stock_entry": "00100a44",
+  "stock_function": "sensors_sensitivity_unregister"
+}

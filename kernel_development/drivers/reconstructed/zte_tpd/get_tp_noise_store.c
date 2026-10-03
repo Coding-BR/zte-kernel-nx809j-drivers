@@ -4,6 +4,7 @@ ssize_t get_tp_noise_store(struct file *file, const char __user *buffer, size_t 
   __int64 a3 = (__int64)count;
 
   (void)file;
+  (void)a2;
   (void)offset;
   __int64 v4; // x20
   __int64 v5; // x0

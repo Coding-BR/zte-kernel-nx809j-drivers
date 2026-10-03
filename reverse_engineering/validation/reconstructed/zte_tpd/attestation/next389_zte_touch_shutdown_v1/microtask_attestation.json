@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_touch_shutdown",
+  "attestation_id": "next389_zte_touch_shutdown_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_JOERN_SYNCHRONIZATION_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS_WITH_REVIEW_FINDINGS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "PASS",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_LAYOUT_ONLY",
+    "aarch64_call_order_normalized": "PASS",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "log the stock shutdown message and invoke the optional callback stored at cdev + 0xf90",
+    "preserve the KCFI callback type check and pass tpd_cdev as the callback argument",
+    "log and execute tpd_report_work_deinit followed by tpd_resume_work_deinit",
+    "cancel delayed work at offsets 0x8d0, 0xa50 and 0x938 in the stock order",
+    "vfree the buffer at offset 0xbe8 and clear that field after the free"
+  ],
+  "evidence": {
+    "stock_body_bytes": 224,
+    "candidate_body_bytes": 224,
+    "stock_instruction_count": 56,
+    "candidate_instruction_count": 56,
+    "function_kcfi_type_id": "0x24a11bb9",
+    "candidate_module_sha256": "3ba6661e500cdd7c47dbdcb8e87ad7eebcaa7d075f6aaea2b3c0f8fb9eea2932",
+    "candidate_function_assembly_sha256": "9bd7806550fd71e190aee2ca586e6749da872099648a3ed2461ed35a877a45b8",
+    "stock_function_assembly_sha256": "d3db62780a620a6c2be8a9662dba6dfcb8d0aba8849c77bb56e5647a18f13314",
+    "host_cases": 2,
+    "host_repetitions": 2,
+    "joern_unresolved_calls": 0,
+    "joern_synchronization_high_findings": 3
+  },
+  "follow_up_required": [
+    "Review the three Joern synchronization findings around cancel_delayed_work_sync before hardware or concurrent runtime promotion.",
+    "Keep the raw .rodata relocation offsets separate from semantic parity; rerun relocation identity only if exact module layout is required.",
+    "Run controlled platform-bus and NX809J runtime shutdown validation only after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual callback lifetime and KCFI trap behavior in the target kernel",
+    "workqueue scheduler behavior under concurrent shutdown",
+    "runtime interaction with the touch controller and NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 56-instruction/224-byte AArch64 body and call order, matching KCFI type and size, strict Joern graph gate with three explicit synchronization findings, reproducible Docker build, and two-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

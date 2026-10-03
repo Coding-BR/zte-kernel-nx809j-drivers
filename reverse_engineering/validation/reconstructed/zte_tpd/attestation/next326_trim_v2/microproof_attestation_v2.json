@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "kind": "bounded_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "326_trim",
+  "stock_function": "trim",
+  "stock_entry": "0012b4dc",
+  "status": "MICROPROOFS_PASS_PROMOTION_BLOCKED",
+  "promotion_allowed": false,
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_STATE_EFFECT_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_TEST_ORACLE": "PASS",
+    "MP5_JOERN_STRICT": "PASS",
+    "MP6_AARCH64_INPUT": "PASS",
+    "MP7_HOST_ASAN_UBSAN": "PASS",
+    "MP8_KBUILD_CANONICAL": "BLOCKED_ENVIRONMENT",
+    "MP9_KCFI_EXACT_PARITY": "PENDING",
+    "MP10_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "observed_contract": {
+    "null_input_returns_null": true,
+    "leading_linux_whitespace_is_skipped": true,
+    "trailing_linux_whitespace_is_terminated": true,
+    "interior_bytes_are_preserved": true,
+    "one_terminating_store_is_observed": true,
+    "allocations": 0,
+    "hardware_access": false
+  },
+  "promotion_blockers": [
+    "trim.c is excluded from the canonical zte_tpd Makefile",
+    "kernel generated configuration is unavailable for Kbuild",
+    "whole-module KCFI and exact opcode/relocation parity are not proven",
+    "independent L3 review is not recorded"
+  ],
+  "evidence": {
+    "candidate_source_sha256": "4c1ad52d07dbaccfcd572aadc3bccf3ad7c063758729415bf0c0b404a9a409db",
+    "host_report": "host_harness_report.json",
+    "joern_report": "joern/joern_gate_report.json",
+    "aarch64_report": "aarch64_compile_report.json",
+    "kbuild_report": "kbuild_isolated_report.json",
+    "assembly_review": "assembly_semantic_review.json"
+  }
+}

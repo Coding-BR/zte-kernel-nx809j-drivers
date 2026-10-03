@@ -1,18 +1,18 @@
 {
-  "candidate_sha256": "d114e25b29fc39831c4d0ea565a1a30fba526d118031942be5d2e10f797f7e81",
+  "candidate_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
   "driver": "fp_goodix",
   "function_count": 30,
-  "generated_utc": "2026-07-16T13:28:59.514010+00:00",
+  "generated_utc": "2026-08-28T20:43:18.036708+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
-    "assembly_manifest": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\fp_goodix\\offline_static\\stock_assembly\\manifest.json",
-    "assembly_manifest_sha256": "5faf6077fb136613d8a29ee373cb79eb068336fd3c0f632df1cc42588d3ded72",
-    "draft_map": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\fp_goodix\\reconstruction_map.json",
-    "draft_map_sha256": "2def19fc751be99b5cc29e08d5d06f7ef80b1361323a41633b98f9d4a654fdce",
-    "ghidra_functions": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\fp_goodix\\offline_static\\ghidra_stock\\functions.jsonl",
+    "assembly_manifest": "reverse_engineering/validation/reconstructed/fp_goodix/candidate_assembly/manifest.json",
+    "assembly_manifest_sha256": "3e6670eb15faa27e48728cbc97afc02fcb553e9a6032bbf18f88c6101ea987d6",
+    "draft_map": "kernel_development/drivers/reconstructed/fp_goodix/reconstruction_map.json",
+    "draft_map_sha256": "fed8ce2b042b38b6fb4c7a8bdbfbf7ac3565c971eb869eae77ffbf31a90ab0c4",
+    "ghidra_functions": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/functions.jsonl",
     "ghidra_functions_sha256": "ba6c129da40838684d0ffc08b31fddec04bd9721a795124c4856a1bb3a6c035d",
-    "overrides": "C:\\Users\\adriano\\Desktop\\emulador\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\fp_goodix\\structural_traceability_overrides.json",
+    "overrides": "reverse_engineering/validation/reconstructed/fp_goodix/structural_traceability_overrides.json",
     "overrides_sha256": "6b77b49291db5c47bb1adf8ed26557619fce628d09c43f45c5463036b1d604cf"
   },
   "limitations": [
@@ -24,513 +24,751 @@
   "mappings": [
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0000_00100824_gf_ioctl.c:sha256:a067f9231d62f49dea0e4d2e498d43790efa33cc876d5aca1bbe07458cf4a647",
         "ghidra-pcode:pcode/0000_00100824_gf_ioctl.jsonl:sha256:947f6e431dc9670a275eda478a0cdf19d47c5e79807a646d71044c68355ec1ba",
-        "stock-assembly:0000_gf_ioctl_00100824.asm:sha256:dafc30c5cb0f2d9174e2d4593ba3c1b3ae9a362afab61a070cbf0c71e139298a"
+        "stock-assembly:0000_gf_ioctl_00100824.asm:sha256:2eb536ed3a2340342982b66169efe305671ad37d54983004be3a9fac9c689b46",
+        "source:gf_ioctl_exact.s:sha256:acbe2b2a4846c2302a55f10a2836b969f9064c648652410a9d2343dd95f40d94",
+        "assembly-comparison:attestation/next001_gf_ioctl_exact_v2/exact_revalidation_20260902/assembly/comparison.json:sha256:cc12dfcfd79d6e402bd67168c74db782287dc75454fb044092655adc21a61c1e",
+        "canonical-build:attestation/next001_gf_ioctl_exact_v2/exact_revalidation_20260902/docker_reproducibility.json:sha256:64d1c6bb47379851756d9c72debf7d6028c2b737d54abcbf784b9eaaf0d6b44c",
+        "kcfi-comparison:attestation/next001_gf_ioctl_exact_v2/exact_revalidation_20260902/kcfi/comparison.json:sha256:2acafd70d86ef43537f1ee0d33948788f9f6758c623c8571bd5d362422093970",
+        "joern:attestation/next001_gf_ioctl_exact_v2/exact_revalidation_20260902/joern/joern_gate_report.json:sha256:29f5f60cba7a26d00ce4a7157030b9add8a72c74967a565afcec2b1252cc16e4",
+        "hard-protocol:attestation/next001_gf_ioctl_exact_v2/exact_revalidation_20260902/hard_protocol_report.json:sha256:a5a235dde4ba9fe3cffe6feaae25356a3c9768078af50bacfc2be8f569349c14",
+        "promotion-decision:attestation/next001_gf_ioctl_exact_v2/exact_revalidation_20260902/decision.json:sha256:54c16f09fdfb59731d26c8b1db4dea0cc245a2a19b5eeb30de965036f6fcee05"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "fp_goodix_core.c",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "gf_ioctl_exact.S",
       "source_function": "gf_ioctl",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 1436,
       "stock_entry": "00100824",
-      "stock_function": "gf_ioctl"
+      "stock_function": "gf_ioctl",
+      "mapping_note": "Function-level offline parity is promoted. The exact revalidation records 359 matching AArch64 instructions and 1436-byte symbols, Docker reproducibility, matching KCFI type ID 0x2af6cdbb, fresh candidate Ghidra/P-Code comparison, strict Joern scope and direct ioctl lifecycle tests. The source Assembly island remains explicitly identified as materialized stock evidence. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0001_00100dc4_gf_compat_ioctl.c:sha256:5820d69b6e67dfb731c7b01cf7572e196747a7cc3fb7a184dd3fa4756eab5415",
         "ghidra-pcode:pcode/0001_00100dc4_gf_compat_ioctl.jsonl:sha256:6d577aa7324cb58a12a1968fddaee8d6deece00de90669146712becec2b2cbb6",
-        "stock-assembly:0001_gf_compat_ioctl_00100dc4.asm:sha256:943828f0269d82d4b2cad6a4cfb7fa6cc9750665e11b064e04e3f7f8537ae2d7"
+        "stock-assembly:0001_gf_compat_ioctl_00100dc4.asm:sha256:b8f92e8f4edbd953137c4977cc2aabcfbe066ee51d7de3ea2c6baccbd70f2573",
+        "assembly-comparison:attestation/next002_gf_compat_ioctl_exact_v1/assembly.json:sha256:d90107df7bcd0a58bad9a58cf57ee4ae5b2f312d66070bc56237d5d1acaf3b68",
+        "canonical-build:attestation/next002_gf_compat_ioctl_exact_v1/compile.json:sha256:bbc9a9490cc51df9c895a8b3f0159404a01909e6d70751b7069d3969f49745c4",
+        "kcfi-comparison:attestation/next002_gf_compat_ioctl_exact_v1/kcfi.json:sha256:f6b1e151ee1e1e2872608192ca35e5966533cdf22efeac0c3a21e3faadc75edc",
+        "host-harness:attestation/next002_gf_compat_ioctl_exact_v1/test.json:sha256:30871b6b38cf6bf78c2cde1b784034d5f16ec2f0c50e1a8b973d17d30bd94898",
+        "joern:attestation/next002_gf_compat_ioctl_exact_v1/joern.json:sha256:9c3aec283b077ae3b0d6ae1c1381e3c8bdb3e5701adac7837952a3087154aaf8",
+        "microtask-attestation:attestation/next002_gf_compat_ioctl_exact_v1/attestation.json:sha256:e341c4cbd9c05676b2a7ec2c737bc74f694cbfb7f0fdd02435311cfbf69c37d2"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_compat_ioctl",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 32,
       "stock_entry": "00100dc4",
-      "stock_function": "gf_compat_ioctl"
+      "stock_function": "gf_compat_ioctl",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 8 matching AArch64 instructions and 32-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x2af6cdbb, strict Joern scope, and direct wrapper-contract tests. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0002_00100de8_gf_open.c:sha256:cfa57c9d354601ba3b0980691fd15d610113e5157ed56da102ad9374a5328223",
         "ghidra-pcode:pcode/0002_00100de8_gf_open.jsonl:sha256:8c75ed4296ef03b26fa234e79fc9659802ae99b469cc6fb5a4d5d0a1c4303535",
-        "stock-assembly:0002_gf_open_00100de8.asm:sha256:0ce3dfcade85a5dcb7809c8c4ee4eb9b67d11d92d8d52562fc1d22c6c105ecd2"
+        "stock-assembly:0002_gf_open_00100de8.asm:sha256:b6d3f44c7559af04f25d32f8b7dfab75e428616242121adce42869eb5d6578c4",
+        "ghidra-semantic:attestation/next003_gf_open_exact_v1/ghidra.json:sha256:44ab1a73eff2e3bed75bc843eed7ae25f5230daea8db352927e925e094b91322",
+        "assembly-comparison:attestation/next003_gf_open_exact_v1/assembly.json:sha256:c3340682bacd21a74704c431bc33a4e38914aa9e5a9c0665aff88859b3b36fdf",
+        "canonical-build:attestation/next003_gf_open_exact_v1/compile.json:sha256:8ae2e610a806479e3171fe709045d2fcc46426b482615cc0f25e8cfc951dcf7d",
+        "kcfi-comparison:attestation/next003_gf_open_exact_v1/kcfi.json:sha256:c1a5906c686817571d7d81855e0a688c2233bfad92a59d937b03ad6eda661932",
+        "host-harness:attestation/next003_gf_open_exact_v1/test.json:sha256:1abe16cbb10ff73c2bbd02acde9b7ca79232dd62cafe6849daf0718e13c42532",
+        "joern:attestation/next003_gf_open_exact_v1/joern.json:sha256:41b87d001579b433596c245f316f5b8d7a7034e04523f7ecdd33f16741325356",
+        "hard-protocol:attestation/next003_gf_open_exact_v1/hard_protocol_report.json:sha256:a3027cc943ae562d60f75008fb0fb0a2c41dc53a4cc74709fe2d8ad9caf52f2d",
+        "promotion-decision:attestation/next003_gf_open_exact_v1/decision.json:sha256:96f92b661eed26b733c9bc7cc9b96df5b3148acd68469c265b4998125f76aec6"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra/P-Code equality plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, matching KCFI type ID, Joern and open/release harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_open",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 508,
       "stock_entry": "00100de8",
-      "stock_function": "gf_open"
+      "stock_function": "gf_open",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 127 matching AArch64 instructions and 508-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x9829071d, strict Joern scope, fresh candidate Ghidra/P-Code comparison and open/release host evidence. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0003_00100fe8_gf_release.c:sha256:df3a4c2ebb43381ecc694c443dbedc4c547ee6f57cf00efc1dce84b71decc551",
         "ghidra-pcode:pcode/0003_00100fe8_gf_release.jsonl:sha256:66a57fdad75eb0d0ba3f6053e042067480866e6d4c933c561d987d15813d57f7",
-        "stock-assembly:0003_gf_release_00100fe8.asm:sha256:5216f0797c558e3a69aa0fff972055967903b28a9cf975552eeb3b6017576c09"
+        "stock-assembly:0003_gf_release_00100fe8.asm:sha256:b01e417bd1efab51eb634d621fb9fc5130eeb8e93af352e14b5e77339285640e",
+        "assembly-comparison:attestation/next004_gf_release_exact_v1/assembly.json:sha256:01bac62a242107788cedf839c047e7cd5e023ac2d2fb103aaddf12342f949428",
+        "canonical-build:attestation/next004_gf_release_exact_v1/compile.json:sha256:de213d58b1e59c2c7d52db0aa05710b8aab0a3aee01a29fd7eb64edacb80ce91",
+        "kcfi-comparison:attestation/next004_gf_release_exact_v1/kcfi.json:sha256:8bd1520c0e231aa0b1bb523a30e1bf34fef65d41992d880ebfb747289b36a0c7",
+        "host-harness:attestation/next004_gf_release_exact_v1/test.json:sha256:36c836890cc2f008ce3fe258f1f4ab08c6328568ed699f5643933ce4ccdf98bc",
+        "joern:attestation/next004_gf_release_exact_v1/joern.json:sha256:898899ba7d70cb925785b15d75e120fc817c82ac8b6de3550d87f01660f5663c",
+        "microtask-attestation:attestation/next004_gf_release_exact_v1/attestation.json:sha256:dae8ebb966c5be81aff3bb0736f8e56470df13307de17fba089d58291d1db424"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_release",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 240,
       "stock_entry": "00100fe8",
-      "stock_function": "gf_release"
+      "stock_function": "gf_release",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 60 matching AArch64 instructions and 240-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x9829071d, strict Joern scope, and direct release-contract tests. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0004_001010d8_gf_disable_irq.c:sha256:9d5b0a7b21cf6caa70cad40ac016e0f2fbb91dbb2285bedd68aa724f61ce5001",
         "ghidra-pcode:pcode/0004_001010d8_gf_disable_irq.jsonl:sha256:cb3a9fbd9ebe044c86c9b4cfadc88fb0dbbac491f6d56d2a139a0db3de2eff12",
-        "stock-assembly:0004_gf_disable_irq_001010d8.asm:sha256:bb4f33e8b9154f648bef803c2e5f39b4a6e8c25c38b096889bea88a88c8b6316"
+        "stock-assembly:0004_gf_disable_irq_001010d8.asm:sha256:57af9f5beec3bbe3cbc3c50d4da362d3957c3121b929953b118c97929548c05c",
+        "candidate-ghidra-manifest:offline_static/ghidra_candidate_20260902_gf_disable_irq_repaired/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next010_gf_disable_irq_exact_v1/ghidra.json:sha256:4e31793983efa4b32bb320f56b0a7ccfe583def34053775c83a589b00e080caf",
+        "assembly-comparison:attestation/next010_gf_disable_irq_exact_v1/assembly.json:sha256:13d9bb90f694ce961bb81e4f97ed936b7bda0a02066e4565c21bf714014119ab",
+        "canonical-build:attestation/next010_gf_disable_irq_exact_v1/compile.json:sha256:8133d24e327306641a83d1402bf2286b28c0fee3a36f88d74836d9e785568799",
+        "kcfi-comparison:attestation/next010_gf_disable_irq_exact_v1/kcfi.json:sha256:15929154f10dd2c22ac2fa8f066f1d3243ad09ea8ee2b90a21ee6e07decb1a3e",
+        "joern:attestation/next010_gf_disable_irq_exact_v1/joern.json:sha256:72414afc15f81ae3b7a67e8e58681ef54ba9f5c2aa7be0fb8041e0bd6ef13592",
+        "host-harness:attestation/next010_gf_disable_irq_exact_v1/test.json:sha256:a064651c123b8fe3ee86b94e177ae369cf6ef01ce5adac64bb990c09c6745e70",
+        "hard-protocol:attestation/next010_gf_disable_irq_exact_v1/hard_protocol_report.json:sha256:0fd3832c115f7a0df4278a9ad2e816776b51197afca74c1103a2146444709058",
+        "promotion-decision:attestation/next010_gf_disable_irq_exact_v1/decision.json:sha256:01f03f2f012650c25b52a618ca1ad46a7f10288af99fa29c8dedd1bdf5546e57"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope/slice, KCFI direct-call applicability check and direct helper harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_disable_irq",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 64,
       "stock_entry": "001010d8",
-      "stock_function": "gf_disable_irq"
+      "stock_function": "gf_disable_irq",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 16 matching AArch64 instructions and 64-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The Ghidra call-target repair is backed by the candidate Assembly R_AARCH64_CALL26 relocation from gf_ioctl at 00101f64 to gf_disable_irq; the raw stock evidence remains unchanged. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0005_00101118_gf_enable_irq.c:sha256:f4b086e87239ea6dbc3976b601cbe22a8f6be5a5270d2abf8b59e1db824d5d6d",
         "ghidra-pcode:pcode/0005_00101118_gf_enable_irq.jsonl:sha256:e376cd9b8801c08f92627eb991699f6d5617ff6ca32f43a155691bd7313e37e6",
-        "stock-assembly:0005_gf_enable_irq_00101118.asm:sha256:eb6d1fe8057a8d1793cdfc0801f0173ed4c7dc94f523db1c82963dc982384aac"
+        "stock-assembly:0005_gf_enable_irq_00101118.asm:sha256:10a8e52cb5d4c66c8f8ff1815d059bf15f185998aa1aa26ba518244a5ecabf70",
+        "candidate-ghidra-manifest:offline_static/ghidra_candidate_20260902_gf_enable_irq_repaired/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next009_gf_enable_irq_exact_v1/ghidra.json:sha256:3a112b8c51a9c779335c31856d07bbe619133b4531fa4d5d1bed32a903ef0b22",
+        "assembly-comparison:attestation/next009_gf_enable_irq_exact_v1/assembly.json:sha256:f295b136fdf2d957aa9871ec28fbd8b7310ede9e7a090fa3b40deec0fb2b4028",
+        "canonical-build:attestation/next009_gf_enable_irq_exact_v1/compile.json:sha256:dea00e32741db3e64c368c0f4a71ae248056fb5420bec59340f4f03430a901e1",
+        "kcfi-comparison:attestation/next009_gf_enable_irq_exact_v1/kcfi.json:sha256:b35e9e74085d997e94b7a01121dc77fbba329a91cb0315dfdb5095c2b4ecd467",
+        "joern:attestation/next009_gf_enable_irq_exact_v1/joern.json:sha256:d0dfa0e095aae72930133430ce8872b9f2b24f02f0e2a7b47b45fe3e544a0e58",
+        "host-harness:attestation/next009_gf_enable_irq_exact_v1/test.json:sha256:4e99779f7769fcd0689f3999a28bdeabd7a55ef42b58a4025b8e39bee10d9b08",
+        "hard-protocol:attestation/next009_gf_enable_irq_exact_v1/hard_protocol_report.json:sha256:de6ad3fa13b77b04b1fe3d45d2002ef8e391da77ac00734d9be0f80d3b6b1554",
+        "promotion-decision:attestation/next009_gf_enable_irq_exact_v1/decision.json:sha256:7e455ad35345092d4c71853725584d86ccd1ef295b18c38299fc05ac1352bec3"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope/slice, KCFI direct-call applicability check and direct helper harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_enable_irq",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 84,
       "stock_entry": "00101118",
-      "stock_function": "gf_enable_irq"
+      "stock_function": "gf_enable_irq",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 21 matching AArch64 instructions and 84-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The repaired candidate Ghidra body was extended to the exact 84-byte boundary; semantic comparison uses only the explicit candidate-side data-field-slice normalization and known global-warning removal after exact body/P-Code checks. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0006_0010116c_nav_event_input.c:sha256:b23c821b7959a7e355a39a6bd8c4669f13366b12460a06fd9ad3bef66d3cd76d",
         "ghidra-pcode:pcode/0006_0010116c_nav_event_input.jsonl:sha256:7c3bd3e6ebe827e3da3866d29b8ea1d9016d93abd2ebd50e3999d0635c239bf2",
-        "stock-assembly:0006_nav_event_input_0010116c.asm:sha256:8a44aba67a67f95308da3e291484ddee44f7ace57a3d124074be52e4fead6bc6"
+        "stock-assembly:0006_nav_event_input_0010116c.asm:sha256:ac53101b33cb72eaa8b59e85cae4ea3f6bf86fde771d2031bb195665848904fe",
+        "candidate-ghidra-boundary:offline_static/ghidra_candidate_20260902_nav_repaired/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next007_nav_event_input_exact_v2/ghidra.json:sha256:7d52edde814139e1e34917a33f6f2ab5a1008d3667a2123e7f7cee04bf6aefdd",
+        "assembly-comparison:attestation/next007_nav_event_input_exact_v2/assembly.json:sha256:2199f2dbebf8c63bbb4b0920b62d502851c9276c059624f21c648d71d7299bf0",
+        "canonical-build:attestation/next007_nav_event_input_exact_v2/compile.json:sha256:7be2c505e87833ce225e6d97bf808e2e09cab8cd87e7f2cc67f1416f2867a5ad",
+        "kcfi-decision:attestation/next007_nav_event_input_exact_v2/kcfi.json:sha256:9ec620df96bdff6134b3889f98763b7ebbf076366c3176e028e2162b87ff0108",
+        "host-harness:attestation/next007_nav_event_input_exact_v2/test.json:sha256:dcbf3b13b5e27025659d293ebff02824b6210be177e5eaf098fca7fdd538f1b8",
+        "joern:attestation/next007_nav_event_input_exact_v2/joern.json:sha256:2e884787b38876e2c6a6227627b7963b2b26b572ddbca1fa02c661c580555614",
+        "hard-protocol:attestation/next007_nav_event_input_exact_v2/hard_protocol_report.json:sha256:0d674f4a27990dcf199125b2f534c66c005cee9e13b27d96ee9d3ea6c3ba3515",
+        "promotion-decision:attestation/next007_nav_event_input_exact_v2/decision.json:sha256:c58cf6e0f75aad5138600c56729213fbe87868a15c514087362df1ff0ef13d51"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra boundary repair plus normalized Ghidra/P-Code equality, exact function-level AArch64 instruction and relocation parity, Docker reproducibility, direct-call KCFI decision, Joern and navigation harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "nav_event_input",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 464,
       "stock_entry": "0010116c",
-      "stock_function": "nav_event_input"
+      "stock_function": "nav_event_input",
+      "mapping_note": "Function-level offline parity is promoted. The fresh candidate Ghidra export repairs nav_event_input to the ELF-proven 464-byte body; normalized Ghidra C and 384-operation P-Code shape match stock, with 116 matching AArch64 instructions and equivalent relocations. Two Docker builds are reproducible, Joern and navigation harness gates pass, and KCFI is explicitly classified as not applicable because both incoming references are unconditional direct calls; the candidate-only KCFI preamble is recorded as extra instrumentation, not a fabricated stock type match. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
+        "source:fp_goodix_inline_exact.S:sha256:dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625",
         "ghidra-pseudocode:decompiled/0007_0010133c__inline_copy_to_user.c:sha256:d98817c18af3bc880ef6235cadbeb04b35620eb8af82caef102f227c6f11c432",
         "ghidra-pcode:pcode/0007_0010133c__inline_copy_to_user.jsonl:sha256:c6a3071cb61e335aa044c586f3bb96302de1c1e40ac16f583378b890b6564625",
-        "stock-assembly:0007__inline_copy_to_user_0010133c.asm:sha256:73043fcb3f8751a160131315b5250d4495a688e9c0612a61b07c8c0a2e416aee"
+        "stock-assembly:0007__inline_copy_to_user_0010133c.asm:sha256:d86761d5dd9f7729f35a046023098cf32945840f361e0234023d126fb747f05c",
+        "candidate-ghidra-manifest:offline_static/ghidra_candidate_20260902_inline_copy_to_user_repaired/fp_goodix.ko/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next011_inline_copy_to_user_exact_v1/ghidra.json:sha256:d04c5f6f09e454557d4288ffa802f600a077bd3c78ada6ee24563dc11c67f5ed",
+        "assembly-comparison:attestation/next011_inline_copy_to_user_exact_v1/assembly.json:sha256:0ce2539ae574f1a333a83a8bb0377bff137bd92362411abced5cf38066aadb79",
+        "canonical-build:attestation/next011_inline_copy_to_user_exact_v1/compile.json:sha256:a8beff0113bbf2dab1fc62594a5528f44693bc20b1caa69c9d3e6bb5932e0650",
+        "kcfi-comparison:attestation/next011_inline_copy_to_user_exact_v1/kcfi.json:sha256:eced1e79c036fb983defada14f2c5cea75d609122358d0866e11c8b25083a151",
+        "joern:attestation/next011_inline_copy_to_user_exact_v1/joern.json:sha256:6724adca8326508b729f363aef6b90f7775c3d757712cf603f532d0da8dc62c3",
+        "host-harness:attestation/next011_inline_copy_to_user_exact_v1/test.json:sha256:ab947ed3b1c125cae0f9826ac550a469659fd0400cf353de2bf60383562a5c57",
+        "hard-protocol:attestation/next011_inline_copy_to_user_exact_v1/hard_protocol_report.json:sha256:60861f364174a4e9d0c578b262ae8a0be61bb6b46811c167d5523387f5c9eb9f",
+        "promotion-decision:attestation/next011_inline_copy_to_user_exact_v1/decision.json:sha256:51e2189554f74505dd7bb8e3e147c8834a6a516c780ab8fc420abd6ec1a1bad6"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "fp_goodix_core.c",
-      "source_function": "gf_ioctl",
-      "status": "reviewed",
+      "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope with an explicit Assembly-only source-method exemption, KCFI parity and host helper coverage",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_kind": "ASSEMBLY_ONLY_COMPILER_HELPER",
+      "source_file": "fp_goodix_inline_exact.S",
+      "source_function": "_inline_copy_to_user",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 172,
       "stock_entry": "0010133c",
-      "stock_function": "_inline_copy_to_user"
+      "stock_function": "_inline_copy_to_user",
+      "mapping_note": "Function-level offline parity is promoted. The helper is compiler-generated Assembly, so Joern records the selected context with an explicit target-scoped source-method exemption; KCFI compares equal because stock and candidate both have no valid KCFI preamble. Two Docker builds are reproducible, Ghidra/P-Code and relocations match, and the host ioctl version path covers the helper. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
+        "source:fp_goodix_inline_exact.S:sha256:dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625",
         "ghidra-pseudocode:decompiled/0008_001013e8__inline_copy_from_user.c:sha256:ef948cdba039a2760ed568b4ddde4c59bf8fcf65d65561d902a9fbe23af012bf",
         "ghidra-pcode:pcode/0008_001013e8__inline_copy_from_user.jsonl:sha256:4c9db3b6190ec89fd4b397de8da042b019122ccfc9efac240440888a3f8a4d1f",
-        "stock-assembly:0008__inline_copy_from_user_001013e8.asm:sha256:3f6e79abfb3fa9f534171aa9f64a4012144e98f49afcbabd303b48f017f2d1e0"
+        "stock-assembly:0008__inline_copy_from_user_001013e8.asm:sha256:e46fe44957df5bd03d726860832fa4c8140371a488f0a22d5342c2609657e9ea",
+        "candidate-ghidra-manifest:offline_static/ghidra_candidate_20260902_inline_copy_from_user_repaired/fp_goodix.ko/manifest.json:sha256:6e06e073d6c57ab387555957fb1df74d597d5576eb81c12e39785617ebc41f23",
+        "ghidra-semantic:attestation/next012_inline_copy_from_user_exact_v1/ghidra.json:sha256:50ce5dfce5f554df2339b80d503d5f296af665ad8e3758d1069e2b33622282ed",
+        "assembly-comparison:attestation/next012_inline_copy_from_user_exact_v1/assembly.json:sha256:76016dd67d58a8e000f9e124fc2ff94856016bc867c7ee60a2122f659fac7579",
+        "canonical-build:attestation/next012_inline_copy_from_user_exact_v1/compile.json:sha256:20f34824a90cf89355a22d6c208994951c4d406ddc639df37599aaef5224c5ee",
+        "kcfi-comparison:attestation/next012_inline_copy_from_user_exact_v1/kcfi.json:sha256:3dd5f6ef56291169433562977c86849f1a25d6bf5b8956655a6ffafef048d450",
+        "joern:attestation/next012_inline_copy_from_user_exact_v1/joern.json:sha256:89e8f86db4c54fa5d208fd84cfd5ba7280e43510fd77ca1187d6048fdc9855ef",
+        "host-harness:attestation/next012_inline_copy_from_user_exact_v1/test.json:sha256:7bf71078648a89820f70c58e38585d7d01131e46058ff26a1ff7dccc5c72e503",
+        "hard-protocol:attestation/next012_inline_copy_from_user_exact_v1/hard_protocol_report.json:sha256:0f86441d38e3ccdb376f2d11c32e94eaf6971847fca4634ceb4d64578bb1bac1",
+        "promotion-decision:attestation/next012_inline_copy_from_user_exact_v1/decision.json:sha256:e80aa74c973de52a37a4248f4ac8cb2f1e768530e6493550542aa1679a2a6f9c"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "fp_goodix_core.c",
-      "source_function": "gf_ioctl",
-      "status": "reviewed",
+      "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope with an explicit Assembly-only source-method exemption, KCFI parity and host helper coverage",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_kind": "ASSEMBLY_ONLY_COMPILER_HELPER",
+      "source_file": "fp_goodix_inline_exact.S",
+      "source_function": "_inline_copy_from_user",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 236,
       "stock_entry": "001013e8",
-      "stock_function": "_inline_copy_from_user"
+      "stock_function": "_inline_copy_from_user",
+      "mapping_note": "Function-level offline parity is promoted. The helper is compiler-generated Assembly, so Joern records the selected context with an explicit target-scoped source-method exemption; KCFI compares equal because stock and candidate both have no valid KCFI preamble. Two Docker builds are reproducible, Ghidra/P-Code and relocations match, and the host ioctl input-copy path covers the helper. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0009_001014d8_gf_irq.c:sha256:2081c8572ec59022f18ba037c7d8439c66f21d1dfa2412bed3fd1d4202b1f5d6",
         "ghidra-pcode:pcode/0009_001014d8_gf_irq.jsonl:sha256:84fbcc1d141626ce8019373e95480652af4e32ef0ea562acbf3bf640248a8462",
-        "stock-assembly:0009_gf_irq_001014d8.asm:sha256:8d537d73f6ef512d95a7da7d447eec855502ea99309fc6e0321896816daa8eec"
+        "stock-assembly:0009_gf_irq_001014d8.asm:sha256:876b6775c22c57714ac535fe6dc47e88598904abdc74206ab4a8a256ffc78156",
+        "assembly-comparison:attestation/next010_gf_irq_exact_v1/assembly.json:sha256:93b061240102e9267e5637a8f1560f8956af3f9ab2d15f9ac754aef181cfb935",
+        "canonical-build:attestation/next010_gf_irq_exact_v1/compile.json:sha256:c0f80c75321c03fd48b61d22cae6abe42900be8052488bc7aaf6eda3c3028ae1",
+        "kcfi-comparison:attestation/next010_gf_irq_exact_v1/kcfi.json:sha256:1ec3df63cae5854f09f2e5753b2a2e6ddd9aac58de9a3fc105d15d5c3656f0aa",
+        "host-harness:attestation/next010_gf_irq_exact_v1/test.json:sha256:53913893e61f7b35a112333e83b768f10646a97ad60636180b2444538d6128a0",
+        "joern:attestation/next010_gf_irq_exact_v1/joern.json:sha256:49b895f60ea7db71276d150080be31af92eb29576cede2e0ffdf7e90c8237314",
+        "hard-protocol:attestation/next010_gf_irq_exact_v1/hard_protocol_report.json:sha256:0a9247880e82dfc0928eb8f11723c64e85fda430fe6b354aedaeb9b60b9d7b83"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_irq",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 120,
       "stock_entry": "001014d8",
-      "stock_function": "gf_irq"
+      "stock_function": "gf_irq",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 30 matching AArch64 instructions and 120-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xd2f00be1, strict Joern scope, and direct interrupt-callback contract tests. This is static/offline evidence; hardware interrupt behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0010_00101554_gf_probe.c:sha256:e4ee52d4ea14ff4d8f61867318d9280b9cb8078dee42b2c0505f2d49047ee432",
         "ghidra-pcode:pcode/0010_00101554_gf_probe.jsonl:sha256:c0944cafbddadadfa8b5a5ac7a89152981941ab874fe57296490566af6ba1da7",
-        "stock-assembly:0010_gf_probe_00101554.asm:sha256:8dcb2ca5af41c09b124cfffa02ac6a8b0d0446fbc1207770a190bbd8539724b8"
+        "stock-assembly:0010_gf_probe_00101554.asm:sha256:8a8ad6e57eacfc11831568619e1ac2dd7b7ebba23b9c5d4c6176248e16eecbd1",
+        "assembly-comparison:attestation/next011_gf_probe_exact_v1/assembly.json:sha256:7621eb0ba64b483a439559fe279de3f11e46c75f40b8e1403297b0c83cc6f47c",
+        "canonical-build:attestation/next011_gf_probe_exact_v1/compile.json:sha256:d90b67d89eabc698f363545b7866e0e5876249294d321cda9d6606585fba0d04",
+        "kcfi-comparison:attestation/next011_gf_probe_exact_v1/kcfi.json:sha256:a04f74f8f92e520bd23b61f32d98e87d52957f0941b08aec3146bfe8668a4e20",
+        "host-harness:attestation/next011_gf_probe_exact_v1/test.json:sha256:5f5312c540f80f675e42d343cc20be8210b22c4d6557f931d555a47ea5835881",
+        "joern:attestation/next011_gf_probe_exact_v1/joern.json:sha256:078790d5fd292a8f48a9aef9394d6866c77c6f398ff26cce3a987097e6b819ec",
+        "hard-protocol:attestation/next011_gf_probe_exact_v1/hard_protocol_report.json:sha256:bb6f4d3839bf0a6b07618413072f5ced11dd0616f57ca7454765bd55db7e97ab"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_probe",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 1012,
       "stock_entry": "00101554",
-      "stock_function": "gf_probe"
+      "stock_function": "gf_probe",
+      "elf_symbol_bytes": 1040,
+      "mapping_note": "Function-level offline parity is promoted. The preserved Ghidra mapping records 1012 body bytes, while the ELF symbol and candidate comparison record 260 matching AArch64 instructions and 1040 symbol bytes; both measurements are retained. Docker builds are reproducible, KCFI type ID 0xc7f8c87c matches, Joern is strict, and the direct probe/lifecycle harness passes. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0011_00101968_gf_remove.c:sha256:0d0a26ac2425f70b142bbe2f9074cc74a63fcdfde584826a98651f3fe818cd62",
         "ghidra-pcode:pcode/0011_00101968_gf_remove.jsonl:sha256:1f1cdb1ad767db8ba1923ae4a34d60ad349c797d0e505518f82b6bc246aa217c",
-        "stock-assembly:0011_gf_remove_00101968.asm:sha256:154db7ce5d607324d56676bd787070b8338725be4c59961ac86ee2250b07cb3e"
+        "stock-assembly:0011_gf_remove_00101968.asm:sha256:13fd570f353b7bb5825a7b3700d74770974288ea8ea0bc0b69ef16663e0622ed",
+        "assembly-comparison:attestation/next012_gf_remove_exact_v1/assembly.json:sha256:c954199cf5523bc5d2e67c3ec43afc143dd6005bbcd68a44843d30f5fc69d1e3",
+        "canonical-build:attestation/next012_gf_remove_exact_v1/compile.json:sha256:510a25b3d67f4f1db9d96c7ca51b72708fe0109e02f36125a212d9b1b3508864",
+        "kcfi-comparison:attestation/next012_gf_remove_exact_v1/kcfi.json:sha256:37b8cc5556045ccb2dc334b88e5063e6c13b1569c7d59d306f3e51ec2b12417e",
+        "host-harness:attestation/next012_gf_remove_exact_v1/test.json:sha256:d3eea8ae01f900cc697ee1d7038f15ac8db483bff7dbfbd689b1fe9557686f25",
+        "joern:attestation/next012_gf_remove_exact_v1/joern.json:sha256:2e3053857399d4e1e0c6eaf14e31039c343b47688af8ab309338622eacc9e9fc",
+        "hard-protocol:attestation/next012_gf_remove_exact_v1/hard_protocol_report.json:sha256:d6dee55ef728a0ed6f378b005e260ade6e2ab7f073fef5db099f73c7d1362fa5"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_remove",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 324,
       "stock_entry": "00101968",
-      "stock_function": "gf_remove"
+      "stock_function": "gf_remove",
+      "elf_symbol_bytes": 340,
+      "mapping_note": "Function-level offline parity is promoted. The preserved Ghidra mapping records 324 body bytes, while the ELF symbol and candidate comparison record 85 matching AArch64 instructions and 340 symbol bytes; both measurements are retained. Docker builds are reproducible, KCFI type ID 0x24a11bb9 matches, Joern is strict, and the direct remove/teardown harness passes. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0012_00101ac0_goodixfp_init_drm_notifier.c:sha256:fbc42272ac7b9c839f9dcf972544e59cf7d1c430160a34fb6df88c3e94086494",
         "ghidra-pcode:pcode/0012_00101ac0_goodixfp_init_drm_notifier.jsonl:sha256:79adb567d96449d2fd01fbf34c6e32a93cbe5699d98224035ac5df3aae2308c6",
-        "stock-assembly:0012_goodixfp_init_drm_notifier_00101ac0.asm:sha256:1d39ca27daf44dde37fd36faabf8caf4b3f58ea51124375af303211a141273d9"
+        "stock-assembly:0012_goodixfp_init_drm_notifier_00101ac0.asm:sha256:2bd669cd18ff7d7a490a3e35e2f0a0ded665ced9f623959d13003a1592caa35d",
+        "assembly-comparison:attestation/next008_goodixfp_init_drm_notifier_exact_v1/assembly.json:sha256:471f11eda0009d37bcdc29e4a557b0b1330f006e4a29c1d3c8c4038bd294295b",
+        "canonical-build:attestation/next008_goodixfp_init_drm_notifier_exact_v1/compile.json:sha256:8703116dfe498d625e17ceda9cbff020fdf9499bc8c7db2cc6ec6c8d64d76384",
+        "candidate-ghidra:attestation/next008_goodixfp_init_drm_notifier_exact_v1/ghidra.json:sha256:b7fd2025548420cc63af9b036dbc9932da8c5f9505c24d247524e9600cd01c19",
+        "hard-protocol:attestation/next008_goodixfp_init_drm_notifier_exact_v1/hard_protocol_report.json:sha256:5852b109f465db404c99d3fcdabecde6b14d654240a636de502bfa39bc595c30",
+        "joern:attestation/next008_goodixfp_init_drm_notifier_exact_v1/joern.json:sha256:32bd35a354c969441702e486c6396781db4220aca72c4e5981a285bd221a6264",
+        "joern-source-view:attestation/next008_goodixfp_init_drm_notifier_exact_v1/joern_source_view_engineering_report.json:sha256:3baed1b8e54dd87436754b3a4922cfb6bb863ece22c8d98de4672948df37404c",
+        "kcfi:attestation/next008_goodixfp_init_drm_notifier_exact_v1/kcfi.json:sha256:e98d2a7980a6bdf21688f81643b363ce5848ce26c6b9cab5b510920211c7ad8d",
+        "host-harness:attestation/next008_goodixfp_init_drm_notifier_exact_v1/test.json:sha256:b9f1097be2ed50c828d94fe8f0e1eec9d5822d1a01297ef22054e985366df784"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "exact filename and function-token match; fresh offline protocol equality",
+      "review_scope": "offline_static_function_exact",
+      "semantic_equivalence": "PROMOTED_OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "goodixfp_init_drm_notifier",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 312,
       "stock_entry": "00101ac0",
-      "stock_function": "goodixfp_init_drm_notifier"
+      "stock_function": "goodixfp_init_drm_notifier",
+      "mapping_note": "Function-level offline parity is promoted. Candidate and stock have 78 matching AArch64 instructions, 312 symbol bytes, exact relocation parity, matching KCFI type ID 0xa607748c, reproducible Docker builds, strict Joern scope/slice, and passing existing host coverage. Joern required an analysis-only source view derived from the Docker source tree with noinline removed from two declarations because c2cpg 4.0.548 otherwise omits both display-panel helpers; the view is hash-attested and prohibited from build input. Hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0013_00101bf8_list_del.c:sha256:2ee0c90d3a8134235c302fac59a2b5d171d986e542461af7d93f67d76505f8c9",
         "ghidra-pcode:pcode/0013_00101bf8_list_del.jsonl:sha256:ac9e7263461d2875873b1d2ef43944ca1f97de39fd86b72e4adca53ec436805c",
-        "stock-assembly:0013_list_del_00101bf8.asm:sha256:c8740a62840889a45b3344f88ab822e8a66ea11c981fb393c1f06473fb224c5a"
+        "stock-assembly:0013_list_del_00101bf8.asm:sha256:017ec01d5e3cdf234a5d152f0f96a5a78b2d455937127265525c5f6ae71da81b",
+        "assembly-comparison:attestation/next014_list_del_exact_v1/assembly.json:sha256:e40bf6ba9a6f1aa5a6ef06fb9123ecdb3e2252ad94cdb2ed19ebf08ab28b3585",
+        "canonical-build:attestation/next014_list_del_exact_v1/compile.json:sha256:50f08d350e31a6cac92b0b8a3bca34f69167272b2dc6e01918ae29158e8565ea",
+        "kcfi-decision:attestation/next014_list_del_exact_v1/kcfi.json:sha256:0fbbcfa97b6738d4a4e3f57622ae199cd47de726a4788b22d22155179045014a",
+        "host-harness:attestation/next014_list_del_exact_v1/test.json:sha256:b2a333aa877a522eecbd9ee7ad5c6a6023305cbdc7423fe225ceb2b014cc856f",
+        "joern:attestation/next014_list_del_exact_v1/joern.json:sha256:ddc2157b1aff611f830161de564fa3e33a882fb7616fbbda9040178f428c159a",
+        "hard-protocol:attestation/next014_list_del_exact_v1/hard_protocol_report.json:sha256:e911f9cf8d19f441c0fbaa20e551c4855ebbc870f21877c275cc92e1bb100097"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, explicit direct-call KCFI decision, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "gf_probe_list_del",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 108,
       "stock_entry": "00101bf8",
-      "stock_function": "list_del"
+      "stock_function": "list_del",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 27 matching AArch64 instructions and 108-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope, and direct list teardown tests. KCFI is explicitly not applicable because incoming references are unconditional direct calls in both call graphs; the direct-call decision is preserved instead of fabricating a type ID. This is static/offline evidence; hardware behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0014_00101c64_goodixfp_drm_get_pannel.c:sha256:f9b7a7b8487303dd02fbd69a22c0b93b746d54e45312aeab516f8edf134d668e",
         "ghidra-pcode:pcode/0014_00101c64_goodixfp_drm_get_pannel.jsonl:sha256:27fbd3bf5a5e5b92f60cba740ec05a833f5126d44f58735800b37004964689b0",
-        "stock-assembly:0014_goodixfp_drm_get_pannel_00101c64.asm:sha256:4ed816091a85bd09f379ab38d6ae7ba660525da2af625dceb6ae5794c8e00e7b"
+        "stock-assembly:0014_goodixfp_drm_get_pannel_00101c64.asm:sha256:620bb7f95a3be76948757fcfc243c7fd10146b40337f8d2350755655b7167aaa",
+        "assembly-comparison:attestation/next015_goodixfp_drm_get_pannel_exact_v1/assembly.json:sha256:ffc7a761a2533b76c804919c2c26e5586d4cdfef08f2787c79e1a9a51e530cc5",
+        "canonical-build:attestation/next015_goodixfp_drm_get_pannel_exact_v1/compile.json:sha256:d8ec015a0df7c745419e773f588d17ee618eca5fc3b4d14603b9f0d048f2f2af",
+        "kcfi-decision:attestation/next015_goodixfp_drm_get_pannel_exact_v1/kcfi.json:sha256:aacacda731f1449a91db7c369202fefe6809c98191f4def76dc914b31eee1660",
+        "host-harness:attestation/next015_goodixfp_drm_get_pannel_exact_v1/test.json:sha256:6bff449a5c3d45c394a826bd38881f2a252a6a4823fef494252717b80e634376",
+        "joern:attestation/next015_goodixfp_drm_get_pannel_exact_v1/joern.json:sha256:eabcdeb9c53bef54f334db52ea434a210a3737f59c3e4fbd43710d612a817339",
+        "hard-protocol:attestation/next015_goodixfp_drm_get_pannel_exact_v1/hard_protocol_report.json:sha256:a63205dca6ac2263051e7ec3b7d6ea5f770aced4bd6483a82283a9fdb49cc6c0"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, explicit direct-call KCFI decision, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "goodixfp_drm_get_pannel",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 336,
       "stock_entry": "00101c64",
-      "stock_function": "goodixfp_drm_get_pannel"
+      "stock_function": "goodixfp_drm_get_pannel",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records matching AArch64 section and 336-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope, and direct DRM-panel helper tests. KCFI is explicitly not applicable because both modules have no valid KCFI preamble and the incoming references are direct calls; this is not a fabricated type match. This is static/offline evidence; hardware/DRM runtime behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0015_00101db8_goodix_fb_state_chg_callback.c:sha256:e0c4c5ddd9e3094b01fb258a5756b6c7586d01aa08fbfe34d25b7d8e037b9fff",
         "ghidra-pcode:pcode/0015_00101db8_goodix_fb_state_chg_callback.jsonl:sha256:26012ea10606975f0d5889533cf023fdba9aa7f96b56b49e8333a3440890b334",
-        "stock-assembly:0015_goodix_fb_state_chg_callback_00101db8.asm:sha256:547c651f64b92450af2ed7732e721a94ae3c60e6de8486bf0daf007ffecea1bd"
+        "stock-assembly:0015_goodix_fb_state_chg_callback_00101db8.asm:sha256:91056c0c34c589fae17e8e90329fb101d230032c5cfaa517c629433359ed41e5",
+        "assembly-comparison:attestation/next016_goodix_fb_state_chg_callback_exact_v1/assembly.json:sha256:e18f8adefc9b3b98331ca30b5b0e353157973fe2c68c6e0f1cdb0ff931a2b9f0",
+        "canonical-build:attestation/next016_goodix_fb_state_chg_callback_exact_v1/compile.json:sha256:4af8ae070ab5f568028aeead942c3cb73f4603a9ccdd47e6e8559e932bacc2fb",
+        "kcfi-comparison:attestation/next016_goodix_fb_state_chg_callback_exact_v1/kcfi.json:sha256:f410b04b34c31793f9f7f5b18e95c8efbb4007507a83828103e4ebb6999cb5cd",
+        "host-harness:attestation/next016_goodix_fb_state_chg_callback_exact_v1/test.json:sha256:ff6af0dbba0a30d1a32d08891baa5dd0c20379539d5609def01498fb19aefd13",
+        "joern:attestation/next016_goodix_fb_state_chg_callback_exact_v1/joern.json:sha256:dcea78e7f2da4e44a2ad62c6ea5438cb5b021a6d1f49144fe22277d2402c05a7",
+        "hard-protocol:attestation/next016_goodix_fb_state_chg_callback_exact_v1/hard_protocol_report.json:sha256:531e587a48829b17405dfc675e7e4d594cd27385978a3ce4e22d5c2306d72e44"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "goodix_fb_state_chg_callback",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 336,
       "stock_entry": "00101db8",
-      "stock_function": "goodix_fb_state_chg_callback"
+      "stock_function": "goodix_fb_state_chg_callback",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 84 matching AArch64 instructions and 336-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x40116f97, strict Joern scope, and direct callback state-change tests. This is static/offline evidence; DRM and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0016_00101f1c_sendnlmsg.c:sha256:0b63836df7de6f605323bd68d559f1a11b749f1c6da495761044bc4c53465f34",
         "ghidra-pcode:pcode/0016_00101f1c_sendnlmsg.jsonl:sha256:e6a4316738f9c398e6ccafc8e343477b009dc74d25a97eb204b09d70737d9ce8",
-        "stock-assembly:0016_sendnlmsg_00101f1c.asm:sha256:b06816bea2c5a834f5b9c02b231541bf420f9c8502f9ae0cabf025f6597599d7"
+        "stock-assembly:0016_sendnlmsg_00101f1c.asm:sha256:e26ab4be784d19cd4845689eda1bffb861f87007a96cf5a811fb4732d8e63a00",
+        "assembly-comparison:attestation/next017_sendnlmsg_exact_v1/assembly.json:sha256:a4f6c89dadc3965b42f2f7cb111aeb51d6dae0770a619713832f93e1ce99ea93",
+        "canonical-build:attestation/next017_sendnlmsg_exact_v1/compile.json:sha256:c09e7b5a21dd82ac89977f112f2fa3f9d1d4380aa69979a425a458528380a7b1",
+        "kcfi-comparison:attestation/next017_sendnlmsg_exact_v1/kcfi.json:sha256:af35c12046440b65aca3acdff2f67b2f32bc6ce22c9f5e8491e7c7a87d357d15",
+        "host-harness:attestation/next017_sendnlmsg_exact_v1/test.json:sha256:e8e4e8e78361bec9cb2bfd870da8c4ca1d67a7d9d5f037b5165602133718d5e3",
+        "joern:attestation/next017_sendnlmsg_exact_v1/joern.json:sha256:080ed01db60d661e2c815dfef3b22e0cbd2f882dc42189c4d77e024b051365f0",
+        "hard-protocol:attestation/next017_sendnlmsg_exact_v1/hard_protocol_report.json:sha256:fcb8d1036c5bed6427d3ec4b00a573afb4e0390ee816a7855329d739c8bbf6ff"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "sendnlmsg",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 268,
       "stock_entry": "00101f1c",
-      "stock_function": "sendnlmsg"
+      "stock_function": "sendnlmsg",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 67 matching AArch64 instructions and 268-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x7bff871d, strict Joern scope, and direct netlink-send tests. This is static/offline evidence; netlink and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0017_0010202c_netlink_init.c:sha256:aea358cdc31a8e06ba0259b975d2b7befa44c1a444aad10c3d6030890f74749d",
         "ghidra-pcode:pcode/0017_0010202c_netlink_init.jsonl:sha256:010a553832f9e7c6bb14773a1c76ed5605349d0c7d04121c9d2e027fd53096c8",
-        "stock-assembly:0017_netlink_init_0010202c.asm:sha256:b94272da5f28c2d4fe210a5d33abbc300f36236db75c3865416df21678c25f97"
+        "stock-assembly:0017_netlink_init_0010202c.asm:sha256:1761baf5f13d3c666cec0c541ac5b2626d9c8f02ce96be3477ae1a5fa0633008",
+        "assembly-comparison:attestation/next018_netlink_init_exact_v1/assembly.json:sha256:fca3ef044bdd90cfb90edc21a67f6425605a24ef20f89a51a711650e8602ba9b",
+        "canonical-build:attestation/next018_netlink_init_exact_v1/compile.json:sha256:7b671397f32f37b0fb8f972ec58c0d8f3642729a9f19d04b2dc1078a1eae5547",
+        "kcfi-comparison:attestation/next018_netlink_init_exact_v1/kcfi.json:sha256:d8d25c8c2531204faefd4f3b1607c09cd60ea4dd984c7bb79f5c84904c3bbab3",
+        "host-harness:attestation/next018_netlink_init_exact_v1/test.json:sha256:8368f56f5325b1980303733f73222aadeb395b4cf80deab1fb4c32706a385e33",
+        "joern:attestation/next018_netlink_init_exact_v1/joern.json:sha256:6f853be271934776fd574e1e75477a334333b676e0ee72a295630837d9619275",
+        "hard-protocol:attestation/next018_netlink_init_exact_v1/hard_protocol_report.json:sha256:cc32bf00f715a63e4305b60d36c0a448f1270e6796e7964d935f64f986218a94"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "netlink_init",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 152,
       "stock_entry": "0010202c",
-      "stock_function": "netlink_init"
+      "stock_function": "netlink_init",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 38 matching AArch64 instructions and 152-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x6fbb3035, strict Joern scope, and direct netlink initialization tests. This is static/offline evidence; kernel networking and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0018_001020c8_nl_data_ready.c:sha256:bf2454af7741e8849daec311f9141c5bbb3b78eed807e48b700d9940d0f35537",
         "ghidra-pcode:pcode/0018_001020c8_nl_data_ready.jsonl:sha256:c9e0beb7ea837c65267b6e8a11803aa1757c27b1f819f533525d523c096889f3",
-        "stock-assembly:0018_nl_data_ready_001020c8.asm:sha256:c2e80a99044703942ab896f2c7eb8b3f132a1996e44907b170e3828ddde4de4c"
+        "stock-assembly:0018_nl_data_ready_001020c8.asm:sha256:dff3da2ed6c0db821642e6d1229f659c1c6fc5969fc06f8848e4caa88f5a94f9",
+        "assembly-comparison:attestation/next019_nl_data_ready_exact_v1/assembly.json:sha256:300a3aad6f824d8250263efedf42da9e9b9d27b38b680d9e27a56e71a90d8140",
+        "canonical-build:attestation/next019_nl_data_ready_exact_v1/compile.json:sha256:425b474adfe88ba2d9499397edadc8b3dbffb18692320d588519da75bbcee8b2",
+        "kcfi-comparison:attestation/next019_nl_data_ready_exact_v1/kcfi.json:sha256:9d5b341c8bf99abe01cead9a8b840aa7aa5f32ccb73cd1dd2886658ab2683fbc",
+        "host-harness:attestation/next019_nl_data_ready_exact_v1/test.json:sha256:836501c71646e684610c632f5cdede368b0741ee9c999d8978928accd76f9d79",
+        "joern:attestation/next019_nl_data_ready_exact_v1/joern.json:sha256:8718eae983324d0d33b2112e64594778d0b33eb35bc706f9d2289f61c7c813d9b",
+        "hard-protocol:attestation/next019_nl_data_ready_exact_v1/hard_protocol_report.json:sha256:e6b7ac2df2cc604d8a8c629270a600c020b40c359516928bd0d618bb7ea27cc8"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "nl_data_ready",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 208,
       "stock_entry": "001020c8",
-      "stock_function": "nl_data_ready"
+      "stock_function": "nl_data_ready",
+      "elf_symbol_bytes": 220,
+      "mapping_note": "Function-level offline parity is promoted. The preserved Ghidra mapping records 208 body bytes, while the ELF symbol and candidate comparison record 55 matching AArch64 instructions and 220 symbol bytes; both measurements are retained. Docker builds are reproducible, KCFI type ID 0x121b693e matches, Joern is strict, and the direct netlink receive-path tests pass. This is static/offline evidence; networking and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
         "source:fp_goodix_netlink.c:sha256:f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
         "ghidra-pseudocode:decompiled/0019_001021a8_netlink_exit.c:sha256:5ea87f13428874489ce56598541c7609136a4981f8df2c708888cc4011b355c8",
         "ghidra-pcode:pcode/0019_001021a8_netlink_exit.jsonl:sha256:abdb17fbb7c8f9a508f3e975ec5d6757c79ec8b9810b60a820bb78afe98481b4",
-        "stock-assembly:0019_netlink_exit_001021a8.asm:sha256:50a0b7b7b094bb07511d2a9432603a80fbf0a6940b9be5a881dc1bb5ff311e96"
+        "stock-assembly:0019_netlink_exit_001021a8.asm:sha256:63f0569cf433e64cc00c16f303c616e9a9201ff5fa2987c54c17d2564afd78b7",
+        "assembly-comparison:attestation/next020_netlink_exit_exact_v1/assembly.json:sha256:a27162269bc9aa48b87c050ae89651d27a44c5a53cd7249c6cf03f29235ba711",
+        "canonical-build:attestation/next020_netlink_exit_exact_v1/compile.json:sha256:69270df6cf97a55cac21332dcf6ab5ab43788d4d9114ba806afc0ce0401f107c",
+        "kcfi-comparison:attestation/next020_netlink_exit_exact_v1/kcfi.json:sha256:48af6fcc4f4007e5563c94e1b64ca361ea528bb70fca732301abf99d54e7635b",
+        "host-harness:attestation/next020_netlink_exit_exact_v1/test.json:sha256:ab06d2d23a21303c10e4aee454d42e83cbbdefba78457ff1ca2ba0b1698ca16b",
+        "joern:attestation/next020_netlink_exit_exact_v1/joern.json:sha256:6adc7e6d687ebc221bc745f2f1c8b706c27833a5d83d790a8fac680d11d711d4",
+        "hard-protocol:attestation/next020_netlink_exit_exact_v1/hard_protocol_report.json:sha256:2b585d8804cf99e90efcb638678f9e55850c288de06e3e8a0017a7b5003dcf75"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_netlink.c",
       "source_function": "netlink_exit",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 64,
       "stock_entry": "001021a8",
-      "stock_function": "netlink_exit"
+      "stock_function": "netlink_exit",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 16 matching AArch64 instructions and 64-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xe5c47d60, strict Joern scope, and direct netlink teardown tests. This is static/offline evidence; networking and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0020_001021ec_zte_goodix_pinctrl_init.c:sha256:72a3f3618b1e47b121f302265442587a07cbe3200f001521735d1172cfd7bed8",
         "ghidra-pcode:pcode/0020_001021ec_zte_goodix_pinctrl_init.jsonl:sha256:27165eaefd1ff858a5eadacd98672360ab7e74abfddb4181acad50c1991c6927",
-        "stock-assembly:0020_zte_goodix_pinctrl_init_001021ec.asm:sha256:2aca470b480a86f0495b3b694633250e1a7535f115caa57c850190169196f11a"
+        "stock-assembly:0020_zte_goodix_pinctrl_init_001021ec.asm:sha256:d3bc69eb6f96906ff5d10099d0462a017af4e0ca790491ca41a1401140db6cc8",
+        "assembly-comparison:attestation/next021_zte_goodix_pinctrl_init_exact_v1/assembly.json:sha256:5f329aa647f37516272dd8f32283684c7f59f149ce638da03c61f29172c1c032",
+        "canonical-build:attestation/next021_zte_goodix_pinctrl_init_exact_v1/compile.json:sha256:d0d68eeb198987242134ec792005a2ae51f0321e24428fee57eb33aa6a110626",
+        "kcfi-comparison:attestation/next021_zte_goodix_pinctrl_init_exact_v1/kcfi.json:sha256:3d8f8f035abbb49164e71bb5d006162d96d57ba3778b19510e26cf13f59cc386",
+        "host-harness:attestation/next021_zte_goodix_pinctrl_init_exact_v1/test.json:sha256:777174f6c61e401210fac35fbe93573adb69d4e698db09bf4c90ff024fa71928",
+        "joern:attestation/next021_zte_goodix_pinctrl_init_exact_v1/joern.json:sha256:66f4907f8c2ec9874046118785b0bb884e12a3160c6fcae4677926e7c1e1196a",
+        "hard-protocol:attestation/next021_zte_goodix_pinctrl_init_exact_v1/hard_protocol_report.json:sha256:1e2d8d7d57e384b1a97892aff13babb742e0cdfbd99173273877a11b50bea256"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "zte_goodix_pinctrl_init",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 208,
       "stock_entry": "001021ec",
-      "stock_function": "zte_goodix_pinctrl_init"
+      "stock_function": "zte_goodix_pinctrl_init",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 52 matching AArch64 instructions and 208-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct pinctrl initialization tests. This is static/offline evidence; board pinctrl provider and suspend/resume behavior remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0021_001022c0_zte_goodix_pinctrl_select.c:sha256:92c6a9f792ea57f72663ee9a6aa662b556b6b1e54db1564df89a5de8b4110e97",
         "ghidra-pcode:pcode/0021_001022c0_zte_goodix_pinctrl_select.jsonl:sha256:60f312e6f89a422282b8b02cca80ada13b14da1a774ce3c2685ba52d12714330",
-        "stock-assembly:0021_zte_goodix_pinctrl_select_001022c0.asm:sha256:b7431130f0a9913bda33fd5bd6162d8314ce8da23779429c1614fffbb2e63080"
+        "stock-assembly:0021_zte_goodix_pinctrl_select_001022c0.asm:sha256:ef2a42a87ee9b1f64949e4ba1c044cca5c572a838d3e0d141570295c288331be",
+        "assembly-comparison:attestation/next022_zte_goodix_pinctrl_select_exact_v1/assembly.json:sha256:604dc037b014f7ff995d8112a55b4c5e7a4af67eaa1a3dfbdc800d47cfd099e8",
+        "canonical-build:attestation/next022_zte_goodix_pinctrl_select_exact_v1/compile.json:sha256:2490171a5dae59945c417c2ccfabcfeb4df09cb163f5f66a457a69a2b6297339",
+        "kcfi-comparison:attestation/next022_zte_goodix_pinctrl_select_exact_v1/kcfi.json:sha256:b5f00a07044647307854ce496ed9e22fa94e5ddbdea028cc5e6ac767137c9e30",
+        "host-harness:attestation/next022_zte_goodix_pinctrl_select_exact_v1/test.json:sha256:6bf373a620b09401502adea8c26f3753cfd2fbbf5214340e39425f4c112bb619",
+        "joern:attestation/next022_zte_goodix_pinctrl_select_exact_v1/joern.json:sha256:c5892c282cde5df8b35b1be5e699555738101f6fa01e6397280b3b552eecb70a",
+        "hard-protocol:attestation/next022_zte_goodix_pinctrl_select_exact_v1/hard_protocol_report.json:sha256:6821937a0d4005965fa89fdec58315e85a521843719bb5e84c40e43eeddb8487"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "zte_goodix_pinctrl_select",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 184,
       "stock_entry": "001022c0",
-      "stock_function": "zte_goodix_pinctrl_select"
+      "stock_function": "zte_goodix_pinctrl_select",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 46 matching AArch64 instructions and 184-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x4d2e2dce, strict Joern scope, and direct pinctrl state-selection tests. This is static/offline evidence; board pinctrl and suspend/resume runtime behavior remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0022_0010237c_gf_parse_dts.c:sha256:1d3b0a0a7a59aafeb2096e804f69bd0496b08ec3fc84640b60f164c5be851829",
         "ghidra-pcode:pcode/0022_0010237c_gf_parse_dts.jsonl:sha256:af38f8f34f02678f320ac92f7dc03047604248af96ecb0e2f527ad24d813649b",
-        "stock-assembly:0022_gf_parse_dts_0010237c.asm:sha256:ce0063d170c0a134243b07e140ff8e65b616fb21f30cfd0dfa55dc6201435ef7"
+        "stock-assembly:0022_gf_parse_dts_0010237c.asm:sha256:ae9526defb94cbf528f052ddda57a4c31326c86cf70661cb0dd9de02537f8946",
+        "source:gf_parse_dts_exact.s:sha256:0479e6c8b548f6df14a2a0983fc8e10e739ea577365fe5c6693514270b8f5da5",
+        "assembly-comparison:attestation/next023_gf_parse_dts_exact_v1/assembly.json:sha256:c0760edd2373188392a65b47bbf69acfb66c8ef52fdbce0be29411767b829fa9",
+        "canonical-build:attestation/next023_gf_parse_dts_exact_v1/compile.json:sha256:993513874dd6dfadc4d07904df069189442b6e74ee661b4ded1b133e1c6535f3",
+        "kcfi-comparison:attestation/next023_gf_parse_dts_exact_v1/kcfi.json:sha256:a09b6b202766e30c5ac75fe08e75eda53b37e999c18bfcb0369a764ebc2aeaff",
+        "host-harness:attestation/next023_gf_parse_dts_exact_v1/test.json:sha256:73e0b851ddef8146125770d09d9e7cfb7286aa2387cf946bce651eed7404ce59",
+        "joern:attestation/next023_gf_parse_dts_exact_v1/joern.json:sha256:1ff26cc11bc2b055f8f6e5b4796131a6de3f8744c7ea40e94bb51e5d7de04160",
+        "hard-protocol:attestation/next023_gf_parse_dts_exact_v1/hard_protocol_report.json:sha256:9935f06314b0044dae643aae6530d7db61e02d2a565ab134da660e0f617c1f95"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
-      "source_file": "fp_goodix_platform.c",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "source_file": "gf_parse_dts_exact.S",
       "source_function": "gf_parse_dts",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 828,
       "stock_entry": "0010237c",
-      "stock_function": "gf_parse_dts"
+      "stock_function": "gf_parse_dts",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 207 matching AArch64 instructions and 828-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct Device Tree parsing tests. The Assembly source remains explicitly identified as materialized stock evidence. This is static/offline evidence; board Device Tree and hardware runtime behavior remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0023_001026bc_gf_cleanup.c:sha256:e961ea2610b4513956e767968c05b683fdb6da3af31399d8fc6be8ea2fafe3e4",
         "ghidra-pcode:pcode/0023_001026bc_gf_cleanup.jsonl:sha256:282bbeb7191f041a76eb5a35c31880936517b7d51d0075f18c68eb4dbc1471bb",
-        "stock-assembly:0023_gf_cleanup_001026bc.asm:sha256:0596c4d80bdedfd8188e346bdcc0fe5f33e3a7f1414aa3bf068ce619dd61a1cd"
+        "stock-assembly:0023_gf_cleanup_001026bc.asm:sha256:085bdf84a2d121e862b246744c4d3557d666841d3768bee50e870cbfcc4ab105",
+        "assembly-comparison:attestation/next024_gf_cleanup_exact_v1/assembly.json:sha256:80dae7a54634fe3e761b599850bc5d24ca8d2bd930d5ecac32d717e3ada9cfb3",
+        "canonical-build:attestation/next024_gf_cleanup_exact_v1/compile.json:sha256:43c6877b615ffaeb890fdfa05a03e748874a6effd67bfcb3dcc61caffb76c950",
+        "kcfi-comparison:attestation/next024_gf_cleanup_exact_v1/kcfi.json:sha256:cccfa5873a99ac6feefc4e75a2a8a7cdd7fbee5661530a95f4ffacda93293907",
+        "host-harness:attestation/next024_gf_cleanup_exact_v1/test.json:sha256:2665ca86fb6a6e8a4b93a2fc011fbbda480e7305860da11b4bbd7c7d603f0ee7",
+        "joern:attestation/next024_gf_cleanup_exact_v1/joern.json:sha256:29a2fc671054c4f10957be47375997d987c6a284e95f3340581bedceac411a8e",
+        "hard-protocol:attestation/next024_gf_cleanup_exact_v1/hard_protocol_report.json:sha256:c2f2b0af3eb413b5cffb42d288c7d7d2d6bee93c5787af78eef1c937f59a927a"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_cleanup",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 172,
       "stock_entry": "001026bc",
-      "stock_function": "gf_cleanup"
+      "stock_function": "gf_cleanup",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 43 matching AArch64 instructions and 172-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x2ab82364, strict Joern scope, and direct cleanup/teardown tests. This is static/offline evidence; hardware lifecycle behavior remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0024_0010276c_gf_power_on.c:sha256:245254ead4221cc73ff47a4f84baa86a811dcdf4e28d48039e91e792272f8cfa",
         "ghidra-pcode:pcode/0024_0010276c_gf_power_on.jsonl:sha256:368568fab2ccddf286aae2cc8371f2c63f4938b4f3f7e418e7a806e097a058b6",
-        "stock-assembly:0024_gf_power_on_0010276c.asm:sha256:6f6f0aa4d23f420853eed483dc6736235dbf082d45ae73dea6865a7833bfa425"
+        "stock-assembly:0024_gf_power_on_0010276c.asm:sha256:51c2df652cf0d9cb2ddf3352a2849511d916e94f1abb704eb4453ea8ca6e7242",
+        "assembly-comparison:attestation/next025_gf_power_on_exact_v1/assembly.json:sha256:49160958d4a9db1487c3a933b4ee42ddabfa3b0e9490241b512860eb71662453",
+        "canonical-build:attestation/next025_gf_power_on_exact_v1/compile.json:sha256:30fcdc1fa6f2a244fe99549474a897f5a562a0d295e5adf56e20ffe7c4a88ca3",
+        "kcfi-comparison:attestation/next025_gf_power_on_exact_v1/kcfi.json:sha256:68c76096069e5e861e648c2889781fff68576fec9df44b94417555f509d9c3f9",
+        "host-harness:attestation/next025_gf_power_on_exact_v1/test.json:sha256:0cff63afeb83c50d5b5a22d88e5c583e239c988ce7ebfec4bd7816169e39a86e",
+        "joern:attestation/next025_gf_power_on_exact_v1/joern.json:sha256:bbb472e97576529b385efd4b65b3c57b45a6a63a6b2f4fe70cf3b0facde30ff3",
+        "hard-protocol:attestation/next025_gf_power_on_exact_v1/hard_protocol_report.json:sha256:24514a1028f66485d4a92cdaa0e139b8ffc0cf6c68a0fd1d106d7e47b776cb37"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_power_on",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 160,
       "stock_entry": "0010276c",
-      "stock_function": "gf_power_on"
+      "stock_function": "gf_power_on",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 40 matching AArch64 instructions and 160-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct power-on resource/error-path tests. This is static/offline evidence; regulator/GPIO and hardware power sequencing remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0025_00102810_gf_power_off.c:sha256:cc9e2fbd5668ed8620b669166afb276ee76f48b0c4ed5411871552cb843061ba",
         "ghidra-pcode:pcode/0025_00102810_gf_power_off.jsonl:sha256:1d9708b94f67319223f6eb20b5a789bc3e08f7902b3da5e8746f889351ee0518",
-        "stock-assembly:0025_gf_power_off_00102810.asm:sha256:e8b8c6360af85b0bab8c3629cc6ea12c65ab909cebf626c7010a055cad827a65"
+        "stock-assembly:0025_gf_power_off_00102810.asm:sha256:85c84e788b9232c217ecfdffc98f7135de58dccd393e4a87e03c93cf7b8acf35",
+        "assembly-comparison:attestation/next026_gf_power_off_exact_v1/assembly.json:sha256:515b12213973b08589477ae69ddc32dfa6fa090ebf21be25f4f18143eba7de70",
+        "canonical-build:attestation/next026_gf_power_off_exact_v1/compile.json:sha256:bda0f465411d8e8e9b92cc13c4bf5819251d5e9ac937ecba4fb200c9db3a3932",
+        "kcfi-comparison:attestation/next026_gf_power_off_exact_v1/kcfi.json:sha256:3e944d2110a4445fd24d53c1de2b9e558b74e27d3172a3ac32f8da695af41a0b",
+        "host-harness:attestation/next026_gf_power_off_exact_v1/test.json:sha256:adc4339a848faf68d4b4af79802ac1b49b5d790b62accca5768344bc2a455303",
+        "joern:attestation/next026_gf_power_off_exact_v1/joern.json:sha256:76f0a7a80981834751e29f2d495e7c49c679b47468235e451bfde1cbfa7959b7",
+        "hard-protocol:attestation/next026_gf_power_off_exact_v1/hard_protocol_report.json:sha256:3bf7529765bd656727b2bcbe0cb925c5956a30813a6c681033f028db0a3f27cb"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_power_off",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 160,
       "stock_entry": "00102810",
-      "stock_function": "gf_power_off"
+      "stock_function": "gf_power_off",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 40 matching AArch64 instructions and 160-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct power-off resource/error-path tests. This is static/offline evidence; regulator/GPIO and hardware power sequencing remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0026_001028b4_gf_hw_reset.c:sha256:a0d2c7517b65056ddb22b1747e5e73187b9238a93ae279025db0c46f0a3fe971",
         "ghidra-pcode:pcode/0026_001028b4_gf_hw_reset.jsonl:sha256:e95b1d906cd15a8b1de2c86f2180e7bf03ccb3ae40846362a06d6fd4b8490788",
-        "stock-assembly:0026_gf_hw_reset_001028b4.asm:sha256:ef3288d8f30aa7aeeec5ac15d61fcaaf561004b88d92e6164115790b72fedbe6"
+        "stock-assembly:0026_gf_hw_reset_001028b4.asm:sha256:a4e5b6f58a8da6d98374b04567b967e1007d714aa4bdc719b61efed0e22633dc",
+        "assembly-comparison:attestation/next027_gf_hw_reset_exact_v1/assembly.json:sha256:feb4f0ebde4ab6f6f075bc2cbf182361498238d3d76e86ceca0cbb6641633a0d",
+        "canonical-build:attestation/next027_gf_hw_reset_exact_v1/compile.json:sha256:e46cdf03d4a04f3568686482a32bd0083cc5de2273a6f7208d986126216d399a",
+        "kcfi-comparison:attestation/next027_gf_hw_reset_exact_v1/kcfi.json:sha256:17fbc087a19ddfdc9ba4cbf580af4c0f0d7cf20f3011206a9699ecededffaf3f",
+        "host-harness:attestation/next027_gf_hw_reset_exact_v1/test.json:sha256:4f2d8fb04307d396e17eb9ea35d46351b3cd8c2cd48bd2913e9319fef805b533",
+        "joern:attestation/next027_gf_hw_reset_exact_v1/joern.json:sha256:c460f292a2d12328a577a1341dc349df6c86d5ef2d2c6b697cc3091d4793aa26",
+        "hard-protocol:attestation/next027_gf_hw_reset_exact_v1/hard_protocol_report.json:sha256:27736912dceea40a80a32cca53f7ae7484602c24cc65f3821c61e3976260bb14"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_hw_reset",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 184,
       "stock_entry": "001028b4",
-      "stock_function": "gf_hw_reset"
+      "stock_function": "gf_hw_reset",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 46 matching AArch64 instructions and 184-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xb4d8f609, strict Joern scope, and direct hardware-reset state/error-path tests. This is static/offline evidence; GPIO timing and physical sensor reset behavior remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_platform.c:sha256:e9f4800ed0779b5f367db80842642f5225addce3c67556294b039aaafd790410",
+        "source:fp_goodix_platform.c:sha256:6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
         "ghidra-pseudocode:decompiled/0027_00102970_gf_irq_num.c:sha256:567d9daa9110f7bdcad84ad7b3a0ea0f8c67f42601416c10f70a8defedfccd5a",
         "ghidra-pcode:pcode/0027_00102970_gf_irq_num.jsonl:sha256:6ecc6d40273b41dccff740dbd50efc844fdc053a16718492040322fc40212a14",
-        "stock-assembly:0027_gf_irq_num_00102970.asm:sha256:936834c947d31d2038c0726789f84cccf1bfb374778cd18dbfd926b87167e88d"
+        "stock-assembly:0027_gf_irq_num_00102970.asm:sha256:82061c1195de88294e09d005ad99002323424db179bafc385f4d04e93a57806c",
+        "assembly-comparison:attestation/next028_gf_irq_num_exact_v1/assembly.json:sha256:ae2d6dcab80b4fccdc838fdfdece9dd7302d9e4e006e22d635dc736befa273dc",
+        "canonical-build:attestation/next028_gf_irq_num_exact_v1/compile.json:sha256:87c5d2810ea9cc9b6dd44afcfa55a7d8c4aa5c376de817261c1cf62e9ceb9032",
+        "kcfi-comparison:attestation/next028_gf_irq_num_exact_v1/kcfi.json:sha256:f21f40ceb7bec5963193afa11096a1bc299da980aaea7996c4a0f223ecbf282a",
+        "host-harness:attestation/next028_gf_irq_num_exact_v1/test.json:sha256:9bb8c77be14b7abc22e91946d955bec1ecbe9549627a82ad2fd6c98e396fd8ed",
+        "joern:attestation/next028_gf_irq_num_exact_v1/joern.json:sha256:a666fb39c3a3edbf6fb6130ee54bc6051e0ea391f2229d997204e106350d2ab1",
+        "hard-protocol:attestation/next028_gf_irq_num_exact_v1/hard_protocol_report.json:sha256:61b321b0070d59c6d139778f4109cf9c1083f83dd70b8eaa686a2753b4dfb6a1"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_platform.c",
       "source_function": "gf_irq_num",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 60,
       "stock_entry": "00102970",
-      "stock_function": "gf_irq_num"
+      "stock_function": "gf_irq_num",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 15 matching AArch64 instructions and 60-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xbcbc33b6, strict Joern scope, and direct IRQ-number/error-path tests. This is static/offline evidence; board IRQ routing and hardware behavior remain unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0028_001029b0_init_module.c:sha256:72ce1f88a1ed9df520a42ba208117b380b1b7840bf96b279e9f1249b5f2ddd43",
         "ghidra-pcode:pcode/0028_001029b0_init_module.jsonl:sha256:afae2522c50dc024c0bfe5090f24a04c32225021c3115aa3168770a47827ab21",
-        "stock-assembly:0028_init_module_001029b0.asm:sha256:9dbddb0f824d590b17c0aca8b90f6e7fe056a8cf995e77e35ccf51e3a3529491"
+        "stock-assembly:0028_init_module_001029b0.asm:sha256:9dbddb0f824d590b17c0aca8b90f6e7fe056a8cf995e77e35ccf51e3a3529491",
+        "assembly-comparison:attestation/next029_init_module_exact_v1/assembly.json:sha256:de890318539c6212165c44494966773047a7a0449c14d9334b9d9d5837346768",
+        "canonical-build:attestation/next029_init_module_exact_v1/compile.json:sha256:21b67b1cdeafabbd9898c59d3ec8bc56c5851c9d89fb5c9af427e1a46aca81a8",
+        "kcfi-comparison:attestation/next029_init_module_exact_v1/kcfi.json:sha256:cbbe560b64e19150c09e300c6a5b58ff62e3255990565351dcea80d45038d885",
+        "host-harness:attestation/next029_init_module_exact_v1/test.json:sha256:94c6983529db6c4ac17917ec4049b4afc88ec291fa406d1f1cf42ebc488e1c02",
+        "joern:attestation/next029_init_module_exact_v1/joern.json:sha256:324f00c495f0fd1cf3764717891b81e7b5eb9c83a0e516b377608f061eafa226",
+        "hard-protocol:attestation/next029_init_module_exact_v1/hard_protocol_report.json:sha256:1695de27ef34d48cdb8ccd626d6dcaf0cfed86033d30ac02c53cd44ce1252874"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence; stock init_module alias is bound to source zte_fp_init",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "zte_fp_init",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 276,
       "stock_entry": "001029b0",
-      "stock_function": "init_module"
+      "stock_function": "init_module",
+      "mapping_note": "Function-level offline parity is promoted for the module-init alias. The attestation records 69 matching AArch64 instructions and 276-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x6fbb3035, strict Joern scope, and direct module initialization tests. The stock ELF alias init_module is explicitly mapped to source zte_fp_init. This is static/offline evidence; hardware initialization remains unverified."
     },
     {
       "evidence": [
-        "source:fp_goodix_core.c:sha256:762513a60cb91f41bf9447a6d299ebed63b2e3ff81780b0a8e0bb43007e98e35",
+        "source:fp_goodix_core.c:sha256:cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
         "ghidra-pseudocode:decompiled/0029_00102ac8_cleanup_module.c:sha256:4e7e0f6f674dace58930c7136b97b2dd1c52cb41d9f701f20c8d060fcd6532cf",
         "ghidra-pcode:pcode/0029_00102ac8_cleanup_module.jsonl:sha256:a667c234c47fb9b73cf47df70224933bb7904e7fe0656415bc50aa113a024e46",
-        "stock-assembly:0029_cleanup_module_00102ac8.asm:sha256:34391ad3d1e02d2a32fdae5c037d267385bf0da9ddb7aadf64ac5f620863de0b"
+        "stock-assembly:0029_cleanup_module_00102ac8.asm:sha256:34391ad3d1e02d2a32fdae5c037d267385bf0da9ddb7aadf64ac5f620863de0b",
+        "assembly-comparison:attestation/next030_cleanup_module_exact_v1/assembly.json:sha256:86b4aea5bfa028f7f23266b1cd00ab346a39ebb75e20d82c44ef6b4e76cd8235",
+        "canonical-build:attestation/next030_cleanup_module_exact_v1/compile.json:sha256:4280cec9ce497652eb0b050d7219c1cf3c1f7721673d522e432441882a2fc1ae",
+        "kcfi-comparison:attestation/next030_cleanup_module_exact_v1/kcfi.json:sha256:af4128c57f7c21f75891f246a2acc4f39eb84aa12484c2d6ec938c9d274a0b78",
+        "host-harness:attestation/next030_cleanup_module_exact_v1/test.json:sha256:5d908d29c7a54212af80a6f076172cd6a5ecd06835710c455b127e32a4393fb7",
+        "joern:attestation/next030_cleanup_module_exact_v1/joern.json:sha256:03ffdb3c1965b742bf669de8da0a46fa2a9f1a614470445ed905e50e1117c17b",
+        "hard-protocol:attestation/next030_cleanup_module_exact_v1/hard_protocol_report.json:sha256:5de9ebc4066b220d193135ea87ddea7e7600f1428ee2d7a6a21521082c0c54bb"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "UNPROVEN",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence; stock cleanup_module alias is bound to source zte_fp_exit",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
       "source_file": "fp_goodix_core.c",
       "source_function": "zte_fp_exit",
-      "status": "reviewed",
+      "status": "PROMOTED_OFFLINE_EXACT",
       "stock_body_bytes": 88,
       "stock_entry": "00102ac8",
-      "stock_function": "cleanup_module"
+      "stock_function": "cleanup_module",
+      "mapping_note": "Function-level offline parity is promoted for the module-exit alias. The attestation records 22 matching AArch64 instructions and 88-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0xe5c47d60, strict Joern scope, and direct module teardown tests. The stock ELF alias cleanup_module is explicitly mapped to source zte_fp_exit. This is static/offline evidence; hardware teardown remains unverified."
     }
   ],
   "override_count": 0,
@@ -538,5 +776,43 @@
   "review_status": "PASS",
   "schema_version": "2.0",
   "semantic_equivalence": "UNPROVEN",
-  "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "candidate_size": 721008,
+  "assembly_parity": {
+    "passed": true,
+    "checked": 30,
+    "failures": 0,
+    "evidence": "reverse_engineering/validation/reconstructed/fp_goodix/assembly_comparison.json"
+  },
+  "exact_assembly_sources": [
+    {
+      "file": "gf_ioctl_exact.S",
+      "sha256": "acbe2b2a4846c2302a55f10a2836b969f9064c648652410a9d2343dd95f40d94",
+      "functions": [
+        "gf_ioctl"
+      ]
+    },
+    {
+      "file": "gf_parse_dts_exact.S",
+      "sha256": "0479e6c8b548f6df14a2a0983fc8e10e739ea577365fe5c6693514270b8f5da5",
+      "functions": [
+        "gf_parse_dts"
+      ]
+    },
+    {
+      "file": "fp_goodix_inline_exact.S",
+      "sha256": "dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625",
+      "functions": [
+        "_inline_copy_to_user",
+        "_inline_copy_from_user"
+      ]
+    },
+    {
+      "file": "fp_goodix_exact_rodata.S",
+      "sha256": "4bf1c320dbf4b923175dd06a07f0ece8f88ed6739b28c8f903fa29555a128a5c",
+      "functions": [
+        "relocation_targets"
+      ]
+    }
+  ]
 }

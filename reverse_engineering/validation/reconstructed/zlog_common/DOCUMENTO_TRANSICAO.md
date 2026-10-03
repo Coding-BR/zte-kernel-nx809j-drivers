@@ -4,7 +4,7 @@
 - Kernel alvo: Android 16 GKI `6.12.23`, AArch64, modulo out-of-tree em `vendor_dlkm`
 - Stock SHA-256: `cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0`
 - Fonte primaria: ELF stock, assembly, relocacoes, P-Code e pseudocodigo Ghidra deste run
-- Estado: paridade estatica forte; revisao independente e validacao em hardware ainda pendentes
+- Estado: paridade estatica forte (13/13 Assembly estrito, ABI/KMI e KCFI); revisao independente e validacao em hardware ainda pendentes
 
 ## 1. Mapeamento de Assinaturas (Conformidade GKI 6.12.23)
 
@@ -33,7 +33,7 @@ static int __init zlog_common_init(void);
 
 `struct file_operations` usa `.read`, `.write`, `.unlocked_ioctl`, `.compat_ioctl`, `.open` e `.release`. Nao existe `platform_driver`, binding OF, IRQ ou MMIO neste modulo. O callback indireto `zlog_client_ops.notify` foi recuperado por brute force KCFI como `int (*)(void *, int)`, ID `0xc2a6c845`; casts de ponteiro de funcao sao proibidos.
 
-Os 12 limites indiretos instrumentados possuem os mesmos IDs KCFI do stock. `zlog_comm_create_ctrl_dev` e chamada somente de forma direta e nao possui preambulo KCFI independente. O inventario de 31 imports do candidato coincide com o stock. Todos os simbolos de kernel foram encontrados no `Module.symvers` local; `zlog_write_internal` foi comprovado como export de `zlog_exception`.
+Os limites indiretos instrumentados possuem os mesmos IDs KCFI do stock; a comparação final cobre 13 decisões KCFI, incluindo o caminho direto de `zlog_comm_create_ctrl_dev`. O inventario de imports do candidato coincide com o stock, incluindo `mem_alloc_profiling_key` e as relocações de `__jump_table`. Todos os simbolos de kernel foram encontrados no `Module.symvers` local; `zlog_write_internal` foi comprovado como export de `zlog_exception`.
 
 Nenhum Android Vendor Hook foi observado. Nao adicionar hook por suposicao. Nenhum namespace restrito foi observado, portanto nao ha `MODULE_IMPORT_NS()` comprovado. Qualquer mudanca futura nessa conclusao exige nova evidencia ELF/KMI.
 
@@ -63,7 +63,7 @@ Regra comum para todas as tarefas: implemente somente a funcao solicitada; use e
 
 1. **`zlog_client_notify`**: implemente a validacao do servidor/cliente, atualizacao atomica sob mutex dos campos de evento/flag e reagendamento do delayed work. Valide chamadas e tamanho contra `0000_001003e4_zlog_client_notify.c` e assembly.
 2. **`zlog_client_record`**: implemente apenas o append variadico, limite de `0x800`, saturacao de comprimento e bit de registro. Preserve o tamanho incomum passado a `vsnprintf` e todos os retornos.
-3. **`zlog_register_client`**: implemente busca duplicada, busca de slot livre entre 32 clientes, alocacao de `0x800`, copias limitadas, inicializacao e exports. Nao adicione validacoes ausentes no stock. Esta e a unica funcao com divergencia de tamanho atual: candidato `816`, stock `828` bytes.
+3. **`zlog_register_client`**: implemente busca duplicada, busca de slot livre entre 32 clientes, alocacao de `0x800`, copias limitadas, inicializacao e exports. Nao adicione validacoes ausentes no stock. O corpo final materializado possui `828` bytes, igual ao stock.
 4. **`zlog_unregister_client`**: implemente apenas a liberacao e limpeza observadas. Preserve conscientemente o ponteiro nao zerado, a limpeza duplicada e os campos que o stock deixa intactos.
 5. **`zlog_reset_client`**: implemente zeragem do evento, comprimento e buffer sob mutex; limpe somente o bit comprovado pelo assembly.
 6. **`zlog_handle_work`**: implemente apenas o worker dos 32 clientes, consumo do bit notify, timestamp local, serializacao textual, `zlog_write_internal`, cleanup e reset. Preserve `ZLOG_EVENT_OVERHEAD=0x1ba` e a verificacao fortify antes de `memcpy`.

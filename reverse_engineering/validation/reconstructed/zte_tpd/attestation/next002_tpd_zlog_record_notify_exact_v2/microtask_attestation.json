@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "002_tpd_zlog_record_notify",
+  "stock_function": "tpd_zlog_record_notify",
+  "stock_entry": "00106998",
+  "ghidra_body_bytes": 3452,
+  "elf_symbol_bytes": 3452,
+  "selected_functions": ["tpd_zlog_record_notify"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "a2a2d72ecb28e09e82046619020a70413fe08536bd5af92570a980ed8f17ab4a",
+  "candidate_module_sha256": "f8ac727f9d3c2ec3fbd06cad74d69bcb67b16eb5b6fce1ed5bb07b0237ef129a",
+  "candidate_module_size": 17688992,
+  "evidence": [
+    {"role": "stock_assembly", "path": "stock_assembly/0000_tpd_zlog_record_notify.asm", "sha256": "3dcf43970f70bc8a0eacfd52c459eb62a6c92d14ed23716eb50d8a248952ba7c"},
+    {"role": "candidate_assembly", "path": "candidate_assembly/0000_tpd_zlog_record_notify.asm", "sha256": "9f109585a8c13ee6189202b9a1cc61e4068d4233afb6f178eeb8d40f4d31204c"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "d46917d0d7491a9d8f8707cb2c480348d85a60dbe16998273675b3d59abd6912"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "d67a8010a622b69cce2069be8310654b43b29b6a8eef8de476ec745dc93ba34e"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "09710bfc2c4a201662d1c6c3a2b95b0d5076b7e0411ad3b0520d5b3a1d7e1b22"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "27bc8fb30218b636dba3ecaffc458013398441c3485b82b5c8ed1180b9e21745"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "8aee74b7ea7ce057dca35148d2e05c11e5b0fb6fe459052dc8cf77609b59a73e"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "f9fb722b983eac9b2e708e0da4c229750acabfe61b9ca9fa01131db63f209305"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "9229a2c8abe93eefed5dcaa4b41b20a77233ea0a0846b730f97e70ea46d98a9c"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "958634bc209827174f08bcc95f5b1fe9f1b05bd79305ba22ac45c4318f79a18f"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "8b2b8778fdfedb779e7b3b016ee93db973b7981454decb392b6d979b6599c902"}
+  ],
+  "findings": [
+    "Stock and candidate ELF symbols contain 863 AArch64 instructions and 3452 bytes; the Ghidra body size and ELF symbol size agree.",
+    "KCFI type ID matches at 0xcc3d7e08 in .text with a 3452-byte symbol size.",
+    "The switch dispatch is an 18-entry u16 table; the comparator accepts the independently linked table relocation only after the bounds-checked dispatch shape, table bounds and table hash match.",
+    "The current zlog cluster harness passes 10 direct cases in two ASan/UBSan cycles, including all event mappings, throttle/reset gates, escalation and the stock null-memset path without dereferencing NULL in userspace.",
+    "Android scheduler, zlog service, firmware/touch transport and NX809J hardware behavior remain unverified."
+  ]
+}

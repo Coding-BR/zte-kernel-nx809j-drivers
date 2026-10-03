@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "tool": "Ghidra 12.1.2 headless",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "function": "syna_ghost_check_reset",
+  "stock_body_bytes": 96,
+  "candidate_body_bytes": 96,
+  "repair_scripts": [
+    {"script":"ClearGhidraNoReturn.java","argument":"_printk","effect":"cleared incorrect external no-return inference before decompilation"},
+    {"script":"ExtendGhidraFunctionBody.java","arguments":["syna_ghost_check_reset","96"],"effect":"set function body to the ELF symbol size proven by relocation-aware assembly"}
+  ],
+  "fallback": "PREMATURE_RETURN_DECOMPILER_TRUNCATION",
+  "fallback_scope": "decompiled C only; body bytes, P-Code operation shape, assembly/relocations, KCFI, Joern and Docker remain mandatory"
+}

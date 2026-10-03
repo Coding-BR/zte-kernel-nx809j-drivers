@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "tp_module_info_read",
+  "status": "PASS_NORMALIZED_SEMANTIC_WITH_SCHEDULE_AND_JOERN_FOLLOWUP",
+  "stock": {
+    "instructions": 168,
+    "symbol_size": 672,
+    "section": ".text",
+    "assembly_sha256": "8bb318bddaba5fcfdc7a849ff859e6fe69f10afcd4d4c69fa9ef86d1349931fb",
+    "raw_relocations": 30
+  },
+  "candidate": {
+    "instructions": 168,
+    "symbol_size": 672,
+    "section": ".text",
+    "assembly_sha256": "173b1f905f319f9d320639c2a4a59b7c8d2d5f23e8365661fb28af1bbe06b199",
+    "raw_relocations": 30
+  },
+  "kcfi": {
+    "stock_type_id": "0xf4e9d97c",
+    "candidate_type_id": "0xf4e9d97c",
+    "size_match": true,
+    "section_match": true
+  },
+  "normalized_differences": {
+    "callback_load_schedule": "candidate loads cdev + 0xe20 after zeroing the local 200-byte buffer; stock loads it before zeroing",
+    "terminal_blocks": "candidate places __stack_chk_fail before brk #0x5512 in the linear layout; branch destinations preserve overflow-brk and canary-fail-call behavior",
+    "rodata_and_branch_relocations": "module-local addresses differ"
+  },
+  "comparison": {
+    "instruction_count": "PASS",
+    "symbol_size": "PASS",
+    "section": "PASS",
+    "normalized_control_flow": "PASS",
+    "normalized_field_offsets": "PASS",
+    "raw_instruction_sequence": "FAIL_SCHEDULE_AND_TERMINAL_LAYOUT",
+    "raw_relocations": "FAIL_MODULE_LOCAL_RODATA_OFFSETS"
+  },
+  "scope": "Offline AArch64 function-level validation. This does not prove userspace fault handling, callback lifetime, or hardware behavior."
+}

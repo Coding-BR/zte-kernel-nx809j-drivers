@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T17:15:34Z",
+  "driver": "zte_tpd",
+  "microtask": "007_tpd_zlog_init",
+  "function": "tpd_zlog_init",
+  "stock_entry": "001078c8",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_zlog_init.c",
+    "sha256": "1edc92eb0e9c1e9eb39a7875b981a1cdfeb42ece51bdf3f9a05b053dccd5bd46"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "90c6208b7e88ff61bbcc80f782cd5f6e019820e85e36d08e4c5ac186b7657e38",
+    "size": 24696696
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 184,
+    "candidate_symbol_bytes": 184,
+    "stock_instructions": 46,
+    "candidate_instructions": 46,
+    "stock_relocations": 23,
+    "candidate_relocations": 23,
+    "stock_cfg_blocks": 1,
+    "candidate_cfg_blocks": 1,
+    "stock_direct_calls": 0,
+    "candidate_direct_calls": 0
+  },
+  "kcfi": {
+    "function_type_id": "0xe5c47d60",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 3,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "bf5728c858fcbf912beac8496ec1c0e0b991648a4d64dc60e308e3e08730c868"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/build_report.json",
+      "sha256": "3ef65455456f5000633b024fe3f7d574645c051ab818b9c220a35a6527d15350"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/host_harness_report.json",
+      "sha256": "dea1be1a5210d0bccd7c4f2a1e4fd63eeb4d7ea4dd8d737e45fc133959efb43c"
+    },
+    {
+      "role": "joern_source_view",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/joern_source_view.json",
+      "sha256": "d0c7fc15213742b54911162e66156102f0ef30d62164bde9cbbe942eb6b934e9"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/joern_gate_summary.json",
+      "sha256": "6be34e6eb286bdb1fdbf9024c6c746faaafdec446ea0cc1d77ca3cf0e80b9924"
+    },
+    {
+      "role": "assembly_manifest",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/candidate_assembly_manifest.json",
+      "sha256": "d417365851d736b89e054becad3ee99c7d6465e5b19fb98a7d7733d3b31089aa"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/assembly_comparison.json",
+      "sha256": "5ef4a82339f2508dd2513126ac807c559af7cd92166d28e4c7db51d7c46c5b34"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/kcfi_comparison.json",
+      "sha256": "7f5c2a4a179a31d3fe0cb8c4b8a91047b565a1cc10ca4a6307d8f99a8d23e490"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next109_tpd_zlog_init_exact_v1/cfg_comparison.json",
+      "sha256": "5a90197b8a249ed93991ffd9d32f8e0b54b3da36a2e3984105a0bba21320c3d2"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only tpd_zlog_init.",
+    "The host test checks the typed zlog state initialization contract with stubs, not kernel scheduler timing.",
+    "No ADB, fastboot, module load, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "The blocked syna_cdev_ioctl_raw_read and syna_cdev_ioctl_raw_write candidates are not part of this build or commit."
+  ]
+}

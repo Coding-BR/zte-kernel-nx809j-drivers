@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_ir",
+  "function": "zte_ir_ioctl",
+  "stock_entry": "0010069c",
+  "stock_module_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_module_sha256": "d95aa976258f24d9337feb40bd4c9d775d416d707f35cdec9fadc2bd0fbe8b08",
+  "candidate_module_size": 241216,
+  "assembly": {
+    "instruction_count": 89,
+    "body_bytes": 356,
+    "stock_body_sha256": "de4bcfea1acedc8c44f207192c46c46c88b842cccf4d8c605ac9ca904a04e07f",
+    "candidate_body_sha256": "1a3a9664f0689c9cc7f33b1deb9e95059362f335f194afb7a3aa38aa86d2017f",
+    "comparison": "PASS",
+    "relocations": "PASS"
+  },
+  "kcfi": {
+    "type_id": "0x2af6cdbb",
+    "symbol_size": 356,
+    "comparison": "PASS"
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible": true,
+    "report": "host_test_report.json"
+  },
+  "automated_gates": {
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "INPUT_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "KCFI": "PASS",
+    "MAP_IDENTITY": "PASS"
+  },
+  "source_artifacts": {
+    "zte_ir_ioctl_exact.S": "bf4f4921e019859e339b9f2125a55599e6162b9531c1af7edaf8e0963e6d39b7",
+    "zte_ir_exact_bases.S": "0425a8867d582a7e90ad68e92771db0e7467cb2d12c8a26d9d2ef88e86fab1d6",
+    "stock_rodata_str.bin": "f71159f214192aaede9bf75571498472dbc669cb55ca0931524c20f0d6116a20"
+  },
+  "limitations": [
+    "Resultado estático/offline; não há validação de hardware.",
+    "O corpo stock preserva instruções privilegiadas TTBR/DAIF.",
+    "As outras seis funções do zte_ir permanecem C safety-oriented e não são binary-exact.",
+    "Revisão independente, KMI contextual, sanitizers e gates de hardware continuam pendentes."
+  ],
+  "promotion_authorized": false
+}

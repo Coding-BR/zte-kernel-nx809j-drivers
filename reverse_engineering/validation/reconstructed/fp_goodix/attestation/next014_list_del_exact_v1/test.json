@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "list_del",
+  "stock_function": "list_del",
+  "stock_entry": "00101bf8",
+  "source_file": "fp_goodix_core.c",
+  "source_function": "gf_probe_list_del",
+  "candidate_symbol": "list_del",
+  "source_sha256": "cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
+  "test_source": "kernel_development/drivers/reconstructed/fp_goodix/tests/host_test.c",
+  "test_source_sha256": "b35be14d110231a165a9f62934912663a6e6f0e62d1f42328e40abb84891807a",
+  "host_report": "kernel_development/drivers/validation/fp_goodix/host_test_report.json",
+  "host_report_sha256": "84e5b653049ffbf033011ab7faf47d2c1eb6c620f0e91434149b0cc8337f79c4",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain": "clang-r536225",
+  "cycles": 2,
+  "covered_functions": ["list_del"],
+  "cases": [
+    "test_failure_paths/input_allocate_failure",
+    "entry unlink updates adjacent links",
+    "LIST_POISON1/LIST_POISON2 are written after unlink",
+    "rollback path is exercised through gf_probe failure cleanup"
+  ],
+  "passed": true,
+  "reproducible": true,
+  "status": "PASS",
+  "limitations": [
+    "The host harness validates the list helper with kernel stubs; it does not exercise concurrent list mutation on NX809J.",
+    "KCSAN, lockdep and hardware teardown validation remain separate gates."
+  ]
+}

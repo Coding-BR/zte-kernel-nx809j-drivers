@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_charger_policy/cycle_2/zte_charger_policy.mod := printf '%s\n'   zte_charger_policy.o | awk '!x[$$0]++ { print("/work/validation/zte_charger_policy/cycle_2/"$$0) }' > /work/validation/zte_charger_policy/cycle_2/zte_charger_policy.mod

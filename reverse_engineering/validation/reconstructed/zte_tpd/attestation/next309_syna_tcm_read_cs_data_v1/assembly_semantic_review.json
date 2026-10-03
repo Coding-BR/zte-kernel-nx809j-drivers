@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_read_cs_data",
+  "stock_entry": "001277fc",
+  "stock_assembly": "0308_syna_tcm_read_cs_data_001277fc.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_read_cs_data_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34 and armv8.2-a.",
+    "Setup and read helpers receive timeout, mode-delay, rounded length, offset and delay-mode values.",
+    "The function copies exactly the requested length only after validating the returned buffer and data_length.",
+    "Zero write-block size preserves the stock zero-rounded-length read call path.",
+    "Firmware-mode switching and both managed cleanup call sites are preserved."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "synchronization",
+      "finding": "mutex_init on two stack-backed protocol buffers requires independent kernel review against the canonical TCM buffer locking contract."
+    },
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kfree is called through the managed-device provider and must be checked against the canonical devm ownership lifetime."
+    }
+  ],
+  "promotion_allowed": false
+}

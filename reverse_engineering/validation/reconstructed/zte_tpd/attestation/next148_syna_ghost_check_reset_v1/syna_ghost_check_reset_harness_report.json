@@ -1,0 +1,105 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer syna_ghost_check_reset_harness.c -o build/syna_ghost_check_reset_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/syna_ghost_check_reset_harness"
+  ],
+  "coverage": {
+    "cdev_tcm_offset_0xdb8": true,
+    "four_stock_calls": true,
+    "hardware_paths_exercised": false,
+    "tcm_hw_if_offset_0x270": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS returns_zero\nPASS five_calls\nPASS call_order\nPASS tcm_context\nPASS hw_interface_offset\nPASS fingerprint_mode_disabled\nPASS stock_log_format\nPASS stock_log_name\nSUMMARY tests=8 failures=0\n",
+      "summary": "SUMMARY tests=8 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "returns_zero",
+        "five_calls",
+        "call_order",
+        "tcm_context",
+        "hw_interface_offset",
+        "fingerprint_mode_disabled",
+        "stock_log_format",
+        "stock_log_name"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS returns_zero\nPASS five_calls\nPASS call_order\nPASS tcm_context\nPASS hw_interface_offset\nPASS fingerprint_mode_disabled\nPASS stock_log_format\nPASS stock_log_name\nSUMMARY tests=8 failures=0\n",
+      "summary": "SUMMARY tests=8 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "returns_zero",
+        "five_calls",
+        "call_order",
+        "tcm_context",
+        "hw_interface_offset",
+        "fingerprint_mode_disabled",
+        "stock_log_format",
+        "stock_log_name"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T03:10:02.725382+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_ghost_check_reset.c",
+      "sha256": "1fa9a8db92f1a6db2c78d97534b2849608aa7615b38c81086c336aad411ed262",
+      "size": 373
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\syna_ghost_check_reset_harness.c",
+      "sha256": "cae8a73474a7edf4209257d346f28d292627e95c13fc328373885af16dbad33c",
+      "size": 2690
+    }
+  ],
+  "limitations": [
+    "The harness uses deterministic host stubs for driver-internal calls and printk.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_hash_bound_syna_ghost_check_reset_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 8,
+    "failed": [],
+    "passed": [
+      "returns_zero",
+      "five_calls",
+      "call_order",
+      "tcm_context",
+      "hw_interface_offset",
+      "fingerprint_mode_disabled",
+      "stock_log_format",
+      "stock_log_name"
+    ],
+    "summary": "SUMMARY tests=8 failures=0"
+  },
+  "transformation": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\build\\syna_ghost_check_reset_under_test.c",
+    "removed_prelude": "#include \"defs.h\"",
+    "sha256": "9806092d9859afa30c4a6434edd008a9d985c3cf58e06ef8dee8c89c2ac9f0c6",
+    "size": 355
+  }
+}

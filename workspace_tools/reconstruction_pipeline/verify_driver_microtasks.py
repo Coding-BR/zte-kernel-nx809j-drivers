@@ -13,14 +13,22 @@ from typing import Any
 
 DEFAULT_REQUIRED_ROLES = {"compile", "kcfi", "test"}
 SUPPORTED_ROLES = DEFAULT_REQUIRED_ROLES | {"joern"}
+TEXT_HASH_SUFFIXES = {".c", ".h", ".json", ".jsonl", ".md", ".py", ".sc", ".txt"}
 
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
+        return digest.hexdigest()
     with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sha256_file_raw(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -78,6 +86,26 @@ def git_index_blob(workspace_root: Path, relative_path: Path) -> bytes:
     return result.stdout
 
 
+def index_hash_matches(
+    workspace_root: Path, relative_path: Path, expected: str
+) -> bool:
+    """Match normalized hashes and preserve compatibility with legacy CRLF hashes."""
+    indexed = git_index_blob(workspace_root, relative_path)
+    if sha256_bytes(indexed) == expected:
+        return True
+    candidate = (workspace_root / relative_path).resolve()
+    if (
+        candidate.is_file()
+        and candidate.suffix.lower() in TEXT_HASH_SUFFIXES
+    ):
+        working = candidate.read_bytes()
+        return (
+            working.replace(b"\r\n", b"\n") == indexed
+            and sha256_file_raw(candidate) == expected
+        )
+    return False
+
+
 def discover_layout() -> tuple[Path, Path]:
     script = Path(__file__).resolve()
     for root in script.parents:
@@ -106,6 +134,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--driver", required=True)
     parser.add_argument("--curated-root", type=Path, default=curated_root)
     parser.add_argument("--evidence-root", type=Path, default=evidence_root)
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        help="explicit microtask manifest; defaults to <curated-root>/<driver>/MICROTASKS.json",
+    )
     parser.add_argument(
         "--function",
         action="append",
@@ -146,7 +179,11 @@ def main() -> int:
     args = parse_args()
     curated_root = args.curated_root.resolve()
     workspace_root = workspace_root_for_curated(curated_root)
-    manifest_path = curated_root / args.driver / "MICROTASKS.json"
+    manifest_path = (
+        args.manifest.resolve()
+        if args.manifest
+        else curated_root / args.driver / "MICROTASKS.json"
+    )
     output = args.evidence_root.resolve() / args.driver / "microtask_audit.json"
     if not manifest_path.is_file():
         raise ValueError("missing microtask manifest: " + str(manifest_path))
@@ -168,8 +205,8 @@ def main() -> int:
     selected_tasks = select_tasks(tasks, args.functions)
     for task in selected_tasks:
         checked += 1
-        if task.get("status") != "PASS":
-            failures.append(task.get("id", "unknown") + ": status is not PASS")
+        if task.get("status") not in {"PASS", "PROMOTED_OFFLINE_EXACT"}:
+            failures.append(task.get("id", "unknown") + ": status is not PASS or PROMOTED_OFFLINE_EXACT")
             continue
         roles = set()
         for record in task.get("evidence", []):
@@ -188,8 +225,8 @@ def main() -> int:
             else:
                 if args.git_index:
                     try:
-                        actual = sha256_bytes(
-                            git_index_blob(workspace_root, Path(path_value))
+                        matches = index_hash_matches(
+                            workspace_root, Path(path_value), expected
                         )
                     except ValueError as error:
                         failures.append(task["id"] + ": " + str(error))
@@ -198,8 +235,10 @@ def main() -> int:
                     failures.append(task["id"] + ": evidence file is missing")
                     continue
                 else:
-                    actual = sha256_file(candidate)
-                if actual != expected:
+                    matches = expected in {
+                        sha256_file(candidate), sha256_file_raw(candidate)
+                    }
+                if not matches:
                     failures.append(task["id"] + ": evidence SHA-256 mismatch")
                 else:
                     roles.add(role)

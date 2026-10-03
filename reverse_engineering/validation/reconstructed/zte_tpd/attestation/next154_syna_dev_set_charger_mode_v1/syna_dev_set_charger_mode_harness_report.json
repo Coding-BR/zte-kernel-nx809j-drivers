@@ -1,0 +1,97 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer syna_dev_set_charger_mode_harness.c -o build/syna_dev_set_charger_mode_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/syna_dev_set_charger_mode_harness"
+  ],
+  "coverage": {
+    "dynamic_config_id_7": true,
+    "hardware_paths_exercised": false,
+    "negative_error_preserved": true,
+    "null_tcm": true,
+    "success_path": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS null_returns_einval\nPASS null_logs_before_validation\nPASS success_preserved\nPASS dynamic_config_arguments\nPASS success_logs\nPASS negative_error_preserved\nPASS negative_still_dispatches\nSUMMARY tests=7 failures=0\n",
+      "summary": "SUMMARY tests=7 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "null_returns_einval",
+        "null_logs_before_validation",
+        "success_preserved",
+        "dynamic_config_arguments",
+        "success_logs",
+        "negative_error_preserved",
+        "negative_still_dispatches"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS null_returns_einval\nPASS null_logs_before_validation\nPASS success_preserved\nPASS dynamic_config_arguments\nPASS success_logs\nPASS negative_error_preserved\nPASS negative_still_dispatches\nSUMMARY tests=7 failures=0\n",
+      "summary": "SUMMARY tests=7 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "null_returns_einval",
+        "null_logs_before_validation",
+        "success_preserved",
+        "dynamic_config_arguments",
+        "success_logs",
+        "negative_error_preserved",
+        "negative_still_dispatches"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T04:21:32.488280+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_dev_set_charger_mode.c",
+      "sha256": "a3dcdecc2754ceaffc452d53208d82187f4e3a2682bfe628a56221f6c4b3a42a",
+      "size": 451
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\syna_dev_set_charger_mode_harness.c",
+      "sha256": "c74da8aa786f0bcf18eae24387089a41142db8ae77747105c8d5fb132ad2a703",
+      "size": 1903
+    }
+  ],
+  "limitations": [
+    "The harness uses deterministic host printk and syna_tcm_set_dynamic_config stubs.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_direct_source_syna_dev_set_charger_mode_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 7,
+    "failed": [],
+    "passed": [
+      "null_returns_einval",
+      "null_logs_before_validation",
+      "success_preserved",
+      "dynamic_config_arguments",
+      "success_logs",
+      "negative_error_preserved",
+      "negative_still_dispatches"
+    ],
+    "summary": "SUMMARY tests=7 failures=0"
+  }
+}

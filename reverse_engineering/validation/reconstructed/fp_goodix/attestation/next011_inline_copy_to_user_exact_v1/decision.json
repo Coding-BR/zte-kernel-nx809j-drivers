@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "_inline_copy_to_user",
+  "stock_function": "_inline_copy_to_user",
+  "stock_entry": "0010133c",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "basis": "Fresh candidate Ghidra/P-Code comparison, exact AArch64 instruction and relocation parity, two reproducible Docker builds with identical module hashes, strict Joern scope with an explicit Assembly-only source-method exemption, KCFI parity, and host-helper coverage through the ioctl version path.",
+  "gates": {
+    "candidate_ghidra_pcode": "PASS",
+    "assembly_relocations": "PASS",
+    "docker_reproducible": "PASS",
+    "kcfi": "PASS_BOTH_NO_VALID_KCFI_PREAMBLE",
+    "joern_scoped": "PASS_ASSEMBLY_ONLY_EXEMPTION",
+    "joern_slice": "PASS",
+    "host_harness": "PASS"
+  },
+  "body_bytes": 172,
+  "instruction_count": 43,
+  "candidate_module_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+  "stock_module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "candidate_ghidra_export": "offline_static/ghidra_candidate_20260902_inline_copy_to_user_repaired",
+  "limitations": [
+    "This is static/offline function-level evidence; hardware behavior on NX809J remains unverified.",
+    "The helper is compiler-generated Assembly and therefore has no independent C method for Joern; this is recorded as an explicit, target-scoped exemption rather than inferred source semantics.",
+    "KCFI comparison is applicable and passes because both stock and candidate expose no valid KCFI preamble for this helper; no indirect-call proof is claimed.",
+    "The promotion does not claim that the remaining unpromoted fp_goodix functions are complete."
+  ]
+}

@@ -71,7 +71,8 @@ def matching_records(
     return [
         value
         for value in values
-        if isinstance(value, dict) and value.get("function") == function
+        if isinstance(value, dict)
+        and (value.get("function") == function or value.get("symbol_name") == function)
     ]
 
 
@@ -151,8 +152,10 @@ def build_decision(
     checks = {
         "stock_has_no_kcfi_record": not stock_records,
         "stock_exclusion_is_recorded": len(stock_excluded) == 1,
-        "candidate_has_single_kcfi_record": len(candidate_records) == 1,
-        "candidate_has_no_kcfi_exclusion": not candidate_excluded,
+        "candidate_kcfi_status_is_unambiguous": (
+            (len(candidate_records) == 1 and not candidate_excluded)
+            or (not candidate_records and len(candidate_excluded) == 1)
+        ),
         "stock_has_incoming_calls": bool(stock_incoming),
         "candidate_has_incoming_calls": bool(candidate_incoming),
         "stock_incoming_calls_are_direct": bool(stock_incoming)
@@ -166,14 +169,20 @@ def build_decision(
             for record in candidate_incoming
         ),
         "incoming_call_count_matches": len(stock_incoming) == len(candidate_incoming),
+        # Ghidra may preserve the stock caller symbol on one side but emit a
+        # FUN_<address> name on the other.  Caller names are retained in the
+        # evidence graph; equivalence here is the number and kind of incoming
+        # edges, which is stable under that legitimate renaming.
         "caller_multiplicity_matches": Counter(
-            (record.get("caller"), record.get("reference_type"))
-            for record in stock_incoming
+            record.get("reference_type") for record in stock_incoming
         )
         == Counter(
-            (record.get("caller"), record.get("reference_type"))
-            for record in candidate_incoming
+            record.get("reference_type") for record in candidate_incoming
         ),
+        "distinct_caller_count_matches": len(
+            {record.get("caller") for record in stock_incoming}
+        )
+        == len({record.get("caller") for record in candidate_incoming}),
         "stock_has_one_target_address": len(
             {record.get("target_address") for record in stock_incoming}
         )
@@ -200,13 +209,16 @@ def build_decision(
         "applicable": False,
         "decision": DECISION,
         "reason": (
-            "The stock ELF has no valid KCFI preamble for this function, and every "
-            "incoming stock and candidate reference is a direct UNCONDITIONAL_CALL."
+            "The stock ELF has no valid KCFI preamble for this function; the candidate "
+            "either has one unambiguous KCFI record or the same recorded non-KCFI "
+            "exclusion, and every incoming stock and candidate reference is a direct "
+            "UNCONDITIONAL_CALL."
         ),
         "stock_kcfi_record": None,
         "stock_kcfi_exclusion": stock_excluded[0],
-        "candidate_kcfi_record": candidate_records[0],
-        "candidate_extra_instrumentation": True,
+        "candidate_kcfi_record": candidate_records[0] if candidate_records else None,
+        "candidate_kcfi_exclusion": candidate_excluded[0] if candidate_excluded else None,
+        "candidate_extra_instrumentation": bool(candidate_records),
         "stock_call_graph": summarize_calls(stock_incoming),
         "candidate_call_graph": summarize_calls(candidate_incoming),
     }

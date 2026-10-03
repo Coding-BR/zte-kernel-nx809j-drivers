@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "function": "aw22xxx_fw_timer_func",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "stock_entry": "001051e8",
+  "stock_body_bytes": 80,
+  "candidate_body_bytes": 80,
+  "instruction_count": 20,
+  "kcfi_applicable": true,
+  "kcfi_decision": "TYPE_ID_COMPARISON",
+  "stock_type_id": "0xe3cff753",
+  "candidate_type_id": "0xe3cff753",
+  "candidate_module_sha256": "4ee5f4db54c00207e059f929e531f4e7bedd4052e352f6f2c356ddf588ac065a",
+  "candidate_source_sha256": "d5793671d16eeaab982678549bb7245ebbc941cc88a196d7f030b78bb92a2774",
+  "candidate_assembly_sha256": "1e5f9cb9299e557a269beea7fea8dd75d0bdfd58ed7ac19037c3dc6c67c5a4de",
+  "stock_assembly_sha256": "0f7bb9879585db6354a0673c71059e0874704bcc95c81c760dc0a916852d90e3",
+  "protocol": "hard_protocol_report.json",
+  "promotion_basis": "Exact 80-byte/20-instruction AArch64 body and relocation parity, fresh Ghidra C/P-Code comparison, strict Joern scope/slice, reproducible Docker build, matching KCFI type ID/body size and passing host harness.",
+  "limitations": [
+    "Offline/static evidence only; hrtimer and workqueue runtime behavior remains unverified on NX809J hardware/runtime.",
+    "The exact island preserves the printk, queue_work_on(system_wq, fw_work), callback container offset and HRTIMER_NORESTART return observed in stock.",
+    "Sanitizers, lock/lifetime ledger, semantic counterexample search and independent hardware/runtime review remain deferred."
+  ]
+}

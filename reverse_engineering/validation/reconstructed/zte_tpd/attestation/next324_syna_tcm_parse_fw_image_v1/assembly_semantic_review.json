@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "mode": "offline_aarch64_object_and_ghidra_review",
+  "function": "syna_tcm_parse_fw_image",
+  "stock": {
+    "entry": "0012ab6c",
+    "body_bytes": 860,
+    "assembly_sha256": "7ab89d199daee667c8f83c8cd19945a45a3ae32cdd0ce794eab4b9a4edf5f435",
+    "decompiled_sha256": "34333131c88d45fd81528f71af8a27a4e39e2653fbcf319c19ed03e04fc253c6",
+    "pcode_sha256": "29d1fee96db24381752a5946f2cec3843e1be04cbaff62b76e6dbe10076d3338"
+  },
+  "candidate": {
+    "source_sha256": "dd6e52cbb2c770afa154af6085c18f4b4307430f26773527c2d1bb3595237cfd",
+    "aarch64_input_sha256": "31aedb4247585488e748dd019bedfe41d1a3c9518040add5863a27b01f1d292d",
+    "aarch64_input_assembly_sha256": "bb54138cd10a5c47963460f1a49d4a26da9b72d59321aae2074765acb637ebd7",
+    "kernel_object_assembly_sha256": "50a782ad1375d217e0b6bc15ad909be5a4cbe2953a7faa6f275c7c85486923fe",
+    "body_bytes": 816
+  },
+  "semantic_checks": {
+    "aarch64_syntax": true,
+    "typed_offsets": true,
+    "magic_values": true,
+    "partition_record_stride": "0x20",
+    "output_clear_size": "0x30c",
+    "crc32_seed_and_inversion": true,
+    "exact_body_size": false,
+    "exact_instruction_parity": false
+  },
+  "passed": false,
+  "status": "REVIEW_REQUIRED",
+  "blockers": [
+    "The kernel object body is 816 bytes versus the stock 860 bytes; exact instruction and relocation parity is not established.",
+    "The full .ko build is not available because unrelated existing translation-unit conflicts stop the tree before linking."
+  ]
+}

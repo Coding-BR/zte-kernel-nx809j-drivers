@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_tpd",
+  "function": "syna_tcm_buf_lock",
+  "stock_entry": "0011ede8",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "body": {
+    "instructions": 22,
+    "bytes": 88,
+    "kcfi_type_id": null,
+    "kcfi_decision": "BOTH_NO_VALID_KCFI_PREAMBLE"
+  },
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "host_harness": {
+    "passed": true,
+    "cycles": 2,
+    "expected_tests": 11,
+    "asan_ubsan_stderr_empty": true,
+    "reproducible_binary": true
+  },
+  "ghidra_repair": {
+    "clear_no_return": "_printk",
+    "extended_function_body_bytes": 88,
+    "fallback": "ghidra_syna_tcm_buf_lock_back_edge_branch_artifact",
+    "body_bytes_equal": true,
+    "pcode_operation_shape_equal": true,
+    "normalized_decompiled_c_textual_match": false
+  },
+  "limitations": [
+    "No hardware, SPI, IRQ, firmware transport, or module-loading validation was performed.",
+    "The Docker candidate is the canonical rebuilt module; the external binary is referenced by its SHA-256.",
+    "The Ghidra C export has a documented back-edge CFG artifact; independent low-level gates remain mandatory."
+  ],
+  "evidence": {
+    "hard_protocol_report_sha256": "a23dbfd09cb334bb43d612d0ea235ec3be343b10c69d16d6e87b86dc6c4ede17",
+    "docker_reproducibility_sha256": "e75ea0949f9f4c8fd8e7bf56d7701fe8ec6cb9d78671cfd321b14d165b3f6a8e",
+    "assembly_comparison_sha256": "c16796533dc58d0107b7a271027516a24cc98c4b490d21f33eeafc8e97331b4a",
+    "kcfi_comparison_sha256": "3af9dc9c3ac532728f0fe035efbfa51ead4441607f5800600689dd4f5c9b202c",
+    "joern_gate_report_sha256": "77c7aa798c3d84e04a271dd0a021b07b5f88b691344ed7889f0749e90b060caf",
+    "semantic_comparison_sha256": "110abd659b0085b0ca76535bd4f5d7e29a603628be3924d3beabace339c72c0b",
+    "host_harness_report_sha256": "a76a7dd0b0d321617fe32fb5029a1350c77074ee2c0912c0de1dd41fe2afbf9b"
+  }
+}

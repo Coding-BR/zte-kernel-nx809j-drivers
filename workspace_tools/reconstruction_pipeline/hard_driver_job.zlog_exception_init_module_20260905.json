@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "driver": "zlog_exception",
+  "stock_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
+  "profiles": ["STATEFUL_MEMORY", "CONCURRENCY_LIFETIME"],
+  "functions": [{
+    "stock_function": "init_module",
+    "stock_entry": "00100ca4",
+    "source_function": "zlog_init",
+    "candidate_function": "init_module",
+    "kcfi_required": true,
+    "assembly_only": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zlog_exception",
+    "stock_module": "reference_modules/full_vendor_boot/zlog_exception.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zlog_exception/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zlog_exception/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zlog_exception_init_module_protocol_20260905"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zlog_exception",
+    "define": ["__user"],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

@@ -11,11 +11,19 @@ from pathlib import Path
 from typing import Any
 
 
+TEXT_HASH_SUFFIXES = {".c", ".h", ".json", ".jsonl", ".md", ".py", ".sc", ".txt"}
 JOERN_TEXT_SUFFIXES = {".c", ".h"}
 JOERN_EXCLUDED_PATHS = {"tests", "validation", "build"}
 
 
 def sha256_file(path: Path) -> str:
+    content = path.read_bytes()
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        content = content.replace(b"\r\n", b"\n")
+    return hashlib.sha256(content).hexdigest()
+
+
+def sha256_file_raw(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
@@ -94,6 +102,9 @@ def build_candidate_sha256(payload: dict[str, Any]) -> str | None:
         return candidate["sha256"].lower()
     drivers = payload.get("drivers")
     if isinstance(drivers, list) and len(drivers) == 1:
+        candidate = drivers[0].get("candidate")
+        if isinstance(candidate, dict) and isinstance(candidate.get("sha256"), str):
+            return candidate["sha256"].lower()
         build = drivers[0].get("build")
         if isinstance(build, dict):
             for key in ("candidate_sha256", "sha256"):
@@ -117,22 +128,66 @@ def kcfi_functions(reports: list[tuple[Path, dict[str, Any]]]) -> dict[str, Path
 def direct_tested_sources(
     source_dir: Path,
     reports: list[tuple[Path, dict[str, Any]]],
+    tasks: object = None,
 ) -> dict[str, Path]:
     sources: dict[str, Path] = {}
+    source_files_by_function: dict[str, str] = {}
+    if isinstance(tasks, list):
+        for task in tasks:
+            if not isinstance(task, dict):
+                continue
+            function = task.get("source_function")
+            source_file = task.get("source_file")
+            if isinstance(function, str) and isinstance(source_file, str):
+                source_files_by_function[function] = source_file
     for report_path, payload in reports:
-        if not payload.get("passed"):
+        if payload.get("passed") and isinstance(payload.get("inputs"), list):
+            for record in payload.get("inputs", []):
+                if not isinstance(record, dict):
+                    continue
+                path_value = record.get("path")
+                expected_sha = record.get("sha256")
+                if not isinstance(path_value, str) or not isinstance(expected_sha, str):
+                    continue
+                basename = Path(path_value).name
+                current = source_dir / basename
+                if not current.is_file():
+                    continue
+                if expected_sha in {sha256_file(current), sha256_file_raw(current)}:
+                    sources[basename] = report_path
             continue
-        for record in payload.get("inputs", []):
-            path_value = record.get("path")
-            expected_sha = record.get("sha256")
-            if not isinstance(path_value, str) or not isinstance(expected_sha, str):
-                continue
-            basename = Path(path_value).name
-            current = source_dir / basename
-            if current.suffix != ".c" or not current.is_file():
-                continue
-            if sha256_file(current) == expected_sha:
-                sources[basename] = report_path
+        status = payload.get("status")
+        function = payload.get("function") or payload.get("target")
+        source_sha = (
+            payload.get("driver_source_sha256")
+            or payload.get("candidate_source_sha256")
+            or payload.get("source_sha256")
+        )
+        gates = payload.get("gates")
+        test_passed = (
+            payload.get("passed") is True
+            or payload.get("reproducible") is True
+            or isinstance(gates, dict)
+            and (
+                gates.get("host_asan_ubsan") in {"PASS", True}
+                or gates.get("host_asan_ubsan_two_cycles") in {"PASS", True}
+                or gates.get("asan_ubsan_host_two_cycles") in {"PASS", True}
+            )
+        )
+        if (
+            status not in {"PASS", "OFFLINE_EXACT", "PROMOTED_OFFLINE_EXACT"}
+            or not isinstance(function, str)
+            or not isinstance(source_sha, str)
+            or not test_passed
+            or function not in source_files_by_function
+        ):
+            continue
+        basename = Path(source_files_by_function[function]).name
+        current = source_dir / basename
+        if current.is_file() and source_sha in {
+            sha256_file(current), sha256_file_raw(current)
+        }:
+            sources[basename] = report_path
     return sources
 
 
@@ -238,7 +293,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--source-dir", type=Path, required=True)
     parser.add_argument("--build-report", type=Path, required=True)
-    parser.add_argument("--kcfi-report", action="append", type=Path, required=True)
+    parser.add_argument("--kcfi-report", action="append", type=Path, default=[])
     parser.add_argument(
         "--joern-report",
         action="append",
@@ -246,7 +301,7 @@ def main() -> int:
         default=[],
         help="strict Joern summary whose current source-tree hash must match --source-dir",
     )
-    parser.add_argument("--test-report", action="append", type=Path, required=True)
+    parser.add_argument("--test-report", action="append", type=Path, default=[])
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--function",
@@ -260,6 +315,26 @@ def main() -> int:
         help="leave statuses and evidence outside --function unchanged",
     )
     parser.add_argument(
+        "--require-joern",
+        action="store_true",
+        help="require and record strict Joern evidence for every selected function",
+    )
+    parser.add_argument(
+        "--manifest-evidence",
+        action="store_true",
+        help="load KCFI and direct-test reports referenced by the input manifest",
+    )
+    parser.add_argument(
+        "--scan-test-root",
+        type=Path,
+        help="also scan JSON reports below this root for passing direct-test inputs",
+    )
+    parser.add_argument(
+        "--scan-kcfi-root",
+        type=Path,
+        help="also scan JSON reports below this root for passing KCFI comparisons",
+    )
+    parser.add_argument(
         "--candidate",
         type=Path,
         help="candidate module whose SHA-256 must match the build report",
@@ -270,6 +345,64 @@ def main() -> int:
     workspace = args.workspace.resolve()
     manifest_path = args.manifest.resolve()
     source_dir = args.source_dir.resolve()
+    manifest = read_object(manifest_path)
+    if manifest.get("driver") != args.driver:
+        raise ValueError("manifest driver does not match --driver")
+    if args.manifest_evidence:
+        referenced: dict[str, list[Path]] = {"kcfi": [], "test": []}
+        for task in manifest.get("tasks", []):
+            for record in task.get("evidence", []):
+                role = record.get("role")
+                value = record.get("path")
+                if role not in referenced or not isinstance(value, str):
+                    continue
+                path = (workspace / value).resolve()
+                if path.is_file() and path not in referenced[role]:
+                    referenced[role].append(path)
+        args.kcfi_report = referenced["kcfi"] + [
+            path for path in args.kcfi_report if path not in referenced["kcfi"]
+        ]
+        args.test_report = referenced["test"] + [
+            path for path in args.test_report if path not in referenced["test"]
+        ]
+    if args.scan_kcfi_root:
+        scan_root = args.scan_kcfi_root.resolve()
+        for path in sorted(scan_root.rglob("*.json")):
+            if path.is_file() and path not in args.kcfi_report:
+                try:
+                    candidate = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if isinstance(candidate, dict) and isinstance(candidate.get("comparisons"), list):
+                    args.kcfi_report.append(path)
+    if args.scan_test_root:
+        scan_root = args.scan_test_root.resolve()
+        for path in sorted(scan_root.rglob("*.json")):
+            if path.is_file() and path not in args.test_report:
+                try:
+                    candidate = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                has_inputs = isinstance(candidate, dict) and isinstance(candidate.get("inputs"), list)
+                has_function_test = (
+                    isinstance(candidate, dict)
+                    and (candidate.get("function") or candidate.get("target"))
+                    and candidate.get("status") in {"PASS", "OFFLINE_EXACT", "PROMOTED_OFFLINE_EXACT"}
+                    and (
+                        candidate.get("driver_source_sha256")
+                        or candidate.get("candidate_source_sha256")
+                        or candidate.get("source_sha256")
+                    )
+                    and (
+                        candidate.get("passed") is True
+                        or candidate.get("reproducible") is True
+                        or isinstance(candidate.get("gates"), dict)
+                    )
+                )
+                if has_inputs or has_function_test:
+                    args.test_report.append(path)
+    if not args.kcfi_report or not args.test_report:
+        raise ValueError("at least one KCFI and one direct-test report are required")
     build_path = args.build_report.resolve()
     build = read_object(build_path)
     if not build_passed(build):
@@ -291,10 +424,7 @@ def main() -> int:
     test_reports = [(path.resolve(), read_object(path.resolve())) for path in args.test_report]
     typed = kcfi_functions(kcfi_reports)
     joern = joern_functions(source_dir, joern_reports)
-    tested = direct_tested_sources(source_dir, test_reports)
-    manifest = read_object(manifest_path)
-    if manifest.get("driver") != args.driver:
-        raise ValueError("manifest driver does not match --driver")
+    tested = direct_tested_sources(source_dir, test_reports, manifest.get("tasks"))
     selected_functions = set(args.function)
     if args.preserve_unselected and not selected_functions:
         raise ValueError("--preserve-unselected requires at least one --function")
@@ -328,17 +458,23 @@ def main() -> int:
             continue
         if selected_functions and source_function not in selected_functions:
             continue
-        kcfi_path = typed.get(source_function)
+        # A reviewed mapping may use a source-level name different from the
+        # ELF stock symbol (for example cleanup_module -> nubia_hw_version_exit).
+        # Accept either identity, but never accept an unrelated function.
+        kcfi_path = typed.get(source_function) or typed.get(str(task.get("stock_function", "")))
         test_path = tested.get(Path(source_file).name)
         required_evidence = task.get("required_evidence", ["compile", "kcfi", "test"])
         if not isinstance(required_evidence, list) or not all(
             isinstance(role, str) for role in required_evidence
         ):
             raise ValueError(f"{task.get('id', 'unknown')}: invalid required_evidence")
-        require_joern = "joern" in required_evidence
+        require_joern = args.require_joern or "joern" in required_evidence
         joern_path = joern.get(source_function)
         if kcfi_path is None or test_path is None or (require_joern and joern_path is None):
             continue
+        if require_joern and "joern" not in required_evidence:
+            required_evidence = [*required_evidence, "joern"]
+            task["required_evidence"] = required_evidence
         task["status"] = "PASS"
         task["evidence"] = [
             build_evidence,

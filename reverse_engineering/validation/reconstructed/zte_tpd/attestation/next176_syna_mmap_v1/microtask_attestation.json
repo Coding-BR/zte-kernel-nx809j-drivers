@@ -1,0 +1,61 @@
+{
+  "schema_version": "reconstruction_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "176_syna_mmap",
+  "stock_entry": "001147ec",
+  "stock_function": "syna_mmap",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "semantic_equivalence": "UNPROVEN",
+  "source_of_truth": {
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "ghidra_decompiled_sha256": "b5d84ad2fe4ff0bec8041e39c5c735cfa19d90a4001a7537f5e2b3dda81a01a9",
+    "ghidra_pcode_sha256": "fc5c7dea07d037312f683e0d212cac42855dbc2d29c6ac2ffdf81c44c898c1e6",
+    "stock_assembly_sha256": "47d0b4c19cd62ce259d1233ea0cac6d59041d34fb9b442662e8e65c1520e69c4"
+  },
+  "candidate": {
+    "module_sha256": "95ab6ee732ffc254426ff416adcd0edab01790a2c4ea762ef3fe61716c6fdfbc",
+    "module_size": 30037264,
+    "source_sha256": "e8433f5d362fe442b9b80b20c2714bcd3ef7171dbbebb1a9fef69918fcb30fe6",
+    "clang_revision": "clang-r536225",
+    "docker_image": "nubia-sm8850-kernel-builder:latest"
+  },
+  "gates": {
+    "ghidra_exports_present": "PASS",
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "host_harness_asan_ubsan": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "kcfi_type_id": {
+      "status": "PASS",
+      "stock_type_id": "0x7de14acc",
+      "candidate_type_id": "0x7de14acc",
+      "stock_symbol_size": 176,
+      "candidate_symbol_size": 160
+    },
+    "aarch64_symbol_size": "BLOCKED",
+    "aarch64_instruction_count": {
+      "status": "BLOCKED",
+      "stock": 44,
+      "candidate": 40
+    },
+    "aarch64_exact_opcode_parity": "BLOCKED",
+    "relocation_identity": "BLOCKED",
+    "hardware_validation": "NOT_RUN"
+  },
+  "limitations": [
+    "The candidate is 16 bytes and four instructions smaller than stock after matching the signed P-Code arithmetic model.",
+    "KCFI type identity matches, but symbol-size parity is a gating failure.",
+    "The normalized relocation sequence differs because the out-of-tree candidate resolves rodata symbols differently from stock.",
+    "The host harness validates four deterministic PFN/error contracts and does not exercise MMIO or the NX809J kernel.",
+    "No smartphone, module loading, SPI, IRQ, MMIO or firmware transport was exercised."
+  ],
+  "artifacts": {
+    "source_sync_report.json": "0fb1ffd0feedd8aa543f6278e74e5aa4be85123d0fb6a35196b6bd2ea264295a",
+    "joern_gate_report.json": "a10152cebe1e028ff6c741976e716eee544220426f4cdeacca955b081f55afd3",
+    "host_harness_report.json": "8fe3f6b74aae0a2cf33c8ecc4a5c0145d2315a9ccbe5246e32d370037df9685f",
+    "canonical_build_report.json": "6e312500d447f27722b15e4e3df8f9775e20d363d245911dd402e6a36a6cdffb",
+    "kcfi_comparison.json": "0b8c1ad9ee8d7567e7df1d9d805b274862c720b01f787e3d2632c9ef336464f4",
+    "assembly_comparison.json": "e171a0af7c807f8e06b2157868f0cb5cac3f614a6e75ea134da1413552c5bc88"
+  }
+}

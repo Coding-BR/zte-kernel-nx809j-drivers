@@ -1,0 +1,75 @@
+﻿{
+    "schema_version":  "microtask_attestation_v1",
+    "driver":  "zte_tpd",
+    "microtask":  "target190_12_syna_cdev_ioctls_enable_irq",
+    "function":  "syna_cdev_ioctls route 0x12",
+    "stock_entry":  "001150ec",
+    "route_label":  "0x12",
+    "status":  "PARTIAL",
+    "semantic_equivalence":  "UNPROVEN",
+    "hardware_validation":  "NOT_RUN",
+    "gates":  {
+                  "ghidra_decompilation":  {
+                                               "passed":  true,
+                                               "decompiled_sha256":  "73f05587c429142b81fb485efa5fd90071c9e9debfd2e294109b0864b99a1414",
+                                               "pcode_sha256":  "9c60c3c2aac12e0a3db2d7f8b4419bb356f0ba62595648d51aa7af53dbf97095",
+                                               "stock_assembly_sha256":  "b3cce5022c16dea45c38ec8e91ce08915820fffc979dea16554022a3baf61593"
+                                           },
+                  "source_sync":  {
+                                      "passed":  true,
+                                      "report_sha256":  "eb43898f421d733fcb9f89126506fa594ae0bc96590152c96ef0a2cb4be78353"
+                                  },
+                  "joern_parent":  {
+                                       "passed":  true,
+                                       "report_sha256":  "cb26471ffd706191c3f096af8e7b853f81e7855ebafb1a5f1977cc78f583ccc1"
+                                   },
+                  "joern_route_scope":  {
+                                            "passed":  false,
+                                            "report_sha256":  "231da9e614bc654b9938b7334a6d75fd0485682d3693c082bc5895e28b9c37a0",
+                                            "blocker":  "No independent stock function symbol exists for basic block 0x12"
+                                        },
+                  "host_harness_asan_ubsan":  {
+                                                  "passed":  true,
+                                                  "repetitions":  2,
+                                                  "test_groups":  4,
+                                                  "report_sha256":  "c98837949fd92cab7c006edab94196776fca0357057d7eba422c5f7fdeb5f6a4"
+                                              },
+                  "canonical_docker_build":  {
+                                                 "passed":  true,
+                                                 "cycles":  2,
+                                                 "module_sha256":  "2317f773f2a28d35c1b164cac6f00d8d432941cc67f3b78687681dcd24e55e77",
+                                                 "module_size":  30037472,
+                                                 "report_sha256":  "2e5bb67a5922f4b870fac49402e829bd482b59cd211ae216c8a46cd684f82e3d"
+                                             },
+                  "kcfi_parent":  {
+                                      "passed":  false,
+                                      "stock_type_id":  "0x2af6cdbb",
+                                      "candidate_type_id":  "0xe513074c",
+                                      "stock_size":  8584,
+                                      "candidate_size":  7872,
+                                      "stock_report_sha256":  "b3e36f3fdef6a662f13ea0a477bdf66364c20c4c41ac2311716a4b133e1192a3",
+                                      "candidate_report_sha256":  "ab31ad3a310a4e39091c0ed8ccc28d5549f671518259e5d9441b24f72d12df35"
+                                  },
+                  "aarch64_parent":  {
+                                         "passed":  false,
+                                         "report_sha256":  "8519238d4915bc1c20d0f75683099e25cc7940791667a3491a3bb1f929d3877c",
+                                         "stock_symbol_size":  8584,
+                                         "candidate_symbol_size":  7872,
+                                         "opcode_parity":  false,
+                                         "relocation_parity":  false
+                                     }
+              },
+    "inputs":  {
+                   "candidate_route_source_sha256":  "8d6d36014e10c38c2545e93dc5428ec8ce12bd05a8b5356752ca53b8b5bd05b9",
+                   "host_harness_sha256":  "7ee50920f4bce1a4feb3fb14d88baf80a82a32752379330283c6eecc8ae066dd",
+                   "candidate_assembly_sha256":  "112bd7ca137bcf49f00274343e7504c0ec62acc7cdd6111b57f0d35d135d2902",
+                   "stock_kcfi_sha256":  "b3e36f3fdef6a662f13ea0a477bdf66364c20c4c41ac2311716a4b133e1192a3",
+                   "candidate_kcfi_sha256":  "ab31ad3a310a4e39091c0ed8ccc28d5549f671518259e5d9441b24f72d12df35"
+               },
+    "limitations":  [
+                        "The route is a basic block inside syna_cdev_ioctls and has no independent stock ELF symbol.",
+                        "Parent dispatcher KCFI and full AArch64 parity are currently blocked.",
+                        "The isolated fixture is not yet promoted into the parent dispatcher.",
+                        "The smartphone was intentionally not used."
+                    ]
+}

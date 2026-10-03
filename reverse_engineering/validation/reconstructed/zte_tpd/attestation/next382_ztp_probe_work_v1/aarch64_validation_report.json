@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "target": "ztp_probe_work",
+  "mode": "offline_aarch64_semantic_and_normalized_relocation_comparison",
+  "instruction_count": { "stock": 10, "candidate": 10, "exact": true },
+  "symbol_size": { "stock": 40, "candidate": 40, "exact": true, "delta_bytes": 0 },
+  "section": { "stock": ".text", "candidate": ".text", "match": true },
+  "kcfi_type_id": { "stock": "0xa607748c", "candidate": "0xa607748c", "match": true },
+  "instruction_sequence": { "normalized_match": true, "comparison": "opcode and control-flow sequence exact" },
+  "call_targets": {
+    "stock": ["_printk", "syna_dev_module_init"],
+    "candidate": ["_printk", "syna_dev_module_init"],
+    "normalized_match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The separately linked module has a different module-local .rodata offset; resolved printk string and external call targets match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw ELF relocation identity is not byte-level equal across independently linked modules.",
+    "printk and syna_dev_module_init are stubbed in the host harness.",
+    "No smartphone, workqueue scheduler or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "613f7161f1e2bf0ea9e17dbe9ae3366067afe20ec57af03035c78af9db18e8a3",
+    "candidate_assembly_sha256": "959612b756dd68c299428499c900d5b56bb550ddb9e72238165dbc089bdc8541"
+  }
+}

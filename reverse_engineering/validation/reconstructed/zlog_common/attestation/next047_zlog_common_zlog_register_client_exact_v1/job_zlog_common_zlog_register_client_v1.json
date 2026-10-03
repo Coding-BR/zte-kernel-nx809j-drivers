@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "driver": "zlog_common",
+  "stock_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "functions": [
+    {
+      "stock_function": "zlog_register_client",
+      "stock_entry": "00100644",
+      "source_function": "zlog_register_client",
+      "candidate_function": "zlog_register_client",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zlog_common",
+    "stock_module": "reference_modules/full_vendor_boot/zlog_common.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zlog_common/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zlog_common/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zlog_common_zlog_register_client_protocol_20260906"
+  },
+  "kcfi": {"ignore_size": true},
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zlog_common",
+    "define": ["__user", "__init", "__exit", "noinline", "__used"],
+    "slice": {
+      "mode": "usages",
+      "depth": 12,
+      "parallelism": 1,
+      "sink_filter": "(zlog_register_client|kmalloc|kfree|mutex|spinlock|client|slot|array|copy_from_user|callback)"
+    }
+  }
+}

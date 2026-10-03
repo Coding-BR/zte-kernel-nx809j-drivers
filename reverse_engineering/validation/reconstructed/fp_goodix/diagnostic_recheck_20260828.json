@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-28T15:45:00Z",
+  "driver": "fp_goodix",
+  "scope": "diagnostic only; canonical source and promoted candidate were not changed",
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225",
+    "normal_builds": 2,
+    "normal_build_reproducible": true,
+    "normal_candidate_sha256": "d114e25b29fc39831c4d0ea565a1a30fba526d118031942be5d2e10f797f7e81",
+    "normal_candidate_size": 730632,
+    "evidence_dir": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/validation/fp_goodix_recheck_20260828"
+  },
+  "stock": {
+    "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  },
+  "functions": {
+    "gf_ioctl": {
+      "status": "structural_difference",
+      "finding": "branch/case topology and block order differ; not a safe word-level predicate patch"
+    },
+    "gf_open": {
+      "status": "structural_difference",
+      "finding": "same size and relocation count, but nontrivial opcode ordering differs around error and success paths"
+    },
+    "gf_parse_dts": {
+      "status": "structural_difference",
+      "finding": "same size and instruction count, but error-block layout and relocation order differ"
+    },
+    "gf_probe": {
+      "status": "source_variant_rejected",
+      "baseline": {
+        "stock_size": 1040,
+        "stock_instructions": 260,
+        "baseline_instructions": 260
+      },
+      "variant": {
+        "description": "removed irq_gpio/reset_gpio sentinel stores, initialized irq_num, and reordered pdev assignment",
+        "sha256": "751744ca9913dd006e1d75b793a0b3192ed0176199c22a85df65385e9e573814",
+        "size": 730624,
+        "function_size": 1032,
+        "instructions": 258,
+        "relocations": 86
+      },
+      "finding": "the variant matches the stock 64-bit sentinel-store shape but still misses two instructions and diverges in list insertion; not promoted"
+    }
+  },
+  "decision": "retain canonical candidate and continue with CFG/source-idiom reconstruction; no post-link materialization authorized for these four functions"
+}

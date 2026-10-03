@@ -1,0 +1,151 @@
+{
+  "build": {
+    "commands": {
+      "build_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_reboot_ext",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/vendor.Module.symvers",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zte_reboot_ext/zte_reboot_ext.o\n  MODPOST /work/validation/zte_reboot_ext/Module.symvers\n  CC [M]  /work/validation/zte_reboot_ext/zte_reboot_ext.mod.o\n  CC [M]  /work/validation/zte_reboot_ext/.module-common.o\n  LD [M]  /work/validation/zte_reboot_ext/zte_reboot_ext.ko\n  BTF [M] /work/validation/zte_reboot_ext/zte_reboot_ext.ko\n"
+      },
+      "build_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_reboot_ext",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/vendor.Module.symvers",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "make[2]: Warning: File '/work/validation/zte_reboot_ext/modules.order' has modification time 0.033 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\nmake[2]: Warning: File '/work/validation/zte_reboot_ext/zte_reboot_ext.mod.c' has modification time 0.064 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n",
+        "stdout": "  CC [M]  /work/validation/zte_reboot_ext/zte_reboot_ext.o\n  MODPOST /work/validation/zte_reboot_ext/Module.symvers\n  CC [M]  /work/validation/zte_reboot_ext/zte_reboot_ext.mod.o\n  CC [M]  /work/validation/zte_reboot_ext/.module-common.o\n  LD [M]  /work/validation/zte_reboot_ext/zte_reboot_ext.ko\n  BTF [M] /work/validation/zte_reboot_ext/zte_reboot_ext.ko\n"
+      },
+      "clean_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_reboot_ext",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/vendor.Module.symvers",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "clean_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_reboot_ext",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/vendor.Module.symvers",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CLEAN   /work/validation/zte_reboot_ext/Module.symvers\n"
+      }
+    },
+    "first_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext\\zte_reboot_ext.ko",
+      "sha256": "e6146dfb5cf51b0ec46e1f32bfd7b5f7315d089eebc96beef6fadf6eb79bf17f",
+      "size": 236096
+    },
+    "passed": true,
+    "reproducible": true,
+    "second_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext\\zte_reboot_ext.ko",
+      "sha256": "e6146dfb5cf51b0ec46e1f32bfd7b5f7315d089eebc96beef6fadf6eb79bf17f",
+      "size": 236096
+    },
+    "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext"
+  },
+  "checks": {
+    "aarch64_rel": true,
+    "alias_match": true,
+    "build_passed": true,
+    "function_traceability": true,
+    "namespace_match": true,
+    "reproducible_build": true,
+    "undefined_symbols_match": true
+  },
+  "driver": "zte_reboot_ext",
+  "function": "attr_store",
+  "generated_utc": "2026-08-29T03:16:24.463963+00:00",
+  "passed": true,
+  "schema_version": "1.0",
+  "source_report": "reverse_engineering\\validation\\reconstructed\\zte_reboot_ext\\driver_audit_final.json",
+  "source_report_sha256": "2b9ce3d6681029f12ee7af986bb989038d7986df260d040743c38d41609c1219",
+  "stock_entry": "00101144",
+  "stock_function": "attr_store"
+}

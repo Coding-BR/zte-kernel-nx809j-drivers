@@ -1,0 +1,170 @@
+{
+  "blockers": [],
+  "command_plan": {
+    "after_candidate": {
+      "assembly": "extract_module_assembly.py stock/candidate, then compare_function_assembly.py",
+      "candidate_ghidra": "compare_ghidra_function_semantics.py when a fresh candidate export is supplied",
+      "kcfi": "extract_kcfi.py stock/candidate, then compare_kcfi_reports.py"
+    },
+    "docker": [
+      "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\run_zte_tpd_canonical_build.py",
+      "--engineering-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia",
+      "--label",
+      "hard_protocol_zte_tpd_baca8873fa28",
+      "--audit-name",
+      "hard_protocol_zte_tpd_baca8873fa28",
+      "--cycles",
+      "2",
+      "--parallelism",
+      "4",
+      "--image",
+      "nubia-sm8850-kernel-builder:latest",
+      "--source-volume",
+      "nubia_sm8850_kernel_src",
+      "--toolchain-volume",
+      "nubia_sm8850_kernel_toolchains",
+      "--clang-revision",
+      "clang-r536225",
+      "--candidate-source",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd",
+      "--artifact-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\syna_tcm_clear_data_dup_kcfi_20260901_protocol\\docker\\artifacts",
+      "--output",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\syna_tcm_clear_data_dup_kcfi_20260901_protocol\\docker\\canonical_build_report.json"
+    ],
+    "docker_adapter": "zte_tpd_canonical",
+    "docker_report": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\syna_tcm_clear_data_dup_kcfi_20260901_protocol\\docker\\canonical_build_report.json",
+    "joern": [
+      "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\run_joern_reconstruction_gate.py",
+      "--driver",
+      "zte_tpd",
+      "--source-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd",
+      "--source-view-root",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd",
+      "--ghidra-export",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock",
+      "--reconstruction-map",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\reconstruction_map.json",
+      "--output-dir",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\syna_tcm_clear_data_dup_kcfi_20260901_protocol\\joern",
+      "--strict",
+      "--function",
+      "syna_tcm_clear_data_duplicator@00124124",
+      "--joern-home",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548",
+      "--java-home",
+      "C:\\Program Files\\Microsoft\\jdk-21.0.12.8-hotspot"
+    ],
+    "joern_slice": [
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reproducible_environment\\.tools\\joern-v4.0.548\\joern-cli\\joern-slice.bat",
+      "usages",
+      "--method-name-filter",
+      "^syna_tcm_clear_data_duplicator",
+      "--parallelism",
+      "2",
+      "--min-num-calls",
+      "1",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\syna_tcm_clear_data_dup_kcfi_20260901_protocol\\joern\\source.cpg.bin"
+    ]
+  },
+  "driver": "zte_tpd",
+  "functions": [
+    {
+      "alias": "f000",
+      "identity": "syna_tcm_clear_data_duplicator@124124",
+      "kcfi_required": true,
+      "source_function": "syna_tcm_clear_data_duplicator",
+      "stock_entry": "00124124",
+      "stock_function": "syna_tcm_clear_data_duplicator"
+    }
+  ],
+  "generated_utc": "2026-09-01T09:24:44.644695+00:00",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE"
+  ],
+  "ready_for_core_execution": true,
+  "required_gates": {
+    "ASSEMBLY_RELOCATIONS": {
+      "kind": "AUTOMATED",
+      "reason": "compare function opcodes, sizes, sections and relocations"
+    },
+    "BOUNDED_MODEL": {
+      "kind": "EVIDENCE",
+      "reason": "bounded pointer, array, overflow and loop checks"
+    },
+    "CALLBACK_TABLE": {
+      "kind": "EVIDENCE",
+      "reason": "callback slot, prototype, section and relocation audit"
+    },
+    "CANDIDATE_GHIDRA_PCODE": {
+      "kind": "AUTOMATED",
+      "reason": "fresh candidate Ghidra/P-Code comparison"
+    },
+    "DOCKER_REPRODUCIBLE": {
+      "kind": "AUTOMATED",
+      "reason": "two clean pinned-container builds with identical bytes"
+    },
+    "HOST_HARNESS": {
+      "kind": "EVIDENCE",
+      "reason": "exercise observed success, error, boundary and teardown paths"
+    },
+    "INDEPENDENT_REVIEW": {
+      "kind": "EVIDENCE",
+      "reason": "review from stock evidence by a different executor"
+    },
+    "INPUT_IDENTITY": {
+      "kind": "AUTOMATED",
+      "reason": "hash stock, source tree, Ghidra index, map and runners"
+    },
+    "JOERN_SCOPED": {
+      "kind": "AUTOMATED",
+      "reason": "strict source CPG gate scoped to the selected functions"
+    },
+    "JOERN_SLICE": {
+      "kind": "AUTOMATED",
+      "reason": "usage or data-flow slice for each state source and sink"
+    },
+    "KCFI": {
+      "kind": "AUTOMATED",
+      "reason": "at least one selected function explicitly requires KCFI"
+    },
+    "KMI_TYPES": {
+      "kind": "EVIDENCE",
+      "reason": "GENDWARFKSYMS/BTF/DWARF type evidence where available"
+    },
+    "LLVM_IR_DIAGNOSIS": {
+      "kind": "EVIDENCE",
+      "reason": "IR-level diagnosis before any assembly island"
+    },
+    "MAP_IDENTITY": {
+      "kind": "AUTOMATED",
+      "reason": "bind every stock_function@entry to one source function"
+    },
+    "SANITIZERS": {
+      "kind": "EVIDENCE",
+      "reason": "ASan/UBSan host harness with deterministic replay corpus"
+    },
+    "SEMANTIC_COUNTEREXAMPLE": {
+      "kind": "EVIDENCE",
+      "reason": "search for divergent return, writes or call trace"
+    },
+    "STATE_EFFECT_LEDGER": {
+      "kind": "EVIDENCE",
+      "reason": "ordered loads, stores, widths, aliases and conditions"
+    }
+  },
+  "safety": {
+    "curated_sync": false,
+    "hardware_execution": false,
+    "microtask_status_changes": false,
+    "promotion": false,
+    "source_edits": false
+  },
+  "schema_version": "1.0"
+}

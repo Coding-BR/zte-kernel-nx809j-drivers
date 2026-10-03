@@ -1,0 +1,1 @@
+savedcmd_/work/engineering/curated/fp_goodix/Module.symvers :=  ./scripts/mod/modpost -M -m -b -x  -E -w    -o /work/engineering/curated/fp_goodix/Module.symvers -T /work/engineering/curated/fp_goodix/modules.order -i ./Module.symvers -e -i /work/engineering/curated/fp_goodix/vendor.Module.symvers -p protected_module_names_list

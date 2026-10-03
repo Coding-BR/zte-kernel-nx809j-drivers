@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "tp_sensibility_level_read",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "sanitizers": ["address", "undefined"],
+  "cycles": [
+    {
+      "cycle": 1,
+      "returncode": 0,
+      "output": "PASS tp_sensibility_level_read: 4 cases"
+    },
+    {
+      "cycle": 2,
+      "returncode": 0,
+      "output": "PASS tp_sensibility_level_read: 4 cases"
+    }
+  ],
+  "cases": [
+    "full read invokes callback and returns the level",
+    "nonzero file position returns EOF without callback",
+    "short destination is truncated safely",
+    "missing callback and zero-length read are handled"
+  ],
+  "passed": true,
+  "hardware": "DEFERRED"
+}

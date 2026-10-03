@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_smart_cover_write",
+  "attestation_id": "next401_tp_smart_cover_write_exact_v2",
+  "status": "OFFLINE_EXACT",
+  "hardware_status": "DEFERRED",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "promotion_claim": true,
+  "source_sha256": "ddf9a01927467d0d4841d5593dcc42e5effd3cd7d6ec5938f354bab676eded61",
+  "artifact": {
+    "path": "zte_tpd.ko",
+    "sha256": "6d04fa5109b091760b39bbbaff12c8ad08b26db27b4cdce0b1bb10527ef3b483",
+    "size": 17344280
+  },
+  "function_assembly": {
+    "candidate_sha256": "817a49e172bb96e9ecbe3f8fea2790b9cd52ba1a567ba3831dfa48fa0ad270fe",
+    "stock_sha256": "2a55dbc0d5843ed0bc97b249b3513580112b50a8e0f88c9ff90513c14572793f",
+    "instructions": 52,
+    "bytes": 208,
+    "raw_instruction_match": true,
+    "raw_relocation_match": true,
+    "section_match": true,
+    "symbol_size_match": true
+  },
+  "kcfi": {
+    "stock_type_id": "0xc3d43b4d",
+    "candidate_type_id": "0xc3d43b4d",
+    "indirect_callback_type_id": "0x6af8b499",
+    "size_match": true,
+    "section_match": true
+  },
+  "semantic_offsets": {
+    "callback": "tpd_cdev + 0xe40"
+  },
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_relocations_normalized": "PASS",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "parse the userspace value with base 10 through kstrtouint_from_user",
+    "return -EINVAL on parse failure without logging or invoking a callback",
+    "normalize every successful input to boolean zero or one before logging and callback",
+    "load the optional callback from tpd_cdev + 0xe40 and pass struct ztp_device * plus int",
+    "preserve the stock callback KCFI type 0x6af8b499 and return the original count on success"
+  ],
+  "evidence": {
+    "stock_body_bytes": 208,
+    "candidate_body_bytes": 208,
+    "stock_instruction_count": 52,
+    "candidate_instruction_count": 52,
+    "function_kcfi_type_id": "0xc3d43b4d",
+    "candidate_module_sha256": "6d04fa5109b091760b39bbbaff12c8ad08b26db27b4cdce0b1bb10527ef3b483",
+    "candidate_function_assembly_sha256": "817a49e172bb96e9ecbe3f8fea2790b9cd52ba1a567ba3831dfa48fa0ad270fe",
+    "stock_function_assembly_sha256": "2a55dbc0d5843ed0bc97b249b3513580112b50a8e0f88c9ff90513c14572793f",
+    "host_cases": 3,
+    "host_repetitions": 2,
+    "host_binary_sha256": "2148bb227e78aa6c49b7608e4e712d14f65dd14ad575719bb8594676ec429247",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_relocation_difference": "None; raw instruction sequence and normalized relocations match the stock function."
+  },
+  "follow_up_required": [
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior and concurrent callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 52-instruction/208-byte AArch64 body, matching function KCFI type and callback offset contract, strict Joern with zero unresolved calls, reproducible Docker build, and three-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

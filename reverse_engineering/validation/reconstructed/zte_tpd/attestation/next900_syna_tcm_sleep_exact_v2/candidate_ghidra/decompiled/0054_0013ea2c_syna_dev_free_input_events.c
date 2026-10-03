@@ -1,0 +1,32 @@
+
+void syna_dev_free_input_events(long param_1)
+
+{
+  long lVar1;
+  int iVar2;
+  
+  lVar1 = *(long *)(param_1 + 0x3b0);
+  if (lVar1 != 0) {
+    mutex_lock(param_1 + 0x278);
+    iVar2 = 0;
+    do {
+      input_event(lVar1,3,0x2f,iVar2);
+      input_mt_report_slot_state(lVar1,0,0);
+      tpd_touch_release(lVar1,iVar2);
+      one_key_report(0,0xffffffff,0xffffffff,iVar2);
+      iVar2 = iVar2 + 1;
+    } while (iVar2 != 10);
+    input_event(lVar1,1,0x14a,0);
+    input_event(lVar1,1,0x145,0);
+    if (DAT_0015fb38._1_1_ != '\0' || (char)DAT_0015fb38 != '\0') {
+      DAT_0015fb3a = 1;
+      _printk(&DAT_00181d48,"syna_dev_free_input_events");
+      return;
+    }
+    report_ufp_uevent(0);
+    input_event(lVar1,0,0,0);
+    mutex_unlock(param_1 + 0x278);
+  }
+  return;
+}
+

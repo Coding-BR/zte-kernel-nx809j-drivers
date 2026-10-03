@@ -1,0 +1,110 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer syna_tcm_buf_lock_harness.c -o build/syna_tcm_buf_lock_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/syna_tcm_buf_lock_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 1,
+    "hardware_paths_exercised": false,
+    "mutex_offset_0x10": true,
+    "reentrant_path": true,
+    "u8_wrap_path": true,
+    "uncontended_path": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS uncontended_mutex_once\nPASS uncontended_mutex_offset\nPASS uncontended_depth_increment\nPASS uncontended_no_warning\nPASS reentrant_mutex_once\nPASS reentrant_depth_increment\nPASS reentrant_warning_once\nPASS reentrant_warning_depth\nPASS wrap_mutex_once\nPASS wrap_u8_semantics\nPASS wrap_warning_depth\nSUMMARY tests=11 failures=0\n",
+      "summary": "SUMMARY tests=11 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "uncontended_mutex_once",
+        "uncontended_mutex_offset",
+        "uncontended_depth_increment",
+        "uncontended_no_warning",
+        "reentrant_mutex_once",
+        "reentrant_depth_increment",
+        "reentrant_warning_once",
+        "reentrant_warning_depth",
+        "wrap_mutex_once",
+        "wrap_u8_semantics",
+        "wrap_warning_depth"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS uncontended_mutex_once\nPASS uncontended_mutex_offset\nPASS uncontended_depth_increment\nPASS uncontended_no_warning\nPASS reentrant_mutex_once\nPASS reentrant_depth_increment\nPASS reentrant_warning_once\nPASS reentrant_warning_depth\nPASS wrap_mutex_once\nPASS wrap_u8_semantics\nPASS wrap_warning_depth\nSUMMARY tests=11 failures=0\n",
+      "summary": "SUMMARY tests=11 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "uncontended_mutex_once",
+        "uncontended_mutex_offset",
+        "uncontended_depth_increment",
+        "uncontended_no_warning",
+        "reentrant_mutex_once",
+        "reentrant_depth_increment",
+        "reentrant_warning_once",
+        "reentrant_warning_depth",
+        "wrap_mutex_once",
+        "wrap_u8_semantics",
+        "wrap_warning_depth"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T02:20:51.419217+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_buf_lock.c",
+      "sha256": "8c50f99af5854baa8e16bc9ec3d2cc85cbc1cde7674e9593b06c2a1e50e58852",
+      "size": 258
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\syna_tcm_buf_lock_harness.c",
+      "sha256": "d7c5d73a66f36d9cd56c894214a90cf8b66bb238dead338f93f94087066fcf24",
+      "size": 2480
+    }
+  ],
+  "limitations": [
+    "The harness uses deterministic host stubs for mutex_lock and printk.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_direct_source_syna_tcm_buf_lock_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 11,
+    "failed": [],
+    "passed": [
+      "uncontended_mutex_once",
+      "uncontended_mutex_offset",
+      "uncontended_depth_increment",
+      "uncontended_no_warning",
+      "reentrant_mutex_once",
+      "reentrant_depth_increment",
+      "reentrant_warning_once",
+      "reentrant_warning_depth",
+      "wrap_mutex_once",
+      "wrap_u8_semantics",
+      "wrap_warning_depth"
+    ],
+    "summary": "SUMMARY tests=11 failures=0"
+  }
+}

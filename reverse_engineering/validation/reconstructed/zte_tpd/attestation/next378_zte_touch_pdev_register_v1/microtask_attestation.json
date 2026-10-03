@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_touch_pdev_register",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "PASS",
+    "aarch64_section": "PASS",
+    "aarch64_opcode_and_normalized_relocation_parity": "PASS"
+  },
+  "semantic_contract": [
+    "Log registration, allocate zte_touch with PLATFORM_DEVID_NONE and store it at tpd_cdev + 0xdd0.",
+    "On allocation failure clear the callback at tpd_cdev + 0xea0 and return -ENOMEM.",
+    "On negative platform_device_add return, invoke dev.release, clear the callback and return the original error.",
+    "On zero or positive platform_device_add return, normalize the function result to zero and install tpd_report_uevent at tpd_cdev + 0xea0."
+  ],
+  "unverified": [
+    "Actual platform bus registration and device lifetime on the kernel.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "aarch64_validation_report.json"
+  }
+}

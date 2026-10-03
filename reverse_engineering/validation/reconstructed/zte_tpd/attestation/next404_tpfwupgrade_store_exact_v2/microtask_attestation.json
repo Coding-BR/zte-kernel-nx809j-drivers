@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "035_tpfwupgrade_store",
+  "stock_function": "tpfwupgrade_store",
+  "stock_entry": "00109f80",
+  "ghidra_body_bytes": 468,
+  "elf_symbol_bytes": 560,
+  "selected_functions": ["tpfwupgrade_store"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "374e577e2e6263de67165bb61e574c5a6c458fff4dcfcf2069ed7e1c92a08b4f",
+  "candidate_module_sha256": "a45333097e31b3a902d424040685266625c92988ecdc427a019a91691dae057e",
+  "candidate_module_size": 17073168,
+  "evidence": [
+    {"role": "stock_assembly", "path": "0034_tpfwupgrade_store_00109f80.asm", "sha256": "34f67170afd6d51847b74dc29f8afe188afd82d911ee6ac6cf0127f9ab2215c5"},
+    {"role": "candidate_assembly", "path": "0000_tpfwupgrade_store.asm", "sha256": "8359d61cf7aefcaefddbc23ba19fb7d52f788f539ab1c94db269f8e14a629329"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "c180e30763055252c17293e357b391afe35ea7b90c857943c5d6084184ca87a9"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "ac19e3728db51864560055136aca539b8cb662408d21a8cce1a75b402d565c08"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "d59e35c45807cab3cebcf5e04adfca0443b05a28675f2e381e2e8ca39a0ac893"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "10ef75baeb99db458efdab04fd60f2a3f2bc4b1574a56fd0b713b55351b925c1"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "6e8cdcf947e7e49849fcecda12c0a9bf02614b99040ecc4b2bbb05742405de22"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "5f295c0f10dcf7a92cbd7f60301c35f9333c4121248e6f30d1b264e474e84600"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "f6768b63bfd3b44c23cb4229c45a21680e673aac2add628e20c18725ef0ba9cb"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "f5547058777141493e6237f1114b423c9538b236c1ab05ad8ed2b5b1fa7cd49e"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "4ee799c014ed4883e9c267c35e4875cb7162593cc234934ac43d871eb29a6d51"}
+  ],
+  "findings": [
+    "The Ghidra function inventory reports 468 body bytes; the ELF symbol and extracted stock body are 560 bytes/140 instructions, and the discrepancy is retained rather than rewritten.",
+    "The candidate reproduces all 140 AArch64 instructions and 35 relocation sites; normalized relocation comparison passes, including compiler-generated allocation-tag normalization at identical ADRP/ADD sites.",
+    "KCFI function type ID matches at 0xc3d43b4d in .text and the indirect callback contract matches 0x4d7650a4 at tpd_cdev + 0xe18.",
+    "Strict Joern, canonical Docker build, and five-case two-cycle ASan/UBSan host contract all pass."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent firmware callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ]
+}

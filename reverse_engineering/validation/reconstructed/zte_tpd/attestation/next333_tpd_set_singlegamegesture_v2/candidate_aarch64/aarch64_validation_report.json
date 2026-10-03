@@ -1,0 +1,90 @@
+﻿{
+    "schema_version":  "1.0",
+    "generated_utc":  "2026-08-12T21:41:03.2391077Z",
+    "driver":  "zte_tpd",
+    "target":  "tpd_set_singlegamegesture",
+    "compiler":  "/toolchains/clang-r536225/bin/clang",
+    "container_image":  "nubia-sm8850-kernel-builder:latest",
+    "source":  "kernel_development/drivers/reconstructed/zte_tpd/tpd_set_singlegamegesture.c",
+    "source_sha256":  "3c76dcb7bf7a527e390ff83c4f13e35ab8b86fed054c5d09c111e18ddc6346f6",
+    "correction":  {
+                       "previous_root_offset":  "0xc00",
+                       "stock_root_offset":  "0xdb8",
+                       "state_offsets":  [
+                                             "0x57c",
+                                             "0x5b4",
+                                             "0x5b8",
+                                             "0x5bc",
+                                             "0x5b0"
+                                         ],
+                       "reason":  "The old source used decimal 3072 for the root pointer; Ghidra and stock assembly require 0xdb8."
+                   },
+    "assembly_order_barrier":  "Added an AArch64-safe compiler barrier and sequential OR operations to preserve stock load/store order.",
+    "syntax_check":  "PASS",
+    "assembly_generation":  "PASS",
+    "object_generation":  "PASS",
+    "candidate_assembly_sha256":  "1cb1486766b027129627e6b6cb6ee1e93154923a59e9bb933481e80f407e61ed",
+    "candidate_object_sha256":  "b0276db071145ef08af8f494ec416b893ffd8cbd94dd2765d0b305fba41ae751",
+    "required_instruction_checks":  [
+                                        {
+                                            "regex":  "ldr\\s+x20,\\s+\\[x0,\\s+#0xdb8\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "ldr\\s+w8,\\s+\\[x20,\\s+#0x57c\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "cmp\\s+w8,\\s+#0x1",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "b\\.ne",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "ldr\\s+w8,\\s+\\[x20,\\s+#0x5b4\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "ldr\\s+w2,\\s+\\[x20,\\s+#0x5b8\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "cmp\\s+w1,\\s+#0x0",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "cset\\s+w9,\\s+gt",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "orr\\s+w8,\\s+w8,\\s+w2",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "str\\s+w9,\\s+\\[x20,\\s+#0x5bc\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "orr\\s+w8,\\s+w8,\\s+w9",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "str\\s+w8,\\s+\\[x20,\\s+#0x5b0\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "mov\\s+w0,\\s+wzr",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "ret",
+                                            "found":  true
+                                        }
+                                    ],
+    "required_instruction_checks_passed":  true,
+    "exact_stock_opcode_parity":  "NOT_ESTABLISHED",
+    "exact_stock_opcode_parity_reason":  "The canonical .ko build is blocked by unrelated shared source errors.",
+    "status":  "PASS_WITH_CANONICAL_BLOCKER"
+}

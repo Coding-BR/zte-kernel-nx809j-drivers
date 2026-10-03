@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "function": "get_play_game",
+  "stock_entry": "0010bc14",
+  "stock_body_bytes": 240,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "candidate_source": "candidate_source.c",
+  "candidate_exact_source": "candidate_source_exact.S",
+  "gates": {
+    "canonical_docker": {"cycles": 2, "passed": true},
+    "aarch64_assembly": {"instructions": 60, "bytes": 240, "passed": true},
+    "kcfi": {"type_id": "0xf4e9d97c", "section": ".text", "size": 240, "passed": true},
+    "joern": {"calls": 42, "control_structures": 2, "unresolved_calls": 0, "parser_problems": 0, "passed": true},
+    "host_asan_ubsan": {"cases": 4, "cycles": 2, "passed": true}
+  },
+  "review_findings": [
+    {"category": "userspace_egress", "severity": "high", "count": 1, "disposition": "runtime review remains"}
+  ],
+  "limitations": [
+    "The direct harness is a contract model and does not execute real procfs.",
+    "No physical NX809J hardware execution.",
+    "No concurrent lifetime proof or malformed-input coverage beyond the four direct cases."
+  ]
+}

@@ -89,6 +89,11 @@ def source_name(stock_name: str, driver: str) -> str:
 
 def source_file_name(stock_name: str, driver: str, mapped_source: Any) -> str:
     """Resolve the owning translation unit for composite reconstructed modules."""
+    # A reviewed exact Assembly mapping is authoritative for the source unit.
+    # This must be checked before the driver's historical C ownership table so
+    # compiler-generated helpers can be bound to their explicit .S labels.
+    if isinstance(mapped_source, str) and Path(mapped_source).suffix.lower() == ".s":
+        return mapped_source
     if driver == "fp_goodix":
         if stock_name in FP_GOODIX_NETLINK_FUNCTIONS:
             return "fp_goodix_netlink.c"
@@ -98,6 +103,20 @@ def source_file_name(stock_name: str, driver: str, mapped_source: Any) -> str:
     if isinstance(mapped_source, str) and mapped_source:
         return mapped_source
     return f"{driver}.c"
+
+
+def source_contains_function(source_text: str, source_rel: str, function: str) -> bool:
+    """Check a C definition or an Assembly-exact global label.
+
+    Exact AArch64 reconstructions intentionally have no C-style function
+    signature.  Their public identity is the label emitted after a global
+    symbol directive, so the source-map validator must accept that form while
+    retaining the strict token check for C/C++ translation units.
+    """
+    if Path(source_rel).suffix.lower() in {".s", ".S".lower()}:
+        label = rf"(?m)^\s*{re.escape(function)}:\s*(?:/\*.*\*/\s*)?$"
+        return re.search(label, source_text) is not None
+    return re.search(rf"\b{re.escape(function)}\s*\(", source_text) is not None
 
 
 def bind_driver(repo: Path, driver: str, check: bool) -> dict[str, Any]:
@@ -148,16 +167,31 @@ def bind_driver(repo: Path, driver: str, check: bool) -> dict[str, Any]:
         if not isinstance(stock_function, str) or not stock_function:
             raise MappingError("mapping has no stock_function")
         mapped_function = item.get("source_function")
+        canonical_function = source_name(stock_function, driver)
+        # Compiler-generated exports and module entry aliases must supersede a
+        # stale self-reference carried by an older reconstruction map.
+        exact_assembly_mapping = (
+            isinstance(item.get("source_file"), str)
+            and Path(item["source_file"]).suffix.lower() == ".s"
+        )
         candidate = (
             mapped_function
-            if isinstance(mapped_function, str) and mapped_function
-            else source_name(stock_function, driver)
+            if exact_assembly_mapping and isinstance(mapped_function, str) and mapped_function
+            else (
+                canonical_function
+                if canonical_function != stock_function
+                else (
+                    mapped_function
+                    if isinstance(mapped_function, str) and mapped_function
+                    else canonical_function
+                )
+            )
         )
         source_rel = source_file_name(
             stock_function, driver, item.get("source_file")
         )
         source_text = load_source(source_rel)
-        if not re.search(rf"\b{re.escape(candidate)}\s*\(", source_text):
+        if not source_contains_function(source_text, source_rel, candidate):
             missing.append(f"{stock_function} -> {candidate}")
             continue
         updated_item = dict(item)

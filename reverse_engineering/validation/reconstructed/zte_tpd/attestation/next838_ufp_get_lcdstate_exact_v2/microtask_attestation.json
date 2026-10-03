@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "131",
+  "function": "ufp_get_lcdstate",
+  "stock_entry": "00110868",
+  "stock_body_bytes": 12,
+  "candidate_symbol_bytes": 12,
+  "stock_instruction_count": 3,
+  "candidate_instruction_count": 3,
+  "stock_relocation_count": 2,
+  "candidate_relocation_count": 2,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison regenerated from bundled modules",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "fbd11769d87fda516aa0033c7ee58e4d488d8a5fcc6cd011f02efd571d9b48d9",
+    "candidate_module_size": 29310992,
+    "candidate_source_sha256": "13ff8a8b8fcc1c6a1cc2979d1ee96dcf424932ae6cbf6a51a3a9f678941a817c",
+    "ghidra_pseudocode_sha256": "02c38d0a15a7d2772554f9ed7969093ef596702048d33d17a8986fa6a713120d",
+    "ghidra_pcode_sha256": "f5e99c7a9ec0a1b15b3555765a6e0c2b16b2beba0df1cadd71b870ccc5e2584e",
+    "candidate_assembly_sha256": "f848a19364a880c6a1b3362eb2c077c77335073358b11049d3eb7165aa3c87bb",
+    "stock_assembly_sha256": "439bc9a0c44065243116b55178efda693448a3b22a60e16efb0c0052bee4ce2f",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0x6fbb3035"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "LCD state and UFP runtime state are represented by deterministic host stubs.",
+    "Android runtime and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

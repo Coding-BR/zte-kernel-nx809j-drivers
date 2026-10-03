@@ -1,0 +1,574 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_cdev_process_reports",
+  "identity": "syna_cdev_process_reports@00117c90",
+  "status": "PASS",
+  "source_file": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_cdev_process_reports_exact.S",
+  "driver_source_sha256": "ad790c4afb48d2889c8cba585b06cdeafbf1085d14afb37077e39f181411188a",
+  "mode": "relational_aarch64_unicorn",
+  "coverage_scope": "early_argument_and_allocation_error_paths",
+  "passed": true,
+  "stock": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\stock\\zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "section": ".text",
+    "virtual_address": "0x11408",
+    "symbol_size": 1616,
+    "raw_function_sha256": "409f42c38a0c337fadf0b1dfd9af56b3f36f5d35e6fc6dcff5063f1426b8f0e1",
+    "symbol_index": 707
+  },
+  "candidate": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\zte_tpd.ko",
+    "sha256": "820ed31ae04a27d2e9d4497d298ecbb2959e502f23078b56d5753aa7e3e2d15a",
+    "section": ".text",
+    "virtual_address": "0x1e224",
+    "symbol_size": 1616,
+    "raw_function_sha256": "409f42c38a0c337fadf0b1dfd9af56b3f36f5d35e6fc6dcff5063f1426b8f0e1",
+    "symbol_index": 3833
+  },
+  "emulation_shim": {
+    "tool": "Unicorn 2.x",
+    "patched_instructions": [
+      "PACIASP",
+      "AUTIASP",
+      "g_cdev_data+0xb4 ADRP/LDST relocation materialized in harness memory"
+    ],
+    "external_bl_zero": "instrumented by function offset",
+    "hardware": "not executed"
+  },
+  "limitations": [
+    "Secondary-frame allocation cleanup, FIFO linked-list insertion, queue payload, ktime, and indirect hardware callback paths are covered by the auxiliary host contract report and remain outside this focused emulator."
+  ],
+  "cases": [
+    {
+      "name": "null_context",
+      "stock": {
+        "return_u64": 4294967274,
+        "return_s32": -22,
+        "calls": [
+          {
+            "offset": "0x378",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 8,
+            "x3": 0
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967274,
+        "return_s32": -22,
+        "calls": [
+          {
+            "offset": "0x378",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 8,
+            "x3": 0
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "null_payload",
+      "stock": {
+        "return_u64": 4294967274,
+        "return_s32": -22,
+        "calls": [
+          {
+            "offset": "0x394",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x43c",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 1,
+            "x3": 8
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967274,
+        "return_s32": -22,
+        "calls": [
+          {
+            "offset": "0x394",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x43c",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 1,
+            "x3": 8
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "managed_device_missing",
+      "stock": {
+        "return_u64": 4294967284,
+        "return_s32": -12,
+        "calls": [
+          {
+            "offset": "0x54",
+            "function": "syna_request_managed_device",
+            "x0": 1,
+            "x1": 118489088,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x3bc",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x3d8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 11,
+            "x3": 8
+          },
+          {
+            "offset": "0x43c",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 1,
+            "x3": 8
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967284,
+        "return_s32": -12,
+        "calls": [
+          {
+            "offset": "0x54",
+            "function": "syna_request_managed_device",
+            "x0": 1,
+            "x1": 118489088,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x3bc",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x3d8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 11,
+            "x3": 8
+          },
+          {
+            "offset": "0x43c",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 1,
+            "x3": 8
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    },
+    {
+      "name": "initial_allocation_failure",
+      "stock": {
+        "return_u64": 4294967284,
+        "return_s32": -12,
+        "calls": [
+          {
+            "offset": "0x54",
+            "function": "syna_request_managed_device",
+            "x0": 1,
+            "x1": 118489088,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x6c",
+            "function": "devm_kmalloc",
+            "x0": 120586240,
+            "x1": 11,
+            "x2": 3520,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x3d8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 11,
+            "x3": 8
+          },
+          {
+            "offset": "0x43c",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 1,
+            "x3": 8
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "candidate": {
+        "return_u64": 4294967284,
+        "return_s32": -12,
+        "calls": [
+          {
+            "offset": "0x54",
+            "function": "syna_request_managed_device",
+            "x0": 1,
+            "x1": 118489088,
+            "x2": 8,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x6c",
+            "function": "devm_kmalloc",
+            "x0": 120586240,
+            "x1": 11,
+            "x2": 3520,
+            "x3": 117440512
+          },
+          {
+            "offset": "0x3d8",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 11,
+            "x3": 8
+          },
+          {
+            "offset": "0x43c",
+            "function": "_printk",
+            "x0": 16777216,
+            "x1": 16777216,
+            "x2": 1,
+            "x3": 8
+          }
+        ],
+        "patched_offsets": [
+          "0x0",
+          "0x44",
+          "0x74",
+          "0x11c",
+          "0x14c",
+          "0x16c",
+          "0x404",
+          "0x460"
+        ],
+        "error": null
+      },
+      "passed": true,
+      "differences": {}
+    }
+  ],
+  "mutation_check": {
+    "detected": true,
+    "offset": "0x28",
+    "original_word": "0xb4001a03",
+    "mutated_word": "0xb5001a03",
+    "differences": [
+      {
+        "name": "null_context",
+        "differences": {
+          "return_u64": {
+            "stock": 4294967274,
+            "candidate": 1
+          },
+          "return_s32": {
+            "stock": -22,
+            "candidate": 1
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x378",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 8,
+                "x3": 0
+              }
+            ],
+            "candidate": []
+          },
+          "emulation_error": {
+            "stock": null,
+            "candidate": "Invalid memory read (UC_ERR_READ_UNMAPPED)"
+          }
+        }
+      },
+      {
+        "name": "null_payload",
+        "differences": {
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x394",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 8,
+                "x3": 117440512
+              },
+              {
+                "offset": "0x43c",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 1,
+                "x3": 8
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x378",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 8,
+                "x3": 117440512
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "managed_device_missing",
+        "differences": {
+          "return_u64": {
+            "stock": 4294967284,
+            "candidate": 4294967274
+          },
+          "return_s32": {
+            "stock": -12,
+            "candidate": -22
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x54",
+                "function": "syna_request_managed_device",
+                "x0": 1,
+                "x1": 118489088,
+                "x2": 8,
+                "x3": 117440512
+              },
+              {
+                "offset": "0x3bc",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 8,
+                "x3": 117440512
+              },
+              {
+                "offset": "0x3d8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 11,
+                "x3": 8
+              },
+              {
+                "offset": "0x43c",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 1,
+                "x3": 8
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x378",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 8,
+                "x3": 117440512
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "initial_allocation_failure",
+        "differences": {
+          "return_u64": {
+            "stock": 4294967284,
+            "candidate": 4294967274
+          },
+          "return_s32": {
+            "stock": -12,
+            "candidate": -22
+          },
+          "calls": {
+            "stock": [
+              {
+                "offset": "0x54",
+                "function": "syna_request_managed_device",
+                "x0": 1,
+                "x1": 118489088,
+                "x2": 8,
+                "x3": 117440512
+              },
+              {
+                "offset": "0x6c",
+                "function": "devm_kmalloc",
+                "x0": 120586240,
+                "x1": 11,
+                "x2": 3520,
+                "x3": 117440512
+              },
+              {
+                "offset": "0x3d8",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 11,
+                "x3": 8
+              },
+              {
+                "offset": "0x43c",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 1,
+                "x3": 8
+              }
+            ],
+            "candidate": [
+              {
+                "offset": "0x378",
+                "function": "_printk",
+                "x0": 16777216,
+                "x1": 16777216,
+                "x2": 8,
+                "x3": 117440512
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_cdev_process_reports_exact.S",
+      "sha256": "ad790c4afb48d2889c8cba585b06cdeafbf1085d14afb37077e39f181411188a"
+    }
+  ]
+}

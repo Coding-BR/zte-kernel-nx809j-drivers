@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "target": "zte_touch_probe",
+  "mode": "offline_aarch64_exact_instruction_and_normalized_dataflow_relocation_comparison",
+  "instruction_count": {
+    "stock": 928,
+    "candidate": 928,
+    "exact": true,
+    "normalized_match": true
+  },
+  "symbol_size": {
+    "stock": 3712,
+    "candidate": 3712,
+    "exact": true,
+    "delta_bytes": 0
+  },
+  "section": {
+    "stock": ".text",
+    "candidate": ".text",
+    "match": true
+  },
+  "function_kcfi_type_id": {
+    "stock": "0xc7f8c87c",
+    "candidate": "0xc7f8c87c",
+    "match": true
+  },
+  "instruction_sequence": {
+    "raw_match": false,
+    "normalized_match": true,
+    "raw_differences": 0,
+    "comparison": "The 928-instruction AArch64 opcode and control-flow sequence is exact. The strict raw comparator remains false only for independently linked module-local relocation identities; opcode comparison reports zero differences."
+  },
+  "branch_contract": {
+    "allocation_failure": "logs the allocation failure and returns -ENOMEM",
+    "optional_dt_properties": "presence and read failures preserve the observed defaults and field offsets",
+    "proc_sysfs_failures": "logs individual creation failures while preserving the stock continuation behavior",
+    "workqueue_failure": "returns -ENOMEM before delayed-work scheduling",
+    "success": "initializes delayed work, timestamps, waitqueue and zlog fields, logs probe completion and returns zero",
+    "normalized_match": true
+  },
+  "offset_contract": {
+    "pdev_back_reference": "cdev + 0xdc8",
+    "pdev_cdev_slot": "pdev + 0xa8",
+    "ghost_config": "cdev + 0x490..0x4a4",
+    "probe_work": "cdev + 0x8d0",
+    "zlog_work": "cdev + 0xa50",
+    "zlog_buffer": "cdev + 0xbe8",
+    "normalized_match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "Both functions expose 385 relocations and identical call/property structure; separately linked local .rodata/.rodata pointer offsets and symbol layout differ."
+  },
+  "call_targets": {
+    "normalized_match": true
+  },
+  "decision": "OFFLINE_EXACT",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw ELF relocation identity is not exact across independently linked modules; normalized relocation roles and resolved targets match.",
+    "The host harness stubs kernel allocators, Device Tree, procfs/sysfs, mutex, workqueue and platform behavior.",
+    "Alignment sanitization is disabled in the host ABI model because the recovered source contains intentional raw offset stores.",
+    "No smartphone, scheduler, platform bus or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "265ceb8cef3a461dd0afd23eaa301eddf93c745a760a68fab2afe01b945f276f",
+    "candidate_assembly_sha256": "5322cd4ff82760be849e7167488e758b780348ba45756d6c8fa719af6f65c7a8",
+    "candidate_module_sha256": "5c42f629f075f4a7f17200f983afd2e7d9c796a9f651d658d547e454c4345af7"
+  }
+}

@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.mod := printf '%s\n'   zte_reboot_ext.o | awk '!x[$$0]++ { print("/work/validation/zte_reboot_ext/cycle_1/"$$0) }' > /work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.mod

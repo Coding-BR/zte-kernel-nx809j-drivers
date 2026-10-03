@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "set_rotation_limit_level",
+  "attestation_id": "next411_set_rotation_limit_level_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_REGISTER_ALLOCATION_AND_RELOCATION_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "kcfi_indirect_callback_type": "PASS_0x6af8b499",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "FAIL_REGISTER_ALLOCATION_ONLY",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_SYMBOL_LAYOUT_ONLY",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "parse the user value with kstrtouint_from_user using base 10",
+    "return -EINVAL without logging or callback on parse failure",
+    "log set_rotation_limit_level and the parsed unsigned value",
+    "load the optional callback from tpd_cdev + 0xe80 with callback KCFI type 0x6af8b499",
+    "pass struct ztp_device * and the parsed integer to the callback",
+    "return the original count on success or when no callback is installed"
+  ],
+  "evidence": {
+    "stock_body_bytes": 196,
+    "candidate_body_bytes": 196,
+    "stock_instruction_count": 49,
+    "candidate_instruction_count": 49,
+    "function_kcfi_type_id": "0xc3d43b4d",
+    "indirect_callback_kcfi_type_id": "0x6af8b499",
+    "candidate_module_sha256": "849654a2dbfa8c123a97f6f044167a835bbc43bccc08af7f715cb1b0e6768765",
+    "candidate_function_assembly_sha256": "529359b65375231befbbbfd4067cf9703210ac1395fcd843640f28f91af8ab9a",
+    "stock_function_assembly_sha256": "5a3e4efa9dda2989339bde9585c7db8b2b59f95cbc6f98b30f4a3eea534f16b7",
+    "host_cases": 3,
+    "host_repetitions": 2,
+    "host_binary_sha256": "0b89dc3dddb25b4764e9a8ba5b4d13995ca6e87347b8c6ba28318405b475e6c0",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_difference": "The candidate preserves the stock control flow and contracts but uses a different equivalent register allocation and module-local .rodata relocation layout."
+  },
+  "follow_up_required": [
+    "Review register allocation only if exact opcode ordering is required.",
+    "Review local .rodata symbol placement only if exact relocation parity is required.",
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 49-instruction/196-byte AArch64 body, matching function and indirect callback KCFI contracts, strict Joern with zero unresolved calls, reproducible Docker build, and three-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

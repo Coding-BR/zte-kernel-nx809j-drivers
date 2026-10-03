@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "431_tp_sensibility_level_write",
+  "function": "tp_sensibility_level_write",
+  "source_file": "tp_sensibility_level_write.c",
+  "stock_entry": "0010c3f8",
+  "protocol": [
+    "Ghidra pseudocode and P-Code reviewed",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two cycles",
+    "canonical Docker build with clang-r536225, two cycles",
+    "KCFI type and size comparison",
+    "AArch64 instruction and relocation comparison"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "canonical_reproducible": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": false,
+    "aarch64_instruction_relocation_parity": false,
+    "hardware": "DEFERRED"
+  },
+  "candidate_artifact": {
+    "sha256": "003bedfbe72b014323f27bd9986ee4270f0087856bb9dbb6fa804383d621b150",
+    "size": 30050256
+  },
+  "promotion": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "passed": false,
+  "claim": "The function is compile-clean, Joern-clean and host-tested, with matching KCFI type and normalized relocation targets. Eight bytes and two AArch64 instructions remain different from stock, so 100% equivalence and hardware behavior are not established."
+}
