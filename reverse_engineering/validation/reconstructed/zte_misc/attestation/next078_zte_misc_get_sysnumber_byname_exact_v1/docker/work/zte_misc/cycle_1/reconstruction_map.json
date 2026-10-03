@@ -4,29 +4,7 @@
   "stock_sha256": "6455a3c97f10d10914248c4a92b0f92b06a8e06921def9c56c6a57a863703f9d",
   "ghidra_export": "engenharia/runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_misc.ko",
   "mappings": [
-    {
-      "stock_function": "get_sysnumber_byname",
-      "stock_entry": "00100a54",
-      "source_file": "zte_misc.c",
-      "source_function": "get_sysnumber_byname",
-      "evidence": [
-        "Ghidra stock pseudocode/P-Code at 00100a54 reviewed",
-        "exact 27-instruction/108-byte AArch64 body matched stock",
-        "stock and candidate KCFI type ID 0x7bff871d matched",
-        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
-        "Joern scoped and usage-slice gates passed",
-        "ABI correction validated: int return and char * parameter match stock",
-        "direct host-test receipt covers GPIO label hit and miss paths",
-        "no hardware execution claim"
-      ],
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "stock_body_bytes": 108,
-      "attestation": "reverse_engineering/validation/reconstructed/zte_misc/attestation/next078_zte_misc_get_sysnumber_byname_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, corrected ABI, KCFI, Docker reproducibility, Joern and direct harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted after correcting the prototype to int get_sysnumber_byname(char *), which matched stock KCFI 0x7bff871d. The attestation records 27 matching instructions/108 bytes, two reproducible Docker builds, strict Joern scope/slice and GPIO lookup host tests. Live GPIO hardware behavior remains unverified."
-    },
+    {"stock_function":"get_sysnumber_byname","stock_entry":"00100a54","source_file":"zte_misc.c","source_function":"get_sysnumber_byname","evidence":["decompiled/0000_00100a54_get_sysnumber_byname.c"],"status":"reviewed"},
     {
       "stock_function": "zte_poweroff_charging_status",
       "stock_entry": "00100ac4",
