@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_misc/cycle_1/zte_misc.mod := printf '%s\n'   zte_misc.o | awk '!x[$$0]++ { print("/work/validation/zte_misc/cycle_1/"$$0) }' > /work/validation/zte_misc/cycle_1/zte_misc.mod
