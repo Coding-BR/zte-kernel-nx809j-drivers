@@ -1,0 +1,434 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc_fan_MP2",
+  "work_unit": "MP2_STATE_EFFECT_LEDGER",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": false,
+  "stock_identity": {
+    "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+  },
+  "source_environment": {
+    "docker_source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "binary_evidence": "repaired Ghidra export and stock assembly from pinned Docker builder image"
+  },
+  "state_objects": [
+    {
+      "object": "module-global chip",
+      "size": "0x58-byte devm allocation",
+      "observed_roles": [
+        "offset +0x00 stores platform device pointer",
+        "offset +0x08 points to subordinate fan state",
+        "offset +0x10 stores kobject pointer",
+        "offset +0x18 is initialized and used as mutex",
+        "offset +0x48 stores regulator handle",
+        "offset +0x50 stores pinctrl state handle"
+      ],
+      "confidence": "offsets observed in decompilation/relocations; C struct type unresolved"
+    },
+    {
+      "object": "subordinate fan state",
+      "size": "0xa8-byte devm allocation",
+      "observed_roles": [
+        "offset +0x00 current fan level/mode: read by level setters and speed logic",
+        "offset +0x01 pending level used while disabled",
+        "offset +0x02 tachometer sampling phase",
+        "offset +0x04 atomic IRQ pulse count",
+        "offset +0x08 latched pulse count",
+        "offset +0x0c enabled boolean",
+        "offset +0x10 PWM GPIO number",
+        "offset +0x14 speed/tach GPIO number",
+        "offset +0x1c IRQ number",
+        "offset +0x68 PWM device pointer"
+      ],
+      "confidence": "roles are behavioral aliases inferred from exact access sites, not confirmed source field names"
+    },
+    {
+      "object": "nb_fan_rpm_check_rst_cnt",
+      "storage": "module global",
+      "observed_roles": [
+        "counts recovery attempts in fan_speed_show",
+        "threshold checked against 11",
+        "when fan is active and recovery predicate is false, assigned zero by the observed path"
+      ],
+      "confidence": "symbol and read/write sites observed; reset semantics review required"
+    }
+  ],
+  "function_ledger": [
+    {
+      "function": "fan_speed_irq_proc",
+      "state_effects": [
+        "atomically increments subordinate_state+0x04 through dev_id pointer path"
+      ],
+      "external_effects": [],
+      "return_observed": "returns 1 (IRQ_HANDLED under irqreturn_t ABI)",
+      "open": "exact semantic name of count field inferred"
+    },
+    {
+      "function": "nb_fan_probe",
+      "state_effects": [
+        "allocates 0x58-byte chip; stores module-global chip",
+        "obtains regulator, reads fan,voltage with 2800000 fallback, sets voltage",
+        "obtains/selects default pinctrl state",
+        "calls DT parser and GPIO/IRQ setup",
+        "initializes mutex and hrtimer; binds fan_hrtimer_hander",
+        "stores chip in platform device drvdata at device offset +0x98",
+        "creates kobject and sysfs group"
+      ],
+      "external_effects": [
+        "regulator and pinctrl APIs",
+        "GPIO/IRQ registration",
+        "hrtimer and sysfs lifecycle"
+      ],
+      "return_observed": "error/status values propagated through multiple branches; full cleanup/error contract is not established here",
+      "open": "probe unwind and partial-registration lifetime deferred to MP4/MP5"
+    },
+    {
+      "function": "nb_fan_remove",
+      "state_effects": [
+        "removes sysfs group",
+        "clears platform device drvdata pointer"
+      ],
+      "external_effects": [
+        "sysfs_remove_group"
+      ],
+      "return_observed": "void",
+      "open": "timer, IRQ, GPIO, kobject and regulator teardown ownership deferred to MP5; absence in this body alone is not a leak proof"
+    },
+    {
+      "function": "nb_fan_parse_dt",
+      "state_effects": [
+        "requires exactly one available child in observed count path",
+        "allocates 0xa8-byte subordinate state and stores it at chip+0x08",
+        "finds child label/name and requests PWM with devm_fwnode_pwm_get",
+        "constructs initial PWM state using period from PWM device and zero duty, then indirect-calls pwm_ops.apply"
+      ],
+      "external_effects": [
+        "OF child/property lookup",
+        "managed allocation and PWM lookup",
+        "KCFI-checked PWM apply"
+      ],
+      "return_observed": "returns 0 on success; observed negative error branches include -ENOMEM, -EINVAL, -ENODEV and preserved -EPROBE_DEFER",
+      "open": "KCFI preamble excluded because entry-4 overlaps prior function; prototype contract relies on callers/header and needs reviewer check"
+    },
+    {
+      "function": "nb_fan_gpio_proc",
+      "state_effects": [
+        "reads fan,speed-gpio and fan,pwm-gpio",
+        "requests speed GPIO, resolves IRQ, requests threaded IRQ with fan_speed_irq_proc and chip pointer as dev_id",
+        "disables the IRQ after registration",
+        "reads current PWM GPIO raw value"
+      ],
+      "external_effects": [
+        "GPIO request/descriptor/IRQ mapping and IRQ registration"
+      ],
+      "return_observed": "propagates several negative errors; returns -ENODEV when subordinate state absent",
+      "open": "partial failure cleanup and ownership deferred to MP5"
+    },
+    {
+      "function": "fan_hrtimer_hander",
+      "state_effects": [
+        "phase 1 -> zeroes pulse count +0x04, sets phase 2, starts 500 ms timer, enables IRQ",
+        "phase 2 -> sets phase 3, copies count +0x04 to latched count +0x08, disables IRQ",
+        "other phase values leave observed fields unchanged"
+      ],
+      "external_effects": [
+        "hrtimer_start_range_ns",
+        "enable_irq/disable_irq_nosync"
+      ],
+      "return_observed": "1 on phase-1 transition (HRTIMER_RESTART ABI); 0 otherwise",
+      "open": "phase names inferred from numeric state transitions"
+    },
+    {
+      "function": "fan_enable_show",
+      "state_effects": [
+        "reads enabled byte at subordinate_state+0x0c"
+      ],
+      "external_effects": [
+        "sprintf into sysfs buffer"
+      ],
+      "return_observed": "returns formatted byte length"
+    },
+    {
+      "function": "fan_enable_store",
+      "state_effects": [
+        "sscanf parses integer; nonzero maps to enabled=true",
+        "same boolean is idempotent",
+        "on change stores enabled byte under mutex",
+        "disable path saves current level to pending +0x01 and requests level 0",
+        "enable path applies nonzero pending level then clears pending byte"
+      ],
+      "external_effects": [
+        "mutex lock/unlock and fan_level_set"
+      ],
+      "return_observed": "returns sysfs write count on normal path; sscanf conversion result is ignored",
+      "open": "behavior for malformed input follows zero-initialized parse local in decompile; verify exact compiled branches during MP3"
+    },
+    {
+      "function": "fan_level_set",
+      "state_effects": [
+        "no-op when requested level equals current level",
+        "level 0 may disable regulator; nonzero may enable regulator and sleep 10 ms",
+        "builds PWM state with period 40000 and duty level*8000",
+        "special level 5 uses zero duty and may drive PWM GPIO low; other levels drive it high when raw state is low",
+        "indirect-calls pwm_ops.apply; updates current level only when apply result is nonnegative"
+      ],
+      "external_effects": [
+        "regulator APIs, msleep, GPIO and PWM apply"
+      ],
+      "return_observed": "returns int in w0: zero on same-level no-op, otherwise the PWM apply result is preserved on nonnegative return, and negative apply result is restored to w0 before RET",
+      "open": "first argument is the subordinate-state pointer; second is the requested level in w1. Exact source-level width/signedness remains unresolved because no source type metadata/KCFI preamble is available."
+    },
+    {
+      "function": "fan_level_show",
+      "state_effects": [
+        "reads pending level +0x01 when disabled, current level +0x00 when enabled"
+      ],
+      "external_effects": [
+        "sprintf into sysfs buffer"
+      ],
+      "return_observed": "returns formatted value length"
+    },
+    {
+      "function": "fan_level_store",
+      "state_effects": [
+        "parses integer and rejects values >=6 with -EINVAL",
+        "while disabled writes pending level +0x01",
+        "while enabled locks mutex and invokes fan_level_set"
+      ],
+      "external_effects": [
+        "mutex and fan_level_set"
+      ],
+      "return_observed": "returns input count in disabled-cache path; in enabled path captures fan_level_set w0 and returns input count on zero, otherwise propagates that nonzero status",
+      "open": "none for the fan_level_set return dataflow; malformed-input conversion behavior and source-level argument signedness remain MP3 review items"
+    },
+    {
+      "function": "fan_pwm_store",
+      "state_effects": [
+        "parses integer and rejects values >=101 with -EINVAL",
+        "under mutex constructs enabled PWM state with period 40000 and duty percent*400",
+        "indirect-calls pwm_ops.apply"
+      ],
+      "external_effects": [
+        "mutex and PWM apply"
+      ],
+      "return_observed": "negative PWM result propagates; zero result returns input count; positive result appears returned as-is in Ghidra pseudocode"
+    },
+    {
+      "function": "fan_speed_show",
+      "state_effects": [
+        "under mutex starts tachometer sample phase and a 1 ms hrtimer, sleeps 1 s, then derives count*40 and mode-specific correction",
+        "formats computed speed; if requested level is nonzero and speed <= level*1000 and retry counter <11, requests level 0, cycles regulator with 50 ms off/10 ms settling, restores requested level, and increments retry counter",
+        "active path without recovery predicate writes retry counter to zero; disabled path preserves its previous value"
+      ],
+      "external_effects": [
+        "mutex, hrtimer, msleep, fan_level_set and regulator APIs"
+      ],
+      "return_observed": "returns formatted value length",
+      "open": "units/calibration and retry intent inferred from constants/log strings; preserve raw arithmetic as primary evidence"
+    },
+    {
+      "function": "init_module",
+      "state_effects": [
+        "registers nubia_fan_driver with __platform_driver_register"
+      ],
+      "external_effects": [
+        "platform bus registration"
+      ],
+      "return_observed": "calls __platform_driver_register and returns with w0 unchanged; assembly supports forwarding its int status despite Ghidra declaring void",
+      "open": "source prototype is not available; registration return forwarding is observed in stock assembly"
+    },
+    {
+      "function": "cleanup_module",
+      "state_effects": [
+        "unregisters nubia_fan_driver"
+      ],
+      "external_effects": [
+        "platform_driver_unregister"
+      ],
+      "return_observed": "void"
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP0_IDENTITY.json",
+      "sha256": "ac88f5d0816bbf57584b25a213d24682407846550e6a73c800ce42cf004dde75"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "a757053fbc8010b310ac234fbdc94ab28bd4fd3fce3117912003ca7a7f9f2bb6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/manifest.json",
+      "sha256": "21c89648abcdbe7b80ea6738aa10728b78eeadff28729dc2f5bca287ccef045d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/functions.jsonl",
+      "sha256": "f767904d61eb3bea84a63bd46a560d7d30aa2bdeb7e9e7e03822a22f8a9621c3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/calls.jsonl",
+      "sha256": "476bb7156695005a5f71d7c901df30a8357bfc110b3dda63a6cd82ba6c9b19d1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kcfi_stock.json",
+      "sha256": "80d3446bf67c9b743710a6666b98111841873675a64a296a24d70d2955cf3a6d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_relocations.txt",
+      "sha256": "20475a9898c8e9b21f81f29dd7b0a3a78b524bdfacdd3458a0505bc8e483cb7f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kernel_header_evidence_MP1_20261027.txt",
+      "sha256": "e92546b29c99b745c482317cf361d432c473f0c0cbd7e7c619cfc6a3c8d41bf8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/manifest.json",
+      "sha256": "1f375a3920e16c21816d84cf82037f664eb8fe4c47ba56f2104cb5f50a349b8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0000_001004ec_fan_speed_irq_proc.c",
+      "sha256": "83d97325953e1acd2e740bfbe8db3f729f19153202a878da033bd8044156bb21"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0001_0010052c_nb_fan_probe.c",
+      "sha256": "3d7712cb5dd75959d41d602c9ff1976621f4a168aed2d161954a861be24d86ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0002_00100a54_nb_fan_remove.c",
+      "sha256": "18527b61687144d07809fa27053237e9e26776914c6843cd5546223282b98c24"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0003_00100a90_nb_fan_parse_dt.c",
+      "sha256": "e6510a6eb893463049c26e06a6316cd64eff57910bc148b83c7d55226305c793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0004_00100dac_nb_fan_gpio_proc.c",
+      "sha256": "994c904617fb82eb80c8323d11aeecbc6216900b1ba9ec5e35e19102531c86b8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0005_00100f80_fan_hrtimer_hander.c",
+      "sha256": "f76e4c6e803aa6f41ec20ec0b10f18860e4d8a24ceeb898ec738fce03f2d0111"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0006_0010109c_fan_enable_show.c",
+      "sha256": "24bcee970718e2052ac10b386e8c9affa7cd1ed9cabe5e27b0f790deae3e98e5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0007_00101114_fan_enable_store.c",
+      "sha256": "5b6149b67826e24ae8c66a81d5a2a61fac8a035c6199f5c3d01927cc43747645"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0008_0010127c_fan_level_set.c",
+      "sha256": "62f504499ebf5c93bad596af8b1c5932685c7ed35c0e5235a40a6cb7e5679513"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0009_001014c0_fan_level_show.c",
+      "sha256": "97182949c50ed76d66e7c3e1c8266d49e6bb8798dbdc31ada4f1bf2f0391b1b9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0010_0010150c_fan_level_store.c",
+      "sha256": "7a54a7f43f1bf81be1e1efebee87c0ca878e648a2c53eab23f1d9ad67d89b31b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0011_00101654_fan_pwm_store.c",
+      "sha256": "8d04c100c679f82a332daecf47f840a9e0207c2bdb07f1c4ad116f4bcf2ab93c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0012_001017f4_fan_speed_show.c",
+      "sha256": "ccbf9a0c0552c24ca3ac3195c2f5cdd6d44b28cda4007b7ffbf595c47213c5a5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0013_00101acc_init_module.c",
+      "sha256": "b354f46cb110d1d37e95e7e925a51cae3b16373f59ed1d4437494be9ed3ace20"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0014_00101afc_cleanup_module.c",
+      "sha256": "997f7f98009169fc2d2c7ac1ce9c0fb6fb990e0afcbd1b3c63eafdd40ae11b74"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0000_fan_speed_irq_proc_001004ec.asm",
+      "sha256": "6a64340c68b77402e40201dd0a9c210f9371d6ec05037a3377c5e0331d7893b0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0001_nb_fan_probe_0010052c.asm",
+      "sha256": "293cc1987db531aa43a8f73b7a7c711e5bb1e01e40d85ce7d0ba5d2d587a1c6a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0002_nb_fan_remove_00100a54.asm",
+      "sha256": "75955d670c2ad985787080e0db0dad25e896b2f1f584f0fc3783621c8c953d8f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0003_nb_fan_parse_dt_00100a90.asm",
+      "sha256": "2e17e89384cc8504e190d36d391f4b2864b17c3437f10c9051a335735d768d60"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0004_nb_fan_gpio_proc_00100dac.asm",
+      "sha256": "4007fcbdf3d078e7abc56b2aba2e69e79ad6e4170e54849bf6ce7eaa785b85ca"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0005_fan_hrtimer_hander_00100f80.asm",
+      "sha256": "3bffdc2860ad44236812bf0f500a81b3b40227394e579b417e15b82f8890742f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0006_fan_enable_show_0010109c.asm",
+      "sha256": "5e63ebf66a2b6309a2dccc7bf6f7412ed9d3281b16c5df8baf84afe849ad2d05"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0007_fan_enable_store_00101114.asm",
+      "sha256": "1d92833daf2e367e3ad7fb821be4c36e4407015743467b98581e9257ea8651df"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0008_fan_level_set_0010127c.asm",
+      "sha256": "58909b910ec70d342ecee1713a01df1f5fdf5a1a323e711e34829952e2a7c09b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0009_fan_level_show_001014c0.asm",
+      "sha256": "4c542e314edacfc9ec9eb79b6a62a3c1082600dc1068908cb5e53aa6792bc21f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0010_fan_level_store_0010150c.asm",
+      "sha256": "f1c34de717bf659fa4092eb7411233946150f75e126ae6ebba155f0d2453c8a9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0011_fan_pwm_store_00101654.asm",
+      "sha256": "55741c3317e4ac96f78fe73b14a7d08a49de960c00ac61cb1e945e01d3915789"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0012_fan_speed_show_001017f4.asm",
+      "sha256": "235729aa3fc3492ae017719fdf1b5848e310a01ed41b3e6e52f409b512dd35aa"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0013_init_module_00101acc.asm",
+      "sha256": "1667fe6227abb285c7d7edf92b82bfdb5372bce5c232274d13dda85bd7f936f8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0014_cleanup_module_00101afc.asm",
+      "sha256": "30a5080dccc1f7458204316c6476e7104a41e6cfbe2204827bd39849a338abfe"
+    }
+  ],
+  "limitations": [
+    "All field names beyond exact global and symbol names are behavioral aliases, not recovered C declarations.",
+    "Ghidra pseudocode contains prototype ambiguities; fan_level_set and module init return contracts remain open pending assembly-level reviewer check.",
+    "This ledger records static paths; it does not establish runtime hardware behavior or semantic equivalence.",
+    "Probe/remove error unwind and asynchronous lifetime require MP4/MP5 review.",
+    "Independent review is pending; candidate source remains empty."
+  ],
+  "assembly_return_review": [
+    {
+      "function": "fan_level_set",
+      "evidence": "stock_assembly_repaired_20261027/0008_fan_level_set_0010127c.asm: f04 blr; f08 tests negative; f60 zeros w0 on no-op; f70 saves negative apply result; f98 restores it; f38 returns; caller 0010_fan_level_store_0010150c.asm:1094 BL then caller tests saved w0 at 10a8",
+      "conclusion": "int return register is proven; C argument types remain partially open"
+    },
+    {
+      "function": "init_module",
+      "evidence": "stock_assembly_repaired_20261027/0013_init_module_00101acc.asm: call __platform_driver_register at 0x20 followed by epilogue and RET, with no write to w0",
+      "conclusion": "forwards registration status in w0; Ghidra void prototype is insufficient"
+    }
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc_fan_MP5",
+  "work_unit": "MP5_LOCK_LIFETIME_CONTRACT",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": false,
+  "stock_identity": {
+    "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+  },
+  "source_environment": {
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "analysis": "read-only source inspection; no candidate build"
+  },
+  "observations": [
+    {
+      "id": "OBS-001",
+      "claim": "The driver core releases devres after a failed probe without calling the driver remove callback on that failed-probe path; on normal unbind it calls driver remove first, then releases devres.",
+      "evidence": [
+        "lifetime_source_contracts_MP5_20261027.txt: drivers/base/dd.c:658-675, 713-724, 1267-1279",
+        "lifetime_source_contracts_MP5_20261027.txt: drivers/base/devres.c:511-537"
+      ],
+      "classification": "pinned kernel control flow"
+    },
+    {
+      "id": "OBS-002",
+      "claim": "nb_fan_probe allocates the 0x58-byte chip object with devm_kmalloc and nb_fan_parse_dt allocates the 0xa8-byte subordinate state with devm_kmalloc. Those allocations are in devres; the hrtimer is embedded in the subordinate state.",
+      "evidence": [
+        "stock probe decompilation lines 21-32",
+        "stock parse_dt decompilation lines 37-43",
+        "MP2_STATE_EFFECT_LEDGER.json subordinate fan state offsets"
+      ],
+      "classification": "stock call/data observation plus pinned devres contract"
+    },
+    {
+      "id": "OBS-003",
+      "claim": "nb_fan_probe calls regulator_get and stores the returned handle at chip+0x48. The module call ledger contains no regulator_put; pinned consumer documentation says regulator_put releases the acquired regulator reference.",
+      "evidence": [
+        "stock probe decompilation lines 29-32",
+        "calls.jsonl nb_fan_probe callsite 001005e0",
+        "related_source_contracts_20261027.txt: regulator consumer docs lines 21-32 and consumer.h lines 158-170"
+      ],
+      "classification": "unreleased-reference question; runtime leak not asserted"
+    },
+    {
+      "id": "OBS-004",
+      "claim": "nb_fan_gpio_proc calls raw gpio_request for the speed GPIO. If IRQ conversion/registration fails, or if the later fan,pwm-gpio lookup fails after IRQ registration, the function returns an error without a gpio_free call. The module contains no gpio_free target.",
+      "evidence": [
+        "stock GPIO decompilation lines 17-49",
+        "calls.jsonl nb_fan_gpio_proc callsites 00100e3c and 00100e88",
+        "lifetime_source_contracts_MP5_20261027.txt: include/linux/gpio.h:76-80 and drivers/gpio/gpiolib-legacy.c:15-22"
+      ],
+      "classification": "conditional partial-acquisition cleanup path"
+    },
+    {
+      "id": "OBS-005",
+      "claim": "The stock registers a non-devm request_threaded_irq with chip pointer as dev_id and disables it after registration. No free_irq call is present. devm_free_irq does not pair with this acquisition API.",
+      "evidence": [
+        "MP4_EVENT_CALLBACK_LIFETIME.json threaded GPIO IRQ binding",
+        "stock GPIO decompilation lines 23-31",
+        "related_source_contracts_20261027.txt: include/linux/interrupt.h declarations and kernel/irq/manage.c free_irq implementation"
+      ],
+      "classification": "raw IRQ ownership question"
+    },
+    {
+      "id": "OBS-006",
+      "claim": "If nb_fan_gpio_proc returns an error after acquiring raw GPIO/IRQ, nb_fan_probe returns that error. If the later kobject creation or sysfs group creation fails, probe also returns an error after IRQ registration. Driver core probe-failure cleanup releases devres but does not invoke this driver remove callback.",
+      "evidence": [
+        "stock probe decompilation lines 84-124",
+        "stock GPIO decompilation lines 17-49",
+        "lifetime_source_contracts_MP5_20261027.txt: drivers/base/dd.c:658-675, 713-724"
+      ],
+      "classification": "static error-path relation; stale-resource consequence remains a hypothesis"
+    },
+    {
+      "id": "OBS-007",
+      "claim": "nb_fan_parse_dt obtains child nodes with of_get_next_available_child. The pinned implementation releases prev on the next call. Label-missing, devm_fwnode_pwm_get error, and PWM apply error exits leave the loop before that next call. include/linux/of.h makes the refcount operation conditional on CONFIG_OF_DYNAMIC; the stock-target setting is not bound to this evidence. No of_node_put target appears in the module call ledger.",
+      "evidence": [
+        "stock parse_dt decompilation lines 44-92",
+        "stock assembly 0003_nb_fan_parse_dt_00100a90.asm relocations/error branches",
+        "related_source_contracts_20261027.txt: drivers/of/base.c:631-665 and include/linux/of.h:103-138"
+      ],
+      "classification": "conditional OF reference-release question; target config unresolved"
+    },
+    {
+      "id": "OBS-008",
+      "claim": "fan_speed_show starts the timer for 1 ms while holding chip mutex; the timer callback can start a further 500 ms interval and enable the IRQ. The callback later captures the count and disables the IRQ. No hrtimer_cancel or hrtimer_try_to_cancel target is present.",
+      "evidence": [
+        "stock fan_speed_show decompilation and assembly 0012_*fan_speed_show*",
+        "stock hrtimer handler decompilation lines 7-25",
+        "MP4_EVENT_CALLBACK_LIFETIME.json timer binding",
+        "lifetime_source_contracts_MP5_20261027.txt: include/linux/hrtimer.h:261-280 and kernel/time/hrtimer.c:1504-1523"
+      ],
+      "classification": "asynchronous lifetime path"
+    },
+    {
+      "id": "OBS-009",
+      "claim": "nb_fan_remove removes the sysfs group and clears platform drvdata, but has no observed hrtimer cancellation, IRQ release, GPIO release, regulator_put, or kobject_put. Device core releases devres after this callback returns.",
+      "evidence": [
+        "stock remove decompilation lines 7-10",
+        "calls.jsonl nb_fan_remove direct calls",
+        "lifetime_source_contracts_MP5_20261027.txt: drivers/base/dd.c:561-570, 1267-1279"
+      ],
+      "classification": "static teardown inventory"
+    },
+    {
+      "id": "OBS-010",
+      "claim": "The acquired kobject reference requires kobject_put when finished. sysfs_create_group failure rolls back files created by the group operation, but does not release the caller-owned kobject reference. The successful remove path removes the group but no kobject_put call is observed.",
+      "evidence": [
+        "stock probe decompilation lines 101-119",
+        "stock remove decompilation lines 7-10",
+        "related_source_contracts_20261027.txt: lib/kobject.c:776-806",
+        "lifetime_source_contracts_MP5_20261027.txt: fs/sysfs/group.c:76-85 and 120-207"
+      ],
+      "classification": "reference-release question on probe failure and remove"
+    },
+    {
+      "id": "OBS-011",
+      "claim": "sysfs_remove_group/kernfs removal drains active sysfs references, but this does not cancel the independent hrtimer or release the kobject reference.",
+      "evidence": [
+        "lifetime_source_contracts_MP5_20261027.txt: fs/sysfs/group.c group removal and fs/kernfs/dir.c active-reference drain excerpts",
+        "MP4_EVENT_CALLBACK_LIFETIME.json: normal remove calls sysfs_remove_group"
+      ],
+      "classification": "scope boundary for teardown guarantees"
+    },
+    {
+      "id": "OBS-012",
+      "claim": "The mutex at chip+0x18 is initialized in probe and used in several sysfs store/show paths; the timer and IRQ callbacks update state asynchronously without using this mutex. The global chip pointer is assigned in probe and is not cleared by nb_fan_remove.",
+      "evidence": [
+        "MP2_STATE_EFFECT_LEDGER.json module-global chip offsets",
+        "calls.jsonl mutex_lock/unlock and callback call rows",
+        "stock probe decompilation line 23",
+        "stock remove decompilation lines 7-10"
+      ],
+      "classification": "concurrency and pointer-lifetime relation; runtime impact unproven"
+    },
+    {
+      "id": "OBS-013",
+      "claim": "The pinned devres core appends managed resources to the device resource list and releases the collected list in reverse order. This establishes reverse registration order (LIFO); this observation does not assert an exact order among the target driver resources without their registration sequence.",
+      "evidence": [
+        "lifetime_source_contracts_MP5_20261027.txt: drivers/base/devres.c:132-137, 243-252, 496-537"
+      ],
+      "classification": "pinned generic devres release-order contract"
+    }
+  ],
+  "inferences": [
+    "The devm-managed state, pinctrl handle, and PWM handle are released by driver-core devres cleanup; this does not automatically release raw GPIO/IRQ registrations, the regulator_get reference, the child-node reference across an early exit when CONFIG_OF_DYNAMIC is enabled, the kobject reference, or cancel the embedded hrtimer.",
+    "If a raw IRQ remains registered after an error/unbind, its dev_id points at chip state whose lifetime is controlled by devres; this creates a stale-pointer/UAF risk hypothesis, not a proven runtime failure.",
+    "sysfs_remove_group drains active sysfs operations, while an hrtimer scheduled by a completed sysfs callback may remain independently active; timer quiescence before devres release is unresolved."
+  ],
+  "unknowns": [
+    "Which error predicates and DT child values occur on the actual NX809J device, and whether those paths are reached.",
+    "Whether the hrtimer can be active at each remove/unbind point under real concurrent sysfs access.",
+    "Whether the stock target is bound at runtime and which concrete PWM provider backs the dynamic apply callback.",
+    "Whether any external framework not represented in this module performs cleanup for its raw GPIO, IRQ, regulator, OF-node, or kobject acquisitions.",
+    "Whether the module-global chip pointer is ever intentionally reused or reset through an unobserved path outside the 15 stock functions.",
+    "The concurrency consequences of timer/IRQ state updates relative to sysfs mutex-protected operations.",
+    "The stock target CONFIG_OF_DYNAMIC setting is not tied to the pinned source-volume .config; the OF-child reference question remains conditional."
+  ],
+  "contradictions": [],
+  "resource_ledger": [
+    {
+      "resource": "chip state allocation (0x58 bytes)",
+      "acquisition": "devm_kmalloc in nb_fan_probe",
+      "owner": "platform device devres",
+      "normal_release": "device_unbind_cleanup after nb_fan_remove",
+      "probe_failure_release": "device_unbind_cleanup after failed probe",
+      "status": "PINNED_MANAGED"
+    },
+    {
+      "resource": "subordinate fan state (0xa8 bytes), including hrtimer",
+      "acquisition": "devm_kmalloc in nb_fan_parse_dt",
+      "owner": "platform device devres",
+      "normal_release": "devres after remove",
+      "probe_failure_release": "devres after probe error",
+      "status": "MANAGED_MEMORY_BUT_ASYNC_TIMER_QUIESCENCE_OPEN"
+    },
+    {
+      "resource": "pinctrl handle",
+      "acquisition": "devm_pinctrl_get",
+      "owner": "platform device devres",
+      "normal_release": "devres",
+      "probe_failure_release": "devres",
+      "status": "PINNED_MANAGED"
+    },
+    {
+      "resource": "PWM device",
+      "acquisition": "devm_fwnode_pwm_get",
+      "owner": "platform device devres",
+      "normal_release": "devres",
+      "probe_failure_release": "devres",
+      "status": "PINNED_MANAGED_PROVIDER_DYNAMIC"
+    },
+    {
+      "resource": "regulator handle at chip+0x48",
+      "acquisition": "regulator_get",
+      "owner": "raw consumer reference",
+      "normal_release": "regulator_put absent from module",
+      "probe_failure_release": "regulator_put absent from module",
+      "status": "OPEN_REFERENCE_RELEASE"
+    },
+    {
+      "resource": "speed GPIO",
+      "acquisition": "gpio_request",
+      "owner": "raw GPIO request",
+      "normal_release": "gpio_free absent from module",
+      "probe_failure_release": "gpio_free absent on downstream error paths",
+      "status": "OPEN_PARTIAL_ACQUISITION_AND_TEARDOWN"
+    },
+    {
+      "resource": "tach IRQ",
+      "acquisition": "request_threaded_irq with chip dev_id",
+      "owner": "raw IRQ action",
+      "normal_release": "free_irq absent from module",
+      "probe_failure_release": "no driver remove callback after failed probe; raw registration is not devres-managed",
+      "status": "OPEN_PARTIAL_ACQUISITION_AND_STALE_DEV_ID_RISK"
+    },
+    {
+      "resource": "DT child node",
+      "acquisition": "of_get_next_available_child",
+      "owner": "temporary OF node reference",
+      "normal_release": "next iteration call drops prev; full iteration reaches null call",
+      "probe_failure_release": "Early label/PWM errors bypass next-iteration release; explicit of_node_put absent. Refcount outcome depends on CONFIG_OF_DYNAMIC, not bound to stock target.",
+      "status": "OPEN_CONDITIONAL_CONFIG_AND_REFERENCE_RELEASE"
+    },
+    {
+      "resource": "kobject and sysfs group",
+      "acquisition": "kobject_create_and_add then sysfs_create_group",
+      "owner": "caller-owned kobject reference plus kernfs group",
+      "normal_release": "sysfs_remove_group observed; kobject_put absent",
+      "probe_failure_release": "sysfs file rollback may occur; kobject_put absent",
+      "status": "OPEN_KOBJECT_REFERENCE_RELEASE"
+    },
+    {
+      "resource": "high-resolution timer",
+      "acquisition": "hrtimer_init; started by fan_speed_show and callback",
+      "owner": "embedded in devm subordinate state",
+      "normal_release": "hrtimer_cancel absent before devres release",
+      "probe_failure_release": "remove not called for failed probe; timer starts only after sysfs exists, but teardown race on bound device remains",
+      "status": "OPEN_ASYNC_QUIESCENCE"
+    },
+    {
+      "resource": "mutex at chip+0x18",
+      "acquisition": "__mutex_init in probe",
+      "owner": "embedded in devm chip state",
+      "users": "sysfs show/store functions; timer and IRQ callbacks do not take this lock",
+      "normal_release": "storage released with devres after remove",
+      "probe_failure_release": "storage released with devres",
+      "status": "LOCK_SCOPE_REVIEW_REQUIRED"
+    },
+    {
+      "resource": "module-global chip pointer",
+      "acquisition": "assigned from devm allocation in nb_fan_probe",
+      "owner": "module global",
+      "normal_release": "not cleared in nb_fan_remove",
+      "probe_failure_release": "may retain devm address after failed probe",
+      "status": "OPEN_STALE_GLOBAL_POINTER"
+    }
+  ],
+  "locks": [
+    {
+      "lock": "mutex embedded at chip+0x18",
+      "initialized": "__mutex_init in nb_fan_probe",
+      "observed_callers": [
+        "fan_enable_store",
+        "fan_level_store",
+        "fan_pwm_store",
+        "fan_speed_show"
+      ],
+      "asynchronous_paths_without_lock": [
+        "fan_speed_irq_proc",
+        "fan_hrtimer_hander"
+      ],
+      "review_status": "L4 must verify lock coverage and teardown interaction"
+    }
+  ],
+  "requested_escalation": "Independent L4 review of all resource acquisition/error/unbind paths, particularly gpio_request/request_threaded_irq partial failure, devm memory versus raw dev_id lifetime, hrtimer cancellation before devres release, regulator_put, OF child early exits, kobject_put, and global chip pointer invalidation. No MP7 candidate patch until required microproofs are approved.",
+  "revision_notes": [
+    "MP5 is an evidence draft, not a gate pass. It deliberately labels leak/UAF consequences as open questions or risk hypotheses.",
+    "Pinned kernel source was read from the read-only Docker source volume at e1ea0289c329945af9422e58256a37f7603fa098; source excerpts are hash-bound in lifetime_source_contracts_MP5_20261027.txt.",
+    "Added the generic devres reverse-registration release-order contract and qualified the OF child-reference inference on CONFIG_OF_DYNAMIC.",
+    "No candidate C/assembly was edited; no test or hardware run was performed."
+  ],
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP0_IDENTITY.json",
+      "sha256": "ac88f5d0816bbf57584b25a213d24682407846550e6a73c800ce42cf004dde75"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "a757053fbc8010b310ac234fbdc94ab28bd4fd3fce3117912003ca7a7f9f2bb6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "595079c1c4d3f44898a0fbfd50a4dd36f3ad760172e90cfd1b093b56539357e0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "b240daa45fdbc39c88eb683b06300c2ebe96d7fbb112129e1a249624cfa07c8a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP4_EVENT_CALLBACK_LIFETIME.json",
+      "sha256": "f521c029bc26b31363a9487bce63a6502c2fba8dc871b0bc559e11ccbcfbbe59"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/manifest.json",
+      "sha256": "21c89648abcdbe7b80ea6738aa10728b78eeadff28729dc2f5bca287ccef045d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/functions.jsonl",
+      "sha256": "f767904d61eb3bea84a63bd46a560d7d30aa2bdeb7e9e7e03822a22f8a9621c3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/calls.jsonl",
+      "sha256": "476bb7156695005a5f71d7c901df30a8357bfc110b3dda63a6cd82ba6c9b19d1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0000_001004ec_fan_speed_irq_proc.c",
+      "sha256": "83d97325953e1acd2e740bfbe8db3f729f19153202a878da033bd8044156bb21"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0001_0010052c_nb_fan_probe.c",
+      "sha256": "3d7712cb5dd75959d41d602c9ff1976621f4a168aed2d161954a861be24d86ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0002_00100a54_nb_fan_remove.c",
+      "sha256": "18527b61687144d07809fa27053237e9e26776914c6843cd5546223282b98c24"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0003_00100a90_nb_fan_parse_dt.c",
+      "sha256": "e6510a6eb893463049c26e06a6316cd64eff57910bc148b83c7d55226305c793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0004_00100dac_nb_fan_gpio_proc.c",
+      "sha256": "994c904617fb82eb80c8323d11aeecbc6216900b1ba9ec5e35e19102531c86b8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0005_00100f80_fan_hrtimer_hander.c",
+      "sha256": "f76e4c6e803aa6f41ec20ec0b10f18860e4d8a24ceeb898ec738fce03f2d0111"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0012_001017f4_fan_speed_show.c",
+      "sha256": "ccbf9a0c0552c24ca3ac3195c2f5cdd6d44b28cda4007b7ffbf595c47213c5a5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kcfi_stock.json",
+      "sha256": "80d3446bf67c9b743710a6666b98111841873675a64a296a24d70d2955cf3a6d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_relocations.txt",
+      "sha256": "20475a9898c8e9b21f81f29dd7b0a3a78b524bdfacdd3458a0505bc8e483cb7f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kernel_header_evidence_MP1_20261027.txt",
+      "sha256": "e92546b29c99b745c482317cf361d432c473f0c0cbd7e7c619cfc6a3c8d41bf8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/manifest.json",
+      "sha256": "1f375a3920e16c21816d84cf82037f664eb8fe4c47ba56f2104cb5f50a349b8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0000_fan_speed_irq_proc_001004ec.asm",
+      "sha256": "6a64340c68b77402e40201dd0a9c210f9371d6ec05037a3377c5e0331d7893b0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0001_nb_fan_probe_0010052c.asm",
+      "sha256": "293cc1987db531aa43a8f73b7a7c711e5bb1e01e40d85ce7d0ba5d2d587a1c6a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0002_nb_fan_remove_00100a54.asm",
+      "sha256": "75955d670c2ad985787080e0db0dad25e896b2f1f584f0fc3783621c8c953d8f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0003_nb_fan_parse_dt_00100a90.asm",
+      "sha256": "2e17e89384cc8504e190d36d391f4b2864b17c3437f10c9051a335735d768d60"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0004_nb_fan_gpio_proc_00100dac.asm",
+      "sha256": "4007fcbdf3d078e7abc56b2aba2e69e79ad6e4170e54849bf6ce7eaa785b85ca"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0005_fan_hrtimer_hander_00100f80.asm",
+      "sha256": "3bffdc2860ad44236812bf0f500a81b3b40227394e579b417e15b82f8890742f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0012_fan_speed_show_001017f4.asm",
+      "sha256": "235729aa3fc3492ae017719fdf1b5848e310a01ed41b3e6e52f409b512dd35aa"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/related_source_contracts_20261027.txt",
+      "sha256": "7faa3cfa5a218891e81db6ce06fc39dc4bc8a3ac3ca8749a096e7fe1941f35ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/lifetime_source_contracts_MP5_20261027.txt",
+      "sha256": "c8b0929e74c4cf7360ef4898ef27046e9d66b5ad439d32a530cf4ab4ef0a2d06"
+    }
+  ]
+}
