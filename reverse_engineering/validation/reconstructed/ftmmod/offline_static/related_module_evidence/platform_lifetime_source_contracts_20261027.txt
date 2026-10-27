@@ -5,6 +5,9 @@ deb56bde49fca1e12ec4e81fb7107713db3d3e8e6a953ddc6d8218c3d6dfc1c8  kernel_platfor
 59ac8a6ba1bedda5311205a834a4210d2f4f37f37d67afac8f872f5b1a5f3354  kernel_platform/common/kernel/module/main.c
 0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc  kernel_platform/common/include/linux/of.h
 a389221f5551054244d8ce3f4154f8da7b994c7a22b88134f66aba4c621f998f  kernel_platform/common/include/linux/platform_device.h
+64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882  kernel_platform/common/drivers/base/core.c
+b16662203c8756436f717c8b68868e1a2018586865e7b553d89ca7f7d70efc44  kernel_platform/common/arch/arm64/mm/ioremap.c
+0fbda7e24749b383c432c86b2d011ff03f41f7eb90d5209a149739ae642df348  kernel_platform/common/mm/ioremap.c
 f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d  vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi
 5d3fba582e75e85aa1cad61183e5a9f2c666246362426edfad71f06134ebbe2a  kernel_platform/common/arch/arm64/configs/nx809j_defconfig
 
@@ -278,3 +281,42 @@ kernel_platform/common/drivers/base/platform.c-1020- * @drivers: an array of dri
 
 === implementation search ===
 vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi:651:            compatible = "soc,fan";
+
+=== conditional OF and I/O mapping lifetime ===
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+
+drivers/of/base.c:941-957 documents that of_find_compatible_node returns a node
+with its reference count incremented and says to call of_node_put when done.
+The stock ftmmod bodies contain no of_node_put call.
+
+drivers/of/address.c:1113-1131 implements of_iomap by translating the resource
+and returning ioremap(...) or ioremap_np(...). It does not call of_node_put or
+release the returned mapping. mm/ioremap.c:60-72 implements iounmap through
+generic_iounmap/vunmap. The stock ftmmod bodies contain no iounmap call.
+
+arch/arm64/mm/ioremap.c:17-42 implements ioremap_prot by returning
+generic_ioremap_prot(...). The stock ftmmod stores this result in .bss+0x8 and
+the nine stock function bodies contain no iounmap call.
+
+Static consequence, conditional on successful acquisition: both mappings
+remain unreleased by ftmmod through its probe failure and remove/unload paths;
+the of_find_compatible_node reference also remains unput when lookup succeeds.
+These are source-level lifetime consequences, not proof that those branches
+were reached on a device at runtime. The FTMMOD corpus has no devm mapping
+acquisition or implicit driver-core mapping cleanup for these pointers.
+
+=== static ftm_dev release callback ===
+drivers/base/core.c:2541-2572 calls dev->release, type->release, or
+class->dev_release when present; otherwise it emits a WARN and frees only the
+device_private allocation, not the containing static device object.
+drivers/base/platform.c:556-568 defines platform_device_release, while
+platform_device_alloc installs that callback at lines 581-588.
+
+The stock ELF symbol table identifies ftm_dev as a 1008-byte .data object at
+offset 0. Its .rela.data table has no function relocation within [0,0x3f0);
+the first relocation to .text is at .data+0x3f8, outside ftm_dev. Therefore no
+dev.release initializer is present in this stock object. The static object is
+not freed by the missing callback; the no-bind init-error path remains a
+conditional stale registered-device pointer risk because the core retains the
+device while module init failure frees the module image. No runtime UAF is
+asserted here.

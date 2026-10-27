@@ -11,15 +11,15 @@
     },
     {
       "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP2_STATE_EFFECT_LEDGER.json",
-      "sha256": "7ed140459c0f2e7acf6cd7c066847ec9c5892f0c8cdf1c540f62e1e746b5dbf9"
+      "sha256": "f216f592615a399888012efb59b07017fe1f949b69ef57c94303b61b9b9e4d07"
     },
     {
       "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP3_CONTROL_ERROR_MATRIX.json",
-      "sha256": "2678a0ef16ad91b63fff40123e5d3ec782a9c494151d0cf5a0e42b2528c0a6f2"
+      "sha256": "43af4c47175472bd7553c8e6a58b1503c1aae135847c80127f3ef06c5dd2ad23"
     },
     {
       "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
-      "sha256": "0558e94cf4dbf89867c33d2e0a7c6084919e722300a7dd7a9925585188f39db9"
+      "sha256": "8739c046e1a071d3e1a7731427e1b9ff198376c9d270fd815324f1071fbe1496"
     },
     {
       "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_callback_source_contracts_20261027.txt",
@@ -121,9 +121,42 @@
     {
       "id": "OBS-014",
       "test_id": "T14",
-      "claim": "T14: setup secboot stub retorna zero e não zero; esperado formata decimal newline e propaga snprintf.",
+      "claim": "T14: preserve the opaque callback dev value in x0 at the is_secboot_device call; vary the callee's 32-bit w0 return across signed boundaries; the caller copies w0 to w3, formats it with the stock %d\\n format into a 4096-byte buffer, and propagates snprintf's byte count.",
       "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0006_show_secboot_status.asm",
-      "locator": "secboot .text+0x60..0x90"
+      "locator": "secboot .text+0x60..0x90",
+      "details": {
+        "callee_argument": "At entry to show_secboot_status, x0 is the opaque sysfs dev callback argument; no instruction changes x0 before the call at .text+0x64. Assert the same pointer value reaches is_secboot_device; do not invent its C prototype.",
+        "return_values": [
+          "0x00000000",
+          "0x00000001",
+          "0x7fffffff",
+          "0x80000000",
+          "0xffffffff"
+        ],
+        "caller_dataflow": "After the call, mov w3,w0 zero-extends the low 32 bits into the snprintf variadic argument register. The stock format is %d\\n, buffer size is 0x1000, and the callback sign-extends snprintf result from w0.",
+        "expected_output_and_callback_return": {
+          "0x00000000": {
+            "text": "0\n",
+            "bytes": 2
+          },
+          "0x00000001": {
+            "text": "1\n",
+            "bytes": 2
+          },
+          "0x7fffffff": {
+            "text": "2147483647\n",
+            "bytes": 11
+          },
+          "0x80000000": {
+            "text": "-2147483648\n",
+            "bytes": 12
+          },
+          "0xffffffff": {
+            "text": "-1\n",
+            "bytes": 3
+          }
+        }
+      }
     },
     {
       "id": "OBS-015",
