@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "status": "SOURCE_BOUND_SUPPLEMENTAL_VENDOR_KMI",
+  "driver": "ftmmod",
+  "purpose": "Supply only the two vendor imports absent from the pinned common Module.symvers during isolated Docker builds.",
+  "target": {
+    "device_model": "NX809J",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "target_kernel_manifest": {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "fe27099af08ef8815363c6b16ffa1cf87794bbaf20e65e78cf30ccd290c47373"
+    },
+    "common_module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+    "qseecom_header": {
+      "path": "docker-volume:nubia_sm8850_kernel_src/kernel/kernel_platform/common/include/soc/qcom/qseecom_scm.h",
+      "sha256": "62761cf9574f55b7a79cdbce8feaa4b8c514537e959115960caf0aea5324548e",
+      "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098"
+    }
+  },
+  "consumer": {
+    "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+    "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb",
+    "crc_evidence": "The CRC was read from the stock module ELF __versions entry for the named symbol."
+  },
+  "providers": [
+    {
+      "symbol": "is_secboot_device",
+      "crc32": "0x7851be11",
+      "provider_module": "kmparam",
+      "export": "EXPORT_SYMBOL",
+      "provider_path": "reference_modules/full_vendor_boot/kmparam.ko",
+      "provider_sha256": "9813fc808fa7de6fd86494bb33fce596a7b131b1a6d6c0e4e8346335f3c814b0",
+      "provider_crc_evidence": "Matching __kcrctab entry and regular __ksymtab export in the provider ELF."
+    },
+    {
+      "symbol": "qcom_scm_qseecom_call",
+      "crc32": "0xbf1bc3c1",
+      "provider_module": "qcom-scm",
+      "export": "EXPORT_SYMBOL_GPL",
+      "provider_path": "reference_modules/full_vendor_boot/qcom-scm.ko",
+      "provider_sha256": "0ce277e1903c855b49d274e0dc305628d6bdf817f8687c91db44bf699cb49d94",
+      "provider_crc_evidence": "Matching __kcrctab_gpl entry and GPL export in the provider ELF."
+    }
+  ],
+  "symvers_rows": [
+    {
+      "crc32": "0x7851be11",
+      "symbol": "is_secboot_device",
+      "module": "kmparam",
+      "export": "EXPORT_SYMBOL",
+      "namespace": ""
+    },
+    {
+      "crc32": "0xbf1bc3c1",
+      "symbol": "qcom_scm_qseecom_call",
+      "module": "qcom-scm",
+      "export": "EXPORT_SYMBOL_GPL",
+      "namespace": ""
+    }
+  ],
+  "limitations": [
+    "The supplemental file provides symbol-version inputs; it does not establish function semantics, prototype correctness, runtime availability, or hardware behavior.",
+    "All recorded hashes bind the inputs used for this reconstruction checkpoint."
+  ]
+}
