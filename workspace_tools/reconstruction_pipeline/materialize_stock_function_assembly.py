@@ -12,6 +12,20 @@ INSTRUCTION_RE = re.compile(r"^\s*[0-9a-f]+:\s+([0-9a-f]{8})\s")
 LOCAL_CALL_RE = re.compile(r"\bbl\s+0x[0-9a-f]+\s+<([^>]+)>")
 RELOCATION_RE = re.compile(r"R_AARCH64_[A-Z0-9_]+\s+(.+?)\s*$")
 
+SECTION_BASE_SUFFIXES = {
+    ".rodata.str1.1": "rodata_str_base",
+    ".codetag.alloc_tags": "codetag_base",
+    ".data..percpu": "percpu_base",
+    ".rodata.cst16": "rodata_cst16_base",
+    ".rodata.__llvm_fs_discriminator__": "rodata_llvm_discriminator_base",
+    ".init.text": "init_text_base",
+    ".exit.text": "exit_text_base",
+    ".rodata": "rodata_base",
+    ".bss": "bss_base",
+    ".data": "data_base",
+    ".text": "text_base",
+}
+
 
 def parse(
     path: pathlib.Path,
@@ -77,31 +91,17 @@ def render(
         lines.append(f"    .inst 0x{encoded_word:08x}")
         for kind, target in relocations:
             if section_base_prefix:
-                if target.startswith(".rodata.str1.1"):
-                    target = (
-                        f"{section_base_prefix}_rodata_str_base"
-                        + target.removeprefix(".rodata.str1.1")
-                    )
-                elif target.startswith(".rodata"):
-                    target = (
-                        f"{section_base_prefix}_rodata_base"
-                        + target.removeprefix(".rodata")
-                    )
-                elif target.startswith(".bss"):
-                    target = (
-                        f"{section_base_prefix}_bss_base"
-                        + target.removeprefix(".bss")
-                    )
-                elif target.startswith(".codetag.alloc_tags"):
-                    target = (
-                        f"{section_base_prefix}_codetag_base"
-                        + target.removeprefix(".codetag.alloc_tags")
-                    )
-                elif target.startswith(".data"):
-                    target = (
-                        f"{section_base_prefix}_data_base"
-                        + target.removeprefix(".data")
-                    )
+                for section, suffix in sorted(
+                    SECTION_BASE_SUFFIXES.items(),
+                    key=lambda item: len(item[0]),
+                    reverse=True,
+                ):
+                    if target == section or target.startswith(section + "+"):
+                        target = (
+                            f"{section_base_prefix}_{suffix}"
+                            + target.removeprefix(section)
+                        )
+                        break
             target = relocation_aliases.get(target, target)
             lines.append(f"    .reloc .-4, {kind}, {target}")
     lines.append(f".size {function}, .-{function}")
@@ -125,9 +125,8 @@ def main() -> int:
     parser.add_argument(
         "--section-base-prefix",
         help=(
-            "rewrite .rodata/.rodata.str1.1/.bss/.codetag.alloc_tags targets "
-            "to named absolute bases PREFIX_rodata_base, PREFIX_rodata_str_base, "
-            "PREFIX_bss_base, PREFIX_codetag_base and PREFIX_data_base"
+            "rewrite alloc-section relocation targets to named bases using "
+            "PREFIX_<section>_base symbols (the source must define each used base)"
         ),
     )
     parser.add_argument(
