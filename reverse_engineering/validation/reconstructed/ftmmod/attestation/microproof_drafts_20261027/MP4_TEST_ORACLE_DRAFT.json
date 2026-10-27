@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod_MP4",
+  "work_unit": "MP4_TEST_ORACLE_DRAFT",
+  "draft_status": "DRAFT_PENDING_L3",
+  "candidate_edit_authorized": false,
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+      "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "7ed140459c0f2e7acf6cd7c066847ec9c5892f0c8cdf1c540f62e1e746b5dbf9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "2678a0ef16ad91b63fff40123e5d3ec782a9c494151d0cf5a0e42b2528c0a6f2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
+      "sha256": "0558e94cf4dbf89867c33d2e0a7c6084919e722300a7dd7a9925585188f39db9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_callback_source_contracts_20261027.txt",
+      "sha256": "082e849d26ee13fe7e3de939d4ec4945b5fa9414a3c61e336e009a2c7ce03ea4"
+    }
+  ],
+  "observations": [
+    {
+      "id": "OBS-001",
+      "test_id": "T01",
+      "claim": "T01: if platform_device_register returns nonzero, stock init_module skips __platform_driver_probe and returns fixed -ENODEV; ftm_probe is not invoked on this registration-error path.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm",
+      "locator": "init .init.text+0x34"
+    },
+    {
+      "id": "OBS-002",
+      "test_id": "T02",
+      "claim": "T02: stub __platform_driver_probe itself to return a negative error E after platform_device_register succeeds; expected init_module to propagate that API return E. This is an API-level propagation test, not a claim that ftm_probe callback error E is returned by the platform core.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm",
+      "locator": "init .init.text+0x58"
+    },
+    {
+      "id": "OBS-003",
+      "test_id": "T03",
+      "claim": "T03: setup ambos retornam zero; esperado init_module retorna zero.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm",
+      "locator": "init .init.text+0x5c..0xa0"
+    },
+    {
+      "id": "OBS-004",
+      "test_id": "T04",
+      "claim": "T04: setup nó compatível ausente; esperado continua para ioremap; não chama of_iomap nesse ramo.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe .init.text+0xe4..0x120"
+    },
+    {
+      "id": "OBS-005",
+      "test_id": "T05",
+      "claim": "T05: setup nó encontrado; of_iomap nulo; esperado grava nulo em .bss+0x10 e continua.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe .init.text+0x100..0x120"
+    },
+    {
+      "id": "OBS-006",
+      "test_id": "T06",
+      "claim": "T06: setup ioremap_prot nulo; esperado retorna -12; não chama sysfs_create_group.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe .init.text+0x154..0x17c"
+    },
+    {
+      "id": "OBS-007",
+      "test_id": "T07",
+      "claim": "T07: after valid ioremap, assert sysfs_create_group receives x0 = pdev->dev.kobj (the embedded struct device/kobject at platform_device base + 0x10) and x1 = static attribute-group object .data+0x4e0. If the call returns E, ftm_probe returns E after the error printk; no module-side sysfs_remove_group call is observed.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe .init.text+0x180..0x1c0"
+    },
+    {
+      "id": "OBS-008",
+      "test_id": "T08",
+      "claim": "T08: setup sysfs_create_group retorna zero; esperado ftm_probe retorna zero.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe .init.text+0x190..0x1c0"
+    },
+    {
+      "id": "OBS-009",
+      "test_id": "T09",
+      "claim": "T09: setup map pointer nulo em show_efs_recovery; esperado retorna -14 sem snprintf.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "locator": "show .text+0x220..0x250"
+    },
+    {
+      "id": "OBS-010",
+      "test_id": "T10",
+      "claim": "T10: setup word +4 varia: 0, 1, INT_MAX, 0x80000000; esperado capturar texto %d newline e bytes retornados.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "locator": "show .text+0x22c..0x248"
+    },
+    {
+      "id": "OBS-011",
+      "test_id": "T11",
+      "claim": "T11: setup map pointer nulo em store_efs_recovery; esperado retorna -14 sem sscanf/store.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "locator": "store .text+0x2a8..0x2c8"
+    },
+    {
+      "id": "OBS-012",
+      "test_id": "T12",
+      "claim": "T12: setup store válido: zero, um, negativo e count variado; esperado grava 0 se parseado zero senão 1; DSB SY; retorna count.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "locator": "store .text+0x2e8..0x340"
+    },
+    {
+      "id": "OBS-013",
+      "test_id": "T13",
+      "claim": "T13: setup store input vazio/malformado e sscanf sem conversão; esperado local zero causa store zero; retorno sscanf ignorado; retorna count.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "locator": "store .text+0x2a0..0x334"
+    },
+    {
+      "id": "OBS-014",
+      "test_id": "T14",
+      "claim": "T14: setup secboot stub retorna zero e não zero; esperado formata decimal newline e propaga snprintf.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0006_show_secboot_status.asm",
+      "locator": "secboot .text+0x60..0x90"
+    },
+    {
+      "id": "OBS-015",
+      "test_id": "T15",
+      "claim": "T15: set the QSEE stub return to nonzero; assert call inputs smc_id=0x02000807, arginfo=2, args[0] selected by the .bss byte, args[1..9]=0, atomic=1; then expect error printk, zero composite status, formatted false predicate, and snprintf return propagation.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text+0x110..0x198"
+    },
+    {
+      "id": "OBS-016",
+      "test_id": "T16",
+      "claim": "T16: for a zero QSEE return, vary ret[0] bits 30/31 and ret[1] low/high words. Assert diagnostic composite = (u32)ret[0] | ((u32)ret[1]<<32), with ret[1] high 32 bits discarded; output predicate is true exactly when both bits 30 and 31 of ret[0] low word are set and is independent of ret[1].",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text+0x114..0x174; qseecom_scm_desc.ret layout in pinned header"
+    },
+    {
+      "id": "OBS-017",
+      "test_id": "T17",
+      "claim": "T17: setup permission e cleanup com stubs; esperado permission formata zero; cleanup desregistra driver antes do device.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0005_show_permission_status.asm",
+      "locator": "permission .text+0x1c8..0x1e0; cleanup .exit.text+0x4..0x30"
+    },
+    {
+      "id": "OBS-018",
+      "test_id": "T18",
+      "claim": "Integration case: platform_device_register succeeds and ftm_probe callback fails before binding. Per pinned __platform_driver_probe, when no device binds the API returns -ENODEV and unregisters the driver; init_module propagates -ENODEV. Track the still-registered platform device separately; this is a core-state assertion, not a harness claim of runtime UAF.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
+      "locator": "platform.c:910-957; init_module stock .init.text+0x28..0xa8; module main.c:2991-2994,3077-3091"
+    },
+    {
+      "id": "OBS-019",
+      "test_id": "T19",
+      "claim": "Vary the observed .bss byte at offset 0 between zero/nonzero. Assert QSEE args[0] is 0x30 when zero and 0x00058030 when nonzero; assert arginfo=2, remaining args zero, smc_id=0x02000807 and atomic=1 in both cases. Do not assign a semantic name to the flag.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text+0xb0..0x10c; .bss relocation at .text+0xd4..0xd8"
+    },
+    {
+      "id": "OBS-020",
+      "test_id": "T20",
+      "claim": "Exercise both arm64_use_ng_mappings branches; assert ioremap_prot receives phys_addr=0x58000 and size=0x1000; when arm64_use_ng_mappings==0 assert prot=0x0068000000000713, and when nonzero assert prot=0x0068000000000f13.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe .init.text+0x120..0x154; relocation to arm64_use_ng_mappings"
+    },
+    {
+      "id": "OBS-021",
+      "test_id": "T21",
+      "claim": "For show callbacks, invoke the stock callback through the pinned sysfs envelope with a non-null PAGE_SIZE buffer; assert the stock 0x1000 snprintf bound, exact output bytes, and returned length. NULL callback pointers are excluded from functional equivalence because the core constructs the kobject/attribute and output buffer before dispatch.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_callback_source_contracts_20261027.txt",
+      "locator": "sysfs/file.c:42-73; stock show assembly call sites use size 0x1000"
+    },
+    {
+      "id": "OBS-022",
+      "test_id": "T22",
+      "claim": "For store_efs_recovery, exercise valid kernfs buffers with counts 0, 1, and PAGE_SIZE and both parse/no-parse strings. Assert the buffer is NUL-terminated by kernfs, the observed 0/1 state normalization and DSB SY ordering, and the callback returns count. Do not pass arbitrary unterminated or NULL buffers as valid sysfs inputs.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_callback_source_contracts_20261027.txt",
+      "locator": "kernfs/file.c:293-339; stock store assembly .text+0x2a0..0x340"
+    }
+  ],
+  "inferences": [],
+  "unknowns": [
+    "Rascunho exige aprovação L3 antes de orientar implementação.",
+    "Stub harness não prova overlay runtime, SCM/QSEE real, semântica física, KCFI em runtime, lifetime sysfs ou comportamento em hardware.",
+    "Entradas malformadas devem seguir contrato do harness e não equivalem a teste no aparelho.",
+    "L3 must approve the exact test doubles for platform core, QSEE and sysfs; the oracle does not prove real SCM behavior, overlay application, or runtime resource lifetime."
+  ],
+  "contradictions": [],
+  "requested_escalation": "MP4 remains DRAFT_PENDING_L3; after corrections it requires independent L3 approval, and MP5/MP6 L4 review remains open.",
+  "test_scope_policy": {
+    "valid_sysfs_show_inputs": "Pinned sysfs core supplies kobj, attribute private data, and a buffer of at least PAGE_SIZE; the stock callbacks pass size 0x1000 to snprintf.",
+    "valid_sysfs_store_inputs": "Pinned kernfs clamps non-atomic writes to PAGE_SIZE, copies into a kernel buffer, appends NUL, and serializes ops for one open file; test count boundaries 0, 1, PAGE_SIZE with valid terminated buffers.",
+    "null_pointer_policy": "NULL kobj/attribute/buffer values are not valid callback invocations from this core path. Exclude NULL injection from the functional oracle; if used as robustness probes, report separately and do not infer supported behavior.",
+    "global_concurrency_limit": "The per-open-file kernfs mutex does not prove serialization of the module-global EFS state across distinct attributes/open files; that remains MP5/L4."
+  }
+}

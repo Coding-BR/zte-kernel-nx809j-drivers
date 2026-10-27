@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T13:18:51.449458+00:00",
+  "driver": "ftmmod",
+  "review_type": "INDEPENDENT_MP0_MP6_REVIEW",
+  "reviewer_label": "Hubble (independent subagent)",
+  "reviewer_edits": false,
+  "reviewed_input_snapshot_sha256": {
+    "MP0_IDENTITY.json": "0c7405b85b6388a2f92889d16ba2277aeec80e39ac70c85152f348e8c5c81c0d",
+    "MP1_CALL_SIGNATURE.json": "3c3594c3a4123c7326d6a7bbc4f61e4e3c61cd17eb793ddc889a0ca771b1cc6e",
+    "MP2_STATE_EFFECT_LEDGER.json": "f9cbb98c10da9efe8d0cfdc9e14f19d97ff2e171eb4415ce372838a42b8aaea9",
+    "MP3_CONTROL_ERROR_MATRIX.json": "dfeb90217a6e42f5d50ef697fb3eaca3da65f9c2f9588be7b2fce367470406a9",
+    "MP4_TEST_ORACLE_DRAFT.json": "42bf4896719dd7275712ff10c32a0973743df4adc1bb02462bed32bcd43912d1",
+    "MP5_LOCK_LIFETIME_CONTRACT.json": "59fb85e67d4d7b60d5a9b7ef9b9e9e998ba956ac852e0aa5bf1a8e4384981970",
+    "MP6_REGISTER_OR_BUS_LEDGER.json": "17bf621a09e9578237202cc6201e8ecd43baf17552c34fcae1c4e30ca8d8f7f9",
+    "kernel_header_evidence.json": "513262fcf02bf67c480737cbdbe0890bb39aae3a8ab7b8eea3bd411423006a1a"
+  },
+  "input_hash_records_recomputed": 119,
+  "input_hash_mismatches": 0,
+  "identity_crosscheck": {
+    "function_count": 9,
+    "function_identity_errors": 0,
+    "direct_call_observations_checked": 35,
+    "call_indirect_or_branch_indirect_count": 0
+  },
+  "decision": "REJECTED_PENDING_CORRECTIONS",
+  "candidate_edit_authorized": false,
+  "readiness": {
+    "MP4_L3_approval": false,
+    "MP5_L4_approval": false,
+    "MP6_L3_L4_approval": false,
+    "MP7_authorized": false
+  },
+  "findings": [
+    {
+      "id": "REV-001",
+      "artifact": "kernel_header_evidence.json",
+      "issue": "unresolved symbol text is stale: source-level definition is absent, but kmparam.ko stock binary provides a 32-bit dataflow definition",
+      "required_change": "distinguish source search from stock binary evidence; leave exact C declaration and signedness unknown"
+    },
+    {
+      "id": "REV-002",
+      "artifact": "MP5_LOCK_LIFETIME_CONTRACT.json",
+      "issue": "of_find_compatible_node increments the device_node reference; no of_node_put occurs in the ftmmod function inventory; of_iomap does not release that reference",
+      "required_change": "record the possible outstanding reference with pinned source evidence; do not label it a proven runtime leak"
+    },
+    {
+      "id": "REV-003",
+      "artifact": "MP5_LOCK_LIFETIME_CONTRACT.json",
+      "issue": "platform_device_register initializes the device and requires platform_device_put on error; successful registration followed by no bound probe causes __platform_driver_probe to unregister only the driver; failed module init frees module memory without running cleanup_module",
+      "required_change": "record both error paths and the possible dangling registered device/UAF risk for L4 review; do not mark runtime UAF proven"
+    },
+    {
+      "id": "REV-004",
+      "artifact": "MP4_TEST_ORACLE_DRAFT.json",
+      "issue": "T02 conflates a stubbed __platform_driver_probe return with the callback return; pinned core may return -ENODEV when no device bound",
+      "required_change": "separate API-level propagation from core/probe integration"
+    },
+    {
+      "id": "REV-005",
+      "artifact": "MP4_TEST_ORACLE_DRAFT.json",
+      "issue": "oracle omits both arm64 mapping choices, QSEE arg selector, complete call arguments/order, sysfs bounds and NULL argument scope",
+      "required_change": "add branch/call assertions and specify valid sysfs callback preconditions and excluded invalid NULL probes"
+    },
+    {
+      "id": "REV-006",
+      "artifact": "MP2_STATE_EFFECT_LEDGER.json, MP6_REGISTER_OR_BUS_LEDGER.json, MP4_TEST_ORACLE_DRAFT.json",
+      "issue": "ret[1] is shifted as a qword by 32; only its low 32 bits enter the combined diagnostic value, and the output predicate depends only on ret[0] low word",
+      "required_change": "separate diagnostic composite from boolean predicate and cover both"
+    },
+    {
+      "id": "REV-007",
+      "artifact": "MP6_REGISTER_OR_BUS_LEDGER.json",
+      "issue": "translated IMEM word at base+4 address is not recorded",
+      "required_change": "record 0x14680C00 as the static address, retaining runtime-overlay uncertainty"
+    }
+  ],
+  "post_correction_review_required": true
+}

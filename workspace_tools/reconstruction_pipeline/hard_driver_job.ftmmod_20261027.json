@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0",
+  "driver": "ftmmod",
+  "stock_sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb",
+  "profiles": [
+    "CALLBACK_ABI",
+    "STATEFUL_MEMORY",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS",
+    "DISPATCHER_PARSER",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "ftm_remove",
+      "stock_entry": "00100784",
+      "source_function": "ftm_remove",
+      "candidate_function": "ftm_remove",
+      "stock_symbol_offset": "0x4",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "show_secboot_status",
+      "stock_entry": "001007d0",
+      "source_function": "show_secboot_status",
+      "candidate_function": "show_secboot_status",
+      "stock_symbol_offset": "0x50",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "show_simlock_status",
+      "stock_entry": "00100818",
+      "source_function": "show_simlock_status",
+      "candidate_function": "show_simlock_status",
+      "stock_symbol_offset": "0x98",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "show_permission_status",
+      "stock_entry": "00100928",
+      "source_function": "show_permission_status",
+      "candidate_function": "show_permission_status",
+      "stock_symbol_offset": "0x1a8",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "show_efs_recovery",
+      "stock_entry": "00100978",
+      "source_function": "show_efs_recovery",
+      "candidate_function": "show_efs_recovery",
+      "stock_symbol_offset": "0x1f8",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "store_efs_recovery",
+      "stock_entry": "001009e4",
+      "source_function": "store_efs_recovery",
+      "candidate_function": "store_efs_recovery",
+      "stock_symbol_offset": "0x264",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "00100acc",
+      "source_function": "init_module",
+      "candidate_function": "init_module",
+      "stock_symbol_offset": "0x4",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "ftm_probe",
+      "stock_entry": "00100b7c",
+      "source_function": "ftm_probe",
+      "candidate_function": "ftm_probe",
+      "stock_symbol_offset": "0xb4",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "cleanup_module",
+      "stock_entry": "00100ca0",
+      "source_function": "cleanup_module",
+      "candidate_function": "cleanup_module",
+      "stock_symbol_offset": "0x4",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/ftmmod",
+    "stock_module": "reference_modules/full_vendor_boot/ftmmod.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko",
+    "reconstruction_map": "reverse_engineering/validation/reconstructed/ftmmod/attestation/initial_scope_plan_20261027/ftmmod_initial_plan_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/ftmmod",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1
+    }
+  },
+  "kcfi": {
+    "ignore_size": true
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "evidence": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+      "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb"
+    },
+    "stock_evidence_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_STOCK_EVIDENCE_MANIFEST.json",
+      "sha256": "85ad88c4890e7cd88fadac1fffe168fa0e089c3d4557c052b8c2d5e15d3ea6b7"
+    },
+    "ghidra_export_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/manifest.json",
+      "sha256": "966f9c10947645d7de27ffa4900ae730c3e07fefc6deac942ec58fa5eb1173c9"
+    },
+    "stock_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/manifest.json",
+      "sha256": "4f358c5e22cde2f1d7484deb385809589312e1d87645cd7018cefa4e945194fb"
+    },
+    "stock_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/kcfi_stock.json",
+      "sha256": "86de64bc8e67fae541ac585610a15015abbb932892af016b6264ed1aab1ac586"
+    },
+    "scope_review": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "sha256": "f5bbf80e97219a617b74b60b7523fcb923e9befc1e1211e1fa47672a760595cc"
+    },
+    "decompiled_stock_provenance": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/decompiled_stock/PROVENANCE.json",
+      "sha256": "34f97a64150afc2fabe9cd1a4d95cde045c3638c90fe8bd5e37dd2d9253acba5"
+    },
+    "docker_source_revision": "nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098",
+    "nx809j_overlay_target": {
+      "path": "docker-volume:nubia_sm8850_kernel_src/vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+      "sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d"
+    },
+    "common_overlay": {
+      "path": "docker-volume:nubia_sm8850_kernel_src/vendor/qcom/proprietary/zte-devicetree/zte-canoe-common-overlay.dtsi",
+      "sha256": "57c52c5342c78848188d8a6550db249e13c5efe7c24d6bf7257f1d740bbeec0b"
+    },
+    "module_load_manifests": {
+      "normal": {
+        "path": "reference_modules/full_vendor_boot/modules.load",
+        "sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae"
+      },
+      "recovery": {
+        "path": "reference_modules/full_vendor_boot/modules.load.recovery",
+        "sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf"
+      },
+      "dependencies": {
+        "path": "reference_modules/full_vendor_boot/modules.dep",
+        "sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43"
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T15:07:21Z",
+  "driver": "ftmmod",
+  "status": "STATIC_RECONSTRUCTION_CANDIDATE_RECOVERY_LISTED_RUNTIME_UNKNOWN",
+  "scope_decision": {
+    "reconstruct_target": true,
+    "basis": "ftmmod.ko is in the NX809J full_vendor_boot stock inventory, the stock probe queries qcom,msm-imem-efs-golden-copy, and the pinned qwjujube NX809J target overlay includes that compatible in the common overlay. The stock metadata lists ftmmod only in modules.load.recovery, not normal modules.load; this is manifest intent and does not prove actual loading or binding.",
+    "runtime_overlay_application_confirmed": false
+  },
+  "stock": {
+    "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+    "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb",
+    "size_bytes": 20552
+  },
+  "pinned_kernel_source": {
+    "volume": "nubia_sm8850_kernel_src",
+    "git_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "target_overlay_dts": {
+      "path": "vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dts",
+      "sha256": "309a4730b967f60cd0f44512f19e5a68082117f3331afdec405bce5056157a5b",
+      "evidence": "includes zte-qwjujube-overlay.dtsi and ../zte-canoe-common-overlay.dtsi"
+    },
+    "target_overlay_dtsi": {
+      "path": "vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+      "sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d",
+      "evidence": "line 1 labels it dtsi for aston board (NX809J)"
+    },
+    "common_overlay": {
+      "path": "vendor/qcom/proprietary/zte-devicetree/zte-canoe-common-overlay.dtsi",
+      "sha256": "57c52c5342c78848188d8a6550db249e13c5efe7c24d6bf7257f1d740bbeec0b",
+      "evidence": "contains qcom,msm-imem-efs-golden-copy at node efs_golden_copy@04; parent qcom,msm-vendor-imem@14680BF8 has ranges <0x0 0x0 0x14680BF8 0x200>; child reg is <0x04 8>"
+    }
+  },
+  "source_availability": {
+    "original_ftmmod_C_source_found": false,
+    "tracked_decompiled_stock_files": 9,
+    "decompiled_source_provenance": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/decompiled_stock/PROVENANCE.json",
+    "classification": "decompiler pseudocode, not original vendor source or candidate implementation",
+    "candidate_source": "NOT_STARTED",
+    "candidate_module": "NOT_BUILT"
+  },
+  "stock_behavior_observations": [
+    {
+      "claim": "init_module registers a platform device and then calls __platform_driver_probe with ftm_probe",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/decompiled/0006_00100acc_init_module.c",
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm"
+      ],
+      "semantic_class": "OBSERVED_FROM_HASH_BOUND_STOCK"
+    },
+    {
+      "claim": "ftm_probe calls of_find_compatible_node with the string qcom,msm-imem-efs-golden-copy, then of_iomap(node, 0) on the non-null path",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/decompiled/0007_00100b7c_ftm_probe.c",
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/strings.jsonl"
+      ],
+      "semantic_class": "OBSERVED_FROM_HASH_BOUND_STOCK"
+    },
+    {
+      "claim": "The target overlay declares the queried node under vendor IMEM with child reg offset 0x04 and size 8; adding parent base 0x14680BF8 yields translated range 0x14680BFC..0x14680C03",
+      "evidence": [
+        "Docker source revision e1ea0289c329945af9422e58256a37f7603fa098",
+        "vendor/qcom/proprietary/zte-devicetree/zte-canoe-common-overlay.dtsi lines 3-11"
+      ],
+      "semantic_class": "OBSERVED_PROPERTIES_AND_DETERMINISTIC_ADDRESS_DERIVATION",
+      "runtime_applied": "UNKNOWN"
+    },
+    {
+      "claim": "ftm_probe calls ioremap_prot with physical argument 0x58000 and length 0x1000, selecting one of two observed protection constants using arm64_use_ng_mappings",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm"
+      ],
+      "semantic_class": "OBSERVED_FROM_HASH_BOUND_STOCK",
+      "hardware_meaning": "UNKNOWN"
+    },
+    {
+      "claim": "stock exports nine functions with KCFI preambles; function type IDs are recorded",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/ftmmod/offline_static/kcfi_stock.json"
+      ],
+      "semantic_class": "OBSERVED_FROM_HASH_BOUND_ELF"
+    },
+    {
+      "claim": "ftmmod.ko is listed in modules.load.recovery only and is absent from normal modules.load; neither list proves successful runtime loading.",
+      "evidence": [
+        "reference_modules/full_vendor_boot/modules.load",
+        "reference_modules/full_vendor_boot/modules.load.recovery",
+        "reference_modules/FULL_VENDOR_BOOT_MANIFEST.json"
+      ],
+      "semantic_class": "HASH_VERIFIED_LOAD_MANIFEST_INTENT_RUNTIME_UNKNOWN"
+    }
+  ],
+  "open_blockers": [
+    "Confirm whether this overlay is the exact compiled/applied NX809J DT configuration; source selection is identified, runtime application is not.",
+    "No original ftmmod source was found in the pinned kernel source revision; implementation must be reconstructed from stock evidence.",
+    "Physical meaning and safety contract of the 0x58000 mapping remain unknown; do not infer register names or behavior.",
+    "Candidate source, candidate module, Joern, Docker candidate build, candidate KCFI/assembly parity, harness and independent review remain pending."
+  ],
+  "evidence_manifests": {
+    "stock_evidence_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_STOCK_EVIDENCE_MANIFEST.json",
+      "sha256": "85ad88c4890e7cd88fadac1fffe168fa0e089c3d4557c052b8c2d5e15d3ea6b7"
+    },
+    "ghidra_export_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/manifest.json",
+      "sha256": "966f9c10947645d7de27ffa4900ae730c3e07fefc6deac942ec58fa5eb1173c9"
+    },
+    "assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/manifest.json",
+      "sha256": "4f358c5e22cde2f1d7484deb385809589312e1d87645cd7018cefa4e945194fb"
+    },
+    "kcfi_report": {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/kcfi_stock.json",
+      "sha256": "86de64bc8e67fae541ac585610a15015abbb932892af016b6264ed1aab1ac586"
+    }
+  },
+  "module_load_context": {
+    "normal_load_manifest": {
+      "path": "reference_modules/full_vendor_boot/modules.load",
+      "sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+      "listed": false
+    },
+    "recovery_load_manifest": {
+      "path": "reference_modules/full_vendor_boot/modules.load.recovery",
+      "sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+      "listed": true,
+      "line": 291
+    },
+    "modules_dep": {
+      "path": "reference_modules/full_vendor_boot/modules.dep",
+      "sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+      "reverse_dependents": []
+    },
+    "effective_runtime_loaded": false,
+    "final_composed_dtbo_selection_confirmed": false
+  }
+}

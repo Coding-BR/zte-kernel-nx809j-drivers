@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod_MP5",
+  "work_unit": "MP5_LOCK_LIFETIME_CONTRACT",
+  "draft_status": "DRAFT_PENDING_L4",
+  "candidate_edit_authorized": false,
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+      "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP0_IDENTITY.json",
+      "sha256": "d5a6d38b022f6e944f9881881d53fa90f25f04de39f2a5d5692963a75aae8101"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "e52e0a27d6c973a0aee55a652e3cbccc5bcdb85cf81c9d80066966ffa9f46ef4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "7ed140459c0f2e7acf6cd7c066847ec9c5892f0c8cdf1c540f62e1e746b5dbf9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "2678a0ef16ad91b63fff40123e5d3ec782a9c494151d0cf5a0e42b2528c0a6f2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP4_TEST_ORACLE_DRAFT.json",
+      "sha256": "77013adef68282db9f970578f386d4ee21260024a2924ab5c4bbfed24bfe40b6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "sha256": "5ed69f37628e2e4a6687d22ee0d34d3f0ef55ee8532ac33583b7ab7a1f4ff709"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0000_cleanup_module.asm",
+      "sha256": "9e1573e528c75b6ae3713d2294ded74128e183fdb60f40dc445baca44d0f9351"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "sha256": "acdecc230375cdbe3d484ce71b66153929fd4168b25d4784be7105c409374b4c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0002_ftm_remove.asm",
+      "sha256": "1073a1fe1cae9d71d6d5c0044c80800ce8f69173181e04714d165d98937103d9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "sha256": "0ea5df582863f593eca794c81a681c1237e9b89ce2be29e3f708a5a48c9b2288"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "sha256": "c5079ffbe3e9a61ab51aabe687d60bbb479d8da7f320dc552a56ffb5a1f8135e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
+      "sha256": "0558e94cf4dbf89867c33d2e0a7c6084919e722300a7dd7a9925585188f39db9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_callback_source_contracts_20261027.txt",
+      "sha256": "082e849d26ee13fe7e3de939d4ec4945b5fa9414a3c61e336e009a2c7ce03ea4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_teardown_source_contracts_20261027.txt",
+      "sha256": "92727e7aa748ea03af889d0b9ec7d891516ec55e33acbcf7a55c6c26648f306d"
+    }
+  ],
+  "observations": [
+    {
+      "id": "OBS-001",
+      "claim": "ftm_probe guarda of_iomap em .bss+0x10; show_efs_recovery/store_efs_recovery leem o ponteiro e acessam +4.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "probe store .init.text+0x10c; readers show .text+0x220/store .text+0x2a8"
+    },
+    {
+      "id": "OBS-002",
+      "claim": "ftm_probe guarda ioremap_prot em .bss+0x8; ftm_remove/cleanup e callbacks não mostram unmap nos nove corpos.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "store .init.text+0x154..0x15c; function corpus MP0"
+    },
+    {
+      "id": "OBS-003",
+      "claim": "cleanup_module chama unregister do driver e depois do device; ftm_remove contém apenas printk.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0000_cleanup_module.asm",
+      "locator": "cleanup .exit.text 0x4..0x30; remove .text 0x4..0x48"
+    },
+    {
+      "id": "OBS-004",
+      "claim": "Pinned core source resolves sysfs behavior: create_files removes files already created when one sysfs_create_group call fails; on normal unload, platform_device_unregister -> platform_device_del -> device_del -> kobject_del -> sysfs_remove_dir -> kernfs_remove deactivates nodes and drains active references. This establishes normal sysfs teardown ordering, not I/O mapping or OF-node release.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_teardown_source_contracts_20261027.txt",
+      "locator": "group.c:45-117,120-190; platform.c:746-765,789-796; core.c:3860-3890; kobject.c:586-630; sysfs/dir.c:79-104; kernfs/dir.c:1447-1530,471-517"
+    },
+    {
+      "id": "OBS-005",
+      "claim": "show/store EFS acessam o mesmo word 32-bit em +4 sem lock observado; store executa DSB SY após a gravação.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "locator": "read .text+0x22c; store .text+0x334; barrier .text+0x338"
+    },
+    {
+      "id": "OBS-006",
+      "claim": "Pinned of_find_compatible_node returns a device_node with incremented refcount and requires of_node_put when done. The stock ftmmod corpus has no of_node_put call; pinned of_iomap maps the resource but does not put the node reference.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
+      "locator": "drivers/of/base.c:941-957; drivers/of/address.c:1119-1131; stock direct-call inventory MP1"
+    },
+    {
+      "id": "OBS-007",
+      "claim": "Pinned platform_device_register calls device_initialize before platform_device_add and explicitly requires platform_device_put on error, including when register returns failure. Stock init_module passes the ftm_dev object from .data, propagates registration failure as -ENODEV, and the module corpus has no platform_device_put call.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
+      "locator": "drivers/base/platform.c:768-781; init_module stock .init.text+0x28..0x34 and +0x74..0xa8; Ghidra symbols ftm_dev at .data base"
+    },
+    {
+      "id": "OBS-008",
+      "claim": "Pinned __platform_driver_probe returns -ENODEV and unregisters the driver if no platform device binds; it does not unregister the platform device. Stock init_module propagates that error. Pinned do_init_module frees the module on negative init return and does not invoke cleanup_module on that failure path.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/platform_lifetime_source_contracts_20261027.txt",
+      "locator": "drivers/base/platform.c:910-957; kernel/module/main.c:2991-2994,3077-3091,3458-3462; stock init_module .init.text+0x38..0xa8"
+    },
+    {
+      "id": "OBS-009",
+      "claim": "Normal module cleanup unregisters the platform device; pinned platform/sysfs/kernfs source follows platform_device_unregister -> platform_device_del -> device_del -> kobject_del -> sysfs_remove_dir -> kernfs_remove. kernfs marks nodes removing/deactivates active nodes and waits until active references drain before removal completes. This is a core-path fact, not proof that the module releases its separately mapped resources.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_teardown_source_contracts_20261027.txt",
+      "locator": "platform.c:746-765,789-796; core.c:3860-3890; kobject.c:586-630; sysfs/dir.c:79-104; kernfs/dir.c:1447-1530,471-517"
+    },
+    {
+      "id": "OBS-010",
+      "claim": "For a single sysfs_create_group failure, create_files removes files already created from the group; internal_create_group also removes a named group directory on error. The attribute-file rollback is provided by pinned sysfs core; module-specific mapping and OF-reference cleanup remain separate.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_teardown_source_contracts_20261027.txt",
+      "locator": "group.c:45-117,120-190"
+    }
+  ],
+  "inferences": [
+    {
+      "id": "INF-001",
+      "claim": "On the stock success path where of_find_compatible_node returns a node, the missing of_node_put is consistent with an outstanding device_node reference. This is a statically supported possible reference-retention issue; do not report a runtime leak without L4 confirmation of the target path and teardown context.",
+      "basis": [
+        "OBS-006",
+        "MP1 direct-call inventory"
+      ]
+    },
+    {
+      "id": "INF-002",
+      "claim": "If platform_device_register fails after device_initialize, pinned API documentation requires platform_device_put. No such call exists in the stock function corpus; exact residual refcount/release behavior for this module object needs L4 review.",
+      "basis": [
+        "OBS-007"
+      ]
+    },
+    {
+      "id": "INF-003",
+      "claim": "If platform_device_register succeeds but __platform_driver_probe finds no bound device, the pinned core unregisters only the driver and returns -ENODEV; init failure frees module memory without calling cleanup_module. Because the registered ftm_dev object is in module .data, this creates a possible stale registered-device pointer/UAF risk. This is a risk hypothesis requiring L4/core-path review, not a claim of observed runtime UAF.",
+      "basis": [
+        "OBS-008",
+        "stock init_module assembly",
+        "Ghidra symbol inventory"
+      ]
+    }
+  ],
+  "unknowns": [
+    "Owner, matching unmap and teardown on every failure unresolved; absence in this module is not proof of leak.",
+    "Concurrency behavior of show/store under target kernfs configuration unresolved; no lock visible.",
+    "Whether the OF node lookup success path is reached on the device at runtime remains unverified; the overlay application is not proven.",
+    "The exact platform-device refcount/release consequences of both init failure paths, including whether the no-bind path produces a dereference after module memory release, require independent L4 review.",
+    "The failed ftm_probe/sysfs_create_group path does not establish cleanup of the separately acquired OF reference or I/O mappings; those ownership/release paths remain unresolved.",
+    "The platform-device registration reference and the no-bind init-failure path still require L4 review; possible stale-reference consequences remain risk hypotheses, not observed runtime failures."
+  ],
+  "contradictions": [],
+  "requested_escalation": "MP5 remains DRAFT_PENDING_L4; independent L4 review must resolve OF node reference and platform_device failure/no-bind lifetime risks before MP7.",
+  "resource_ledger": [
+    {
+      "resource": "of_iomap result (.bss+0x10)",
+      "acquisition": "ftm_probe",
+      "consumers": [
+        "show_efs_recovery",
+        "store_efs_recovery"
+      ],
+      "release": "UNKNOWN; no explicit iounmap observed in module bodies"
+    },
+    {
+      "resource": "ioremap_prot result (.bss+0x8)",
+      "acquisition": "ftm_probe",
+      "consumers": "none located in nine bodies",
+      "release": "UNKNOWN; no explicit iounmap observed"
+    },
+    {
+      "resource": "sysfs attribute group",
+      "acquisition": "sysfs_create_group in ftm_probe",
+      "release": "Core rolls back partially created group files on sysfs_create_group error; on normal platform-device unregister, kobject/sysfs removal reaches kernfs_remove and drains active references. This does not release the separately stored I/O mappings or OF node reference."
+    },
+    {
+      "resource": "device_node reference",
+      "acquisition": "of_find_compatible_node",
+      "release": "No of_node_put appears in the nine stock function bodies. Pinned API returns an incremented reference and of_iomap does not release it; successful lookup therefore leaves a possible outstanding reference, subject to L4 review."
+    },
+    {
+      "resource": "platform_device registration reference",
+      "acquisition": "platform_device_register on ftm_dev object in module .data",
+      "consumers": "platform core; __platform_driver_probe may attempt a bind",
+      "release": "platform_device_unregister from cleanup_module only after successful module initialization/unload. No platform_device_put on registration error; no platform_device_unregister when probe binds no device and module init fails."
+    }
+  ],
+  "revision_notes": [
+    "Independent re-review correction: normal sysfs removal and active-reference drain are source-resolved; partial sysfs group file creation rolls back in pinned sysfs core. MP5 remains pending L4 for platform-device refcount, OF-node reference, and mapping ownership."
+  ]
+}

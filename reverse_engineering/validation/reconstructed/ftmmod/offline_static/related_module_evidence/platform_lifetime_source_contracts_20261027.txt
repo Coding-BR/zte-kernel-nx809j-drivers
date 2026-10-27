@@ -1,0 +1,280 @@
+REVISION e1ea0289c329945af9422e58256a37f7603fa098
+dfeb8e30035a356295c52bfb4dd90a9f6d1cd1e1b0ef9b89dc855e648b1f4e15  kernel_platform/common/drivers/of/base.c
+af61fd12ec13d39dc8ab03faf1df26860c5a54f2f1ca03ac12b8e8647f5d1fd7  kernel_platform/common/drivers/of/address.c
+deb56bde49fca1e12ec4e81fb7107713db3d3e8e6a953ddc6d8218c3d6dfc1c8  kernel_platform/common/drivers/base/platform.c
+59ac8a6ba1bedda5311205a834a4210d2f4f37f37d67afac8f872f5b1a5f3354  kernel_platform/common/kernel/module/main.c
+0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc  kernel_platform/common/include/linux/of.h
+a389221f5551054244d8ce3f4154f8da7b994c7a22b88134f66aba4c621f998f  kernel_platform/common/include/linux/platform_device.h
+f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d  vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi
+5d3fba582e75e85aa1cad61183e5a9f2c666246362426edfad71f06134ebbe2a  kernel_platform/common/arch/arm64/configs/nx809j_defconfig
+
+=== platform register/put definitions ===
+kernel_platform/common/drivers/base/platform.c-501- *
+kernel_platform/common/drivers/base/platform.c-502- * Return: 0 on success, negative error number on failure.
+kernel_platform/common/drivers/base/platform.c-503- */
+kernel_platform/common/drivers/base/platform.c-504-int platform_add_devices(struct platform_device **devs, int num)
+kernel_platform/common/drivers/base/platform.c-505-{
+kernel_platform/common/drivers/base/platform.c-506-	int i, ret = 0;
+kernel_platform/common/drivers/base/platform.c-507-
+kernel_platform/common/drivers/base/platform.c-508-	for (i = 0; i < num; i++) {
+kernel_platform/common/drivers/base/platform.c:509:		ret = platform_device_register(devs[i]);
+kernel_platform/common/drivers/base/platform.c-510-		if (ret) {
+kernel_platform/common/drivers/base/platform.c-511-			while (--i >= 0)
+kernel_platform/common/drivers/base/platform.c-512-				platform_device_unregister(devs[i]);
+kernel_platform/common/drivers/base/platform.c-513-			break;
+kernel_platform/common/drivers/base/platform.c-514-		}
+kernel_platform/common/drivers/base/platform.c-515-	}
+kernel_platform/common/drivers/base/platform.c-516-
+kernel_platform/common/drivers/base/platform.c-517-	return ret;
+--
+kernel_platform/common/drivers/base/platform.c-541-
+kernel_platform/common/drivers/base/platform.c-542-/**
+kernel_platform/common/drivers/base/platform.c-543- * platform_device_put - destroy a platform device
+kernel_platform/common/drivers/base/platform.c-544- * @pdev: platform device to free
+kernel_platform/common/drivers/base/platform.c-545- *
+kernel_platform/common/drivers/base/platform.c-546- * Free all memory associated with a platform device.  This function must
+kernel_platform/common/drivers/base/platform.c-547- * _only_ be externally called in error cases.  All other usage is a bug.
+kernel_platform/common/drivers/base/platform.c-548- */
+kernel_platform/common/drivers/base/platform.c:549:void platform_device_put(struct platform_device *pdev)
+kernel_platform/common/drivers/base/platform.c-550-{
+kernel_platform/common/drivers/base/platform.c-551-	if (!IS_ERR_OR_NULL(pdev))
+kernel_platform/common/drivers/base/platform.c-552-		put_device(&pdev->dev);
+kernel_platform/common/drivers/base/platform.c-553-}
+kernel_platform/common/drivers/base/platform.c-554-EXPORT_SYMBOL_GPL(platform_device_put);
+kernel_platform/common/drivers/base/platform.c-555-
+kernel_platform/common/drivers/base/platform.c-556-static void platform_device_release(struct device *dev)
+kernel_platform/common/drivers/base/platform.c-557-{
+--
+kernel_platform/common/drivers/base/platform.c-646-	return 0;
+kernel_platform/common/drivers/base/platform.c-647-}
+kernel_platform/common/drivers/base/platform.c-648-EXPORT_SYMBOL_GPL(platform_device_add_data);
+kernel_platform/common/drivers/base/platform.c-649-
+kernel_platform/common/drivers/base/platform.c-650-/**
+kernel_platform/common/drivers/base/platform.c-651- * platform_device_add - add a platform device to device hierarchy
+kernel_platform/common/drivers/base/platform.c-652- * @pdev: platform device we're adding
+kernel_platform/common/drivers/base/platform.c-653- *
+kernel_platform/common/drivers/base/platform.c:654: * This is part 2 of platform_device_register(), though may be called
+kernel_platform/common/drivers/base/platform.c-655- * separately _iff_ pdev was allocated by platform_device_alloc().
+kernel_platform/common/drivers/base/platform.c-656- */
+kernel_platform/common/drivers/base/platform.c:657:int platform_device_add(struct platform_device *pdev)
+kernel_platform/common/drivers/base/platform.c-658-{
+kernel_platform/common/drivers/base/platform.c-659-	struct device *dev = &pdev->dev;
+kernel_platform/common/drivers/base/platform.c-660-	u32 i;
+kernel_platform/common/drivers/base/platform.c-661-	int ret;
+kernel_platform/common/drivers/base/platform.c-662-
+kernel_platform/common/drivers/base/platform.c-663-	if (!dev->parent)
+kernel_platform/common/drivers/base/platform.c-664-		dev->parent = &platform_bus;
+kernel_platform/common/drivers/base/platform.c-665-
+--
+kernel_platform/common/drivers/base/platform.c-764-}
+kernel_platform/common/drivers/base/platform.c-765-EXPORT_SYMBOL_GPL(platform_device_del);
+kernel_platform/common/drivers/base/platform.c-766-
+kernel_platform/common/drivers/base/platform.c-767-/**
+kernel_platform/common/drivers/base/platform.c-768- * platform_device_register - add a platform-level device
+kernel_platform/common/drivers/base/platform.c-769- * @pdev: platform device we're adding
+kernel_platform/common/drivers/base/platform.c-770- *
+kernel_platform/common/drivers/base/platform.c-771- * NOTE: _Never_ directly free @pdev after calling this function, even if it
+kernel_platform/common/drivers/base/platform.c:772: * returned an error! Always use platform_device_put() to give up the
+kernel_platform/common/drivers/base/platform.c-773- * reference initialised in this function instead.
+kernel_platform/common/drivers/base/platform.c-774- */
+kernel_platform/common/drivers/base/platform.c:775:int platform_device_register(struct platform_device *pdev)
+kernel_platform/common/drivers/base/platform.c-776-{
+kernel_platform/common/drivers/base/platform.c-777-	device_initialize(&pdev->dev);
+kernel_platform/common/drivers/base/platform.c-778-	setup_pdev_dma_masks(pdev);
+kernel_platform/common/drivers/base/platform.c:779:	return platform_device_add(pdev);
+kernel_platform/common/drivers/base/platform.c-780-}
+kernel_platform/common/drivers/base/platform.c-781-EXPORT_SYMBOL_GPL(platform_device_register);
+kernel_platform/common/drivers/base/platform.c-782-
+kernel_platform/common/drivers/base/platform.c-783-/**
+kernel_platform/common/drivers/base/platform.c-784- * platform_device_unregister - unregister a platform-level device
+kernel_platform/common/drivers/base/platform.c-785- * @pdev: platform device we're unregistering
+kernel_platform/common/drivers/base/platform.c-786- *
+kernel_platform/common/drivers/base/platform.c-787- * Unregistration is done in 2 steps. First we release all resources
+kernel_platform/common/drivers/base/platform.c-788- * and remove it from the subsystem, then we drop reference count by
+kernel_platform/common/drivers/base/platform.c:789: * calling platform_device_put().
+kernel_platform/common/drivers/base/platform.c-790- */
+kernel_platform/common/drivers/base/platform.c-791-void platform_device_unregister(struct platform_device *pdev)
+kernel_platform/common/drivers/base/platform.c-792-{
+kernel_platform/common/drivers/base/platform.c-793-	platform_device_del(pdev);
+kernel_platform/common/drivers/base/platform.c:794:	platform_device_put(pdev);
+kernel_platform/common/drivers/base/platform.c-795-}
+kernel_platform/common/drivers/base/platform.c-796-EXPORT_SYMBOL_GPL(platform_device_unregister);
+kernel_platform/common/drivers/base/platform.c-797-
+kernel_platform/common/drivers/base/platform.c-798-/**
+kernel_platform/common/drivers/base/platform.c-799- * platform_device_register_full - add a platform-level device with
+kernel_platform/common/drivers/base/platform.c-800- * resources and platform-specific data
+kernel_platform/common/drivers/base/platform.c-801- *
+kernel_platform/common/drivers/base/platform.c-802- * @pdevinfo: data used to create device
+--
+kernel_platform/common/drivers/base/platform.c-836-
+kernel_platform/common/drivers/base/platform.c-837-	if (pdevinfo->properties) {
+kernel_platform/common/drivers/base/platform.c-838-		ret = device_create_managed_software_node(&pdev->dev,
+kernel_platform/common/drivers/base/platform.c-839-							  pdevinfo->properties, NULL);
+kernel_platform/common/drivers/base/platform.c-840-		if (ret)
+kernel_platform/common/drivers/base/platform.c-841-			goto err;
+kernel_platform/common/drivers/base/platform.c-842-	}
+kernel_platform/common/drivers/base/platform.c-843-
+kernel_platform/common/drivers/base/platform.c:844:	ret = platform_device_add(pdev);
+kernel_platform/common/drivers/base/platform.c-845-	if (ret) {
+kernel_platform/common/drivers/base/platform.c-846-err:
+kernel_platform/common/drivers/base/platform.c-847-		ACPI_COMPANION_SET(&pdev->dev, NULL);
+kernel_platform/common/drivers/base/platform.c:848:		platform_device_put(pdev);
+kernel_platform/common/drivers/base/platform.c-849-		return ERR_PTR(ret);
+kernel_platform/common/drivers/base/platform.c-850-	}
+kernel_platform/common/drivers/base/platform.c-851-
+kernel_platform/common/drivers/base/platform.c-852-	return pdev;
+kernel_platform/common/drivers/base/platform.c-853-}
+kernel_platform/common/drivers/base/platform.c-854-EXPORT_SYMBOL_GPL(platform_device_register_full);
+kernel_platform/common/drivers/base/platform.c-855-
+kernel_platform/common/drivers/base/platform.c-856-/**
+--
+kernel_platform/common/drivers/base/platform.c-991-	error = platform_device_add_resources(pdev, res, n_res);
+kernel_platform/common/drivers/base/platform.c-992-	if (error)
+kernel_platform/common/drivers/base/platform.c-993-		goto err_pdev_put;
+kernel_platform/common/drivers/base/platform.c-994-
+kernel_platform/common/drivers/base/platform.c-995-	error = platform_device_add_data(pdev, data, size);
+kernel_platform/common/drivers/base/platform.c-996-	if (error)
+kernel_platform/common/drivers/base/platform.c-997-		goto err_pdev_put;
+kernel_platform/common/drivers/base/platform.c-998-
+kernel_platform/common/drivers/base/platform.c:999:	error = platform_device_add(pdev);
+kernel_platform/common/drivers/base/platform.c-1000-	if (error)
+kernel_platform/common/drivers/base/platform.c-1001-		goto err_pdev_put;
+kernel_platform/common/drivers/base/platform.c-1002-
+kernel_platform/common/drivers/base/platform.c-1003-	error = __platform_driver_probe(driver, probe, module);
+kernel_platform/common/drivers/base/platform.c-1004-	if (error)
+kernel_platform/common/drivers/base/platform.c-1005-		goto err_pdev_del;
+kernel_platform/common/drivers/base/platform.c-1006-
+kernel_platform/common/drivers/base/platform.c-1007-	return pdev;
+kernel_platform/common/drivers/base/platform.c-1008-
+kernel_platform/common/drivers/base/platform.c-1009-err_pdev_del:
+kernel_platform/common/drivers/base/platform.c-1010-	platform_device_del(pdev);
+kernel_platform/common/drivers/base/platform.c-1011-err_pdev_put:
+kernel_platform/common/drivers/base/platform.c:1012:	platform_device_put(pdev);
+kernel_platform/common/drivers/base/platform.c-1013-err_out:
+kernel_platform/common/drivers/base/platform.c-1014-	return ERR_PTR(error);
+kernel_platform/common/drivers/base/platform.c-1015-}
+kernel_platform/common/drivers/base/platform.c-1016-EXPORT_SYMBOL_GPL(__platform_create_bundle);
+kernel_platform/common/drivers/base/platform.c-1017-
+kernel_platform/common/drivers/base/platform.c-1018-/**
+kernel_platform/common/drivers/base/platform.c-1019- * __platform_register_drivers - register an array of platform drivers
+kernel_platform/common/drivers/base/platform.c-1020- * @drivers: an array of drivers to register
+--
+
+=== module init error cleanup ===
+  3038	
+  3039		mod_tree_remove_init(mod);
+  3040		module_arch_freeing_init(mod);
+  3041		for_class_mod_mem_type(type, init) {
+  3042			mod->mem[type].base = NULL;
+  3043			mod->mem[type].size = 0;
+  3044		}
+  3045	
+  3046	#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+  3047		/* .BTF is not SHF_ALLOC and will get removed, so sanitize pointers */
+  3048		mod->btf_data = NULL;
+  3049		mod->btf_base_data = NULL;
+  3050	#endif
+  3051		/*
+  3052		 * We want to free module_init, but be aware that kallsyms may be
+  3053		 * walking this with preempt disabled.  In all the failure paths, we
+  3054		 * call synchronize_rcu(), but we don't want to slow down the success
+  3055		 * path. execmem_free() cannot be called in an interrupt, so do the
+  3056		 * work and call synchronize_rcu() in a work queue.
+  3057		 *
+  3058		 * Note that execmem_alloc() on most architectures creates W+X page
+  3059		 * mappings which won't be cleaned up until do_free_init() runs.  Any
+  3060		 * code such as mark_rodata_ro() which depends on those mappings to
+  3061		 * be cleaned up needs to sync with the queued work by invoking
+  3062		 * flush_module_init_free_work().
+  3063		 */
+  3064		if (llist_add(&freeinit->node, &init_free_list))
+  3065			schedule_work(&init_free_wq);
+  3066	
+  3067		mutex_unlock(&module_mutex);
+  3068		wake_up_all(&module_wq);
+  3069	
+  3070		mod_stat_add_long(text_size, &total_text_size);
+  3071		mod_stat_add_long(total_size, &total_mod_size);
+  3072	
+  3073		mod_stat_inc(&modcount);
+  3074	
+  3075		return 0;
+  3076	
+  3077	fail_free_freeinit:
+  3078		kfree(freeinit);
+  3079	fail:
+  3080		/* Try to protect us from buggy refcounters. */
+  3081		mod->state = MODULE_STATE_GOING;
+  3082		synchronize_rcu();
+  3083		module_put(mod);
+  3084		blocking_notifier_call_chain(&module_notify_list,
+  3085					     MODULE_STATE_GOING, mod);
+  3086		klp_module_going(mod);
+  3087		ftrace_release_mod(mod);
+  3088		free_module(mod);
+  3089		wake_up_all(&module_wq);
+  3090	
+  3091		return ret;
+  3092	}
+  3093	
+  3094	static int may_init_module(void)
+  3095	{
+
+=== device-tree soc_fan node ===
+   642	        fan_pwm_dev: pwms@eb00 {
+   643	            compatible = "qcom,pm8350c-pwm";
+   644	            reg = <0xeb00>;
+   645	            #address-cells = <1>;
+   646	            #size-cells = <0>;
+   647	            #pwm-cells = <2>;
+   648	        };
+   649	
+   650	        nb_fan: qcom,fan@ef00 {
+   651	            compatible = "soc,fan";
+   652	            reg = <0xef00>;
+   653	            fan,avdd-supply = <&pmh0101_l8>;
+   654	            regulator-names = "avdd";
+   655	            pinctrl-names ="default";
+   656	            pinctrl-0 =<&fan_speed &fan_pwm>;
+   657	            fan,pwm-gpio = <&pmh0101_gpios 9 GPIO_ACTIVE_HIGH>;
+   658	            fan,speed-gpio = <&tlmm 211 GPIO_ACTIVE_HIGH>;
+   659	            fan,voltage = <3300000>;
+   660	            fan {
+   661	                label = "fan";
+   662	                pwms = <&fan_pwm_dev 3 40000>;
+   663	            };
+   664	        };
+   665	    };
+   666	};
+   667	/*fan end*/
+
+=== NX809J fan config matches ===
+153:CONFIG_RCU_FANOUT=64
+154:CONFIG_RCU_FANOUT_LEAF=16
+2990:# CONFIG_INPUT_PWM_BEEPER is not set
+2991:# CONFIG_INPUT_PWM_VIBRA is not set
+3765:# CONFIG_REGULATOR_FAN53555 is not set
+3766:# CONFIG_REGULATOR_FAN53880 is not set
+3800:# CONFIG_REGULATOR_PWM is not set
+3859:# CONFIG_IR_PWM_TX is not set
+4594:# CONFIG_BACKLIGHT_PWM is not set
+5556:# CONFIG_LEDS_PWM is not set
+5595:# CONFIG_LEDS_PWM_MULTICOLOR is not set
+5981:# CONFIG_COMMON_CLK_PWM is not set
+6819:CONFIG_PWM=y
+6820:# CONFIG_PWM_DEBUG is not set
+6821:# CONFIG_PWM_ATMEL_TCB is not set
+6822:# CONFIG_PWM_BCM2835 is not set
+6823:# CONFIG_PWM_BRCMSTB is not set
+6824:# CONFIG_PWM_CLK is not set
+6825:# CONFIG_PWM_DWC is not set
+6826:# CONFIG_PWM_FSL_FTM is not set
+6827:# CONFIG_PWM_GPIO is not set
+6828:# CONFIG_PWM_HIBVT is not set
+6829:# CONFIG_PWM_PCA9685 is not set
+6830:# CONFIG_PWM_SUN4I is not set
+6831:# CONFIG_PWM_XILINX is not set
+7097:# CONFIG_FANOTIFY is not set
+
+=== implementation search ===
+vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi:651:            compatible = "soc,fan";

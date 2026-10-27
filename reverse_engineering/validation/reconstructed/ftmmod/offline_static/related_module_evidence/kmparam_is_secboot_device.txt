@@ -1,0 +1,15 @@
+Tool: llvm-readelf -Ws and llvm-objdump -dr --disassemble-symbols=is_secboot_device
+Image: sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390
+    23: 0000000000000008     4 OBJECT  LOCAL  DEFAULT     3 secboot_status
+   177: 00000000000000c0    12 FUNC    GLOBAL DEFAULT    15 is_secboot_device
+
+/repo/reference_modules/full_vendor_boot/kmparam.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000000c0 <is_secboot_device>:
+      c0: 90000008     	adrp	x8, 0x0 <.text>
+		00000000000000c0:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x8
+      c4: b9400100     	ldr	w0, [x8]
+		00000000000000c4:  R_AARCH64_LDST32_ABS_LO12_NC	.data+0x8
+      c8: d65f03c0     	ret

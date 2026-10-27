@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T12:58:26.525163+00:00",
+  "module_path": "reference_modules/full_vendor_boot/kmparam.ko",
+  "module_sha256": "9813fc808fa7de6fd86494bb33fce596a7b131b1a6d6c0e4e8346335f3c814b0",
+  "module_size_bytes": 22208,
+  "function": "is_secboot_device",
+  "elf_symbol": {
+    "section": ".text",
+    "section_offset": "0xc0",
+    "size_bytes": 12,
+    "binding": "GLOBAL"
+  },
+  "data_symbol": {
+    "name": "secboot_status",
+    "section": ".data",
+    "section_offset": "0x8",
+    "size_bytes": 4,
+    "binding": "LOCAL"
+  },
+  "disassembly_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/kmparam_is_secboot_device.txt",
+  "disassembly_sha256": "5c1763814914f5f9a5b9411ba99d147713bd3efae6ad3bbf4f2dfeb74304f0a7",
+  "tool": "llvm-readelf -Ws; llvm-objdump -dr --disassemble-symbols=is_secboot_device",
+  "container_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "observations": [
+    "Function body at .text+0xc0 loads a 32-bit value from .data+8 into w0 and returns.",
+    "No instruction consumes an incoming argument register in this 12-byte function body.",
+    "The stock decompiler pseudocode returns (unsigned int)secboot_status; it is decompiler evidence, not original source.",
+    "Binary dataflow supports zero consumed arguments and 32-bit return bits; exact C declaration/signedness remains unverified."
+  ]
+}

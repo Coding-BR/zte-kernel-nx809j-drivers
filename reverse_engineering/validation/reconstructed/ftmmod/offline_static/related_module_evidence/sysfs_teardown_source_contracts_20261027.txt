@@ -1,0 +1,441 @@
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+
+=== pinned source hashes ===
+deb56bde49fca1e12ec4e81fb7107713db3d3e8e6a953ddc6d8218c3d6dfc1c8  kernel_platform/common/drivers/base/platform.c
+64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882  kernel_platform/common/drivers/base/core.c
+0161a3faaa770cf7a724f94773104a5ab33c5dbafe525729276360cd8120d4ab  kernel_platform/common/lib/kobject.c
+baa94bbf4d3d857a986089d9d6a0dcdd71623d574ab49dd56bdb3cdd15755aa7  kernel_platform/common/fs/sysfs/dir.c
+ecbd38d79ea3513b7138d42a0ca7104f41ca28bac95c139529c131440925e64b  kernel_platform/common/fs/sysfs/group.c
+f1a463c8976410a37aed61f3677a35afe044fce51fda50d60ed9f6e4869bb1e9  kernel_platform/common/fs/kernfs/dir.c
+a389221f5551054244d8ce3f4154f8da7b994c7a22b88134f66aba4c621f998f  kernel_platform/common/include/linux/platform_device.h
+140ef53cc3eb0340a6ac573ec4310adcc3890c310e2d450e82e4f61d98685ff1  kernel_platform/common/include/linux/device.h
+
+=== platform_device_del and unregister ===
+void platform_device_del(struct platform_device *pdev)
+{
+	u32 i;
+
+	if (!IS_ERR_OR_NULL(pdev)) {
+		device_del(&pdev->dev);
+
+		if (pdev->id_auto) {
+			ida_free(&platform_devid_ida, pdev->id);
+			pdev->id = PLATFORM_DEVID_AUTO;
+		}
+
+		for (i = 0; i < pdev->num_resources; i++) {
+			struct resource *r = &pdev->resource[i];
+			if (r->parent)
+				release_resource(r);
+		}
+	}
+}
+EXPORT_SYMBOL_GPL(platform_device_del);
+ * calling platform_device_put().
+ */
+void platform_device_unregister(struct platform_device *pdev)
+{
+	platform_device_del(pdev);
+	platform_device_put(pdev);
+}
+EXPORT_SYMBOL_GPL(platform_device_unregister);
+
+=== device_del to kobject_del ===
+
+	/*
+	 * If a device does not have a driver attached, we need to clean
+	 * up any managed resources. We do this in device_release(), but
+	 * it's never called (and we leak the device) if a managed
+	 * resource holds a reference to the device. So release all
+	 * managed resources here, like we do in driver_detach(). We
+	 * still need to do so again in device_release() in case someone
+	 * adds a new resource after this point, though.
+	 */
+	devres_release_all(dev);
+
+	bus_notify(dev, BUS_NOTIFY_REMOVED_DEVICE);
+	kobject_uevent(&dev->kobj, KOBJ_REMOVE);
+	glue_dir = get_glue_dir(dev);
+	kobject_del(&dev->kobj);
+	cleanup_glue_dir(dev, glue_dir);
+	memalloc_noio_restore(noio_flag);
+	put_device(parent);
+}
+EXPORT_SYMBOL_GPL(device_del);
+
+/**
+ * device_unregister - unregister device from system.
+ * @dev: device going away.
+ *
+ * We do this in two parts, like we do device_register(). First,
+ * we remove it from all the subsystems with device_del(), then
+ * we decrement the reference count via put_device(). If that
+ * is the final reference count, the device will be cleaned up
+ * via device_release() above. Otherwise, the structure will
+
+=== kobject deletion ===
+static void __kobject_del(struct kobject *kobj)
+{
+	struct kernfs_node *sd;
+	const struct kobj_type *ktype;
+
+	sd = kobj->sd;
+	ktype = get_ktype(kobj);
+
+	if (ktype)
+		sysfs_remove_groups(kobj, ktype->default_groups);
+
+	/* send "remove" if the caller did not do it but sent "add" */
+	if (kobj->state_add_uevent_sent && !kobj->state_remove_uevent_sent) {
+		pr_debug("'%s' (%p): auto cleanup 'remove' event\n",
+			 kobject_name(kobj), kobj);
+		kobject_uevent(kobj, KOBJ_REMOVE);
+	}
+
+	sysfs_remove_dir(kobj);
+	sysfs_put(sd);
+
+	kobj->state_in_sysfs = 0;
+	kobj_kset_leave(kobj);
+	kobj->parent = NULL;
+}
+
+/**
+ * kobject_del() - Unlink kobject from hierarchy.
+ * @kobj: object.
+ *
+ * This is the function that should be called to delete an object
+ * successfully added via kobject_add().
+ */
+void kobject_del(struct kobject *kobj)
+{
+	struct kobject *parent;
+
+	if (!kobj)
+		return;
+
+	parent = kobj->parent;
+	__kobject_del(kobj);
+	kobject_put(parent);
+}
+EXPORT_SYMBOL(kobject_del);
+
+=== sysfs_remove_dir ===
+void sysfs_remove_dir(struct kobject *kobj)
+{
+	struct kernfs_node *kn = kobj->sd;
+
+	/*
+	 * In general, kobject owner is responsible for ensuring removal
+	 * doesn't race with other operations and sysfs doesn't provide any
+	 * protection; however, when @kobj is used as a symlink target, the
+	 * symlinking entity usually doesn't own @kobj and thus has no
+	 * control over removal.  @kobj->sd may be removed anytime
+	 * and symlink code may end up dereferencing an already freed node.
+	 *
+	 * sysfs_symlink_target_lock synchronizes @kobj->sd
+	 * disassociation against symlink operations so that symlink code
+	 * can safely dereference @kobj->sd.
+	 */
+	spin_lock(&sysfs_symlink_target_lock);
+	kobj->sd = NULL;
+	spin_unlock(&sysfs_symlink_target_lock);
+
+	if (kn) {
+		WARN_ON_ONCE(kernfs_type(kn) != KERNFS_DIR);
+		kernfs_remove(kn);
+	}
+}
+
+
+=== sysfs group partial-file rollback ===
+static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+			kuid_t uid, kgid_t gid,
+			const struct attribute_group *grp, int update)
+{
+	struct attribute *const *attr;
+	struct bin_attribute *const *bin_attr;
+	int error = 0, i;
+
+	if (grp->attrs) {
+		for (i = 0, attr = grp->attrs; *attr && !error; i++, attr++) {
+			umode_t mode = (*attr)->mode;
+
+			/*
+			 * In update mode, we're changing the permissions or
+			 * visibility.  Do this by first removing then
+			 * re-adding (if required) the file.
+			 */
+			if (update)
+				kernfs_remove_by_name(parent, (*attr)->name);
+			if (grp->is_visible) {
+				mode = grp->is_visible(kobj, *attr, i);
+				mode &= ~SYSFS_GROUP_INVISIBLE;
+				if (!mode)
+					continue;
+			}
+
+			WARN(mode & ~(SYSFS_PREALLOC | 0664),
+			     "Attribute %s: Invalid permissions 0%o\n",
+			     (*attr)->name, mode);
+
+			mode &= SYSFS_PREALLOC | 0664;
+			error = sysfs_add_file_mode_ns(parent, *attr, mode, uid,
+						       gid, NULL);
+			if (unlikely(error))
+				break;
+		}
+		if (error) {
+			remove_files(parent, grp);
+			goto exit;
+		}
+	}
+
+	if (grp->bin_attrs) {
+		for (i = 0, bin_attr = grp->bin_attrs; *bin_attr; i++, bin_attr++) {
+			umode_t mode = (*bin_attr)->attr.mode;
+
+			if (update)
+				kernfs_remove_by_name(parent,
+						(*bin_attr)->attr.name);
+			if (grp->is_bin_visible) {
+				mode = grp->is_bin_visible(kobj, *bin_attr, i);
+				mode &= ~SYSFS_GROUP_INVISIBLE;
+				if (!mode)
+					continue;
+			}
+
+			WARN(mode & ~(SYSFS_PREALLOC | 0664),
+			     "Attribute %s: Invalid permissions 0%o\n",
+			     (*bin_attr)->attr.name, mode);
+
+			mode &= SYSFS_PREALLOC | 0664;
+			error = sysfs_add_bin_file_mode_ns(parent, *bin_attr,
+							   mode, uid, gid,
+							   NULL);
+			if (error)
+				break;
+		}
+		if (error)
+			remove_files(parent, grp);
+	}
+exit:
+	return error;
+}
+static int internal_create_group(struct kobject *kobj, int update,
+				 const struct attribute_group *grp)
+{
+	struct kernfs_node *kn;
+	kuid_t uid;
+	kgid_t gid;
+	int error;
+
+	if (WARN_ON(!kobj || (!update && !kobj->sd)))
+		return -EINVAL;
+
+	/* Updates may happen before the object has been instantiated */
+	if (unlikely(update && !kobj->sd))
+		return -EINVAL;
+
+	if (!grp->attrs && !grp->bin_attrs) {
+		pr_debug("sysfs: (bin_)attrs not set by subsystem for group: %s/%s, skipping\n",
+			 kobj->name, grp->name ?: "");
+		return 0;
+	}
+
+	kobject_get_ownership(kobj, &uid, &gid);
+	if (grp->name) {
+		umode_t mode = __first_visible(grp, kobj);
+
+		if (mode & SYSFS_GROUP_INVISIBLE)
+			mode = 0;
+		else
+			mode = S_IRWXU | S_IRUGO | S_IXUGO;
+
+		if (update) {
+			kn = kernfs_find_and_get(kobj->sd, grp->name);
+			if (!kn) {
+				pr_debug("attr grp %s/%s not created yet\n",
+					 kobj->name, grp->name);
+				/* may have been invisible prior to this update */
+				update = 0;
+			} else if (!mode) {
+				sysfs_remove_group(kobj, grp);
+				kernfs_put(kn);
+				return 0;
+			}
+		}
+
+		if (!update) {
+			if (!mode)
+				return 0;
+			kn = kernfs_create_dir_ns(kobj->sd, grp->name, mode,
+						  uid, gid, kobj, NULL);
+			if (IS_ERR(kn)) {
+				if (PTR_ERR(kn) == -EEXIST)
+					sysfs_warn_dup(kobj->sd, grp->name);
+				return PTR_ERR(kn);
+			}
+		}
+	} else {
+		kn = kobj->sd;
+	}
+
+	kernfs_get(kn);
+	error = create_files(kn, kobj, uid, gid, grp, update);
+	if (error) {
+		if (grp->name)
+			kernfs_remove(kn);
+	}
+	kernfs_put(kn);
+
+	if (grp->name && update)
+		kernfs_put(kn);
+
+	return error;
+
+=== kernfs subtree deactivation and drain ===
+static void __kernfs_remove(struct kernfs_node *kn)
+{
+	struct kernfs_node *pos;
+
+	/* Short-circuit if non-root @kn has already finished removal. */
+	if (!kn)
+		return;
+
+	lockdep_assert_held_write(&kernfs_root(kn)->kernfs_rwsem);
+
+	/*
+	 * This is for kernfs_remove_self() which plays with active ref
+	 * after removal.
+	 */
+	if (kn->parent && RB_EMPTY_NODE(&kn->rb))
+		return;
+
+	pr_debug("kernfs %s: removing\n", kn->name);
+
+	/* prevent new usage by marking all nodes removing and deactivating */
+	pos = NULL;
+	while ((pos = kernfs_next_descendant_post(pos, kn))) {
+		pos->flags |= KERNFS_REMOVING;
+		if (kernfs_active(pos))
+			atomic_add(KN_DEACTIVATED_BIAS, &pos->active);
+	}
+
+	/* deactivate and unlink the subtree node-by-node */
+	do {
+		pos = kernfs_leftmost_descendant(kn);
+
+		/*
+		 * kernfs_drain() may drop kernfs_rwsem temporarily and @pos's
+		 * base ref could have been put by someone else by the time
+		 * the function returns.  Make sure it doesn't go away
+		 * underneath us.
+		 */
+		kernfs_get(pos);
+
+		kernfs_drain(pos);
+
+		/*
+		 * kernfs_unlink_sibling() succeeds once per node.  Use it
+		 * to decide who's responsible for cleanups.
+		 */
+		if (!pos->parent || kernfs_unlink_sibling(pos)) {
+			struct kernfs_iattrs *ps_iattr =
+				pos->parent ? pos->parent->iattr : NULL;
+
+			/* update timestamps on the parent */
+			down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
+
+			if (ps_iattr) {
+				ktime_get_real_ts64(&ps_iattr->ia_ctime);
+				ps_iattr->ia_mtime = ps_iattr->ia_ctime;
+			}
+
+			up_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
+			kernfs_put(pos);
+		}
+
+		kernfs_put(pos);
+	} while (pos != kn);
+}
+
+/**
+ * kernfs_remove - remove a kernfs_node recursively
+ * @kn: the kernfs_node to remove
+ *
+ * Remove @kn along with all its subdirectories and files.
+ */
+void kernfs_remove(struct kernfs_node *kn)
+{
+	struct kernfs_root *root;
+
+	if (!kn)
+		return;
+
+	root = kernfs_root(kn);
+
+	down_write(&root->kernfs_rwsem);
+	__kernfs_remove(kn);
+	up_write(&root->kernfs_rwsem);
+}
+ * kernfs_drain - drain kernfs_node
+ * @kn: kernfs_node to drain
+ *
+ * Drain existing usages and nuke all existing mmaps of @kn.  Multiple
+ * removers may invoke this function concurrently on @kn and all will
+ * return after draining is complete.
+ */
+static void kernfs_drain(struct kernfs_node *kn)
+	__releases(&kernfs_root(kn)->kernfs_rwsem)
+	__acquires(&kernfs_root(kn)->kernfs_rwsem)
+{
+	struct kernfs_root *root = kernfs_root(kn);
+
+	lockdep_assert_held_write(&root->kernfs_rwsem);
+	WARN_ON_ONCE(kernfs_active(kn));
+
+	/*
+	 * Skip draining if already fully drained. This avoids draining and its
+	 * lockdep annotations for nodes which have never been activated
+	 * allowing embedding kernfs_remove() in create error paths without
+	 * worrying about draining.
+	 */
+	if (atomic_read(&kn->active) == KN_DEACTIVATED_BIAS &&
+	    !kernfs_should_drain_open_files(kn))
+		return;
+
+	up_write(&root->kernfs_rwsem);
+
+	if (kernfs_lockdep(kn)) {
+		rwsem_acquire(&kn->dep_map, 0, 0, _RET_IP_);
+		if (atomic_read(&kn->active) != KN_DEACTIVATED_BIAS)
+			lock_contended(&kn->dep_map, _RET_IP_);
+	}
+
+	wait_event(root->deactivate_waitq,
+		   atomic_read(&kn->active) == KN_DEACTIVATED_BIAS);
+
+	if (kernfs_lockdep(kn)) {
+		lock_acquired(&kn->dep_map, _RET_IP_);
+		rwsem_release(&kn->dep_map, _RET_IP_);
+	}
+
+	if (kernfs_should_drain_open_files(kn))
+		kernfs_drain_open_files(kn);
+
+	down_write(&root->kernfs_rwsem);
+}
+
+=== platform_device and device layouts ===
+struct platform_device {
+	const char	*name;
+	int		id;
+	bool		id_auto;
+	struct device	dev;
+	u64		platform_dma_mask;
+	struct device_dma_parameters dma_parms;
+struct device {
+	struct kobject kobj;
+	struct device		*parent;
+
