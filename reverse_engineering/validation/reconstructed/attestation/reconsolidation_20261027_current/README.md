@@ -2,7 +2,7 @@
 
 ## Resultado
 
-**Ainda não: o inventário completo não foi reconstruído.** A pasta reference_modules/full_vendor_boot contém 335 módulos .ko. Há 21 mapas: 20 candidatos com fonte e módulo passaram a classificação estática; haptic_86938 ainda só tem evidência stock. Os outros 314 sem mapa foram triados por nome e conferidos contra os hashes stock: 306 estão provisoriamente classificados como platform/standard e ficam no corpus de dependências; 8 estão na fila device-vendor-review e seguem sem mapa: 7 aguardam confirmação de escopo por fonte local e Device Tree; `soc_fan` já tem escopo confirmado pelo Device Tree do NX809J, mas continua sem mapa, fonte e módulo candidato. Essa triagem não prova propriedade nem ativação do overlay em runtime. Veja [vendor_boot_scope_triage_20261027.json](vendor_boot_scope_triage_20261027.json) e a [revisão de escopo de soc_fan](../../soc_fan/offline_static/SOC_FAN_SCOPE_REVIEW.json).
+**Ainda não: o inventário completo não foi reconstruído.** `reference_modules/full_vendor_boot` contém 335 módulos `.ko`. Há 21 mapas: 20 candidatos com fonte e módulo passaram a classificação estática; `haptic_86938` ainda só tem evidência stock. Dos outros 314 módulos sem mapa, 306 estão provisoriamente no corpus `platform/standard`, três são dependências provisórias (`dmesg_dumper`, `nb7vpq904m`, `rdbg`) e cinco são alvos de reconstrução sem mapa (`awp1921`, `ftmmod`, `soc_fan`, `st54jese`, `st54jnfc`). A revisão estática de fonte e DT foi concluída para os sete itens da fila anterior; ela não prova carregamento do módulo, ativação do overlay em runtime nem propriedade. Veja [vendor_boot_scope_triage_20261027.json](vendor_boot_scope_triage_20261027.json), o [dossiê de escopo dos sete módulos](device_vendor_scope_review_20261027.json) e a [revisão de escopo de `soc_fan`](../../soc_fan/offline_static/SOC_FAN_SCOPE_REVIEW.json).
 
 Os 20 candidatos anteriores passaram os gates estáticos registrados, mas isso não prova equivalência semântica. O relatório registra **0 validados em hardware**. Para `aw9620x`, os 8 gates automatizados passaram e `promotion_authorized` continua `false`.
 
@@ -16,7 +16,7 @@ A evidência stock cobre 160 funções. Corrigi em exportação Ghidra separada 
 
 ## Fila difícil sem mapa
 
-`awp1921`, `dmesg_dumper`, `ftmmod`, `nb7vpq904m`, `rdbg`, `soc_fan`, `st54jese`, `st54jnfc`.
+Alvos de reconstrução sem mapa: `awp1921`, `ftmmod`, `soc_fan`, `st54jese`, `st54jnfc`. Dependências provisórias, sem prova de carregamento em runtime: `dmesg_dumper`, `nb7vpq904m`, `rdbg`.
 
 ## Snapshot Docker
 

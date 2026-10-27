@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T14:50:52Z",
+  "status": "SOURCE_AND_STATIC_DT_REVIEW_COMPLETE_RUNTIME_SCOPE_UNCONFIRMED",
+  "scope": "Seven hash-triaged device_vendor_review modules without reconstruction maps",
+  "method": {
+    "stock_inspection": [
+      "sha256sum",
+      "readelf -p .modinfo",
+      "strings"
+    ],
+    "source_and_dt_inspection": [
+      "pinned Docker source snapshot search",
+      "target ZTE device-tree compatible search"
+    ],
+    "runtime_limits": "Source-tree DT nodes and stock ELF metadata do not prove compiled DTBO selection, runtime module loading, hardware binding, or ownership."
+  },
+  "docker": {
+    "image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "target_dt_tree": "vendor/qcom/proprietary/zte-devicetree",
+    "nx809j_overlay": "vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+    "nx809j_overlay_sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d"
+  },
+  "modules": [
+    {
+      "name": "awp1921",
+      "stock_sha256": "7574edbb00eb8bf3fa812a950796e5acd3b266661ebb5c0dab320e370de4d101",
+      "stock_metadata": {
+        "description": "AWP1921 Driver",
+        "aliases": [
+          "i2c:awp1921"
+        ]
+      },
+      "evidence": {
+        "stock_strings": [
+          "zte,awp1921",
+          "awp1921"
+        ],
+        "target_dt": "qwjujube overlay lines 419-428: compatible zte,awp1921 and awinic,aw86320; status okay",
+        "runtime_overlay_application_confirmed": false
+      },
+      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+    },
+    {
+      "name": "dmesg_dumper",
+      "stock_sha256": "4e1ad060b43eaa9a2b2778be143e3b877ee850372eeab79cec0c1d5e99331f0e",
+      "stock_metadata": {
+        "description": "QTI Virtual Machine dmesg log buffer dumper",
+        "depends": [
+          "gh_ctrl",
+          "gh_panic_notifier",
+          "gh_dbl",
+          "gh_rm_drv",
+          "minidump",
+          "qcom-scm"
+        ]
+      },
+      "evidence": {
+        "embedded_source_path": "../soc-repo/drivers/soc/qcom/dmesg_dumper.c",
+        "matching_source_in_pinned_tree": false,
+        "target_nx809j_compatible_found": false
+      },
+      "disposition": "DEPENDENCY_ONLY_PROVISIONAL_RUNTIME_LOADING_UNKNOWN"
+    },
+    {
+      "name": "ftmmod",
+      "stock_sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb",
+      "stock_metadata": {
+        "description": "ZTE FTM Driver Ver %s1.0",
+        "depends": [
+          "kmparam",
+          "qcom-scm"
+        ]
+      },
+      "evidence": {
+        "stock_strings": [
+          "ftm_init",
+          "platform_device_register"
+        ],
+        "target_nx809j_compatible_found": false,
+        "matching_source_in_pinned_tree": false
+      },
+      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_LOAD_UNKNOWN"
+    },
+    {
+      "name": "nb7vpq904m",
+      "stock_sha256": "058f6bad816503c20347360c9058439ca58ce9a5f3f3aa9c5af4f4c5300bf224",
+      "stock_metadata": {
+        "description": "USB Super Speed Linear Re-Driver",
+        "depends": [
+          "redriver"
+        ]
+      },
+      "evidence": {
+        "matching_source": "kernel_platform/common/drivers/usb/typec/mux/nb7vpq904m.c",
+        "matching_source_sha256": "c4f398840826ad392afdb806de1017df1e7563c82b9921ecc85509b3559c0376",
+        "binding_yaml": "kernel_platform/common/Documentation/devicetree/bindings/usb/onnn,nb7vpq904m.yaml",
+        "binding_yaml_sha256": "90768d83088cb21236c7e735b081306adc3e4c074e10fb1047a45b4bf4e64c7d",
+        "source_compatible": "onnn,nb7vpq904m",
+        "matching_compatible_found_in_nx809j_dt": false,
+        "config_makefile_line": "obj-$(CONFIG_TYPEC_MUX_NB7VPQ904M) += nb7vpq904m.o",
+        "config_makefile_sha256": "0c49213dd2d135402bd2f46ba068e9212a91dde41003c3e986d8ad27642162e8"
+      },
+      "disposition": "DEPENDENCY_ONLY_PROVISIONAL_RUNTIME_BINDING_UNKNOWN"
+    },
+    {
+      "name": "rdbg",
+      "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+      "stock_metadata": {
+        "description": "rdbg module",
+        "depends": [
+          "smem"
+        ]
+      },
+      "evidence": {
+        "embedded_source_path": "../soc-repo/drivers/char/rdbg.c",
+        "matching_source_in_pinned_tree": false,
+        "stock_strings_include_smp2p_debug_bindings": true,
+        "target_nx809j_compatible_found": false
+      },
+      "disposition": "DEPENDENCY_ONLY_PROVISIONAL_RUNTIME_LOADING_UNKNOWN"
+    },
+    {
+      "name": "st54jese",
+      "stock_sha256": "0aa21cab37aa5c45ca339945f881849dcd81c46ce6aa9d7ce9c26898ecb8c0c0",
+      "stock_metadata": {
+        "description": "User mode SPI device interface",
+        "aliases": [
+          "spi:st54spi",
+          "of:N*T*Cst,st54spi",
+          "of:N*T*Cst,st54spiC*"
+        ]
+      },
+      "evidence": {
+        "target_dt": "qwjujube overlay line 332: compatible st,st54spi",
+        "runtime_overlay_application_confirmed": false,
+        "matching_source_in_pinned_tree": false
+      },
+      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+    },
+    {
+      "name": "st54jnfc",
+      "stock_sha256": "d07884f1bb01aecf30be9d7351000d5066de6b15845b5cab617cdbe89a02c068",
+      "stock_metadata": {
+        "description": "NFC ST21NFC driver",
+        "depends": [
+          "zlog_common"
+        ],
+        "aliases": [
+          "of:N*T*Cst,st21nfc",
+          "of:N*T*Cst,st21nfcC*"
+        ]
+      },
+      "evidence": {
+        "target_dt": "qwjujube overlay line 275: compatible st,st21nfc",
+        "runtime_overlay_application_confirmed": false,
+        "matching_vendor_source_in_pinned_tree": false,
+        "generic_st21nfca_source_is_distinct": true
+      },
+      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+    }
+  ],
+  "summary": {
+    "reviewed_names": 7,
+    "in_scope_reconstruction_targets_without_maps": [
+      "awp1921",
+      "ftmmod",
+      "st54jese",
+      "st54jnfc"
+    ],
+    "dependency_only_provisional": [
+      "dmesg_dumper",
+      "nb7vpq904m",
+      "rdbg"
+    ],
+    "existing_in_scope_target_from_prior_review": "soc_fan",
+    "in_scope_unmapped_targets_total_including_soc_fan": 5,
+    "ownership_proven": false,
+    "runtime_module_load_or_dtbo_activation_proven": false,
+    "semantic_equivalence_proven": false
+  }
+}

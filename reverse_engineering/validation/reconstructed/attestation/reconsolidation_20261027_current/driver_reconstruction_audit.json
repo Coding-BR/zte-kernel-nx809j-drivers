@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "10/27/2026 14:26:01",
+  "generated_utc": "2026-10-27T14:50:52Z",
   "status": "INCOMPLETE_ALL_MODULES_NOT_RECONSTRUCTED",
   "scope": {
     "stock_inventory": "reference_modules/full_vendor_boot",
@@ -9,7 +9,7 @@
     "mapped_candidate_count": 20,
     "mapped_candidates_with_stock_and_ko": 20,
     "not_represented_by_reconstruction_map_count": 314,
-    "not_represented_scope_note": "314 stock modules have no reconstruction map. Hash-verified name triage identifies 306 as provisional platform_or_standard dependency-corpus modules and 8 unmapped device_vendor_review modules: 7 still await exact local source/DT scope review, while soc_fan is confirmed in the NX809J Device Tree but remains without a reconstruction map, source, or candidate module; name classification is not ownership proof.",
+    "not_represented_scope_note": "314 stock modules have no reconstruction map: 306 provisional platform_or_standard dependency-corpus modules, 3 provisional dependency-only device-review modules (dmesg_dumper, nb7vpq904m, rdbg), and 5 in-scope unmapped reconstruction targets (awp1921, ftmmod, soc_fan, st54jese, st54jnfc). Static scope review is complete for the seven prior pending names. Name classification is not proof of ownership; runtime module loading and overlay application remain unconfirmed.",
     "reconstruction_map_count": 21,
     "stock_evidence_only_map_count": 1,
     "scope_triage": {
@@ -23,10 +23,13 @@
       "strict_zte_nubia_custom_static_verified": 17,
       "device_vendor_review_static_verified": 3,
       "device_vendor_review_stock_evidence_only": 1,
-      "device_vendor_review_unmapped_pending_scope_review": 7,
-      "device_vendor_review_scope_confirmed_in_scope_unmapped": 1,
-      "platform_or_standard_without_map": 306
-    }
+      "device_vendor_review_unmapped_pending_scope_review": 0,
+      "device_vendor_review_scope_confirmed_in_scope_unmapped": 5,
+      "platform_or_standard_without_map": 306,
+      "device_vendor_review_dependency_only_provisional_unmapped": 3
+    },
+    "device_vendor_review_scope_review_path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
+    "device_vendor_review_scope_review_sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12"
   },
   "static_audit": {
     "prior_consolidated_candidates": 18,
@@ -102,42 +105,50 @@
     {
       "driver": "awp1921",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
     },
     {
       "driver": "dmesg_dumper",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "DEPENDENCY_ONLY_PROVISIONAL"
     },
     {
       "driver": "ftmmod",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
     },
     {
       "driver": "nb7vpq904m",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "DEPENDENCY_ONLY_PROVISIONAL"
     },
     {
       "driver": "rdbg",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "DEPENDENCY_ONLY_PROVISIONAL"
     },
     {
       "driver": "soc_fan",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
     },
     {
       "driver": "st54jese",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
     },
     {
       "driver": "st54jnfc",
       "stock_module_present": true,
-      "reconstruction_map_present": false
+      "reconstruction_map_present": false,
+      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
     }
   ],
   "drivers": [
@@ -429,7 +440,27 @@
   },
   "scope_triage_attestation": {
     "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/vendor_boot_scope_triage_20261027.json",
-    "sha256": "4333cc66a3c2d754567a12e806479c1dc68cf91c69716bc4025a6653f90ff110",
-    "status": "HASH_VERIFIED_NAME_TRIAGE_PARTIAL_SCOPE_REVIEW"
-  }
+    "sha256": "317e40a7f804b25e96583fa1d4487ccc272620e3a1cd764559e66cb45caa7a9e",
+    "status": "HASH_VERIFIED_STATIC_SCOPE_REVIEW_COMPLETE_RUNTIME_UNKNOWN"
+  },
+  "unmapped_dependency_only_provisional": [
+    {
+      "driver": "dmesg_dumper",
+      "stock_module_present": true,
+      "reconstruction_map_present": false,
+      "runtime_loading_confirmed": false
+    },
+    {
+      "driver": "nb7vpq904m",
+      "stock_module_present": true,
+      "reconstruction_map_present": false,
+      "runtime_loading_confirmed": false
+    },
+    {
+      "driver": "rdbg",
+      "stock_module_present": true,
+      "reconstruction_map_present": false,
+      "runtime_loading_confirmed": false
+    }
+  ]
 }

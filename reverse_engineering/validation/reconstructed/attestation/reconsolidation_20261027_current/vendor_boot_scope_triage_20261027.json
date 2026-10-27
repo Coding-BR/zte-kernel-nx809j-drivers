@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-10-27T14:26:01Z",
-  "status": "HASH_VERIFIED_NAME_TRIAGE_PARTIAL_SCOPE_REVIEW",
+  "generated_utc": "2026-10-27T14:50:52Z",
+  "status": "HASH_VERIFIED_STATIC_SCOPE_REVIEW_COMPLETE_RUNTIME_UNKNOWN",
   "scope": "reference_modules/full_vendor_boot",
   "provenance": {
     "stock_file_count": 335,
@@ -25,11 +25,20 @@
   "classification_method": {
     "basis": "The checked-in inventory generator applies a name-prefix regex and an explicit device-review name set; all other names fall into platform_or_standard.",
     "ownership_proven": false,
-    "source_and_device_tree_review_for_device_vendor_queue_complete": false,
-    "policy": "Treat the three groups as triage, not as proof of ownership. Keep platform/standard modules in the dependency corpus per the inventory scope rule. Seven device-review items still need exact source/DT scope review; soc_fan is confirmed in the NX809J Device Tree but runtime overlay application and ownership remain unproven.",
+    "source_and_device_tree_review_for_device_vendor_queue_complete": true,
+    "policy": "The three classification groups remain triage, not proof of ownership. Static stock/source/DT dispositions for the seven device-review items: awp1921, ftmmod, st54jese and st54jnfc are in-scope reconstruction targets; dmesg_dumper, nb7vpq904m and rdbg are provisional dependency-only. NX809J DT source evidence does not prove runtime overlay application or module loading. soc_fan remains an additional in-scope target with runtime overlay and ownership unproven.",
     "scope_review_completed_for_names": [
-      "soc_fan"
-    ]
+      "awp1921",
+      "dmesg_dumper",
+      "ftmmod",
+      "nb7vpq904m",
+      "rdbg",
+      "soc_fan",
+      "st54jese",
+      "st54jnfc"
+    ],
+    "scope_review_evidence_path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
+    "scope_review_evidence_sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12"
   },
   "classification_counts": {
     "platform_or_standard": 306,
@@ -71,17 +80,13 @@
       "stock_evidence_only_names": [
         "haptic_86938"
       ],
-      "unmapped_pending_scope_review_names": [
+      "unmapped_pending_scope_review_names": [],
+      "scope_confirmed_unmapped_names": [
         "awp1921",
-        "dmesg_dumper",
         "ftmmod",
-        "nb7vpq904m",
-        "rdbg",
+        "soc_fan",
         "st54jese",
         "st54jnfc"
-      ],
-      "scope_confirmed_unmapped_names": [
-        "soc_fan"
       ],
       "scope_review_evidence": {
         "name": "soc_fan",
@@ -95,8 +100,39 @@
         "runtime_overlay_application_confirmed": false,
         "candidate_source_present": false,
         "candidate_module_present": false,
-        "reconstruction_map_present": false
-      }
+        "reconstruction_map_present": false,
+        "device_vendor_queue": {
+          "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
+          "sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12",
+          "reviewed_names": [
+            "awp1921",
+            "dmesg_dumper",
+            "ftmmod",
+            "nb7vpq904m",
+            "rdbg",
+            "st54jese",
+            "st54jnfc"
+          ],
+          "in_scope_reconstruction_targets": [
+            "awp1921",
+            "ftmmod",
+            "st54jese",
+            "st54jnfc"
+          ],
+          "dependency_only_provisional": [
+            "dmesg_dumper",
+            "nb7vpq904m",
+            "rdbg"
+          ],
+          "runtime_overlay_or_module_loading_confirmed": false,
+          "ownership_proven": false
+        }
+      },
+      "dependency_only_provisional_names": [
+        "dmesg_dumper",
+        "nb7vpq904m",
+        "rdbg"
+      ]
     },
     "platform_or_standard": {
       "count": 306,
@@ -419,25 +455,27 @@
         "platform_or_standard": 306,
         "device_vendor_review": 8
       },
-      "device_vendor_review_scope_pending_count": 7,
-      "device_vendor_review_scope_confirmed_unmapped_count": 1
+      "device_vendor_review_scope_pending_count": 0,
+      "device_vendor_review_scope_confirmed_unmapped_count": 5,
+      "device_vendor_review_dependency_only_provisional_count": 3
     }
   },
   "next_work": {
-    "required_before_target_creation": "For each of the seven pending device-review items, bind the stock hash, inspect ELF imports/exports/relocations/strings and aliases, locate matching source in the pinned kernel tree, inspect DT/DTBO/runtime scope, then decide reconstruct, dependency-only, or exclude with evidence. For soc_fan, scope is confirmed but reconstruction gates and a candidate implementation remain incomplete.",
+    "required_before_target_creation": "Static source/DT scope review is complete for the seven-name queue. Reconstruct the five in-scope unmapped targets (awp1921, ftmmod, soc_fan, st54jese, st54jnfc) under the hard-driver gates. Keep dmesg_dumper, nb7vpq904m and rdbg dependency-only provisional until runtime/module-loading evidence changes their scope. A source-tree overlay alone does not prove runtime activation.",
     "active_haptic_status": "stock map/evidence only; no candidate source or candidate module",
-    "device_vendor_review_unmapped_pending_scope_review": [
+    "device_vendor_review_unmapped_pending_scope_review": [],
+    "scope_confirmed_unmapped_names": [
       "awp1921",
-      "dmesg_dumper",
       "ftmmod",
-      "nb7vpq904m",
-      "rdbg",
+      "soc_fan",
       "st54jese",
       "st54jnfc"
     ],
-    "scope_confirmed_unmapped_names": [
-      "soc_fan"
-    ],
-    "active_soc_fan_status": "NX809J DT scope confirmed; runtime overlay unknown; MP0-MP6 evidence drafts exist; no candidate source/module/map; formal reconstruction gates remain open."
+    "active_soc_fan_status": "NX809J DT source scope confirmed; runtime overlay unknown; MP0-MP6 evidence drafts exist; no candidate source/module/map; formal reconstruction gates remain open.",
+    "device_vendor_review_dependency_only_provisional_names": [
+      "dmesg_dumper",
+      "nb7vpq904m",
+      "rdbg"
+    ]
   }
 }
