@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-10-27T11:06:43.310922+00:00",
+  "generated_utc": "10/27/2026 14:26:01",
   "status": "INCOMPLETE_ALL_MODULES_NOT_RECONSTRUCTED",
   "scope": {
     "stock_inventory": "reference_modules/full_vendor_boot",
@@ -8,8 +8,25 @@
     "reconstruction_tree": "kernel_development/drivers/reconstructed",
     "mapped_candidate_count": 20,
     "mapped_candidates_with_stock_and_ko": 20,
-    "not_represented_by_reconstruction_map_count": 315,
-    "not_represented_scope_note": "These modules are absent from the current reconstruction maps. They still need per-module classification; this count does not assert every .ko is an in-scope driver."
+    "not_represented_by_reconstruction_map_count": 314,
+    "not_represented_scope_note": "314 stock modules have no reconstruction map. Hash-verified name triage identifies 306 as provisional platform_or_standard dependency-corpus modules and 8 unmapped device_vendor_review modules: 7 still await exact local source/DT scope review, while soc_fan is confirmed in the NX809J Device Tree but remains without a reconstruction map, source, or candidate module; name classification is not ownership proof.",
+    "reconstruction_map_count": 21,
+    "stock_evidence_only_map_count": 1,
+    "scope_triage": {
+      "classification_counts": {
+        "platform_or_standard": 306,
+        "device_vendor_review": 12,
+        "zte_nubia_custom": 17
+      },
+      "classification_method": "name-based triage; device_vendor_review requires source/DT confirmation",
+      "inventory_filename_and_sha256_matches": 335,
+      "strict_zte_nubia_custom_static_verified": 17,
+      "device_vendor_review_static_verified": 3,
+      "device_vendor_review_stock_evidence_only": 1,
+      "device_vendor_review_unmapped_pending_scope_review": 7,
+      "device_vendor_review_scope_confirmed_in_scope_unmapped": 1,
+      "platform_or_standard_without_map": 306
+    }
   },
   "static_audit": {
     "prior_consolidated_candidates": 18,
@@ -31,7 +48,55 @@
       "KCFI": "PASS",
       "MAP_IDENTITY": "PASS"
     },
-    "current_aw9620x_promotion_authorized": false
+    "current_aw9620x_promotion_authorized": false,
+    "haptic_86938_progress": {
+      "status": "STOCK_EVIDENCE_COVERAGE_REPAIRED_CANDIDATE_NOT_STARTED",
+      "function_count": 160,
+      "functions_with_exact_stock_identity_map": 160,
+      "ghidra_body_repairs": 8,
+      "stock_assembly_extraction": "PASS",
+      "hard_protocol_plan": "BLOCKED_CANDIDATE_SOURCE_EMPTY",
+      "semantic_equivalence_proven": false,
+      "hardware_verified": false,
+      "promotion_authorized": false,
+      "MP0_IDENTITY": "PASS",
+      "MP1_CALL_SIGNATURE": "TYPE_ID_RESOLVED_SOURCE_CHAIN_CORROBORATED; OTHER_POINTER_ORIGINS_OPEN",
+      "indirect_call_sites": 155,
+      "candidate_source": "NOT_STARTED",
+      "MP2_STATE_EFFECT_LEDGER": "EXTRACTED_REVIEW_REQUIRED",
+      "MP3_CONTROL_ERROR_MATRIX": "EXTRACTED_REVIEW_REQUIRED",
+      "MP4_EVENT_CALLBACK_LIFETIME": "EXTRACTED_REVIEW_REQUIRED",
+      "MP4_RELATION_REVIEW": "REVIEWED_STATIC_RELATIONS_WITH_ABI_AND_LIFETIME_GAPS_OPEN",
+      "MP4_event_api_call_references": 213,
+      "MP4_data_object_relocations": 214,
+      "MP4_function_pointer_relocations": 127,
+      "MP4_nearby_callback_address_relocations": 23,
+      "MP4_semantic_candidate_relations_authorized": 0,
+      "candidate_source_authorized": false,
+      "open_blockers": [
+        "Per-site pointer origins and target sets for the other 154 CALLIND sites remain open; three computed-target hypotheses still need review.",
+        "MP5 manually confirms four exact lifecycle pairs and one IRQ dev_id relation; per-object allocation/release ownership, workqueue destruction, async firmware quiescence, and remaining path-specific teardown proofs remain incomplete.",
+        "MP5 API call counts and asymmetries remain inventory evidence; they do not prove leaks, double frees, or complete cleanup.",
+        "Candidate source is not started; Joern, candidate Docker build, relational harness, and independent review are pending."
+      ],
+      "MP5_RESOURCE_LIFETIME_SURFACE": "EXTRACTED_REVIEW_REQUIRED",
+      "MP5_resource_groups": 11,
+      "MP5_acquisition_release_pairs_proven": 0,
+      "MP1_CROSS_MODULE_TYPE_ID_REVIEW": "TYPE_ID_RESOLVED_SOURCE_CHAIN_CORROBORATED_RUNTIME_TARGET_DEPENDENT",
+      "MP1_cross_module_function_matches_for_0x7cc2eb16": 4,
+      "MP1_target_kbuild_probe_matches": true,
+      "MP1_resolved_prototype_candidate": "u32 (struct i2c_adapter *)",
+      "MP1_remaining_callind_sites_pointer_origin_open": 154,
+      "MP1_computed_target_hypotheses_open": 3,
+      "MP1_standalone_probe_context_difference_isolated": false,
+      "resolved_callsite_kcfi_type_id": "0x7cc2eb16",
+      "MP5_pairs_proven_by_automated_count_join": 0,
+      "MP5_lifecycle_pairs_confirmed_manual": 4,
+      "MP5_other_same_context_relations_reviewed": 1,
+      "MP5_RELATION_REVIEW": "PARTIALLY_REVIEWED_STATIC_RELATIONS_WITH_OWNERSHIP_AND_PATH_GAPS_OPEN",
+      "MP5_RELATION_REVIEW_sha256": "67519ed7bd22d6c35c0d55f2ba4c6d2ed165352754f6cda273d909fa32ada309",
+      "MP5_RESOURCE_LIFETIME_SURFACE_sha256": "55a4ea691be7a50a883d3b42aea622800f89dd8af4ee467ee845b0971b09aac7"
+    }
   },
   "known_difficult_queue_remaining": [
     {
@@ -46,11 +111,6 @@
     },
     {
       "driver": "ftmmod",
-      "stock_module_present": true,
-      "reconstruction_map_present": false
-    },
-    {
-      "driver": "haptic_86938",
       "stock_module_present": true,
       "reconstruction_map_present": false
     },
@@ -300,11 +360,76 @@
       "candidate_path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
       "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
       "candidate_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce"
+    },
+    {
+      "driver": "haptic_86938",
+      "audit_status": "stock_evidence_only",
+      "mapping_count": 160,
+      "stock_module_present": true,
+      "candidate_module_present": false,
+      "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "candidate_path": null,
+      "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
     }
   ],
   "sources": {
     "prior_18_driver_audit": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20260904_all18/driver_audit_all18.json",
     "aw86320_audit": "reverse_engineering/validation/reconstructed/aw86320/offline_static/driver_audit.json",
-    "aw9620x_protocol_report": "reverse_engineering/validation/reconstructed/aw9620x/offline_static/hard_protocol_core_iteration7/hard_protocol_report.json"
+    "aw9620x_protocol_report": "reverse_engineering/validation/reconstructed/aw9620x/offline_static/hard_protocol_core_iteration7/hard_protocol_report.json",
+    "haptic_86938_stock_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_body_repair_audit.json"
+  },
+  "difficult_work_in_progress": [
+    {
+      "driver": "haptic_86938",
+      "stock_module_present": true,
+      "reconstruction_map_present": true,
+      "candidate_source_present": false,
+      "candidate_module_present": false,
+      "status": "stock evidence MP0-MP5 indexed; I2C functionality call type/source chain corroborated; remaining indirect origins and lifetime proofs open; candidate source not started"
+    }
+  ],
+  "docker_snapshot_comparison": {
+    "engineering_root": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia",
+    "curated_directories": [
+      "aw9620x",
+      "fp_goodix",
+      "zte_tpd"
+    ],
+    "aw9620x": {
+      "main_module_sha256": "415ecdadac15591b3bddebea79514c142cc92e612cc586f26eba93622259f2f0",
+      "docker_module_sha256": "415ecdadac15591b3bddebea79514c142cc92e612cc586f26eba93622259f2f0",
+      "module_bytes_match": true,
+      "reconstruction_map_bytes_match": true
+    },
+    "fp_goodix": {
+      "main_module_sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+      "docker_module_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+      "module_bytes_match": false,
+      "main_module_size_bytes": 721560,
+      "docker_module_size_bytes": 721008,
+      "reconstruction_map_sha256_main": "67e74b86d1299005bb4a6c988b14c70ec21b70803e25823a9d9623a6c3329b61",
+      "reconstruction_map_sha256_docker": "fed8ce2b042b38b6fb4c7a8bdbfbf7ac3565c971eb869eae77ffbf31a90ab0c4",
+      "reconstruction_map_bytes_match": false,
+      "text_init_exit_rodata_data_and_versions_sections_match": true,
+      "main_has_host_test_files_absent_from_docker": [
+        "tests/host_stubs.h",
+        "tests/host_test.c"
+      ],
+      "assessment": "curated snapshot diverges; exact whole-module reproducibility is not established"
+    },
+    "zte_tpd": {
+      "source_file_count": 809,
+      "reconstruction_map_present": false,
+      "candidate_module_count": 0
+    },
+    "haptic_86938": {
+      "curated_directory_present": false,
+      "candidate_module_count": 0
+    }
+  },
+  "scope_triage_attestation": {
+    "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/vendor_boot_scope_triage_20261027.json",
+    "sha256": "4333cc66a3c2d754567a12e806479c1dc68cf91c69716bc4025a6653f90ff110",
+    "status": "HASH_VERIFIED_NAME_TRIAGE_PARTIAL_SCOPE_REVIEW"
   }
 }
