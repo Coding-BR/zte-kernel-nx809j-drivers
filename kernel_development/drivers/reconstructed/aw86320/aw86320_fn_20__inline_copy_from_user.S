@@ -1,0 +1,69 @@
+.section .text,"ax",@progbits
+.align 2
+.global _inline_copy_from_user
+.type _inline_copy_from_user, %function
+_inline_copy_from_user:
+    .inst 0xd503233f
+    .inst 0xa9bd7bfd
+    .inst 0xf9000bf5
+    .inst 0xa9024ff4
+    .inst 0x910003fd
+    .inst 0xd5384108
+    .inst 0x39411909
+    .inst 0xaa0203f3
+    .inst 0xaa0003f4
+    .inst 0x37280089
+    .inst 0xf940010a
+    .inst 0xaa0103e9
+    .inst 0x36d0006a
+    .inst 0xd378dc29
+    .inst 0x8a892029
+    .inst 0xd2c0100a
+    .inst 0xaa1303f5
+    .inst 0xeb0a027f
+    .inst 0x54000408
+    .inst 0xcb13014a
+    .inst 0xaa1303f5
+    .inst 0xeb09015f
+    .inst 0x54000383
+    .inst 0xd503201f
+    .inst 0xd53b4229
+    .inst 0xd50343df
+    .inst 0xf9400508
+    .inst 0xd538202a
+    .inst 0xaa0803eb
+    .inst 0xb340bd4b
+    .inst 0xd518202b
+    .inst 0xd5182008
+    .inst 0xd5033fdf
+    .inst 0xd51b4229
+    .inst 0x9248f821
+    .inst 0xaa1403e0
+    .inst 0xaa1303e2
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, __arch_copy_from_user
+    .inst 0xaa0003f5
+    .inst 0xd503201f
+    .inst 0xd53b4228
+    .inst 0xd50343df
+    .inst 0xd5382029
+    .inst 0x9240bd29
+    .inst 0xd140052a
+    .inst 0xd518200a
+    .inst 0xd5182029
+    .inst 0xd5033fdf
+    .inst 0xd51b4228
+    .inst 0xb40000d5
+    .inst 0xcb150268
+    .inst 0x2a1f03e1
+    .inst 0xaa1503e2
+    .inst 0x8b080280
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, memset
+    .inst 0xaa1503e0
+    .inst 0xa9424ff4
+    .inst 0xf9400bf5
+    .inst 0xa8c37bfd
+    .inst 0xd50323bf
+    .inst 0xd65f03c0
+.size _inline_copy_from_user, .-_inline_copy_from_user
