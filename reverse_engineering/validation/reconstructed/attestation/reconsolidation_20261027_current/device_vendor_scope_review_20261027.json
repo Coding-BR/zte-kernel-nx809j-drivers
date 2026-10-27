@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-10-27T14:50:52Z",
-  "status": "SOURCE_AND_STATIC_DT_REVIEW_COMPLETE_RUNTIME_SCOPE_UNCONFIRMED",
+  "generated_utc": "2026-10-27T15:07:21Z",
+  "status": "STATIC_SOURCE_AND_TARGET_OVERLAY_REVIEW_COMPLETE_RECOVERY_LISTED_FINAL_RUNTIME_SCOPE_UNKNOWN",
   "scope": "Seven hash-triaged device_vendor_review modules without reconstruction maps",
   "method": {
     "stock_inspection": [
@@ -13,7 +13,7 @@
       "pinned Docker source snapshot search",
       "target ZTE device-tree compatible search"
     ],
-    "runtime_limits": "Source-tree DT nodes and stock ELF metadata do not prove compiled DTBO selection, runtime module loading, hardware binding, or ownership."
+    "runtime_limits": "Static source/target overlay search and module-load manifests describe build/load intent only. They do not establish final composed DT/DTBO selection, successful runtime module loading, binding, or normal-boot use."
   },
   "docker": {
     "image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
@@ -39,9 +39,23 @@
           "awp1921"
         ],
         "target_dt": "qwjujube overlay lines 419-428: compatible zte,awp1921 and awinic,aw86320; status okay",
-        "runtime_overlay_application_confirmed": false
+        "runtime_overlay_application_confirmed": false,
+        "stock_metadata_alias_limit": "Stock has i2c:awp1921 and no OF alias; target compatible string overlap does not prove an OF match table or successful binding.",
+        "stock_source_relationship_confirmed": false,
+        "matching_source_in_pinned_tree": false,
+        "stock_of_alias_found": false
       },
-      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "disposition": "POSSIBLE_STATIC_TARGET_CANDIDATE_I2C_ALIAS_MATCH_UNRESOLVED_RECOVERY_LISTED",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 312,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     },
     {
       "name": "dmesg_dumper",
@@ -62,7 +76,17 @@
         "matching_source_in_pinned_tree": false,
         "target_nx809j_compatible_found": false
       },
-      "disposition": "DEPENDENCY_ONLY_PROVISIONAL_RUNTIME_LOADING_UNKNOWN"
+      "disposition": "RECOVERY_LISTED_SCOPE_UNRESOLVED_SOURCE_ABSENT_RUNTIME_UNKNOWN",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 213,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     },
     {
       "name": "ftmmod",
@@ -80,9 +104,20 @@
           "platform_device_register"
         ],
         "target_nx809j_compatible_found": false,
-        "matching_source_in_pinned_tree": false
+        "matching_source_in_pinned_tree": false,
+        "load_context": "Present in recovery load manifest only; absent from normal modules.load; runtime load and binding remain unconfirmed."
       },
-      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_LOAD_UNKNOWN"
+      "disposition": "STATIC_RECONSTRUCTION_CANDIDATE_RECOVERY_LISTED_RUNTIME_UNKNOWN",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 291,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     },
     {
       "name": "nb7vpq904m",
@@ -94,16 +129,33 @@
         ]
       },
       "evidence": {
-        "matching_source": "kernel_platform/common/drivers/usb/typec/mux/nb7vpq904m.c",
         "matching_source_sha256": "c4f398840826ad392afdb806de1017df1e7563c82b9921ecc85509b3559c0376",
         "binding_yaml": "kernel_platform/common/Documentation/devicetree/bindings/usb/onnn,nb7vpq904m.yaml",
         "binding_yaml_sha256": "90768d83088cb21236c7e735b081306adc3e4c074e10fb1047a45b4bf4e64c7d",
         "source_compatible": "onnn,nb7vpq904m",
         "matching_compatible_found_in_nx809j_dt": false,
         "config_makefile_line": "obj-$(CONFIG_TYPEC_MUX_NB7VPQ904M) += nb7vpq904m.o",
-        "config_makefile_sha256": "0c49213dd2d135402bd2f46ba068e9212a91dde41003c3e986d8ad27642162e8"
+        "config_makefile_sha256": "0c49213dd2d135402bd2f46ba068e9212a91dde41003c3e986d8ad27642162e8",
+        "matching_compatible_found_in_nx809j_zte_source_tree": false,
+        "stock_alias_for_source_compatible_found": false,
+        "stock_source_relationship_confirmed": false,
+        "target_tree_scope": "Only vendor/qcom/proprietary/zte-devicetree was searched; absence there does not prove absence in final composed DT/DTBO.",
+        "stock_module_contains_onnn_compatible_string": false,
+        "stock_module_has_onnn_of_alias": false,
+        "candidate_source_in_pinned_tree": "kernel_platform/common/drivers/usb/typec/mux/nb7vpq904m.c",
+        "stock_binary_relationship_confirmed": false
       },
-      "disposition": "DEPENDENCY_ONLY_PROVISIONAL_RUNTIME_BINDING_UNKNOWN"
+      "disposition": "RECOVERY_LISTED_SCOPE_UNRESOLVED_STOCK_SOURCE_RELATION_UNCONFIRMED",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 281,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     },
     {
       "name": "rdbg",
@@ -120,7 +172,17 @@
         "stock_strings_include_smp2p_debug_bindings": true,
         "target_nx809j_compatible_found": false
       },
-      "disposition": "DEPENDENCY_ONLY_PROVISIONAL_RUNTIME_LOADING_UNKNOWN"
+      "disposition": "RECOVERY_LISTED_SCOPE_UNRESOLVED_SOURCE_ABSENT_RUNTIME_UNKNOWN",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 116,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     },
     {
       "name": "st54jese",
@@ -136,9 +198,20 @@
       "evidence": {
         "target_dt": "qwjujube overlay line 332: compatible st,st54spi",
         "runtime_overlay_application_confirmed": false,
-        "matching_source_in_pinned_tree": false
+        "matching_source_in_pinned_tree": false,
+        "load_context": "Present in recovery load manifest only; absent from normal modules.load; runtime load and binding remain unconfirmed."
       },
-      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "disposition": "STATIC_RECONSTRUCTION_CANDIDATE_OF_ALIAS_MATCH_RECOVERY_LISTED_RUNTIME_UNKNOWN",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 310,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     },
     {
       "name": "st54jnfc",
@@ -157,28 +230,118 @@
         "target_dt": "qwjujube overlay line 275: compatible st,st21nfc",
         "runtime_overlay_application_confirmed": false,
         "matching_vendor_source_in_pinned_tree": false,
-        "generic_st21nfca_source_is_distinct": true
+        "generic_st21nfca_source_is_distinct": true,
+        "load_context": "Present in recovery load manifest only; absent from normal modules.load; runtime load and binding remain unconfirmed."
       },
-      "disposition": "IN_SCOPE_VENDOR_DRIVER_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "disposition": "STATIC_RECONSTRUCTION_CANDIDATE_OF_ALIAS_MATCH_RECOVERY_LISTED_RUNTIME_UNKNOWN",
+      "load_context": {
+        "normal_modules_load_listed": false,
+        "recovery_modules_load_listed": true,
+        "recovery_line": 309,
+        "runtime_loaded_confirmed": false,
+        "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+        "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+        "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+        "reverse_dependents_in_modules_dep": []
+      }
     }
   ],
   "summary": {
-    "reviewed_names": 7,
-    "in_scope_reconstruction_targets_without_maps": [
+    "reviewed_static_scope_names": [
       "awp1921",
+      "dmesg_dumper",
+      "ftmmod",
+      "nb7vpq904m",
+      "rdbg",
+      "st54jese",
+      "st54jnfc"
+    ],
+    "static_reconstruction_candidates_without_maps": [
       "ftmmod",
       "st54jese",
       "st54jnfc"
     ],
-    "dependency_only_provisional": [
+    "possible_static_candidate_match_unresolved": [
+      "awp1921"
+    ],
+    "recovery_listed_scope_unresolved": [
       "dmesg_dumper",
       "nb7vpq904m",
       "rdbg"
     ],
-    "existing_in_scope_target_from_prior_review": "soc_fan",
-    "in_scope_unmapped_targets_total_including_soc_fan": 5,
+    "existing_static_target_from_prior_review": "soc_fan",
+    "all_device_review_unmapped_names_recovery_listed": [
+      "awp1921",
+      "dmesg_dumper",
+      "ftmmod",
+      "nb7vpq904m",
+      "rdbg",
+      "st54jese",
+      "st54jnfc",
+      "soc_fan"
+    ],
+    "all_device_review_unmapped_names_normal_load_listed": [],
+    "runtime_loaded_or_overlay_application_confirmed": false,
     "ownership_proven": false,
-    "runtime_module_load_or_dtbo_activation_proven": false,
-    "semantic_equivalence_proven": false
+    "semantic_equivalence_proven": false,
+    "final_composed_dtbo_review_complete": false,
+    "dependency_only_conclusion_supported": false
+  },
+  "module_load_manifests": {
+    "normal": {
+      "path": "reference_modules/full_vendor_boot/modules.load",
+      "sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+      "line_count": 113,
+      "target_names_listed": []
+    },
+    "recovery": {
+      "path": "reference_modules/full_vendor_boot/modules.load.recovery",
+      "sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+      "line_count": 338,
+      "target_names_listed": [
+        "awp1921",
+        "dmesg_dumper",
+        "ftmmod",
+        "nb7vpq904m",
+        "rdbg",
+        "st54jese",
+        "st54jnfc",
+        "soc_fan"
+      ],
+      "target_line_numbers": {
+        "awp1921": 312,
+        "dmesg_dumper": 213,
+        "ftmmod": 291,
+        "nb7vpq904m": 281,
+        "rdbg": 116,
+        "st54jese": 310,
+        "st54jnfc": 309,
+        "soc_fan": 299
+      }
+    },
+    "dependency_map": {
+      "path": "reference_modules/full_vendor_boot/modules.dep",
+      "sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+      "target_reverse_dependents": {
+        "awp1921": [],
+        "dmesg_dumper": [],
+        "ftmmod": [],
+        "nb7vpq904m": [],
+        "rdbg": [],
+        "st54jese": [],
+        "st54jnfc": [],
+        "soc_fan": []
+      },
+      "interpretation_limit": "No reverse dependents does not show that the module is dependency-only; modules.load.recovery lists each target."
+    },
+    "manifest_identity": "All three metadata-file SHA-256 values match entries in reference_modules/FULL_VENDOR_BOOT_MANIFEST.json."
+  },
+  "independent_review": {
+    "reviewed_pre_correction_sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12",
+    "reviewer": "Hubble",
+    "result": "CORRECTIONS_REQUIRED_APPLIED_FOLLOWUP_REVIEW_PENDING",
+    "key_correction": "Do not label dmesg_dumper, nb7vpq904m or rdbg dependency-only; all eight mapless device-review modules including soc_fan are recovery-list-only in the captured load metadata, and actual loading is unknown.",
+    "followup_review_pending": false,
+    "followup_result": "FOLLOWUP_CONFIRMED_CORRECTION"
   }
 }

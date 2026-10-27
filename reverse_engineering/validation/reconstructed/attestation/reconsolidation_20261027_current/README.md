@@ -2,7 +2,7 @@
 
 ## Resultado
 
-**Ainda não: o inventário completo não foi reconstruído.** `reference_modules/full_vendor_boot` contém 335 módulos `.ko`. Há 21 mapas: 20 candidatos com fonte e módulo passaram a classificação estática; `haptic_86938` ainda só tem evidência stock. Dos outros 314 módulos sem mapa, 306 estão provisoriamente no corpus `platform/standard`, três são dependências provisórias (`dmesg_dumper`, `nb7vpq904m`, `rdbg`) e cinco são alvos de reconstrução sem mapa (`awp1921`, `ftmmod`, `soc_fan`, `st54jese`, `st54jnfc`). A revisão estática de fonte e DT foi concluída para os sete itens da fila anterior; ela não prova carregamento do módulo, ativação do overlay em runtime nem propriedade. Veja [vendor_boot_scope_triage_20261027.json](vendor_boot_scope_triage_20261027.json), o [dossiê de escopo dos sete módulos](device_vendor_scope_review_20261027.json) e a [revisão de escopo de `soc_fan`](../../soc_fan/offline_static/SOC_FAN_SCOPE_REVIEW.json).
+**Ainda não: o inventário completo não foi reconstruído.** `reference_modules/full_vendor_boot` contém 335 módulos `.ko`. Há 21 mapas: 20 candidatos com fonte e módulo passaram a classificação estática; `haptic_86938` ainda só tem evidência stock. Dos 314 módulos sem mapa, 306 seguem no corpus provisório `platform/standard` e oito continuam na fila `device-vendor-review`. A revisão estática aponta `ftmmod`, `st54jese` e `st54jnfc` como candidatos; a associação de `awp1921` segue incerta; `dmesg_dumper`, `nb7vpq904m` e `rdbg` seguem sem escopo resolvido. `soc_fan` tem evidência de overlay-alvo, ainda sem fonte candidata. Os oito módulos sem mapa aparecem em `modules.load.recovery` e nenhum aparece em `modules.load` normal; esses manifestos não comprovam carregamento real nem seleção final do DTBO. Veja [vendor_boot_scope_triage_20261027.json](vendor_boot_scope_triage_20261027.json), o [dossiê de escopo](device_vendor_scope_review_20261027.json) e a [revisão independente](device_vendor_scope_independent_review_20261027.json).
 
 Os 20 candidatos anteriores passaram os gates estáticos registrados, mas isso não prova equivalência semântica. O relatório registra **0 validados em hardware**. Para `aw9620x`, os 8 gates automatizados passaram e `promotion_authorized` continua `false`.
 
@@ -16,7 +16,7 @@ A evidência stock cobre 160 funções. Corrigi em exportação Ghidra separada 
 
 ## Fila difícil sem mapa
 
-Alvos de reconstrução sem mapa: `awp1921`, `ftmmod`, `soc_fan`, `st54jese`, `st54jnfc`. Dependências provisórias, sem prova de carregamento em runtime: `dmesg_dumper`, `nb7vpq904m`, `rdbg`.
+Candidatos estáticos sem mapa: `ftmmod`, `st54jese`, `st54jnfc`, `soc_fan`. Associação ainda incerta: `awp1921`. Escopo sem resolução: `dmesg_dumper`, `nb7vpq904m`, `rdbg`. Todos os oito estão apenas na lista de módulos de recovery; carregamento em runtime permanece desconhecido.
 
 ## Snapshot Docker
 

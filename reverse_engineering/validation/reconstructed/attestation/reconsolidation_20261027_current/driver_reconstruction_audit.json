@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-10-27T14:50:52Z",
+  "generated_utc": "2026-10-27T15:07:21Z",
   "status": "INCOMPLETE_ALL_MODULES_NOT_RECONSTRUCTED",
   "scope": {
     "stock_inventory": "reference_modules/full_vendor_boot",
@@ -9,7 +9,7 @@
     "mapped_candidate_count": 20,
     "mapped_candidates_with_stock_and_ko": 20,
     "not_represented_by_reconstruction_map_count": 314,
-    "not_represented_scope_note": "314 stock modules have no reconstruction map: 306 provisional platform_or_standard dependency-corpus modules, 3 provisional dependency-only device-review modules (dmesg_dumper, nb7vpq904m, rdbg), and 5 in-scope unmapped reconstruction targets (awp1921, ftmmod, soc_fan, st54jese, st54jnfc). Static scope review is complete for the seven prior pending names. Name classification is not proof of ownership; runtime module loading and overlay application remain unconfirmed.",
+    "not_represented_scope_note": "314 stock modules have no reconstruction map: 306 provisional platform_or_standard dependency-corpus modules and 8 device_vendor_review modules. Static review of the seven prior names is complete for the pinned source/target overlay tree, but all eight unmapped device-review names including soc_fan are listed only in modules.load.recovery and none in normal modules.load. Actual loading and final DTBO composition are unknown; do not classify any of dmesg_dumper, nb7vpq904m or rdbg as dependency-only from the current evidence.",
     "reconstruction_map_count": 21,
     "stock_evidence_only_map_count": 1,
     "scope_triage": {
@@ -18,18 +18,24 @@
         "device_vendor_review": 12,
         "zte_nubia_custom": 17
       },
-      "classification_method": "name-based triage; device_vendor_review requires source/DT confirmation",
+      "classification_method": "name-based triage; device_vendor_review requires static target evidence; runtime inclusion remains unknown",
       "inventory_filename_and_sha256_matches": 335,
       "strict_zte_nubia_custom_static_verified": 17,
       "device_vendor_review_static_verified": 3,
       "device_vendor_review_stock_evidence_only": 1,
       "device_vendor_review_unmapped_pending_scope_review": 0,
-      "device_vendor_review_scope_confirmed_in_scope_unmapped": 5,
+      "device_vendor_review_scope_confirmed_in_scope_unmapped": 1,
       "platform_or_standard_without_map": 306,
-      "device_vendor_review_dependency_only_provisional_unmapped": 3
+      "static_source_and_target_overlay_search_complete": true,
+      "final_composed_dtbo_review_complete": false,
+      "device_vendor_review_static_candidate_unmapped": 3,
+      "device_vendor_review_possible_candidate_match_unresolved": 1,
+      "device_vendor_review_scope_unresolved_recovery_listed": 3,
+      "device_vendor_review_recovery_only_listed_unmapped": 8,
+      "device_vendor_review_normal_load_listed_unmapped": 0
     },
     "device_vendor_review_scope_review_path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
-    "device_vendor_review_scope_review_sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12"
+    "device_vendor_review_scope_review_sha256": "1cc0a090b24dedadf44934630c287c1c92855b48080e546b143e2875624b00a6"
   },
   "static_audit": {
     "prior_consolidated_candidates": 18,
@@ -106,49 +112,57 @@
       "driver": "awp1921",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "scope_disposition": "POSSIBLE_STATIC_CANDIDATE_I2C_OF_MATCH_UNRESOLVED",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "dmesg_dumper",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "DEPENDENCY_ONLY_PROVISIONAL"
+      "scope_disposition": "RECOVERY_LISTED_SCOPE_UNRESOLVED",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "ftmmod",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "scope_disposition": "STATIC_RECONSTRUCTION_CANDIDATE_RUNTIME_UNKNOWN",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "nb7vpq904m",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "DEPENDENCY_ONLY_PROVISIONAL"
+      "scope_disposition": "RECOVERY_LISTED_SCOPE_UNRESOLVED",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "rdbg",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "DEPENDENCY_ONLY_PROVISIONAL"
+      "scope_disposition": "RECOVERY_LISTED_SCOPE_UNRESOLVED",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "soc_fan",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "scope_disposition": "STATIC_TARGET_DT_EVIDENCE_RUNTIME_UNKNOWN",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "st54jese",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "scope_disposition": "STATIC_RECONSTRUCTION_CANDIDATE_RUNTIME_UNKNOWN",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     },
     {
       "driver": "st54jnfc",
       "stock_module_present": true,
       "reconstruction_map_present": false,
-      "scope_disposition": "IN_SCOPE_RECONSTRUCTION_TARGET_RUNTIME_UNKNOWN"
+      "scope_disposition": "STATIC_RECONSTRUCTION_CANDIDATE_RUNTIME_UNKNOWN",
+      "load_profile": "RECOVERY_LISTED_ONLY_RUNTIME_UNKNOWN"
     }
   ],
   "drivers": [
@@ -440,27 +454,57 @@
   },
   "scope_triage_attestation": {
     "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/vendor_boot_scope_triage_20261027.json",
-    "sha256": "317e40a7f804b25e96583fa1d4487ccc272620e3a1cd764559e66cb45caa7a9e",
-    "status": "HASH_VERIFIED_STATIC_SCOPE_REVIEW_COMPLETE_RUNTIME_UNKNOWN"
+    "sha256": "d5a0f03de1e96643b6f1a29d88404ab0f55091c970b287428defa3c7b1e62b50",
+    "status": "HASH_VERIFIED_STATIC_REVIEW_COMPLETE_RECOVERY_LISTED_RUNTIME_UNKNOWN"
   },
-  "unmapped_dependency_only_provisional": [
+  "recovery_only_listed_unmapped_device_review": [
+    {
+      "driver": "awp1921",
+      "recovery_line": 312,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
+    },
     {
       "driver": "dmesg_dumper",
-      "stock_module_present": true,
-      "reconstruction_map_present": false,
-      "runtime_loading_confirmed": false
+      "recovery_line": 213,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
+    },
+    {
+      "driver": "ftmmod",
+      "recovery_line": 291,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
     },
     {
       "driver": "nb7vpq904m",
-      "stock_module_present": true,
-      "reconstruction_map_present": false,
-      "runtime_loading_confirmed": false
+      "recovery_line": 281,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
     },
     {
       "driver": "rdbg",
-      "stock_module_present": true,
-      "reconstruction_map_present": false,
-      "runtime_loading_confirmed": false
+      "recovery_line": 116,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
+    },
+    {
+      "driver": "st54jese",
+      "recovery_line": 310,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
+    },
+    {
+      "driver": "st54jnfc",
+      "recovery_line": 309,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
+    },
+    {
+      "driver": "soc_fan",
+      "recovery_line": 299,
+      "normal_load_listed": false,
+      "runtime_loaded_confirmed": false
     }
   ]
 }

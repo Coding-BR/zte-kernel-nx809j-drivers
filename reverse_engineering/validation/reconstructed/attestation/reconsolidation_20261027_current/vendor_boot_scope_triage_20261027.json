@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-10-27T14:50:52Z",
-  "status": "HASH_VERIFIED_STATIC_SCOPE_REVIEW_COMPLETE_RUNTIME_UNKNOWN",
+  "generated_utc": "2026-10-27T15:07:21Z",
+  "status": "HASH_VERIFIED_STATIC_REVIEW_COMPLETE_RECOVERY_LISTED_RUNTIME_UNKNOWN",
   "scope": "reference_modules/full_vendor_boot",
   "provenance": {
     "stock_file_count": 335,
@@ -25,20 +25,27 @@
   "classification_method": {
     "basis": "The checked-in inventory generator applies a name-prefix regex and an explicit device-review name set; all other names fall into platform_or_standard.",
     "ownership_proven": false,
-    "source_and_device_tree_review_for_device_vendor_queue_complete": true,
-    "policy": "The three classification groups remain triage, not proof of ownership. Static stock/source/DT dispositions for the seven device-review items: awp1921, ftmmod, st54jese and st54jnfc are in-scope reconstruction targets; dmesg_dumper, nb7vpq904m and rdbg are provisional dependency-only. NX809J DT source evidence does not prove runtime overlay application or module loading. soc_fan remains an additional in-scope target with runtime overlay and ownership unproven.",
+    "policy": "Name-based classes remain triage, not proof of ownership. Static review of the seven prior names is complete only for the pinned source and target ZTE overlay tree. All seven plus soc_fan are listed in modules.load.recovery and none in normal modules.load; manifests do not prove actual loading. Keep dmesg_dumper, nb7vpq904m and rdbg scope unresolved; awp1921 has a compatible-string overlap but stock exposes only an I2C alias, so its driver match is unproven. ftmmod, st54jese and st54jnfc have static target evidence, but runtime loading/binding remains unknown.",
     "scope_review_completed_for_names": [
       "awp1921",
       "dmesg_dumper",
       "ftmmod",
       "nb7vpq904m",
       "rdbg",
-      "soc_fan",
       "st54jese",
-      "st54jnfc"
+      "st54jnfc",
+      "soc_fan"
     ],
     "scope_review_evidence_path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
-    "scope_review_evidence_sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12"
+    "scope_review_evidence_sha256": "1cc0a090b24dedadf44934630c287c1c92855b48080e546b143e2875624b00a6",
+    "static_source_and_target_overlay_search_complete_for_device_vendor_queue": true,
+    "final_composed_dtbo_review_complete": false,
+    "runtime_module_loading_confirmed": false,
+    "module_load_manifest_evidence": {
+      "modules.load": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae",
+      "modules.load.recovery": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+      "modules.dep": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43"
+    }
   },
   "classification_counts": {
     "platform_or_standard": 306,
@@ -82,11 +89,7 @@
       ],
       "unmapped_pending_scope_review_names": [],
       "scope_confirmed_unmapped_names": [
-        "awp1921",
-        "ftmmod",
-        "soc_fan",
-        "st54jese",
-        "st54jnfc"
+        "soc_fan"
       ],
       "scope_review_evidence": {
         "name": "soc_fan",
@@ -103,7 +106,7 @@
         "reconstruction_map_present": false,
         "device_vendor_queue": {
           "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
-          "sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12",
+          "sha256": "1cc0a090b24dedadf44934630c287c1c92855b48080e546b143e2875624b00a6",
           "reviewed_names": [
             "awp1921",
             "dmesg_dumper",
@@ -113,26 +116,64 @@
             "st54jese",
             "st54jnfc"
           ],
-          "in_scope_reconstruction_targets": [
-            "awp1921",
+          "static_reconstruction_candidates": [
             "ftmmod",
             "st54jese",
             "st54jnfc"
           ],
-          "dependency_only_provisional": [
+          "possible_candidate_match_unresolved": [
+            "awp1921"
+          ],
+          "scope_unresolved": [
             "dmesg_dumper",
             "nb7vpq904m",
             "rdbg"
           ],
-          "runtime_overlay_or_module_loading_confirmed": false,
-          "ownership_proven": false
+          "recovery_listed_names": [
+            "awp1921",
+            "dmesg_dumper",
+            "ftmmod",
+            "nb7vpq904m",
+            "rdbg",
+            "st54jese",
+            "st54jnfc",
+            "soc_fan"
+          ],
+          "normal_load_listed_names": [],
+          "runtime_loading_confirmed": false,
+          "final_composed_dtbo_review_complete": false
+        },
+        "independent_review": {
+          "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_independent_review_20261027.json",
+          "sha256": "ee47d4fbf9748c582853fe17edecdb4f02da13b1e7e49d9e1ff9f602a73e6a09",
+          "result": "CORRECTIONS_APPLIED_AND_FOLLOWUP_CONFIRMED"
         }
       },
-      "dependency_only_provisional_names": [
+      "static_reconstruction_candidate_names": [
+        "ftmmod",
+        "st54jese",
+        "st54jnfc"
+      ],
+      "possible_static_candidate_match_unresolved_names": [
+        "awp1921"
+      ],
+      "scope_unresolved_recovery_listed_names": [
         "dmesg_dumper",
         "nb7vpq904m",
         "rdbg"
-      ]
+      ],
+      "recovery_listed_unmapped_names": [
+        "awp1921",
+        "dmesg_dumper",
+        "ftmmod",
+        "nb7vpq904m",
+        "rdbg",
+        "st54jese",
+        "st54jnfc",
+        "soc_fan"
+      ],
+      "normal_load_listed_unmapped_names": [],
+      "effective_runtime_loading_confirmed": false
     },
     "platform_or_standard": {
       "count": 306,
@@ -456,26 +497,44 @@
         "device_vendor_review": 8
       },
       "device_vendor_review_scope_pending_count": 0,
-      "device_vendor_review_scope_confirmed_unmapped_count": 5,
-      "device_vendor_review_dependency_only_provisional_count": 3
+      "device_vendor_review_scope_confirmed_unmapped_count": 1,
+      "device_vendor_review_static_candidate_unmapped_count": 3,
+      "device_vendor_review_possible_candidate_match_unresolved_count": 1,
+      "device_vendor_review_scope_unresolved_recovery_listed_count": 3,
+      "device_vendor_review_recovery_only_listed_unmapped_count": 8
     }
   },
   "next_work": {
-    "required_before_target_creation": "Static source/DT scope review is complete for the seven-name queue. Reconstruct the five in-scope unmapped targets (awp1921, ftmmod, soc_fan, st54jese, st54jnfc) under the hard-driver gates. Keep dmesg_dumper, nb7vpq904m and rdbg dependency-only provisional until runtime/module-loading evidence changes their scope. A source-tree overlay alone does not prove runtime activation.",
+    "required_before_target_creation": "Static source/target-overlay search is complete for the seven-name queue, but final runtime scope is unresolved. Continue reconstruction candidates ftmmod, st54jese and st54jnfc; resolve the awp1921 I2C/OF association before treating it as a confirmed target. Keep dmesg_dumper, nb7vpq904m and rdbg unresolved rather than dependency-only. All eight device-review unmapped modules are listed only in modules.load.recovery; actual loading and final DTBO selection remain unknown. For soc_fan, continue reconstruction under its open gates.",
     "active_haptic_status": "stock map/evidence only; no candidate source or candidate module",
     "device_vendor_review_unmapped_pending_scope_review": [],
     "scope_confirmed_unmapped_names": [
-      "awp1921",
+      "soc_fan"
+    ],
+    "active_soc_fan_status": "NX809J DT source candidate; listed in modules.load.recovery only, not normal modules.load; actual runtime load and overlay application unknown; MP0-MP6 evidence drafts exist; no candidate source/module/map; formal reconstruction gates remain open.",
+    "static_reconstruction_candidate_unmapped_names": [
       "ftmmod",
-      "soc_fan",
       "st54jese",
       "st54jnfc"
     ],
-    "active_soc_fan_status": "NX809J DT source scope confirmed; runtime overlay unknown; MP0-MP6 evidence drafts exist; no candidate source/module/map; formal reconstruction gates remain open.",
-    "device_vendor_review_dependency_only_provisional_names": [
+    "possible_static_candidate_match_unresolved_names": [
+      "awp1921"
+    ],
+    "scope_unresolved_recovery_listed_unmapped_names": [
       "dmesg_dumper",
       "nb7vpq904m",
       "rdbg"
-    ]
+    ],
+    "recovery_listed_unmapped_names": [
+      "awp1921",
+      "dmesg_dumper",
+      "ftmmod",
+      "nb7vpq904m",
+      "rdbg",
+      "st54jese",
+      "st54jnfc",
+      "soc_fan"
+    ],
+    "normal_load_listed_unmapped_names": []
   }
 }
