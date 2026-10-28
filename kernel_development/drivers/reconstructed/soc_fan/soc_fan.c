@@ -1,6 +1,9 @@
 #include <linux/atomic.h>
 #include <linux/device.h>
 #include <linux/hrtimer.h>
+#include <linux/gpio.h>
+#include <linux/gpio/consumer.h>
+#include <linux/of_gpio.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/kobject.h>
@@ -28,6 +31,68 @@ static __used irqreturn_t fan_speed_irq_proc(int irq, void *dev_id)
 	/* The arm64 atomic primitive supplies the stock prefetch hint. */
 	atomic_inc(speed_count);
 	return IRQ_HANDLED;
+}
+
+static __used int nb_fan_gpio_proc(long *context)
+{
+	struct device_node *node;
+	int gpio;
+	int ret;
+
+	if (context[1] == 0)
+		return -ENODEV;
+
+	node = *(struct device_node **)((u8 *)context[0] + 0x2e8);
+	gpio = of_get_named_gpio(node, "fan,speed-gpio", 0);
+	*(int *)(context[1] + 0x14) = gpio;
+	ret = *(volatile int *)(context[1] + 0x14);
+	if (ret < 0) {
+		printk(KERN_DEBUG "[%s] [%s:%d] Find speed_gpio failed!\n",
+		       "NB_FAN", "nb_fan_gpio_proc", 0x343);
+		ret = *(int *)(context[1] + 0x14);
+	} else {
+		ret = gpio_request(ret, "fan_speed_gpio");
+		if (ret == 0) {
+			gpio = *(int *)(context[1] + 0x14);
+			gpio = gpiod_to_irq(gpio_to_desc(gpio));
+			*(int *)(context[1] + 0x1c) = gpio;
+			ret = request_threaded_irq(
+				*(int *)(context[1] + 0x1c),
+				fan_speed_irq_proc, NULL, 0x00200002UL,
+				"fan_speed_int", context);
+			if (ret < 0) {
+				printk(KERN_ERR
+				       "failed to register speed IRQ handler\n");
+			} else {
+				disable_irq(*(int *)(context[1] + 0x1c));
+				gpio = of_get_named_gpio(
+					node, "fan,pwm-gpio", 0);
+				*(int *)(context[1] + 0x10) = gpio;
+				ret = *(volatile int *)(context[1] + 0x10);
+				if (ret < 0) {
+					printk(KERN_DEBUG
+					       "[%s] [%s:%d] Find pwm_gpio failed!\n",
+					       "NB_FAN", "nb_fan_gpio_proc",
+					       0x355);
+					ret = *(int *)(context[1] + 0x10);
+				} else {
+					gpio = gpiod_get_raw_value(
+						gpio_to_desc(ret));
+					printk(KERN_DEBUG
+					       "[%s] [%s:%d] pwm gpio status is:%d.",
+					       "NB_FAN", "nb_fan_gpio_proc",
+					       0x358, gpio);
+					ret = 0;
+				}
+			}
+		} else {
+			printk(KERN_DEBUG
+			       "[%s] [%s:%d] Find speed_gpio=%d requst failed.\n",
+			       "NB_FAN", "nb_fan_gpio_proc", 0x348,
+			       *(int *)(context[1] + 0x14));
+		}
+	}
+	return ret;
 }
 
 struct nb_fan_remove_context {
