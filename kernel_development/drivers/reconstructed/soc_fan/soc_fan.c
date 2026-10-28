@@ -1,3 +1,5 @@
+#include <linux/atomic.h>
+#include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/kobject.h>
 #include <linux/module.h>
@@ -6,6 +8,17 @@
 
 /* The stock ELF exports this module-global pointer as an 8-byte BSS object. */
 void *chip;
+
+/* Count fan tachometer interrupts through the stock atomic counter. */
+static __used irqreturn_t fan_speed_irq_proc(int irq, void *dev_id)
+{
+	atomic_t *speed_count =
+		(atomic_t *)(*(u8 **)((u8 *)dev_id + 0x08) + 0x04);
+
+	/* The arm64 atomic primitive supplies the stock prefetch hint. */
+	atomic_inc(speed_count);
+	return IRQ_HANDLED;
+}
 
 /*
  * The recovered sysfs read callback logs the stock source line and returns the
@@ -41,5 +54,7 @@ static ssize_t (*const fan_enable_show_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, char *) __used = fan_enable_show;
 static ssize_t (*const fan_level_show_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, char *) __used = fan_level_show;
+static irqreturn_t (*const fan_speed_irq_proc_kcfi_anchor)(int, void *)
+	__used = fan_speed_irq_proc;
 
 MODULE_LICENSE("GPL");
