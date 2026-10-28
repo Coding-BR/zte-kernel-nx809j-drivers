@@ -390,37 +390,37 @@ static __used ssize_t fan_pwm_store(struct kobject *kobj,
 	int ret;
 
 	sscanf(buf, "%d", &pwm_value);
-	if (pwm_value < 101) {
-		mutex_lock((struct mutex *)((u8 *)chip + 0x18));
-		chip_base = *(u8 * volatile *)&chip;
-		pwm_pct = *(volatile u8 *)&pwm_value;
-		pwm = *(struct pwm_device **)(*(u8 **)(chip_base + 0x08) + 0x68);
-		pwm_chip = pwm->chip;
-		state_tail = *(volatile u64 *)((u8 *)pwm + 0x40);
-		ops = *(const struct pwm_ops * volatile *)((u8 *)pwm_chip + 0x390);
-		*(u64 *)((u8 *)&state + 0x10) = state_tail;
-		state.enabled = true;
-		state.period = 40000;
-		state.duty_cycle = (u64)pwm_pct * 400;
-		ret = ops->apply(pwm_chip, pwm, &state);
-		if (ret < 0) {
-			printk(KERN_DEBUG
-			       "[%s] [%s:%d] Apply PWM state for fan_pwm=%d failed, rc=%d\n",
-			       "NB_FAN", "fan_pwm_set", 0xd5, pwm_pct, ret);
-		} else if (ret == 0) {
-			mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
-			printk(KERN_DEBUG "[%s] [%s:%d] set fan_pwm=%d rc=%d.",
-			       "NB_FAN", "fan_pwm_store", 0x18c, pwm_value, 0);
-			goto return_count;
-		}
-		mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
-		return ret;
-	} else {
+	if (pwm_value >= 101) {
 		printk(KERN_DEBUG
 		       "[%s] [%s:%d] pwm=%d,it is a bad pwm,not in(%d-%d).\n",
 		       "NB_FAN", "fan_pwm_store", 0x181, pwm_value, 0, 100);
 		return -EINVAL;
 	}
+
+	mutex_lock((struct mutex *)((u8 *)chip + 0x18));
+	chip_base = *(u8 * volatile *)&chip;
+	pwm_pct = *(volatile u8 *)&pwm_value;
+	pwm = *(struct pwm_device **)(*(u8 **)(chip_base + 0x08) + 0x68);
+	pwm_chip = pwm->chip;
+	state_tail = *(volatile u64 *)((u8 *)pwm + 0x40);
+	ops = *(const struct pwm_ops * volatile *)((u8 *)pwm_chip + 0x390);
+	*(u64 *)((u8 *)&state + 0x10) = state_tail;
+	state.enabled = true;
+	state.period = 40000;
+	state.duty_cycle = (u64)pwm_pct * 400;
+	ret = ops->apply(pwm_chip, pwm, &state);
+	if (ret < 0) {
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] Apply PWM state for fan_pwm=%d failed, rc=%d\n",
+		       "NB_FAN", "fan_pwm_set", 0xd5, pwm_pct, ret);
+	} else if (ret == 0) {
+		mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
+		printk(KERN_DEBUG "[%s] [%s:%d] set fan_pwm=%d rc=%d.",
+		       "NB_FAN", "fan_pwm_store", 0x18c, pwm_value, 0);
+		goto return_count;
+	}
+	mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
+	return ret;
 
 return_count:
 	return count;
