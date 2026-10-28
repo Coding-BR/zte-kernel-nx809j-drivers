@@ -43,6 +43,11 @@ static __used void nb_fan_remove(struct platform_device *pdev)
 	dev_set_drvdata(context->dev, NULL);
 }
 
+__used void __exit cleanup_module(void)
+{
+	platform_driver_unregister(&nubia_fan_driver);
+}
+
 /*
  * The recovered sysfs read callback logs the stock source line and returns the
  * enable byte at chip+0x08+0x0c as decimal text.
@@ -81,5 +86,6 @@ static irqreturn_t (*const fan_speed_irq_proc_kcfi_anchor)(int, void *)
 	__used = fan_speed_irq_proc;
 static void (*const nb_fan_remove_kcfi_anchor)(struct platform_device *)
 	__used = nb_fan_remove;
+static void (*const cleanup_module_kcfi_anchor)(void) __used = cleanup_module;
 
 MODULE_LICENSE("GPL");
