@@ -1,13 +1,22 @@
 #include <linux/atomic.h>
+#include <linux/device.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/kobject.h>
 #include <linux/module.h>
+#include <linux/platform_device.h>
 #include <linux/printk.h>
+#include <linux/sysfs.h>
 #include <linux/types.h>
 
 /* The stock ELF exports this module-global pointer as an 8-byte BSS object. */
 void *chip;
+
+/* Layout scaffolding; the driver's fields and sysfs table are still pending. */
+static struct platform_driver nubia_fan_driver
+	__used __attribute__((section(".data"))) = {};
+static struct attribute_group chip_attr_group
+	__used __attribute__((section(".data"))) = {};
 
 /* Count fan tachometer interrupts through the stock atomic counter. */
 static __used irqreturn_t fan_speed_irq_proc(int irq, void *dev_id)
@@ -18,6 +27,20 @@ static __used irqreturn_t fan_speed_irq_proc(int irq, void *dev_id)
 	/* The arm64 atomic primitive supplies the stock prefetch hint. */
 	atomic_inc(speed_count);
 	return IRQ_HANDLED;
+}
+
+struct nb_fan_remove_context {
+	struct device *dev;
+	u64 reserved_08;
+	struct kobject *sysfs_kobj;
+};
+
+static __used void nb_fan_remove(struct platform_device *pdev)
+{
+	struct nb_fan_remove_context *context = platform_get_drvdata(pdev);
+
+	sysfs_remove_group(context->sysfs_kobj, &chip_attr_group);
+	dev_set_drvdata(context->dev, NULL);
 }
 
 /*
@@ -56,5 +79,7 @@ static ssize_t (*const fan_level_show_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, char *) __used = fan_level_show;
 static irqreturn_t (*const fan_speed_irq_proc_kcfi_anchor)(int, void *)
 	__used = fan_speed_irq_proc;
+static void (*const nb_fan_remove_kcfi_anchor)(struct platform_device *)
+	__used = nb_fan_remove;
 
 MODULE_LICENSE("GPL");
