@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "profiles": [
+    "CALLBACK_ABI",
+    "STATEFUL_MEMORY",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS",
+    "DISPATCHER_PARSER",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "nb_fan_remove",
+      "stock_entry": "00100a54",
+      "source_function": "nb_fan_remove",
+      "candidate_function": "nb_fan_remove",
+      "stock_symbol_offset": "0x56c",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "00101acc",
+      "source_function": "init_module",
+      "candidate_function": "init_module",
+      "stock_symbol_offset": "0x4",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "cleanup_module",
+      "stock_entry": "00101afc",
+      "source_function": "cleanup_module",
+      "candidate_function": "cleanup_module",
+      "stock_symbol_offset": "0x4",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/soc_fan",
+    "stock_module": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko",
+    "reconstruction_map": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_method_map_20261028_lifecycle_input.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_enable_store_candidate_ghidra_20261028_r7/exports/soc_fan.ko"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/soc_fan",
+    "define": [
+      "__user",
+      "__init",
+      "__exit",
+      "__used"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1
+    }
+  },
+  "kcfi": {
+    "ignore_size": true
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "evidence": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    "ghidra_export_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/manifest.json",
+      "sha256": "21c89648abcdbe7b80ea6738aa10728b78eeadff28729dc2f5bca287ccef045d"
+    },
+    "stock_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/manifest.json",
+      "sha256": "1f375a3920e16c21816d84cf82037f664eb8fe4c47ba56f2104cb5f50a349b8d"
+    },
+    "stock_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kcfi_stock.json",
+      "sha256": "80d3446bf67c9b743710a6666b98111841873675a64a296a24d70d2955cf3a6d"
+    },
+    "scope_review": {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/SOC_FAN_SCOPE_REVIEW.json",
+      "sha256": "d151ebe27df244e419c79a626d8c5de601ea068799d49b4a5ca0c582dec9580d"
+    },
+    "ghidra_boundary_repair": {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_boundary_repair_20261027.json",
+      "sha256": "9d261bfecb0af3da9481b8e06eadeee97b30b0780894f92e67252bd6d236aa11"
+    },
+    "docker_scope_source_evidence": {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/soc_fan_scope_source_evidence.txt",
+      "sha256": "0456805e16191b75a4334f52d6fba6e5b3b5e58c3c521916eb5b9e41ef485813"
+    },
+    "docker_source_revision": "nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098",
+    "nx809j_overlay_target": {
+      "path": "docker-volume:nubia_sm8850_kernel_src/vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+      "sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d"
+    }
+  }
+}
