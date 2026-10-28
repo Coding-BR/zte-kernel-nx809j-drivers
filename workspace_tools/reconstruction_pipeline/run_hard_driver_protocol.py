@@ -128,7 +128,7 @@ def file_record(path: Path) -> dict[str, Any]:
     }
 
 
-def source_tree_record(root: Path) -> dict[str, Any]:
+def source_tree_record(root: Path, *, allow_empty: bool = False) -> dict[str, Any]:
     files: list[dict[str, Any]] = []
     tree = hashlib.sha256()
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
@@ -145,13 +145,14 @@ def source_tree_record(root: Path) -> dict[str, Any]:
             "size": path.stat().st_size,
             "sha256": digest,
         })
-    if not files:
+    if not files and not allow_empty:
         raise ValueError(f"source tree contains no compiler inputs: {root}")
     return {
         "root": str(root),
         "file_count": len(files),
         "tree_sha256": tree.hexdigest(),
         "files": files,
+        "status": "EMPTY_PLAN_ONLY" if not files else "PRESENT",
     }
 
 
@@ -227,6 +228,15 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
     ghidra = job.get("ghidra", {})
     if not isinstance(ghidra, dict):
         raise ValueError("ghidra must be an object")
+    paired_exports = ghidra.get("semantic_comparison_exports")
+    if paired_exports is not None and (
+        not isinstance(paired_exports, dict)
+        or any(not isinstance(paired_exports.get(side), str) or not paired_exports[side]
+               for side in ("stock", "candidate"))
+    ):
+        raise ValueError(
+            "ghidra.semantic_comparison_exports must provide stock and candidate paths"
+        )
     if ghidra.get("allow_pcode_authoritative_decompiler_fallback", False):
         reason = ghidra.get("fallback_reason")
         if not isinstance(reason, str) or not reason.strip():
@@ -755,6 +765,132 @@ def evidence_inventory(repo_root: Path, evidence: Any) -> dict[str, Any]:
     return inventory
 
 
+def ghidra_function_records(export_root: Path) -> dict[str, list[dict[str, Any]]]:
+    records: dict[str, list[dict[str, Any]]] = {}
+    index = export_root / "functions.jsonl"
+    if not index.is_file():
+        raise FileNotFoundError(f"Ghidra function index missing: {index}")
+    for line in index.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        item = json.loads(line)
+        records.setdefault(str(item.get("name", "")), []).append(item)
+    return records
+
+
+def paired_ghidra_semantic_exports(
+    *,
+    job: dict[str, Any],
+    repo_root: Path,
+    stock_module: Path,
+    candidate_module: Path | None,
+    functions: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Resolve optional same-base imports and bind them to current ELF hashes.
+
+    Stock function identities remain at their canonical entries everywhere
+    except the supplemental Ghidra import selector.  Its entry bias is derived
+    from the actual ELF-import manifests and checked against both paired exports.
+    """
+    paths = job["paths"]
+    canonical_stock = resolve_repo_path(repo_root, paths["ghidra_export"], label="paths.ghidra_export")
+    candidate_value = paths.get("candidate_ghidra_export")
+    if not candidate_value:
+        if job.get("ghidra", {}).get("semantic_comparison_exports"):
+            raise ValueError("paired semantic Ghidra imports require paths.candidate_ghidra_export")
+        return {"enabled": False, "stock_export": str(canonical_stock), "candidate_export": None,
+                "stock_entry_bias": 0, "input_files": []}
+    canonical_candidate = resolve_repo_path(
+        repo_root, candidate_value, label="paths.candidate_ghidra_export"
+    )
+    config = job.get("ghidra", {}).get("semantic_comparison_exports")
+    if config:
+        stock_export = resolve_repo_path(repo_root, config["stock"], label="ghidra.semantic_comparison_exports.stock")
+        candidate_export = resolve_repo_path(repo_root, config["candidate"], label="ghidra.semantic_comparison_exports.candidate")
+    else:
+        stock_export, candidate_export = canonical_stock, canonical_candidate
+
+    roots = {
+        "canonical_stock": canonical_stock,
+        "canonical_candidate": canonical_candidate,
+        "semantic_stock": stock_export,
+        "semantic_candidate": candidate_export,
+    }
+    manifests = {name: read_json(root / "manifest.json") for name, root in roots.items()}
+    stock_md5 = hashlib.md5(stock_module.read_bytes()).hexdigest()
+    for name in ("canonical_stock", "semantic_stock"):
+        if manifests[name].get("executable_md5") != stock_md5:
+            raise ValueError(f"{name} Ghidra export does not match the stock module")
+    candidate_md5s = {manifests[name].get("executable_md5")
+                      for name in ("canonical_candidate", "semantic_candidate")}
+    if len(candidate_md5s) != 1:
+        raise ValueError("candidate Ghidra imports do not describe the same module bytes")
+    expected_candidate_md5 = next(iter(candidate_md5s))
+    if candidate_module is not None and hashlib.md5(candidate_module.read_bytes()).hexdigest() != expected_candidate_md5:
+        raise ValueError("candidate Ghidra exports do not match the fresh Docker module")
+    try:
+        bases = {name: int(str(manifest["image_base"]), 16) for name, manifest in manifests.items()}
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("Ghidra export has no valid image_base") from error
+    stock_bias = bases["semantic_stock"] - bases["canonical_stock"]
+    candidate_bias = bases["semantic_candidate"] - bases["canonical_candidate"]
+    if stock_bias != candidate_bias:
+        raise ValueError("stock/candidate Ghidra imports do not use the same base adjustment")
+    if config and bases["semantic_stock"] != bases["semantic_candidate"]:
+        raise ValueError("paired stock/candidate Ghidra imports must use the same image base")
+
+    indexes = {name: ghidra_function_records(root) for name, root in roots.items()}
+    input_files: dict[Path, dict[str, Any]] = {}
+    for root_name, root in roots.items():
+        for relative in ("manifest.json", "functions.jsonl"):
+            path = root / relative
+            input_files[path] = file_record(path)
+    selected: list[dict[str, Any]] = []
+    for function in functions:
+        stock_name = function["stock_function"]
+        candidate_name = function.get("candidate_function", function["source_function"])
+        stock_base_entry = normalize_entry(function["stock_entry"])
+        stock_canonical = [x for x in indexes["canonical_stock"].get(stock_name, [])
+                           if normalize_entry(x.get("entry")) == stock_base_entry]
+        stock_semantic = [x for x in indexes["semantic_stock"].get(stock_name, [])
+                          if normalize_entry(x.get("entry"))
+                          == normalize_entry(f"{int(stock_base_entry, 16)+stock_bias:08x}")]
+        candidate_canonical = indexes["canonical_candidate"].get(candidate_name, [])
+        if len(candidate_canonical) != 1:
+            raise ValueError(f"candidate function identity is missing or ambiguous: {candidate_name}")
+        candidate_base_entry = normalize_entry(candidate_canonical[0].get("entry"))
+        candidate_semantic = [x for x in indexes["semantic_candidate"].get(candidate_name, [])
+                              if normalize_entry(x.get("entry"))
+                              == normalize_entry(f"{int(candidate_base_entry, 16)+candidate_bias:08x}")]
+        if len(stock_canonical) != 1 or len(stock_semantic) != 1 or len(candidate_semantic) != 1:
+            raise ValueError(f"paired Ghidra function identity is missing or ambiguous: {function['identity']}")
+        pairs = (("canonical_stock", stock_canonical[0]), ("semantic_stock", stock_semantic[0]),
+                 ("canonical_candidate", candidate_canonical[0]), ("semantic_candidate", candidate_semantic[0]))
+        body_sizes = {int(record["body_bytes"]) for _, record in pairs}
+        if len(body_sizes) != 1:
+            raise ValueError(f"Ghidra function body sizes differ across imports: {function['identity']}")
+        artifacts = {}
+        for root_name, record in pairs:
+            root = roots[root_name]
+            files = {}
+            for key in ("decompiled_file", "pcode_file"):
+                path = root / str(record[key])
+                if not path.is_file():
+                    raise FileNotFoundError(f"Ghidra semantic input missing: {path}")
+                input_files[path] = file_record(path)
+                files[key] = str(path)
+            artifacts[root_name] = {"entry": record["entry"], "body_bytes": record["body_bytes"], **files}
+        selected.append({"identity": function["identity"], "stock_entry_bias": stock_bias,
+                         "candidate_entry_bias": candidate_bias, "artifacts": artifacts})
+    return {
+        "enabled": bool(config), "stock_export": str(stock_export), "candidate_export": str(candidate_export),
+        "stock_entry_bias": stock_bias, "image_bases": bases,
+        "stock_module_md5": stock_md5, "candidate_module_md5": expected_candidate_md5,
+        "selected_functions": selected,
+        "input_files": [input_files[path] for path in sorted(input_files)],
+    }
+
+
 def execute_post_candidate(
     *,
     job: dict[str, Any],
@@ -915,15 +1051,15 @@ def execute_post_candidate(
 
     candidate_export_value = job.get("paths", {}).get("candidate_ghidra_export")
     if candidate_export_value:
-        candidate_export = resolve_repo_path(
-            repo_root, candidate_export_value, label="paths.candidate_ghidra_export"
+        semantic_exports = paired_ghidra_semantic_exports(
+            job=job, repo_root=repo_root, stock_module=stock_module,
+            candidate_module=candidate_module, functions=functions,
         )
+        candidate_export = semantic_exports["candidate_export"]
         ghidra_report = output_dir / "ghidra" / "semantic_comparison.json"
         ghidra_command = python_command(
             python, tools_root / "compare_ghidra_function_semantics.py",
-            "--stock-export", str(resolve_repo_path(
-                repo_root, job["paths"]["ghidra_export"], label="paths.ghidra_export"
-            )),
+            "--stock-export", str(semantic_exports["stock_export"]),
             "--candidate-export", str(candidate_export),
             "--stock-module", str(stock_module),
             "--candidate-module", str(candidate_module),
@@ -937,7 +1073,8 @@ def execute_post_candidate(
             # Ghidra selectors use the actual function entry.  The separate
             # stock_symbol_offset field is an ELF/KCFI/assembly selector and
             # must not be reused here.
-            stock_selector = f"{item['stock_function']}@{item['stock_entry']}"
+            stock_entry = int(item["stock_entry"], 16) + semantic_exports["stock_entry_bias"]
+            stock_selector = f"{item['stock_function']}@{stock_entry:08x}"
             candidate_selector = candidate_function
             if stock_selector != candidate_selector:
                 ghidra_command.extend(["--function-pair", f"{stock_selector}={candidate_selector}"])
@@ -1086,12 +1223,16 @@ def main() -> int:
         "profiles": job["profiles"],
         "functions": functions,
         "stock_module": file_record(stock_module),
-        "source": source_tree_record(source_root),
+        "source": source_tree_record(source_root, allow_empty=args.mode == "plan"),
         "ghidra": {
             "root": str(ghidra_export),
             "functions": file_record(ghidra_export / "functions.jsonl"),
             "calls": file_record(ghidra_export / "calls.jsonl"),
         },
+        "ghidra_semantic_comparison_inputs": paired_ghidra_semantic_exports(
+            job=job, repo_root=repo_root, stock_module=stock_module,
+            candidate_module=None, functions=functions,
+        ),
         "reconstruction_map": file_record(reconstruction_map),
         "map_bindings": bindings,
         "runtimes": {
@@ -1107,6 +1248,10 @@ def main() -> int:
     }
     write_json(output_dir / "input_manifest.json", manifest)
     plan_blockers = list(map_blockers)
+    if manifest["source"]["file_count"] == 0:
+        plan_blockers.append(
+            "candidate source tree is empty; reconstruction has not started"
+        )
     if java_home is None:
         plan_blockers.append("JAVA_HOME or --java-home is required for Joern execution")
     if not engineering_root.is_dir():

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import json
 import tempfile
 from pathlib import Path
 import unittest
@@ -16,6 +17,7 @@ from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
     run_command,
     select_functions,
     validate_job,
+    paired_ghidra_semantic_exports,
 )
 
 
@@ -46,6 +48,56 @@ def base_job(**overrides):
 
 
 class HardDriverProtocolTests(unittest.TestCase):
+    def test_paired_same_base_ghidra_exports_keep_stock_identity_bias_hash_bound(self):
+        repo = Path(__file__).resolve().parents[3]
+        job = json.loads((repo / "workspace_tools/reconstruction_pipeline/hard_driver_job.ftmmod_20261027.json").read_text())
+        job["ghidra"]["semantic_comparison_exports"] = {
+            "stock": "reverse_engineering/validation/reconstructed/ftmmod/attestation/layout_diagnosis_20261027_r1/rebased_stock/ftmmod.ko",
+            "candidate": "reverse_engineering/validation/reconstructed/ftmmod/attestation/layout_diagnosis_20261027_r1/rebased_candidate/ftmmod.ko",
+        }
+        functions = validate_job(job)
+        stock = repo / job["paths"]["stock_module"]
+        candidate = repo / "reverse_engineering/validation/reconstructed/ftmmod/attestation/hard_protocol_core_20261027_r3/docker/work/ftmmod/cycle_2/ftmmod.ko"
+        result = paired_ghidra_semantic_exports(
+            job=job, repo_root=repo, stock_module=stock,
+            candidate_module=candidate, functions=functions,
+        )
+        self.assertTrue(result["enabled"])
+        self.assertEqual(result["stock_entry_bias"], 0x100)
+        self.assertEqual(result["image_bases"]["semantic_stock"], result["image_bases"]["semantic_candidate"])
+        self.assertEqual(len(result["selected_functions"]), 9)
+        self.assertEqual(len(result["input_files"]), 80)
+        for function in result["selected_functions"]:
+            self.assertEqual(function["stock_entry_bias"], 0x100)
+            self.assertEqual(function["candidate_entry_bias"], 0x100)
+            self.assertEqual(function["artifacts"]["semantic_stock"]["body_bytes"],
+                             function["artifacts"]["semantic_candidate"]["body_bytes"])
+        self.assertEqual(functions[0]["stock_entry"], "00100784")
+
+    def test_paired_ghidra_imports_with_different_base_adjustments_fail_closed(self):
+        repo = Path(__file__).resolve().parents[3]
+        job = json.loads((repo / "workspace_tools/reconstruction_pipeline/hard_driver_job.ftmmod_20261027.json").read_text())
+        job["ghidra"]["semantic_comparison_exports"] = {
+            "stock": "reverse_engineering/validation/reconstructed/ftmmod/attestation/layout_diagnosis_20261027_r1/rebased_stock/ftmmod.ko",
+            "candidate": job["paths"]["candidate_ghidra_export"],
+        }
+        with self.assertRaisesRegex(ValueError, "same base adjustment"):
+            paired_ghidra_semantic_exports(
+                job=job, repo_root=repo, stock_module=repo/job["paths"]["stock_module"],
+                candidate_module=None, functions=validate_job(job),
+            )
+
+    def test_default_ghidra_exports_keep_zero_entry_bias(self):
+        repo = Path(__file__).resolve().parents[3]
+        job = json.loads((repo / "workspace_tools/reconstruction_pipeline/hard_driver_job.ftmmod_20261027.json").read_text())
+        result = paired_ghidra_semantic_exports(
+            job=job, repo_root=repo, stock_module=repo/job["paths"]["stock_module"],
+            candidate_module=None, functions=validate_job(job),
+        )
+        self.assertFalse(result["enabled"])
+        self.assertEqual(result["stock_entry_bias"], 0)
+        self.assertEqual(len(result["selected_functions"]), 9)
+
     def test_profiles_form_a_union_of_required_gates(self):
         job = base_job(profiles=["CALLBACK_ABI", "CONCURRENCY_LIFETIME"])
         functions = validate_job(job)
@@ -255,6 +307,14 @@ class HardDriverProtocolTests(unittest.TestCase):
             ) as run_mock, patch(
                 "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.report_passed",
                 return_value=True,
+            ), patch(
+                "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.paired_ghidra_semantic_exports",
+                return_value={
+                    "enabled": False,
+                    "stock_export": root / "stock-ghidra",
+                    "candidate_export": root / "candidate-ghidra",
+                    "stock_entry_bias": 0,
+                },
             ):
                 _, gates = execute_post_candidate(
                     job=job,
@@ -297,6 +357,14 @@ class HardDriverProtocolTests(unittest.TestCase):
             ) as run_mock, patch(
                 "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.report_passed",
                 return_value=True,
+            ), patch(
+                "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.paired_ghidra_semantic_exports",
+                return_value={
+                    "enabled": False,
+                    "stock_export": root / "stock-ghidra",
+                    "candidate_export": root / "candidate-ghidra",
+                    "stock_entry_bias": 0,
+                },
             ):
                 execute_post_candidate(
                     job=job,

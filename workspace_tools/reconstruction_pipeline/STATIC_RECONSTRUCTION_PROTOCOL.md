@@ -51,6 +51,23 @@ adicione o menor modelo analítico possível, execute
 `run_joern_reconstruction_gate.py --strict` por identidade e registre o source
 view e todos os relatórios no attestation versionado.
 
+## Importações Ghidra com base de imagem pareada
+
+Quando uma diferença de P-Code vier de relocação/layout do ELF, investigue a
+relocação e confirme o acesso no assembly antes de mudar a configuração de
+importação. Se uma importação Ghidra pareada for necessária, use
+`ghidra.semantic_comparison_exports.stock` e `.candidate` no job. Esses caminhos
+devem apontar para exports completos, derivados dos mesmos módulos stock e
+candidato que os exports canônicos. Importe stock e candidato na mesma base; o
+runner verifica manifests, hashes MD5 dos módulos, deslocamento comum das bases,
+identidades, tamanho dos corpos e hashes de todos os arquivos selecionados.
+
+O deslocamento dos entries é derivado dos manifests e aplicado somente aos
+seletores do comparador Ghidra. Mapa de reconstrução, Joern, assembly,
+relocations, KCFI e identidade canônica continuam usando os entries originais.
+Isso não relaxa nem substitui a comparação de P-Code. Sem configuração pareada,
+o runner usa o export canônico e bias zero.
+
 ## Proteção contra erros de processo
 
 - Nunca use `git add .` em um checkout com agentes paralelos. Faça staging por
