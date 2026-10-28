@@ -30,7 +30,8 @@ LOCAL_LABEL_RE = re.compile(
     r"code_r0x[0-9a-fA-F]+|joined_r0x[0-9a-fA-F]+)\b"
 )
 STACK_LOCAL_RE = re.compile(
-    r"\b(?:local|[a-z]{1,4}Stack)_(?P<offset>[0-9a-fA-F]+)\b"
+    r"(?<![A-Za-z0-9_])_?(?:local|[a-z]{1,4}Stack)_"
+    r"(?P<offset>[0-9a-fA-F]+)\b"
 )
 ALLOC_TAG_ARGUMENT_RE = re.compile(
     r"(__kmalloc_cache_noprof\(\s*)"
