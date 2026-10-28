@@ -252,20 +252,6 @@ static __used int fan_level_set(u8 *fan_state, u8 level)
 }
 
 /*
- * The recovered sysfs read callback logs the stock source line and returns the
- * enable byte at chip+0x08+0x0c as decimal text.
- */
-static __used ssize_t fan_enable_show(struct kobject *kobj,
-				      struct kobj_attribute *attr, char *buf)
-{
-	printk(KERN_DEBUG "[%s] [%s:%d] fan_enable=%d.\n",
-	       "NB_FAN", "fan_enable_show", 0x130,
-	       (*(u8 **)((u8 *)chip + 0x08))[0x0c]);
-	return sprintf(buf, "%d\n",
-		       (*(u8 **)((u8 *)chip + 0x08))[0x0c]);
-}
-
-/*
  * Keep the observed byte offsets explicit until the original structure type is
  * independently recovered. The state pointer is at chip+0x08; its active
  * flag is at +0x0c, selecting current (+0x00) or pending (+0x01) level.
@@ -277,6 +263,65 @@ static __used ssize_t fan_level_show(struct kobject *kobj,
 	u8 level_index = fan_state[0x0c] ^ 1;
 
 	return sprintf(buf, "%d\n", fan_state[level_index]);
+}
+
+/*
+ * A disabled fan stores the requested level for the next enable operation.
+ * When enabled, the update is serialized with the chip mutex and delegated
+ * to fan_level_set.
+ */
+static __used ssize_t fan_level_store(struct kobject *kobj,
+				      struct kobj_attribute *attr,
+				      const char *buf, size_t count)
+{
+	ssize_t result = count;
+	u32 level = 0;
+	u8 *fan_state;
+	int ret;
+
+	sscanf(buf, "%d", &level);
+	if (level >= 6) {
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] level=%d,it is a bad level,not in(%d-%d).\n",
+		       "NB_FAN", "fan_level_store", 0x165, level, 0, 5);
+		result = -EINVAL;
+	} else {
+		fan_state = *(u8 **)((u8 *)chip + 0x08);
+		if ((fan_state[0x0c] & 1) == 0) {
+			fan_state[1] = (u8)level;
+			printk(KERN_DEBUG
+			       "[%s] [%s:%d] Fan is disabled, just run this level:%d after fan enabled.",
+			       "NB_FAN", "fan_level_store", 0x16b, level);
+		} else {
+			mutex_lock((struct mutex *)((u8 *)chip + 0x18));
+			ret = fan_level_set(
+				*(u8 **)((u8 *)chip + 0x08), level);
+			mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
+			if (ret == 0) {
+				printk(KERN_DEBUG
+				       "[%s] [%s:%d] set fan_level=%d rc=%d.",
+				       "NB_FAN", "fan_level_store", 0x175,
+				       level, 0);
+			} else {
+				result = ret;
+			}
+		}
+	}
+	return result;
+}
+
+/*
+ * The recovered sysfs read callback logs the stock source line and returns the
+ * enable byte at chip+0x08+0x0c as decimal text.
+ */
+static __used ssize_t fan_enable_show(struct kobject *kobj,
+				      struct kobj_attribute *attr, char *buf)
+{
+	printk(KERN_DEBUG "[%s] [%s:%d] fan_enable=%d.\n",
+	       "NB_FAN", "fan_enable_show", 0x130,
+	       (*(u8 **)((u8 *)chip + 0x08))[0x0c]);
+	return sprintf(buf, "%d\n",
+		       (*(u8 **)((u8 *)chip + 0x08))[0x0c]);
 }
 
 /* Preserve the stock sysfs show callback ABI while the actual attribute table
@@ -347,5 +392,8 @@ static enum hrtimer_restart (*const fan_hrtimer_hander_kcfi_anchor)(
 static ssize_t (*const fan_pwm_store_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, const char *, size_t)
 	__used = fan_pwm_store;
+static ssize_t (*const fan_level_store_kcfi_anchor)(
+	struct kobject *, struct kobj_attribute *, const char *, size_t)
+	__used = fan_level_store;
 
 MODULE_LICENSE("GPL");
