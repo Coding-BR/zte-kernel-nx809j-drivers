@@ -9,6 +9,7 @@
 #include <linux/kobject.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
+#include <linux/pwm.h>
 #include <linux/printk.h>
 #include <linux/sysfs.h>
 #include <linux/types.h>
@@ -186,6 +187,57 @@ static __used ssize_t fan_level_show(struct kobject *kobj,
 
 /* Preserve the stock sysfs show callback ABI while the actual attribute table
  * is still pending reconstruction. Replace these anchors with that table. */
+static __used ssize_t fan_pwm_store(struct kobject *kobj,
+				    struct kobj_attribute *attr,
+				    const char *buf, size_t count)
+{
+	struct pwm_state state;
+	u32 pwm_value = 0;
+	u8 pwm_pct;
+	u8 *chip_base;
+	struct pwm_device *pwm;
+	struct pwm_chip *pwm_chip;
+	const struct pwm_ops *ops;
+	u64 state_tail;
+	int ret;
+
+	sscanf(buf, "%d", &pwm_value);
+	if (pwm_value < 101) {
+		mutex_lock((struct mutex *)((u8 *)chip + 0x18));
+		chip_base = *(u8 * volatile *)&chip;
+		pwm_pct = *(volatile u8 *)&pwm_value;
+		pwm = *(struct pwm_device **)(*(u8 **)(chip_base + 0x08) + 0x68);
+		pwm_chip = pwm->chip;
+		state_tail = *(volatile u64 *)((u8 *)pwm + 0x40);
+		ops = *(const struct pwm_ops * volatile *)((u8 *)pwm_chip + 0x390);
+		*(u64 *)((u8 *)&state + 0x10) = state_tail;
+		state.enabled = true;
+		state.period = 40000;
+		state.duty_cycle = (u64)pwm_pct * 400;
+		ret = ops->apply(pwm_chip, pwm, &state);
+		if (ret < 0) {
+			printk(KERN_DEBUG
+			       "[%s] [%s:%d] Apply PWM state for fan_pwm=%d failed, rc=%d\n",
+			       "NB_FAN", "fan_pwm_set", 0xd5, pwm_pct, ret);
+		} else if (ret == 0) {
+			mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
+			printk(KERN_DEBUG "[%s] [%s:%d] set fan_pwm=%d rc=%d.",
+			       "NB_FAN", "fan_pwm_store", 0x18c, pwm_value, 0);
+			goto return_count;
+		}
+		mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
+		return ret;
+	} else {
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] pwm=%d,it is a bad pwm,not in(%d-%d).\n",
+		       "NB_FAN", "fan_pwm_store", 0x181, pwm_value, 0, 100);
+		return -EINVAL;
+	}
+
+return_count:
+	return count;
+}
+
 static ssize_t (*const fan_enable_show_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, char *) __used = fan_enable_show;
 static ssize_t (*const fan_level_show_kcfi_anchor)(
@@ -198,5 +250,8 @@ static void (*const cleanup_module_kcfi_anchor)(void) __used = cleanup_module;
 static int (*const init_module_kcfi_anchor)(void) __used = init_module;
 static enum hrtimer_restart (*const fan_hrtimer_hander_kcfi_anchor)(
 	struct hrtimer *) __used = fan_hrtimer_hander;
+static ssize_t (*const fan_pwm_store_kcfi_anchor)(
+	struct kobject *, struct kobj_attribute *, const char *, size_t)
+	__used = fan_pwm_store;
 
 MODULE_LICENSE("GPL");

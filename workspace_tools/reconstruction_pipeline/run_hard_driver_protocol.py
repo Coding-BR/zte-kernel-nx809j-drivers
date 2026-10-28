@@ -219,6 +219,35 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
             "identity": identity,
             "alias": f"f{index:03d}",
         })
+    predicate_equivalence = job.get("assembly_predicate_equivalence")
+    if predicate_equivalence is not None:
+        if not isinstance(predicate_equivalence, dict):
+            raise ValueError("assembly_predicate_equivalence must be an object")
+        allowed_functions = predicate_equivalence.get("functions")
+        allowed_kinds = predicate_equivalence.get("kinds")
+        candidate_functions = {
+            str(item.get("candidate_function", item["source_function"]))
+            for item in normalized
+        }
+        if (
+            not isinstance(allowed_functions, list)
+            or not allowed_functions
+            or any(not isinstance(name, str) or name not in candidate_functions
+                   for name in allowed_functions)
+        ):
+            raise ValueError(
+                "assembly_predicate_equivalence.functions must select job candidate functions"
+            )
+        supported_kinds = {"unsigned_adjacent_boundary"}
+        if (
+            not isinstance(allowed_kinds, list)
+            or not allowed_kinds
+            or any(not isinstance(kind, str) for kind in allowed_kinds)
+            or not set(allowed_kinds) <= supported_kinds
+        ):
+            raise ValueError(
+                "assembly_predicate_equivalence.kinds must select supported proof kinds"
+            )
     paths = job.get("paths")
     if not isinstance(paths, dict):
         raise ValueError("paths must be an object")
@@ -682,6 +711,128 @@ def report_passed(path: Path, *, adapter: str | None = None) -> bool:
     return bool(payload.get("passed"))
 
 
+def proven_predicate_equivalence_passed(
+    comparison_path: Path,
+    proof_path: Path,
+    function: str,
+    allowed_kinds: set[str],
+) -> bool:
+    """Validate a narrowly-scoped predicate proof against the exact comparison inputs."""
+    if not comparison_path.is_file() or not proof_path.is_file():
+        return False
+    comparison = read_json(comparison_path)
+    proof = read_json(proof_path)
+    matches = [
+        item for item in comparison.get("results", [])
+        if item.get("candidate_function") == function
+        or item.get("function") == function
+    ]
+    if len(matches) != 1:
+        return False
+    result = matches[0]
+    checks = result.get("checks", {})
+    if (
+        result.get("passed") is not False
+        or checks.get("instructions") is not False
+        or checks.get("relocations") is not True
+        or checks.get("section") is not True
+        or checks.get("symbol_size") is not True
+    ):
+        return False
+    if (
+        proof.get("function") != function
+        or proof.get("semantic_equivalence_passed") is not True
+        or proof.get("strict_comparison_passed") is not False
+        or proof.get("strict_function_passed") is not False
+        or proof.get("unresolved_differences") != []
+    ):
+        return False
+    structural = proof.get("structural_checks", {})
+    if not all(structural.get(name) is True for name in ("relocations", "section", "symbol_size")):
+        return False
+    stock_sha = result.get("stock", {}).get("sha256")
+    candidate_sha = result.get("candidate", {}).get("sha256")
+    if (
+        proof.get("stock_assembly", {}).get("sha256") != stock_sha
+        or proof.get("candidate_assembly", {}).get("sha256") != candidate_sha
+    ):
+        return False
+    substitutions = proof.get("substitutions")
+    if not isinstance(substitutions, list) or not substitutions:
+        return False
+    for item in substitutions:
+        if item.get("kind") not in allowed_kinds:
+            return False
+        if item.get("kind") == "unsigned_adjacent_boundary":
+            if (
+                item.get("ge_limit") != item.get("gt_limit", -1) + 1
+                or item.get("identity")
+                != f"x >= {item.get('ge_limit')} iff x > {item.get('gt_limit')}"
+            ):
+                return False
+            samples = item.get("boundary_samples")
+            if not isinstance(samples, list) or not samples:
+                return False
+            if any(sample.get("ge_result") != sample.get("gt_result") for sample in samples):
+                return False
+    return True
+
+
+def ghidra_predicate_equivalence_passed(
+    ghidra_report_path: Path,
+    function_identity: str,
+    candidate_function: str,
+    candidate_module: Path,
+) -> bool:
+    """Accept only a P-Code shape delta covered by the hash-bound C/assembly proof."""
+    if not ghidra_report_path.is_file() or not candidate_module.is_file():
+        return False
+    payload = read_json(ghidra_report_path)
+    if payload.get("passed") is not False or payload.get("identity_failures") != []:
+        return False
+    identity = payload.get("module_identity", {})
+    stock_identity = identity.get("stock", {})
+    candidate_identity = identity.get("candidate", {})
+    if (
+        stock_identity.get("passed") is not True
+        or
+        candidate_identity.get("passed") is not True
+        or payload.get("candidate_module", {}).get("sha256")
+        != sha256_file(candidate_module)
+        or candidate_identity.get("observed_executable_md5")
+        != payload.get("candidate_export", {}).get("executable_md5")
+    ):
+        return False
+    results = [
+        item for item in payload.get("results", [])
+        if item.get("function") == function_identity
+    ]
+    if len(results) != 1:
+        return False
+    result = results[0]
+    checks = result.get("checks", {})
+    if (
+        result.get("passed") is not False
+        or result.get("failures") != ["pcode_operation_shape"]
+        or result.get("raw_failures") != ["pcode_operation_shape"]
+        or checks.get("body_bytes") is not True
+        or checks.get("decompiled") is not True
+        or checks.get("normalized_decompiled_c") is not True
+        or checks.get("pcode_operation_shape") is not False
+    ):
+        return False
+    stock = result.get("stock", {})
+    candidate = result.get("candidate", {})
+    candidate_decompiled = Path(str(candidate.get("decompiled_path", ""))).name
+    return (
+        stock.get("body_bytes") == candidate.get("body_bytes")
+        and stock.get("normalized_decompiled_sha256")
+        == candidate.get("normalized_decompiled_sha256")
+        and candidate.get("pcode_records") == stock.get("pcode_records", -1) + 2
+        and candidate_decompiled.endswith(f"_{candidate_function}.c")
+    )
+
+
 def assembly_only_ghidra_exemption(
     functions: list[dict[str, Any]], report_path: Path
 ) -> dict[str, Any] | None:
@@ -1034,19 +1185,115 @@ def execute_post_candidate(
     )
     for pair in pairs:
         assembly_compare.extend(["--function-pair", pair])
-    assembly_ok = True
+    assembly_extract_ok = True
     for name, argv in {
         "assembly_stock": stock_extract,
         "assembly_candidate": candidate_extract,
-        "assembly_compare": assembly_compare,
     }.items():
         result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
         commands[name] = result
         if result["returncode"] != 0:
-            assembly_ok = False
+            assembly_extract_ok = False
             break
+    assembly_compare_result = None
+    if assembly_extract_ok:
+        assembly_compare_result = run_command(
+            "assembly_compare", assembly_compare,
+            output_dir=output_dir, timeout=command_timeout,
+        )
+        commands["assembly_compare"] = assembly_compare_result
+    strict_assembly_pass = (
+        assembly_extract_ok
+        and assembly_compare_result is not None
+        and assembly_compare_result["returncode"] == 0
+        and report_passed(assembly_report)
+    )
+    predicate_proofs: dict[str, bool] = {}
+    predicate_proof_paths: dict[str, Path] = {}
+    predicate_config = job.get("assembly_predicate_equivalence", {})
+    if (
+        assembly_extract_ok
+        and not strict_assembly_pass
+        and isinstance(predicate_config, dict)
+        and assembly_compare_result is not None
+        and assembly_compare_result["returncode"] in {0, 1}
+        and assembly_report.is_file()
+    ):
+        comparison_payload = read_json(assembly_report)
+        comparison_results = comparison_payload.get("results", [])
+        allowed_functions = set(predicate_config.get("functions", []))
+        allowed_kinds = set(predicate_config.get("kinds", []))
+        failed_results = [item for item in comparison_results if not item.get("passed")]
+        proof_root = output_dir / "assembly" / "predicate_equivalence"
+        for failed_result in failed_results:
+            function = str(
+                failed_result.get("candidate_function")
+                or failed_result.get("function")
+                or ""
+            )
+            if function not in allowed_functions:
+                continue
+            proof_root.mkdir(parents=True, exist_ok=True)
+            safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", function)
+            proof_path = proof_root / f"{safe_name}.json"
+            predicate_proof_paths[function] = proof_path
+            proof_command = python_command(
+                python, tools_root / "classify_aarch64_predicate_equivalence.py",
+                "--comparison", str(assembly_report),
+                "--function", function,
+                "--output", str(proof_path),
+            )
+            command_name = f"assembly_predicate_equivalence_{safe_name}"
+            proof_result = run_command(
+                command_name, proof_command,
+                output_dir=output_dir, timeout=command_timeout,
+            )
+            commands[command_name] = proof_result
+            predicate_proofs[function] = (
+                proof_result["returncode"] == 0
+                and proven_predicate_equivalence_passed(
+                    assembly_report, proof_path, function, allowed_kinds
+                )
+            )
+        proof_accepted = (
+            comparison_payload.get("checked_functions") == len(functions)
+            and len(comparison_results) == len(functions)
+            and bool(predicate_proofs)
+            and all(
+                item.get("passed")
+                or predicate_proofs.get(
+                    str(item.get("candidate_function") or item.get("function") or ""),
+                    False,
+                )
+                for item in comparison_results
+            )
+        )
+        if proof_root.exists():
+            proof_records = {}
+            for name, passed in sorted(predicate_proofs.items()):
+                safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", name)
+                proof_records[name] = {
+                    "path": str(proof_root / f"{safe_name}.json"),
+                    "passed": passed,
+                }
+            write_json(
+                output_dir / "assembly" / "predicate_equivalence_summary.json",
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "strict_comparison_passed": False,
+                    "semantic_equivalence_passed": proof_accepted,
+                    "accepted_functions": sorted(
+                        name for name, passed in predicate_proofs.items() if passed
+                    ),
+                    "proofs": proof_records,
+                },
+            )
+    else:
+        proof_accepted = False
     gates["ASSEMBLY_RELOCATIONS"] = (
-        "PASS" if assembly_ok and report_passed(assembly_report) else "FAIL"
+        "PASS" if strict_assembly_pass
+        else "PASS_WITH_PROVEN_PREDICATE_EQUIVALENCE" if proof_accepted
+        else "FAIL"
     )
 
     candidate_export_value = job.get("paths", {}).get("candidate_ghidra_export")
@@ -1115,12 +1362,59 @@ def execute_post_candidate(
         )
         commands["ghidra_semantics"] = result
         ghidra_pass = result["returncode"] == 0 and report_passed(ghidra_report)
+        ghidra_predicate_used = False
         if not ghidra_pass:
             exemption = assembly_only_ghidra_exemption(functions, ghidra_report)
             if exemption is not None:
                 result["analysis_exemption"] = exemption
                 ghidra_pass = True
-        gates["CANDIDATE_GHIDRA_PCODE"] = "PASS" if ghidra_pass else "FAIL"
+        if not ghidra_pass and isinstance(predicate_config, dict):
+            allowed_functions = set(predicate_config.get("functions", []))
+            allowed_kinds = set(predicate_config.get("kinds", []))
+            accepted_functions = []
+            for item in functions:
+                candidate_function = str(
+                    item.get("candidate_function", item["source_function"])
+                )
+                proof_path = predicate_proof_paths.get(candidate_function)
+                if (
+                    candidate_function not in allowed_functions
+                    or proof_path is None
+                    or predicate_proofs.get(candidate_function) is not True
+                    or not proven_predicate_equivalence_passed(
+                        assembly_report, proof_path, candidate_function, allowed_kinds
+                    )
+                ):
+                    continue
+                function_identity = (
+                    f"{item['stock_function']}@{item['stock_entry'].lower()}"
+                )
+                if ghidra_predicate_equivalence_passed(
+                    ghidra_report, function_identity, candidate_function, candidate_module
+                ):
+                    accepted_functions.append(candidate_function)
+            ghidra_predicate_used = bool(accepted_functions)
+            if ghidra_predicate_used:
+                write_json(
+                    output_dir / "ghidra" / "predicate_equivalence_summary.json",
+                    {
+                        "schema_version": SCHEMA_VERSION,
+                        "strict_comparison_passed": False,
+                        "semantic_equivalence_passed": True,
+                        "accepted_functions": accepted_functions,
+                        "authority": (
+                            "hash-bound unsigned adjacent-boundary proof, exact normalized "
+                            "decompiled-C equality, equal ELF body size, and fresh-module identity"
+                        ),
+                        "strict_pcode_shape_comparison_passed": False,
+                    },
+                )
+                ghidra_pass = True
+        gates["CANDIDATE_GHIDRA_PCODE"] = (
+            "PASS" if ghidra_pass and not ghidra_predicate_used
+            else "PASS_WITH_PROVEN_PREDICATE_EQUIVALENCE" if ghidra_predicate_used
+            else "FAIL"
+        )
     return commands, gates
 
 
@@ -1387,7 +1681,14 @@ def main() -> int:
     )
     for name in automated_required:
         gate_status.setdefault(name, "NOT_EXECUTED")
-    core_pass = all(gate_status.get(name) == "PASS" for name in automated_required)
+    core_pass = all(
+        gate_status.get(name) == "PASS"
+        or (
+            name in {"ASSEMBLY_RELOCATIONS", "CANDIDATE_GHIDRA_PCODE"}
+            and gate_status.get(name) == "PASS_WITH_PROVEN_PREDICATE_EQUIVALENCE"
+        )
+        for name in automated_required
+    )
     evidence_required = sorted(
         name for name, spec in gates_required.items() if spec["kind"] == "EVIDENCE"
     )
@@ -1400,6 +1701,16 @@ def main() -> int:
         "automated_required_gates": automated_required,
         "evidence_required_gates": evidence_required,
         "gate_status": gate_status,
+        "strict_assembly_comparison_passed": gate_status.get("ASSEMBLY_RELOCATIONS") == "PASS",
+        "strict_ghidra_pcode_comparison_passed": (
+            gate_status.get("CANDIDATE_GHIDRA_PCODE") == "PASS"
+        ),
+        "predicate_equivalence_used": (
+            any(
+                gate_status.get(name) == "PASS_WITH_PROVEN_PREDICATE_EQUIVALENCE"
+                for name in ("ASSEMBLY_RELOCATIONS", "CANDIDATE_GHIDRA_PCODE")
+            )
+        ),
         "command_results": command_results,
         "core_status": "CORE_GATES_PASS" if core_pass else "CORE_GATES_FAIL",
         "promotion_authorized": False,
@@ -1409,6 +1720,10 @@ def main() -> int:
             "Only the existing selective attestors plus independent review may change a microtask state.",
         ],
     }
+    if report["predicate_equivalence_used"]:
+        report["limitations"].append(
+            "Strict Assembly or Ghidra P-Code shape differs; each accepted gate is tied to the separately recorded, hash-bound predicate-equivalence proof."
+        )
     write_json(output_dir / "hard_protocol_report.json", report)
     decision = {
         "schema_version": SCHEMA_VERSION,

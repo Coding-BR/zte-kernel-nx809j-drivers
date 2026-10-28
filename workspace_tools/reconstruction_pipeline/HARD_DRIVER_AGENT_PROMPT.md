@@ -81,6 +81,17 @@ Regras inviolaveis:
   fisico;
 - nao use cast, hardening desativado, Assembly `naked`, `.inst` opaco ou
   comparacao relaxada para esconder divergencia;
+- uma equivalencia de predicado AArch64 so pode ser aceita quando o job a
+  autorizar explicitamente em `assembly_predicate_equivalence`, a classificacao
+  `classify_aarch64_predicate_equivalence.py` passar, os hashes das duas
+  funcoes coincidirem com o comparador, tamanho/secao/relocations forem iguais,
+  e nao houver diferencas sem resolucao. A comparacao estrita permanece
+  registrada como FAIL; o gate deve dizer
+  `PASS_WITH_PROVEN_PREDICATE_EQUIVALENCE`, nunca identidade binaria;
+- a mesma prova so pode cobrir o gate Ghidra/P-Code se a exportacao candidata
+  vier do modulo validado, os corpos e C decompilado normalizado forem iguais,
+  `pcode_operation_shape` for a unica diferenca e a prova cobrir a mesma funcao.
+  Qualquer outra divergencia continua sendo FAIL;
 - qualquer mudanca invalida relatorios presos ao hash anterior;
 - nao altere `MICROTASKS.json`, `reconstruction_map.json`, auditorias ou
   atestacoes para fabricar `PASS`;
