@@ -73,10 +73,15 @@ def public_evidence_paths(repository_root: Path, driver: str) -> tuple[Path, Pat
     stock = repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko"
     if not stock.is_file():
         stock = repository_root / "reference_modules" / "stock" / f"{driver}.ko"
+    ghidra_root = (
+        repository_root / "reverse_engineering" / "validation" / "reconstructed"
+        / driver / "offline_static" / "ghidra_stock"
+    )
+    nested_export = ghidra_root / f"{driver}.ko"
+    ghidra_export = nested_export if (nested_export / "manifest.json").is_file() else ghidra_root
     return (
         stock,
-        repository_root / "reverse_engineering" / "validation" / "reconstructed"
-        / driver / "offline_static" / "ghidra_stock",
+        ghidra_export,
         transition,
     )
 
@@ -188,8 +193,54 @@ def parse_elf(path: Path) -> dict[str, Any]:
 
 
 def parse_modinfo(path: Path) -> dict[str, list[str]]:
+    data = path.read_bytes()
+    if len(data) < ELF_HEADER.size:
+        raise ValueError("ELF header is truncated while reading .modinfo")
+    header = ELF_HEADER.unpack_from(data)
+    if header[0][:4] != b"\x7fELF" or header[0][4] != 2 or header[0][5] != 1:
+        raise ValueError("expected ELF64 little-endian while reading .modinfo")
+    section_offset = header[6]
+    section_entry_size = header[11]
+    section_count = header[12]
+    string_table_index = header[13]
+    if (
+        section_entry_size < SECTION_HEADER.size
+        or section_count == 0
+        or string_table_index >= section_count
+    ):
+        raise ValueError("invalid ELF section table while reading .modinfo")
+
+    sections = []
+    for index in range(section_count):
+        offset = section_offset + index * section_entry_size
+        if offset + SECTION_HEADER.size > len(data):
+            raise ValueError("ELF section table exceeds file size while reading .modinfo")
+        sections.append(SECTION_HEADER.unpack_from(data, offset))
+
+    string_header = sections[string_table_index]
+    string_offset, string_size = string_header[4], string_header[5]
+    if string_offset + string_size > len(data):
+        raise ValueError("ELF section-name table exceeds file size")
+    section_names = data[string_offset : string_offset + string_size]
+    modinfo_data: bytes | None = None
+    for section in sections:
+        name_offset = section[0]
+        if name_offset >= len(section_names):
+            raise ValueError("ELF section name offset is invalid")
+        name_end = section_names.find(b"\0", name_offset)
+        if name_end < 0:
+            raise ValueError("ELF section name is unterminated")
+        name = section_names[name_offset:name_end].decode("utf-8", errors="replace")
+        if name != ".modinfo":
+            continue
+        content_offset, content_size = section[4], section[5]
+        if content_offset + content_size > len(data):
+            raise ValueError("ELF .modinfo section exceeds file size")
+        modinfo_data = data[content_offset : content_offset + content_size]
+        break
+
     values: dict[str, list[str]] = {}
-    for field in path.read_bytes().split(b"\0"):
+    for field in (modinfo_data or b"").split(b"\0"):
         text = field.decode("utf-8", errors="ignore")
         key, separator, value = text.partition("=")
         if separator and key in MODINFO_KEYS:
@@ -471,7 +522,8 @@ def validate_regular_driver(
         errors.append("driver source tree or Makefile is incomplete")
     if not stock.is_file():
         errors.append("acquired stock module is missing from the selected evidence source")
-    if not candidate.is_file():
+    candidate_missing = not candidate.is_file()
+    if candidate_missing and not (promote_fresh and rebuild):
         errors.append("current reconstructed .ko is missing")
 
     ghidra, ghidra_errors = ghidra_check(ghidra_export, transition_document)
@@ -575,6 +627,14 @@ def validate_regular_driver(
             "candidate_matches_fresh",
         ):
             checks[key] = False
+
+    # A requested promotion may have created the canonical module after the
+    # initial source-tree checks. Report it missing only if promotion did not
+    # produce the artifact.
+    if not candidate.is_file() and not any(
+        error == "current reconstructed .ko is missing" for error in errors
+    ):
+        errors.append("current reconstructed .ko is missing")
 
     complete = not errors and map_result["passed"] and build_result.get("passed", False)
     status = "static_verified" if complete else "incomplete_or_failed"

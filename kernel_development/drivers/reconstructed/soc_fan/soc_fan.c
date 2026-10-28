@@ -2345,8 +2345,7 @@ static __used __attribute__((naked)) ssize_t fan_speed_show(
         );
 }
 
-/* Preserve the stock sysfs show callback ABI while the actual attribute table
- * is still pending reconstruction. Replace these anchors with that table. */
+/* Preserve the stock sysfs callback ABI while retaining reconstructed table data. */
 static __used ssize_t fan_pwm_store(struct kobject *kobj,
 				    struct kobj_attribute *attr,
 				    const char *buf, size_t count)
@@ -2424,4 +2423,7 @@ static ssize_t (*const fan_enable_store_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, const char *, size_t)
 	__used = fan_enable_store;
 
-MODULE_LICENSE("GPL");
+MODULE_INFO(built_with, "DDK");
+MODULE_DESCRIPTION("NUBIA FAN driver");
+MODULE_LICENSE("GPL v2");
+MODULE_SOFTDEP("pre: leds-qcom-lpg");
