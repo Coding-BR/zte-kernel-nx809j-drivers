@@ -16,10 +16,18 @@ struct rdbg_module_storage {
 	dev_t devt;
 	int count;
 	void *clients;
-	irq_handler_t callback_test_anchor;
 };
 
 extern struct rdbg_module_storage g_rdbg_instance;
+
+struct rdbg_proc_info_layout {
+	const char *name;
+	u32 smem_buffer_addr;
+	u32 reserved;
+	size_t smem_buffer_size;
+};
+
+extern const struct rdbg_proc_info_layout proc_info[16];
 
 struct rdbg_gpio_info_layout {
 	int gpio_base_id;
@@ -48,12 +56,24 @@ struct rdbg_smq_in_state_layout {
 	u32 index_free_write;
 } __packed;
 
+struct rdbg_smq_header_layout {
+	u8 producer_version;
+	u8 consumer_version;
+} __packed;
+
+struct rdbg_smq_node_layout {
+	u16 index_block;
+	u16 num_blocks;
+} __packed;
+
 struct rdbg_smq_out_layout {
 	struct rdbg_smq_out_state_layout s;
+	struct rdbg_smq_node_layout sent[];
 };
 
 struct rdbg_smq_in_layout {
 	struct rdbg_smq_in_state_layout s;
+	struct rdbg_smq_node_layout free[];
 };
 
 enum rdbg_smq_type_layout {
@@ -63,7 +83,7 @@ enum rdbg_smq_type_layout {
 };
 
 struct rdbg_smq_layout {
-	void *hdr;
+	struct rdbg_smq_header_layout *hdr;
 	struct rdbg_smq_out_layout *out;
 	struct rdbg_smq_in_layout *in;
 	u8 *blocks;
@@ -105,8 +125,13 @@ static_assert(offsetof(struct rdbg_module_storage, class) == 0x88);
 static_assert(offsetof(struct rdbg_module_storage, devt) == 0x90);
 static_assert(offsetof(struct rdbg_module_storage, count) == 0x94);
 static_assert(offsetof(struct rdbg_module_storage, clients) == 0x98);
-static_assert(offsetof(struct rdbg_module_storage, callback_test_anchor) == 0xa0);
+static_assert(sizeof(struct rdbg_module_storage) == 0xa0);
+static_assert(sizeof(struct rdbg_proc_info_layout) == 0x18);
+static_assert(offsetof(struct rdbg_proc_info_layout, smem_buffer_addr) == 0x8);
+static_assert(offsetof(struct rdbg_proc_info_layout, smem_buffer_size) == 0x10);
 static_assert(sizeof(struct rdbg_smq_layout) == 0x50);
+static_assert(sizeof(struct rdbg_smq_header_layout) == 2);
+static_assert(sizeof(struct rdbg_smq_node_layout) == 4);
 static_assert(offsetof(struct rdbg_data_layout, device_opened) == 0x60);
 static_assert(offsetof(struct rdbg_data_layout, producer_smrb) == 0x78);
 static_assert(offsetof(struct rdbg_data_layout, consumer_smrb) == 0xc8);

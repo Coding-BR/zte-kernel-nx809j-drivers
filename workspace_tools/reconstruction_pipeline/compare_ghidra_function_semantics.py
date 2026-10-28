@@ -821,6 +821,91 @@ def named_data_address_syntax_fallback(
     }
 
 
+def rdbg_proc_info_index_syntax_fallback(
+    stock: str,
+    candidate: str,
+    stock_artifacts: list[dict[str, Any]],
+    candidate_artifacts: list[dict[str, Any]],
+    stock_named_data_bindings: dict[str, str] | None,
+    candidate_named_data_bindings: dict[str, str] | None,
+) -> dict[str, Any] | None:
+    """Normalize two Ghidra forms for the same proc_info.name array element.
+
+    This admits only the stock ``(&proc_info)[device_id * 3]`` form and the
+    candidate ``*(u64 *)(&proc_info + byte_offset)`` form when the byte offset
+    is explicitly ``device_id * 0x18`` on both decompilations and both exports
+    prove the same shared ``proc_info`` data binding. The caller additionally
+    requires equal function body bytes and P-Code operation shape.
+    """
+    shared_symbol = "GHIDRA_DATA_SHARED_proc_info"
+    if (
+        not stock_named_data_bindings
+        or not candidate_named_data_bindings
+        or stock_named_data_bindings.get("proc_info") != shared_symbol
+        or candidate_named_data_bindings.get("proc_info") != shared_symbol
+    ):
+        return None
+
+    stock_table_artifacts = [
+        item for item in stock_artifacts
+        if item.get("kind") == "elf_pointer_table_base_symbol"
+        and item.get("value") == "proc_info"
+    ]
+    candidate_binding_artifacts = [
+        item for item in candidate_artifacts
+        if item.get("kind") == "ghidra_named_data_binding"
+        and item.get("value") == "proc_info"
+        and item.get("normalized") == shared_symbol
+    ]
+    if len(stock_table_artifacts) != 2 or len(candidate_binding_artifacts) != 2:
+        return None
+
+    stock_access = re.compile(r"GHIDRA_POINTER_TABLE\[\(ulong\)uVar9\*3\]")
+    candidate_access = re.compile(
+        r"\*\(undefined8\*\)\(&GHIDRA_DATA_SHARED_proc_info\+lVar8\)"
+    )
+    stock_accesses = list(stock_access.finditer(stock))
+    candidate_accesses = list(candidate_access.finditer(candidate))
+    stock_stride = "lVar8=(ulong)uVar9*0x18;"
+    if (
+        len(stock_accesses) != 2
+        or len(candidate_accesses) != 2
+        or stock.count(stock_stride) != 1
+        or candidate.count(stock_stride) != 1
+    ):
+        return None
+
+    normalized_stock = stock_access.sub("GHIDRA_PROC_INFO_NAME_BY_DEVICE", stock)
+    normalized_candidate = candidate_access.sub(
+        "GHIDRA_PROC_INFO_NAME_BY_DEVICE", candidate
+    )
+    if normalized_stock != normalized_candidate:
+        return None
+
+    return {
+        "kind": "rdbg_proc_info_array_index_representation",
+        "symbol": "proc_info",
+        "stock_expression": "proc_info[(ulong)device_id * 3]",
+        "candidate_expression": "*(u64 *)(&proc_info + byte_offset)",
+        "index_variable": "uVar9",
+        "byte_offset_variable": "lVar8",
+        "byte_offset_assignment": "lVar8 = (ulong)uVar9 * 0x18",
+        "pointer_width_bytes": 8,
+        "array_stride_bytes": 24,
+        "field_offset_bytes": 0,
+        "matched_accesses": 2,
+        "shared_data_binding": shared_symbol,
+        "requirements": [
+            "same ELF shared data binding on stock and candidate",
+            "exactly two matching accesses on each side",
+            "explicit equal device index and 24-byte stride",
+            "whole-function normalized C equality after this substitution",
+            "equal function body bytes and P-Code operation shape",
+            "independent relocation-aware assembly gate remains required",
+        ],
+    }
+
+
 def relocated_pointer_table_index_base_fallback(
     stock: str, candidate: str
 ) -> dict[str, Any] | None:
@@ -2264,6 +2349,7 @@ def compare_function(
     stock_named_data_bindings: dict[str, str] | None = None,
     candidate_named_data_bindings: dict[str, str] | None = None,
     allow_named_data_address_syntax_fallback: bool = False,
+    allow_rdbg_proc_info_index_syntax_fallback: bool = False,
     allow_relocated_pointer_table_index_base_normalization: bool = False,
     stock_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
@@ -2345,6 +2431,7 @@ def compare_function(
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
     named_data_address_syntax_evidence: dict[str, Any] | None = None
+    rdbg_proc_info_index_syntax_evidence: dict[str, Any] | None = None
     pointer_table_index_base_evidence: dict[str, Any] | None = None
     pointer_table_absolute_base_evidence: dict[str, Any] | None = None
     data_field_slice_evidence: dict[str, Any] | None = None
@@ -2443,70 +2530,84 @@ def compare_function(
         if named_data_address_syntax_evidence is not None:
             normalized_decompiled_match = True
         else:
-            if allow_relocated_pointer_table_index_base_normalization:
-                pointer_table_index_base_evidence = (
-                    relocated_pointer_table_index_base_fallback(
-                        stock_normalized, candidate_normalized
+            if allow_rdbg_proc_info_index_syntax_fallback:
+                rdbg_proc_info_index_syntax_evidence = (
+                    rdbg_proc_info_index_syntax_fallback(
+                        stock_normalized,
+                        candidate_normalized,
+                        stock_artifact_evidence,
+                        candidate_artifact_evidence,
+                        stock_named_data_bindings,
+                        candidate_named_data_bindings,
                     )
                 )
-            if pointer_table_index_base_evidence is not None:
+            if rdbg_proc_info_index_syntax_evidence is not None:
                 normalized_decompiled_match = True
             else:
                 if allow_relocated_pointer_table_index_base_normalization:
-                    pointer_table_absolute_base_evidence = (
-                        relocated_pointer_table_absolute_base_fallback(
+                    pointer_table_index_base_evidence = (
+                        relocated_pointer_table_index_base_fallback(
                             stock_normalized, candidate_normalized
                         )
                     )
-                if pointer_table_absolute_base_evidence is not None:
+                if pointer_table_index_base_evidence is not None:
                     normalized_decompiled_match = True
                 else:
-                    if allow_ghidra_data_field_slice_fallback:
-                        data_field_slice_evidence = ghidra_data_field_slice_fallback(
-                            stock_normalized, candidate_normalized
-                        )
-                    if data_field_slice_evidence is not None:
-                        normalized_decompiled_match = True
-                    else:
-                        fallback = fragmented_byte_flag_normalization(
-                            stock_normalized,
-                            candidate_normalized,
-                            stock_artifact_evidence,
-                            candidate_artifact_evidence,
-                        )
-                        if fallback is not None:
-                            fallback_stock, fallback_candidate, fallback_evidence = fallback
-                            normalized_decompiled_match = fallback_stock == fallback_candidate
-                        elif allow_return_propagation_fallback:
-                            return_propagation_fallback = decompiler_return_propagation_artifact(
+                    if allow_relocated_pointer_table_index_base_normalization:
+                        pointer_table_absolute_base_evidence = (
+                            relocated_pointer_table_absolute_base_fallback(
                                 stock_normalized, candidate_normalized
                             )
-                            if (
-                                return_propagation_fallback is None
-                                and allow_pcode_authoritative_decompiler_fallback
-                            ):
-                                pcode_authoritative_fallback = (
-                                    collect_pcode_authoritative_fallback()
-                                )
-                            normalized_decompiled_match = False
-                        elif allow_pcode_authoritative_decompiler_fallback:
-                            pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
-                            normalized_decompiled_match = False
-                        elif allow_exact_assembly_island_decompiler_fallback:
-                            exact_assembly_island_fallback = {
-                                "kind": "ghidra_decompiler_non_authoritative_exact_assembly_island",
-                                "authority": (
-                                    "ELF-bounded AArch64 opcodes and relocations, fresh module identity, "
-                                    "and equal P-Code operation shape"
-                                ),
-                                "requirement": (
-                                    "caller must independently require relocation-aware assembly parity; "
-                                    "this does not claim normalized C equivalence"
-                                ),
-                            }
-                            normalized_decompiled_match = False
+                        )
+                    if pointer_table_absolute_base_evidence is not None:
+                        normalized_decompiled_match = True
+                    else:
+                        if allow_ghidra_data_field_slice_fallback:
+                            data_field_slice_evidence = ghidra_data_field_slice_fallback(
+                                stock_normalized, candidate_normalized
+                            )
+                        if data_field_slice_evidence is not None:
+                            normalized_decompiled_match = True
                         else:
-                            normalized_decompiled_match = False
+                            fallback = fragmented_byte_flag_normalization(
+                                stock_normalized,
+                                candidate_normalized,
+                                stock_artifact_evidence,
+                                candidate_artifact_evidence,
+                            )
+                            if fallback is not None:
+                                fallback_stock, fallback_candidate, fallback_evidence = fallback
+                                normalized_decompiled_match = fallback_stock == fallback_candidate
+                            elif allow_return_propagation_fallback:
+                                return_propagation_fallback = decompiler_return_propagation_artifact(
+                                    stock_normalized, candidate_normalized
+                                )
+                                if (
+                                    return_propagation_fallback is None
+                                    and allow_pcode_authoritative_decompiler_fallback
+                                ):
+                                    pcode_authoritative_fallback = (
+                                        collect_pcode_authoritative_fallback()
+                                    )
+                                normalized_decompiled_match = False
+                            elif allow_pcode_authoritative_decompiler_fallback:
+                                pcode_authoritative_fallback = collect_pcode_authoritative_fallback()
+                                normalized_decompiled_match = False
+                            elif allow_exact_assembly_island_decompiler_fallback:
+                                exact_assembly_island_fallback = {
+                                    "kind": "ghidra_decompiler_non_authoritative_exact_assembly_island",
+                                    "authority": (
+                                        "ELF-bounded AArch64 opcodes and relocations, fresh module identity, "
+                                        "and equal P-Code operation shape"
+                                    ),
+                                    "requirement": (
+                                        "caller must independently require relocation-aware assembly parity; "
+                                        "this does not claim normalized C equivalence"
+                                    ),
+                                }
+                                normalized_decompiled_match = False
+                            else:
+                                normalized_decompiled_match = False
     else:
         normalized_decompiled_match = direct_normalized_match
     checks = {
@@ -2520,6 +2621,7 @@ def compare_function(
     failures = list(raw_failures)
     if (
         named_data_address_syntax_evidence is not None
+        or rdbg_proc_info_index_syntax_evidence is not None
         or pointer_table_index_base_evidence is not None
         or pointer_table_absolute_base_evidence is not None
         or data_field_slice_evidence is not None
@@ -2537,6 +2639,7 @@ def compare_function(
         "decompiled_normalization": {
             "direct_match": direct_normalized_match,
             "named_data_address_syntax_fallback": named_data_address_syntax_evidence,
+            "rdbg_proc_info_index_syntax_fallback": rdbg_proc_info_index_syntax_evidence,
             "pointer_table_index_base_fallback": pointer_table_index_base_evidence,
             "pointer_table_absolute_base_fallback": pointer_table_absolute_base_evidence,
             "data_field_slice_fallback": data_field_slice_evidence,
@@ -2628,6 +2731,14 @@ def parse_args() -> argparse.Namespace:
         "--allow-named-data-address-syntax-fallback",
         action="store_true",
         help="accept only Ghidra obj versus &obj syntax for proven shared data bindings after body/P-Code equality",
+    )
+    parser.add_argument(
+        "--allow-rdbg-proc-info-index-syntax-fallback",
+        action="store_true",
+        help=(
+            "accept only the byte-proven proc_info array-index rendering difference "
+            "after shared binding, body-byte, and P-Code checks"
+        ),
     )
     parser.add_argument(
         "--allow-section-address-normalization",
@@ -2747,6 +2858,7 @@ def main() -> int:
             stock_named_data_bindings,
             candidate_named_data_bindings,
             args.allow_named_data_address_syntax_fallback,
+            args.allow_rdbg_proc_info_index_syntax_fallback,
             args.allow_relocated_same_name_data_normalization,
             stock_absolute_data_ranges,
             candidate_absolute_data_ranges,
@@ -2765,6 +2877,8 @@ def main() -> int:
             "Ghidra normalized decompiled-C equality plus ordered instruction-mnemonic "
             "and P-Code-operation shape equality; shared absolute data references are "
             "normalized only when exact symbol addresses have proven shared bindings; "
+            "the optional RDBG proc_info rule normalizes only two byte-proven array-index "
+            "representations with the same shared symbol and 24-byte stride; "
             "optional explicit P-Code-authoritative "
             "fallback records lossy premature-return or external-call return-propagation decompilation"
         ),
@@ -2785,6 +2899,9 @@ def main() -> int:
         ),
         "named_data_address_syntax_fallback_allowed": (
             args.allow_named_data_address_syntax_fallback
+        ),
+        "rdbg_proc_info_index_syntax_fallback_allowed": (
+            args.allow_rdbg_proc_info_index_syntax_fallback
         ),
         "section_address_normalization_allowed": (
             args.allow_section_address_normalization

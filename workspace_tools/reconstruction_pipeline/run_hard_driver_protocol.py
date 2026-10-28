@@ -294,6 +294,12 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError(
                 "exact assembly-island fallback requires assembly_only=true for every job function"
             )
+    if ghidra.get("allow_rdbg_proc_info_index_syntax_fallback", False):
+        reason = ghidra.get("fallback_reason")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError(
+                "ghidra.fallback_reason is required when the RDBG proc_info index-syntax fallback is enabled"
+            )
     docker = job.get("docker", {})
     if docker.get("adapter", "generic_driver_audit") not in {
         "zte_tpd_canonical",
@@ -1363,6 +1369,8 @@ def execute_post_candidate(
                 ghidra_command.append("--allow-shared-data-binding-normalization")
             if ghidra_config.get("allow_named_data_address_syntax_fallback", False):
                 ghidra_command.append("--allow-named-data-address-syntax-fallback")
+            if ghidra_config.get("allow_rdbg_proc_info_index_syntax_fallback", False):
+                ghidra_command.append("--allow-rdbg-proc-info-index-syntax-fallback")
             if ghidra_config.get("allow_relocated_same_name_data_normalization", False):
                 ghidra_command.append("--allow-relocated-same-name-data-normalization")
             command_name = (
@@ -1779,6 +1787,34 @@ def main() -> int:
             "exact_assembly_island_decompiler_fallback"
         ) is not None
     ]
+    c_normalization_fallbacks = (
+        "named_data_address_syntax_fallback",
+        "rdbg_proc_info_index_syntax_fallback",
+        "pointer_table_index_base_fallback",
+        "pointer_table_absolute_base_fallback",
+        "data_field_slice_fallback",
+        "fragmented_byte_global_fallback",
+        "pcode_authoritative_decompiler_fallback",
+        "return_propagation_fallback",
+        "exact_assembly_island_decompiler_fallback",
+    )
+    ghidra_normalized_c_fallback_functions = [
+        {
+            "function": str(item.get("function", "")),
+            "fallbacks": {
+                name: item["decompiled_normalization"][name]
+                for name in c_normalization_fallbacks
+                if item["decompiled_normalization"].get(name) is not None
+            },
+        }
+        for item in ghidra_semantic_results
+        if isinstance(item, dict)
+        and isinstance(item.get("decompiled_normalization"), dict)
+        and any(
+            item["decompiled_normalization"].get(name) is not None
+            for name in c_normalization_fallbacks
+        )
+    ]
     ghidra_pcode_operation_shape_passed = (
         bool(ghidra_semantic_results)
         and not ghidra_semantic_payload.get("identity_failures")
@@ -1797,6 +1833,8 @@ def main() -> int:
             isinstance(item, dict)
             and isinstance(item.get("checks"), dict)
             and item["checks"].get("normalized_decompiled_c") is True
+            and isinstance(item.get("decompiled_normalization"), dict)
+            and item["decompiled_normalization"].get("direct_match") is True
             for item in ghidra_semantic_results
         )
     )
@@ -1815,6 +1853,9 @@ def main() -> int:
             and not ghidra_assembly_only_fallback_functions
         ),
         "strict_ghidra_normalized_c_comparison_passed": ghidra_normalized_c_strict_passed,
+        "ghidra_normalized_c_fallback_functions": (
+            ghidra_normalized_c_fallback_functions
+        ),
         "ghidra_pcode_operation_shape_passed": ghidra_pcode_operation_shape_passed,
         "ghidra_assembly_only_decompiler_fallback_functions": (
             ghidra_assembly_only_fallback_functions
