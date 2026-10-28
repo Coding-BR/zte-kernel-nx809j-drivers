@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "function": "nb_fan_probe",
+  "stock_identity": "nb_fan_probe@0010052c",
+  "status": "METHOD_CORE_GATES_PASS",
+  "generated_utc": "2026-10-28T12:37:34.741727+00:00",
+  "source": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\soc_fan\\soc_fan.c",
+    "sha256": "21e0b904d4d4ef03e9137bcd7dba10e440a9954d4532de185beea331a76097ed",
+    "function_symbol": {
+      "section": ".text",
+      "offset": 864,
+      "size": 1316,
+      "binding": "STB_LOCAL",
+      "type": "STT_FUNC"
+    }
+  },
+  "stock": {
+    "module": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+    "entry": "0010052c",
+    "size_bytes": 1316,
+    "instruction_count": 329,
+    "relocation_directives": 194,
+    "bss": {
+      "section_size": 16,
+      "chip": {
+        "offset": 0,
+        "size": 8,
+        "binding": "STB_GLOBAL"
+      },
+      "nb_fan_probe.__key": {
+        "offset": 8,
+        "size": 1,
+        "binding": "STB_LOCAL"
+      },
+      "nb_fan_rpm_check.rst_cnt": {
+        "offset": 12,
+        "size": 4,
+        "binding": "STB_LOCAL"
+      }
+    }
+  },
+  "candidate": {
+    "module_path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_probe_20261028_final_r37/docker/work/soc_fan/cycle_2/soc_fan.ko",
+    "sha256": "c11c13d11a4e139976eb4bc83b24fc286f68dcf48e0313144bd167ab9312db7d",
+    "size_bytes": 281336,
+    "docker_cycle_1_sha256": "c11c13d11a4e139976eb4bc83b24fc286f68dcf48e0313144bd167ab9312db7d",
+    "docker_cycle_2_sha256": "c11c13d11a4e139976eb4bc83b24fc286f68dcf48e0313144bd167ab9312db7d",
+    "reproducible": true,
+    "bss_size_bytes": 16,
+    "symbols": {
+      "nb_fan_probe.__key": {
+        "section": ".bss",
+        "offset": 8,
+        "size": 1,
+        "binding": "STB_LOCAL",
+        "type": "STT_OBJECT"
+      },
+      "nb_fan_rpm_check.rst_cnt": {
+        "section": ".bss",
+        "offset": 12,
+        "size": 4,
+        "binding": "STB_LOCAL",
+        "type": "STT_OBJECT"
+      },
+      "nb_fan_probe": {
+        "section": ".text",
+        "offset": 864,
+        "size": 1316,
+        "binding": "STB_LOCAL",
+        "type": "STT_FUNC"
+      },
+      "chip": {
+        "section": ".bss",
+        "offset": 0,
+        "size": 8,
+        "binding": "STB_GLOBAL",
+        "type": "STT_OBJECT"
+      }
+    }
+  },
+  "automated_core_gates": {
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "INPUT_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "KCFI": "PASS",
+    "MAP_IDENTITY": "PASS"
+  },
+  "assembly": {
+    "passed": true,
+    "stock_instruction_count": 329,
+    "candidate_instruction_count": 329,
+    "stock_symbol_size_bytes": 1316,
+    "candidate_symbol_size_bytes": 1316,
+    "stock_comparator_relocations": 161,
+    "candidate_comparator_relocations": 161,
+    "synthetic_local_call_relocations": [
+      {
+        "offset": "0x348",
+        "target": "nb_fan_parse_dt"
+      },
+      {
+        "offset": "0x3c0",
+        "target": "nb_fan_gpio_proc"
+      }
+    ]
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xc7f8c87c",
+    "candidate_type_id": "0xc7f8c87c",
+    "stock_size": 1316,
+    "candidate_size": 1316
+  },
+  "ghidra": {
+    "candidate_export": "reverse_engineering/validation/reconstructed/soc_fan/attestation/ghidra_r35/soc_fan.ko",
+    "candidate_entry": "00100728",
+    "body_bytes_match": true,
+    "pcode_operation_shape_match": true,
+    "normalized_decompiled_c_match": false,
+    "exact_assembly_only_fallback_used": true,
+    "fallback_authority": "ELF-bounded AArch64 opcodes and relocations, fresh module identity, and equal P-Code operation shape",
+    "pcode_records_stock": 970,
+    "pcode_records_candidate": 970,
+    "reviewed_difference": "Pointer rendering only: stock `undefined *puVar5`; candidate `undefined1 *puVar5`, as confirmed by independent review; P-Code operation shape and exact function bytes match."
+  },
+  "joern": {
+    "status": "PASS",
+    "scope": "assembly-only function declaration; C method/CFG checks do not model the body"
+  },
+  "independent_review": {
+    "reviewer": "Hubble",
+    "status": "PASS_METHOD_BODY",
+    "review_mode": "read-only",
+    "reviewed_source_sha256": "21e0b904d4d4ef03e9137bcd7dba10e440a9954d4532de185beea331a76097ed",
+    "reviewed_candidate_sha256": "c11c13d11a4e139976eb4bc83b24fc286f68dcf48e0313144bd167ab9312db7d",
+    "applies_to_r37_by_identity": true,
+    "findings": [
+      "No behavior divergence found in the exact body.",
+      "329 instructions, 1316 bytes, KCFI and BSS symbol layout were independently corroborated.",
+      "Ghidra normalized-C output differs only in pointer-width rendering; P-Code operation shape matches.",
+      "The earlier report wording conflated assembly-only acceptance with strict Ghidra equality; R37 report now records strict-C and P-Code-shape results separately."
+    ],
+    "scope_limit": "Independent method review only; it does not clear driver-wide integration, registration/data tables, runtime or hardware.",
+    "reviewed_artifact_identity_matches_r37": true
+  },
+  "limitations": [
+    "Method-level only; no driver-wide completion claim.",
+    "nubia_fan_driver and chip_attr_group remain zeroed scaffolding; registration/data tables remain incomplete.",
+    "Generic Docker driver audit remains incomplete because canonical reconstructed .ko and candidate Ghidra export are not integrated at the driver-wide paths.",
+    "No hardware/runtime test was performed.",
+    "Normalized Ghidra C equality is false for this assembly-only function; acceptance uses exact reloc-aware assembly plus equal Ghidra body bytes and P-Code operation shape."
+  ],
+  "evidence": [
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_probe_20261028_final_r37/hard_protocol_report.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_probe_20261028_final_r37/assembly/comparison.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_probe_20261028_final_r37/ghidra/semantic_comparison.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_probe_20261028_final_r37/kcfi/comparison.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/ghidra_r35/soc_fan.ko/manifest.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/ghidra_r35/analyze_headless.log"
+  ]
+}

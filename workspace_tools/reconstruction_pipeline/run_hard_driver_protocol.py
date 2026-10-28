@@ -1303,75 +1303,144 @@ def execute_post_candidate(
             candidate_module=candidate_module, functions=functions,
         )
         candidate_export = semantic_exports["candidate_export"]
-        ghidra_report = output_dir / "ghidra" / "semantic_comparison.json"
-        ghidra_command = python_command(
-            python, tools_root / "compare_ghidra_function_semantics.py",
-            "--stock-export", str(semantic_exports["stock_export"]),
-            "--candidate-export", str(candidate_export),
-            "--stock-module", str(stock_module),
-            "--candidate-module", str(candidate_module),
-            "--output", str(ghidra_report),
-        )
-        for item in functions:
-            # init_module/cleanup_module are ELF entry aliases emitted by
-            # module_init/module_exit; compare the stock and candidate Ghidra
-            # symbols, while keeping source_function for Joern/map identity.
-            candidate_function = item.get("candidate_function", item["source_function"])
-            # Ghidra selectors use the actual function entry.  The separate
-            # stock_symbol_offset field is an ELF/KCFI/assembly selector and
-            # must not be reused here.
-            stock_entry = int(item["stock_entry"], 16) + semantic_exports["stock_entry_bias"]
-            stock_selector = f"{item['stock_function']}@{stock_entry:08x}"
-            candidate_selector = candidate_function
-            if stock_selector != candidate_selector:
-                ghidra_command.extend(["--function-pair", f"{stock_selector}={candidate_selector}"])
-            else:
-                ghidra_command.extend(["--function", stock_selector])
+        ghidra_dir = output_dir / "ghidra"
+        ghidra_dir.mkdir(parents=True, exist_ok=True)
+        strict_c_functions = [item for item in functions if not item.get("assembly_only", False)]
+        assembly_only_functions = [item for item in functions if item.get("assembly_only", False)]
+        groups: list[tuple[str, list[dict[str, Any]], bool]] = []
+        if strict_c_functions:
+            groups.append(("strict_c", strict_c_functions, False))
+        if assembly_only_functions:
+            # The comparator's exact-island option is scoped to this invocation,
+            # so it cannot waive normalized-C equality for ordinary C methods.
+            groups.append(("assembly_only", assembly_only_functions, True))
+        ghidra_group_results: list[dict[str, Any]] = []
         ghidra_config = job.get("ghidra", {})
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_pcode_authoritative_decompiler_fallback", False
-        ):
-            ghidra_command.append("--allow-pcode-authoritative-decompiler-fallback")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_return_propagation_fallback", False
-        ):
-            ghidra_command.append("--allow-ghidra-return-propagation-fallback")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_section_address_normalization", False
-        ):
-            ghidra_command.append("--allow-section-address-normalization")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_ghidra_data_field_slice_fallback", False
-        ):
-            ghidra_command.append("--allow-ghidra-data-field-slice-fallback")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_exact_assembly_island_decompiler_fallback", False
-        ):
-            ghidra_command.append("--allow-exact-assembly-island-decompiler-fallback")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_shared_data_binding_normalization", False
-        ):
-            ghidra_command.append("--allow-shared-data-binding-normalization")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_named_data_address_syntax_fallback", False
-        ):
-            ghidra_command.append("--allow-named-data-address-syntax-fallback")
-        if isinstance(ghidra_config, dict) and ghidra_config.get(
-            "allow_relocated_same_name_data_normalization", False
-        ):
-            ghidra_command.append("--allow-relocated-same-name-data-normalization")
-        result = run_command(
-            "ghidra_semantics", ghidra_command,
-            output_dir=output_dir, timeout=command_timeout,
+        if not isinstance(ghidra_config, dict):
+            ghidra_config = {}
+        ghidra_group_reports: list[tuple[str, Path, bool, dict[str, Any] | None]] = []
+        for group_name, group_functions, assembly_island_group in groups:
+            report_path = (
+                ghidra_dir / "semantic_comparison.json"
+                if len(groups) == 1
+                else ghidra_dir / f"semantic_comparison_{group_name}.json"
+            )
+            ghidra_command = python_command(
+                python, tools_root / "compare_ghidra_function_semantics.py",
+                "--stock-export", str(semantic_exports["stock_export"]),
+                "--candidate-export", str(candidate_export),
+                "--stock-module", str(stock_module),
+                "--candidate-module", str(candidate_module),
+                "--output", str(report_path),
+            )
+            for item in group_functions:
+                # init_module/cleanup_module are ELF entry aliases emitted by
+                # module_init/module_exit; compare the stock and candidate Ghidra
+                # symbols, while keeping source_function for Joern/map identity.
+                candidate_function = item.get("candidate_function", item["source_function"])
+                # Ghidra selectors use the actual function entry.  The separate
+                # stock_symbol_offset field is an ELF/KCFI/assembly selector and
+                # must not be reused here.
+                stock_entry = int(item["stock_entry"], 16) + semantic_exports["stock_entry_bias"]
+                stock_selector = f"{item['stock_function']}@{stock_entry:08x}"
+                if stock_selector != candidate_function:
+                    ghidra_command.extend(["--function-pair", f"{stock_selector}={candidate_function}"])
+                else:
+                    ghidra_command.extend(["--function", stock_selector])
+            if ghidra_config.get("allow_pcode_authoritative_decompiler_fallback", False):
+                ghidra_command.append("--allow-pcode-authoritative-decompiler-fallback")
+            if ghidra_config.get("allow_return_propagation_fallback", False):
+                ghidra_command.append("--allow-ghidra-return-propagation-fallback")
+            if ghidra_config.get("allow_section_address_normalization", False):
+                ghidra_command.append("--allow-section-address-normalization")
+            if ghidra_config.get("allow_ghidra_data_field_slice_fallback", False):
+                ghidra_command.append("--allow-ghidra-data-field-slice-fallback")
+            if assembly_island_group or ghidra_config.get(
+                "allow_exact_assembly_island_decompiler_fallback", False
+            ):
+                ghidra_command.append("--allow-exact-assembly-island-decompiler-fallback")
+            if ghidra_config.get("allow_shared_data_binding_normalization", False):
+                ghidra_command.append("--allow-shared-data-binding-normalization")
+            if ghidra_config.get("allow_named_data_address_syntax_fallback", False):
+                ghidra_command.append("--allow-named-data-address-syntax-fallback")
+            if ghidra_config.get("allow_relocated_same_name_data_normalization", False):
+                ghidra_command.append("--allow-relocated-same-name-data-normalization")
+            command_name = (
+                "ghidra_semantics" if len(groups) == 1
+                else f"ghidra_semantics_{group_name}"
+            )
+            result = run_command(
+                command_name, ghidra_command,
+                output_dir=output_dir, timeout=command_timeout,
+            )
+            commands[command_name] = result
+            group_pass = result["returncode"] == 0 and report_passed(report_path)
+            group_payload = read_json(report_path) if report_path.is_file() else None
+            ghidra_group_reports.append((group_name, report_path, group_pass, group_payload))
+            ghidra_group_results.append({
+                "group": group_name,
+                "report": str(report_path),
+                "passed": group_pass,
+                "functions": [str(item["source_function"]) for item in group_functions],
+                "assembly_island_fallback_scoped": assembly_island_group,
+            })
+
+        ghidra_report = ghidra_dir / "semantic_comparison.json"
+        if len(ghidra_group_reports) > 1:
+            payloads = [item[3] for item in ghidra_group_reports if item[3] is not None]
+            aggregate = dict(payloads[0]) if payloads else {}
+            aggregate["passed"] = (
+                len(payloads) == len(ghidra_group_reports)
+                and all(item[2] for item in ghidra_group_reports)
+            )
+            aggregate["requested_functions"] = [
+                selector
+                for payload in payloads
+                for selector in payload.get("requested_functions", [])
+            ]
+            aggregate["results"] = [
+                result
+                for payload in payloads
+                for result in payload.get("results", [])
+            ]
+            aggregate["identity_failures"] = [
+                failure
+                for payload in payloads
+                for failure in payload.get("identity_failures", [])
+            ]
+            aggregate["comparison_policy"] = {
+                "strict_normalized_c_functions": [
+                    str(item["source_function"]) for item in strict_c_functions
+                ],
+                "assembly_only_functions": [
+                    str(item["source_function"]) for item in assembly_only_functions
+                ],
+                "assembly_only_decompiler_fallback_scoped_to_declared_functions": True,
+                "assembly_only_authority": (
+                    "separate relocation-aware assembly parity plus equal Ghidra body bytes "
+                    "and P-Code operation shape; no normalized-C equivalence claim"
+                ),
+            }
+            aggregate["subreports"] = ghidra_group_results
+            write_json(ghidra_report, aggregate)
+        elif ghidra_group_reports:
+            ghidra_report = ghidra_group_reports[0][1]
+        ghidra_pass = (
+            bool(ghidra_group_reports)
+            and all(item[2] for item in ghidra_group_reports)
+            and report_passed(ghidra_report)
         )
-        commands["ghidra_semantics"] = result
-        ghidra_pass = result["returncode"] == 0 and report_passed(ghidra_report)
+        if len(ghidra_group_reports) > 1:
+            commands["ghidra_semantics"] = {
+                "returncode": 0 if ghidra_pass else 1,
+                "timed_out": False,
+                "stdout_tail": json.dumps({
+                    "passed": ghidra_pass,
+                    "subreports": ghidra_group_results,
+                }, sort_keys=True),
+                "policy": "strict C comparison and declared assembly-only comparison ran separately",
+            }
         ghidra_predicate_used = False
-        if not ghidra_pass:
-            exemption = assembly_only_ghidra_exemption(functions, ghidra_report)
-            if exemption is not None:
-                result["analysis_exemption"] = exemption
-                ghidra_pass = True
         if not ghidra_pass and isinstance(predicate_config, dict):
             allowed_functions = set(predicate_config.get("functions", []))
             allowed_kinds = set(predicate_config.get("kinds", []))
@@ -1696,6 +1765,41 @@ def main() -> int:
     evidence_required = sorted(
         name for name, spec in gates_required.items() if spec["kind"] == "EVIDENCE"
     )
+    ghidra_semantic_report = output_dir / "ghidra" / "semantic_comparison.json"
+    ghidra_semantic_payload = (
+        read_json(ghidra_semantic_report) if ghidra_semantic_report.is_file() else {}
+    )
+    ghidra_semantic_results = ghidra_semantic_payload.get("results", [])
+    ghidra_assembly_only_fallback_functions = [
+        str(item.get("function", ""))
+        for item in ghidra_semantic_results
+        if isinstance(item, dict)
+        and isinstance(item.get("decompiled_normalization"), dict)
+        and item["decompiled_normalization"].get(
+            "exact_assembly_island_decompiler_fallback"
+        ) is not None
+    ]
+    ghidra_pcode_operation_shape_passed = (
+        bool(ghidra_semantic_results)
+        and not ghidra_semantic_payload.get("identity_failures")
+        and all(
+            isinstance(item, dict)
+            and isinstance(item.get("checks"), dict)
+            and item["checks"].get("body_bytes") is True
+            and item["checks"].get("pcode_operation_shape") is True
+            for item in ghidra_semantic_results
+        )
+    )
+    ghidra_normalized_c_strict_passed = (
+        bool(ghidra_semantic_results)
+        and not ghidra_semantic_payload.get("identity_failures")
+        and all(
+            isinstance(item, dict)
+            and isinstance(item.get("checks"), dict)
+            and item["checks"].get("normalized_decompiled_c") is True
+            for item in ghidra_semantic_results
+        )
+    )
     report = {
         "schema_version": SCHEMA_VERSION,
         "generated_utc": utc_now(),
@@ -1708,6 +1812,15 @@ def main() -> int:
         "strict_assembly_comparison_passed": gate_status.get("ASSEMBLY_RELOCATIONS") == "PASS",
         "strict_ghidra_pcode_comparison_passed": (
             gate_status.get("CANDIDATE_GHIDRA_PCODE") == "PASS"
+            and not ghidra_assembly_only_fallback_functions
+        ),
+        "strict_ghidra_normalized_c_comparison_passed": ghidra_normalized_c_strict_passed,
+        "ghidra_pcode_operation_shape_passed": ghidra_pcode_operation_shape_passed,
+        "ghidra_assembly_only_decompiler_fallback_functions": (
+            ghidra_assembly_only_fallback_functions
+        ),
+        "assembly_only_ghidra_fallback_used": bool(
+            ghidra_assembly_only_fallback_functions
         ),
         "predicate_equivalence_used": (
             any(
@@ -1727,6 +1840,13 @@ def main() -> int:
     if report["predicate_equivalence_used"]:
         report["limitations"].append(
             "Strict Assembly or Ghidra P-Code shape differs; each accepted gate is tied to the separately recorded, hash-bound predicate-equivalence proof."
+        )
+    if ghidra_assembly_only_fallback_functions:
+        report["limitations"].append(
+            "Normalized Ghidra C equality is not claimed for assembly-only functions: "
+            + ", ".join(ghidra_assembly_only_fallback_functions)
+            + ". Their method gate relies on equal function bytes and P-Code operation shape, "
+            "with relocation-aware assembly parity checked separately."
         )
     write_json(output_dir / "hard_protocol_report.json", report)
     decision = {
