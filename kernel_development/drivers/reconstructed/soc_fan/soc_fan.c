@@ -1,5 +1,6 @@
 #include <linux/atomic.h>
 #include <linux/device.h>
+#include <linux/delay.h>
 #include <linux/hrtimer.h>
 #include <linux/gpio.h>
 #include <linux/gpio/consumer.h>
@@ -10,6 +11,7 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/pwm.h>
+#include <linux/regulator/consumer.h>
 #include <linux/printk.h>
 #include <linux/sysfs.h>
 #include <linux/types.h>
@@ -155,6 +157,98 @@ stop_calculation:
 	       (*(u8 **)((u8 *)chip + 0x08))[0],
 	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
 	return HRTIMER_NORESTART;
+}
+
+/* Recover the PWM, GPIO and regulator side effects for a fan-level change. */
+static __used int fan_level_set(u8 *fan_state, u8 level)
+{
+	struct regulator *vdd_fan = *(struct regulator **)((u8 *)chip + 0x48);
+	struct pwm_state pwm_state;
+	u64 state_tail;
+	bool pwm_enabled;
+	u32 pwm_duty;
+	struct pwm_device *state_pwm;
+	int gpio_num;
+	u8 *chip_value;
+	u8 *chip_state;
+	register u64 pwm_period asm("x9");
+	int gpio_value;
+	int ret;
+
+	if (fan_state[0] == level) {
+		printk(KERN_DEBUG "[%s] [%s:%d] fan have in level=%d.\n",
+		       "NB_FAN", "fan_level_set", 0x94, level);
+		return 0;
+	}
+
+	if (level == 0) {
+		if (vdd_fan && regulator_is_enabled(vdd_fan)) {
+			ret = regulator_disable(vdd_fan);
+			printk(KERN_DEBUG
+			       "[%s] [%s:%d] NB_FAN: close fan power!ret=%d.\n",
+			       "NB_FAN", "nb_fan_power_set", 0xe5, ret);
+		}
+	} else if (vdd_fan && !regulator_is_enabled(vdd_fan)) {
+		ret = regulator_enable(vdd_fan);
+		msleep(10);
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] NB_FAN: open fan power!ret=%d.\n",
+		       "NB_FAN", "nb_fan_power_set", 0xed, ret);
+	}
+
+	/* Keep the stock Clang load/store schedule around the PWM state. */
+	/* Empty barriers emit no instructions; the x9 immediate matches stock. */
+	state_pwm = *(struct pwm_device **)(fan_state + 0x68);
+	asm volatile("" : "+r" (state_pwm) : : "memory");
+	pwm_duty = level * 8000;
+	pwm_enabled = level != 0;
+	asm volatile("" : : "r" (pwm_enabled));
+	state_tail = *(u64 *)((u8 *)state_pwm + 0x40);
+	pwm_state.duty_cycle = pwm_duty;
+	*(u64 *)((u8 *)&pwm_state + 0x10) = state_tail;
+	asm volatile("" : : : "memory");
+	chip_value = (u8 *)chip;
+	asm volatile("" : "+r" (chip_value) : : "memory");
+	asm volatile("mov w9, #40000" : "=r" (pwm_period)
+		     : "r" (chip_value));
+	pwm_state.enabled = pwm_enabled;
+	chip_state = *(u8 **)(chip_value + 0x08);
+	*(volatile u64 *)((u8 *)&pwm_state) = pwm_period;
+	gpio_num = *(int *)(chip_state + 0x10);
+	gpio_value = gpiod_get_raw_value(gpio_to_desc(gpio_num));
+	if (level == 5) {
+		if (gpio_value == 1)
+			gpiod_direction_output_raw(
+				gpio_to_desc(*(int *)(*(u8 **)((u8 *)chip + 0x08) + 0x10)), 0);
+		struct pwm_device *level_pwm =
+			*(struct pwm_device **)(fan_state + 0x68);
+		u64 idle_tail = *(volatile u64 *)((u8 *)level_pwm + 0x40);
+		u32 idle_polarity = *(volatile u32 *)((u8 *)level_pwm + 0x28);
+		u64 idle_period = *(volatile u64 *)((u8 *)level_pwm + 0x20);
+		*(u64 *)((u8 *)&pwm_state + 0x08) = 0;
+		*(u64 *)((u8 *)&pwm_state + 0x10) = idle_tail;
+		pwm_state.polarity = idle_polarity;
+		*(volatile u64 *)((u8 *)&pwm_state) = idle_period;
+		*(u16 *)((u8 *)&pwm_state + 0x14) = 0;
+	} else if (gpio_value == 0) {
+		gpiod_direction_output_raw(
+			gpio_to_desc(*(int *)(*(u8 **)((u8 *)chip + 0x08) + 0x10)), 1);
+	}
+
+	{
+		struct pwm_device *pwm = *(
+			struct pwm_device **)(fan_state + 0x68);
+		struct pwm_chip *pwm_chip = pwm->chip;
+		ret = pwm_chip->ops->apply(pwm_chip, pwm, &pwm_state);
+	}
+	if (ret < 0) {
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] Apply PWM state for fan_level=%d failed, rc=%d\n",
+		       "NB_FAN", "fan_level_set", 0xbf, level, ret);
+	} else {
+		fan_state[0] = level;
+	}
+	return ret;
 }
 
 /*
