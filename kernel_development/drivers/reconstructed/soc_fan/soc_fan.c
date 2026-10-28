@@ -11,6 +11,7 @@
 #include <linux/kernel.h>
 #include <linux/kobject.h>
 #include <linux/module.h>
+#include <linux/of.h>
 #include <linux/platform_device.h>
 #include <linux/pwm.h>
 #include <linux/regulator/consumer.h>
@@ -139,11 +140,71 @@ __asm__(
 );
 
 
-/* Layout scaffolding; the driver's fields and sysfs table are still pending. */
+static int nb_fan_probe(struct platform_device *pdev);
+static void nb_fan_remove(struct platform_device *pdev);
+static ssize_t fan_enable_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *buf);
+static ssize_t fan_enable_store(struct kobject *kobj,
+				struct kobj_attribute *attr,
+				const char *buf, size_t count);
+static ssize_t fan_level_show(struct kobject *kobj,
+			      struct kobj_attribute *attr, char *buf);
+static ssize_t fan_level_store(struct kobject *kobj,
+			       struct kobj_attribute *attr,
+			       const char *buf, size_t count);
+static ssize_t fan_pwm_store(struct kobject *kobj,
+			     struct kobj_attribute *attr,
+			     const char *buf, size_t count);
+static ssize_t fan_speed_show(struct kobject *kobj,
+			      struct kobj_attribute *attr, char *buf);
+static struct kobj_attribute fan_enable_attr;
+static struct kobj_attribute fan_speed_level_attr;
+static struct kobj_attribute fan_speed_pwm_attr;
+static struct kobj_attribute fan_speed_count_attr;
+
+static const struct of_device_id nubia_fan_of_match[] = {
+	{ .compatible = "soc,fan" },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, nubia_fan_of_match);
+
 static struct platform_driver nubia_fan_driver
-	__used __attribute__((section(".data"))) = {};
+	__used __attribute__((section(".data"))) = {
+	.probe = nb_fan_probe,
+	.remove = nb_fan_remove,
+	.driver = {
+		.name = "soc,fan",
+		.of_match_table = nubia_fan_of_match,
+	},
+};
+
 static struct attribute_group chip_attr_group
-	__used __attribute__((section(".data"))) = {};
+	__used __attribute__((section(".data"))) = {
+	.attrs = (struct attribute **)((char *)&chip_attr_group +
+				       sizeof(chip_attr_group)),
+};
+
+static struct attribute *chip_attrs[5] __used
+	__attribute__((section(".data"))) = {
+	&fan_enable_attr.attr,
+	&fan_speed_level_attr.attr,
+	&fan_speed_pwm_attr.attr,
+	&fan_speed_count_attr.attr,
+	NULL,
+};
+
+static struct kobj_attribute fan_enable_attr __used
+	__attribute__((section(".data"))) =
+	__ATTR(fan_enable, 0664, fan_enable_show, fan_enable_store);
+static struct kobj_attribute fan_speed_level_attr __used
+	__attribute__((section(".data"))) =
+	__ATTR(fan_speed_level, 0664, fan_level_show, fan_level_store);
+static struct kobj_attribute fan_speed_pwm_attr __used
+	__attribute__((section(".data"))) =
+	__ATTR(fan_speed_pwm, 0664, NULL, fan_pwm_store);
+static struct kobj_attribute fan_speed_count_attr __used
+	__attribute__((section(".data"))) =
+	__ATTR(fan_speed_count, 0664, fan_speed_show, NULL);
 
 /* Count fan tachometer interrupts through the stock atomic counter. */
 static __used irqreturn_t fan_speed_irq_proc(int irq, void *dev_id)
