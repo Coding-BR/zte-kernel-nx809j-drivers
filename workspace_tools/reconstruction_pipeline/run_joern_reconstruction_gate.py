@@ -812,8 +812,9 @@ def build_cross_oracle_report(
                 "kind": "ASSEMBLY_ONLY_SOURCE_METHOD",
                 "source_function": name,
                 "reason": (
-                    "compiler-generated Assembly helper is compiled from a .S source "
-                    "unit and has no independent C method for Joern resolution"
+                    "function is marked assembly_only by the reconstruction job; "
+                    "Joern C method-presence and source-CFG checks do not model its "
+                    "assembly implementation"
                 ),
                 "effect": "Joern method-presence and source-CFG requirements are not applicable",
             }
