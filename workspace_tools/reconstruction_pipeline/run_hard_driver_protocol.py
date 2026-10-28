@@ -1353,6 +1353,10 @@ def execute_post_candidate(
         ):
             ghidra_command.append("--allow-shared-data-binding-normalization")
         if isinstance(ghidra_config, dict) and ghidra_config.get(
+            "allow_named_data_address_syntax_fallback", False
+        ):
+            ghidra_command.append("--allow-named-data-address-syntax-fallback")
+        if isinstance(ghidra_config, dict) and ghidra_config.get(
             "allow_relocated_same_name_data_normalization", False
         ):
             ghidra_command.append("--allow-relocated-same-name-data-normalization")

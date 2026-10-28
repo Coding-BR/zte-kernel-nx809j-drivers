@@ -1,3 +1,5 @@
+#include <asm/alternative-macros.h>
+#include <asm/cpucaps.h>
 #include <linux/atomic.h>
 #include <linux/device.h>
 #include <linux/delay.h>
@@ -28,12 +30,35 @@ static struct attribute_group chip_attr_group
 /* Count fan tachometer interrupts through the stock atomic counter. */
 static __used irqreturn_t fan_speed_irq_proc(int irq, void *dev_id)
 {
-	atomic_t *speed_count =
-		(atomic_t *)(*(u8 **)((u8 *)dev_id + 0x08) + 0x04);
-
-	/* The arm64 atomic primitive supplies the stock prefetch hint. */
-	atomic_inc(speed_count);
-	return IRQ_HANDLED;
+	/* Keep the stock LSE path, callback alternative, and LL/SC fallback. */
+	asm goto(
+		"ldr x8, [x1, #8]\n\t"
+		ALTERNATIVE_CB("b\t%l[llsc]", %[cpucap], alt_cb_patch_nops)
+		"add x8, x8, #4\n\t"
+		"mov w9, #1\n\t"
+		".inst 0xb829011f\n\t"
+		"mov w0, #1\n\t"
+		"ret\n\t"
+		:
+		: [cpucap] "i" (ARM64_HAS_LSE_ATOMICS)
+		: "x8", "x9", "memory"
+		: llsc);
+	__builtin_unreachable();
+llsc:
+	asm volatile(
+		"add x8, x8, #4\n\t"
+		"prfm pstl1strm, [x8]\n\t"
+		"3:\n\t"
+		"ldxr w9, [x8]\n\t"
+		"add w9, w9, #1\n\t"
+		"stxr w10, w9, [x8]\n\t"
+		"cbnz w10, 3b\n\t"
+		"mov w0, #1\n\t"
+		"ret\n\t"
+		:
+		:
+		: "x8", "x9", "x10", "memory");
+	__builtin_unreachable();
 }
 
 static __used int nb_fan_gpio_proc(long *context)

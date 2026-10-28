@@ -336,10 +336,12 @@ def shared_named_data_bindings(
             candidate_token = candidate[name]
             stock_section, _ = stock_token.rsplit("_", 1)
             candidate_section, _ = candidate_token.rsplit("_", 1)
-            if stock_section != candidate_section or stock_token == candidate_token:
+            if stock_section != candidate_section:
                 continue
-            canonical = "GHIDRA_DATA_SHARED_" + re.sub(
-                r"[^A-Za-z0-9_]", "_", name
+            canonical = (
+                stock_token
+                if stock_token == candidate_token
+                else "GHIDRA_DATA_SHARED_" + re.sub(r"[^A-Za-z0-9_]", "_", name)
             )
             stock_bindings[name] = canonical
             candidate_bindings[name] = canonical
@@ -347,6 +349,43 @@ def shared_named_data_bindings(
         stock_bindings,
         candidate_bindings,
     )
+
+
+def shared_absolute_data_bindings(
+    root: Path, shared_bindings: dict[str, str]
+) -> dict[int, dict[str, Any]]:
+    """Index absolute data addresses only when a shared named binding proves them.
+
+    Ghidra can render a relocated data reference as an integer when the
+    referenced object begins at the program's minimum address.  Resolve only
+    exact symbol addresses whose same-name binding was already proven shared
+    by section-relative offset (or the explicitly enabled same-name rule).
+    """
+    candidates: dict[int, dict[str, Any]] = {}
+    ambiguous: set[int] = set()
+    for record in read_jsonl(root / "symbols.jsonl"):
+        name = record.get("name")
+        address = record.get("address")
+        token = shared_bindings.get(name) if isinstance(name, str) else None
+        if not isinstance(address, str) or token is None:
+            continue
+        try:
+            numeric_address = int(address, 16)
+        except ValueError:
+            continue
+        existing = candidates.get(numeric_address)
+        if existing is not None and existing["token"] != token:
+            ambiguous.add(numeric_address)
+            continue
+        if existing is None:
+            candidates[numeric_address] = {"token": token, "symbols": [name]}
+        elif name not in existing["symbols"]:
+            existing["symbols"].append(name)
+    return {
+        address: binding
+        for address, binding in candidates.items()
+        if address not in ambiguous
+    }
 
 
 def elf_sections(module: Path) -> tuple[bytes, dict[str, tuple[int, int]]]:
@@ -466,12 +505,14 @@ def normalize_decompiled(
     symbol_strings: dict[str, str] | None = None,
     named_data_bindings: dict[str, str] | None = None,
     absolute_data_ranges: list[tuple[str, int, int]] | None = None,
+    shared_absolute_data_bindings: dict[int, dict[str, Any]] | None = None,
 ) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
     evidence: list[dict[str, Any]] = []
     artifact_evidence: list[dict[str, Any]] = []
     elf_strings = elf_strings or {}
     symbol_strings = symbol_strings or {}
     named_data_bindings = named_data_bindings or {}
+    shared_absolute_data_bindings = shared_absolute_data_bindings or {}
 
     # Ghidra emits load-dependent warning comments (for example overlapping
     # global-symbol notes). They are not decompiled semantics and can differ
@@ -600,6 +641,18 @@ def normalize_decompiled(
     if absolute_data_ranges:
         def replace_absolute_data_address(match: re.Match[str]) -> str:
             address = int(match.group(1), 16)
+            shared_binding = shared_absolute_data_bindings.get(address)
+            if shared_binding is not None:
+                normalized = str(shared_binding["token"])
+                artifact_evidence.append(
+                    {
+                        "kind": "ghidra_absolute_shared_data_binding",
+                        "value": match.group(0),
+                        "normalized": normalized,
+                        "symbols": sorted(shared_binding["symbols"]),
+                    }
+                )
+                return normalized
             for section, start, end in absolute_data_ranges:
                 if start <= address <= end:
                     normalized = (
@@ -2213,6 +2266,8 @@ def compare_function(
     allow_relocated_pointer_table_index_base_normalization: bool = False,
     stock_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
     candidate_absolute_data_ranges: list[tuple[str, int, int]] | None = None,
+    stock_shared_absolute_data_bindings: dict[int, dict[str, Any]] | None = None,
+    candidate_shared_absolute_data_bindings: dict[int, dict[str, Any]] | None = None,
     candidate_function: str | None = None,
     allow_ghidra_data_field_slice_fallback: bool = False,
     allow_exact_assembly_island_decompiler_fallback: bool = False,
@@ -2250,6 +2305,7 @@ def compare_function(
         stock_symbol_strings,
         stock_named_data_bindings,
         stock_absolute_data_ranges,
+        stock_shared_absolute_data_bindings,
     )
     (
         candidate_normalized,
@@ -2262,6 +2318,7 @@ def compare_function(
         candidate_symbol_strings,
         candidate_named_data_bindings,
         candidate_absolute_data_ranges,
+        candidate_shared_absolute_data_bindings,
     )
     stock_pcode_records = read_jsonl(paths["stock"]["pcode"])
     candidate_pcode_paths = [paths["candidate"]["pcode"]]
@@ -2638,9 +2695,17 @@ def main() -> int:
             candidate_root,
             args.allow_relocated_same_name_data_normalization,
         )
+        stock_shared_absolute_data_bindings = shared_absolute_data_bindings(
+            stock_root, stock_named_data_bindings
+        )
+        candidate_shared_absolute_data_bindings = shared_absolute_data_bindings(
+            candidate_root, candidate_named_data_bindings
+        )
     else:
         stock_named_data_bindings = None
         candidate_named_data_bindings = None
+        stock_shared_absolute_data_bindings = None
+        candidate_shared_absolute_data_bindings = None
     module_identity: dict[str, dict[str, Any] | None] = {}
     identity_failures: list[str] = []
     for side, manifest, module in (
@@ -2684,6 +2749,8 @@ def main() -> int:
             args.allow_relocated_same_name_data_normalization,
             stock_absolute_data_ranges,
             candidate_absolute_data_ranges,
+            stock_shared_absolute_data_bindings,
+            candidate_shared_absolute_data_bindings,
             candidate_function,
             args.allow_ghidra_data_field_slice_fallback,
             args.allow_exact_assembly_island_decompiler_fallback,
@@ -2695,7 +2762,9 @@ def main() -> int:
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "method": (
             "Ghidra normalized decompiled-C equality plus ordered instruction-mnemonic "
-            "and P-Code-operation shape equality; optional explicit P-Code-authoritative "
+            "and P-Code-operation shape equality; shared absolute data references are "
+            "normalized only when exact symbol addresses have proven shared bindings; "
+            "optional explicit P-Code-authoritative "
             "fallback records lossy premature-return or external-call return-propagation decompilation"
         ),
         "pcode_authoritative_decompiler_fallback_allowed": (
@@ -2705,6 +2774,9 @@ def main() -> int:
             args.allow_ghidra_return_propagation_fallback
         ),
         "shared_data_binding_normalization_allowed": (
+            args.allow_shared_data_binding_normalization
+        ),
+        "absolute_data_address_shared_binding_normalization_allowed": (
             args.allow_shared_data_binding_normalization
         ),
         "relocated_same_name_data_normalization_allowed": (
