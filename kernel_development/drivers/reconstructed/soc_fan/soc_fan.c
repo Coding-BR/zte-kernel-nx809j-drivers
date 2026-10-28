@@ -159,6 +159,55 @@ stop_calculation:
 	return HRTIMER_NORESTART;
 }
 
+static __used int fan_level_set(u8 *fan_state, u8 level);
+
+/* Enable or disable the fan, then apply or defer the selected level. */
+static __used ssize_t fan_enable_store(struct kobject *kobj,
+				      struct kobj_attribute *attr,
+				      const char *buf, size_t count)
+{
+	ssize_t result = count;
+	int enable = 0;
+	u8 *chip_base;
+	u8 *fan_state;
+
+	sscanf(buf, "%d", &enable);
+	chip_base = (u8 *)chip;
+	if (*(bool *)(*(u8 **)((u8 *)chip + 0x08) + 0x0c) ==
+	    (enable != 0)) {
+		printk(KERN_DEBUG "[%s] [%s:%d] fan have been enabled!",
+		       "NB_FAN", "fan_enable_store", 0x13f);
+		goto fan_enable_return;
+	}
+
+	*(bool *)(*(u8 **)((u8 *)chip + 0x08) + 0x0c) = enable != 0;
+	printk(KERN_DEBUG "[%s] [%s:%d] fan_enable=%d\n",
+	       "NB_FAN", "fan_enable_store", 0x143,
+	       *(u8 *)(*(u8 **)(chip_base + 0x08) + 0x0c));
+	mutex_lock((struct mutex *)((u8 *)chip + 0x18));
+	fan_state = *(u8 **)((u8 *)chip + 0x08);
+	if (__builtin_expect_with_probability((fan_state[0x0c] & 1) != 0,
+					      1, 0.6)) {
+		if (unlikely(fan_state[1] == 0))
+			goto fan_enable_unlock;
+
+		fan_level_set(fan_state, fan_state[1]);
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] fan enabled,back fan level:%d to run.\n",
+		       "NB_FAN", "fan_enable_store", 0x14c,
+		       *(u8 *)(*(u8 **)((u8 *)chip + 0x08) + 0x01));
+		*(u8 *)(*(u8 **)((u8 *)chip + 0x08) + 0x01) = 0;
+	} else {
+		fan_state[1] = fan_state[0];
+		fan_level_set(*(u8 **)((u8 *)chip + 0x08), 0);
+	}
+
+fan_enable_unlock:
+	mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
+fan_enable_return:
+	return result;
+}
+
 /* Recover the PWM, GPIO and regulator side effects for a fan-level change. */
 static __used int fan_level_set(u8 *fan_state, u8 level)
 {
@@ -395,5 +444,8 @@ static ssize_t (*const fan_pwm_store_kcfi_anchor)(
 static ssize_t (*const fan_level_store_kcfi_anchor)(
 	struct kobject *, struct kobj_attribute *, const char *, size_t)
 	__used = fan_level_store;
+static ssize_t (*const fan_enable_store_kcfi_anchor)(
+	struct kobject *, struct kobj_attribute *, const char *, size_t)
+	__used = fan_enable_store;
 
 MODULE_LICENSE("GPL");
