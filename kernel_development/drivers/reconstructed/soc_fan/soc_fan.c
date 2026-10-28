@@ -1,5 +1,6 @@
 #include <linux/atomic.h>
 #include <linux/device.h>
+#include <linux/hrtimer.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/kobject.h>
@@ -53,6 +54,43 @@ __used int __init init_module(void)
 	return __platform_driver_register(&nubia_fan_driver, THIS_MODULE);
 }
 
+static __used enum hrtimer_restart fan_hrtimer_hander(struct hrtimer *timer)
+{
+	u8 *state = *(u8 **)((u8 *)chip + 0x08);
+
+	if (state[0x02] == 0x02)
+		goto stop_calculation;
+	if (state[0x02] == 0x01)
+		goto start_calculation;
+	return HRTIMER_NORESTART;
+
+start_calculation:
+	*(u32 *)(state + 0x04) = 0;
+	(*(u8 **)((u8 *)chip + 0x08))[0x02] = 0x02;
+	hrtimer_start_range_ns(
+		(struct hrtimer *)(*(u8 **)((u8 *)chip + 0x08) + 0x28),
+		500000000, 0, HRTIMER_MODE_REL);
+	enable_irq(*(int *)(*(u8 **)((u8 *)chip + 0x08) + 0x1c));
+	printk(KERN_DEBUG "[%s] [%s:%d] fan_level=%d start calculate, count=%d.",
+	       "NB_FAN", "fan_hrtimer_hander", 0x82,
+	       (*(u8 **)((u8 *)chip + 0x08))[0],
+	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
+	return HRTIMER_RESTART;
+
+stop_calculation:
+	state[0x02] = 0x03;
+	u8 *root = (u8 *)chip;
+	u8 *stop_state = *(u8 **)(root + 0x08);
+	*(u32 *)(stop_state + 0x08) = *(u32 *)(stop_state + 0x04);
+	disable_irq_nosync(
+		*(int *)(*(u8 **)(root + 0x08) + 0x1c));
+	printk(KERN_DEBUG "[%s] [%s:%d] fan_level=%d stop calculate, count=%d.",
+	       "NB_FAN", "fan_hrtimer_hander", 0x89,
+	       (*(u8 **)((u8 *)chip + 0x08))[0],
+	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
+	return HRTIMER_NORESTART;
+}
+
 /*
  * The recovered sysfs read callback logs the stock source line and returns the
  * enable byte at chip+0x08+0x0c as decimal text.
@@ -93,5 +131,7 @@ static void (*const nb_fan_remove_kcfi_anchor)(struct platform_device *)
 	__used = nb_fan_remove;
 static void (*const cleanup_module_kcfi_anchor)(void) __used = cleanup_module;
 static int (*const init_module_kcfi_anchor)(void) __used = init_module;
+static enum hrtimer_restart (*const fan_hrtimer_hander_kcfi_anchor)(
+	struct hrtimer *) __used = fan_hrtimer_hander;
 
 MODULE_LICENSE("GPL");
