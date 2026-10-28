@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"cleanup_module","type":"IF","code":"if (g_rdbg_instance.count > 0) {\n\t\tdo {\n\t\t\tif (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {\n\t\t\t\tdevice_destroy(g_rdbg_instance.class,\n\t\t\t\t\t       (g_rdbg_instance.devt & 0xfff00000U) |\n\t\t\t\t\t       (unsigned int)slot);\n\t\t\t}\n\t\t\tslot++;\n\t\t\tclient_offset += RDBG_CLIENT_STRIDE;\n\t\t} while (slot < g_rdbg_instance.count);\n\t}","filename":"rdbg_fn_01_cleanup_module.c","line":22},
+    {"method":"cleanup_module","type":"DO","code":"do {\n\t\t\tif (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {\n\t\t\t\tdevice_destroy(g_rdbg_instance.class,\n\t\t\t\t\t       (g_rdbg_instance.devt & 0xfff00000U) |\n\t\t\t\t\t       (unsigned int)slot);\n\t\t\t}\n\t\t\tslot++;\n\t\t\tclient_offset += RDBG_CLIENT_STRIDE;\n\t\t} while (slot < g_rdbg_instance.count);","filename":"rdbg_fn_01_cleanup_module.c","line":23},
+    {"method":"cleanup_module","type":"IF","code":"if (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {\n\t\t\t\tdevice_destroy(g_rdbg_instance.class,\n\t\t\t\t\t       (g_rdbg_instance.devt & 0xfff00000U) |\n\t\t\t\t\t       (unsigned int)slot);\n\t\t\t}","filename":"rdbg_fn_01_cleanup_module.c","line":24},
+    {"method":"rdbg_smq_destroy","type":"IF","code":"if (smq->initialized == RDBG_SMQ_MAGIC_INIT) {\n\t\tif (smq->type == RDBG_SMQ_PRODUCER) {\n\t\t\tsmq->out->s.init = 0;\n\t\t\trdbg_smq_blockmap_destroy(&smq->block_map);\n\t\t} else if (smq->type == RDBG_SMQ_CONSUMER) {\n\t\t\tsmq->in->s.init = 0;\n\t\t}\n\t\tsmq->initialized = 0;\n\t}","filename":"rdbg_fn_02_release.c","line":22},
+    {"method":"rdbg_smq_destroy","type":"IF","code":"if (smq->type == RDBG_SMQ_PRODUCER) {\n\t\t\tsmq->out->s.init = 0;\n\t\t\trdbg_smq_blockmap_destroy(&smq->block_map);\n\t\t} else if (smq->type == RDBG_SMQ_CONSUMER) {\n\t\t\tsmq->in->s.init = 0;\n\t\t}","filename":"rdbg_fn_02_release.c","line":23},
+    {"method":"rdbg_smq_destroy","type":"ELSE","code":"else","filename":"rdbg_fn_02_release.c","line":26},
+    {"method":"rdbg_smq_destroy","type":"IF","code":"if (smq->type == RDBG_SMQ_CONSUMER) {\n\t\t\tsmq->in->s.init = 0;\n\t\t}","filename":"rdbg_fn_02_release.c","line":26},
+    {"method":"rdbg_release","type":"IF","code":"if (!inode || !rdbgdevice->rdbg_data) {\n\t\tpr_err(\"Memory not allocated yet\\n\");\n\t\terr = -ENODEV;\n\t\tgoto bail;\n\t}","filename":"rdbg_fn_02_release.c","line":41},
+    {"method":"rdbg_release","type":"GOTO","code":"goto bail;","filename":"rdbg_fn_02_release.c","line":44},
+    {"method":"rdbg_release","type":"IF","code":"if (rdbgdata->device_opened == 1) {\n\t\trdbgdata->device_opened = 0;\n\t\tcomplete(&rdbgdata->work);\n\t\trdbg_smq_destroy(&rdbgdevice->rdbg_data[device_id].producer_smrb);\n\t\trdbg_smq_destroy(&rdbgdevice->rdbg_data[device_id].consumer_smrb);\n\t\tmutex_destroy(&rdbgdata->write_mutex);\n\t}","filename":"rdbg_fn_02_release.c","line":49}
+  ]
+}
