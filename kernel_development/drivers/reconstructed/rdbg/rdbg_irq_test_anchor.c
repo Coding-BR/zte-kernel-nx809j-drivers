@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: GPL-2.0-only
-#include <linux/interrupt.h>
+#include <linux/compiler.h>
+#include "rdbg_reconstruction_layout.h"
 
-/* Test-only reference: the completed rdbg_open() implementation will take
- * this callback's address. This temporary anchor keeps KCFI emission enabled
- * while validating the IRQ microtask in isolation.
- */
 extern irqreturn_t on_interrupt_from(int irq, void *dev_id);
-irq_handler_t __used rdbg_irq_microtask_anchor = on_interrupt_from;
+
+/*
+ * Temporary reconstruction data island. The stock symbols occupy these
+ * offsets in .data; the callback pointer is test-only and keeps KCFI emitted
+ * until rdbg_open is reconstructed. This layout is guarded by static_asserts.
+ */
+struct rdbg_module_storage g_rdbg_instance __used __attribute__((section(".data"))) = {
+	.callback_test_anchor = on_interrupt_from,
+};

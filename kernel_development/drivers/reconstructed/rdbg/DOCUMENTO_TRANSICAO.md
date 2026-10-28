@@ -1,7 +1,9 @@
 # Transição — rdbg
 
-A microtarefa on_interrupt_from@00101600 está implementada como C e passou os gates estáticos limitados a essa função. O relatório on_interrupt_from_microtask_20261028/README.md resume os resultados, limites e hashes. O build Docker usa rdbg_irq_test_anchor.c apenas para preservar a emissão KCFI enquanto rdbg_open ainda não existe.
+A reconstrução está INCOMPLETE. Os dois microciclos versionados são on_interrupt_from@00101600 e cleanup_module@00101974. Cada um tem evidência separada e comparações estáticas por função.
 
-O artefato em docker_candidate_partial/rdbg_irq_test_candidate.ko é um módulo parcial de teste. Não é o módulo canônico, não deve ser promovido nem carregado no aparelho. A auditoria Docker completa permanece incompleta por desenho: sete funções continuam sem implementação e a lista de imports não corresponde ao módulo stock completo.
+cleanup_module foi comparada com igualdade de instruções, tamanho, seção, relocations, KCFI, P-Code e pseudocódigo normalizado. A normalização Ghidra foi necessária apenas para a expressão de endereço de g_rdbg_instance: os módulos REL recebem bases de seção diferentes no importador, enquanto o vínculo ELF e o offset relativo em .data coincidem. O relatório registra essa normalização e prova igualdade do corpo e do P-Code.
 
-Continuar pelas funções restantes usando o protocolo estrito. rdbg_probe, rdbg_read, rdbg_write, rdbg_open, rdbg_release, init_module e cleanup_module ainda não têm implementação candidata. Não declarar reconstrução completa sem revisão independente, paridade de módulo e os gates restantes. Hardware continua fora do escopo desta microtarefa.
+O build Docker é um candidato parcial de teste. O callback anchor em g_rdbg_instance.callback_test_anchor existe apenas para preservar a emissão KCFI enquanto rdbg_open ainda não foi implementada. Ele ocupa temporariamente o slot .data+0xa0 usado pelo símbolo stock rdbg_driver e precisa ser substituído pela definição real ao reconstruir o driver completo. O candidato não inclui as seis funções restantes, não tem paridade de imports com o stock, não é um módulo canônico e não deve ser promovido nem carregado no aparelho.
+
+Continuar com rdbg_probe, rdbg_read, rdbg_write, rdbg_open, rdbg_release e init_module, uma função por vez, mantendo o protocolo estrito. Revisão independente, paridade integral, seleção do device tree no aparelho e validação de hardware permanecem pendentes.
