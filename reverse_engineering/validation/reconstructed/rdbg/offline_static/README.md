@@ -4,4 +4,6 @@ Este checkpoint preserva o módulo stock, a exportação Ghidra e a extração d
 
 A exportação Ghidra contém pseudocódigo, P-Code, chamadas, símbolos e strings. `stock_assembly/manifest.json` registra `complete=true` para cada função. `stock_kcfi.json` registra os oito preâmbulos KCFI extraídos do mesmo SHA do stock. A busca no volume de fonte Docker não encontrou o C original do driver; os arquivos sob `kernel/decompiled` são decompilações.
 
+O arquivo `device_tree_context.json` vincula a imagem vendor_boot ao mesmo hash do módulo stock e registra os nós rdbg nas variantes do DTB. A seleção de variante/overlay pelo bootloader continua desconhecida.
+
 Este diretório registra evidência do binário de referência. Não representa fonte candidata, equivalência semântica, módulo reconstruído nem validação no aparelho.
