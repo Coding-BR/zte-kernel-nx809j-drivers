@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/repo:ro",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\relocated_byte_proof_20261027_r2:/proof",
+    "-w",
+    "/repo",
+    "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "python3",
+    "workspace_tools/reconstruction_pipeline/prove_ftmmod_relocated_state_access.py",
+    "--stock-module",
+    "reference_modules/full_vendor_boot/ftmmod.ko",
+    "--candidate-module",
+    "reverse_engineering/validation/reconstructed/ftmmod/attestation/hard_protocol_core_20261027_r3/docker/work/ftmmod/cycle_2/ftmmod.ko",
+    "--stock-export",
+    "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko",
+    "--candidate-export",
+    "reverse_engineering/validation/reconstructed/ftmmod/attestation/candidate_ghidra_export_20261027_r1/ftmmod.ko",
+    "--output",
+    "/proof/docker_proof.json"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/repo/workspace_tools/reconstruction_pipeline/prove_ftmmod_relocated_state_access.py\", line 17, in <module>\n    from elftools.elf.elffile import ELFFile\nModuleNotFoundError: No module named 'elftools'\n"
+}

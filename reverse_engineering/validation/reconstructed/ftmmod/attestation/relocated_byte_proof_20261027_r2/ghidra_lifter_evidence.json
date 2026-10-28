@@ -1,0 +1,44 @@
+{
+  "tool": "Ghidra 12.1.2_PUBLIC",
+  "license": "Apache-2.0; source from the pinned local Ghidra distribution",
+  "scope": "Explains the lifter representation; does not supply facts about device behavior",
+  "sources": [
+    {
+      "path": "reproducible_environment/.tools/ghidra_12.1.2_PUBLIC/Ghidra/Processors/AARCH64/data/languages/AARCH64instructions.sinc",
+      "sha256": "fde6454c27ed9c2ab99cbdc403af8d188b7cf3a044468b9d9569654afcf04683",
+      "excerpts": [
+        {
+          "start_line": 2225,
+          "end_line": 2225,
+          "text": "addrUIMM: \"[\"^Rn_GPR64xsp, \"#\"^pimm^\"]\" is size.ldstr=0 & b_2729=7 & v & b_2425=1 & b_2323 & Rn_GPR64xsp & imm12 [ pimm = imm12 << 0; ] { tmp:8 = Rn_GPR64xsp + pimm; export tmp; }"
+        },
+        {
+          "start_line": 2231,
+          "end_line": 2231,
+          "text": "addrUIMM: \"[\"^Rn_GPR64xsp^\"]\" is size.ldstr=0 & b_2729=7 & v & b_2425=1 & b_2323 & Rn_GPR64xsp & imm12=0 { tmp:8 = Rn_GPR64xsp; export tmp; }"
+        },
+        {
+          "start_line": 2268,
+          "end_line": 2268,
+          "text": "addrIndexed: addrUIMM is size.ldstr & b_2729=7 & b_2425=1 & addrUIMM { export addrUIMM; }"
+        }
+      ]
+    },
+    {
+      "path": "reproducible_environment/.tools/ghidra_12.1.2_PUBLIC/Ghidra/Processors/AARCH64/data/languages/AARCH64base.sinc",
+      "sha256": "a02ec3681ebb32fe13c294ed146407a0017d4b1f5dcad25b170da92eb76bc39b",
+      "excerpts": [
+        {
+          "start_line": 3195,
+          "end_line": 3204,
+          "text": "# C6.2.170 LDRB (immediate) page C6-1562 line 92814 MATCH x39400000/mask=xffc00000\n# CONSTRUCT x39400000/mask=xffc00000 MATCHED 1 DOCUMENTED OPCODES\n# AUNIT --inst x39400000/mask=xffc00000 --status nomem\n# unsigned offset variant\n\n:ldrb Rt_GPR32, addrIndexed\nis b_2231=0b0011100101 & addrIndexed & Rt_GPR32 & Rt_GPR64\n{\n\tRt_GPR64 = zext(*:1 addrIndexed);\n}"
+        },
+        {
+          "start_line": 5971,
+          "end_line": 5981,
+          "text": "# C6.2.324 STRB (immediate) page C6-1876 line 110516 MATCH x39000000/mask=xffc00000\n# CONSTRUCT x39000000/mask=xffc00000 MATCHED 1 DOCUMENTED OPCODES\n# AUNIT --inst x39000000/mask=xffc00000 --status nomem\n\n:strb Rt_GPR32, addrIndexed\nis size.ldstr=0 & b_2729=7 & v=0 & b_2425=1 & b_23=0 & b_2222=0 & addrIndexed & Rt_GPR32\n{\n\ttmp:4 = Rt_GPR32;\n\tbuild addrIndexed;\n\t*addrIndexed = tmp:1;\n}"
+        }
+      ]
+    }
+  ]
+}
