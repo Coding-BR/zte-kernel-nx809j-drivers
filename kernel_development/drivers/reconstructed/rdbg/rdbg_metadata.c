@@ -5,7 +5,9 @@
 #include "rdbg_reconstruction_layout.h"
 
 struct rdbg_module_storage g_rdbg_instance __used
-	__attribute__((section(".data"))) = { };
+	__attribute__((section(".data"))) = {
+		.count = 16,
+	};
 
 static const u8 rdbg_proc_info_padding[0x4f0] __used
 	__attribute__((section(".rodata")));

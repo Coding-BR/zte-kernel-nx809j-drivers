@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "rdbg_probe",
+      "stock_entry": "001004ac",
+      "source_function": "rdbg_probe",
+      "candidate_function": "rdbg_probe",
+      "stock_symbol_offset": "0x4",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/rdbg",
+    "stock_module": "reference_modules/full_vendor_boot/rdbg.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/candidate_ghidra/rdbg.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "release": "4.0.548",
+    "source_view_root": "kernel_development/drivers/reconstructed/rdbg",
+    "define": [
+      "__user",
+      "__init",
+      "__exit",
+      "__used"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1
+    }
+  },
+  "kcfi": {
+    "ignore_size": true
+  },
+  "ghidra": {
+    "allow_section_address_normalization": true,
+    "allow_shared_data_binding_normalization": true,
+    "allow_relocated_same_name_data_normalization": true,
+    "allow_named_data_address_syntax_fallback": true,
+    "allow_rdbg_proc_info_index_syntax_fallback": true,
+    "fallback_reason": "Stock and candidate Ghidra exports render the same shared proc_info.name access as a pointer-table index versus a byte-offset dereference. Accept only the two exact accesses when both exports bind proc_info to the same ELF data symbol, both explicitly compute the same device index times 0x18 (24-byte record stride), and whole-function normalized C then matches. Exact body bytes, equal P-Code operation shape, and the independent relocation-aware assembly gate remain required."
+  },
+  "evidence": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/rdbg.ko",
+      "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b4b55cd11a12"
+    },
+    "stock_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/manifest.json"
+    },
+    "stock_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json"
+    },
+    "device_tree_context": {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/device_tree_context.json"
+    }
+  }
+}

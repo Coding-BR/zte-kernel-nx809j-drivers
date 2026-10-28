@@ -126,17 +126,26 @@ static_assert(offsetof(struct rdbg_module_storage, devt) == 0x90);
 static_assert(offsetof(struct rdbg_module_storage, count) == 0x94);
 static_assert(offsetof(struct rdbg_module_storage, clients) == 0x98);
 static_assert(sizeof(struct rdbg_module_storage) == 0xa0);
+static_assert(offsetof(struct rdbg_module_storage, count) == 0x94);
+static_assert(offsetof(struct rdbg_module_storage, clients) == 0x98);
 static_assert(sizeof(struct rdbg_proc_info_layout) == 0x18);
+static_assert(offsetof(struct rdbg_proc_info_layout, name) == 0x0);
 static_assert(offsetof(struct rdbg_proc_info_layout, smem_buffer_addr) == 0x8);
 static_assert(offsetof(struct rdbg_proc_info_layout, smem_buffer_size) == 0x10);
 static_assert(sizeof(struct rdbg_smq_layout) == 0x50);
 static_assert(sizeof(struct rdbg_smq_header_layout) == 2);
 static_assert(sizeof(struct rdbg_smq_node_layout) == 4);
+static_assert(sizeof(struct rdbg_gpio_info_layout) == 0x18);
+static_assert(offsetof(struct rdbg_gpio_info_layout, smem_bit) == 0x8);
+static_assert(offsetof(struct rdbg_gpio_info_layout, smem_state) == 0x10);
+static_assert(offsetof(struct rdbg_data_layout, in) == 0x28);
+static_assert(offsetof(struct rdbg_data_layout, out) == 0x40);
 static_assert(offsetof(struct rdbg_data_layout, device_opened) == 0x60);
 static_assert(offsetof(struct rdbg_data_layout, producer_smrb) == 0x78);
 static_assert(offsetof(struct rdbg_data_layout, consumer_smrb) == 0xc8);
 static_assert(offsetof(struct rdbg_data_layout, write_mutex) == 0x118);
 static_assert(sizeof(struct rdbg_data_layout) == 0x1c8);
 static_assert(offsetof(struct rdbg_device_layout, rdbg_data) == 0x98);
+static_assert(offsetof(struct rdbg_device_layout, num_devices) == 0x94);
 
 #endif
