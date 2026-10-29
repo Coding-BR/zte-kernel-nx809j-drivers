@@ -110,3 +110,4 @@ haptic_86938-y += haptic_86938_fn_105_aw8693x_protect_config.o
 haptic_86938-y += haptic_86938_fn_106_aw8693x_upload_lra.o
 haptic_86938-y += haptic_86938_fn_107_awrw_show.o
 haptic_86938-y += haptic_86938_fn_108_awrw_store.o
+haptic_86938-y += haptic_86938_fn_109_activate_aw_store.o
