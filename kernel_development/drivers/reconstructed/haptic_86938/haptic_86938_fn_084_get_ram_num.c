@@ -32,7 +32,9 @@ void get_ram_num(struct aw_haptic *haptic)
 		*(void ***)((u8 *)haptic + 0x5c8))[38])(haptic,
 							      (char *)&first_wave_addr);
 
-	address = (u16)((first_wave_addr >> 8) | (first_wave_addr << 8));
+	asm("rev16 %w[out], %w[in]"
+	    : [out] "=r"(address)
+	    : [in] "r"((u32)first_wave_addr));
 	ram_num = address + ~*(u32 *)((u8 *)haptic + 0x458);
 	ram_num >>= 2;
 	*(u8 *)((u8 *)haptic + 0x45c) = (u8)ram_num;

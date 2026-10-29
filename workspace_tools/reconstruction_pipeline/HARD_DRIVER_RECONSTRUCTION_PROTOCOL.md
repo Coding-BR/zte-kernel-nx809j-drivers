@@ -135,6 +135,10 @@ modelo e aos bounds declarados.
   limites. O fuzzer encontra contraexemplos; nao prova ausencia universal.
 - Callback: KCFI stock/candidato, slot e relocacao, gendwarfksyms/BTF quando
   houver tipos, e teste do callsite indireto.
+- O preambulo KCFI na entrada da funcao e os guards dos `blr` internos sao
+  provas distintas. `kcfi_required` exige comparar o preambulo da funcao;
+  `CALLBACK_ABI` exige comparar cada callsite indireto, incluindo slot, guard
+  e type ID. A ausencia de preambulo nao dispensa a auditoria dos callsites.
 - Concorrencia: state machine de ownership, todos os cancelamentos e teardown,
   depois KUnit/lockdep/KCSAN em kernel de laboratorio.
 - Hardware: stub de bus apenas para ordem e erros; registradores continuam

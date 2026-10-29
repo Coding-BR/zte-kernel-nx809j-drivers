@@ -174,12 +174,17 @@ def planned_runner_paths(
     if "KCFI" in gates_required:
         helper_names.update({"extract_kcfi.py", "compare_kcfi_reports.py"})
         kcfi_config = job.get("kcfi", {})
+        if (
+            "CALLBACK_ABI" in job.get("profiles", [])
+            or (isinstance(kcfi_config, dict) and kcfi_config.get("callsite_required", False))
+        ):
+            helper_names.add("compare_kcfi_callsites.py")
         direct_call_only = (
             set(kcfi_config.get("direct_call_only", []))
             if isinstance(kcfi_config, dict) else set()
         )
         selected = {str(item["stock_function"]) for item in functions}
-        if direct_call_only and selected <= direct_call_only:
+        if direct_call_only & selected:
             helper_names.add("build_kcfi_direct_call_decision.py")
     if job.get("paths", {}).get("candidate_ghidra_export"):
         helper_names.add("compare_ghidra_function_semantics.py")
@@ -742,7 +747,10 @@ def build_command_plan(
         "docker_adapter": adapter,
         "docker_report": str(docker_report),
         "after_candidate": {
-            "kcfi": "extract_kcfi.py stock/candidate, then compare_kcfi_reports.py",
+            "kcfi": (
+                "compare function-entry preambles only for kcfi_required functions; "
+                "CALLBACK_ABI also compares every indirect-call guard, slot and type ID"
+            ),
             "assembly": "extract_module_assembly.py stock/candidate, then compare_function_assembly.py",
             "candidate_ghidra": "compare_ghidra_function_semantics.py when a fresh candidate export is supplied",
         },
@@ -1195,7 +1203,6 @@ def execute_post_candidate(
     tools_root = repo_root / "workspace_tools" / "reconstruction_pipeline"
     commands: dict[str, Any] = {}
     gates: dict[str, str] = {}
-    aliases = [item["alias"] for item in functions]
     (output_dir / "kcfi").mkdir(parents=True, exist_ok=True)
     stock_kcfi = output_dir / "kcfi" / "stock.json"
     candidate_kcfi = output_dir / "kcfi" / "candidate.json"
@@ -1225,7 +1232,20 @@ def execute_post_candidate(
     direct_call_only = {
         str(name) for name in kcfi_config.get("direct_call_only", [])
     } if isinstance(kcfi_config, dict) else set()
-    selected_functions = {str(item["stock_function"]) for item in functions}
+    preamble_functions = [item for item in functions if bool(item.get("kcfi_required", False))]
+    preamble_aliases = [str(item["alias"]) for item in preamble_functions]
+    direct_call_functions = [
+        item for item in functions
+        if str(item["stock_function"]) in direct_call_only
+        and not bool(item.get("kcfi_required", False))
+    ]
+    callback_callsites_required = (
+        "CALLBACK_ABI" in job.get("profiles", [])
+        or (isinstance(kcfi_config, dict) and bool(kcfi_config.get("callsite_required", False)))
+    )
+    kcfi_base_pass = True
+    direct_ok = True
+    kcfi_extract_pass = True
     if not kcfi_required:
         gates["KCFI"] = "NOT_REQUIRED"
         commands["kcfi_applicability"] = {
@@ -1235,14 +1255,52 @@ def execute_post_candidate(
                 "requires a KCFI/callback ABI gate"
             ),
         }
-    elif direct_call_only and selected_functions <= direct_call_only:
-        direct_ok = bool(stock_ghidra_export and candidate_ghidra_export)
+    else:
         for name, argv in kcfi_commands.items():
             result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
             commands[name] = result
             if result["returncode"] != 0:
-                direct_ok = False
-        for item in functions:
+                kcfi_extract_pass = False
+
+        if preamble_aliases and kcfi_extract_pass:
+            compare = python_command(
+                python,
+                tools_root / "compare_kcfi_reports.py",
+                str(stock_kcfi),
+                str(candidate_kcfi),
+                "--output", str(kcfi_comparison),
+            )
+            for alias in preamble_aliases:
+                compare.extend(["--require-function", alias])
+            if isinstance(kcfi_config, dict) and kcfi_config.get("ignore_size", False):
+                compare.append("--ignore-size")
+            result = run_command(
+                "kcfi_compare", compare, output_dir=output_dir, timeout=command_timeout
+            )
+            commands["kcfi_compare"] = result
+            kcfi_base_pass = (
+                result["returncode"] == 0 and report_passed(kcfi_comparison)
+            )
+        else:
+            write_json(
+                output_dir / "kcfi" / "preamble_applicability.json",
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "status": "NOT_REQUIRED_BY_FUNCTION_POLICY" if not preamble_aliases else "BLOCKED_BY_EXTRACTION",
+                    "required_functions": preamble_aliases,
+                    "reason": (
+                        "selected functions do not declare kcfi_required; callback callsites "
+                        "are audited separately when CALLBACK_ABI applies"
+                        if not preamble_aliases else
+                        "KCFI extraction did not complete, so required function preambles were not compared"
+                    ),
+                },
+            )
+            if preamble_aliases:
+                kcfi_base_pass = False
+
+        direct_ok = kcfi_extract_pass if direct_call_functions else True
+        for item in direct_call_functions:
             alias = str(item["alias"])
             direct_report = output_dir / "kcfi" / f"direct_call_{alias}.json"
             direct_argv = python_command(
@@ -1262,7 +1320,14 @@ def execute_post_candidate(
                 "--output", str(direct_report),
             )
             name = f"kcfi_direct_call_{alias}"
-            if direct_ok:
+            if not kcfi_extract_pass:
+                commands[name] = {
+                    "argv": direct_argv,
+                    "returncode": 2,
+                    "stderr_tail": "stock/candidate KCFI extraction failed before direct-call proof",
+                }
+                direct_ok = False
+            elif stock_ghidra_export and candidate_ghidra_export:
                 result = run_command(name, direct_argv, output_dir=output_dir, timeout=command_timeout)
                 commands[name] = result
                 direct_ok = result["returncode"] == 0 and report_passed(direct_report)
@@ -1272,28 +1337,18 @@ def execute_post_candidate(
                     "returncode": 2,
                     "stderr_tail": "stock/candidate Ghidra calls exports are required for direct-call KCFI proof",
                 }
-        gates["KCFI"] = "PASS" if direct_ok else "FAIL"
-    else:
-        compare = python_command(
-            python,
-            tools_root / "compare_kcfi_reports.py",
-            str(stock_kcfi),
-            str(candidate_kcfi),
-            "--output", str(kcfi_comparison),
+        write_json(
+            output_dir / "kcfi" / "policy.json",
+            {
+                "schema_version": SCHEMA_VERSION,
+                "function_preamble_required": preamble_aliases,
+                "callsite_comparison_required": callback_callsites_required,
+                "direct_call_only_functions": [str(item["stock_function"]) for item in direct_call_functions],
+                "preamble_comparison_passed": kcfi_base_pass,
+                "direct_call_proofs_passed": direct_ok,
+            },
         )
-        for alias in aliases:
-            compare.extend(["--require-function", alias])
-        if isinstance(kcfi_config, dict) and kcfi_config.get("ignore_size", False):
-            compare.append("--ignore-size")
-        kcfi_commands["kcfi_compare"] = compare
-        kcfi_ok = True
-        for name, argv in kcfi_commands.items():
-            result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
-            commands[name] = result
-            if result["returncode"] != 0:
-                kcfi_ok = False
-                break
-        gates["KCFI"] = "PASS" if kcfi_ok and report_passed(kcfi_comparison) else "FAIL"
+        gates["KCFI"] = "PASS" if kcfi_base_pass and direct_ok and not callback_callsites_required else "FAIL"
 
     image = str(docker_config.get("image", "nubia-sm8850-kernel-builder:latest"))
     toolchain_volume = str(docker_config.get("toolchain_volume", "nubia_sm8850_kernel_toolchains"))
@@ -1347,6 +1402,48 @@ def execute_post_candidate(
             output_dir=output_dir, timeout=command_timeout,
         )
         commands["assembly_compare"] = assembly_compare_result
+    if kcfi_required and callback_callsites_required:
+        callsite_report = output_dir / "kcfi" / "callsite_comparison.json"
+        if assembly_extract_ok:
+            callsite_compare = python_command(
+                python,
+                tools_root / "compare_kcfi_callsites.py",
+                "--stock-dir", str(stock_assembly),
+                "--candidate-dir", str(candidate_assembly),
+                "--output", str(callsite_report),
+            )
+            for pair in pairs:
+                callsite_compare.extend(["--function-pair", pair])
+            callsite_result = run_command(
+                "kcfi_callsites", callsite_compare,
+                output_dir=output_dir, timeout=command_timeout,
+            )
+            commands["kcfi_callsites"] = callsite_result
+            callsites_pass = (
+                callsite_result["returncode"] == 0 and report_passed(callsite_report)
+            )
+        else:
+            commands["kcfi_callsites"] = {
+                "argv": [],
+                "returncode": 2,
+                "stderr_tail": "stock and candidate assembly extraction is required for KCFI callsite proof",
+            }
+            callsites_pass = False
+        write_json(
+            output_dir / "kcfi" / "callsite_applicability.json",
+            {
+                "schema_version": SCHEMA_VERSION,
+                "required_by_callback_abi_profile": "CALLBACK_ABI" in job.get("profiles", []),
+                "required_by_job_configuration": bool(
+                    isinstance(kcfi_config, dict) and kcfi_config.get("callsite_required", False)
+                ),
+                "comparison_passed": callsites_pass,
+                "report": str(callsite_report),
+            },
+        )
+        gates["KCFI"] = (
+            "PASS" if kcfi_base_pass and direct_ok and callsites_pass else "FAIL"
+        )
     strict_assembly_pass = (
         assembly_extract_ok
         and assembly_compare_result is not None
