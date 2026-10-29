@@ -95,3 +95,4 @@ haptic_86938-y += haptic_86938_fn_090_cali_show.o
 haptic_86938-y += haptic_86938_fn_091_f0_show.o
 haptic_86938-y += haptic_86938_fn_092_ram_update_show.o
 haptic_86938-y += haptic_86938_fn_093_ram_update_store.o
+haptic_86938-y += haptic_86938_fn_094_activate_mode_store.o
