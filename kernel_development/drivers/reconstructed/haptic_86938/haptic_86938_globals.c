@@ -2,3 +2,5 @@
 #include "haptic_86938_internal.h"
 
 struct aw_haptic *g_aw_haptic;
+
+char *aw_ram_name = "haptic_ram.bin";

@@ -1,13 +1,13 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Sixty-two candidates pass their applicable automated core gates; 21 candidate sources await gates, and 77 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Sixty-two candidates pass their applicable automated core gates; 22 candidate sources await gates, and 76 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
 - Candidate source functions with core-gate attestations: 62
-- Functions still not started: 77
-- Candidate sources awaiting core gates: 21
+- Functions still not started: 76
+- Candidate sources awaiting core gates: 22
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -92,9 +92,10 @@ Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, 
 - aw8693x_set_pwm: maps modes 0–3 to register values `0x20`, `0`, `0x40`, and `0x60`; invalid modes log the stock error without a bus call. Stock and candidate match all 41 AArch64 instructions and 164 bytes, including relocations. KCFI ID is `0x1d0adf6e`; all eight automated core gates pass. Two Docker cycles produced identical module SHA-256 `b5bda49361ec8a5d928115bcf40aa8238eb17766a9f70410d2764c8bed486cc7` (3,604,808 bytes). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_pwm_20261029/README.md)
 - aw8693x_get_ram_data: zero length returns 0; otherwise reads register `0x42` in chunks capped at `0x400`, reloads the 32-bit length at `haptic + 0x450` after each read, ignores the helper result, and returns the sign-extended offset. The signed buffer offset matches stock `sxtw`; all 33 AArch64 instructions and 132 bytes, including relocation, match. KCFI ID is `0x0c0dba4c`; all eight automated core gates pass. Two clean Docker builds produced SHA-256 `cf2d78d1f9852e53202bf5b96e6ac5880ea25cb3c07467069618cd94f4344e94` (3,606,752 bytes). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_get_ram_data_20261029/README.md)
 - prct_mode_show: loads the `get_prctmode` callback from operations slot `0x150`, calls it with `driver_data - 0xa8`, formats its low-byte result as `prctmode = %d\n`, and returns `snprintf` status. Stock and candidate match all 27 AArch64 instructions and 108 bytes, including callback KCFI and relocation surface. Show KCFI is `0xae84bcd4`; callback KCFI is `0x784b3854`. All eight automated core gates pass. Two clean Docker builds produced SHA-256 `54bebb276dd8a0f3896690903d11eb52e5df93264e5142d7070b74c3252114ba` (3,688,240 bytes). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_prct_mode_show_20261029/README.md)
-- ram_work_init: initializes the delayed-work object at `haptic + 0x3c0` and queues it on `system_wq`, CPU 32, after 2000 jiffies. Two pinned Docker object builds are byte-identical; stock and candidate match all 30 AArch64 instructions and 120 bytes, including relocation checks. Strict Joern source and `usages` slice gates pass. The full module build still fails because `ram_work_routine` has no candidate source. This function remains under static validation. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_init_20261029/README.md)
+- ram_work_init: initializes the delayed-work object at `haptic + 0x3c0` and queues it on `system_wq`, CPU 32, after 2000 jiffies. Two pinned Docker object builds are byte-identical; stock and candidate match all 30 AArch64 instructions and 120 bytes, including relocation checks. Strict Joern source and `usages` slice gates pass. Module linking now proceeds past this function but remains blocked by the downstream `ram_load` callback. This function remains under static validation. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_init_20261029/README.md)
+- ram_work_routine: recovers the embedded work object, clears the RAM initialization field, and requests `haptic_ram.bin` asynchronously with `ram_load` as callback. Two pinned Docker object builds are byte-identical; stock and candidate match all 19 AArch64 instructions and 76 bytes, KCFI ID `0xa607748c`, and relocations. Strict Joern source and `usages` slice gates pass. Full module linking now reaches the next unresolved local callback, `ram_load`. This function remains under static validation. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_routine_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 77 stock functions still lack candidate source mappings, 21 mapped candidates await gates, complete target-kernel identity and hardware validation remain open. The latest full-source Docker attempt cannot link because `ram_work_routine` is unmapped; full-module metadata/KMI parity also remains unproven.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 76 stock functions still lack candidate source mappings, 22 mapped candidates await gates, complete target-kernel identity and hardware validation remain open. The latest full-source Docker attempt cannot link because `ram_load` is unmapped; full-module metadata/KMI parity also remains unproven.
 
 ## Remaining stock evidence
 
