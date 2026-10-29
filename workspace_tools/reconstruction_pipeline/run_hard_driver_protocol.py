@@ -463,6 +463,16 @@ def find_map_bindings(
             )
             continue
         mapping = matches[0]
+        source_file = mapping.get("source_file")
+        if not isinstance(source_file, str) or not source_file.strip():
+            blockers.append(
+                f"{function['identity']}: reconstruction-map source_file is missing"
+            )
+        if mapping.get("status") != "candidate_under_static_validation":
+            blockers.append(
+                f"{function['identity']}: reconstruction-map status must be "
+                "'candidate_under_static_validation' before core validation"
+            )
         if mapping.get("source_function") != function["source_function"]:
             blockers.append(
                 f"{function['identity']}: source function mismatch "
