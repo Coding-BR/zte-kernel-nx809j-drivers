@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Forty-one candidates pass their applicable automated core gates; 119 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Forty-two candidates pass their applicable automated core gates; 118 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 41
-- Functions still not started: 119
+- Candidate source functions with core-gate attestations: 42
+- Functions still not started: 118
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -46,7 +46,9 @@ Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, 
 
 - aw8693x_set_rtp_aei: KCFI ID `0x1d0adf6e`; all eight automated core gates pass. The AArch64 candidate matches the stock 48-byte body and relocation; normalized Ghidra C and P-Code match. The KCFI oracle identifies a `bool`/`u8` alias set, and the candidate preserves byte-level bit-0 behavior with `u8`. The ASan/UBSan host harness rejects four seeded mutants. Candidate module SHA-256: `1063d9b97b65f7dabe6e29a4916895067676ade34ae989c96b67335e2f0eb724`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_aei_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 119 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because the remaining functions are unmapped and full-module metadata/KMI parity still fails.
+- aw8693x_auto_bst_enable: KCFI ID `0x1d0adf6e`; all eight automated core gates pass. The C candidate matches the stock 52-byte body and relocation; normalized Ghidra C and P-Code match. It stores the input byte at `haptic + 0x18` and updates bit 4 of register `0x08`. The ASan/UBSan host harness rejects five seeded mutants. Candidate module SHA-256: `881f37a8a08ac6af385dec4eb44dd429db180d6a650457be941323167b8d2905`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_auto_bst_enable_20261029/README.md)
+
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 118 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because the remaining functions are unmapped and full-module metadata/KMI parity still fails.
 
 ## Remaining stock evidence
 
