@@ -110,6 +110,83 @@ class HardDriverProtocolTests(unittest.TestCase):
         self.assertIn("LOCK_LIFETIME", gates)
         self.assertIn("JOERN_SLICE", gates)
 
+    def test_compiler_sensitive_profile_only_requires_kcfi_when_function_does(self):
+        job = base_job(
+            profiles=["COMPILER_SENSITIVE"],
+            functions=[{
+                "stock_function": "stock_fn",
+                "stock_entry": "00100010",
+                "source_function": "source_fn",
+                "kcfi_required": False,
+            }],
+        )
+
+        gates = required_gates(job, validate_job(job))
+
+        self.assertNotIn("KCFI", gates)
+        self.assertIn("CANDIDATE_GHIDRA_PCODE", gates)
+        self.assertIn("LLVM_IR_DIAGNOSIS", gates)
+
+    def test_compiler_sensitive_profile_keeps_explicit_function_kcfi_gate(self):
+        job = base_job(
+            profiles=["COMPILER_SENSITIVE"],
+            functions=[{
+                "stock_function": "stock_fn",
+                "stock_entry": "00100010",
+                "source_function": "source_fn",
+                "kcfi_required": True,
+            }],
+        )
+
+        self.assertIn("KCFI", required_gates(job, validate_job(job)))
+
+    def test_non_required_kcfi_is_reported_without_running_comparator(self):
+        job = base_job(
+            profiles=["COMPILER_SENSITIVE"],
+            functions=[{
+                "stock_function": "stock_fn",
+                "stock_entry": "00100010",
+                "source_function": "source_fn",
+                "kcfi_required": False,
+            }],
+        )
+        functions = validate_job(job)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch(
+                "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.run_command",
+                return_value={"returncode": 0},
+            ) as run_mock, patch(
+                "workspace_tools.reconstruction_pipeline.run_hard_driver_protocol.paired_ghidra_semantic_exports",
+                return_value={
+                    "enabled": False,
+                    "stock_export": root / "stock-ghidra",
+                    "candidate_export": root / "candidate-ghidra",
+                    "stock_entry_bias": 0,
+                },
+            ):
+                commands, gates = execute_post_candidate(
+                    job=job,
+                    functions=functions,
+                    repo_root=root,
+                    output_dir=root / "output",
+                    python=Path("python"),
+                    stock_module=root / "stock.ko",
+                    candidate_module=root / "candidate.ko",
+                    stock_ghidra_export=root / "stock-ghidra",
+                    candidate_ghidra_export=root / "candidate-ghidra",
+                    docker_config={},
+                    command_timeout=1,
+                    kcfi_required=False,
+                )
+
+        command_names = [call.args[0] for call in run_mock.call_args_list]
+        self.assertEqual(gates["KCFI"], "NOT_REQUIRED")
+        self.assertEqual(commands["kcfi_applicability"]["status"], "NOT_REQUIRED")
+        self.assertNotIn("kcfi_stock", command_names)
+        self.assertNotIn("kcfi_candidate", command_names)
+        self.assertNotIn("kcfi_compare", command_names)
+
     def test_hardware_profile_cannot_omit_runtime_and_bus_ledger(self):
         job = base_job(profiles=["HARDWARE_BUS"])
         functions = validate_job(job)

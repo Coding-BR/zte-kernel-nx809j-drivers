@@ -361,6 +361,12 @@ def required_gates(job: dict[str, Any], functions: list[dict[str, Any]]) -> dict
     }
     for profile in job["profiles"]:
         for name, reason in PROFILE_GATES[profile].items():
+            # COMPILER_SENSITIVE identifies a risk class, not proof that every
+            # selected symbol has a KCFI boundary. Require the KCFI gate for
+            # this profile only when a selected function opts in below. The
+            # CALLBACK_ABI profile still requires its KCFI/callsite audit.
+            if name == "KCFI" and profile == "COMPILER_SENSITIVE":
+                continue
             gates[name] = {
                 "reason": reason,
                 "kind": "AUTOMATED" if name in AUTOMATED_GATES else "EVIDENCE",
@@ -1061,6 +1067,7 @@ def execute_post_candidate(
     candidate_ghidra_export: Path | None,
     docker_config: dict[str, Any],
     command_timeout: int,
+    kcfi_required: bool = True,
 ) -> tuple[dict[str, Any], dict[str, str]]:
     tools_root = repo_root / "workspace_tools" / "reconstruction_pipeline"
     commands: dict[str, Any] = {}
@@ -1096,7 +1103,16 @@ def execute_post_candidate(
         str(name) for name in kcfi_config.get("direct_call_only", [])
     } if isinstance(kcfi_config, dict) else set()
     selected_functions = {str(item["stock_function"]) for item in functions}
-    if direct_call_only and selected_functions <= direct_call_only:
+    if not kcfi_required:
+        gates["KCFI"] = "NOT_REQUIRED"
+        commands["kcfi_applicability"] = {
+            "status": "NOT_REQUIRED",
+            "reason": (
+                "no selected function declares kcfi_required and no profile "
+                "requires a KCFI/callback ABI gate"
+            ),
+        }
+    elif direct_call_only and selected_functions <= direct_call_only:
         direct_ok = bool(stock_ghidra_export and candidate_ghidra_export)
         for name, argv in kcfi_commands.items():
             result = run_command(name, argv, output_dir=output_dir, timeout=command_timeout)
@@ -1747,6 +1763,7 @@ def main() -> int:
             ) if job["paths"].get("candidate_ghidra_export") else None,
             docker_config=job.get("docker", {}),
             command_timeout=args.post_timeout,
+            kcfi_required="KCFI" in gates_required,
         )
         command_results.update(post_commands)
         gate_status.update(post_gates)

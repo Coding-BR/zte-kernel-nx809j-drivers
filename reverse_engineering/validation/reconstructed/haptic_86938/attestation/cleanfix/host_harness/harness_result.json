@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T06:33:13.485134+00:00",
+  "passed": true,
+  "scope": "host-only bounded memory behavior; no kernel or hardware execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_036_richtap_clean_buf.c",
+  "candidate_source_sha256": "77a38989f0d30552e33021927a7b62006f765a1fa8404a0256cde1e4ea51e358",
+  "harness_source_sha256": "05b2cec74fb77a978efbe7b89a3b48109b4b053f4368acd9761bb826a7a1a557",
+  "stock_root_pointer_offset": "0x610",
+  "node_count_tested": 16,
+  "node_stride_bytes": 1024,
+  "buffer_bytes_per_node": 1000,
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "expected": "pass",
+      "observed_returncode": 0,
+      "passed": true,
+      "output": "PASS: 16 nodes cleared and marked; links, sentinels, and root preserved"
+    },
+    "mutant_missing_first_clear": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: buffer byte was not cleared (node=0)"
+    },
+    "mutant_missing_first_sentinel": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: state sentinel was not written (node=0)"
+    },
+    "mutant_wrong_first_link_step": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: state sentinel was not written (node=15)"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: 16 nodes cleared and marked; links, sentinels, and root preserved\nCASE_END\nCASE_RESULT:mutant_missing_first_clear:1\nFAIL: buffer byte was not cleared (node=0)\nCASE_END\nCASE_RESULT:mutant_missing_first_sentinel:1\nFAIL: state sentinel was not written (node=0)\nCASE_END\nCASE_RESULT:mutant_wrong_first_link_step:1\nFAIL: state sentinel was not written (node=15)\nCASE_END\n"
+}
