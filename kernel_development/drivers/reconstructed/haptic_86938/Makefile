@@ -21,3 +21,6 @@ haptic_86938-y += haptic_86938_fn_018_haptic_audio_show.o
 haptic_86938-y += haptic_86938_fn_019_activate_aw_show.o
 haptic_86938-y += haptic_86938_fn_020_osc_cali_show.o
 haptic_86938-y += haptic_86938_fn_021_osc_save_show.o
+haptic_86938-y += haptic_86938_fn_022_ram_vbat_comp_show.o
+haptic_86938-y += haptic_86938_fn_023_pre_f0_show.o
+haptic_86938-y += haptic_86938_fn_024_rtp_show.o
