@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "function": "awrw_show@0010d518",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "ordered_effects": [
+    {
+      "sequence": 1,
+      "operation": "load",
+      "base": "device",
+      "offset": "0x98",
+      "width_bytes": 8,
+      "condition": "always",
+      "value": "private state pointer"
+    },
+    {
+      "sequence": 2,
+      "operation": "load_compare",
+      "base": "private state",
+      "offset": "0x528",
+      "width_bytes": 4,
+      "condition": "mode must equal 1"
+    },
+    {
+      "sequence": 3,
+      "operation": "load_null_check",
+      "base": "private state",
+      "offset": "0x530",
+      "width_bytes": 8,
+      "condition": "mode equals 1"
+    },
+    {
+      "sequence": 4,
+      "operation": "load",
+      "base": "private state",
+      "offset": "0x52c",
+      "width_bytes": 4,
+      "condition": "data pointer non-NULL; initial count"
+    },
+    {
+      "sequence": 5,
+      "operation": "load",
+      "base": "private state",
+      "offset": "0x530",
+      "width_bytes": 8,
+      "condition": "once per loop iteration; pointer is reloaded"
+    },
+    {
+      "sequence": 6,
+      "operation": "load",
+      "base": "data pointer",
+      "offset": "signed_extend(index_u32)",
+      "width_bytes": 1,
+      "condition": "index less than most recently loaded count"
+    },
+    {
+      "sequence": 7,
+      "operation": "call",
+      "target": "snprintf",
+      "arguments": ["buf + total", "4096 - total", "0x%02x,", "byte"],
+      "condition": "each loop iteration"
+    },
+    {
+      "sequence": 8,
+      "operation": "update",
+      "value": "total += snprintf_return; index++"
+    },
+    {
+      "sequence": 9,
+      "operation": "load",
+      "base": "private state",
+      "offset": "0x52c",
+      "width_bytes": 4,
+      "condition": "after each iteration; loop bound is reloaded"
+    },
+    {
+      "sequence": 10,
+      "operation": "call",
+      "target": "snprintf",
+      "arguments": ["buf + total - 1", "4096 - total", "\\n"],
+      "condition": "data pointer non-NULL, including zero count"
+    }
+  ],
+  "formatter_semantics": {
+    "evidence": "attestation/haptic_awrw_show_20261029/kernel_vsnprintf_source_evidence.json",
+    "zero_count": "final destination is buf-1; target formatter writes newline at buf[-1] and NUL at buf[0]",
+    "count_820": "total reaches 4100; size_t subtraction exceeds INT_MAX; exported kernel snprintf delegates to vsnprintf, which warns and returns 0 before writing"
+  },
+  "concurrency": {
+    "show_lock_operations": [],
+    "pointer_reload_and_count_reload": true,
+    "lifetime_contract": "NOT_ESTABLISHED; see MP5_LIFETIME.json and awrw_store stock decompilation"
+  },
+  "evidence": {
+    "stock_pcode": "offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0136_0010d518_awrw_show.jsonl",
+    "candidate_pcode": "attestation/haptic_awrw_show_20261029/candidate_ghidra_v3/s/pcode/0108_00105a58_awrw_show.jsonl",
+    "kernel_formatter_source": "attestation/haptic_awrw_show_20261029/kernel_vsnprintf_source_excerpt.txt"
+  }
+}

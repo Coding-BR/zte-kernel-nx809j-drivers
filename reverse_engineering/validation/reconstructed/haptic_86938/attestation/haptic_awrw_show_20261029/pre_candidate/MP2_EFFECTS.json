@@ -1,0 +1,18 @@
+{
+  "ordered_effects": [
+    "read private pointer dev+0x98",
+    "read mode +0x528, require 1",
+    "read buffer pointer +0x530, require non-NULL",
+    "read count +0x52c; reload pointer and count each loop iteration",
+    "load byte with signed-extended 32-bit index",
+    "snprintf(buf+total,4096-total,\"0x%02x,\",byte)",
+    "increment index and add snprintf result",
+    "snprintf(buf+total-1,4096-total,\"\\n\"); target kernel vsnprintf returns 0 when the underflowed size exceeds INT_MAX",
+    "return total plus final snprintf result"
+  ],
+  "writer_cross_reference": "awrw_store@0010d620 writes mode/count/pointer at +0x528/+0x52c/+0x530",
+  "evidence": [
+    "awrw_show Assembly 0x0010d530..0x0010d79c",
+    "awrw_store P-Code 0x0010d69c,0x0010d6a0,0x0010d6c4"
+  ]
+}

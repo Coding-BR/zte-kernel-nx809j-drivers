@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "kernel_source": "kernel/kernel_platform/common/fs/kernfs/file.c",
+  "sha256": "93d24a909ef8113b16a29c8d505e3a81861b60351f10d3b3ab6b83abfbeca4e9",
+  "source_volume": "nubia_sm8850_kernel_src",
+  "source_lines": {
+    "read_callback_mutex": [149, 154],
+    "write_callback_mutex": [237, 240],
+    "open_file_allocation": [621, 624],
+    "separate_open_mutex_statement": [633, 635]
+  },
+  "finding": "kernfs callbacks are serialized by a mutex on each kernfs_open_file. kernfs_fop_open allocates a distinct kernfs_open_file for each open, and the source explicitly says each open file has a separate mutex.",
+  "consequence": "The kernfs mutex does not establish mutual exclusion between awrw_show and awrw_store across separate opens. The target driver's callbacks have no shared lock covering show's pointer dereference and store's pointer replacement/free.",
+  "status": "SOURCE_REVIEW_CONFIRMS_CROSS_OPEN_SERIALIZATION_ABSENT",
+  "limitation": "Source analysis confirms the missing serialization mechanism; it does not replace a target runtime KASAN/KCSAN reproduction."
+}

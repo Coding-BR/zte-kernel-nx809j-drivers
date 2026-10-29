@@ -1,0 +1,22 @@
+Source: kernel/kernel_platform/common/fs/kernfs/file.c
+SHA-256: 93d24a909ef8113b16a29c8d505e3a81861b60351f10d3b3ab6b83abfbeca4e9
+
+Lines 149-154: seq callback path locks @of->mutex and says it prevents concurrent operations "for the same open file".
+  151 /* @of->mutex nests outside active ref and is primarily to ensure that */
+  152 /* the ops aren't called concurrently for the same open file. */
+  154 mutex_lock(&of->mutex);
+
+Lines 238-240: write callback path uses the same per-open-file mutex.
+  238 /* the ops aren't called concurrently for the same open file. */
+  240 mutex_lock(&of->mutex);
+
+Lines 621-624: kernfs_fop_open allocates one kernfs_open_file for the open.
+  621 /* allocate a kernfs_open_file for the file */
+  623 of = kzalloc(sizeof(struct kernfs_open_file), GFP_KERNEL);
+
+Lines 633-635: upstream source explicitly states each open file has a separate mutex.
+  633 /* which mm->mmap_lock nests, while holding @of->mutex.  As each */
+  634 /* open file has a separate mutex, it's okay as long as those don't */
+  635 /* happen on the same file. */
+
+Interpretation: kernfs serializes callbacks that use the same kernfs_open_file. Separate opens have separate of->mutex instances; this lock does not serialize awrw_show and awrw_store issued through different open file descriptions. The driver callbacks have no shared lock around the pointer replacement/free and show dereference, so the stock lifetime race remains possible.

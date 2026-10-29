@@ -108,3 +108,4 @@ haptic_86938-y += haptic_86938_fn_103_brightness_set.o
 haptic_86938-y += haptic_86938_fn_104_aw8693x_get_irq_state.o
 haptic_86938-y += haptic_86938_fn_105_aw8693x_protect_config.o
 haptic_86938-y += haptic_86938_fn_106_aw8693x_upload_lra.o
+haptic_86938-y += haptic_86938_fn_107_awrw_show.o

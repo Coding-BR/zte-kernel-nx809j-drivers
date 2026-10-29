@@ -1,0 +1,42 @@
+5cb95bba576a4512373b1e5cd753977efb5264807942b5df905df13b688cd594  /work/src/kernel/kernel_platform/common/lib/vsprintf.c
+===vsnprintf-2733-2758===
+int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
+{
+	unsigned long long num;
+	char *str, *end;
+	struct printf_spec spec = {0};
+
+	/* Reject out-of-range values early.  Large positive sizes are
+	   used for unknown buffer sizes. */
+	if (WARN_ON_ONCE(size > INT_MAX))
+		return 0;
+
+	str = buf;
+	end = buf + size;
+
+	/* Make sure end is always >= buf */
+	if (end < buf) {
+		end = ((void *)-1);
+		size = end - buf;
+	}
+
+	while (*fmt) {
+		const char *old_fmt = fmt;
+		int read = format_decode(fmt, &spec);
+
+		fmt += read;
+
+===snprintf-wrapper-2932-2944===
+int snprintf(char *buf, size_t size, const char *fmt, ...)
+{
+	va_list args;
+	int i;
+
+	va_start(args, fmt);
+	i = vsnprintf(buf, size, fmt, args);
+	va_end(args);
+
+	return i;
+}
+EXPORT_SYMBOL(snprintf);
+

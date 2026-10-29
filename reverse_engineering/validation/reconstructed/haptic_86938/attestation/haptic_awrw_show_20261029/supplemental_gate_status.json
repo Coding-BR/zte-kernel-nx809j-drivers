@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "function": "awrw_show@0010d518",
+  "generated_local_date": "2026-10-29",
+  "core_report": "core_v3/hard_protocol_report.json",
+  "status": "CANDIDATE_STATIC_CORE_PASS_INTEGRATION_INCOMPLETE",
+  "promotion_authorized": false,
+  "core_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "supplemental_gates": {
+    "HOST_HARNESS": "PASS",
+    "SANITIZERS": "PASS_WITH_EXPECTED_CONDITIONAL_STOCK_UNDERWRITE",
+    "STATE_EFFECT_LEDGER": "PASS",
+    "SEMANTIC_COUNTEREXAMPLE": "PASS",
+    "KMI_TYPES": "PASS",
+    "BOUNDED_MODEL": "PARTIAL_HOST_SWEEP_ONLY_NO_CBMC_OR_KLEE_PROOF",
+    "CALLBACK_TABLE": "INCOMPLETE",
+    "INDEPENDENT_REVIEW": "INCOMPLETE_LIFETIME_BLOCKER",
+    "KUNIT_LOCKDEP_KCSAN": "NOT_RUN",
+    "LLVM_IR_DIAGNOSIS": "NOT_RUN",
+    "LOCK_LIFETIME": "INCOMPLETE"
+  },
+  "corrected_reconstruction_divergences": [
+    "Error paths now return -ERANGE (-34), matching stock instead of -EINVAL (-22).",
+    "Local initialization/declaration order was adjusted until the target Clang emitted the exact stock function body."
+  ],
+  "residual_stock_behavior": [
+    "Count zero with a non-NULL data pointer underwrites buf by one byte; the normal stock awrw_store rejects a zero count before modifying state.",
+    "awrw_show reads the shared pointer/count without a lock while awrw_store can free/replace the pointer. The target kernfs mutex is per-open-file, so separate opens are not serialized."
+  ],
+  "why_no_source_lock_patch": "Adding synchronization to awrw_show would change its stock semantics and fail exact reconstruction. A separate hardening change requires an explicit non-reconstruction scope and must update both callbacks consistently.",
+  "remaining_evidence": [
+    "Reconstruct and statically validate awrw_store so the pair's state effects can be audited together.",
+    "Run the integrated callback pair under target-kernel KASAN/KCSAN or provide an equivalent proof of pointer lifetime.",
+    "Complete CALLBACK_TABLE and applicable LLVM IR diagnostic evidence."
+  ],
+  "independent_review": "pre_candidate/MP8_INDEPENDENT_REVIEW.json",
+  "kernfs_lifetime_source": "kernel_kernfs_lifetime_evidence.json"
+}
