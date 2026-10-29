@@ -30,3 +30,5 @@ haptic_86938-y += haptic_86938_fn_027_haptic_audio_time_show.o
 haptic_86938-y += haptic_86938_fn_028_loop_show.o
 haptic_86938-y += haptic_86938_fn_029_reg_show.o
 haptic_86938-y += haptic_86938_fn_030_trig_show.o
+haptic_86938-y += haptic_86938_fn_031_i2c_r_bytes.o
+haptic_86938-y += haptic_86938_fn_032_i2c_w_bytes.o

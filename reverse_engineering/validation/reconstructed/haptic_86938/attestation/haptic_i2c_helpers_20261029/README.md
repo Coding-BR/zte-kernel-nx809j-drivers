@@ -1,0 +1,9 @@
+# Haptic I²C byte helpers microtask
+
+This microtask reconstructs stock `i2c_r_bytes` (`00107014`) and `i2c_w_bytes` (`00107114`), local helpers required by the continuous-drive sysfs stores. Both read the `struct i2c_client *` at `struct aw_haptic + 0x328` and now link inside the candidate module, so the dependent stores will not rely on an unresolved vendor symbol.
+
+`i2c_r_bytes` submits the register-address write and data read as a two-message I²C transfer. Negative transfers preserve the returned error; an incomplete nonnegative transfer logs the stock message and returns `-ENXIO` (`-6`). Although the repaired Ghidra export inferred `void`, stock assembly returns the transfer result in `w0`; the stock KCFI ID confirms the `int` return type. `i2c_w_bytes` allocates `length + 1`, prefixes the register byte, copies the payload, calls `i2c_transfer_buffer_flags`, logs negative results, frees the temporary buffer, and returns the transfer result.
+
+A pinned Docker Kbuild signature probe tested seven prototypes. The matching signature for both stock KCFI preambles is `int (struct aw_haptic *, u8, u8 *, u32)` with ID `0x96263f44`; see `signature_probe/README.md`. The final candidate matches both stock function sizes and all AArch64 instructions and relocations (252 bytes / 63 instructions for `i2c_r_bytes`; 276 bytes / 69 instructions for `i2c_w_bytes`). The full non-promoting protocol reports `CORE_GATES_PASS` for both functions and all eight required gates. The accumulated candidate module SHA-256 is `e3082ced7e98c7a298aafdc61439b352d0cf39ea31158849b223119fcdcb3d88`.
+
+This attests only these two functions. The whole driver remains incomplete, the candidate module is not promoted, and whole-driver semantic equivalence and hardware behavior are not established. See `core_v2/hard_protocol_report.json` and `core_v2/docker/driver_audit.md`.
