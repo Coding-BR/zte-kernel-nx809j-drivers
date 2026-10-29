@@ -1,0 +1,7 @@
+#ifndef HAPTIC_OPEN_HARNESS_LINUX_ERRNO_H
+#define HAPTIC_OPEN_HARNESS_LINUX_ERRNO_H
+
+#define ENODEV 19
+#define EFAULT 14
+
+#endif

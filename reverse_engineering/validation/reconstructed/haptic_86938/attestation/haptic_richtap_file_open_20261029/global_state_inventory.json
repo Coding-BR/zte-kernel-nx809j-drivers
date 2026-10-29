@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "object": "g_aw_haptic",
+  "driver": "haptic_86938",
+  "diagnosis": "The first reconstructed module build stopped at MODPOST because richtap_file_open referenced g_aw_haptic but no candidate translation unit defined it.",
+  "stock": {
+    "elf_symbol": {
+      "name": "g_aw_haptic",
+      "binding": "GLOBAL",
+      "type": "OBJECT",
+      "section": ".bss",
+      "section_index": 33,
+      "value": "0x0",
+      "size_bytes": 8,
+      "alignment": 8
+    },
+    "initialization_observation": {
+      "function": "aw_i2c_probe@001073c0",
+      "effect": "assigns the probe-created haptic pointer to g_aw_haptic",
+      "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    "sha256": {
+      "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+      "open_function": "0906f0aa9ca932519f6f14791271246b1f59672664671c0601ef752e94ac5d8f",
+      "probe_function": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+      "failed_build": "a87fe7a5eab4e44bdb6fce91ac09631eb1cd8a2f35aa4ffb9bb053ffe40f58b3",
+      "internal_header": "2a43df716ca797e78a8c23ed22127587cd2f9c33ccdc7f3c886df6a7a7af2a2c",
+      "global_definition": "c328078493a5bcb4246b923b354d3902937814c1666ff576863664be9e1f6fd1",
+      "open_source": "8ee629d2f0a5f1c0cf38631bb55d10609d1cfc927039f287339970cb50f489d7"
+    },
+    "symbol_inventory_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/symbols.jsonl",
+    "symbol_inventory_sha256": "f3892272eef216429739fab074dc0188496f4af58df41986eed03a323ff8b5b0"
+  },
+  "candidate": {
+    "declaration_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+    "definition_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_globals.c",
+    "definition": "struct aw_haptic *g_aw_haptic;",
+    "expected_storage": "8-byte zero-initialized pointer in .bss",
+    "sha256": {
+      "internal_header": "2a43df716ca797e78a8c23ed22127587cd2f9c33ccdc7f3c886df6a7a7af2a2c",
+      "definition": "c328078493a5bcb4246b923b354d3902937814c1666ff576863664be9e1f6fd1"
+    },
+    "module_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/candidate_module/haptic_86938.ko",
+    "module_sha256": "34ed18cce9cc6d0418c41a139cb015c84d8e4bf9872189855887103dce03f655",
+    "elf_symbol": {
+      "name": "g_aw_haptic",
+      "binding": "GLOBAL",
+      "type": "OBJECT",
+      "section": ".bss",
+      "section_index": 43,
+      "value": "0x0",
+      "size_bytes": 8,
+      "alignment": 8
+    }
+  },
+  "build_diagnosis": {
+    "first_attempt": "FAILED at MODPOST: undefined symbol g_aw_haptic",
+    "correction": "Added the stock-observed 8-byte global pointer definition and shared declaration; retry uses a fresh Docker work root.",
+    "retry_report": "pre_candidate/docker_build_retry.json"
+  },
+  "limits": [
+    "The probe-side runtime assignment is not reconstructed by this global object.",
+    "The symbol definition is evidence-backed, but device lifecycle and initialization remain unverified.",
+    "This state-object record does not imply whole-driver completion or static verification."
+  ]
+}

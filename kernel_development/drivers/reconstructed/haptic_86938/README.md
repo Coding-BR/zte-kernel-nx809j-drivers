@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Thirty-three candidate functions now pass the automated core protocol; 127 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Thirty-six candidate functions now pass the automated core protocol; 124 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 33
-- Functions still not started: 127
+- Candidate source functions with core-gate attestations: 36
+- Functions still not started: 124
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -35,8 +35,11 @@ Each function passed all eight core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDR
 - reg_show: forwards to the callback at function-table offset `+0x148` with `struct aw_haptic *`, zero initial length, and the sysfs buffer, then returns the callback result. The indirect target KCFI ID is `0xdf86a5ee`; the show wrapper uses `0xae84bcd4`. Accumulated candidate module SHA-256: `654744ca3a13538772fd5176d2238de93f737e09cac33889c669f6c50d190220`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_reg_show_20261029/README.md)
 - trig_show: formats all three trigger records using the stock byte offsets, line format, 4096-byte bound, and accumulated snprintf return. The first attempt exposed a relocation-section mismatch caused by a static format array; direct literals corrected it. All eight core gates now pass. KCFI ID is `0xae84bcd4`. Accumulated candidate module SHA-256: `73b92fcddb2e1f6402060465ddbfcbf075250c209a3639722a5becb89a4659de`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_trig_show_20261029/README.md)
 - i2c_r_bytes and i2c_w_bytes: both use the recovered KCFI signature `int (struct aw_haptic *, u8, u8 *, u32)` and ID `0x96263f44`. The read helper performs the two-message register/data transfer and preserves the stock `-6` short-transfer result; the write helper prefixes the register byte, sends the buffer, and frees it. Both match stock instruction streams, relocations, and symbol sizes and pass all eight core gates. Accumulated candidate module SHA-256: `e3082ced7e98c7a298aafdc61439b352d0cf39ea31158849b223119fcdcb3d88`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_helpers_20261029/README.md)
+- cont_drv_time_store: corrected the parser and transfer-buffer stack layout to match the stock 204-byte body; all eight core gates pass. Candidate module SHA-256: `ad5cd6ab75b7560a50d207c741c506231693a0ab07ada59392ff1e83ebbbb25c`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_drv_time_store_20261029/README.md)
+- richtap_file_release: releases the module reference with `module_put(THIS_MODULE)` and returns zero; strict assembly, Ghidra/P-Code, KCFI, Docker, and Joern gates pass. Candidate module SHA-256: `23623a53a178ca5e8c7f4913afbbdcea840d1af59dd5a0b0c6606e5d009f3da9`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/README.md)
+- richtap_file_open: acquires the module reference, returns `-ENODEV` on failure, and stores `g_aw_haptic` in `file->private_data` on success; its 76-byte body matches stock assembly, normalized Ghidra C, P-Code, and KCFI. The candidate defines the stock-observed 8-byte `g_aw_haptic` BSS object; probe-side initialization remains incomplete. Candidate module SHA-256: `34ed18cce9cc6d0418c41a139cb015c84d8e4bf9872189855887103dce03f655`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 127 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but correctly withholds static verification because no combined module has been promoted.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 124 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because the remaining functions are unmapped and full-module metadata/KMI parity still fails.
 
 ## Remaining stock evidence
 
