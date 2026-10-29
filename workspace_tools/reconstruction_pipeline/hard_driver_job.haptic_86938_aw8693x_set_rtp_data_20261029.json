@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "stock_function": "aw8693x_set_rtp_data",
+      "stock_entry": "00104c50",
+      "source_function": "aw8693x_set_rtp_data",
+      "candidate_function": "aw8693x_set_rtp_data",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_data_20261029/candidate_ghidra/haptic_86938.ko"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "source_function": "aw8693x_set_rtp_data",
+      "candidate_function": "aw8693x_set_rtp_data"
+    }
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "evidence": {
+    "pre_candidate_packet": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_data_20261029/pre_candidate/MP0_MP6.json",
+    "stock_callback_relocation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_data_20261029/pre_candidate/stock_func_list_relocation.json",
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrtpdata/host_harness/harness_result.json",
+      "sha256": "d494d82a4e2ce86e614241f828f1e325538da5a23498fb03263e79b63b3d69a8"
+    },
+    "host_harness_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrtpdata/host_harness/aw8693x_set_rtp_data_harness.c",
+      "sha256": "8ea17a47888844e60af2e944bc9859eac42b2f6162d09376f6a87c95325d26ac"
+    },
+    "host_harness_runner": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrtpdata/host_harness/run_harness.py",
+      "sha256": "2808de41a44d2d27a2f92174c4424e765147dba2f844b914a2d7675f6d7d16e4"
+    }
+  }
+}

@@ -12,6 +12,7 @@ from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
     build_command_plan,
     execute_post_candidate,
     find_map_bindings,
+    generic_docker_work_root,
     required_gates,
     resolve_repo_path,
     run_command,
@@ -49,6 +50,47 @@ def base_job(**overrides):
 
 
 class HardDriverProtocolTests(unittest.TestCase):
+    def test_generic_docker_work_root_shortens_long_windows_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "reconstructed" / "example_driver"
+            source.mkdir(parents=True)
+            (source / "a_source_file_with_a_long_name.c").write_text(
+                "int example;\n", encoding="utf-8"
+            )
+            output = root / "validation" / ("long_output_dir_" * 5)
+            short_temp = root / "temp"
+
+            work_root = generic_docker_work_root(
+                output_dir=output,
+                source_root=source,
+                driver="example_driver",
+                stable_id="0123456789ab",
+                windows=True,
+                temp_root=short_temp,
+                max_path=100,
+            )
+
+            self.assertEqual(work_root.parent, short_temp / "chdp")
+            self.assertTrue(work_root.name.startswith("0123456789ab-"))
+
+    def test_generic_docker_work_root_keeps_normal_path_in_output(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            source.mkdir()
+            output = root / "output"
+
+            work_root = generic_docker_work_root(
+                output_dir=output,
+                source_root=source,
+                driver="example_driver",
+                stable_id="0123456789ab",
+                windows=False,
+            )
+
+            self.assertEqual(work_root, output / "docker" / "work")
+
     def test_runner_inventory_hashes_scripts_and_detects_changes(self):
         with tempfile.TemporaryDirectory() as temporary:
             repo = Path(temporary)

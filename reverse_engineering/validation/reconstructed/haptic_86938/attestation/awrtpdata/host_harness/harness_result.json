@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T07:00:55.547022+00:00",
+  "passed": true,
+  "scope": "host-only forwarding contract; no kernel KCFI or I2C hardware execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_038_aw8693x_set_rtp_data.c",
+  "candidate_source_sha256": "db1642457b89faffbefbdf2f20dab36310d14d52fdc5dadba69e67f5667ba6cf",
+  "harness_source_sha256": "8ea17a47888844e60af2e944bc9859eac42b2f6162d09376f6a87c95325d26ac",
+  "harness_runner_sha256": "2808de41a44d2d27a2f92174c4424e765147dba2f844b914a2d7675f6d7d16e4",
+  "register": "0x32",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "expected": "pass",
+      "expected_failure": null,
+      "observed_returncode": 0,
+      "failure_diagnostic_matched": false,
+      "passed": true,
+      "output": "PASS: one synchronous write to register 0x32 with the original buffer and length"
+    },
+    "mutant_missing_write": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: expected one i2c write, got 0",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: expected one i2c write, got 0"
+    },
+    "mutant_wrong_register": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: expected reg 0x32, got 0x33",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: expected reg 0x32, got 0x33"
+    },
+    "mutant_wrong_data_pointer": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: data pointer mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: data pointer mismatch"
+    },
+    "mutant_wrong_length": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: expected length 3, got 4",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: expected length 3, got 4"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: one synchronous write to register 0x32 with the original buffer and length\nCASE_END\nCASE_RESULT:mutant_missing_write:1\nFAIL: expected one i2c write, got 0\nCASE_END\nCASE_RESULT:mutant_wrong_register:1\nFAIL: expected reg 0x32, got 0x33\nCASE_END\nCASE_RESULT:mutant_wrong_data_pointer:1\nFAIL: data pointer mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_length:1\nFAIL: expected length 3, got 4\nCASE_END\n"
+}

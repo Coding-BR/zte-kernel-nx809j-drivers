@@ -17,6 +17,7 @@ import re
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -481,6 +482,46 @@ def python_command(python: Path, script: Path, *args: str) -> list[str]:
     return [str(python), str(script), *args]
 
 
+def generic_docker_work_root(
+    *,
+    output_dir: Path,
+    source_root: Path,
+    driver: str,
+    stable_id: str,
+    windows: bool | None = None,
+    temp_root: Path | None = None,
+    max_path: int = 240,
+) -> Path:
+    """Keep copied source paths below the legacy Windows MAX_PATH boundary."""
+    work_root = output_dir / "docker" / "work"
+    if windows is None:
+        windows = os.name == "nt"
+    if not windows:
+        return work_root
+
+    source_root = source_root.resolve()
+    longest_relative = max(
+        (
+            path.relative_to(source_root)
+            for path in source_root.rglob("*")
+            if path.is_file()
+        ),
+        key=lambda path: len(str(path)),
+        default=Path("driver.ko"),
+    )
+    longest_destination = (
+        work_root / driver / "cycle_1" / longest_relative
+    ).resolve()
+    if len(str(longest_destination)) < max_path:
+        return work_root
+
+    # Keep transient build copies outside the evidence tree and use a short,
+    # run-specific path.  Docker still mounts this directory normally.
+    temp_root = temp_root or Path(tempfile.gettempdir())
+    output_id = hashlib.sha256(str(output_dir.resolve()).encode("utf-8")).hexdigest()[:8]
+    return temp_root / "chdp" / f"{stable_id[:12]}-{output_id}"
+
+
 def build_command_plan(
     *,
     job: dict[str, Any],
@@ -566,13 +607,19 @@ def build_command_plan(
         # engineering curated snapshot here silently audits an unrelated or
         # empty directory for auxiliary drivers.
         curated_root = source_root.parent
+        docker_work_root = generic_docker_work_root(
+            output_dir=output_dir,
+            source_root=source_root,
+            driver=job["driver"],
+            stable_id=stable_id,
+        )
         docker = python_command(
             python,
             tools_root / "validate_reconstructed_drivers.py",
             "--curated-root", str(curated_root),
             "--driver", job["driver"],
             "--rebuild",
-            "--work-root", str(output_dir / "docker" / "work"),
+            "--work-root", str(docker_work_root),
             "--output", str(docker_report),
             "--markdown", str(output_dir / "docker" / "driver_audit.md"),
             "--image", image,
