@@ -102,3 +102,4 @@ haptic_86938-y += haptic_86938_fn_097_ram_vbat_comp_store.o
 haptic_86938-y += haptic_86938_fn_098_aw8693x_get_wav_seq.o
 haptic_86938-y += haptic_86938_fn_099_aw8693x_play_go.o
 haptic_86938-y += haptic_86938_fn_100_aw8693x_interrupt_setup.o
+haptic_86938-y += haptic_86938_fn_101_aw8693x_bst_mode_config.o
