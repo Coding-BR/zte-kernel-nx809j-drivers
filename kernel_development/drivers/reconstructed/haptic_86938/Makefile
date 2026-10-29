@@ -51,3 +51,4 @@ haptic_86938-y += haptic_86938_fn_047_aw8693x_get_glb_state.o
 haptic_86938-y += haptic_86938_fn_048_aw8693x_get_osc_status.o
 haptic_86938-y += haptic_86938_fn_049_aw8693x_rtp_get_fifo_afs.o
 haptic_86938-y += haptic_86938_fn_050_aw8693x_rtp_get_fifo_aes.o
+haptic_86938-y += haptic_86938_fn_051_aw8693x_rtp_get_fifo_afi.o
