@@ -79,3 +79,4 @@ haptic_86938-y += haptic_86938_fn_075_haptic_audio_time_store.o
 haptic_86938-y += haptic_86938_fn_076_audio_timer_func.o
 haptic_86938-y += haptic_86938_fn_077_duration_show.o
 haptic_86938-y += haptic_86938_fn_078_duration_aw_show.o
+haptic_86938-y += haptic_86938_fn_079_aw8693x_set_pwm.o
