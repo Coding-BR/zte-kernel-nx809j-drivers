@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "function": "haptic_audio_time_store",
+  "effects": [
+    {
+      "condition": "sscanf returns exactly 2",
+      "effects": [
+        "write first parsed 32-bit integer to driver_data+0x430",
+        "write second parsed 32-bit integer to driver_data+0x434"
+      ]
+    },
+    {
+      "condition": "sscanf returns any other value",
+      "effects": [
+        "no state writes"
+      ]
+    }
+  ],
+  "lock": "none",
+  "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0131_0010d2d8_haptic_audio_time_store.c",
+  "layout_note": "Offsets are relative to the pointer returned by dev_get_drvdata; no parent-structure field labels are invented."
+}
