@@ -1,12 +1,13 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Sixty candidates pass their applicable automated core gates; 100 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Sixty-one candidates pass their applicable automated core gates; 20 candidate sources await gates, and 79 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 60
-- Functions still not started: 100
+- Candidate source functions with core-gate attestations: 61
+- Functions still not started: 79
+- Candidate sources awaiting core gates: 20
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -89,8 +90,9 @@ Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, 
 - duration_aw_show: matches the stock `duration_show` behavior: checks the hrtimer at `driver_data + 0x288`, displays zero when inactive, and otherwise displays remaining nanoseconds divided by 1,000,000. Stock and candidate match 31 AArch64 instructions and 124 bytes. KCFI ID is `0xae84bcd4`; all eight automated core gates pass. Two clean Docker builds produced candidate module SHA-256 `77db84aca7ee3c7ef497f39b49045f15345c7e204f7a4efc84b3bdbe3386a4b6` (3,602,480 bytes). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_duration_aw_show_20261029/README.md)
 
 - aw8693x_set_pwm: maps modes 0–3 to register values `0x20`, `0`, `0x40`, and `0x60`; invalid modes log the stock error without a bus call. Stock and candidate match all 41 AArch64 instructions and 164 bytes, including relocations. KCFI ID is `0x1d0adf6e`; all eight automated core gates pass. Two Docker cycles produced identical module SHA-256 `b5bda49361ec8a5d928115bcf40aa8238eb17766a9f70410d2764c8bed486cc7` (3,604,808 bytes). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_pwm_20261029/README.md)
+- aw8693x_get_ram_data: zero length returns 0; otherwise reads register `0x42` in chunks capped at `0x400`, reloads the 32-bit length at `haptic + 0x450` after each read, ignores the helper result, and returns the sign-extended offset. The signed buffer offset matches stock `sxtw`; all 33 AArch64 instructions and 132 bytes, including relocation, match. KCFI ID is `0x0c0dba4c`; all eight automated core gates pass. Two clean Docker builds produced SHA-256 `cf2d78d1f9852e53202bf5b96e6ac5880ea25cb3c07467069618cd94f4344e94` (3,606,752 bytes). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_get_ram_data_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 80 stock functions still unmapped, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because 80 stock functions still lack mapping/source traceability and full-module metadata/KMI parity still fails.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 79 stock functions still lack candidate source mappings, 20 mapped candidates await gates, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because source traceability and full-module metadata/KMI parity still fail.
 
 ## Remaining stock evidence
 
