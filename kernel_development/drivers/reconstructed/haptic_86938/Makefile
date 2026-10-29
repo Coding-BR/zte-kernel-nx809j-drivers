@@ -67,3 +67,4 @@ haptic_86938-y += haptic_86938_fn_063_aw8693x_trig1_param_config.o
 haptic_86938-y += haptic_86938_fn_064_aw8693x_trig2_param_config.o
 haptic_86938-y += haptic_86938_fn_065_aw8693x_trig3_param_config.o
 haptic_86938-y += haptic_86938_fn_066_trig_store.o
+haptic_86938-y += haptic_86938_fn_067_duration_store.o
