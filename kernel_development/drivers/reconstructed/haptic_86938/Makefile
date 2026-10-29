@@ -116,3 +116,4 @@ haptic_86938-y += haptic_86938_fn_111_gain_store.o
 haptic_86938-y += haptic_86938_fn_112_richtap_stop_work.o
 haptic_86938-y += haptic_86938_fn_113_auto_boost_store.o
 haptic_86938-y += haptic_86938_fn_114_index_store.o
+haptic_86938-y += haptic_86938_fn_115_prct_mode_store.o
