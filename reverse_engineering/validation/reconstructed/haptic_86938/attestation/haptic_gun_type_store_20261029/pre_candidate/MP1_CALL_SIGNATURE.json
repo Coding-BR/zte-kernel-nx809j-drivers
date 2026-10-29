@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "function": "gun_type_store",
+  "prototype": "ssize_t gun_type_store(struct device *, struct device_attribute *, const char *, size_t)",
+  "arguments": [
+    "device",
+    "unused attribute",
+    "input buffer",
+    "input byte count"
+  ],
+  "calls": [
+    "dev_get_drvdata",
+    "kstrtouint(base=0)",
+    "mutex_lock",
+    "mutex_unlock",
+    "__stack_chk_fail"
+  ],
+  "evidence": [
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0133_0010d3ac_gun_type_store.c",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0133_gun_type_store_0010d3ac.asm"
+  ],
+  "signature_confidence": "high; stock sysfs-store ABI and KCFI type 0x95c41a97 agree."
+}
