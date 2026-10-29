@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_bst_vol",
+  "stock_entry": "00104a80",
+  "stock_body_bytes": 64,
+  "kcfi_type_id": "0x1d0adf6e",
+  "static_observation": {
+    "assembly": "The stock interprets the second argument as a byte, clamps values below 6 to 5 and values above 24 to 25, then calls i2c_w_bits(haptic, 6, 0xffffffe0, value). The helper return is discarded.",
+    "decompiler_prototype": "void aw8693x_set_bst_vol(undefined8 haptic, byte value)",
+    "candidate_prototype": "void aw8693x_set_bst_vol(struct aw_haptic *haptic, u8 bst_vol)",
+    "return": "void; helper return discarded",
+    "limits": "The static contract and KCFI type ID are evidenced; physical hardware behavior and whole-driver semantic equivalence remain unestablished."
+  },
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_045_aw8693x_set_bst_vol.c"
+}
