@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "task_id": "trig_param_config_cluster",
+  "work_unit": "MP5_LOCK_LIFETIME_CONTRACT",
+  "functions": [
+    {
+      "identity": "aw8693x_trig1_param_config@00106bac",
+      "contract": "helper itself does not lock; observed trig_store caller acquires driver_data+0x248 before dispatch and releases after helper returns",
+      "unknowns": [
+        "other external call contexts, if any, are not established",
+        "object lifetime is outside helper"
+      ]
+    },
+    {
+      "identity": "aw8693x_trig2_param_config@00106ca4",
+      "contract": "helper itself does not lock; observed trig_store caller acquires driver_data+0x248 before dispatch and releases after helper returns",
+      "unknowns": [
+        "other external call contexts, if any, are not established",
+        "object lifetime is outside helper"
+      ]
+    },
+    {
+      "identity": "aw8693x_trig3_param_config@00106d98",
+      "contract": "helper itself does not lock; observed trig_store caller acquires driver_data+0x248 before dispatch and releases after helper returns",
+      "unknowns": [
+        "other external call contexts, if any, are not established",
+        "object lifetime is outside helper"
+      ]
+    }
+  ],
+  "caller_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0055_00106940_trig_store.c",
+      "sha256": "839865c0e3584c004799dcee9f54720c067b26e9d1b4efa5ff05b4151170878a",
+      "locator": "mutex_lock before helper dispatch, mutex_unlock after dispatch"
+    }
+  ]
+}

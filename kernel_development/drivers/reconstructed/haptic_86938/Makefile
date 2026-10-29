@@ -63,3 +63,6 @@ haptic_86938-y += haptic_86938_fn_059_aw8693x_check_qualify.o
 haptic_86938-y += haptic_86938_fn_060_cont_brk_time_store.o
 haptic_86938-y += haptic_86938_fn_061_cont_drv_lvl_store.o
 haptic_86938-y += haptic_86938_fn_062_rtp_auto_sin_store.o
+haptic_86938-y += haptic_86938_fn_063_aw8693x_trig1_param_config.o
+haptic_86938-y += haptic_86938_fn_064_aw8693x_trig2_param_config.o
+haptic_86938-y += haptic_86938_fn_065_aw8693x_trig3_param_config.o
