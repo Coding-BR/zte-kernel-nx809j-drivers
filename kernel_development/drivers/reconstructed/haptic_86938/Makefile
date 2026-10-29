@@ -44,3 +44,4 @@ haptic_86938-y += haptic_86938_fn_040_aw8693x_set_rtp_aei.o
 haptic_86938-y += haptic_86938_fn_041_aw8693x_auto_bst_enable.o
 haptic_86938-y += haptic_86938_fn_042_aw8693x_vbat_mode_config.o
 haptic_86938-y += haptic_86938_fn_043_aw8693x_set_wav_loop.o
+haptic_86938-y += haptic_86938_fn_044_aw8693x_set_wav_seq.o

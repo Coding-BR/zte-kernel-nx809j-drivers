@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T08:49:44.838504+00:00",
+  "passed": true,
+  "scope": "host-only wrapper argument contract; no kernel or physical device execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_044_aw8693x_set_wav_seq.c",
+  "candidate_source_sha256": "e17dd891e4e0102ecc7e96333b875381a6d7b270dee8d59652d2a812cbdcff34",
+  "harness_source_sha256": "90fca3af8ca201bbe7ccb21300ac70f8e6835992ae312a04e166d33c2da8e404",
+  "harness_runner_sha256": "76819cb77eb1323734dc50e4bb7b221bb389ce122bfd738dd5ec227b6252659f",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "passed": true,
+      "observed_returncode": 0,
+      "output": "PASS: wav-sequence register and single-byte write contract"
+    },
+    "mutant_register_minus_one": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, byte value, length, or call count mismatch"
+    },
+    "mutant_register_plus_one": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, byte value, length, or call count mismatch"
+    },
+    "mutant_wrong_length": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, byte value, length, or call count mismatch"
+    },
+    "mutant_wrong_value": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, byte value, length, or call count mismatch"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: wav-sequence register and single-byte write contract\nCASE_END\nCASE_RESULT:mutant_register_minus_one:1\nFAIL: register, byte value, length, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_register_plus_one:1\nFAIL: register, byte value, length, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_length:1\nFAIL: register, byte value, length, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_value:1\nFAIL: register, byte value, length, or call count mismatch\nCASE_END\n"
+}
