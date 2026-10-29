@@ -18,3 +18,6 @@ haptic_86938-y += haptic_86938_fn_015_auto_boost_show.o
 haptic_86938-y += haptic_86938_fn_016_cont_save_show.o
 haptic_86938-y += haptic_86938_fn_017_f0_save_show.o
 haptic_86938-y += haptic_86938_fn_018_haptic_audio_show.o
+haptic_86938-y += haptic_86938_fn_019_activate_aw_show.o
+haptic_86938-y += haptic_86938_fn_020_osc_cali_show.o
+haptic_86938-y += haptic_86938_fn_021_osc_save_show.o
