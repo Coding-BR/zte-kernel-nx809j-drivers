@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Fifty-six candidates pass their applicable automated core gates; 104 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Fifty-seven candidates pass their applicable automated core gates; 103 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 56
-- Functions still not started: 104
+- Candidate source functions with core-gate attestations: 57
+- Functions still not started: 103
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -74,7 +74,9 @@ Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, 
 
 - aw8693x_ram_init: bit 0 selects the write to register `0x45` that clears or sets bit 2; the set path then waits 500–600 us in state 2. Helper status is ignored. Stock/candidate match at 20 instructions and 80 bytes, including all three call relocations. KCFI ID `0x1d0adf6e`; both Docker cycles produced SHA-256 `dc2ae2d099222503e87a19bc215f4000cfccb1819813de5750013bce455f4a1c`. Fresh Ghidra C/P-Code match; the ASan/UBSan harness covers five mode values and rejects five seeded mutants. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_ram_init_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 104 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because 104 functions still lack candidate source and full-module metadata/KMI parity still fails.
+- aw8693x_get_first_wave_addr: reads three bytes from register `0x42`, ignores the helper status, and copies bytes 1–2 to the output buffer. The initial `u16 *` candidate had the wrong KCFI ID; switching the ABI parameter to `char *` matches stock ID `0x13c2d68c`. Stock and candidate match at 28 AArch64 instructions and 112 bytes, including both call relocations. Both Docker cycles produced module SHA-256 `e3434212adf12f7d4ec0a031f71727ba4c2c081a692d1fbdfba3e677cf63a701`. Fresh Ghidra normalized C/P-Code match; the ASan/UBSan harness covers five cases and rejects five seeded mutants. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_get_first_wave_addr_20261029/README.md)
+
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 103 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because 103 functions still lack candidate source and full-module metadata/KMI parity still fails.
 
 ## Remaining stock evidence
 
