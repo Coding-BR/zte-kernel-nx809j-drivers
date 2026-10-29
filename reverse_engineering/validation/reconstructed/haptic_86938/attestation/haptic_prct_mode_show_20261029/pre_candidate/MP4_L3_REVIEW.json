@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "function": "prct_mode_show",
+  "claims": [
+    {
+      "claim": "The wrapper loads driver_data from device offset 0x98 and the operations table from driver_data offset 0x520.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "It dispatches through callback slot 0x150 with haptic pointer driver_data - 0xa8; callback KCFI type is 0x784b3854.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0040_00106144_aw8693x_get_prctmode.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_get_prctmode_20261029/core_runnerbound_v2/hard_protocol_report.json"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "It formats the low byte as \"prctmode = %d\\n\" using a 4096-byte snprintf bound and returns snprintf result.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "limitations": [
+    "The function does not validate the callback pointer or protect the operations table lifetime.",
+    "Static wrapper checks do not establish hardware behavior; callback bus effects are covered by its separate attestation."
+  ]
+}

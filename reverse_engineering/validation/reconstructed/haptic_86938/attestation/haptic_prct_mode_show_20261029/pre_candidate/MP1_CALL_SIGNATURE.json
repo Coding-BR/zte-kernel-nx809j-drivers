@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "function": "prct_mode_show",
+  "prototype": "ssize_t prct_mode_show(struct device *, struct device_attribute *, char *)",
+  "prototype_basis": "Stock KCFI type 0xae84bcd4 matches the sysfs show ABI. The indirect callback has prototype u8 (struct aw_haptic *) and KCFI type 0x784b3854, independently matched by stock aw8693x_get_prctmode and its pinned Docker core attestation.",
+  "indirect_callback": {
+    "table_base": "driver_data + 0x520",
+    "slot_offset": "0x150",
+    "prototype": "u8 (*)(struct aw_haptic *)",
+    "type_id": "0x784b3854",
+    "argument": "driver_data - 0xa8"
+  },
+  "external_calls": [
+    "indirect get_prctmode callback",
+    "snprintf"
+  ],
+  "confidence": "high; both show and callback KCFI IDs are corroborated by stock evidence and the helper attestation."
+}
