@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "i2c_w_bits@0010722c",
+  "stage": "PRE_CANDIDATE",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "evidence_roots": {
+    "stock_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0063_i2c_w_bits_0010722c.asm",
+    "stock_kcfi": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+  },
+  "MP0_identity": {
+    "elf_type": "ET_REL",
+    "machine": "AArch64",
+    "section": ".text",
+    "stock_assembly_section_offset": "0x440c",
+    "ghidra_entry": "0010722c",
+    "body_bytes": 400,
+    "symbol_size": 400,
+    "kcfi_preamble_offset": "0x4408",
+    "evidence_sha256": {
+      "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+      "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+      "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+      "function_decomp": "96f355f4ff629c784f21eef35703f70dbf8b2fca55880b27f54710aac4fc5d59",
+      "function_pcode": "061818d828a0f8bd9802ba63ab7f70a24e5397e63a782297641d3a071bd8114d",
+      "stock_assembly": "21d0530c6a43f423737add459440df51093b5e0a910c05096c9386ef75cbe9fd",
+      "stock_kcfi": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+      "signature_resolution": "fe8b9c2d1d61c966bcab0fa3c776ace0850e56ce683353e5e709339905790e2a"
+    }
+  },
+  "MP1_call_signature": {
+    "inferred_prototype": "int i2c_w_bits(struct aw_haptic *, u8, unsigned int, u8)",
+    "kcfi_type_id": "0x18d014f6",
+    "signature_oracle": "Pinned Docker Kbuild KCFI batch: 375 candidate prototypes, one match.",
+    "signature_oracle_match": "int (struct aw_haptic *, u8, unsigned int, u8)",
+    "decompiler_conflict": "Ghidra rendered the return as void; KCFI matched int and the stock epilogue returns the read/write error or zero.",
+    "call_targets": [
+      "i2c_transfer",
+      "i2c_w_bytes",
+      "_printk",
+      "__stack_chk_fail"
+    ]
+  },
+  "MP2_state_effects": {
+    "ordered_effects": [
+      {
+        "sequence": 1,
+        "effect": "load struct i2c_client * from haptic + 0x328"
+      },
+      {
+        "sequence": 2,
+        "effect": "read client address at +0x2 and adapter at +0x18"
+      },
+      {
+        "sequence": 3,
+        "effect": "i2c_transfer(adapter, messages, 2), first message writes one register byte and second reads one byte"
+      },
+      {
+        "sequence": 4,
+        "effect": "on exactly two completed messages, replace only bits outside mask and preserve masked bits"
+      },
+      {
+        "sequence": 5,
+        "effect": "i2c_w_bytes(haptic, reg, &byte, 1)"
+      }
+    ],
+    "heap_effects": [],
+    "persistent_memory_writes": []
+  },
+  "MP3_control_error_matrix": {
+    "branches": 3,
+    "cases": [
+      {
+        "condition": "i2c_transfer < 0",
+        "result": "return transfer error unchanged; emit transfer-failed and i2c_w_bits read-error logs; do not write"
+      },
+      {
+        "condition": "i2c_transfer != 2 and not negative",
+        "result": "emit short-transfer log; return -6 after i2c_w_bits read-error log; do not write"
+      },
+      {
+        "condition": "read returns exactly 2; i2c_w_bytes < 0",
+        "result": "return write error unchanged after i2c_w_bits write-error log"
+      },
+      {
+        "condition": "read returns exactly 2; i2c_w_bytes >= 0",
+        "result": "return 0"
+      }
+    ],
+    "all_other_read_counts": "treated as short transfer"
+  },
+  "MP4_event_callback_lifetime": {
+    "indirect_calls": [],
+    "callback_table": "none observed",
+    "transfer_lifetime": "synchronous stack-backed i2c_msg records and one-byte buffers remain live through i2c_transfer and i2c_w_bytes calls"
+  },
+  "MP5_lock_lifetime": {
+    "lock_operations": [],
+    "allocation_or_release": [],
+    "ownership_note": "no heap allocation, lock, work item, IRQ registration, or pointer retention in the function"
+  },
+  "MP6_register_bus_ledger": {
+    "i2c_read": {
+      "adapter_source": "*(struct i2c_client **)(haptic + 0x328), then client->adapter at +0x18",
+      "message_count": 2,
+      "message_0": {
+        "flags": 0,
+        "length": 1,
+        "buffer": "register byte"
+      },
+      "message_1": {
+        "flags": "I2C_M_RD",
+        "length": 1,
+        "buffer": "zero-initialized byte"
+      }
+    },
+    "bit_update": "new_byte = (old_byte & mask) | (value & ~mask)",
+    "i2c_write": {
+      "helper": "i2c_w_bytes",
+      "register": "same input register",
+      "length": 1,
+      "return": "negative value propagated; nonnegative normalized to zero"
+    },
+    "hardware_runtime": "not performed"
+  },
+  "MP7_callers": {
+    "callsite_count": 97,
+    "unique_caller_count": 26,
+    "top_callers": [
+      [
+        "aw8693x_get_f0",
+        13
+      ],
+      [
+        "aw8693x_ram_get_f0",
+        12
+      ],
+      [
+        "aw8693x_play_mode",
+        10
+      ],
+      [
+        "aw8693x_get_lra_resistance",
+        8
+      ],
+      [
+        "aw8693x_cont_config",
+        6
+      ],
+      [
+        "aw8693x_offset_cali",
+        6
+      ],
+      [
+        "aw8693x_misc_para_init",
+        6
+      ],
+      [
+        "aw8693x_stop",
+        5
+      ],
+      [
+        "aw8693x_get_vbat",
+        5
+      ],
+      [
+        "aw8693x_trig_init",
+        4
+      ],
+      [
+        "aw8693x_container_update",
+        3
+      ],
+      [
+        "aw8693x_ram_init",
+        2
+      ]
+    ]
+  },
+  "open_evidence_gates": [
+    "independent review of the KCFI signature and register-mask direction",
+    "device-tree/client adapter context",
+    "physical I2C hardware runtime",
+    "semantic counterexample search outside the host harness"
+  ],
+  "promotion_authorized": false
+}

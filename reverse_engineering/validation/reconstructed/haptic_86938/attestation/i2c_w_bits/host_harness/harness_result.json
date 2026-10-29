@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T07:51:58.503549+00:00",
+  "passed": true,
+  "scope": "host-only I2C read-modify-write contract; no kernel or physical device execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_039_i2c_w_bits.c",
+  "candidate_source_sha256": "8991ed07f2c32e013e4fe6635581a0160981a01a0de65b3cfb57dd37063a208b",
+  "harness_source_sha256": "59411ee6744b07167a2dfeb6efd9dccc889ea2aba4d9e1d371b14daebeeb21d0",
+  "harness_runner_sha256": "da3fa7b3d56c42df819d533a3c4af59faeade604c05e7148a5ca8254e1caf973",
+  "kcfi_signature": "int (struct aw_haptic *, u8, unsigned int, u8)",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "expected": "pass",
+      "expected_failure": null,
+      "observed_returncode": 0,
+      "failure_diagnostic_matched": false,
+      "passed": true,
+      "output": "PASS: register read, mask update, write, and error contracts"
+    },
+    "mutant_wrong_register": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: first I2C message register mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: first I2C message register mismatch"
+    },
+    "mutant_wrong_mask": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: masked byte mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: masked byte mismatch"
+    },
+    "mutant_missing_write": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: expected one byte write to the same register",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: expected one byte write to the same register"
+    },
+    "mutant_short_read_accepted": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: short read must return -6 and must not write",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: short read must return -6 and must not write"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: register read, mask update, write, and error contracts\nCASE_END\nCASE_RESULT:mutant_wrong_register:1\nFAIL: first I2C message register mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_mask:1\nFAIL: masked byte mismatch\nCASE_END\nCASE_RESULT:mutant_missing_write:1\nFAIL: expected one byte write to the same register\nCASE_END\nCASE_RESULT:mutant_short_read_accepted:1\nFAIL: short read must return -6 and must not write\nCASE_END\n"
+}

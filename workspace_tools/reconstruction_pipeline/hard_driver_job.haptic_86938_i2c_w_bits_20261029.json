@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS",
+    "STATEFUL_MEMORY"
+  ],
+  "functions": [
+    {
+      "stock_function": "i2c_w_bits",
+      "stock_entry": "0010722c",
+      "source_function": "i2c_w_bits",
+      "candidate_function": "i2c_w_bits",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_w_bits_20261029/candidate_ghidra_v3/haptic_86938.ko"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "source_function": "i2c_w_bits",
+      "candidate_function": "i2c_w_bits"
+    }
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "evidence": {
+    "pre_candidate_packet": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_w_bits_20261029/pre_candidate/MP0_MP6.json",
+      "sha256": "77c295f8eda17e7e8d653dd9971dd249c19518cc87803c3186a5c98e91284c14"
+    },
+    "kcfi_signature_resolution": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_w_bits_20261029/pre_candidate/kcfi_signature_resolution.json",
+      "sha256": "fe8b9c2d1d61c966bcab0fa3c776ace0850e56ce683353e5e709339905790e2a"
+    },
+    "kcfi_signature_candidates": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_w_bits_20261029/pre_candidate/kcfi_signature_candidates.json",
+      "sha256": "21552bbf8270ae2e16f9ef447c06e6f65266e3276d4b0c02950d0676fd5ebedb"
+    },
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/i2c_w_bits/host_harness/harness_result.json",
+      "sha256": "cc85565f1a7bd7781ec3b6f2ec451046a3904a231066cb26877bd64d138cf83c"
+    },
+    "host_harness_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/i2c_w_bits/host_harness/i2c_w_bits_harness.c",
+      "sha256": "59411ee6744b07167a2dfeb6efd9dccc889ea2aba4d9e1d371b14daebeeb21d0"
+    },
+    "host_harness_runner": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/i2c_w_bits/host_harness/run_harness.py",
+      "sha256": "da3fa7b3d56c42df819d533a3c4af59faeade604c05e7148a5ca8254e1caf973"
+    },
+    "stock_function_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0063_i2c_w_bits_0010722c.asm",
+    "host_harness_kernel_header": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/i2c_w_bits/host_harness/include/linux/kernel.h",
+      "sha256": "3f91368fb6f6e91f3df052d35a588d81c971c154855708201b6ca610be6b22b9"
+    }
+  }
+}
