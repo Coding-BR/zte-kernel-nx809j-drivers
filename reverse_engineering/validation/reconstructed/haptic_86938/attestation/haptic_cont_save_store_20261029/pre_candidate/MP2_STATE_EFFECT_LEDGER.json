@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "function": "cont_save_store@0010dc00",
+  "reads": [
+    {"source": "buf", "meaning": "unsigned integer parsed with base autodetection (base 0)"},
+    {"source": "driver_data", "offset": "device->driver_data at +0x98", "meaning": "base for the cont_save field"}
+  ],
+  "writes": [
+    {"base": "driver_data", "offset": "-0x38", "width": 4, "condition": "parse succeeds, including parsed zero", "source": "parsed u32"}
+  ],
+  "return": "negative kstrtouint error on parse failure; otherwise the supplied byte count",
+  "effects_basis": ["stock Ghidra decompilation", "stock AArch64 body", "candidate source"]
+}
