@@ -47,3 +47,4 @@ haptic_86938-y += haptic_86938_fn_043_aw8693x_set_wav_loop.o
 haptic_86938-y += haptic_86938_fn_044_aw8693x_set_wav_seq.o
 haptic_86938-y += haptic_86938_fn_045_aw8693x_set_bst_vol.o
 haptic_86938-y += haptic_86938_fn_046_aw8693x_set_gain.o
+haptic_86938-y += haptic_86938_fn_047_aw8693x_get_glb_state.o

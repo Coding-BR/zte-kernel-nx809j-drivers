@@ -1,7 +1,7 @@
 # haptic_86938 status
 
-The reconstruction is incomplete and is not a replacement module. The stock inventory has 160 mapped functions; forty-seven source candidates have passed their applicable function-scoped automated core gates, and 113 functions remain `NOT_STARTED`. Whole-driver semantic equivalence and hardware behavior have not been established.
+The reconstruction is incomplete and is not a replacement module. The stock inventory has 160 mapped functions; forty-eight source candidates have passed their applicable function-scoped automated core gates, and 112 functions remain `NOT_STARTED`. Whole-driver semantic equivalence and hardware behavior have not been established.
 
-The latest accumulated candidate module built reproducibly in two clean Docker cycles with SHA-256 `3af88d74f468997e9135783e793e5445324477baf97c5565302fcee068008afd`. It remains in the versioned attestation package and has not been promoted to `haptic_86938.ko`.
+The latest accumulated candidate module built reproducibly in two clean Docker cycles with SHA-256 `029640ac156e760ad5b1b4da0f6cd099bb3474ee9e854d6d6e17173357f5ded8`. It remains in the versioned attestation package and has not been promoted to `haptic_86938.ko`.
 
 The stock module reports vermagic `6.12.23-maybe-dirty-4k`; the shared Docker kernel source reports `6.12.23-4k`. This difference and the remaining function reconstruction prevent a whole-driver readiness claim. See [README.md](README.md) and the per-function attestations for evidence.
