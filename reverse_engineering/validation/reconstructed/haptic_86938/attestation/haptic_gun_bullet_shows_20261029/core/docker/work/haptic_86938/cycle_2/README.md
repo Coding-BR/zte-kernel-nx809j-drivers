@@ -1,0 +1,39 @@
+# haptic_86938 reconstruction status
+
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Eleven candidate functions now pass the automated core protocol; 149 functions remain NOT_STARTED.
+
+- Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
+- Stock functions mapped by exact name and entry: 160
+- Functions without a stock mapping: 0
+- Candidate source functions with core-gate attestations: 11
+- Functions still not started: 149
+- Whole-driver semantic equivalence: not established
+- Hardware validation: not performed
+- Module promotion: not authorized
+
+## Candidate microtasks
+
+Each function passed all eight core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDRA_PCODE, DOCKER_REPRODUCIBLE, INPUT_IDENTITY, JOERN_SCOPED, JOERN_SLICE, KCFI, and MAP_IDENTITY.
+
+- aw8693x_set_bst_peak_cur: stock body is one ret instruction (4 bytes); recovered signature is void (struct aw_haptic *); stock/candidate KCFI ID is 0x847a0830. Candidate module SHA-256: 7286ee7689b0f56424ab35f3872f99ce1e051a729c59acd9e39fcd3ff6ba8c52. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_bstcur_20261029/README.md)
+- state_store: stock body is mov x0, x3; ret (8 bytes); recovered signature is ssize_t (struct device *, struct device_attribute *, const char *, size_t); stock/candidate KCFI ID is 0x95c41a97. It returns the supplied byte count without parsing or storing the buffer. Candidate module SHA-256: de2c719d096a338ba9160986ef53d3a62ecae4d0910f998edbe5caafa555d278. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_state_20261029/README.md)
+- brightness_get: stock body loads a 32-bit enum from led_classdev minus 0x50 and returns (8 bytes); recovered signature is enum led_brightness (struct led_classdev *); stock/candidate KCFI ID is 0x39e483e6. Candidate module SHA-256: 99042f2c2febed1105ff65604a0f224ce59368aa7b97349bea18493d22154c64. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_brightness_20261029/README.md)
+- aw_i2c_resume: stock and candidate bodies are `mov w0, wzr; ret` (8 bytes, no relocations); recovered signature is `int (struct device *)`; KCFI ID is `0x2a703c0b`. The accumulated candidate module SHA-256 is `2c9496922d86b0fdf657fc8922fcba5aa5ee8953cdc30898ce76ccb2ef389467`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_resume_20261029/README.md)
+- richtap_write: stock body is `mov x0, x2; ret` (8 bytes, no relocations); the `file_operations.write` signature probe matches KCFI ID `0xc3d43b4d`. It returns the byte count without consuming the buffer. Accumulated candidate module SHA-256: `dcdba09a1a5d576cf88f4d46f5750a13ab7b999349e1357909e3fefa24c6a26e`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_write_20261029/README.md)
+- richtap_read: stock and candidate bodies are `mov x0, xzr; ret` (8 bytes, no relocations); the `file_operations.read` signature probe matches KCFI ID `0xf4e9d97c`, and the callback returns EOF. Accumulated candidate module SHA-256: `84e9436e204989f692b6b2cff8d918dd3cff57633ea8b2f85b0713f9f5dc5e43`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_read_20261029/README.md)
+- state_show: stock and candidate read the 32-bit state at `driver_data - 0x68` and format `state = %d\n` with a 4096-byte bound; sysfs callback KCFI ID is `0xae84bcd4`. Accumulated candidate module SHA-256: `fb4922d15f115199afe27210545d067c65356437c8782a167bf8ed33d7c103fe`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_state_show_20261029/README.md)
+- activate_show and activate_mode_show: stock/candidate sysfs getters load the 32-bit value at `driver_data - 0x68` and the byte at `driver_data - 0x8d`, respectively, and preserve their exact labels and `%d` output. Both use KCFI ID `0xae84bcd4`. Accumulated candidate module SHA-256: `b118123869588816584212325339d7f5fb162e569e689583bc4f38e60d50dc6e`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_activation_shows_20261029/README.md)
+- vmax_show and gain_show: stock/candidate sysfs getters read 32-bit values at `driver_data - 0x78` and `driver_data - 0x74`, preserving `0x%02X` formatting and the 4096-byte bound. Both use KCFI ID `0xae84bcd4`. Accumulated candidate module SHA-256: `e4384440a7ce294fcdff5a73df9a66c91955e5f955af6c1222a4002ade233a04`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_vmax_gain_shows_20261029/README.md)
+
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 149 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but correctly withholds static verification because no combined module has been promoted.
+
+## Remaining stock evidence
+
+- MP0 identity and stock assembly extraction: PASS for all 160 functions.
+- MP1 call signatures: the 0x7cc2eb16 site is corroborated as u32(struct i2c_adapter *) and resolves to i2c_algorithm.functionality; 154 other CALLIND origins and three computed-target hypotheses remain open.
+- MP2 state/effect ledger: 3,523 raw LOAD/STORE records, review required.
+- MP3 control/error matrix: 708 conditional branches, 237 direct branches, 949 call references and 166 BRANCHIND operations, review required.
+- MP4 event/callback inventory: 213 selected API call references, 214 .data relocations, 127 function-pointer relocations and 23 nearby callback-sensitive code-address relocations. ABI, ownership and teardown gaps remain open.
+- MP5 resource/lifetime surface: 11 resource groups and 29 focused summaries. Four lifecycle pairs and the IRQ dev_id link were manually reviewed; allocation/release ownership, firmware callback quiescence, sysfs/LED cleanup and other teardown paths remain open.
+
+The stock module reports vermagic 6.12.23-maybe-dirty-4k; the shared Docker kernel source currently reports 6.12.23-4k. These function attestations do not make the combined candidate a verified replacement module.
