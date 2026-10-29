@@ -88,3 +88,4 @@ haptic_86938-y += haptic_86938_fn_080_aw8693x_get_ram_data.o
 haptic_86938-y += haptic_86938_fn_081_prct_mode_show.o
 haptic_86938-y += haptic_86938_fn_085_ram_num_show.o
 haptic_86938-y += haptic_86938_fn_086_cont_show.o
+haptic_86938-y += haptic_86938_fn_087_lra_resistance_show.o
