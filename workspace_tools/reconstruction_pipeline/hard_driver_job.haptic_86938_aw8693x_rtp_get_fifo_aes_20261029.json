@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "cycles": 2,
+    "parallelism": 8
+  },
+  "profiles": [
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "kcfi_required": true,
+      "stock_entry": "00106334",
+      "stock_function": "aw8693x_rtp_get_fifo_aes",
+      "source_function": "aw8693x_rtp_get_fifo_aes",
+      "candidate_function": "aw8693x_rtp_get_fifo_aes"
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/candidate_ghidra_v1/haptic_86938.ko"
+  },
+  "ghidra": {
+    "allow_section_address_normalization": true,
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "joern": {
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "slice": {
+      "candidate_function": "aw8693x_rtp_get_fifo_aes",
+      "source_function": "aw8693x_rtp_get_fifo_aes",
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1
+    }
+  },
+  "evidence": {
+    "stock_ghidra_decomp": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0045_00106334_aw8693x_rtp_get_fifo_aes.c",
+      "sha256": "907c18df341cf5fd45d8f49803f6866e966b578f809e101bf82fb1bd39248e44"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0045_00106334_aw8693x_rtp_get_fifo_aes.jsonl",
+      "sha256": "dd7e227b0db52fdb978312c2fc2d0d5785e36fef37f3ea25f2883f0c8467da99"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0045_aw8693x_rtp_get_fifo_aes_00106334.asm",
+      "sha256": "d49cc419b56e6617d61f5dac5ab1ff2daffef25b0ba50ba2a4e661ce10f98ea1"
+    },
+    "helper_stock_ghidra_decomp": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0061_00107014_i2c_r_bytes.c",
+      "sha256": "98e95d2d27d878fcbfe952a23627b6abfc56f622ca77225e2e3704d2e34fa3fa"
+    },
+    "pre_candidate_packet": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP0_MP7.json",
+      "sha256": "ce19bd827be09acebc2e673805b889a0bf99376e2f2ba61363a011244447f15a"
+    },
+    "mp0_identity": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP0_IDENTITY.json",
+      "sha256": "ff05873a9e2450d2dd5b632a63877916c657950f46b60773ef683907630d0e01"
+    },
+    "mp1_signature": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP1_SIGNATURE.json",
+      "sha256": "45dc003792ddc964772a9e44492c615d01dcd0cbdcdd2ff117c970d336a65fd5"
+    },
+    "mp2_effects": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP2_EFFECTS.json",
+      "sha256": "a3d5bf72dd775347f1be1f2cd78b4d32d0ca087fa854e29649488ef51782503a"
+    },
+    "mp3_control_errors": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP3_CONTROL_ERRORS.json",
+      "sha256": "cca0d46ef328c1a92e1e585313148aa8e5d1b3abacc809b1b025f5fa109faf88"
+    },
+    "mp4_callback_lifetime": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP4_CALLBACK_LIFETIME.json",
+      "sha256": "fc6cd75cf4b9cdfde8e2786b71e9518c2e9767c9514ef4c9e46a77eff9d9725b"
+    },
+    "mp5_resource_lifetime": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP5_RESOURCE_LIFETIME.json",
+      "sha256": "ab6c0ad6e1e6ce2cad884d1aa698e37529f534dc94d8a1592869f4a23ec2244f"
+    },
+    "mp6_bus_register": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP6_BUS_REGISTER.json",
+      "sha256": "9b8db3f3bf8530ddf4f968a455b35b549e9f30c4f025ed3b5a22e09bc66d1ba8"
+    },
+    "mp7_limits": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/MP7_LIMITS.json",
+      "sha256": "a7761deb3669c4174d11e0f05b6887bcee8f7df7fa76f6e654a8b15a5e313281"
+    },
+    "kcfi_signature_candidates": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/kcfi_signature_candidates.json",
+      "sha256": "4a6077f23809815f5aac5bd521e586a43af4d215c3f71a4861fe59c1e516c4c3"
+    },
+    "kcfi_signature_resolution": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/pre_candidate/kcfi_signature_resolution.json",
+      "sha256": "2253f739a5f3919f767a56caf50ba99138c8784e0388c8599ca8e40024ea9fc9"
+    },
+    "host_harness_types": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/host_harness/include/linux/types.h",
+      "sha256": "e446247a23d458a6e5c3dca46b05b0734b8e55ee71abaeb80215b5d5b468d376"
+    },
+    "host_harness_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/host_harness/aw8693x_rtp_get_fifo_aes_harness.c",
+      "sha256": "ebf205b87ff1021fbe7e7813952e58f85d4af7d41528b818058e4c72924c222f"
+    },
+    "host_harness_runner": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/host_harness/run_harness.py",
+      "sha256": "13ef32d4e96cc7d8e5de2b2178f3fa8deecf3d16b62fb2c1523dcdc490a64f14"
+    },
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/host_harness/harness_result.json",
+      "sha256": "5fcc226297257cae1ff7c8ed1b94ea58876551465831fc656199851a96770369"
+    },
+    "candidate_module": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/candidate_module_v1/haptic_86938.ko",
+      "sha256": "2817761e4806c0a8981ce2b571c77ade86d296a53801c2d01d82978c8de337ce"
+    },
+    "candidate_ghidra_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/candidate_ghidra_v1/haptic_86938.ko/manifest.json",
+      "sha256": "cec5fe5c9e25c1afa0e8eb1ec494b61bffb5ff7ee718ccd1edd87a201d5fbeff"
+    },
+    "candidate_ghidra_functions": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/candidate_ghidra_v1/haptic_86938.ko/functions.jsonl",
+      "sha256": "3ac5940dc0c24a7663fc223cea6ab2bdb17795f5c02bf52789204839c009c81a"
+    },
+    "candidate_ghidra_decomp": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/candidate_ghidra_v1/haptic_86938.ko/decompiled/0050_00101e70_aw8693x_rtp_get_fifo_aes.c",
+      "sha256": "907c18df341cf5fd45d8f49803f6866e966b578f809e101bf82fb1bd39248e44"
+    },
+    "candidate_ghidra_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_rtp_get_fifo_aes_20261029/candidate_ghidra_v1/haptic_86938.ko/pcode/0050_00101e70_aw8693x_rtp_get_fifo_aes.jsonl",
+      "sha256": "15b549ef06df6741dd2e1c2d519cf85cd91525b701b6739115bf3453168ce889"
+    }
+  }
+}
