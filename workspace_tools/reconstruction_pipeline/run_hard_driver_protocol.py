@@ -639,11 +639,12 @@ def build_command_plan(
             "--target-kernel-manifest",
             str((repo_root / "kernel_development" / "config" / "target_kernel.json").resolve()),
         )
-        # Per-function jobs often compile a deliberately partial module.  Keep
-        # the full-driver completeness check opt-in for those jobs; the report
-        # still records incomplete traceability while the core gate separately
-        # requires a successful, byte-reproducible Docker build.
-        if docker_config.get("require_complete_driver_audit", True):
+        # This runner's Docker gate is function-scoped: it requires successful,
+        # byte-reproducible builds.  The report still records full-driver
+        # incompleteness; requiring that audit here would block every function
+        # job on unrelated unmapped functions.  Opt in only when the job is
+        # explicitly validating whole-driver completeness.
+        if docker_config.get("require_complete_driver_audit", False):
             docker.append("--strict")
         run_root = docker_config.get("run_root")
         if run_root:
