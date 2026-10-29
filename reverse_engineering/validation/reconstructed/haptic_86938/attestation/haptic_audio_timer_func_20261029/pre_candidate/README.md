@@ -1,0 +1,3 @@
+# Pre-candidate evidence: `audio_timer_func`
+
+Stock target: `audio_timer_func@0010dcc4`, 136 bytes, KCFI type `0xe3cff753`. `haptic_init` registers it on the timer at parent+0x520. It queues work at parent+0x560 on the queue at parent+0x448, reads a signed 32-bit interval at parent+0x4dc, rearms the same timer with the stock signed quotient/remainder conversion, then returns `HRTIMER_NORESTART`. The teardown order observed in `aw_remove` cancels work before the timer and remains flagged for separate lifetime review. MP0–MP6 record identity, ABI, effects, control flow, a draft oracle, teardown, and bus findings.

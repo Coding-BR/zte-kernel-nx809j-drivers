@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "function": "audio_timer_func",
+  "claims": [
+    {
+      "claim": "The timer callback is registered on the hrtimer at parent+0x520.",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0068_00108608_haptic_init.c",
+      "confidence": "high"
+    },
+    {
+      "claim": "The worker is parent+0x560 and queue pointer parent+0x448.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0145_0010dcc4_audio_timer_func.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0068_00108608_haptic_init.c"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "The callback rearms using the signed 32-bit value at parent+0x4dc.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0145_0010dcc4_audio_timer_func.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0128_0010cd9c_haptic_audio_store.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0145_audio_timer_func_0010dcc4.asm"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "limitations": [
+    "The source preserves signed C remainder/division and 32-bit multiply-before-widen behavior visible in stock instructions.",
+    "No hardware operation is performed directly here."
+  ]
+}

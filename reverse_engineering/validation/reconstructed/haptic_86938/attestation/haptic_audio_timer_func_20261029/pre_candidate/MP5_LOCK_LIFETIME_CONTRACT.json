@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "function": "audio_timer_func",
+  "locks_acquired": [],
+  "locks_released": [],
+  "lifetime_contract": "The embedded hrtimer, queue pointer, and work item must remain valid through the callback and queued worker execution.",
+  "teardown_evidence": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+    "observed_order": [
+      "cancel_work_sync(parent+0x560)",
+      "hrtimer_cancel(parent+0x520)"
+    ],
+    "assessment": "The observed ordering is preserved; it may merit a separate race audit because the timer can enqueue work. This callback reconstruction does not change or certify teardown safety."
+  },
+  "decision": "No new locking or lifetime behavior added."
+}
