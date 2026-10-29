@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Thirteen candidate functions now pass the automated core protocol; 147 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Fifteen candidate functions now pass the automated core protocol; 145 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 13
-- Functions still not started: 147
+- Candidate source functions with core-gate attestations: 15
+- Functions still not started: 145
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -25,8 +25,9 @@ Each function passed all eight core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDR
 - activate_show and activate_mode_show: stock/candidate sysfs getters load the 32-bit value at `driver_data - 0x68` and the byte at `driver_data - 0x8d`, respectively, and preserve their exact labels and `%d` output. Both use KCFI ID `0xae84bcd4`. Accumulated candidate module SHA-256: `b118123869588816584212325339d7f5fb162e569e689583bc4f38e60d50dc6e`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_activation_shows_20261029/README.md)
 - vmax_show and gain_show: stock/candidate sysfs getters read 32-bit values at `driver_data - 0x78` and `driver_data - 0x74`, preserving `0x%02X` formatting and the 4096-byte bound. Both use KCFI ID `0xae84bcd4`. Accumulated candidate module SHA-256: `e4384440a7ce294fcdff5a73df9a66c91955e5f955af6c1222a4002ade233a04`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_vmax_gain_shows_20261029/README.md)
 - gun_type_show and bullet_nr_show: stock/candidate getters read 32-bit values at `driver_data - 0x2c` and `driver_data - 0x28`, preserving the shared `0x%02x\n` output and 4096-byte bound. Both use KCFI ID `0xae84bcd4`. Accumulated candidate module SHA-256: `7fd72b9ea526e696c7c06291fe4ef351437deb741e43df47e4ad12a97ee95720`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_gun_bullet_shows_20261029/README.md)
+- cont_brk_time_show and rtp_auto_sin_show: stock/candidate getters read an unsigned byte at `driver_data + 0x3f5` and a 32-bit counter at `driver_data - 0x34`; formats are preserved. Both use KCFI ID `0xae84bcd4`. Accumulated candidate module SHA-256: `4bb47a47691b049ef9b86023d5598d687f41f95b48d047eacd75bec68ea1a2e0`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_misc_shows_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 147 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but correctly withholds static verification because no combined module has been promoted.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 145 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but correctly withholds static verification because no combined module has been promoted.
 
 ## Remaining stock evidence
 

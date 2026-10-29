@@ -12,3 +12,5 @@ haptic_86938-y += haptic_86938_fn_009_vmax_show.o
 haptic_86938-y += haptic_86938_fn_010_gain_show.o
 haptic_86938-y += haptic_86938_fn_011_gun_type_show.o
 haptic_86938-y += haptic_86938_fn_012_bullet_nr_show.o
+haptic_86938-y += haptic_86938_fn_013_cont_brk_time_show.o
+haptic_86938-y += haptic_86938_fn_014_rtp_auto_sin_show.o
