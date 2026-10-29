@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_aw_show",
+  "branches": 1,
+  "early_returns": 0,
+  "errors_handled": 0,
+  "branches_detail": [
+    {
+      "condition": "hrtimer_active(driver_data+0x288)",
+      "active": "read remaining time and divide by 1,000,000",
+      "inactive": "format zero milliseconds"
+    }
+  ],
+  "sequence": [
+    "load driver data",
+    "query hrtimer active",
+    "conditionally read remaining time",
+    "snprintf into 4096-byte buffer",
+    "return formatted length"
+  ]
+}
