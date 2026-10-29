@@ -106,3 +106,4 @@ haptic_86938-y += haptic_86938_fn_101_aw8693x_bst_mode_config.o
 haptic_86938-y += haptic_86938_fn_102_aw8693x_get_theory_time.o
 haptic_86938-y += haptic_86938_fn_103_brightness_set.o
 haptic_86938-y += haptic_86938_fn_104_aw8693x_get_irq_state.o
+haptic_86938-y += haptic_86938_fn_105_aw8693x_protect_config.o
