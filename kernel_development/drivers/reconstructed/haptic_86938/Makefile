@@ -98,3 +98,4 @@ haptic_86938-y += haptic_86938_fn_093_ram_update_store.o
 haptic_86938-y += haptic_86938_fn_094_activate_mode_store.o
 haptic_86938-y += haptic_86938_fn_095_aw8693x_judge_rtp_going.o
 haptic_86938-y += haptic_86938_fn_096_reg_store.o
+haptic_86938-y += haptic_86938_fn_097_ram_vbat_comp_store.o
