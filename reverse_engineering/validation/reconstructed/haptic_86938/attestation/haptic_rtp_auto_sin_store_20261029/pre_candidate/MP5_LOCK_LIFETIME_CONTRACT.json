@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "task_id": "061_rtp_auto_sin_store",
+  "work_unit": "MP5_LOCK_LIFETIME_CONTRACT",
+  "identity": "rtp_auto_sin_store@00106ed0",
+  "lock_offset": "driver_data+0x248",
+  "contract": [
+    "Successful parsing is required before acquiring the mutex.",
+    "State changes and any i2c_w_bits update occur while the mutex is held.",
+    "For out-of-range input, the state is cleared and a log is emitted while locked, with no bus update.",
+    "Mutex is released before queue_work_on(cpu=0x20, ...).",
+    "Parser-error path never acquires the mutex or queues work."
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462",
+      "locator": "lock 0x4100; unlock 0x4154; queue_work_on 0x4164; error return path 0x4198-0x41c0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0060_00106ed0_rtp_auto_sin_store.jsonl",
+      "sha256": "c787608fb9952cf4a5271ae9a17ff7a344132c5d635ead5c36f012530c143f8d"
+    }
+  ],
+  "unknowns": [
+    "Removal/teardown synchronization and whether queued work is drained are not established here."
+  ]
+}

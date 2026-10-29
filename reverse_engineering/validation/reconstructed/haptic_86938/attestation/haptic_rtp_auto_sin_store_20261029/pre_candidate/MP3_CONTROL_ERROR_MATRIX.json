@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "task_id": "061_rtp_auto_sin_store",
+  "work_unit": "MP3_CONTROL_ERROR_MATRIX",
+  "identity": "rtp_auto_sin_store@00106ed0",
+  "input_hashes": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0060_00106ed0_rtp_auto_sin_store.c",
+      "sha256": "a44a38e6f8d89b85456a0be62ac155d496c34ca25d9305d13fc25dcc3299b2e2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0060_00106ed0_rtp_auto_sin_store.jsonl",
+      "sha256": "c787608fb9952cf4a5271ae9a17ff7a344132c5d635ead5c36f012530c143f8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462"
+    }
+  ],
+  "cases": [
+    {
+      "condition": "kstrtouint returns negative",
+      "result": "print kstrtouint-fail message; return parser errno; do not lock, touch state, or queue work"
+    },
+    {
+      "condition": "value == 0",
+      "result": "lock; clear state at -0x68; write masked bit 0 to register 0x2d via mask 0xdf; unlock; queue work on CPU 0x20; return count"
+    },
+    {
+      "condition": "0 < value < *(u32*)(data+0x638)",
+      "result": "lock; set state at -0x68 to 1; store value at -0x18; write masked bit 0x20 to register 0x2d; unlock; queue work; return count"
+    },
+    {
+      "condition": "value >= limit and value != 0",
+      "result": "lock; clear state at -0x68; log value; skip i2c_w_bits; unlock; queue work; return count"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "6f4248f03511311f003696861295f89c0bd157f0330417164ae033db113f5e9d",
+      "locator": "functions[rtp_auto_sin_store@00106ed0].ordered_control_events"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462"
+    }
+  ]
+}
