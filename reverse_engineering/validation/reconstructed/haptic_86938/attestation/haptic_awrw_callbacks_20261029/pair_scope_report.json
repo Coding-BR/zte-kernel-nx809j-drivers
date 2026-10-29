@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "problem": "The awrw_show and awrw_store evidence came from different candidate module snapshots; an earlier awrw_store Ghidra export also truncated its function body to 816 bytes instead of the stock 856-byte ELF extent.",
+  "cause": "The show-only attestation used a module without awrw_store. The store candidate existed in a later module, but its first Ghidra function boundary was incomplete. Reusing either export for a pair caused identity or body-size rejection.",
+  "correction": "Built a current two-callback candidate with the pinned Docker toolchain, verified reproducibility, imported that exact module into Ghidra, extended awrw_store to the independently verified ELF symbol size, and scoped both functions from that same export.",
+  "core_status": "CORE_GATES_PASS",
+  "all_core_gates_pass": true,
+  "candidate_module_sha256": "2e19782ab7257a05973f256beb961b75303c7d0a62adb73df5b3b7a39136e134",
+  "candidate_module_size": 5547464,
+  "candidate_functions": {
+    "awrw_show": {
+      "candidate_entry": "00105d58",
+      "body_bytes": 260
+    },
+    "awrw_store": {
+      "candidate_entry": "00105e60",
+      "body_bytes": 856
+    }
+  },
+  "stock_functions": {
+    "awrw_show": {
+      "entry": "0010d518",
+      "body_bytes": 260
+    },
+    "awrw_store": {
+      "entry": "0010d620",
+      "body_bytes": 856
+    }
+  },
+  "ghidra_normalized_c_fallback_functions": [
+    "awrw_store@0010d620"
+  ],
+  "promotion_authorized": false,
+  "remaining_blockers": [
+    "callback table/device-attribute registration evidence",
+    "cross-open shared-pointer lifetime proof or separate hardening change",
+    "KUnit/Lockdep/KCSAN validation",
+    "remaining supplemental gates"
+  ]
+}
