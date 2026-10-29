@@ -33,3 +33,4 @@ haptic_86938-y += haptic_86938_fn_030_trig_show.o
 haptic_86938-y += haptic_86938_fn_031_i2c_r_bytes.o
 haptic_86938-y += haptic_86938_fn_032_i2c_w_bytes.o
 haptic_86938-y += haptic_86938_fn_033_cont_drv_time_store.o
+haptic_86938-y += haptic_86938_fn_034_richtap_file_release.o
