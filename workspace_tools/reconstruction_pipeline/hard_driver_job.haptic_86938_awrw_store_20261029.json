@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "DISPATCHER_PARSER",
+    "HARDWARE_BUS",
+    "STATEFUL_MEMORY"
+  ],
+  "functions": [
+    {
+      "assembly_only": false,
+      "candidate_function": "awrw_store",
+      "stock_function": "awrw_store",
+      "source_function": "awrw_store",
+      "stock_entry": "0010d620",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_store_20261029/candidate_ghidra_v2/s"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "source_function": "awrw_store",
+      "candidate_function": "awrw_store"
+    }
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true,
+    "allow_exact_assembly_island_decompiler_fallback": false,
+    "fallback_reason": "awrw_store stock/candidate Ghidra normalized C differs only in the inferred pointee type of the opaque printk format pointer (undefined * versus undefined1 *) and rebased local addresses. A function-specific detector accepts only whole-body normalized C equality after rewriting that single declaration, with equal 856-byte ELF bodies and equal ordered P-Code operation shape. Strict Assembly/relocation parity, fresh Docker reproducibility, KCFI, Joern, map and module identity remain independently mandatory.",
+    "fallback_evidence": "Retain candidate_ghidra_v2 Ghidra export, the scoped semantic comparison, protocol report, strict Assembly/relocation comparison, Docker reproducibility report, KCFI comparison, Joern reports and candidate/stock identity manifests."
+  }
+}

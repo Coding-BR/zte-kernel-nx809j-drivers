@@ -1166,6 +1166,65 @@ def decompiler_aw22xxx_imax_string_artifact(
     }
 
 
+def decompiler_opaque_pointer_pointee_width_artifact(
+    function: str,
+    stock_normalized: str,
+    candidate_normalized: str,
+) -> dict[str, Any] | None:
+    """Recognize awrw_store's opaque printk-format pointer type spelling delta.
+
+    The two Ghidra imports infer the same local format-string pointer as
+    ``undefined *`` and ``undefined1 *``. Accept this only when the complete
+    normalized C bodies become identical after changing that one declaration;
+    callers already require equal ELF body size and P-Code operation shape.
+    """
+    if function.split("@", 1)[0] != "awrw_store":
+        return None
+    declaration_re = re.compile(
+        r"\b(?P<type>undefined1|undefined)\*(?P<name>[A-Za-z_]\w*);"
+    )
+    stock_declarations = {
+        match.group("name"): match.group("type")
+        for match in declaration_re.finditer(stock_normalized)
+    }
+    candidate_declarations = {
+        match.group("name"): match.group("type")
+        for match in declaration_re.finditer(candidate_normalized)
+    }
+    if stock_declarations.keys() != candidate_declarations.keys():
+        return None
+    changed = [
+        name for name, stock_type in stock_declarations.items()
+        if candidate_declarations[name] != stock_type
+    ]
+    if len(changed) != 1:
+        return None
+    variable = changed[0]
+    if {stock_declarations[variable], candidate_declarations[variable]} != {
+        "undefined", "undefined1"
+    }:
+        return None
+    rewritten_candidate = re.sub(
+        rf"\b(?:undefined1|undefined)\*{re.escape(variable)};",
+        f"{stock_declarations[variable]}*{variable};",
+        candidate_normalized,
+        count=1,
+    )
+    if rewritten_candidate != stock_normalized:
+        return None
+    return {
+        "kind": "awrw_store_opaque_format_pointer_pointee_width_artifact",
+        "variable": variable,
+        "stock_type": "undefined *",
+        "candidate_type": "undefined1 *",
+        "requirement": (
+            "whole normalized C equality after rewriting this one inferred local "
+            "pointer declaration, equal ELF body bytes and ordered P-Code operation "
+            "shape; independent ELF opcode/relocation, KCFI, Docker and Joern gates remain mandatory"
+        ),
+    }
+
+
 def decompiler_symbol_resolution_artifact(
     stock_normalized: str, candidate_normalized: str
 ) -> dict[str, Any] | None:
@@ -2537,6 +2596,9 @@ def compare_function(
                 stock_shape,
                 candidate_shape,
             )
+        )
+        fallback = fallback or decompiler_opaque_pointer_pointee_width_artifact(
+            function, stock_normalized, candidate_normalized
         )
         fallback = fallback or decompiler_symbol_resolution_artifact(
             stock_normalized, candidate_normalized
