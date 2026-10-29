@@ -1,0 +1,10 @@
+{
+  "function": "aw8693x_check_qualify",
+  "branches": [
+    "zero or positive signed byte: unqualified-chip log, return -ERANGE",
+    "signed negative byte: qualified-chip log, return 0",
+    "stack-canary mismatch: __stack_chk_fail"
+  ],
+  "helper_error_behavior": "i2c_r_bytes return is ignored; classification uses the initialized/output byte",
+  "caller_behavior": "aw_i2c_probe checks the returned int and enters its error path when it is negative"
+}

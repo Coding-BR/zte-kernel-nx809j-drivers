@@ -1,0 +1,33 @@
+{
+  "function": "aw8693x_check_qualify",
+  "ordered_effects": [
+    {
+      "kind": "BUS_READ",
+      "helper": "i2c_r_bytes",
+      "register": "0x64",
+      "length": 1,
+      "buffer_initial_byte": 0,
+      "return_handling": "ignored"
+    },
+    {
+      "kind": "BRANCH",
+      "condition": "(s8)data[0] >= 0",
+      "nonnegative_path": "log unqualified chip; return -ERANGE",
+      "negative_path": "log qualified chip; return 0"
+    },
+    {
+      "kind": "LOG",
+      "negative_path": {
+        "format": "\\0016[%s][%04d]%s: qualified chip\\n",
+        "tag": "haptic_hv",
+        "line": 313
+      },
+      "nonnegative_path": {
+        "format": "\\0013[%s][%04d]%s: unqualified chip\\n",
+        "tag": "haptic_hv",
+        "line": 310
+      }
+    }
+  ],
+  "evidence": "stock assembly, P-Code, string table, helper decompilation, and caller use are hash-bound in the job"
+}
