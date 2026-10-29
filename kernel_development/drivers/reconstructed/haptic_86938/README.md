@@ -1,24 +1,25 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Two candidate functions now pass the automated core protocol; 158 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Three candidate functions now pass the automated core protocol; 157 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 2
-- Functions still not started: 158
+- Candidate source functions with core-gate attestations: 3
+- Functions still not started: 157
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
 
 ## Candidate microtasks
 
-Both functions passed all eight core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDRA_PCODE, DOCKER_REPRODUCIBLE, INPUT_IDENTITY, JOERN_SCOPED, JOERN_SLICE, KCFI, and MAP_IDENTITY.
+Each function passed all eight core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDRA_PCODE, DOCKER_REPRODUCIBLE, INPUT_IDENTITY, JOERN_SCOPED, JOERN_SLICE, KCFI, and MAP_IDENTITY.
 
-- aw8693x_set_bst_peak_cur: stock body is one ret instruction (4 bytes); the recovered signature is void (struct aw_haptic *); stock and candidate KCFI ID is 0x847a0830. Candidate module SHA-256: 7286ee7689b0f56424ab35f3872f99ce1e051a729c59acd9e39fcd3ff6ba8c52. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_bstcur_20261029/README.md)
-- state_store: stock body is mov x0, x3; ret (8 bytes); the recovered sysfs callback signature is ssize_t (struct device *, struct device_attribute *, const char *, size_t); stock and candidate KCFI ID is 0x95c41a97. It returns the supplied byte count and does not parse or store the buffer. Combined candidate module SHA-256: de2c719d096a338ba9160986ef53d3a62ecae4d0910f998edbe5caafa555d278. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_state_20261029/README.md)
+- aw8693x_set_bst_peak_cur: stock body is one ret instruction (4 bytes); recovered signature is void (struct aw_haptic *); stock/candidate KCFI ID is 0x847a0830. Candidate module SHA-256: 7286ee7689b0f56424ab35f3872f99ce1e051a729c59acd9e39fcd3ff6ba8c52. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_bstcur_20261029/README.md)
+- state_store: stock body is mov x0, x3; ret (8 bytes); recovered signature is ssize_t (struct device *, struct device_attribute *, const char *, size_t); stock/candidate KCFI ID is 0x95c41a97. It returns the supplied byte count without parsing or storing the buffer. Candidate module SHA-256: de2c719d096a338ba9160986ef53d3a62ecae4d0910f998edbe5caafa555d278. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_state_20261029/README.md)
+- brightness_get: stock body loads a 32-bit enum from led_classdev minus 0x50 and returns (8 bytes); recovered signature is enum led_brightness (struct led_classdev *); stock/candidate KCFI ID is 0x39e483e6. Candidate module SHA-256: 99042f2c2febed1105ff65604a0f224ce59368aa7b97349bea18493d22154c64. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_brightness_20261029/README.md)
 
-The core gates validate these functions and the reproducibility of the current candidate module. They do not authorize whole-driver promotion: independent review, the remaining functions, complete target-kernel identity and hardware validation remain open.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 157 remaining functions, complete target-kernel identity and hardware validation remain open.
 
 ## Remaining stock evidence
 
