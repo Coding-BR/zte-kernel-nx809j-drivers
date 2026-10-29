@@ -91,3 +91,4 @@ haptic_86938-y += haptic_86938_fn_086_cont_show.o
 haptic_86938-y += haptic_86938_fn_087_lra_resistance_show.o
 haptic_86938-y += haptic_86938_fn_088_index_show.o
 haptic_86938-y += haptic_86938_fn_089_vbat_monitor_show.o
+haptic_86938-y += haptic_86938_fn_090_cali_show.o
