@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "task_id": "054_cont_brk_time_store",
+  "work_unit": "MP5_LOCK_LIFETIME_CONTRACT",
+  "identity": "cont_brk_time_store@0010679c",
+  "input_hashes": [
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "sha256": "5a5e1555e0a52a6d727bdbd879a2c01926663a0896762a334f9117e16b875363"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl", "sha256": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4"}
+  ],
+  "observations": [
+    {"claim": "On the parse-success path, mutex_lock(data+0x248) precedes i2c_w_bytes and mutex_unlock(data+0x248) follows it.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "locator": "calls 001067d4, 001067e8, 001067f0"},
+    {"claim": "The parse-failure path performs no lock or bus operation; no allocation, timer, work item or callback registration occurs in this body.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "locator": "branch at 001067c8 and full call list for caller identity"}
+  ],
+  "inferences": ["The mutex protects this one-byte I2C write against other users of the same lock; the exact set of competing users must be confirmed from the complete driver call graph."],
+  "unknowns": ["Ownership and lifetime of the pointer loaded from dev+0x98; whether sysfs teardown waits for active callbacks; lock initialization and all competing lock users are outside this function."],
+  "contradictions": [],
+  "required_follow_up": ["Inspect attribute-group creation/removal and mutex initialization/teardown before claiming callback lifetime safety."]
+}

@@ -60,3 +60,4 @@ haptic_86938-y += haptic_86938_fn_056_aw8693x_get_first_wave_addr.o
 haptic_86938-y += haptic_86938_fn_057_aw8693x_set_repeat_seq.o
 haptic_86938-y += haptic_86938_fn_058_aw8693x_irq_clear.o
 haptic_86938-y += haptic_86938_fn_059_aw8693x_check_qualify.o
+haptic_86938-y += haptic_86938_fn_060_cont_brk_time_store.o

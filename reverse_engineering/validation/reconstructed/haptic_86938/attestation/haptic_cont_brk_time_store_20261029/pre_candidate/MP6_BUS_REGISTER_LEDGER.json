@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "task_id": "054_cont_brk_time_store",
+  "work_unit": "MP6_REGISTER_OR_BUS_LEDGER",
+  "identity": "cont_brk_time_store@0010679c",
+  "input_hashes": [
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "sha256": "5a5e1555e0a52a6d727bdbd879a2c01926663a0896762a334f9117e16b875363"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0053_cont_brk_time_store_0010679c.asm", "sha256": "8bc3ef8ebd56046158edc2d05deb086c58bac22609d088deb4b8ad53bb573782"},
+    {"path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_032_i2c_w_bytes.c", "sha256": "586941289ba11886aeb817d1ff69b1dee45057f347b3debe2055d6f36bccb737"}
+  ],
+  "observations": [
+    {"claim": "The callback asks i2c_w_bytes to write register 0x21 with a one-byte buffer at data+0x3f5 while holding mutex at data+0x248.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "locator": "argument setup at 001067dc, 001067e0, 001067e4, 001067e8"},
+    {"claim": "The callback ignores i2c_w_bytes' return value.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "locator": "call 001067e8 followed by unlock and count return; no read of w0"}
+  ],
+  "inferences": [],
+  "unknowns": ["The physical meaning of register 0x21, device behavior, I2C electrical timing and the interpretation of the written byte are unknown from this function and must remain unknown."],
+  "contradictions": []
+}
