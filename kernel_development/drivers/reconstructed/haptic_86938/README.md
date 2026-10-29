@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Five candidate functions now pass the automated core protocol; 155 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Six candidate functions now pass the automated core protocol; 154 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 5
-- Functions still not started: 155
+- Candidate source functions with core-gate attestations: 6
+- Functions still not started: 154
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -20,8 +20,9 @@ Each function passed all eight core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDR
 - brightness_get: stock body loads a 32-bit enum from led_classdev minus 0x50 and returns (8 bytes); recovered signature is enum led_brightness (struct led_classdev *); stock/candidate KCFI ID is 0x39e483e6. Candidate module SHA-256: 99042f2c2febed1105ff65604a0f224ce59368aa7b97349bea18493d22154c64. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_brightness_20261029/README.md)
 - aw_i2c_resume: stock and candidate bodies are `mov w0, wzr; ret` (8 bytes, no relocations); recovered signature is `int (struct device *)`; KCFI ID is `0x2a703c0b`. The accumulated candidate module SHA-256 is `2c9496922d86b0fdf657fc8922fcba5aa5ee8953cdc30898ce76ccb2ef389467`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_resume_20261029/README.md)
 - richtap_write: stock body is `mov x0, x2; ret` (8 bytes, no relocations); the `file_operations.write` signature probe matches KCFI ID `0xc3d43b4d`. It returns the byte count without consuming the buffer. Accumulated candidate module SHA-256: `dcdba09a1a5d576cf88f4d46f5750a13ab7b999349e1357909e3fefa24c6a26e`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_write_20261029/README.md)
+- richtap_read: stock and candidate bodies are `mov x0, xzr; ret` (8 bytes, no relocations); the `file_operations.read` signature probe matches KCFI ID `0xf4e9d97c`, and the callback returns EOF. Accumulated candidate module SHA-256: `84e9436e204989f692b6b2cff8d918dd3cff57633ea8b2f85b0713f9f5dc5e43`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_read_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 155 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but correctly withholds static verification because no combined module has been promoted.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 154 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but correctly withholds static verification because no combined module has been promoted.
 
 ## Remaining stock evidence
 
