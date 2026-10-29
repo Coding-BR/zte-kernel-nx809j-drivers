@@ -122,3 +122,4 @@ haptic_86938-y += haptic_86938_fn_117_aw8693x_cont_config.o
 haptic_86938-y += haptic_86938_fn_118_aw8693x_stop.o
 haptic_86938-y += haptic_86938_fn_119_aw8693x_get_lra_resistance.o
 haptic_86938-y += haptic_86938_fn_120_aw8693x_get_vbat.o
+haptic_86938-y += haptic_86938_fn_121_aw8693x_get_f0.o
