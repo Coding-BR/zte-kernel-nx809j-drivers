@@ -8,3 +8,5 @@ haptic_86938-y += haptic_86938_fn_005_richtap_read.o
 haptic_86938-y += haptic_86938_fn_006_state_show.o
 haptic_86938-y += haptic_86938_fn_007_activate_show.o
 haptic_86938-y += haptic_86938_fn_008_activate_mode_show.o
+haptic_86938-y += haptic_86938_fn_009_vmax_show.o
+haptic_86938-y += haptic_86938_fn_010_gain_show.o
