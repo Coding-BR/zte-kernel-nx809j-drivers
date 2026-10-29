@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "function": "vibrator_timer_func",
+  "effects": [
+    {
+      "kind": "write",
+      "width_bytes": 4,
+      "address_expression": "(u8 *)timer - 0x2f0",
+      "container_relative": "parent + 0x40",
+      "value": 0,
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c",
+      "confidence": "high"
+    },
+    {
+      "kind": "enqueue_work",
+      "cpu": 32,
+      "workqueue_expression": "timer + 0x118",
+      "work_expression": "timer + 0xf8",
+      "container_relative": {
+        "workqueue": "parent + 0x448",
+        "work_struct": "parent + 0x428"
+      },
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "container_layout_cross_checks": [
+    {
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+      "observation": "The hrtimer is initialized at parent+0x330 and callback pointer at parent+0x358."
+    },
+    {
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+      "observation": "The work_struct is initialized at parent+0x428 and its work function pointer is at parent+0x440."
+    },
+    {
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0078_001096ec_vibrator_work_routine.c",
+      "observation": "The worker recovers parent by subtracting 0x428 from its work_struct argument and reads the state field at parent+0x40."
+    }
+  ],
+  "decision": "Offsets align with the parent object layout inferred from independent initialization and worker code."
+}

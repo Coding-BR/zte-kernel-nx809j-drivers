@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "function": "vibrator_timer_func",
+  "paths": [
+    {
+      "condition": "always",
+      "effects": [
+        "store 32-bit zero to timer-0x2f0",
+        "queue work on CPU 32 using fields timer+0x118 and timer+0xf8"
+      ],
+      "return": "HRTIMER_NORESTART (0)",
+      "stock_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c"
+    }
+  ],
+  "branches": 0,
+  "early_returns": 0,
+  "errors_handled": 0,
+  "queue_work_return_checked": false,
+  "candidate_must_not_add": [
+    "locking",
+    "allocation",
+    "hardware I/O",
+    "conditional queueing",
+    "restart behavior"
+  ]
+}

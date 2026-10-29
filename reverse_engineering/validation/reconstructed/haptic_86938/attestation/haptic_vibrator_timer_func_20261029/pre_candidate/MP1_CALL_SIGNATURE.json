@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "stock_function": "vibrator_timer_func",
+  "candidate_prototype": "enum hrtimer_restart vibrator_timer_func(struct hrtimer *timer)",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+      "observation": "hrtimer_init(parent + 0x330, 1, 1); function pointer vibrator_timer_func stored at parent + 0x358, the callback slot within the embedded timer."
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json",
+      "observation": "KCFI type id 0xe3cff753 at preamble 0x6890; the build gate must confirm the candidate callback type."
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c",
+      "observation": "Ghidra omits the callback prototype and arguments, so its undefined8/long form is not treated as authoritative."
+    }
+  ],
+  "external_call": {
+    "name": "queue_work_on",
+    "arguments": [
+      "cpu=0x20",
+      "workqueue pointer at timer+0x118",
+      "work_struct pointer at timer+0xf8"
+    ],
+    "return_value": "ignored"
+  },
+  "decision": "Prototype inferred from hrtimer callback registration and must pass KCFI validation."
+}

@@ -72,3 +72,4 @@ haptic_86938-y += haptic_86938_fn_068_f0_save_store.o
 haptic_86938-y += haptic_86938_fn_069_cont_save_store.o
 haptic_86938-y += haptic_86938_fn_070_osc_save_store.o
 haptic_86938-y += haptic_86938_fn_071_duration_aw_store.o
+haptic_86938-y += haptic_86938_fn_072_vibrator_timer_func.o
