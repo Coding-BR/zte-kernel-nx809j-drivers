@@ -1,0 +1,25 @@
+{
+  "function": "aw8693x_irq_clear",
+  "ordered_effects": [
+    {
+      "kind": "BUS_READ",
+      "helper": "i2c_r_bytes",
+      "reg": "0x02",
+      "length": 1,
+      "initial_status": 0,
+      "return_handling": "ignored"
+    },
+    {
+      "kind": "LOG",
+      "helper": "printk",
+      "format": "\\0016[%s][%04d]%s: reg SYSINT=0x%02X\\n",
+      "arguments": [
+        "haptic_hv",
+        1099,
+        "aw8693x_irq_clear",
+        "status_byte"
+      ]
+    }
+  ],
+  "evidence": "stock assembly, P-Code, string table and helper decompilation are hash-bound in the job"
+}

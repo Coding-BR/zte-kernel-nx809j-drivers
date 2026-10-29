@@ -638,8 +638,13 @@ def build_command_plan(
             "--clang-revision", clang_revision,
             "--target-kernel-manifest",
             str((repo_root / "kernel_development" / "config" / "target_kernel.json").resolve()),
-            "--strict",
         )
+        # Per-function jobs often compile a deliberately partial module.  Keep
+        # the full-driver completeness check opt-in for those jobs; the report
+        # still records incomplete traceability while the core gate separately
+        # requires a successful, byte-reproducible Docker build.
+        if docker_config.get("require_complete_driver_audit", True):
+            docker.append("--strict")
         run_root = docker_config.get("run_root")
         if run_root:
             run_root_path = Path(str(run_root))
@@ -1857,11 +1862,9 @@ def main() -> int:
     )
     command_results["docker"] = docker_result
     docker_report = Path(command_plan["docker_report"])
-    docker_pass = report_passed(
-        docker_report, adapter=command_plan["docker_adapter"]
-    ) and (
-        command_plan["docker_adapter"] == "generic_driver_audit"
-        or docker_result["returncode"] == 0
+    docker_pass = (
+        docker_result["returncode"] == 0
+        and report_passed(docker_report, adapter=command_plan["docker_adapter"])
     )
     gate_status["DOCKER_REPRODUCIBLE"] = "PASS" if docker_pass else "FAIL"
     candidate_module = candidate_from_docker_report(
