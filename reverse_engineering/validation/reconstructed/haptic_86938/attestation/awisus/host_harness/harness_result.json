@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T06:43:16.306029+00:00",
+  "passed": true,
+  "scope": "host-only lock/callback contract; no kernel, KCFI, or hardware execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_037_aw_i2c_suspend.c",
+  "candidate_source_sha256": "d906a91c62f773ec1cd160f8b3899f8596a2576b384243d88667b21eb9846b29",
+  "harness_source_sha256": "f2940487cdcda7ac6d3932681153e529e4a3bfe7f12c32ab26feb82369e48646",
+  "stock_offsets": {
+    "device_driver_data": "0x98",
+    "haptic_mutex": "0x2f0",
+    "operations_table": "0x5c8",
+    "stop_callback_slot": "0x38"
+  },
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "expected": "pass",
+      "observed_returncode": 0,
+      "passed": true,
+      "output": "PASS: driver_data, callback ABI, lock scope/order, and return value"
+    },
+    "mutant_missing_lock": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: lock or callback contract violated (events=2)"
+    },
+    "mutant_callback_after_unlock": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: lock or callback contract violated (events=3)"
+    },
+    "mutant_wrong_callback_argument": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: lock or callback contract violated (events=3)"
+    },
+    "mutant_wrong_return": {
+      "expected": "rejected",
+      "observed_returncode": 1,
+      "passed": true,
+      "output": "FAIL: expected return 0, got -5"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: driver_data, callback ABI, lock scope/order, and return value\nCASE_END\nCASE_RESULT:mutant_missing_lock:1\nFAIL: lock or callback contract violated (events=2)\nCASE_END\nCASE_RESULT:mutant_callback_after_unlock:1\nFAIL: lock or callback contract violated (events=3)\nCASE_END\nCASE_RESULT:mutant_wrong_callback_argument:1\nFAIL: lock or callback contract violated (events=3)\nCASE_END\nCASE_RESULT:mutant_wrong_return:1\nFAIL: expected return 0, got -5\nCASE_END\n"
+}

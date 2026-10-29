@@ -15,6 +15,7 @@ from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
     required_gates,
     resolve_repo_path,
     run_command,
+    runner_script_inventory,
     select_functions,
     validate_job,
     paired_ghidra_semantic_exports,
@@ -48,6 +49,31 @@ def base_job(**overrides):
 
 
 class HardDriverProtocolTests(unittest.TestCase):
+    def test_runner_inventory_hashes_scripts_and_detects_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo = Path(temporary)
+            runner = repo / "runner.py"
+            runner.write_text("print('first')\n", encoding="utf-8")
+
+            initial = runner_script_inventory(repo, [runner])
+            self.assertEqual(initial[0]["path"], "runner.py")
+            self.assertEqual(initial[0]["size"], runner.stat().st_size)
+
+            runner.write_text("print('changed')\n", encoding="utf-8")
+            changed = runner_script_inventory(repo, [runner])
+            self.assertNotEqual(initial[0]["sha256"], changed[0]["sha256"])
+
+    def test_runner_inventory_is_stable_for_duplicate_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo = Path(temporary)
+            runner = repo / "runner.py"
+            runner.write_text("print('stable')\n", encoding="utf-8")
+
+            inventory = runner_script_inventory(repo, [runner, runner.resolve()])
+
+            self.assertEqual(len(inventory), 1)
+            self.assertEqual(inventory[0]["path"], "runner.py")
+
     def test_paired_same_base_ghidra_exports_keep_stock_identity_bias_hash_bound(self):
         repo = Path(__file__).resolve().parents[3]
         job = json.loads((repo / "workspace_tools/reconstruction_pipeline/hard_driver_job.ftmmod_20261027.json").read_text())

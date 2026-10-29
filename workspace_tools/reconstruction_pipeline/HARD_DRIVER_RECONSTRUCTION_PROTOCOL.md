@@ -250,6 +250,13 @@ assembly/
 
 Uma pasta de saida nao vazia e rejeitada para impedir mistura de hashes.
 
+O `input_manifest.json` registra os SHA-256 dos entrypoints Python do runner,
+Joern, auditor Docker e comparadores selecionados. Ao concluir o modo `core`,
+o runner recalcula esses hashes; qualquer alteracao durante a execucao reprova
+`INPUT_IDENTITY`. O relatorio registra `runner_identity_revalidated` e a lista
+dos scripts fixados, para que o resultado possa ser reproduzido com o mesmo
+codigo de validacao.
+
 ## 6. Ferramentas avaliadas e decisao
 
 | Ferramenta | Uso correto | Posicao no protocolo |

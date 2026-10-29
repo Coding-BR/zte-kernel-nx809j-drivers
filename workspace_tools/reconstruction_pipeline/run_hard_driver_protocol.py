@@ -128,6 +128,66 @@ def file_record(path: Path) -> dict[str, Any]:
     }
 
 
+def runner_script_inventory(repo_root: Path, runner_paths: list[Path]) -> list[dict[str, Any]]:
+    """Hash the exact Python entrypoints planned for this protocol run."""
+    repo_root = repo_root.resolve()
+    inventory: dict[str, dict[str, Any]] = {}
+    for raw_path in runner_paths:
+        path = raw_path.resolve(strict=True)
+        if not path.is_file():
+            raise FileNotFoundError(f"runner script is not a file: {path}")
+        try:
+            label = path.relative_to(repo_root).as_posix()
+        except ValueError:
+            label = str(path)
+        record = file_record(path)
+        inventory[label] = {
+            "path": label,
+            "size": record["size"],
+            "sha256": record["sha256"],
+        }
+    return [inventory[label] for label in sorted(inventory)]
+
+
+def planned_runner_paths(
+    repo_root: Path,
+    job: dict[str, Any],
+    functions: list[dict[str, Any]],
+    command_plan: dict[str, Any],
+    gates_required: dict[str, dict[str, str]],
+) -> list[Path]:
+    """Return core and helper scripts that may execute for this selected job."""
+    repo_root = repo_root.resolve()
+    paths = {Path(__file__).resolve()}
+    for command_name in ("joern", "docker"):
+        argv = command_plan.get(command_name)
+        if not isinstance(argv, list):
+            continue
+        for argument in argv:
+            candidate = Path(str(argument))
+            if candidate.suffix.lower() == ".py" and candidate.is_file():
+                paths.add(candidate.resolve())
+
+    tools_root = repo_root / "workspace_tools" / "reconstruction_pipeline"
+    helper_names = {"extract_module_assembly.py", "compare_function_assembly.py"}
+    if "KCFI" in gates_required:
+        helper_names.update({"extract_kcfi.py", "compare_kcfi_reports.py"})
+        kcfi_config = job.get("kcfi", {})
+        direct_call_only = (
+            set(kcfi_config.get("direct_call_only", []))
+            if isinstance(kcfi_config, dict) else set()
+        )
+        selected = {str(item["stock_function"]) for item in functions}
+        if direct_call_only and selected <= direct_call_only:
+            helper_names.add("build_kcfi_direct_call_decision.py")
+    if job.get("paths", {}).get("candidate_ghidra_export"):
+        helper_names.add("compare_ghidra_function_semantics.py")
+    if job.get("assembly_predicate_equivalence"):
+        helper_names.add("classify_aarch64_predicate_equivalence.py")
+    paths.update(tools_root / name for name in helper_names)
+    return sorted(paths, key=lambda path: str(path).casefold())
+
+
 def source_tree_record(root: Path, *, allow_empty: bool = False) -> dict[str, Any]:
     files: list[dict[str, Any]] = []
     tree = hashlib.sha256()
@@ -1605,6 +1665,10 @@ def main() -> int:
         joern_home=joern_home,
         java_home=java_home,
     )
+    runner_paths = planned_runner_paths(
+        repo_root, job, functions, command_plan, gates_required
+    )
+    runner_inputs = runner_script_inventory(repo_root, runner_paths)
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "generated_utc": utc_now(),
@@ -1635,6 +1699,7 @@ def main() -> int:
                 repo_root / "workspace_tools" / "reconstruction_pipeline" / "joern" / "joern.lock.json"
             ),
         },
+        "runner_scripts": runner_inputs,
         "evidence": evidence_inventory(repo_root, job.get("evidence")),
     }
     write_json(output_dir / "input_manifest.json", manifest)
@@ -1774,6 +1839,15 @@ def main() -> int:
         if "CANDIDATE_GHIDRA_PCODE" in gates_required:
             gate_status["CANDIDATE_GHIDRA_PCODE"] = "BLOCKED_BY_DOCKER"
 
+    runner_inputs_after = runner_script_inventory(repo_root, runner_paths)
+    runner_identity_passed = runner_inputs_after == runner_inputs
+    gate_status["INPUT_IDENTITY"] = "PASS" if runner_identity_passed else "FAIL"
+    command_results["runner_identity_revalidation"] = {
+        "passed": runner_identity_passed,
+        "before": runner_inputs,
+        "after": runner_inputs_after,
+    }
+
     automated_required = sorted(
         name for name, spec in gates_required.items() if spec["kind"] == "AUTOMATED"
     )
@@ -1861,6 +1935,8 @@ def main() -> int:
         "driver": job["driver"],
         "functions": functions,
         "candidate_module": file_record(candidate_module) if candidate_module else None,
+        "runner_identity_revalidated": runner_identity_passed,
+        "runner_scripts": runner_inputs,
         "automated_required_gates": automated_required,
         "evidence_required_gates": evidence_required,
         "gate_status": gate_status,

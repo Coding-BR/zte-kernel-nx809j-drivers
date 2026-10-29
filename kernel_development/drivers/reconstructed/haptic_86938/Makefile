@@ -37,3 +37,4 @@ haptic_86938-y += haptic_86938_fn_034_richtap_file_release.o
 haptic_86938-y += haptic_86938_fn_035_richtap_file_open.o
 haptic_86938-y += haptic_86938_globals.o
 haptic_86938-y += haptic_86938_fn_036_richtap_clean_buf.o
+haptic_86938-y += haptic_86938_fn_037_aw_i2c_suspend.o

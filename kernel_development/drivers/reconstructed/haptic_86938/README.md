@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 mapped functions. Thirty-seven candidate functions now pass their applicable automated core gates; 123 functions remain NOT_STARTED.
+Status: incomplete. Offline stock evidence covers all 160 mapped functions. Thirty-eight candidates pass their applicable automated core gates; 122 functions remain NOT_STARTED.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with core-gate attestations: 37
-- Functions still not started: 123
+- Candidate source functions with core-gate attestations: 38
+- Functions still not started: 122
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -39,8 +39,9 @@ Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, 
 - richtap_file_release: releases the module reference with `module_put(THIS_MODULE)` and returns zero; strict assembly, Ghidra/P-Code, KCFI, Docker, and Joern gates pass. Candidate module SHA-256: `23623a53a178ca5e8c7f4913afbbdcea840d1af59dd5a0b0c6606e5d009f3da9`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/README.md)
 - richtap_file_open: acquires the module reference, returns `-ENODEV` on failure, and stores `g_aw_haptic` in `file->private_data` on success; its 76-byte body matches stock assembly, normalized Ghidra C, P-Code, and KCFI. The candidate defines the stock-observed 8-byte `g_aw_haptic` BSS object; probe-side initialization remains incomplete. Candidate module SHA-256: `34ed18cce9cc6d0418c41a139cb015c84d8e4bf9872189855887103dce03f655`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/README.md)
 - richtap_clean_buf: clears 1000 bytes and writes `0xff` to each of 16 linked nodes while preserving links. Stock/candidate assembly is 107 instructions and 428 bytes; normalized Ghidra C and P-Code match. KCFI is `NOT_REQUIRED`: stock has no valid preamble and this helper has no indirect callback ABI. The ASan/UBSan harness passed and rejected three seeded mutants. Candidate module SHA-256: `d45d6cf32620ff8a0cb67bc4897e65e8cbeae2c5ce8ff3f41f4d3f182f19ba85`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_clean_buf_20261029/README.md)
+- aw_i2c_suspend: PM suspend callback that locks the haptic mutex, invokes the typed `aw8693x_stop` operation at slot `+0x38`, unlocks, and returns zero. The stock ELF relocation resolves the slot to `aw8693x_stop`; KCFI IDs are recorded for both callback boundaries. Candidate module SHA-256: `def0d87c62c1f87194c8338063eb2b19c07507def9f67c85dcb86a13e192f785`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_i2c_suspend_20261029/README.md)
 
-The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 123 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because the remaining functions are unmapped and full-module metadata/KMI parity still fails.
+The core gates validate these functions and reproducibility of each accumulated candidate module. They do not authorize whole-driver promotion: independent review, 122 remaining functions, complete target-kernel identity and hardware validation remain open. The public Docker audit confirms reproducible builds but withholds static verification because the remaining functions are unmapped and full-module metadata/KMI parity still fails.
 
 ## Remaining stock evidence
 

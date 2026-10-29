@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"i2c_r_bytes","type":"IF","code":"if (result < 0) {\n        printk(\"\\0013[%s][%04d]%s: transfer failed.\\n\",\n               \"haptic_hv\", 0x65, \"i2c_r_bytes\");\n    } else if (result != 2) {\n        printk(\"\\0013[%s][%04d]%s: transfer failed(size error).\\n\",\n               \"haptic_hv\", 0x68, \"i2c_r_bytes\");\n        result = -6;\n    }","filename":"haptic_86938_fn_031_i2c_r_bytes.c","line":28},
+    {"method":"i2c_r_bytes","type":"ELSE","code":"else","filename":"haptic_86938_fn_031_i2c_r_bytes.c","line":31},
+    {"method":"i2c_r_bytes","type":"IF","code":"if (result != 2) {\n        printk(\"\\0013[%s][%04d]%s: transfer failed(size error).\\n\",\n               \"haptic_hv\", 0x68, \"i2c_r_bytes\");\n        result = -6;\n    }","filename":"haptic_86938_fn_031_i2c_r_bytes.c","line":31},
+    {"method":"i2c_w_bytes","type":"IF","code":"if (result < 0) {\n        printk(\"\\0013[%s][%04d]%s: i2c master send 0x%02x err\\n\",\n               \"haptic_hv\", 0x7a, \"i2c_w_bytes\", reg);\n    }","filename":"haptic_86938_fn_032_i2c_w_bytes.c","line":19},
+    {"method":"cont_drv_time_store","type":"IF","code":"if (parsed == 2) {\n        first = *(volatile u8 *)&parsed_values;\n        driver_data[0x3f8] = first;\n        second = *(volatile u8 *)((char *)&parsed_values + 4);\n        driver_data[0x3f9] = second;\n        transfer.first = first;\n        transfer.second = second;\n        haptic = (struct aw_haptic *)(driver_data - 0xa8);\n        mutex_lock((struct mutex *)(driver_data + 0x248));\n        i2c_w_bytes(haptic, 0x1f, (u8 *)&transfer, 2);\n        mutex_unlock((struct mutex *)(driver_data + 0x248));\n    }","filename":"haptic_86938_fn_033_cont_drv_time_store.c","line":26},
+    {"method":"richtap_file_open","type":"IF","code":"if (!try_module_get(THIS_MODULE))\n\t\treturn -ENODEV;","filename":"haptic_86938_fn_035_richtap_file_open.c","line":10}
+  ]
+}
