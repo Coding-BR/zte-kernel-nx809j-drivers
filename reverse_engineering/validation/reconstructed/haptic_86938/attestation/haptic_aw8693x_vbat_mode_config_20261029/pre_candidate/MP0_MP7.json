@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_vbat_mode_config",
+  "stock_entry": "00104b78",
+  "stock_body_bytes": 52,
+  "kcfi_type_id": "0x1d0adf6e",
+  "static_observation": {
+    "assembly": "and w8,w1,#0xff; mov w1,#0x4c; mov w2,#-0x41; cmp w8,#1; cset w8,eq; lsl w3,w8,#6; bl i2c_w_bits",
+    "call": "i2c_w_bits(haptic, 0x4c, 0xffffffbf, (flag == 1) << 6)",
+    "return": "void; helper return discarded",
+    "limits": "KCFI hash alone may collide across byte-like declarations; exact caller type not independently established."
+  },
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_042_aw8693x_vbat_mode_config.c"
+}
