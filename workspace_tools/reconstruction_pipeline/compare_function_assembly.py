@@ -495,6 +495,10 @@ def normalized_symbol_target(
             "bss": ".bss",
             "codetag": ".codetag.alloc_tags",
         }[base_match.group("section")]
+        if addend:
+            for symbol, (symbol_section, symbol_offset) in symbol_locations.items():
+                if symbol_section == section and symbol_offset == addend:
+                    return symbol
         return section if not addend else f"{section}+0x{addend:x}"
     if location is not None:
         # Keep the symbol identity. Its section-relative address may differ
@@ -1002,6 +1006,8 @@ def _canonical_commutative_word(word: int) -> tuple[int, str] | None:
         operation = "ADD shifted-register LSL #0"
     elif fixed == 0x1B007C00:
         operation = "MUL alias of MADD with RA=ZR"
+    elif fixed == 0x2A000000:
+        operation = "ORR shifted-register LSL #0"
     else:
         return None
 

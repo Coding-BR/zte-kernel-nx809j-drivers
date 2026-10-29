@@ -25,6 +25,38 @@ def write_jsonl(path: Path, records: list[dict]) -> None:
 
 
 class GhidraSemanticComparisonTests(unittest.TestCase):
+    def test_cont_drv_lvl_store_commutative_bit7_or_is_narrow(self) -> None:
+        stock = (
+            "undefined8 cont_drv_lvl_store(){local_44=CONCAT11("
+            "*(undefined1*)(lVar2+0x3f3),*(byte*)(lVar2+0x3f2)|"
+            "(byte)GHIDRA_STACK_LOCAL_44&0x80);}"
+        )
+        candidate = (
+            "undefined8 cont_drv_lvl_store(){local_44=CONCAT11("
+            "*(undefined1*)(lVar2+0x3f3),(byte)GHIDRA_STACK_LOCAL_44&0x80|"
+            "*(byte*)(lVar2+0x3f2));}"
+        )
+
+        evidence = MODULE.cont_drv_lvl_bit7_or_normalization(
+            "cont_drv_lvl_store@00106554", stock, candidate
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"],
+            "commutative_cont_drv_lvl_bit7_or_operand_order",
+        )
+        self.assertIsNone(
+            MODULE.cont_drv_lvl_bit7_or_normalization(
+                "cont_drv_lvl_store", stock, candidate.replace("0x3f2", "0x3f4")
+            )
+        )
+        self.assertIsNone(
+            MODULE.cont_drv_lvl_bit7_or_normalization(
+                "another_function", stock, candidate
+            )
+        )
+
     def test_decompiler_comments_are_ignored_as_syntax_artifacts(self) -> None:
         without_comment, _, _ = MODULE.normalize_decompiled(
             "void f(void) { return; }", {}

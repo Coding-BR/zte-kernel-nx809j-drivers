@@ -1246,6 +1246,49 @@ def decompiler_symbol_resolution_artifact(
     }
 
 
+def cont_drv_lvl_bit7_or_normalization(
+    function: str,
+    stock: str,
+    candidate: str,
+) -> dict[str, Any] | None:
+    """Normalize the sole commutative OR rendering delta in cont_drv_lvl_store.
+
+    The stock and candidate P-Code/assembly can encode the same byte-level OR
+    with reversed operands. Accept only this exact pair of side-effect-free
+    byte reads, and only when the caller has already established equal body
+    size and P-Code operation shape.
+    """
+    if function.split("@", 1)[0] != "cont_drv_lvl_store":
+        return None
+    stock_expr = (
+        "*(byte*)(lVar2+0x3f2)|(byte)GHIDRA_STACK_LOCAL_44&0x80"
+    )
+    candidate_expr = (
+        "(byte)GHIDRA_STACK_LOCAL_44&0x80|*(byte*)(lVar2+0x3f2)"
+    )
+    if stock.count(stock_expr) != 1 or candidate.count(candidate_expr) != 1:
+        return None
+    canonical_expr = "GHIDRA_CONT_DRV_LVL_STATE_BYTE_OR_READ_BIT7"
+    normalized_stock = stock.replace(stock_expr, canonical_expr, 1)
+    normalized_candidate = candidate.replace(candidate_expr, canonical_expr, 1)
+    if normalized_stock != normalized_candidate:
+        return None
+    return {
+        "kind": "commutative_cont_drv_lvl_bit7_or_operand_order",
+        "stock_expression": stock_expr,
+        "candidate_expression": candidate_expr,
+        "canonical_expression": canonical_expr,
+        "reason": (
+            "bitwise OR of the state byte and masked register bit 7 is "
+            "commutative; both operands are read-only byte values"
+        ),
+        "requirement": (
+            "whole normalized C matches after this sole rewrite, with equal "
+            "function body bytes and P-Code operation shape"
+        ),
+    }
+
+
 def fragmented_byte_flag_normalization(
     stock: str,
     candidate: str,
@@ -2430,6 +2473,7 @@ def compare_function(
     body_bytes_match = stock_record.get("body_bytes") == effective_candidate_body_bytes
     pcode_shape_match = stock_shape == candidate_shape
     fallback_evidence: dict[str, Any] | None = None
+    commutative_cont_drv_lvl_or_evidence: dict[str, Any] | None = None
     named_data_address_syntax_evidence: dict[str, Any] | None = None
     rdbg_proc_info_index_syntax_evidence: dict[str, Any] | None = None
     pointer_table_index_base_evidence: dict[str, Any] | None = None
@@ -2523,11 +2567,21 @@ def compare_function(
         )
 
     if not direct_normalized_match and body_bytes_match and pcode_shape_match:
-        if allow_named_data_address_syntax_fallback:
+        commutative_cont_drv_lvl_or_evidence = (
+            cont_drv_lvl_bit7_or_normalization(
+                function, stock_normalized, candidate_normalized
+            )
+        )
+        if commutative_cont_drv_lvl_or_evidence is not None:
+            normalized_decompiled_match = True
+        elif allow_named_data_address_syntax_fallback:
             named_data_address_syntax_evidence = named_data_address_syntax_fallback(
                 stock_normalized, candidate_normalized
             )
-        if named_data_address_syntax_evidence is not None:
+        if (
+            commutative_cont_drv_lvl_or_evidence is not None
+            or named_data_address_syntax_evidence is not None
+        ):
             normalized_decompiled_match = True
         else:
             if allow_rdbg_proc_info_index_syntax_fallback:
@@ -2621,6 +2675,7 @@ def compare_function(
     failures = list(raw_failures)
     if (
         named_data_address_syntax_evidence is not None
+        or commutative_cont_drv_lvl_or_evidence is not None
         or rdbg_proc_info_index_syntax_evidence is not None
         or pointer_table_index_base_evidence is not None
         or pointer_table_absolute_base_evidence is not None
@@ -2638,6 +2693,7 @@ def compare_function(
         "failures": failures,
         "decompiled_normalization": {
             "direct_match": direct_normalized_match,
+            "commutative_cont_drv_lvl_bit7_or": commutative_cont_drv_lvl_or_evidence,
             "named_data_address_syntax_fallback": named_data_address_syntax_evidence,
             "rdbg_proc_info_index_syntax_fallback": rdbg_proc_info_index_syntax_evidence,
             "pointer_table_index_base_fallback": pointer_table_index_base_evidence,

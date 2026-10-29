@@ -354,6 +354,20 @@ class NormalizedRelocationTests(unittest.TestCase):
         self.assertEqual(stock, candidate)
         self.assertEqual(len(evidence), 2)
 
+    def test_commutative_orr_operand_swap_is_equivalent(self) -> None:
+        stock, candidate, evidence = (
+            MODULE.canonicalize_commutative_instruction_pairs(
+                ["2a090108"],
+                ["2a080128"],
+            )
+        )
+
+        self.assertEqual(stock, candidate)
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(
+            evidence[0]["operation"], "ORR shifted-register LSL #0"
+        )
+
     def test_equality_cmp_operand_swap_requires_an_identical_equality_branch(self) -> None:
         stock, candidate, evidence = MODULE.canonicalize_equality_cmp_operand_swaps(
             ["eb14013f", "54000241"],
