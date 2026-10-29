@@ -118,3 +118,4 @@ haptic_86938-y += haptic_86938_fn_113_auto_boost_store.o
 haptic_86938-y += haptic_86938_fn_114_index_store.o
 haptic_86938-y += haptic_86938_fn_115_prct_mode_store.o
 haptic_86938-y += haptic_86938_fn_116_aw8693x_get_reg.o
+haptic_86938-y += haptic_86938_fn_117_aw8693x_cont_config.o
