@@ -86,3 +86,4 @@ haptic_86938-y += haptic_86938_fn_078_duration_aw_show.o
 haptic_86938-y += haptic_86938_fn_079_aw8693x_set_pwm.o
 haptic_86938-y += haptic_86938_fn_080_aw8693x_get_ram_data.o
 haptic_86938-y += haptic_86938_fn_081_prct_mode_show.o
+haptic_86938-y += haptic_86938_fn_085_ram_num_show.o

@@ -138,7 +138,9 @@ modelo e aos bounds declarados.
 - O preambulo KCFI na entrada da funcao e os guards dos `blr` internos sao
   provas distintas. `kcfi_required` exige comparar o preambulo da funcao;
   `CALLBACK_ABI` exige comparar cada callsite indireto, incluindo slot, guard
-  e type ID. A ausencia de preambulo nao dispensa a auditoria dos callsites.
+  e type ID. A ausencia de preambulo nao dispensa a auditoria dos callsites;
+  se ambos os módulos não tiverem chamadas indiretas na função, esse subgate é
+  não aplicável e o preâmbulo continua sujeito à política da função.
 - Concorrencia: state machine de ownership, todos os cancelamentos e teardown,
   depois KUnit/lockdep/KCSAN em kernel de laboratorio.
 - Hardware: stub de bus apenas para ordem e erros; registradores continuam

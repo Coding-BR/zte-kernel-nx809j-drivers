@@ -1419,8 +1419,18 @@ def execute_post_candidate(
                 output_dir=output_dir, timeout=command_timeout,
             )
             commands["kcfi_callsites"] = callsite_result
-            callsites_pass = (
+            callsite_payload = (
+                read_json(callsite_report) if callsite_report.is_file() else {}
+            )
+            callsites_applicable = bool(callsite_payload.get("applicable", False))
+            callsite_comparison_passed = (
                 callsite_result["returncode"] == 0 and report_passed(callsite_report)
+            )
+            explicit_callsite_required = bool(
+                isinstance(kcfi_config, dict) and kcfi_config.get("callsite_required", False)
+            )
+            callsites_pass = callsite_comparison_passed and (
+                callsites_applicable or not explicit_callsite_required
             )
         else:
             commands["kcfi_callsites"] = {
@@ -1428,6 +1438,8 @@ def execute_post_candidate(
                 "returncode": 2,
                 "stderr_tail": "stock and candidate assembly extraction is required for KCFI callsite proof",
             }
+            callsites_applicable = False
+            callsite_comparison_passed = False
             callsites_pass = False
         write_json(
             output_dir / "kcfi" / "callsite_applicability.json",
@@ -1437,7 +1449,14 @@ def execute_post_candidate(
                 "required_by_job_configuration": bool(
                     isinstance(kcfi_config, dict) and kcfi_config.get("callsite_required", False)
                 ),
+                "applicable": callsites_applicable,
                 "comparison_passed": callsites_pass,
+                "comparison_status": (
+                    "PASS" if callsites_applicable and callsite_comparison_passed
+                    else "NOT_APPLICABLE_NO_INDIRECT_CALLS"
+                    if not callsites_applicable and callsite_comparison_passed
+                    else "FAIL"
+                ),
                 "report": str(callsite_report),
             },
         )

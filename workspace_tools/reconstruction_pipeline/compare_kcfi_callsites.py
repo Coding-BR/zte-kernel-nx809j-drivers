@@ -304,15 +304,23 @@ def main() -> int:
 
     stock_site_total = sum(item["stock"]["indirect_call_count"] for item in results)
     candidate_site_total = sum(item["candidate"]["indirect_call_count"] for item in results)
+    any_indirect_site = stock_site_total > 0 or candidate_site_total > 0
     at_least_one_site = stock_site_total > 0 and candidate_site_total > 0
+    no_indirect_sites = stock_site_total == 0 and candidate_site_total == 0
+    passed = bool(results) and all(item["passed"] for item in results)
     report = {
         "schema_version": "1.0",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "stock_manifest_sha256": sha256_file(stock_root / "manifest.json"),
         "candidate_manifest_sha256": sha256_file(candidate_root / "manifest.json"),
         "indirect_call_count_total": {"stock": stock_site_total, "candidate": candidate_site_total},
+        "applicable": any_indirect_site,
         "at_least_one_indirect_callsite": at_least_one_site,
-        "passed": bool(results) and at_least_one_site and all(item["passed"] for item in results),
+        "status": (
+            "NOT_APPLICABLE_NO_INDIRECT_CALLS" if no_indirect_sites
+            else "PASS" if passed else "FAIL"
+        ),
+        "passed": passed,
         "results": results,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
