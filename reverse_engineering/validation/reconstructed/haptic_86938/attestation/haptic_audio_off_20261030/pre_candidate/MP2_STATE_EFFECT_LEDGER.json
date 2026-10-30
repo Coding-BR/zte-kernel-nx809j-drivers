@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "function_id": "audio_off@0010d148",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "source_state": "PRE_CANDIDATE",
+  "ordered_effects": [
+    {"sequence": 1, "kind": "log", "line": "0x765", "message": "enter"},
+    {"sequence": 2, "kind": "lock", "object": "haptic+0x2f0", "operation": "mutex_lock"},
+    {"sequence": 3, "kind": "indirect_call", "slot": "operations+0x88", "type_id": "0x1d0adf6e", "arguments": ["haptic", "0x80"], "result": "ignored/void"},
+    {"sequence": 4, "kind": "indirect_call", "slot": "operations+0x38", "type_id": "0x847a0830", "arguments": ["haptic"], "result": "ignored/void"},
+    {"sequence": 5, "kind": "list_walk", "head": "haptic+0x590", "direction": "reverse from head.prev at +0x598"},
+    {"sequence": 6, "kind": "list_validation", "condition": "neighbor links are reciprocal", "valid_effect": "unlink node by updating adjacent pointers", "invalid_effect": "call __list_del_entry_valid_or_report and continue cleanup"},
+    {"sequence": 7, "kind": "store", "address": "list node", "value": ["LIST_POISON1", "LIST_POISON2"]},
+    {"sequence": 8, "kind": "free", "object": "list node - 8 bytes", "operation": "kfree"},
+    {"sequence": 9, "kind": "unlock", "object": "haptic+0x2f0", "operation": "mutex_unlock"},
+    {"sequence": 10, "kind": "return", "value": "void"}
+  ],
+  "function_state_writes": [
+    {"field": "list links at haptic+0x590 and node link fields", "condition": "valid list adjacency"},
+    {"field": "each removed node's list_head", "value": "LIST_POISON1/LIST_POISON2"}
+  ],
+  "resources": "Frees every queued audio command node reachable by reverse traversal; no allocation occurs in target.",
+  "limitations": [
+    "The callback table object and queued-node producer are outside this function.",
+    "The global lock order between haptic+0x2f0 and haptic+0x4f0 requires whole-driver review."
+  ]
+}

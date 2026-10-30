@@ -1,19 +1,21 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 126 current source revisions have source-hash-bound passing automated core reports, and 32 functions remain `NOT_STARTED` without source files.
+Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 127 mapped source revisions have passing automated core reports bound to their current hashes, 30 functions remain `NOT_STARTED`, and two functions carry a separate hardening deviation.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with current source-hash-bound core attestations: 126
+- Candidate source functions with current source-hash-bound core attestations: 127
 - awrw_show and awrw_store now carry a separate hardening deviation; earlier exact-reconstruction reports are historical and do not attest these sources.
-- Functions still not started without source files: 32
-- Mapped candidate sources awaiting current-hash core gates: 0
+- Functions still not started without source files: 30
+- Mapped candidate sources awaiting current-hash core gates: 1 (`get_ram_num`)
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
 
 ## Candidate microtasks
+
+- audio_off: stock and candidate match exactly (71 AArch64 instructions, 284 bytes, relocations, and section); both callback KCFI callsites, Docker reproducibility, Joern, and map identity pass. The ASan/UBSan host harness checks empty-list, reverse cleanup order, and invalid-link report-then-free behavior. Lock ordering against concurrent audio work remains unproved. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_audio_off_20261030/README.md)
 
 Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDRA_PCODE, DOCKER_REPRODUCIBLE, INPUT_IDENTITY, JOERN_SCOPED, JOERN_SLICE, KCFI when required, and MAP_IDENTITY. The `COMPILER_SENSITIVE` profile alone does not require a KCFI boundary for every function; `kcfi_required` controls that function-level gate, while `CALLBACK_ABI` continues to require the KCFI/callsite audit.
 
