@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_creat_node@00103258",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "paths": [
+    {
+      "condition": "sysfs_create_group result < 0",
+      "log_format": "\\u00013[%s][%04d]%s: error create aw8693x sysfs attr files\\n",
+      "arguments": [
+        "haptic_hv",
+        2330,
+        "aw8693x_creat_node"
+      ],
+      "return": "same negative result",
+      "cleanup": "none observed in function"
+    },
+    {
+      "condition": "sysfs_create_group result >= 0",
+      "log": null,
+      "return": 0
+    }
+  ],
+  "errno_mapping": "none; error code is propagated unchanged",
+  "branch_evidence": {
+    "instruction": "tbnz w0,#0x1f",
+    "target": "error block"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "byte_count_including_nul": 10,
+  "byte_identical": true,
+  "candidate_nul_terminated_hex": "6861707469635f687600",
+  "candidate_target": ".rodata.str1.1+0x18",
+  "comparator_fix": {
+    "path": "workspace_tools/reconstruction_pipeline/compare_function_assembly.py",
+    "rule": "A blob alias in a .rodata string section is rendered as text only when the complete NUL-terminated byte span matches the alias size and SHA-256 and decodes as UTF-8.",
+    "sha256": "f82cca7f238326068d3776822fd705d82f78a233d62ed8ea93b4432b3bbba749"
+  },
+  "final_map_bound_relocation_gate": "PASS",
+  "final_map_bound_run": "core_v4",
+  "final_map_sha256": "250ff9bb3eedadcf2d31df61bac7b3e09c03fae87076de89c85b3c83f83f3349",
+  "first_passing_run": "core_v2",
+  "first_run": "core_v1",
+  "first_run_relocation_gate": "FAIL",
+  "issue": "ASSEMBLY_RELOCATION_FALSE_NEGATIVE",
+  "root_cause": "The stock ELF literal haptic_hv was normalized as a 10-byte opaque blob because a local ELF symbol covered it; the candidate ELF literal was normalized as a string. The bytes and NUL terminator are identical, but the assembly comparator had no blob-to-string normalization for this exact case.",
+  "schema_version": "1.0",
+  "scope": "The normalization changes only relocation labels for byte-identical, single-NUL UTF-8 strings; it does not waive opcode, call target, string-content, section, or symbol-size checks.",
+  "second_run": "core_v2",
+  "second_run_all_instructions_match": true,
+  "second_run_relocation_gate": "PASS",
+  "second_run_relocations_match": true,
+  "sha256_including_nul": "035bc8edddd78f84873566b98f57511391576c3c44124ad8cd84094ca0b3a4fb",
+  "stock_nul_terminated_hex": "6861707469635f687600",
+  "stock_target": ".rodata.str1.1"
+}

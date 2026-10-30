@@ -573,6 +573,35 @@ def normalized_relocation(
 
     blob_alias = (rodata_blob_aliases or {}).get((section_name, offset))
     if blob_alias is not None:
+        # A local symbol may make one side of an identical NUL-terminated
+        # literal look like an opaque blob while the other side is recognized
+        # as a string. In the mergeable string section, normalize that case as
+        # text only when the complete symbol bytes (including the final NUL)
+        # match the recorded size and SHA-256 exactly.
+        blob_match = re.fullmatch(
+            re.escape(section_name) + r":blob:size=(\d+):sha256=([0-9a-f]{64})",
+            blob_alias,
+        )
+        if blob_match is not None and ".str" in section_name:
+            blob_size = int(blob_match.group(1))
+            blob_end = offset + blob_size
+            blob = section[offset:blob_end]
+            if (
+                blob_size >= 2
+                and blob_end <= len(section)
+                and blob.endswith(b"\0")
+                and b"\0" not in blob[:-1]
+                and hashlib.sha256(blob).hexdigest() == blob_match.group(2)
+            ):
+                try:
+                    text = blob[:-1].decode("utf-8", errors="strict")
+                except UnicodeDecodeError:
+                    pass
+                else:
+                    return (
+                        f"{relocation_type} {section_name}:string="
+                        f"{json.dumps(text, ensure_ascii=True)}"
+                    )
         return f"{relocation_type} {blob_alias}"
 
     pointer = (relocation_sites or {}).get((section_name, offset))
