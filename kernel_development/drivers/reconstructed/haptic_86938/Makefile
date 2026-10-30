@@ -125,3 +125,4 @@ haptic_86938-y += haptic_86938_fn_120_aw8693x_get_vbat.o
 haptic_86938-y += haptic_86938_fn_121_aw8693x_get_f0.o
 haptic_86938-y += haptic_86938_fn_122_aw8693x_ram_get_f0.o
 haptic_86938-y += haptic_86938_fn_123_loop_store.o
+haptic_86938-y += haptic_86938_fn_124_seq_store.o
