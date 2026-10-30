@@ -1,13 +1,13 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 124 current source revisions have source-hash-bound passing automated core reports; three mapped candidate sources need a passing report for their current hashes, and 33 functions remain `NOT_STARTED` without source files.
+Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 125 current source revisions have source-hash-bound passing automated core reports; two mapped candidate sources need a passing report for their current hashes, and 33 functions remain `NOT_STARTED` without source files.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with current source-hash-bound core attestations: 124
+- Candidate source functions with current source-hash-bound core attestations: 125
 - Functions still not started without source files: 33
-- Mapped candidate sources awaiting current-hash core gates: 3
+- Mapped candidate sources awaiting current-hash core gates: 2
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -19,6 +19,7 @@ Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, 
 The counts above were recomputed by matching each passing report's input-manifest SHA-256 against the current mapped source file. The per-function notes below describe their attested revisions; a source edit after an attestation requires fresh gates.
 
 - aw8693x_set_bst_peak_cur: stock body is one ret instruction (4 bytes); recovered signature is void (struct aw_haptic *); stock/candidate KCFI ID is 0x847a0830. Candidate module SHA-256: 7286ee7689b0f56424ab35f3872f99ce1e051a729c59acd9e39fcd3ff6ba8c52. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_bstcur_20261029/README.md)
+- aw8693x_play_go: logs the low bit of `flag`, sends play code 1 or 2 to register 9, and preserves the stack-protector path. All 38 AArch64 instructions, 152 bytes, relocations, and KCFI ID `0x1d0adf6e` match; all eight current-hash core gates pass. Candidate module SHA-256: `abf59d499834b0909141b4256c09a4c0ef4cb14fab2b41c5e069b30da4f1a948`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_play_go_refresh_20261030/README.md)
 - state_store: stock body is mov x0, x3; ret (8 bytes); recovered signature is ssize_t (struct device *, struct device_attribute *, const char *, size_t); stock/candidate KCFI ID is 0x95c41a97. It returns the supplied byte count without parsing or storing the buffer. Candidate module SHA-256: de2c719d096a338ba9160986ef53d3a62ecae4d0910f998edbe5caafa555d278. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_state_20261029/README.md)
 - brightness_get: stock body loads a 32-bit enum from led_classdev minus 0x50 and returns (8 bytes); recovered signature is enum led_brightness (struct led_classdev *); stock/candidate KCFI ID is 0x39e483e6. Candidate module SHA-256: 99042f2c2febed1105ff65604a0f224ce59368aa7b97349bea18493d22154c64. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_brightness_20261029/README.md)
 - aw_i2c_resume: stock and candidate bodies are `mov w0, wzr; ret` (8 bytes, no relocations); recovered signature is `int (struct device *)`; KCFI ID is `0x2a703c0b`. The accumulated candidate module SHA-256 is `2c9496922d86b0fdf657fc8922fcba5aa5ee8953cdc30898ce76ccb2ef389467`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_resume_20261029/README.md)
@@ -103,9 +104,9 @@ The counts above were recomputed by matching each passing report's input-manifes
 - get_ram_num: locks the RAM mutex, invokes the stock operations-table callbacks with matching KCFI callsite IDs, computes/stores the RAM count, logs it, and unlocks. Strict Joern passes. The linked candidate has 116 instructions/464 bytes versus 115/460 in stock; the remaining difference is documented in its assembly comparison. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_get_ram_num_20261029/README.md)
 - aw8693x_ram_get_f0: exact stock/candidate body match at 240 instructions and 960 bytes with matching relocations, KCFI, Joern, Docker reproducibility, and P-Code operation shape. Normalized Ghidra C differs, so this target uses an explicit assembly-only static attestation and does not claim normalized-C equivalence. Candidate module SHA-256 `b710cfc390ef2758a80f939646a17d2375c4188afe78418bca9ccc5cc46c38c2`. [Core report](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/ram_get_f0_20261029/core_final_v3/hard_protocol_report.json)
 
-The latest source-bound core process refreshed `ram_work_init`; all applicable static gates pass, including exact assembly, relocation, Ghidra C/P-Code, and two reproducible Docker builds. `ram_work_routine`, `aw8693x_set_wav_loop`, `seq_show`, and `seq_store` also pass their current-source gates. Three other source files need fresh gates against their current hashes. No candidate module has been promoted, and the whole-driver audit remains incomplete.
+The latest source-bound core process refreshed `aw8693x_play_go`; all required static gates pass, including exact assembly, relocation, KCFI, Ghidra C/P-Code, and two reproducible Docker builds. `ram_work_init`, `ram_work_routine`, `aw8693x_set_wav_loop`, `seq_show`, and `seq_store` also pass their current-source gates. Two other source files need fresh gates against their current hashes. No candidate module has been promoted, and the whole-driver audit remains incomplete.
 
-The function-scoped gates do not authorize whole-driver promotion: 33 functions still lack source files, three mapped candidates need current-hash gates, and complete target-kernel identity and hardware validation remain open. The whole-driver audit is incomplete. No candidate module has been promoted.
+The function-scoped gates do not authorize whole-driver promotion: 33 functions still lack source files, two mapped candidates need current-hash gates, and complete target-kernel identity and hardware validation remain open. The whole-driver audit is incomplete. No candidate module has been promoted.
 
 ## Remaining stock evidence
 
