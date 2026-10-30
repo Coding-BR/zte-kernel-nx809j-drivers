@@ -55,8 +55,12 @@ int aw8693x_container_update(struct aw_haptic *haptic,
 	{
 		u16 encoded_address =
 			*(u16 *)(container_data + address_offset);
+#if defined(__aarch64__)
 		asm volatile("" : : "r"(encoded_address)
 			     : "x0", "x1", "x2", "x3", "memory");
+#else
+		asm volatile("" : : "r"(encoded_address) : "memory");
+#endif
 
 #if defined(__aarch64__)
 		u32 decoded_address;
@@ -161,11 +165,16 @@ int aw8693x_container_update(struct aw_haptic *haptic,
 					u32 ram_byte;
 					u32 file_byte;
 
+#if defined(__aarch64__)
 					asm volatile("ldrb %w0, [%2, %4]\n\t"
 						     "ldrb %w1, [%3, %4]"
 						     : "=&r"(ram_byte), "=&r"(file_byte)
 						     : "r"(readback), "r"(container_chunk),
 						       "r"(index));
+#else
+					ram_byte = *(readback + index);
+					file_byte = *(container_chunk + index);
+#endif
 					if (ram_byte != file_byte) {
 					printk("\0013[%s][%04d]%s: check ramdata error, addr=0x%04x, ram_data=0x%02x, file_data=0x%02x\n",
 					       "haptic_hv", 0x630,
@@ -177,7 +186,11 @@ int aw8693x_container_update(struct aw_haptic *haptic,
 					goto out;
 					}
 				}
+#if defined(__aarch64__)
 				asm volatile("add %x0, %x0, #1" : "+r"(index));
+#else
+				index++;
+#endif
 #if defined(__aarch64__)
 				asm goto volatile("cmp %w0, %w1\n\tb.ne %l[compare_loop]"
 						   :
