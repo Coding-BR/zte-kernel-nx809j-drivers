@@ -30,6 +30,6 @@ Por fim, o `modpost` precisa criar `.vmlinux.protected-exports.c`. O auditor mon
 - Manifesto: `kernel_development/config/target_kernel.json`
 - Verificação do `UTS_RELEASE` e SHA da `Image`: `reverse_engineering/validation/kernel_source/target_kernel_image_20261030.json`
 - Preparação Docker: `reverse_engineering/validation/kernel_source/target_kernel_source_20261030.json`
-- Auditoria mais recente: `reverse_engineering/validation/reconstructed/ftmmod/attestation/static_audit_20261030_r7.json`
+- Auditoria mais recente: `reverse_engineering/validation/reconstructed/ftmmod/attestation/static_audit_20261030_r8.json`
 
 Os nove mapeamentos ainda precisam de revisão independente antes de declarar o driver estaticamente concluído. Nenhum status de função foi promovido; o que foi atualizado é somente o binário curado, após os gates de build e paridade. Não declarar equivalência funcional completa sem a revisão e a validação de hardware.
