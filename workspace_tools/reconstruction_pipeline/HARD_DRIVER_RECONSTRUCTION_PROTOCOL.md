@@ -79,6 +79,50 @@ kernel alvo quando esses campos existirem. Se houver manifesto de alvo, um
 divergencia marca `SOURCE_INPUT_MISMATCH` e bloqueia promocao; nao force
 `LOCALVERSION` para ocultar a diferenca.
 
+Para o NX809J, use a cadeia fixada em `kernel_development/config/target_kernel.json`:
+
+1. `verify_target_kernel_image.py` confere o SHA-256 da `Image` publicada e o
+   `UTS_RELEASE` embutido antes de aceitar o sufixo de release.
+2. `prepare_target_kernel_volume.py` cria um clone limpo no volume Docker e
+   valida commit, remoto, `.config`, `Module.symvers`, `localversion`, imagem e
+   ID do container. O arquivo `localversion.nx809j-target` e uma entrada
+   versionada, derivada do `UTS_RELEASE` verificado; nao altere
+   `CONFIG_LOCALVERSION` nem use um override avulso de ambiente.
+3. A preparacao Rust deve usar `bindgen 0.69.5` e o SHA fixado no manifesto.
+   O `bindgen 0.66.1` da imagem pode reescrever o texto de versao no `.config`
+   e falhar com `InteriorNul`; nao aceite um `.config` alterado.
+4. Cada build limpo prepara/usa um objeto `O=` separado em volume Docker. O
+   `modpost` gera `.vmlinux.protected-exports.c`; compilar com a fonte montada
+   somente para leitura e sem `O=` falha, enquanto gravar na fonte contamina o
+   input. Preserve a fonte somente para leitura e mantenha os ciclos isolados.
+
+Instalacao CLI do bindgen pinado, quando o volume auxiliar ainda nao existir:
+
+```bash
+docker volume create nx809j_bindgen_0695
+docker run --rm \
+  -v nx809j_bindgen_0695:/work/bindgen \
+  -v nubia_sm8850_kernel_toolchains:/work/toolchains:ro \
+  -e PATH=/work/toolchains/rust-1.82.0/bin:/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  -e CARGO_HOME=/tmp/nx809j-bindgen-cargo \
+  nubia-sm8850-kernel-builder:latest bash -lc \
+  'cargo install bindgen-cli --version 0.69.5 --locked --root /work/bindgen'
+```
+
+Depois de baixar a `Image` do release fixado, valide-a e prepare um novo volume
+com nomes novos; o preparador recusa sobrescrever volumes existentes:
+
+```bash
+python workspace_tools/reconstruction_pipeline/verify_target_kernel_image.py \
+  --image-file /caminho/para/Image
+python workspace_tools/reconstruction_pipeline/prepare_target_kernel_volume.py \
+  --seed-source-volume nubia_sm8850_kernel_src_nx809j_release_20260711 \
+  --source-volume nubia_sm8850_kernel_src_nx809j_oout_YYYYMMDD \
+  --bindgen-volume nx809j_bindgen_0695 \
+  --kernel-image-file /caminho/para/Image \
+  --output reverse_engineering/validation/kernel_source/target_kernel_source_YYYYMMDD.json
+```
+
 ### H1 - decompor por dependencia e observaveis
 
 Use ondas callee-first e trate cada SCC como uma unidade. Produza MP0-MP6 antes

@@ -271,9 +271,13 @@ def probe_docker_kernel_source(
     image: str,
     image_id_expected: str | None,
     source_volume: str,
+    toolchain_volume: str,
+    bindgen_volume: str,
+    clang_revision: str,
     target_kernel: dict[str, Any],
 ) -> dict[str, Any]:
     """Record the mounted kernel identity and compare it with target evidence."""
+    source_provenance = target_kernel.get("source_provenance", {})
     probe_code = """
 import hashlib
 import json
@@ -290,19 +294,42 @@ def digest(path):
     except OSError:
         return None
 
+source_root = pathlib.Path("/work/src/kernel")
+common = source_root / "kernel_platform/common"
+build_output = source_root / ".codex-kbuild/identity"
+build_inputs = source_root / "target_build_inputs"
+localversion_rel = "kernel_platform/common/localversion.nx809j-target"
+bindgen = pathlib.Path("/work/bindgen/bin/bindgen")
+clang = pathlib.Path("/work/toolchains/__CLANG_REVISION__/bin/clang.real")
+rustc = pathlib.Path("/work/toolchains/rust-1.82.0/bin/rustc")
+clang_version = run([str(clang), "--version"])
+rust_toolchain = run([str(rustc), "--version"])
+
 print(json.dumps({
-    "source_head": run(["git", "rev-parse", "HEAD"]),
-    "source_repository": run(["git", "config", "--get", "remote.origin.url"]),
-    "kernel_release": run(["make", "-s", "kernelrelease"]),
-    "config_sha256": digest(".config"),
-    "module_symvers_sha256": digest("Module.symvers"),
+    "source_head": run(["git", "-C", str(source_root), "rev-parse", "HEAD"]),
+    "source_repository": run(["git", "-C", str(source_root), "config", "--get", "remote.origin.url"]),
+    "kernel_release": run(["make", "-s", "-C", str(common), f"O={build_output}", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", "kernelrelease"]),
+    "config_sha256": digest(build_output / ".config"),
+    "module_symvers_sha256": digest(build_output / "Module.symvers"),
+    "localversion_sha256": digest(common / "localversion.nx809j-target"),
+    "bindgen_version": run([str(bindgen), "--version"]),
+    "bindgen_sha256": digest(bindgen),
+    "clang_revision": "__CLANG_REVISION__",
+    "clang_version": clang_version.splitlines()[0] if clang_version else None,
+    "clang_binary_sha256": digest(clang),
+    "rust_toolchain": rust_toolchain,
+    "rustc_sha256": digest(rustc),
 }))
 """
+    probe_code = probe_code.replace("__CLANG_REVISION__", clang_revision)
     probe_command = command_record(
         [
             "docker", "run", "--rm",
             "-v", f"{source_volume}:/work/src:ro",
-            "-w", "/work/src/kernel/kernel_platform/common",
+            "-v", f"{toolchain_volume}:/work/toolchains:ro",
+            "-v", f"{bindgen_volume}:/work/bindgen:ro",
+            "-e", "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w", "/work/src/kernel",
             image, "python3", "-c", probe_code,
         ],
         timeout=300,
@@ -326,6 +353,12 @@ print(json.dumps({
     observed["docker_image_id"] = image_id
 
     comparisons = {
+        "source_head": (
+            source_provenance.get("commit"), observed.get("source_head")
+        ),
+        "source_repository": (
+            source_provenance.get("repository"), observed.get("source_repository")
+        ),
         "kernel_release": (
             target_kernel.get("kernel_release"), observed.get("kernel_release")
         ),
@@ -335,6 +368,32 @@ print(json.dumps({
         "module_symvers_sha256": (
             target_kernel.get("module_symvers_sha256"),
             observed.get("module_symvers_sha256"),
+        ),
+        "localversion_sha256": (
+            source_provenance.get("localversion_asset_sha256"),
+            observed.get("localversion_sha256"),
+        ),
+        "bindgen_version": (
+            target_kernel.get("bindgen_version"),
+            observed.get("bindgen_version", "").removeprefix("bindgen "),
+        ),
+        "bindgen_sha256": (
+            target_kernel.get("bindgen_sha256"), observed.get("bindgen_sha256")
+        ),
+        "clang_revision": (
+            target_kernel.get("toolchain"), observed.get("clang_revision")
+        ),
+        "clang_version": (
+            target_kernel.get("clang_version"), observed.get("clang_version")
+        ),
+        "clang_binary_sha256": (
+            target_kernel.get("clang_binary_sha256"), observed.get("clang_binary_sha256")
+        ),
+        "rust_toolchain": (
+            target_kernel.get("rust_toolchain"), observed.get("rust_toolchain")
+        ),
+        "rustc_sha256": (
+            target_kernel.get("rustc_sha256"), observed.get("rustc_sha256")
         ),
         "docker_image_id": (image_id_expected, image_id),
     }
@@ -543,7 +602,9 @@ def build_twice(
     image: str,
     source_volume: str,
     toolchain_volume: str,
+    bindgen_volume: str,
     clang_revision: str,
+    target_kernel: dict[str, Any] | None = None,
     parallelism: int = 8,
 ) -> tuple[dict[str, Any], Path | None, list[str]]:
     errors: list[str] = []
@@ -552,7 +613,12 @@ def build_twice(
         shutil.rmtree(work_dir)
     work_dir.mkdir(parents=True)
     toolchain_bin = f"/work/toolchains/{clang_revision}/bin"
+    bindgen_bin = "/work/bindgen/bin"
+    kernel_source = "/work/src/kernel/kernel_platform/common"
+    separate_objtree = bool(target_kernel and target_kernel.get("source_provenance"))
+    expected_release = target_kernel.get("kernel_release") if target_kernel else None
     commands: dict[str, Any] = {}
+    kernel_output_volumes: dict[str, str] = {}
     source_epoch = 946684800
 
     def clean_build(cycle: str, command_prefix: str) -> tuple[Path, dict[str, Any]]:
@@ -570,19 +636,99 @@ def build_twice(
                 path.touch()
                 os.utime(path, (source_epoch, source_epoch))
         container_dir = f"/work/validation/{driver}/{cycle}"
-        base = [
+        kernel_output_volume: str | None = None
+        container_kernel_out = "/work/kernel_out"
+        if separate_objtree:
+            volume_key = hashlib.sha256(
+                f"{work_root.resolve()}\0{driver}\0{cycle}".encode("utf-8")
+            ).hexdigest()[:12]
+            kernel_output_volume = f"codex-kbuild-{driver[:24]}-{cycle[-1]}-{volume_key}"
+            kernel_output_volumes[cycle] = kernel_output_volume
+            commands[f"create_kernel_output_volume_{command_prefix}"] = command_record(
+                ["docker", "volume", "create", kernel_output_volume], timeout=60
+            )
+            if commands[f"create_kernel_output_volume_{command_prefix}"]["returncode"] != 0:
+                errors.append(f"could not create kernel output volume for {cycle}")
+                return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
+        path_value = (
+            f"{bindgen_bin}:{toolchain_bin}:/work/toolchains/rust-1.82.0/bin"
+            ":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        )
+        if separate_objtree:
+            prepare_lines = [
+                "set -eu",
+                f"S={kernel_source}",
+                f"O={container_kernel_out}",
+                "I=/work/src/kernel/.codex-kbuild/identity",
+                'make -s -C "$S" O="$O" ARCH=arm64 mrproper',
+                'mkdir -p "$O"',
+                'cp -a "$I/." "$O/"',
+                'cmp "$O/.config" "$I/.config"',
+                'cmp "$O/Module.symvers" "$I/Module.symvers"',
+            ]
+            if expected_release and re.fullmatch(r"[A-Za-z0-9.+_-]+", expected_release):
+                prepare_lines.append(
+                    'test "$(make -s -C "$S" O="$O" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)" = '
+                    f'"{expected_release}"'
+                )
+            prepare_command = [
+                "docker", "run", "--rm",
+                "-v", f"{source_volume}:/work/src:ro",
+                "-v", f"{toolchain_volume}:/work/toolchains:ro",
+                "-v", f"{bindgen_volume}:/work/bindgen:ro",
+                "-v", f"{kernel_output_volume}:/work/kernel_out",
+                "-v", f"{work_root}:/work/validation",
+                "-e", f"PATH={path_value}",
+                "-e", "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+                "-e", "KBUILD_BUILD_USER=codex",
+                "-e", "KBUILD_BUILD_HOST=reproducible",
+                "-w", "/work/src/kernel",
+                image, "bash", "-lc", "\n".join(prepare_lines),
+            ]
+            commands[f"prepare_{command_prefix}"] = command_record(prepare_command)
+            if commands[f"prepare_{command_prefix}"]["returncode"] != 0:
+                errors.append(f"kernel output-tree preparation failed for {cycle}")
+                commands[f"clean_{command_prefix}"] = {
+                    "argv": [], "returncode": commands[f"prepare_{command_prefix}"]["returncode"],
+                    "stdout": "", "stderr": "skipped because kernel output-tree preparation failed",
+                }
+                commands[f"build_{command_prefix}"] = dict(commands[f"clean_{command_prefix}"])
+                return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
+        docker_prefix = [
             "docker", "run", "--rm",
             "-v", f"{source_volume}:/work/src:ro",
             "-v", f"{toolchain_volume}:/work/toolchains:ro",
             "-v", f"{work_root}:/work/validation",
-            "-e", f"PATH={toolchain_bin}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "-w", "/work/src/kernel/kernel_platform/common",
-            image,
-            "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
+        ]
+        if separate_objtree:
+            docker_prefix.extend(
+                [
+                    "-v", f"{bindgen_volume}:/work/bindgen:ro",
+                    "-v", f"{kernel_output_volume}:/work/kernel_out",
+                    "-e", f"PATH={path_value}",
+                    "-e", "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+                    "-e", "KBUILD_BUILD_USER=codex",
+                    "-e", "KBUILD_BUILD_HOST=reproducible",
+                    "-w", "/work/src/kernel",
+                ]
+            )
+            make_args = [
+                "make", "-C", kernel_source, f"O={container_kernel_out}",
+                "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
+            ]
+        else:
+            docker_prefix.extend(
+                [
+                    "-e", f"PATH={toolchain_bin}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                    "-w", "/work/src/kernel/kernel_platform/common",
+                ]
+            )
+            make_args = ["make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}"]
+        base = docker_prefix + [image] + make_args + [
             (
                 f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"
                 f" -fdebug-prefix-map={container_dir}=/zte_tpd"
-            ),
+            )
         ]
         if (cycle_dir / "vendor.Module.symvers").is_file():
             base.append(f"KBUILD_EXTRA_SYMBOLS={container_dir}/vendor.Module.symvers")
@@ -608,6 +754,7 @@ def build_twice(
             "work_dir": str(work_dir),
             "cycle_dirs": [str(first_module.parent), str(second_module.parent)],
             "commands": commands,
+            "kernel_output_volumes": kernel_output_volumes,
             "first_build": first,
             "second_build": second,
             "reproducible": reproducible,
@@ -630,6 +777,7 @@ def validate_regular_driver(
     image: str,
     source_volume: str,
     toolchain_volume: str,
+    bindgen_volume: str,
     clang_revision: str,
     parallelism: int,
     target_kernel: dict[str, Any] | None,
@@ -674,6 +822,9 @@ def validate_regular_driver(
                 image=image,
                 image_id_expected=target_kernel.get("docker_image_id"),
                 source_volume=source_volume,
+                toolchain_volume=toolchain_volume,
+                bindgen_volume=bindgen_volume,
+                clang_revision=clang_revision,
                 target_kernel=target_kernel,
             )
             kernel_source_identity["required"] = True
@@ -704,7 +855,9 @@ def validate_regular_driver(
             image=image,
             source_volume=source_volume,
             toolchain_volume=toolchain_volume,
+            bindgen_volume=bindgen_volume,
             clang_revision=clang_revision,
+            target_kernel=target_kernel,
             parallelism=parallelism,
         )
         errors.extend(build_errors)
@@ -859,6 +1012,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
     parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
+    parser.add_argument("--bindgen-volume", default="nx809j_bindgen_0695")
     parser.add_argument("--clang-revision", default="clang-r536225")
     parser.add_argument(
         "--parallelism",
@@ -946,6 +1100,7 @@ def main() -> int:
                 image=args.image,
                 source_volume=args.source_volume,
                 toolchain_volume=args.toolchain_volume,
+                bindgen_volume=args.bindgen_volume,
                 clang_revision=args.clang_revision,
                 parallelism=args.parallelism,
                 target_kernel=target_kernel,
