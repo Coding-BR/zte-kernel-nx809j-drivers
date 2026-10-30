@@ -1,11 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 127 current source revisions have source-hash-bound passing automated core reports, and 33 functions remain `NOT_STARTED` without source files.
+Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 125 current source revisions have source-hash-bound passing automated core reports, and 33 functions remain `NOT_STARTED` without source files.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with current source-hash-bound core attestations: 127
+- Candidate source functions with current source-hash-bound core attestations: 125
+- awrw_show and awrw_store now carry a separate hardening deviation; earlier exact-reconstruction reports are historical and do not attest these sources.
 - Functions still not started without source files: 33
 - Mapped candidate sources awaiting current-hash core gates: 0
 - Whole-driver semantic equivalence: not established

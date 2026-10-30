@@ -40,6 +40,7 @@ ssize_t awrw_store(struct device *dev, struct device_attribute *attr,
 	struct aw_haptic *haptic;
 	u8 *private_data;
 	u8 *data;
+	u8 *old_data;
 	struct i2c_client *client;
 	ssize_t result;
 	u32 expected_len;
@@ -88,22 +89,27 @@ ssize_t awrw_store(struct device *dev, struct device_attribute *attr,
 		goto out;
 	}
 
+	mutex_lock((struct mutex *)(private_data + 0x248));
 	mode_snapshot = field_mode;
 	barrier();
-	data = *(u8 **)(private_data + 0x530);
+	data = kmalloc(field_count, GFP_KERNEL);
+	if (data == NULL) {
+		result = -ENOMEM;
+		goto out_unlock;
+	}
+	old_data = *(u8 **)(private_data + 0x530);
 	barrier();
 	*(u32 *)(private_data + 0x52c) = count_snapshot;
 	*(u32 *)(private_data + 0x528) = mode_snapshot;
-	if (data != NULL)
-		kfree(data);
-	haptic = (struct aw_haptic *)(private_data - 0xa8);
-	data = kmalloc(field_count, GFP_KERNEL);
 	*(u8 **)(private_data + 0x530) = data;
+	if (old_data != NULL)
+		kfree(old_data);
+	haptic = (struct aw_haptic *)(private_data - 0xa8);
 
 	if (field_mode == 1)
 		goto read_mode;
 	if (field_mode != 0)
-		goto out;
+		goto out_unlock;
 
 	guard_count = *(volatile u32 *)&field_count;
 	expected_len = guard_count * 5U;
@@ -111,7 +117,7 @@ ssize_t awrw_store(struct device *dev, struct device_attribute *attr,
 		printk(KERN_ERR "[%s][%04d]%s: param error\n",
 		       "haptic_hv", 0xc79, "awrw_store");
 		result = -ERANGE;
-		goto out;
+		goto out_unlock;
 	}
 	if (guard_count != 0) {
 		index = 0;
@@ -124,7 +130,7 @@ ssize_t awrw_store(struct device *dev, struct device_attribute *attr,
 				printk(KERN_ERR "[%s][%04d]%s: param error\n",
 				       "haptic_hv", 0xc81, "awrw_store");
 				result = -ERANGE;
-				goto out;
+				goto out_unlock;
 			}
 			offset += 5U;
 			data = *(u8 **)(private_data + 0x530);
@@ -133,13 +139,11 @@ ssize_t awrw_store(struct device *dev, struct device_attribute *attr,
 		} while (index < field_count);
 	}
 
-	mutex_lock((struct mutex *)(private_data + 0x248));
 	(void)i2c_w_bytes(haptic, (u8)reg,
 			  *(u8 **)(private_data + 0x530), field_count);
-	goto unlock;
+	goto out_unlock;
 
 read_mode:
-	mutex_lock((struct mutex *)(private_data + 0x248));
 	(*(struct awrw_ops **)(private_data + 0x520))->read_prepare(haptic);
 	(*(struct awrw_ops **)(private_data + 0x520))->read_config(haptic, 0);
 	(*(struct awrw_ops **)(private_data + 0x520))->read_finish(haptic);
@@ -181,7 +185,7 @@ read_mode:
 		printk(KERN_ERR "[%s][%04d]%s: transfer failed(size error).\n",
 		       "haptic_hv", 0x68, "i2c_r_bytes");
 	}
-unlock:
+out_unlock:
 	mutex_unlock((struct mutex *)(private_data + 0x248));
 out:
 	return result;
