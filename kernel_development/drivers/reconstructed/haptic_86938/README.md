@@ -1,13 +1,13 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 121 current source revisions have source-hash-bound passing automated core reports; six mapped candidate sources need a passing report for their current hashes, and 33 functions remain `NOT_STARTED` without source files.
+Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 122 current source revisions have source-hash-bound passing automated core reports; five mapped candidate sources need a passing report for their current hashes, and 33 functions remain `NOT_STARTED` without source files.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with current source-hash-bound core attestations: 121
+- Candidate source functions with current source-hash-bound core attestations: 122
 - Functions still not started without source files: 33
-- Mapped candidate sources awaiting current-hash core gates: 6
+- Mapped candidate sources awaiting current-hash core gates: 5
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
 - Module promotion: not authorized
@@ -54,7 +54,7 @@ The counts above were recomputed by matching each passing report's input-manifes
 
 - aw8693x_auto_bst_enable: KCFI ID `0x1d0adf6e`; all eight automated core gates pass. The C candidate matches the stock 52-byte body and relocation; normalized Ghidra C and P-Code match. It stores the input byte at `haptic + 0x18` and updates bit 4 of register `0x08`. The ASan/UBSan host harness rejects five seeded mutants. Candidate module SHA-256: `881f37a8a08ac6af385dec4eb44dd429db180d6a650457be941323167b8d2905`. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_auto_bst_enable_20261029/README.md)
 - aw8693x_vbat_mode_config: stock/candidate bodies match exactly at 13 AArch64 instructions (52 bytes), including the i2c_w_bits relocation; KCFI ID is 0x1d0adf6e. It writes value 0x40 to register 0x4c only when the low input byte equals 1; otherwise it writes zero. The host ASan/UBSan harness passes the baseline and rejects five mutants. Both clean Docker cycles produced module SHA-256 6486da9e83b3244623e823f8908938879c30fdf5ea323d0be6bb4627166a2407. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_vbat_mode_config_20261029/README.md)
-- aw8693x_set_wav_loop: stock/candidate bodies match exactly at 16 AArch64 instructions (64 bytes), including the i2c_w_bits relocation; KCFI ID is 0x7b877e65. Bit 0 of index selects mask 0xfffffff0 or 0xffffff0f; the register is ((index >> 1) & 0x7f) + 0x12. The pinned oracle tested 504 signatures and matched byte aliases for both arguments. The ASan/UBSan harness passes its baseline and rejects five mutants. Both clean Docker cycles produced module SHA-256 64b3d860d643d8f216e05701cd7e3bf6f3f03c87fff02af54546afdcfd938e6c. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_wav_loop_20261029/README.md)
+- aw8693x_set_wav_loop: stock/candidate bodies match exactly at 16 AArch64 instructions (64 bytes), including the `i2c_w_bits` relocation; KCFI ID is `0x7b877e65`. Bit 0 of the index selects mask `0xfffffff0` or `0xffffff0f`; the register is `((index >> 1) & 0x7f) + 0x12`. The pinned oracle tested 504 signatures and matched byte aliases for both arguments; the ASan/UBSan harness passes its baseline and rejects five mutants. A fresh source-hash-bound run passes all eight core gates. Candidate module SHA-256: `abf59d499834b0909141b4256c09a4c0ef4cb14fab2b41c5e069b30da4f1a948`. [Current attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_wav_loop_refresh_20261030/README.md)
 
 - aw8693x_set_wav_seq: KCFI ID 0x7b877e65; all eight automated core gates pass. The candidate matches the stock 88-byte body across 22 AArch64 instructions, including i2c_w_bytes and stack-check relocations. The byte-sized index type fixes the initial KCFI mismatch. Both clean Docker cycles produced module SHA-256 3e0e035ba958363670d1d87c22cdb948e64b23929395dae6c540ca899da3b937. Fresh Ghidra normalized C and P-Code match; the ASan/UBSan harness passes six boundary cases and rejects four seeded mutants. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_wav_seq_20261029/README.md)
 
@@ -103,9 +103,9 @@ The counts above were recomputed by matching each passing report's input-manifes
 - get_ram_num: locks the RAM mutex, invokes the stock operations-table callbacks with matching KCFI callsite IDs, computes/stores the RAM count, logs it, and unlocks. Strict Joern passes. The linked candidate has 116 instructions/464 bytes versus 115/460 in stock; the remaining difference is documented in its assembly comparison. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_get_ram_num_20261029/README.md)
 - aw8693x_ram_get_f0: exact stock/candidate body match at 240 instructions and 960 bytes with matching relocations, KCFI, Joern, Docker reproducibility, and P-Code operation shape. Normalized Ghidra C differs, so this target uses an explicit assembly-only static attestation and does not claim normalized-C equivalence. Candidate module SHA-256 `b710cfc390ef2758a80f939646a17d2375c4188afe78418bca9ccc5cc46c38c2`. [Core report](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/ram_get_f0_20261029/core_final_v3/hard_protocol_report.json)
 
-The latest source-bound core process reconstructed `seq_show`; all required static gates pass, including exact assembly, relocation, KCFI, fresh Ghidra C/P-Code, and two reproducible Docker builds. `seq_store` and `loop_store` also pass the same core gates. Six other source files need fresh gates against their current hashes. No candidate module has been promoted, and the whole-driver audit remains incomplete.
+The latest source-bound core process refreshed `aw8693x_set_wav_loop`; all required static gates pass, including exact assembly, relocation, KCFI, fresh Ghidra C/P-Code, and two reproducible Docker builds. `seq_show` and `seq_store` also pass the same core gates. Five other source files need fresh gates against their current hashes. No candidate module has been promoted, and the whole-driver audit remains incomplete.
 
-The function-scoped gates do not authorize whole-driver promotion: 33 functions still lack source files, six mapped candidates need current-hash gates, and complete target-kernel identity and hardware validation remain open. The whole-driver audit is incomplete. No candidate module has been promoted.
+The function-scoped gates do not authorize whole-driver promotion: 33 functions still lack source files, five mapped candidates need current-hash gates, and complete target-kernel identity and hardware validation remain open. The whole-driver audit is incomplete. No candidate module has been promoted.
 
 ## Remaining stock evidence
 
