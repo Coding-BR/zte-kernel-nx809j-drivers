@@ -28,6 +28,14 @@ CMP_RE = re.compile(
     re.IGNORECASE,
 )
 SELF_BRANCH_RE = re.compile(r"^0x[0-9a-f]+\s+<(?P<name>[^+>]+)\+(?P<offset>0x[0-9a-f]+)>$", re.IGNORECASE)
+RELOCATION_RE = re.compile(r"R_AARCH64_(?:CALL26|JUMP26)\s+(?P<target>[^\s]+)", re.IGNORECASE)
+SYMBOL_TARGET_RE = re.compile(r"<(?P<target>[^>]+)>")
+DIRECT_BRANCHES = {"b", "bl", "cbz", "cbnz", "tbz", "tbnz"}
+
+
+def is_direct_branch(mnemonic: str) -> bool:
+    mnemonic = mnemonic.lower()
+    return mnemonic in DIRECT_BRANCHES or mnemonic.startswith("b.")
 
 
 def sha256_file(path: Path) -> str:
@@ -45,18 +53,41 @@ def read_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def read_instructions(path: Path) -> list[dict[str, str]]:
+def read_instructions(path: Path, function: str) -> list[dict[str, str]]:
     instructions: list[dict[str, str]] = []
+    pending_branch: dict[str, str] | None = None
     for line in path.read_text(encoding="utf-8").splitlines():
         match = INSTRUCTION_RE.match(line)
-        if not match:
-            continue
-        instructions.append(
-            {
+        if match:
+            instruction = {
                 key: value or ""
                 for key, value in match.groupdict().items()
             }
-        )
+            instruction["branch_target"] = ""
+            if is_direct_branch(instruction["mnemonic"]):
+                target_match = SYMBOL_TARGET_RE.search(instruction["operands"])
+                if target_match:
+                    target = target_match.group("target")
+                    self_match = re.fullmatch(
+                        r"(?P<name>[^+>]+)\+(?P<offset>0x[0-9a-f]+)",
+                        target,
+                        re.IGNORECASE,
+                    )
+                    if self_match and self_match.group("name") == function:
+                        instruction["branch_target"] = (
+                            "self+" + self_match.group("offset").lower()
+                        )
+                    else:
+                        instruction["branch_target"] = "symbol:" + target.lower()
+                pending_branch = instruction
+            else:
+                pending_branch = None
+            instructions.append(instruction)
+            continue
+        relocation = RELOCATION_RE.search(line)
+        if relocation and pending_branch is not None:
+            pending_branch["branch_target"] = "symbol:" + relocation.group("target").lower()
+            pending_branch = None
     return instructions
 
 
@@ -69,11 +100,25 @@ def parse_compare(instruction: dict[str, str]) -> tuple[str, int] | None:
     return match.group("register").lower(), int(match.group("immediate"), 16)
 
 
-def normalized_branch_target(operands: str) -> tuple[str, str] | None:
+def normalized_branch_target(
+    operands: str, function: str
+) -> tuple[str, str] | None:
     """Keep only a function-relative target when absolute ELF addresses differ."""
-    match = SELF_BRANCH_RE.fullmatch(operands)
+    symbol = SYMBOL_TARGET_RE.search(operands)
+    if symbol is None:
+        return None
+    target = symbol.group("target")
+    match = re.fullmatch(
+        r"(?P<name>[^+>]+)\+(?P<offset>0x[0-9a-f]+)",
+        target,
+        re.IGNORECASE,
+    )
     if match is not None:
-        return ("self", match.group("offset").lower())
+        if match.group("name") == function:
+            return ("self", match.group("offset").lower())
+        return ("symbol", target.lower())
+    if target:
+        return ("symbol", target.lower())
     return None
 
 
@@ -90,13 +135,14 @@ def classify_pair(
     left_branch: dict[str, str],
     right_cmp: dict[str, str],
     right_branch: dict[str, str],
+    function: str,
 ) -> dict[str, Any] | None:
     left = parse_compare(left_cmp)
     right = parse_compare(right_cmp)
     if left is None or right is None or left[0] != right[0]:
         return None
-    left_target = normalized_branch_target(left_branch["operands"])
-    right_target = normalized_branch_target(right_branch["operands"])
+    left_target = normalized_branch_target(left_branch["operands"], function)
+    right_target = normalized_branch_target(right_branch["operands"], function)
     if left_branch["operands"] == right_branch["operands"]:
         branch_target: tuple[str, str] | str = left_branch["operands"]
     elif left_target is not None and left_target == right_target:
@@ -154,7 +200,9 @@ def classify_pair(
 
 
 def classify_instructions(
-    stock: list[dict[str, str]], candidate: list[dict[str, str]]
+    stock: list[dict[str, str]],
+    candidate: list[dict[str, str]],
+    function: str,
 ) -> tuple[bool, list[dict[str, Any]], list[dict[str, Any]]]:
     if len(stock) != len(candidate):
         return False, [], [
@@ -169,6 +217,14 @@ def classify_instructions(
     unresolved: list[dict[str, Any]] = []
     index = 0
     while index < len(stock):
+        if (
+            stock[index]["mnemonic"].lower() == candidate[index]["mnemonic"].lower()
+            and is_direct_branch(stock[index]["mnemonic"])
+            and stock[index].get("branch_target")
+            and stock[index].get("branch_target") == candidate[index].get("branch_target")
+        ):
+            index += 1
+            continue
         if stock[index]["opcode"] == candidate[index]["opcode"]:
             index += 1
             continue
@@ -178,6 +234,7 @@ def classify_instructions(
                 stock[index + 1],
                 candidate[index],
                 candidate[index + 1],
+                function,
             )
             if classified is not None:
                 classified["instruction_indexes"] = [index, index + 1]
@@ -224,7 +281,9 @@ def main() -> int:
     stock_path = Path(result["stock"]["path"]).resolve()
     candidate_path = Path(result["candidate"]["path"]).resolve()
     equivalent, substitutions, unresolved = classify_instructions(
-        read_instructions(stock_path), read_instructions(candidate_path)
+        read_instructions(stock_path, args.function),
+        read_instructions(candidate_path, args.function),
+        args.function,
     )
     checks = result.get("checks", {})
     structural_checks = {
