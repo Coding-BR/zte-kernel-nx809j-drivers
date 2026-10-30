@@ -266,6 +266,98 @@ def command_record(command: list[str], *, timeout: int = 900) -> dict[str, Any]:
     }
 
 
+def probe_docker_kernel_source(
+    *,
+    image: str,
+    image_id_expected: str | None,
+    source_volume: str,
+    target_kernel: dict[str, Any],
+) -> dict[str, Any]:
+    """Record the mounted kernel identity and compare it with target evidence."""
+    probe_code = """
+import hashlib
+import json
+import pathlib
+import subprocess
+
+def run(args):
+    result = subprocess.run(args, capture_output=True, text=True, check=False)
+    return result.stdout.strip() if result.returncode == 0 else None
+
+def digest(path):
+    try:
+        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
+    except OSError:
+        return None
+
+print(json.dumps({
+    "source_head": run(["git", "rev-parse", "HEAD"]),
+    "source_repository": run(["git", "config", "--get", "remote.origin.url"]),
+    "kernel_release": run(["make", "-s", "kernelrelease"]),
+    "config_sha256": digest(".config"),
+    "module_symvers_sha256": digest("Module.symvers"),
+}))
+"""
+    probe_command = command_record(
+        [
+            "docker", "run", "--rm",
+            "-v", f"{source_volume}:/work/src:ro",
+            "-w", "/work/src/kernel/kernel_platform/common",
+            image, "python3", "-c", probe_code,
+        ],
+        timeout=300,
+    )
+    observed: dict[str, Any] = {}
+    probe_error: str | None = None
+    if probe_command["returncode"] == 0:
+        try:
+            observed = json.loads(probe_command["stdout"])
+        except (TypeError, ValueError, json.JSONDecodeError) as error:
+            probe_error = f"Docker source probe returned invalid JSON: {error}"
+    else:
+        probe_error = "Docker source probe failed"
+
+    image_command = command_record(
+        ["docker", "image", "inspect", "--format", "{{.Id}}", image],
+        timeout=60,
+    )
+    image_id = image_command["stdout"].strip() if image_command["returncode"] == 0 else None
+    observed["docker_image"] = image
+    observed["docker_image_id"] = image_id
+
+    comparisons = {
+        "kernel_release": (
+            target_kernel.get("kernel_release"), observed.get("kernel_release")
+        ),
+        "config_sha256": (
+            target_kernel.get("config_sha256"), observed.get("config_sha256")
+        ),
+        "module_symvers_sha256": (
+            target_kernel.get("module_symvers_sha256"),
+            observed.get("module_symvers_sha256"),
+        ),
+        "docker_image_id": (image_id_expected, image_id),
+    }
+    checks = {
+        key: expected is None or (actual is not None and expected == actual)
+        for key, (expected, actual) in comparisons.items()
+    }
+    required = [key for key, (expected, _actual) in comparisons.items() if expected is not None]
+    mismatches = [key for key in required if not checks[key]]
+    passed = probe_error is None and bool(required) and not mismatches
+    return {
+        "passed": passed,
+        "status": "MATCH" if passed else "SOURCE_INPUT_MISMATCH",
+        "probe_error": probe_error,
+        "observed": observed,
+        "expected": {key: value[0] for key, value in comparisons.items()},
+        "checks": checks,
+        "mismatches": mismatches,
+        "probe_command": probe_command,
+        "image_command": image_command,
+    }
+
+
 def find_run(engineering_root: Path, drivers: list[str]) -> Path:
     required = drivers
     candidates = sorted(
@@ -341,22 +433,34 @@ def reconstruction_map_check(
     driver_dir: Path, stock_sha256: str | None, ghidra_names: list[str]
 ) -> tuple[dict[str, Any], list[str]]:
     path = driver_dir / "reconstruction_map.json"
-    errors: list[str] = []
-    result: dict[str, Any] = {"path": str(path), "exists": path.is_file(), "passed": False}
+    traceability_errors: list[str] = []
+    review_errors: list[str] = []
+    result: dict[str, Any] = {
+        "path": str(path),
+        "exists": path.is_file(),
+        "passed": False,
+        "traceability_passed": False,
+        "mapping_review_passed": False,
+    }
     if not path.is_file():
-        return result, ["reconstruction_map.json is missing"]
+        message = "reconstruction_map.json is missing"
+        result.update({"traceability_errors": [message], "mapping_review_errors": [message]})
+        return result, [message]
     try:
         payload = read_json(path)
         mappings = payload.get("mappings")
         if payload.get("stock_sha256") != stock_sha256:
-            errors.append("reconstruction map stock SHA-256 does not match acquired module")
+            traceability_errors.append(
+                "reconstruction map stock SHA-256 does not match acquired module"
+            )
         if not isinstance(mappings, list):
-            errors.append("reconstruction map has no mappings array")
+            traceability_errors.append("reconstruction map has no mappings array")
             mappings = []
         mapped_names: set[str] = set()
+        duplicate_names: set[str] = set()
         for index, mapping in enumerate(mappings):
             if not isinstance(mapping, dict):
-                errors.append(f"mapping {index} is not an object")
+                traceability_errors.append(f"mapping {index} is not an object")
                 continue
             stock_name = mapping.get("stock_function")
             source_file = mapping.get("source_file")
@@ -364,36 +468,60 @@ def reconstruction_map_check(
             status = mapping.get("status")
             evidence = mapping.get("evidence")
             if not all(isinstance(value, str) and value for value in (stock_name, source_file, source_function)):
-                errors.append(f"mapping {index} lacks stock_function/source_file/source_function")
+                traceability_errors.append(
+                    f"mapping {index} lacks stock_function/source_file/source_function"
+                )
                 continue
             if not (driver_dir / source_file).is_file():
-                errors.append(f"mapping {index} refers to missing source file: {source_file}")
+                traceability_errors.append(
+                    f"mapping {index} refers to missing source file: {source_file}"
+                )
+            if stock_name in mapped_names:
+                duplicate_names.add(stock_name)
             if status not in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
-                errors.append(f"mapping {index} is not independently reviewed")
+                review_errors.append(f"mapping {index} is not independently reviewed")
             if not isinstance(evidence, list) or not evidence or not all(
                 isinstance(item, str) and item.strip() for item in evidence
             ):
-                errors.append(f"mapping {index} has no review evidence")
+                review_errors.append(f"mapping {index} has no review evidence")
             mapped_names.add(stock_name)
+        for name in sorted(duplicate_names):
+            traceability_errors.append(f"reconstruction map has duplicate stock function: {name}")
         unmapped = sorted(set(ghidra_names) - mapped_names)
         if unmapped:
-            errors.append(f"reconstruction map leaves {len(unmapped)} Ghidra functions unmapped")
+            traceability_errors.append(
+                f"reconstruction map leaves {len(unmapped)} Ghidra functions unmapped"
+            )
         result.update(
             {
                 "stock_sha256": payload.get("stock_sha256"),
                 "mapped_functions": len(mapped_names),
                 "unmapped_functions": unmapped,
+                "traceability_passed": not traceability_errors,
+                "mapping_review_passed": not review_errors,
+                "traceability_errors": traceability_errors,
+                "mapping_review_errors": review_errors,
             }
         )
     except (OSError, ValueError, json.JSONDecodeError) as error:
-        errors.append(f"invalid reconstruction map: {error}")
-    result["passed"] = not errors
-    return result, errors
+        traceability_errors.append(f"invalid reconstruction map: {error}")
+        review_errors.append("mapping review cannot be evaluated because the map is invalid")
+        result.update(
+            {
+                "traceability_errors": traceability_errors,
+                "mapping_review_errors": review_errors,
+            }
+        )
+    result["traceability_passed"] = not traceability_errors
+    result["mapping_review_passed"] = not review_errors
+    result["passed"] = result["traceability_passed"] and result["mapping_review_passed"]
+    return result, traceability_errors + review_errors
 
 
 PROMOTION_PARITY_KEYS = (
     "aarch64_rel",
     "alias_match",
+    "kernel_source_identity",
     "namespace_match",
     "undefined_symbols_match",
     "vermagic_accepted",
@@ -535,8 +663,36 @@ def validate_regular_driver(
     map_result, map_errors = reconstruction_map_check(
         driver_dir, stock_record.get("sha256"), ghidra["function_names"]
     )
-    checks["function_traceability"] = map_result["passed"]
+    checks["function_traceability"] = map_result["traceability_passed"]
+    checks["mapping_review"] = map_result["mapping_review_passed"]
     warnings.extend(map_errors)
+
+    kernel_source_identity: dict[str, Any] = {"required": target_kernel is not None}
+    if target_kernel is not None:
+        try:
+            kernel_source_identity = probe_docker_kernel_source(
+                image=image,
+                image_id_expected=target_kernel.get("docker_image_id"),
+                source_volume=source_volume,
+                target_kernel=target_kernel,
+            )
+            kernel_source_identity["required"] = True
+        except (OSError, subprocess.SubprocessError, ValueError) as error:
+            kernel_source_identity.update(
+                {
+                    "required": True,
+                    "passed": False,
+                    "probe_error": f"Docker source identity probe failed: {error}",
+                    "mismatches": ["probe"],
+                }
+            )
+        checks["kernel_source_identity"] = kernel_source_identity.get("passed") is True
+        if not checks["kernel_source_identity"]:
+            mismatch_names = ", ".join(kernel_source_identity.get("mismatches", [])) or "probe"
+            errors.append(f"Docker kernel source identity does not match target manifest: {mismatch_names}")
+    else:
+        kernel_source_identity.update({"passed": True, "reason": "no target kernel manifest supplied"})
+        checks["kernel_source_identity"] = True
 
     build_result: dict[str, Any] = {"requested": rebuild, "passed": False}
     fresh_module: Path | None = None
@@ -582,7 +738,10 @@ def validate_regular_driver(
                 "vermagic_match": stock_vermagic_match,
                 "target_vermagic": target_vermagic,
                 "target_vermagic_match": target_vermagic_match,
-                "vermagic_accepted": stock_vermagic_match or target_vermagic_match,
+                "vermagic_accepted": (
+                    target_vermagic_match if target_kernel is not None else stock_vermagic_match
+                ),
+                "kernel_source_identity": kernel_source_identity.get("passed") is True,
                 "alias_match": stock_modinfo.get("alias", []) == fresh_modinfo.get("alias", []),
                 "namespace_match": stock_modinfo.get("import_ns", []) == fresh_modinfo.get("import_ns", []),
                 "undefined_symbols_match": stock_elf["undefined_symbols"] == fresh_elf["undefined_symbols"],
@@ -606,6 +765,7 @@ def validate_regular_driver(
                 metadata["fresh_promoted"] = False
             for key in (
                 "aarch64_rel",
+                "kernel_source_identity",
                 "vermagic_accepted",
                 "alias_match",
                 "namespace_match",
@@ -646,6 +806,7 @@ def validate_regular_driver(
         "candidate": candidate_record,
         "ghidra": ghidra,
         "traceability": map_result,
+        "kernel_source_identity": kernel_source_identity,
         "build": build_result,
         "metadata": metadata,
         "checks": checks,

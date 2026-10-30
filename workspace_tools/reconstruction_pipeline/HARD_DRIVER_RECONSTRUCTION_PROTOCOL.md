@@ -71,6 +71,14 @@ Registre SHA-256 do job, stock, fonte compilavel, mapa, Ghidra, toolchain,
 imagem Docker, Joern lock e Java. A identidade e sempre
 `stock_function@stock_entry`. Um relatorio de outro hash fica obsoleto.
 
+Antes de compilar, registre tambem o `HEAD` e remote do volume-fonte Docker,
+`make -s kernelrelease`, SHA-256 de `.config` e `Module.symvers`, e o ID da
+imagem. Compare release, configuracao, symvers e imagem com o manifesto do
+kernel alvo quando esses campos existirem. Se houver manifesto de alvo, um
+`vermagic` igual ao modulo stock nao substitui essa comparacao. Qualquer
+divergencia marca `SOURCE_INPUT_MISMATCH` e bloqueia promocao; nao force
+`LOCALVERSION` para ocultar a diferenca.
+
 ### H1 - decompor por dependencia e observaveis
 
 Use ondas callee-first e trate cada SCC como uma unidade. Produza MP0-MP6 antes
