@@ -656,9 +656,9 @@ def build_command_plan(
             run_root_path = Path(str(run_root))
             if not run_root_path.is_absolute():
                 run_root_path = engineering_root / run_root_path
-            docker[ docker.index("--strict"):docker.index("--strict") ] = [
+            docker.extend([
                 "--run-root", str(run_root_path.resolve()),
-            ]
+            ])
     slice_config = joern_config.get("slice", {})
     slice_mode = slice_config.get("mode", "off")
     slice_command: list[str] | None = None
