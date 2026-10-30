@@ -1,19 +1,24 @@
-# get_ram_num current-source attestation
+# `get_ram_num` current-source attestation
 
-Stock identity: `get_ram_num@0010b648`, 460 bytes (115 AArch64 instructions). Current source SHA-256: `a2a1035fe5596a4b82e7d2e91d9f689ab3d1893de3278f9d2648f93b7d70077a`.
+Stock identity: `get_ram_num@0010b648`, 460 bytes (115 AArch64 instructions). Current candidate source SHA-256: `a2a1035fe5596a4b82e7d2e91d9f689ab3d1893de3278f9d2648f93b7d70077a`.
 
-## Diagnosis and correction
+## Diagnosis
 
-The older `get_ram_num` report was bound to an earlier source revision and recorded a 116-instruction/464-byte candidate. The current Docker-built candidate initially had the correct 115-instruction size but differed in the flag-test/error-path layout and in scheduling two first-`printk` arguments. The compiler had not been told that the inline branch could leave the normal path, and it hoisted argument setup across the arithmetic sequence.
+The function source had not changed: its current SHA-256 already matched the earlier attestation. The stale binding was in the surrounding evidence. `core_final_v2` captured an older whole-driver source inventory and reconstruction-map hash; since then, other candidate sources, the Makefile, and the map changed. Its candidate module (`53ced20c…`) and Ghidra export (129 functions, `get_ram_num` at `00104658`) therefore no longer represented the current driver tree.
 
-The source now models the cold error edge with `asm goto`, preserves the stock flag-load/zero-store/test order, and constrains only the two argument registers whose scheduling differed. The current stock and candidate function bodies now match exactly.
+The first fresh protocol run rebuilt the current tree in Docker and correctly stopped because the supplied Ghidra export did not match that new module. I preserved the old artifacts, exported the new reproducible module through Ghidra 12.1.2, and reran the protocol with the refreshed export. The candidate source itself did not need another code change.
 
-## Result
+## Verified
 
-All six required function-scoped core gates pass. The fresh Ghidra semantic comparison also passes strict normalized-C and P-Code checks; no decompiler fallback was used. Stock and candidate each contain 115 instructions / 460 bytes, with matching section and relocations. There is no unambiguous standalone stock KCFI preamble associated with this entry, so its standalone KCFI gate is `NOT_REQUIRED`; the exact assembly comparison covers the callback callsites in the function body.
+- `core_final_v4_execution` passed all required gates. `core_final_v5_execution` repeated the checks against the final map and passed `MAP_IDENTITY` as well.
+- Stock and candidate match exactly: 115 AArch64 instructions, 460 bytes, identical section and relocations.
+- Strict normalized Ghidra C and P-Code comparisons pass without a decompiler fallback. The fresh export contains 132 functions; `get_ram_num` is at `00104850` and remains 460 bytes.
+- Two clean Docker builds produced byte-identical modules with SHA-256 `87bc5d418e961f591706261ef74290a4e9fa7b296b851c0b52e909d12e5b44ce` (5,906,088 bytes).
+- Joern scoped analysis and usage slice pass. The final input manifest binds the current candidate source and reconstruction map.
+- KCFI entry-preamble checking is `NOT_REQUIRED`: no unambiguous standalone stock preamble belongs to this entry. The complete function body and its indirect callback callsites are covered by the exact assembly comparison.
 
-Two clean Docker builds produced byte-identical module SHA-256 `53ced20c84cae9214caa6beffb7d20da29ef48f72162a250cd469144f0fa46fa` (5,821,048 bytes). The preserved module is [candidate_module/haptic_86938.ko](candidate_module/haptic_86938.ko). The full core report is [core_final_v2/hard_protocol_report.json](core_final_v2/hard_protocol_report.json), with assembly evidence in [comparison.json](core_final_v2/assembly/comparison.json) and Ghidra evidence in [semantic_comparison.json](core_final_v2/ghidra/semantic_comparison.json). Ghidra export provenance is recorded in [ghidra_candidate_export_run.json](ghidra_candidate_export_run.json).
+Reports: [final core report](core_final_v5_execution/hard_protocol_report.json), [assembly comparison](core_final_v4_execution/assembly/comparison.json), [Ghidra semantic comparison](core_final_v4_execution/ghidra/semantic_comparison.json), [fresh Ghidra export provenance](ghidra_candidate_export_run_v2.json).
 
-## Scope and limits
+## Status and limits
 
-This result establishes function-scoped static correspondence for the current source hash. It does not establish whole-driver equivalence or hardware behavior. The combined candidate remains unpromoted; 33 stock functions still have no reconstructed source, and the broader module audit is incomplete.
+The map retains `candidate_under_static_validation` and `PROVEN_OFFLINE_EXACT`. Whole-driver equivalence and hardware behavior are not established, and module promotion remains unauthorized.
