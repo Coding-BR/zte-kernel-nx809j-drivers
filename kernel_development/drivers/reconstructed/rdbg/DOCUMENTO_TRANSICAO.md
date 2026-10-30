@@ -1,9 +1,19 @@
 # Transição — rdbg
 
-A reconstrução permanece INCOMPLETE. O mapa agora cobre as 8 funções stock com fontes candidatas. `init_module@00101638` foi reconstruída em C comum e passou os oito gates core: assembly/relocações, Ghidra C/P-Code, KCFI, Joern, identidade das entradas e build Docker reproduzível.
+## Estado
 
-O problema restante está na base do Docker, não no corpo de `init_module`: a imagem monta o volume de kernel no commit `e1ea0289c329` (`build-run-50-202606...`), enquanto o manifesto do aparelho identifica o commit Android Common `f1bdb13583da` e registra outra configuração. O `.config` do volume tem SHA-256 `2ac6f9259bf4d82a2c8944ea0e0f7c562c7be563cec070174109182f59fd2825`, diferente do hash de alvo `b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288`. O `Module.symvers` coincide com o manifesto, mas isso não prova igualdade do kernel nem do `vermagic`.
+A reconstrução permanece **INCOMPLETE**. O mapa contém oito funções stock associadas às fontes C; `init_module@00101638` também passou os oito gates automatizados do protocolo, incluindo comparação de assembly/relocações, Ghidra C/P-Code, KCFI, Joern, identidade das entradas e builds reproduzíveis.
 
-Os dois builds limpos do snapshot `engenharia/curated/rdbg` são reprodutíveis e produzem o mesmo hash. Ainda assim, o `vermagic` gerado é `6.12.23-4k`, diferente do alvo `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k` e do módulo stock `6.12.23-maybe-dirty-4k`. Por isso o auditor não promoveu um `.ko` para a árvore curated. Não force um sufixo de versão para mascarar a diferença.
+## Fonte e rebuild NX809J
 
-Próximos passos: obter e fixar o source/config do kernel alvo; repetir a auditoria completa até atingir paridade de `vermagic`, KMI, aliases e imports; concluir o harness de host, o modelo de estados/lifetime e a revisão independente. A validação de hardware segue pendente. Não carregar este candidato no aparelho.
+A fonte Docker agora está fixada ao repositório `android_kernel_nubia_sm8850_qwjujube`, commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`. A identidade passou para o `.config`, `Module.symvers`, `localversion`, kernelrelease alvo, imagem Docker, Clang r536225, Rust 1.82.0 e bindgen 0.69.5.
+
+Dois builds limpos em árvores `O=` isoladas produziram o mesmo módulo: SHA-256 `7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70`, 781720 bytes. A arquitetura AArch64/REL, a vermagic do kernel alvo, aliases, namespaces e símbolos indefinidos passaram a paridade. A vermagic gravada no stock é `6.12.23-maybe-dirty-4k`; o auditor validou o candidato pela identidade verificada do kernel alvo, cuja vermagic é `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.
+
+O candidato reproduzido foi promovido para `kernel_development/drivers/reconstructed/rdbg/rdbg.ko`. Auditoria: `reverse_engineering/validation/reconstructed/rdbg/attestation/kernel_identity_reaudit_20261030_r2/static_audit_20261030_r2.json`.
+
+O snapshot `engenharia/curated/rdbg` foi sincronizado com a árvore versionada por hash: 16 arquivos de origem, duas atualizações documentais e nenhuma remoção. Dois builds Docker independentes desse snapshot também produziram o SHA `7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70`; o binário verificado foi copiado para `engenharia/curated/rdbg/rdbg.ko`. A sincronização final e o rebuild do snapshot são registrados em `curated_source_sync_final_20261030.json` e `curated_snapshot_rebuild_20261030_final.json`.
+
+## Pendências
+
+A auditoria permanece incompleta porque os oito mapeamentos ainda precisam de revisão independente. Também faltam evidência final do harness de host e lifetime, revisão semântica completa e validação em hardware. Não declarar equivalência funcional total nem carregar este candidato no aparelho.
