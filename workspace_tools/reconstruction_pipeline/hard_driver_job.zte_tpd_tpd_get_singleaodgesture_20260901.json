@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": ["STATEFUL_MEMORY", "CALLBACK_ABI", "COMPILER_SENSITIVE"],
+  "functions": [
+    {
+      "stock_function": "tpd_get_singleaodgesture",
+      "stock_entry": "0012bccc",
+      "source_function": "tpd_get_singleaodgesture",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next912_tpd_get_singleaodgesture_exact_v1/candidate_ghidra",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "Ghidra 12.1.2 marks the imported _printk call as no-return in this relocatable module; the ELF-bounded body and ordered P-Code retain the proven second printk and return.",
+    "fallback_evidence": "tpd_get_singleaodgesture: candidate body 96 bytes, P-Code includes both _printk calls and return; verified by ExtendGhidraFunctionBody.java and direct P-Code comparison."
+  }
+}

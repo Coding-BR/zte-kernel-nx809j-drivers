@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-01T06:24:00+00:00",
+  "driver": "zte_ramdisk_reboot",
+  "stock_export": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock",
+  "candidate_export": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_candidate_20260901",
+  "stock_module": "reference_modules/full_vendor_boot/zte_ramdisk_reboot.ko",
+  "stock_module_sha256": "598d5862b03a7f1fdc60318ca53fb6837716662c591991390e6f946aafb2d740",
+  "candidate_module": "kernel_development/drivers/reconstructed/zte_ramdisk_reboot/zte_ramdisk_reboot.ko",
+  "candidate_module_sha256": "299fc9776b31c692df523b60792151865608c37d44245950b5bddd606a79716c",
+  "candidate_module_size": 225080,
+  "candidate_ghidra_executable_md5": "42209437d488ad1703a178bff3c584f2",
+  "candidate_ghidra_manifest_sha256": "6e20aba9b50a286be5dba6bafe17edc02f8b29f525af2f57d2c4e8555f8f3b09",
+  "stock_ghidra_manifest_sha256": "5b5bf242e708b33994927678008e49429e217469486d650392be69d450808357",
+  "checked_functions": 13,
+  "strict": {
+    "passed_functions": 5,
+    "body_size_passed": 11,
+    "pcode_operation_shape_passed": 9,
+    "normalized_decompiled_c_passed": 6,
+    "failed_functions": [
+      "zte_ramdisk_reboot_write",
+      "zte_check_xbl_log_lines",
+      "extract_sn_info",
+      "zte_ramdisk_reboot_probe",
+      "zte_get_xbl_log_memory_region",
+      "ramdisk_nvmem_show",
+      "init_module",
+      "cleanup_module"
+    ],
+    "passed": false
+  },
+  "authorized_fallbacks": {
+    "passed_functions": 5,
+    "remaining_functions": [
+      "zte_ramdisk_reboot_write",
+      "zte_check_xbl_log_lines",
+      "extract_sn_info",
+      "zte_ramdisk_reboot_probe",
+      "zte_get_xbl_log_memory_region",
+      "ramdisk_nvmem_show",
+      "init_module",
+      "cleanup_module"
+    ],
+    "passed": false
+  },
+  "docker_rebuild_evidence": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_digest": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "kernel_volume": "nubia_sm8850_kernel_src",
+    "toolchain": "clang-r536225",
+    "cycles": [
+      {
+        "cycle": 1,
+        "sha256": "299fc9776b31c692df523b60792151865608c37d44245950b5bddd606a79716c",
+        "size": 225080,
+        "path": "validation/zte_ramdisk_reboot_rebuild_20260901/artifacts/zte_ramdisk_reboot_cycle_1.ko"
+      },
+      {
+        "cycle": 2,
+        "sha256": "299fc9776b31c692df523b60792151865608c37d44245950b5bddd606a79716c",
+        "size": 225080,
+        "path": "validation/zte_ramdisk_reboot_rebuild_20260901/artifacts/zte_ramdisk_reboot_cycle_2.ko"
+      }
+    ],
+    "reproducible": true,
+    "matches_candidate": true
+  },
+  "interpretation": "Static Ghidra/Docker checkpoint only. Docker bitwise reproducibility is confirmed, while the independent Ghidra comparison remains materially incomplete. No promotion or equivalence claim is authorized."
+}

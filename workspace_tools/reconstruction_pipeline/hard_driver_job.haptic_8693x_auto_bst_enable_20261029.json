@@ -1,0 +1,88 @@
+{
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "clang_revision": "clang-r536225",
+    "cycles": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "parallelism": 8,
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+  },
+  "driver": "haptic_86938",
+  "evidence": {
+    "host_harness_kernel_types": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_auto_bst_enable/host_harness/include/linux/types.h",
+      "sha256": "abd3ebf2c8008c55a7f7802a7f5bab3557e233ec6f54419f0e8da6576c627934"
+    },
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_auto_bst_enable/host_harness/harness_result.json",
+      "sha256": "6ee734283d58c7afd2a8d10a4a97b69e902e6507fd32e552f0936dec29036078"
+    },
+    "host_harness_runner": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_auto_bst_enable/host_harness/run_harness.py",
+      "sha256": "283f4b15c022e2422e6b56f25622f9f4465ff33220be62d6ecb44dc1d469c026"
+    },
+    "host_harness_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_auto_bst_enable/host_harness/aw8693x_auto_bst_enable_harness.c",
+      "sha256": "fc1b9b4ec3ebb67478b50e9186d59b075f69b8c39728d88492cc5e98709c60a4"
+    },
+    "kcfi_signature_candidates": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_auto_bst_enable_20261029/pre_candidate/kcfi_signature_candidates.json",
+      "sha256": "047e3bbb0ba1b30c1bc5d05b016a3a24c7a7926c1cae5174df2044df6e856199"
+    },
+    "kcfi_signature_resolution": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_auto_bst_enable_20261029/pre_candidate/kcfi_signature_resolution.json",
+      "sha256": "070b75aa1c4280b3e1f39abea623c00e8557e4074e52ca5ddc010a4eb8265708"
+    },
+    "pre_candidate_packet": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_auto_bst_enable_20261029/pre_candidate/MP0_MP7.json",
+      "sha256": "9cec505f9c17acf91cd3dd0ab43db796df7487b2c1adf390dcc9df315b6346ca"
+    },
+    "stock_function_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0020_aw8693x_auto_bst_enable_00104b40.asm"
+  },
+  "functions": [
+    {
+      "assembly_only": false,
+      "candidate_function": "aw8693x_auto_bst_enable",
+      "kcfi_required": true,
+      "source_function": "aw8693x_auto_bst_enable",
+      "stock_entry": "00104b40",
+      "stock_function": "aw8693x_auto_bst_enable"
+    }
+  ],
+  "ghidra": {
+    "allow_exact_assembly_island_decompiler_fallback": false,
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true
+  },
+  "joern": {
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "candidate_function": "aw8693x_auto_bst_enable",
+      "min_num_calls": 1,
+      "mode": "usages",
+      "parallelism": 1,
+      "source_function": "aw8693x_auto_bst_enable"
+    },
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938"
+  },
+  "paths": {
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_auto_bst_enable_20261029/candidate_ghidra_v1/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko"
+  },
+  "profiles": [
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS",
+    "STATEFUL_MEMORY"
+  ],
+  "schema_version": "1.0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+}

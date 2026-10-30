@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "driver": "gpio_keys_nubia",
+  "stock_sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+  "profiles": ["STATEFUL_MEMORY", "CALLBACK_ABI", "CONCURRENCY_LIFETIME", "HARDWARE_BUS", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "gpio_keys_probe",
+    "stock_entry": "0010071c",
+    "source_function": "gpio_keys_probe",
+    "kcfi_required": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/gpio_keys_nubia",
+    "stock_module": "reference_modules/full_vendor_boot/gpio_keys_nubia.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/gpio_probe_kcfi_v1/ghidra_candidate_20260901/gpio_keys_nubia.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/gpio_keys_nubia/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {"slice": {"mode": "usages", "parallelism": 2, "min_num_calls": 1}},
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "The probe is a 3600-byte relocatable AArch64 function reconstructed as an exact assembly island; Ghidra's C emitter may vary in inferred platform types and bounds checks while the ELF-bounded bytes, relocations, KCFI and ordered P-Code remain authoritative.",
+    "fallback_evidence": "Use the canonical stock decompilation/P-Code, fresh candidate Ghidra export and the exact assembly source. Any fallback must be named and retain body-size, instruction, relocation, KCFI, Joern and host-harness gates."
+  }
+}

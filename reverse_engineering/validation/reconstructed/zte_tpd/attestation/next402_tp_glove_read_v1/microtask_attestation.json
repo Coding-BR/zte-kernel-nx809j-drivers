@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_glove_read",
+  "attestation_id": "next402_tp_glove_read_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_DEAD_LOCAL_STORE_AND_RUNTIME_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "kcfi_indirect_callback_type": "PASS_0x73fc0d79",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "FAIL_DEAD_LOCAL_STORE_SCHEDULE_ONLY",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_SYMBOL_LAYOUT_ONLY",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero without callback when *ppos is nonzero",
+    "load the optional callback from tpd_cdev + 0xe48 and pass struct ztp_device *",
+    "read the glove state from tpd_cdev + 0x8",
+    "log the tp_glove_read label and state value",
+    "format the unsigned state as %u\\n with snprintf size 10",
+    "return the formatted value through simple_read_from_buffer"
+  ],
+  "evidence": {
+    "stock_body_bytes": 240,
+    "candidate_body_bytes": 240,
+    "stock_instruction_count": 60,
+    "candidate_instruction_count": 60,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "indirect_callback_kcfi_type_id": "0x73fc0d79",
+    "candidate_module_sha256": "59c18443e2abef34f7db5e9062ca24bd82285f1545806d7a5f9cdf98ef260495",
+    "candidate_function_assembly_sha256": "57ea917a2b90bd5a49e9275fa42dd1b2f7ea46502d40d90bde769e4f969500e5",
+    "stock_function_assembly_sha256": "fd03526b6ee746caf41ad5e0d5fd936d9667d382a947dedb87b36ed9a16e41ec",
+    "host_cases": 2,
+    "host_repetitions": 2,
+    "host_binary_sha256": "ade40cc51ee2c1d45c4b448029f480de55b2bf3ad44af7bd07058c2fbc8d82ba",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_difference": "The candidate schedules the dead local zero store differently from stock; device and helper call structure matches. Local .rodata symbols have different generated offsets while call relocation kinds are preserved."
+  },
+  "follow_up_required": [
+    "Review the dead local store only if exact opcode schedule parity is required.",
+    "Review local .rodata symbol placement only if exact relocation parity is required.",
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent callback lifetime",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 60-instruction/240-byte AArch64 body, matching function KCFI type and callback/value offset contract, strict Joern with zero unresolved calls, reproducible Docker build, and two-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

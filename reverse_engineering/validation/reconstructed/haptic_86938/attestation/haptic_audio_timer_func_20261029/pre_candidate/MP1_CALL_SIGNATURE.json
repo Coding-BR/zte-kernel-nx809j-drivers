@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "function": "audio_timer_func",
+  "prototype": "enum hrtimer_restart audio_timer_func(struct hrtimer *)",
+  "registration": {
+    "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0068_00108608_haptic_init.c",
+    "observation": "haptic_init initializes the timer at parent+0x520 and stores audio_timer_func in its callback slot at parent+0x548."
+  },
+  "external_calls": [
+    "queue_work_on",
+    "hrtimer_start_range_ns"
+  ],
+  "kcfi_type_id": "0xe3cff753",
+  "confidence": "high; callback registration and candidate KCFI gate will confirm."
+}

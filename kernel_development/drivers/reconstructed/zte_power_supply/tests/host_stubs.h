@@ -107,7 +107,9 @@ struct device {
 	bool wakeup_enabled;
 	bool locked;
 	bool added;
-	u8 reserved[0x390 - 124];
+	u8 reserved_to_release[0x328 - 124];
+	void (*release)(struct device *);
+	u8 reserved[0x390 - 0x330];
 };
 static_assert(sizeof(struct device) == 0x390);
 

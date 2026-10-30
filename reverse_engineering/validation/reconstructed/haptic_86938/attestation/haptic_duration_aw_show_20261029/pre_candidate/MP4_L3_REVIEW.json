@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_aw_show",
+  "claims": [
+    {
+      "claim": "The timer is at driver_data+0x288.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0138_0010d97c_duration_aw_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0141_0010dac4_activate_aw_store.c"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "Inactive timer is displayed as zero; active timer displays remaining nanoseconds divided by 1,000,000.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0138_0010d97c_duration_aw_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0138_duration_aw_show_0010d97c.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "Output is bounded by 4096 bytes and uses the exact format string.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0138_0010d97c_duration_aw_show.c"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "limitations": [
+    "No lock is taken, matching stock.",
+    "The timer may change state between hrtimer_active and __hrtimer_get_remaining; this reconstruction preserves stock behavior and does not claim a stronger snapshot guarantee."
+  ]
+}

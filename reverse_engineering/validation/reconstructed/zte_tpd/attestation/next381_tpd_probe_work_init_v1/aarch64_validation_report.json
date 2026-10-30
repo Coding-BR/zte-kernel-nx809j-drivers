@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "target": "tpd_probe_work_init",
+  "mode": "offline_aarch64_semantic_and_normalized_relocation_comparison",
+  "instruction_count": { "stock": 30, "candidate": 30, "exact": true },
+  "symbol_size": { "stock": 120, "candidate": 120, "exact": true, "delta_bytes": 0 },
+  "section": { "stock": ".text", "candidate": ".text", "match": true },
+  "kcfi_type_id": { "stock": "0xe5c47d60", "candidate": "0xe5c47d60", "match": true },
+  "instruction_sequence": { "normalized_match": true, "comparison": "opcode and control-flow sequence exact" },
+  "callback_resolution": {
+    "stock_relocation": ".text+0x1c0c",
+    "stock_function": "ztp_probe_work",
+    "candidate_symbol": "ztp_probe_work",
+    "normalized_match": true,
+    "evidence": "stock 0019_ztp_probe_work_00108494.asm starts at .text+0x1c0c"
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The separately linked module has different module-local .rodata offsets and exposes ztp_probe_work as a symbol; resolved string contents, tpd_cdev, delayed_work_timer_fn, callback target and init_timer_key relocation roles match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw ELF relocation identity is not byte-level equal across independently linked modules.",
+    "printk and init_timer_key are stubbed in the host harness.",
+    "No smartphone, timer scheduler or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "26e95fae1c2690b20617f4049f1e863d4cc76d0c0926e92cf9677995a506cbbc",
+    "candidate_assembly_sha256": "2bbe3972b3baf2664d312c78eb17c50d4fd6e3f8e661dc41070c6b4a512d3454"
+  }
+}

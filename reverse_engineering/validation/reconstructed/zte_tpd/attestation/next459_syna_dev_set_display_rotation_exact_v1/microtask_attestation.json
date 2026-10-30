@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "microtask": "next459_syna_dev_set_display_rotation_exact_v1",
+  "driver": "zte_tpd",
+  "function": "syna_dev_set_display_rotation",
+  "stock_entry": "00111a30",
+  "status": "OFFLINE_EXACT",
+  "hardware_status": "DEFERRED",
+  "source_sha256": "5820eeae0ae72ac87122208d68e857f529179d15bea3d4969591ba814fb5e24f",
+  "exact_assembly_sha256": "f8d1c71418da2b04702a60930f77a6d33bebad5ed90ace8e8a07faea0a4afd7d",
+  "artifact": {
+    "path": "zte_tpd.ko",
+    "sha256": "676db01b9fd1819b6293bde71f8a7af05cbc0f43792e0b6321815daf3ec69979",
+    "size": 28278928
+  },
+  "gates": {
+    "ghidra_pseudocode_and_pcode": "PASS",
+    "joern_strict": "PASS",
+    "host_asan_ubsan": "PASS",
+    "canonical_docker_two_cycles": "PASS",
+    "aarch64_assembly": "PASS",
+    "kcfi": "PASS"
+  },
+  "joern_review_findings": {
+    "blockers": 0,
+    "parse_problem_count": 0,
+    "unresolved_call_count": 0,
+    "userspace_egress_count": 0
+  },
+  "promotion_claim": false,
+  "source_of_truth": "NX809J stock zte_tpd.ko and its local Ghidra exports",
+  "notes": [
+    "Exact offline function-level parity is established by stock/candidate AArch64 comparison, relocation normalization, KCFI and strict Joern gates.",
+    "The historical C export remains preserved as semantic reference; exact linked Assembly follows stock branch, load and string evidence.",
+    "The stock sequence reads +0x60c before the null branch; this is preserved and documented in the host limitation.",
+    "No smartphone execution was performed; hardware validation remains deferred."
+  ]
+}

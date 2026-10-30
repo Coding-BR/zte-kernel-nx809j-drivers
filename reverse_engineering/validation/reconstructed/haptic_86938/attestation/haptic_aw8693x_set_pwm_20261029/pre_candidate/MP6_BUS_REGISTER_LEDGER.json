@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_pwm",
+  "register_accesses": [
+    {
+      "register": "0x46",
+      "operation": "masked update via i2c_w_bits",
+      "mask": "0xffffff9f",
+      "value_by_mode": {
+        "0": "0x20",
+        "1": "0",
+        "2": "0x40",
+        "3": "0x60"
+      }
+    }
+  ],
+  "bus_calls": [
+    "i2c_w_bits for valid mode only"
+  ],
+  "software_effects": [
+    "diagnostic log for invalid mode"
+  ],
+  "evidence": [
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0015_aw8693x_set_pwm_00104694.asm",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0063_0010722c_i2c_w_bits.c"
+  ]
+}

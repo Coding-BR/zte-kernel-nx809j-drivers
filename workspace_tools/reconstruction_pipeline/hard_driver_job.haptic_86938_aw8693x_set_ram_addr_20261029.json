@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "cycles": 2,
+    "parallelism": 8
+  },
+  "profiles": [
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "kcfi_required": true,
+      "stock_entry": "00105704",
+      "stock_function": "aw8693x_set_ram_addr",
+      "source_function": "aw8693x_set_ram_addr",
+      "candidate_function": "aw8693x_set_ram_addr"
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/candidate_ghidra_v1/haptic_86938.ko"
+  },
+  "ghidra": {
+    "allow_section_address_normalization": true,
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "joern": {
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "slice": {
+      "candidate_function": "aw8693x_set_ram_addr",
+      "source_function": "aw8693x_set_ram_addr",
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1
+    }
+  },
+  "evidence": {
+    "stock_ghidra_decomp": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0029_00105704_aw8693x_set_ram_addr.c",
+      "sha256": "68768099c80714d5a94be6add5d9839ca16fd20a1f5ebfcfa8d6b6f242765921"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0029_00105704_aw8693x_set_ram_addr.jsonl",
+      "sha256": "ad5dfb61e536c3833c23790fb07c7a9dbf3c4439c533f80e55ceb10505fbbc60"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0029_aw8693x_set_ram_addr_00105704.asm",
+      "sha256": "e178da51e96ba4aa4f7975536bc565ba0c96bd1029d8ce141fcac1736b1a9445"
+    },
+    "helper_stock_ghidra_decomp": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0062_00107114_i2c_w_bytes.c",
+      "sha256": "e0733366e6c7e49569159eee3c292fb9a65a772d931866442eff796d9f197dda"
+    },
+    "pre_candidate_packet": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP0_MP7.json",
+      "sha256": "74481238200d2a5f7d1b3c2493376a31c0a7964f7e2373be88daa8cc8d9ef47c"
+    },
+    "mp0_identity": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP0_IDENTITY.json",
+      "sha256": "38ee2956b27c635a08bb6159695a999b28f1dfbfec9b370d3fe3cebd73d44473"
+    },
+    "mp1_signature": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP1_SIGNATURE.json",
+      "sha256": "3c701a24602c480def01882c80e5540d2ec620aca705a75cb7e7a9f7ee012017"
+    },
+    "mp2_effects": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP2_EFFECTS.json",
+      "sha256": "5eba4bfca7a6ddc72d8b58cb6f431fb53b7f58c41b735a3b989995107cde16fc"
+    },
+    "mp3_control_errors": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP3_CONTROL_ERRORS.json",
+      "sha256": "343c541dcab5c095e2c0e57cf1979dc5c042153fee9dac8e231f96d3168c8d03"
+    },
+    "mp4_callback_lifetime": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP4_CALLBACK_LIFETIME.json",
+      "sha256": "2dee7013b38dbaa395562153a10b7d44804f9bc834c8267eb9fc9bd50a0fd577"
+    },
+    "mp5_resource_lifetime": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP5_RESOURCE_LIFETIME.json",
+      "sha256": "4be2b3909419ef5c717dbb2a387dacdb14c790e9b86f2511ee93562d5c4e7f3a"
+    },
+    "mp6_bus_register": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP6_BUS_REGISTER.json",
+      "sha256": "18d4c6a6ca2117a05af38f074023856569cf6463af1876247d3babf5aa4c2508"
+    },
+    "mp7_limits": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/MP7_LIMITS.json",
+      "sha256": "a4050a600c852681ba3f23e4e7dc3e91f79e961686957b13b993c72e598f143f"
+    },
+    "kcfi_signature_candidates": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/kcfi_signature_candidates.json",
+      "sha256": "3e17e60aa13919b70a21cc9ea01d97c89476f750351512fbaf112f5b2199d141"
+    },
+    "kcfi_signature_resolution": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/pre_candidate/kcfi_signature_resolution.json",
+      "sha256": "caa86eedc4df9ad924f6275373c810366fb6665aa04bbdeacb820d7882cdc081"
+    },
+    "host_harness_types": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/host_harness/include/linux/types.h",
+      "sha256": "51bea7b3b0c265c5c848830b0cf8a23d78aa55bc30b58aab9be49241d8a31575"
+    },
+    "host_harness_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/host_harness/aw8693x_set_ram_addr_harness.c",
+      "sha256": "9b4615aaa44d7bdc46fa4e81cbdb7a0ceb2c472008c607b521b1d18d6e704ab4"
+    },
+    "host_harness_runner": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/host_harness/run_harness.py",
+      "sha256": "b192473e6f0618bb55e8d740aafc8bbe5ece621476c1fbfb87b03147a65ae2a1"
+    },
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/host_harness/harness_result.json",
+      "sha256": "efb1ac2490e9ad77fb4286fbd79762664f61405f54866a3f354054fec34a6745"
+    },
+    "candidate_module": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/candidate_module_v1/haptic_86938.ko",
+      "sha256": "9af25b2c8a50eb5053abda0b0868ee663179d4c4443fdc1b97dfcf3a49ce88ee"
+    },
+    "candidate_ghidra_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/candidate_ghidra_v1/haptic_86938.ko/manifest.json",
+      "sha256": "45f522b21051fed514dbd02a19fc9095931e92c711ef323c87adf157dd18729e"
+    },
+    "candidate_ghidra_functions": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/candidate_ghidra_v1/haptic_86938.ko/functions.jsonl",
+      "sha256": "f4dc30cbae39bd384ac0bd248e66eb123fc18af173a1f292fb840ec7578ee681"
+    },
+    "candidate_ghidra_decomp": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/candidate_ghidra_v1/haptic_86938.ko/decompiled/0054_0010214c_aw8693x_set_ram_addr.c",
+      "sha256": "68768099c80714d5a94be6add5d9839ca16fd20a1f5ebfcfa8d6b6f242765921"
+    },
+    "candidate_ghidra_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_ram_addr_20261029/candidate_ghidra_v1/haptic_86938.ko/pcode/0054_0010214c_aw8693x_set_ram_addr.jsonl",
+      "sha256": "8ff4fc501067d113248b59442b4c3773636c99e17d4318c340ae1be8cdd6b031"
+    }
+  }
+}

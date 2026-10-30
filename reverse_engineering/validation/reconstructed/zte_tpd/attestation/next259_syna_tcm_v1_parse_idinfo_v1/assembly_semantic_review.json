@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "259_syna_tcm_v1_parse_idinfo",
+  "stock_entry": "0011f6d0",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0258_syna_tcm_v1_parse_idinfo_0011f6d0.asm",
+      "sha256": "31aee662a17fdb94e6cf4d778786f225eb56d69462f06f555d35762d1074cf8a"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next259_syna_tcm_v1_parse_idinfo_v1/candidate_assembly/parse_idinfo_candidate.s",
+      "sha256": "e2ba04694dffd710c7378c6a99a58b733877d731d201b4cbe0e6d772822090ab"
+    }
+  },
+  "checks": {
+    "null_buffer_or_zero_size_logs_and_returns_zero_extended_minus_241": "PASS",
+    "effective_length_is_minimum_of_a4_and_48": "PASS",
+    "oversize_source_logs_four_arguments_and_returns_zero_extended_minus_22": "PASS",
+    "valid_path_copies_to_a1_plus_0x80": "PASS",
+    "identification_size_sync_uses_offsets_0x92_and_0x0c": "PASS",
+    "mode_byte_copy_uses_offsets_0x81_and_0x09": "PASS",
+    "error_paths_do_not_write_object_memory": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP and relocation context that the freestanding candidate assembly does not reproduce.",
+    "The candidate was generated with GCC 13.3.0, not the vendor compiler and flags.",
+    "Stock uses an unaligned AArch64 load at offset 0x92; the C candidate preserves the offset but exact compiler lowering is not guaranteed.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or exact binary equivalence."
+  ]
+}

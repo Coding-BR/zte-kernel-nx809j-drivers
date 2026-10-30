@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-25T03:31:05.598260+00:00",
+  "mode": "aarch64_opcode_relocation_and_validated_semantic_comparison",
+  "stock_module": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\stock\\zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target165_current\\canonical_final_v3\\zte_tpd\\canonical_builds\\target165_syna_ts_register_for_panel_events_exact_v3\\20260825T032702Z\\cycle_1\\zte_tpd.ko",
+    "sha256": "0fd7e1c219351776eb75762802b7e5b56068468d9e1abf05eb75ccd87d3748c5"
+  },
+  "checked_functions": 1,
+  "strict_matches": 1,
+  "semantic_matches": 1,
+  "strict_passed": true,
+  "passed": true,
+  "failures": [],
+  "results": [
+    {
+      "function": "syna_ts_register_for_panel_events",
+      "strict_match": true,
+      "semantic_match": true,
+      "checks": {
+        "instructions": true,
+        "relocations": true,
+        "section": true,
+        "symbol_size": true,
+        "printk_formats": true
+      },
+      "exception": null,
+      "printk": {
+        "stock_call_count": 2,
+        "candidate_call_count": 2,
+        "stock_unresolved_count": 0,
+        "candidate_unresolved_count": 0,
+        "format_differences": [],
+        "stock_calls": [
+          {
+            "address": "0xccc8",
+            "format": "\u00013[error] %s: Failed to register for panel events\n",
+            "format_candidates": [
+              "\u00013[error] %s: Failed to register for panel events\n"
+            ],
+            "format_resolution": "static"
+          },
+          {
+            "address": "0xcce8",
+            "format": "\u00016[info ] %s: registered for panel notifications panel: 0x%p\n",
+            "format_candidates": [
+              "\u00016[info ] %s: registered for panel notifications panel: 0x%p\n"
+            ],
+            "format_resolution": "static"
+          }
+        ],
+        "candidate_calls": [
+          {
+            "address": "0x1a7fc",
+            "format": "\u00013[error] %s: Failed to register for panel events\n",
+            "format_candidates": [
+              "\u00013[error] %s: Failed to register for panel events\n"
+            ],
+            "format_resolution": "static"
+          },
+          {
+            "address": "0x1a81c",
+            "format": "\u00016[info ] %s: registered for panel notifications panel: 0x%p\n",
+            "format_candidates": [
+              "\u00016[info ] %s: registered for panel notifications panel: 0x%p\n"
+            ],
+            "format_resolution": "static"
+          }
+        ]
+      },
+      "stock": {
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\stock_assembly\\0164_syna_ts_register_for_panel_events_00113504.asm",
+        "sha256": "d32a48a6ddbb54edbc41b15f13a06bab6a4b497bbf12cfb3dec17b3c9279a49b",
+        "section": ".text",
+        "instruction_count": 34,
+        "relocations_raw": [
+          "R_AARCH64_ADR_PREL_PG_HI21\t.bss+0x7a0",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.text+0xe08c",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.text+0xe08c",
+          "R_AARCH64_LDST64_ABS_LO12_NC\t.bss+0x7a0",
+          "R_AARCH64_CALL26\tpanel_event_notifier_register",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x917e",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x917e",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x4c87",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x4c87",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_LDST64_ABS_LO12_NC\t.bss+0x7a0",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x9777",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x9777",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x4c87",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x4c87",
+          "R_AARCH64_CALL26\t_printk"
+        ],
+        "relocations": [
+          "R_AARCH64_ADR_PREL_PG_HI21 active_panel",
+          "R_AARCH64_ADR_PREL_PG_HI21 syna_ts_panel_notifier_callback",
+          "R_AARCH64_ADD_ABS_LO12_NC syna_ts_panel_notifier_callback",
+          "R_AARCH64_LDST64_ABS_LO12_NC active_panel",
+          "R_AARCH64_CALL26 panel_event_notifier_register",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Failed to register for panel events\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Failed to register for panel events\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_LDST64_ABS_LO12_NC active_panel",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00016[info ] %s: registered for panel notifications panel: 0x%p\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00016[info ] %s: registered for panel notifications panel: 0x%p\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_CALL26 _printk"
+        ],
+        "symbol_size": 136
+      },
+      "candidate": {
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target165_current\\candidate_assembly_final_v3\\0000_syna_ts_register_for_panel_events.asm",
+        "sha256": "f94e742a5d17d9772bca3a8b1b3bb18d4ef18c0a8817db227499082e24e41c15",
+        "section": ".text",
+        "instruction_count": 34,
+        "relocations_raw": [
+          "R_AARCH64_ADR_PREL_PG_HI21\tactive_panel",
+          "R_AARCH64_ADR_PREL_PG_HI21\tsyna_ts_panel_notifier_callback",
+          "R_AARCH64_ADD_ABS_LO12_NC\tsyna_ts_panel_notifier_callback",
+          "R_AARCH64_LDST64_ABS_LO12_NC\tactive_panel",
+          "R_AARCH64_CALL26\tpanel_event_notifier_register",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x10189",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x10189",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0xd984",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0xd984",
+          "R_AARCH64_CALL26\t_printk",
+          "R_AARCH64_LDST64_ABS_LO12_NC\tactive_panel",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x1055a",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x1055a",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0xd984",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0xd984",
+          "R_AARCH64_CALL26\t_printk"
+        ],
+        "relocations": [
+          "R_AARCH64_ADR_PREL_PG_HI21 active_panel",
+          "R_AARCH64_ADR_PREL_PG_HI21 syna_ts_panel_notifier_callback",
+          "R_AARCH64_ADD_ABS_LO12_NC syna_ts_panel_notifier_callback",
+          "R_AARCH64_LDST64_ABS_LO12_NC active_panel",
+          "R_AARCH64_CALL26 panel_event_notifier_register",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Failed to register for panel events\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Failed to register for panel events\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_CALL26 _printk",
+          "R_AARCH64_LDST64_ABS_LO12_NC active_panel",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00016[info ] %s: registered for panel notifications panel: 0x%p\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00016[info ] %s: registered for panel notifications panel: 0x%p\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_ts_register_for_panel_events\"",
+          "R_AARCH64_CALL26 _printk"
+        ],
+        "symbol_size": 136
+      },
+      "opcode_mismatches": []
+    }
+  ]
+}

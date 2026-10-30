@@ -1,0 +1,316 @@
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+source_root=kernel_platform/common and vendor/qcom/proprietary/zte-devicetree
+f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d  vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi
+7786608b222118bc5ce8decd56fa942744c35ffc800f00135f6697d2631b7ccd  drivers/leds/rgb/leds-qcom-lpg.c
+771f12c6fe0879ab4fff839813fda685744a8b8321dc5d2f53339216f7d0f8d8  Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+529a69177e180d7a4f7056a0c1aa277408cbd80b94f35dfed83a32cdb9af1c6a  include/linux/pwm.h
+15a558c1e7494c1b49a6fb21a645408171bc173eea95685a209a8cc95ce89d7d  include/linux/regulator/consumer.h
+
+=== NX809J overlay PWM/regulator/GPIO mapping ===
+   640	&spmi0_bus {
+   641	    pmh0101@1 {
+   642	        fan_pwm_dev: pwms@eb00 {
+   643	            compatible = "qcom,pm8350c-pwm";
+   644	            reg = <0xeb00>;
+   645	            #address-cells = <1>;
+   646	            #size-cells = <0>;
+   647	            #pwm-cells = <2>;
+   648	        };
+   649	
+   650	        nb_fan: qcom,fan@ef00 {
+   651	            compatible = "soc,fan";
+   652	            reg = <0xef00>;
+   653	            fan,avdd-supply = <&pmh0101_l8>;
+   654	            regulator-names = "avdd";
+   655	            pinctrl-names ="default";
+   656	            pinctrl-0 =<&fan_speed &fan_pwm>;
+   657	            fan,pwm-gpio = <&pmh0101_gpios 9 GPIO_ACTIVE_HIGH>;
+   658	            fan,speed-gpio = <&tlmm 211 GPIO_ACTIVE_HIGH>;
+   659	            fan,voltage = <3300000>;
+   660	            fan {
+   661	                label = "fan";
+   662	                pwms = <&fan_pwm_dev 3 40000>;
+   663	            };
+   664	        };
+
+=== PWM state units and callback ABI: include/linux/pwm.h ===
+50-	PWMF_EXPORTED = 1,
+51-};
+52-
+53-/*
+54: * struct pwm_state - state of a PWM channel
+55- * @period: PWM period (in nanoseconds)
+56- * @duty_cycle: PWM duty cycle (in nanoseconds)
+57- * @polarity: PWM polarity
+58- * @enabled: PWM enabled status
+59- * @usage_power: If set, the PWM driver is only required to maintain the power
+60- *               output but has more freedom regarding signal form.
+61- *               If supported, the signal can be optimized, for example to
+62- *               improve EMI by phase shifting individual channels.
+63- */
+64:struct pwm_state {
+65-	u64 period;
+66-	u64 duty_cycle;
+67-	enum pwm_polarity polarity;
+68-	bool enabled;
+69-	bool usage_power;
+70-};
+71-
+72-/**
+73- * struct pwm_device - PWM channel object
+74- * @label: name of the PWM device
+75- * @flags: flags associated with the PWM device
+76- * @hwpwm: per-chip relative index of the PWM device
+77- * @chip: PWM chip providing this PWM device
+78- * @args: PWM arguments
+79- * @state: last applied state
+80- * @last: last implemented state (for PWM_DEBUG)
+--
+85-	unsigned int hwpwm;
+86-	struct pwm_chip *chip;
+87-
+88-	struct pwm_args args;
+89:	struct pwm_state state;
+90:	struct pwm_state last;
+91-
+92-	ANDROID_KABI_RESERVE(1);
+93-};
+94-
+95-/**
+96- * pwm_get_state() - retrieve the current PWM state
+97- * @pwm: PWM device
+   260	struct pwm_ops {
+   261		int (*request)(struct pwm_chip *chip, struct pwm_device *pwm);
+   262		void (*free)(struct pwm_chip *chip, struct pwm_device *pwm);
+   263		int (*capture)(struct pwm_chip *chip, struct pwm_device *pwm,
+   264			       struct pwm_capture *result, unsigned long timeout);
+   265		int (*apply)(struct pwm_chip *chip, struct pwm_device *pwm,
+   266			     const struct pwm_state *state);
+   267		int (*get_state)(struct pwm_chip *chip, struct pwm_device *pwm,
+   268				 struct pwm_state *state);
+   269		ANDROID_KABI_RESERVE(1);
+
+=== regulator voltage API units: include/linux/regulator/consumer.h ===
+   226	int regulator_list_voltage(struct regulator *regulator, unsigned selector);
+   227	int regulator_is_supported_voltage(struct regulator *regulator,
+   228					   int min_uV, int max_uV);
+   229	unsigned int regulator_get_linear_step(struct regulator *regulator);
+   230	int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV);
+   231	int regulator_set_voltage_time(struct regulator *regulator,
+   232				       int old_uV, int new_uV);
+   233	int regulator_get_voltage(struct regulator *regulator);
+
+=== qcom PM8350C LPG PWM apply implementation ===
+  1219	/*
+  1220	 * Limitations:
+  1221	 * - Updating both duty and period is not done atomically, so the output signal
+  1222	 *   will momentarily be a mix of the settings.
+  1223	 * - Changed parameters takes effect immediately.
+  1224	 * - A disabled channel outputs a logical 0.
+  1225	 */
+  1226	static int lpg_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+  1227				 const struct pwm_state *state)
+  1228	{
+  1229		struct lpg *lpg = lpg_pwm_from_chip(chip);
+  1230		struct lpg_channel *chan = &lpg->channels[pwm->hwpwm];
+  1231		int ret = 0;
+  1232	
+  1233		if (state->polarity != PWM_POLARITY_NORMAL)
+  1234			return -EINVAL;
+  1235	
+  1236		mutex_lock(&lpg->lock);
+  1237	
+  1238		if (state->enabled) {
+  1239			ret = lpg_calc_freq(chan, state->period);
+  1240			if (ret < 0)
+  1241				goto out_unlock;
+  1242	
+  1243			lpg_calc_duty(chan, state->duty_cycle);
+  1244		}
+  1245		chan->enabled = state->enabled;
+  1246	
+  1247		lpg_apply(chan);
+  1248	
+  1249		triled_set(lpg, chan->triled_mask, chan->enabled ? chan->triled_mask : 0);
+  1250	
+  1251	out_unlock:
+  1252		mutex_unlock(&lpg->lock);
+  1253	
+  1254		return ret;
+  1255	}
+  1256	
+  1257	static int lpg_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+  1258				     struct pwm_state *state)
+  1259	{
+  1260		struct lpg *lpg = lpg_pwm_from_chip(chip);
+  1261		struct lpg_channel *chan = &lpg->channels[pwm->hwpwm];
+  1262		unsigned int resolution;
+  1263		unsigned int pre_div;
+  1264		unsigned int refclk;
+  1265		unsigned int val;
+  1266		unsigned int m;
+  1267		u16 pwm_value;
+  1268		int ret;
+  1269	
+  1270		ret = regmap_read(lpg->map, chan->base + LPG_SIZE_CLK_REG, &val);
+  1271		if (ret)
+  1272			return ret;
+  1273	
+  1274		if (chan->subtype == LPG_SUBTYPE_HI_RES_PWM) {
+  1275			refclk = lpg_clk_rates_hi_res[FIELD_GET(PWM_CLK_SELECT_HI_RES_MASK, val)];
+  1276			resolution = lpg_pwm_resolution_hi_res[FIELD_GET(PWM_SIZE_HI_RES_MASK, val)];
+  1277		} else {
+  1278			refclk = lpg_clk_rates[FIELD_GET(PWM_CLK_SELECT_MASK, val)];
+  1279			resolution = 9;
+  1280		}
+  1281	
+  1282		if (refclk) {
+  1283			ret = regmap_read(lpg->map, chan->base + LPG_PREDIV_CLK_REG, &val);
+  1284			if (ret)
+  1285				return ret;
+  1286	
+  1287			pre_div = lpg_pre_divs[FIELD_GET(PWM_FREQ_PRE_DIV_MASK, val)];
+  1288			m = FIELD_GET(PWM_FREQ_EXP_MASK, val);
+  1289	
+  1290			ret = regmap_bulk_read(lpg->map, chan->base + PWM_VALUE_REG, &pwm_value, sizeof(pwm_value));
+  1291			if (ret)
+  1292				return ret;
+  1293	
+  1294			state->period = DIV_ROUND_UP_ULL((u64)NSEC_PER_SEC * (1 << resolution) *
+  1295							 pre_div * (1 << m), refclk);
+  1296			state->duty_cycle = DIV_ROUND_UP_ULL((u64)NSEC_PER_SEC * pwm_value * pre_div * (1 << m), refclk);
+  1297		} else {
+  1298			state->period = 0;
+  1299			state->duty_cycle = 0;
+  1300		}
+  1301	
+  1302		ret = regmap_read(lpg->map, chan->base + PWM_ENABLE_CONTROL_REG, &val);
+  1303		if (ret)
+  1304			return ret;
+  1305	
+  1306		state->enabled = FIELD_GET(LPG_ENABLE_CONTROL_OUTPUT, val);
+  1307		state->polarity = PWM_POLARITY_NORMAL;
+  1308	
+  1309		if (state->duty_cycle > state->period)
+  1310			state->duty_cycle = state->period;
+  1311	
+  1312		return 0;
+  1313	}
+  1314	
+  1315	static const struct pwm_ops lpg_pwm_ops = {
+  1316		.request = lpg_pwm_request,
+  1317		.apply = lpg_pwm_apply,
+  1318		.get_state = lpg_pwm_get_state,
+  1319	};
+
+=== LPG ops registration and PM8350C channel map ===
+  1315	static const struct pwm_ops lpg_pwm_ops = {
+  1316		.request = lpg_pwm_request,
+  1317		.apply = lpg_pwm_apply,
+  1318		.get_state = lpg_pwm_get_state,
+  1319	};
+  1320	
+  1321	static int lpg_add_pwm(struct lpg *lpg)
+  1322	{
+  1323		struct pwm_chip *chip;
+  1324		int ret;
+  1325	
+  1326		lpg->pwm = chip = devm_pwmchip_alloc(lpg->dev, lpg->num_channels, 0);
+  1327		if (IS_ERR(chip))
+  1328			return PTR_ERR(chip);
+  1329	
+  1330		chip->ops = &lpg_pwm_ops;
+  1331		pwmchip_set_drvdata(chip, lpg);
+  1332	
+  1333		ret = devm_pwmchip_add(lpg->dev, chip);
+  1334		if (ret)
+  1335			dev_err_probe(lpg->dev, ret, "failed to add PWM chip\n");
+  1798	static const struct lpg_data pm8350c_pwm_data = {
+  1799		.triled_base = 0xef00,
+  1800	
+  1801		.lut_size = 122,
+  1802	
+  1803		.num_channels = 4,
+  1804		.channels = (const struct lpg_channel_data[]) {
+  1805			{ .base = 0xe800, .triled_mask = BIT(7), .sdam_offset = 0x48 },
+  1806			{ .base = 0xe900, .triled_mask = BIT(6), .sdam_offset = 0x56 },
+  1807			{ .base = 0xea00, .triled_mask = BIT(5), .sdam_offset = 0x64 },
+  1808			{ .base = 0xeb00 },
+  1809		},
+  1810	};
+  1811	
+  1812	static const struct lpg_data pmk8550_pwm_data = {
+  1813		.num_channels = 2,
+  1814		.channels = (const struct lpg_channel_data[]) {
+  1815			{ .base = 0xe800 },
+  1816			{ .base = 0xe900 },
+  1817		},
+  1818	};
+  1819	
+  1820	static const struct of_device_id lpg_of_table[] = {
+  1821		{ .compatible = "qcom,pm660l-lpg", .data = &pm660l_lpg_data },
+  1822		{ .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data },
+  1823		{ .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data },
+  1824		{ .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data },
+  1825		{ .compatible = "qcom,pm8916-pwm", .data = &pm8916_pwm_data },
+  1826		{ .compatible = "qcom,pm8941-lpg", .data = &pm8941_lpg_data },
+  1827		{ .compatible = "qcom,pm8994-lpg", .data = &pm8994_lpg_data },
+  1828		{ .compatible = "qcom,pmi632-lpg", .data = &pmi632_lpg_data },
+  1829		{ .compatible = "qcom,pmi8950-pwm", .data = &pmi8950_pwm_data },
+  1830		{ .compatible = "qcom,pmi8994-lpg", .data = &pmi8994_lpg_data },
+  1831		{ .compatible = "qcom,pmi8998-lpg", .data = &pmi8998_lpg_data },
+  1832		{ .compatible = "qcom,pmc8180c-lpg", .data = &pm8150l_lpg_data },
+  1833		{ .compatible = "qcom,pmk8550-pwm", .data = &pmk8550_pwm_data },
+  1834		{}
+  1835	};
+  1836	MODULE_DEVICE_TABLE(of, lpg_of_table);
+
+=== binding cells: Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml ===
+    35	          - enum:
+    36	              - qcom,pm6150l-lpg
+    37	          - const: qcom,pm8150l-lpg
+    38	      - items:
+    39	          - enum:
+    40	              - qcom,pm8550-pwm
+    41	          - const: qcom,pm8350c-pwm
+    42	
+    43	  "#pwm-cells":
+    44	    const: 2
+    45	
+    46	  "#address-cells":
+    47	    const: 1
+    48	
+    49	  "#size-cells":
+    50	    const: 0
+
+=== PWM Device Tree specifier translation: drivers/pwm/core.c ===
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+source_sha256=c62b4fb404167c172567abdeba09024f214bef42d99750f3370bf90f72c62fd6
+   451	of_pwm_xlate_with_flags(struct pwm_chip *chip, const struct of_phandle_args *args)
+   452	{
+   455		/* period in the second cell and flags in the third cell are optional */
+   456		if (args->args_count < 1)
+   457			return ERR_PTR(-EINVAL);
+   459		pwm = pwm_request_from_chip(chip, args->args[0], NULL);
+   463		if (args->args_count > 1)
+   464			pwm->args.period = args->args[1];
+   467		if (args->args_count > 2 && args->args[2] & PWM_POLARITY_INVERTED)
+   468			pwm->args.polarity = PWM_POLARITY_INVERSED;
+   470		return pwm;
+  1070	static void of_pwmchip_add(struct pwm_chip *chip)
+  1075		if (!chip->of_xlate)
+  1076			chip->of_xlate = of_pwm_xlate_with_flags;
+
+=== regulator supply property lookup: drivers/regulator/of_regulator.c ===
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+source_sha256=a45e4b86bcae6582431e3191e894c34496fda30d5c42885b8f1d60f587222f2f
+   611	static struct device_node *of_get_regulator(struct device *dev, const char *supply)
+   616		dev_dbg(dev, "Looking up %s-supply from device tree\n", supply);
+   618		snprintf(prop_name, 64, "%s-supply", supply);
+   619		regnode = of_parse_phandle(dev->of_node, prop_name, 0);
+   620		if (regnode)
+   621			return regnode;
+   623		regnode = of_get_child_regulator(dev->of_node, prop_name);
+   624		if (regnode)
+   625			return regnode;
+   628		return NULL;

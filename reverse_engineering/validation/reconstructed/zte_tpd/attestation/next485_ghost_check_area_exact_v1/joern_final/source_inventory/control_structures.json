@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"ghost_check_area","type":"IF","code":"if ((mode | 2U) == 3U) {\n    y = *(unsigned __int16 *)(point + 28);\n    edge_area = *(_DWORD *)(tpd_cdev + 1180);\n    if (edge_area <= (int)y &&\n        (int)y <= (int)(unsigned int)(*(unsigned __int16 *)(tpd_cdev + 1092) - edge_area) &&\n        edge_area <= (int)x) {\n      max_x = *(unsigned __int16 *)(tpd_cdev + 1090);\n      if ((int)x <= (int)(unsigned int)(max_x - edge_area))\n        goto check_corner;\n    }\n    goto edge_ignore;\n  }","filename":"ghost_check_area.c","line":12},
+    {"method":"ghost_check_area","type":"IF","code":"if (edge_area <= (int)y &&\n        (int)y <= (int)(unsigned int)(*(unsigned __int16 *)(tpd_cdev + 1092) - edge_area) &&\n        edge_area <= (int)x) {\n      max_x = *(unsigned __int16 *)(tpd_cdev + 1090);\n      if ((int)x <= (int)(unsigned int)(max_x - edge_area))\n        goto check_corner;\n    }","filename":"ghost_check_area.c","line":15},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)x <= (int)(unsigned int)(max_x - edge_area))\n        goto check_corner;","filename":"ghost_check_area.c","line":19},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto check_corner;","filename":"ghost_check_area.c","line":20},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto edge_ignore;","filename":"ghost_check_area.c","line":22},
+    {"method":"ghost_check_area","type":"IF","code":"if (edge_area > (int)x)\n    goto edge_ignore;","filename":"ghost_check_area.c","line":26},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto edge_ignore;","filename":"ghost_check_area.c","line":27},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)x > (int)(unsigned int)(max_x - edge_area))\n    goto edge_ignore;","filename":"ghost_check_area.c","line":29},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto edge_ignore;","filename":"ghost_check_area.c","line":30},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto check_corner;","filename":"ghost_check_area.c","line":32},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto print_ignore;","filename":"ghost_check_area.c","line":36},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)mode < 2) {\n    if (mode != 0U) {\n      if (mode != 1U)\n        return 1;\n      goto check_horizontal_corner;\n    }\n    if ((int)y <=\n        (int)(unsigned int)(*(unsigned __int16 *)(tpd_cdev + 1092) - *(_DWORD *)(tpd_cdev + 1188)))\n      return 1;\n    goto check_vertical_corner;\n  }","filename":"ghost_check_area.c","line":39},
+    {"method":"ghost_check_area","type":"IF","code":"if (mode != 0U) {\n      if (mode != 1U)\n        return 1;\n      goto check_horizontal_corner;\n    }","filename":"ghost_check_area.c","line":40},
+    {"method":"ghost_check_area","type":"IF","code":"if (mode != 1U)\n        return 1;","filename":"ghost_check_area.c","line":41},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto check_horizontal_corner;","filename":"ghost_check_area.c","line":43},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)y <=\n        (int)(unsigned int)(*(unsigned __int16 *)(tpd_cdev + 1092) - *(_DWORD *)(tpd_cdev + 1188)))\n      return 1;","filename":"ghost_check_area.c","line":45},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto check_vertical_corner;","filename":"ghost_check_area.c","line":48},
+    {"method":"ghost_check_area","type":"IF","code":"if (mode == 2U) {\n    if ((int)*(_DWORD *)(tpd_cdev + 1188) <= (int)y)\n      return 1;\n    goto check_vertical_corner;\n  }","filename":"ghost_check_area.c","line":51},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)*(_DWORD *)(tpd_cdev + 1188) <= (int)y)\n      return 1;","filename":"ghost_check_area.c","line":52},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto check_vertical_corner;","filename":"ghost_check_area.c","line":54},
+    {"method":"ghost_check_area","type":"IF","code":"if (mode != 3U)\n    return 1;","filename":"ghost_check_area.c","line":56},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)*(_DWORD *)(tpd_cdev + 1188) <= (int)x &&\n      (int)x <= (int)(unsigned int)(max_x - *(_DWORD *)(tpd_cdev + 1188))) {\n    if ((int)*(_DWORD *)(tpd_cdev + 1184) <= (int)y &&\n        (int)y <= (int)(unsigned int)(*(unsigned __int16 *)(tpd_cdev + 1092) -\n                                      *(_DWORD *)(tpd_cdev + 1184)))\n      return 1;\n  }","filename":"ghost_check_area.c","line":60},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)*(_DWORD *)(tpd_cdev + 1184) <= (int)y &&\n        (int)y <= (int)(unsigned int)(*(unsigned __int16 *)(tpd_cdev + 1092) -\n                                      *(_DWORD *)(tpd_cdev + 1184)))\n      return 1;","filename":"ghost_check_area.c","line":62},
+    {"method":"ghost_check_area","type":"GOTO","code":"goto print_ignore;","filename":"ghost_check_area.c","line":68},
+    {"method":"ghost_check_area","type":"IF","code":"if ((int)*(_DWORD *)(tpd_cdev + 1184) <= (int)x &&\n      (int)x <= (int)(unsigned int)(max_x - *(_DWORD *)(tpd_cdev + 1184)))\n    return 1;","filename":"ghost_check_area.c","line":71}
+  ]
+}

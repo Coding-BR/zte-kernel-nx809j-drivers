@@ -1,9 +1,10 @@
+#if !defined(ZTE_TPD_HOST_TEST)
 #include "defs.h"
+#endif
 
-__int64 edge_long_press_up(struct input_dev *input, int index)
+__int64 edge_long_press_up(struct input_dev *input, unsigned short index)
 {
     struct point_info_struct *point_report;
-    int other_index;
     struct point_info_struct *other_point;
     bool any_other_active = false;
     int i;
@@ -21,8 +22,8 @@ __int64 edge_long_press_up(struct input_dev *input, int index)
         return 0;
     }
 
-    // Acquire lock (mutex on tpd_cdev + 2776)
-    mutex_lock((struct mutex *)(tpd_cdev + 2776));
+    // Stock locks the mutex at tpd_cdev + 0xc90.
+    mutex_lock((struct mutex *)(tpd_cdev + 0xc90));
 
     // Report MT up events
     input_event(input, EV_ABS, ABS_MT_SLOT, index);
@@ -45,10 +46,10 @@ __int64 edge_long_press_up(struct input_dev *input, int index)
     }
 
     // Report SYN
-    input_sync(input);
+    input_event(input, EV_SYN, 0, 0);
 
     // Release lock
-    mutex_unlock((struct mutex *)(tpd_cdev + 2776));
+    mutex_unlock((struct mutex *)(tpd_cdev + 0xc90));
 
     // Clear edge report flag
     point_report->field_84 = 0;
@@ -57,7 +58,8 @@ __int64 edge_long_press_up(struct input_dev *input, int index)
     BUG_ON((136 * index + 4) > 1360);
 
     // Print debug message
-    printk("%s: id = %d, x = %d, y = %d\n", "edge_long_press_up", index, point_report->x, point_report->y);
+    printk("%s: id = %d, x = %d, y = %d\n", "edge_long_press_up", index,
+           point_report->x, point_report->y);
 
     return 0;
 }

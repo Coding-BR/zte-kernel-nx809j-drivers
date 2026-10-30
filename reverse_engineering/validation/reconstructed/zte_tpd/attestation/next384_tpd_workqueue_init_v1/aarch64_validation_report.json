@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "target": "tpd_workqueue_init",
+  "mode": "offline_aarch64_semantic_and_normalized_relocation_comparison",
+  "instruction_count": { "stock": 97, "candidate": 97, "exact": true },
+  "symbol_size": { "stock": 388, "candidate": 388, "exact": true, "delta_bytes": 0 },
+  "section": { "stock": ".text", "candidate": ".text", "match": true },
+  "kcfi_type_id": { "stock": "0x6fbb3035", "candidate": "0x6fbb3035", "match": true },
+  "instruction_sequence": { "normalized_match": true, "comparison": "opcode and control-flow sequence exact" },
+  "branch_contract": {
+    "allocation_failure": "logs failure and returns -ENOMEM",
+    "report_failure": "checks slot, conditionally destroys zero slot, logs failure and returns -ENOMEM",
+    "success": "initializes probe, zlog and ghost delayed-work objects, calls resume initializer and returns zero",
+    "normalized_match": true
+  },
+  "call_targets": {
+    "stock": ["_printk", "alloc_workqueue", "tpd_report_work_init", "init_timer_key", "tpd_resume_work_init", "destroy_workqueue"],
+    "candidate": ["_printk", "alloc_workqueue", "tpd_report_work_init", "init_timer_key", "tpd_resume_work_init", "destroy_workqueue"],
+    "normalized_match": true
+  },
+  "offset_contract": {
+    "workqueue": "tpd_cdev + 0x4b0",
+    "probe_work": "tpd_cdev + 0x8d0..0x8f0",
+    "zlog_work": "tpd_cdev + 0xa50..0xa70",
+    "ghost_work": "tpd_cdev + 0x938..0x958",
+    "normalized_match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The separately linked module has different module-local .rodata offsets and exposes recovered local callbacks by symbol names; resolved strings, call targets, branch structure and all offsets match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw ELF relocation identity is not byte-level equal across independently linked modules.",
+    "Kernel allocator, workqueue and timer APIs are stubbed in the host harness.",
+    "No smartphone, scheduler or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "0819bc046423349fd574ff0c9fd15ddba027db9e4c121c47edb9a1835b50e835",
+    "candidate_assembly_sha256": "f0c02490deedc2feb76b9bbc47fe0c48b5e82fdedd74287a2cf12a5f4dc24b64"
+  }
+}

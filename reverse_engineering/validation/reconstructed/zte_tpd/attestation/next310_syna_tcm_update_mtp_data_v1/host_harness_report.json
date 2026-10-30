@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "target": "syna_tcm_update_mtp_data",
+  "stock_contract": "Ghidra decompilation, P-Code and Assembly entry 00127b14",
+  "mode": "direct_source_asan_ubsan_host_oracle",
+  "expected_cases": 12,
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "container_image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "clang": "Android clang version 19.0.1 (r536225)",
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_update_mtp_data host contract\n",
+      "stderr": "",
+      "binary_sha256": "c72f3c7dbb3209df9abb120b3fc4dfd43233adbf37b30ea01da87f8a156fd431",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_update_mtp_data host contract\n",
+      "stderr": "",
+      "binary_sha256": "c72f3c7dbb3209df9abb120b3fc4dfd43233adbf37b30ea01da87f8a156fd431",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "asan_ubsan_stderr_empty": true,
+  "aarch64_syntax_check": true,
+  "candidate_assembly_emitted": true,
+  "alignment_sanitizer_enabled_by_safe_reads": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness uses deterministic managed-memory and flash-write stubs and does not exercise the kernel driver core, KCFI, SPI, IRQ, MMIO or physical hardware.",
+    "The rounded payload is intentionally devm-owned, matching the stock lifetime; the isolated function does not call devm_kfree for that payload.",
+    "Canonical module build, relocation comparison and independent review remain required."
+  ]
+}

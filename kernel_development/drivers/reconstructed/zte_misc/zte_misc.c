@@ -312,7 +312,7 @@ int zte_misc_get_design_capacity(char *buf, const struct kernel_param *kp)
  * Timezone, Power-off Charging and GPIO Helpers
  * ====================================================================== */
 
-int __init zte_timezone_setup(const char *val)
+int __init zte_timezone_setup(char *val)
 {
 	long long tz = 0;
 	int ret;
@@ -325,7 +325,7 @@ int __init zte_timezone_setup(const char *val)
 	return ret;
 }
 
-int __init zte_poweroff_charging_handle(const char *val)
+int __init zte_poweroff_charging_handle(char *val)
 {
 	zte_poweroff_charging = (strncmp(val, "charger", 7) == 0);
 	pr_info("zte_misc: setup mode, %s[%d]\n", val,
@@ -341,7 +341,7 @@ int zte_poweroff_charging_status(void)
 }
 EXPORT_SYMBOL(zte_poweroff_charging_status);
 
-unsigned int get_sysnumber_byname(const char *name)
+int get_sysnumber_byname(char *name)
 {
 	int i;
 
@@ -421,6 +421,7 @@ DEFINE_NODE_PARAM(zlog_enable_test);
  * Platform Driver Probe & Remove
  * ====================================================================== */
 
+#if defined(ZTE_MISC_HOST_TEST)
 static int zte_misc_probe(struct platform_device *pdev)
 {
 	pr_info("%s into\n", __func__);
@@ -501,6 +502,10 @@ parse_gpios:
 	pr_info("%s end\n", __func__);
 	return 0;
 }
+#else
+extern int zte_misc_probe(struct platform_device *pdev);
+#include "zte_misc_probe_exact.inc"
+#endif
 
 static void zte_misc_remove(struct platform_device *pdev)
 {

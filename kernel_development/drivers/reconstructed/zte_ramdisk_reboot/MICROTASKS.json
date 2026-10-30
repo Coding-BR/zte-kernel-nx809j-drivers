@@ -1,10 +1,561 @@
 {
-  "schema_version": "1.0",
-  "generated_utc": "2026-07-12T20:39:26.325101+00:00",
+  "attestation_tool": "workspace_tools\\reconstruction_pipeline\\attest_driver_microtasks.py",
   "driver": "zte_ramdisk_reboot",
-  "status": "BLOCKED",
-  "blocked": [
-    "missing acquired stock module and Ghidra functions export"
-  ],
-  "tasks": []
+  "generated_utc": "2026-08-29T00:30:35.515941+00:00",
+  "ghidra_export": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock",
+  "schema_version": "1.0",
+  "status": "PASS",
+  "stock": {
+    "path": "reference_modules/stock/zte_ramdisk_reboot.ko",
+    "published": false,
+    "sha256": "598d5862b03a7f1fdc60318ca53fb6837716662c591991390e6f946aafb2d740"
+  },
+  "tasks": [
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\001_zte_ramdisk_reboot_write\\compile.json",
+          "role": "compile",
+          "sha256": "27faafb2ee016b8ae3ecff936eaab2d1ef83c3ee10ebfae3b6caccf1ca8c3682"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\001_zte_ramdisk_reboot_write\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "4f023356333c26ab7ba6466043b1b4b33a8039df3294821a92799924d9614b8d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\001_zte_ramdisk_reboot_write\\test.json",
+          "role": "test",
+          "sha256": "4d9c4161220c5e160f65b3a3f4a3a10e00f5f0e9a4e9620e4ebb149a1704f47a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0000_00100464_zte_ramdisk_reboot_write.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0000_00100464_zte_ramdisk_reboot_write.c",
+      "id": "001_zte_ramdisk_reboot_write",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: zte_ramdisk_reboot_write\nEntrada Ghidra: 00100464\nTamanho stock: 148 bytes\nCategoria: user_abi\nAlvo no fonte: zte_ramdisk_reboot.c:zte_ramdisk_reboot_write\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0000_00100464_zte_ramdisk_reboot_write.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0000_00100464_zte_ramdisk_reboot_write.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_ramdisk_reboot_write",
+      "status": "PASS",
+      "stock_body_bytes": 148,
+      "stock_entry": "00100464",
+      "stock_function": "zte_ramdisk_reboot_write"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\002_zte_check_xbl_log_lines\\compile.json",
+          "role": "compile",
+          "sha256": "5eb4525e13968254a07c2481f39fc611b7ba18c550b1f7a4e9db8efc643183f9"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\002_zte_check_xbl_log_lines\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "3971f9082b86468db1f8f83978b8425a8c60397af1d49b67314ffd486d3cc95a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\002_zte_check_xbl_log_lines\\test.json",
+          "role": "test",
+          "sha256": "1c3e12b6e200bf99c070543c194ceb3a58b81d5681f3df44f2fbf3d2b60cccaa"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0001_001004fc_zte_check_xbl_log_lines.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0001_001004fc_zte_check_xbl_log_lines.c",
+      "id": "002_zte_check_xbl_log_lines",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: zte_check_xbl_log_lines\nEntrada Ghidra: 001004fc\nTamanho stock: 440 bytes\nCategoria: core_logic\nAlvo no fonte: zte_ramdisk_reboot.c:zte_check_xbl_log_lines\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0001_001004fc_zte_check_xbl_log_lines.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0001_001004fc_zte_check_xbl_log_lines.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_check_xbl_log_lines",
+      "status": "PASS",
+      "stock_body_bytes": 440,
+      "stock_entry": "001004fc",
+      "stock_function": "zte_check_xbl_log_lines"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\003_extract_ocp_info\\compile.json",
+          "role": "compile",
+          "sha256": "dbc153541b5fadd741f3e487d8033e5c1ac009310307238ae3c5544ed66a9b2a"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\003_extract_ocp_info\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "cd6aa8e823598455b19319b43786767cc9fc2939e4e873f8e0c9a61862645e8e"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\003_extract_ocp_info\\test.json",
+          "role": "test",
+          "sha256": "ed7b9b95fda319a4b64afbe73c6522d4ef7994c18bb7a52539bd400810d344df"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0002_001006b8_extract_ocp_info.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0002_001006b8_extract_ocp_info.c",
+      "id": "003_extract_ocp_info",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: extract_ocp_info\nEntrada Ghidra: 001006b8\nTamanho stock: 240 bytes\nCategoria: core_logic\nAlvo no fonte: zte_ramdisk_reboot.c:extract_ocp_info\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0002_001006b8_extract_ocp_info.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0002_001006b8_extract_ocp_info.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "extract_ocp_info",
+      "status": "PASS",
+      "stock_body_bytes": 240,
+      "stock_entry": "001006b8",
+      "stock_function": "extract_ocp_info"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\004_extract_sn_info\\compile.json",
+          "role": "compile",
+          "sha256": "4e7d6b1e4c7080f3d4d7b6b22a2bdc0c7e454dd49eae0bb1c3522aa156a63efd"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\004_extract_sn_info\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "559b013261cea5f9d921bb3023058f531958873d059ea81263f62adadf0d2196"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\004_extract_sn_info\\test.json",
+          "role": "test",
+          "sha256": "9ff66af604d2ccc491ee8236a3aa13574b94ea38a1cd74eb34baa1801fa650f3"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0003_001007ac_extract_sn_info.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0003_001007ac_extract_sn_info.c",
+      "id": "004_extract_sn_info",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: extract_sn_info\nEntrada Ghidra: 001007ac\nTamanho stock: 228 bytes\nCategoria: core_logic\nAlvo no fonte: zte_ramdisk_reboot.c:extract_sn_info\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0003_001007ac_extract_sn_info.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0003_001007ac_extract_sn_info.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "extract_sn_info",
+      "status": "PASS",
+      "stock_body_bytes": 228,
+      "stock_entry": "001007ac",
+      "stock_function": "extract_sn_info"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "binding",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\005_zte_ramdisk_reboot_probe\\compile.json",
+          "role": "compile",
+          "sha256": "bc8f1176f6cd392a31cfd2c9cc2fe216142c8e15cd57f7f26d1ffdf9fb49faf3"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\005_zte_ramdisk_reboot_probe\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "dc04406edf07600917ee96108f86e08e2b7a23c03cb840e9d70632534049fe96"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\005_zte_ramdisk_reboot_probe\\test.json",
+          "role": "test",
+          "sha256": "4e4f6c07106e87d0ab3d35d604fe9404c99cc45048e0e3c45669569c858f26ae"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0004_00100894_zte_ramdisk_reboot_probe.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0004_00100894_zte_ramdisk_reboot_probe.c",
+      "id": "005_zte_ramdisk_reboot_probe",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: zte_ramdisk_reboot_probe\nEntrada Ghidra: 00100894\nTamanho stock: 832 bytes\nCategoria: binding\nAlvo no fonte: zte_ramdisk_reboot.c:zte_ramdisk_reboot_probe\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0004_00100894_zte_ramdisk_reboot_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0004_00100894_zte_ramdisk_reboot_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_ramdisk_reboot_probe",
+      "status": "PASS",
+      "stock_body_bytes": 832,
+      "stock_entry": "00100894",
+      "stock_function": "zte_ramdisk_reboot_probe"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "binding",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\006_zte_ramdisk_reboot_remove\\compile.json",
+          "role": "compile",
+          "sha256": "87c6b1d805bdfd15e5f7291f67296aa288ec96d0aa80b5f11865047e4b1fab54"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\006_zte_ramdisk_reboot_remove\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "06af1e02fef101aef88432844b2511a2178fd978dda873a1a99944afe87f425e"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\006_zte_ramdisk_reboot_remove\\test.json",
+          "role": "test",
+          "sha256": "ab81ce93d0ac0b1dbcdb9792e795472b02fdc5f1b29185d40b3ab6f9a6f83d56"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0005_00100bd8_zte_ramdisk_reboot_remove.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0005_00100bd8_zte_ramdisk_reboot_remove.c",
+      "id": "006_zte_ramdisk_reboot_remove",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: zte_ramdisk_reboot_remove\nEntrada Ghidra: 00100bd8\nTamanho stock: 4 bytes\nCategoria: binding\nAlvo no fonte: zte_ramdisk_reboot.c:zte_ramdisk_reboot_remove\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0005_00100bd8_zte_ramdisk_reboot_remove.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0005_00100bd8_zte_ramdisk_reboot_remove.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_ramdisk_reboot_remove",
+      "status": "PASS",
+      "stock_body_bytes": 4,
+      "stock_entry": "00100bd8",
+      "stock_function": "zte_ramdisk_reboot_remove"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "core_logic",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\007_zte_get_xbl_log_memory_region\\compile.json",
+          "role": "compile",
+          "sha256": "c0ba3463971205cf1f3c51ea51b7f89697e490bc2ef4fefb9a8874f5b9d39e93"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\007_zte_get_xbl_log_memory_region\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "7f196a434dcffe03ee98e7bec5ba7a60bb6d2c4a0be56dc03fca60b31251a0bb"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\007_zte_get_xbl_log_memory_region\\test.json",
+          "role": "test",
+          "sha256": "5ca1736fb2005d52a0292438b9474a15192aed7953d9efb05c0de75aa6068d38"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0006_00100bdc_zte_get_xbl_log_memory_region.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0006_00100bdc_zte_get_xbl_log_memory_region.c",
+      "id": "007_zte_get_xbl_log_memory_region",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: zte_get_xbl_log_memory_region\nEntrada Ghidra: 00100bdc\nTamanho stock: 268 bytes\nCategoria: core_logic\nAlvo no fonte: zte_ramdisk_reboot.c:zte_get_xbl_log_memory_region\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0006_00100bdc_zte_get_xbl_log_memory_region.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0006_00100bdc_zte_get_xbl_log_memory_region.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "zte_get_xbl_log_memory_region",
+      "status": "PASS",
+      "stock_body_bytes": 268,
+      "stock_entry": "00100bdc",
+      "stock_function": "zte_get_xbl_log_memory_region"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\008_attr_show\\compile.json",
+          "role": "compile",
+          "sha256": "c599492ace0654711d5c80e298954aa6e7745616791f4ef6254b1484e7871c02"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\008_attr_show\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "17a497161c3e94a8b777ee5ce0e153f42dece473f832fd131db7ccc69e8ebcd3"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\008_attr_show\\test.json",
+          "role": "test",
+          "sha256": "5846a946d95678e9fa81fe21940e16a62452fe750ef0cb99a4566cfecfb4e4b4"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0007_00100cec_attr_show.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0007_00100cec_attr_show.c",
+      "id": "008_attr_show",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: attr_show\nEntrada Ghidra: 00100cec\nTamanho stock: 68 bytes\nCategoria: user_abi\nAlvo no fonte: zte_ramdisk_reboot.c:attr_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0007_00100cec_attr_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0007_00100cec_attr_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "attr_show",
+      "status": "PASS",
+      "stock_body_bytes": 68,
+      "stock_entry": "00100cec",
+      "stock_function": "attr_show"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\009_attr_store\\compile.json",
+          "role": "compile",
+          "sha256": "1f5bfd56bbe39744acad18ed833cc95df5ffe3187ed41f917c2eedc3f4e96836"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\009_attr_store\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "2761542298de4cdb592e877aa06516487160798ccf65396dc98ff3a1ad2b64e9"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\009_attr_store\\test.json",
+          "role": "test",
+          "sha256": "36f9fca116798031d7ad588e920d40b7185af72d7ae575dcb2508a83fad3947f"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0008_00100d34_attr_store.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0008_00100d34_attr_store.c",
+      "id": "009_attr_store",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: attr_store\nEntrada Ghidra: 00100d34\nTamanho stock: 68 bytes\nCategoria: user_abi\nAlvo no fonte: zte_ramdisk_reboot.c:attr_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0008_00100d34_attr_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0008_00100d34_attr_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "attr_store",
+      "status": "PASS",
+      "stock_body_bytes": 68,
+      "stock_entry": "00100d34",
+      "stock_function": "attr_store"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\010_ramdisk_nvmem_show\\compile.json",
+          "role": "compile",
+          "sha256": "546b7d9f7429434670ef82fe620193edfbf4abdf64f44c720d6e8e38d1d29d6c"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\010_ramdisk_nvmem_show\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "65bff70dc5f2e001fd93cc4737ca1f6999bef0f414df7960a12c8bfb6715d46b"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\010_ramdisk_nvmem_show\\test.json",
+          "role": "test",
+          "sha256": "be986cec1fe67e677ae47fd681a4802bc119bb61036befb973ef0057e51b43da"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0009_00100d7c_ramdisk_nvmem_show.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0009_00100d7c_ramdisk_nvmem_show.c",
+      "id": "010_ramdisk_nvmem_show",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: ramdisk_nvmem_show\nEntrada Ghidra: 00100d7c\nTamanho stock: 56 bytes\nCategoria: user_abi\nAlvo no fonte: zte_ramdisk_reboot.c:ramdisk_nvmem_show\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0009_00100d7c_ramdisk_nvmem_show.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0009_00100d7c_ramdisk_nvmem_show.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "ramdisk_nvmem_show",
+      "status": "PASS",
+      "stock_body_bytes": 56,
+      "stock_entry": "00100d7c",
+      "stock_function": "ramdisk_nvmem_show"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "user_abi",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\011_ramdisk_nvmem_store\\compile.json",
+          "role": "compile",
+          "sha256": "a258611d4dd014ffeb54ad33f17879c8bf3543fe1363c4dea16784a37a5f282c"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\011_ramdisk_nvmem_store\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "a27dd6e6e3988573596a0150153b171698f2617ea96982541f9eb349c16cf1a9"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\011_ramdisk_nvmem_store\\test.json",
+          "role": "test",
+          "sha256": "30337cd4826382ce1db05ad386920d80044bebdeca630b7797c5e4b820c2b54b"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0010_00100db8_ramdisk_nvmem_store.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0010_00100db8_ramdisk_nvmem_store.c",
+      "id": "011_ramdisk_nvmem_store",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: ramdisk_nvmem_store\nEntrada Ghidra: 00100db8\nTamanho stock: 40 bytes\nCategoria: user_abi\nAlvo no fonte: zte_ramdisk_reboot.c:ramdisk_nvmem_store\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0010_00100db8_ramdisk_nvmem_store.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0010_00100db8_ramdisk_nvmem_store.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "ramdisk_nvmem_store",
+      "status": "PASS",
+      "stock_body_bytes": 40,
+      "stock_entry": "00100db8",
+      "stock_function": "ramdisk_nvmem_store"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\012_init_module\\compile.json",
+          "role": "compile",
+          "sha256": "190f94e487e99ba6f94e958eee8b74892ff745c871f8ccac3c93f6e9cced87a4"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\012_init_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "3244af782e536bcb264b0c5e2b67d108c338609a00ef22483002ef110763e65d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\012_init_module\\test.json",
+          "role": "test",
+          "sha256": "f3f1a7434120bcdb8879b202fdbe0cc3288ce1f489158ff60c9c9db4bee66d49"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0011_00100de4_init_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0011_00100de4_init_module.c",
+      "id": "012_init_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: init_module\nEntrada Ghidra: 00100de4\nTamanho stock: 44 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_ramdisk_reboot.c:init_module (module_platform_driver expansion)\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0011_00100de4_init_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0011_00100de4_init_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "init_module (module_platform_driver expansion)",
+      "status": "PASS",
+      "stock_body_bytes": 44,
+      "stock_entry": "00100de4",
+      "stock_function": "init_module"
+    },
+    {
+      "attestation": "Promoted by attest_driver_microtasks.py after strict hash-backed checks.",
+      "category": "lifecycle",
+      "evidence": [
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\013_cleanup_module\\compile.json",
+          "role": "compile",
+          "sha256": "70627c5da831392c63952ee269396fa48b6e355a892b5dc799fa1129fab181ac"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\013_cleanup_module\\kcfi.json",
+          "role": "kcfi",
+          "sha256": "1d76c33c7668cde005cb1d9947bbe65bf694a1c8c55dff53b3d26fe25c8ba70d"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\microtasks\\013_cleanup_module\\test.json",
+          "role": "test",
+          "sha256": "7299c3465541095b50706b0fad1f24ec9073d6b6557a3a06ea4c24fa70ec7ff6"
+        },
+        {
+          "path": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\joern_gate_v3\\joern_gate_report.json",
+          "role": "joern",
+          "sha256": "e5ffb89932f4671c4e7c0a74148bb87bca9687fbaf288ba63844e970b53367e0"
+        }
+      ],
+      "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0012_00100e14_cleanup_module.jsonl",
+      "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0012_00100e14_cleanup_module.c",
+      "id": "013_cleanup_module",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_ramdisk_reboot\nFuncao stock: cleanup_module\nEntrada Ghidra: 00100e14\nTamanho stock: 36 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_ramdisk_reboot.c:cleanup_module (module_platform_driver expansion)\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/decompiled/0012_00100e14_cleanup_module.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock/pcode/0012_00100e14_cleanup_module.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Execute o gate Joern estrito para a funcao; o relatorio deve cobrir a funcao mapeada, nao ter erros de parser e corresponder a arvore C/H atual.\n7. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio Joern estrito e hashado para a funcao mapeada;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "required_evidence": [
+        "compile",
+        "kcfi",
+        "joern",
+        "test"
+      ],
+      "source_file": "zte_ramdisk_reboot.c",
+      "source_function": "cleanup_module (module_platform_driver expansion)",
+      "status": "PASS",
+      "stock_body_bytes": 36,
+      "stock_entry": "00100e14",
+      "stock_function": "cleanup_module"
+    }
+  ]
 }

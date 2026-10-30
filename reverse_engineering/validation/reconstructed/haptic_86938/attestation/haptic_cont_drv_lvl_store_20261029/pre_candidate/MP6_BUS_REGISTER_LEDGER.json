@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "task_id": "050_cont_drv_lvl_store",
+  "work_unit": "MP6_BUS_REGISTER_LEDGER",
+  "identity": "cont_drv_lvl_store@00106554",
+  "register": "0x1d",
+  "transactions": [
+    {
+      "order": 1,
+      "direction": "read",
+      "length": 1,
+      "target": "driver_data-0xa8",
+      "buffer": "initialized 16-bit local; address of its low byte",
+      "lock": "driver_data+0x248 held"
+    },
+    {
+      "order": 2,
+      "direction": "write",
+      "length": 2,
+      "target": "driver_data-0xa8",
+      "buffer": "[data[0x3f2] | (read_byte & 0x80), data[0x3f3]]",
+      "lock": "same mutex remains held"
+    }
+  ],
+  "error_policy": "Both helper return values are ignored. A negative read does not suppress the write.",
+  "semantic_unknowns": [
+    "Register 0x1d meaning and bit7 role are unknown; only the preservation behavior is established.",
+    "Bus helper partial-transfer behavior is outside this function's local control flow."
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0049_00106554_cont_drv_lvl_store.c",
+      "sha256": "09903cca66c07d6f4fb612083605a0de10333338966073acdc09cb5c2def9018"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0049_00106554_cont_drv_lvl_store.jsonl",
+      "sha256": "4d8a93ab983f5c3242c1766f8be5d842f3bd9305980e28b05ab4bf917266a889"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0049_cont_drv_lvl_store_00106554.asm",
+      "sha256": "63774192887d30f9af2e5f9db6b388692806ee733500eba63e7608db5669c64c"
+    }
+  ]
+}

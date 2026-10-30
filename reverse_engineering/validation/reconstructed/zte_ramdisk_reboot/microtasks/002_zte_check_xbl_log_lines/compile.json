@@ -1,0 +1,147 @@
+{
+  "build": {
+    "commands": {
+      "build_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_ramdisk_reboot",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CC [M]  /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.o\n  MODPOST /work/validation/zte_ramdisk_reboot/Module.symvers\n  CC [M]  /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.mod.o\n  CC [M]  /work/validation/zte_ramdisk_reboot/.module-common.o\n  LD [M]  /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.ko\n  BTF [M] /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.ko\n"
+      },
+      "build_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_ramdisk_reboot",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "make[2]: Warning: File '/work/validation/zte_ramdisk_reboot/modules.order' has modification time 0.3 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\nmake[2]: Warning: File '/work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.o' has modification time 0.19 s in the future\nmake[2]: warning:  Clock skew detected.  Your build may be incomplete.\n",
+        "stdout": "  CC [M]  /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.o\n  MODPOST /work/validation/zte_ramdisk_reboot/Module.symvers\n  CC [M]  /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.mod.o\n  CC [M]  /work/validation/zte_ramdisk_reboot/.module-common.o\n  LD [M]  /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.ko\n  BTF [M] /work/validation/zte_ramdisk_reboot/zte_ramdisk_reboot.ko\n"
+      },
+      "clean_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_ramdisk_reboot",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "clean_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work:/work/validation",
+          "-e",
+          "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel/kernel_platform/common",
+          "nubia-sm8850-kernel-builder:latest",
+          "make",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/zte_ramdisk_reboot",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "  CLEAN   /work/validation/zte_ramdisk_reboot/Module.symvers\n"
+      }
+    },
+    "first_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_ramdisk_reboot\\zte_ramdisk_reboot.ko",
+      "sha256": "299fc9776b31c692df523b60792151865608c37d44245950b5bddd606a79716c",
+      "size": 225080
+    },
+    "passed": true,
+    "reproducible": true,
+    "second_build": {
+      "exists": true,
+      "path": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_ramdisk_reboot\\zte_ramdisk_reboot.ko",
+      "sha256": "299fc9776b31c692df523b60792151865608c37d44245950b5bddd606a79716c",
+      "size": 225080
+    },
+    "work_dir": "C:\\Users\\adriano\\Desktop\\emulador\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_ramdisk_reboot"
+  },
+  "checks": {
+    "aarch64_rel": true,
+    "alias_match": true,
+    "build_passed": true,
+    "function_traceability": true,
+    "namespace_match": true,
+    "reproducible_build": true,
+    "undefined_symbols_match": true
+  },
+  "driver": "zte_ramdisk_reboot",
+  "function": "zte_check_xbl_log_lines",
+  "generated_utc": "2026-08-29T00:30:35.515941+00:00",
+  "passed": true,
+  "schema_version": "1.0",
+  "source_report": "reverse_engineering\\validation\\reconstructed\\zte_ramdisk_reboot\\driver_audit_current.json",
+  "source_report_sha256": "571699842eebcbfbc6fb38c31e37208f814366664efeb04e2fc01d814f83feb9",
+  "stock_entry": "001004fc",
+  "stock_function": "zte_check_xbl_log_lines"
+}

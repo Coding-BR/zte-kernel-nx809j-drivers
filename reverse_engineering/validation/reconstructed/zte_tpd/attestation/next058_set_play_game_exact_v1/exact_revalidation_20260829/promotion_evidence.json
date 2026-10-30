@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "task_id": "058_set_play_game",
+  "source_function": "set_play_game",
+  "stock_function": "set_play_game",
+  "stock_entry": "0010bd08",
+  "stock_body_bytes": 196,
+  "candidate_source": "set_play_game_exact.S",
+  "candidate_source_sha256": "8282b8ab6be6ab572b9f36e5e926b8436202d4654d1b49c56f9381d0d0cefb85",
+  "candidate_module": "candidate_zte_tpd.ko",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "checks": {
+    "canonical_build_two_cycles": true,
+    "aarch64_opcode_and_relocation_comparison": true,
+    "kcfi_type_id_and_size": true,
+    "host_asan_ubsan_two_cycles": true,
+    "joern_strict": true
+  },
+  "observations": {
+    "aarch64_instruction_count": 49,
+    "kcfi_type_id": "0xc3d43b4d",
+    "joern_review_finding_count": 0,
+    "direct_source_contract": "kstrtouint_from_user result is forwarded verbatim to the callback; invalid input returns -EINVAL without printk or callback."
+  },
+  "artifacts": {
+    "canonical_build": {"path": "canonical_build_report.json", "sha256": "4bc6e0450e80974cdd75b0aec6e7df092ccb640140a115064d2b552842fab5ab"},
+    "aarch64_comparison": {"path": "aarch64_comparison.json", "sha256": "523324c784c3ad82e701e9b4cef9bcb91da8192e578bf358cb53cc0249167eb8"},
+    "kcfi_comparison": {"path": "kcfi/kcfi_comparison.json", "sha256": "22b7f7a2bd490caf53062f80d9b3cabe4e8047c168294e4231fa5c598de139b4"},
+    "host_harness": {"path": "host_harness_docker_report.json", "sha256": "11e9d6a706257b18312eaeadd29075da163a1af9e75a7ae7394a0eeaa110dfa7"},
+    "joern": {"path": "joern/joern_gate_summary.json", "sha256": "f416576289f3053b64e24bd7ba2015978b0cadda1d06d1e59a8059efb2369868"},
+    "microtask_attestation": {"path": "microtask_attestation.json", "sha256": "333f35df9e316cc3625031948e5979c57c9eae4f3ed6ab00917f7a761a85fc28"}
+  },
+  "limitations": [
+    "Offline/static validation only; hardware, ADB, insmod, firmware, and device behavior remain unverified.",
+    "The host test includes the reconstructed source and fake parser/device callbacks; it does not execute a real kernel userspace path."
+  ]
+}

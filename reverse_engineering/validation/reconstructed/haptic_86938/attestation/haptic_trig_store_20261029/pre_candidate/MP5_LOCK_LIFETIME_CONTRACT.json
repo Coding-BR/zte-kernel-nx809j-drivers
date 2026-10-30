@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "function": "trig_store@00106940",
+  "lock": "mutex at driver_data + 0x248",
+  "acquire": "after all validation and after the selected trigger record is written",
+  "release": "after exactly one selected trigger configuration helper returns, or immediately when no slot matches",
+  "protected_calls": ["aw8693x_trig1_param_config", "aw8693x_trig2_param_config", "aw8693x_trig3_param_config"],
+  "error_edges": "all validation errors branch around the lock; no early return occurs while held",
+  "note": "This records stock behavior; it does not assert that pre-lock record writes are race-free."
+}

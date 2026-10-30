@@ -1,0 +1,23 @@
+Ghidra-derived stock assembly reference: 0359_syna_ghost_check_reset_0012c940.asm
+
+stp x29, x30, [sp, #-0x20]!
+str x19, [sp, #0x10]
+mov x29, sp
+ldr x19, [x0, #0xdb8]
+mov x0, x19
+bl syna_dev_free_input_events
+ldr x0, [x19, #0x270]
+bl syna_spi_hw_reset
+mov x0, x19
+bl syna_recovery_game_mode_after_reset
+mov x0, x19
+mov w1, wzr
+bl syna_dev_set_screen_on_fp_mode
+bl _printk
+mov w0, wzr
+ldr x19, [sp, #0x10]
+ldp x29, x30, [sp], #0x20
+ret
+
+The original stock ELF bytes are unavailable. This text records the assembly
+export used for structural comparison and does not claim byte identity.

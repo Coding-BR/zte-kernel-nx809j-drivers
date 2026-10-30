@@ -5,7 +5,7 @@
 Reconstrucao estaticamente verificada para o NX809J, sem declaracao de 100% e sem alegacao de validacao em hardware.
 
 - Stock SHA-256: `2ae6f7615c9a4fea48a84fb2595d2f52dd049c11749b7cd2a3d9037dfcd813e8`
-- Candidato SHA-256: `459a676278f794ab85b790d942f892c4281ec5575989b602f4712609c4b6408a`
+- Candidato SHA-256: `07b2c6c8e4f770e7e3e15762fb280db0b3bfd67a1656579368426b2ff32d355f` (283624 bytes)
 - Build limpa e reproduzivel: PASS
 - Inventario e callgraph Ghidra: PASS, `47/47`
 - Superficie KCFI indireta: PASS, `20/20`

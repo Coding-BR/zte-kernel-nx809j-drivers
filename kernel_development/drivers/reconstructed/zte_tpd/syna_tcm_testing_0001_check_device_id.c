@@ -14,7 +14,7 @@ __int64 __fastcall syna_tcm_testing_0001_check_device_id(__int64 a1, char *s2, s
     if ( 16 - (int)n < 0 )
     {
 LABEL_10:
-      printk(unk_3CC6C, "syna_tcm_testing_0001_check_device_id", a1);
+      printk(unk_3CC6C, "syna_tcm_testing_0001_check_device_id", a1, s2);
       return 0;
     }
     else

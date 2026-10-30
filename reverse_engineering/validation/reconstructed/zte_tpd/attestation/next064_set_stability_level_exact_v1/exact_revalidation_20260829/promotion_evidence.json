@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "task_id": "064_set_stability_level",
+  "source_function": "set_stability_level",
+  "stock_function": "set_stability_level",
+  "stock_entry": "0010c23c",
+  "stock_body_bytes": 196,
+  "candidate_source": "set_stability_level_exact.S",
+  "candidate_source_sha256": "12f05d392c57f890cd5c4868b7c45daaa405e446bd1c3fe0a45cf8ec15c3df00",
+  "candidate_module": "candidate_zte_tpd.ko",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "checks": {
+    "canonical_build_two_cycles": true,
+    "aarch64_opcode_and_relocation_comparison": true,
+    "kcfi_type_id_and_size": true,
+    "host_asan_ubsan_two_cycles": true,
+    "joern_strict": true
+  },
+  "observations": {
+    "aarch64_instruction_count": 49,
+    "kcfi_type_id": "0xc3d43b4d",
+    "joern_review_finding_count": 0,
+    "direct_source_contract": "kstrtouint_from_user result is forwarded verbatim to the callback; invalid input returns -EINVAL without printk or callback."
+  },
+  "artifacts": {
+    "canonical_build": {"path": "canonical_build_report.json", "sha256": "63500a48b077188640eee233007de22e94ea91461386c354473bf86b5ebcc527"},
+    "aarch64_comparison": {"path": "aarch64_comparison.json", "sha256": "296c6e6e1ca18fa4a8e6c5d7105512295fcf62a7a59d2305691f8eb6e95eeecc"},
+    "kcfi_comparison": {"path": "kcfi/kcfi_comparison.json", "sha256": "2216cd990aab91ba6b3f9a04c875f55df7f4f41038a519aebd4303c6e59b6e56"},
+    "host_harness": {"path": "host_harness_docker_report.json", "sha256": "83c9b39d0d2913ddaf9518a2d68e21432c7c22c44404005f5a2555cf202dbf21"},
+    "joern": {"path": "joern/joern_gate_summary.json", "sha256": "749173d67180038ba1326ab0ce82b0f50fd79953f1e33436597ced492707f24a"},
+    "microtask_attestation": {"path": "microtask_attestation.json", "sha256": "9ab18ea08f719b46951b1a8ab97bea4c719c4b941c09bc47909b95203416123b"}
+  },
+  "limitations": [
+    "Offline/static validation only; hardware, ADB, insmod, firmware, and device behavior remain unverified.",
+    "The host test includes the reconstructed source and fake parser/device callbacks; it does not execute a real kernel userspace path."
+  ]
+}

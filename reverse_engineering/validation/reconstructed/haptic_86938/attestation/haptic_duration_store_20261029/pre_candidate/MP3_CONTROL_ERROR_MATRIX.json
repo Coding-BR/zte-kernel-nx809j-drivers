@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_store@0010a368",
+  "cases": [
+    {"condition": "kstrtouint returns a negative value", "state_effect": "none", "return": "the negative parser result"},
+    {"condition": "parse succeeds and value is zero", "state_effect": "leave duration unchanged", "return": "count"},
+    {"condition": "parse succeeds and value is nonzero", "state_effect": "store the 32-bit value at driver_data - 0x54", "return": "count"},
+    {"condition": "stack canary mismatch", "state_effect": "no return; __stack_chk_fail", "return": "does not return"}
+  ],
+  "ordering": ["load driver data", "initialize local parse value", "parse input", "on success store only nonzero value", "check stack canary", "return"]
+}

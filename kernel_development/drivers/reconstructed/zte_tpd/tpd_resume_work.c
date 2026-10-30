@@ -1,18 +1,16 @@
 void tpd_resume_work(struct work_struct *work)
 {
-  (void)work;
-  __int64 v0; // x19
-  void (__fastcall *v1)(_QWORD); // x8
-  __int64 v2; // x0
+  long long cdev;
+  int (*resume)(void *pdev);
+  void *pdev;
 
-  v0 = tpd_cdev;
-  v1 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 3152);
-  if ( v1 )
-  {
-    v2 = *(_QWORD *)(tpd_cdev + 3104);
-    if ( *((_DWORD *)v1 - 1) != -1066802076 )
-      __break(0x8228u);
-    v1(v2);
-    *(_DWORD *)(v0 + 1192) = 0;
-  }
+  (void)work;
+  cdev = tpd_cdev;
+  resume = *(int (**)(void *))(cdev + 0xe08);
+  if (!resume)
+    return;
+
+  pdev = *(void **)(cdev + 0xdd8);
+  resume(pdev);
+  *(unsigned int *)(cdev + 0x4a8) = 0;
 }

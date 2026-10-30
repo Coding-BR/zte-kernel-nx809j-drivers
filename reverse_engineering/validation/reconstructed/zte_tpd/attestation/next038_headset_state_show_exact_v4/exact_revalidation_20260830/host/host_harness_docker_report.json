@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "headset_state_show",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\headset_state_show.c",
+  "source_sha256": "0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\headset_state_show.c",
+      "size": 1171,
+      "sha256": "0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\headset_state_show.c",
+      "size": 1171,
+      "sha256": "0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e"
+    }
+  ],
+  "driver_source_sha256": "0eb521fbb202b64ab43d4cde7d54d3803877ec38e1aa13b9c85694ec8af8165e",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\headset_state_show_host_test.c",
+  "harness_sha256": "e551eb4c89bd42a790f957d96a880b682e470256cd8d3b18921da6e6b28e0b23",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 2,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS headset_state_show host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "25b0cf6823babb96fade3085dddf26b2786dbbfd2bdd6667c59d40115dddcbdb",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS headset_state_show host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "25b0cf6823babb96fade3085dddf26b2786dbbfd2bdd6667c59d40115dddcbdb",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness validates the +0xe78 callback offset, +0x17 state byte, formatting, partial read and EOF contracts with fake memory.",
+    "It does not execute the real procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

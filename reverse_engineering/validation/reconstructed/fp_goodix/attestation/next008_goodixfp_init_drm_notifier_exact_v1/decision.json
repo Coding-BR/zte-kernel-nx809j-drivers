@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "goodixfp_init_drm_notifier",
+  "stock_function": "goodixfp_init_drm_notifier",
+  "stock_entry": "00101ac0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "basis": "Fresh candidate Ghidra/P-Code equality, exact AArch64 instruction and relocation parity, two reproducible Docker builds, matching KCFI type ID, strict Joern scope/slice using a versioned analysis-only noinline compatibility view derived from the Docker source tree, and existing passing fp_goodix host coverage.",
+  "gates": {
+    "candidate_ghidra_pcode": "PASS",
+    "assembly_relocations": "PASS",
+    "docker_reproducible": "PASS",
+    "kcfi": "PASS_TYPE_ID_0xa607748c",
+    "joern_scoped": "PASS",
+    "joern_slice": "PASS",
+    "host_harness": "PASS"
+  },
+  "body_bytes": 312,
+  "instruction_count": 78,
+  "candidate_module_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+  "stock_module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "limitations": [
+    "This is static/offline function-level evidence; hardware behavior on NX809J remains unverified.",
+    "The Joern noinline removal is confined to the analysis-only source view and is prohibited from build input.",
+    "The promotion does not claim that the remaining unpromoted fp_goodix functions are complete."
+  ]
+}

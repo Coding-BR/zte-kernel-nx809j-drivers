@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "status": "HARDENING_BUILD_PASS_RECONSTRUCTION_NOT_PROMOTED",
+  "generated_local_date": "2026-10-30",
+  "driver": "haptic_86938",
+  "functions": [
+    "awrw_show@0010d518",
+    "awrw_store@0010d620"
+  ],
+  "scope": "safety hardening deviation; not exact stock reconstruction",
+  "findings": [
+    {
+      "id": "AWRW_ZERO_COUNT_UNDERWRITE",
+      "evidence": "The previous awrw_show passed buf-1 to snprintf when count was zero; the pinned host ASan run observed a one-byte heap underwrite. awrw_store rejects a zero field_count, so this synthetic state is not reachable through that validated input path.",
+      "correction": "awrw_show returns 0 without writing when mode is read, data is non-NULL, and count is zero."
+    },
+    {
+      "id": "AWRW_CROSS_OPEN_BUFFER_LIFETIME_RACE",
+      "evidence": "The pinned kernfs source gives each open file a distinct callback mutex. awrw_show read the shared pointer without a driver lock, while awrw_store freed/replaced the buffer before taking its existing per-device mutex.",
+      "correction": "Both callbacks now use the existing per-device mutex at private_data+0x248 across shared-state access. awrw_store allocates the replacement first, then installs it and frees the previous allocation while holding that mutex."
+    }
+  ],
+  "source_hashes": {
+    "show_head_exact_sha256": "61e16cb2963e4f385654cf0fa1208eb5df0e4e6547bbb5e823a6763f1e5d71c4",
+    "show_hardened_sha256": "0833d12809e2a6a78882160402e6e5ccd0cdab7f1b9b8bb70c90c53e8da39320",
+    "store_head_exact_sha256": "8e584096fcfc541152119ffd8553c6beba266ad923a4f73363778f4c77655223",
+    "store_hardened_sha256": "3f317cf118d2bffca88c2647ae2c3c5833b44901eed942c8d39aebc917067ead"
+  },
+  "invalidated_exact_reconstruction_reports": [
+    "attestation/haptic_awrw_callbacks_20261029/core_v2/hard_protocol_report.json",
+    "attestation/haptic_awrw_show_20261029/core_v3/hard_protocol_report.json",
+    "attestation/haptic_awrw_store_20261029/protocol_v36/hard_protocol_report.json"
+  ],
+  "validation": {
+    "host_harness": {
+      "schema_version": "1.0",
+      "status": "PASS",
+      "mode": "host-only in pinned Docker image; no device access",
+      "docker_image": "nubia-sm8850-kernel-builder:latest",
+      "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+      "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "source_hashes": {
+        "awrw_show": "0833d12809e2a6a78882160402e6e5ccd0cdab7f1b9b8bb70c90c53e8da39320",
+        "awrw_store": "3f317cf118d2bffca88c2647ae2c3c5833b44901eed942c8d39aebc917067ead"
+      },
+      "guarded_differential_runs": 2,
+      "guarded": {
+        "status": "PASS",
+        "differential_cases": 2051,
+        "count_range": [
+          1,
+          1024
+        ],
+        "byte_format_cases": 256,
+        "mode_errors": -34,
+        "two_byte_return": 11,
+        "zero_count_return": 0,
+        "count_819_return": 4096,
+        "count_820_return": 4100,
+        "mutant_error_errno_detected": true
+      },
+      "zero_count_asan_probe": {
+        "status": "PASS",
+        "count_zero_return": 0,
+        "buffer_unchanged": true
+      },
+      "count820_boundary_probe": {
+        "status": "PASS",
+        "return": 4100,
+        "oversize_guard_calls": 1,
+        "last_in_page_byte_is_nul": true
+      },
+      "asan_lifetime_stress": {
+        "status": "PASS",
+        "writer_replacements": 10000,
+        "show_calls": 41870
+      },
+      "tsan": {
+        "status": "UNAVAILABLE_OR_UNSUPPORTED",
+        "build_returncode": 0,
+        "run_returncode": 66,
+        "result": null,
+        "stderr": "FATAL: ThreadSanitizer: unexpected memory mapping 0x608d45a4b000-0x608d45a4c000\n"
+      },
+      "limitations": [
+        "The threaded writer models the awrw_store pointer replacement/free critical section using the same per-device lock; it is not an execution of the ARM64 awrw_store callback.",
+        "This host harness does not replace target-kernel KASAN/KCSAN or hardware validation."
+      ]
+    },
+    "docker_build": {
+      "image": "nubia-sm8850-kernel-builder:latest",
+      "clang_revision": "clang-r536225",
+      "two_clean_builds_passed": true,
+      "reproducible": true,
+      "module_size": 5819952,
+      "cycle_1_sha256": "5439b5a85d4791e82637f9f813c6b7a4b99ee699dfe0c7c570518de166ad8596",
+      "cycle_2_sha256": "5439b5a85d4791e82637f9f813c6b7a4b99ee699dfe0c7c570518de166ad8596"
+    },
+    "whole_driver_audit": {
+      "status": "incomplete_or_failed",
+      "build_reproducible": true,
+      "build_errors": [
+        "current reconstructed .ko is missing",
+        "module parity check failed: vermagic_accepted",
+        "module parity check failed: alias_match",
+        "module parity check failed: undefined_symbols_match",
+        "module parity check failed: candidate_matches_fresh"
+      ],
+      "static_verified": [],
+      "hardware_verified": []
+    },
+    "thread_sanitizer": {
+      "status": "UNAVAILABLE_OR_UNSUPPORTED",
+      "reason": "FATAL: ThreadSanitizer: unexpected memory mapping 0x608d45a4b000-0x608d45a4c000\n"
+    }
+  },
+  "promotion": {
+    "authorized": false,
+    "reason": "Whole-driver traceability and module parity remain incomplete; no target-device KASAN/KCSAN run or hardware validation was performed."
+  }
+}

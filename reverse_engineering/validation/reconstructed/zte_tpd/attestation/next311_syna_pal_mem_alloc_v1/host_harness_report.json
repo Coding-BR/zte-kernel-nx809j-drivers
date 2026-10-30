@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "target": "syna_pal_mem_alloc",
+  "stock_contract": "Ghidra decompilation, P-Code and Assembly entry 00127e18",
+  "mode": "direct_source_asan_ubsan_host_oracle",
+  "expected_cases": 5,
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "container_image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "clang": "Android clang version 19.0.1 (r536225)",
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_pal_mem_alloc host contract\n",
+      "stderr": "",
+      "binary_sha256": "9adf6786f55879223a21f53604e2ebb54594637f9eb3b4a2900d2f8a8f12aecc",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_pal_mem_alloc host contract\n",
+      "stderr": "",
+      "binary_sha256": "9adf6786f55879223a21f53604e2ebb54594637f9eb3b4a2900d2f8a8f12aecc",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "asan_ubsan_stderr_empty": true,
+  "aarch64_syntax_check": true,
+  "candidate_assembly_emitted": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness uses deterministic managed-device and allocator stubs and does not exercise kernel devres internals, KCFI or physical hardware.",
+    "The returned allocation is freed by the harness after assertions; the production contract remains devm-owned.",
+    "Canonical module build, relocation comparison and independent review remain required."
+  ]
+}

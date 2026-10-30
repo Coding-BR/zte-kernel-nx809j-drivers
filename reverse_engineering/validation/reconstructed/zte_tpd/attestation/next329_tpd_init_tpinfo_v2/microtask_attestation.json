@@ -1,0 +1,42 @@
+﻿{
+    "schema_version":  "1.0",
+    "generated_utc":  "2026-08-12T20:51:24.8728258Z",
+    "driver":  "zte_tpd",
+    "target":  "tpd_init_tpinfo",
+    "function":  "tpd_init_tpinfo",
+    "source":  "kernel_development/drivers/reconstructed/zte_tpd/tpd_init_tpinfo.c",
+    "source_sha256":  "d73498601af544b364f2e3d0dc57718d2dedb1b781b683434d13265ec0e6c79a",
+    "gates":  {
+                  "host_contract":  {
+                                        "status":  "PASS",
+                                        "passed":  true,
+                                        "report":  "tpd_init_tpinfo_contract_harness_report.json"
+                                    },
+                  "aarch64":  {
+                                  "status":  "PASS_WITH_CANONICAL_BLOCKER",
+                                  "passed":  false,
+                                  "report":  "candidate_aarch64/aarch64_validation_report.json"
+                              },
+                  "joern":  {
+                                "status":  "PASS",
+                                "passed":  true,
+                                "strict":  true,
+                                "report":  "joern_gate/joern_gate_summary.json"
+                            },
+                  "canonical_build":  {
+                                          "status":  "BLOCKED",
+                                          "passed":  false,
+                                          "cycles_requested":  2,
+                                          "cycles_accepted":  0,
+                                          "report":  "canonical_build_report.json"
+                                      }
+              },
+    "promotion":  "BLOCKED",
+    "promotion_reason":  "Function-level evidence passes, but promotion requires two clean canonical module builds and those cycles both fail in syna_tcm_erase_mtp_data.c before producing zte_tpd.ko.",
+    "limitations":  [
+                        "No smartphone execution was performed.",
+                        "Standalone AArch64 object checks instruction shape but is not a substitute for final .ko symbol parity.",
+                        "KCFI evidence is retained from the unchanged source hash; canonical module promotion remains blocked."
+                    ],
+    "status":  "BLOCKED_BY_SHARED_CANONICAL_BUILD"
+}

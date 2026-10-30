@@ -2,12 +2,11 @@ int tpd_set_frame_data(struct ztp_device *cdev, int a2)
 {
   unsigned long a1 = (unsigned long)cdev;
   __int64 v3; // x19
-  __int64 v5; // x2
   __int64 v6; // x9
   unsigned int v7; // w21
-  void *v9; // x0
+  const char *v9; // x0
 
-  v3 = *(_QWORD *)(a1 + 3072);
+  v3 = *(_QWORD *)(a1 + 0xdb8);
   printk(unk_34878, "tpd_set_frame_data");
   if ( v3 )
   {
@@ -29,7 +28,7 @@ int tpd_set_frame_data(struct ztp_device *cdev, int a2)
     {
       v9 = unk_3B5E0;
     }
-    printk(v9, "tpd_set_frame_data", v5);
+    printk(v9, "tpd_set_frame_data");
     return 0;
   }
   return -22;

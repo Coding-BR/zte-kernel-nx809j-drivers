@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-12T23:30:00Z",
+  "driver": "zte_tpd",
+  "target": "tpd_get_singlefpgesture",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_get_singlefpgesture.c",
+  "source_sha256": "E3EAADF8DDD2D460F9BC99A82DFE6C5A6EF8D9E2881B7DF180FC3917117FB271",
+  "correction": {
+    "previous_root_offset": "0xc00",
+    "stock_root_offset": "0xdb8",
+    "state_offset": "0x5b8",
+    "output_offset": "0x44c",
+    "reason": "Ghidra and stock AArch64 assembly require the root pointer at 0xdb8, state at 0x5b8 and output at 0x44c."
+  },
+  "syntax_check": "PASS",
+  "assembly_generation": "PASS",
+  "object_generation": "PASS",
+  "candidate_assembly_sha256": "6835C4D51AAC648B578721878517CCE0C4E087DC56AF73D000C5CAD9C1FAE026",
+  "candidate_object_sha256": "AA1BC420C71C1DD12CB4AF214E378C0A35EBBD8D734FC1094772638E82274102",
+  "required_instruction_checks": [
+    {"regex": "ldr\\s+x8,\\s+\\[x0,\\s+#0xdb8\\]", "found": true},
+    {"regex": "ldr\\s+w2,\\s+\\[x8,\\s+#0x5b8\\]", "found": true},
+    {"regex": "str\\s+w2,\\s+\\[x0,\\s+#0x44c\\]", "found": true},
+    {"regex": "mov\\s+w0,\\s+wzr", "found": true},
+    {"regex": "ret", "found": true}
+  ],
+  "required_instruction_checks_passed": true,
+  "exact_stock_opcode_parity": "NOT_ESTABLISHED",
+  "exact_stock_opcode_parity_reason": "The critical offsets match stock; full opcode and relocation parity requires the stock ELF comparison."
+}

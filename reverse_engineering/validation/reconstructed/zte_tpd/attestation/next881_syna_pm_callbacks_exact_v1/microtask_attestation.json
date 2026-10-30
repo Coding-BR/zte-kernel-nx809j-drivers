@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "package": "next881_syna_pm_callbacks_exact_v1",
+  "status": "PENDING_CANONICAL_BUILD",
+  "promotion": "NOT_PROMOTED",
+  "functions": [
+    "syna_pm_suspend",
+    "syna_pm_resume"
+  ],
+  "evidence": {
+    "all_bodies_exact": true,
+    "all_opcode_mismatches": 0,
+    "source_files": [
+      {
+        "function": "syna_pm_suspend",
+        "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_pm_suspend_exact.S",
+        "source_sha256": "548c5915a56997456ab6b5b3be3b90ac2498aa31d5affd7214a09959dd957497",
+        "body_bytes": 72,
+        "instruction_count": 18,
+        "relocation_count": 5,
+        "kcfi_type_id": "0x2a703c0b"
+      },
+      {
+        "function": "syna_pm_resume",
+        "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_pm_resume_exact.S",
+        "source_sha256": "9b2bf2ccc3069f35285f8dbf61e6418cb2ea46d1389f4c603cf86fe9f3200d7b",
+        "body_bytes": 72,
+        "instruction_count": 18,
+        "relocation_count": 6,
+        "kcfi_type_id": "0x2a703c0b"
+      }
+    ],
+    "static_comparison": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next881_syna_pm_callbacks_exact_v1/static_exact_comparison.json"
+  },
+  "stock_evidence": {
+    "syna_pm_suspend": {
+      "entry": "00114a94",
+      "assembly": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0181_syna_pm_suspend_00114a94.asm",
+      "ghidra_decompilation": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0181_00114a94_syna_pm_suspend.c"
+    },
+    "syna_pm_resume": {
+      "entry": "00114ae0",
+      "assembly": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0182_syna_pm_resume_00114ae0.asm",
+      "ghidra_decompilation": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0182_00114ae0_syna_pm_resume.c"
+    }
+  },
+  "canonical_build": {
+    "passed": false,
+    "status": "BLOCKED_DOCKER_UNAVAILABLE",
+    "blocker": "Docker Desktop is unavailable because the backend fails while initializing the dockerInference listener at C:/Users/adria/AppData/Local/Docker/run/dockerInference."
+  },
+  "limitations": [
+    "Static opcode and relocation equivalence does not prove a rebuilt ELF module.",
+    "Physical NX809J runtime behavior remains unverified."
+  ]
+}

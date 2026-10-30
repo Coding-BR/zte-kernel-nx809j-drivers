@@ -1,0 +1,56 @@
+﻿{
+    "schema_version":  "1.0",
+    "generated_utc":  "2026-08-12T21:16:22.8613871Z",
+    "driver":  "zte_tpd",
+    "target":  "tpd_enable_wakegesture",
+    "compiler":  "/toolchains/clang-r536225/bin/clang",
+    "container_image":  "nubia-sm8850-kernel-builder:latest",
+    "source":  "kernel_development/drivers/reconstructed/zte_tpd/tpd_enable_wakegesture.c",
+    "source_sha256":  "0fcd17d87914eba748768c6a925d104c89b6774f8e76b50f751c4b7238f50a01",
+    "correction":  {
+                       "previous_root_offset":  "0xc00",
+                       "stock_root_offset":  "0xdb8",
+                       "previous_destination":  "0x5c4",
+                       "observed_state_offset":  "0x57c",
+                       "reason":  "The old source used decimal 3072 for the root pointer; Ghidra and stock assembly require 0xdb8."
+                   },
+    "syntax_check":  "PASS",
+    "assembly_generation":  "PASS",
+    "object_generation":  "PASS",
+    "candidate_assembly_sha256":  "02a72926f5f1bb27959dc1ccdfe8e0d29b3122bf2f3588ef69f7ff860dceef19",
+    "candidate_object_sha256":  "f143b2ab1c5929a17f54c7d534b4788cee67c73b053b723b90708d6452e4398a",
+    "required_instruction_checks":  [
+                                        {
+                                            "regex":  "ldr\\s+x8,\\s+\\[x0,\\s+#0xdb8\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "ldr\\s+w9,\\s+\\[x8,\\s+#0x57c\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "cmp\\s+w9,\\s+#0x1",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "b\\.ne",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "mov\\s+w0,\\s+wzr",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "str\\s+w1,\\s+\\[x8,\\s+#0x5c4\\]",
+                                            "found":  true
+                                        },
+                                        {
+                                            "regex":  "ret",
+                                            "found":  true
+                                        }
+                                    ],
+    "required_instruction_checks_passed":  true,
+    "exact_stock_opcode_parity":  "NOT_ESTABLISHED",
+    "exact_stock_opcode_parity_reason":  "The canonical .ko build is blocked by unrelated shared source errors.",
+    "status":  "PASS_WITH_CANONICAL_BLOCKER"
+}

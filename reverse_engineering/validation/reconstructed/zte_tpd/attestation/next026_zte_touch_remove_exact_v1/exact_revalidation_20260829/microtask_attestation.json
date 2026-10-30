@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "026_zte_touch_remove",
+  "stock_function": "zte_touch_remove",
+  "stock_entry": "00109668",
+  "stock_body_bytes": 52,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "1f40f044a6b9e679829749e572b77b3ba81dfad72f7ce18cb961afdbc036f899",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 13,
+    "instruction_count_candidate": 13,
+    "symbol_size_stock": 52,
+    "symbol_size_candidate": 52,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0x24a11bb9",
+    "candidate_type_id": "0x24a11bb9",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 3,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "printk_contract",
+      "deinit_call_contract",
+      "repeated_remove_contract"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "09682881da84571afc81d39a85a56a273d1721a910c3a21f67373765c8a9f11a",
+    "aarch64_comparison.json": "4c7055c715c76292ce9f7942e9d4fdab7d17dbfca5fc2160395cb602c9031fbb",
+    "kcfi/comparison.json": "78befa11bb9e18d27e4ea7ad8020aa01e511c3e06ce95f351aa8750f3f25e109",
+    "joern/joern_gate_report.json": "8891e9000c1ae48b025e9cae3a22b3fd016c6aa839f58cfbfedb6f503d07651c",
+    "host_harness_report.json": "8e0d458c765dc2fc967d933bc5e5b0da7cd92a4946ad4b3f1677a79079f41d96",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host contract stubs printk and zte_touch_deinit.",
+    "No physical NX809J, platform driver core, Android service, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

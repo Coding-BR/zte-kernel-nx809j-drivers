@@ -26,6 +26,22 @@ PUBLISH_SPEC.loader.exec_module(PUBLISH)
 
 
 class ModuleDecompositionTests(unittest.TestCase):
+    def test_all_reconstructed_auxiliary_modules_are_in_contract(self) -> None:
+        targets = MODULE.load_targets(REPO)
+        names = {item["driver"] for item in targets["targets"]}
+        self.assertEqual(len(names), 18)
+        self.assertTrue(
+            {"fp_goodix", "gpio_keys_nubia", "nubia_hw_version"}.issubset(names)
+        )
+        self.assertEqual(targets["future_targets"], [])
+
+    def test_driver_target_name_rejects_unsafe_characters(self) -> None:
+        with self.assertRaises(MODULE.DecompositionError):
+            MODULE.analyze_target(
+                REPO,
+                {"driver": "bad-name", "role": "invalid"},
+            )
+
     def test_repo_path_rejects_traversal(self) -> None:
         with self.assertRaises(MODULE.DecompositionError):
             MODULE.repo_path(REPO, "../outside", field="test")

@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "016_zte_touch_pdev_register",
+  "stock_function": "zte_touch_pdev_register",
+  "stock_entry": "001081c8",
+  "stock_body_bytes": 224,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "77cd73ea6ac92654b25cf6d50061ab4eb649ec59a7f33155285c634ba9e61f23",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 56,
+    "instruction_count_candidate": 56,
+    "symbol_size_stock": 224,
+    "symbol_size_candidate": 224,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0x6fbb3035",
+    "candidate_type_id": "0x6fbb3035",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 4,
+    "direct_cases": [
+      "allocation_failure",
+      "platform_device_add_failure_and_release",
+      "zero_return_success",
+      "positive_add_return_normalized"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "32b319b34af7a4315b2b199a3576a842121e258090da5d3d16f234486f188e82",
+    "aarch64_comparison.json": "7788789a2fbce406cbbab1720e36724531e94e1acfae14c25b2bef5fa1ec487f",
+    "kcfi/comparison.json": "320a405affecaa28f66a3095e8c2e51709ca6ba82e82ca42d17daea0f278d96f",
+    "joern/joern_gate_report.json": "179a67b6eb5559906cf5d8f9d1c01d307c69621f1f7ea0c9ccebc42304470385",
+    "host_harness_report.json": "8d196a5d53f8a7353016ac478cf6913c3a3aa8839b0a15024afc7487c69355c1",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host contract stubs platform_device allocation, add, release and printk.",
+    "No physical NX809J, platform bus, Android service, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

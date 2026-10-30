@@ -23,10 +23,10 @@ ssize_t tp_frame_data_write(struct file *file, const char __user *buffer, size_t
   }
   else
   {
-    v6 = v9;
-    v9 = v9;
+    v6 = v9 != 0;
+    v9 = v9 != 0;
     printk(unk_374F7, "tp_frame_data_write", v6);
-    v7 = *(void (__fastcall **)(__int64, _BOOL8))(v4 + 3648);
+    v7 = *(void (__fastcall **)(__int64, _BOOL8))(v4 + 0xFF8);
     if ( v7 )
     {
       v8 = v9;

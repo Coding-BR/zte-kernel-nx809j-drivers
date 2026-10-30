@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "get_screen_off_awake",
+  "stock_entry": "0010d240",
+  "stock_body_bytes": 240,
+  "candidate_source_sha256": "3009bf043085fe3b8900f313c6c40347806729965d2a9330a717b24a75e615c5",
+  "candidate_exact_source_sha256": "ecd2a6d8b1f6cea3084e8ff2325c999c48fbe8de4fcfb5394f0ca5b9daf60197",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_body_instructions": 60,
+  "kcfi_type_id": "0xf4e9d97c",
+  "canonical_build_cycles": 2,
+  "source_test_cases": 4,
+  "source_test_repetitions": 2,
+  "gates": {
+    "canonical_docker_build": "PASS",
+    "aarch64_function_comparison": "PASS",
+    "kcfi_comparison": "PASS",
+    "joern_strict": "PASS",
+    "asan_ubsan_source_contract": "PASS"
+  },
+  "correction": {
+    "old_callback_offset": "0xe20",
+    "stock_callback_offset": "0xfd8",
+    "reason": "Ghidra pseudocode and exact stock assembly agree on the function-pointer field at tpd_cdev + 0xfd8."
+  },
+  "limitations": [
+    "No physical NX809J hardware or Android runtime was available.",
+    "The host contract uses fake device memory and does not execute a real procfs path."
+  ]
+}

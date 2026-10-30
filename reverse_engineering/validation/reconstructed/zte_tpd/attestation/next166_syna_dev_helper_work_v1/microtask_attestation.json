@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-14T05:00:00Z",
+  "driver": "zte_tpd",
+  "function": "syna_dev_helper_work",
+  "task_id": "166_syna_dev_helper_work",
+  "status": "READY_FOR_IMPLEMENTATION",
+  "offline_gates": {
+    "source_sync": "PASS",
+    "host_harness": "PASS",
+    "joern": "PASS",
+    "canonical_build": "PASS",
+    "kcfi": "PASS",
+    "aarch64_opcodes": "PASS",
+    "aarch64_relocations": "BLOCKED",
+    "hardware": "NOT_RUN"
+  },
+  "promotion_claim": false,
+  "source_sha256": "52d6a15478d8065d2c982ee32a6595f26603b17f53c0cc20e08b933844e8be54",
+  "candidate_module_sha256": "7061f6f80dec9066758ccd9a0b73ea601300b30e79fcd8c496d5b40e77f817fc",
+  "candidate_module_size": 30036432,
+  "host_harness": {
+    "report": "host_harness_report.json",
+    "sha256": "d81c617aa69c14a340fdee35ca65a95941d40c1a50c619746ffaa9084af0112f",
+    "cases": 5,
+    "repetitions": 2,
+    "reproducible": true
+  },
+  "joern": {
+    "report": "joern_gate_summary.json",
+    "sha256": "d9e479830467a065c03c223ae57487c0369e233a3b88fb7ae48ca655f82f2a72",
+    "passed": true,
+    "unresolved_calls": 0
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "sha256": "3b6c074e920cb003539db8ed328f52daf95835ed1386911120a549ad4948a301",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2
+  },
+  "static_comparison": {
+    "kcfi_report": "kcfi_comparison.json",
+    "kcfi_sha256": "09332e97dd88ed7d9c7fbbb606cdff6135450df42148525d719e16c67028f797",
+    "assembly_report": "assembly_comparison.json",
+    "assembly_sha256": "1bffcaa40ba89c2851fa4b72637e3d036815c0956eb62c2c262b77e2ceede860",
+    "opcode_parity": true,
+    "relocation_parity": false,
+    "status": "BLOCKED_BY_RELOCATION_IDENTITY"
+  },
+  "source_sync": {
+    "report": "source_sync_report.json",
+    "sha256": "26468f97c10d707d8e071eb12590750ab39d3d1f703c5d02b637078a97569b36",
+    "passed": true
+  },
+  "evidence": {
+    "stock_decompiled": "stock_decompiled.c",
+    "stock_pcode": "stock_pcode.jsonl",
+    "stock_assembly": "stock_assembly.asm",
+    "candidate_assembly": "candidate_assembly.asm",
+    "candidate_source": "candidate_source.c",
+    "host_harness_source": "host_harness_source.c",
+    "host_harness_runner": "host_harness_runner.py"
+  },
+  "blockers": [
+    "The AArch64 opcode stream is exact, but relocation identity for recovered .rodata strings is not proven exact.",
+    "No smartphone or hardware validation was run by request."
+  ]
+}

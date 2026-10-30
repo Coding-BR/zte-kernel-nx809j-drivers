@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod_MP2",
+  "work_unit": "MP2_STATE_EFFECT_LEDGER",
+  "draft_status": "DRAFT_UNREVIEWED",
+  "candidate_edit_authorized": false,
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+      "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP0_IDENTITY.json",
+      "sha256": "2f6cb179668f13e7419d7b8129f5ba757a79676b4ff22afaf5b3007025a018b4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "f6401987c36dc1eca96cd8fd56235aec0953fed85ab4ef241df4e741ee6e754c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/kernel_header_evidence.json",
+      "sha256": "23e765bfbddd8d4c8bd7e749cd3b56545d4d98cdb4fed8318186de2513c7cc2b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "sha256": "f5bbf80e97219a617b74b60b7523fcb923e9befc1e1211e1fa47672a760595cc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/strings.jsonl",
+      "sha256": "308c6137abbf748b0d402c85b183fedaeaa856e56f7619b0e82c96d1d8c181eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0000_cleanup_module.asm",
+      "sha256": "9e1573e528c75b6ae3713d2294ded74128e183fdb60f40dc445baca44d0f9351"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "sha256": "acdecc230375cdbe3d484ce71b66153929fd4168b25d4784be7105c409374b4c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0002_ftm_remove.asm",
+      "sha256": "1073a1fe1cae9d71d6d5c0044c80800ce8f69173181e04714d165d98937103d9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm",
+      "sha256": "7e1d28f01043893ffa0a7b0f0a41872df8b50dc0282885ebe9d9e363ab4abd98"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "sha256": "0ea5df582863f593eca794c81a681c1237e9b89ce2be29e3f708a5a48c9b2288"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0005_show_permission_status.asm",
+      "sha256": "c84c46b437ebc030b1c4fb308e3885821491100bb16ae8c08cf3a941bc9b9f08"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0006_show_secboot_status.asm",
+      "sha256": "3b4d3cb7254fcafadfbd72cf2b297e8070411398b84eddf975394e96e244d6f0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "sha256": "4eb933109cc88973a431f674238b25f47392a9457a2ad8d44ad9f731127da1e5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "sha256": "c5079ffbe3e9a61ab51aabe687d60bbb479d8da7f320dc552a56ffb5a1f8135e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/manifest.json",
+      "sha256": "4f358c5e22cde2f1d7484deb385809589312e1d87645cd7018cefa4e945194fb"
+    }
+  ],
+  "observations": [
+    {
+      "id": "OBS-001",
+      "claim": "ftm_probe grava o retorno de of_iomap em .bss+0x10 com largura 8 bytes, inclusive se nulo.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "section=.init.text offset=0x104 call; store .bss+0x10 at 0x10c"
+    },
+    {
+      "id": "OBS-002",
+      "claim": "ftm_probe grava byte 1 em .bss+0x0 antes de ioremap_prot; show_simlock_status depois lê esse byte para selecionar valor local do descriptor QSEE.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "store .init.text+0x14c; consumer simlock .text+0xd4"
+    },
+    {
+      "id": "OBS-003",
+      "claim": "ftm_probe grava retorno de ioremap_prot em .bss+0x8 com largura 8 bytes.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "section=.init.text offsets=0x154-0x15c"
+    },
+    {
+      "id": "OBS-004",
+      "claim": "show_efs_recovery carrega ponteiro .bss+0x10; se não nulo lê 4 bytes em ponteiro+4 e passa valor a snprintf.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "locator": "section=.text offsets=0x220-0x240"
+    },
+    {
+      "id": "OBS-005",
+      "claim": "store_efs_recovery testa ponteiro .bss+0x10; inicializa local de 4 bytes a zero, chama sscanf, compara local com zero e grava 0/1 em ponteiro+4 com largura 4.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "locator": "section=.text offsets=0x2a8-0x2b0,0x2a0,0x2f8,0x318-0x334"
+    },
+    {
+      "id": "OBS-006",
+      "claim": "store_efs_recovery executa DSB SY imediatamente após a gravação de 32 bits.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "locator": "section=.text offsets=0x334-0x33c"
+    },
+    {
+      "id": "OBS-007",
+      "claim": "show_simlock_status lê byte .bss+0x0 e escolhe 0x00058030 ou 0x30 no descriptor QSEE.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "section=.text offsets=0xd4-0x108"
+    },
+    {
+      "id": "OBS-008",
+      "claim": "qseecom_scm_desc em stack+8: arginfo (u32)=2; args[0] recebe 0x00058030/0x30; args[1..9] e ret[0..2] são inicializados a zero antes da chamada.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text offsets 0xdc-0x10c; struct layout from pinned qseecom_scm.h lines 11-15"
+    },
+    {
+      "id": "OBS-009",
+      "claim": "Após qcom_scm_qseecom_call retornar zero, simlock lê ret[0] como word baixo em stack+0x60 e ret[1] como qword em +0x68; o valor diagnóstico compõe (u32)ret[0] | ((u32)ret[1] << 32), descartando os 32 bits altos de ret[1]. O predicado de status usa somente os bits 30/31 do word baixo ret[0].",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text offsets 0x110-0x164; ldr x8 ret[1], ldr w9 ret[0], orr x20,x9,x8,lsl #32, then mvn w8,w20 and tst w8,#0xc0000000"
+    },
+    {
+      "id": "OBS-010",
+      "claim": "Strings identificam qcom,msm-imem-efs-golden-copy e formato efs_recovery_enable: %d; nomes não provam semântica física do campo.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/strings.jsonl",
+      "locator": "addresses=00100d90,00100f2a"
+    },
+    {
+      "id": "OBS-011",
+      "claim": "Overlay comum declara child reg=<0x04 8> e parent ranges com base 0x14680BF8; translação aritmética dá 0x14680BFC, comprimento 8.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "locator": "pinned_kernel_source.common_overlay"
+    }
+  ],
+  "inferences": [],
+  "unknowns": [
+    "Significado final dos bytes/words .bss desconhecido: +0 observado como flag, +8 e +0x10 como ponteiros.",
+    "Aplicação runtime do overlay NX809J não confirmada.",
+    "Ponteiro ioremap_prot é armazenado, mas não há acesso de dados através dele nos nove corpos.",
+    "Semântica do serviço para os valores genéricos args[0], ret[0] e ret[1] não está documentada pelas evidências disponíveis."
+  ],
+  "contradictions": [],
+  "requested_escalation": null
+}

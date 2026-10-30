@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "mode": "offline_aarch64_structural_comparison",
+  "function": "zte_touch_init",
+  "stock_function": "init_module",
+  "stock_entry": "0013159c",
+  "stock_reference_available": false,
+  "candidate_symbol_size": 64,
+  "stock_body_bytes": 64,
+  "candidate_instruction_count": 18,
+  "stock_instruction_count": 16,
+  "checks": {
+    "section_init_text": true,
+    "symbol_size_matches_stock_body": true,
+    "printk_call_and_format": true,
+    "platform_driver_register_call": true,
+    "driver_and_module_relocations": true,
+    "prologue_epilogue_byte_identity": false,
+    "stock_instruction_count_matches": false
+  },
+  "status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "difference": "The candidate includes PACIASP/AUTIASP hardening around the 64-byte function body; the Ghidra reference sequence records 16 instructions without those two instructions.",
+  "limitations": [
+    "The original stock ELF bytes are unavailable, so byte-for-byte identity cannot be established.",
+    "Relocation and semantic structure are compared against Ghidra-derived evidence only."
+  ]
+}

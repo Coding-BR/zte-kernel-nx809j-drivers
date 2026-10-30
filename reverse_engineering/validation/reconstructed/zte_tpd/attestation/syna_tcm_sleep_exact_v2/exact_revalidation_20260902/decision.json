@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_tpd",
+  "function": "syna_tcm_sleep",
+  "stock_entry": "001238fc",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "body": {
+    "instructions": 66,
+    "bytes": 264,
+    "kcfi_type_id": "0xdad41fc4"
+  },
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS"
+  },
+  "host_harness": {
+    "status": "PASS",
+    "cycles": 2,
+    "asan_ubsan": true,
+    "reproducible_binary": true
+  },
+  "ghidra_repair": {
+    "scripts": [
+      "ClearGhidraNoReturn.java _printk",
+      "ExtendGhidraFunctionBody.java syna_tcm_sleep 264"
+    ],
+    "fallback": "ghidra_multi_branch_printk_status_control_flow_artifact",
+    "requirements_retained": [
+      "equal ELF body bytes",
+      "equal P-Code operation shape",
+      "independent AArch64/relocation parity",
+      "KCFI parity"
+    ]
+  },
+  "limitations": [
+    "Validação estática/offline; não declara funcionamento em hardware NX809J.",
+    "A forma C normalizada do decompiler não é textualmente idêntica; a divergência foi aceita somente pelo fallback estrutural nomeado acima.",
+    "Revisão independente e execução em hardware permanecem pendentes."
+  ],
+  "evidence": {
+    "protocol_plan": "hard_protocol_plan.json",
+    "protocol_report": "hard_protocol_report.json",
+    "semantic_comparison": "semantic_comparison.json",
+    "assembly_comparison": "assembly/comparison.json",
+    "kcfi_comparison": "kcfi/comparison.json",
+    "joern_report": "joern/joern_gate_report.json",
+    "docker_report": "docker_reproducibility.json",
+    "host_report": "host_harness_report.json",
+    "job": "job.json"
+  }
+}

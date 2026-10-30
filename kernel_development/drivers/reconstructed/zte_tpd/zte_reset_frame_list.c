@@ -8,5 +8,5 @@ void zte_reset_frame_list(struct syna_tcm *tcm)
   *(_QWORD *)(a1 + 1084) = 0;
   memset(v2, 0, 0x32000u);
   mutex_unlock(a1 + 1136);
-  printk(unk_365BE, "zte_reset_frame_list");
+  printk("\0016[info ] %s: reset success", "zte_reset_frame_list");
 }

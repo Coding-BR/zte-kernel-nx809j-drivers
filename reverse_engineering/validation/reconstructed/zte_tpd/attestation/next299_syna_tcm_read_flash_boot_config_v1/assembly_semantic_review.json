@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "299_syna_tcm_read_flash_boot_config",
+  "stock_entry": "00125290",
+  "stock_symbol": "syna_tcm_read_flash_boot_config",
+  "candidate_symbol": "syna_tcm_read_flash_boot_config",
+  "candidate_compiler": "GCC aarch64-linux-gnu cross-compiler in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0298_00125290_syna_tcm_read_flash_boot_config.c",
+      "sha256": "4cc53c2c0565633c811453bc369bd6e3e6a49d0a41e6434eddd0a2f067bbfd8e"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0298_00125290_syna_tcm_read_flash_boot_config.jsonl",
+      "sha256": "1dd7eae3bbe7f3d43549cea9b0bf9c5b4a5f7d997b6622b10990984acc8d4a82"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0298_syna_tcm_read_flash_boot_config_00125290.asm",
+      "sha256": "a5d872d73c7acd1dddfc60484a82d1e6af71ea1cddc0ac9c6541fd41ce9e5e04"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_boot_config.c",
+      "sha256": "e62d0319ea5a7771de2f9228af43b4012c03e631132b514ef7793e44e97cf3ac"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next299_syna_tcm_read_flash_boot_config_v1/candidate_assembly/syna_tcm_read_flash_boot_config_candidate.s",
+      "sha256": "92ca2cb23f57d1884ed278a967218c824f055b30913985fa345fdf0e1dcef805"
+    }
+  },
+  "checks": {
+    "argument_and_mode_validation": "PASS",
+    "version_one_geometry": "PASS",
+    "version_three_geometry": "PASS",
+    "little_endian_scaling": "PASS",
+    "context_offset_writes": "PASS",
+    "resize_zero_and_flash_delegation": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "Dependency implementations are outside this isolated target.",
+    "The candidate explicitly rejects null pointers that the stock path would dereference.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}

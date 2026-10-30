@@ -4,24 +4,11 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-07-15T21:18:10.130197+00:00`
+Gerado em: `2026-07-31T16:11:38.370932+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
-| `zlog_common` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zlog_exception` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_charger_policy` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_fingerprint` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_imem_info` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_ir` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_led` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_misc` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_power_supply` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_ramdisk_reboot` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_reboot_ext` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_sensor_sensitivity` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_stats_info` | `INCOMPLETE` | 9/10 | missing independent_review.json<br>review targets another candidate SHA-256 |
-| `zte_tpd` | `INCOMPLETE` | 8/10 | report status is not PASS<br>missing independent_review.json<br>review targets another candidate SHA-256 |
+| `zte_tpd` | `INCOMPLETE` | 3/10 | no assembly manifest found<br>mapping is not reviewed: _inline_copy_from_user<br>mapping is not reviewed: cancel_report_lcd_state_delayed_work<br>mapping is not reviewed: change_tp_state |
 
 ## Regra de leitura
 

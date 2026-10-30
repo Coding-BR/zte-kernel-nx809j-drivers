@@ -15,6 +15,7 @@ typedef uint8_t u8;
 #define __init
 #define __exit
 #define noinline __attribute__((noinline))
+#define __used __attribute__((used))
 #define GFP_KERNEL 0
 #define PAGE_SIZE 4096
 #define NOTIFY_OK 1

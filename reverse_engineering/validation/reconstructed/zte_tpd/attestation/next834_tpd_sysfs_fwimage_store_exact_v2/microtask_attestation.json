@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "094",
+  "function": "tpd_sysfs_fwimage_store",
+  "stock_entry": "0010dff0",
+  "stock_body_bytes": 224,
+  "candidate_symbol_bytes": 224,
+  "stock_instruction_count": 56,
+  "candidate_instruction_count": 56,
+  "stock_relocation_count": 8,
+  "candidate_relocation_count": 8,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs and five cases",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "c95f27dc86d63a5dda54439f152c4e8e9cd570802a4e450773e6c96761685352",
+    "candidate_module_size": 26606176,
+    "candidate_source_sha256": "9774473956928a24df1a4b2f4e5d62782fb04e17f7c66ff01519026bbc34a049",
+    "exact_source_sha256": "6334e21de540e33f6e490fa9b10d31ece3d9b74ddb23eb3b4d60536f763750f6",
+    "rodata_include_sha256": "2bac5e90d9b01d69242bfd533d515db19ddacda3e22d831bb05f918b7f89cb96",
+    "candidate_assembly_sha256": "d969898c39a8eed5e5affba7ff40ce59541c957f64cfcb07a30d02ff80429d92",
+    "stock_assembly_sha256": "5643ae4e175517a148b7210550d2f45665c7b4f37b6cb2f9005c6e3a74b4badb",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0x30c400c0"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "Kernel sysfs, firmware and mutex state are represented by deterministic host stubs.",
+    "The preserved host report has no corresponding host-test source file in the current host tree.",
+    "Android runtime, firmware ownership and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T08:26:53.833215+00:00",
+  "passed": true,
+  "scope": "host-only wrapper argument contract; no kernel or physical device execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_042_aw8693x_vbat_mode_config.c",
+  "candidate_source_sha256": "4bbf254d2b0e2d501f48fb5d0e9759400f30ea56fcd30c040be7811b7f993723",
+  "harness_source_sha256": "8c0c0d176397add3654f4d2b960314f1ecbbdbda768771ee0fa6cc907026e221",
+  "harness_runner_sha256": "fb4a001cf7e35f6ee2f8745f4fe7831635e15475c902bf43f250047d9885ffc7",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "passed": true,
+      "observed_returncode": 0,
+      "output": "PASS: exact flag==1 condition updates bit 6 of register 0x4c"
+    },
+    "mutant_wrong_register": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, mask, equality predicate, shift, or call count mismatch"
+    },
+    "mutant_wrong_mask": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, mask, equality predicate, shift, or call count mismatch"
+    },
+    "mutant_nonzero_predicate": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, mask, equality predicate, shift, or call count mismatch"
+    },
+    "mutant_wrong_shift": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, mask, equality predicate, shift, or call count mismatch"
+    },
+    "mutant_inverted_predicate": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: register, mask, equality predicate, shift, or call count mismatch"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: exact flag==1 condition updates bit 6 of register 0x4c\nCASE_END\nCASE_RESULT:mutant_wrong_register:1\nFAIL: register, mask, equality predicate, shift, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_mask:1\nFAIL: register, mask, equality predicate, shift, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_nonzero_predicate:1\nFAIL: register, mask, equality predicate, shift, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_shift:1\nFAIL: register, mask, equality predicate, shift, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_inverted_predicate:1\nFAIL: register, mask, equality predicate, shift, or call count mismatch\nCASE_END\n"
+}

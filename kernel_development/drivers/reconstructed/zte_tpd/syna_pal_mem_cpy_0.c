@@ -1,20 +1,20 @@
-_QWORD *__fastcall syna_pal_mem_cpy_0(_QWORD *result, unsigned int a2, _QWORD *a3)
-{
-  __int64 v3; // x8
+struct syna_pal_mem_pair {
+  unsigned long long low;
+  unsigned long long high;
+};
 
-  if ( result && a3 )
-  {
-    if ( a2 <= 0xF )
-    {
-      printk(unk_3944E, "syna_pal_mem_cpy", 16);
-      return NULL;
-    }
-    else
-    {
-      v3 = a3[1];
-      *result = *a3;
-      result[1] = v3;
-    }
+void syna_pal_mem_cpy_0(unsigned long long *destination, unsigned int size,
+                        unsigned long long *source)
+{
+  if (!destination || !source)
+    return;
+
+  if (size < 16) {
+    printk("\x01" "3[error] %s: Invalid size. src:%d, dest:%d, size to copy:%d\n",
+           "syna_pal_mem_cpy", 16, size, 16);
+    return;
   }
-  return result;
+
+  *(struct syna_pal_mem_pair *)destination =
+      *(const struct syna_pal_mem_pair *)source;
 }

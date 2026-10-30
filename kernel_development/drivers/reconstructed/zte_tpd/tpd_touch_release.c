@@ -1,6 +1,6 @@
-__int64 tpd_touch_release(__int64 result, unsigned __int16 a2, int a3)
+__int64 tpd_touch_release(__int64 result, unsigned short a2, int a3)
 {
-  unsigned __int16 *v3; // x19
+  unsigned short *v3; // x19
   __int64 v4; // x27
   unsigned int v5; // w20
   __int64 v7; // x26
@@ -59,7 +59,7 @@ LABEL_83:
   if ( *((_BYTE *)&point_report_info + v9 + 83) == 1 )
   {
     v15 = result;
-    mutex_lock(tpd_cdev + 2776);
+    mutex_lock(tpd_cdev + 3216);
     input_event(v15, 3, 47, v5);
     input_mt_report_slot_state(v15, 0, 0);
     v16 = jiffies_to_msecs(jiffies - *((_QWORD *)v3 + 12));
@@ -110,7 +110,7 @@ LABEL_83:
         }
       }
     }
-    result = mutex_unlock(v8 + 2776);
+    result = mutex_unlock(v8 + 3216);
     if ( *((_QWORD *)v3 + 15) < (unsigned __int64)*(unsigned __int8 *)(v8 + 1173) && (v3[45] & 1) == 0 )
     {
       if ( (*(_BYTE *)(v8 + 1160) & 1) == 0 )
@@ -169,7 +169,7 @@ LABEL_54:
     goto LABEL_54;
   }
   v4 = v28;
-  mutex_lock(v28 + 2776);
+  mutex_lock(v28 + 3216);
   a3 = (136 * v7) | 4;
   if ( ((136 * v7) | 4uLL) > 0x550 )
     goto LABEL_83;
@@ -193,7 +193,7 @@ LABEL_54:
   input_event(*((_QWORD *)v3 + 16), 0, 0, 0);
   *((_BYTE *)v3 + 84) = 1;
   printk(unk_35994, "edge_point_report", v5);
-  mutex_unlock(v4 + 2776);
+  mutex_unlock(v4 + 3216);
   a3 = a2;
   if ( a2 <= 4u )
   {

@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "296_syna_tcm_set_up_flash_access",
+  "stock_entry": "001244e4",
+  "stock_symbol": "syna_tcm_set_up_flash_access",
+  "candidate_symbol": "syna_tcm_set_up_flash_access",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0295_001244e4_syna_tcm_set_up_flash_access.c",
+      "sha256": "25f5d8713198df6470b66184362c18cc1387f2bd00a268ea5e198a73bccf6dce"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0295_001244e4_syna_tcm_set_up_flash_access.jsonl",
+      "sha256": "4dd08518fa854d5c56d2afd9346a7bc9d191405d4d07e77146b78281136a4de8"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0295_syna_tcm_set_up_flash_access_001244e4.asm",
+      "sha256": "43a8f535dfb176ae6f95c9932caee647131d939fd35b43609f8f846ddf4e8d60"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_set_up_flash_access.c",
+      "sha256": "a9e488eb89c0a92cafd27598ed62e94dd6dc28951120c1287831570dffb40249"
+    },
+    "candidate_layout_header": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_tcm_layout.h",
+      "sha256": "0b583002fbf21c61047db6a3fe4f5c30b474976fbfed771e66a0ec56783df242"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next296_syna_tcm_set_up_flash_access_v1/candidate_assembly/syna_tcm_set_up_flash_access_candidate.s",
+      "sha256": "36b7013468a16388b67171cec1662eb066e2c738616fbea9ad9fcc5ae71627e5"
+    }
+  },
+  "checks": {
+    "null_context_validation": "PASS",
+    "identify_and_mode_switch": "PASS",
+    "bootloader_mode_gate": "PASS",
+    "protocol_marker_scan_and_setup_flag": "PASS",
+    "boot_geometry_offset_mapping": "PASS",
+    "little_endian_geometry_conversion": "PASS",
+    "read_size_cap_and_zero_rejection": "PASS",
+    "version_3_page_geometry": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation context that does not establish final module equivalence.",
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The identify, firmware-mode, and boot-info dependency implementations are outside this isolated target.",
+    "The marker scan's software breakpoint is represented by the repository's non-panicking __break policy for safe analysis.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}

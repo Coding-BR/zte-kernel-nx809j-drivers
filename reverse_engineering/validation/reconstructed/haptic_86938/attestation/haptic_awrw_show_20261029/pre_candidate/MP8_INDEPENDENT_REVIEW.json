@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "function": "awrw_show@0010d518",
+  "reviewer": "independent sub-agent 01a18927-991b-7e42-a8e8-f4f8bedba701",
+  "verdict": "INCOMPLETE",
+  "review_scope": [
+    "count-820 formatter boundary",
+    "conditional zero-count underwrite",
+    "candidate/stock function-body and KCFI evidence",
+    "host differential and sanitizer harness",
+    "awrw_store/awrw_show lifetime integration"
+  ],
+  "findings": {
+    "count_820": {
+      "status": "SUPPORTED",
+      "detail": "Pinned formatter guard returns before dereferencing the out-of-range final pointer; the show callback returns 4100 and sysfs clamps it to 4095."
+    },
+    "zero_count": {
+      "status": "CONDITIONAL_STOCK_UNDERWRITE",
+      "detail": "ASan observed a write beginning one byte before buf. The stock awrw_store parser rejects count zero before updating state, so this was not established as reachable through the normal writer."
+    },
+    "body_and_kcfi": {
+      "status": "PASS",
+      "detail": "The 260-byte function body matches stock; KCFI type ID matches. STB_GLOBAL versus STB_LOCAL is internal visibility and neither symbol is exported through __ksymtab."
+    },
+    "harness": {
+      "status": "PASS_WITH_SCOPE_LIMIT",
+      "detail": "Differential harness compares the reconstructed C to a separate stock-flow transcription; it does not execute the candidate module or test concurrent store/show lifetime."
+    },
+    "lifetime": {
+      "status": "INCOMPLETE",
+      "detail": "A controlled concurrent awrw_store/awrw_show run under KASAN/KCSAN, or an equivalent lock/lifetime proof, remains outstanding."
+    }
+  },
+  "promotion": "NOT_AUTHORIZED",
+  "review_artifact": "conversation review returned 2026-10-29; full findings recorded here"
+}

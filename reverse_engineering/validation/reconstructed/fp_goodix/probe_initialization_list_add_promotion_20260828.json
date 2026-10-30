@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-28T14:40:00-03:00",
+  "driver": "fp_goodix",
+  "scope": "isolated gf_probe source reconstruction promoted after Docker full-module recheck",
+  "source": {
+    "file": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix_core.c",
+    "sha256": "db9186a8ffcbd84337ae09fcd372fccbda85e065d0882eb350773557298afc4c",
+    "changes": [
+      "initialize pdev before the sentinel fields",
+      "zero-extend the 32-bit sentinel pair into the observed 64-bit store",
+      "use list_add to reproduce the stock CONFIG_LIST_HARDENED insertion topology"
+    ]
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "curated_snapshot": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\fp_goodix",
+    "canonical_candidate": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix.ko",
+    "canonical_sha256": "68338a7bec5eba35fd11456bf4a73c482bb191e3661ee5b529df2b1b4b8d6a2f",
+    "canonical_size": 730720,
+    "curated_build": "PASS; SHA-256 identical to canonical candidate"
+  },
+  "gf_probe_isolated": {
+    "stock": "1040 bytes / 260 instructions",
+    "candidate": "1040 bytes / 260 instructions",
+    "instruction_identity": true,
+    "relocation_identity": true,
+    "symbol_size_identity": true,
+    "comparison": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\fp_goodix_probe_list_add_variant_20260828\\compare_gf_probe_zeroext.json"
+  },
+  "full_module_recheck": {
+    "extracted_functions": 30,
+    "exact_functions": 27,
+    "remaining_open_functions": [
+      "gf_ioctl@00100824",
+      "gf_open@00100de8",
+      "gf_parse_dts@0010237c"
+    ],
+    "regression_check": "27/30 exact; gf_probe removed from the failure set",
+    "comparison": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\fp_goodix_probe_promoted_recheck_20260828\\compare_all.json"
+  },
+  "tests": {
+    "host_harness": "PASS; reproducible; 30 functions covered",
+    "pipeline_unittests": "PASS; 287 tests",
+    "hardware": "DEFERRED"
+  },
+  "decision": "PROMOTE_SOURCE_AND_CANONICAL_ARTIFACT; DO_NOT_CLAIM_100_PERCENT"
+}

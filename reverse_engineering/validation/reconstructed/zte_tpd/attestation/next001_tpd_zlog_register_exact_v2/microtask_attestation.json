@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "001_tpd_zlog_register",
+  "stock_function": "tpd_zlog_register",
+  "stock_entry": "0010688c",
+  "ghidra_body_bytes": 224,
+  "elf_symbol_bytes": 264,
+  "selected_functions": ["tpd_zlog_register"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "9615dbb7d4b0b97c119ff5a171547ce96e23008a7fbb51557478fb15cf852ba3",
+  "candidate_module_sha256": "f8ac727f9d3c2ec3fbd06cad74d69bcb67b16eb5b6fce1ed5bb07b0237ef129a",
+  "candidate_module_size": 17688992,
+  "evidence": [
+    {"role": "stock_assembly", "path": "stock_assembly/0000_tpd_zlog_register.asm", "sha256": "0273e82df981ec4e1dbda11af9759b441ed9c72c9562b1f13434ea0d23fc7e58"},
+    {"role": "candidate_assembly", "path": "candidate_assembly/0000_tpd_zlog_register.asm", "sha256": "9b7ff2853f2eb092c6659a28710d91e45da3a4b8f04bb35173d9484b7f18570d"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "6580126003b35f8c0de2f96c4606b33d065264058267fda5bc16166afb4e3f64"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "4306a40734fb997cbf1307dfde129e9b304e236df4148304235e8d0761436c11"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "873a8636b0da30d12399dc212f4c67855455f9cb2f9e0c36be20ecca46e6ee4a"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "3d8e9b606f75481b5a6155a999fdff7c2c97d209658218d6910bfefbeb4f338f"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "47cf217dbdace66a4205ea5deff055cad016ad41aca138095fda97c66f18e30c"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "8c586f069c5cfa63eabaf8e32cdd4f998822a81eaf0dbc1a4aae22bfaaefcef3"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "02463b6216702bec3e718497f13b1fcd7ccf7e7895f4e1228265052fa542ddf6"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "a6a01ce1d5ca4c47af81d4cbd150c5419cc62f05407523db8cab171d31f9fe9f"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "2d95528a9b964d965286d956b3a2e39c83501cfa42d32f622b836395bbf0ab66"}
+  ],
+  "findings": [
+    "Stock and candidate ELF symbols contain 66 AArch64 instructions and 264 bytes; this is the parity range used by the Assembly gate.",
+    "The Ghidra functions inventory reports 224 body bytes for the same entry; the discrepancy is retained rather than rewritten.",
+    "KCFI type ID matches at 0xd02e5b64 in .text.",
+    "Relocations match after a narrow __start_alloc_tags to compiler-generated alloc-tag normalization at identical ADRP/ADD sites; strings and call targets match.",
+    "The stock vmalloc-failure memset(NULL) behavior is preserved and documented by the host contract; Android allocator and NX809J behavior remain unverified."
+  ]
+}

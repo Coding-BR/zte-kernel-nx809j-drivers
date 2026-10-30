@@ -1,1 +1,12 @@
 obj-m += nubia_hw_version.o
+nubia_hw_version-objs := nubia_hw_rf_band_show_exact.o nubia_get_hw_id_exact.o nubia_get_hw_pcb_version_exact.o hml_config_version_show_exact.o nubia_hw_ver_probe_exact.o nubia_hw_ver_remove_exact.o nubia_get_gpio_status_exact.o nubia_get_pcb_table_item_by_gpio_exact.o nubia_get_rf_band_by_gpio_exact.o nubia_hw_version_main.o
+CFLAGS_nubia_hw_version_main.o :=
+AFLAGS_nubia_hw_rf_band_show_exact.o := -g0 -I$(src)
+AFLAGS_nubia_get_hw_id_exact.o := -g0 -I$(src)
+AFLAGS_nubia_get_hw_pcb_version_exact.o := -g0 -I$(src)
+AFLAGS_hml_config_version_show_exact.o := -g0 -I$(src)
+AFLAGS_nubia_hw_ver_probe_exact.o := -g0 -I$(src)
+AFLAGS_nubia_get_gpio_status_exact.o := -g0 -I$(src)
+AFLAGS_nubia_hw_ver_remove_exact.o := -g0 -I$(src)
+AFLAGS_nubia_get_pcb_table_item_by_gpio_exact.o := -g0 -I$(src)
+AFLAGS_nubia_get_rf_band_by_gpio_exact.o := -g0 -I$(src)

@@ -1,4 +1,4 @@
-bool __fastcall point_is_in_limit_area(unsigned __int16 a1, unsigned __int16 a2)
+bool point_is_in_limit_area(unsigned short a1, unsigned short a2)
 {
   int v2; // w12
   unsigned int v3; // w8
@@ -10,22 +10,22 @@ bool __fastcall point_is_in_limit_area(unsigned __int16 a1, unsigned __int16 a2)
   v3 = a1;
   if ( (v2 | 2) == 3 )
   {
-    if ( *(unsigned __int8 *)(tpd_cdev + 39) > (unsigned int)a1 )
+    if ( *(unsigned char *)(tpd_cdev + 39) > (unsigned int)a1 )
       return 1;
-    if ( *(unsigned __int16 *)(tpd_cdev + 1090) - *(unsigned __int8 *)(tpd_cdev + 40) < a1 )
+    if ( *(unsigned short *)(tpd_cdev + 1090) - *(unsigned char *)(tpd_cdev + 40) < a1 )
       return 1;
-    if ( *(unsigned __int8 *)(tpd_cdev + 41) > (unsigned int)a2 )
+    if ( *(unsigned char *)(tpd_cdev + 41) > (unsigned int)a2 )
       return 1;
-    return *(unsigned __int16 *)(tpd_cdev + 1092) - *(unsigned __int8 *)(tpd_cdev + 42) < a2;
+    return *(unsigned short *)(tpd_cdev + 1092) - *(unsigned char *)(tpd_cdev + 42) < a2;
   }
-  if ( *(unsigned __int8 *)(tpd_cdev + 39) > (unsigned int)a1 )
+  if ( *(unsigned char *)(tpd_cdev + 39) > (unsigned int)a1 )
     return 1;
-  v5 = *(unsigned __int16 *)(tpd_cdev + 1090);
-  if ( v5 - *(unsigned __int8 *)(tpd_cdev + 40) < a1 )
+  v5 = *(unsigned short *)(tpd_cdev + 1090);
+  if ( v5 - *(unsigned char *)(tpd_cdev + 40) < a1 )
     return 1;
   if ( !v2
-    && (a1 < (3 * (unsigned int)*(unsigned __int8 *)(tpd_cdev + 52)) >> 1
-     || (int)(v5 - ((3 * (unsigned int)*(unsigned __int8 *)(tpd_cdev + 53)) >> 1)) < a1)
+    && (a1 < (3 * (unsigned int)*(unsigned char *)(tpd_cdev + 52)) >> 1
+     || (int)(v5 - ((3 * (unsigned int)*(unsigned char *)(tpd_cdev + 53)) >> 1)) < a1)
     && ((byte_30EFB & 1) != 0
      || (byte_30F83 & 1) != 0
      || (byte_3100B & 1) != 0
@@ -42,9 +42,9 @@ bool __fastcall point_is_in_limit_area(unsigned __int16 a1, unsigned __int16 a2)
   }
   if ( !*(_BYTE *)(tpd_cdev + 56) )
     return 0;
-  if ( *(unsigned __int16 *)(tpd_cdev + 46) >= (unsigned int)a2 )
+  if ( *(unsigned short *)(tpd_cdev + 46) >= (unsigned int)a2 )
     return 0;
-  v6 = *(unsigned __int16 *)(tpd_cdev + 44);
+  v6 = *(unsigned short *)(tpd_cdev + 44);
   result = 1;
   if ( v6 <= v3 && (int)(v5 - v6) >= (int)v3 )
     return 0;

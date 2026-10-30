@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "276_syna_tcm_switch_fw_mode",
+  "stock_entry": "001226ec",
+  "stock_symbol": "syna_tcm_switch_fw_mode",
+  "candidate_symbol": "syna_tcm_switch_fw_mode",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0275_001226ec_syna_tcm_switch_fw_mode.c",
+      "sha256": "d807c1f2ebe2e438362be998aef0f87cdc0b62761c45b379e1278bb473865a83"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0275_001226ec_syna_tcm_switch_fw_mode.jsonl",
+      "sha256": "e6269a9ff3f4dfa0cb41837d501abb2e3c22a12fc61888f7d6d7e0fb07837c5d"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0275_syna_tcm_switch_fw_mode_001226ec.asm",
+      "sha256": "128f6c8f840dc4c0f0f93d77b06454c026f57d16a5cacfd14f2762231fa178f3"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_switch_fw_mode.c",
+      "sha256": "c6cc00fe2b4ec3230208da9c1b5268a1f40b4ee8e93f6d742b57eddd08572924"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next276_syna_tcm_switch_fw_mode_v1/candidate_assembly/syna_tcm_switch_fw_mode_candidate.s",
+      "sha256": "f94ceeed7522f53d10cba588115a659d594a93c9889fbba402bbafffc837a839"
+    }
+  },
+  "checks": {
+    "null_device_validation": "PASS",
+    "application_command_0x14": "PASS",
+    "bootloader_command_0x1f": "PASS",
+    "irq_and_polling_delay_selection": "PASS",
+    "minimum_delay_floor": "PASS",
+    "idempotent_mode_request": "PASS",
+    "transport_error_and_mode_failure": "PASS",
+    "max_rw_check_callback": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation context that does not establish final module equivalence.",
+    "Candidate assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "This review does not establish kernel ABI, KCFI, module relocation or physical hardware behavior.",
+    "The callback return from check_max_rw_size is ignored by the recovered implementation and remains intentionally ignored."
+  ]
+}

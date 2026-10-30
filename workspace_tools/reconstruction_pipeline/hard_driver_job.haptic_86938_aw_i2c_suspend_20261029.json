@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "stock_function": "aw_i2c_suspend",
+      "stock_entry": "0010ec50",
+      "source_function": "aw_i2c_suspend",
+      "candidate_function": "aw_i2c_suspend",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_i2c_suspend_20261029/candidate_ghidra/haptic_86938.ko"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "source_function": "aw_i2c_suspend",
+      "candidate_function": "aw_i2c_suspend"
+    }
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true,
+    "allow_exact_assembly_island_decompiler_fallback": false
+  },
+  "evidence": {
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awisus/host_harness/harness_result.json",
+      "sha256": "cfe57c46b4da7a2b8bb2d66f7e85e67908715b63750eb1fb81ed1d8a89dc0d52"
+    },
+    "stock_callback_relocation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_i2c_suspend_20261029/pre_candidate/stock_ops_table_relocation.json",
+    "pre_candidate_packet": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_i2c_suspend_20261029/pre_candidate/MP0_MP6.json"
+  }
+}

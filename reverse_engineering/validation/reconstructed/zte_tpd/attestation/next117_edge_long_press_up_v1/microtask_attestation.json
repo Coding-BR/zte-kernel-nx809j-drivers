@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-13T08:00:00Z",
+  "driver": "zte_tpd",
+  "function": "edge_long_press_up",
+  "task_id": "117_edge_long_press_up",
+  "status": "READY_FOR_IMPLEMENTATION",
+  "offline_gates": {
+    "host_harness": "PASS",
+    "joern": "PASS",
+    "canonical_build": "PASS",
+    "kcfi": "BLOCKED",
+    "aarch64_assembly": "BLOCKED",
+    "hardware": "NOT_RUN"
+  },
+  "promotion_claim": false,
+  "source_sha256": "0c45b257fd471074b89190128d7e48bafe23e0b6234bbd613360d611e2f6d8a9",
+  "candidate_module_sha256": "0ae228995451bb1213d73d8eec4f0fa8a6b8312fc788d59cc22432093ffc87ee",
+  "candidate_module_size": 29350696,
+  "host_harness": {
+    "report": "host_harness_report.json",
+    "sha256": "392b67dae75213fabe4658b79e5a18702bf9faab7b40cf116abd182edbfbc36f",
+    "cases": 3,
+    "repetitions": 2,
+    "reproducible": true
+  },
+  "joern": {
+    "report": "joern_gate_summary.json",
+    "sha256": "dbb5ab783570b36035922bd4a4f6f61bfd01a67e703e8b35d4d0f179ccff54d5",
+    "passed": true,
+    "unresolved_calls": 0
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "sha256": "adaa1d54d1da7e67eeb4d1df4d68adbc0b91790f651d804078563db9c632e9f8",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2
+  },
+  "static_comparison": {
+    "kcfi_report": "kcfi_comparison.json",
+    "kcfi_sha256": "44e48344255e3f62f0bcd589c41538c0898896c0abe8b5697b161fc358a483b7",
+    "assembly_report": "assembly_comparison.json",
+    "assembly_sha256": "90a3b2bf896d3f7b26d98bff708743bf52d882432adb301edbaf0be6c5d63078",
+    "status": "BLOCKED"
+  },
+  "source_sync": {
+    "report": "source_sync_report.json",
+    "sha256": "1e9fcd33188cf4debc28fc91381fefca2707d9dd30a6603e59f86390dbfac127",
+    "passed": true
+  },
+  "evidence": {
+    "stock_decompiled": "stock_decompiled.c",
+    "stock_pcode": "stock_pcode.jsonl",
+    "stock_assembly": "stock_assembly.asm",
+    "candidate_assembly": "candidate_assembly.asm",
+    "candidate_source": "candidate_source.c"
+  },
+  "blockers": [
+    "KCFI presence mismatch: candidate type 0x1be62358 versus no valid stock preamble, with symbol size 608 versus 624.",
+    "AArch64 parity mismatch: candidate 608/152/24 versus stock 624/156/48 for symbol size/instructions/relocations as reported by the comparison gate.",
+    "The candidate is semantically covered by the host cases and Joern, but exact machine-level parity is not proven.",
+    "No smartphone or hardware validation was run by request."
+  ]
+}

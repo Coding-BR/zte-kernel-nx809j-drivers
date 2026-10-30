@@ -1,0 +1,1 @@
+savedcmd_/work/validation/haptic_86938/cycle_2/haptic_86938.o := ld.lld -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack   -r -o /work/validation/haptic_86938/cycle_2/haptic_86938.o @/work/validation/haptic_86938/cycle_2/haptic_86938.mod 

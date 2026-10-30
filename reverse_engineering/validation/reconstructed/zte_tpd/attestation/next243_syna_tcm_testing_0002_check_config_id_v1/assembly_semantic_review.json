@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "kind": "bounded_assembly_semantic_review",
+  "task_id": "243_syna_tcm_testing_0002_check_config_id",
+  "status": "SEMANTIC_SHAPE_PASS_EXACT_EQUIVALENCE_PENDING",
+  "stock": {
+    "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0242_syna_tcm_testing_0002_check_config_id_0011da70.asm",
+    "sha256": "4c2415840f055d5736d15c346a9498d9d594709ba70e91c66c54b1ecad6bd422",
+    "entry": "0011da70",
+    "instruction_count_observed": 30,
+    "calls": ["_printk"],
+    "loads": ["firmware_id[index]", "limit_id[index]"],
+    "stores": [],
+    "control_features": ["null firmware guard", "null limit guard", "negative limit bit test", "inclusive loop", "mismatch path"]
+  },
+  "candidate": {
+    "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next243_syna_tcm_testing_0002_check_config_id_v1/candidate_assembly/config_id_candidate.s",
+    "sha256": "5afb5669133f9bd63758e57d0e0252f8855ddf788b351d292b3bfc295eb305ac",
+    "calls": ["printk"],
+    "loads": ["firmware_id[index]", "limit_id[index]"],
+    "stores": [],
+    "control_features": ["null guards", "negative limit bit test", "inclusive loop", "mismatch path"]
+  },
+  "checks": {
+    "null_path": true,
+    "negative_limit_no_load_path": true,
+    "inclusive_loop": true,
+    "mismatch_printk": true,
+    "printk_three_argument_shape": true,
+    "no_buffer_store": true,
+    "indirect_branch": false,
+    "mmio_or_barrier": false
+  },
+  "limitations": [
+    "The candidate was compiled with GCC 13 AArch64, while stock was built by the vendor toolchain.",
+    "This report compares semantic shape and host behavior, not exact opcode identity.",
+    "Relocation and KCFI comparison require the canonical module build and remain pending."
+  ],
+  "exact_equivalence_proven": false
+}

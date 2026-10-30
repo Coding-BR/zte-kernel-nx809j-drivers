@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "015_tpd_proc_deinit",
+  "stock_function": "tpd_proc_deinit",
+  "stock_entry": "00107fa4",
+  "stock_body_bytes": 544,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "0a8cfd93efb8f6926b52c823a1792fa8a4b914f2fec6e8f4b596cca5e7c5e4a6",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 136,
+    "instruction_count_candidate": 136,
+    "symbol_size_stock": 544,
+    "symbol_size_candidate": 544,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 3,
+    "direct_cases": [
+      "null_directory_logs_and_returns",
+      "all_entries_are_removed_in_order",
+      "deinit_is_repeatable_without_directory_mutation"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "c94cd4cde99d457b4df6dd8c5ef295f4ac95319f160934ee530b631ece44686a",
+    "aarch64_comparison.json": "e12f4583027b9370ed7646103406fe8927dfa37881559af4bbccb1343a92d1bc",
+    "kcfi/comparison.json": "a94ad6ec1b53df0f8967947ce25125fe3f297d460f76cb817180794aef2cdda8",
+    "joern/joern_gate_report.json": "f742f489bfd66958b72ac1e95da9c6395959cd8ebd3f23513f701016b93adf11",
+    "host_harness_report.json": "c44f63d8ef8c6577bd475ef8dc819ef8a01472098bfef82eedf8a9a01b99f42b",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The dedicated harness models proc-entry removal and printk in user space.",
+    "No physical NX809J, Android procfs implementation, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

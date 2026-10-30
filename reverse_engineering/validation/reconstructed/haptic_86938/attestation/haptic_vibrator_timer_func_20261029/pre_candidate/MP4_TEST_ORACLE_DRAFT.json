@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "vibrator_timer_func",
+  "oracle_cases": [
+    {
+      "case": "layout_and_queue",
+      "setup": "Allocate a byte-backed parent object with a timer view at +0x330; set queue pointer at parent+0x448 and work item at parent+0x428; initialize parent+0x40 with a nonzero sentinel; stub queue_work_on.",
+      "assertions": [
+        "the 32-bit state at parent+0x40 becomes zero",
+        "queue_work_on receives CPU 32",
+        "queue_work_on receives the exact queue and work addresses",
+        "callback returns HRTIMER_NORESTART"
+      ]
+    },
+    {
+      "case": "no_extra_effects",
+      "setup": "Use guarded memory around the container and a recording queue stub.",
+      "assertions": [
+        "no out-of-range writes",
+        "no hardware calls",
+        "no lock/unlock calls",
+        "queue return value does not alter callback return"
+      ]
+    }
+  ],
+  "note": "This is an unexecuted design oracle; static compilation and binary evidence are the current acceptance gates."
+}

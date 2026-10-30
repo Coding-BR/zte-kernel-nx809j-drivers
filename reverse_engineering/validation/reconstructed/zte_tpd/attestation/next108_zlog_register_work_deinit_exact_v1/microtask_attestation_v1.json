@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T17:04:00Z",
+  "driver": "zte_tpd",
+  "microtask": "006_zlog_register_work_deinit",
+  "function": "zlog_register_work_deinit",
+  "stock_entry": "00107874",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zlog_register_work_deinit.c",
+    "sha256": "1c6bf9b8a22af8df5c930d3f8b70858b63b674ed08223046f9289e84e8b38f4f"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "90c6208b7e88ff61bbcc80f782cd5f6e019820e85e36d08e4c5ac186b7657e38",
+    "size": 24696696
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 80,
+    "candidate_symbol_bytes": 80,
+    "stock_instructions": 20,
+    "candidate_instructions": 20,
+    "stock_relocations": 9,
+    "candidate_relocations": 9,
+    "stock_cfg_blocks": 1,
+    "candidate_cfg_blocks": 1,
+    "stock_direct_calls": 3,
+    "candidate_direct_calls": 3
+  },
+  "kcfi": {
+    "function_type_id": "0xe5c47d60",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "e4572b2c10a92ff32aaacc39eaf967333bdd92848b661f8345a79665faeb3065"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next108_zlog_register_work_deinit_exact_v1/build_report.json",
+      "sha256": "6faa0b6f54cd4d8ecdc0285eb5502622d9df3afc932cc2072a481074710c8815"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next108_zlog_register_work_deinit_exact_v1/host_harness_report.json",
+      "sha256": "b744c74e0651d200722c3e45eb5796fa953d80453a1233e4e84b85adcc86eff0"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next108_zlog_register_work_deinit_exact_v1/joern_gate_summary.json",
+      "sha256": "20fb747352a29b757435951659ee4702463d6c54bbd1f15473815e31f4f63afb"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next108_zlog_register_work_deinit_exact_v1/assembly_comparison.json",
+      "sha256": "d3c1b2203d6434ed3ef1a77e0aaa4acd1dbc69151e3f111def85738db98cf9f7"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next108_zlog_register_work_deinit_exact_v1/kcfi_comparison.json",
+      "sha256": "d3ee011a8be6ad1e1b63c9fcfd40e02f359d7ba47fcc5172f32c1bc3e84bbe90"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next108_zlog_register_work_deinit_exact_v1/cfg_comparison.json",
+      "sha256": "daf0d98852e99ffbdbc1ec1b338907d984c2b029ae328bb4bf5884e3fc4d04ef"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only zlog_register_work_deinit.",
+    "The host test checks direct teardown flow with stubs, not delayed-work scheduler timing or real zlog allocation behavior.",
+    "No ADB, fastboot, module load, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "The blocked syna_cdev_ioctl_raw_read and syna_cdev_ioctl_raw_write candidates are not part of this build or commit."
+  ]
+}

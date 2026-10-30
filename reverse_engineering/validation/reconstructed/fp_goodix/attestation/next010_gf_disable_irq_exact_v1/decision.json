@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "gf_disable_irq",
+  "stock_function": "gf_disable_irq",
+  "stock_entry": "001010d8",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "basis": "Fresh repaired-candidate Ghidra/P-Code comparison, exact AArch64 instruction and relocation parity, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and KCFI direct-call-only applicability check.",
+  "gates": {
+    "candidate_ghidra_pcode": "PASS",
+    "assembly_relocations": "PASS",
+    "docker_reproducible": "PASS",
+    "kcfi": "PASS_DIRECT_CALL_ONLY_NOT_APPLICABLE",
+    "joern_scoped": "PASS",
+    "joern_slice": "PASS",
+    "host_harness": "PASS"
+  },
+  "body_bytes": 64,
+  "instruction_count": 16,
+  "candidate_module_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+  "stock_module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "candidate_ghidra_export": "offline_static/ghidra_candidate_20260902_gf_disable_irq_repaired",
+  "ghidra_repairs": [
+    "ExtendGhidraFunctionBody.java gf_enable_irq 84",
+    "RepairGhidraCallTarget.java 00101f64 0010077c, derived from candidate Assembly R_AARCH64_CALL26 gf_disable_irq"
+  ],
+  "limitations": [
+    "This is static/offline function-level evidence; hardware behavior on NX809J remains unverified.",
+    "The Ghidra call-target repair is limited to one relocation-proven callsite and does not alter the raw stock evidence.",
+    "The KCFI direct-call check is not applicable because gf_disable_irq has kcfi_required=false and no validated indirect-call surface was requested.",
+    "The promotion does not claim that the remaining unpromoted fp_goodix functions are complete."
+  ]
+}

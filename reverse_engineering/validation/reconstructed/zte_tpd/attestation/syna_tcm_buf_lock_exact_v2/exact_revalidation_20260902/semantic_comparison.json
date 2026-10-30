@@ -1,0 +1,129 @@
+{
+  "candidate_export": {
+    "executable_md5": "55e4ef25df5f63e11544ff8716f186ce",
+    "manifest_sha256": "8b0fbbedc9658ad57fcb92d7aa36a73d2a89c031048bf6100621649d3be96035",
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_candidate_20260902_syna_tcm_buf_lock_repaired\\zte_tpd.ko"
+  },
+  "candidate_module": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zte_tpd_syna_tcm_buf_lock_protocol_20260902_v3\\docker\\artifacts\\hard_protocol_zte_tpd_60a4f5168a61\\zte_tpd\\zte_tpd.ko",
+    "sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce"
+  },
+  "generated_utc": "2026-09-01T15:21:03.455038+00:00",
+  "ghidra_return_propagation_fallback_allowed": false,
+  "identity_failures": [],
+  "method": "Ghidra normalized decompiled-C equality plus ordered instruction-mnemonic and P-Code-operation shape equality; optional explicit P-Code-authoritative fallback records lossy premature-return or external-call return-propagation decompilation",
+  "module_identity": {
+    "candidate": {
+      "manifest_executable_md5": "55e4ef25df5f63e11544ff8716f186ce",
+      "module": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zte_tpd_syna_tcm_buf_lock_protocol_20260902_v3\\docker\\artifacts\\hard_protocol_zte_tpd_60a4f5168a61\\zte_tpd\\zte_tpd.ko",
+      "observed_executable_md5": "55e4ef25df5f63e11544ff8716f186ce",
+      "passed": true
+    },
+    "stock": {
+      "manifest_executable_md5": "aa6d8877d82961aa20e76e0b8128bee6",
+      "module": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\stock\\zte_tpd.ko",
+      "observed_executable_md5": "aa6d8877d82961aa20e76e0b8128bee6",
+      "passed": true
+    }
+  },
+  "named_data_address_syntax_fallback_allowed": false,
+  "passed": true,
+  "pcode_authoritative_decompiler_fallback_allowed": true,
+  "requested_functions": [
+    "syna_tcm_buf_lock"
+  ],
+  "results": [
+    {
+      "candidate": {
+        "body_bytes": 88,
+        "decompiled_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_candidate_20260902_syna_tcm_buf_lock_repaired\\zte_tpd.ko\\decompiled\\0397_0015b620_syna_tcm_buf_lock.c",
+        "decompiled_sha256": "20f2835ec0303946eaae891eeb69b06edbec1ad6b63122e7ec0fbae23c078512",
+        "normalized_decompiled_sha256": "5028a7f1a3a325037c1623cad9985ec12d48b77a7bc038d6667163b41353b467",
+        "normalized_ghidra_artifacts": [],
+        "pcode_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_candidate_20260902_syna_tcm_buf_lock_repaired\\zte_tpd.ko\\pcode\\0397_0015b620_syna_tcm_buf_lock.jsonl",
+        "pcode_records": 67,
+        "pcode_sha256": "8703d17b39dd26d52bf9208b0bbac790a0a2e1c5278f4f81b48b4ae63d12c5ad",
+        "resolved_strings": [
+          {
+            "ghidra_address": "0016da50",
+            "identity": "0016da50",
+            "sha256": "234dcc7572212fc828ed33f28f3e0924ba50f8aa4a60ea2b82552948490c6f45",
+            "source": "elf_section_bytes",
+            "string_address_delta": 0,
+            "value": "3[error] %s: Buffer access out-of balance, %d\n"
+          }
+        ]
+      },
+      "checks": {
+        "body_bytes": true,
+        "decompiled": true,
+        "normalized_decompiled_c": false,
+        "pcode_operation_shape": true
+      },
+      "decompiled_normalization": {
+        "direct_match": false,
+        "fragmented_byte_global_fallback": null,
+        "named_data_address_syntax_fallback": null,
+        "pcode_authoritative_decompiler_fallback": {
+          "call_counts": {
+            "candidate": {
+              "_printk": 1,
+              "mutex_lock": 1
+            },
+            "stock": {
+              "_printk": 1,
+              "mutex_lock": 1
+            }
+          },
+          "candidate_shape": "inverted conditional renders diagnostic arm as early return",
+          "field_offsets": {
+            "lock_depth": "0x40",
+            "mutex": "0x10"
+          },
+          "kind": "ghidra_syna_tcm_buf_lock_back_edge_branch_artifact",
+          "requirement": "function-specific offsets, equal ELF body bytes and P-Code operation shape; independent AArch64 assembly and relocation parity remain mandatory",
+          "stock_shape": "diagnostic printk branch falls through a backward edge to common lock/increment path"
+        },
+        "return_propagation_fallback": null
+      },
+      "failures": [],
+      "function": "syna_tcm_buf_lock",
+      "passed": true,
+      "raw_failures": [
+        "normalized_decompiled_c"
+      ],
+      "stock": {
+        "body_bytes": 88,
+        "decompiled_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock\\decompiled\\0255_0011ede8_syna_tcm_buf_lock.c",
+        "decompiled_sha256": "6f72caf1e2c06948827747a369da9c752ed924e781a46e7c5fd6a9b3a4384b5e",
+        "normalized_decompiled_sha256": "79221feda442fd46faa250e687dfa941f0c7f21c8fe62fb82fd90537c54a409c",
+        "normalized_ghidra_artifacts": [],
+        "pcode_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock\\pcode\\0255_0011ede8_syna_tcm_buf_lock.jsonl",
+        "pcode_records": 67,
+        "pcode_sha256": "b512df102342c88957fd675ae41eec1216d8b1778c80f0b0d7f291535239f171",
+        "resolved_strings": [
+          {
+            "ghidra_address": "00138e56",
+            "identity": "00138e56",
+            "sha256": "234dcc7572212fc828ed33f28f3e0924ba50f8aa4a60ea2b82552948490c6f45",
+            "source": "elf_section_bytes",
+            "string_address_delta": 0,
+            "value": "3[error] %s: Buffer access out-of balance, %d\n"
+          }
+        ]
+      }
+    }
+  ],
+  "schema_version": "1.0",
+  "section_address_normalization_allowed": true,
+  "shared_data_binding_normalization_allowed": false,
+  "stock_export": {
+    "executable_md5": "aa6d8877d82961aa20e76e0b8128bee6",
+    "manifest_sha256": "c9379acb7909327ba114b12c8ce6bc308dfa3052b1135ae2c04efa62f943f61c",
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock"
+  },
+  "stock_module": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\stock\\zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_ir",
+  "function": "zte_ir_release",
+  "stock_entry": "001008c4",
+  "stock_module_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_module_sha256": "cc0a7dfe46caa27544bdcff2e358646a4a914159845bf5cb700c23d50632204f",
+  "body": {
+    "instructions": 20,
+    "bytes": 80,
+    "kcfi_type_id": "0x9829071d",
+    "stock_assembly_sha256": "9e24cabf7e8dc16f1c6e18d205d2443dffb45377fd4c943151feb2a9c2d6cfb3",
+    "candidate_assembly_sha256": "f29546fa6e716421305dc66dff2680be85ca05d5e2e5e1409e4e42bbafd4bab5"
+  },
+  "data_layout": {
+    "device_list_lock": ".data+0x0",
+    "evidence": "assembly/comparison.json and candidate Ghidra symbols"
+  },
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible": true,
+    "report": "host_test_report.json"
+  },
+  "limitations": [
+    "The result is static/offline and has no hardware claim.",
+    "The stock release body does not include the C safety layer's deferred-free logic.",
+    "Independent review O10 and controlled NX809J runtime validation remain pending."
+  ],
+  "evidence": {
+    "hard_protocol": "hard_protocol_report.json",
+    "assembly": "assembly/comparison.json",
+    "kcfi": "kcfi/comparison.json",
+    "ghidra": "semantic_comparison.json",
+    "joern": "joern/joern_gate_report.json",
+    "docker": "docker_reproducibility.json"
+  }
+}

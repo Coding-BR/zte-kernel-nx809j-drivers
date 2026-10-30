@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "021_tpd_probe_work_deinit",
+  "stock_function": "tpd_probe_work_deinit",
+  "stock_entry": "001084c0",
+  "stock_body_bytes": 68,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "a1bb9942cf04622c53d8c746bdb9ea180ac3193b3d6e080201e7c99e9194c211",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 17,
+    "instruction_count_candidate": 17,
+    "symbol_size_stock": 68,
+    "symbol_size_candidate": 68,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 2,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "deinit_contract",
+      "repeated_deinit_contract"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "e5e8bf8b8417ac501735b49af7fc8656b266d99db5b6768547ef0f00089615bf",
+    "aarch64_comparison.json": "f5c222ed572429bdbe8cdf97561f35f6e28dd62a17a6eb8e2af0bed02ff2b1f5",
+    "kcfi/comparison.json": "a937f3bd813544d8eff9f5a531509280987cb5b2c478f5409ebaf6cf4409629e",
+    "joern/joern_gate_report.json": "e2f42a95987c661cfddbee511b0809824dafae139edebf0e6cf6462cc39431da",
+    "host_harness_report.json": "bb5091b4bfe61177b0350947507c1543a4bf8bc1fa9c25b0e2b88f32749eedda",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host contract stubs cancel_delayed_work_sync and printk.",
+    "No physical NX809J, scheduler, Android service, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

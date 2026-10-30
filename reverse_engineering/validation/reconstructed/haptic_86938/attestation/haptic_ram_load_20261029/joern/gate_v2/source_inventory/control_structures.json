@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"ram_load","type":"IF","code":"if (!firmware) {\n\t\tprintk(KERN_ERR \"[%s][%04d]%s: failed to read %s\\n\",\n\t\t       \"haptic_hv\", 0x6e9, \"ram_load\", aw_ram_name);\n\t\trelease_firmware(firmware);\n\t\tif (load_cont > 0x14)\n\t\t\treturn;\n\t\tqueue_delayed_work_on(\n\t\t\t0x20, system_wq,\n\t\t\t(struct delayed_work *)((u8 *)haptic + 0x3c0), 0xfa);\n\t\tprintk(KERN_INFO \"[%s][%04d]%s: start hrtimer:load_cont%d\\n\",\n\t\t       \"haptic_hv\", 0x6ef, \"ram_load\", load_cont);\n\t\treturn;\n\t}","filename":"haptic_86938_fn_083_ram_load.i","line":60},
+    {"method":"ram_load","type":"IF","code":"if (load_cont > 0x14)\n\t\t\treturn;","filename":"haptic_86938_fn_083_ram_load.i","line":64},
+    {"method":"ram_load","type":"IF","code":"if (firmware->size >= 3) {\n\t\tfor (i = 2; i < firmware->size; i++)\n\t\t\tchecksum += firmware->data[i];\n\t\tchecksum &= 0xffff;\n\t}","filename":"haptic_86938_fn_083_ram_load.i","line":76},
+    {"method":"ram_load","type":"FOR","code":"for (i = 2;i < firmware->size;i++)","filename":"haptic_86938_fn_083_ram_load.i","line":77},
+    {"method":"ram_load","type":"IF","code":"if (checksum != be16_to_cpu(*(__be16 *)firmware->data)) {\n\t\tprintk(KERN_ERR \"[%s][%04d]%s: check sum err: check_sum=0x%04x\\n\",\n\t\t       \"haptic_hv\", 0x6f9, \"ram_load\", checksum);\n\t\trelease_firmware(firmware);\n\t\treturn;\n\t}","filename":"haptic_86938_fn_083_ram_load.i","line":82},
+    {"method":"ram_load","type":"IF","code":"if (!container) {\n\t\trelease_firmware(firmware);\n\t\tprintk(KERN_ERR \"[%s][%04d]%s: Error allocating memory\\n\",\n\t\t       \"haptic_hv\", 0x704, \"ram_load\");\n\t\treturn;\n\t}","filename":"haptic_86938_fn_083_ram_load.i","line":94},
+    {"method":"ram_load","type":"IF","code":"if (!result) {\n\t\t*(u8 *)((u8 *)haptic + 6) = 1;\n\t\t*(u32 *)((u8 *)haptic + 0x450) =\n\t\t\tcontainer->len - *(u8 *)((u8 *)haptic + 0x45e);\n\t\tprintk(KERN_INFO \"[%s][%04d]%s: ram firmware update complete!\\n\",\n\t\t       \"haptic_hv\", 0x711, \"ram_load\");\n\t\tget_ram_num(haptic);\n\t} else {\n\t\tprintk(KERN_ERR \"[%s][%04d]%s: ram firmware update failed!\\n\",\n\t\t       \"haptic_hv\", 0x70c, \"ram_load\");\n\t}","filename":"haptic_86938_fn_083_ram_load.i","line":107},
+    {"method":"ram_load","type":"ELSE","code":"else","filename":"haptic_86938_fn_083_ram_load.i","line":114}
+  ]
+}

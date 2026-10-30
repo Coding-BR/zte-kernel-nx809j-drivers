@@ -13,6 +13,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import shutil
 import struct
@@ -60,12 +61,28 @@ def repository_root_for_curated(curated_root: Path) -> Path | None:
 
 def public_evidence_paths(repository_root: Path, driver: str) -> tuple[Path, Path, Path]:
     """Resolve immutable public stock/Ghidra evidence without a private run tree."""
-    return (
-        repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko",
-        repository_root / "reverse_engineering" / "validation" / "reconstructed"
-        / driver / "offline_static" / "ghidra_stock",
+    transition = (
         repository_root / "kernel_development" / "drivers" / "reconstructed"
-        / driver / "DOCUMENTO_TRANSICAO.md",
+        / driver / "DOCUMENTO_TRANSICAO.md"
+    )
+    # Auxiliary drivers may have a STATUS.md instead of a separate transition
+    # document.  It is still a versioned provenance document and is sufficient
+    # for the offline existence/hash gate; the report preserves the exact path.
+    if not transition.is_file():
+        transition = transition.with_name("STATUS.md")
+    stock = repository_root / "reference_modules" / "full_vendor_boot" / f"{driver}.ko"
+    if not stock.is_file():
+        stock = repository_root / "reference_modules" / "stock" / f"{driver}.ko"
+    ghidra_root = (
+        repository_root / "reverse_engineering" / "validation" / "reconstructed"
+        / driver / "offline_static" / "ghidra_stock"
+    )
+    nested_export = ghidra_root / f"{driver}.ko"
+    ghidra_export = nested_export if (nested_export / "manifest.json").is_file() else ghidra_root
+    return (
+        stock,
+        ghidra_export,
+        transition,
     )
 
 
@@ -176,8 +193,54 @@ def parse_elf(path: Path) -> dict[str, Any]:
 
 
 def parse_modinfo(path: Path) -> dict[str, list[str]]:
+    data = path.read_bytes()
+    if len(data) < ELF_HEADER.size:
+        raise ValueError("ELF header is truncated while reading .modinfo")
+    header = ELF_HEADER.unpack_from(data)
+    if header[0][:4] != b"\x7fELF" or header[0][4] != 2 or header[0][5] != 1:
+        raise ValueError("expected ELF64 little-endian while reading .modinfo")
+    section_offset = header[6]
+    section_entry_size = header[11]
+    section_count = header[12]
+    string_table_index = header[13]
+    if (
+        section_entry_size < SECTION_HEADER.size
+        or section_count == 0
+        or string_table_index >= section_count
+    ):
+        raise ValueError("invalid ELF section table while reading .modinfo")
+
+    sections = []
+    for index in range(section_count):
+        offset = section_offset + index * section_entry_size
+        if offset + SECTION_HEADER.size > len(data):
+            raise ValueError("ELF section table exceeds file size while reading .modinfo")
+        sections.append(SECTION_HEADER.unpack_from(data, offset))
+
+    string_header = sections[string_table_index]
+    string_offset, string_size = string_header[4], string_header[5]
+    if string_offset + string_size > len(data):
+        raise ValueError("ELF section-name table exceeds file size")
+    section_names = data[string_offset : string_offset + string_size]
+    modinfo_data: bytes | None = None
+    for section in sections:
+        name_offset = section[0]
+        if name_offset >= len(section_names):
+            raise ValueError("ELF section name offset is invalid")
+        name_end = section_names.find(b"\0", name_offset)
+        if name_end < 0:
+            raise ValueError("ELF section name is unterminated")
+        name = section_names[name_offset:name_end].decode("utf-8", errors="replace")
+        if name != ".modinfo":
+            continue
+        content_offset, content_size = section[4], section[5]
+        if content_offset + content_size > len(data):
+            raise ValueError("ELF .modinfo section exceeds file size")
+        modinfo_data = data[content_offset : content_offset + content_size]
+        break
+
     values: dict[str, list[str]] = {}
-    for field in path.read_bytes().split(b"\0"):
+    for field in (modinfo_data or b"").split(b"\0"):
         text = field.decode("utf-8", errors="ignore")
         key, separator, value = text.partition("=")
         if separator and key in MODINFO_KEYS:
@@ -200,6 +263,157 @@ def command_record(command: list[str], *, timeout: int = 900) -> dict[str, Any]:
         "returncode": completed.returncode,
         "stdout": completed.stdout[-6000:],
         "stderr": completed.stderr[-6000:],
+    }
+
+
+def probe_docker_kernel_source(
+    *,
+    image: str,
+    image_id_expected: str | None,
+    source_volume: str,
+    toolchain_volume: str,
+    bindgen_volume: str,
+    clang_revision: str,
+    target_kernel: dict[str, Any],
+) -> dict[str, Any]:
+    """Record the mounted kernel identity and compare it with target evidence."""
+    source_provenance = target_kernel.get("source_provenance", {})
+    probe_code = """
+import hashlib
+import json
+import pathlib
+import subprocess
+
+def run(args):
+    result = subprocess.run(args, capture_output=True, text=True, check=False)
+    return result.stdout.strip() if result.returncode == 0 else None
+
+def digest(path):
+    try:
+        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
+    except OSError:
+        return None
+
+source_root = pathlib.Path("/work/src/kernel")
+common = source_root / "kernel_platform/common"
+build_output = source_root / ".codex-kbuild/identity"
+build_inputs = source_root / "target_build_inputs"
+localversion_rel = "kernel_platform/common/localversion.nx809j-target"
+bindgen = pathlib.Path("/work/bindgen/bin/bindgen")
+clang = pathlib.Path("/work/toolchains/__CLANG_REVISION__/bin/clang.real")
+rustc = pathlib.Path("/work/toolchains/rust-1.82.0/bin/rustc")
+clang_version = run([str(clang), "--version"])
+rust_toolchain = run([str(rustc), "--version"])
+
+print(json.dumps({
+    "source_head": run(["git", "-C", str(source_root), "rev-parse", "HEAD"]),
+    "source_repository": run(["git", "-C", str(source_root), "config", "--get", "remote.origin.url"]),
+    "kernel_release": run(["make", "-s", "-C", str(common), f"O={build_output}", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", "kernelrelease"]),
+    "config_sha256": digest(build_output / ".config"),
+    "module_symvers_sha256": digest(build_output / "Module.symvers"),
+    "localversion_sha256": digest(common / "localversion.nx809j-target"),
+    "bindgen_version": run([str(bindgen), "--version"]),
+    "bindgen_sha256": digest(bindgen),
+    "clang_revision": "__CLANG_REVISION__",
+    "clang_version": clang_version.splitlines()[0] if clang_version else None,
+    "clang_binary_sha256": digest(clang),
+    "rust_toolchain": rust_toolchain,
+    "rustc_sha256": digest(rustc),
+}))
+"""
+    probe_code = probe_code.replace("__CLANG_REVISION__", clang_revision)
+    probe_command = command_record(
+        [
+            "docker", "run", "--rm",
+            "-v", f"{source_volume}:/work/src:ro",
+            "-v", f"{toolchain_volume}:/work/toolchains:ro",
+            "-v", f"{bindgen_volume}:/work/bindgen:ro",
+            "-e", "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w", "/work/src/kernel",
+            image, "python3", "-c", probe_code,
+        ],
+        timeout=300,
+    )
+    observed: dict[str, Any] = {}
+    probe_error: str | None = None
+    if probe_command["returncode"] == 0:
+        try:
+            observed = json.loads(probe_command["stdout"])
+        except (TypeError, ValueError, json.JSONDecodeError) as error:
+            probe_error = f"Docker source probe returned invalid JSON: {error}"
+    else:
+        probe_error = "Docker source probe failed"
+
+    image_command = command_record(
+        ["docker", "image", "inspect", "--format", "{{.Id}}", image],
+        timeout=60,
+    )
+    image_id = image_command["stdout"].strip() if image_command["returncode"] == 0 else None
+    observed["docker_image"] = image
+    observed["docker_image_id"] = image_id
+
+    comparisons = {
+        "source_head": (
+            source_provenance.get("commit"), observed.get("source_head")
+        ),
+        "source_repository": (
+            source_provenance.get("repository"), observed.get("source_repository")
+        ),
+        "kernel_release": (
+            target_kernel.get("kernel_release"), observed.get("kernel_release")
+        ),
+        "config_sha256": (
+            target_kernel.get("config_sha256"), observed.get("config_sha256")
+        ),
+        "module_symvers_sha256": (
+            target_kernel.get("module_symvers_sha256"),
+            observed.get("module_symvers_sha256"),
+        ),
+        "localversion_sha256": (
+            source_provenance.get("localversion_asset_sha256"),
+            observed.get("localversion_sha256"),
+        ),
+        "bindgen_version": (
+            target_kernel.get("bindgen_version"),
+            observed.get("bindgen_version", "").removeprefix("bindgen "),
+        ),
+        "bindgen_sha256": (
+            target_kernel.get("bindgen_sha256"), observed.get("bindgen_sha256")
+        ),
+        "clang_revision": (
+            target_kernel.get("toolchain"), observed.get("clang_revision")
+        ),
+        "clang_version": (
+            target_kernel.get("clang_version"), observed.get("clang_version")
+        ),
+        "clang_binary_sha256": (
+            target_kernel.get("clang_binary_sha256"), observed.get("clang_binary_sha256")
+        ),
+        "rust_toolchain": (
+            target_kernel.get("rust_toolchain"), observed.get("rust_toolchain")
+        ),
+        "rustc_sha256": (
+            target_kernel.get("rustc_sha256"), observed.get("rustc_sha256")
+        ),
+        "docker_image_id": (image_id_expected, image_id),
+    }
+    checks = {
+        key: expected is None or (actual is not None and expected == actual)
+        for key, (expected, actual) in comparisons.items()
+    }
+    required = [key for key, (expected, _actual) in comparisons.items() if expected is not None]
+    mismatches = [key for key in required if not checks[key]]
+    passed = probe_error is None and bool(required) and not mismatches
+    return {
+        "passed": passed,
+        "status": "MATCH" if passed else "SOURCE_INPUT_MISMATCH",
+        "probe_error": probe_error,
+        "observed": observed,
+        "expected": {key: value[0] for key, value in comparisons.items()},
+        "checks": checks,
+        "mismatches": mismatches,
+        "probe_command": probe_command,
+        "image_command": image_command,
     }
 
 
@@ -278,22 +492,34 @@ def reconstruction_map_check(
     driver_dir: Path, stock_sha256: str | None, ghidra_names: list[str]
 ) -> tuple[dict[str, Any], list[str]]:
     path = driver_dir / "reconstruction_map.json"
-    errors: list[str] = []
-    result: dict[str, Any] = {"path": str(path), "exists": path.is_file(), "passed": False}
+    traceability_errors: list[str] = []
+    review_errors: list[str] = []
+    result: dict[str, Any] = {
+        "path": str(path),
+        "exists": path.is_file(),
+        "passed": False,
+        "traceability_passed": False,
+        "mapping_review_passed": False,
+    }
     if not path.is_file():
-        return result, ["reconstruction_map.json is missing"]
+        message = "reconstruction_map.json is missing"
+        result.update({"traceability_errors": [message], "mapping_review_errors": [message]})
+        return result, [message]
     try:
         payload = read_json(path)
         mappings = payload.get("mappings")
         if payload.get("stock_sha256") != stock_sha256:
-            errors.append("reconstruction map stock SHA-256 does not match acquired module")
+            traceability_errors.append(
+                "reconstruction map stock SHA-256 does not match acquired module"
+            )
         if not isinstance(mappings, list):
-            errors.append("reconstruction map has no mappings array")
+            traceability_errors.append("reconstruction map has no mappings array")
             mappings = []
         mapped_names: set[str] = set()
+        duplicate_names: set[str] = set()
         for index, mapping in enumerate(mappings):
             if not isinstance(mapping, dict):
-                errors.append(f"mapping {index} is not an object")
+                traceability_errors.append(f"mapping {index} is not an object")
                 continue
             stock_name = mapping.get("stock_function")
             source_file = mapping.get("source_file")
@@ -301,31 +527,71 @@ def reconstruction_map_check(
             status = mapping.get("status")
             evidence = mapping.get("evidence")
             if not all(isinstance(value, str) and value for value in (stock_name, source_file, source_function)):
-                errors.append(f"mapping {index} lacks stock_function/source_file/source_function")
+                traceability_errors.append(
+                    f"mapping {index} lacks stock_function/source_file/source_function"
+                )
                 continue
             if not (driver_dir / source_file).is_file():
-                errors.append(f"mapping {index} refers to missing source file: {source_file}")
-            if status != "reviewed":
-                errors.append(f"mapping {index} is not independently reviewed")
+                traceability_errors.append(
+                    f"mapping {index} refers to missing source file: {source_file}"
+                )
+            if stock_name in mapped_names:
+                duplicate_names.add(stock_name)
+            if status not in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
+                review_errors.append(f"mapping {index} is not independently reviewed")
             if not isinstance(evidence, list) or not evidence or not all(
                 isinstance(item, str) and item.strip() for item in evidence
             ):
-                errors.append(f"mapping {index} has no review evidence")
+                review_errors.append(f"mapping {index} has no review evidence")
             mapped_names.add(stock_name)
+        for name in sorted(duplicate_names):
+            traceability_errors.append(f"reconstruction map has duplicate stock function: {name}")
         unmapped = sorted(set(ghidra_names) - mapped_names)
         if unmapped:
-            errors.append(f"reconstruction map leaves {len(unmapped)} Ghidra functions unmapped")
+            traceability_errors.append(
+                f"reconstruction map leaves {len(unmapped)} Ghidra functions unmapped"
+            )
         result.update(
             {
                 "stock_sha256": payload.get("stock_sha256"),
                 "mapped_functions": len(mapped_names),
                 "unmapped_functions": unmapped,
+                "traceability_passed": not traceability_errors,
+                "mapping_review_passed": not review_errors,
+                "traceability_errors": traceability_errors,
+                "mapping_review_errors": review_errors,
             }
         )
     except (OSError, ValueError, json.JSONDecodeError) as error:
-        errors.append(f"invalid reconstruction map: {error}")
-    result["passed"] = not errors
-    return result, errors
+        traceability_errors.append(f"invalid reconstruction map: {error}")
+        review_errors.append("mapping review cannot be evaluated because the map is invalid")
+        result.update(
+            {
+                "traceability_errors": traceability_errors,
+                "mapping_review_errors": review_errors,
+            }
+        )
+    result["traceability_passed"] = not traceability_errors
+    result["mapping_review_passed"] = not review_errors
+    result["passed"] = result["traceability_passed"] and result["mapping_review_passed"]
+    return result, traceability_errors + review_errors
+
+
+PROMOTION_PARITY_KEYS = (
+    "aarch64_rel",
+    "alias_match",
+    "kernel_source_identity",
+    "namespace_match",
+    "undefined_symbols_match",
+    "vermagic_accepted",
+)
+
+
+def fresh_build_is_promotable(build_result: dict[str, Any], metadata: dict[str, Any]) -> bool:
+    """Allow promotion only after reproducible rebuild and module parity gates pass."""
+    return bool(build_result.get("passed")) and all(
+        bool(metadata.get(key)) for key in PROMOTION_PARITY_KEYS
+    )
 
 
 def build_twice(
@@ -336,7 +602,10 @@ def build_twice(
     image: str,
     source_volume: str,
     toolchain_volume: str,
+    bindgen_volume: str,
     clang_revision: str,
+    target_kernel: dict[str, Any] | None = None,
+    parallelism: int = 8,
 ) -> tuple[dict[str, Any], Path | None, list[str]]:
     errors: list[str] = []
     work_dir = work_root / driver
@@ -344,7 +613,13 @@ def build_twice(
         shutil.rmtree(work_dir)
     work_dir.mkdir(parents=True)
     toolchain_bin = f"/work/toolchains/{clang_revision}/bin"
+    bindgen_bin = "/work/bindgen/bin"
+    kernel_source = "/work/src/kernel/kernel_platform/common"
+    separate_objtree = bool(target_kernel and target_kernel.get("source_provenance"))
+    expected_release = target_kernel.get("kernel_release") if target_kernel else None
     commands: dict[str, Any] = {}
+    kernel_output_volumes: dict[str, str] = {}
+    source_epoch = 946684800
 
     def clean_build(cycle: str, command_prefix: str) -> tuple[Path, dict[str, Any]]:
         cycle_dir = work_dir / cycle
@@ -356,22 +631,111 @@ def build_twice(
                 "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
             ),
         )
+        for path in cycle_dir.rglob("*"):
+            if path.is_file():
+                path.touch()
+                os.utime(path, (source_epoch, source_epoch))
         container_dir = f"/work/validation/{driver}/{cycle}"
-        base = [
+        kernel_output_volume: str | None = None
+        container_kernel_out = "/work/kernel_out"
+        if separate_objtree:
+            volume_key = hashlib.sha256(
+                f"{work_root.resolve()}\0{driver}\0{cycle}".encode("utf-8")
+            ).hexdigest()[:12]
+            kernel_output_volume = f"codex-kbuild-{driver[:24]}-{cycle[-1]}-{volume_key}"
+            kernel_output_volumes[cycle] = kernel_output_volume
+            commands[f"create_kernel_output_volume_{command_prefix}"] = command_record(
+                ["docker", "volume", "create", kernel_output_volume], timeout=60
+            )
+            if commands[f"create_kernel_output_volume_{command_prefix}"]["returncode"] != 0:
+                errors.append(f"could not create kernel output volume for {cycle}")
+                return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
+        path_value = (
+            f"{bindgen_bin}:{toolchain_bin}:/work/toolchains/rust-1.82.0/bin"
+            ":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        )
+        if separate_objtree:
+            prepare_lines = [
+                "set -eu",
+                f"S={kernel_source}",
+                f"O={container_kernel_out}",
+                "I=/work/src/kernel/.codex-kbuild/identity",
+                'make -s -C "$S" O="$O" ARCH=arm64 mrproper',
+                'mkdir -p "$O"',
+                'cp -a "$I/." "$O/"',
+                'cmp "$O/.config" "$I/.config"',
+                'cmp "$O/Module.symvers" "$I/Module.symvers"',
+            ]
+            if expected_release and re.fullmatch(r"[A-Za-z0-9.+_-]+", expected_release):
+                prepare_lines.append(
+                    'test "$(make -s -C "$S" O="$O" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)" = '
+                    f'"{expected_release}"'
+                )
+            prepare_command = [
+                "docker", "run", "--rm",
+                "-v", f"{source_volume}:/work/src:ro",
+                "-v", f"{toolchain_volume}:/work/toolchains:ro",
+                "-v", f"{bindgen_volume}:/work/bindgen:ro",
+                "-v", f"{kernel_output_volume}:/work/kernel_out",
+                "-v", f"{work_root}:/work/validation",
+                "-e", f"PATH={path_value}",
+                "-e", "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+                "-e", "KBUILD_BUILD_USER=codex",
+                "-e", "KBUILD_BUILD_HOST=reproducible",
+                "-w", "/work/src/kernel",
+                image, "bash", "-lc", "\n".join(prepare_lines),
+            ]
+            commands[f"prepare_{command_prefix}"] = command_record(prepare_command)
+            if commands[f"prepare_{command_prefix}"]["returncode"] != 0:
+                errors.append(f"kernel output-tree preparation failed for {cycle}")
+                commands[f"clean_{command_prefix}"] = {
+                    "argv": [], "returncode": commands[f"prepare_{command_prefix}"]["returncode"],
+                    "stdout": "", "stderr": "skipped because kernel output-tree preparation failed",
+                }
+                commands[f"build_{command_prefix}"] = dict(commands[f"clean_{command_prefix}"])
+                return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
+        docker_prefix = [
             "docker", "run", "--rm",
             "-v", f"{source_volume}:/work/src:ro",
             "-v", f"{toolchain_volume}:/work/toolchains:ro",
             "-v", f"{work_root}:/work/validation",
-            "-e", f"PATH={toolchain_bin}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "-w", "/work/src/kernel/kernel_platform/common",
-            image,
-            "make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
-            f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd",
+        ]
+        if separate_objtree:
+            docker_prefix.extend(
+                [
+                    "-v", f"{bindgen_volume}:/work/bindgen:ro",
+                    "-v", f"{kernel_output_volume}:/work/kernel_out",
+                    "-e", f"PATH={path_value}",
+                    "-e", "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+                    "-e", "KBUILD_BUILD_USER=codex",
+                    "-e", "KBUILD_BUILD_HOST=reproducible",
+                    "-w", "/work/src/kernel",
+                ]
+            )
+            make_args = [
+                "make", "-C", kernel_source, f"O={container_kernel_out}",
+                "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}",
+            ]
+        else:
+            docker_prefix.extend(
+                [
+                    "-e", f"PATH={toolchain_bin}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                    "-w", "/work/src/kernel/kernel_platform/common",
+                ]
+            )
+            make_args = ["make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}"]
+        base = docker_prefix + [image] + make_args + [
+            (
+                f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"
+                f" -fdebug-prefix-map={container_dir}=/zte_tpd"
+            )
         ]
         if (cycle_dir / "vendor.Module.symvers").is_file():
             base.append(f"KBUILD_EXTRA_SYMBOLS={container_dir}/vendor.Module.symvers")
         commands[f"clean_{command_prefix}"] = command_record([*base, "clean"])
-        commands[f"build_{command_prefix}"] = command_record([*base, "modules"])
+        commands[f"build_{command_prefix}"] = command_record(
+            [*base, "-j", str(parallelism), "modules"]
+        )
         return cycle_dir / f"{driver}.ko", file_record(cycle_dir / f"{driver}.ko")
 
     first_module, first = clean_build("cycle_1", "first")
@@ -390,6 +754,7 @@ def build_twice(
             "work_dir": str(work_dir),
             "cycle_dirs": [str(first_module.parent), str(second_module.parent)],
             "commands": commands,
+            "kernel_output_volumes": kernel_output_volumes,
             "first_build": first,
             "second_build": second,
             "reproducible": reproducible,
@@ -412,7 +777,9 @@ def validate_regular_driver(
     image: str,
     source_volume: str,
     toolchain_volume: str,
+    bindgen_volume: str,
     clang_revision: str,
+    parallelism: int,
     target_kernel: dict[str, Any] | None,
     promote_fresh: bool,
 ) -> dict[str, Any]:
@@ -431,7 +798,8 @@ def validate_regular_driver(
         errors.append("driver source tree or Makefile is incomplete")
     if not stock.is_file():
         errors.append("acquired stock module is missing from the selected evidence source")
-    if not candidate.is_file():
+    candidate_missing = not candidate.is_file()
+    if candidate_missing and not (promote_fresh and rebuild):
         errors.append("current reconstructed .ko is missing")
 
     ghidra, ghidra_errors = ghidra_check(ghidra_export, transition_document)
@@ -443,8 +811,39 @@ def validate_regular_driver(
     map_result, map_errors = reconstruction_map_check(
         driver_dir, stock_record.get("sha256"), ghidra["function_names"]
     )
-    checks["function_traceability"] = map_result["passed"]
+    checks["function_traceability"] = map_result["traceability_passed"]
+    checks["mapping_review"] = map_result["mapping_review_passed"]
     warnings.extend(map_errors)
+
+    kernel_source_identity: dict[str, Any] = {"required": target_kernel is not None}
+    if target_kernel is not None:
+        try:
+            kernel_source_identity = probe_docker_kernel_source(
+                image=image,
+                image_id_expected=target_kernel.get("docker_image_id"),
+                source_volume=source_volume,
+                toolchain_volume=toolchain_volume,
+                bindgen_volume=bindgen_volume,
+                clang_revision=clang_revision,
+                target_kernel=target_kernel,
+            )
+            kernel_source_identity["required"] = True
+        except (OSError, subprocess.SubprocessError, ValueError) as error:
+            kernel_source_identity.update(
+                {
+                    "required": True,
+                    "passed": False,
+                    "probe_error": f"Docker source identity probe failed: {error}",
+                    "mismatches": ["probe"],
+                }
+            )
+        checks["kernel_source_identity"] = kernel_source_identity.get("passed") is True
+        if not checks["kernel_source_identity"]:
+            mismatch_names = ", ".join(kernel_source_identity.get("mismatches", [])) or "probe"
+            errors.append(f"Docker kernel source identity does not match target manifest: {mismatch_names}")
+    else:
+        kernel_source_identity.update({"passed": True, "reason": "no target kernel manifest supplied"})
+        checks["kernel_source_identity"] = True
 
     build_result: dict[str, Any] = {"requested": rebuild, "passed": False}
     fresh_module: Path | None = None
@@ -456,7 +855,10 @@ def validate_regular_driver(
             image=image,
             source_volume=source_volume,
             toolchain_volume=toolchain_volume,
+            bindgen_volume=bindgen_volume,
             clang_revision=clang_revision,
+            target_kernel=target_kernel,
+            parallelism=parallelism,
         )
         errors.extend(build_errors)
     elif not rebuild:
@@ -489,7 +891,10 @@ def validate_regular_driver(
                 "vermagic_match": stock_vermagic_match,
                 "target_vermagic": target_vermagic,
                 "target_vermagic_match": target_vermagic_match,
-                "vermagic_accepted": stock_vermagic_match or target_vermagic_match,
+                "vermagic_accepted": (
+                    target_vermagic_match if target_kernel is not None else stock_vermagic_match
+                ),
+                "kernel_source_identity": kernel_source_identity.get("passed") is True,
                 "alias_match": stock_modinfo.get("alias", []) == fresh_modinfo.get("alias", []),
                 "namespace_match": stock_modinfo.get("import_ns", []) == fresh_modinfo.get("import_ns", []),
                 "undefined_symbols_match": stock_elf["undefined_symbols"] == fresh_elf["undefined_symbols"],
@@ -501,16 +906,7 @@ def validate_regular_driver(
                 ),
                 "candidate_matches_fresh": candidate_record.get("sha256") == sha256_file(fresh_module),
             }
-            promotable = all(
-                metadata[key]
-                for key in (
-                    "aarch64_rel",
-                    "alias_match",
-                    "namespace_match",
-                    "undefined_symbols_match",
-                    "vermagic_accepted",
-                )
-            )
+            promotable = fresh_build_is_promotable(build_result, metadata)
             if promote_fresh and promotable:
                 shutil.copy2(fresh_module, candidate)
                 candidate_record = file_record(candidate)
@@ -522,6 +918,7 @@ def validate_regular_driver(
                 metadata["fresh_promoted"] = False
             for key in (
                 "aarch64_rel",
+                "kernel_source_identity",
                 "vermagic_accepted",
                 "alias_match",
                 "namespace_match",
@@ -544,6 +941,14 @@ def validate_regular_driver(
         ):
             checks[key] = False
 
+    # A requested promotion may have created the canonical module after the
+    # initial source-tree checks. Report it missing only if promotion did not
+    # produce the artifact.
+    if not candidate.is_file() and not any(
+        error == "current reconstructed .ko is missing" for error in errors
+    ):
+        errors.append("current reconstructed .ko is missing")
+
     complete = not errors and map_result["passed"] and build_result.get("passed", False)
     status = "static_verified" if complete else "incomplete_or_failed"
     return {
@@ -554,6 +959,7 @@ def validate_regular_driver(
         "candidate": candidate_record,
         "ghidra": ghidra,
         "traceability": map_result,
+        "kernel_source_identity": kernel_source_identity,
         "build": build_result,
         "metadata": metadata,
         "checks": checks,
@@ -606,7 +1012,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
     parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
+    parser.add_argument("--bindgen-volume", default="nx809j_bindgen_0695")
     parser.add_argument("--clang-revision", default="clang-r536225")
+    parser.add_argument(
+        "--parallelism",
+        type=int,
+        default=8,
+        help="parallel make jobs for each clean Docker rebuild",
+    )
     parser.add_argument(
         "--target-kernel-manifest",
         type=Path,
@@ -687,7 +1100,9 @@ def main() -> int:
                 image=args.image,
                 source_volume=args.source_volume,
                 toolchain_volume=args.toolchain_volume,
+                bindgen_volume=args.bindgen_volume,
                 clang_revision=args.clang_revision,
+                parallelism=args.parallelism,
                 target_kernel=target_kernel,
                 promote_fresh=args.promote_fresh,
             )

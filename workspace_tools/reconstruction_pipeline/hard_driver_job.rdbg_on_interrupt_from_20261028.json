@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "profiles": [
+    "CALLBACK_ABI",
+    "CONCURRENCY_LIFETIME"
+  ],
+  "functions": [
+    {
+      "stock_function": "on_interrupt_from",
+      "stock_entry": "00101600",
+      "source_function": "on_interrupt_from",
+      "candidate_function": "on_interrupt_from",
+      "stock_symbol_offset": "0x1158",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/rdbg",
+    "stock_module": "reference_modules/full_vendor_boot/rdbg.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/rdbg",
+    "define": ["__user", "__init", "__exit"],
+    "slice": {"mode": "off"}
+  },
+  "kcfi": {"ignore_size": true},
+  "ghidra": {"allow_section_address_normalization": true},
+  "evidence": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/rdbg.ko",
+      "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12"
+    },
+    "stock_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/manifest.json"
+    },
+    "stock_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json"
+    },
+    "device_tree_context": {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/device_tree_context.json"
+    }
+  }
+}

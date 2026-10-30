@@ -19,7 +19,7 @@ Disassembly of section .text:
       34: 52800328     	mov	w8, #0x19               // =25
       38: b90007ff     	str	wzr, [sp, #0x4]
       3c: 390003e8     	strb	w8, [sp]
-      40: 540013a1     	b.ne	0x2b4 <gf_ioctl+0x2b0>
+      40: 54001881     	b.ne	0x350 <gf_ioctl+0x34c>
       44: a900ffff     	stp	xzr, xzr, [sp, #0x8]
       48: 37f800a1     	tbnz	w1, #0x1f, 0x5c <gf_ioctl+0x58>
       4c: 531e7c28     	lsr	w8, w1, #30
@@ -40,7 +40,7 @@ Disassembly of section .text:
       88: eb09011f     	cmp	x8, x9
       8c: 54000062     	b.hs	0x98 <gf_ioctl+0x94>
       90: 928001a0     	mov	x0, #-0xe               // =-14
-      94: 14000089     	b	0x2b8 <gf_ioctl+0x2b4>
+      94: 140000b0     	b	0x354 <gf_ioctl+0x350>
       98: 90000013     	adrp	x19, 0x0 <.text>
 		0000000000000098:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x80
       9c: 39400268     	ldrb	w8, [x19]
@@ -61,14 +61,14 @@ Disassembly of section .text:
       d4: 528ce0a8     	mov	w8, #0x6705             // =26373
       d8: 72a80088     	movk	w8, #0x4004, lsl #16
       dc: 6b08003f     	cmp	w1, w8
-      e0: 54000ec0     	b.eq	0x2b8 <gf_ioctl+0x2b4>
+      e0: 540013a0     	b.eq	0x354 <gf_ioctl+0x350>
       e4: 140000a7     	b	0x380 <gf_ioctl+0x37c>
       e8: 528ce048     	mov	w8, #0x6702             // =26370
       ec: 6b08003f     	cmp	w1, w8
       f0: 5400026d     	b.le	0x13c <gf_ioctl+0x138>
       f4: 528ce0c8     	mov	w8, #0x6706             // =26374
       f8: 6b08003f     	cmp	w1, w8
-      fc: 54000de0     	b.eq	0x2b8 <gf_ioctl+0x2b4>
+      fc: 540012c0     	b.eq	0x354 <gf_ioctl+0x350>
      100: 528ce068     	mov	w8, #0x6703             // =26371
      104: 6b08003f     	cmp	w1, w8
      108: 54001a20     	b.eq	0x44c <gf_ioctl+0x448>
@@ -97,7 +97,7 @@ Disassembly of section .text:
      148: 528ce008     	mov	w8, #0x6700             // =26368
      14c: 72b00028     	movk	w8, #0x8001, lsl #16
      150: 6b08003f     	cmp	w1, w8
-     154: 54000e60     	b.eq	0x320 <gf_ioctl+0x31c>
+     154: 54000d80     	b.eq	0x304 <gf_ioctl+0x300>
      158: 528ce168     	mov	w8, #0x670b             // =26379
      15c: 72b00028     	movk	w8, #0x8001, lsl #16
      160: 6b08003f     	cmp	w1, w8
@@ -109,7 +109,7 @@ Disassembly of section .text:
      170: 14000099     	b	0x3d4 <gf_ioctl+0x3d0>
      174: 528ce128     	mov	w8, #0x6709             // =26377
      178: 6b08003f     	cmp	w1, w8
-     17c: 54000b4c     	b.gt	0x2e4 <gf_ioctl+0x2e0>
+     17c: 54000a6c     	b.gt	0x2c8 <gf_ioctl+0x2c4>
      180: 528ce0e8     	mov	w8, #0x6707             // =26375
      184: 6b08003f     	cmp	w1, w8
      188: 54001040     	b.eq	0x390 <gf_ioctl+0x38c>
@@ -138,10 +138,10 @@ Disassembly of section .text:
      1c0: aa1f03e0     	mov	x0, xzr
      1c4: 3900027f     	strb	wzr, [x19]
 		00000000000001c4:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x80
-     1c8: 1400003c     	b	0x2b8 <gf_ioctl+0x2b4>
+     1c8: 14000063     	b	0x354 <gf_ioctl+0x350>
      1cc: 528ce028     	mov	w8, #0x6701             // =26369
      1d0: 6b08003f     	cmp	w1, w8
-     1d4: 54000c00     	b.eq	0x354 <gf_ioctl+0x350>
+     1d4: 54000b20     	b.eq	0x338 <gf_ioctl+0x334>
      1d8: 528ce048     	mov	w8, #0x6702             // =26370
      1dc: 6b08003f     	cmp	w1, w8
      1e0: 54000d01     	b.ne	0x380 <gf_ioctl+0x37c>
@@ -213,83 +213,83 @@ Disassembly of section .text:
      294: 1400003d     	b	0x388 <gf_ioctl+0x384>
      298: 128ce0c8     	mov	w8, #-0x6707            // =-26375
      29c: 0b080028     	add	w8, w1, w8
-     2a0: 7100091f     	cmp	w8, #0x2
-     2a4: 540005e3     	b.lo	0x360 <gf_ioctl+0x35c>
+     2a0: 7100051f     	cmp	w8, #0x1
+     2a4: 54000508     	b.hi	0x344 <gf_ioctl+0x340>
      2a8: 90000000     	adrp	x0, 0x0 <.text>
-		00000000000002a8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x78
+		00000000000002a8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x131
      2ac: 91000000     	add	x0, x0, #0x0
-		00000000000002ac:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x78
-     2b0: 94000000     	bl	0x2b0 <gf_ioctl+0x2ac>
-		00000000000002b0:  R_AARCH64_CALL26	_printk
-     2b4: 92800240     	mov	x0, #-0x13              // =-19
-     2b8: d5384108     	mrs	x8, SP_EL0
-     2bc: f9438908     	ldr	x8, [x8, #0x710]
-     2c0: f85f83a9     	ldur	x9, [x29, #-0x8]
-     2c4: eb09011f     	cmp	x8, x9
-     2c8: 54001641     	b.ne	0x590 <gf_ioctl+0x58c>
-     2cc: a9444ff4     	ldp	x20, x19, [sp, #0x40]
-     2d0: f9401bf5     	ldr	x21, [sp, #0x30]
-     2d4: a9427bfd     	ldp	x29, x30, [sp, #0x20]
-     2d8: 910143ff     	add	sp, sp, #0x50
-     2dc: d50323bf     	autiasp
-     2e0: d65f03c0     	ret
-     2e4: 528ce148     	mov	w8, #0x670a             // =26378
-     2e8: 6b08003f     	cmp	w1, w8
-     2ec: 54000700     	b.eq	0x3cc <gf_ioctl+0x3c8>
-     2f0: 528ce188     	mov	w8, #0x670c             // =26380
-     2f4: 6b08003f     	cmp	w1, w8
-     2f8: 54000441     	b.ne	0x380 <gf_ioctl+0x37c>
-     2fc: 90000000     	adrp	x0, 0x0 <.text>
-		00000000000002fc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xc2
-     300: 91000000     	add	x0, x0, #0x0
-		0000000000000300:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xc2
-     304: 90000001     	adrp	x1, 0x0 <.text>
-		0000000000000304:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xfc3
-     308: 91000021     	add	x1, x1, #0x0
-		0000000000000308:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xfc3
-     30c: 94000000     	bl	0x30c <gf_ioctl+0x308>
-		000000000000030c:  R_AARCH64_CALL26	_printk
-     310: 90000000     	adrp	x0, 0x0 <.text>
-		0000000000000310:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x10
-     314: 91000000     	add	x0, x0, #0x0
-		0000000000000314:  R_AARCH64_ADD_ABS_LO12_NC	.bss+0x10
+		00000000000002ac:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x131
+     2b0: 2a0103f4     	mov	w20, w1
+     2b4: aa0203f5     	mov	x21, x2
+     2b8: 94000000     	bl	0x2b8 <gf_ioctl+0x2b4>
+		00000000000002b8:  R_AARCH64_CALL26	_printk
+     2bc: aa1503e2     	mov	x2, x21
+     2c0: 2a1403e1     	mov	w1, w20
+     2c4: 17ffff78     	b	0xa4 <gf_ioctl+0xa0>
+     2c8: 528ce148     	mov	w8, #0x670a             // =26378
+     2cc: 6b08003f     	cmp	w1, w8
+     2d0: 540007e0     	b.eq	0x3cc <gf_ioctl+0x3c8>
+     2d4: 528ce188     	mov	w8, #0x670c             // =26380
+     2d8: 6b08003f     	cmp	w1, w8
+     2dc: 54000521     	b.ne	0x380 <gf_ioctl+0x37c>
+     2e0: 90000000     	adrp	x0, 0x0 <.text>
+		00000000000002e0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xc2
+     2e4: 91000000     	add	x0, x0, #0x0
+		00000000000002e4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xc2
+     2e8: 90000001     	adrp	x1, 0x0 <.text>
+		00000000000002e8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xfc3
+     2ec: 91000021     	add	x1, x1, #0x0
+		00000000000002ec:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xfc3
+     2f0: 94000000     	bl	0x2f0 <gf_ioctl+0x2ec>
+		00000000000002f0:  R_AARCH64_CALL26	_printk
+     2f4: 90000000     	adrp	x0, 0x0 <.text>
+		00000000000002f4:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x10
+     2f8: 91000000     	add	x0, x0, #0x0
+		00000000000002f8:  R_AARCH64_ADD_ABS_LO12_NC	.bss+0x10
+     2fc: 94000000     	bl	0x2fc <gf_ioctl+0x2f8>
+		00000000000002fc:  R_AARCH64_CALL26	gf_cleanup
+     300: 14000038     	b	0x3e0 <gf_ioctl+0x3dc>
+     304: 90000000     	adrp	x0, 0x0 <.text>
+		0000000000000304:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xa5
+     308: 91000000     	add	x0, x0, #0x0
+		0000000000000308:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xa5
+     30c: 90000001     	adrp	x1, 0x0 <.text>
+		000000000000030c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xfc3
+     310: 91000021     	add	x1, x1, #0x0
+		0000000000000310:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xfc3
+     314: aa0203f3     	mov	x19, x2
      318: 94000000     	bl	0x318 <gf_ioctl+0x314>
-		0000000000000318:  R_AARCH64_CALL26	gf_cleanup
-     31c: 14000031     	b	0x3e0 <gf_ioctl+0x3dc>
-     320: 90000000     	adrp	x0, 0x0 <.text>
-		0000000000000320:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xa5
-     324: 91000000     	add	x0, x0, #0x0
-		0000000000000324:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xa5
-     328: 90000001     	adrp	x1, 0x0 <.text>
-		0000000000000328:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xfc3
-     32c: 91000021     	add	x1, x1, #0x0
-		000000000000032c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xfc3
-     330: aa0203f3     	mov	x19, x2
-     334: 94000000     	bl	0x334 <gf_ioctl+0x330>
-		0000000000000334:  R_AARCH64_CALL26	_printk
-     338: 910003e1     	mov	x1, sp
-     33c: aa1303e0     	mov	x0, x19
-     340: 940001f4     	bl	0xb10 <_inline_copy_to_user>
-     344: 928001a8     	mov	x8, #-0xe               // =-14
-     348: f100001f     	cmp	x0, #0x0
-     34c: 9a8803e0     	csel	x0, xzr, x8, eq
-     350: 17ffffda     	b	0x2b8 <gf_ioctl+0x2b4>
-     354: 90000000     	adrp	x0, 0x0 <.text>
-		0000000000000354:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x9c7
-     358: 91000000     	add	x0, x0, #0x0
-		0000000000000358:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x9c7
-     35c: 1400001e     	b	0x3d4 <gf_ioctl+0x3d0>
-     360: 90000000     	adrp	x0, 0x0 <.text>
-		0000000000000360:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x131
-     364: 91000000     	add	x0, x0, #0x0
-		0000000000000364:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x131
-     368: 2a0103f4     	mov	w20, w1
-     36c: aa0203f5     	mov	x21, x2
-     370: 94000000     	bl	0x370 <gf_ioctl+0x36c>
-		0000000000000370:  R_AARCH64_CALL26	_printk
-     374: aa1503e2     	mov	x2, x21
-     378: 2a1403e1     	mov	w1, w20
-     37c: 17ffff4a     	b	0xa4 <gf_ioctl+0xa0>
+		0000000000000318:  R_AARCH64_CALL26	_printk
+     31c: 910003e1     	mov	x1, sp
+     320: aa1303e0     	mov	x0, x19
+     324: 940001fb     	bl	0xb10 <_inline_copy_to_user>
+     328: 928001a8     	mov	x8, #-0xe               // =-14
+     32c: f100001f     	cmp	x0, #0x0
+     330: 9a8803e0     	csel	x0, xzr, x8, eq
+     334: 14000008     	b	0x354 <gf_ioctl+0x350>
+     338: 90000000     	adrp	x0, 0x0 <.text>
+		0000000000000338:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x9c7
+     33c: 91000000     	add	x0, x0, #0x0
+		000000000000033c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x9c7
+     340: 14000025     	b	0x3d4 <gf_ioctl+0x3d0>
+     344: 90000000     	adrp	x0, 0x0 <.text>
+		0000000000000344:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x78
+     348: 91000000     	add	x0, x0, #0x0
+		0000000000000348:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x78
+     34c: 94000000     	bl	0x34c <gf_ioctl+0x348>
+		000000000000034c:  R_AARCH64_CALL26	_printk
+     350: 92800240     	mov	x0, #-0x13              // =-19
+     354: d5384108     	mrs	x8, SP_EL0
+     358: f9438908     	ldr	x8, [x8, #0x710]
+     35c: f85f83a9     	ldur	x9, [x29, #-0x8]
+     360: eb09011f     	cmp	x8, x9
+     364: 54001161     	b.ne	0x590 <gf_ioctl+0x58c>
+     368: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+     36c: f9401bf5     	ldr	x21, [sp, #0x30]
+     370: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+     374: 910143ff     	add	sp, sp, #0x50
+     378: d50323bf     	autiasp
+     37c: d65f03c0     	ret
      380: 90000000     	adrp	x0, 0x0 <.text>
 		0000000000000380:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xe21
      384: 91000000     	add	x0, x0, #0x0
@@ -321,7 +321,7 @@ Disassembly of section .text:
      3c0: aa1f03e0     	mov	x0, xzr
      3c4: 39000268     	strb	w8, [x19]
 		00000000000003c4:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x80
-     3c8: 17ffffbc     	b	0x2b8 <gf_ioctl+0x2b4>
+     3c8: 17ffffe3     	b	0x354 <gf_ioctl+0x350>
      3cc: 90000000     	adrp	x0, 0x0 <.text>
 		00000000000003cc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x468
      3d0: 91000000     	add	x0, x0, #0x0
@@ -333,7 +333,7 @@ Disassembly of section .text:
      3dc: 94000000     	bl	0x3dc <gf_ioctl+0x3d8>
 		00000000000003dc:  R_AARCH64_CALL26	_printk
      3e0: aa1f03e0     	mov	x0, xzr
-     3e4: 17ffffb5     	b	0x2b8 <gf_ioctl+0x2b4>
+     3e4: 17ffffdc     	b	0x354 <gf_ioctl+0x350>
      3e8: 910023e0     	add	x0, sp, #0x8
      3ec: aa1303e1     	mov	x1, x19
      3f0: 52800102     	mov	w2, #0x8                // =8
@@ -383,7 +383,7 @@ Disassembly of section .text:
      470: 94000000     	bl	0x470 <gf_ioctl+0x46c>
 		0000000000000470:  R_AARCH64_CALL26	_printk
      474: 928001a0     	mov	x0, #-0xe               // =-14
-     478: 17ffff90     	b	0x2b8 <gf_ioctl+0x2b4>
+     478: 17ffffb7     	b	0x354 <gf_ioctl+0x350>
      47c: 52801a93     	mov	w19, #0xd4              // =212
      480: 14000004     	b	0x490 <gf_ioctl+0x48c>
      484: 7100091f     	cmp	w8, #0x2

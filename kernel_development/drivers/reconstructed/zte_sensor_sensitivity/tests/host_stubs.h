@@ -17,6 +17,9 @@ typedef uint64_t dev_t;
 
 #define __init
 #define __exit
+#ifndef __used
+#define __used __attribute__((used))
+#endif
 #ifndef __always_inline
 #define __always_inline inline __attribute__((always_inline))
 #endif

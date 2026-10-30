@@ -9,8 +9,8 @@ ssize_t tp_test_read(struct file *file, char __user *buffer, size_t count, loff_
   __int64 v5; // x8
   __int64 v8; // x22
   __int64 v10; // x1
-  __int64 v11; // x1
-  __int64 v12; // x2
+  __int64 v11 = 0; // x1 (unused printk vararg in the lifted call)
+  __int64 v12 = 0; // x2 (unused printk vararg in the lifted call)
   int v13; // w3
   int v14; // w0
   char s[32]; // [xsp+8h] [xbp-18h] BYREF
@@ -25,7 +25,7 @@ ssize_t tp_test_read(struct file *file, char __user *buffer, size_t count, loff_
   if ( !v5 )
   {
     v8 = tpd_cdev;
-    v10 = *(unsigned __int8 *)(tpd_cdev + 2632);
+    v10 = *(unsigned __int8 *)(tpd_cdev + 0xC00);
     if ( (_DWORD)v10 == 255 )
     {
       printk(unk_3CABE, *(unsigned __int8 *)(tpd_cdev + 1094), a3);

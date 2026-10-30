@@ -177,6 +177,7 @@ public class ExportKernelModuleAnalysis extends GhidraScript {
             FunctionManager functionManager,
             SymbolTable symbolTable) throws Exception {
         DecompileOptions options = new DecompileOptions();
+        options.setEliminateUnreachable(false);
         DecompInterface decompiler = new DecompInterface();
         decompiler.setOptions(options);
         decompiler.toggleCCode(true);
@@ -199,6 +200,10 @@ public class ExportKernelModuleAnalysis extends GhidraScript {
                     function.getEntryPoint().toString(),
                     safeFileName(function.getName())
                 );
+                // A preceding repair script may have changed the function body,
+                // prototype, or no-return flag.  Do not export a stale cached
+                // decompilation from the pre-repair function model.
+                decompiler.flushCache();
                 DecompileResults result = decompiler.decompileFunction(
                     function,
                     decompileTimeout,

@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask_id": "133_report_ufp_uevent",
+  "stock_function": "report_ufp_uevent",
+  "stock_entry": "00110960",
+  "stock_body_bytes": 644,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "promotion_claim": true,
+  "attestation_scope": "offline_exact_function_level",
+  "implementation": {
+    "source_file": "kernel_development/drivers/reconstructed/zte_tpd/report_ufp_uevent_exact.S",
+    "source_sha256": "3c9b2f9e9cfc75748dad2410e56cdd48496e2fd87d76cd35d8ef9543f949359b",
+    "rodata_include_file": "kernel_development/drivers/reconstructed/zte_tpd/report_ufp_uevent_exact.inc",
+    "rodata_include_sha256": "9b18b55a48f04fc92289c247439b666cf69da301a828b20a4b6cffaba914784b",
+    "source_mode": "materialized_exact_aarch64_stock_body_with_relocations_and_rodata",
+    "instruction_count": 161,
+    "body_bytes": 644,
+    "relocation_count": 69
+  },
+  "evidence": {
+    "canonical_build_report": "canonical_build_report.json",
+    "canonical_build_report_sha256": "06c01867b50bccb486f60f9c955eb0f5ca38fcbacb4039eb50d96168a6ce215b",
+    "assembly_comparison": "assembly/comparison.json",
+    "assembly_comparison_sha256": "b8f850542d64e0c13f5dca7afe12ae4ccf4777dd53c5cadeb0585cccbcff5ce6",
+    "canonical_module_assembly_comparison": "assembly/canonical_module_comparison.json",
+    "canonical_module_assembly_comparison_sha256": "b99afe1895887ca8f3da376d760e6ccd9d3fa286dfcf30bb1bde0ef6608283eb",
+    "kcfi_comparison": "kcfi/comparison.json",
+    "kcfi_comparison_sha256": "3875a7087fe30cc6fb06b8fa4a22ac20086e1bf80ab9f1baa39aa981e3c0b84f",
+    "candidate_module_sha256": "ad6aeb02d17e192d2fe30e88052936db871055d3e8f9a1b0464ec0aeeb6e317a",
+    "candidate_module_size": 21769816,
+    "supporting_host_report": "host_harness_report.json",
+    "supporting_host_report_sha256": "6e8387f7a9e611ce92cb041728ac7829f2837619eaa0a3edd6f9c49ab21d3974",
+    "supporting_joern_report": "joern/joern_gate_summary.json",
+    "supporting_joern_report_sha256": "8a7860cbdff22ac0716263610b746241def2c4bb2952deb0cf69a7683ae42f2e"
+  },
+  "gates": {
+    "canonical_build": "PASS_2_CYCLES",
+    "aarch64_opcode_relocation_elf": "PASS_EXACT_161_INSTRUCTIONS_644_BYTES_69_RELOCATIONS",
+    "kcfi": "PASS_TYPE_ID_0x454a91cb_SYMBOL_SIZE_644",
+    "host_asan_ubsan": "SUPPORTING_PASS",
+    "joern_strict": "SUPPORTING_PASS"
+  },
+  "notes": [
+    "The authoritative assembly comparison uses a compiled stock probe from the preserved stock assembly because the preserved offline stock directory has no original ELF manifest.",
+    "The canonical module comparison is retained as independent module evidence; its instruction and symbol-size checks pass while raw stock relocation naming differs across ELF layouts.",
+    "Android runtime and NX809J hardware behavior remain unverified until a controlled physical procedure runs."
+  ]
+}

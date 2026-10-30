@@ -1,0 +1,248 @@
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+source_root=kernel_platform/common
+9fdef9c1dfafefc16946b517fe76dccce243cf70762224ac87151113f9030937  Documentation/power/regulator/consumer.rst
+15a558c1e7494c1b49a6fb21a645408171bc173eea95685a209a8cc95ce89d7d  include/linux/regulator/consumer.h
+dfeb8e30035a356295c52bfb4dd90a9f6d1cd1e1b0ef9b89dc855e648b1f4e15  drivers/of/base.c
+0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc  include/linux/of.h
+0161a3faaa770cf7a724f94773104a5ab33c5dbafe525729276360cd8120d4ab  lib/kobject.c
+aa1a8232a58c8d67f2800abfd2cb72288b90df78c9e89891200ee6701358af64  include/linux/interrupt.h
+be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b  kernel/irq/manage.c
+
+=== regulator consumer contract: Documentation/power/regulator/consumer.rst ===
+    21	To release the regulator the consumer driver should call ::
+    22	
+    23		regulator_put(regulator);
+    24	
+    25	Consumers can be supplied by more than one regulator e.g. codec consumer with
+    26	analog and digital supplies ::
+    27	
+    28		digital = regulator_get(dev, "Vcc");  /* digital core */
+    29		analog = regulator_get(dev, "Avdd");  /* analog */
+    30	
+    31	The regulator access functions regulator_get() and regulator_put() will
+    32	usually be called in your device drivers probe() and remove() respectively.
+    33	
+
+=== regulator_put declarations: include/linux/regulator/consumer.h ===
+   158							       const char *id);
+   159	struct regulator *__must_check devm_regulator_get_exclusive(struct device *dev,
+   160								const char *id);
+   161	struct regulator *__must_check regulator_get_optional(struct device *dev,
+   162							      const char *id);
+   163	struct regulator *__must_check devm_regulator_get_optional(struct device *dev,
+   164								   const char *id);
+   165	int devm_regulator_get_enable(struct device *dev, const char *id);
+   166	int devm_regulator_get_enable_optional(struct device *dev, const char *id);
+   167	int devm_regulator_get_enable_read_voltage(struct device *dev, const char *id);
+   168	void regulator_put(struct regulator *regulator);
+   169	void devm_regulator_put(struct regulator *regulator);
+   170	
+
+=== OF next-child implementation: drivers/of/base.c ===
+   631	static struct device_node *of_get_next_status_child(const struct device_node *node,
+   632							    struct device_node *prev,
+   633							    bool (*checker)(const struct device_node *))
+   634	{
+   635		struct device_node *next;
+   636		unsigned long flags;
+   637	
+   638		if (!node)
+   639			return NULL;
+   640	
+   641		raw_spin_lock_irqsave(&devtree_lock, flags);
+   642		next = prev ? prev->sibling : node->child;
+   643		for (; next; next = next->sibling) {
+   644			if (!checker(next))
+   645				continue;
+   646			if (of_node_get(next))
+   647				break;
+   648		}
+   649		of_node_put(prev);
+   650		raw_spin_unlock_irqrestore(&devtree_lock, flags);
+   651		return next;
+   652	}
+   653	
+   654	/**
+   655	 * of_get_next_available_child - Find the next available child node
+   656	 * @node:	parent node
+   657	 * @prev:	previous child of the parent node, or NULL to get first
+   658	 *
+   659	 * This function is like of_get_next_child(), except that it
+   660	 * automatically skips any disabled nodes (i.e. status = "disabled").
+   661	 */
+   662	struct device_node *of_get_next_available_child(const struct device_node *node,
+   663		struct device_node *prev)
+   664	{
+   665		return of_get_next_status_child(node, prev, __of_device_is_available);
+
+=== OF reference contract: include/linux/of.h ===
+   103	/**
+   104	 * of_node_init - initialize a devicetree node
+   105	 * @node: Pointer to device node that has been created by kzalloc()
+   106	 *
+   107	 * On return the device_node refcount is set to one.  Use of_node_put()
+   108	 * on @node when done to free the memory allocated for it.  If the node
+   109	 * is NOT a dynamic node the memory will not be freed. The decision of
+   110	 * whether to free the memory will be done by node->release(), which is
+   111	 * of_node_release().
+   112	 */
+   113	static inline void of_node_init(struct device_node *node)
+   114	{
+   115	#if defined(CONFIG_OF_KOBJ)
+   116		kobject_init(&node->kobj, &of_node_ktype);
+   117	#endif
+   118		fwnode_init(&node->fwnode, &of_fwnode_ops);
+   119	}
+   120	
+   121	#if defined(CONFIG_OF_KOBJ)
+   122	#define of_node_kobj(n) (&(n)->kobj)
+   123	#else
+   124	#define of_node_kobj(n) NULL
+   125	#endif
+   126	
+   127	#ifdef CONFIG_OF_DYNAMIC
+   128	extern struct device_node *of_node_get(struct device_node *node);
+   129	extern void of_node_put(struct device_node *node);
+   130	#else /* CONFIG_OF_DYNAMIC */
+   131	/* Dummy ref counting routines - to be implemented later */
+   132	static inline struct device_node *of_node_get(struct device_node *node)
+   133	{
+   134		return node;
+   135	}
+   136	static inline void of_node_put(struct device_node *node) { }
+   137	#endif /* !CONFIG_OF_DYNAMIC */
+   138	DEFINE_FREE(device_node, struct device_node *, if (_T) of_node_put(_T))
+
+=== kobject creation/release contract: lib/kobject.c ===
+   724	/**
+   725	 * kobject_put() - Decrement refcount for object.
+   726	 * @kobj: object.
+   727	 *
+   728	 * Decrement the refcount, and if 0, call kobject_cleanup().
+   729	 */
+   730	void kobject_put(struct kobject *kobj)
+   731	{
+   732		if (kobj) {
+   733			if (!kobj->state_initialized)
+   734				WARN(1, KERN_WARNING
+   735					"kobject: '%s' (%p): is not initialized, yet kobject_put() is being called.\n",
+   736				     kobject_name(kobj), kobj);
+   737			kref_put(&kobj->kref, kobject_release);
+   738		}
+   739	}
+   776	/**
+   777	 * kobject_create_and_add() - Create a struct kobject dynamically and
+   778	 *                            register it with sysfs.
+   779	 * @name: the name for the kobject
+   780	 * @parent: the parent kobject of this kobject, if any.
+   781	 *
+   782	 * This function creates a kobject structure dynamically and registers it
+   783	 * with sysfs.  When you are finished with this structure, call
+   784	 * kobject_put() and the structure will be dynamically freed when
+   785	 * it is no longer being used.
+   786	 *
+   787	 * If the kobject was not able to be created, NULL will be returned.
+   788	 */
+   789	struct kobject *kobject_create_and_add(const char *name, struct kobject *parent)
+   790	{
+   791		struct kobject *kobj;
+   792		int retval;
+   793	
+   794		kobj = kobject_create();
+   795		if (!kobj)
+   796			return NULL;
+   797	
+   798		retval = kobject_add(kobj, parent, "%s", name);
+   799		if (retval) {
+   800			pr_warn("%s: kobject_add error: %d\n", __func__, retval);
+   801			kobject_put(kobj);
+   802			kobj = NULL;
+   803		}
+   804		return kobj;
+   805	}
+   806	EXPORT_SYMBOL_GPL(kobject_create_and_add);
+
+=== IRQ API declarations: include/linux/interrupt.h ===
+   150	extern int __must_check
+   151	request_threaded_irq(unsigned int irq, irq_handler_t handler,
+   152			     irq_handler_t thread_fn,
+   153			     unsigned long flags, const char *name, void *dev);
+   154	
+   155	/**
+   156	 * request_irq - Add a handler for an interrupt line
+   157	 * @irq:	The interrupt line to allocate
+   158	 * @handler:	Function to be called when the IRQ occurs.
+   159	 *		Primary handler for threaded interrupts
+   160	 *		If NULL, the default primary handler is installed
+   161	 * @flags:	Handling flags
+   162	 * @name:	Name of the device generating this interrupt
+   163	 * @dev:	A cookie passed to the handler function
+   164	 *
+   165	 * This call allocates an interrupt and establishes a handler; see
+   166	 * the documentation for request_threaded_irq() for details.
+   167	 */
+   168	static inline int __must_check
+   169	request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
+   170		    const char *name, void *dev)
+   171	{
+   172		return request_threaded_irq(irq, handler, NULL, flags | IRQF_COND_ONESHOT, name, dev);
+   173	}
+   200	extern const void *free_irq(unsigned int, void *);
+   201	extern void free_percpu_irq(unsigned int, void __percpu *);
+   202	
+   203	extern const void *free_nmi(unsigned int irq, void *dev_id);
+   204	extern void free_percpu_nmi(unsigned int irq, void __percpu *percpu_dev_id);
+   205	
+   206	struct device;
+   207	
+   208	extern int __must_check
+   209	devm_request_threaded_irq(struct device *dev, unsigned int irq,
+   210				  irq_handler_t handler, irq_handler_t thread_fn,
+   211				  unsigned long irqflags, const char *devname,
+   212				  void *dev_id);
+   213	
+   214	static inline int __must_check
+   215	devm_request_irq(struct device *dev, unsigned int irq, irq_handler_t handler,
+   216			 unsigned long irqflags, const char *devname, void *dev_id)
+   217	{
+   218		return devm_request_threaded_irq(dev, irq, handler, NULL, irqflags,
+   219						 devname, dev_id);
+   220	}
+   221	
+   222	extern int __must_check
+   223	devm_request_any_context_irq(struct device *dev, unsigned int irq,
+   224			 irq_handler_t handler, unsigned long irqflags,
+   225			 const char *devname, void *dev_id);
+   226	
+   227	extern void devm_free_irq(struct device *dev, unsigned int irq, void *dev_id);
+   228	
+
+=== free_irq implementation: kernel/irq/manage.c ===
+  2028	 *
+  2029	 *	This function must not be called from interrupt context.
+  2030	 *
+  2031	 *	Returns the devname argument passed to request_irq.
+  2032	 */
+  2033	const void *free_irq(unsigned int irq, void *dev_id)
+  2034	{
+  2035		struct irq_desc *desc = irq_to_desc(irq);
+  2036		struct irqaction *action;
+  2037		const char *devname;
+  2038	
+  2039		if (!desc || WARN_ON(irq_settings_is_per_cpu_devid(desc)))
+  2040			return NULL;
+  2041	
+  2042	#ifdef CONFIG_SMP
+  2043		if (WARN_ON(desc->affinity_notify))
+  2044			desc->affinity_notify = NULL;
+  2045	#endif
+  2046	
+  2047		action = __free_irq(desc, dev_id);
+  2048	
+  2049		if (!action)
+  2050			return NULL;
+  2051	
+  2052		devname = action->name;
+  2053		kfree(action);
+  2054		return devname;
+  2055	}

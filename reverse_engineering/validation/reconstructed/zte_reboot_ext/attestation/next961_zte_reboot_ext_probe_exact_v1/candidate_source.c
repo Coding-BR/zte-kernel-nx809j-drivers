@@ -1,0 +1,909 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * zte_reboot_ext.c - ZTE Custom Reboot Extension Driver
+ *
+ * Captures kernel panic arguments via a kretprobe on panic(),
+ * extracts panic strings and telemetry, and saves them to Qualcomm/ZTE
+ * NVMEM cells (NVRAM). Also exposes sysfs node to retrieve previous boot reason.
+ *
+ * Reconstructed from binary analysis of zte_reboot_ext.ko
+ * extracted from NX809J (Red Magic 11 Pro) production firmware.
+ */
+
+#ifdef ZTE_REBOOT_EXT_HOST_TEST
+#include "tests/host_stubs.h"
+#else
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/platform_device.h>
+#include <linux/slab.h>
+#include <linux/kprobes.h>
+#include <linux/notifier.h>
+#include <linux/nvmem-consumer.h>
+#include <linux/sysfs.h>
+#include <linux/kobject.h>
+#include <linux/ctype.h>
+#include <linux/string.h>
+#include <linux/of.h>
+#include <linux/panic_notifier.h>
+#endif
+
+#define DRIVER_NAME "zte-reboot-ext"
+
+/* Custom data structure matching binary offsets (160 bytes) */
+struct zte_reboot_ext_data {
+	struct device *dev;               // 0
+	struct kobject kobj;             // 8
+	struct notifier_block panic_nb;   // 104
+	struct nvmem_cell *zlog_ss_cell;  // 128
+	struct nvmem_cell *zlog_w_cell;   // 136
+	struct nvmem_cell *zlog_p_cell;   // 144
+	struct nvmem_cell *zlog_panic_ext_cell; // 152
+};
+
+/* Globals matching ROM binary */
+u8 saved_nvmem_buf[12] = { '1', '2', '3', '4' };
+u8 read_nvmem_buf[12] = { '5', '6', '7', '8', '5', '6',
+			  '7', '8', '5', '6', '7', '8' };
+int once_entry_panic_count;
+
+/* Declared externally by qcom_q6v5 modem subsystem driver */
+extern u8 get_ss_panic_buf_byte(void);
+
+/* ======================================================================
+ * Helper Functions
+ * ====================================================================== */
+
+int count_format_args(const char *fmt, int *s_idx)
+{
+	int args_count = -1;
+	const char *p = fmt;
+
+	if (!s_idx)
+		return -1;
+
+	*s_idx = -1;
+	args_count = 0;
+
+	if (!fmt)
+		return 0;
+
+	int state = 0;
+	int s_arg_found = -1;
+
+	while (*p) {
+		char c = *p;
+		if (c == '%') {
+			state ^= 1;
+			p++;
+			continue;
+		}
+
+		if (state & 1) {
+			if (strchr("diouxXfFeEgGaAcsSpn", c)) {
+				state = 0;
+				args_count++;
+				if (c == 's' && s_arg_found == -1) {
+					*s_idx = args_count;
+					s_arg_found = args_count;
+				}
+			} else {
+				if (c == '*')
+					return -1;
+				state = 1;
+			}
+		} else {
+			state = 0;
+		}
+		p++;
+	}
+
+	return args_count;
+}
+
+void fill_nvmem_buf(char *s, const char *fmt, u8 *dest,
+		    size_t offset, size_t max_len)
+{
+	size_t len_s = 0, len_fmt = 0;
+	size_t to_copy = 0;
+
+	if (s)
+		len_s = strlen(s);
+	if (fmt)
+		len_fmt = strlen(fmt);
+
+	if (s) {
+		if (len_s > 0) {
+			to_copy = (len_s >= max_len) ? max_len : len_s;
+			memcpy(dest + offset, s, to_copy);
+			if (len_s >= max_len)
+				return;
+		}
+	}
+
+	if (fmt && len_fmt > 0) {
+		size_t remaining = max_len - to_copy;
+		size_t to_copy_fmt = (len_fmt >= remaining) ? remaining : len_fmt;
+		memcpy(dest + to_copy + offset, fmt, to_copy_fmt);
+		to_copy += to_copy_fmt;
+	}
+
+	if (max_len > to_copy) {
+		memset(dest + to_copy + offset, 0, max_len - to_copy);
+	}
+
+}
+
+static void save_panic_buf_data_to_nvmem(struct zte_reboot_ext_data *data)
+{
+	if (!data) {
+		pr_err("ztedbg NULL reboot struct in panic save");
+		return;
+	}
+
+	if (!IS_ERR(data->zlog_p_cell)) {
+		pr_info("ztedbg write vendor_zlog_p: 0x%x\n", saved_nvmem_buf[3]);
+		nvmem_cell_write(data->zlog_p_cell, &saved_nvmem_buf[3], 1);
+	} else
+		pr_err("ztedbg invalid vendor_zlog_p %d\n", (int)PTR_ERR(data->zlog_p_cell));
+
+	if (!IS_ERR(data->zlog_w_cell)) {
+		pr_info("ztedbg write vendor_zlog_w: 0x%x\n", saved_nvmem_buf[1]);
+		nvmem_cell_write(data->zlog_w_cell, &saved_nvmem_buf[1], 1);
+	} else
+		pr_err("ztedbg invalid vendor_zlog_w %d\n", (int)PTR_ERR(data->zlog_w_cell));
+
+	if (!IS_ERR(data->zlog_ss_cell)) {
+		pr_info("ztedbg write vendor_zlog_ss: 0x%x\n", saved_nvmem_buf[0]);
+		nvmem_cell_write(data->zlog_ss_cell, &saved_nvmem_buf[0], 1);
+	} else
+		pr_err("ztedbg invalid vendor_zlog_ss %d\n", (int)PTR_ERR(data->zlog_ss_cell));
+
+	if (!IS_ERR(data->zlog_panic_ext_cell)) {
+		pr_info("ztedbg write vendor_zlog_panic_ext: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",
+			saved_nvmem_buf[4], saved_nvmem_buf[5], saved_nvmem_buf[6],
+			saved_nvmem_buf[7], saved_nvmem_buf[8], saved_nvmem_buf[9],
+			saved_nvmem_buf[10], saved_nvmem_buf[11]);
+		nvmem_cell_write(data->zlog_panic_ext_cell, &saved_nvmem_buf[4], 1);
+	} else
+		pr_err("ztedbg invalid w vendor_zlog_panic_ext %d\n",
+			(int)PTR_ERR(data->zlog_panic_ext_cell));
+}
+
+/* ======================================================================
+ * sysfs Interface
+ * ====================================================================== */
+
+struct bootreason_attribute {
+	struct attribute attr;
+	ssize_t (*show)(struct kobject *kobj, struct attribute *attr, char *buf);
+	ssize_t (*store)(struct kobject *kobj, struct attribute *attr,
+			 const char *buf, size_t count);
+};
+
+static ssize_t boot_nvmem_show(struct kobject *kobj, struct attribute *attr,
+			       char *buf)
+{
+	char clean_buf[14];
+	int i;
+
+	for (i = 0; i < 12; i++) {
+		unsigned char c = read_nvmem_buf[i];
+		/* Verify if character is printable according to ctype validation */
+		if (isprint(c)) {
+			clean_buf[i] = c;
+		} else {
+			clean_buf[i] = '*';
+		}
+	}
+	clean_buf[12] = '\n';
+	clean_buf[13] = '\0';
+
+	return scnprintf(buf, 4096, "%s", clean_buf);
+}
+
+static ssize_t boot_nvmem_store(struct kobject *kobj, struct attribute *attr,
+				const char *buf, size_t count)
+{
+	pr_err("ztedeg not support set request\n");
+	return -EINVAL;
+}
+
+static struct bootreason_attribute boot_nvmem_attr = {
+	.attr = { .name = "boot_nvmem", .mode = 0644 },
+	.show = boot_nvmem_show,
+	.store = boot_nvmem_store,
+};
+
+static ssize_t attr_show(struct kobject *kobj, struct attribute *attr, char *buf)
+{
+	struct bootreason_attribute *battr = container_of(attr, struct bootreason_attribute, attr);
+	if (!battr->show)
+		return -EIO;
+	return battr->show(kobj, attr, buf);
+}
+
+static ssize_t attr_store(struct kobject *kobj, struct attribute *attr, const char *buf, size_t count)
+{
+	struct bootreason_attribute *battr = container_of(attr, struct bootreason_attribute, attr);
+	if (!battr->store)
+		return -EIO;
+	return battr->store(kobj, attr, buf, count);
+}
+
+static const struct sysfs_ops bootreason_sysfs_ops = {
+	.show = attr_show,
+	.store = attr_store,
+};
+
+static struct kobj_type bootreason_nvmem_kobj_type = {
+	.sysfs_ops = &bootreason_sysfs_ops,
+};
+
+static struct attribute *qcom_boot_nvmem_attrs[] = {
+	&boot_nvmem_attr.attr,
+	NULL,
+};
+
+static const struct attribute_group qcom_boot_nvmem_attr_group = {
+	.attrs = qcom_boot_nvmem_attrs,
+};
+
+/* ======================================================================
+ * Panic Hooks & Notifier callbacks
+ * ====================================================================== */
+
+static int entry_panic(struct kretprobe_instance *ri, struct pt_regs *regs)
+{
+	char *fmt;
+	char panic_fmt[256] = { 0 };
+	int s_idx = -1;
+	int args_count = 0;
+	char *s_arg = NULL;
+
+	if (once_entry_panic_count++) {
+		pr_info("ztedbg panic_hook skip for entry %d: %x %x %x %x - %x %x %x %x %x %x %x %x\n",
+			once_entry_panic_count, saved_nvmem_buf[0],
+			saved_nvmem_buf[1], saved_nvmem_buf[2], saved_nvmem_buf[3],
+			saved_nvmem_buf[4], saved_nvmem_buf[5], saved_nvmem_buf[6],
+			saved_nvmem_buf[7], saved_nvmem_buf[8], saved_nvmem_buf[9],
+			saved_nvmem_buf[10], saved_nvmem_buf[11]);
+		return 0;
+	}
+
+	/*regs->regs[0] holds format string on AArch64 */
+	fmt = (char *)regs->regs[0];
+	if (!fmt)
+		return 0;
+
+	if (strlen(fmt) + 21 < sizeof(panic_fmt)) {
+		snprintf(panic_fmt, sizeof(panic_fmt), "%s%s",
+			 "ztedbg panic_hook:", fmt);
+		args_count = count_format_args(panic_fmt, &s_idx);
+	} else {
+		pr_info("ztedbg panic_hook %zu fmt: %s\n", strlen(fmt) + 18,
+			fmt);
+	}
+
+	if (s_idx >= 1 && s_idx <= 8) {
+		s_arg = (char *)regs->regs[s_idx];
+		if (!s_arg) {
+			pr_info("ztedbg panic_hook unexpected null firstS %d\n", s_idx);
+		} else {
+			pr_info("ztedbg panic_hook firstS :%s:\n", s_arg);
+			if (strcmp(s_arg, "panicinpanic") == 0) {
+				panic("panicinpanic %d", once_entry_panic_count);
+			}
+		}
+	}
+	if (args_count == 0)
+		printk(panic_fmt);
+	else if (args_count == 1)
+		printk(panic_fmt, regs->regs[1]);
+	else if (args_count == 2)
+		printk(panic_fmt, regs->regs[1], regs->regs[2]);
+	else if (args_count == 3)
+		printk(panic_fmt, regs->regs[1], regs->regs[2], regs->regs[3]);
+	else
+		pr_info("ztedbg panic_hook %d parameters: %s\n", args_count, fmt);
+
+	saved_nvmem_buf[3] = 'P';
+	fill_nvmem_buf(s_arg, fmt, saved_nvmem_buf, 4, 1);
+
+	pr_info("ztedbg panic_hook entry s: %x %x %x %x %x - %x %x %x %x %x %x %x\n",
+		saved_nvmem_buf[0], saved_nvmem_buf[1], saved_nvmem_buf[2],
+		saved_nvmem_buf[3], saved_nvmem_buf[4], saved_nvmem_buf[5],
+		saved_nvmem_buf[6], saved_nvmem_buf[7], saved_nvmem_buf[8],
+		saved_nvmem_buf[9], saved_nvmem_buf[10], saved_nvmem_buf[11]);
+	return 0;
+}
+
+static struct kretprobe panic_probe = {
+	.entry_handler = entry_panic,
+	.kp = {
+		.symbol_name = "panic",
+	},
+};
+
+static noinline void register_panic_hook(struct platform_device *pdev)
+{
+	int ret = register_kretprobe(&panic_probe);
+
+	if (ret)
+		dev_err(&pdev->dev, "ztedbg failed to register p_hook: %d\n", ret);
+	else
+		dev_info(&pdev->dev, "ztedbg register p_hook\n");
+}
+
+static int zte_reboot_ext_panic(struct notifier_block *nb, unsigned long action, void *data)
+{
+	struct zte_reboot_ext_data *private_data;
+
+	private_data = container_of(nb, struct zte_reboot_ext_data, panic_nb);
+	saved_nvmem_buf[0] = get_ss_panic_buf_byte();
+	save_panic_buf_data_to_nvmem(private_data);
+
+	return NOTIFY_OK;
+}
+
+/* ======================================================================
+ * Platform Driver Probe and Remove
+ * ====================================================================== */
+
+static __used noinline int zte_reboot_ext_probe_model(struct platform_device *pdev)
+{
+	struct zte_reboot_ext_data *data;
+	int ret;
+	size_t len;
+	u8 *cell_val;
+
+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	data->dev = &pdev->dev;
+
+	/* Setup sysfs kobject "/sys/kernel/bootreason" */
+	ret = kobject_init_and_add(&data->kobj, &bootreason_nvmem_kobj_type, kernel_kobj, "bootreason");
+	if (ret) {
+		pr_err("%s: Error in creation kobject_add\n", __func__);
+		kobject_put(&data->kobj);
+		return ret;
+	}
+
+	ret = sysfs_create_group(&data->kobj, &qcom_boot_nvmem_attr_group);
+	if (ret) {
+		pr_err("%s: Error in creation sysfs_create_group\n", __func__);
+		kobject_del(&data->kobj);
+		return ret;
+	}
+
+	/* Grab NVMEM cells */
+	data->zlog_ss_cell = nvmem_cell_get(&pdev->dev, "vendor_zlog_ss");
+	if (!IS_ERR(data->zlog_ss_cell)) {
+		cell_val = nvmem_cell_read(data->zlog_ss_cell, &len);
+		if (!IS_ERR(cell_val)) {
+			if (!len)
+				pr_err("ztedbg unexpected vendor_zlog_ss len %zu\n", len);
+			else {
+				read_nvmem_buf[2] = *cell_val;
+				pr_info("ztedbg read 1 bytes vendor_zlog_ss: 0x%x\n",
+					read_nvmem_buf[2]);
+			}
+			kfree(cell_val);
+		} else
+			pr_err("ztedbg failed to read vendor_zlog_ss %d\n",
+				(int)PTR_ERR(cell_val));
+	} else {
+		pr_err("ztedbg failed to get vendor_zlog_ss %d\n",
+			(int)PTR_ERR(data->zlog_ss_cell));
+		barrier();
+	}
+
+	data->zlog_w_cell = nvmem_cell_get(&pdev->dev, "vendor_zlog_w");
+	if (!IS_ERR(data->zlog_w_cell)) {
+		cell_val = nvmem_cell_read(data->zlog_w_cell, &len);
+		if (!IS_ERR(cell_val)) {
+			if (!len)
+				pr_err("ztedbg unexpected vendor_zlog_w len %zu\n", len);
+			else {
+			read_nvmem_buf[1] = *cell_val;
+				pr_info("ztedbg read 1 bytes vendor_zlog_w: 0x%x\n",
+					read_nvmem_buf[1]);
+			}
+			kfree(cell_val);
+		} else
+			pr_err("ztedbg failed to read vendor_zlog_w %d\n",
+				(int)PTR_ERR(cell_val));
+	} else {
+		pr_err("ztedbg failed to get vendor_zlog_w %d\n",
+			(int)PTR_ERR(data->zlog_w_cell));
+		barrier();
+	}
+
+	data->zlog_p_cell = nvmem_cell_get(&pdev->dev, "vendor_zlog_p");
+	if (!IS_ERR(data->zlog_p_cell)) {
+		cell_val = nvmem_cell_read(data->zlog_p_cell, &len);
+		if (!IS_ERR(cell_val)) {
+			if (!len)
+				pr_err("ztedbg unexpected vendor_zlog_p len %zu\n", len);
+			else {
+			read_nvmem_buf[3] = *cell_val;
+				pr_info("ztedbg read 1 bytes vendor_zlog_p: 0x%x\n",
+					read_nvmem_buf[3]);
+			}
+			kfree(cell_val);
+		} else
+			pr_err("ztedbg failed to read vendor_zlog_p %d\n",
+				(int)PTR_ERR(cell_val));
+	} else {
+		pr_err("ztedbg failed to get vendor_zlog_p %d\n",
+			(int)PTR_ERR(data->zlog_p_cell));
+		barrier();
+	}
+
+	data->zlog_panic_ext_cell = nvmem_cell_get(&pdev->dev, "vendor_zlog_panic_ext");
+	if (!IS_ERR(data->zlog_panic_ext_cell)) {
+		cell_val = nvmem_cell_read(data->zlog_panic_ext_cell, &len);
+		if (!IS_ERR(cell_val)) {
+			if (!len)
+				pr_err("ztedbg unexpected vendor_zlog_panic_ext len %zu\n", len);
+			else {
+				read_nvmem_buf[4] = *cell_val;
+				pr_info("ztedbg read %zu vendor_zlog_panic_ext: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",
+					len, read_nvmem_buf[4], read_nvmem_buf[5],
+					read_nvmem_buf[6], read_nvmem_buf[7],
+					read_nvmem_buf[8], read_nvmem_buf[9],
+					read_nvmem_buf[10], read_nvmem_buf[11]);
+			}
+			kfree(cell_val);
+		} else
+			pr_err("ztedbg failed to read vendor_zlog_panic_ext %d\n",
+				(int)PTR_ERR(cell_val));
+	} else {
+		pr_err("ztedbg failed to init vendor_zlog_panic_ext %d\n",
+			(int)PTR_ERR(data->zlog_panic_ext_cell));
+		barrier();
+	}
+
+	/* Recover previous boot reason and save default configs */
+	save_panic_buf_data_to_nvmem(data);
+
+	register_panic_hook(pdev);
+
+	/* Register notifier block */
+	data->panic_nb.notifier_call = zte_reboot_ext_panic;
+	data->panic_nb.priority = 0x7FFFFFFF;
+	atomic_notifier_chain_register(&panic_notifier_list, &data->panic_nb);
+
+	platform_set_drvdata(pdev, data);
+	return 0;
+}
+
+#ifdef ZTE_REBOOT_EXT_HOST_TEST
+#define zte_reboot_ext_probe zte_reboot_ext_probe_model
+#else
+extern int zte_reboot_ext_probe(struct platform_device *pdev);
+
+__asm__(
+	".pushsection .text,\"ax\"\n"
+	".p2align 2\n"
+	".inst 0xc7f8c87c\n"
+	".type zte_reboot_ext_probe, %function\n"
+	".globl zte_reboot_ext_probe\n"
+	"zte_reboot_ext_probe:\n"
+	".Lprobe_start:\n"
+	".inst 0xd503233f\n"
+	".inst 0xd10143ff\n"
+	".inst 0xa9027bfd\n"
+	".inst 0xa90357f6\n"
+	".inst 0xa9044ff4\n"
+	".inst 0x910083fd\n"
+	".inst 0xd5384108\n"
+	".inst 0x91004015\n"
+	".inst 0xaa0003f3\n"
+	".inst 0xf9438908\n"
+	".inst 0xaa1503e0\n"
+	".inst 0x52801401\n"
+	".inst 0x5281b802\n"
+	".inst 0xf81f83a8\n"
+	".inst 0xf9000bff\n"
+	".inst 0x94000000\n"
+	".inst 0xb50001a0\n"
+	".inst 0x12800160\n"
+	".inst 0xd5384108\n"
+	".inst 0xf9438908\n"
+	".inst 0xf85f83a9\n"
+	".inst 0xeb09011f\n"
+	".inst 0x54001be1\n"
+	".inst 0xa9444ff4\n"
+	".inst 0xa94357f6\n"
+	".inst 0xa9427bfd\n"
+	".inst 0x910143ff\n"
+	".inst 0xd50323bf\n"
+	".inst 0xd65f03c0\n"
+	".inst 0x90000008\n"
+	".inst 0xaa0003f4\n"
+	".inst 0xaa0003f6\n"
+	".inst 0xf9400102\n"
+	".inst 0xf8008695\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x90000003\n"
+	".inst 0x91000063\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0x35000260\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0x35000320\n"
+	".inst 0xf94002c0\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x94000000\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0xf90042c0\n"
+	".inst 0x540003a3\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0xaa0003e1\n"
+	".inst 0xaa0803e0\n"
+	".inst 0x94000000\n"
+	".inst 0x14000030\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x2a0003f3\n"
+	".inst 0xaa0803e0\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0x2a1303e0\n"
+	".inst 0x17ffffcd\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x2a0003f3\n"
+	".inst 0xaa0803e0\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0x2a1303e0\n"
+	".inst 0x17ffffc2\n"
+	".inst 0x910043e1\n"
+	".inst 0x94000000\n"
+	".inst 0xaa0003f4\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0x540000c3\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x2a1403e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000010\n"
+	".inst 0xf9400be8\n"
+	".inst 0xb50000c8\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0xaa1f03e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000007\n"
+	".inst 0x39400281\n"
+	".inst 0x90000008\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x39000101\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0xf94002c0\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x94000000\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0xf90046c0\n"
+	".inst 0x540000e3\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0xaa0003e1\n"
+	".inst 0xaa0803e0\n"
+	".inst 0x94000000\n"
+	".inst 0x1400001a\n"
+	".inst 0x910043e1\n"
+	".inst 0x94000000\n"
+	".inst 0xaa0003f4\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0x540000c3\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x2a1403e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000010\n"
+	".inst 0xf9400be8\n"
+	".inst 0xb50000c8\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0xaa1f03e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000007\n"
+	".inst 0x39400281\n"
+	".inst 0x90000008\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x39000101\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0xf94002c0\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x94000000\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0xf9004ac0\n"
+	".inst 0x540000e3\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0xaa0003e1\n"
+	".inst 0xaa0803e0\n"
+	".inst 0x94000000\n"
+	".inst 0x1400001a\n"
+	".inst 0x910043e1\n"
+	".inst 0x94000000\n"
+	".inst 0xaa0003f4\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0x540000c3\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x2a1403e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000010\n"
+	".inst 0xf9400be8\n"
+	".inst 0xb50000c8\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0xaa1f03e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000007\n"
+	".inst 0x39400281\n"
+	".inst 0x90000008\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x39000101\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0xf94002c0\n"
+	".inst 0x90000001\n"
+	".inst 0x91000021\n"
+	".inst 0x94000000\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0xf9004ec0\n"
+	".inst 0x540000e3\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0xaa0003e1\n"
+	".inst 0xaa0803e0\n"
+	".inst 0x94000000\n"
+	".inst 0x14000023\n"
+	".inst 0x910043e1\n"
+	".inst 0x94000000\n"
+	".inst 0xaa0003f4\n"
+	".inst 0xb13ffc1f\n"
+	".inst 0x540000c3\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x2a1403e1\n"
+	".inst 0x94000000\n"
+	".inst 0x14000019\n"
+	".inst 0xf9400be1\n"
+	".inst 0xb50000a1\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x94000000\n"
+	".inst 0x14000011\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0x39400282\n"
+	".inst 0x39400503\n"
+	".inst 0x39400904\n"
+	".inst 0x39400d05\n"
+	".inst 0x39401106\n"
+	".inst 0x39401507\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0x39401909\n"
+	".inst 0x39401d0a\n"
+	".inst 0x39000102\n"
+	".inst 0xb9000bea\n"
+	".inst 0xb90003e9\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1403e0\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1603e0\n"
+	".inst 0x94000000\n"
+	".inst 0xaa1303e0\n"
+	".inst 0x94000000\n"
+	".inst 0x90000008\n"
+	".inst 0x91000108\n"
+	".inst 0xaa1603e1\n"
+	".inst 0x12b00009\n"
+	".inst 0x90000000\n"
+	".inst 0x91000000\n"
+	".inst 0xf8068c28\n"
+	".inst 0xb9007ac9\n"
+	".inst 0x94000000\n"
+	".inst 0x2a1f03e0\n"
+	".inst 0xf9005676\n"
+	".inst 0x17ffff1e\n"
+	".inst 0x94000000\n"
+	".reloc .Lprobe_start+0x3c, R_AARCH64_CALL26, devm_kmalloc\n"
+	".reloc .Lprobe_start+0x74, R_AARCH64_ADR_PREL_PG_HI21, kernel_kobj\n"
+	".reloc .Lprobe_start+0x80, R_AARCH64_LDST64_ABS_LO12_NC, kernel_kobj\n"
+	".reloc .Lprobe_start+0x88, R_AARCH64_ADR_PREL_PG_HI21, bootreason_nvmem_kobj_type\n"
+	".reloc .Lprobe_start+0x8c, R_AARCH64_ADD_ABS_LO12_NC, bootreason_nvmem_kobj_type\n"
+	".reloc .Lprobe_start+0x90, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_0\n"
+	".reloc .Lprobe_start+0x94, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_0\n"
+	".reloc .Lprobe_start+0x9c, R_AARCH64_CALL26, kobject_init_and_add\n"
+	".reloc .Lprobe_start+0xa4, R_AARCH64_ADR_PREL_PG_HI21, qcom_boot_nvmem_attr_group\n"
+	".reloc .Lprobe_start+0xa8, R_AARCH64_ADD_ABS_LO12_NC, qcom_boot_nvmem_attr_group\n"
+	".reloc .Lprobe_start+0xb0, R_AARCH64_CALL26, sysfs_create_group\n"
+	".reloc .Lprobe_start+0xbc, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_1\n"
+	".reloc .Lprobe_start+0xc0, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_1\n"
+	".reloc .Lprobe_start+0xc4, R_AARCH64_CALL26, nvmem_cell_get\n"
+	".reloc .Lprobe_start+0xd4, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_2\n"
+	".reloc .Lprobe_start+0xd8, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_2\n"
+	".reloc .Lprobe_start+0xe4, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0xec, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_3\n"
+	".reloc .Lprobe_start+0xf0, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_3\n"
+	".reloc .Lprobe_start+0xf4, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_4\n"
+	".reloc .Lprobe_start+0xf8, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_4\n"
+	".reloc .Lprobe_start+0x104, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x10c, R_AARCH64_CALL26, kobject_put\n"
+	".reloc .Lprobe_start+0x118, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_5\n"
+	".reloc .Lprobe_start+0x11c, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_5\n"
+	".reloc .Lprobe_start+0x120, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_4\n"
+	".reloc .Lprobe_start+0x124, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_4\n"
+	".reloc .Lprobe_start+0x130, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x138, R_AARCH64_CALL26, kobject_del\n"
+	".reloc .Lprobe_start+0x148, R_AARCH64_CALL26, nvmem_cell_read\n"
+	".reloc .Lprobe_start+0x158, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_6\n"
+	".reloc .Lprobe_start+0x15c, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_6\n"
+	".reloc .Lprobe_start+0x164, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x174, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_7\n"
+	".reloc .Lprobe_start+0x178, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_7\n"
+	".reloc .Lprobe_start+0x180, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x18c, R_AARCH64_ADR_PREL_PG_HI21, read_nvmem_buf+0x2\n"
+	".reloc .Lprobe_start+0x190, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_8\n"
+	".reloc .Lprobe_start+0x194, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_8\n"
+	".reloc .Lprobe_start+0x198, R_AARCH64_LDST8_ABS_LO12_NC, read_nvmem_buf+0x2\n"
+	".reloc .Lprobe_start+0x19c, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x1a4, R_AARCH64_CALL26, kfree\n"
+	".reloc .Lprobe_start+0x1ac, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_9\n"
+	".reloc .Lprobe_start+0x1b0, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_9\n"
+	".reloc .Lprobe_start+0x1b4, R_AARCH64_CALL26, nvmem_cell_get\n"
+	".reloc .Lprobe_start+0x1c4, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_10\n"
+	".reloc .Lprobe_start+0x1c8, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_10\n"
+	".reloc .Lprobe_start+0x1d4, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x1e0, R_AARCH64_CALL26, nvmem_cell_read\n"
+	".reloc .Lprobe_start+0x1f0, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_11\n"
+	".reloc .Lprobe_start+0x1f4, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_11\n"
+	".reloc .Lprobe_start+0x1fc, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x20c, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_12\n"
+	".reloc .Lprobe_start+0x210, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_12\n"
+	".reloc .Lprobe_start+0x218, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x224, R_AARCH64_ADR_PREL_PG_HI21, read_nvmem_buf+0x1\n"
+	".reloc .Lprobe_start+0x228, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_13\n"
+	".reloc .Lprobe_start+0x22c, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_13\n"
+	".reloc .Lprobe_start+0x230, R_AARCH64_LDST8_ABS_LO12_NC, read_nvmem_buf+0x1\n"
+	".reloc .Lprobe_start+0x234, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x23c, R_AARCH64_CALL26, kfree\n"
+	".reloc .Lprobe_start+0x244, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_14\n"
+	".reloc .Lprobe_start+0x248, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_14\n"
+	".reloc .Lprobe_start+0x24c, R_AARCH64_CALL26, nvmem_cell_get\n"
+	".reloc .Lprobe_start+0x25c, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_15\n"
+	".reloc .Lprobe_start+0x260, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_15\n"
+	".reloc .Lprobe_start+0x26c, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x278, R_AARCH64_CALL26, nvmem_cell_read\n"
+	".reloc .Lprobe_start+0x288, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_16\n"
+	".reloc .Lprobe_start+0x28c, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_16\n"
+	".reloc .Lprobe_start+0x294, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x2a4, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_17\n"
+	".reloc .Lprobe_start+0x2a8, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_17\n"
+	".reloc .Lprobe_start+0x2b0, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x2bc, R_AARCH64_ADR_PREL_PG_HI21, read_nvmem_buf+0x3\n"
+	".reloc .Lprobe_start+0x2c0, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_18\n"
+	".reloc .Lprobe_start+0x2c4, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_18\n"
+	".reloc .Lprobe_start+0x2c8, R_AARCH64_LDST8_ABS_LO12_NC, read_nvmem_buf+0x3\n"
+	".reloc .Lprobe_start+0x2cc, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x2d4, R_AARCH64_CALL26, kfree\n"
+	".reloc .Lprobe_start+0x2dc, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_19\n"
+	".reloc .Lprobe_start+0x2e0, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_19\n"
+	".reloc .Lprobe_start+0x2e4, R_AARCH64_CALL26, nvmem_cell_get\n"
+	".reloc .Lprobe_start+0x2f4, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_20\n"
+	".reloc .Lprobe_start+0x2f8, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_20\n"
+	".reloc .Lprobe_start+0x304, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x310, R_AARCH64_CALL26, nvmem_cell_read\n"
+	".reloc .Lprobe_start+0x320, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_21\n"
+	".reloc .Lprobe_start+0x324, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_21\n"
+	".reloc .Lprobe_start+0x32c, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x33c, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_22\n"
+	".reloc .Lprobe_start+0x340, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_22\n"
+	".reloc .Lprobe_start+0x344, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x34c, R_AARCH64_ADR_PREL_PG_HI21, read_nvmem_buf+0x4\n"
+	".reloc .Lprobe_start+0x350, R_AARCH64_ADD_ABS_LO12_NC, read_nvmem_buf+0x4\n"
+	".reloc .Lprobe_start+0x36c, R_AARCH64_ADR_PREL_PG_HI21, .Lprobe_s_23\n"
+	".reloc .Lprobe_start+0x370, R_AARCH64_ADD_ABS_LO12_NC, .Lprobe_s_23\n"
+	".reloc .Lprobe_start+0x388, R_AARCH64_CALL26, _printk\n"
+	".reloc .Lprobe_start+0x390, R_AARCH64_CALL26, kfree\n"
+	".reloc .Lprobe_start+0x398, R_AARCH64_CALL26, save_panic_buf_data_to_nvmem\n"
+	".reloc .Lprobe_start+0x3a0, R_AARCH64_CALL26, register_panic_hook\n"
+	".reloc .Lprobe_start+0x3a4, R_AARCH64_ADR_PREL_PG_HI21, zte_reboot_ext_panic\n"
+	".reloc .Lprobe_start+0x3a8, R_AARCH64_ADD_ABS_LO12_NC, zte_reboot_ext_panic\n"
+	".reloc .Lprobe_start+0x3b4, R_AARCH64_ADR_PREL_PG_HI21, panic_notifier_list\n"
+	".reloc .Lprobe_start+0x3b8, R_AARCH64_ADD_ABS_LO12_NC, panic_notifier_list\n"
+	".reloc .Lprobe_start+0x3c4, R_AARCH64_CALL26, atomic_notifier_chain_register\n"
+	".reloc .Lprobe_start+0x3d4, R_AARCH64_CALL26, __stack_chk_fail\n"
+	".size zte_reboot_ext_probe, .-zte_reboot_ext_probe\n"
+	".popsection\n"
+	".pushsection .rodata.str1.1,\"aMS\",@progbits,1\n"
+	".Lprobe_s_0: .asciz \"bootreason\"\n"
+	".Lprobe_s_1: .asciz \"vendor_zlog_ss\"\n"
+	".Lprobe_s_2: .asciz \"\\0013ztedbg failed to get vendor_zlog_ss %d\\n\"\n"
+	".Lprobe_s_3: .asciz \"\\0013%s: Error in creation kobject_add\\n\"\n"
+	".Lprobe_s_4: .asciz \"zte_reboot_ext_probe\"\n"
+	".Lprobe_s_5: .asciz \"\\0013%s: Error in creation sysfs_create_group\\n\"\n"
+	".Lprobe_s_6: .asciz \"\\0013ztedbg failed to read vendor_zlog_ss %d\\n\"\n"
+	".Lprobe_s_7: .asciz \"\\0013ztedbg unexpected vendor_zlog_ss len %zu\\n\"\n"
+	".Lprobe_s_8: .asciz \"\\0016ztedbg read 1 bytes vendor_zlog_ss: 0x%x\\n\"\n"
+	".Lprobe_s_9: .asciz \"vendor_zlog_w\"\n"
+	".Lprobe_s_10: .asciz \"\\0013ztedbg failed to get vendor_zlog_w %d\\n\"\n"
+	".Lprobe_s_11: .asciz \"\\0013ztedbg failed to read vendor_zlog_w %d\\n\"\n"
+	".Lprobe_s_12: .asciz \"\\0013ztedbg unexpected vendor_zlog_w len %zu\\n\"\n"
+	".Lprobe_s_13: .asciz \"\\0016ztedbg read 1 bytes vendor_zlog_w: 0x%x\\n\"\n"
+	".Lprobe_s_14: .asciz \"vendor_zlog_p\"\n"
+	".Lprobe_s_15: .asciz \"\\0013ztedbg failed to get vendor_zlog_p %d\\n\"\n"
+	".Lprobe_s_16: .asciz \"\\0013ztedbg failed to read vendor_zlog_p %d\\n\"\n"
+	".Lprobe_s_17: .asciz \"\\0013ztedbg unexpected vendor_zlog_p len %zu\\n\"\n"
+	".Lprobe_s_18: .asciz \"\\0016ztedbg read 1 bytes vendor_zlog_p: 0x%x\\n\"\n"
+	".Lprobe_s_19: .asciz \"vendor_zlog_panic_ext\"\n"
+	".Lprobe_s_20: .asciz \"\\0013ztedbg failed to init vendor_zlog_panic_ext %d\\n\"\n"
+	".Lprobe_s_21: .asciz \"\\0013ztedbg failed to read vendor_zlog_panic_ext %d\\n\"\n"
+	".Lprobe_s_22: .asciz \"\\0013ztedbg unexpected vendor_zlog_panic_ext len %zu\\n\"\n"
+	".Lprobe_s_23: .asciz \"\\0016ztedbg read %zu vendor_zlog_panic_ext: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\\n\"\n"
+	".popsection\n"
+ );
+#endif
+static void zte_reboot_ext_remove(struct platform_device *pdev)
+{
+	struct zte_reboot_ext_data *data = platform_get_drvdata(pdev);
+
+	atomic_notifier_chain_unregister(&panic_notifier_list, &data->panic_nb);
+	unregister_kretprobe(&panic_probe);
+	pr_info("ztedbg unregister p_hook");
+}
+
+static const struct of_device_id zte_reboot_ext_match[] = {
+	{ .compatible = "zte,reboot-ext" },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, zte_reboot_ext_match);
+
+static struct platform_driver zte_reboot_ext_driver = {
+	.probe = zte_reboot_ext_probe,
+	.remove = zte_reboot_ext_remove,
+	.driver = {
+		.name = DRIVER_NAME,
+		.of_match_table = zte_reboot_ext_match,
+	},
+};
+
+module_platform_driver(zte_reboot_ext_driver);
+
+MODULE_DESCRIPTION("ZTE Reboot Ext Driver");
+MODULE_LICENSE("GPL v2");
+MODULE_INFO(built_with, "DDK");

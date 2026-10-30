@@ -1,14 +1,15 @@
-void *__fastcall syna_pal_mem_cpy(void *result, unsigned int a2, void *src, unsigned int a4, size_t n)
+void syna_pal_mem_cpy(void *destination, unsigned int source_size,
+		      void *source, unsigned int destination_size,
+		      unsigned int copy_size)
 {
-  if ( result && src )
-  {
-    if ( (unsigned int)n > a2 || (unsigned int)n > a4 )
-    {
-      printk(unk_3944E, "syna_pal_mem_cpy", a4);
-      return NULL;
-    }
-    else
-      return memcpy(result, src, (unsigned int)n);
-  }
-  return result;
+  if (!destination || !source)
+    return;
+
+	if (copy_size > source_size || copy_size > destination_size) {
+		printk("\0013[error] %s: Invalid size. src:%d, dest:%d, size to copy:%d\n",
+		       "syna_pal_mem_cpy", destination_size, source_size, copy_size);
+		return;
+	}
+
+  memcpy(destination, source, copy_size);
 }

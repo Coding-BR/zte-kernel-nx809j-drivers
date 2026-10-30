@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "stock_function": "syna_tcm_buf_lock",
+      "stock_entry": "0011ede8",
+      "source_function": "syna_tcm_buf_lock",
+      "candidate_function": "syna_tcm_buf_lock",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_candidate_20260902_syna_tcm_buf_lock_repaired/zte_tpd.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "Ghidra may infer _printk as no-return on the diagnostic branch. ClearGhidraNoReturn(_printk) and ExtendGhidraFunctionBody(syna_tcm_buf_lock,88) are applied before export; equal body bytes, P-Code operation shape, KCFI and independent Assembly/relocation parity remain mandatory.",
+    "allow_section_address_normalization": true
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  }
+}

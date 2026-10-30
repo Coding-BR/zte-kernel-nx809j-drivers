@@ -1,115 +1,96 @@
-int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
-                                     unsigned int length,
-                                     unsigned int delay_ms)
-{
-  __int64 a1 = (__int64)(unsigned long)tcm;
-  char *a2 = config;
-  unsigned int a3 = length;
-  unsigned int a4 = delay_ms;
-  void *v4; // x0
-  unsigned int v6; // w22
-  __int64 v7; // x19
-  void *v8; // x20
-  unsigned int v9; // w21
-  __int64 v10; // x20
-  void *v11; // x22
-  unsigned int v12; // w24
-  unsigned int v13; // w21
-  __int64 v14; // x23
-  __int64 v15; // x0
-  __int64 v16; // x2
-  __int64 v17; // x2
-  __int64 v18; // x0
-  __int64 v19; // x19
-  int v20; // w0
-  __int64 v21; // x2
-  int v22; // w20
-  void *v23; // x0
-  tcm_write_message_fn v24; // x8
+/* SPDX-License-Identifier: GPL-2.0-only */
 
-  if ( !a1 )
-  {
-    v4 = unk_3365A;
-LABEL_12:
-    printk(v4, "syna_tcm_set_touch_report_config");
-    return -241;
-  }
-  if ( !a2 || !(_DWORD)a3 )
-  {
-    v4 = unk_34B2B;
-    goto LABEL_12;
-  }
-  if ( *(_BYTE *)(a1 + 9) != 1 )
-  {
-    printk(unk_36DD4, "syna_tcm_set_touch_report_config", *(unsigned __int8 *)(a1 + 9));
-    return -241;
-  }
-  if ( !a4 )
-  {
-    if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) == 0 )
-    {
-      v6 = *(_DWORD *)(a1 + 524);
-      v7 = a1;
-      v8 = a2;
-      v9 = a3;
-      printk(unk_3BA3F, "syna_tcm_set_touch_report_config", a3);
-      a2 = v8;
-      a3 = v9;
-      a4 = v6;
-      a1 = v7;
-      if ( !*(_WORD *)(v7 + 176) )
-        goto LABEL_10;
-      goto LABEL_17;
-    }
-    a4 = 0;
-  }
-  if ( !*(_WORD *)(a1 + 176) )
-  {
-LABEL_10:
-    v4 = unk_3C27E;
-    goto LABEL_12;
-  }
-LABEL_17:
-  v10 = *(unsigned __int16 *)(a1 + 188);
-  if ( (unsigned int)v10 < (unsigned int)a3 )
-  {
-    printk(unk_332E4, "syna_tcm_set_touch_report_config", a3, v10);
-    return -241;
-  }
-  v11 = a2;
-  v12 = a3;
-  v13 = a4;
-  v14 = a1;
-  v15 = syna_request_managed_device();
-  if ( !v15 )
-  {
-    printk(unk_3BE43, "syna_pal_mem_alloc");
-LABEL_22:
-    printk(unk_351D9, "syna_tcm_set_touch_report_config");
-    return -243;
-  }
-  v18 = devm_kmalloc(v15, v10, 3520);
-  if ( !v18 )
-    goto LABEL_22;
-  v19 = v18;
-  v20 = syna_pal_mem_cpy_1(v18, v10, v11, v12, v12);
-  if ( v20 < 0 )
-  {
-    v22 = v20;
-    v23 = unk_38006;
-  }
-  else
-  {
-    v24 = tcm->write_message;
-    if ( *(_DWORD *)((char *)v24 - 4) != 606091918 )
-      __break(0x8228u);
-    v22 = v24(tcm, 38, (u8 *)v19, (unsigned int)v10, NULL, v13);
-    if ( v22 >= 0 )
-      v23 = unk_3A63C;
-    else
-      v23 = unk_373B9;
-  }
-  printk(v23, "syna_tcm_set_touch_report_config");
-  syna_pal_mem_free_0(v19);
-  return v22;
+struct device;
+
+extern struct device *syna_request_managed_device(void);
+extern void *devm_kmalloc(struct device *device, size_t size,
+				  unsigned int flags);
+extern int syna_pal_mem_cpy_1(void *destination, unsigned int destination_size,
+				      const void *source, unsigned int source_size,
+				      unsigned int copy_size);
+extern void syna_pal_mem_free_0(void *memory);
+
+static u16 syna_tcm_set_touch_report_config_read_u16(const u8 *value)
+{
+	return (u16)value[0] | ((u16)value[1] << 8);
+}
+
+int syna_tcm_set_touch_report_config(struct tcm_dev *tcm, char *config,
+				     unsigned int length,
+				     unsigned int delay_ms)
+{
+	struct device *managed_device;
+	void *config_copy;
+	u16 current_config_size;
+	u16 max_config_size;
+	unsigned int effective_delay = delay_ms;
+	int result;
+
+	if (!tcm) {
+		printk("%s: Invalid tcm device handle\n",
+		       "syna_tcm_set_touch_report_config");
+		return -241;
+	}
+	if (!config || !length) {
+		printk("%s: Invalid configuration buffer\n",
+		       "syna_tcm_set_touch_report_config");
+		return -241;
+	}
+	if (tcm->firmware_mode != 0x01) {
+		printk("%s: Device is not in application fw mode, mode: %x\n",
+		       "syna_tcm_set_touch_report_config", tcm->firmware_mode);
+		return -241;
+	}
+
+	if (!effective_delay && !(tcm->transport->flags & 0x01)) {
+		effective_delay = tcm->command_delay_ms;
+		printk("%s: No support of IRQ control, use polling mode instead\n",
+		       "syna_tcm_set_touch_report_config");
+	}
+
+	current_config_size = syna_tcm_set_touch_report_config_read_u16(
+		tcm->application_info.version);
+	if (!current_config_size) {
+		printk("%s: Touch report configuration is unavailable\n",
+		       "syna_tcm_set_touch_report_config");
+		return -241;
+	}
+
+	max_config_size = syna_tcm_set_touch_report_config_read_u16(
+		tcm->application_info.max_touch_report_config_size);
+	if (max_config_size < length) {
+		printk("%s: Configuration length exceeds device limit\n",
+		       "syna_tcm_set_touch_report_config");
+		return -241;
+	}
+
+	managed_device = syna_request_managed_device();
+	if (!managed_device) {
+		printk("%s: Managed device is unavailable\n",
+		       "syna_tcm_set_touch_report_config");
+		return -243;
+	}
+
+	config_copy = devm_kmalloc(managed_device, max_config_size, 0xdc0);
+	if (!config_copy) {
+		printk("%s: Failed to allocate configuration buffer\n",
+		       "syna_tcm_set_touch_report_config");
+		return -243;
+	}
+
+	result = syna_pal_mem_cpy_1(config_copy, max_config_size, config,
+					length, length);
+	if (result >= 0)
+		result = tcm->write_message(tcm, 0x26, config_copy,
+					    max_config_size, NULL, effective_delay);
+
+	if (result < 0)
+		printk("%s: Failed to set touch report configuration\n",
+		       "syna_tcm_set_touch_report_config");
+	else
+		printk("%s: Touch report configuration updated\n",
+		       "syna_tcm_set_touch_report_config");
+
+	syna_pal_mem_free_0(config_copy);
+	return result;
 }

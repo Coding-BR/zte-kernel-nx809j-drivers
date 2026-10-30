@@ -2,12 +2,12 @@
 
 int suspend_tp_need_awake(void)
 {
-  int (*v0)(void); // x8
+  struct ztp_device *cdev;
+  bool (*check)(struct ztp_device *cdev);
 
-  v0 = *(int (**)(void))(tpd_cdev + 3248);
-  if ( !v0 )
+  cdev = (struct ztp_device *)(unsigned long)tpd_cdev;
+  check = *(bool (**)(struct ztp_device *))(tpd_cdev + 0xe68);
+  if (!check)
     return 0;
-  if ( *((_DWORD *)v0 - 1) != -2139014615 )
-    __break(0x8228u);
-  return v0() & 1;
+  return check(cdev) & 1;
 }

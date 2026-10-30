@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_get_ram_data",
+  "branches": [
+    {
+      "condition": "initial length is zero",
+      "behavior": "return 0 without calling helper"
+    },
+    {
+      "condition": "length is nonzero",
+      "behavior": "perform at least one chunk read; after each read reload length, advance by the chunk, and continue only while offset is below the reloaded length"
+    }
+  ],
+  "error_handling": {
+    "helper_return": "ignored",
+    "logging": "none in this function",
+    "buffer_validation": "none observed",
+    "length_validation": "none observed"
+  },
+  "arithmetic_notes": "length and offset are 32-bit unsigned values in the loop; return sign-extends the low 32-bit offset. Do not add bounds, retries, or error propagation absent from stock."
+}

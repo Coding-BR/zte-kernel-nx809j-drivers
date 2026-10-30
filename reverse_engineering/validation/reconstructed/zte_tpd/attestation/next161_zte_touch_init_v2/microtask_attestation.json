@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_touch_init",
+  "source_function": "zte_touch_init",
+  "stock_function": "init_module",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_normalized_entrypoint": "PASS",
+    "aarch64_instruction_size_section": "PASS",
+    "aarch64_relocation_parity": "BLOCKED"
+  },
+  "semantic_contract": [
+    "Emit the stock printk format and zte_touch_init name.",
+    "Call the platform-driver registration wrapper with zte_touch_device_driver and THIS_MODULE.",
+    "Return the registration result without rewriting it."
+  ],
+  "unverified": [
+    "Exact stock .data+0x150 object identity for zte_touch_device_driver.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison_normalized.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

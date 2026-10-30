@@ -1,0 +1,452 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T20:23:18.652071Z",
+  "mode": "aarch64_basic_blocks_calls_relocations",
+  "sources": {
+    "stock": {
+      "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\stock_assembly\\0004_zlog_register_work_00107844.asm",
+      "sha256": "3520e04428212e182103974c1f2611c204cd7d54dd3d869e090c744cf20e89c1"
+    },
+    "candidate": {
+      "path": "F:\\drivers\\analysis\\zte_tpd\\20260801_next121_zlog_register_work_revalidation\\candidate_assembly_final\\0000_zlog_register_work.asm",
+      "sha256": "e05a1d1595d2156bcbb3dd8623fe36e337c4550a4b676a8a51b23e07ff1950fc"
+    }
+  },
+  "stock": {
+    "function": "zlog_register_work",
+    "entry": 4028,
+    "instruction_count": 11,
+    "symbol_size": 44,
+    "basic_block_count": 3,
+    "edge_count": 3,
+    "call_count": 1,
+    "calls": [
+      "tpd_zlog_register"
+    ],
+    "blocks": [
+      {
+        "id": "B000",
+        "start_offset": 0,
+        "end_offset": 16,
+        "instruction_count": 4,
+        "instructions": [
+          {
+            "address": 4028,
+            "offset": 0,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x0 <.text>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev"
+            ]
+          },
+          {
+            "address": 4032,
+            "offset": 4,
+            "opcode": "f9400100",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev"
+            ]
+          },
+          {
+            "address": 4036,
+            "offset": 8,
+            "opcode": "396fc008",
+            "mnemonic": "ldrb",
+            "operands": "w8, [x0, #0xbf0]",
+            "relocations": []
+          },
+          {
+            "address": 4040,
+            "offset": 12,
+            "opcode": "370000e8",
+            "mnemonic": "tbnz",
+            "operands": "w8, #0x0, 0xfe4 <zlog_register_work+0x28>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "tbnz",
+        "successors": [
+          "B002",
+          "B001"
+        ],
+        "signature": "00fc06bf2350ccf638316411b4283004ae663bea8a213ef17ca3fbff7631ccc3"
+      },
+      {
+        "id": "B001",
+        "start_offset": 16,
+        "end_offset": 40,
+        "instruction_count": 6,
+        "instructions": [
+          {
+            "address": 4044,
+            "offset": 16,
+            "opcode": "d503233f",
+            "mnemonic": "paciasp",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 4048,
+            "offset": 20,
+            "opcode": "a9bf7bfd",
+            "mnemonic": "stp",
+            "operands": "x29, x30, [sp, #-0x10]!",
+            "relocations": []
+          },
+          {
+            "address": 4052,
+            "offset": 24,
+            "opcode": "910003fd",
+            "mnemonic": "mov",
+            "operands": "x29, sp",
+            "relocations": []
+          },
+          {
+            "address": 4056,
+            "offset": 28,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0xfd8 <zlog_register_work+0x1c>",
+            "relocations": [
+              "R_AARCH64_CALL26 tpd_zlog_register"
+            ]
+          },
+          {
+            "address": 4060,
+            "offset": 32,
+            "opcode": "a8c17bfd",
+            "mnemonic": "ldp",
+            "operands": "x29, x30, [sp], #0x10",
+            "relocations": []
+          },
+          {
+            "address": 4064,
+            "offset": 36,
+            "opcode": "d50323bf",
+            "mnemonic": "autiasp",
+            "operands": "",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "tpd_zlog_register"
+        ],
+        "terminator": null,
+        "successors": [
+          "B002"
+        ],
+        "signature": "7b7c7b51712237dbabfd43490642489a4d735a6b6898120e9eca3dae36545b74"
+      },
+      {
+        "id": "B002",
+        "start_offset": 40,
+        "end_offset": 44,
+        "instruction_count": 1,
+        "instructions": [
+          {
+            "address": 4068,
+            "offset": 40,
+            "opcode": "d65f03c0",
+            "mnemonic": "ret",
+            "operands": "",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "ret",
+        "successors": [],
+        "signature": "382361f319c57ca329f031bb0a203bfe745c56496a5ad1e8a89e1da4f57337a0"
+      }
+    ],
+    "call_regions": [
+      {
+        "id": "C000",
+        "block": "B000",
+        "start_offset": 0,
+        "end_offset": 16,
+        "instruction_count": 4,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "adrp",
+          "ldr",
+          "ldrb",
+          "tbnz"
+        ]
+      },
+      {
+        "id": "C001",
+        "block": "B001",
+        "start_offset": 16,
+        "end_offset": 32,
+        "instruction_count": 4,
+        "boundary": "call",
+        "call": "tpd_zlog_register",
+        "mnemonics": [
+          "paciasp",
+          "stp",
+          "mov",
+          "bl"
+        ]
+      },
+      {
+        "id": "C002",
+        "block": "B001",
+        "start_offset": 32,
+        "end_offset": 40,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldp",
+          "autiasp"
+        ]
+      },
+      {
+        "id": "C003",
+        "block": "B002",
+        "start_offset": 40,
+        "end_offset": 44,
+        "instruction_count": 1,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ret"
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "function": "zlog_register_work",
+    "entry": 153388,
+    "instruction_count": 11,
+    "symbol_size": 44,
+    "basic_block_count": 3,
+    "edge_count": 3,
+    "call_count": 1,
+    "calls": [
+      "tpd_zlog_register"
+    ],
+    "blocks": [
+      {
+        "id": "B000",
+        "start_offset": 0,
+        "end_offset": 16,
+        "instruction_count": 4,
+        "instructions": [
+          {
+            "address": 153388,
+            "offset": 0,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x25000 <tpd_zlog_register+0xf4>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev"
+            ]
+          },
+          {
+            "address": 153392,
+            "offset": 4,
+            "opcode": "f9400100",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev"
+            ]
+          },
+          {
+            "address": 153396,
+            "offset": 8,
+            "opcode": "396fc008",
+            "mnemonic": "ldrb",
+            "operands": "w8, [x0, #0xbf0]",
+            "relocations": []
+          },
+          {
+            "address": 153400,
+            "offset": 12,
+            "opcode": "370000e8",
+            "mnemonic": "tbnz",
+            "operands": "w8, #0x0, 0x25754 <zlog_register_work+0x28>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "tbnz",
+        "successors": [
+          "B002",
+          "B001"
+        ],
+        "signature": "00fc06bf2350ccf638316411b4283004ae663bea8a213ef17ca3fbff7631ccc3"
+      },
+      {
+        "id": "B001",
+        "start_offset": 16,
+        "end_offset": 40,
+        "instruction_count": 6,
+        "instructions": [
+          {
+            "address": 153404,
+            "offset": 16,
+            "opcode": "d503233f",
+            "mnemonic": "paciasp",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 153408,
+            "offset": 20,
+            "opcode": "a9bf7bfd",
+            "mnemonic": "stp",
+            "operands": "x29, x30, [sp, #-0x10]!",
+            "relocations": []
+          },
+          {
+            "address": 153412,
+            "offset": 24,
+            "opcode": "910003fd",
+            "mnemonic": "mov",
+            "operands": "x29, sp",
+            "relocations": []
+          },
+          {
+            "address": 153416,
+            "offset": 28,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x25748 <zlog_register_work+0x1c>",
+            "relocations": [
+              "R_AARCH64_CALL26 tpd_zlog_register"
+            ]
+          },
+          {
+            "address": 153420,
+            "offset": 32,
+            "opcode": "a8c17bfd",
+            "mnemonic": "ldp",
+            "operands": "x29, x30, [sp], #0x10",
+            "relocations": []
+          },
+          {
+            "address": 153424,
+            "offset": 36,
+            "opcode": "d50323bf",
+            "mnemonic": "autiasp",
+            "operands": "",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "tpd_zlog_register"
+        ],
+        "terminator": null,
+        "successors": [
+          "B002"
+        ],
+        "signature": "7b7c7b51712237dbabfd43490642489a4d735a6b6898120e9eca3dae36545b74"
+      },
+      {
+        "id": "B002",
+        "start_offset": 40,
+        "end_offset": 44,
+        "instruction_count": 1,
+        "instructions": [
+          {
+            "address": 153428,
+            "offset": 40,
+            "opcode": "d65f03c0",
+            "mnemonic": "ret",
+            "operands": "",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "ret",
+        "successors": [],
+        "signature": "382361f319c57ca329f031bb0a203bfe745c56496a5ad1e8a89e1da4f57337a0"
+      }
+    ],
+    "call_regions": [
+      {
+        "id": "C000",
+        "block": "B000",
+        "start_offset": 0,
+        "end_offset": 16,
+        "instruction_count": 4,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "adrp",
+          "ldr",
+          "ldrb",
+          "tbnz"
+        ]
+      },
+      {
+        "id": "C001",
+        "block": "B001",
+        "start_offset": 16,
+        "end_offset": 32,
+        "instruction_count": 4,
+        "boundary": "call",
+        "call": "tpd_zlog_register",
+        "mnemonics": [
+          "paciasp",
+          "stp",
+          "mov",
+          "bl"
+        ]
+      },
+      {
+        "id": "C002",
+        "block": "B001",
+        "start_offset": 32,
+        "end_offset": 40,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldp",
+          "autiasp"
+        ]
+      },
+      {
+        "id": "C003",
+        "block": "B002",
+        "start_offset": 40,
+        "end_offset": 44,
+        "instruction_count": 1,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ret"
+        ]
+      }
+    ]
+  },
+  "comparison": {
+    "same_cfg_counts": {
+      "basic_blocks": true,
+      "edges": true,
+      "calls": true
+    },
+    "block_signature_ratio": 1.0,
+    "block_changes": [],
+    "mnemonics": {
+      "ratio": 1.0,
+      "changes": []
+    },
+    "opcodes": {
+      "ratio": 1.0,
+      "changes": []
+    },
+    "calls": {
+      "ratio": 1.0,
+      "changes": []
+    }
+  }
+}

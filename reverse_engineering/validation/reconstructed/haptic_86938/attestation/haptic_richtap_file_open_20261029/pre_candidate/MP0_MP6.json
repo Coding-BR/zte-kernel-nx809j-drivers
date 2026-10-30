@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "richtap_file_open@0010ea28",
+  "stage": "PRE_CANDIDATE",
+  "generated_date": "2026-10-29",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "classification": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "STATEFUL_MEMORY"
+  ],
+  "microproofs": {
+    "MP0_IDENTITY": {
+      "status": "PASS",
+      "elf_section": ".text",
+      "elf_symbol_value": "0xbc08",
+      "ghidra_entry": "0010ea28",
+      "body_bytes": 76,
+      "kcfi_preamble_offset": "0xbc04",
+      "kcfi_type_id": "0x9829071d",
+      "evidence_sha256": {
+        "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+        "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+        "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+        "kcfi_inventory": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+        "stock_decompiled_c": "0906f0aa9ca932519f6f14791271246b1f59672664671c0601ef752e94ac5d8f",
+        "stock_pcode": "fcf712e43fb02bed78c1180031d96fe70335c210a4c6d4fbc5d9d790ac4a4466",
+        "stock_assembly": "e5e1d2e60b782a6c5460e0c8b1c8b7a711d0a30474867db64401bfaccaaa60cb",
+        "stock_identity": "598786f8381370ec7668107d30c41affc94df4b9d654826066a6514d57eb64e6"
+      }
+    },
+    "MP1_CALL_SIGNATURE": {
+      "status": "SUPPORTED_BY_KERNEL_ABI_AND_STOCK_KCFI",
+      "prototype": "int (struct inode *, struct file *)",
+      "basis": [
+        "Pinned kernel include/linux/fs.h declares file_operations.open with this prototype.",
+        "Stock KCFI type ID is 0x9829071d, matching the adjacent release callback."
+      ],
+      "callee": "try_module_get(struct module *)",
+      "callee_result": "success iff low bit is set"
+    },
+    "MP2_STATE_EFFECT_LEDGER": {
+      "status": "EXTRACTED_REVIEW_REQUIRED",
+      "effects": [
+        "Calls try_module_get(&__this_module) exactly once.",
+        "If try_module_get returns false, returns -ENODEV (-19) and does not store private_data.",
+        "If it succeeds, loads g_aw_haptic and stores the pointer into file->private_data at offset 0x20, then returns zero.",
+        "The stack save/restore of x19 is compiler-generated preservation across the external call."
+      ],
+      "function_pcode_sha256": "fcf712e43fb02bed78c1180031d96fe70335c210a4c6d4fbc5d9d790ac4a4466"
+    },
+    "MP3_CONTROL_ERROR_MATRIX": {
+      "status": "PASS_STATIC_CONTROL_FLOW",
+      "paths": [
+        {
+          "condition": "try_module_get(&__this_module) returns false",
+          "external_effect": "no private_data store",
+          "return": -19
+        },
+        {
+          "condition": "try_module_get(&__this_module) returns true",
+          "external_effect": "file->private_data = g_aw_haptic",
+          "return": 0
+        }
+      ],
+      "no_error_branch": false
+    },
+    "MP4_EVENT_CALLBACK_LIFETIME": {
+      "status": "CALLBACK_REFERENCE_OBSERVED",
+      "stock_relocation": {
+        "section": ".rela.data",
+        "offset": "0xaf0",
+        "owner_object": "left_fops",
+        "owner_symbol_value": "0xa88",
+        "owner_offset": "0x68",
+        "target": ".text+0xbc08 (richtap_file_open)",
+        "type": "R_AARCH64_ABS64"
+      },
+      "stock_kcfi_type_id": "0x9829071d",
+      "limitation": "Stock callback relocation and prototype are identified; candidate callback table is not reconstructed."
+    },
+    "MP5_RESOURCE_LIFETIME": {
+      "status": "STOCK_PAIR_AND_RELEASE_CANDIDATE_OBSERVED",
+      "acquire_side": {
+        "function": "richtap_file_open@0010ea28",
+        "effect": "try_module_get(&__this_module); on success store g_aw_haptic in file private_data; on failure return -ENODEV"
+      },
+      "release_side": {
+        "function": "richtap_file_release@0010ea78",
+        "effect": "module_put(&__this_module); return 0",
+        "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_034_richtap_file_release.c",
+        "candidate_status": "candidate_under_static_validation",
+        "semantic_equivalence": "NOT_ESTABLISHED"
+      },
+      "limitation": "The stock refcount pair is visible. Release has a static candidate, but independent review and kernel lifecycle tests are outstanding."
+    },
+    "MP6_REGISTER_BUS_LEDGER": {
+      "status": "NOT_APPLICABLE_TO_THIS_FUNCTION",
+      "basis": "No I2C, SPI, GPIO, regmap, MMIO, or firmware call/reference occurs in the target function."
+    }
+  },
+  "pre_edit_decision": {
+    "candidate_source_created": false,
+    "source_edit_allowed": true,
+    "promotion_authorized": false,
+    "remaining_proofs": [
+      "candidate Docker rebuild and strict assembly/relocation comparison",
+      "candidate KCFI and Ghidra/P-Code comparison",
+      "Joern scoped state and lifetime slices",
+      "host harness with failure and no-private-data-store mutants",
+      "independent review",
+      "whole-driver lifecycle closure with release"
+    ]
+  }
+}

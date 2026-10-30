@@ -10,6 +10,11 @@
 
 #include "fp_goodix_internal.h"
 
+#ifndef ZTE_FINGERPRINT_HOST_TEST
+extern long gf_ioctl(struct file *file, unsigned int cmd,
+			     unsigned long arg);
+#endif
+
 struct zlog_module_info goodix_zlog_fp_dev = {
 	.module_id = 7,
 	.name = "fingerprint",
@@ -30,7 +35,7 @@ static LIST_HEAD(device_list);
 static DEFINE_MUTEX(device_list_lock);
 
 /* Global static device reference (since original uses a fixed instance layout) */
-static struct gf_dev gf;
+struct gf_dev gf;
 
 static noinline void gf_probe_list_del(struct list_head *entry) __asm__("list_del");
 
@@ -151,7 +156,7 @@ static noinline void goodixfp_init_drm_notifier(struct work_struct *work)
 	}
 }
 
-static void gf_enable_irq(void)
+void gf_enable_irq(void)
 {
 	if (gf.irq_enabled == 0) {
 		enable_irq(gf.irq_num);
@@ -161,7 +166,7 @@ static void gf_enable_irq(void)
 	}
 }
 
-static void gf_disable_irq(struct gf_dev *gf_dev)
+void gf_disable_irq(struct gf_dev *gf_dev)
 {
 	if (!gf_dev->irq_enabled) {
 		pr_warn("fp_goodix: IRQ has been disabled.\n");
@@ -223,8 +228,7 @@ static int gf_open(struct inode *inode, struct file *file)
 		if (gf_dev->ref_count == 1) {
 			ret = gf_parse_dts(gf_dev);
 			if (ret) {
-				mutex_unlock(&device_list_lock);
-				return ret;
+				goto err_unlock_return;
 			}
 
 			pr_info("fp_goodix: %s: enter", "irq_setup");
@@ -232,24 +236,43 @@ static int gf_open(struct inode *inode, struct file *file)
 			ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
 						   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 						   "gf", gf_dev);
+			#if defined(__aarch64__)
+			register int wake_irq __asm__("w1");
+			asm volatile("ldr %w0, [%1, #0x40]"
+				     : "=r"(wake_irq)
+				     : "r"(&gf_dev->device_entry));
+			#else
+			int wake_irq = gf_dev->irq_num;
+			#endif
 			if (ret) {
+				#if defined(__aarch64__)
+				#pragma clang diagnostic push
+				#pragma clang diagnostic ignored "-Wformat-insufficient-args"
+				pr_err("fp_goodix: failed to request IRQ:%d\n");
+				#pragma clang diagnostic pop
+				#else
 				pr_err("fp_goodix: failed to request IRQ:%d\n", ret);
+				#endif
 				gf_cleanup(gf_dev);
-				mutex_unlock(&device_list_lock);
-				return ret;
+				goto err_unlock_return;
 			}
 
-			irq_set_irq_wake(gf_dev->irq_num, 1);
+			irq_set_irq_wake(wake_irq, 1);
 			gf_dev->irq_enabled = 1;
 		}
 
 		gf_hw_reset(gf_dev, 5);
-		ret = 0;
 		gf_dev->opened = 1;
+		barrier();
+		ret = 0;
 	}
 
 	mutex_unlock(&device_list_lock);
 	pr_info("fp_goodix: %s: end\n", __func__);
+	return ret;
+
+err_unlock_return:
+	mutex_unlock(&device_list_lock);
 	return ret;
 }
 
@@ -289,7 +312,7 @@ static int gf_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static void nav_event_input(int action)
+void nav_event_input(int action)
 {
 	u32 key_code = 0;
 
@@ -343,7 +366,9 @@ static void nav_event_input(int action)
 
 
 
-static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+static long __maybe_unused gf_ioctl_source_reference(struct file *file,
+						     unsigned int cmd,
+						     unsigned long arg)
 {
 	struct gf_key_event {
 		u32 key;
@@ -378,11 +403,12 @@ static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	if (!gf.opened) {
 		power_offset = cmd - 0x6707;
 		OPTIMIZER_HIDE_VAR(power_offset);
-		if (power_offset > 1) {
+		if (power_offset <= 1) {
+			pr_info("fp_goodix: power cmd\n");
+		} else {
 			pr_info("fp_goodix: Sensor is power off currently.\n");
 			goto err_nodev;
 		}
-		pr_info("fp_goodix: power cmd\n");
 	}
 
 	switch (cmd) {
@@ -545,12 +571,12 @@ static int gf_probe(struct platform_device *pdev)
 	pr_info("fp_goodix: %s\n", __func__);
 
 	INIT_LIST_HEAD(&gf_dev->device_entry);
+	gf_dev->pdev = pdev;
 	gf_dev->irq_gpio = -EINVAL;
 	gf_dev->reset_gpio = -EINVAL;
-	gf_dev->reserved_44 = (u32)-EINVAL;
+	*(u64 *)&gf_dev->reserved_44 = (u64)(u32)-EINVAL;
 	gf_dev->opened = 0;
 	gf_dev->screen_state = 0;
-	gf_dev->pdev = pdev;
 
 	gf_dev->screen_state_wq = create_singlethread_workqueue("screen_state_wq");
 	if (gf_dev->screen_state_wq) {
@@ -578,7 +604,7 @@ static int gf_probe(struct platform_device *pdev)
 	}
 
 	set_bit(minor, minors);
-	list_add_tail(&gf_dev->device_entry, &device_list);
+	list_add(&gf_dev->device_entry, &device_list);
 	mutex_unlock(&device_list_lock);
 
 	gf_dev->input_dev = input_allocate_device();

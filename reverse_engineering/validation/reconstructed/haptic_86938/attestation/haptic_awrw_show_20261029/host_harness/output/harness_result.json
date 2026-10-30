@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "generated_utc": "2026-10-29T19:48:39.936287+00:00",
+  "mode": "host-only; never device",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_107_awrw_show.c",
+  "candidate_source_sha256": "61e16cb2963e4f385654cf0fa1208eb5df0e4e6547bbb5e823a6763f1e5d71c4",
+  "candidate_module_sha256": "ff7ccc663b53fcbf8606f85ddc655d3ddfacdb6a936965814e2419d8c33a1b48",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "guarded_differential_runs": 2,
+  "guarded_run_output_sha256": "5e247e0413e75586e2989a6e44b4448d83f5851f45f0e197d985e263009d5f56",
+  "guarded_results": {
+    "status": "PASS",
+    "differential_cases": 2053,
+    "count_range": [
+      0,
+      1024
+    ],
+    "byte_format_cases": 256,
+    "mode_errors": -34,
+    "two_byte_return": 11,
+    "zero_count_return": 1,
+    "count_819_return": 4096,
+    "count_820_return": 4100,
+    "mutant_error_errno_detected": true
+  },
+  "sanitizer_observations": {
+    "status": "PASS",
+    "conditional_zero_state_exit": 1,
+    "count820_probe_exit": 0,
+    "count820_probe": {
+      "status": "PASS",
+      "return": 4100,
+      "oversize_guard_calls": 1,
+      "last_in_page_byte_is_nul": true
+    }
+  },
+  "conditional_zero_state_stderr_sha256": "17df103e6a2e2f8913d1147aea1070fe2d0abce29b4ada67b03cf3be7a62abfd",
+  "count820_probe_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "limitations": [
+    "The zero-count ASan case intentionally reproduces the stock one-byte underwrite.",
+    "The count-820 case uses a 4096-byte allocation; the target-kernel size guard returns before an out-of-page write.",
+    "This host harness does not prove concurrent show/store lifetime safety."
+  ]
+}

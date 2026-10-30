@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "262_syna_tcm_v1_set_up_max_rw_size",
+  "stock_entry": "00120da8",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0261_syna_tcm_v1_set_up_max_rw_size_00120da8.asm",
+      "sha256": "e954318c9d85877144e1a63e0c8e2070c75f2f308fade1ebd953c3f6daa070bd"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next262_syna_tcm_v1_set_up_max_rw_size_v1/candidate_assembly/set_up_max_rw_size_candidate.asm",
+      "sha256": "973baeac9152ea56946dda750b3fa25ace91bebc0093102fe017d0db11e0a7f9"
+    }
+  },
+  "checks": {
+    "instruction_count_46": "PASS",
+    "symbol_size_184": "PASS",
+    "null_tcm_error_path": "PASS",
+    "invalid_protocol_error_path": "PASS",
+    "read_limit_minimum_and_zero_host_fallback": "PASS",
+    "write_limit_host_cap": "PASS",
+    "conditional_state_stores": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP and relocation context that do not establish final module equivalence.",
+    "The candidate assembly was generated with a different build context than the vendor compiler and flags.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or exact binary equivalence."
+  ]
+}

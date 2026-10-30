@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_ramdisk_reboot",
+  "stock_sha256": "598d5862b03a7f1fdc60318ca53fb6837716662c591991390e6f946aafb2d740",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "functions": [{
+    "stock_function": "zte_ramdisk_reboot_write",
+    "stock_entry": "00100464",
+    "source_function": "zte_ramdisk_reboot_write",
+    "candidate_function": "zte_ramdisk_reboot_write",
+    "kcfi_required": true,
+    "assembly_only": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_ramdisk_reboot",
+    "stock_module": "reference_modules/full_vendor_boot/zte_ramdisk_reboot.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_ramdisk_reboot/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_ramdisk_reboot_write_protocol_20260905"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_ramdisk_reboot",
+    "define": ["__user", "__init", "__exit", "noinline"],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

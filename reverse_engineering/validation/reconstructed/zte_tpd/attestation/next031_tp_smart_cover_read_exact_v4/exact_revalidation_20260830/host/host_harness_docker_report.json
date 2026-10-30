@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_smart_cover_read",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_smart_cover_read.c",
+  "source_sha256": "a7086d5dd11ccb0c32d48c1015fefd01cbc21d6499e84fb4d2ca208d5233c5bb",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_smart_cover_read.c",
+      "size": 994,
+      "sha256": "a7086d5dd11ccb0c32d48c1015fefd01cbc21d6499e84fb4d2ca208d5233c5bb"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_smart_cover_read.c",
+      "size": 994,
+      "sha256": "a7086d5dd11ccb0c32d48c1015fefd01cbc21d6499e84fb4d2ca208d5233c5bb"
+    }
+  ],
+  "driver_source_sha256": "a7086d5dd11ccb0c32d48c1015fefd01cbc21d6499e84fb4d2ca208d5233c5bb",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_smart_cover_read_host_test.c",
+  "harness_sha256": "a0eb3faa91ce52e170cd377648f57609298cc8fe7c0fc50005461fa38027a113",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 2,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_smart_cover_read host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "ac9751dfc1d1a137709a290d67622806ab02fd10871cc1b33a8cf9e8067524a5",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_smart_cover_read host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "ac9751dfc1d1a137709a290d67622806ab02fd10871cc1b33a8cf9e8067524a5",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness validates the +0xe38 callback offset, +0x4 value read, partial read and EOF contract with fake memory.",
+    "It does not execute the real procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

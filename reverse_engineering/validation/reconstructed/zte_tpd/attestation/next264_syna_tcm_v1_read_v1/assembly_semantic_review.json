@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "264_syna_tcm_v1_read",
+  "stock_entry": "00120eec",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0263_syna_tcm_v1_read_00120eec.asm",
+      "sha256": "f450e60d0b2bd411bd97ab3e6ebbe3ee1bbc671edd5331c911d145c11d39454f"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next264_syna_tcm_v1_read_v1/candidate_assembly/tcm_v1_read_candidate.s",
+      "sha256": "83b352149ae1ebdf1c2be9946d6bcf2afb894ee320734e432c4ccd0c95356822"
+    }
+  },
+  "checks": {
+    "null_data_log_has_only_function_argument": "PASS",
+    "zero_length_returns_zero_without_transport": "PASS",
+    "destination_and_max_write_limits": "PASS",
+    "transport_and_callback_null_error_paths": "PASS",
+    "indirect_call_arguments_transport_data_length": "PASS",
+    "negative_callback_result_is_returned": "PASS",
+    "response_0xa5_returns_zero": "PASS",
+    "unexpected_response_returns_minus_242": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP and a CFI type hash check; the freestanding candidate does not reproduce vendor hardening.",
+    "The candidate was generated with GCC 13.3.0, not the vendor compiler and flags.",
+    "This review does not establish kernel ABI, module relocation, KCFI, or exact binary equivalence."
+  ]
+}

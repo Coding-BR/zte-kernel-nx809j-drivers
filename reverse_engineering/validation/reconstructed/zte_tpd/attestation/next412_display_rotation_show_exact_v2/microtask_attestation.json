@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "display_rotation_show",
+  "attestation_id": "next412_display_rotation_show_exact_v2",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "PASS_EXACT",
+    "aarch64_relocations_raw": "PASS_WITH_LOCAL_RODATA_RELOCATION_NORMALIZATION",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero without logging or copying when *offset is nonzero",
+    "read the display rotation value from tpd_cdev + 0x10",
+    "log display_rotation_show with the observed rotation value",
+    "format display rotation: %d\\n with snprintf size 30",
+    "return the formatted value through simple_read_from_buffer"
+  ],
+  "evidence": {
+    "stock_body_bytes": 212,
+    "candidate_body_bytes": 212,
+    "stock_instruction_count": 53,
+    "candidate_instruction_count": 53,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "candidate_module_sha256": "ff42f74689c03f39a3cb4fee71dd31789452c38750e1b2014c79a674230368af",
+    "candidate_function_assembly_sha256": "bdda5201957019bc281d4a925228a1b3608ff74a74fb3472b2bcbaa54a65acb4",
+    "stock_function_assembly_sha256": "b9aa4e0e4e0f30802f3f31afb0f09ddc94b916bed2796d643dc274d344ad0e0e",
+    "host_cases": 2,
+    "host_repetitions": 2,
+    "host_binary_sha256": "71d9e3dae20eeb53ba69a0f91377ec87f90a51477def3f76d736ebea3e77c279",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_difference": "The instruction sequence is byte-identical to stock. Local .rodata relocation offsets differ because the candidate module is independently linked; normalized relocation identity and pointed-to strings match stock."
+  },
+  "follow_up_required": [
+    "Review local .rodata symbol placement only if raw link-time offsets are required; normalized relocation identity is exact.",
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "concurrent lifetime",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, byte-identical 53-instruction/212-byte AArch64 body, matching function KCFI contract, strict Joern with zero unresolved calls, reproducible Docker build, and two-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod_MP6",
+  "work_unit": "MP6_REGISTER_OR_BUS_LEDGER",
+  "draft_status": "DRAFT_PENDING_L3_L4",
+  "candidate_edit_authorized": false,
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+      "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "f6401987c36dc1eca96cd8fd56235aec0953fed85ab4ef241df4e741ee6e754c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "f216f592615a399888012efb59b07017fe1f949b69ef57c94303b61b9b9e4d07"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "43af4c47175472bd7553c8e6a58b1503c1aae135847c80127f3ef06c5dd2ad23"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP5_LOCK_LIFETIME_CONTRACT.json",
+      "sha256": "3f6463fc5fea849bc935a5330ebd16086b465524081ed4ace855913fa6078e97"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/kernel_header_evidence.json",
+      "sha256": "23e765bfbddd8d4c8bd7e749cd3b56545d4d98cdb4fed8318186de2513c7cc2b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "sha256": "f5bbf80e97219a617b74b60b7523fcb923e9befc1e1211e1fa47672a760595cc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/strings.jsonl",
+      "sha256": "308c6137abbf748b0d402c85b183fedaeaa856e56f7619b0e82c96d1d8c181eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "sha256": "acdecc230375cdbe3d484ce71b66153929fd4168b25d4784be7105c409374b4c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "sha256": "0ea5df582863f593eca794c81a681c1237e9b89ce2be29e3f708a5a48c9b2288"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "sha256": "4eb933109cc88973a431f674238b25f47392a9457a2ad8d44ad9f731127da1e5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "sha256": "c5079ffbe3e9a61ab51aabe687d60bbb479d8da7f320dc552a56ffb5a1f8135e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/manifest.json",
+      "sha256": "4f358c5e22cde2f1d7484deb385809589312e1d87645cd7018cefa4e945194fb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/sysfs_teardown_source_contracts_20261027.txt",
+      "sha256": "92727e7aa748ea03af889d0b9ec7d891516ec55e33acbcf7a55c6c26648f306d"
+    }
+  ],
+  "observations": [
+    {
+      "id": "OBS-001",
+      "claim": "ftm_probe chama ioremap_prot com phys_addr=0x58000 e size=0x1000; branch map confirmado: arm64_use_ng_mappings==0 -> prot 0x0068000000000713; arm64_use_ng_mappings!=0 -> prot 0x0068000000000f13.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "stock ftm_probe .init.text+0x120..0x154; compare/branch against arm64_use_ng_mappings; exact instruction and relocations in 0001_ftm_probe.asm"
+    },
+    {
+      "id": "OBS-002",
+      "claim": "Retorno ioremap_prot é guardado em .bss+0x8; nenhum load/store pelo ponteiro foi localizado nos nove corpos.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "store .bss+0x8 at .init.text+0x15c; P-Code corpus"
+    },
+    {
+      "id": "OBS-003",
+      "claim": "At qcom_scm_qseecom_call, x0 is smc_id=0x02000807, x1 points to qseecom_scm_desc, and x2 is atomic=true. Separately, the descriptor has arginfo=2, args[0]=0x00058030 or 0x30, and args[1..9] initialized to zero; atomic is not a descriptor member.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text offsets 0xb0-0x10c; pinned qseecom_scm.h descriptor fields and qcom_scm_qseecom_call prototype in kernel_header_evidence.json"
+    },
+    {
+      "id": "OBS-004",
+      "claim": "The function loads ret[0] as a 32-bit low word and ret[1] as a 64-bit qword; it forms diagnostic value (u32)ret[0] | ((u32)ret[1]<<32), discarding ret[1] high 32 bits. The output predicate tests only bits 30/31 of ret[0] low word; ret[1] does not affect that predicate.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "simlock .text+0x114..0x164: ldr x8,[sp,#0x68]; ldr w9,[sp,#0x60]; orr x20,x9,x8,lsl #32; mvn w8,w20; tst w8,#0xc0000000"
+    },
+    {
+      "id": "OBS-005",
+      "claim": "Busca OF usa qcom,msm-imem-efs-golden-copy e of_iomap índice zero; overlay comum declara reg=<0x04 8> sob parent ranges a partir de 0x14680BF8.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "locator": "common_overlay; stock string at 00100d90"
+    },
+    {
+      "id": "OBS-006",
+      "claim": "Static DT translation yields IMEM base 0x14680BFC, size 8; the observed 32-bit word access at base+4 resolves to static address 0x14680C00. show reads it; store writes normalized 0/1 and executes DSB SY.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "locator": "common overlay reg/ranges translation; MP2 show/store assembly locators; address arithmetic 0x14680BFC+4"
+    },
+    {
+      "id": "OBS-007",
+      "claim": "Dtsi tem comentário NX809J; aplicação runtime do overlay e validade do mapping no aparelho não confirmadas.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "locator": "target_overlay_dtsi; runtime_overlay_application_confirmed=false"
+    }
+  ],
+  "inferences": [],
+  "unknowns": [
+    "Overlay NX809J runtime não provado.",
+    "Semântica externa do word IMEM+4 continua parcialmente desconhecida.",
+    "SMC service semantics and physical meaning of the IMEM word remain unknown; runtime overlay application is not proven."
+  ],
+  "contradictions": [],
+  "requested_escalation": "MP6 remains DRAFT_PENDING_L3_L4; independent review is required for ABI, mapping and lifetime interaction before MP7."
+}

@@ -1,0 +1,1011 @@
+{
+  "schema_version": "1.0",
+  "driver": "ftmmod",
+  "promotion_authorized": false,
+  "hardware": "DEFERRED",
+  "source_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\ftmmod\\ftmmod.c",
+  "source_sha256": "41e22f79185d29890ebb4e06e5fa6dfb3e7b849d4192a042bc21500916758da8",
+  "target_manifest_sha256": "fe27099af08ef8815363c6b16ffa1cf87794bbaf20e65e78cf30ccd290c47373",
+  "docker_image": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "image_inspect": {
+    "argv": [
+      "docker",
+      "image",
+      "inspect",
+      "--format",
+      "{{.Id}}",
+      "nubia-sm8850-kernel-builder:latest"
+    ],
+    "returncode": 0,
+    "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n",
+    "stderr": ""
+  },
+  "toolchain_version": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-e",
+      "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+      "-e",
+      "UBSAN_OPTIONS=halt_on_error=1",
+      "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "/work/toolchains/clang-r536225/bin/clang",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /work/toolchains/clang-r536225/bin\n",
+    "stderr": ""
+  },
+  "toolchain_hash": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-e",
+      "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+      "-e",
+      "UBSAN_OPTIONS=halt_on_error=1",
+      "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "sha256sum",
+      "/work/toolchains/clang-r536225/bin/clang"
+    ],
+    "returncode": 0,
+    "stdout": "2603435cc1f030ded14648f6ad19c70fa640c9f4b53aad73a83321753571a4b5  /work/toolchains/clang-r536225/bin/clang\n",
+    "stderr": ""
+  },
+  "harness_inputs": {
+    "harness.c": "c36cb4898e4fc1128d35ac262476cb270bf9af82caf2bc968b97950e6f40facc",
+    "shim.h": "a6d15e6e2ea7da59d9c381f14a805c36407ee220ee7eb5bc2945b2cd2061cd20",
+    "run.py": "94238b0ea36cb92886a7a224d5c660ad68c9d61083ae9b8a5daca9373c2dfdbe"
+  },
+  "baselines": [
+    {
+      "name": "cycle_1",
+      "source_sha256": "41e22f79185d29890ebb4e06e5fa6dfb3e7b849d4192a042bc21500916758da8",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/cycle_1=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/cycle_1=/ftmmod_host",
+          "-I/work/harness/cycle_1",
+          "-I/work/harness/cycle_1/include",
+          "/work/harness/cycle_1/harness.c",
+          "-o",
+          "/work/harness/cycle_1/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/cycle_1/harness.bin"
+          ],
+          "returncode": 0,
+          "stdout": "{\"passed\":true,\"cases\":241,\"contract_tests\":22,\"hardware\":\"NOT_TESTED\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/cycle_1/harness.bin"
+          ],
+          "returncode": 0,
+          "stdout": "{\"passed\":true,\"cases\":241,\"contract_tests\":22,\"hardware\":\"NOT_TESTED\"}\n",
+          "stderr": ""
+        }
+      ],
+      "binary_sha256": "6ff97b3642c3bf010550c9d2dd88bf93270a3d42b8baa898ac0aba9fa6b677e2"
+    },
+    {
+      "name": "cycle_2",
+      "source_sha256": "41e22f79185d29890ebb4e06e5fa6dfb3e7b849d4192a042bc21500916758da8",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/cycle_2=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/cycle_2=/ftmmod_host",
+          "-I/work/harness/cycle_2",
+          "-I/work/harness/cycle_2/include",
+          "/work/harness/cycle_2/harness.c",
+          "-o",
+          "/work/harness/cycle_2/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/cycle_2/harness.bin"
+          ],
+          "returncode": 0,
+          "stdout": "{\"passed\":true,\"cases\":241,\"contract_tests\":22,\"hardware\":\"NOT_TESTED\"}\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/cycle_2/harness.bin"
+          ],
+          "returncode": 0,
+          "stdout": "{\"passed\":true,\"cases\":241,\"contract_tests\":22,\"hardware\":\"NOT_TESTED\"}\n",
+          "stderr": ""
+        }
+      ],
+      "binary_sha256": "7635751838fb71f12fc6e87a7ce0fb5dc7139e4ffe58b6b8efbb5d1b9c5514e6"
+    }
+  ],
+  "mutants": [
+    {
+      "name": "mutant_init_errno",
+      "source_sha256": "98d5ef182f97426a88fb88cd35937c49d50caf6aaad2965346a6fa561eb11dac",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_init_errno=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_init_errno=/ftmmod_host",
+          "-I/work/harness/mutant_init_errno",
+          "-I/work/harness/mutant_init_errno/include",
+          "/work/harness/mutant_init_errno/harness.c",
+          "-o",
+          "/work/harness/mutant_init_errno/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_init_errno/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T01-T03 init API propagation line 141: result == -ENODEV && !device_live\n"
+        }
+      ],
+      "binary_sha256": "b0eca96a83c154d297999b5b460676dd224406c24fbdc159fb12cdb8da30f121",
+      "mutation": {
+        "old": "return -ENODEV;",
+        "new": "return -EINVAL;"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_show_errno",
+      "source_sha256": "9eb91960870ec868a7bb48159dac201f5c937e37e3b8985cc4e236d90db5772d",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_show_errno=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_show_errno=/ftmmod_host",
+          "-I/work/harness/mutant_show_errno",
+          "-I/work/harness/mutant_show_errno/include",
+          "/work/harness/mutant_show_errno/harness.c",
+          "-o",
+          "/work/harness/mutant_show_errno/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_show_errno/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T09 null EFS mapping line 186: show_efs_recovery(&caller, &dev_attr_efs_recovery, out) == -EFAULT\n"
+        }
+      ],
+      "binary_sha256": "5b1d78ffc2026b2be2a7e0afd7b8ba06b1765b8433af68218b531e5e94ec223d",
+      "mutation": {
+        "old": "\t\treturn -EFAULT;",
+        "new": "\t\treturn -ENOMEM;"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_invert_store",
+      "source_sha256": "0e4a7d018175382af8df40d1d4b79d78755d294c1bfcbc7449ed53778a331b4d",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_invert_store=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_invert_store=/ftmmod_host",
+          "-I/work/harness/mutant_invert_store",
+          "-I/work/harness/mutant_invert_store/include",
+          "/work/harness/mutant_invert_store/harness.c",
+          "-o",
+          "/work/harness/mutant_invert_store/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_invert_store/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T12-T13,T22 store bounds, parse, barrier line 76: memory_words[2] == expected_store\n"
+        }
+      ],
+      "binary_sha256": "f6e8679b03941acc8f798c094e8b31e91c07d4d93d9ee3a8e2dcbce0ff51e74e",
+      "mutation": {
+        "old": "(u32)(enabled != 0)",
+        "new": "(u32)(enabled == 0)"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_remove_barrier",
+      "source_sha256": "3e560d9de7bac92b38b57c345ccb02a6a05dc5f0bef04d1464c8f6b097e63574",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_remove_barrier=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_remove_barrier=/ftmmod_host",
+          "-I/work/harness/mutant_remove_barrier",
+          "-I/work/harness/mutant_remove_barrier/include",
+          "/work/harness/mutant_remove_barrier/harness.c",
+          "-o",
+          "/work/harness/mutant_remove_barrier/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_remove_barrier/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T12-T13,T22 store bounds, parse, barrier line 22: nevents == n\n"
+        }
+      ],
+      "binary_sha256": "0f381f28283d77896bebbc20b2cb86ff1e96efc85b48d7100c0da90f34dbee99",
+      "mutation": {
+        "old": "dsb(sy);",
+        "new": "(void)0;"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_qsee_command",
+      "source_sha256": "9136e412b90b2377052ca7f7778cc7614776f0e211f50635c9ffc6195b117388",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_qsee_command=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_qsee_command=/ftmmod_host",
+          "-I/work/harness/mutant_qsee_command",
+          "-I/work/harness/mutant_qsee_command/include",
+          "/work/harness/mutant_qsee_command/harness.c",
+          "-o",
+          "/work/harness/mutant_qsee_command/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_qsee_command/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T15-T16,T19,T21 QSEE contract line 128: id == 0x02000807 && atomic && d->arginfo == 2\n"
+        }
+      ],
+      "binary_sha256": "bce5417fa85041352ae364651475e8803819e4871e75ac1734ba84b6e87a015e",
+      "mutation": {
+        "old": "qcom_scm_qseecom_call(0x02000807,",
+        "new": "qcom_scm_qseecom_call(0x02000808,"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_qsee_high_word_shift",
+      "source_sha256": "190e5bc401af9302d81f67d53c4645d9503b4bb53abac213bbafdb88e2654cdc",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_qsee_high_word_shift=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_qsee_high_word_shift=/ftmmod_host",
+          "-I/work/harness/mutant_qsee_high_word_shift",
+          "-I/work/harness/mutant_qsee_high_word_shift/include",
+          "/work/harness/mutant_qsee_high_word_shift/harness.c",
+          "-o",
+          "/work/harness/mutant_qsee_high_word_shift/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_qsee_high_word_shift/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T15-T16,T19,T21 QSEE contract line 27: !strcmp(events[i].text, text)\n"
+        }
+      ],
+      "binary_sha256": "c96e49264ae59b1e5ae87eab671ccf878bc4ca298df779a2b97c7ef1d9671e22",
+      "mutation": {
+        "old": "((u64)(u32)ret_hi << 32)",
+        "new": "((u64)(u32)ret_hi << 31)"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_flag_store",
+      "source_sha256": "a3fb0616827c21ddd67672d95ff5500f9c0e78ec7b31ba0eec01fcaaa7f4dd73",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_flag_store=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_flag_store=/ftmmod_host",
+          "-I/work/harness/mutant_flag_store",
+          "-I/work/harness/mutant_flag_store/include",
+          "/work/harness/mutant_flag_store/harness.c",
+          "-o",
+          "/work/harness/mutant_flag_store/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_flag_store/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T04-T08,T20 probe effects line 111: ftm_sysdev_priv_data_0 == 1\n"
+        }
+      ],
+      "binary_sha256": "d2ffd692e8524d6923b2d348e842a83e26bec1c124e8effbfd7a16ba8ec8e9f1",
+      "mutation": {
+        "old": "ftm_sysdev_priv_data_0 = 1;",
+        "new": "ftm_sysdev_priv_data_0 = 0;"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_cleanup_order",
+      "source_sha256": "0dcefe463206742d9ee7288c70aff8b3fdc336444415f8f4c49b70f7936d2f50",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_cleanup_order=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_cleanup_order=/ftmmod_host",
+          "-I/work/harness/mutant_cleanup_order",
+          "-I/work/harness/mutant_cleanup_order/include",
+          "/work/harness/mutant_cleanup_order/harness.c",
+          "-o",
+          "/work/harness/mutant_cleanup_order/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_cleanup_order/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T17 cleanup order line 23: events[i].kind == expected[i]\n"
+        }
+      ],
+      "binary_sha256": "2580c4f7b8eda8dc0daca67862935b7a79d86d09356dfe7dca3aee0163ce0d6c",
+      "mutation": {
+        "old": "platform_driver_unregister(&ftm_driver);\n\tplatform_device_unregister(&ftm_dev);",
+        "new": "platform_device_unregister(&ftm_dev);\n\tplatform_driver_unregister(&ftm_driver);"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_format_bound",
+      "source_sha256": "d185c22d634efd3336ae9e60f77b423eaa5e76f66e40009a2b93e940162d70a4",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_format_bound=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_format_bound=/ftmmod_host",
+          "-I/work/harness/mutant_format_bound",
+          "-I/work/harness/mutant_format_bound/include",
+          "/work/harness/mutant_format_bound/harness.c",
+          "-o",
+          "/work/harness/mutant_format_bound/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_format_bound/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T14,T21 secboot argument and output line 63: buf != NULL && n == 4096 && !strcmp(fmt, \"%d\\n\")\n"
+        }
+      ],
+      "binary_sha256": "b9cca82af800cbc7841dd9f813e3f5ad0d62876779237b96f5a4a4de562e00fc",
+      "mutation": {
+        "old": "snprintf(buf, 0x1000, \"%d\\n\", is_secboot_device(dev))",
+        "new": "snprintf(buf, 0x100, \"%d\\n\", is_secboot_device(dev))"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_malformed_initial_state",
+      "source_sha256": "f67df0ff63fb52a25b1d5763c500364bccb613caef09d7d5cec823153c17a345",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_malformed_initial_state=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_malformed_initial_state=/ftmmod_host",
+          "-I/work/harness/mutant_malformed_initial_state",
+          "-I/work/harness/mutant_malformed_initial_state/include",
+          "/work/harness/mutant_malformed_initial_state/harness.c",
+          "-o",
+          "/work/harness/mutant_malformed_initial_state/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_malformed_initial_state/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T12-T13,T22 store bounds, parse, barrier line 76: memory_words[2] == expected_store\n"
+        }
+      ],
+      "binary_sha256": "93f99144d45f1472c73ad7f2c7e2b293e41585e0744c0413d1a70c92a0138431",
+      "mutation": {
+        "old": "int enabled = 0;",
+        "new": "int enabled = 1;"
+      },
+      "detected_by_oracle": true
+    },
+    {
+      "name": "mutant_mmio_word_offset",
+      "source_sha256": "c1d4b51a1bf3abe56322a7910f729bcf7a7280924d5d93576b2d35c58feee5bc",
+      "compile": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-e",
+          "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+          "-e",
+          "UBSAN_OPTIONS=halt_on_error=1",
+          "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "/work/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-parameter",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize-recover=all",
+          "-fno-omit-frame-pointer",
+          "-ffile-prefix-map=/work/harness/mutant_mmio_word_offset=/ftmmod_host",
+          "-fdebug-prefix-map=/work/harness/mutant_mmio_word_offset=/ftmmod_host",
+          "-I/work/harness/mutant_mmio_word_offset",
+          "-I/work/harness/mutant_mmio_word_offset/include",
+          "/work/harness/mutant_mmio_word_offset/harness.c",
+          "-o",
+          "/work/harness/mutant_mmio_word_offset/harness.bin"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runs": [
+        {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\attestation\\host_harness_20261027_r1:/work/harness",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-e",
+            "ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-e",
+            "UBSAN_OPTIONS=halt_on_error=1",
+            "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+            "/work/harness/mutant_mmio_word_offset/harness.bin"
+          ],
+          "returncode": 2,
+          "stdout": "",
+          "stderr": "FAIL T12-T13,T22 store bounds, parse, barrier line 76: memory_words[2] == expected_store\n"
+        }
+      ],
+      "binary_sha256": "a4860ecacdaa489cda699426ee2171ca9b203794df0dbed238ea71b417e1e9eb",
+      "mutation": {
+        "old": "*(u32 __force *)((u8 __iomem *)ftm_sysdev_priv_data_2 + 4) =",
+        "new": "*(u32 __force *)((u8 __iomem *)ftm_sysdev_priv_data_2 + 0) ="
+      },
+      "detected_by_oracle": true
+    }
+  ],
+  "limitations": [
+    "Host x86_64 test doubles do not test the AArch64 instructions, ELF ABI or KCFI.",
+    "MMIO is replaced with bounded host memory; DSB SY is a trace event that observes the preceding store, not a physical barrier.",
+    "The parser corpus uses libc vsscanf only for in-range decimal strings and no-conversion cases, not all Linux sscanf inputs.",
+    "The platform core model covers the specified no-binding failure only, not real kernel lifetime or concurrency.",
+    "QSEE, device tree and mapping calls are contractual stubs; physical behavior remains untested.",
+    "Independent review is required before adopting this harness as promotion evidence."
+  ],
+  "reproducible_host_binary": false,
+  "passed": false
+}

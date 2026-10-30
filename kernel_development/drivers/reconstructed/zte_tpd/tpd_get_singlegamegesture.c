@@ -3,7 +3,7 @@ int tpd_get_singlegamegesture(struct ztp_device *cdev)
   unsigned long a1 = (unsigned long)cdev;
   __int64 v1; // x8
 
-  v1 = *(_QWORD *)(a1 + 3072);
+  v1 = *(_QWORD *)(a1 + 0xdb8);
   *(_DWORD *)(a1 + 1108) = *(_DWORD *)(v1 + 1464);
   printk(unk_32D26, "tpd_get_singlegamegesture", *(unsigned int *)(v1 + 1468));
   printk(unk_3CE17, "tpd_get_singlegamegesture", *(unsigned int *)(a1 + 1108));

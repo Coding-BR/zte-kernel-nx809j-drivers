@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "function": "prct_mode_show",
+  "branches": [
+    {
+      "condition": "KCFI callback type matches 0x784b3854",
+      "behavior": "invoke the callback and format its low-byte result"
+    },
+    {
+      "condition": "KCFI callback type does not match",
+      "behavior": "compiler-emitted trap at BRK #0x8229; no recovery path"
+    }
+  ],
+  "error_handling": {
+    "callback_pointer_null_check": "none observed",
+    "callback_result": "formatted; no status propagation",
+    "snprintf_result": "returned to sysfs caller",
+    "callback_i2c_errors": "outside this wrapper; callback result remains the displayed byte"
+  },
+  "evidence": [
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+  ]
+}

@@ -1,0 +1,163 @@
+obj-m += aw9620x.o
+aw9620x-y := aw9620x_fn_00_aw_check_sum.o \
+    aw9620x_fn_01_aw_check_data_version.o \
+    aw9620x_fn_02_aw_check_register_num_v1.o \
+    aw9620x_fn_03_aw_check_dsp_reg_num_v1.o \
+    aw9620x_fn_04_aw_check_soc_app_num_v1.o \
+    aw9620x_fn_05_aw_get_single_bin_header_1_0_0.o \
+    aw9620x_fn_06_aw_parse_each_of_multi_bins_1_0_0.o \
+    aw9620x_fn_07_aw_parse_bin_header_1_0_0.o \
+    aw9620x_fn_08_aw_get_multi_bin_header_1_0_0.o \
+    aw9620x_fn_09_aw_parsing_bin_file.o \
+    aw9620x_fn_10_aw9620x_flash_update.o \
+    aw9620x_fn_11_aw9620x_i2c_write.o \
+    aw9620x_fn_12_aw9620x_reg_write_val_to_flash.o \
+    aw9620x_fn_13_aw9620x_get_bin_checksum.o \
+    aw9620x_fn_14_aw9620x_update_bt_to_flash.o \
+    aw9620x_fn_15_aw9620x_update_fw_to_flash.o \
+    aw9620x_fn_16_get_pack_checksum.o \
+    aw9620x_fn_17_dri_to_soc_pack_send.o \
+    aw9620x_fn_18_soc_to_dri_pack_recv.o \
+    aw9620x_fn_19_soc_to_dri_pack_parse.o \
+    aw9620x_fn_20_aw9620x_fw_update.o \
+    aw9620x_fn_21_aw9620x_irq_handle_func.o \
+    aw9620x_fn_22_aw9620x_i2c_read.o \
+    aw9620x_fn_23_aw9620x_load_frimware_work.o \
+    aw9620x_fn_24_aw9620x_update.o \
+    aw9620x_fn_25_aw9620x_update_work.o \
+    aw9620x_fn_26_aw9620x_check_isp_go_reg.o \
+    aw9620x_fn_27_aw9620x_reg_write_to_flash_once.o \
+    aw9620x_fn_28_aw9620x_reg_read_val.o \
+    aw9620x_fn_29_aw9620x_send_once_cmd.o \
+    aw9620x_fn_30_aw9620x_cycle_write_firmware.o \
+    aw9620x_fn_31_aw9620x_send_stop_cmd.o \
+    aw9620x_fn_32_aw9620x_read_ack_irq.o \
+    aw9620x_fn_33_aw9620x_reg_read_all_val.o \
+    aw9620x_fn_34_aw9620x_i2c_write_bits.o \
+    aw9620x_fn_35_aw9620x_update_firmware.o \
+    aw9620x_fn_36_aw9620x_read_init_over_irq.o \
+    aw9620x_fn_37_aw9620x_get_err_info.o \
+    aw9620x_fn_38_aw9620x_reg_update_boot_work.o \
+    aw9620x_fn_39_aw9620x_recover_fun.o \
+    aw9620x_fn_40_aw9620x_soft_reset.o \
+    aw9620x_fn_41_aw9620x_read_chipid.o \
+    aw9620x_fn_42_aw9620x_load_def_reg_bin.o \
+    aw9620x_fn_43_aw9620x_en_active.o \
+    aw9620x_fn_44_aw9620x_i2c_probe.o \
+    aw9620x_fn_45_aw9620x_i2c_remove.o \
+    aw9620x_fn_46_aw9620x_i2c_shutdown.o \
+    aw9620x_fn_47_aw9620x_set_brightness.o \
+    aw9620x_fn_48_aw9620x_input_init.o \
+    aw9620x_fn_49_aw9620x_irq_init.o \
+    aw9620x_fn_50_aw9620x_old_boot_nvr_modify.o \
+    aw9620x_fn_51_aw9620x_awrw_get.o \
+    aw9620x_fn_52_aw9620x_awrw_set.o \
+    aw9620x_fn_53_aw9620x_awrw_data_analysis.o \
+    aw9620x_fn_54_aw9620x_soft_rst_set.o \
+    aw9620x_fn_55_aw9620x_mode_operation_get.o \
+    aw9620x_fn_56_aw9620x_mode_operation_set.o \
+    aw9620x_fn_57_aw9620x_update_fw_get.o \
+    aw9620x_fn_58_aw9620x_update_fw_set.o \
+    aw9620x_fn_59_aw9620x_update_reg_set.o \
+    aw9620x_fn_60_aw9620x_reg_update_bt_set.o \
+    aw9620x_fn_61_aw9620x_reg_update_fw_set.o \
+    aw9620x_fn_62_aw9620x_raw_get.o \
+    aw9620x_fn_63_aw9620x_lpf_get.o \
+    aw9620x_fn_64_aw9620x_valid_get.o \
+    aw9620x_fn_65_aw9620x_diff_get.o \
+    aw9620x_fn_66_aw9620x_deltavalid_get.o \
+    aw9620x_fn_67_aw9620x_baseline_get.o \
+    aw9620x_fn_68_aw9620x_initial_get.o \
+    aw9620x_fn_69_aw9620x_reg_get.o \
+    aw9620x_fn_70_aw9620x_reg_set.o \
+    aw9620x_fn_71_aw9620x_aot_cail_set.o \
+    aw9620x_fn_72_aw9620x_parasitic_data_get.o \
+    aw9620x_fn_73_aw9620x_chip_info_get.o \
+    aw9620x_fn_74_aw9620x_sensy_config_get.o \
+    aw9620x_fn_75_aw9620x_sensy_config_set.o \
+    aw9620x_fn_76_aw9620x_irq.o \
+    aw9620x_fn_77_init_module.o \
+    aw9620x_fn_78_cleanup_module.o \
+    aw9620x_sections.o \
+    aw9620x_metadata.o
+
+AFLAGS_aw9620x_sections.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_00_aw_check_sum.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_01_aw_check_data_version.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_02_aw_check_register_num_v1.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_03_aw_check_dsp_reg_num_v1.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_04_aw_check_soc_app_num_v1.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_05_aw_get_single_bin_header_1_0_0.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_06_aw_parse_each_of_multi_bins_1_0_0.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_07_aw_parse_bin_header_1_0_0.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_08_aw_get_multi_bin_header_1_0_0.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_09_aw_parsing_bin_file.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_10_aw9620x_flash_update.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_11_aw9620x_i2c_write.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_12_aw9620x_reg_write_val_to_flash.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_13_aw9620x_get_bin_checksum.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_14_aw9620x_update_bt_to_flash.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_15_aw9620x_update_fw_to_flash.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_16_get_pack_checksum.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_17_dri_to_soc_pack_send.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_18_soc_to_dri_pack_recv.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_19_soc_to_dri_pack_parse.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_20_aw9620x_fw_update.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_21_aw9620x_irq_handle_func.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_22_aw9620x_i2c_read.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_23_aw9620x_load_frimware_work.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_24_aw9620x_update.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_25_aw9620x_update_work.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_26_aw9620x_check_isp_go_reg.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_27_aw9620x_reg_write_to_flash_once.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_28_aw9620x_reg_read_val.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_29_aw9620x_send_once_cmd.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_30_aw9620x_cycle_write_firmware.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_31_aw9620x_send_stop_cmd.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_32_aw9620x_read_ack_irq.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_33_aw9620x_reg_read_all_val.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_34_aw9620x_i2c_write_bits.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_35_aw9620x_update_firmware.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_36_aw9620x_read_init_over_irq.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_37_aw9620x_get_err_info.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_38_aw9620x_reg_update_boot_work.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_39_aw9620x_recover_fun.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_40_aw9620x_soft_reset.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_41_aw9620x_read_chipid.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_42_aw9620x_load_def_reg_bin.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_43_aw9620x_en_active.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_44_aw9620x_i2c_probe.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_45_aw9620x_i2c_remove.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_46_aw9620x_i2c_shutdown.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_47_aw9620x_set_brightness.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_48_aw9620x_input_init.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_49_aw9620x_irq_init.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_50_aw9620x_old_boot_nvr_modify.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_51_aw9620x_awrw_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_52_aw9620x_awrw_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_53_aw9620x_awrw_data_analysis.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_54_aw9620x_soft_rst_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_55_aw9620x_mode_operation_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_56_aw9620x_mode_operation_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_57_aw9620x_update_fw_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_58_aw9620x_update_fw_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_59_aw9620x_update_reg_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_60_aw9620x_reg_update_bt_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_61_aw9620x_reg_update_fw_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_62_aw9620x_raw_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_63_aw9620x_lpf_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_64_aw9620x_valid_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_65_aw9620x_diff_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_66_aw9620x_deltavalid_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_67_aw9620x_baseline_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_68_aw9620x_initial_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_69_aw9620x_reg_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_70_aw9620x_reg_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_71_aw9620x_aot_cail_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_72_aw9620x_parasitic_data_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_73_aw9620x_chip_info_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_74_aw9620x_sensy_config_get.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_75_aw9620x_sensy_config_set.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_76_aw9620x_irq.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_77_init_module.o := -g0 -I$(src)
+AFLAGS_aw9620x_fn_78_cleanup_module.o := -g0 -I$(src)

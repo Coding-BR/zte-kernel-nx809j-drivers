@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import Any
 
 
+TEXT_HASH_SUFFIXES = {".c", ".h", ".json", ".jsonl", ".md", ".py", ".sc", ".txt"}
+
+
 def read_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -62,6 +65,9 @@ def write_prompts(path: Path, driver: str, tasks: list[dict[str, Any]]) -> None:
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
+    if path.suffix.lower() in TEXT_HASH_SUFFIXES:
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
+        return digest.hexdigest()
     with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
@@ -131,6 +137,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--build-report", type=Path, required=True)
     parser.add_argument("--test-report", type=Path, required=True)
     parser.add_argument("--kcfi-report", type=Path, required=True)
+    parser.add_argument(
+        "--joern-report",
+        type=Path,
+        help="strict Joern gate report to attach to every promoted microtask",
+    )
     parser.add_argument(
         "--kcfi-not-applicable",
         action="append",
@@ -202,7 +213,12 @@ def main() -> int:
     manifest_path = driver_root / "MICROTASKS.json"
     map_path = driver_root / "reconstruction_map.json"
 
-    for path in (manifest_path, map_path, args.build_report, args.test_report, args.kcfi_report):
+    required_paths = [
+        manifest_path, map_path, args.build_report, args.test_report, args.kcfi_report
+    ]
+    if args.joern_report:
+        required_paths.append(args.joern_report)
+    for path in required_paths:
         if not path.resolve().is_file():
             raise ValueError(f"missing required input: {path}")
 
@@ -211,6 +227,7 @@ def main() -> int:
     build_report = read_json(args.build_report.resolve())
     test_report = read_json(args.test_report.resolve())
     kcfi_report = read_json(args.kcfi_report.resolve())
+    joern_report = read_json(args.joern_report.resolve()) if args.joern_report else None
     build_evidence = require_build(build_report, args.driver)
 
     if test_report.get("driver") != args.driver or test_report.get("passed") is not True:
@@ -221,6 +238,9 @@ def main() -> int:
 
     if kcfi_report.get("passed") is not True:
         raise ValueError("KCFI report did not pass")
+    if joern_report is not None:
+        if joern_report.get("passed") is not True or joern_report.get("strict") is not True:
+            raise ValueError("Joern report did not pass in strict mode")
     kcfi_comparisons = {
         function_id(item.get("function"), item.get("stock_entry")): item
         for item in kcfi_report.get("comparisons", [])
@@ -285,6 +305,8 @@ def main() -> int:
         "test_report": sha256_file(args.test_report.resolve()),
         "kcfi_report": sha256_file(args.kcfi_report.resolve()),
     }
+    if args.joern_report:
+        source_hashes["joern_report"] = sha256_file(args.joern_report.resolve())
     generated_utc = dt.datetime.now(dt.timezone.utc).isoformat()
 
     for task in tasks:
@@ -357,7 +379,7 @@ def main() -> int:
             if line.startswith("Alvo no fonte:") else line
             for line in prompt_lines
         )
-        task["evidence"] = [
+        evidence_records = [
             {
                 "role": role,
                 "path": relative_path(path, workspace_root),
@@ -369,6 +391,13 @@ def main() -> int:
                 ("test", test_path),
             )
         ]
+        if args.joern_report:
+            evidence_records.append({
+                "role": "joern",
+                "path": relative_path(args.joern_report, workspace_root),
+                "sha256": source_hashes["joern_report"],
+            })
+        task["evidence"] = evidence_records
         task["attestation"] = "Promoted by attest_driver_microtasks.py after strict hash-backed checks."
 
     manifest["generated_utc"] = generated_utc
@@ -389,7 +418,10 @@ def main() -> int:
             "driver": args.driver,
             "tests": [relative_path(args.test_report, workspace_root)],
             "kcfi": [relative_path(args.kcfi_report, workspace_root)],
-            "reports": [relative_path(manifest_path, workspace_root)],
+            "reports": [relative_path(manifest_path, workspace_root)] + (
+                [relative_path(args.joern_report, workspace_root)]
+                if args.joern_report else []
+            ),
             "audit": relative_path(validation_root / "microtask_audit.json", workspace_root),
             "verified_tasks": len(tasks),
             "generated_utc": generated_utc,

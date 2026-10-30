@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "function": "haptic_audio_time_store",
+  "paths": [
+    {
+      "condition": "sscanf returns 2",
+      "return": "count",
+      "effect": "write both values"
+    },
+    {
+      "condition": "sscanf returns anything other than 2",
+      "return": "count",
+      "effect": "write neither value"
+    }
+  ],
+  "error_translation": "none; sscanf result only gates the state writes",
+  "stack_canary": "stock checks SP_EL0 and calls __stack_chk_fail on mismatch."
+}

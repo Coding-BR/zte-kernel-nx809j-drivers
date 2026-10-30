@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T12:51:58.265841+00:00",
+  "source_volume": "nubia_sm8850_kernel_src",
+  "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+  "container_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "hash_method": "sha256sum in pinned Docker image against read-only source volume",
+  "files": [
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/linux/device.h",
+      "sha256": "140ef53cc3eb0340a6ac573ec4310adcc3890c310e2d450e82e4f61d98685ff1",
+      "locator": "101-112: device_attribute callbacks"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/linux/platform_device.h",
+      "sha256": "a389221f5551054244d8ce3f4154f8da7b994c7a22b88134f66aba4c621f998f",
+      "locator": "242-258,289-291: platform_driver callbacks and __platform_driver_probe"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/linux/of.h",
+      "sha256": "0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc",
+      "locator": "273-275: of_find_compatible_node"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/linux/of_address.h",
+      "sha256": "3b347d5310d61c722f142c7bba0e31f7544fafce9f5f562c9e9b82624ffe9426",
+      "locator": "64-65: of_iomap"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/asm-generic/io.h",
+      "sha256": "cfee3d5b8f3fa2da42362513f8d0f420c46f217ddb0db022037afa1919b710d8",
+      "locator": "1050-1057: ioremap_prot"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/linux/sysfs.h",
+      "sha256": "9a795a5fcb0fc379931d992abb268bd160daa6ff4f58513a187f8c6b6aa3d782",
+      "locator": "438-439: sysfs_create_group"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src@e1ea0289c329945af9422e58256a37f7603fa098/kernel_platform/common/include/soc/qcom/qseecom_scm.h",
+      "sha256": "62761cf9574f55b7a79cdbce8feaa4b8c514537e959115960caf0aea5324548e",
+      "locator": "lines 11-15: qseecom_scm_desc fields; line 44: qcom_scm_qseecom_call prototype"
+    }
+  ],
+  "unresolved_symbol_search": {
+    "symbol": "is_secboot_device",
+    "result": "No tracked source-level declaration/definition found in pinned source HEAD. Separate stock kmparam.ko binary evidence defines is_secboot_device at .text+0xc0; its 12-byte body loads 32 bits from secboot_status at .data+0x8 into w0 and returns without consuming an argument register. Exact C declaration and signedness remain unknown.",
+    "scope": "git grep exact symbol over HEAD"
+  },
+  "stock_binary_evidence": {
+    "module_path": "reference_modules/full_vendor_boot/kmparam.ko",
+    "module_sha256": "9813fc808fa7de6fd86494bb33fce596a7b131b1a6d6c0e4e8346335f3c814b0",
+    "evidence_json": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/kmparam_is_secboot_device.json",
+    "evidence_disassembly": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/related_module_evidence/kmparam_is_secboot_device.txt",
+    "evidence_json_sha256": "c982bfff0132c16a8b96d50985bdf7bbb41ba23f87bd106d59ef8a8e65875f4e",
+    "evidence_disassembly_sha256": "5c1763814914f5f9a5b9411ba99d147713bd3efae6ad3bbf4f2dfeb74304f0a7",
+    "elf_symbol": {
+      "section": ".text",
+      "section_offset": "0xc0",
+      "size_bytes": 12
+    },
+    "data_symbol": {
+      "name": "secboot_status",
+      "section": ".data",
+      "section_offset": "0x8",
+      "size_bytes": 4
+    },
+    "binary_argument_registers_consumed": 0,
+    "binary_return_width_bits": 32,
+    "c_prototype_proven": false
+  }
+}

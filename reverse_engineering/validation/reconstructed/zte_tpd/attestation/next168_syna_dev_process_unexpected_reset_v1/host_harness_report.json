@@ -1,0 +1,170 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "syna_dev_process_unexpected_reset"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "c89466071a9f3100f00b01bdde1d19ff6a39bb68d3181748e420b2772e543ff6",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/repo:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target168\\harness_v3\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-target168-unexpected-reset",
+          "-ffile-prefix-map=/repo=<repo>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_dev_process_unexpected_reset_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target168\\harness_v3\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS null_context_returns_einval\nPASS null_context_logs_without_queue\nPASS inactive_mode_returns_zero\nPASS inactive_mode_has_no_side_effects\nPASS missing_workqueue_returns_einval\nPASS missing_workqueue_logs_event_and_error\nPASS first_reset_returns_zero\nPASS first_reset_sets_flag_and_queues_on_cpu_32\nPASS duplicate_reset_returns_zero\nPASS duplicate_reset_is_not_requeued\nSUMMARY tests=10 failures=0\n"
+      },
+      "summary": {
+        "failures": 0,
+        "tests": 10
+      }
+    },
+    {
+      "binary_sha256": "c89466071a9f3100f00b01bdde1d19ff6a39bb68d3181748e420b2772e543ff6",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/repo:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target168\\harness_v3\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-target168-unexpected-reset",
+          "-ffile-prefix-map=/repo=<repo>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/repo/kernel_development/drivers/validation/zte_tpd/host/syna_dev_process_unexpected_reset_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target168\\harness_v3\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS null_context_returns_einval\nPASS null_context_logs_without_queue\nPASS inactive_mode_returns_zero\nPASS inactive_mode_has_no_side_effects\nPASS missing_workqueue_returns_einval\nPASS missing_workqueue_logs_event_and_error\nPASS first_reset_returns_zero\nPASS first_reset_sets_flag_and_queues_on_cpu_32\nPASS duplicate_reset_returns_zero\nPASS duplicate_reset_is_not_requeued\nSUMMARY tests=10 failures=0\n"
+      },
+      "summary": {
+        "failures": 0,
+        "tests": 10
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 10,
+  "generated_utc": "2026-08-14T05:47:47.790640+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_dev_process_unexpected_reset_host_test.c",
+      "sha256": "8d5243b1db1e79e7584f8876ffd574140cde45aea9baff61eb1031eaf08ea245",
+      "size": 3757
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_dev_process_unexpected_reset.c",
+      "sha256": "d00d86b0fee0d1e47c1c46e6ee7459d66109fccf31370434e1cb3c95f5ad5332",
+      "size": 892
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock\\decompiled\\0167_00113a9c_syna_dev_process_unexpected_reset.c",
+      "sha256": "cc8e0ebd5dc4b195fb5121268d4aa723c739086e7eb612b1b6863929db3ce872",
+      "size": 722
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock\\pcode\\0167_00113a9c_syna_dev_process_unexpected_reset.jsonl",
+      "sha256": "6a813b35de9c0e412b1e19393e3f6c58fbf9536e5abac5f4e99217dc1ca48608",
+      "size": 15298
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\stock_assembly\\0167_syna_dev_process_unexpected_reset_00113a9c.asm",
+      "sha256": "e53fc88a612af5468b11ef3b1ba528c70a509b737a99108286e1058425edda63",
+      "size": 3256
+    }
+  ],
+  "limitations": [
+    "The harness directly executes the recovered source with deterministic mocks for printk and queue_work_on.",
+    "It does not prove scheduler behavior, workqueue lifetime, Android integration, or hardware behavior.",
+    "Assembly, P-Code, KCFI, Joern, the whole-module build, and hardware remain independent gates."
+  ],
+  "mode": "offline_direct_source_unexpected_reset_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "syna_dev_process_unexpected_reset",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

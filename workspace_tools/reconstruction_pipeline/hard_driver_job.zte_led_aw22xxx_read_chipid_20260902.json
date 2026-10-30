@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["HARDWARE_BUS", "STATEFUL_MEMORY", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "aw22xxx_read_chipid",
+    "stock_entry": "00102364",
+    "source_function": "aw22xxx_read_chipid",
+    "candidate_function": "aw22xxx_read_chipid",
+    "kcfi_required": false,
+    "assembly_only": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "C:/Users/adria/Desktop/drivers/ghidra_nav_repair_20260902/zte_led_read_chipid_candidate_ghidra_20260902_v1/export/zte_led.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "kcfi": {},
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "The function is a compiler-sensitive chip-identification routine without a valid stock KCFI preamble. The exact Assembly/relocation body is authoritative; Ghidra P-Code remains an independent semantic gate and may use only a named, function-local fallback if imported kernel helper signatures differ.",
+    "fallback_evidence": "The candidate export must be fresh for the final Docker candidate and retain the same 460-byte ELF-bounded body, I2C call order, retry branches, constants, direct-call decision, Joern gate and host contract evidence."
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_led",
+    "define": [],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

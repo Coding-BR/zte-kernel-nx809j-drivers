@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["STATEFUL_MEMORY", "CALLBACK_ABI", "CONCURRENCY_LIFETIME", "HARDWARE_BUS", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "aw22xxx_fw_loaded",
+    "stock_entry": "001055c8",
+    "source_function": "aw22xxx_fw_loaded",
+    "kcfi_required": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/attestation/aw22xxx_fw_loaded_kcfi_v1/ghidra_candidate_20260901_v8/zte_led.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {"slice": {"mode": "usages", "parallelism": 2, "min_num_calls": 1}},
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "The callback is a 3132-byte relocatable AArch64 assembly island with stock metadata bases and local CALL26 repair; Ghidra C emission may vary for firmware bounds and fortify paths while ELF-bounded bytes, relocations, KCFI and ordered P-Code remain authoritative.",
+    "fallback_evidence": "Retain fresh candidate Ghidra export, stock Ghidra export, exact assembly, section-base evidence and all binary gates. No binary gate may be waived by the fallback."
+  }
+}

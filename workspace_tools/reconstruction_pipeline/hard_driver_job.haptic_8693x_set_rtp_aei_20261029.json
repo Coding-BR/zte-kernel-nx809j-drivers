@@ -1,0 +1,87 @@
+{
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "clang_revision": "clang-r536225",
+    "cycles": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "parallelism": 8,
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+  },
+  "driver": "haptic_86938",
+  "evidence": {
+    "host_harness_kernel_types": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_set_rtp_aei/host_harness/include/linux/types.h",
+      "sha256": "abd3ebf2c8008c55a7f7802a7f5bab3557e233ec6f54419f0e8da6576c627934"
+    },
+    "host_harness_result": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_set_rtp_aei/host_harness/harness_result.json",
+      "sha256": "44125e33c05c832da58d1022fd59797de2478124a3cd0c63ad99793db5e11bf7"
+    },
+    "host_harness_runner": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_set_rtp_aei/host_harness/run_harness.py",
+      "sha256": "aaf59b6198611a1301f80e7baabe07386606eec72f6958b64f6a8545be8c181d"
+    },
+    "host_harness_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_set_rtp_aei/host_harness/aw8693x_set_rtp_aei_harness.c",
+      "sha256": "1d83a87e4839b4602fab3186e5da8d288f363426d0aa9ccd6e1ccdb441933f46"
+    },
+    "kcfi_signature_candidates": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_aei_20261029/pre_candidate/kcfi_signature_candidates.json",
+      "sha256": "b99212de62dbe9992aa04cc844648772f33f80ab8b38759e77b6f0685d0b9971"
+    },
+    "kcfi_signature_resolution": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_aei_20261029/pre_candidate/kcfi_signature_resolution.json",
+      "sha256": "a14ca03abe443f1deeb7928bc6be94c25f51a77a7c62e1695f6b5babfede07da"
+    },
+    "pre_candidate_packet": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_aei_20261029/pre_candidate/MP0_MP7.json",
+      "sha256": "1ada7d7a2b7c2decf3f5f49e37cd3fa6cb297c0895a469fa435915282ad07515"
+    },
+    "stock_function_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0032_aw8693x_set_rtp_aei_00105ac0.asm"
+  },
+  "functions": [
+    {
+      "assembly_only": false,
+      "candidate_function": "aw8693x_set_rtp_aei",
+      "kcfi_required": true,
+      "source_function": "aw8693x_set_rtp_aei",
+      "stock_entry": "00105ac0",
+      "stock_function": "aw8693x_set_rtp_aei"
+    }
+  ],
+  "ghidra": {
+    "allow_exact_assembly_island_decompiler_fallback": false,
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true
+  },
+  "joern": {
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "candidate_function": "aw8693x_set_rtp_aei",
+      "min_num_calls": 1,
+      "mode": "usages",
+      "parallelism": 1,
+      "source_function": "aw8693x_set_rtp_aei"
+    },
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938"
+  },
+  "paths": {
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_set_rtp_aei_20261029/candidate_ghidra_v2/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko"
+  },
+  "profiles": [
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "schema_version": "1.0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+}

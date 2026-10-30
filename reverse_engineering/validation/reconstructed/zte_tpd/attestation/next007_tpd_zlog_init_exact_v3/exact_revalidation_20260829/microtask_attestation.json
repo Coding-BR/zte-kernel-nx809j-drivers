@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "007_tpd_zlog_init",
+  "stock_function": "tpd_zlog_init",
+  "stock_entry": "001078c8",
+  "stock_body_bytes": 184,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "1edc92eb0e9c1e9eb39a7875b981a1cdfeb42ece51bdf3f9a05b053dccd5bd46",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 46,
+    "instruction_count_candidate": 46,
+    "symbol_size_stock": 184,
+    "symbol_size_candidate": 184,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 10,
+    "direct_case": "test_layout_and_init",
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "9a074dd312325b4b7ddfb29f2bf55e7c18cea8c903968ff87058428c8491ea06",
+    "aarch64_comparison.json": "7a958f647916fd698b43717f91e009eb6a83047dc43981badef71bbf58384772",
+    "kcfi/comparison.json": "c0d5dcca562280b0178b6a3be860596d3d0321c90b17fab62ecac0678e0260f7",
+    "joern/joern_gate_report.json": "b428ec584dbdb25ad811396fa8e8f6b5d8c6695514a710802bb71824db7b3273",
+    "host_harness_report.json": "9922911c067f1ac7c6dc70e239d3863d17fb3e3382c6cf1217c5f4327ac33af3",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The shared host harness directly covers initialization in test_layout_and_init; jiffies and kernel globals are stubbed.",
+    "No smartphone, Android zlog service, SPI, IRQ, touch-controller or physical hardware is exercised.",
+    "The AArch64 gate proves opcode/relocation identity; semantic and hardware equivalence remain bounded by the listed evidence."
+  ]
+}

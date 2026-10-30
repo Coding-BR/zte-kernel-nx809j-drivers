@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "306_syna_tcm_check_flash_block",
+  "stock_entry": "00126e70",
+  "stock_symbol": "syna_tcm_check_flash_block",
+  "candidate_symbol": "syna_tcm_check_flash_block",
+  "candidate_compiler": "Android clang r536225 in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0305_00126e70_syna_tcm_check_flash_block.c",
+      "sha256": "301a0c72a5600c23db8a98b1303f68e9fb1dae4b10ad6c7110f7f296a8f9d338"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0305_00126e70_syna_tcm_check_flash_block.jsonl",
+      "sha256": "8e4dcb0f7501b2bbf0bf35726455f37baf632321c28603a003d6f75dd14c8669"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0305_syna_tcm_check_flash_block_00126e70.asm",
+      "sha256": "a280ab7d63a1db483077d1d31db7d0f44da5e063e921e341718e880464b1fc1c"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_check_flash_block.c",
+      "sha256": "f85584a44371db8b35c236b21cd26d119fb9a951031dec2d4af51aa54550137c"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next306_syna_tcm_check_flash_block_v1/candidate_assembly/syna_tcm_check_flash_block_candidate.s",
+      "sha256": "e902c57f2830322de5674ba094a91f50868d75d5b8a0c166a9a18f728bc316b6"
+    }
+  },
+  "checks": {
+    "partition_class_ror_and_basic_geometry": "PASS",
+    "app_config_geometry_and_length_contract": "PASS",
+    "tool_boot_version_one_and_three_offsets": "PASS",
+    "invalid_sizes_and_missing_boot_info": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The candidate uses explicit little-endian reads for protocol words and a missing boot-info guard at an invalid-input boundary.",
+    "This review does not establish kernel ABI, KCFI, module relocation, canonical build or physical hardware behavior."
+  ]
+}

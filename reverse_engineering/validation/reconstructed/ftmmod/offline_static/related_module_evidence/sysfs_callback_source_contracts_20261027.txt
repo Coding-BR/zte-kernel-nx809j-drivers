@@ -1,0 +1,119 @@
+REVISION e1ea0289c329945af9422e58256a37f7603fa098
+93d24a909ef8113b16a29c8d505e3a81861b60351f10d3b3ab6b83abfbeca4e9  kernel_platform/common/fs/kernfs/file.c
+d4e03a65749e1c5691ab0a11408218834c91f2b3967fc9ffd4c32af83a9ab9f0  kernel_platform/common/fs/sysfs/file.c
+
+=== kernfs write size and callback path ===
+   285	 * operation.
+   286	 *
+   287	 * There is no easy way for us to know if userspace is only doing a partial
+   288	 * write, so we don't support them. We expect the entire buffer to come on
+   289	 * the first write.  Hint: if you're writing a value, first read the file,
+   290	 * modify only the value you're changing, then write entire buffer
+   291	 * back.
+   292	 */
+   293	static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+   294	{
+   295		struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
+   296		ssize_t len = iov_iter_count(iter);
+   297		const struct kernfs_ops *ops;
+   298		char *buf;
+   299	
+   300		if (of->atomic_write_len) {
+   301			if (len > of->atomic_write_len)
+   302				return -E2BIG;
+   303		} else {
+   304			len = min_t(size_t, len, PAGE_SIZE);
+   305		}
+   306	
+   307		buf = of->prealloc_buf;
+   308		if (buf)
+   309			mutex_lock(&of->prealloc_mutex);
+   310		else
+   311			buf = kmalloc(len + 1, GFP_KERNEL);
+   312		if (!buf)
+   313			return -ENOMEM;
+   314	
+   315		if (copy_from_iter(buf, len, iter) != len) {
+   316			len = -EFAULT;
+   317			goto out_free;
+   318		}
+   319		buf[len] = '\0';	/* guarantee string termination */
+   320	
+   321		/*
+   322		 * @of->mutex nests outside active ref and is used both to ensure that
+   323		 * the ops aren't called concurrently for the same open file.
+   324		 */
+   325		mutex_lock(&of->mutex);
+   326		if (!kernfs_get_active(of->kn)) {
+   327			mutex_unlock(&of->mutex);
+   328			len = -ENODEV;
+   329			goto out_free;
+   330		}
+   331	
+   332		ops = kernfs_ops(of->kn);
+   333		if (ops->write)
+   334			len = ops->write(of, buf, len, iocb->ki_pos);
+   335		else
+   336			len = -EINVAL;
+   337	
+   338		kernfs_put_active(of->kn);
+   339		mutex_unlock(&of->mutex);
+   340	
+
+=== sysfs attribute read callback and buffer ===
+    42		struct kernfs_open_file *of = sf->private;
+    43		struct kobject *kobj = of->kn->parent->priv;
+    44		const struct sysfs_ops *ops = sysfs_file_ops(of->kn);
+    45		ssize_t count;
+    46		char *buf;
+    47	
+    48		if (WARN_ON_ONCE(!ops->show))
+    49			return -EINVAL;
+    50	
+    51		/* acquire buffer and ensure that it's >= PAGE_SIZE and clear */
+    52		count = seq_get_buf(sf, &buf);
+    53		if (count < PAGE_SIZE) {
+    54			seq_commit(sf, -1);
+    55			return 0;
+    56		}
+    57		memset(buf, 0, PAGE_SIZE);
+    58	
+    59		count = ops->show(kobj, of->kn->priv, buf);
+    60		if (count < 0)
+    61			return count;
+    62	
+    63		/*
+    64		 * The code works fine with PAGE_SIZE return but it's likely to
+    65		 * indicate truncated result or overflow in normal use cases.
+    66		 */
+    67		if (count >= (ssize_t)PAGE_SIZE) {
+    68			printk("fill_read_buffer: %pS returned bad count\n",
+    69					ops->show);
+    70			/* Try to struggle along */
+    71			count = PAGE_SIZE - 1;
+    72		}
+    73		seq_commit(sf, count);
+    74		return 0;
+    75	}
+    76	
+
+=== kernfs preallocation ===
+   662	
+   663		error = -EINVAL;
+   664		/*
+   665		 * ->seq_show is incompatible with ->prealloc,
+   666		 * as seq_read does its own allocation.
+   667		 * ->read must be used instead.
+   668		 */
+   669		if (ops->prealloc && ops->seq_show)
+   670			goto err_free;
+   671		if (ops->prealloc) {
+   672			int len = of->atomic_write_len ?: PAGE_SIZE;
+   673			of->prealloc_buf = kmalloc(len + 1, GFP_KERNEL);
+   674			error = -ENOMEM;
+   675			if (!of->prealloc_buf)
+   676				goto err_free;
+   677			mutex_init(&of->prealloc_mutex);
+   678		}
+   679	
+   680		/*

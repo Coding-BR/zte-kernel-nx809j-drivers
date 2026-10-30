@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "aw22xxx_cfg_update_wait_from_dyn_name",
+    "stock_entry": "00103ea4",
+    "source_function": "aw22xxx_cfg_update_wait_from_dyn_name",
+    "candidate_function": "aw22xxx_cfg_update_wait_from_dyn_name",
+    "kcfi_required": false,
+    "assembly_only": true
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/attestation/next084_aw22xxx_cfg_update_wait_from_dyn_name_exact_v2/candidate_ghidra",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "kcfi": {},
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_exact_assembly_island_decompiler_fallback": true,
+    "allow_section_address_normalization": true,
+    "fallback_reason": "The candidate preserves the independently verified 260-byte/65-instruction AArch64 firmware/configuration update island and its P-Code operation shape; Ghidra normalized C is non-authoritative for this explicit assembly-only function.",
+    "fallback_evidence": "Fresh Ghidra body bounds and P-Code shape must pass, while independent relocation-aware Assembly, Docker, Joern and KCFI gates remain mandatory. This is not a semantic C-equivalence claim."
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_led",
+    "define": [],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

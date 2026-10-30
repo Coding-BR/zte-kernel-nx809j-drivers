@@ -1,0 +1,148 @@
+{
+  "build_root": "F:\\drivers\\host-builds\\zte_tpd\\20260731_next119_syna_cdev_devnode_v2",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "syna_cdev_devnode"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "5fac8d2cef64793326b84c6b544c4b28cd26f81bcdf411cb50ecadcce3a627e9",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\host-builds\\zte_tpd\\20260731_next119_syna_cdev_devnode_v2\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next119-syna-cdev-devnode",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_cdev_devnode_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\host-builds\\zte_tpd\\20260731_next119_syna_cdev_devnode_v2\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_cdev_devnode host tests (4 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "5fac8d2cef64793326b84c6b544c4b28cd26f81bcdf411cb50ecadcce3a627e9",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "F:\\drivers\\host-builds\\zte_tpd\\20260731_next119_syna_cdev_devnode_v2\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next119-syna-cdev-devnode",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/syna_cdev_devnode_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "F:\\drivers\\host-builds\\zte_tpd\\20260731_next119_syna_cdev_devnode_v2\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS syna_cdev_devnode host tests (4 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 4,
+  "generated_utc": "2026-07-31T19:45:23.386642+00:00",
+  "inputs": [
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_cdev_devnode_host_test.c",
+      "sha256": "20e947b42613bdf318e43523b897c1bf9493f1e5f98cd6782a321d8761cf09d5",
+      "size": 3129
+    },
+    {
+      "path": "F:\\drivers\\worktrees\\zte-tpd-syna-release-attested\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_cdev_devnode.c",
+      "sha256": "37f90ddc7342c2c4c05e25c56f75ef0abbd23d9bfbfd99f145018010862024e7",
+      "size": 363
+    }
+  ],
+  "limitations": [
+    "The harness validates direct-source devnode control flow and return propagation only.",
+    "It does not load the module or emulate Android device-core behavior.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build remain separate gates."
+  ],
+  "mode": "offline_direct_source_syna_cdev_devnode_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "syna_cdev_devnode",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_creat_node@00103258",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "inferred_prototype": "int aw8693x_creat_node(struct aw_haptic *haptic)",
+  "confidence": "HIGH_FOR_ABI; STRUCT FIELD TYPE REMAINS OFFSET-BASED",
+  "evidence": {
+    "return": "sysfs_create_group returns int; stock tests sign bit of w0, returns original negative value on failure and 0 otherwise",
+    "parameter": "single x0 pointer; KCFI type ID 0x512cf1f0 is shared by aw8693x_get_f0, aw8693x_ram_get_f0, aw8693x_get_irq_state, aw8693x_check_qualify, and aw8693x_judge_rtp_going; their source prototypes are int(struct aw_haptic *)",
+    "field": "load at haptic+0xf8 is passed to sysfs_create_group as struct kobject * per pinned include/linux/sysfs.h prototype; retain offset-based access because the reconstructed struct definition is absent"
+  },
+  "direct_calls": [
+    {
+      "site": "00103274",
+      "target": "sysfs_create_group",
+      "prototype": "int(struct kobject *, const struct attribute_group *)"
+    },
+    {
+      "site": "001032b4",
+      "target": "_printk",
+      "format": "KERN_ERR plus three string/integer substitutions"
+    }
+  ],
+  "kcfi": {
+    "preamble_required": true,
+    "type_id": "0x512cf1f0",
+    "indirect_call_inside_function": false,
+    "caller_indirect_site": "aw_i2c_probe@001073c0:00107ec8",
+    "caller_site_type_id": "0x512cf1f0",
+    "caller_site_status": "COMPUTED_TARGET_CONFIRMED_BY_GHIDRA; DATAFLOW_REVIEW_REMAINS"
+  },
+  "sysfs_callbacks": {
+    "show_type": "ssize_t(struct device *, struct device_attribute *, char *)",
+    "store_type": "ssize_t(struct device *, struct device_attribute *, const char *, size_t)",
+    "evidence": "pinned device_attribute declarations and matching existing reconstructed callback definitions"
+  }
+}

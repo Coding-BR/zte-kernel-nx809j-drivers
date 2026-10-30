@@ -1,0 +1,100 @@
+{
+  "MP0_identity": {
+    "body_bytes": 48,
+    "elf_type": "ET_REL",
+    "evidence_sha256": {
+      "function_decomp": "12d3e35959326e1254505191b54e2f7cc3c112c973d65fcf16216875e5221b21",
+      "function_pcode": "c13c671590ac91606920bf395d90206de386d56cf1c84e7908a41ea698978501",
+      "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+      "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+      "signature_candidates": "b99212de62dbe9992aa04cc844648772f33f80ab8b38759e77b6f0685d0b9971",
+      "signature_resolution": "a14ca03abe443f1deeb7928bc6be94c25f51a77a7c62e1695f6b5babfede07da",
+      "stock_assembly": "9d85048e3ac7ae7ed593e4948b169e7a79c39ee561fb2b9a4a7e62de2701ab5c",
+      "stock_kcfi": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+      "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    "ghidra_entry": "00105ac0",
+    "kcfi_preamble_offset": "0x2c9c",
+    "machine": "AArch64",
+    "section": ".text",
+    "stock_assembly_section_offset": "0x2ca0",
+    "symbol_size": 48
+  },
+  "MP1_call_signature": {
+    "ambiguity": "KCFI resolves return type and first pointer type, but bool/u8/unsigned char are hash-equivalent. The byte declaration is retained to preserve the stock low-bit operation for all byte values.",
+    "inferred_prototype": "void aw8693x_set_rtp_aei(struct aw_haptic *, u8)",
+    "kcfi_type_id": "0x1d0adf6e",
+    "signature_oracle": "Pinned Docker Kbuild KCFI batch, 48 candidate prototypes.",
+    "signature_oracle_matches": [
+      "void (struct aw_haptic * haptic, bool flag)",
+      "void (struct aw_haptic * haptic, u8 flag)",
+      "void (struct aw_haptic * haptic, unsigned char flag)"
+    ]
+  },
+  "MP2_state_effects": {
+    "heap_effects": [],
+    "ordered_effects": [
+      {
+        "effect": "read low bit of flag; no persistent state or heap changes",
+        "sequence": 1
+      },
+      {
+        "effect": "select value 0 when flag bit 0 is set, otherwise 0x10",
+        "sequence": 2
+      },
+      {
+        "effect": "call i2c_w_bits(haptic, 0x03, 0xffffffef, value); ignore its return",
+        "sequence": 3
+      }
+    ],
+    "persistent_memory_writes": []
+  },
+  "MP3_control_error_matrix": {
+    "branches": 1,
+    "cases": [
+      {
+        "condition": "flag & 1",
+        "result": "pass value 0; clear register bit 4 through active-low mask"
+      },
+      {
+        "condition": "(flag & 1) == 0",
+        "result": "pass value 0x10; set register bit 4 through active-low mask"
+      }
+    ],
+    "helper_errors": "i2c_w_bits return is ignored by this void wrapper"
+  },
+  "MP4_event_callback_lifetime": {
+    "callback_table": "not established from the direct-call inventory; function may be reached indirectly",
+    "direct_incoming_call_count": 0,
+    "hardware_runtime": "not performed",
+    "retained_pointers": []
+  },
+  "MP5_lock_lifetime": {
+    "allocation_or_release": [],
+    "lock_operations": [],
+    "ownership_note": "no lock, allocation, work item, IRQ registration, or pointer retention in this wrapper"
+  },
+  "MP6_register_bus_ledger": {
+    "effect": "active-low update of bit 4, using the validated helper contract",
+    "helper": "i2c_w_bits",
+    "mask": "0xffffffef",
+    "register": "0x03",
+    "return": "void; helper status discarded",
+    "value": "(flag & 1) ? 0 : 0x10"
+  },
+  "MP7_callers": {
+    "confidence_note": "do not infer absence of callback callers from the direct-call inventory",
+    "direct_callsite_count": 0,
+    "indirect_call_surface": "not resolved by the Ghidra direct-call inventory; KCFI type ID recorded"
+  },
+  "driver": "haptic_86938",
+  "evidence_roots": {
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0032_aw8693x_set_rtp_aei_00105ac0.asm",
+    "stock_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "stock_kcfi": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+  },
+  "function": "aw8693x_set_rtp_aei@00105ac0",
+  "schema_version": "1.0",
+  "stage": "PRE_CANDIDATE",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+}

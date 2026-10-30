@@ -17,7 +17,7 @@ int syna_dev_do_reflash(struct syna_tcm *tcm, bool force)
   }
 
   retval = syna_tcm_do_fw_update(tcm_dev, firmware->data,
-                                 firmware->size, 0, force);
+                                 firmware->size, 0, force & 1);
   if (retval < 0)
     printk("\0013[error] %s: Fail to do reflash\n", __func__);
 

@@ -4,6 +4,6 @@ void zlog_register_work_init(void)
 {
 	struct ztp_device *cdev = tpd_zlog_device();
 
-	pr_debug("zte_tpd: initialize zlog registration work\n");
+	printk("\0015tpd: %s enter", "zlog_register_work_init");
 	INIT_DELAYED_WORK(&cdev->zlog_register_work, zlog_register_work);
 }

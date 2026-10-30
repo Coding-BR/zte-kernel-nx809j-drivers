@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-14T05:30:00Z",
+  "driver": "zte_tpd",
+  "function": "syna_dev_set_up_input_device",
+  "stock_entry": "001136c4",
+  "task_id": "167_syna_dev_set_up_input_device",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "source_sha256": "21e881b3808ecc8bb5a3086277e508d8dfd7d0149a1aace2bc9fa62c0999d402",
+  "candidate_module_sha256": "7e44fe261313282f57f610777cb1f3ac8fbfcf4661626acd51dc7056bd94f6b0",
+  "candidate_module_size": 30038016,
+  "offline_gates": {
+    "source_sync": "PASS",
+    "joern": "PASS",
+    "host_harness": "PASS",
+    "canonical_build": "PASS",
+    "kcfi_candidate_presence": "PASS",
+    "kcfi_stock_type_equivalence": "NOT_COMPARABLE_STOCK_NO_VALID_PREAMBLE",
+    "aarch64_opcode_parity": "BLOCKED",
+    "aarch64_relocation_parity": "BLOCKED",
+    "hardware": "NOT_RUN"
+  },
+  "evidence_hashes": {
+    "source_sync_report.json": "b7f9b9ae4885d5bb34269224b9c41085ad4a23d7e17615d04696f0a023230edd",
+    "joern_gate_report.json": "463e0ccfd1a0dd0f3bae15620f1db57f6b28bf28a2d143166740154c35ae9693",
+    "host_harness_report.json": "444e5a99439785571772971d734d3eeb4ccb685ac58ab6e9a58e07ed7da31dc6",
+    "canonical_build_report.json": "5a965c084c825db1f508e26f0badefaeb3c2e28c8e8321e2581f51de95d9222b",
+    "kcfi_comparison.json": "23d2c2c90400268f8bbd8af3c52a7fb154db8866919ddde33b09722bc47941c6",
+    "assembly_comparison.json": "9b617116e67198cee693f5d939e132f01c9f0db28aa26d854a3ec1598c406fb7"
+  },
+  "joern": {
+    "report": "joern_gate_report.json",
+    "passed": true,
+    "tool_version": "4.0.548"
+  },
+  "host_harness": {
+    "report": "host_harness_report.json",
+    "passed": true,
+    "cases": 21,
+    "repetitions": 2,
+    "reproducible": true,
+    "mode": "offline_contract_model_input_setup_asan_ubsan"
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "clang_revision": "clang-r536225"
+  },
+  "static_comparison": {
+    "candidate_kcfi": "PRESENT",
+    "stock_kcfi": "NO_VALID_KCFI_PREAMBLE",
+    "candidate_symbol_size": 964,
+    "stock_symbol_size": 980,
+    "candidate_instruction_count": 241,
+    "stock_instruction_count": 245,
+    "kcfi_report": "kcfi_comparison.json",
+    "assembly_report": "assembly_comparison.json",
+    "opcode_parity": false,
+    "relocation_parity": false
+  },
+  "evidence": {
+    "stock_decompiled": "stock_decompiled.c",
+    "stock_pcode": "stock_pcode.jsonl",
+    "stock_assembly": "stock_assembly.asm",
+    "candidate_assembly": "candidate_assembly.asm",
+    "candidate_source": "candidate_source.c",
+    "host_harness_source": "host_harness_source.c",
+    "host_harness_runner": "host_harness_runner.py"
+  },
+  "blockers": [
+    "The candidate has KCFI metadata, but the stock symbol has no valid KCFI preamble, so type-ID equivalence cannot be claimed.",
+    "The candidate is 964 bytes and 241 instructions versus 980 bytes and 245 instructions in stock.",
+    "Clang tail-merges the two input-parameter printk branches; relocation identity also differs for recovered strings and the dispatcher target.",
+    "No smartphone or hardware validation was run by request."
+  ]
+}

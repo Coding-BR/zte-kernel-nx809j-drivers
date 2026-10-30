@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-01T05:47:26Z",
+  "driver": "zte_stats_info",
+  "protocol": "offline_docker_clean_rebuild_with_elf_function_comparison",
+  "image": "nubia-sm8850-kernel-builder:latest",
+  "image_digest": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "toolchain": "clang-r536225",
+  "clang_version": "Android clang 19.0.1 based on r536225",
+  "source_snapshot": {
+    "root": "kernel_development/drivers/reconstructed/zte_stats_info",
+    "files": {
+      "Makefile": {
+        "sha256": "99863772423f472fdd2c8ddabba0984fd49def7b361b2dea7e6d76652157f8b4",
+        "size": 26
+      },
+      "zte_stats_info.c": {
+        "sha256": "9e093b3da29492bf52b2811341879939ca88d68d8604cd650d6393b40703f6e4",
+        "size": 14109
+      },
+      "zte_stats_info_abi.h": {
+        "sha256": "397f7b1bfd7a147466b0eaca532de815e5bbe697a7565a8b7ceb0a83c873c527",
+        "size": 1920
+      }
+    }
+  },
+  "build_command": "ARCH=arm64 LLVM=1 LLVM_IAS=1 PATH=/toolchains/clang-r536225/bin:$PATH KCFLAGS=-ffile-prefix-map=/work/validation/zte_stats_info=/work/validation/zte_stats_info make -C /work/src/kernel/kernel_platform/common M=/work/validation/zte_stats_info modules",
+  "cycles": [
+    {
+      "cycle": 1,
+      "docker_module_path": "/work/validation/zte_stats_info/zte_stats_info.ko",
+      "host_artifact": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_stats_info_rebuild_20260901\\cycle_1_mapped\\zte_stats_info.ko",
+      "sha256": "22f93083062922e5a2932e387d91db714e123896818e13a2ef853948308349e7",
+      "size": 329768,
+      "returncode": 0
+    },
+    {
+      "cycle": 2,
+      "docker_module_path": "/work/validation/zte_stats_info/zte_stats_info.ko",
+      "host_artifact": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_stats_info_rebuild_20260901\\cycle_2_mapped\\zte_stats_info.ko",
+      "sha256": "22f93083062922e5a2932e387d91db714e123896818e13a2ef853948308349e7",
+      "size": 329768,
+      "returncode": 0
+    }
+  ],
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_stats_info/zte_stats_info.ko",
+    "sha256": "22f93083062922e5a2932e387d91db714e123896818e13a2ef853948308349e7",
+    "size": 329768
+  },
+  "checks": {
+    "docker_cycles_reproducible": true,
+    "docker_matches_repository_candidate": true,
+    "aarch64_function_comparison": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_stats_info_rebuild_20260901\\current_vs_docker_comparison.json",
+      "passed": true,
+      "checked_functions": 8,
+      "failures": 0
+    },
+    "ghidra_candidate_semantic_evidence": "reverse_engineering/validation/reconstructed/zte_stats_info/ghidra_semantic_recheck_20260901.json"
+  },
+  "diagnostic_note": "Um build preliminar com M=/work/validation/zte_stats_info/cycle_1 produziu outro hash por incorporar um caminho de arquivo diferente em .rodata.str1.1. O build aceito usa o caminho canônico e o mapeamento explícito acima; a divergência preliminar não foi promovida."
+}

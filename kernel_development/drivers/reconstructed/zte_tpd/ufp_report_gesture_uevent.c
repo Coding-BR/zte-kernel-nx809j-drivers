@@ -1,3 +1,7 @@
+#if !defined(ZTE_TPD_HOST_TEST)
+#include "defs.h"
+#endif
+
 void ufp_report_gesture_uevent(char *event)
 {
 	char *envp[] = { event, NULL };

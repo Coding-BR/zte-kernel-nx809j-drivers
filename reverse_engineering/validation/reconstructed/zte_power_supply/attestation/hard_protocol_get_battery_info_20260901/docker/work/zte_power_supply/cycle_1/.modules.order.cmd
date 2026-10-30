@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_power_supply/cycle_1/modules.order := {   echo /work/validation/zte_power_supply/cycle_1/zte_power_supply.o; :; } > /work/validation/zte_power_supply/cycle_1/modules.order

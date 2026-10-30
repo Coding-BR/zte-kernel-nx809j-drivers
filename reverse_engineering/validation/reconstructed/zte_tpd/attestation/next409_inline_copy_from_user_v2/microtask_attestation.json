@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "zte_inline_copy_from_user",
+  "stock_function": "_inline_copy_from_user",
+  "attestation_id": "next409_inline_copy_from_user_v2",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT_WITH_PRIVILEGED_RUNTIME_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS_BOTH_NO_VALID_KCFI_PREAMBLE",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "PASS",
+    "aarch64_relocations_raw": "PASS",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "inspect the stock user-access configuration through SP_EL0-derived state",
+    "mask the user address when the stock masked-access condition is active",
+    "reject addresses outside the stock 0x8000000000 and size boundary",
+    "temporarily switch TTBR0/TTBR1 with DAIF masked and restore both registers",
+    "invoke __arch_copy_from_user with the stock address mask",
+    "zero the uncopied tail and return the residual byte count"
+  ],
+  "evidence": {
+    "stock_body_bytes": 244,
+    "candidate_body_bytes": 244,
+    "stock_instruction_count": 61,
+    "candidate_instruction_count": 61,
+    "candidate_module_sha256": "b524068acd5d4cc0fbfda1c6bf61730b608144a7b8436aeb4112079bfc6e3cf0",
+    "candidate_function_assembly_sha256": "02938fdedd65b908e4afe0ee7481a5b92cbf79e69efeb33746c7255679658cfc",
+    "stock_function_assembly_sha256": "6ccf1323b21320ec2a0fe57a3ae1d0cd773ec0925c1c5c77813e9ff0370a5648",
+    "host_cases": 5,
+    "host_repetitions": 2,
+    "host_binary_sha256": "8555cae532fd2c813eb9bb0e2137793cc3663f28fefe8caae2c3484ee943719b",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "kcfi_candidate": "NO_VALID_KCFI_PREAMBLE",
+    "kcfi_stock": "NO_VALID_KCFI_PREAMBLE"
+  },
+  "follow_up_required": [
+    "Run privileged AArch64 execution only in a controlled kernel or emulator environment that can safely model TTBR and DAIF behavior.",
+    "Keep the host harness as the deterministic regression gate for failure, masking, bounds and partial-copy paths.",
+    "Run controlled NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "privileged SP_EL0/DAIF/TTBR runtime behavior",
+    "actual Android uaccess integration",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 61-instruction/244-byte AArch64 body and relocations, KCFI absence parity, strict Joern with zero unresolved calls, reproducible Docker build, and five-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

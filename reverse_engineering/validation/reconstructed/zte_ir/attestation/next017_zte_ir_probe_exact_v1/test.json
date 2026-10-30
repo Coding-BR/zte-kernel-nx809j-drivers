@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_ir",
+  "function": "zte_ir_probe",
+  "stock_function": "zte_ir_probe",
+  "source_function": "zte_ir_probe",
+  "stock_entry": "00100918",
+  "source_file": "zte_ir.c",
+  "source_sha256": "82011824020e9428478f2f5643f7564b0918c5c1d0180a756f46683589c694ac",
+  "test_source": "kernel_development/drivers/reconstructed/zte_ir/tests/host_test.c",
+  "test_source_sha256": "77d724493d5d8a23b093821645d2aae1a6739b57e9df84f8773a0aec4e19cfee",
+  "host_report": "reverse_engineering/validation/reconstructed/zte_ir/host_test_report.json",
+  "host_report_sha256": "a2bb68e88ac2613dcd4c2f1358528d9b229156992dcd488aa42432b63ec121e0",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain": "clang-r536225",
+  "cycles": 2,
+  "covered_functions": ["zte_ir_probe", "zte_ir_remove", "zte_ir_open", "zte_ir_release"],
+  "source_coverage_function": "zte_ir_probe",
+  "coverage_test_id": "microtask_07_probe_host_test",
+  "cases": [
+    "device registration and list insertion",
+    "pinctrl, class and character-device setup",
+    "probe failure rollback paths",
+    "host harness passes twice with reproducible binaries"
+  ],
+  "passed": true,
+  "reproducible": true,
+  "status": "PASS",
+  "limitations": [
+    "The host harness uses kernel and SPI stubs; it does not execute the callback against live hardware.",
+    "Concurrent probe/remove races and physical bus behavior require runtime validation."
+  ]
+}

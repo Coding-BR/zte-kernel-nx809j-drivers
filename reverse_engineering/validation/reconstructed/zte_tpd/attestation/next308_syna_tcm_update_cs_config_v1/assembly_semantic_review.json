@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_update_cs_config",
+  "stock_entry": "00127414",
+  "stock_assembly": "0307_syna_tcm_update_cs_config_00127414.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_update_cs_config_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34 and armv8.2-a.",
+    "Setup and read helpers receive timeout and mode-delay values selected from delay_mode.",
+    "Boot-config scan preserves the signed marker pair and computes max_offset from the recovered stock geometry.",
+    "Cursor alignment, zero-block search, rounded write length, +0x38 flash base and cleanup mode switch are present.",
+    "The write result is replaced by the rounded length only on non-negative stock write completion."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "synchronization",
+      "finding": "mutex_init on two stack-backed protocol buffers requires independent kernel review against the canonical TCM buffer locking contract."
+    },
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kfree is called through the managed-device provider and must be checked against the canonical devm ownership lifetime."
+    }
+  ],
+  "promotion_allowed": false
+}

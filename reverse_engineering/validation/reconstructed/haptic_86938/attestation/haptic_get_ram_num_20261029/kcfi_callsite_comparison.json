@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "method": "Compare KCFI type-id immediates at each indirect-call check in stock and linked candidate assembly",
+  "stock_assembly": "offline_static/stock_assembly/0105_get_ram_num_0010b648.asm",
+  "candidate_assembly": "../haptic_ram_load_20261029/candidate_module_assembly/0001_get_ram_num.asm",
+  "function_preamble": {
+    "stock": {
+      "decision": "NO_UNAMBIGUOUS_PREAMBLE",
+      "reason": "The word before get_ram_num is the ram_load tail call to __fortify_panic at ram_load+0x364."
+    },
+    "candidate": {
+      "decision": "PRESENT",
+      "type_id": "0x847a0830",
+      "note": "The candidate emits a function type word for this separately compiled global function; stock does not provide an unambiguous standalone preamble."
+    },
+    "kcfi_required": false
+  },
+  "indirect_calls": [
+    {
+      "operations_table_offset": "0x38",
+      "stock_type_id": "0x847a0830",
+      "candidate_type_id": "0x847a0830",
+      "match": true
+    },
+    {
+      "operations_table_offset": "0x68",
+      "stock_type_id": "0x1d0adf6e",
+      "candidate_type_id": "0x1d0adf6e",
+      "match": true,
+      "occurrences": 2
+    },
+    {
+      "operations_table_offset": "0xf8",
+      "stock_type_id": "0x847a0830",
+      "candidate_type_id": "0x847a0830",
+      "match": true
+    },
+    {
+      "operations_table_offset": "0x130",
+      "stock_type_id": "0x13c2d68c",
+      "candidate_type_id": "0x13c2d68c",
+      "match": true
+    }
+  ],
+  "all_callsite_type_ids_match": true
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T09:02:59.463204+00:00",
+  "passed": true,
+  "scope": "host-only wrapper contract; no kernel or physical device execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_046_aw8693x_set_gain.c",
+  "candidate_source_sha256": "1326098e1a6869de84dcbc1ec7b3a544556e390fa88c8d4ff94d9f340e1cd592",
+  "harness_source_sha256": "4309398c529b96622c6415eef7f4e29e8abc0f098d2a31739e2524d146f457a8",
+  "harness_runner_sha256": "3aa7d01eb3260d2e7fd99f2022aa645276fe48db44cd2e4576a2b321ba500bca",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "passed": true,
+      "observed_returncode": 0,
+      "output": "PASS: single-byte gain register write"
+    },
+    "mutant_register_lower": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: gain byte, register, transfer length, or call count mismatch"
+    },
+    "mutant_register_higher": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: gain byte, register, transfer length, or call count mismatch"
+    },
+    "mutant_length": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: gain byte, register, transfer length, or call count mismatch"
+    },
+    "mutant_gain_byte": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: gain byte, register, transfer length, or call count mismatch"
+    }
+  },
+  "docker_output_tail": "CASE_RESULT:baseline:0\nPASS: single-byte gain register write\nCASE_END\nCASE_RESULT:mutant_register_lower:1\nFAIL: gain byte, register, transfer length, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_register_higher:1\nFAIL: gain byte, register, transfer length, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_length:1\nFAIL: gain byte, register, transfer length, or call count mismatch\nCASE_END\nCASE_RESULT:mutant_gain_byte:1\nFAIL: gain byte, register, transfer length, or call count mismatch\nCASE_END\n"
+}

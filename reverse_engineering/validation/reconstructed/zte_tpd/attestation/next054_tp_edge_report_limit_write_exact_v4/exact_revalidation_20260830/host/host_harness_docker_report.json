@@ -1,0 +1,156 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "tp_edge_report_limit_write"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "2a9953032a2e508d9113652a07641cb6b63733e5cd37ec3017b42571006c480d",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next054_tp_edge_report_limit_write_exact_v4\\host\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-format-security",
+          "-Wno-unused-variable",
+          "-Wno-unused-but-set-variable",
+          "-Wno-uninitialized",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-edge-report-limit-write",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tp_edge_report_limit_write_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next054_tp_edge_report_limit_write_exact_v4\\host\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS tp_edge_report_limit_write host tests (5 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "2a9953032a2e508d9113652a07641cb6b63733e5cd37ec3017b42571006c480d",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next054_tp_edge_report_limit_write_exact_v4\\host\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-format-security",
+          "-Wno-unused-variable",
+          "-Wno-unused-but-set-variable",
+          "-Wno-uninitialized",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-edge-report-limit-write",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tp_edge_report_limit_write_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next054_tp_edge_report_limit_write_exact_v4\\host\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS tp_edge_report_limit_write host tests (5 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "driver_source_sha256": "888bcd600d1b5c11f951547305baaf66ba540ec5b0eb901515a4f19d4d7a6237",
+  "expected_cases": 5,
+  "generated_utc": "2026-08-30T18:39:44.331916+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_edge_report_limit_write_host_test.c",
+      "sha256": "b0491b587a25ac527d611b8f4794918d379b1829828140b6d1e8741146fa026d",
+      "size": 7973
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_edge_report_limit_write.c",
+      "sha256": "888bcd600d1b5c11f951547305baaf66ba540ec5b0eb901515a4f19d4d7a6237",
+      "size": 4563
+    }
+  ],
+  "limitations": [
+    "User-copy, parser and printk helpers are deterministic host stubs.",
+    "The harness checks recovered offsets, conversions, return values and error paths without hardware.",
+    "Assembly, KCFI, Ghidra, Joern, canonical build and hardware gates remain separate."
+  ],
+  "mode": "offline_direct_source_tp_edge_report_limit_write_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "tp_edge_report_limit_write",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

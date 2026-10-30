@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_get_ram_data",
+  "claims": [
+    {
+      "claim": "The initial 32-bit length is loaded from haptic offset 0x450; zero returns immediately.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0038_00105f98_aw8693x_get_ram_data.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0038_aw8693x_get_ram_data_00105f98.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "Nonzero data is read from register 0x42 in chunks capped at 0x400 bytes into the caller buffer.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0038_00105f98_aw8693x_get_ram_data.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0038_aw8693x_get_ram_data_00105f98.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "After each helper call, length is reloaded from offset 0x450 before deciding whether to continue.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0038_00105f98_aw8693x_get_ram_data.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0038_aw8693x_get_ram_data_00105f98.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "The helper return is discarded and final result is the sign-extended 32-bit offset.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0038_00105f98_aw8693x_get_ram_data.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0038_aw8693x_get_ram_data_00105f98.asm"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "limitations": [
+    "Static evidence does not establish the valid buffer capacity or concurrent mutation contract.",
+    "Function-level checks do not certify I2C hardware behavior."
+  ]
+}

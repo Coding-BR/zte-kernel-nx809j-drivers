@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_cdev_ioctls",
+  "stock_entry": "001150ec",
+  "stock_body_bytes": 8584,
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "canonical_build": {
+    "passed": true,
+    "cycles": 2,
+    "module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce"
+  },
+  "aarch64": {
+    "passed": true,
+    "stock_instruction_count": 2146,
+    "candidate_instruction_count": 2146,
+    "stock_symbol_size": 8584,
+    "candidate_symbol_size": 8584
+  },
+  "kcfi": {
+    "passed": true,
+    "decision": "TYPE_ID_COMPARISON",
+    "stock_type_id": "0x2af6cdbb",
+    "candidate_type_id": "0x2af6cdbb"
+  },
+  "host": {
+    "passed": true,
+    "cycles": 2,
+    "cases_per_cycle": 14,
+    "sanitizers": ["ASan", "UBSan"]
+  },
+  "attestation_method": "manual_evidence_reconciliation_v1",
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "call_count": 0,
+    "control_structure_count": 0,
+    "joern_cpg_gap": true,
+    "source_fallback_evidence_count": 8,
+    "mapped_call_delta_count": 1,
+    "unresolved_call_count": 0,
+    "parse_problem_count": 0
+  },
+  "limitations": [
+    "The generic attester's direct source-hash heuristic rejected this split exact-assembly target because the host report truthfully names route-test inputs rather than claiming direct compilation of syna_cdev_ioctls_exact.S.",
+    "The exact assembly implementation is outside Joern's syntactic call graph; mapped calls are retained through assembly-layout fallback evidence.",
+    "Offline exact evidence does not prove Android runtime ioctl behavior or hardware behavior."
+  ]
+}

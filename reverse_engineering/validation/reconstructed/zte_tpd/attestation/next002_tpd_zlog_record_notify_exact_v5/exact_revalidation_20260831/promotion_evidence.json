@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "review_scope": "offline_exact_function_level",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "source_file": "tpd_zlog_record_notify.c",
+  "source_function": "tpd_zlog_record_notify",
+  "stock_function": "tpd_zlog_record_notify",
+  "stock_entry": "00106998",
+  "stock_body_bytes": 3452,
+  "elf_symbol_bytes": 3452,
+  "mapping_basis": "exact AArch64 opcode/relocation parity, Docker reproducibility, KCFI, Joern scope/slice, Ghidra P-Code shape and direct ASan/UBSan contract evidence",
+  "evidence": [
+    "aarch64_comparison.json:sha256:ef607fa1fecc4a42a406f53907e0d558564ae83a3c24f4cbdb5f36a22267ec37",
+    "canonical_build_report.json:sha256:3b7b186cb8d2d93c6aa6e18847caec9fadc756ee6dd7d592d72450b37140dbe7",
+    "ghidra_semantic_comparison.json:sha256:123dfbda9995b50f174b7cb0dd06dc3662c90da30f1f7af7814069461ef1631c",
+    "kcfi/comparison.json:sha256:e932227de8d694dde766ac8de7850399a5d1885a2452cb7d3a55f4714847bae3",
+    "joern/joern_gate_summary.json:sha256:a9ab5edf10057d6d65408edf5de2a1998ae4995f854d54367778d1d5b7eef286",
+    "host/host_harness_docker_report.json:sha256:8bdd721fa1060a4a2c76571dd44357466f77da2486dbcbfdb8b6b70f9324e28a",
+    "candidate_zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce"
+  ],
+  "mapping_note": "Assembly and P-Code preserve the 18-entry event dispatch, throttling, escalation, client-record/client-notify calls and buffer clearing. Ghidra normalized C has a recorded external-label decompiler artifact; it is accepted only with exact P-Code shape and independent relocation-aware assembly parity.",
+  "promotion_authorized": false,
+  "limitations": [
+    "The package promotes only an offline static equivalence state.",
+    "The Docker/harness environment stubs zlog transport and kernel services.",
+    "Hardware, Android scheduler, IRQ, SPI and touch controller remain unverified."
+  ]
+}

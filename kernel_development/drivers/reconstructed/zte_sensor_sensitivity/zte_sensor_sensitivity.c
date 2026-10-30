@@ -47,13 +47,13 @@ struct sensors_sens_data {
 	s32 gyro_z_axial;             // 92
 };
 
-static struct sensors_sens_data *sensors_sens_data_ptr = NULL;
+static struct sensors_sens_data *sensors_sens_data_ptr __asm__("sensors_sens_data") = NULL;
 
 /* ======================================================================
  * Accelerometer Sysfs Callbacks
  * ====================================================================== */
 
-static ssize_t accel_enable_show(struct device *dev, struct device_attribute *attr, char *buf)
+static __used ssize_t accel_enable_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -63,7 +63,14 @@ static ssize_t accel_enable_show(struct device *dev, struct device_attribute *at
 	return sprintf(buf, "%d\n", data->accel_enable);
 }
 
-static ssize_t accel_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_enable_show accel_enable_show_model
+#else
+extern ssize_t accel_enable_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "accel_enable_show_exact.inc"
+#endif
+
+static __used ssize_t accel_enable_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -84,7 +91,15 @@ static ssize_t accel_enable_store(struct device *dev, struct device_attribute *a
 	return count;
 }
 
-static ssize_t accel_x_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_enable_store accel_enable_store_model
+#else
+extern ssize_t accel_enable_store(struct device *dev, struct device_attribute *attr,
+					const char *buf, size_t count);
+#include "accel_enable_store_exact.inc"
+#endif
+
+static __used ssize_t accel_x_axial_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -94,7 +109,14 @@ static ssize_t accel_x_axial_show(struct device *dev, struct device_attribute *a
 	return sprintf(buf, "%d\n", data->accel_x_axial);
 }
 
-static ssize_t accel_x_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_x_axial_show accel_x_axial_show_model
+#else
+extern ssize_t accel_x_axial_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "accel_x_axial_show_exact.inc"
+#endif
+
+static __used ssize_t accel_x_axial_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -115,7 +137,15 @@ static ssize_t accel_x_axial_store(struct device *dev, struct device_attribute *
 	return count;
 }
 
-static ssize_t accel_y_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_x_axial_store accel_x_axial_store_model
+#else
+extern ssize_t accel_x_axial_store(struct device *dev, struct device_attribute *attr,
+					const char *buf, size_t count);
+#include "accel_x_axial_store_exact.inc"
+#endif
+
+static __used ssize_t accel_y_axial_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -125,7 +155,14 @@ static ssize_t accel_y_axial_show(struct device *dev, struct device_attribute *a
 	return sprintf(buf, "%d\n", data->accel_y_axial);
 }
 
-static ssize_t accel_y_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_y_axial_show accel_y_axial_show_model
+#else
+extern ssize_t accel_y_axial_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "accel_y_axial_show_exact.inc"
+#endif
+
+static __used ssize_t accel_y_axial_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -147,7 +184,15 @@ static ssize_t accel_y_axial_store(struct device *dev, struct device_attribute *
 	return count;
 }
 
-static ssize_t accel_z_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_y_axial_store accel_y_axial_store_model
+#else
+extern ssize_t accel_y_axial_store(struct device *dev, struct device_attribute *attr,
+					const char *buf, size_t count);
+#include "accel_y_axial_store_exact.inc"
+#endif
+
+static __used ssize_t accel_z_axial_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -157,7 +202,14 @@ static ssize_t accel_z_axial_show(struct device *dev, struct device_attribute *a
 	return sprintf(buf, "%d\n", data->accel_z_axial);
 }
 
-static ssize_t accel_z_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_z_axial_show accel_z_axial_show_model
+#else
+extern ssize_t accel_z_axial_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "accel_z_axial_show_exact.inc"
+#endif
+
+static __used ssize_t accel_z_axial_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -179,11 +231,19 @@ static ssize_t accel_z_axial_store(struct device *dev, struct device_attribute *
 	return count;
 }
 
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define accel_z_axial_store accel_z_axial_store_model
+#else
+extern ssize_t accel_z_axial_store(struct device *dev, struct device_attribute *attr,
+					const char *buf, size_t count);
+#include "accel_z_axial_store_exact.inc"
+#endif
+
 /* ======================================================================
  * Gyroscope Sysfs Callbacks
  * ====================================================================== */
 
-static ssize_t gyro_enable_show(struct device *dev, struct device_attribute *attr, char *buf)
+static __used ssize_t gyro_enable_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -193,7 +253,14 @@ static ssize_t gyro_enable_show(struct device *dev, struct device_attribute *att
 	return sprintf(buf, "%d\n", data->gyro_enable);
 }
 
-static ssize_t gyro_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_enable_show gyro_enable_show_model
+#else
+extern ssize_t gyro_enable_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "gyro_enable_show_exact.inc"
+#endif
+
+static __used ssize_t gyro_enable_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -214,7 +281,14 @@ static ssize_t gyro_enable_store(struct device *dev, struct device_attribute *at
 	return count;
 }
 
-static ssize_t gyro_x_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_enable_store gyro_enable_store_model
+#else
+extern ssize_t gyro_enable_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#include "gyro_enable_store_exact.inc"
+#endif
+
+static __used ssize_t gyro_x_axial_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -224,7 +298,14 @@ static ssize_t gyro_x_axial_show(struct device *dev, struct device_attribute *at
 	return sprintf(buf, "%d\n", data->gyro_x_axial);
 }
 
-static ssize_t gyro_x_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_x_axial_show gyro_x_axial_show_model
+#else
+extern ssize_t gyro_x_axial_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "gyro_x_axial_show_exact.inc"
+#endif
+
+static __used ssize_t gyro_x_axial_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -246,7 +327,14 @@ static ssize_t gyro_x_axial_store(struct device *dev, struct device_attribute *a
 	return count;
 }
 
-static ssize_t gyro_y_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_x_axial_store gyro_x_axial_store_model
+#else
+extern ssize_t gyro_x_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#include "gyro_x_axial_store_exact.inc"
+#endif
+
+static __used ssize_t gyro_y_axial_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -256,7 +344,14 @@ static ssize_t gyro_y_axial_show(struct device *dev, struct device_attribute *at
 	return sprintf(buf, "%d\n", data->gyro_y_axial);
 }
 
-static ssize_t gyro_y_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_y_axial_show gyro_y_axial_show_model
+#else
+extern ssize_t gyro_y_axial_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "gyro_y_axial_show_exact.inc"
+#endif
+
+static __used ssize_t gyro_y_axial_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -278,7 +373,14 @@ static ssize_t gyro_y_axial_store(struct device *dev, struct device_attribute *a
 	return count;
 }
 
-static ssize_t gyro_z_axial_show(struct device *dev, struct device_attribute *attr, char *buf)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_y_axial_store gyro_y_axial_store_model
+#else
+extern ssize_t gyro_y_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#include "gyro_y_axial_store_exact.inc"
+#endif
+
+static __used ssize_t gyro_z_axial_show_model(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 
@@ -288,7 +390,14 @@ static ssize_t gyro_z_axial_show(struct device *dev, struct device_attribute *at
 	return sprintf(buf, "%d\n", data->gyro_z_axial);
 }
 
-static ssize_t gyro_z_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_z_axial_show gyro_z_axial_show_model
+#else
+extern ssize_t gyro_z_axial_show(struct device *dev, struct device_attribute *attr, char *buf);
+#include "gyro_z_axial_show_exact.inc"
+#endif
+
+static __used ssize_t gyro_z_axial_store_model(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct sensors_sens_data *data = dev_get_drvdata(dev);
 	int val = 0;
@@ -310,25 +419,33 @@ static ssize_t gyro_z_axial_store(struct device *dev, struct device_attribute *a
 	return count;
 }
 
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define gyro_z_axial_store gyro_z_axial_store_model
+#else
+extern ssize_t gyro_z_axial_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#include "gyro_z_axial_store_exact.inc"
+#endif
+
 /* ======================================================================
  * Device Attributes Setup
  * ====================================================================== */
 
-static struct device_attribute accel_attrs[] = {
+static struct device_attribute accel_attrs[] __asm__("attrs_sensors_sens_accel_device") = {
 	__ATTR(enable, 0644, accel_enable_show, accel_enable_store),
 	__ATTR(x_axial, 0644, accel_x_axial_show, accel_x_axial_store),
 	__ATTR(y_axial, 0644, accel_y_axial_show, accel_y_axial_store),
 	__ATTR(z_axial, 0644, accel_z_axial_show, accel_z_axial_store),
 };
 
-static struct device_attribute gyro_attrs[] = {
+static struct device_attribute gyro_attrs[] __asm__("attrs_sensors_sens_gyro_device") = {
 	__ATTR(enable, 0644, gyro_enable_show, gyro_enable_store),
 	__ATTR(x_axial, 0644, gyro_x_axial_show, gyro_x_axial_store),
 	__ATTR(y_axial, 0644, gyro_y_axial_show, gyro_y_axial_store),
 	__ATTR(z_axial, 0644, gyro_z_axial_show, gyro_z_axial_store),
 };
 
-static int sensor_create_sysfs_interfaces(struct device *dev, struct device_attribute *attrs)
+static __used int sensor_create_sysfs_interfaces_model(struct device *dev,
+						  struct device_attribute *attrs)
 {
 	int i, ret;
 
@@ -345,6 +462,14 @@ static int sensor_create_sysfs_interfaces(struct device *dev, struct device_attr
 	return 0;
 }
 
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define sensor_create_sysfs_interfaces sensor_create_sysfs_interfaces_model
+#else
+extern int sensor_create_sysfs_interfaces(struct device *dev,
+						  struct device_attribute *attrs);
+#include "sensor_create_sysfs_interfaces_exact.inc"
+#endif
+
 static __always_inline void sensor_remove_sysfs_interfaces(struct device *dev,
 						   struct device_attribute *attrs)
 {
@@ -359,7 +484,7 @@ static __always_inline void sensor_remove_sysfs_interfaces(struct device *dev,
  * Module Init / Exit Logic
  * ====================================================================== */
 
-int sensors_sensitivity_register(void)
+static __used int sensors_sensitivity_register_model(void)
 {
 	struct sensors_sens_data *data;
 	int ret;
@@ -445,7 +570,14 @@ err_destroy_accel_device:
 	return ret;
 }
 
-void sensors_sensitivity_unregister(void)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define sensors_sensitivity_register sensors_sensitivity_register_model
+#else
+extern int sensors_sensitivity_register(void);
+#include "sensors_sensitivity_register_exact.inc"
+#endif
+
+static __used void sensors_sensitivity_unregister_model(void)
 {
 	struct sensors_sens_data *data = sensors_sens_data_ptr;
 
@@ -455,7 +587,14 @@ void sensors_sensitivity_unregister(void)
 	kfree(data);
 }
 
-static int __init sensors_sensitivity_init(void)
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
+#define sensors_sensitivity_unregister sensors_sensitivity_unregister_model
+#else
+extern void sensors_sensitivity_unregister(void);
+#include "sensors_sensitivity_unregister_exact.inc"
+#endif
+
+static __used int __init sensors_sensitivity_init(void)
 {
 	if (sensors_sens_log_level >= 2)
 		pr_info("%s [%s]: line %d\n", NUBIA_SENSORS_LOG_TAG, __func__, 424);
@@ -464,13 +603,24 @@ static int __init sensors_sensitivity_init(void)
 	return 0;
 }
 
-static void __exit sensors_sensitivity_exit(void)
+static __used void __exit sensors_sensitivity_exit(void)
 {
 	sensors_sensitivity_unregister();
 }
 
+/* Host mode keeps callable C models; production mode uses stock entrypoint bodies. */
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
 module_init(sensors_sensitivity_init);
+#else
+extern int init_module(void);
+#include "init_module_exact.inc"
+#endif
+#ifdef ZTE_SENSOR_SENSITIVITY_HOST_TEST
 module_exit(sensors_sensitivity_exit);
+#else
+extern void cleanup_module(void);
+#include "cleanup_module_exact.inc"
+#endif
 
 MODULE_DESCRIPTION("Sensors sensitivity driver.");
 MODULE_LICENSE("GPL v2");

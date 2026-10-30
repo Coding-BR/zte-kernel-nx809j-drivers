@@ -1,0 +1,62 @@
+{
+  "schema_version": "reconstruction_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "173_syna_dev_enable_lowpwr_gesture",
+  "stock_entry": "00114348",
+  "stock_function": "syna_dev_enable_lowpwr_gesture",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "semantic_equivalence": "UNPROVEN",
+  "source_of_truth": {
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "ghidra_decompiled_sha256": "59d5411bab85fd240a8376bbc18971f929cf9cb777234b4eac470ba87bb72091",
+    "ghidra_pcode_sha256": "f9b1fd92a92e08ba7b4362360ec71800f9eee7f825a9462b1555b2c873ac22ca",
+    "stock_assembly_sha256": "aac0e03c694a55b25cf86c8f2bb4e54cc8d593d420585aa3f5df8b91e1f04699"
+  },
+  "candidate": {
+    "module_sha256": "fcbbd6246732c6e04f12b9321d71e9a29e20ddfe2c374c18526c83e93f355dfc",
+    "module_size": 30037504,
+    "source_sha256": "9f49b2d0f3d21c64d698027fec212c0b7b56e2d23a3fc8f9b5297fb1844c33cb",
+    "clang_revision": "clang-r536225",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "signature_correction": "a2 changed from char to unsigned long to match the Ghidra/P-Code 64-bit parameter model"
+  },
+  "gates": {
+    "ghidra_exports_present": "PASS",
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "host_harness_asan_ubsan": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "kcfi_presence_and_size": {
+      "status": "BLOCKED",
+      "stock_preamble": "NO_VALID_KCFI_PREAMBLE",
+      "candidate_preamble": "PRESENT",
+      "candidate_type_id": "0x0fac22ed",
+      "stock_symbol_size": 452,
+      "candidate_symbol_size": 428
+    },
+    "aarch64_symbol_size": "BLOCKED",
+    "aarch64_instruction_count": {
+      "status": "BLOCKED",
+      "stock": 113,
+      "candidate": 107
+    },
+    "aarch64_exact_opcode_parity": "BLOCKED",
+    "relocation_identity": "BLOCKED",
+    "hardware_validation": "NOT_RUN"
+  },
+  "limitations": [
+    "The candidate is 24 bytes and six instructions smaller than stock after the signature correction.",
+    "Stock has no valid KCFI preamble while the candidate has one, so KCFI presence/type parity is not established.",
+    "The function is not promoted to exact reconstruction; further register-allocation and source-model analysis is required.",
+    "No smartphone or Synaptics hardware interaction was used."
+  ],
+  "artifacts": {
+    "source_sync_report.json": "5df697e60e2b63893a83e8ac4fe11bf85c6c86cccb03c67b9c437174f4cfdccb",
+    "joern_gate_report.json": "60c3f182f8d6b8d8a90dcf29a10753db32ed018ca3cf9f971d45bccd8c523953",
+    "host_harness_report.json": "7f9be2ca547b4ec5579bb2debf5086bc98b319d7d8952bc70b953ec006699661",
+    "canonical_build_report.json": "8b75746fdbc8d360e9b37aab14ff93b479f64abf8efd31e76d884082c210793c",
+    "kcfi_comparison.json": "708d000bd81ae702607467baaf2863db210ea5d65a801d1597a62f0d643fae33",
+    "assembly_comparison.json": "980623b40db7ac0a6bbf203aa89a1b2360f4a615eef67e180e645f3fdab9b8c1"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_container_update@001039e0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "source_state": "PRE_CANDIDATE",
+  "ordered_effects": [
+    {
+      "sequence": 1,
+      "kind": "stack",
+      "effect": "reserve 0x410 plus saved registers; zero 0x400-byte readback buffer; capture stack canary"
+    },
+    {
+      "sequence": 2,
+      "kind": "lock",
+      "object": "haptic+0x2f0",
+      "operation": "mutex_lock"
+    },
+    {
+      "sequence": 3,
+      "kind": "store",
+      "address": "haptic+0x45e",
+      "width_bytes": 2,
+      "value": "0x0204; low byte cursor 4, next byte address offset 2"
+    },
+    {
+      "sequence": 4,
+      "kind": "call",
+      "target": "aw8693x_stop",
+      "return": "ignored"
+    },
+    {
+      "sequence": 5,
+      "kind": "bus",
+      "operation": "i2c_w_bits",
+      "register": "0x45",
+      "mask": "0xfffffffb",
+      "value": "0x04"
+    },
+    {
+      "sequence": 6,
+      "kind": "sleep",
+      "min_us": 500,
+      "max_us": 600,
+      "state": 2
+    },
+    {
+      "sequence": 7,
+      "kind": "load",
+      "source": "container->data[2..3] as u16",
+      "effect": "byte-swap; store u32 at haptic+0x458"
+    },
+    {
+      "sequence": 8,
+      "kind": "log",
+      "line": "0x657",
+      "effect": "log decoded base address"
+    },
+    {
+      "sequence": 9,
+      "kind": "compute",
+      "effect": "derive three bytes from address and address-(address>>2)"
+    },
+    {
+      "sequence": 10,
+      "kind": "bus",
+      "operation": "write then read 3 bytes",
+      "register": "0x2f",
+      "return": "ignored"
+    },
+    {
+      "sequence": 11,
+      "kind": "log",
+      "lines": [
+        "0x665",
+        "0x668"
+      ],
+      "effect": "log decoded local bytes"
+    },
+    {
+      "sequence": 12,
+      "kind": "bus",
+      "operation": "i2c_w_bits",
+      "register": "0x2d",
+      "mask": "0xffffffe0",
+      "value": "address>>8",
+      "return": "ignored"
+    },
+    {
+      "sequence": 13,
+      "kind": "bus",
+      "operation": "i2c_w_bytes",
+      "register": "0x2e",
+      "length": 1
+    },
+    {
+      "sequence": 14,
+      "kind": "bus",
+      "operation": "i2c_w_bytes",
+      "register": "0x40",
+      "length": 2,
+      "effect": "write encoded start address"
+    },
+    {
+      "sequence": 15,
+      "kind": "loop",
+      "condition": "(s32)cursor < container->len",
+      "effect": "write container->data+cursor to 0x42 in chunks <=0x800; cursor starts 4"
+    },
+    {
+      "sequence": 16,
+      "kind": "bus",
+      "operation": "i2c_w_bytes",
+      "register": "0x40",
+      "length": 2,
+      "effect": "rewrite encoded start address after payload writes"
+    },
+    {
+      "sequence": 17,
+      "kind": "loop",
+      "condition": "(s32)cursor < container->len",
+      "effect": "read 0x42 in chunks <=0x400 into zeroed buffer and compare"
+    },
+    {
+      "sequence": 18,
+      "kind": "branch",
+      "condition": "first mismatch",
+      "effect": "logs lines 0x630 and 0x687; result -ERANGE"
+    },
+    {
+      "sequence": 19,
+      "kind": "log",
+      "condition": "no mismatch",
+      "line": "0x689",
+      "effect": "result 0"
+    },
+    {
+      "sequence": 20,
+      "kind": "bus",
+      "operation": "i2c_w_bits",
+      "register": "0x45",
+      "mask": "0xfffffffb",
+      "value": 0,
+      "return": "ignored"
+    },
+    {
+      "sequence": 21,
+      "kind": "unlock",
+      "object": "haptic+0x2f0",
+      "operation": "mutex_unlock"
+    },
+    {
+      "sequence": 22,
+      "kind": "return",
+      "effect": "return 0 or -ERANGE; canary mismatch calls __stack_chk_fail"
+    }
+  ],
+  "function_state_writes": [
+    {
+      "field": "haptic+0x45e..0x45f",
+      "value": "0x0204"
+    },
+    {
+      "field": "haptic+0x458",
+      "value": "decoded address as u32"
+    }
+  ],
+  "container_access": "read-only; len at offset 0 and payload at offset 4",
+  "limitations": [
+    "Register semantics are not inferred beyond observed numbers and operations.",
+    "I2C helper statuses and aw8693x_stop result are ignored."
+  ]
+}

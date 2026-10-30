@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"cleanup_module","type":"IF","code":"if (g_rdbg_instance.count > 0) {\n\t\tdo {\n\t\t\tif (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {\n\t\t\t\tdevice_destroy(g_rdbg_instance.class,\n\t\t\t\t\t       (g_rdbg_instance.devt & 0xfff00000U) |\n\t\t\t\t\t       (unsigned int)slot);\n\t\t\t}\n\t\t\tslot++;\n\t\t\tclient_offset += RDBG_CLIENT_STRIDE;\n\t\t} while (slot < g_rdbg_instance.count);\n\t}","filename":"rdbg_fn_01_cleanup_module.c","line":22},
+    {"method":"cleanup_module","type":"DO","code":"do {\n\t\t\tif (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {\n\t\t\t\tdevice_destroy(g_rdbg_instance.class,\n\t\t\t\t\t       (g_rdbg_instance.devt & 0xfff00000U) |\n\t\t\t\t\t       (unsigned int)slot);\n\t\t\t}\n\t\t\tslot++;\n\t\t\tclient_offset += RDBG_CLIENT_STRIDE;\n\t\t} while (slot < g_rdbg_instance.count);","filename":"rdbg_fn_01_cleanup_module.c","line":23},
+    {"method":"cleanup_module","type":"IF","code":"if (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {\n\t\t\t\tdevice_destroy(g_rdbg_instance.class,\n\t\t\t\t\t       (g_rdbg_instance.devt & 0xfff00000U) |\n\t\t\t\t\t       (unsigned int)slot);\n\t\t\t}","filename":"rdbg_fn_01_cleanup_module.c","line":24}
+  ]
+}

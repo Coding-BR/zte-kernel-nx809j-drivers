@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "task_id": "055_get_one_key",
+  "source_function": "get_one_key",
+  "stock_function": "get_one_key",
+  "stock_entry": "0010ba4c",
+  "stock_body_bytes": 240,
+  "candidate_source": "get_one_key_exact.S",
+  "candidate_source_sha256": "401bb629d94ebf4f96c8e4b6786918c5abba597a4f47eb9b37a895a0ff9e8ecd",
+  "candidate_module": "candidate_zte_tpd.ko",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "checks": {
+    "canonical_build_two_cycles": true,
+    "aarch64_opcode_and_relocation_comparison": true,
+    "kcfi_type_id_and_size": true,
+    "host_asan_ubsan_two_cycles": true,
+    "joern_strict": true
+  },
+  "observations": {
+    "aarch64_instruction_count": 60,
+    "kcfi_type_id": "0xf4e9d97c",
+    "joern_review_finding_count": 1,
+    "joern_review_finding": "userspace_egress: simple_read_from_buffer(a2, a3, a4, s, v12)"
+  },
+  "artifacts": {
+    "canonical_build": {"path": "canonical_build_report.json", "sha256": "4be6b4a80ace93c4bf4d8bad9929aff4ef7a28ceb2eed49b4925263d3a2e86ef"},
+    "aarch64_comparison": {"path": "aarch64_comparison.json", "sha256": "80da2d92a273be215e42dc5d1a2c7305050c73ab04132b1e01712d897d4102bd"},
+    "kcfi_comparison": {"path": "kcfi/kcfi_comparison.json", "sha256": "6904e14a58e4fbabedfa3176b108917df5851950f2fd79a8e1dc84fb2628964c"},
+    "host_harness": {"path": "host_harness_docker_report.json", "sha256": "574622f02dd66663479e31d46ddba425e4e962a4e57867fafcefb4c11a19b683"},
+    "joern": {"path": "joern/joern_gate_summary.json", "sha256": "fe2e160c7c4733fcb31e29d1dcb6cff9b092784dbb38c039218dbf4f7ac0783a"},
+    "microtask_attestation": {"path": "microtask_attestation.json", "sha256": "abb7f6a15e0022a63e0ff10315213c000c6e828bfdf985a4ce36cff4c26e7241"}
+  },
+  "limitations": [
+    "Offline/static validation only; hardware, ADB, insmod, firmware, and device behavior remain unverified.",
+    "The host test includes the reconstructed source and fake procfs/device callbacks; it does not execute a real kernel procfs path.",
+    "The Joern userspace_egress finding is retained as a review observation because the function intentionally calls simple_read_from_buffer."
+  ]
+}

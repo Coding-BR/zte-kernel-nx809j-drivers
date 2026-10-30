@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "task_id": "061_rtp_auto_sin_store",
+  "work_unit": "MP2_STATE_EFFECT_LEDGER",
+  "identity": "rtp_auto_sin_store@00106ed0",
+  "input_hashes": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0060_00106ed0_rtp_auto_sin_store.c",
+      "sha256": "a44a38e6f8d89b85456a0be62ac155d496c34ca25d9305d13fc25dcc3299b2e2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0060_00106ed0_rtp_auto_sin_store.jsonl",
+      "sha256": "c787608fb9952cf4a5271ae9a17ff7a344132c5d635ead5c36f012530c143f8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462"
+    }
+  ],
+  "ordered_effects": [
+    {
+      "phase": "parse",
+      "effect": "kstrtouint(buf, 0, &value); negative return logs and returns errno without lock or work queue.",
+      "evidence": ".text 0x40e8-0x40f4; conditional branch to error block"
+    },
+    {
+      "phase": "lock",
+      "effect": "lock mutex at driver_data+0x248 after successful parse.",
+      "evidence": ".text 0x40f8-0x4100"
+    },
+    {
+      "phase": "zero",
+      "effect": "if value==0 set u32 at driver_data-0x68 to 0 and call i2c_w_bits(haptic,0x2d,0xdf,0).",
+      "evidence": ".text 0x4108, 0x4138-0x414c"
+    },
+    {
+      "phase": "valid nonzero",
+      "effect": "if value < *(u32*)(driver_data+0x638), set u32 at -0x68 to 1, save value at -0x18, and call i2c_w_bits(haptic,0x2d,0xdf,0x20).",
+      "evidence": ".text 0x410c-0x4134"
+    },
+    {
+      "phase": "out of range",
+      "effect": "for nonzero value >= limit, clear u32 at -0x68 and printk the value; do not call i2c_w_bits.",
+      "evidence": ".text 0x4114-0x41e8"
+    },
+    {
+      "phase": "unlock and queue",
+      "effect": "unlock mutex, then queue_work_on(cpu=0x20, workqueue at driver_data+0x3a0, work at driver_data+0x2f8); return count.",
+      "evidence": ".text 0x4150-0x4164 and shared return"
+    }
+  ],
+  "unknowns": [
+    "Meaning of register 0x2d and semantic names of the state fields remain unconfirmed.",
+    "Work cancellation/removal lifetime is not proven by the callback body alone."
+  ]
+}

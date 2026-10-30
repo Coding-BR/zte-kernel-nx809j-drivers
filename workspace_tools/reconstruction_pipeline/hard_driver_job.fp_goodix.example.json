@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "DISPATCHER_PARSER",
+    "HARDWARE_BUS",
+    "STATEFUL_MEMORY"
+  ],
+  "functions": [
+    {
+      "stock_function": "gf_ioctl",
+      "stock_entry": "00100824",
+      "source_function": "gf_ioctl",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "gf_open",
+      "stock_entry": "00100de8",
+      "source_function": "gf_open",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "gf_probe",
+      "stock_entry": "00101554",
+      "source_function": "gf_probe",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "gf_parse_dts",
+      "stock_entry": "0010237c",
+      "source_function": "gf_parse_dts",
+      "kcfi_required": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/fp_goodix",
+    "stock_module": "reference_modules/full_vendor_boot/fp_goodix.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/fp_goodix/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/fp_goodix_protocol_20260828"
+  },
+  "kcfi": {
+    "ignore_size": true
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/fp_goodix",
+    "slice": {
+      "mode": "data-flow",
+      "depth": 12,
+      "parallelism": 2,
+      "sink_filter": "(copy_to_user|copy_from_user|gpio|regulator|pinctrl|input|work|mutex|wait|netlink)"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc-fan-independent-review-MP6-20261027-r1",
+  "reviewer": "Hubble",
+  "reviewer_agent_id": "01a17d6e-d604-7ab2-9e10-ac190169a0d0",
+  "reviewed_utc": "2026-10-27T14:46:14Z",
+  "review_scope": [
+    "MP6_REGISTER_OR_BUS_LEDGER L3/L4 readiness",
+    "Declared input hashes",
+    "Pinned Device Tree, PWM, regulator, and callback source evidence"
+  ],
+  "source_environment": {
+    "docker_source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098"
+  },
+  "reviewed_artifact_hashes": [
+    {
+      "path": "MP6_REGISTER_OR_BUS_LEDGER.json",
+      "sha256": "56c1939b7efbe61147eb96830fe8b36b12f8fc4f3244f25227a1478fb0124cb1"
+    },
+    {
+      "path": "offline_static/pwm_source_contracts_MP6_20261027.txt",
+      "sha256": "97b79db266986a10b82f9d124b20f318ded17173f2354b0daeea8473aca31aa4"
+    }
+  ],
+  "independent_input_audit": {
+    "declared_hash_count_checked": 27,
+    "missing_or_mismatched_hashes": 0,
+    "reviewer_result": "All declared MP6 inputs and cited evidence match the reviewed artifact and pinned source volume."
+  },
+  "findings": [
+    "The regulator of_regulator source confirms supply-name expansion to the -supply DT property and supports mapping fan,avdd to fan,avdd-supply.",
+    "The PWM core translator maps cell 0 to channel index and cell 1 to period; the pinned LPG provider does not set a custom of_xlate. The static mapping of channel 3 and period cell 40000 is supported.",
+    "The stock call ledger and assembly support the gpiod_direction_output_raw callsites 0010137c and 001013bc.",
+    "The numeric equality reg=0xef00 and triled_base=0xef00 does not establish a hardware relation; indirect or pointer-based MMIO is not excluded by the direct-call inventory."
+  ],
+  "readiness": {
+    "MP6_L3": "READY_FOR_FORMAL_L3_DISPOSITION_NOT_PASSED",
+    "MP6_L4": "OPEN",
+    "formal_gate_passes_recorded": 0
+  },
+  "open_items": [
+    "Runtime overlay application and later target DT changes are unconfirmed.",
+    "Actual regulator, GPIO, pinctrl, and PWM provider binding and runtime state are unverified.",
+    "Raw GPIO ownership, PWM runtime return behavior, physical voltage/fan response, and reg=0xef00 semantics remain open."
+  ],
+  "candidate_source_edited": false,
+  "semantic_equivalence_established": false,
+  "hardware_validation_performed": false,
+  "review_notes": "Independent readiness review only. MP6 remains EXTRACTED_REVIEW_REQUIRED; no formal gate PASS or candidate edit authorization is established."
+}

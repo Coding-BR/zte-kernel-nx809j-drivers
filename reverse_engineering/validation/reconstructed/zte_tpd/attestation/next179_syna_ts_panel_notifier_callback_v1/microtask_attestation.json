@@ -1,0 +1,65 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "target179_syna_ts_panel_notifier_callback",
+  "function": "syna_ts_panel_notifier_callback",
+  "stock_entry": "00114914",
+  "status": "PARTIAL",
+  "semantic_equivalence": "UNPROVEN",
+  "hardware_validation": "NOT_RUN",
+  "gates": {
+    "ghidra_decompilation": {
+      "passed": true,
+      "decompiled_sha256": "806276c8ee191876cc85607a8ba04b9209a09041c3ffca33c58064f7e4835bd4",
+      "pcode_sha256": "ed9ee05d692e0d2726e978c8f4ab6554494e7348a6ea64885d3e63fe19e14f8f",
+      "stock_assembly_sha256": "383a1bde29601fa05890f33ddead6bc2cdfc3b76e2ae612a1a5c76a2c6763bab"
+    },
+    "source_sync": {
+      "passed": true,
+      "report_sha256": "323657e35e79eda4d25a1b5fb296c54f435870ee36e2ba4cfa7a029ea94375a3"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "3ab3ba67fa81b9c116a2acd6ab094745dfcc0f18befbbdcded14a026cdb5017f"
+    },
+    "host_harness_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "report_sha256": "a2b95a79d8fd54bf2300459ca7c465d3d7ac116162ee86d73e6196a672bd5592"
+    },
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "634091bbf02f29002b53acb57bf019adfcad9425de47f49d65ac440c57c5f5fa",
+      "module_size": 30037464,
+      "report_sha256": "e93c963255910f77a4005a8634bd91f504bab9b40ea6193a3e702c072e5e42da"
+    },
+    "kcfi": {
+      "passed": true,
+      "type_id": "0x40116f97",
+      "stock_size": 300,
+      "candidate_size": 300,
+      "report_sha256": "0c7cc52cce196ddee7e9a2253a8a9c2d4e1bcb5e2f37863892d99b6c9a4f6af3"
+    },
+    "aarch64_assembly": {
+      "passed": false,
+      "stock_instructions": 75,
+      "candidate_instructions": 75,
+      "stock_size": 300,
+      "candidate_size": 300,
+      "opcode_parity": false,
+      "relocation_parity": false,
+      "report_sha256": "f60e138626173c5c60bd478f8af1c51de2a17902878ff9ac07f4abdd4b134d6b"
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "b51cfcfa69023196cb7a70cafea62db0d3474de99cb973c535de8447922e3cb5",
+    "candidate_assembly_sha256": "c7faf4769fbb74d4855230d76236f7e59241231bc30e544a4683c1ddf0fc93e1",
+    "candidate_kcfi_sha256": "10577de1ccc6d5f5fdc0a22dd0f5463fe1ddd380747dcfcebe7a479c9b853109",
+    "stock_kcfi_sha256": "d03aea974d688c4f4fd429b315c44074e180b1caf4dec70a886a80d3955fa167"
+  },
+  "blockers": [
+    "KCFI type, function size and instruction count match, but strict opcode and relocation identity do not.",
+    "The hardware callback path was not run on the smartphone."
+  ]
+}

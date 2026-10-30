@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "task_id": "054_cont_brk_time_store",
+  "work_unit": "MP3_CONTROL_ERROR_MATRIX",
+  "identity": "cont_brk_time_store@0010679c",
+  "input_hashes": [
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "sha256": "5a5e1555e0a52a6d727bdbd879a2c01926663a0896762a334f9117e16b875363"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0053_0010679c_cont_brk_time_store.c", "sha256": "db656b032523650b9031a70a3a6a40314a80bb069efefa5e6e6875c36e9167f4"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0053_cont_brk_time_store_0010679c.asm", "sha256": "8bc3ef8ebd56046158edc2d05deb086c58bac22609d088deb4b8ad53bb573782"}
+  ],
+  "paths": [
+    {"condition": "kstrtou8 result has sign bit set / negative", "observed_branch": "tbnz w0,#31 to 001067f8", "effects": ["sign-extend parser result into return value"], "return": "parser errno", "evidence": "P-Code 001067c8 op_index=0-4; 001067f8"},
+    {"condition": "kstrtou8 result nonnegative", "observed_branch": "fall through to 001067cc", "effects": ["mutex_lock(data+0x248)", "i2c_w_bytes(data-0xa8, 0x21, data+0x3f5, 1)", "mutex_unlock(data+0x248)"], "return": "original count argument", "evidence": "P-Code 001067cc-001067f4; decompiled C return param_4"}
+  ],
+  "observations": [
+    {"claim": "Only a negative parse result bypasses lock and I2C operations.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0053_cont_brk_time_store_0010679c.asm", "locator": "tbnz at .text+0x39a8 to .text+0x39d8"},
+    {"claim": "The return from i2c_w_bytes is ignored; successful parsing returns count regardless of I2C helper status.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0053_0010679c_cont_brk_time_store.jsonl", "locator": "CALL 001067e8 has no subsequent read of its return before mutex_unlock and return count"}
+  ],
+  "inferences": [],
+  "unknowns": ["The exact error set produced by kstrtou8 for every malformed string is delegated to the kernel helper; this callback preserves any negative result."],
+  "contradictions": []
+}

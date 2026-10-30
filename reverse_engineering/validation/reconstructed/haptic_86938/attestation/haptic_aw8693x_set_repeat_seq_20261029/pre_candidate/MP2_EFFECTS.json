@@ -1,0 +1,22 @@
+{
+  "function": "aw8693x_set_repeat_seq",
+  "ordered_effects": [
+    {
+      "kind": "BUS_WRITE",
+      "helper": "i2c_w_bytes",
+      "reg": "0x0a",
+      "data": "sequence",
+      "length": 1,
+      "return_handling": "ignored"
+    },
+    {
+      "kind": "BUS_READ_MODIFY_WRITE",
+      "helper": "i2c_w_bits",
+      "reg": "0x12",
+      "mask": "0xffffff0f",
+      "value": "0xf0",
+      "return_handling": "ignored"
+    }
+  ],
+  "evidence": "stock assembly, P-Code, and helper decompilations hash-bound in the job"
+}

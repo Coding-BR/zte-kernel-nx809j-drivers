@@ -5,8 +5,8 @@ Estado: `static_verified` (gates 0-7 PASS; gates 8-10 incompletos).
 ## Artefato atual
 
 - Arquivo: `zte_charger_policy.ko`
-- SHA-256: `e603c3f553c4d4375655dc7c9afe2595c449999c15e60acd5efdd2206309e927`
-- Tamanho: `301184` bytes
+- SHA-256: `04f4a2aec2a9dcc1a98313e60eedcba05d34419ef82721bb8b7fece9840a8d5b`
+- Tamanho: `300960` bytes
 - Kernel alvo: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`
 
 ## Evidencias aprovadas

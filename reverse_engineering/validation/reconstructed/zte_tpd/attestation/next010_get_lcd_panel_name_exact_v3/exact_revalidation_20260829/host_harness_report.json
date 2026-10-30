@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-29T16:00:00Z",
+  "mode": "offline_direct_source_get_lcd_panel_name_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "get_lcd_panel_name",
+  "passed": true,
+  "expected_cases": 2,
+  "repetitions": 2,
+  "toolchain": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225",
+    "sanitizers": ["address", "undefined"]
+  },
+  "inputs": [
+    {
+      "path": "host/next010_get_lcd_panel_name_harness.c",
+      "sha256": "b69c41d076d42be7c4d688e32a240c6089e77e4d5e5c6c1fc3a2ca034973ae63",
+      "size": 634
+    },
+    {
+      "path": "candidate_source.c",
+      "sha256": "14685c00cf4292e675c2f5783369984feea4dafbd13ed2511c1543bb342c6a6a",
+      "size": 65
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "binary_sha256": "b5912768622dabcc4ef0de816f6c2ebd7f2892d4794dc396b9cc46ca5a776232",
+      "stdout": "PASS test_panel_name_value_and_identity\nPASS test_panel_name_repeatability\nSUMMARY total=2 passed=2 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "binary_sha256": "b5912768622dabcc4ef0de816f6c2ebd7f2892d4794dc396b9cc46ca5a776232",
+      "stdout": "PASS test_panel_name_value_and_identity\nPASS test_panel_name_repeatability\nSUMMARY total=2 passed=2 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "limitations": [
+    "The dedicated harness validates the returned literal, pointer identity and repeatability; no hardware panel is present.",
+    "The combined next_abi_harness was not used because an unrelated change_tp_state.c dependency is missing ZTE_TPD_BRK_5512 and gesture_complete stubs.",
+    "No smartphone, Android service, SPI, IRQ, MMIO or physical hardware is exercised."
+  ]
+}

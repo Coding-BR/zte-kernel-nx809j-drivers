@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "tp_sensibility_level_write",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "sanitizers": ["address", "undefined"],
+  "cycles": [
+    {
+      "cycle": 1,
+      "returncode": 0,
+      "output": "PASS tp_sensibility_level_write: 6 cases"
+    },
+    {
+      "cycle": 2,
+      "returncode": 0,
+      "output": "PASS tp_sensibility_level_write: 6 cases"
+    }
+  ],
+  "cases": [
+    "basic numeric write and callback",
+    "nine-byte input limit",
+    "invalid input returns -EINVAL",
+    "copy failure returns -EINVAL",
+    "zero count returns -EINVAL",
+    "missing callback is tolerated after the byte is written"
+  ],
+  "passed": true,
+  "hardware": "DEFERRED"
+}

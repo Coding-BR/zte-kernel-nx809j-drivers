@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "function": "trig_store@00106940",
+  "review": [
+    "The nine-element parse buffer is zero-initialized; parsed values are consumed only when sscanf reports all nine conversions.",
+    "Trigger range is validated before subtracting one, so record selection stays within the three 13-byte records.",
+    "Sequence values are checked before narrowing the record fields to bytes.",
+    "The stock callback reports count even on parse or validation failure; this behavior is preserved.",
+    "The record is updated before mutex_lock in the stock instruction order; hardware calls alone are inside the mutex."
+  ],
+  "limitations": ["Static review cannot establish concurrent hardware behavior or the intended user-space ABI beyond the stock evidence."]
+}

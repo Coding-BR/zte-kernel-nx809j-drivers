@@ -1,0 +1,1 @@
+savedcmd_/work/validation/soc_fan/cycle_1/Module.symvers :=  ./scripts/mod/modpost -M -m -b -x  -E     -o /work/validation/soc_fan/cycle_1/Module.symvers -T /work/validation/soc_fan/cycle_1/modules.order -i ./Module.symvers -e  -p protected_module_names_list

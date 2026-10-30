@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "function_id": "cont_store@0010be5c",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "ordered_effects": [
+    {
+      "sequence": 1,
+      "kind": "load",
+      "object": "dev->p->driver_data",
+      "offset_from_dev": "0x98"
+    },
+    {
+      "sequence": 2,
+      "kind": "initialize",
+      "object": "local value",
+      "value": 0
+    },
+    {
+      "sequence": 3,
+      "kind": "call",
+      "target": "kstrtouint",
+      "arguments": [
+        "buf",
+        0,
+        "&value"
+      ]
+    },
+    {
+      "sequence": 4,
+      "kind": "conditional_return",
+      "condition": "kstrtouint result < 0",
+      "value": "negative kstrtouint result",
+      "callbacks": "none"
+    },
+    {
+      "sequence": 5,
+      "kind": "derive_pointer",
+      "object": "haptic",
+      "expression": "driver_data - 0xa8"
+    },
+    {
+      "sequence": 6,
+      "kind": "indirect_call",
+      "target": "aw8693x_stop",
+      "table_offset": "operations+0x38",
+      "type_id": "0x847a0830",
+      "condition": "parse succeeded"
+    },
+    {
+      "sequence": 7,
+      "kind": "indirect_call",
+      "target": "aw8693x_upload_lra",
+      "table_offset": "operations+0x118",
+      "type_id": "0xd37b6e95",
+      "arguments": [
+        "haptic",
+        1
+      ],
+      "condition": "parsed value != 0"
+    },
+    {
+      "sequence": 8,
+      "kind": "indirect_call",
+      "target": "aw8693x_cont_config",
+      "table_offset": "operations+0x48",
+      "type_id": "0x847a0830",
+      "condition": "parsed value != 0"
+    },
+    {
+      "sequence": 9,
+      "kind": "return",
+      "value": "count",
+      "condition": "parse succeeded"
+    }
+  ],
+  "direct_state_writes": [],
+  "callback_effects": "Effects are synchronous and belong to the independently reconstructed callback functions."
+}

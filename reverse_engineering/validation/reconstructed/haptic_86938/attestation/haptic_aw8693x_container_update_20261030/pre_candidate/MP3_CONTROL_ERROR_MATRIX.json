@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_container_update@001039e0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "paths": [
+    {
+      "condition": "all normal paths",
+      "return": "No early error return for stop, I2C, sleep, or printk; common cleanup is used"
+    },
+    {
+      "condition": "container->len <= cursor (normally <=4)",
+      "return": "0 after setup and success log; payload/readback loops are skipped"
+    },
+    {
+      "condition": "first readback byte mismatch",
+      "log_lines": [
+        "0x630",
+        "0x687"
+      ],
+      "return": "-ERANGE (-34)",
+      "cleanup": "clear 0x45 bit 2 and unlock mutex"
+    },
+    {
+      "condition": "all compared bytes equal",
+      "log_line": "0x689",
+      "return": 0,
+      "cleanup": "clear 0x45 bit 2 and unlock mutex"
+    },
+    {
+      "condition": "stack canary mismatch",
+      "return": "__stack_chk_fail is non-returning"
+    }
+  ],
+  "ignored_failures": [
+    {
+      "call": "aw8693x_stop",
+      "effect": "return ignored"
+    },
+    {
+      "call": "i2c_w_bits/i2c_w_bytes/i2c_r_bytes",
+      "effect": "return values ignored"
+    },
+    {
+      "important_case": "read error is not returned directly; zero-initialized or stale scratch is still compared, which can produce -ERANGE or success depending on bytes"
+    }
+  ],
+  "bounds_and_known_defect": {
+    "cursor_start": 4,
+    "readback_buffer_bytes": 1024,
+    "write_chunk_max": 2048,
+    "read_chunk_max": 1024,
+    "issue": "ram_load allows firmware size >=3; target reads u16 at container->data+2 (bytes 2 and 3) without a len>=4 check, so a 3-byte payload can be read out of bounds.",
+    "policy": "Do not silently add a behavior-changing guard to the stock-equivalent candidate; log this as a known stock defect."
+  },
+  "branch_evidence": "AArch64 stock assembly .text+0xbc0..0xf28 and repaired Ghidra P-Code"
+}

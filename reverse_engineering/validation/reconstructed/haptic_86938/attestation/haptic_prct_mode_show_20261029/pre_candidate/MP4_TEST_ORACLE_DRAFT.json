@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "prct_mode_show",
+  "cases": [
+    {
+      "name": "callback_dispatch",
+      "assert": [
+        "callback slot is driver_data + 0x520 + 0x150",
+        "callback receives driver_data - 0xa8"
+      ]
+    },
+    {
+      "name": "byte_formatting",
+      "assert": [
+        "callback outputs 0x00, 0x01, 0x80 and 0xff are formatted as nonnegative values 0, 1, 128 and 255",
+        "format remains prctmode = %d\\n",
+        "snprintf bound remains 4096"
+      ]
+    },
+    {
+      "name": "return_value",
+      "assert": [
+        "returns snprintf result, not callback result"
+      ]
+    },
+    {
+      "name": "kcfi_mismatch",
+      "assert": [
+        "mismatched callback type traps with BRK #0x8229"
+      ]
+    }
+  ],
+  "note": "Static core gates are the acceptance evidence; this oracle is not executed."
+}

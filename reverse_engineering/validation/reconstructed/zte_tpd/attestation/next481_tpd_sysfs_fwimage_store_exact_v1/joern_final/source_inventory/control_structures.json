@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"tpd_sysfs_fwimage_store","type":"IF","code":"if ( !fw_data || !fw_data->data )\n  {\n    printk(\"\\001\" \"3Need set fw image size first\");\n    return -ENOMEM;\n  }","filename":"tpd_sysfs_fwimage_store.c","line":12},
+    {"method":"tpd_sysfs_fwimage_store","type":"IF","code":"if ( !fw_data->size )\n  {\n    printk(\"\\001\" \"3Invalid firmware size\");\n    return -EINVAL;\n  }","filename":"tpd_sysfs_fwimage_store.c","line":17},
+    {"method":"tpd_sysfs_fwimage_store","type":"IF","code":"if ( fw_data->size <= position )\n  {\n    *(u32 *)(tpd_cdev + 0x448) = 0;\n    return -EINVAL;\n  }","filename":"tpd_sysfs_fwimage_store.c","line":24},
+    {"method":"tpd_sysfs_fwimage_store","type":"IF","code":"if ( position + count <= fw_data->size )\n    copied = count;\n  else\n    copied = fw_data->size - position;","filename":"tpd_sysfs_fwimage_store.c","line":29},
+    {"method":"tpd_sysfs_fwimage_store","type":"ELSE","code":"else","filename":"tpd_sysfs_fwimage_store.c","line":32}
+  ]
+}

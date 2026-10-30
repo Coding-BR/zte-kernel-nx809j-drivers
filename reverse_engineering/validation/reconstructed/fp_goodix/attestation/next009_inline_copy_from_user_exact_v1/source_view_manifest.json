@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "purpose": "ANALYSIS_ONLY_JOERN_SOURCE_VIEW",
+  "driver": "fp_goodix",
+  "function": "_inline_copy_from_user@001013e8",
+  "build_input_prohibited": true,
+  "canonical_source": {
+    "path": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix_inline_exact.S",
+    "sha256": "dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625"
+  },
+  "analysis_source_view": {
+    "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/next009_inline_copy_from_user_exact_v1/joern_source_view/inline_copy_from_user_analysis.c",
+    "sha256": "584ae9445ad3eb55970ed0fe6d1e379bb9ba0d923a664fa750990e02b50381c2",
+    "tree_sha256": "4955346cc90b92ea4e718c1703e5b34abfcbf2831bbea19a01569e9cd3c587c3"
+  },
+  "derivation": [
+    "The model retains the stock two-call shape confirmed by Ghidra calls: __arch_copy_from_user and memset.",
+    "The reduced guard and residual-zeroing shape follows the preserved Ghidra pseudocode; privileged DAIF/TTBR transitions remain represented only by the production .S.",
+    "The model exists only to make Joern strict/sliced analysis possible for an assembly-only production symbol."
+  ],
+  "limitations": [
+    "This source view is not the implementation and is not compiled, linked or installed.",
+    "Joern evidence does not replace exact assembly, KCFI, Docker, harness or hardware validation."
+  ]
+}

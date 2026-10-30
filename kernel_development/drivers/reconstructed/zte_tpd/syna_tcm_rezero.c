@@ -1,53 +1,41 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+
+#define TCM_MODE_APPLICATION_FIRMWARE 1
+#define TCM_CMD_REZERO 0x27
+#define TCM_STATUS_INVALID -241
+
 int syna_tcm_rezero(struct tcm_dev *tcm, unsigned int delay_ms)
 {
-  __int64 a1 = (__int64)(unsigned long)tcm;
-  unsigned int a2 = delay_ms;
-  __int64 v3; // x2
-  __int64 (*v4)(__int64, unsigned char, unsigned char *, unsigned int, unsigned char *, int); // x8
-  unsigned int v5; // w8
-  int result; // w0
-  unsigned int v7; // w19
-  __int64 v8; // x20
+	int result;
 
-  if ( a1 )
-  {
-    v3 = *(unsigned __int8 *)(a1 + 9);
-    if ( (_DWORD)v3 == 1 )
-    {
-      unsigned int delay = a2;
-      if ( !a2 )
-      {
-        if ( (*(_BYTE *)(*(_QWORD *)(a1 + 72) + 20LL) & 1) == 0 )
-        {
-          printk(unk_3BA3F, "syna_tcm_rezero");
-          delay = *(_DWORD *)(a1 + 524);
-        }
-        else
-        {
-          delay = 0;
-        }
-      }
-      v4 = *(__int64 (**)(__int64, unsigned char, unsigned char *, unsigned int, unsigned char *, int))(a1 + 920);
-      /* CFI check removed */
-      v5 = v4(a1, 39, 0, 0, 0, delay);
-      result = 0;
-      if ( (v5 & 0x80000000) != 0 )
-      {
-        v7 = v5;
-        printk(unk_39AB7, "syna_tcm_rezero", 39);
-        return v7;
-      }
-    }
-    else
-    {
-      printk(unk_33E1E, "syna_tcm_rezero");
-      return -241;
-    }
-  }
-  else
-  {
-    printk(unk_3365A, "syna_tcm_rezero");
-    return -241;
-  }
-  return result;
+	if (!tcm) {
+		printk("\x01" "3[error] %s: Invalid tcm device handle\n",
+		       "syna_tcm_rezero");
+		return TCM_STATUS_INVALID;
+	}
+	if (tcm->firmware_mode != TCM_MODE_APPLICATION_FIRMWARE) {
+		printk("\x01" "3[error] %s: Device is not in application fw mode, mode: %x\n",
+		       "syna_tcm_rezero", tcm->firmware_mode);
+		return TCM_STATUS_INVALID;
+	}
+
+	if (!delay_ms) {
+		if (!(tcm->transport->flags & BIT(0))) {
+			delay_ms = tcm->command_delay_ms;
+			printk("\x01" "5[info ] %s: No support of IRQ control, use polling mode instead\n",
+			       "syna_tcm_rezero");
+		} else {
+			delay_ms = 0;
+		}
+	}
+
+	result = tcm->write_message(tcm, TCM_CMD_REZERO, NULL, 0, NULL,
+				    delay_ms);
+	if (result < 0) {
+		printk("\x01" "3[error] %s: Fail to send command 0x%02x\n",
+		       "syna_tcm_rezero", TCM_CMD_REZERO);
+		return result;
+	}
+
+	return 0;
 }

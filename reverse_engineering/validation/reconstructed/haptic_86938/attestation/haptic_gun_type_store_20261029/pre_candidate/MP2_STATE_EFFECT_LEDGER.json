@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "function": "gun_type_store",
+  "state_effects": [
+    {
+      "condition": "kstrtouint succeeds",
+      "effect": "write parsed u32 to driver_data-0x2c (parent+0x7c)",
+      "protection": "mutex at driver_data+0x248 (parent+0x2f0)",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0133_0010d3ac_gun_type_store.c"
+    },
+    {
+      "condition": "parse failure",
+      "effect": "no state write and no mutex operation",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0133_0010d3ac_gun_type_store.c"
+    }
+  ],
+  "layout_note": "The device driver_data pointer is parent+0xa8, consistent with the mutex initialized at parent+0x2f0. The field is kept as an offset rather than assigned an unverified structure field."
+}

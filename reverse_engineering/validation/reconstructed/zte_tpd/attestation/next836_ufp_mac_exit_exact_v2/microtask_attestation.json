@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "140",
+  "function": "ufp_mac_exit",
+  "stock_entry": "0011109c",
+  "stock_body_bytes": 80,
+  "candidate_symbol_bytes": 80,
+  "stock_instruction_count": 20,
+  "candidate_instruction_count": 20,
+  "stock_relocation_count": 4,
+  "candidate_relocation_count": 4,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison regenerated from bundled modules",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "fbd11769d87fda516aa0033c7ee58e4d488d8a5fcc6cd011f02efd571d9b48d9",
+    "candidate_module_size": 29310992,
+    "candidate_source_sha256": "4219e73c40162dbc863a76c22b1f1edb6e02982a338d71cc8ef87b1e7b7b706d",
+    "ghidra_pseudocode_sha256": "053ac776849b997461e80c933cafcc939343b62928069b803bfdbe22be741568",
+    "ghidra_pcode_sha256": "3fb4afab1fa2c47a9fb0e084b402cab9b03d3e0662b8b6c0082b752f1d8496cc",
+    "candidate_assembly_sha256": "aacc84c095d1201996dddd3605df889b345ebddf160175e4994b47963c1bda03",
+    "stock_assembly_sha256": "b07f7c4e2e503472ed9f5a249d5fbd7d2e1c79ad4385a10263a0e3048f17935e",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0xe5c47d60"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "UFP runtime state and workqueue teardown are represented by deterministic host stubs.",
+    "Android runtime and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

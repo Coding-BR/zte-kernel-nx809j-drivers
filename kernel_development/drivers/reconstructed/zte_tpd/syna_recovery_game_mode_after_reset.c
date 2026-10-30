@@ -1,55 +1,53 @@
 int syna_recovery_game_mode_after_reset(struct syna_tcm *tcm)
 {
   int *a1 = (int *)tcm;
-  __int64 v2; // x9
-  unsigned int v3; // w19
-  int v4; // w0
-  __int64 v5; // x2
-  void *v6; // x19
-  void *v7; // x0
-  __int64 v9; // x2
-  __int64 v10; // x2
-  __int64 v11; // x2
-  __int64 v12; // x2
-  int v13; // w0
+  __int64 mode_context;
+  unsigned int delay_ms;
+  int result;
+  void *error_format;
+  void *success_format;
 
-  if ( !a1 )
+  if (!a1)
     return -22;
-  v2 = *((_QWORD *)a1 + 78);
-  if ( v2 != -168 && *(_DWORD *)(v2 + 184) && (*(_BYTE *)(v2 + 188) & 1) != 0 )
-    v3 = 0;
+
+  mode_context = *((_QWORD *)a1 + 78);
+  if (mode_context != -168 && *(_DWORD *)(mode_context + 184) &&
+      (*(_BYTE *)(mode_context + 188) & 1) != 0)
+    delay_ms = 0;
   else
-    v3 = *(_DWORD *)(*(_QWORD *)a1 + 524LL);
-  if ( a1[375] )
-  {
+    delay_ms = *(_DWORD *)(*(_QWORD *)a1 + 524LL);
+
+  if (a1[375] == 0) {
+    result = syna_dev_set_tp_report_rate(tcm, a1[382], delay_ms);
+    success_format = unk_3A258;
+    if (result < 0) {
+      error_format = unk_37D46;
+      printk(error_format, "syna_recovery_game_mode_after_reset");
+    }
+  } else {
     printk(unk_35F27, "syna_dev_set_play_game", 1);
-    if ( (syna_tcm_set_dynamic_config(*(_QWORD *)a1, 213, 3, v3) & 0x80000000) != 0 )
-      printk(unk_34708, "syna_recovery_game_mode_after_reset", v9);
-    if ( (syna_dev_set_tp_report_rate((struct syna_tcm *)a1,
-                                      a1[382], v3) & 0x80000000) != 0 )
-      printk(unk_37D46, "syna_recovery_game_mode_after_reset", v10);
-    if ( (syna_dev_set_sensibility_level((struct syna_tcm *)a1,
-                                         a1[383], v3) & 0x80000000) != 0 )
-      printk(unk_34708, "syna_recovery_game_mode_after_reset", v11);
-    if ( (syna_dev_set_follow_hand_level((struct syna_tcm *)a1,
-                                        a1[384], v3) & 0x80000000) != 0 )
-      printk(unk_34708, "syna_recovery_game_mode_after_reset", v12);
-    v13 = syna_dev_set_stability_level((struct syna_tcm *)a1, a1[385], v3);
-    v6 = unk_3BDE4;
-    if ( (v13 & 0x80000000) == 0 )
-      goto LABEL_22;
-    v7 = unk_34708;
-    goto LABEL_21;
+    result = syna_tcm_set_dynamic_config(*(_QWORD *)a1, 213, 3, delay_ms);
+    if (result < 0)
+      printk(unk_34708, "syna_recovery_game_mode_after_reset");
+
+    result = syna_dev_set_tp_report_rate(tcm, a1[382], delay_ms);
+    if (result < 0)
+      printk(unk_37D46, "syna_recovery_game_mode_after_reset");
+
+    result = syna_dev_set_sensibility_level(tcm, a1[383], delay_ms);
+    if (result < 0)
+      printk(unk_34708, "syna_recovery_game_mode_after_reset");
+
+    result = syna_dev_set_follow_hand_level(tcm, a1[384], delay_ms);
+    if (result < 0)
+      printk(unk_34708, "syna_recovery_game_mode_after_reset");
+
+    result = syna_dev_set_stability_level(tcm, a1[385], delay_ms);
+    success_format = unk_3BDE4;
+    if (result < 0)
+      printk(unk_34708, "syna_recovery_game_mode_after_reset");
   }
-  v4 = syna_dev_set_tp_report_rate((struct syna_tcm *)a1, a1[382], v3);
-  v6 = unk_3A258;
-  if ( v4 < 0 )
-  {
-    v7 = unk_37D46;
-LABEL_21:
-    printk(v7, "syna_recovery_game_mode_after_reset", v5);
-  }
-LABEL_22:
-  printk(v6, "syna_recovery_game_mode_after_reset", v5);
+
+  printk(success_format, "syna_recovery_game_mode_after_reset");
   return 0;
 }

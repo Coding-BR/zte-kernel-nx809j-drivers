@@ -1,0 +1,58 @@
+{
+  "schema_version": "host_harness_attestation_v1",
+  "mode": "offline_direct_source_tpd_goodix_ts_resume_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "<repo>/kernel_development/drivers:/drivers:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -frandom-seed=zte-tpd-next180-goodix-resume -fsanitize=address,undefined -Wl,--build-id=none /drivers/validation/zte_tpd/host/tpd_goodix_ts_resume_host_test.c -o /tmp/tpd_goodix_ts_resume_host_test && /tmp/tpd_goodix_ts_resume_host_test"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_goodix_ts_resume.c",
+      "sha256": "65db00f73af7b302eda492991063dccf971921dfb8e8d36e99cf2d87c2c057ac",
+      "size": 144
+    },
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/tpd_goodix_ts_resume_host_test.c",
+      "sha256": "50fe6b351ae3e7713a19f13ea2ec6c7612a7523875041fc7f2de513db8e76bb8",
+      "size": 1935
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS tpd_goodix_ts_resume host tests (2 cases)\n",
+      "stderr": ""
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS tpd_goodix_ts_resume host tests (2 cases)\n",
+      "stderr": ""
+    }
+  ],
+  "coverage": {
+    "forward_success_result": true,
+    "forward_error_result": true,
+    "pdev_plus_0x8_read": true,
+    "device_plus_0x10_forwarding": true,
+    "hardware_paths_exercised": false
+  },
+  "limitations": [
+    "The harness verifies pointer arithmetic and return-value forwarding only.",
+    "It does not load the module or communicate with touch, display, or power hardware."
+  ]
+}

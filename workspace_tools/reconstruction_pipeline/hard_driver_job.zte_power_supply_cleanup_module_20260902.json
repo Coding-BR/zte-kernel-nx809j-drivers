@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_power_supply",
+  "stock_sha256": "2ae6f7615c9a4fea48a84fb2595d2f52dd049c11749b7cd2a3d9037dfcd813e8",
+  "profiles": ["CALLBACK_ABI", "COMPILER_SENSITIVE"],
+  "functions": [
+    {
+      "stock_function": "cleanup_module",
+      "stock_entry": "0010343c",
+      "source_function": "zte_power_supply_exit",
+      "candidate_function": "cleanup_module",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_power_supply",
+    "stock_module": "reference_modules/stock/zte_power_supply.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_power_supply/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/next107_power_supply_attr_visible_v1/ghidra_candidate_export",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_power_supply/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_power_supply",
+    "slice": { "mode": "usages", "depth": 16, "parallelism": 2, "sink_filter": "(power_supply|device|class|work|mutex|of_|regulator)" }
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "allow_shared_data_binding_normalization": true,
+    "allow_relocated_same_name_data_normalization": true,
+    "allow_section_address_normalization": true,
+    "fallback_reason": "This module teardown is callback/lifecycle and layout sensitive; bounded Ghidra normalization is admissible only after exact Assembly/relocation, P-Code, Docker and Joern gates pass.",
+    "fallback_evidence": "Retain stock and candidate Ghidra exports, exact Assembly, KCFI evidence, Joern, Docker and host-harness evidence."
+  }
+}

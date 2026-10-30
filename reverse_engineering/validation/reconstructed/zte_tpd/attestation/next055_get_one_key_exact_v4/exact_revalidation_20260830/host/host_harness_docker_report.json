@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "get_one_key",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\get_one_key.c",
+  "source_sha256": "227262de2309d522ca4a8ea8dc8c9f7987e63c29294ae7d9a185c837bf1d1494",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\get_one_key_source_host_test.c",
+  "harness_sha256": "d54f8748e8ad7e98b93f585a15fa051946b3c4f265ee010b835cfbbd1614cbc9",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 3,
+  "driver_source_sha256": "227262de2309d522ca4a8ea8dc8c9f7987e63c29294ae7d9a185c837bf1d1494",
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS get_one_key source host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "376012df1144f7bbb7efea76a24c1714d6afb7c363cbe320166e162f700af9ac",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS get_one_key source host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "376012df1144f7bbb7efea76a24c1714d6afb7c363cbe320166e162f700af9ac",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness includes the reconstructed get_one_key.c and uses fake device memory, callback and procfs helpers.",
+    "It does not execute a real procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

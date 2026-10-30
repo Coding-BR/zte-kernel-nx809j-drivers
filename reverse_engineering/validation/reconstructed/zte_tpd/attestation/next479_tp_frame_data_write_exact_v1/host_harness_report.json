@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "function": "tp_frame_data_write",
+  "compiler": "clang-r536225",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "runs": 2,
+  "cases": [
+    "zero_value",
+    "nonzero_value_is_boolean",
+    "invalid_input",
+    "null_callback"
+  ],
+  "observed_contract": "parses decimal input, normalizes nonzero values to one, returns -EINVAL on invalid input, and optionally calls the callback at tpd_cdev + 0xff8",
+  "result": "PASS",
+  "binary_sha256": "584272a6beeece7a0975c34cbf98f6bb33751253079433020a8e11d1cf02f036",
+  "hardware_validation": "DEFERRED"
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T21:11:00Z",
+  "driver": "zte_tpd",
+  "microtask": "008_get_tp_algo_item_id",
+  "function": "get_tp_algo_item_id",
+  "stock_entry": "00107984",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": { "path": "kernel_development/drivers/reconstructed/zte_tpd/get_tp_algo_item_id.c", "sha256": "f82f5049880f16e82fa37962263bfa1cefff8360ecf9d8d6f949cf1dcca03ff6" },
+  "stock_module": { "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342" },
+  "candidate_module": { "sha256": "c27e646c0deef520806e66a82100cd9397870bec5619bf90655b03f6477edaf4", "size": 24701176 },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_topology_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 356,
+    "candidate_symbol_bytes": 356,
+    "stock_instructions": 89,
+    "candidate_instructions": 89,
+    "stock_direct_calls": 15,
+    "candidate_direct_calls": 15,
+    "stock_cfg_blocks": 10,
+    "candidate_cfg_blocks": 10,
+    "stock_cfg_edges": 16,
+    "candidate_cfg_edges": 16,
+    "cfg_block_signature_ratio": 0.9
+  },
+  "kcfi": { "function_type_id": "0x7bff871d", "pointer_cast_bypass_used": false },
+  "host_harness": { "cases": 8, "cycles": 2, "sanitizers": ["address", "undefined"], "direct_source_functions": ["get_tp_algo_item_id", "set_gpio_mode", "change_tp_state"] },
+  "evidence": [
+    { "role": "canonical_build", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next124_get_tp_algo_item_id_revalidated_v1/build_report.json", "sha256": "5dc65c6e51262036ae729cf980a1a1f3e8b7be21f53bf7c451694f4a42ad50eb" },
+    { "role": "host_harness_asan_ubsan", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next124_get_tp_algo_item_id_revalidated_v1/host_harness_report.json", "sha256": "7e871206a85d1ad77bd62c003bffa6c81265958b3ce83ad4e6d892879aa950ad" },
+    { "role": "joern_strict", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next124_get_tp_algo_item_id_revalidated_v1/joern_gate_summary.json", "sha256": "4aa42abcba33e0724d4aa8ce877ff1b94b33a15f5b6141c75de28ba90ce2336a" },
+    { "role": "assembly_strict", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next124_get_tp_algo_item_id_revalidated_v1/assembly_comparison.json", "sha256": "1edf14709e8b3581423979c5b7e1055cbf130691f443edf226d33b80d4d6c6cf" },
+    { "role": "kcfi", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next124_get_tp_algo_item_id_revalidated_v1/kcfi_comparison.json", "sha256": "ca9dbe16db42140dff7d6d54b29c583712b29fdc7fd6ba917c3629541cb26887" },
+    { "role": "cfg", "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next124_get_tp_algo_item_id_revalidated_v1/cfg_comparison.json", "sha256": "cc07129695c93372e19919106a9b8d7686bab9b648ad2038588ded0bb3bc4541" }
+  ],
+  "limitations": [
+    "This attestation covers only get_tp_algo_item_id; the shared host harness also exercises set_gpio_mode and change_tp_state.",
+    "The CFG segmenter reports one textual block-signature delta while raw opcodes, topology, call order, relocations and symbol size match.",
+    "No ADB, fastboot, module load, SPI, IRQ, MMIO or touch-controller hardware operation was performed."
+  ]
+}

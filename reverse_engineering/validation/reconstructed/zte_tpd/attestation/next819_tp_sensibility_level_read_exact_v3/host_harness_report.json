@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "function": "tp_sensibility_level_read",
+  "status": "PASS",
+  "environment": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "clang": "clang-r536225",
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "runs": 2,
+    "extra_flags": [
+      "-Wno-unused-but-set-variable"
+    ]
+  },
+  "cases": [
+    "full_read_and_callback",
+    "nonzero_cursor_is_eof",
+    "truncated_read",
+    "callback_absent_and_zero_count"
+  ],
+  "binary_sha256": "bae8ac7575b1422c93282b29e3ca2d5d1100990d1c30dbc0dc7c919d9f3110f4",
+  "source_sha256": "6cf4d25e19ea5f17b63a8ca1a4884c11245a318261018df7cf4871236b3e9f66",
+  "observed_output": "PASS tp_sensibility_level_read: 4 cases",
+  "known_decompiled_warnings": [
+    "v14 set but unused",
+    "v15 set but unused"
+  ],
+  "hardware_validation": "DEFERRED"
+}

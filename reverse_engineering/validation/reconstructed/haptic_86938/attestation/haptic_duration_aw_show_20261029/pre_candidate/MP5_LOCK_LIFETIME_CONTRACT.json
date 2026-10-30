@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_aw_show",
+  "locks_acquired": [],
+  "locks_released": [],
+  "lifetime_contract": "The device driver_data and embedded hrtimer must remain valid while the sysfs callback reads timer state.",
+  "teardown_evidence": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0141_0010dac4_activate_aw_store.c",
+    "observation": "activate_store can cancel the timer at driver_data+0x288. This callback adds no lock or lifetime management; concurrent timer state changes remain governed by stock hrtimer APIs."
+  },
+  "decision": "No synchronization or lifetime behavior added."
+}

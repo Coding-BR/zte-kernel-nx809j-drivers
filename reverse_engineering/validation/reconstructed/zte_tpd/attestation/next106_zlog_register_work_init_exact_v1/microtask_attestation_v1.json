@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T16:32:00Z",
+  "driver": "zte_tpd",
+  "microtask": "004_zlog_register_work_init",
+  "function": "zlog_register_work_init",
+  "stock_entry": "001077c8",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zlog_register_work_init.c",
+    "sha256": "2f2d4394eb52a7dd885ce9017804f5708b054a5ad9fe786c97b1878d8cde925a"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "5a88fc11f23f9271b316a5b76ded0da13d498153a7d0988b4493149764c89ea0",
+    "size": 24696424
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "kcfi_delayed_work_callback_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 120,
+    "candidate_symbol_bytes": 120,
+    "stock_instructions": 30,
+    "candidate_instructions": 30,
+    "stock_relocations": 12,
+    "candidate_relocations": 12,
+    "stock_cfg_blocks": 1,
+    "candidate_cfg_blocks": 1,
+    "stock_direct_calls": 2,
+    "candidate_direct_calls": 2
+  },
+  "kcfi": {
+    "function_type_id": "0xe5c47d60",
+    "delayed_work_callback_type_id": "0xa607748c",
+    "delayed_work_callback_body_strict_match_claimed": false,
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "41d05a7f3c82acaabbac1754bbd52460ec27ea589d52cd38da2dc2d83afdc733"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_zlog_register_work_init_exact_v1/build_report.json",
+      "sha256": "8b53266f013815dcf38b9a486a7d2cbd7f00fb01d57d105d6f9a230fa99a001e"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_zlog_register_work_init_exact_v1/host_harness_report.json",
+      "sha256": "0974438b4541d78ce3ecf450e282b9174f9377f883ee6f8be602f206e34c754f"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_zlog_register_work_init_exact_v1/joern_gate_summary.json",
+      "sha256": "45db38dc681680f12ef3e1802e7720b934f10ebc1c334c8cee4e866585539ba3"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_zlog_register_work_init_exact_v1/assembly_comparison.json",
+      "sha256": "42b11e315daa809a22bb92f636d9c76a840918b858570ac6e46c8f87b1fbd7e2"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_zlog_register_work_init_exact_v1/kcfi_comparison.json",
+      "sha256": "048c8ddffd61c657ffc2c88041fab4f62ba5bbcc3382133e14258eaf64d59bf0"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next106_zlog_register_work_init_exact_v1/cfg_comparison.json",
+      "sha256": "66a915469e6eb863546fcbfe41a3c17fc210bd5feccf31822e335d08cd2d526f"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only zlog_register_work_init and the KCFI type of its delayed-work callback.",
+    "The callback body zlog_register_work is a separate microtask and is not promoted by this evidence.",
+    "No ADB, fastboot, module load, scheduler timing, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "The blocked syna_cdev_ioctl_raw_read and syna_cdev_ioctl_raw_write candidates are not part of this build or commit."
+  ]
+}

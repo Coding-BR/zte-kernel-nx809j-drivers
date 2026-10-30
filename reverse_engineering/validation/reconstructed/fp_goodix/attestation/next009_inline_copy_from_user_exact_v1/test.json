@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "_inline_copy_from_user",
+  "stock_function": "_inline_copy_from_user",
+  "stock_entry": "001013e8",
+  "source_file": "fp_goodix_inline_exact.S",
+  "source_function": "_inline_copy_from_user",
+  "source_sha256": "dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625",
+  "test_source": "kernel_development/drivers/reconstructed/fp_goodix/tests/host_test.c",
+  "test_source_sha256": "b35be14d110231a165a9f62934912663a6e6f0e62d1f42328e40abb84891807a",
+  "host_report": "kernel_development/drivers/validation/fp_goodix/host_test_report.json",
+  "host_report_sha256": "84e5b653049ffbf033011ab7faf47d2c1eb6c620f0e91434149b0cc8337f79c4",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain": "clang-r536225",
+  "cycles": 2,
+  "covered_functions": ["_inline_copy_from_user"],
+  "cases": [
+    "test_full_lifecycle/ioctl_copy_inputs",
+    "copy-from-user ioctl branch is exercised with the host kernel stubs",
+    "caller-level handling of the returned residual count is covered by the full lifecycle harness"
+  ],
+  "passed": true,
+  "reproducible": true,
+  "status": "PASS",
+  "limitations": [
+    "The host harness validates the caller branch with kernel stubs; it does not execute the AArch64 assembly island or load the module on NX809J.",
+    "The exact helper body is validated by stock-versus-candidate AArch64 instruction and relocation comparison; full semantic and hardware equivalence remain unproven."
+  ]
+}

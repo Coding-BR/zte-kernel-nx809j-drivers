@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "function_id": "audio_off@0010d148",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "inferred_prototype": "void audio_off(struct aw_haptic *haptic)",
+  "confidence": "HIGH_FOR_ABI; aw_haptic layout remains offset-based",
+  "evidence": {
+    "entry": "Stock assembly consumes x0 and returns without a value; no valid KCFI entry preamble is present.",
+    "caller": "haptic_audio_store@0010cd9c calls audio_off@0010d148 synchronously at 0010cffc.",
+    "callback_0x88": "KCFI type 0x1d0adf6e; inferred void(struct aw_haptic *, u8) from matching stock callback types and argument registers.",
+    "callback_0x38": "KCFI type 0x847a0830; stock type is void(struct aw_haptic *).",
+    "list": "Reverse-safe list walk from aw_haptic+0x590; list node begins 8 bytes before struct list_head."
+  },
+  "direct_calls": [
+    {"target": "_printk", "site": "0010d17c", "prototype": "int(const char *, ...)"},
+    {"target": "mutex_lock", "site": "0010d184", "prototype": "void(struct mutex *)", "object": "haptic+0x2f0"},
+    {"target": "kfree", "site": "0010d228", "prototype": "void(const void *)", "argument": "list node - 8"},
+    {"target": "__list_del_entry_valid_or_report", "site": "0010d240", "prototype": "bool(const struct list_head *)", "condition": "list adjacency invalid"},
+    {"target": "mutex_unlock", "site": "0010d24c", "prototype": "void(struct mutex *)", "object": "haptic+0x2f0"}
+  ],
+  "indirect_calls": [
+    {"operations_offset": "0x88", "type_id": "0x1d0adf6e", "arguments": ["haptic", "0x80"]},
+    {"operations_offset": "0x38", "type_id": "0x847a0830", "arguments": ["haptic"]}
+  ],
+  "kcfi": {
+    "entry_preamble_required": false,
+    "indirect_callsite_checks_required": true,
+    "type_ids": ["0x1d0adf6e", "0x847a0830"]
+  }
+}

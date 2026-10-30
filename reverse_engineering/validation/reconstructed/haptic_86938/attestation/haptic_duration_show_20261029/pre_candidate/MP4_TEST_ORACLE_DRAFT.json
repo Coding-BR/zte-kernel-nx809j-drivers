@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "duration_show",
+  "cases": [
+    {
+      "name": "inactive_timer",
+      "assert": [
+        "remaining value passed to snprintf is 0",
+        "output format is duration = 0ms\\n"
+      ]
+    },
+    {
+      "name": "active_timer",
+      "assert": [
+        "remaining signed nanoseconds are divided by 1000000",
+        "formatted number uses %lld"
+      ]
+    },
+    {
+      "name": "format_bound",
+      "assert": [
+        "snprintf receives a 4096-byte maximum"
+      ]
+    },
+    {
+      "name": "return_value",
+      "assert": [
+        "returns snprintf result as ssize_t"
+      ]
+    }
+  ],
+  "note": "Static core protocol is the acceptance gate; this oracle is not executed."
+}

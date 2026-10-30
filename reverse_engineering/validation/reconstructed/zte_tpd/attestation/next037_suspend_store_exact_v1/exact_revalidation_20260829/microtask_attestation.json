@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "037_suspend_store",
+  "stock_function": "suspend_store",
+  "stock_entry": "0010a2ac",
+  "stock_body_bytes": 276,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "4fc41fd624044d5b6f6230fe1ceb8d5bf2f3116d2d5ae259051a134c4eda7680",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 69,
+    "instruction_count_candidate": 69,
+    "symbol_size_stock": 276,
+    "symbol_size_candidate": 276,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xc3d43b4d",
+    "candidate_type_id": "0xc3d43b4d",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "compatibility_defines": ["__user", "__init", "__exit", "__nocfi"],
+    "excluded_paths": ["validation", "build"],
+    "review_findings": [
+      {"category": "synchronization", "severity": "high", "count": 2}
+    ],
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 4,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "parse_failure_has_no_side_effects",
+      "same_state_does_not_call_callback",
+      "state_transition_uses_correct_callback",
+      "transition_without_callback_updates_state"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "8fd237717b856c8f5027308a6ec135b223ca53cf6faa444da54150a8eb1e2545",
+    "aarch64_comparison.json": "ce6793790a0f8e5e9611d6815f1971b2fe44711f57f26f206a5ce45ba5186cff",
+    "kcfi/comparison.json": "04be49d26611cf5e0c676b68bf22364b2bd5a3b31024441fe9e6243c443a0ec3",
+    "joern/joern_gate_report.json": "c7fddbb2641c467ce6527f0bc20f025663c0c7b8a7e55e54907e883d2daea1d1",
+    "host_harness_report.json": "20645396cc631fb675bec09f82f54fc3499649fa2e6a9ad1cc460c1f4a7eb027",
+    "candidate_source.c": "4fc41fd624044d5b6f6230fe1ceb8d5bf2f3116d2d5ae259051a134c4eda7680",
+    "ghidra/decompiled.c": "309f01b14f4bb23388603b9ce1418370f651987c76c227218008666dbdb21063",
+    "ghidra/pcode.jsonl": "6cea49e029acde46568a1be83c1a190771819c57756c2b60686964e205a11fe0",
+    "host/suspend_store_host_test.c": "201dcb601f965b77446bc73d4328b717a23fd353f6abb98a01d7c95b278398e3",
+    "pipeline/runner.py": "6ce37d1e4520165b90580a508e790300da25edc2d392acf3c06e974c2355776c",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host harness uses fake memory and stubs user parsing, mutex, printk and the callback; the AArch64 inline KCFI check is covered by the assembly gate.",
+    "No physical NX809J, procfs runtime, Android service, SPI, IRQ, MMIO or concurrent production path is exercised.",
+    "Joern synchronization findings remain open for concurrency and security review."
+  ]
+}

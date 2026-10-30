@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "function_id": "audio_off@0010d148",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "paths": [
+    {"condition": "empty list", "effects": "invoke mode callback, invoke stop callback, unlock", "return": "void"},
+    {"condition": "valid list node", "effects": "save previous node, unlink, poison links, free node, continue reverse walk", "return": "void"},
+    {"condition": "invalid list adjacency", "effects": "call __list_del_entry_valid_or_report, poison current links, free current node, continue using previously saved pointer", "return": "void"}
+  ],
+  "early_returns": [],
+  "error_results": "No explicit error propagation; callback functions return void.",
+  "bounds_and_known_defect": {
+    "iteration": "Terminates when the saved reverse cursor reaches the list head.",
+    "integrity_behavior": "Stock deliberately continues poison/free after the list validation helper reports invalid adjacency.",
+    "policy": "Preserve the stock path and record the memory-safety implications; do not silently add a new guard."
+  },
+  "branch_evidence": "AArch64 stock assembly .text+0xa328..0xa440 and repaired Ghidra P-Code."
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_erase_mtp_data",
+  "stock_entry": "001281c8",
+  "stock_assembly": "0312_syna_tcm_erase_mtp_data_001281c8.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_erase_mtp_data_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34.",
+    "The candidate preserves delay-mode selection, flash-access setup and bootloader-version gating.",
+    "The candidate preserves the two-byte versus four-byte erase-count encoding and sends command 0x11.",
+    "The candidate preserves transport-delay fallback, firmware-mode cleanup and the setup-allocation cleanup order.",
+    "The candidate propagates setup and transport errors while preserving the stock success result."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "synchronization",
+      "finding": "mutex_init on the stack-backed flash-access context requires independent kernel review against the canonical TCM locking contract."
+    },
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kfree of the setup allocation requires canonical ownership and teardown review."
+    }
+  ],
+  "promotion_allowed": false
+}

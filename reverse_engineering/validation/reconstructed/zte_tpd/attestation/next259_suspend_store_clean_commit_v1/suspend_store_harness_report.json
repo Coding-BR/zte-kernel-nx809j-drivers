@@ -1,0 +1,150 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "suspend_store"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "739ec06e24377cb951a955fb8c375509a18a311efbce817595638567fc3b53ec",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_materialized_v2\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_v2\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-but-set-variable",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-suspend-store",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/suspend_store_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_v2\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS suspend_store host tests (3 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "739ec06e24377cb951a955fb8c375509a18a311efbce817595638567fc3b53ec",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_materialized_v2\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_v2\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-unused-but-set-variable",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-suspend-store",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/suspend_store_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_v2\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS suspend_store host tests (3 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "expected_cases": 3,
+  "generated_utc": "2026-08-12T01:15:00.908672+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_materialized_v2\\kernel_development\\drivers\\validation\\zte_tpd\\host\\suspend_store_host_test.c",
+      "sha256": "2497f8e00867953691caa43691a4ced830ec314e089116d897480376cd476253",
+      "size": 5172
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260812_next259_suspend_store_clean_commit_tree\\harness_materialized_v2\\kernel_development\\drivers\\reconstructed\\zte_tpd\\suspend_store.c",
+      "sha256": "eadfac9f5b26477b464679d1ffb2feae3e01062eac15a0695171eac89558dc1f",
+      "size": 1680
+    }
+  ],
+  "limitations": [
+    "The harness models only user parsing, the local device overlay, mutex calls and the indirect callback.",
+    "The host callback intentionally exposes the unresolved stock KCFI mismatch and keeps the host break stub non-fatal so callback semantics can be observed.",
+    "The stock fatal BRK semantics and AArch64 KCFI type ID require the separate KCFI/Assembly gates.",
+    "Assembly, KCFI, Ghidra, Joern, and the whole-module build are separate gates."
+  ],
+  "mode": "offline_direct_source_suspend_store_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "suspend_store",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

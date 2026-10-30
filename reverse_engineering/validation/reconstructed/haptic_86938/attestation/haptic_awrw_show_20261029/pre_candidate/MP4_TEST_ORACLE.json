@@ -1,0 +1,35 @@
+{
+  "promotion": "NOT_AUTHORIZED",
+  "harness": "host-only, never device; target-kernel snprintf size guard modeled explicitly; guarded differential runs plus ASan underwrite reproduction",
+  "cases": [
+    {
+      "id": "mode_invalid",
+      "expect": "-34 (Linux -ERANGE) and printk line 0xc50"
+    },
+    {
+      "id": "null_buffer",
+      "expect": "-34 (Linux -ERANGE) and printk line 0xc54"
+    },
+    {
+      "id": "two_bytes",
+      "expected_return": 11,
+      "source": [
+        0,
+        127
+      ],
+      "expected_visible": "0x00,0x7f"
+    },
+    {
+      "id": "zero_count",
+      "expect": "conditional state only: buf[-1]=newline, buf[0]=NUL; stock awrw_store rejects zero count; use guard allocation for host probe"
+    },
+    {
+      "id": "count_819",
+      "expect": "return 4096; final size=1 writes NUL at buf[4094], existing NUL remains at buf[4095]"
+    },
+    {
+      "id": "count_820",
+      "expect": "return 4100; final size wraps above INT_MAX, target kernel vsnprintf returns 0 before dereferencing buf+4099; sysfs clamps visible result to 4095; no out-of-page memory write"
+    }
+  ]
+}

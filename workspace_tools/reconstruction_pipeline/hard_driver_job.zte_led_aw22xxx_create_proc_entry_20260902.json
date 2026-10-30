@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["HARDWARE_BUS", "STATEFUL_MEMORY", "COMPILER_SENSITIVE"],
+  "functions": [{
+    "stock_function": "aw22xxx_create_proc_entry",
+    "stock_entry": "00102ec4",
+    "source_function": "aw22xxx_create_proc_entry",
+    "candidate_function": "aw22xxx_create_proc_entry",
+    "kcfi_required": false,
+    "assembly_only": false
+  }],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "C:/Users/adria/Desktop/drivers/ghidra_nav_repair_20260902/zte_led_create_proc_entry_candidate_ghidra_20260902_v3/export/zte_led.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 1,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "kcfi": {},
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "fallback_reason": "The function is a small procfs registration helper; normalized Ghidra C, P-Code, exact Assembly/relocation parity and Docker reproducibility remain strict.",
+    "fallback_evidence": "No semantic fallback is authorized unless a fresh candidate export proves a named Ghidra rendering artifact while all binary and source gates remain exact."
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_led",
+    "define": [],
+    "slice": {"mode": "usages", "min_num_calls": 1, "parallelism": 1}
+  }
+}

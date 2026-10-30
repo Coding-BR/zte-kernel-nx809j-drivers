@@ -8,6 +8,8 @@
 
 #ifdef ZTE_LED_HOST_TEST
 #include "tests/host_stubs.h"
+#define __maybe_unused __attribute__((unused))
+#define aw22xxx_fw_loaded aw22xxx_fw_loaded_c
 #define AW22XXX_OPT_BARRIER(tag) do { (void)sizeof(tag); } while (0)
 #else
 #include <linux/module.h>
@@ -115,7 +117,11 @@ extern void *zlog_register_client(struct zlog_module_info *module_info);
 extern void zlog_client_record(void *client, const char *format, ...);
 extern void zlog_client_notify(void *client, u32 event);
 
+#ifdef ZTE_LED_I2C_PROBE_EXACT_ISLAND
+struct zlog_module_info zlog_aw22xxx_dev = {
+#else
 static struct zlog_module_info zlog_aw22xxx_dev = {
+#endif
 	.module_id = 25,
 	.name = "aw22xxx_led",
 	.device = "Unknown",
@@ -124,33 +130,93 @@ static struct zlog_module_info zlog_aw22xxx_dev = {
 };
 
 /* Globals matching ROM binary */
-static char aw22xxx_fw_name[64] = "aw22xxx_fw.bin";
+#ifdef ZTE_LED_HOST_TEST
+char aw22xxx_fw_name[64];
+#else
+extern char aw22xxx_fw_name[64];
+#endif
+#if defined(ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_GET_FWNAME_EXACT_ISLAND)
+char aw22xxx_dyn_name[64];
+#else
 static char aw22xxx_dyn_name[64];
+#endif
 u32 multicolor_led;
-static u32 g_ver_var = 11;
+#ifdef ZTE_LED_HOST_TEST
+u32 g_ver_var = 11;
+#else
+extern u32 g_ver_var;
+#endif
 static u32 g_custom_en = 0;
+#ifdef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
+extern u32 g_cfgarray_count;
+#else
 static u32 g_cfgarray_count = 4500;
+#endif
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+u8 init_flag = 0;
+#else
 static u8 init_flag = 0;
+#endif
+#if defined(ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
+extern u8 g_init_flg;
+#else
 static u8 g_init_flg = 0;
+#endif
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+u8 g_cfg_cur_state = 0;
+#else
 static u8 g_cfg_cur_state = 0;
-static union {
+#endif
+union aw22xxx_chip_id {
 	u64 id;
 	char text[32];
-} g_chip_id;
+};
+#ifdef ZTE_LED_GET_AW22XXX_ID_EXACT_ISLAND
+extern union aw22xxx_chip_id g_chip_id;
+#else
+static union aw22xxx_chip_id g_chip_id;
+#endif
+#if defined(ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND)
+extern u32 lamp_effect;
+extern u32 fan_effect;
+#else
 static u32 lamp_effect;
 static u32 fan_effect;
+#endif
 
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+extern int write_idx;
+extern int read_idx;
+extern int user_para_data[25000];
+#else
 static int write_idx = 0;
 static int read_idx = 0;
 static int user_para_data[25000];
+#endif
+#ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+extern u8 duration;
+#else
 static u8 duration = 0;
+#endif
 static struct task_struct *cfg_update_kthread = NULL;
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+extern int kthread_status;
+#else
 static int kthread_status = 0;
+#endif
+#if defined(ZTE_LED_IMAX_EXACT_ISLAND) || defined(ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND) || defined(ZTE_LED_GET_FWNAME_EXACT_ISLAND)
+extern char **aw22xxx_cfg_name;
+#else
 static char **aw22xxx_cfg_name = NULL;
+#endif
 
+#if defined(ZTE_LED_IMAX_STORE_EXACT_ISLAND) || defined(ZTE_LED_LED_INIT_EXACT_ISLAND)
+extern const u8 aw22xxx_imax_code[13];
+#else
 static const u8 aw22xxx_imax_code[13] = {
 	0x08, 0x00, 0x09, 0x01, 0x02, 0x0b, 0x03, 0x0c, 0x04, 0x0e, 0x05, 0x06, 0x07
 };
+#endif
 
 static const char * const aw22xxx_imax_name[] = {
 	"AW22XXX_IMAX_2mA", "AW22XXX_IMAX_3mA", "AW22XXX_IMAX_4mA",
@@ -160,6 +226,9 @@ static const char * const aw22xxx_imax_name[] = {
 	"AW22XXX_IMAX_75mA"
 };
 
+#ifdef ZTE_LED_REG_SHOW_EXACT_ISLAND
+extern const u8 aw22xxx_reg_access[256];
+#else
 static const u8 aw22xxx_reg_access[256] = {
 	[0x00] = 0x01, [0x01] = 0x03, [0x02] = 0x03, [0x03] = 0x03, [0x04] = 0x03, [0x05] = 0x03, [0x06] = 0x03, [0x07] = 0x01,
 	[0x08] = 0x03, [0x09] = 0x03, [0x0A] = 0x03, [0x0B] = 0x03, [0x0C] = 0x03, [0x0D] = 0x03, [0x0E] = 0x01, [0x0F] = 0x03,
@@ -169,7 +238,11 @@ static const u8 aw22xxx_reg_access[256] = {
 	[0x38] = 0x03, [0x39] = 0x03,
 	[0xFF] = 0x03
 };
+#endif
 
+#ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+extern u8 aw22xxx_blink_cfg[148];
+#else
 static u8 aw22xxx_blink_cfg[] = {
 	0xFF, 0x00, 0x0C, 0x00, 0x05, 0x00, 0x06, 0xFF, 0x04, 0x07, 0x05, 0x00,
 	0x06, 0x00, 0x04, 0x07, 0x05, 0x00, 0x06, 0x00, 0x04, 0x07, 0x05, 0x00,
@@ -185,24 +258,152 @@ static u8 aw22xxx_blink_cfg[] = {
 	0x06, 0xFF, 0x04, 0x07, 0x05, 0x00, 0x06, 0xFF, 0x04, 0x07, 0x05, 0x00,
 	0x06, 0xFF, 0x04, 0x07, 0x05, 0x00, 0x06, 0xFF, 0x04, 0x07
 };
+#endif
 
 /* Prototypes */
-static int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
-static int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
-static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
-static int aw22xxx_led_init(struct aw22xxx *aw22xxx);
+#ifdef ZTE_LED_I2C_WRITE_EXACT_ISLAND
+extern int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
+#else
+int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val);
+#endif
+#ifdef ZTE_LED_I2C_READ_EXACT_ISLAND
+extern int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
+#else
+int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val);
+#endif
+#ifdef ZTE_LED_I2C_PROBE_EXACT_ISLAND
+extern int aw22xxx_i2c_probe(struct i2c_client *client);
+#endif
+#ifdef ZTE_LED_I2C_REMOVE_EXACT_ISLAND
+extern void aw22xxx_i2c_remove(struct i2c_client *client);
+#endif
+int aw22xxx_hw_reset(struct aw22xxx *aw22xxx);
+int aw22xxx_led_init(struct aw22xxx *aw22xxx);
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
+#else
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx);
+#endif
+#ifdef ZTE_LED_CFG_LOADED_EXACT_ISLAND
+void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
+#else
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
-static void aw22xxx_fw_loaded(const struct firmware *fw, void *context);
+#endif
+static void aw22xxx_fw_loaded_c(const struct firmware *fw, void *context);
+extern void aw22xxx_fw_loaded(const struct firmware *fw, void *context);
+#ifdef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
+extern ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2);
+#endif
+#ifdef ZTE_LED_PLAY_EXACT_ISLAND
+extern int aw22xxx_play(void *data);
+#endif
+#ifdef ZTE_LED_REG_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_reg_show(struct device *dev,
+				struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_REG_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_reg_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count);
+#endif
+#ifdef ZTE_LED_HWEN_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_hwen_show(struct device *dev,
+				 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_HWEN_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_hwen_store(struct device *dev,
+				  struct device_attribute *attr, const char *buf,
+				  size_t count);
+#endif
+#ifdef ZTE_LED_IMAX_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_imax_show(struct device *dev,
+				 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_IMAX_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_imax_store(struct device *dev,
+				  struct device_attribute *attr, const char *buf,
+				  size_t count);
+#endif
+#ifdef ZTE_LED_RGB_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_rgb_show(struct device *dev,
+				 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_RGB_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_rgb_store(struct device *dev,
+				  struct device_attribute *attr, const char *buf,
+				  size_t count);
+#endif
+#ifdef ZTE_LED_TASK0_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_task0_show(struct device *dev,
+				   struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_TASK0_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_task0_store(struct device *dev,
+				    struct device_attribute *attr, const char *buf,
+				    size_t count);
+#endif
+#ifdef ZTE_LED_TASK1_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_task1_show(struct device *dev,
+				   struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_TASK1_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_task1_store(struct device *dev,
+				    struct device_attribute *attr, const char *buf,
+				    size_t count);
+#endif
+#ifdef ZTE_LED_TASK_IRQ_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_task_irq_show(struct device *dev,
+					 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_TASK_IRQ_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_task_irq_store(struct device *dev,
+					 struct device_attribute *attr, const char *buf,
+					 size_t count);
+#endif
+#ifdef ZTE_LED_PARA_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_para_show(struct device *dev,
+					 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_PARA_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_para_store(struct device *dev,
+					 struct device_attribute *attr, const char *buf,
+					 size_t count);
+#endif
+#ifdef ZTE_LED_MULTI_BREATH_PATTERN_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_multi_breath_pattern_show(struct device *dev,
+						 struct device_attribute *attr, char *buf);
+#endif
+#ifdef ZTE_LED_MULTI_BREATH_PATTERN_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_multi_breath_pattern_store(struct device *dev,
+						 struct device_attribute *attr, const char *buf,
+						 size_t count);
+#endif
+#ifdef ZTE_LED_FW_TIMER_FUNC_EXACT_ISLAND
+extern enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer);
+#endif
+#ifdef ZTE_LED_FW_WORK_ROUTINE_EXACT_ISLAND
+extern void aw22xxx_fw_work_routine(struct work_struct *work);
+#endif
+#ifdef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
+extern void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
+#endif
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
+int aw22xxx_set_cfg_run_state(u32 effect);
+#else
 static int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
 static int aw22xxx_set_cfg_run_state(u32 effect);
+#endif
+#ifndef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 static void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx);
+#endif
 
 /* ======================================================================
  * I2C and Hardware Operations
  * ====================================================================== */
 
-static noinline int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val)
+#ifndef ZTE_LED_I2C_WRITE_EXACT_ISLAND
+noinline int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val)
 {
 	struct i2c_client *client = aw22xxx->i2c;
 	u8 buf[2] = { reg, val };
@@ -224,8 +425,10 @@ static noinline int aw22xxx_i2c_write(struct aw22xxx *aw22xxx, u8 reg, u8 val)
 	}
 	return ret;
 }
+#endif
 
-static noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
+#ifndef ZTE_LED_I2C_READ_EXACT_ISLAND
+noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 {
 	struct i2c_client *client = aw22xxx->i2c;
 	int ret;
@@ -248,8 +451,10 @@ static noinline int aw22xxx_i2c_read(struct aw22xxx *aw22xxx, u8 reg, u8 *val)
 	}
 	return ret;
 }
+#endif
 
-static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
+#ifndef ZTE_LED_HW_RESET_EXACT_ISLAND
+int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 {
 	struct gpio_desc *desc;
 	pr_info("aw22xxx: %s\n", __func__);
@@ -266,8 +471,10 @@ static int aw22xxx_hw_reset(struct aw22xxx *aw22xxx)
 	usleep_range(1000, 1500);
 	return 0;
 }
+#endif
 
-static noinline int aw22xxx_read_chipid(struct aw22xxx *aw22xxx)
+#ifndef ZTE_LED_READ_CHIPID_EXACT_ISLAND
+__used noinline int aw22xxx_read_chipid(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
 	int ret;
@@ -314,17 +521,22 @@ err:
 	dev_err(aw22xxx->dev, "aw22xxx: failed to read AW22XXX_REG_ID: %d\n", ret);
 	return -EIO;
 }
+#endif
 
+#ifndef ZTE_LED_IMAX_EXACT_ISLAND
 static noinline __used int aw22xxx_led_imax_cfg(struct aw22xxx *aw22xxx)
 {
 	aw22xxx_i2c_write(aw22xxx, 255, 0);
 	aw22xxx_i2c_write(aw22xxx, 11, 7);
 	aw22xxx->imax = 7;
-	pr_info("aw22xxx: %s imax=7\n", __func__);
+	pr_info("%s: nubia set %s imax_level=%d.\n", __func__,
+		aw22xxx_cfg_name[aw22xxx->effect], 7);
 	return 0;
 }
+#endif
 
-static noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
+#ifndef ZTE_LED_INTERRUPT_SETUP_EXACT_ISLAND
+__used noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
 
@@ -337,8 +549,10 @@ static noinline int aw22xxx_interrupt_setup(struct aw22xxx *aw22xxx)
 	aw22xxx_i2c_read(aw22xxx, 9, &val);
 	return aw22xxx_i2c_write(aw22xxx, 9, val | 0x10);
 }
+#endif
 
-static noinline irqreturn_t aw22xxx_irq(int irq, void *data)
+#ifndef ZTE_LED_IRQ_EXACT_ISLAND
+__used noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 {
 	struct aw22xxx *aw22xxx = data;
 	u8 status = 0;
@@ -357,8 +571,10 @@ static noinline irqreturn_t aw22xxx_irq(int irq, void *data)
 	pr_info("aw22xxx: %s exit\n", __func__);
 	return IRQ_HANDLED;
 }
+#endif
 
-static noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
+#ifndef ZTE_LED_IRQ_V15_EXACT_ISLAND
+__used noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
 {
 	struct aw22xxx *aw22xxx = data;
 	u8 status = 0;
@@ -393,8 +609,14 @@ static noinline irqreturn_t aw22xxx_irq_v15(int irq, void *data)
 	}
 	return IRQ_HANDLED;
 }
+#endif
 
-static int aw22xxx_led_init(struct aw22xxx *aw22xxx)
+#ifdef ZTE_LED_LED_INIT_EXACT_ISLAND
+extern int aw22xxx_led_init(struct aw22xxx *aw22xxx);
+#endif
+
+#ifndef ZTE_LED_LED_INIT_EXACT_ISLAND
+int aw22xxx_led_init(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
 	u8 imax_val;
@@ -428,7 +650,9 @@ static int aw22xxx_led_init(struct aw22xxx *aw22xxx)
 
 	return 0;
 }
+#endif
 
+#ifndef ZTE_LED_PLAY_EXACT_ISLAND
 static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)
 {
 	u8 val = 0;
@@ -452,12 +676,20 @@ static int aw22xxx_init_cfg_update_array(struct aw22xxx *aw22xxx)
 
 	return 0;
 }
+#endif
 
 /* ======================================================================
  * Firmware Loading & Configuration
  * ====================================================================== */
 
-static noinline int aw22xxx_get_fwname(u32 index)
+#ifdef ZTE_LED_GET_FWNAME_EXACT_ISLAND
+extern int aw22xxx_get_fwname(u32 index);
+#else
+#if defined(ZTE_LED_EFFECT_STORE_EXACT_ISLAND)
+noinline int aw22xxx_get_fwname(u32 index)
+#else
+static __used noinline int aw22xxx_get_fwname(u32 index)
+#endif
 {
 	u8 mode = (index >> 24) & 0xFF;
 	u32 v3 = (index >> 12) & 0xFFF;
@@ -493,7 +725,11 @@ invalid:
 	pr_err("aw22xxx: %s invalid firmware selector\n", __func__);
 	return -EINVAL;
 }
+#endif
 
+#ifdef ZTE_LED_CFG_LOADED_EXACT_ISLAND
+extern void aw22xxx_cfg_loaded(const struct firmware *fw, void *context);
+#else
 static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
 {
 	struct aw22xxx *aw22xxx = context;
@@ -547,8 +783,9 @@ static void aw22xxx_cfg_loaded(const struct firmware *fw, void *context)
 	aw22xxx_i2c_write(aw22xxx, 11, imax_code);
 	pr_info("aw22xxx: %s complete\n", __func__);
 }
+#endif
 
-static void aw22xxx_fw_loaded(const struct firmware *fw, void *context)
+static void __maybe_unused aw22xxx_fw_loaded_c(const struct firmware *fw, void *context)
 {
 	struct aw22xxx *aw22xxx = context;
 	size_t size;
@@ -779,7 +1016,14 @@ static void aw22xxx_fw_loaded(const struct firmware *fw, void *context)
 	pr_info("aw22xxx: firmware callback leaving\n");
 }
 
-static noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
+#ifdef ZTE_LED_CFG_UPDATE_WAIT_FROM_DYN_NAME_EXACT_ISLAND
+extern int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx);
+#else
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
+#else
+static __used noinline int aw22xxx_cfg_update_wait_from_dyn_name(struct aw22xxx *aw22xxx)
+#endif
 {
 	const struct firmware *fw = NULL;
 	int ret;
@@ -816,8 +1060,16 @@ error:
 	pr_err("aw22xxx: %s failed: %d\n", __func__, ret);
 	return ret;
 }
+#endif
 
-static noinline int aw22xxx_set_cfg_run_state(u32 effect)
+#ifdef ZTE_LED_SET_CFG_RUN_STATE_EXACT_ISLAND
+extern int aw22xxx_set_cfg_run_state(u32 effect);
+#else
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+noinline int aw22xxx_set_cfg_run_state(u32 effect)
+#else
+static __used noinline int aw22xxx_set_cfg_run_state(u32 effect)
+#endif
 {
 	u8 mode = (effect >> 24) & 0xFF;
 	u32 sub_mode = (effect >> 12) & 0xFFF;
@@ -844,7 +1096,9 @@ static noinline int aw22xxx_set_cfg_run_state(u32 effect)
 	g_cfg_cur_state = next_state;
 	return 0;
 }
+#endif
 
+#ifndef ZTE_LED_CFG_RECOVER_UPDATE_WAIT_EXACT_ISLAND
 static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
 {
 	const struct firmware *fw = NULL;
@@ -930,12 +1184,14 @@ static noinline void aw22xxx_cfg_recover_update_wait(struct aw22xxx *aw22xxx)
 	pr_info("aw22xxx: recovery count=%u\n", aw22xxx->task_irq);
 	msleep(20);
 }
+#endif
 
 /* ======================================================================
  * Workqueues & Timers & Kthreads
  * ====================================================================== */
 
-static void aw22xxx_brightness_work(struct work_struct *work)
+#ifndef ZTE_LED_BRIGHTNESS_WORK_EXACT_ISLAND
+__used void aw22xxx_brightness_work(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, brightness_work);
 	u8 val = 0;
@@ -979,8 +1235,10 @@ static void aw22xxx_brightness_work(struct work_struct *work)
 		aw22xxx_i2c_write(aw22xxx, 4, val);
 	}
 }
+#endif
 
-static void aw22xxx_task_work(struct work_struct *work)
+#ifndef ZTE_LED_TASK_WORK_EXACT_ISLAND
+__used void aw22xxx_task_work(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, task_work);
 	u8 val = 0;
@@ -1025,8 +1283,10 @@ static void aw22xxx_task_work(struct work_struct *work)
 		aw22xxx_i2c_write(aw22xxx, 4, val);
 	}
 }
+#endif
 
-static void aw22xxx_fw_work_routine(struct work_struct *work)
+#ifndef ZTE_LED_FW_WORK_ROUTINE_EXACT_ISLAND
+__used void aw22xxx_fw_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, fw_work);
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1035,8 +1295,14 @@ static void aw22xxx_fw_work_routine(struct work_struct *work)
 	request_firmware_nowait(THIS_MODULE, 1, aw22xxx_fw_name, aw22xxx->dev,
 				GFP_KERNEL, aw22xxx, aw22xxx_fw_loaded);
 }
+#endif
 
-static void aw22xxx_cfg_work_routine(struct work_struct *work)
+#ifdef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+extern void aw22xxx_cfg_work_routine(struct work_struct *work);
+#endif
+
+#ifndef ZTE_LED_CFG_WORK_ROUTINE_EXACT_ISLAND
+__used void aw22xxx_cfg_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, cfg_work);
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1062,8 +1328,14 @@ static void aw22xxx_cfg_work_routine(struct work_struct *work)
 	request_firmware_nowait(THIS_MODULE, 1, aw22xxx_dyn_name, aw22xxx->dev,
 				GFP_KERNEL, aw22xxx, aw22xxx_cfg_loaded);
 }
+#endif
 
-static void aw22xxx_recover_work_routine(struct work_struct *work)
+#ifdef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
+extern void aw22xxx_recover_work_routine(struct work_struct *work);
+#endif
+
+#ifndef ZTE_LED_RECOVER_WORK_ROUTINE_EXACT_ISLAND
+__used void aw22xxx_recover_work_routine(struct work_struct *work)
 {
 	struct aw22xxx *aw22xxx = container_of(work, struct aw22xxx, recover_work);
 	u8 val = 0;
@@ -1095,16 +1367,20 @@ static void aw22xxx_recover_work_routine(struct work_struct *work)
 	aw22xxx->effect = fan_effect;
 	aw22xxx_cfg_recover_update_wait(aw22xxx);
 }
+#endif
 
-static enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
+#ifndef ZTE_LED_FW_TIMER_FUNC_EXACT_ISLAND
+__used enum hrtimer_restart aw22xxx_fw_timer_func(struct hrtimer *timer)
 {
 	struct aw22xxx *aw22xxx = container_of(timer, struct aw22xxx, timer);
 	pr_info("aw22xxx: %s\n", __func__);
 	schedule_work(&aw22xxx->fw_work);
 	return HRTIMER_NORESTART;
 }
+#endif
 
-static void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
+#ifndef ZTE_LED_FW_INIT_EXACT_ISLAND
+__used void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 {
 	hrtimer_init(&aw22xxx->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	aw22xxx->timer.function = aw22xxx_fw_timer_func;
@@ -1119,8 +1395,10 @@ static void aw22xxx_fw_init(struct aw22xxx *aw22xxx)
 	pr_info("aw22xxx: %s starting timer\n", __func__);
 	hrtimer_start(&aw22xxx->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
 }
+#endif
 
-static int aw22xxx_alloc_name_array(void)
+#ifndef ZTE_LED_ALLOC_NAME_ARRAY_EXACT_ISLAND
+__used int aw22xxx_alloc_name_array(void)
 {
 	int i;
 	pr_info("aw22xxx: %s\n", __func__);
@@ -1155,7 +1433,9 @@ err:
 	aw22xxx_cfg_name = NULL;
 	return -ENOMEM;
 }
+#endif
 
+	#ifndef ZTE_LED_SET_BREATH_DATA_EXACT_ISLAND
 static ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2)
 {
 	int i;
@@ -1196,7 +1476,9 @@ static ssize_t aw22xxx_set_breath_data(struct aw22xxx *aw22xxx, const u8 *a2)
 	}
 	return 0;
 }
+#endif
 
+#ifndef ZTE_LED_PLAY_EXACT_ISLAND
 static int aw22xxx_play(void *data)
 {
 	struct aw22xxx *aw22xxx = data;
@@ -1231,11 +1513,15 @@ static int aw22xxx_play(void *data)
 
 	return 0;
 }
+#endif
 
 /* ======================================================================
  * Sysfs Callbacks
  * ====================================================================== */
 
+#ifdef ZTE_LED_CFG_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *attr, char *buf);
+#else
 static ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1250,7 +1536,11 @@ static ssize_t aw22xxx_cfg_show(struct device *dev, struct device_attribute *att
 		return -EFAULT;
 	return strlen(buf);
 }
+#endif
 
+#ifdef ZTE_LED_CFG_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#else
 static ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1265,14 +1555,22 @@ static ssize_t aw22xxx_cfg_store(struct device *dev, struct device_attribute *at
 	pr_info("aw22xxx: %s cfg=%u\n", __func__, aw22xxx->cfg_custom_en);
 	return count;
 }
+#endif
 
+#ifdef ZTE_LED_EFFECT_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_effect_show(struct device *dev, struct device_attribute *attr, char *buf);
+#else
 static ssize_t aw22xxx_effect_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	return snprintf(buf, PAGE_SIZE, "effect = 0x%02x\n", aw22xxx->effect);
 }
+#endif
 
+#ifdef ZTE_LED_EFFECT_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#else
 static ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1332,12 +1630,20 @@ static ssize_t aw22xxx_effect_store(struct device *dev, struct device_attribute 
 	mutex_unlock(&aw22xxx->cfg_lock);
 	return count;
 }
+#endif
 
+#ifdef ZTE_LED_FW_SHOW_EXACT_ISLAND
+extern ssize_t aw22xxx_fw_show(struct device *dev, struct device_attribute *attr, char *buf);
+#else
 static ssize_t aw22xxx_fw_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	return snprintf(buf, PAGE_SIZE, "firmware name = %s\n", aw22xxx_fw_name);
 }
+#endif
 
+#ifdef ZTE_LED_FW_STORE_EXACT_ISLAND
+extern ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count);
+#else
 static ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1352,7 +1658,9 @@ static ssize_t aw22xxx_fw_store(struct device *dev, struct device_attribute *att
 	g_init_flg = 0;
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_HWEN_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_hwen_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1360,7 +1668,9 @@ static ssize_t aw22xxx_hwen_show(struct device *dev, struct device_attribute *at
 	int val = gpiod_get_raw_value(gpio_to_desc(aw22xxx->reset_gpio));
 	return snprintf(buf, PAGE_SIZE, "hwen=%d\n", val);
 }
+#endif
 
+#ifndef ZTE_LED_HWEN_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_hwen_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1386,7 +1696,9 @@ static ssize_t aw22xxx_hwen_store(struct device *dev, struct device_attribute *a
 	}
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_IMAX_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_imax_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1404,7 +1716,9 @@ static ssize_t aw22xxx_imax_show(struct device *dev, struct device_attribute *at
 	}
 	return len;
 }
+#endif
 
+#ifndef ZTE_LED_IMAX_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_imax_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1427,7 +1741,9 @@ static ssize_t aw22xxx_imax_store(struct device *dev, struct device_attribute *a
 	aw22xxx_i2c_write(aw22xxx, 11, code);
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_PARA_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_para_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	size_t len = 0;
@@ -1446,7 +1762,9 @@ static ssize_t aw22xxx_para_show(struct device *dev, struct device_attribute *at
 	len += snprintf(buf + len, PAGE_SIZE - len, "\r\n");
 	return len;
 }
+#endif
 
+#ifndef ZTE_LED_PARA_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_para_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	int *vals;
@@ -1485,13 +1803,15 @@ out:
 	kfree(vals);
 	return ret;
 }
+#endif
 
+#ifndef ZTE_LED_REG_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
-	u8 reg_255 = 0;
 	u8 val = 0;
+	u8 reg_255 = 0;
 	int i;
 	size_t len = 0;
 
@@ -1502,9 +1822,6 @@ static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *att
 			continue;
 
 		aw22xxx_i2c_read(aw22xxx, i, &val);
-		if (PAGE_SIZE - len <= 32)
-			break;
-
 		if (snprintf(buf + len, PAGE_SIZE - len,
 			     "reg:0x%02x=0x%02x \n", i, val) >= PAGE_SIZE - len)
 			return -EFAULT;
@@ -1512,22 +1829,30 @@ static ssize_t aw22xxx_reg_show(struct device *dev, struct device_attribute *att
 	}
 	return len;
 }
+#endif
 
+#ifndef ZTE_LED_REG_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_reg_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
-	u32 reg = 0, val = 0;
+	union {
+		u64 packed;
+		u32 words[2];
+	} reg_val = { .packed = 0 };
 
-	if (sscanf(buf, "%x %x", &reg, &val) != 2 || reg >= 256) {
+	if (sscanf(buf, "%x %x", &reg_val.words[0], &reg_val.words[1]) != 2 ||
+	    reg_val.words[0] >= 256) {
 		pr_err("aw22xxx: %s invalid register request\n", __func__);
 		return -EINVAL;
 	}
 
-	aw22xxx_i2c_write(aw22xxx, reg, val);
+	aw22xxx_i2c_write(aw22xxx, reg_val.words[0], reg_val.words[1]);
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_RGB_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_rgb_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1540,7 +1865,9 @@ static ssize_t aw22xxx_rgb_show(struct device *dev, struct device_attribute *att
 	}
 	return len;
 }
+#endif
 
+#ifndef ZTE_LED_RGB_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_rgb_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1554,14 +1881,18 @@ static ssize_t aw22xxx_rgb_store(struct device *dev, struct device_attribute *at
 	pr_info("aw22xxx: rgb[%d] set to 0x%06x\n", index, val);
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_TASK0_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_task0_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	return snprintf(buf, PAGE_SIZE, "task0 = 0x%02x\n", aw22xxx->task0);
 }
+#endif
 
+#ifndef ZTE_LED_TASK0_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_task0_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1578,14 +1909,18 @@ static ssize_t aw22xxx_task0_store(struct device *dev, struct device_attribute *
 	schedule_work(&aw22xxx->task_work);
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_TASK1_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_task1_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	return snprintf(buf, PAGE_SIZE, "task1 = 0x%02x\n", aw22xxx->task1);
 }
+#endif
 
+#ifndef ZTE_LED_TASK1_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_task1_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1601,14 +1936,18 @@ static ssize_t aw22xxx_task1_store(struct device *dev, struct device_attribute *
 	pr_info("aw22xxx: %s task1=0x%x\n", __func__, val);
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_TASK_IRQ_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_task_irq_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	return snprintf(buf, PAGE_SIZE, "task_irq = %u\n", aw22xxx->task_irq);
 }
+#endif
 
+#ifndef ZTE_LED_TASK_IRQ_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_task_irq_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1624,7 +1963,9 @@ static ssize_t aw22xxx_task_irq_store(struct device *dev, struct device_attribut
 	pr_info("aw22xxx: %s task_irq=%u\n", __func__, val);
 	return count;
 }
+#endif
 
+#ifndef ZTE_LED_MULTI_BREATH_PATTERN_SHOW_EXACT_ISLAND
 static ssize_t aw22xxx_multi_breath_pattern_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1632,7 +1973,9 @@ static ssize_t aw22xxx_multi_breath_pattern_show(struct device *dev, struct devi
 	return snprintf(buf, PAGE_SIZE, " pattern_status = %d\n",
 			aw22xxx->multi_breath_pattern);
 }
+#endif
 
+#ifndef ZTE_LED_MULTI_BREATH_PATTERN_STORE_EXACT_ISLAND
 static ssize_t aw22xxx_multi_breath_pattern_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct led_classdev *cdev = dev_get_drvdata(dev);
@@ -1672,6 +2015,7 @@ static ssize_t aw22xxx_multi_breath_pattern_store(struct device *dev, struct dev
 	}
 	return count;
 }
+#endif
 
 static DEVICE_ATTR(cfg, 0644, aw22xxx_cfg_show, aw22xxx_cfg_store);
 static DEVICE_ATTR(effect, 0644, aw22xxx_effect_show, aw22xxx_effect_store);
@@ -1703,7 +2047,7 @@ static struct attribute *aw22xxx_attrs[] = {
 	NULL
 };
 
-static const struct attribute_group aw22xxx_attribute_group = {
+__used const struct attribute_group aw22xxx_attribute_group = {
 	.attrs = aw22xxx_attrs,
 };
 
@@ -1711,14 +2055,15 @@ static const struct attribute_group aw22xxx_attribute_group = {
  * LED Classdev Operations
  * ====================================================================== */
 
-static void aw22xxx_set_brightness(struct led_classdev *cdev, enum led_brightness value)
+__used void aw22xxx_set_brightness(struct led_classdev *cdev, enum led_brightness value)
 {
 	struct aw22xxx *aw22xxx = container_of(cdev, struct aw22xxx, cdev);
 	cdev->brightness = value;
 	schedule_work(&aw22xxx->brightness_work);
 }
 
-static noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
+#ifndef ZTE_LED_PARSE_LED_CDEV_EXACT_ISLAND
+__used noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
 					   struct device_node *np)
 {
 	struct device_node *child;
@@ -1777,12 +2122,14 @@ static noinline int aw22xxx_parse_led_cdev(struct aw22xxx *aw22xxx,
 	}
 	return ret;
 }
+#endif
 
 /* ======================================================================
  * Procfs Entry Callbacks
  * ====================================================================== */
 
-static ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
+#ifndef ZTE_LED_GET_AW22XXX_ID_EXACT_ISLAND
+__used ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
 			     size_t count, loff_t *ppos)
 {
 	size_t len;
@@ -1797,12 +2144,16 @@ static ssize_t get_aw22xxx_id(struct file *file, char __user *user_buf,
 		__fortify_panic(4, sizeof(g_chip_id.text), checked_len);
 	return simple_read_from_buffer(user_buf, count, ppos, g_chip_id.text, len);
 }
+#endif
 
+#ifndef ZTE_LED_CREATE_PROC_EXACT_ISLAND
 static const struct proc_ops proc_ops_awid = {
 	.proc_read = get_aw22xxx_id,
 };
+#endif
 
-static int aw22xxx_create_proc_entry(void)
+#ifndef ZTE_LED_CREATE_PROC_EXACT_ISLAND
+__used int aw22xxx_create_proc_entry(void)
 {
 	pr_info("aw22xxx: %s\n", __func__);
 	if (proc_create("driver/colorleds_id", 0444, NULL, &proc_ops_awid)) {
@@ -1812,11 +2163,13 @@ static int aw22xxx_create_proc_entry(void)
 	pr_err("aw22xxx: failed to create proc entry\n");
 	return -ENOMEM;
 }
+#endif
 
 /* ======================================================================
  * Probe & Remove
  * ====================================================================== */
 
+#ifndef ZTE_LED_I2C_PROBE_EXACT_ISLAND
 static int aw22xxx_i2c_probe(struct i2c_client *client)
 {
 	struct device *dev = &client->dev;
@@ -1994,7 +2347,9 @@ free_device:
 	devm_kfree(dev, aw22xxx);
 	return ret;
 }
+#endif
 
+#ifndef ZTE_LED_I2C_REMOVE_EXACT_ISLAND
 static void aw22xxx_i2c_remove(struct i2c_client *client)
 {
 	struct aw22xxx *aw22xxx = i2c_get_clientdata(client);
@@ -2010,6 +2365,7 @@ static void aw22xxx_i2c_remove(struct i2c_client *client)
 	devm_kfree(&client->dev, aw22xxx);
 	g_cfgarray_count = g_custom_en ? 11 : 4500;
 }
+#endif
 
 static const struct of_device_id aw22xxx_dt_match[] = {
 	{ .compatible = "awinic,aw22xxx_led" },
@@ -2033,6 +2389,7 @@ static struct i2c_driver aw22xxx_i2c_driver = {
 	.id_table = aw22xxx_i2c_id,
 };
 
+#ifndef ZTE_LED_INIT_MODULE_EXACT_ISLAND
 static int __init aw22xxx_driver_init(void)
 {
 	int ret;
@@ -2045,14 +2402,19 @@ static int __init aw22xxx_driver_init(void)
 		pr_err("aw22xxx: I2C registration failed: %d\n", ret);
 	return ret;
 }
+#endif
 
+#ifndef ZTE_LED_CLEANUP_MODULE_EXACT_ISLAND
 static void __exit aw22xxx_driver_exit(void)
 {
 	i2c_del_driver(&aw22xxx_i2c_driver);
 }
 
+#ifndef ZTE_LED_INIT_MODULE_EXACT_ISLAND
 module_init(aw22xxx_driver_init);
+#endif
 module_exit(aw22xxx_driver_exit);
+#endif
 
 MODULE_AUTHOR("Antigravity <google-deepmind>");
 MODULE_DESCRIPTION("Awinic AW22XXX RGB LED smart controller driver reconstruction");

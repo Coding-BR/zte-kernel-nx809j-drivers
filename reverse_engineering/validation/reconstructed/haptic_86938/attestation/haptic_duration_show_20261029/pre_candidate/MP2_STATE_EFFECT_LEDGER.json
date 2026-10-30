@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_show",
+  "effects": [
+    {
+      "order": 1,
+      "kind": "load_driver_data",
+      "expression": "dev->driver_data (device offset +0x98)",
+      "width_bytes": 8,
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0082_0010a2e8_duration_show.c"
+    },
+    {
+      "order": 2,
+      "kind": "query_timer_active",
+      "expression": "driver_data+0x288",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0082_0010a2e8_duration_show.c"
+    },
+    {
+      "order": 3,
+      "kind": "read_remaining_time",
+      "condition": "timer active",
+      "call": "__hrtimer_get_remaining(timer, false)",
+      "conversion": "signed nanoseconds / 1000000"
+    },
+    {
+      "order": 4,
+      "kind": "format_output",
+      "buffer_limit": 4096,
+      "format": "duration = %lldms\\n",
+      "value": "remaining milliseconds, or 0 when inactive",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0082_0010a2e8_duration_show.c"
+    }
+  ],
+  "return": "snprintf return value sign-extended to ssize_t"
+}

@@ -1,0 +1,171 @@
+{
+  "applicable": false,
+  "checks": {
+    "caller_multiplicity_matches": true,
+    "candidate_has_incoming_calls": true,
+    "candidate_has_one_target_address": true,
+    "candidate_incoming_calls_are_direct": true,
+    "candidate_kcfi_status_is_unambiguous": true,
+    "candidate_module_matches_kcfi_report": true,
+    "incoming_call_count_matches": true,
+    "stock_exclusion_is_recorded": true,
+    "stock_has_incoming_calls": true,
+    "stock_has_no_kcfi_record": true,
+    "stock_has_one_target_address": true,
+    "stock_incoming_calls_are_direct": true,
+    "stock_module_matches_kcfi_report": true
+  },
+  "comparisons": [
+    {
+      "applicable": false,
+      "candidate_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "aw22xxx_fw_loaded",
+            "count": 2,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "aw22xxx_fw_loaded",
+            "caller_entry": "00100e8c",
+            "callsite": "00101384",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_led_init",
+            "target_address": "00105fc8"
+          },
+          {
+            "caller": "aw22xxx_fw_loaded",
+            "caller_entry": "00100e8c",
+            "callsite": "00101a38",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_led_init",
+            "target_address": "00105fc8"
+          }
+        ],
+        "count": 2,
+        "target_addresses": [
+          "00105fc8"
+        ]
+      },
+      "candidate_extra_instrumentation": false,
+      "candidate_kcfi_exclusion": {
+        "decision": "NO_VALID_KCFI_PREAMBLE",
+        "function": "f000",
+        "reason": "candidate preamble overlaps function body: aw22xxx_recover_work_routine+0x208",
+        "section": ".text",
+        "symbol_name": "aw22xxx_led_init",
+        "symbol_offset": "0x5140",
+        "symbol_size": 400
+      },
+      "candidate_kcfi_record": null,
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "function": "aw22xxx_led_init",
+      "passed": true,
+      "reason": "The stock ELF has no valid KCFI preamble for this function; the candidate either has one unambiguous KCFI record or the same recorded non-KCFI exclusion, and every incoming stock and candidate reference is a direct UNCONDITIONAL_CALL.",
+      "stock_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "aw22xxx_fw_loaded",
+            "count": 2,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "aw22xxx_fw_loaded",
+            "caller_entry": "001055c8",
+            "callsite": "00105ac0",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_led_init",
+            "target_address": "00106204"
+          },
+          {
+            "caller": "aw22xxx_fw_loaded",
+            "caller_entry": "001055c8",
+            "callsite": "00106170",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "aw22xxx_led_init",
+            "target_address": "00106204"
+          }
+        ],
+        "count": 2,
+        "target_addresses": [
+          "00106204"
+        ]
+      },
+      "stock_kcfi_exclusion": {
+        "decision": "NO_VALID_KCFI_PREAMBLE",
+        "function": "f000",
+        "reason": "candidate preamble overlaps function body: aw22xxx_fw_loaded+0xc38",
+        "section": ".text",
+        "symbol_name": "aw22xxx_led_init",
+        "symbol_offset": "0x4d24",
+        "symbol_size": 400
+      },
+      "stock_kcfi_record": null
+    }
+  ],
+  "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "driver": "zte_led",
+  "function": "aw22xxx_led_init",
+  "generated_utc": "2026-09-02T20:14:36.222158+00:00",
+  "inputs": {
+    "candidate_calls": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_led_init_candidate_ghidra_20260902_v8\\export\\zte_led.ko\\calls.jsonl",
+      "sha256": "4f673c094eea9704b9ee54035f8fac2f9c55fbbef2a4334edaaa1aa9a79e18f3",
+      "size": 56697
+    },
+    "candidate_kcfi_report": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_led_init_protocol_20260902_v8\\kcfi\\candidate.json",
+      "sha256": "d5d440570b71fc410d2d29cb13afbfecdbe4f37e5dff9b0404359a9416921c08",
+      "size": 747
+    },
+    "candidate_module": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_led_init_protocol_20260902_v8\\docker\\work\\zte_led\\cycle_2\\zte_led.ko",
+      "sha256": "c767f3d8deb53409bc8bba1576d56abb98a0a85bd6031953f09be29c448111b7",
+      "size": 350952
+    },
+    "stock_calls": {
+      "path": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock/calls.jsonl",
+      "sha256": "9b0456f7410701b0e0f6626eca8581f81c94a525527c567196715108f74676ff",
+      "size": 124590
+    },
+    "stock_kcfi_report": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\zte_led_led_init_protocol_20260902_v8\\kcfi\\stock.json",
+      "sha256": "be518306aad7fe2d00ef22fad40994457b1d43dde31329a408d3575ee9ccd4ca",
+      "size": 689
+    },
+    "stock_module": {
+      "path": "reference_modules/stock/zte_led.ko",
+      "sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+      "size": 99424
+    }
+  },
+  "limitations": [
+    "This decision proves only that no stock indirect KCFI boundary was observed.",
+    "The candidate compiler emitted an extra KCFI preamble; it is not claimed as a stock type-ID match.",
+    "Direct-call equivalence does not replace Assembly, P-Code, host, or hardware validation."
+  ],
+  "modules": {
+    "candidate": {
+      "sha256": "c767f3d8deb53409bc8bba1576d56abb98a0a85bd6031953f09be29c448111b7",
+      "sha256_matches": true,
+      "size": 350952,
+      "size_matches": true
+    },
+    "stock": {
+      "sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+      "sha256_matches": true,
+      "size": 99424,
+      "size_matches": true
+    }
+  },
+  "passed": true,
+  "schema_version": "1.0"
+}

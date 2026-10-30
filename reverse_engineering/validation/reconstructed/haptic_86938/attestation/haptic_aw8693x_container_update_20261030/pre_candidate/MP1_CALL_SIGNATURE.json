@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_container_update@001039e0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "inferred_prototype": "int aw8693x_container_update(struct aw_haptic *haptic, struct aw_haptic_container *container)",
+  "confidence": "HIGH_FOR_ABI; container layout and haptic members remain offset-based",
+  "evidence": {
+    "callback_target": "ELF .rela.data offset 0x30 in aw8693x_func_list resolves to aw8693x_container_update@001039e0; 8-byte AArch64 pointer stride makes this slot 6",
+    "caller": "ram_load indexes functions[6], typedef int (*)(struct aw_haptic *, struct aw_haptic_container *)",
+    "container": "ram_load defines int len followed by flexible u8 data[]",
+    "kcfi": "stock function preamble type ID 0xd1700c10 at text offset 0xbbc"
+  },
+  "direct_calls": [
+    {
+      "site": "00103a2c",
+      "target": "mutex_lock",
+      "prototype": "void(struct mutex *)",
+      "object": "haptic+0x2f0"
+    },
+    {
+      "site": "00103a34",
+      "target": "aw8693x_stop",
+      "prototype": "void(struct aw_haptic *)"
+    },
+    {
+      "site": "00103a48",
+      "target": "i2c_w_bits",
+      "prototype": "int(struct aw_haptic *, u8, u32, u8)"
+    },
+    {
+      "site": "00103a58",
+      "target": "usleep_range_state",
+      "prototype": "void(unsigned long, unsigned long, u32)"
+    },
+    {
+      "site": "00103b30",
+      "target": "i2c_w_bytes",
+      "prototype": "int(struct aw_haptic *, u8, u8 *, u32)"
+    },
+    {
+      "site": "00103b44",
+      "target": "i2c_r_bytes",
+      "prototype": "int(struct aw_haptic *, u8, u8 *, u32)"
+    },
+    {
+      "site": "00103cf8",
+      "target": "i2c_w_bits",
+      "prototype": "int(struct aw_haptic *, u8, u32, u8)"
+    },
+    {
+      "site": "00103d00",
+      "target": "mutex_unlock",
+      "prototype": "void(struct mutex *)",
+      "object": "haptic+0x2f0"
+    }
+  ],
+  "indirect_call_inside_target": false,
+  "kcfi": {
+    "preamble_required": true,
+    "type_id": "0xd1700c10",
+    "caller": "ram_load functions[6]",
+    "caller_site_guard": "final core audit required"
+  }
+}

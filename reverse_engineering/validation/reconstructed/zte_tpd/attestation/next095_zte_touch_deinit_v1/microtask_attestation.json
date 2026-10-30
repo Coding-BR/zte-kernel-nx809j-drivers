@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "095",
+  "function": "zte_touch_deinit",
+  "source_file": "zte_touch_deinit.c",
+  "protocol": [
+    "Ghidra pseudocode and P-Code reviewed",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two cycles",
+    "canonical Docker build, two cycles",
+    "KCFI stock-reference audit",
+    "AArch64 instruction and relocation comparison"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": false,
+    "kcfi_stock_reference_valid": false,
+    "kcfi_surface_exact": false,
+    "aarch64_instruction_relocation_parity": false,
+    "hardware": "DEFERRED"
+  },
+  "promotion": "BLOCKED_BY_STOCK_KCFI_REFERENCE_AND_AARCH64_PARITY",
+  "passed": false,
+  "claim": "The function is reconstructed sufficiently to compile and exercise the observed offline teardown contract, but 100% binary, KCFI or hardware equivalence is not established."
+}

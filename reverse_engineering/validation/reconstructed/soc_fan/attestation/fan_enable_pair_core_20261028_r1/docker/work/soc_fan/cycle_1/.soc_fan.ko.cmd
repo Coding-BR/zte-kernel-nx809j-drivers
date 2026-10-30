@@ -1,0 +1,1 @@
+savedcmd_/work/validation/soc_fan/cycle_1/soc_fan.ko := ld.lld -r -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack --build-id=sha1  -T ./scripts/module.lds -o /work/validation/soc_fan/cycle_1/soc_fan.ko /work/validation/soc_fan/cycle_1/soc_fan.o /work/validation/soc_fan/cycle_1/soc_fan.mod.o /work/validation/soc_fan/cycle_1/.module-common.o;  true

@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zlog_common/cycle_2/zlog_common.o := ld.lld -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack   -r -o /work/validation/zlog_common/cycle_2/zlog_common.o @/work/validation/zlog_common/cycle_2/zlog_common.mod 

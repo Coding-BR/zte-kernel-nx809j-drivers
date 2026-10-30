@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "target": "tpd_zlog_check",
+  "mode": "offline_aarch64_opcode_and_relocation_normalized_comparison",
+  "instruction_count": {"stock": 43, "candidate": 43, "match": true},
+  "symbol_size": {"stock": 172, "candidate": 172, "match": true},
+  "section": {"stock": ".text", "candidate": ".text", "match": true},
+  "kcfi_type_id": {"stock": "0xc3c3f247", "candidate": "0xc3c3f247", "match": true},
+  "relocation_normalization": {
+    "raw_match": false,
+    "code_call_targets_match": true,
+    "same_string_references": true,
+    "reason": "Only the module-specific .rodata offset for the repeated-notify literal differs; tpd_cdev, jiffies, jiffies_to_msecs and printk references match."
+  },
+  "decision": "OFFLINE_EXACT_FUNCTION_LEVEL",
+  "promotion_allowed": true,
+  "invalid_index_contract": "error_no >= TP_ZLOG_ERROR_MAX reaches non-returning brk #0x5512; this branch is statically verified and not executed by the host harness.",
+  "comparison": "assembly_comparison.json",
+  "limitations": [
+    "jiffies and printk are stubbed in the host harness.",
+    "No smartphone, SPI, firmware transport or physical hardware was used."
+  ]
+}

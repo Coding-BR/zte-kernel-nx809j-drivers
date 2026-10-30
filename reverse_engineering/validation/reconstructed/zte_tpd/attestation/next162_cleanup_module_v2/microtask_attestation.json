@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "cleanup_module",
+  "source_function": "cleanup_module",
+  "stock_function": "cleanup_module",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_SYMBOL_ALIAS_PARITY",
+  "correction": "Changed zte_touch_deinit from a three-argument inferred prototype with explicit zeroes to the void prototype and no-argument call shown by stock P-Code; candidate body reduced from 56 to 44 bytes.",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_section_size": "PASS",
+    "aarch64_instruction_count_size_section": "PASS",
+    "aarch64_symbol_alias_parity": "BLOCKED"
+  },
+  "semantic_contract": [
+    "Call syna_dev_module_exit first.",
+    "Call zte_touch_deinit with no arguments second.",
+    "Pass zte_touch_device_driver to platform_driver_unregister last."
+  ],
+  "unverified": [
+    "Exact stock symbol identity for .text+0x7848 and .data+0x150.",
+    "Runtime behavior during module unload on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

@@ -37,7 +37,11 @@
 #define DRV_NAME "zte_imem_info"
 
 /* Cached IMEM mapped address (reused across reads) */
+#ifdef ZTE_IMEM_INFO_DDR_ID_READ_EXACT_ISLAND
+extern void __iomem *vendor_imem_info_addr;
+#else
 static void __iomem *vendor_imem_info_addr;
+#endif
 
 /* ======================================================================
  * DDR Memory Information
@@ -47,6 +51,7 @@ static void __iomem *vendor_imem_info_addr;
  * DDR manufacturer ID to string mapping.
  * Values per JEDEC JEP106 / LPDDR specification.
  */
+#ifndef ZTE_IMEM_INFO_DDR_ID_READ_EXACT_ISLAND
 static const char *ddr_manufacturer_name(unsigned int id)
 {
 	switch (id) {
@@ -68,6 +73,7 @@ static const char *ddr_manufacturer_name(unsigned int id)
 	default: return "UNKNOWN";
 	}
 }
+#endif
 
 /*
  * Helper: find a compatible DT node, iomap it, and return the u32 value.
@@ -101,6 +107,7 @@ static int imem_read_u32(const char *compatible, u32 *out)
  * Output format: "<MANUFACTURER>-NA-NA-<SIZE_GB>GB-<TYPE>\n"
  * Example:       "SAMSUNG-NA-NA-16GB-LPDDR5\n"
  */
+#ifndef ZTE_IMEM_INFO_DDR_ID_READ_EXACT_ISLAND
 static int ddr_id_read_proc(struct seq_file *m, void *v)
 {
 	const char *manufacturer = "UNKNOWN";
@@ -114,37 +121,42 @@ static int ddr_id_read_proc(struct seq_file *m, void *v)
 
 	/* DDR Type */
 	if (imem_read_u32("qcom,msm-imem-ddr_memory_type", &type_id) == 0) {
-		switch (type_id) {
-		case 0:
-			type_name = "LPDDR1";
-			break;
-		case 2:
-			type_name = "LPDDR2";
-			break;
-		case 3:
-			type_name = "PCDDR3";
-			break;
-		case 4:
-			type_name = "PCDDR4";
-			break;
-		case 5:
-			type_name = "LPDDR3";
-			break;
-		case 6:
-			type_name = "LPDDR4";
-			break;
-		case 7:
-			type_name = "LPDDR4X";
-			break;
-		case 8:
-			type_name = "LPDDR5";
-			break;
-		case 9:
-			type_name = "LPDDR5X";
-			break;
-		default:
+		/* Match stock's unsigned range guard before its pointer table. */
+		if (type_id >= 10) {
 			type_name = "UNKNOWN";
-			break;
+		} else {
+			switch (type_id) {
+			case 0:
+				type_name = "LPDDR1";
+				break;
+			case 2:
+				type_name = "LPDDR2";
+				break;
+			case 3:
+				type_name = "PCDDR3";
+				break;
+			case 4:
+				type_name = "PCDDR4";
+				break;
+			case 5:
+				type_name = "LPDDR3";
+				break;
+			case 6:
+				type_name = "LPDDR4";
+				break;
+			case 7:
+				type_name = "LPDDR4X";
+				break;
+			case 8:
+				type_name = "LPDDR5";
+				break;
+			case 9:
+				type_name = "LPDDR5X";
+				break;
+			default:
+				type_name = "UNKNOWN";
+				break;
+			}
 		}
 	}
 
@@ -155,6 +167,9 @@ static int ddr_id_read_proc(struct seq_file *m, void *v)
 	seq_printf(m, "%s-NA-NA-%dGB-%s\n", manufacturer, size_gb, type_name);
 	return 0;
 }
+#else
+extern int ddr_id_read_proc(struct seq_file *m, void *v);
+#endif
 
 static int ddr_id_proc_open(struct inode *inode, struct file *file)
 {

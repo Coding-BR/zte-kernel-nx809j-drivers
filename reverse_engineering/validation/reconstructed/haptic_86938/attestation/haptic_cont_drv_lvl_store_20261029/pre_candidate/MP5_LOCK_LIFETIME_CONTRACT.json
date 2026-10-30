@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "task_id": "050_cont_drv_lvl_store",
+  "work_unit": "MP5_LOCK_LIFETIME_CONTRACT",
+  "identity": "cont_drv_lvl_store@00106554",
+  "lock_offset": "+0x248 relative to driver_data",
+  "contract": [
+    "Two requested level bytes are stored before acquiring the mutex.",
+    "The mutex is acquired before reading register 0x1d.",
+    "The mutex remains held through the two-byte register write.",
+    "The mutex is released after the write helper returns on the normal path.",
+    "Neither bus result changes control flow."
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0049_cont_drv_lvl_store_00106554.asm",
+      "sha256": "63774192887d30f9af2e5f9db6b388692806ee733500eba63e7608db5669c64c",
+      "locator": "mutex_lock 0x37a8; read 0x37bc; write 0x37ec; mutex_unlock 0x37f4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0049_00106554_cont_drv_lvl_store.jsonl",
+      "sha256": "4d8a93ab983f5c3242c1766f8be5d842f3bd9305980e28b05ab4bf917266a889"
+    }
+  ],
+  "unknowns": [
+    "No proof here of device removal synchronization or driver_data lifetime while sysfs callback runs.",
+    "No proof that the mutex is initialized before the attribute is published."
+  ]
+}

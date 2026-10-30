@@ -10,6 +10,10 @@ void tpd_workqueue_deinit(void)
   v6 = tpd_cdev;
   printk(unk_322AA, "tpd_probe_work_deinit");
   cancel_delayed_work_sync(v6 + 2256);
-  zlog_register_work_deinit();
+  v6 = tpd_cdev;
+  printk(unk_322AA, "zlog_register_work_deinit");
+  cancel_delayed_work_sync(v6 + 2640);
+  vfree(*(_QWORD **)(v6 + 3048));
+  *(_QWORD *)(v6 + 3048) = 0;
   cancel_delayed_work_sync(v3 + 2360);
 }

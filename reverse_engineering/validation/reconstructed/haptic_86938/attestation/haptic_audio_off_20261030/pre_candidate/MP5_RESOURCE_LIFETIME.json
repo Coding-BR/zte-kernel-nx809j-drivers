@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "function_id": "audio_off@0010d148",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "resources": [
+    {"resource": "haptic mutex", "object": "haptic+0x2f0", "acquire": "before callbacks and list cleanup", "release": "after list traversal"},
+    {"resource": "audio command nodes", "owner": "haptic audio list at haptic+0x590", "acquisition": "outside target", "release": "kfree(container_of(list_head, node, offset 8))", "iteration": "reverse-safe using saved previous pointer"},
+    {"resource": "operations table", "object": "pointer at haptic+0x5c8", "target_retains": false}
+  ],
+  "allocations_in_target": [],
+  "async_work_in_target": [],
+  "cleanup_exceptions": ["Invalid list adjacency is reported, then stock continues to poison and free the node."],
+  "lifetime_unknowns": ["Concurrent audio_work_routine ownership and lock ordering are not proven by this function alone."]
+}

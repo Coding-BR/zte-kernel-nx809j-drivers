@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tpd_zlog_register",
+  "source_function": "tpd_zlog_register",
+  "stock_function": "tpd_zlog_register",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT_WITH_KNOWN_STOCK_SAFETY_DEFECT",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "PASS",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_and_normalized_relocation_parity": "PASS"
+  },
+  "semantic_contract": [
+    "Skip registration and log when zlog_client is already present.",
+    "Register zlog_tp_dev, set the client field and log registration failure without allocating when the client is null.",
+    "Allocate a 0x800-byte buffer, record probe failure text for a non-0xff chip id and notify with TP_PROBE_ERROR_NO.",
+    "Set zlog_registered after either registration branch.",
+    "Preserve the stock vmalloc failure branch, including its observed memset(NULL) call, until a separately approved safety-fix target is defined."
+  ],
+  "unverified": [
+    "Actual zlog_common client behavior and allocator behavior.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "tpd_zlog_register_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "aarch64_validation_report.json"
+  }
+}
