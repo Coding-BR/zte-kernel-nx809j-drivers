@@ -1,12 +1,12 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 120 current source revisions have source-hash-bound passing automated core reports; six mapped candidate sources need a passing report for their current hashes, and 35 functions remain `NOT_STARTED` without source files.
+Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 120 current source revisions have source-hash-bound passing automated core reports; six mapped candidate sources need a passing report for their current hashes, and 34 functions remain `NOT_STARTED` without source files.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
 - Candidate source functions with current source-hash-bound core attestations: 120
-- Functions still not started without source files: 35
+- Functions still not started without source files: 34
 - Mapped candidate sources awaiting current-hash core gates: 6
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
@@ -104,7 +104,7 @@ The counts above were recomputed by matching each passing report's input-manifes
 
 The latest source-bound core process reconstructed `seq_store`; all required static gates pass, including exact assembly, relocation, KCFI, fresh Ghidra C/P-Code, and two reproducible Docker builds. `loop_store` also passes the same core gates. Six other source files need fresh gates against their current hashes. No candidate module has been promoted, and the whole-driver audit remains incomplete.
 
-The function-scoped gates do not authorize whole-driver promotion: 35 functions still lack source files, six mapped candidates need current-hash gates, and complete target-kernel identity and hardware validation remain open. The whole-driver audit is incomplete. No candidate module has been promoted.
+The function-scoped gates do not authorize whole-driver promotion: 34 functions still lack source files, six mapped candidates need current-hash gates, and complete target-kernel identity and hardware validation remain open. The whole-driver audit is incomplete. No candidate module has been promoted.
 
 ## Remaining stock evidence
 
