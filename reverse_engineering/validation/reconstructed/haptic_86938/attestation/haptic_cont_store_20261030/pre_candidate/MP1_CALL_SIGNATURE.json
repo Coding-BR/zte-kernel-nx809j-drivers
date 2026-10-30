@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "function_id": "cont_store@0010be5c",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "inferred_prototype": "ssize_t cont_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)",
+  "confidence": "HIGH; stock KCFI entry type and callback function definitions agree",
+  "entry_kcfi_type_id": "0x95c41a97",
+  "entry_kcfi_preamble_offset": "0x9038",
+  "direct_calls": [
+    {
+      "target": "kstrtouint",
+      "prototype": "int kstrtouint(const char *s, unsigned int base, unsigned int *res)",
+      "arguments": [
+        "buf",
+        "0",
+        "&value"
+      ],
+      "result": "negative errno or parsed u32"
+    }
+  ],
+  "indirect_calls": [
+    {
+      "table_symbol": "aw8693x_func_list",
+      "table_offset": "0x38",
+      "target": "aw8693x_stop",
+      "type_id": "0x847a0830",
+      "prototype": "void(struct aw_haptic *)"
+    },
+    {
+      "table_symbol": "aw8693x_func_list",
+      "table_offset": "0x118",
+      "target": "aw8693x_upload_lra",
+      "type_id": "0xd37b6e95",
+      "prototype": "void(struct aw_haptic *, unsigned int)"
+    },
+    {
+      "table_symbol": "aw8693x_func_list",
+      "table_offset": "0x48",
+      "target": "aw8693x_cont_config",
+      "type_id": "0x847a0830",
+      "prototype": "void(struct aw_haptic *)"
+    }
+  ]
+}

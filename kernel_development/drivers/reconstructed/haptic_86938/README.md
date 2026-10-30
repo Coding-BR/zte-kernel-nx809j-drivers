@@ -1,13 +1,13 @@
 # haptic_86938 reconstruction status
 
-Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 128 mapped source revisions have passing automated core reports bound to their current hashes, 30 functions remain `NOT_STARTED`, and two functions carry a separate hardening deviation.
+Status: incomplete. Offline stock evidence covers all 160 stock functions. As of 2026-10-30, 129 mapped source revisions have passing automated core reports bound to their current hashes, 29 functions remain `NOT_STARTED`, and two functions carry a separate hardening deviation.
 
 - Stock module SHA-256: 05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e
 - Stock functions mapped by exact name and entry: 160
 - Functions without a stock mapping: 0
-- Candidate source functions with current source-hash-bound core attestations: 128
+- Candidate source functions with current source-hash-bound core attestations: 129
 - awrw_show and awrw_store now carry a separate hardening deviation; earlier exact-reconstruction reports are historical and do not attest these sources.
-- Functions still not started without source files: 30
+- Functions still not started without source files: 29
 - Mapped candidate sources awaiting current-hash core gates: 0
 - Whole-driver semantic equivalence: not established
 - Hardware validation: not performed
@@ -17,6 +17,7 @@ Status: incomplete. Offline stock evidence covers all 160 stock functions. As of
 
 - audio_off: stock and candidate match exactly (71 AArch64 instructions, 284 bytes, relocations, and section); both callback KCFI callsites, Docker reproducibility, Joern, and map identity pass. The ASan/UBSan host harness checks empty-list, reverse cleanup order, and invalid-link report-then-free behavior. Lock ordering against concurrent audio work remains unproved. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_audio_off_20261030/README.md)
 - get_ram_num: the stale whole-driver/module binding was refreshed from the current Docker build and Ghidra export. All applicable core gates pass against the final map; stock and candidate match exactly (115 instructions, 460 bytes, relocations, and section). [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_get_ram_num_refresh_20261030/README.md)
+- cont_store: the sysfs path parses a u32, stops on every valid value, and uploads LRA calibration plus enters continuous mode for nonzero values. Stock and candidate match exactly (67 instructions, 268 bytes, relocations, and section); fresh Ghidra C/P-Code, KCFI, Joern, Docker reproducibility, and ASan/UBSan host checks pass. [Attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_store_20261030/README.md)
 
 Each function passed its applicable automated core gates: ASSEMBLY_RELOCATIONS, CANDIDATE_GHIDRA_PCODE, DOCKER_REPRODUCIBLE, INPUT_IDENTITY, JOERN_SCOPED, JOERN_SLICE, KCFI when required, and MAP_IDENTITY. The `COMPILER_SENSITIVE` profile alone does not require a KCFI boundary for every function; `kcfi_required` controls that function-level gate, while `CALLBACK_ABI` continues to require the KCFI/callsite audit.
 
