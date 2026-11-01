@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "microproof": "RODATA_CST32_AND_STOCK_LOG_LITERALS",
+  "driver": "haptic_86938",
+  "function_identity": "aw8693x_offset_cali@00104250",
+  "status": "PASS",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "commands": [
+    "llvm-readelf -x .rodata.cst32 /repo/reference_modules/full_vendor_boot/haptic_86938.ko",
+    "python3: read .rodata.str1.1 bytes using section file offset 0xeec0 and extract null-terminated strings at offsets 0x130a, 0x28bc, 0x1d97"
+  ],
+  "constant_section": {
+    "name": ".rodata.cst32",
+    "size": 32,
+    "raw_hex": "fe070000fd0b0000fb130000f7230000f52b0000ef430000eb530000d7a30000",
+    "endianness": "little",
+    "signed_s32_values": [2046, 3069, 5115, 9207, 11253, 17391, 21483, 41943],
+    "relocation_reference": "stock function relocation pair at .text+0x1510/+0x1514 targets .rodata.cst32 with addend 0"
+  },
+  "verified_log_literals": [
+    {"section": ".rodata.str1.1", "offset": "0x130a", "raw_hex": "01335b25735d5b253034645d25733a206432735f6761696e206973206572726f720a00", "escaped": "\\0013[%s][%04d]%s: d2s_gain is error\\n"},
+    {"section": ".rodata.str1.1", "offset": "0x28bc", "raw_hex": "01365b25735d5b253034645d25733a206f735f636f6465203d2025640a00", "escaped": "\\0016[%s][%04d]%s: os_code = %d\\n"},
+    {"section": ".rodata.str1.1", "offset": "0x1d97", "raw_hex": "01365b25735d5b253034645d25733a206f66667365742063616c6962726174696f6e206f7574206f662072616e67650a00", "escaped": "\\0016[%s][%04d]%s: offset calibration out of range\\n"}
+  ],
+  "interpretation_limit": "These bytes and strings are read directly from the pinned Docker image's view of the stock module; they do not establish physical hardware behavior."
+}

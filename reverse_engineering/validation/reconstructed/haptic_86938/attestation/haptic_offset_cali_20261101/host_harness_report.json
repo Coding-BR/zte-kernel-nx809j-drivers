@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01T14:53:02.8764876Z",
+  "status": "PASS",
+  "return_code": 0,
+  "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+  "toolchain": "clang-r536225",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "compile_flags": [
+    "-std=gnu11",
+    "-O1",
+    "-g",
+    "-fno-omit-frame-pointer",
+    "-fno-sanitize-recover=all",
+    "-Wall",
+    "-Wextra",
+    "-Werror"
+  ],
+  "command": "clang -std=gnu11 -O1 -g -fno-omit-frame-pointer -fno-sanitize-recover=all -fsanitize=address,undefined -Wall -Wextra -Werror -I/work/evidence/include -o /work/evidence/aw8693x_offset_cali_harness /work/evidence/aw8693x_offset_cali_harness.c; execute harness",
+  "source_sha256": "b3091690ef10935f75294db0a9014aa819c327b9611a8c7da4a3f651acc35d6a",
+  "harness_sha256": "23ce51fab90b018986450fbc1307157e721286be97d8093859339466ced36fda",
+  "stub_header_sha256": {
+    "include/linux/delay.h": "fbd8269c72ae9fc1aa2615174e316deda29df09f0cc781d956921d9f6d3cd2b1",
+    "include/linux/printk.h": "3e66672359700a7ad6d2f7dff2e6a1c9af5cc34e1e2a089ace2d751273d2a779",
+    "include/linux/types.h": "d66eaa5ab64088cb168ac4cef2515dd5265f359f4ae93c44e84fe96c066a93ad"
+  },
+  "stdout_and_stderr": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\r\nPASS 8 cases; I2C order, delays, logs, boundary offsets, invalid indices, and ignored helper errors match the reference model.",
+  "run_log": "host_harness_run.log"
+}
