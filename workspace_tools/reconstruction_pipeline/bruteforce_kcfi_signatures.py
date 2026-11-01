@@ -12,6 +12,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+try:
+    from .target_kernel_defaults import target_source_volume
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+
 TYPE_PREAMBLE = """/* Generated KCFI signature probe. */
 typedef _Bool bool;
 typedef unsigned char u8;
@@ -294,7 +299,7 @@ def main() -> int:
     parser.add_argument("--engineering-root", type=Path,
                         default=Path(__file__).resolve().parents[1])
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
-    parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
+    parser.add_argument("--source-volume", default=target_source_volume())
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
     parser.add_argument("--output", type=Path)

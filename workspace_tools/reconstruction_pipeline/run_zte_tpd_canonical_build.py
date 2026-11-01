@@ -13,6 +13,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    from .target_kernel_defaults import target_source_volume
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+
 
 GENERATED_NAMES = {
     "Module.symvers",
@@ -131,7 +136,7 @@ def main() -> int:
     parser.add_argument("--cycles", type=int, default=2)
     parser.add_argument("--parallelism", type=int, default=8)
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
-    parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
+    parser.add_argument("--source-volume", default=target_source_volume())
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
     parser.add_argument(

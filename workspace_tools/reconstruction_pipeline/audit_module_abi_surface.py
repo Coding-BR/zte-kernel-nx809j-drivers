@@ -15,9 +15,11 @@ from typing import Any
 try:
     from .audit_driver_symbol_inventory import exported_names, run_llvm_nm
     from .manage_reference_modules import elf_identity, module_info
+    from .target_kernel_defaults import target_source_volume
 except ImportError:
     from audit_driver_symbol_inventory import exported_names, run_llvm_nm
     from manage_reference_modules import elf_identity, module_info
+    from target_kernel_defaults import target_source_volume
 
 
 def sha256_file(path: Path) -> str:
@@ -127,7 +129,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stock", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--target-source-volume", default="nubia_sm8850_kernel_src")
+    parser.add_argument("--target-source-volume", default=target_source_volume())
     parser.add_argument("--target-vermagic", required=True)
     parser.add_argument(
         "--supplemental-symvers",

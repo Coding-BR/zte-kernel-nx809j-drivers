@@ -79,6 +79,13 @@ kernel alvo quando esses campos existirem. Se houver manifesto de alvo, um
 divergencia marca `SOURCE_INPUT_MISMATCH` e bloqueia promocao; nao force
 `LOCALVERSION` para ocultar a diferenca.
 
+O volume-fonte padrao vem de `docker_source_volume` em
+`kernel_development/config/target_kernel.json`. Um `source_volume` explicito
+em um job deve ser igual a esse valor; divergencias bloqueiam o protocolo antes
+de iniciar a compilacao. A porta `DOCKER_REPRODUCIBLE` tambem exige identidade
+do kernel com estado `MATCH` e `vermagic_accepted=true`, alem dos dois builds
+identicos. Build reproduzivel em uma revisao/configuracao diferente nao passa.
+
 Para o NX809J, use a cadeia fixada em `kernel_development/config/target_kernel.json`:
 
 1. `verify_target_kernel_image.py` confere o SHA-256 da `Image` publicada e o

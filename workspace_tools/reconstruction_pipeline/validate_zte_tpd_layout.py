@@ -19,6 +19,11 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+try:
+    from .target_kernel_defaults import target_source_volume
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+
 
 TESTING_ITEMS = {
     "test_0001": (1, 0x0001, "Firmware/Device ID Test", "syna_tcm_testing_build_id"),
@@ -281,7 +286,7 @@ def parse_args() -> argparse.Namespace:
         help="acquisition run containing 01_acquisition/modules/zte_tpd.ko",
     )
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
-    parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
+    parser.add_argument("--source-volume", default=target_source_volume())
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--clang-revision", default="clang-r536225")
     return parser.parse_args()

@@ -22,6 +22,11 @@ import time
 from pathlib import Path
 from typing import Any
 
+try:
+    from .target_kernel_defaults import target_source_volume
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+
 
 SCHEMA_VERSION = "1.0"
 DRIVER_RE = re.compile(r"[A-Za-z0-9_.-]+")
@@ -159,7 +164,7 @@ def planned_runner_paths(
 ) -> list[Path]:
     """Return core and helper scripts that may execute for this selected job."""
     repo_root = repo_root.resolve()
-    paths = {Path(__file__).resolve()}
+    paths = {Path(__file__).resolve(), Path(__file__).with_name("target_kernel_defaults.py")}
     for command_name in ("joern", "docker"):
         argv = command_plan.get(command_name)
         if not isinstance(argv, list):
@@ -587,7 +592,14 @@ def build_command_plan(
     docker_config = job.get("docker", {})
     adapter = docker_config.get("adapter", "generic_driver_audit")
     image = str(docker_config.get("image", "nubia-sm8850-kernel-builder:latest"))
-    source_volume = str(docker_config.get("source_volume", "nubia_sm8850_kernel_src"))
+    expected_source_volume = target_source_volume(repo_root)
+    configured_source_volume = docker_config.get("source_volume")
+    if configured_source_volume and configured_source_volume != expected_source_volume:
+        raise ValueError(
+            "docker.source_volume does not match the NX809J target manifest: "
+            f"expected {expected_source_volume!r}, got {configured_source_volume!r}"
+        )
+    source_volume = expected_source_volume
     toolchain_volume = str(docker_config.get("toolchain_volume", "nubia_sm8850_kernel_toolchains"))
     clang_revision = str(docker_config.get("clang_revision", "clang-r536225"))
     parallelism = int(docker_config.get("parallelism", 4))
@@ -845,12 +857,26 @@ def report_passed(path: Path, *, adapter: str | None = None) -> bool:
     payload = read_json(path)
     if adapter == "generic_driver_audit":
         drivers = payload.get("drivers", [])
-        return bool(drivers) and all(
-            isinstance(item, dict)
-            and bool(item.get("build", {}).get("passed"))
-            and bool(item.get("build", {}).get("reproducible"))
-            for item in drivers
-        )
+        if not isinstance(drivers, list) or not drivers:
+            return False
+        for item in drivers:
+            if not isinstance(item, dict):
+                return False
+            build = item.get("build")
+            identity = item.get("kernel_source_identity")
+            checks = item.get("checks")
+            if (
+                not isinstance(build, dict)
+                or not build.get("passed")
+                or not build.get("reproducible")
+                or not isinstance(identity, dict)
+                or identity.get("passed") is not True
+                or identity.get("status") != "MATCH"
+                or not isinstance(checks, dict)
+                or checks.get("vermagic_accepted") is not True
+            ):
+                return False
+        return True
     return bool(payload.get("passed"))
 
 

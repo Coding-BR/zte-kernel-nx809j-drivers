@@ -22,6 +22,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+try:
+    from .target_kernel_defaults import target_source_volume
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+
 
 ELF_HEADER = struct.Struct("<16sHHIQQQIHHHHHH")
 SECTION_HEADER = struct.Struct("<IIQQQQIIQQ")
@@ -1010,7 +1015,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=engineering_root / "validation" / "driver_audit.json")
     parser.add_argument("--markdown", type=Path, default=engineering_root / "validation" / "DRIVER_AUDIT.md")
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
-    parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
+    parser.add_argument("--source-volume", default=target_source_volume())
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
     parser.add_argument("--bindgen-volume", default="nx809j_bindgen_0695")
     parser.add_argument("--clang-revision", default="clang-r536225")
