@@ -67,6 +67,7 @@ void richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 			s16 fifo_count = aw->rtp_cnt;
 			remaining = (long)fifo_size - (long)fifo_count;
 			remaining_u32 = (u32)remaining;
+#if defined(__aarch64__)
 			register unsigned long count_register asm("x9") =
 				(unsigned long)(long)fifo_count;
 			register long destination_offset asm("x8");
@@ -76,6 +77,10 @@ void richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 				      : "r"(copied), "r"(remaining)
 				      : "cc");
 			unsigned long fifo_offset = count_register;
+#else
+			long destination_offset = (long)copied;
+			unsigned long fifo_offset = (u16)fifo_count;
+#endif
 
 			if (length <= remaining_u32) {
 				if ((u32)fifo_offset > 1000U)
@@ -91,9 +96,14 @@ void richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 				goto deliver;
 			}
 
+#if defined(__aarch64__)
 			asm goto("cmp %w0, #1001\n\t"
 				 "b.hs %l[bounds_failure]"
 				 : : "r"(fifo_offset) : "cc" : bounds_failure);
+#else
+			if (fifo_offset >= 1001UL)
+				goto bounds_failure;
+#endif
 			u16 copy_offset = (u16)aw->rtp_cnt;
 			if (copy_offset > 1000U)
 				goto bounds_failure;
@@ -127,6 +137,10 @@ deliver:
 	return;
 
 bounds_failure:
+#if defined(__aarch64__)
 	asm volatile("brk #0x5512");
 	__builtin_unreachable();
+#else
+	__builtin_trap();
+#endif
 }

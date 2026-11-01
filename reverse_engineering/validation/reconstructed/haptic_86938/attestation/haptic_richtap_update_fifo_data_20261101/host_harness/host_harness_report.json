@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01T17:45:49.742367+00:00",
+  "passed": true,
+  "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+  "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+  "source_sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+  "harness_sha256": "903ec2dbd650c60f72d93ccdcfac5cd364a847cd9d2d8af91fb83a93715a1470",
+  "compiler_flags": [
+    "-std=gnu11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-O1",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer"
+  ],
+  "scenarios": [
+    "partial copy from nonzero FIFO offset",
+    "drain one node and continue into the next",
+    "copy the final valid payload byte at offset 1000",
+    "empty FIFO callback with zero copied bytes",
+    "invalid state retry count and warning",
+    "offset 1001 reaches the bounds trap"
+  ],
+  "normal_exit_code": 0,
+  "normal_and_trap_stdout": "PASS: partial copy, cross-node drain, last valid offset, empty FIFO, invalid-state retries\nINVALID_OFFSET_TRAP_EXIT=132\n",
+  "stderr": "",
+  "invalid_offset_trap_exit_code": 132,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_richtap_update_fifo_data_20261101\\host_harness:/harness:ro",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\haptic_86938\\haptic_86938_fn_136_richtap_update_fifo_data.c:/candidate.c:ro",
+    "--entrypoint",
+    "sh",
+    "nubia-sm8850-kernel-builder:nx809j-repro",
+    "-c",
+    "\nset -eu\nulimit -c 0\ngcc -std=gnu11 -Wall -Wextra -Werror -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -I/harness/host_include /harness/richtap_update_fifo_data_host_harness.c /candidate.c -o /tmp/richtap-host\n/tmp/richtap-host >/tmp/richtap-normal.log 2>&1\ncat /tmp/richtap-normal.log\nset +e\n/tmp/richtap-host invalid-offset >/tmp/richtap-trap.log 2>&1\ntrap_rc=$?\nset -e\ntest \"$trap_rc\" -ne 0\nprintf 'INVALID_OFFSET_TRAP_EXIT=%s\\n' \"$trap_rc\"\n"
+  ]
+}

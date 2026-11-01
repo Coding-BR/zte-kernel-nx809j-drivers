@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01T17:48:07.179098+00:00",
+  "passed": true,
+  "method": "exhaustive finite-domain transition model",
+  "source_sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+  "stock_semantics_source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+  "domain": {
+    "head_and_tail_states": [
+      "ready U",
+      "empty 0xaa",
+      "invalid"
+    ],
+    "ready_node_size": "0..4 bytes",
+    "initial_head_count": "0..data_size",
+    "requested_length": "0..8 bytes",
+    "rtp_loop": [
+      0,
+      1
+    ],
+    "queue": "two nodes followed by an empty sentinel"
+  },
+  "cases_explored": 5202,
+  "signed_16bit_bound_cases": 65536,
+  "explicit_boundary_cases": 4,
+  "u32_length_boundary_cases": 5,
+  "maximum_loop_steps": 5,
+  "invariants": [
+    "terminates within the finite queue/retry bound",
+    "at most three sleep retries and one invalid-state warning",
+    "copied length never exceeds requested length",
+    "every source payload read stays in offsets 0..1000",
+    "every destination write stays within the requested output capacity",
+    "copied bytes retain FIFO order across node drain",
+    "drained nodes become state 0xff with size/count zero",
+    "callback length equals bytes actually copied"
+  ],
+  "limits": [
+    "The model assumes valid object pointers and an empty sentinel after the finite queue.",
+    "It does not model concurrent mutation, KCSAN, or hardware timing.",
+    "The 1000/1001 boundary is separately exercised by the ASan/UBSan host harness."
+  ]
+}
