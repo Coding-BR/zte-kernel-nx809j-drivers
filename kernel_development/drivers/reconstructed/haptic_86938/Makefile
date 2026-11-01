@@ -145,3 +145,4 @@ AFLAGS_haptic_86938_richtap_strings.o := -g0 -I$(src)
 haptic_86938-y += haptic_86938_fn_136_richtap_update_fifo_data.o
 haptic_86938-y += haptic_86938_fn_137_richtap_rtp_work.o
 haptic_86938-y += haptic_86938_fn_138_tiktap_work_routine.o
+haptic_86938-y += haptic_86938_fn_139_aw8693x_play_mode.o
