@@ -328,6 +328,13 @@ def validate_job(job: dict[str, Any]) -> list[dict[str, Any]]:
     ghidra = job.get("ghidra", {})
     if not isinstance(ghidra, dict):
         raise ValueError("ghidra must be an object")
+    if "CANDIDATE_GHIDRA_PCODE" in required_gates(job, normalized):
+        candidate_export = paths.get("candidate_ghidra_export")
+        if not isinstance(candidate_export, str) or not candidate_export.strip():
+            raise ValueError(
+                "paths.candidate_ghidra_export is required when "
+                "CANDIDATE_GHIDRA_PCODE is required"
+            )
     paired_exports = ghidra.get("semantic_comparison_exports")
     if paired_exports is not None and (
         not isinstance(paired_exports, dict)

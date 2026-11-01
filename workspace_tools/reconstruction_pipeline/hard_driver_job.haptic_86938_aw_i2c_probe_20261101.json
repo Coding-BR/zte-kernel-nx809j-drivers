@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "CALLBACK_ABI",
+    "STATEFUL_MEMORY",
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS",
+    "CONCURRENCY_LIFETIME"
+  ],
+  "functions": [
+    {
+      "stock_function": "aw_i2c_probe",
+      "stock_entry": "001073c0",
+      "source_function": "aw_i2c_probe",
+      "candidate_function": "aw_i2c_probe",
+      "kcfi_required": true,
+      "assembly_only": true
+    },
+    {
+      "stock_function": "irq_config",
+      "stock_entry": "00108368",
+      "source_function": "irq_config",
+      "candidate_function": "irq_config",
+      "kcfi_required": false,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "vibrator_init",
+      "stock_entry": "00108468",
+      "source_function": "vibrator_init",
+      "candidate_function": "vibrator_init",
+      "kcfi_required": false,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "haptic_init",
+      "stock_entry": "00108608",
+      "source_function": "haptic_init",
+      "candidate_function": "haptic_init",
+      "kcfi_required": false,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "irq_handle",
+      "stock_entry": "00109090",
+      "source_function": "irq_handle",
+      "candidate_function": "irq_handle",
+      "kcfi_required": true,
+      "assembly_only": true
+    },
+    {
+      "stock_function": "vibrator_work_routine",
+      "stock_entry": "001096ec",
+      "source_function": "vibrator_work_routine",
+      "candidate_function": "vibrator_work_routine",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "rtp_work_routine",
+      "stock_entry": "00109c48",
+      "source_function": "rtp_work_routine",
+      "candidate_function": "rtp_work_routine",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "activate_store",
+      "stock_entry": "0010a430",
+      "source_function": "activate_store",
+      "candidate_function": "activate_store",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "aw_rtp_store",
+      "stock_entry": "0010af38",
+      "source_function": "aw_rtp_store",
+      "candidate_function": "aw_rtp_store",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "cali_store",
+      "stock_entry": "0010bad0",
+      "source_function": "cali_store",
+      "candidate_function": "cali_store",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "osc_cali_store",
+      "stock_entry": "0010c400",
+      "source_function": "osc_cali_store",
+      "candidate_function": "osc_cali_store",
+      "kcfi_required": true,
+      "assembly_only": true
+    },
+    {
+      "stock_function": "haptic_audio_store",
+      "stock_entry": "0010cd9c",
+      "source_function": "haptic_audio_store",
+      "candidate_function": "haptic_audio_store",
+      "kcfi_required": true,
+      "assembly_only": true
+    },
+    {
+      "stock_function": "audio_work_routine",
+      "stock_entry": "0010dd50",
+      "source_function": "audio_work_routine",
+      "candidate_function": "audio_work_routine",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "rtp_osc_cali",
+      "stock_entry": "0010c7f0",
+      "source_function": "rtp_osc_cali",
+      "candidate_function": "rtp_osc_cali",
+      "kcfi_required": false,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_i2c_probe_20261101/candidate_ghidra_v2/s"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "require_complete_driver_audit": false
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "per_function": true
+    }
+  },
+  "ghidra": {
+    "assembly_only_decompiler_fallback_reason": "Four methods are emitted as exact ELF-bounded assembly. Their Ghidra normalized-C output differs because of unresolved/relocated names and CFG rendering, while ELF body sizes, P-Code shapes and relocation-aware instruction bodies match stock. Keep strict normalized-C comparison for the other ten methods; retain exact Assembly, relocations, P-Code and body-size checks for all fourteen."
+  }
+}
