@@ -2,10 +2,16 @@
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
 #include <linux/module.h>
+#include <linux/pm_qos.h>
 
 #include "haptic_86938_internal.h"
 
 struct aw_haptic *g_aw_haptic;
+
+/* Shared by the stock RTP, TikTap, and oscillator-calibration workers. */
+struct pm_qos_request aw_pm_qos_req_vb;
+_Static_assert(sizeof(struct pm_qos_request) == 48,
+	       "NX809J CPU-latency QoS request layout");
 
 char *aw_ram_name = "haptic_ram.bin";
 

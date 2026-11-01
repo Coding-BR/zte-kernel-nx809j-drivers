@@ -2002,22 +2002,62 @@
     {
       "stock_function": "tiktap_work_routine",
       "stock_entry": "00108c68",
-      "source_file": null,
+      "source_file": "haptic_86938_fn_138_tiktap_work_routine.c",
       "source_function": "tiktap_work_routine",
-      "status": "NOT_STARTED",
+      "status": "candidate_under_static_validation",
       "semantic_equivalence": "NOT_ESTABLISHED",
       "kcfi_required": true,
       "kcfi_evidence": {
-        "decision": "KCFI preamble observed",
+        "decision": "Candidate KCFI entry and all six indirect callback callsites pass the protocol_core_v14 comparison; callback concurrency and broader lifetime gates remain open.",
         "type_id": "0xa607748c",
-        "preamble_offset": "0x5e44"
+        "preamble_offset": "0x5e44",
+        "callback_callsite_type_ids": [
+          "0x1d0adf6e",
+          "0xd37b6e95",
+          "0x1d0adf6e",
+          "0x784b3854",
+          "0x784b3854",
+          "0xc6a7b29b"
+        ],
+        "callback_slots": [
+          "aw8693x_func_list+0x98 -> aw8693x_play_mode",
+          "aw8693x_func_list+0x118 -> aw8693x_upload_lra",
+          "aw8693x_func_list+0x60 -> aw8693x_play_go",
+          "aw8693x_func_list+0x178 -> aw8693x_rtp_get_fifo_aes",
+          "aw8693x_func_list+0x160 -> aw8693x_get_glb_state",
+          "aw8693x_func_list+0xd0 -> aw8693x_set_rtp_data"
+        ],
+        "callback_prototypes": [
+          "void (struct aw_haptic *, u8)",
+          "void (struct aw_haptic *, unsigned int)",
+          "void (struct aw_haptic *, u8)",
+          "u8 (struct aw_haptic *)",
+          "u8 (struct aw_haptic *)",
+          "void (struct aw_haptic *, u8 *, u32)"
+        ]
       },
       "evidence": [
         "offline_static/ghidra_stock_repaired/haptic_86938.ko/functions.jsonl",
         "offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl",
         "offline_static/ghidra_body_repair_audit.json",
-        "offline_static/kcfi_stock.json"
-      ]
+        "offline_static/kcfi_stock.json",
+        "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0072_00108c68_tiktap_work_routine.c",
+        "offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0072_00108c68_tiktap_work_routine.jsonl",
+        "offline_static/stock_assembly/0072_tiktap_work_routine_00108c68.asm",
+        "offline_static/MP4_EVENT_CALLBACK_LIFETIME.json",
+        "haptic_86938_fn_138_tiktap_work_routine.c",
+        "workspace_tools/reconstruction_pipeline/hard_driver_job.haptic_86938_tiktap_work_routine_20261101.json",
+        "attestation/haptic_tiktap_work_routine_20261101/README.md",
+        "attestation/haptic_tiktap_work_routine_20261101/SEMANTIC_REVIEW.json",
+        "attestation/haptic_tiktap_work_routine_20261101/protocol_core_v14/hard_protocol_report.json",
+        "attestation/haptic_tiktap_work_routine_20261101/protocol_core_v14/assembly/comparison.json",
+        "attestation/haptic_tiktap_work_routine_20261101/protocol_core_v14/ghidra/semantic_comparison.json",
+        "attestation/haptic_tiktap_work_routine_20261101/protocol_core_v14/kcfi/callsite_comparison.json",
+        "attestation/tiktap_ghidra_candidate_v1/export_provenance.json",
+        "attestation/tiktap_ghidra_candidate_v1/scoped/manifest.json",
+        "attestation/tiktap_ghidra_candidate_v1/scoped/decompiled/0142_00109bc8_tiktap_work_routine.c"
+      ],
+      "mapping_note": "protocol_core_v14 passes exact assembly/relocations, candidate Ghidra C/P-Code, KCFI, Joern, and reproducible Docker core gates; promotion remains blocked by unsatisfied evidence requirements."
     },
     {
       "stock_function": "irq_handle",
