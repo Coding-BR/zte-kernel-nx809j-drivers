@@ -143,3 +143,4 @@ AFLAGS_haptic_86938_fn_134_richtap_file_unlocked_ioctl_exact.o := -g0 -I$(src)
 AFLAGS_haptic_86938_fn_135_richtap_rtp_start_exact.o := -g0 -I$(src)
 AFLAGS_haptic_86938_richtap_strings.o := -g0 -I$(src)
 haptic_86938-y += haptic_86938_fn_136_richtap_update_fifo_data.o
+haptic_86938-y += haptic_86938_fn_137_richtap_rtp_work.o

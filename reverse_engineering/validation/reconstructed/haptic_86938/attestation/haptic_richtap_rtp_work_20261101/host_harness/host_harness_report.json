@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01T18:26:18.593118+00:00",
+  "passed": true,
+  "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+  "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+  "source_sha256": "77d8572d35c9ebeab1202375e93bea5aad3efe038c318ea62afb3f5807f1643e",
+  "harness_sha256": "f954956a155a63ea08e3b737f96657d02dde1050b0f95b26fafa050a4bbfc4b8",
+  "compiler_flags": [
+    "-std=gnu11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-O1",
+    "-g",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer"
+  ],
+  "scenarios": [
+    "drain two ready FIFO nodes and preserve callback order",
+    "partially copy a node without advancing the FIFO cursor",
+    "stop on the empty sentinel and propagate rtp_start failure",
+    "bound invalid-state retries to 31 sleeps",
+    "execute the looping refill callback path",
+    "stop refill when FIFO almost-full is reported"
+  ],
+  "returncode": 0,
+  "stdout": "PASS: 6 worker paths, FIFO mutations, bounded retries, and callback order\n",
+  "stderr": "",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_richtap_rtp_work_20261101\\host_harness:/harness:ro",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\haptic_86938\\haptic_86938_fn_137_richtap_rtp_work.c:/candidate.c:ro",
+    "--entrypoint",
+    "sh",
+    "nubia-sm8850-kernel-builder:nx809j-repro",
+    "-c",
+    "set -eu; ulimit -c 0; gcc -std=gnu11 -Wall -Wextra -Werror -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -I/harness/include /harness/richtap_rtp_work_host_harness.c -o /tmp/richtap-work-host; /tmp/richtap-work-host"
+  ]
+}

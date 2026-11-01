@@ -1,0 +1,4 @@
+#ifndef RICHTAP_WORK_HOST_LINUX_WORKQUEUE_H
+#define RICHTAP_WORK_HOST_LINUX_WORKQUEUE_H
+struct work_struct;
+#endif
