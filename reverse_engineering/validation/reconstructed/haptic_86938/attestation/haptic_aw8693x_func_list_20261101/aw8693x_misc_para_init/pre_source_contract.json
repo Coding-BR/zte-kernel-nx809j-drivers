@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "target": "aw8693x_misc_para_init@0010576c",
+  "prototype": "void aw8693x_misc_para_init(struct aw_haptic *)",
+  "kcfi_type_id": "0x847a0830",
+  "state_ranges": [
+    { "offset": "0x12", "role": "chip identifier byte" },
+    { "offset": "0x1e-0x25", "role": "device register snapshot" },
+    { "offset": "0x30-0x44", "role": "rate and register-derived state" },
+    { "offset": "0x49b", "role": "derived sample-rate value" },
+    { "offset": "0x4c1-0x4c4", "role": "parsed configuration inputs" }
+  ],
+  "observable_effects": [
+    "reads the chip identifier through the I2C client at haptic offset 0x328 and writes register 0x47",
+    "computes and saturates the derived period value at 0x7f",
+    "reads registers 7 and 10 and stores their byte/eight-byte results into haptic state",
+    "applies stock bit updates and ordered writes to protection, VBAT reference, and calibration registers",
+    "I2C helper return values are ignored"
+  ],
+  "evidence_basis": [
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0030_0010576c_aw8693x_misc_para_init.c",
+    "offline_static/stock_assembly/0030_aw8693x_misc_para_init_0010576c.asm",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0000_00102e24_aw8693x_get_f0.c",
+    "offline_static/kcfi_stock.json"
+  ],
+  "limitations": [
+    "Register writes are reconstructed from static evidence; no device hardware validation is claimed."
+  ]
+}

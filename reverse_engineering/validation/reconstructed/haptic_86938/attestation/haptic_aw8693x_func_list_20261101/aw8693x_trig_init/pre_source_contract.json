@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "target": "aw8693x_trig_init@001052d4",
+  "prototype": "void aw8693x_trig_init(struct aw_haptic *)",
+  "kcfi_type_id": "0x847a0830",
+  "state_ranges": [
+    { "offset": "0x4a5-0x4bc", "role": "parsed trigger input bytes" },
+    { "offset": "0x4bf", "role": "one-wire mode flag" },
+    { "offset": "0x5e5-0x5ec", "role": "trigger 1 cached configuration" },
+    { "offset": "0x5f2-0x5f9", "role": "trigger 2 cached configuration" },
+    { "offset": "0x5ff-0x606", "role": "trigger 3 cached configuration" }
+  ],
+  "observable_effects": [
+    "one-wire mode writes 0x6c to register 0x3e, 0x75 to 0x3c, then sets bit 3 of 0x3a",
+    "normal mode derives trigger 1 cached bytes and programs registers 0x39, 0x33, and 0x36",
+    "both modes derive trigger 2 and trigger 3 cached state and program registers 0x39, 0x34, 0x37, 0x3a, 0x35, and 0x38 in stock order",
+    "all I2C helper return values are ignored"
+  ],
+  "evidence_basis": [
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0027_001052d4_aw8693x_trig_init.c",
+    "offline_static/stock_assembly/0027_aw8693x_trig_init_001052d4.asm",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/strings.jsonl",
+    "offline_static/kcfi_stock.json"
+  ],
+  "limitations": [
+    "Register writes are reconstructed from static evidence; no device hardware validation is claimed."
+  ]
+}
