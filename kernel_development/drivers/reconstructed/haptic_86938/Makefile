@@ -129,5 +129,6 @@ haptic_86938-y += haptic_86938_fn_124_seq_store.o
 haptic_86938-y += haptic_86938_fn_125_seq_show.o
 haptic_86938-y += haptic_86938_fn_126_aw8693x_creat_node.o
 haptic_86938-y += haptic_86938_fn_127_aw8693x_container_update.o
+haptic_86938-y += haptic_86938_fn_128_aw8693x_get_wav_loop.o
 haptic_86938-y += haptic_86938_fn_129_audio_off.o
 haptic_86938-y += haptic_86938_fn_130_cont_store.o

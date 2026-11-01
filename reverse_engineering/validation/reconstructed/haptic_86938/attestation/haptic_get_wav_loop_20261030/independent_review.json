@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "target": "aw8693x_get_wav_loop@00105df0",
+  "reviewer": "Ohm, independent read-only reviewer",
+  "review_type": "stock-first semantic and static-codegen audit",
+  "verdict": "PASS",
+  "semantic_equivalence": "PROVEN_OFFLINE_EXACT",
+  "scope": [
+    "stock module, stock assembly/P-Code/Ghidra body, KCFI and callback-table relocation",
+    "candidate C source and callback signature basis",
+    "core_final_v4_execution/hard_protocol_report.json and input_manifest.json",
+    "core_final_v4_execution/assembly/comparison.json and ghidra/semantic_comparison.json",
+    "host_harness/harness_result.json",
+    "microproofs/TEST_CONTRACT.md and MP4_TEST_ORACLE_DRAFT.json"
+  ],
+  "review_findings": [
+    "The callback ABI, return type, zeroed local input, single I2C read, ignored helper result, nibble extraction and stores, eight ordered snprintf arguments, output length and return match the stock evidence.",
+    "The stock decompiler omits the high-nibble vararg for sequences 1, 3, 5 and 7; stock assembly proves w4 contains each value and the candidate supplies it.",
+    "All eight automated gates pass in the final map-closure report. Assembly has 105 instructions and 420 bytes with matching relocations; strict normalized C and P-Code comparisons pass without fallback.",
+    "The ASan/UBSan harness passes four scenarios and verifies output boundaries and touched haptic bytes. The five MP4 observation IDs are unique."
+  ],
+  "status_note": "The function is PROVEN_OFFLINE_EXACT while map_status remains candidate_under_static_validation. promotion_authorized=false is the protocol runner’s non-promoting decision; no whole-module promotion is authorized.",
+  "limitations": [
+    "KCFI collides for char * and unsigned char *; char * is the best-supported nominal spelling from the stock wrapper.",
+    "Physical meaning of register 0x12 and device behavior remain unknown; no hardware validation was performed.",
+    "This function-level proof does not establish whole-driver equivalence."
+  ],
+  "checked_report": "attestation/haptic_get_wav_loop_20261030/core_final_v4_execution/hard_protocol_report.json",
+  "checked_input_manifest": "attestation/haptic_get_wav_loop_20261030/core_final_v4_execution/input_manifest.json"
+}
