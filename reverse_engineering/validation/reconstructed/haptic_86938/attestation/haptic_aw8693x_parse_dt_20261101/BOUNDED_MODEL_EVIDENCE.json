@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "target": "aw8693x_parse_dt@00104d80",
+  "status": "PASS_BOUNDED_RELATIONAL_MODEL_AND_MUTATION_DETECTION",
+  "formal_proof": false,
+  "scope": "Finite host model over target OF helper behavior; it is not an unbounded proof of all possible device-tree contents and does not substitute for device validation.",
+  "harness_report": "host_harness/harness_result.json",
+  "harness_report_sha256": "f0f2b37ce3b0bf13f2fe97bde7b3cdd04e3f1fd9ecf64f3a99f891e316797f7d",
+  "candidate_passed": true,
+  "asan_ubsan": "PASS",
+  "candidate_returncode": 0,
+  "comparisons": [
+    "Stock behavioral model vs. actual reconstructed C: object bytes, log sequence, OF call sequence and counts.",
+    "All 16 property reads succeed with distinctive bytes and endian-sensitive u32 inputs.",
+    "Each of 16 reads fails independently and later reads still run.",
+    "All 16 reads fail together; sentinel destinations remain unchanged except final booleans.",
+    "All eight combinations of the three presence flags, including present property with NULL value.",
+    "Minimum-length failures, surplus bytes with sz_max=0, null node, and local-buffer commit conditions.",
+    "The harness asserts the observed return class for absent properties (-EINVAL), present properties with no value (-ENODATA), and undersized properties (-EOVERFLOW).",
+    "The full 19-call property lookup sequence, including the three final presence checks, is captured and compared between the bounded stock model and candidate."
+  ],
+  "counterexample": {
+    "seeded_mutation": "Change duration_time commit from aw+0x464 to aw+0x465.",
+    "mutant_returncode": 1,
+    "detected": true,
+    "observed": "State-byte and relational all-success checks fail."
+  },
+  "limitations": [
+    "This is a finite host model, not an unbounded formal proof.",
+    "The stock behavioral model and candidate share the OF helper stubs. Target OF errno and write semantics are independently anchored to the exact Docker kernel source contract; the harness validates parser reactions to those results."
+  ],
+  "harness_source_sha256": "d4b2032f80899ece87d115d391fc7ce7dfae29bf97fdfcc3417fe5e6cda606b9",
+  "runner_sha256": "7c9d214b2fc7203b916054239de276579a2d0dab6d0c650c3f7f1795b6264a77",
+  "mutant_build_returncode": 0,
+  "mutant_compiled": true,
+  "passed": true
+}

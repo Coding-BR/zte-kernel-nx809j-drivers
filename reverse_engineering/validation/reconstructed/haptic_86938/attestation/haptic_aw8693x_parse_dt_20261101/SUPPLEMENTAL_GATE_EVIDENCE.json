@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "target": "aw8693x_parse_dt@00104d80",
+  "source_sha256": "001d373de4817f079aa3d06a76d60bf72a88f4e7642f6fef928b46d1606fd7bf",
+  "core_status": "CORE_GATES_PASS",
+  "candidate_function_status": "STATIC_EQUIVALENCE_ESTABLISHED_FOR_FUNCTION",
+  "driver_status": "INCOMPLETE_MODULE_AUDIT",
+  "promotion_authorized": false,
+  "gates": [
+    {
+      "gate": "ASSEMBLY_RELOCATIONS",
+      "status": "PASS",
+      "evidence": "protocol_core_v1/assembly/comparison.json"
+    },
+    {
+      "gate": "CANDIDATE_GHIDRA_PCODE",
+      "status": "PASS",
+      "evidence": "protocol_core_v2/ghidra/semantic_comparison.json"
+    },
+    {
+      "gate": "DOCKER_REPRODUCIBLE",
+      "status": "PASS",
+      "evidence": "protocol_core_v1/docker/driver_audit.json"
+    },
+    {
+      "gate": "INPUT_IDENTITY",
+      "status": "PASS",
+      "evidence": "protocol_core_v1/hard_protocol_report.json"
+    },
+    {
+      "gate": "JOERN_SCOPED",
+      "status": "PASS",
+      "evidence": "protocol_core_v1/joern/joern_gate_report.json"
+    },
+    {
+      "gate": "JOERN_SLICE",
+      "status": "PASS",
+      "evidence": "protocol_core_v1/joern/joern_gate_report.json"
+    },
+    {
+      "gate": "KCFI",
+      "status": "PASS",
+      "evidence": "protocol_core_v2/kcfi/comparison.json; incoming caller evidence in CALLBACK_TABLE_AUDIT.json"
+    },
+    {
+      "gate": "MAP_IDENTITY",
+      "status": "PASS",
+      "evidence": "protocol_core_v1/hard_protocol_report.json"
+    },
+    {
+      "gate": "BOUNDED_MODEL",
+      "status": "PASS_BOUNDED_MATRIX_NOT_FORMAL_PROOF",
+      "evidence": "BOUNDED_MODEL_EVIDENCE.json"
+    },
+    {
+      "gate": "CALLBACK_TABLE",
+      "status": "INCOMPLETE_CANDIDATE_TABLE_MISSING",
+      "evidence": "CALLBACK_TABLE_AUDIT.json"
+    },
+    {
+      "gate": "HOST_HARNESS",
+      "status": "PASS_ERRNO_LOOKUP_ORDER_AND_MUTANT_BUILD_GATED",
+      "evidence": "host_harness/harness_result.json"
+    },
+    {
+      "gate": "INDEPENDENT_REVIEW",
+      "status": "PASS_FUNCTION_SCOPE",
+      "evidence": "independent review submission in progress"
+    },
+    {
+      "gate": "KMI_TYPES",
+      "status": "SCOPED_ABI_CONFIRMED_NO_KMI_EXPORT",
+      "evidence": "KMI_TYPES_EVIDENCE.json"
+    },
+    {
+      "gate": "LLVM_IR_DIAGNOSIS",
+      "status": "PASS",
+      "evidence": "LLVM_IR_DIAGNOSIS.json"
+    },
+    {
+      "gate": "SANITIZERS",
+      "status": "PASS_ASAN_UBSAN",
+      "evidence": "host_harness/harness_result.json"
+    },
+    {
+      "gate": "SEMANTIC_COUNTEREXAMPLE",
+      "status": "PASS_MUTANT_COMPILED_AND_DETECTED",
+      "evidence": "BOUNDED_MODEL_EVIDENCE.json"
+    },
+    {
+      "gate": "STATE_EFFECT_LEDGER",
+      "status": "PASS",
+      "evidence": "MP2_STATE_EFFECT_LEDGER.json"
+    }
+  ],
+  "limitations": [
+    "Candidate callback table is not reconstructed or wired.",
+    "Board-specific device-tree values were not found; hardware validation remains deferred.",
+    "The protocol core runner is non-promoting by design; this matrix records supplemental evidence and unresolved integration."
+  ],
+  "driver_audit_status": "incomplete_or_failed; no current curated .ko; alias/import parity not established",
+  "host_harness_sha256": "f0f2b37ce3b0bf13f2fe97bde7b3cdd04e3f1fd9ecf64f3a99f891e316797f7d"
+}

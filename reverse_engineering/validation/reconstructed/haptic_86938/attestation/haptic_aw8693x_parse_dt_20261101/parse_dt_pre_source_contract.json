@@ -1,0 +1,581 @@
+{
+  "schema_version": "1.0",
+  "created_utc": "2026-11-01",
+  "driver": "haptic_86938",
+  "function_identity": "aw8693x_parse_dt@00104d80",
+  "stage": "PRE_SOURCE_CONTRACT",
+  "status": "PRE_SOURCE_GATE_PASSED",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "inputs": [
+    {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/functions.jsonl",
+      "sha256": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl",
+      "sha256": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0026_00104d80_aw8693x_parse_dt.c",
+      "sha256": "eb75725c7dd44f6078ee8e9adb22244759b4b1e1279cdf3e59ad9507f4201ef6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0026_00104d80_aw8693x_parse_dt.jsonl",
+      "sha256": "69ab08ef5af88c31e3ee39e3c8574cf6bb13407e053682d42c11e54bf865cd34"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0026_aw8693x_parse_dt_00104d80.asm",
+      "sha256": "3f06861b51d82f83a8b3fc6d32c1b985334aa30a637a57c527e73eee8963f73e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json",
+      "sha256": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/function_microtasks.json",
+      "sha256": "0530415d5c19eb6bfe6d1fe5e59894985fb60c93e1578d43706ab542975494cf"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/function_evidence_index.jsonl",
+      "sha256": "bb2a47e0e7d4add7a8f7f0e5a5530da46a19eef392fcf51c3f9b6e2d397f4a28"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/validation_plan.json",
+      "sha256": "f0e01d866ca9abb98274ce3bfa59fb6a439e8a5384a88cbaae0fcbba05d19027"
+    }
+  ],
+  "source_map": {
+    "current_status": "NOT_STARTED",
+    "source_file": null
+  },
+  "abi": {
+    "return_type": "void",
+    "arguments": [
+      {
+        "register": "x0",
+        "candidate_nominal_type": "struct device *",
+        "confidence": "probable",
+        "evidence": "aw_i2c_probe computes param_1+0x20 and passes that value in x0; parse_dt does not read x0"
+      },
+      {
+        "register": "x1",
+        "candidate_nominal_type": "struct aw_haptic *",
+        "confidence": "probable",
+        "evidence": "aw_i2c_probe passes the devm_kmalloc result (0x6f8-byte object) in x1; parse_dt uses x1 as the base for all object offsets"
+      },
+      {
+        "register": "x2",
+        "candidate_nominal_type": "struct device_node *",
+        "confidence": "probable",
+        "evidence": "aw_i2c_probe passes the pointer loaded from param_1+0x308 in x2; parse_dt passes x2 to OF APIs"
+      }
+    ],
+    "kcfi_type_id": "0x2e77d32a",
+    "kcfi_preamble_offset": "0x1f5c",
+    "callsite": "aw_i2c_probe@001073c0+0xa24 (stock address 00107de4)",
+    "caller_guard": "load function preamble at x8-4, compare against 0x2e77d32a, brk #0x8228 on mismatch",
+    "prototype_confidence": "The 3-pointer void prototype is the best-supported source prototype, not a nominal type recovered from Ghidra; KCFI confirms type ID 0x2e77d32a at the actual indirect callsite."
+  },
+  "effects": [
+    {
+      "sequence": 1,
+      "kind": "read_property",
+      "property": "aw8693x_gain_bypass",
+      "element_type": "u8",
+      "output_offset_hex": "0x4c1",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6ae",
+      "error_format": "6[%s][%04d]%s: aw8693x_gain_bypass not found\n",
+      "stock_call_address": "00104dd4",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 2,
+      "kind": "read_property",
+      "property": "aw8693x_uvlo_vol_default",
+      "element_type": "u8",
+      "output_offset_hex": "0x4c2",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6b2",
+      "error_format": "6[%s][%04d]%s: aw8693x_uvlo_vol_default not found\n",
+      "stock_call_address": "00104e14",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 3,
+      "kind": "read_property",
+      "property": "f0_pre",
+      "element_type": "u32",
+      "output_offset_hex": "0x468",
+      "api": "of_property_read_variable_u32_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6b6",
+      "error_format": "6[%s][%04d]%s: f0_pre not found\n",
+      "stock_call_address": "00104e54",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 4,
+      "kind": "read_property",
+      "property": "aw8693x_f0_cali_percent",
+      "element_type": "u8",
+      "output_offset_hex": "0x462",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6ba",
+      "error_format": "6[%s][%04d]%s: aw8693x_f0_cali_percent not found\n",
+      "stock_call_address": "00104e94",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 5,
+      "kind": "read_property",
+      "property": "aw8693x_cont_smart_loop",
+      "element_type": "u8",
+      "output_offset_hex": "0x4c3",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6be",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_smart_loop not found\n",
+      "stock_call_address": "00104ed4",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 6,
+      "kind": "read_property",
+      "property": "aw8693x_cont_drv1_lvl",
+      "element_type": "u8",
+      "output_offset_hex": "0x49a",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6c2",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_drv1_lvl not found\n",
+      "stock_call_address": "00104f14",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 7,
+      "kind": "read_property",
+      "property": "aw8693x_cont_lra_vrms",
+      "element_type": "u32",
+      "output_offset_hex": "0x4c4",
+      "api": "of_property_read_variable_u32_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6c6",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_lra_vrms not found\n",
+      "stock_call_address": "00104f54",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 8,
+      "kind": "read_property",
+      "property": "aw8693x_cont_drv1_time",
+      "element_type": "u8",
+      "output_offset_hex": "0x4a0",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6ca",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_drv1_time not found\n",
+      "stock_call_address": "00104f94",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 9,
+      "kind": "read_property",
+      "property": "aw8693x_cont_drv2_time",
+      "element_type": "u8",
+      "output_offset_hex": "0x4a1",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6ce",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_drv2_time not found\n",
+      "stock_call_address": "00104fd4",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 10,
+      "kind": "read_property",
+      "property": "aw8693x_cont_brk_time",
+      "element_type": "u8",
+      "output_offset_hex": "0x49d",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6d2",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_brk_time not found\n",
+      "stock_call_address": "00105014",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 11,
+      "kind": "read_property",
+      "property": "aw8693x_cont_track_margin",
+      "element_type": "u8",
+      "output_offset_hex": "0x4a3",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6d7",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_track_margin not found\n",
+      "stock_call_address": "00105054",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 12,
+      "kind": "read_property",
+      "property": "aw8693x_cont_brk_gain",
+      "element_type": "u8",
+      "output_offset_hex": "0x49f",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6db",
+      "error_format": "6[%s][%04d]%s: aw8693x_cont_brk_gain not found\n",
+      "stock_call_address": "00105094",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 13,
+      "kind": "read_property",
+      "property": "aw8693x_d2s_gain",
+      "element_type": "u8",
+      "output_offset_hex": "0x495",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6df",
+      "error_format": "6[%s][%04d]%s: aw8693x_d2s_gain not found\n",
+      "stock_call_address": "001050d4",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 14,
+      "kind": "read_property_to_local_then_commit",
+      "property": "aw8693x_duration_time",
+      "element_type": "u8",
+      "local_buffer_bytes": 3,
+      "local_initial_value": [
+        0,
+        0,
+        0
+      ],
+      "commit_offset_hex": "0x464",
+      "commit_bytes": 3,
+      "commit_condition": "only when property read returns nonnegative",
+      "failure": "log INFO and preserve preexisting bytes at aw+0x464..0x466",
+      "error_log_line_hex": "0x6e4",
+      "error_format": "6[%s][%04d]%s: aw8693x_duration_time not found\n",
+      "stock_call_address": "00105114",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 3,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 15,
+      "kind": "read_property_to_local_then_commit",
+      "property": "aw8693x_trig_config",
+      "element_type": "u8",
+      "local_buffer_bytes": 24,
+      "local_initial_value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "commit_offset_hex": "0x4a5",
+      "commit_bytes": 24,
+      "commit_condition": "only when property read returns nonnegative",
+      "failure": "log INFO and preserve preexisting bytes at aw+0x4a5..0x4bc",
+      "error_log_line_hex": "0x6eb",
+      "error_format": "6[%s][%04d]%s: aw8693x_trig_config not found\n",
+      "stock_call_address": "00105168",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 24,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 16,
+      "kind": "read_property",
+      "property": "aw8693x_bst_vol_default",
+      "element_type": "u8",
+      "output_offset_hex": "0x463",
+      "api": "of_property_read_variable_u8_array",
+      "negative_return": "emit the corresponding INFO log and continue; target-kernel OF helper leaves output unchanged on invalid data",
+      "error_log_line_hex": "0x6f2",
+      "error_format": "6[%s][%04d]%s: aw8693x_bst_vol_default not found\n",
+      "stock_call_address": "001051c0",
+      "fifth_argument_semantics": "not inferred from the ELF alone; checked separately against the exact target kernel API contract",
+      "of_api_bounds": {
+        "sz_min": 1,
+        "sz_max": 0,
+        "sz_min_semantics": "minimum number of elements; when sz_max is 0 exactly sz_min elements are copied",
+        "sz_max_semantics": "0 means no upper limit for DT property length, while the helper still copies exactly sz_min elements"
+      },
+      "documented_sz_max_zero_behavior": "read exactly sz_min elements; larger DT arrays are not copied beyond sz_min",
+      "documented_error_write_behavior": "API contract states output is modified only for a valid decoded value; invalid property leaves output unchanged"
+    },
+    {
+      "sequence": 17,
+      "kind": "property_presence_boolean",
+      "property": "aw8693x_is_enabled_track_en",
+      "api": "of_find_property",
+      "length_argument": 0,
+      "output_offset_hex": "0x4c0",
+      "assigned_value": "(returned property pointer != NULL)",
+      "log_line_hex": "0x6f6",
+      "log_format": "6[%s][%04d]%s: track en = %d\\n",
+      "stock_call_address": "001051f8"
+    },
+    {
+      "sequence": 18,
+      "kind": "property_presence_boolean",
+      "property": "aw8693x_is_enabled_auto_bst",
+      "api": "of_find_property",
+      "length_argument": 0,
+      "output_offset_hex": "0x4bd",
+      "assigned_value": "(returned property pointer != NULL)",
+      "log_line_hex": "0x6fa",
+      "log_format": "6[%s][%04d]%s: auto bst = %d\\n",
+      "stock_call_address": "00105240"
+    },
+    {
+      "sequence": 19,
+      "kind": "property_presence_boolean",
+      "property": "aw8693x_is_enabled_one_wire",
+      "api": "of_find_property",
+      "length_argument": 0,
+      "output_offset_hex": "0x4bf",
+      "assigned_value": "(returned property pointer != NULL)",
+      "log_line_hex": "0x6fe",
+      "log_format": "6[%s][%04d]%s: onewire = %d\\n",
+      "stock_call_address": "00105278"
+    }
+  ],
+  "control_flow": {
+    "ordered_operations": true,
+    "read_errors": "All 16 negative OF read returns emit the corresponding INFO log and continue. The verified target helpers validate before copying, so a negative return leaves the destination unchanged. Duration/trig local buffers are copied to aw only on nonnegative return. Later reads and all three presence checks still execute. The text not found is used for every negative errno and does not prove absence.",
+    "presence_reads": "each property presence result is stored as one byte boolean",
+    "stack_canary": "SP_EL0+0x710 saved and checked at epilogue; mismatch calls __stack_chk_fail",
+    "function_return": "void"
+  },
+  "oracle_draft": {
+    "comparison_dimensions": [
+      "return/termination",
+      "ordered external calls and arguments",
+      "property output writes",
+      "boolean stores",
+      "log format and arguments",
+      "stack-canary failure edge"
+    ],
+    "cases": [
+      "All properties present with distinctive patterns: observe helper return values 1, 3, or 24 at the API boundary; parse_dt itself tests only return < 0. Verify u32 big-endian decoding and exact output offsets.",
+      "All 16 OF reads fail while aw is prefilled with sentinels: verify 16 error logs plus three final flag-state logs, no helper destination writes, continued later operations, and the three unconditional flag stores.",
+      "duration_time fails while other reads succeed: preserve aw+0x464..0x466 and emit its error log; local zero bytes are not committed.",
+      "trig_config fails while other reads succeed: preserve aw+0x4a5..0x4bc and emit its error log; local zero bytes are not committed.",
+      "Exercise all eight combinations of the three property-presence booleans. A property object with no value still counts as present for of_find_property.",
+      "Fail each property read independently and verify that subsequent reads and the final three presence checks still execute; account for the three final state logs in addition to any read-error log.",
+      "Use property values longer than sz_min: the helpers accept them and copy only the prefix of sz_min elements; minimum byte lengths are sz_min times sizeof(element), and u32 values are big-endian.",
+      "Separate absent, no-value, and shorter-than-minimum properties: each returns an error without output writes. Do not classify arbitrary trailing bytes as malformed: with sz_max=0, surplus bytes can be accepted while only sz_min elements are decoded.",
+      "Pass np == NULL with a valid aw object: target OF lookups return -EINVAL, all 16 reads take their error paths, and all three presence flags become false.",
+      "Argument boundary: x0/dev is unused by this function; do not assume aw/x1 may be NULL because the final flag stores dereference it. Exclude aw == NULL from normal execution tests.",
+      "Null behavior tests are limited to np == NULL and the verified target kernel implementation; actual NX809J property values remain unknown."
+    ],
+    "oracle_source": "Ghidra repaired decompilation checked against stock Assembly and P-Code; any local host model must be explicitly bounded and must not treat actual NX809J DT values as known",
+    "api_contract_source": "Target kernel include/linux/of.h and drivers/of/property.c in Docker source HEAD 3356b35306d35d5a480e3b63df1a9f065b5d9f55"
+  },
+  "hardware_and_dt_limits": {
+    "local_dts_property_matches_found": false,
+    "consequence": "actual board values and enabled feature policy remain unknown; function contract covers parsing behavior only",
+    "hardware_validation": "DEFERRED",
+    "null_argument_behavior": "For np == NULL, the reviewed target OF implementation returns -EINVAL for the 16 read helpers and NULL for the three property-presence lookups; with a valid aw object, the function logs read errors and stores false flags. x0/dev is unused. aw/x1 is dereferenced unconditionally by final flag stores; aw == NULL is excluded from normal expected-behavior tests."
+  },
+  "required_independent_review": {
+    "reviewer": "Dalton sub-agent",
+    "scope": "MP0-MP6 contract, call register provenance, property order, offsets, target OF API semantics, oracle cases, transitive OF lock behavior, and unknowns",
+    "status": "RECHECK_PASSED",
+    "result": "Independent recheck completed after revisions: sz_max=0 and surplus bytes, 16+3 logs, presence semantics, np/aw null boundaries, transitive devtree_lock MP5 without snapshot atomicity, and MP6 N/A all confirmed. No remaining error was found in the pre-source contract."
+  },
+  "promotion_authorized": false,
+  "kernel_api_contract": {
+    "kernel_source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "api_documents": [
+      {
+        "path": "include/linux/of.h",
+        "sha256": "0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc",
+        "observed": "u8/u32 variable-array helpers take sz_min and sz_max"
+      },
+      {
+        "path": "drivers/of/property.c",
+        "sha256": "f57891f26a96a65d7937004533faae8116020bb1d72adbf8269ed0d5b0cfce15",
+        "observed": "sz_max=0 reads exactly sz_min elements; destination is only modified after valid decode"
+      },
+      {
+        "path": "drivers/of/base.c",
+        "sha256": "dfeb8e30035a356295c52bfb4dd90a9f6d1cd1e1b0ef9b89dc855e648b1f4e15",
+        "observed": "of_find_property uses devtree_lock for an individual lookup and releases it before returning; removed properties are retained on the dead-properties list"
+      }
+    ],
+    "api_semantics": "The stock calls pass sz_min=1 for scalar fields, 3 for duration_time, and 24 for trig_config; sz_max=0 for every read removes the maximum property-length bound, while each helper copies/decodes exactly sz_min elements. The helper validates before copying; negative return leaves output unchanged. A successful helper returns sz_min, but parse_dt only distinguishes negative from nonnegative. u32 values are decoded big-endian. An OF read error is not proof that a property is absent.",
+    "review_status": "SOURCE_HEADER_AND_IMPLEMENTATION_VERIFIED"
+  },
+  "mp5_lock_lifetime_contract": {
+    "status": "APPLICABLE_TRANSITIVE_WITH_REVIEW",
+    "evidence": [
+      "Each of the 16 property readers reaches of_find_property through of_find_property_value_of_size in drivers/of/property.c.",
+      "The three explicit presence checks call of_find_property directly.",
+      "In target drivers/of/base.c (SHA-256 dfeb8e30035a356295c52bfb4dd90a9f6d1cd1e1b0ef9b89dc855e648b1f4e15), of_find_property protects each property-list lookup with raw_spin_lock_irqsave(&devtree_lock, ...) and releases it before returning.",
+      "of_remove_property moves removed properties to the dead-properties list because previously returned property/data pointers may exist.",
+      "There is no evidence of one lock or atomic snapshot spanning the 19 separate lookups; the driver does not acquire, release, or unwind this lock itself."
+    ],
+    "lock_scope": "Transitive OF implementation detail: the raw spinlock covers each individual property-list lookup, not the whole parser or its sequence of reads.",
+    "stack_lifetime": "duration_time (3 bytes) and trig_config (24 bytes) are local stack buffers used synchronously by the OF helpers; their pointers do not escape or become asynchronously retained.",
+    "pointer_lifetime": "OF property pointers are consumed within each helper/lookup; parse_dt stores decoded values, not property pointers.",
+    "open_question": "Actual concurrent DT reconfiguration during parsing is not established by the binary. No snapshot atomicity is claimed.",
+    "review_status": "INDEPENDENTLY_VERIFIED_TRANSITIVE_SCOPE"
+  },
+  "mp6_register_or_bus_ledger": {
+    "status": "NOT_APPLICABLE_WITH_REVIEW",
+    "evidence": "No I2C/SPI/GPIO/MMIO/regmap or hardware register access occurs in aw8693x_parse_dt; the function reads device-tree properties and stores values into the haptic object.",
+    "dt_values": "No matching properties were found in local NX809J DTS/DTSI evidence or the mounted kernel-source arch/arm64/boot/dts tree; actual board values remain unknown.",
+    "review_status": "INDEPENDENTLY_VERIFIED"
+  }
+}

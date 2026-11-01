@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01T20:43:09.845143+00:00",
+  "target": "aw8693x_parse_dt@00104d80",
+  "compiler": "Docker image gcc; AddressSanitizer and UndefinedBehaviorSanitizer",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--entrypoint",
+    "sh",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/repo:ro",
+    "nubia-sm8850-kernel-builder:nx809j-repro",
+    "-lc",
+    "set -u\nwork=$(mktemp -d /tmp/aw8693x-parse-dt.XXXXXX)\ntrap 'rm -rf \"$work\"' EXIT\ncp /repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_140_aw8693x_parse_dt.c $work/parser_under_test.c\ncp /repo/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/parse_dt_host_test.c $work/parse_dt_host_test.c\ngcc -std=gnu11 -O1 -g -Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer -I /repo/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/include $work/parser_under_test.c $work/parse_dt_host_test.c -o $work/parse_dt_host_test\nASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 $work/parse_dt_host_test > $work/candidate.out 2>&1\ncandidate_rc=$?\nprintf 'CANDIDATE_RC=%s\\n' \"$candidate_rc\"\ncat $work/candidate.out\ncp $work/parser_under_test.c $work/parser_mutant.c\npython3 - \"$work/parser_mutant.c\" <<'PY'\nimport sys\np=sys.argv[1]\ns=open(p).read()\nold='memcpy(object + 0x464, duration_time, sizeof(duration_time));'\nnew='memcpy(object + 0x465, duration_time, sizeof(duration_time));'\nassert s.count(old) == 1\nopen(p,'w').write(s.replace(old,new))\nPY\nif gcc -std=gnu11 -O1 -g -Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer -I /repo/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/include $work/parser_mutant.c $work/parse_dt_host_test.c -o $work/parse_dt_mutant > \"$work/mutant_build.out\" 2>&1; then\n  mutant_build_rc=0\nelse\n  mutant_build_rc=$?\nfi\ncat $work/mutant_build.out\nprintf 'MUTANT_BUILD_RC=%s\\n' \"$mutant_build_rc\"\nif [ \"$mutant_build_rc\" -ne 0 ]; then exit 8; fi\nset +e\nASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 $work/parse_dt_mutant > $work/mutant.out 2>&1\nmutant_rc=$?\nset -e\nprintf 'MUTANT_RC=%s\\n' \"$mutant_rc\"\nsed -n '1,8p' $work/mutant.out\nif [ \"$candidate_rc\" -ne 0 ] || [ \"$mutant_rc\" -eq 0 ]; then exit 9; fi\n"
+  ],
+  "source_sha256": "001d373de4817f079aa3d06a76d60bf72a88f4e7642f6fef928b46d1606fd7bf",
+  "harness_source_sha256": "d4b2032f80899ece87d115d391fc7ce7dfae29bf97fdfcc3417fe5e6cda606b9",
+  "runner_sha256": "7c9d214b2fc7203b916054239de276579a2d0dab6d0c650c3f7f1795b6264a77",
+  "support_files_sha256": {
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/include/linux/of.h": "2d4c7ee995db91689b779e4bb3c48f91919b72235c70f90e846af0d6cad19d77",
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/include/linux/printk.h": "098412c3d52a64d71818cc34b433c8c95bea665698da3fd5b98ba542a64098f0",
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/include/linux/string.h": "945ce841733ac4260d1015498e639d29b7c7eec544e1168f1a6d55bee99aed31",
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_parse_dt_20261101/host_harness/include/linux/types.h": "c3e8f0af67f9656d172048b146e337770050dc26f18106ce99d0e14e628136ae"
+  },
+  "candidate_returncode": 0,
+  "candidate_passed": true,
+  "seeded_mutation": "change duration_time destination from aw+0x464 to aw+0x465",
+  "mutant_build_returncode": 0,
+  "mutant_compiled": true,
+  "mutant_returncode": 1,
+  "mutant_detected": true,
+  "docker_returncode": 0,
+  "output": "CANDIDATE_RC=0\nPASS: stock model comparison, errno classes, read/lookup order, offsets, flags, bounds, null-node\nMUTANT_BUILD_RC=0\nMUTANT_RC=1\nFAIL: stock model/candidate state bytes (line 82)\nFAIL: relational all-success case (line 92)\n",
+  "passed": true
+}
