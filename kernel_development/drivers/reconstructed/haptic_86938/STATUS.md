@@ -1,3 +1,7 @@
+## Update 2026-11-01 — aw_remove
+
+The `aw_remove@0010823c` callback now has an exact source candidate. Its 300-byte AArch64 body, relocations, and KCFI type match stock; the host teardown harness passes three GPIO scenarios, and two Docker builds are byte-identical. The full driver remains incomplete: `richtap_misc.left_fops` still lacks reconstructed `unlocked_ioctl` and `mmap` callbacks, and module parity/traceability checks remain open. Promotion and hardware readiness are not claimed. See [the aw_remove attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_remove_20261101/README.md).
+
 # haptic_86938 status
 
 The reconstruction remains incomplete and is not a replacement module. Offline stock evidence covers all 160 functions. As of 2026-10-30, 126 current source revisions have source-hash-bound passing function-scoped core reports; 32 functions remain `NOT_STARTED` without source files. Whole-driver semantic equivalence and hardware behavior have not been established.

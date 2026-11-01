@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "identity": "aw_remove@0010823c",
+  "status": "REVIEWED_AGAINST_STOCK_ASSEMBLY_AND_SOURCE",
+  "stock_evidence": [
+    "offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+    "offline_static/MP4_RELATION_REVIEW.json"
+  ],
+  "ordered_effects": [
+    "print KERN_INFO entry record",
+    "cancel_delayed_work_sync(haptic+0x3c0)",
+    "cancel_work_sync(haptic+0x560)",
+    "hrtimer_cancel(haptic+0x520)",
+    "cancel_work_sync(haptic+0x3a0)",
+    "cancel_work_sync(haptic+0x428)",
+    "hrtimer_cancel(haptic+0x330)",
+    "gpio_to_desc(*(int *)(haptic+0x50)) -> gpiod_to_irq -> devm_free_irq(&client->dev, irq, haptic)",
+    "if *(int *)(haptic+0x50) >= 0: gpio_free(value)",
+    "cancel_work_sync(haptic+0x648)",
+    "kfree(*(void **)(haptic+0x608))",
+    "clear page flag bit 14 for page from *(unsigned long *)(haptic+0x610)",
+    "free_pages(*(unsigned long *)(haptic+0x610), 2)",
+    "misc_deregister(&richtap_misc)",
+    "if *(int *)(haptic+0x5c) >= 0: gpio_free(value)"
+  ],
+  "host_harness": "host_harness/host_harness_report.json",
+  "limits": [
+    "No hardware/runtime test. The misc fops table remains partial pending ioctl and mmap reconstruction."
+  ]
+}

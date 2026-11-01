@@ -133,3 +133,4 @@ haptic_86938-y += haptic_86938_fn_128_aw8693x_get_wav_loop.o
 haptic_86938-y += haptic_86938_fn_129_audio_off.o
 haptic_86938-y += haptic_86938_fn_130_cont_store.o
 haptic_86938-y += haptic_86938_fn_131_aw8693x_offset_cali.o
+haptic_86938-y += haptic_86938_fn_132_aw_remove.o
