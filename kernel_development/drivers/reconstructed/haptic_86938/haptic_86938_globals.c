@@ -13,17 +13,19 @@ extern ssize_t richtap_read(struct file *file, char __user *buffer,
 			    size_t count, loff_t *position);
 extern ssize_t richtap_write(struct file *file, const char __user *buffer,
 			     size_t count, loff_t *position);
+extern int richtap_file_mmap(struct file *file, struct vm_area_struct *vma);
 extern int richtap_file_open(struct inode *inode, struct file *file);
 extern int richtap_file_release(struct inode *inode, struct file *file);
 
 /*
- * The stock table also contains ioctl and mmap handlers. Those two function
- * bodies are not reconstructed yet, so their slots intentionally remain NULL.
+ * The ioctl body remains unavailable; mmap now matches the stock function
+ * body and occupies its evidenced file_operations slot.
  */
 static struct file_operations left_fops = {
 	.owner = THIS_MODULE,
 	.read = richtap_read,
 	.write = richtap_write,
+	.mmap = richtap_file_mmap,
 	.open = richtap_file_open,
 	.release = richtap_file_release,
 };

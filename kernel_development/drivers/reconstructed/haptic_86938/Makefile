@@ -134,3 +134,4 @@ haptic_86938-y += haptic_86938_fn_129_audio_off.o
 haptic_86938-y += haptic_86938_fn_130_cont_store.o
 haptic_86938-y += haptic_86938_fn_131_aw8693x_offset_cali.o
 haptic_86938-y += haptic_86938_fn_132_aw_remove.o
+haptic_86938-y += haptic_86938_fn_133_richtap_file_mmap.o
