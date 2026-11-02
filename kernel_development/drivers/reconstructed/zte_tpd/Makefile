@@ -1469,3 +1469,10 @@ obj-files := $(filter-out zte_touch_probe.o, $(obj-files))
 zte_tpd-objs := $(filter-out zte_touch_probe.o, $(zte_tpd-objs))
 zte_tpd-objs += zte_touch_probe_exact.o
 AFLAGS_zte_touch_probe_exact.o := -g0 -I$(src)
+
+# Exact offline reconstruction: tpd_set_screen_off_awake
+src-files := $(filter-out $(src)/tpd_set_screen_off_awake.c, $(src-files))
+obj-files := $(filter-out tpd_set_screen_off_awake.o, $(obj-files))
+zte_tpd-objs := $(filter-out tpd_set_screen_off_awake.o, $(zte_tpd-objs))
+zte_tpd-objs += tpd_set_screen_off_awake_exact.o
+AFLAGS_tpd_set_screen_off_awake_exact.o := -g0 -I$(src)

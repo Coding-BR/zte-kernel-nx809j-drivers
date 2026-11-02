@@ -131,6 +131,25 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def bind_candidate_hash(map_path: Path, candidate: Path) -> str:
+    document = read_json(map_path)
+    if not isinstance(document, dict):
+        raise ValueError(f"reconstruction map must be a JSON object: {map_path}")
+    candidate_sha256 = sha256_file(candidate)
+    document["candidate_sha256"] = candidate_sha256
+    temporary = map_path.with_name(f".{map_path.name}.{os.getpid()}.tmp")
+    try:
+        temporary.write_text(
+            json.dumps(document, indent=2) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        os.replace(temporary, map_path)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return candidate_sha256
+
+
 def resolve_target_kernel_manifest(curated_root: Path, explicit: Path | None) -> Path:
     if explicit is not None:
         return explicit.resolve()
@@ -1093,7 +1112,12 @@ def validate_regular_driver(
             if promote_fresh and promotable:
                 shutil.copy2(fresh_module, candidate)
                 candidate_record = file_record(candidate)
+                map_sha256 = bind_candidate_hash(
+                    driver_dir / "reconstruction_map.json",
+                    candidate,
+                )
                 metadata["fresh_promoted"] = True
+                metadata["promoted_candidate_sha256"] = map_sha256
             else:
                 metadata["fresh_promoted"] = False
 
