@@ -50,6 +50,9 @@ Regras inviolaveis:
 - separe observacoes com localizador, inferencias, desconhecidos e
   contradicoes;
 - execute Joern e Docker; nenhum dos dois substitui o outro;
+- deixe `docker.source_volume` ausente para o runner derivar o volume de
+  `docker_source_volume` em `kernel_development/config/target_kernel.json`;
+  qualquer override explicito deve coincidir com o manifesto;
 - Joern possui poder de veto estrutural, mas nunca promove;
 - use KCFI para toda funcao/callsite aplicavel e compare Assembly/relocacoes;
 - valide KMI com `audit_module_abi_surface.py`, compondo o `Module.symvers`
