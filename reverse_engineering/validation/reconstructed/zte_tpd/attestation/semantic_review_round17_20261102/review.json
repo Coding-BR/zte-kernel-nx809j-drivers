@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Shared firmware-data lifetime and proc read/write concurrency review",
+  "review_status": "STATIC_UNSYNCHRONIZED_LIFETIME_RACE_CONFIRMED",
+  "independent_human_review": "NOT_PERFORMED",
+  "branch_context": {
+    "reviewed_branch": "codex/zte-tpd-firmware-allocation-hardening",
+    "reviewed_head": "b130f68f611d773c1730e5cfc1cbe67eb24eaf44",
+    "stock_exact_branch": "reconstruction/zte-tpd-syna-release-attested",
+    "stock_exact_head": "c83dbf45e145ad92863eac12f15dca6d58dc65a2",
+    "scope_note": "This review records a residual race on the hardening branch. It does not modify the stock-exact reconstruction or claim that the retry hardening fixes concurrent lifetime access."
+  },
+  "scope": {
+    "shared_slot": "*(struct tpd_firmware_data **)(tpd_cdev + 0xc58)",
+    "position_field": "*(u32 *)(tpd_cdev + 0x448)",
+    "existing_mutex": "tpd_cdev + 0xc60, initialized as ztp_dev->cmd_mutex",
+    "entrypoints": [
+      "proc /touchscreen/tp_self_test read and write",
+      "proc /touchscreen/get_noise read and write",
+      "sysfs binary attribute fwimage read and write",
+      "proc tpfwupgrade_store"
+    ],
+    "analysis_basis": "Reconstructed C and AArch64 inline assembly, Ghidra stock decompilation/call references, source registration, and the target kernel source in the canonical Docker volume"
+  },
+  "source_sha256": {
+    "tp_alloc_tp_firmware_data.c": "a449712703852f5fefb9607da6f280fba3532ed53a94eca6498fa5af51d87dab",
+    "tpd_copy_to_tp_firmware_data.c": "644fcd8f6b9daa9c4ac56da20ffd718ce6d6e6a290fe299b26f90a276ca474d4",
+    "tp_self_test_read.c": "88aab8e0df90933760df6d9fe7f82b1d7ef044392a09b04033d9ac090fd6173e",
+    "tp_self_test_write.c": "d6574aa44a629e01f5bcffafd5d85be225b303d662a591d4b9002cb0b0fb3c99",
+    "tpd_sysfs_fwimage_show.c": "372a32a755569084fc9cf88af8163a84f534b210e104fe5a0c59ba1fa3292382",
+    "tpd_sysfs_fwimage_store.c": "9774473956928a24df1a4b2f4e5d62782fb04e17f7c66ff01519026bbc34a049",
+    "get_tp_noise_show.c": "3fd1f8b157e327b4210d51a06d382846701361539566df45b50d80a3e326db15",
+    "get_tp_noise_store.c": "797242d8e699d23c3f41ee0b543aca108ec4b161ed27b7c39a6d75545a96d09b",
+    "tpfwupgrade_store.c": "374e577e2e6263de67165bb61e574c5a6c458fff4dcfcf2069ed7e1c92a08b4f",
+    "globals.c": "098044b18c36a87791e46f7e679a320cfe2d0d7f3d6b2179b4f49add8261adfd",
+    "zte_touch_probe.c": "c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9",
+    "repo_sources_match_docker_curated_snapshot": true
+  },
+  "ghidra_sha256": {
+    "calls_jsonl": "91036ccf7524b9446063248adf032fbe7c568d2c6b3a32d00cc54ef57853bc96",
+    "tp_self_test_read_decompilation": "272ebb44fc389909df93472b2b8cbbef2cd2c3d006293b812307f6187b270fdb",
+    "tp_self_test_write_decompilation": "5a19297259e3f9afc8247d6b97611da4dfa598264ee67b6467f1f6fb0bd37945",
+    "tpd_copy_to_tp_firmware_data_decompilation": "f7fd328885c01d34115d610b651fbb49436b616024b0d2311ec834aa51e0485c"
+  },
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "fs/proc/inode.c_sha256": "029a98955f602eaeccc0ea58c0e82e278bbc72f6e57c72abd37a66ec3c937f35",
+    "fs/read_write.c_sha256": "5ca4291e5dcea76325f269247ad8ef0994245315b9016f045db50bc4393b8b73",
+    "proc_dispatch_observation": "proc_reg_read/proc_reg_write enter pde_read/pde_write, which directly invokes proc_ops callbacks. The shown dispatch path has no per-entry callback serialization; vfs_write directly invokes file->f_op->write."
+  },
+  "findings": [
+    {
+      "id": "tp_self_test_read-can-free-buffer-during-write",
+      "category": "concurrent_lifetime",
+      "severity": "CONFIRMED_STATIC_UAF_WINDOW_CONDITIONAL_ON_INTERLEAVING",
+      "details": "tp_self_test_write allocates the shared descriptor, invokes the test callback at cdev+0xfa0, and the three testing routines later call tpd_copy_to_tp_firmware_data. Concurrently, tp_self_test_read invokes the separate show callback at cdev+0xf98 and then frees cdev+0xc58 unconditionally. The read handler does not take the existing mutex. The writer's copy helper reloads the global pointer with READ_ONCE but has no lifetime reference or lock before dereferencing data and calling memcpy; the write handler also dereferences the slot at its epilogue without a null check. A read can therefore free the descriptor or data during a writer operation. This is a reachable race window, not a claim that every overlap crashes.",
+      "evidence": [
+        "zte_touch_probe.c:323 registers tp_self_test with mode 0664; globals.c:2073 binds proc_read and proc_write to tp_self_test_read and tp_self_test_write.",
+        "syna_tpd_register_fw_class.c:121-122 installs tpd_test_cmd_store and tpd_test_cmd_show at cdev offsets 0xfa0 and 0xf98.",
+        "tp_self_test_read.c frees the object at cdev+0xc58 after tpd_test_cmd_show; it does not acquire cdev+0xc60.",
+        "tp_self_test_write.c allocates, invokes the store callback, then dereferences cdev+0xc58 at the handler epilogue.",
+        "Ghidra calls.jsonl records tpd_copy_to_tp_firmware_data callers syna_testing_pt01_zte, syna_testing_pt05_zte, and syna_testing_pt0a_zte.",
+        "Target kernel commit 3356b353 proc_reg_read/proc_reg_write directly dispatches proc_ops callbacks without a driver-state lock."
+      ]
+    },
+    {
+      "id": "firmware-slot-locking-is-partial",
+      "category": "shared_state_synchronization",
+      "severity": "CONFIRMED_INCOMPLETE_LOCK_COVERAGE",
+      "details": "Several firmware and noise handlers use cdev+0xc60, but probe initializes that offset as ztp_dev->cmd_mutex. tp_alloc_tp_firmware_data, tpd_copy_to_tp_firmware_data, tp_self_test_read and tp_self_test_write do not use it. The fwimage sysfs handlers perform initial descriptor/data/size checks before taking cmd_mutex, then reload and dereference the slot after locking without revalidating null. Thus existing locking does not establish a lifetime contract for the shared pointer.",
+      "evidence": [
+        "zte_touch_probe.c:270 initializes offset 3168 (0xc60) with label ztp_dev->cmd_mutex.",
+        "get_tp_noise_show.c, get_tp_noise_store.c, tpfwupgrade_store.c and parts of tpd_sysfs_fwimage_show/store use cdev+0xc60.",
+        "tp_alloc_tp_firmware_data.c, tpd_copy_to_tp_firmware_data.c and tp_self_test_read.c access or free cdev+0xc58 without that mutex.",
+        "tpd_sysfs_fwimage_show.c and tpd_sysfs_fwimage_store.c dereference the slot before acquiring cdev+0xc60."
+      ]
+    }
+  ],
+  "recommendation": "Keep the vmalloc-failure retry fix as a separate hardening deviation. For the concurrency issue, first audit every cdev+0xc58/cdev+0x448 access and establish one dedicated firmware-buffer lifetime lock/reference contract across allocation, copy, read cleanup, sysfs binary I/O, noise handlers, firmware upgrade, reset/free helpers, and the writer epilogue. Do not hold cmd_mutex across the full test callback: its declared role is command serialization and nested test-command locking must be checked to avoid deadlock. Implement this as a new hardening batch, validate it in the canonical Docker workspace, and keep the stock-exact branch unchanged.",
+  "validation": {
+    "type": "read-only static review",
+    "repository_vs_docker_curated_source_comparison": "PASS; all 11 reviewed source hashes match",
+    "target_kernel_source": "Read from the Docker volume listed above; commit and file hashes recorded",
+    "build_run": false,
+    "host_harness_run": false,
+    "hardware_runtime_test": false,
+    "reason_no_build": "No driver source changed in this review batch.",
+    "limitations": [
+      "The interleaving is established statically and was not dynamically forced.",
+      "No device runtime or sanitizer run was performed.",
+      "This review does not implement or certify a complete synchronization fix.",
+      "Independent human review was not performed."
+    ]
+  }
+}
