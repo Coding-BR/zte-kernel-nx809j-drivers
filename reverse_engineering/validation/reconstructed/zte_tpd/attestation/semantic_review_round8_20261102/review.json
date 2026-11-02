@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "MTP managed-buffer lifetime and local mutex review",
+  "review_status": "STATIC_REVIEW_COMPLETE",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 6,
+    "unique_call_sites": 6,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_tcm_read_mtp_data",
+      "syna_tcm_read_flash_mtp_config"
+    ],
+    "reviewed_total_after_this_round": 66,
+    "remaining_joern_findings": 62
+  },
+  "joern_alerts": [
+    {
+      "function": "syna_tcm_read_flash_mtp_config",
+      "file": "syna_tcm_read_flash_mtp_config.c",
+      "line": 46,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, buffer->data)"
+    },
+    {
+      "function": "syna_tcm_read_flash_mtp_config",
+      "file": "syna_tcm_read_flash_mtp_config.c",
+      "line": 62,
+      "call": "devm_kmalloc",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kmalloc(managed_device, requested_length, 3520)"
+    },
+    {
+      "function": "syna_tcm_read_mtp_data",
+      "file": "syna_tcm_read_mtp_data.c",
+      "line": 47,
+      "call": "mutex_init",
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(access.mutex)"
+    },
+    {
+      "function": "syna_tcm_read_mtp_data",
+      "file": "syna_tcm_read_mtp_data.c",
+      "line": 48,
+      "call": "mutex_init",
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(mtp_config.mutex)"
+    },
+    {
+      "function": "syna_tcm_read_mtp_data",
+      "file": "syna_tcm_read_mtp_data.c",
+      "line": 95,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, mtp_config.data)"
+    },
+    {
+      "function": "syna_tcm_read_mtp_data",
+      "file": "syna_tcm_read_mtp_data.c",
+      "line": 106,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, access.managed_allocation)"
+    }
+  ],
+  "findings": [
+    {
+      "id": "mtp-data-local-mutex-init-and-common-cleanup",
+      "category": "synchronization_and_lifetime",
+      "severity": "NO_UNBALANCED_INIT_OR_FREE_CONFIRMED; CONDITIONAL_DEVM_RELEASE_GAP_REMAINS",
+      "disposition": "ALL_FOUR_JOERN_ALERTS_CLASSIFIED; STOCK_CONTROL_FLOW_PRESERVED",
+      "details": "Both local mutexes are initialized after parameter validation and before the flash helpers receive their contexts. Every path after initialization reaches the common cleanup, including setup/read errors and success. The two devm_kfree operations are guarded by a fresh managed-device lookup; if that lookup returns NULL, the pointer is then cleared without an immediate free. The same conditional cleanup appears in Ghidra stock. This is a conditional retained-devres risk during a device-lifecycle interleaving; static evidence did not establish that the provider returns NULL after these allocations, and no runtime detach race was modeled. The MTP config buffer is zero-initialized and this call does not exercise the helper’s existing-buffer resize path.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_mtp_data.c",
+        "candidate_source_sha256": "454bcd352b37277627927da6e864d345a692dc612df8481310c8a2b9fad65f66",
+        "exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_mtp_data_exact.S",
+        "exact_assembly_sha256": "1203094ea7cc2bd241bfb530d88d4dbc0665c0cba51189cbf5644ef711a3560f",
+        "ghidra_decomp": "offline_static/ghidra_stock/decompiled/0311_00127e84_syna_tcm_read_mtp_data.c",
+        "ghidra_decomp_sha256": "7316038388aecd2fe7f5be1735538169489d395886d6b3ae0b31d460d59276fa",
+        "ghidra_pcode": "offline_static/ghidra_stock/pcode/0311_00127e84_syna_tcm_read_mtp_data.jsonl",
+        "ghidra_pcode_sha256": "dc364d9a07fae6c649c5b5e7615fcac3cff8d32c6b7c006e91bfe2396fb7036e",
+        "stock_assembly_sha256": "bb998de64a04428db801905d393a8b0ea9ef6cdc2f732212c74c227f6ac0695a",
+        "cleanup_lines": {
+          "label": 87,
+          "buffer_free": 95,
+          "access_free": 106
+        }
+      }
+    },
+    {
+      "id": "mtp-config-buffer-resize-conditional-old-buffer-retention",
+      "category": "lifetime",
+      "severity": "CONDITIONAL_OLD_DEVM_BUFFER_CAN_BE_ABANDONED",
+      "disposition": "INHERITED_STOCK_BEHAVIOR; HARDENING_REQUIRES_SEPARATE_DEVIATION",
+      "details": "When buffer->data is already non-NULL and too small, the helper queries the managed device before freeing it. If that lookup returns NULL, the code retries; if the retry also returns NULL it clears buffer->data and returns, and if the retry succeeds it overwrites buffer->data with a new allocation. In either branch the old devm allocation is not immediately freed and remains attached to devres until device teardown. The repository caller is syna_tcm_read_flash_area, which accepts a caller-owned tcm_buffer; the exact conditions are present in Ghidra stock and stock assembly. Whether detach can produce this interleaving for a live call was not demonstrated. The MTP caller uses a fresh zeroed buffer, so this resize case is not triggered by syna_tcm_read_mtp_data itself.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_mtp_config.c",
+        "candidate_source_sha256": "574f5ffb3c036c05efc0462f03522189bd4366c6f78ba87814b351c5256f6723",
+        "exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_mtp_config_exact.S",
+        "exact_assembly_sha256": "473149e9352980d1bf857068463af6f8fbcbeab49c69284cd94ef7a050369319",
+        "ghidra_decomp": "offline_static/ghidra_stock/decompiled/0300_00125a18_syna_tcm_read_flash_mtp_config.c",
+        "ghidra_decomp_sha256": "0794c9818695fb5016d32ded6761147f0785246f9d37b370cc68530713e195e2",
+        "ghidra_pcode": "offline_static/ghidra_stock/pcode/0300_00125a18_syna_tcm_read_flash_mtp_config.jsonl",
+        "ghidra_pcode_sha256": "a35a64ea2a6fc118dad6773e704adead3b783c2ebf4009ee5ebc2e9c2f73e8f4",
+        "stock_assembly_sha256": "55f1188a6c1792c8ac213668a01ebc853314d80b4061666d81d2baa0f5dc7d8d",
+        "free_line": 46,
+        "allocation_line": 62,
+        "caller": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_area.c",
+        "caller_sha256": "411d7a28125826153c02654f2aaadfb36b93864901c6524bca5859d66bd65731"
+      }
+    },
+    {
+      "id": "mtp-kbuild-source-selection",
+      "category": "reconstruction_provenance",
+      "severity": "NO_RUNTIME_C_FALLBACK_IN_CANONICAL_KBUILD",
+      "disposition": "EXACT_ASSEMBLY_IS_THE_KBUILD_INPUT",
+      "details": "The driver Makefile filters out both C mirrors and includes the corresponding exact .S objects. Thus the reviewed cleanup behavior is present in the currently selected exact stock assembly; no C-only repair would alter the built module unless the Kbuild source selection were changed.",
+      "evidence": {
+        "makefile": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+        "source_filters": [
+          "syna_tcm_read_flash_mtp_config.c",
+          "syna_tcm_read_mtp_data.c"
+        ],
+        "objects": [
+          "syna_tcm_read_flash_mtp_config_exact.o",
+          "syna_tcm_read_mtp_data_exact.o"
+        ]
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_read_mtp_data.c": "454bcd352b37277627927da6e864d345a692dc612df8481310c8a2b9fad65f66",
+    "syna_tcm_read_flash_mtp_config.c": "574f5ffb3c036c05efc0462f03522189bd4366c6f78ba87814b351c5256f6723"
+  },
+  "exact_assembly_sha256": {
+    "syna_tcm_read_mtp_data_exact.S": "1203094ea7cc2bd241bfb530d88d4dbc0665c0cba51189cbf5644ef711a3560f",
+    "syna_tcm_read_flash_mtp_config_exact.S": "473149e9352980d1bf857068463af6f8fbcbeab49c69284cd94ef7a050369319"
+  },
+  "ghidra_sha256": {
+    "syna_tcm_read_mtp_data.c": {
+      "pseudocode": "7316038388aecd2fe7f5be1735538169489d395886d6b3ae0b31d460d59276fa",
+      "pcode": "dc364d9a07fae6c649c5b5e7615fcac3cff8d32c6b7c006e91bfe2396fb7036e",
+      "stock_assembly": "bb998de64a04428db801905d393a8b0ea9ef6cdc2f732212c74c227f6ac0695a"
+    },
+    "syna_tcm_read_flash_mtp_config.c": {
+      "pseudocode": "0794c9818695fb5016d32ded6761147f0785246f9d37b370cc68530713e195e2",
+      "pcode": "a35a64ea2a6fc118dad6773e704adead3b783c2ebf4009ee5ebc2e9c2f73e8f4",
+      "stock_assembly": "55f1188a6c1792c8ac213668a01ebc853314d80b4061666d81d2baa0f5dc7d8d"
+    }
+  },
+  "joern_report": {
+    "path": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "findings_in_scope": 6
+  },
+  "existing_host_harness": {
+    "report": "attestation/next312_syna_tcm_read_mtp_data_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "3dcc82ebba5396197ffb9c82f7c393e3f1726abd76112e1844643055616f364c",
+    "passed": true,
+    "cases": 5,
+    "cycles": 2,
+    "source_sha256_matches": true,
+    "executed_this_round": false
+  },
+  "docker_snapshot": {
+    "reused_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+    "build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "build_passed": true,
+    "build_reproducible": true,
+    "accepted_cycles": 2,
+    "kbuild_inputs": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "source_c_matches_docker": true,
+    "exact_assembly_matches_docker": true,
+    "source_and_assembly_hashes_match_manifest": true,
+    "new_build_required": false,
+    "reason": "No Kbuild input changed during this analysis-only batch."
+  },
+  "limitations": [
+    "Managed-device teardown interleavings were not dynamically modeled.",
+    "No Android runtime or NX809J hardware execution.",
+    "Existing host harness and canonical Docker report were read as prior evidence; neither was rerun this round.",
+    "No implementation or test files changed this round."
+  ]
+}
