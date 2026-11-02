@@ -7,7 +7,7 @@ Este relatorio usa o modulo OEM como fonte da verdade. A comparacao canonica est
 - Funcoes verificadas: 30
 - Identidade de opcode, relocacao, secao e tamanho: 30
 - Call graph equivalente: 30/30
-- KCFI equivalente: 23/23 funcoes instrumentadas
+- KCFI: 23 type IDs do stock coincidem; comparação estrita de presença ainda falha em três preâmbulos candidatos e segue pendente de classificação independente
 - Funcoes sem identidade binaria completa: 0
 
 | Funcao | Bytes OEM/candidato | Instrucoes OEM/candidato | Relocations OEM/candidato | Diferenca restante |
@@ -17,7 +17,7 @@ Este relatorio usa o modulo OEM como fonte da verdade. A comparacao canonica est
 | `gf_parse_dts` | 828/828 | 207/207 | 118/118 | exata |
 | `gf_probe` | 1040/1040 | 260/260 | 120/120 | exata |
 
-Para as duas funções ainda abertas, o conjunto de chamadas, as contagens estruturais indicadas e os type IDs KCFI aplicáveis foram validados. `gf_probe` e `gf_open` agora possuem identidade integral de opcode, relocação e tamanho. Isso é evidência forte de proximidade estrutural, mas não substitui identidade binária total do módulo, revisão independente ou teste no hardware.
+As comparações de assembly atuais cobrem todas as 30 funções. Isso é evidência forte de paridade estática, mas não substitui equivalência semântica, revisão independente ou teste no hardware.
 
 ## Evidencias canonicas
 
@@ -38,12 +38,20 @@ Os quatro corpos difíceis foram promovidos como fontes `.S`, reconstruídos a p
 - `gf_parse_dts_exact.S`: SHA-256 `0479e6c8b548f6df14a2a0983fc8e10e739ea577365fe5c6693514270b8f5da5`.
 - `fp_goodix_inline_exact.S`: SHA-256 `dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625`.
 - `fp_goodix_exact_rodata.S`: SHA-256 `4bf1c320dbf4b923175dd06a07f0ece8f88ed6739b28c8f903fa29555a128a5c`.
-- Módulo candidato: SHA-256 `7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`, 721008 bytes.
-- KCFI: 23/23 type IDs instrumentados. Host harness: dois ciclos PASS com binários idênticos; ele valida a referência C e não executa os corpos Assembly no kernel.
-- Auditoria offline geral: `static_verified`, com dois rebuilds limpos byte-a-byte idênticos (`7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d`).
+- Módulo candidato atual: SHA-256 `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`, 721560 bytes.
+- KCFI: 23 type IDs stock correspondem, mas o comparador estrito de presença registra três candidatos extras. O host harness valida a referência C e não executa os corpos Assembly no kernel.
+- Auditoria offline geral: `static_verified`; dois rebuilds Docker limpos e independentes são reprodutíveis. A atestação 2026-11-02 compara conteúdo/layout de código e dados alocados e `modinfo`; o check estrito de bytes de todas as seções carregáveis permanece falso pelo `.note.gnu.build-id` alocado, registrado separadamente de BTF/debug não alocados.
 - A atestação completa está em `reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1/`.
 
 Este resultado fecha a identidade estática das funções, mas não prova equivalência semântica, revisão independente, carregamento seguro nem funcionamento no NX809J. Diferenças de metadados/dependências do artefato stock permanecem registradas na auditoria ABI.
+
+## Reauditoria Docker — 2026-11-02
+
+- O comando padrão agora encontra `kernel_development/config/target_kernel.json` mesmo quando a fonte auditada é o snapshot Docker; o manifesto escolhe o output volume preparado e evita tentar compilar usando uma árvore de fonte sem `include/generated`.
+- Snapshot Docker, mapa e `.ko` foram alinhados à fonte versionada. O rebuild estrito passou com identidade do kernel validada e dois ciclos limpos.
+- SHA integral candidato/rebuild difere no `.note.gnu.build-id` alocado e em seções não alocadas de BTF/debug. Conteúdo de código/dados alocados, layout e `modinfo` coincidem; o check estrito de bytes de todas as seções carregáveis permanece falso. Não declarar identidade binária integral.
+- Os dois relatórios KCFI estritos falham nos mesmos três casos. O classificador preserva o resultado como pendente, com evidência de sobreposição dos preâmbulos stock e chamadas diretas Ghidra; referências indiretas ainda não foram descartadas.
+- Evidência: `reverse_engineering/validation/reconstructed/fp_goodix/attestation/full_driver_audit_20261102/`.
 
 ## Rechecagem diagnóstica Docker — 2026-08-28
 

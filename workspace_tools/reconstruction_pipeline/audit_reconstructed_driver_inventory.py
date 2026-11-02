@@ -16,6 +16,9 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+BUILD_INPUT_SUFFIXES = {".c", ".h", ".s", ".inc"}
+BUILD_INPUT_NAMES = {"Makefile", "Kbuild", "vendor.Module.symvers"}
+
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -109,6 +112,26 @@ def module_record(path: Path | None, repo_root: Path) -> dict[str, Any]:
     }
 
 
+def source_inventory(root: Path) -> dict[str, Any]:
+    files: dict[str, str] = {}
+    if root.is_dir():
+        for path in root.rglob("*"):
+            if not path.is_file() or ".git" in path.parts or "tests" in path.parts:
+                continue
+            if path.name.endswith(".mod.c"):
+                continue
+            if path.suffix.lower() not in BUILD_INPUT_SUFFIXES and path.name not in BUILD_INPUT_NAMES:
+                continue
+            files[path.relative_to(root).as_posix()] = sha256_file(path)
+    digest = hashlib.sha256()
+    for name, file_hash in sorted(files.items()):
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(file_hash.encode("ascii"))
+        digest.update(b"\n")
+    return {"file_count": len(files), "sha256": digest.hexdigest(), "files": files}
+
+
 def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -> dict[str, Any]:
     driver = driver_root.name
     map_path = driver_root / "reconstruction_map.json"
@@ -117,6 +140,8 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
     export_root = ghidra_export(repo_root, driver)
     functions_path = export_root / "functions.jsonl"
     docker_root = engineering_root / "curated" / driver
+    repo_sources = source_inventory(driver_root)
+    docker_sources = source_inventory(docker_root)
 
     findings: list[str] = []
     map_data: dict[str, Any] = {}
@@ -203,6 +228,22 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
         path for path in docker_root.rglob("*.c")
         if not path.name.endswith(".mod.c")
     ] if docker_root.is_dir() else []
+    source_differences = [
+        name
+        for name in sorted(set(repo_sources["files"]) | set(docker_sources["files"]))
+        if repo_sources["files"].get(name) != docker_sources["files"].get(name)
+    ]
+    docker_candidate_path = docker_root / f"{driver}.ko"
+    docker_candidate_record = (
+        {
+            "exists": True,
+            "path": f"docker/curated/{driver}/{driver}.ko",
+            "size": docker_candidate_path.stat().st_size,
+            "sha256": sha256_file(docker_candidate_path),
+        }
+        if docker_candidate_path.is_file()
+        else {"exists": False, "path": f"docker/curated/{driver}/{driver}.ko"}
+    )
 
     return {
         "driver": driver,
@@ -210,6 +251,8 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
             "path": portable_path(driver_root, ((repo_root, "repo"),)),
             "makefile": (driver_root / "Makefile").is_file(),
             "c_file_count": len(c_sources),
+            "build_input_count": repo_sources["file_count"],
+            "build_input_sha256": repo_sources["sha256"],
         },
         "stock_module": module_record(stock_path, repo_root),
         "candidate_module": module_record(candidate_path, repo_root),
@@ -240,6 +283,16 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
             "curated_directory_present": docker_root.is_dir(),
             "makefile_present": (docker_root / "Makefile").is_file(),
             "candidate_present": (docker_root / f"{driver}.ko").is_file(),
+            "candidate_module": docker_candidate_record,
+            "build_input_count": docker_sources["file_count"],
+            "build_input_sha256": docker_sources["sha256"],
+            "build_inputs_match_repository": bool(docker_root.is_dir()) and not source_differences,
+            "build_input_differences": source_differences,
+            "candidate_matches_repository_candidate": (
+                docker_candidate_record.get("sha256") == candidate_sha
+                if docker_candidate_record.get("exists") and candidate_sha
+                else None
+            ),
             "c_file_count": len(docker_source_files),
         },
         "structural_findings": findings,
@@ -262,10 +315,12 @@ def render_markdown(payload: dict[str, Any]) -> str:
         f"**{summary['candidate_module_count']}**; com stock: **{summary['stock_module_count']}**; "
         f"com inventário Ghidra: **{summary['drivers_with_ghidra_inventory']}** "
         f"({summary['ghidra_function_total']} funções); "
-        f"presentes no snapshot curado do Docker: **{summary['docker_curated_driver_count']}**.",
+        f"presentes no snapshot curado do Docker: **{summary['docker_curated_driver_count']}**; "
+        f"candidatos Docker iguais ao repositório: **{summary['docker_candidates_matching_repository']}**; "
+        f"snapshots de fonte iguais: **{summary['docker_source_snapshots_matching_repository']}**.",
         "",
-        "| Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` candidato | Docker curated | Achados |",
-        "|---|---:|---:|---|---|---|---|---|",
+        "| Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` repo | `.ko` Docker | Fontes iguais | Achados |",
+        "|---|---:|---:|---|---|---|---|---|---|",
     ]
     for row in payload["drivers"]:
         fmap = row["function_map"]
@@ -275,7 +330,8 @@ def render_markdown(payload: dict[str, Any]) -> str:
         lines.append(
             f"| `{row['driver']}` | {row['ghidra']['function_count']} | {fmap['mapping_count']} "
             f"| {coverage} | {states} | {'sim' if row['candidate_module']['exists'] else 'não'} "
-            f"| {'sim' if row['docker_snapshot']['curated_directory_present'] else 'não'} "
+            f"| {'sim' if row['docker_snapshot']['candidate_module']['exists'] else 'não'} "
+            f"| {'sim' if row['docker_snapshot']['build_inputs_match_repository'] else 'não'} "
             f"| {findings} |"
         )
     lines.extend(
@@ -332,6 +388,15 @@ def main() -> int:
         "drivers_with_ghidra_inventory": sum(row["ghidra"]["function_count"] > 0 for row in drivers),
         "ghidra_function_total": sum(row["ghidra"]["function_count"] for row in drivers),
         "docker_curated_driver_count": sum(row["docker_snapshot"]["curated_directory_present"] for row in drivers),
+        "docker_candidates_matching_repository": sum(
+            row["docker_snapshot"]["candidate_matches_repository_candidate"] is True
+            for row in drivers
+        ),
+        "docker_source_snapshots_matching_repository": sum(
+            row["docker_snapshot"]["build_inputs_match_repository"]
+            for row in drivers
+            if row["docker_snapshot"]["curated_directory_present"]
+        ),
         "drivers_with_structural_findings": sum(bool(row["structural_findings"]) for row in drivers),
     }
     payload = {

@@ -9,10 +9,10 @@ Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
 | Fonte | PASS | modulo composto por `fp_goodix_core.c`, `fp_goodix_netlink.c` e `fp_goodix_platform.c` |
 | Mapa stock -> fonte | PASS estrutural | 30/30 funcoes com hashes; `semantic_equivalence: UNPROVEN`; revisao independente nao executada |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
-| KCFI | PASS | 23/23 type IDs instrumentados coincidentes; 7 funcoes sem preambulo KCFI independente |
+| KCFI | PARCIAL / REVISÃO PENDENTE | 23 type IDs presentes no stock coincidem; a comparação estrita de presença falha em três preâmbulos extras no candidato (`gf_disable_irq`, `gf_enable_irq`, `nav_event_input`). Ver classificação em `attestation/full_driver_audit_20261102/kcfi_presence_classification.json`. |
 | Assembly | PASS estrutural | 30/30 funcoes exatas no comparador AArch64 com relocacoes, secoes e tamanhos |
 | Host harness | PASS | 30/30 funcoes cobertas; duas compilacoes e duas execucoes reproduziveis |
-| Build GKI/KMI | PASS parcial | AArch64 REL, imports, aliases e namespace validados; build Docker reproduzivel, mas a auditoria ainda registra diferenca de dependencias/vermagic stock e o candidato normal nao e o artefato de auditoria KCFLAGS |
+| Build GKI/KMI | PASS parcial | Dois builds Docker limpos reproduzíveis; conteúdo de código/dados alocados, layout das seções alocadas e `modinfo` coincidem. `.note.gnu.build-id` alocado e seções BTF/debug não coincidem; dependências stock diferem do target atual. |
 | Microtarefas | PASS offline | 30/30 com evidencias separadas de compile, KCFI e teste verificadas por SHA-256 |
 | Hardware NX809J | DEFERRED | nenhum `insmod`, `rmmod`, ADB ou fastboot foi executado neste ciclo |
 
@@ -21,6 +21,14 @@ Candidato atual:
 - SHA-256: `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`
 - tamanho: `721560` bytes
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
+
+Reauditoria Docker — 2026-11-02:
+
+- O snapshot `engenharia/curated/fp_goodix` foi alinhado ao repositório no `Makefile`, mapa e candidato; os três agora apontam ao candidato `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`.
+- `validate_reconstructed_drivers.py --driver fp_goodix --rebuild --strict` passou usando o manifesto do kernel versionado, dois builds Docker limpos e identidade da fonte confirmada. O resultado é `static_verified`, sem validação em hardware.
+- O SHA-256 integral do candidato não é idêntico ao rebuild: o `.note.gnu.build-id` alocado e seções não alocadas de BTF/debug diferem. O conteúdo de código/dados alocados, o layout das seções alocadas e `modinfo` coincidem; o check estrito de bytes de todas as seções carregáveis permanece falso pelo build ID. A diferença de metadados `depends` do stock para o target foi preservada no relatório.
+- O comparador KCFI estrito continua reprovando três presenças; evidência Ghidra mostra chamadas diretas de `gf_ioctl` para os símbolos, mas isso não resolve possíveis referências indiretas. A classificação segue aberta para revisão independente e não é tratada como PASS.
+- A verificação do manifesto no índice do Git passou 30/30 microtarefas.
 
 Bloqueadores para uma declaracao de equivalencia total:
 

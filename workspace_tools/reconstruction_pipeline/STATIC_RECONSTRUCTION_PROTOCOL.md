@@ -14,8 +14,13 @@ ela passam sobre a mesma árvore de fonte e o mesmo candidato:
 2. Fonte: assinatura, offsets, constantes, ordem de efeitos e chamadas
    reconstruídos sem inventar APIs ou estruturas internas do GKI.
 3. Docker: dois builds limpos e independentes com a imagem/toolchain canônicos;
-   os módulos precisam ser byte-idênticos quando a reproducibilidade for
-   exigida.
+   os dois resultados frescos precisam ser byte-idênticos quando a
+   reproducibilidade for exigida. Compare conteúdo de código/dados alocados,
+   layout das seções alocadas e `modinfo`; diferenças em metadados alocados
+   como `.note.gnu.build-id` e em seções não alocadas de BTF/debug ficam
+   separadas e explícitas. SHA integral diferente nunca é identidade integral.
+   Antes do build, confirme que os inputs do snapshot Docker correspondem à
+   árvore versionada.
 4. Assembly: comparação AArch64 estrita de instruções, tamanho, seção,
    branches, símbolos e relocations. Equivalência aproximada não é PASS.
 5. KCFI: extração stock/candidato, presença de preâmbulo, seção, tamanho e
@@ -88,9 +93,17 @@ o runner usa o export canônico e bias zero.
 Para inventariar toda a árvore principal e compará-la com o snapshot curado do
 Docker, use `audit_reconstructed_driver_inventory.py`. Esse inventário lista
 escopo, hashes, cobertura de identidades Ghidra/mapa e disponibilidade no
-Docker; ele não substitui os gates de build/paridade. O `--all` do auditor
+Docker, incluindo divergências de inputs e `.ko`; ele não substitui os gates de
+build/paridade. `validate_reconstructed_drivers.py` usa o snapshot Docker por
+padrão e resolve o manifesto do kernel versionado no repositório, inclusive
+quando o build é iniciado de outra raiz. O `--all` do auditor
 offline abaixo continua limitado aos drivers `zte_*`/`zlog_*` presentes em
 `engenharia/curated`.
+
+```powershell
+python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py `
+  --driver <driver> --rebuild --strict
+```
 
 ```powershell
 python workspace_tools/reconstruction_pipeline/audit_reconstructed_driver_inventory.py `

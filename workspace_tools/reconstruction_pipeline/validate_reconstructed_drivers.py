@@ -34,9 +34,14 @@ SYMBOL = struct.Struct("<IBBHQQ")
 EM_AARCH64 = 183
 ET_REL = 1
 SHT_SYMTAB = 2
+SHT_RELA = 4
+SHT_REL = 9
+SHT_NOBITS = 8
+SHF_ALLOC = 0x2
 SHN_UNDEF = 0
 STB_GLOBAL = 1
 STB_WEAK = 2
+ALLOCATED_METADATA_SECTIONS = {".note.gnu.build-id"}
 REQUIRED_GHIDRA_FILES = (
     "manifest.json",
     "functions.jsonl",
@@ -118,6 +123,12 @@ def resolve_target_kernel_manifest(curated_root: Path, explicit: Path | None) ->
     if explicit is not None:
         return explicit.resolve()
     repository_root = repository_root_for_curated(curated_root.resolve())
+    if repository_root is None:
+        # The default curated tree lives in the sibling Docker workspace, but
+        # the pinned kernel build manifest is versioned with this repository.
+        script_repository_root = Path(__file__).resolve().parents[2]
+        if (script_repository_root / "kernel_development" / "config" / "target_kernel.json").is_file():
+            repository_root = script_repository_root
     if repository_root is not None:
         return (repository_root / "kernel_development" / "config" / "target_kernel.json").resolve()
     return (curated_root.resolve().parent / "config" / "target_kernel.json").resolve()
@@ -195,6 +206,108 @@ def parse_elf(path: Path) -> dict[str, Any]:
         "machine": header[2],
         "undefined_symbols": sorted(undefined),
     }
+
+
+def parse_module_sections(path: Path) -> dict[str, dict[str, dict[str, Any]]]:
+    """Hash allocated sections separately from non-allocated debug/BTF metadata."""
+    data = path.read_bytes()
+    if len(data) < ELF_HEADER.size:
+        raise ValueError("ELF header is truncated while reading module sections")
+    header = ELF_HEADER.unpack_from(data)
+    if header[0][:4] != b"\x7fELF" or header[0][4] != 2 or header[0][5] != 1:
+        raise ValueError("expected ELF64 little-endian while reading module sections")
+    section_offset = header[6]
+    section_entry_size = header[11]
+    section_count = header[12]
+    string_table_index = header[13]
+    if (
+        section_entry_size < SECTION_HEADER.size
+        or section_count == 0
+        or string_table_index >= section_count
+    ):
+        raise ValueError("invalid ELF section table while reading module sections")
+
+    headers = []
+    for index in range(section_count):
+        offset = section_offset + index * section_entry_size
+        if offset + SECTION_HEADER.size > len(data):
+            raise ValueError("ELF section table exceeds file size")
+        headers.append(SECTION_HEADER.unpack_from(data, offset))
+    names_header = headers[string_table_index]
+    names_offset, names_size = names_header[4], names_header[5]
+    if names_offset + names_size > len(data):
+        raise ValueError("ELF section-name table exceeds file size")
+    names_table = data[names_offset : names_offset + names_size]
+
+    names: list[str] = []
+    for section in headers:
+        name_offset = section[0]
+        if name_offset >= len(names_table):
+            raise ValueError("ELF section name offset is invalid")
+        name_end = names_table.find(b"\0", name_offset)
+        if name_end < 0:
+            raise ValueError("ELF section name is unterminated")
+        names.append(names_table[name_offset:name_end].decode("utf-8", errors="replace"))
+
+    allocated_indices = {
+        index for index, section in enumerate(headers) if section[2] & SHF_ALLOC
+    }
+    runtime: dict[str, dict[str, Any]] = {}
+    all_sections: dict[str, dict[str, Any]] = {}
+    for index, section in enumerate(headers):
+        name = names[index]
+        section_type, flags, section_size = section[1], section[2], section[5]
+        content_offset = section[4]
+        if section_type == SHT_NOBITS:
+            section_data = b""
+        else:
+            if content_offset + section_size > len(data):
+                raise ValueError(f"ELF section {name} exceeds file size")
+            section_data = data[content_offset : content_offset + section_size]
+        key = name if name not in all_sections else f"{name}#{index}"
+        record = {
+            "type": section_type,
+            "flags": flags,
+            "size": section_size,
+            "sha256": hashlib.sha256(section_data).hexdigest(),
+        }
+        all_sections[key] = record
+        relocation_for_runtime = section_type in {SHT_REL, SHT_RELA} and section[7] in allocated_indices
+        include_runtime = bool(flags & SHF_ALLOC) or name == ".modinfo" or relocation_for_runtime
+        if include_runtime:
+            runtime[key] = record
+    return {"runtime": runtime, "all": all_sections}
+
+
+def compare_section_records(
+    left: dict[str, dict[str, Any]], right: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    differences = []
+    for name in sorted(set(left) | set(right)):
+        if left.get(name) != right.get(name):
+            differences.append({"section": name, "candidate": left.get(name), "fresh": right.get(name)})
+    return differences
+
+
+def compare_section_layouts(
+    left: dict[str, dict[str, Any]], right: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Compare names, ELF types, flags, and sizes without comparing contents."""
+    differences = []
+    for name in sorted(set(left) | set(right)):
+        left_record = left.get(name)
+        right_record = right.get(name)
+        left_layout = (
+            {key: left_record[key] for key in ("type", "flags", "size")}
+            if left_record is not None else None
+        )
+        right_layout = (
+            {key: right_record[key] for key in ("type", "flags", "size")}
+            if right_record is not None else None
+        )
+        if left_layout != right_layout:
+            differences.append({"section": name, "candidate": left_layout, "fresh": right_layout})
+    return differences
 
 
 def parse_modinfo(path: Path) -> dict[str, list[str]]:
@@ -877,6 +990,7 @@ def validate_regular_driver(
             fresh_elf = parse_elf(fresh_module)
             stock_modinfo = parse_modinfo(stock)
             fresh_modinfo = parse_modinfo(fresh_module)
+            fresh_sections = parse_module_sections(fresh_module)
             stock_vermagic_match = stock_modinfo.get("vermagic") == fresh_modinfo.get("vermagic")
             target_vermagic = target_kernel.get("vermagic") if target_kernel else None
             target_vermagic_match = bool(
@@ -915,12 +1029,79 @@ def validate_regular_driver(
             if promote_fresh and promotable:
                 shutil.copy2(fresh_module, candidate)
                 candidate_record = file_record(candidate)
-                metadata["candidate_matches_fresh"] = (
-                    candidate_record.get("sha256") == sha256_file(fresh_module)
-                )
                 metadata["fresh_promoted"] = True
             else:
                 metadata["fresh_promoted"] = False
+
+            candidate_modinfo = parse_modinfo(candidate) if candidate.is_file() else {}
+            candidate_sections = parse_module_sections(candidate) if candidate.is_file() else {"runtime": {}, "all": {}}
+            runtime_differences = compare_section_records(
+                candidate_sections["runtime"], fresh_sections["runtime"]
+            )
+            all_differences = compare_section_records(
+                candidate_sections["all"], fresh_sections["all"]
+            )
+            runtime_names = set(candidate_sections["runtime"]) | set(fresh_sections["runtime"])
+            non_runtime_differences = [
+                difference for difference in all_differences
+                if difference["section"] not in runtime_names
+            ]
+            runtime_content_differences = [
+                difference for difference in runtime_differences
+                if difference["section"] not in ALLOCATED_METADATA_SECTIONS | {".modinfo"}
+            ]
+            allocated_metadata_differences = [
+                difference for difference in runtime_differences
+                if difference["section"] in ALLOCATED_METADATA_SECTIONS
+            ]
+            runtime_layout_differences = compare_section_layouts(
+                candidate_sections["runtime"], fresh_sections["runtime"]
+            )
+            candidate_modinfo_matches_fresh = all(
+                candidate_modinfo.get(key, []) == fresh_modinfo.get(key, [])
+                for key in sorted(MODINFO_KEYS)
+            )
+            candidate_loadable_sections_match_fresh = not runtime_differences
+            candidate_runtime_content_matches_fresh = not runtime_content_differences
+            candidate_runtime_section_layout_matches_fresh = not runtime_layout_differences
+            metadata.update(
+                {
+                    "candidate_modinfo": candidate_modinfo,
+                    "candidate_modinfo_matches_fresh": candidate_modinfo_matches_fresh,
+                    "candidate_matches_fresh": (
+                        candidate_record.get("sha256") == sha256_file(fresh_module)
+                    ),
+                    "candidate_loadable_sections_match_fresh": candidate_loadable_sections_match_fresh,
+                    "candidate_loadable_section_differences": runtime_differences,
+                    "candidate_runtime_content_matches_fresh": candidate_runtime_content_matches_fresh,
+                    "candidate_runtime_content_differences": runtime_content_differences,
+                    "candidate_runtime_section_layout_matches_fresh": candidate_runtime_section_layout_matches_fresh,
+                    "candidate_runtime_section_layout_differences": runtime_layout_differences,
+                    "candidate_allocated_metadata_differences": allocated_metadata_differences,
+                    "candidate_nonloadable_section_differences": non_runtime_differences,
+                    "stock_depends_match_target": (
+                        stock_modinfo.get("depends", []) == fresh_modinfo.get("depends", [])
+                    ),
+                    "candidate_depends_match_target": (
+                        candidate_modinfo.get("depends", []) == fresh_modinfo.get("depends", [])
+                    ),
+                }
+            )
+            if (
+                not metadata["candidate_matches_fresh"]
+                and candidate_runtime_content_matches_fresh
+                and candidate_runtime_section_layout_matches_fresh
+                and candidate_modinfo_matches_fresh
+            ):
+                warnings.append(
+                    "candidate and fresh module SHA-256 differ in allocated build-id metadata and/or "
+                    "non-allocated debug/BTF sections; runtime content, section layout, and modinfo match"
+                )
+            if not metadata["stock_depends_match_target"]:
+                warnings.append(
+                    "stock module dependency metadata differs from the current target build; "
+                    "candidate dependency metadata is checked against the target rebuild"
+                )
             for key in (
                 "aarch64_rel",
                 "kernel_source_identity",
@@ -928,7 +1109,9 @@ def validate_regular_driver(
                 "alias_match",
                 "namespace_match",
                 "undefined_symbols_match",
-                "candidate_matches_fresh",
+                "candidate_runtime_content_matches_fresh",
+                "candidate_runtime_section_layout_matches_fresh",
+                "candidate_modinfo_matches_fresh",
             ):
                 checks[key] = metadata[key]
                 if not metadata[key]:
@@ -942,9 +1125,32 @@ def validate_regular_driver(
             "alias_match",
             "namespace_match",
             "undefined_symbols_match",
-            "candidate_matches_fresh",
+            "candidate_runtime_content_matches_fresh",
+            "candidate_runtime_section_layout_matches_fresh",
+            "candidate_modinfo_matches_fresh",
         ):
             checks[key] = False
+
+    map_path = driver_dir / "reconstruction_map.json"
+    declared_candidate_sha: str | None = None
+    if map_path.is_file():
+        try:
+            map_document = read_json(map_path)
+            if isinstance(map_document, dict):
+                value = map_document.get("candidate_sha256")
+                if isinstance(value, str) and value:
+                    declared_candidate_sha = value
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            warnings.append(f"could not read candidate SHA from reconstruction map: {error}")
+    current_candidate_sha = candidate_record.get("sha256")
+    candidate_hash_matches_map = (
+        current_candidate_sha == declared_candidate_sha if declared_candidate_sha else True
+    )
+    checks["candidate_hash_matches_map"] = candidate_hash_matches_map
+    if declared_candidate_sha is None:
+        warnings.append("reconstruction map does not declare candidate_sha256")
+    elif not candidate_hash_matches_map:
+        errors.append("reconstruction map candidate_sha256 does not match the current module")
 
     # A requested promotion may have created the canonical module after the
     # initial source-tree checks. Report it missing only if promotion did not
@@ -962,6 +1168,11 @@ def validate_regular_driver(
         "hardware_verified": False,
         "stock": stock_record,
         "candidate": candidate_record,
+        "candidate_hash_binding": {
+            "declared_candidate_sha256": declared_candidate_sha,
+            "current_candidate_sha256": current_candidate_sha,
+            "matches": candidate_hash_matches_map,
+        },
         "ghidra": ghidra,
         "traceability": map_result,
         "kernel_source_identity": kernel_source_identity,
@@ -1031,7 +1242,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help=(
             "target-kernel evidence used to justify OEM vermagic differences; "
-            "defaults to <curated-root>/../config/target_kernel.json"
+            "defaults to the repository manifest, then <curated-root>/../config/target_kernel.json"
         ),
     )
     parser.add_argument(

@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "strict_kcfi_pass": false,
+  "classification_status": "UNRESOLVED_REVIEW_REQUIRED",
+  "record_counts": {
+    "stock": 23,
+    "current_candidate": 26,
+    "fresh_candidate": 26
+  },
+  "comparison_reports": {
+    "current_candidate": {
+      "path": "assembly/kcfi_comparison_current_candidate.json",
+      "sha256": "ebbae8e9379567dc197e1df2559ab4685c97a777409df4899c96f195ee85e790",
+      "passed": false,
+      "mismatch_count": 3
+    },
+    "fresh_candidate": {
+      "path": "assembly/kcfi_comparison_fresh_candidate.json",
+      "sha256": "fe43083e6d2858c7cc618f0dd023988a913e5483780f2f7ff3717d8ccbd24752",
+      "passed": false,
+      "mismatch_count": 3
+    }
+  },
+  "stock_report": {
+    "path": "assembly/kcfi_stock.json",
+    "sha256": "5cd507e660031343364d3d069c363c625146254641879ba180e9a6405c640460"
+  },
+  "candidate_reports": {
+    "current": {
+      "path": "assembly/kcfi_current_candidate.json",
+      "sha256": "190c41d8294268c7f02f2c52b4ad08955ff240a057add671323f2c9d8de2f41c"
+    },
+    "fresh": {
+      "path": "assembly/kcfi_fresh_candidate.json",
+      "sha256": "4c78fd4c5357acee9ed8e734d4f1bd043fdcd1f60c401ba59a7b151999d0e3f5"
+    }
+  },
+  "unmatched_functions": [
+    {
+      "function": "gf_disable_irq",
+      "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+      "stock_exclusion_reason": "candidate preamble overlaps function body: gf_release+0xec",
+      "candidate_type_id": "0x2ab82364",
+      "candidate_decision": "PRESENT",
+      "current_comparison_passed": false,
+      "fresh_comparison_passed": false,
+      "stock_symbol_offset": "0x8b8",
+      "stock_entry": "001010d8",
+      "stock_symbol_size": 64,
+      "candidate_symbol_size": 64
+    },
+    {
+      "function": "gf_enable_irq",
+      "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+      "stock_exclusion_reason": "candidate preamble overlaps function body: gf_disable_irq+0x3c",
+      "candidate_type_id": "0xe5c47d60",
+      "candidate_decision": "PRESENT",
+      "current_comparison_passed": false,
+      "fresh_comparison_passed": false,
+      "stock_symbol_offset": "0x8f8",
+      "stock_entry": "00101118",
+      "stock_symbol_size": 84,
+      "candidate_symbol_size": 84
+    },
+    {
+      "function": "nav_event_input",
+      "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+      "stock_exclusion_reason": "candidate preamble overlaps function body: gf_enable_irq+0x50",
+      "candidate_type_id": "0x454a91cb",
+      "candidate_decision": "PRESENT",
+      "current_comparison_passed": false,
+      "fresh_comparison_passed": false,
+      "stock_symbol_offset": "0x94c",
+      "stock_entry": "0010116c",
+      "stock_symbol_size": 464,
+      "candidate_symbol_size": 464
+    }
+  ],
+  "ghidra_direct_call_evidence": {
+    "path": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/calls.jsonl",
+    "sha256": "a166651b9972a8ee12b6e7ccfa48d2b1c0fb3cb412d965e877e9b8399dea97e8",
+    "calls": [
+      {
+        "caller": "gf_ioctl",
+        "callsite": "00100954",
+        "target": "gf_disable_irq",
+        "target_address": "001010d8",
+        "reference_type": "UNCONDITIONAL_CALL"
+      },
+      {
+        "caller": "gf_ioctl",
+        "callsite": "00100c70",
+        "target": "nav_event_input",
+        "target_address": "0010116c",
+        "reference_type": "UNCONDITIONAL_CALL"
+      },
+      {
+        "caller": "gf_ioctl",
+        "callsite": "00100c8c",
+        "target": "gf_enable_irq",
+        "target_address": "00101118",
+        "reference_type": "UNCONDITIONAL_CALL"
+      }
+    ],
+    "entries": {
+      "gf_disable_irq": "001010d8",
+      "gf_enable_irq": "00101118",
+      "nav_event_input": "0010116c"
+    }
+  },
+  "interpretation": [
+    "The strict stock-versus-candidate KCFI comparisons fail for exactly these three symbols in both the current and fresh candidate reports.",
+    "The stock extractor records no valid preamble for these symbols because each candidate 4-byte preamble overlaps the preceding stock function body; the exact overlap is recorded per function above.",
+    "Ghidra records direct unconditional calls from gf_ioctl to all three symbols. The direct-call inventory does not prove that no indirect/address-taken references exist elsewhere.",
+    "Do not describe KCFI as a strict PASS until an independent review classifies the presence differences and checks address-taken/callback usage."
+  ]
+}
