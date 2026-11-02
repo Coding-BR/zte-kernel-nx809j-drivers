@@ -2,7 +2,7 @@
 
 - Target: `NX809J (RedMagic 11 Pro+)`
 - Stock SHA-256: `30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372`
-- Candidate SHA-256 (reconsolidated Docker cycle, 2026-09-04): `a38b3fccb92c47ab8203821ae7f9f67d5d1529577512cbafe61d2e6fa75038f5`
+- Candidate SHA-256 (current canonical Docker snapshot, 2026-11-02): 13362b3bf56c500de39cc26615323c0b55e55c31ed4cc3c3c2c9d0817af22c5c
 - Source SHA-256: `0aabf5ee8ae768c72a4935c209f5c1096a7e331c30dad2837fadf4faafeb5da5`
 - Kernel target: Android 16 / GKI `6.12.23` / AArch64 / `vendor_dlkm`
 - Overall verdict: **INCOMPLETE - not authorized as a 100% reconstruction**
@@ -18,7 +18,9 @@
 | Host harness | PASS | 10/10 functions covered; two runs and two host binaries are identical |
 | Microtasks | PASS | 10/10 hash-backed compile/KCFI/test attestations |
 | Strict assembly | PASS | 10/10 funções; instruções, sections, tamanhos e relocations equivalentes |
-| Independent review | PENDING | No reviewer distinct from the implementer has signed this candidate hash |
+| Current Docker static audit | PASS | Canonical 24-driver inventory marks this candidate static_verified; two clean builds, zero errors: reverse_engineering/validation/reconstructed/all_drivers_inventory_20261102.json |
+| Second-pass offline mapping review | PASS | Codex agent reviewed all 10 mappings against fresh candidate assembly; five relocation equivalences are documented in reverse_engineering/validation/reconstructed/zlog_exception/attestation/independent_mapping_review_20261102/ |
+| Independent human review | PENDING | No second human peer reviewer has signed this candidate hash |
 | Controlled hardware | DEFERRED | No load, userspace ABI or concurrency test for this exact candidate |
 
 As dez funções são strict matches. O comparador normaliza somente o sufixo
