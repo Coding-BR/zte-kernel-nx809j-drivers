@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global syna_dev_probe
-.type syna_dev_probe, %function
+.global syna_dev_probe_stock_exact
+.type syna_dev_probe_stock_exact, %function
     .word 0xc7f8c87c
-syna_dev_probe:
+syna_dev_probe_stock_exact:
     .inst 0xd503233f
     .inst 0xd101c3ff
     .inst 0xa9047bfd
@@ -511,7 +511,7 @@ syna_dev_probe:
     .reloc .-4, R_AARCH64_CALL26, __kmalloc_large_noprof
     .inst 0xf9002ab6
     .inst 0x17ffff35
-.size syna_dev_probe, .-syna_dev_probe
+.size syna_dev_probe_stock_exact, .-syna_dev_probe_stock_exact
 
 .section .bss,"aw",@nobits
 .align 0

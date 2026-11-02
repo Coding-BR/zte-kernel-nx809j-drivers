@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "4b9ac82ce6e60bd38d11f13cdc589a91b5198e0e235f81a738dfd93bd00458c6",
+  "candidate_sha256": "f56d61c4a1b31d518fb2a2047c179c03baba96401bbf67ea2b26fd50e2e9e13b",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T23:24:17Z",
+  "generated_utc": "2026-11-02T23:28:26Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4512,7 +4512,7 @@
     {
       "evidence": [
         "source:syna_dev_probe.c:sha256:a499f12641e99b76e0df5b27889be91f889ff327d502ac9afb410a3bef5f514e",
-        "source-exact:syna_dev_probe_exact.S:sha256:3a6d0c98eb140950bda39b5d85b9a7f06837660a557f93c628395cb9356610c9",
+        "source-stock-exact:syna_dev_probe_exact.S:sha256:3a6d0c98eb140950bda39b5d85b9a7f06837660a557f93c628395cb9356610c9",
         "source-include:syna_dev_probe_exact.inc:sha256:d40533908a1cb0d0ae9b87a0c3b2d44c5e1bda39a65f77bd29d713bf6878c5ee",
         "ghidra-pseudocode:decompiled/0156_00112038_syna_dev_probe.c:sha256:01403b177143bebaa14e6c9389f5b5e025a3c23874b97eccefc44c443a810cb2",
         "ghidra-pcode:pcode/0156_00112038_syna_dev_probe.jsonl:sha256:b9db1158fb8888528271bc9e88b6b2e84dbe9e65fc9a9238480d15f698766908",
@@ -4525,18 +4525,25 @@
         "joern-summary:attestation/next157_syna_dev_probe_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:058062416c45a3e5a8d921e26ffd6a2e49711f17190bc09891b1dc0e3cc7c4b7",
         "candidate-module:attestation/next157_syna_dev_probe_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "attestation:attestation/next157_syna_dev_probe_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:3259f3c0e20e878cbe05fd24ee95439c3f641f2021d404326ce45e3891659e6f",
-        "semantic-review-round5:attestation/semantic_review_round5_20261102/review.json:sha256:910f036f9b494ee96627fdfa1c420d1efa1043a8d2d1dd05f324695c51664f87"
+        "semantic-review-round5:attestation/semantic_review_round5_20261102/review.json:sha256:910f036f9b494ee96627fdfa1c420d1efa1043a8d2d1dd05f324695c51664f87",
+        "source-current:syna_dev_probe_exact.S:sha256:24e953ca116a1719f8e09881c9fa539c26b0d1d2f8fde01d1d90c85284d88e6d",
+        "source-current:syna_dev_probe_wrapper.c:sha256:965b99b3f70df40ca70e0d5dd2b4c608016075635a248961d1580b60829d04a6",
+        "source-current:syna_dev_remove.c:sha256:8e0059c2f6938d2d0ddf829b45456c5c2cb72da128997bf25daf32a69798b5da",
+        "source-sync:attestation/syna_dev_probe_helper_workqueue_guard_20261102/source_sync_plan.json:sha256:50d40a661361607e03368794921904df9b650cebbc799af0ce79ab4ec1510cef",
+        "canonical-build:attestation/syna_dev_probe_helper_workqueue_guard_20261102/canonical_build_report.json:sha256:8f8aca856b7d6843d5cfef0af71faf7bc84be4b95dd61f7a1e2a10f874a7e1c6",
+        "kcfi-comparison:attestation/syna_dev_probe_helper_workqueue_guard_20261102/kcfi_comparison.json:sha256:c9295c0b2a54f544f7bae16831adb205e40a651f67c00df744d4d0404115e419",
+        "lifecycle-review:attestation/syna_dev_probe_helper_workqueue_guard_20261102/lifecycle_review.json:sha256:0517c5e311f0cdf2244e58a1ee8afcc7da834891a49ce4898eeee3b13e69a9e9"
       ],
-      "mapping_basis": "Materialized stock AArch64 body with relocation-resolved assembly, stock rodata strings, KCFI, Joern, ASan/UBSan and reproducible Docker evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "source_file": "syna_dev_probe_exact.S",
+      "mapping_basis": "Preserves the 1408-byte stock AArch64 body under syna_dev_probe_stock_exact. A public wrapper checks the late helper queue allocation and rolls back the initialized probe through syna_dev_remove on failure.",
+      "review_scope": "offline_lifecycle_hardening",
+      "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
+      "source_file": "syna_dev_probe_wrapper.c",
       "source_function": "syna_dev_probe",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 1408,
       "stock_entry": "00112038",
       "stock_function": "syna_dev_probe",
-      "mapping_note": "Offline exact: 352 AArch64 instructions/1408 symbol bytes, KCFI type 0xc7f8c87c, strict Joern, two-cycle canonical Docker build and 11-scenario ASan/UBSan host harness pass. Repeated anonymous .bss relocation equivalence is position-bound in the assembly comparator. Device Tree, panel, firmware transport and hardware remain DEFERRED."
+      "mapping_note": "The public wrapper preserves the exact probe body under syna_dev_probe_stock_exact. If the helper workqueue at tcm+0x548 is NULL after stock probe succeeds, it invokes syna_dev_remove, clears platform drvdata, and returns -ENOMEM instead of binding without unexpected-reset recovery. Two-cycle canonical build and matching KCFI type ID passed; runtime/hardware remains unverified."
     },
     {
       "evidence": [

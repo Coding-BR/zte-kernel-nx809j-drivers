@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T23:28:06Z",
+  "driver": "zte_tpd",
+  "scope": [
+    "syna_dev_probe",
+    "syna_dev_remove",
+    "syna_dev_helper_workqueue_stop"
+  ],
+  "finding": {
+    "summary": "The exact probe body ignored failure to allocate the helper workqueue and still bound the device.",
+    "stock_evidence": [
+      "offline_static/ghidra_stock/decompiled/0156_00112038_syna_dev_probe.c stores alloc_workqueue(\"synaptics_tcm_helper\") at tcm+1352 (0x548), initializes the helper work item, and returns success without checking the allocation result.",
+      "syna_dev_process_unexpected_reset only admits reset work while the helper queue slot is non-NULL, so the bound device would silently lose unexpected-reset recovery."
+    ],
+    "impact": "Degraded device operation after memory pressure: touch probing succeeds, but the asynchronous reset-recovery callback cannot run."
+  },
+  "change": {
+    "mechanism": "The exact 1408-byte stock body remains under syna_dev_probe_stock_exact. A public wrapper checks the queue at tcm+0x548 after successful probe.",
+    "allocation_failure": "Call syna_dev_remove to quiesce the cdev, stop/drain work, unregister input_agent, disconnect the IRQ/input path, release TCM resources, clear platform drvdata, and return -ENOMEM.",
+    "normal_path": "When the helper queue exists, return the exact probe result without additional teardown or API changes.",
+    "classification": "HARDENED_STOCK_DEVIATION; the active symbol is a rollback wrapper around the preserved stock body."
+  },
+  "source_sync": {
+    "report": "source_sync_plan.json",
+    "passed": true,
+    "copied": [
+      "defs.h",
+      "syna_dev_probe_exact.S",
+      "syna_dev_probe_wrapper.c"
+    ],
+    "remaining_mismatches": 0
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "passed": true,
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256": "f56d61c4a1b31d518fb2a2047c179c03baba96401bbf67ea2b26fd50e2e9e13b",
+    "module_size": 7264224,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "kcfi": {
+    "report": "kcfi_comparison.json",
+    "passed": true,
+    "function": "syna_dev_probe",
+    "stock_type_id": "0xc7f8c87c",
+    "candidate_type_id": "0xc7f8c87c",
+    "size_is_gating": false,
+    "stock_symbol_size": 1408,
+    "candidate_symbol_size": 108
+  },
+  "limits": [
+    "No kernel runtime, allocation fault injection, Android boot, or NX809J hardware execution was performed.",
+    "Rollback on helper-workqueue allocation failure is supported by static path review and canonical compilation, not dynamic fault injection."
+  ]
+}

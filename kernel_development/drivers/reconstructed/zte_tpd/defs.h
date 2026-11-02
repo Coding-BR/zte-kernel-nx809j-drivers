@@ -661,6 +661,8 @@ extern int syna_input_agent_mmap(struct file *file,
                                  struct vm_area_struct *vma);
 extern int syna_dev_connect_stock_exact(struct syna_tcm *tcm);
 extern int syna_dev_disconnect_stock_exact(struct syna_tcm *tcm);
+extern int syna_dev_probe_stock_exact(struct platform_device *pdev);
+extern void syna_dev_remove(struct platform_device *pdev);
 extern bool syna_dev_queue_reflash_if_available(
 	int cpu, struct workqueue_struct *workqueue, struct delayed_work *work,
 	unsigned long delay);

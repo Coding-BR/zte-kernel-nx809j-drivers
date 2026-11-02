@@ -160,7 +160,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 154_zte_reset_frame_list | zte_reset_frame_list | 00111f64 | core_logic | zte_reset_frame_list.c:zte_reset_frame_list | PASS |
 | 155_syna_dev_module_init | syna_dev_module_init | 00111fcc | lifecycle | syna_dev_module_init.c:syna_dev_module_init | PROMOTED_OFFLINE_EXACT |
 | 156_syna_dev_module_exit | syna_dev_module_exit | 0011200c | lifecycle | syna_dev_module_exit.c:syna_dev_module_exit | PROMOTED_OFFLINE_EXACT |
-| 157_syna_dev_probe | syna_dev_probe | 00112038 | binding | syna_dev_probe_exact.S:syna_dev_probe | PROMOTED_OFFLINE_EXACT |
+| 157_syna_dev_probe | syna_dev_probe | 00112038 | binding | syna_dev_probe_wrapper.c:syna_dev_probe | HARDENED_STOCK_DEVIATION |
 | 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | HARDENED_STOCK_DEVIATION |
 | 159_syna_dev_shutdown | syna_dev_shutdown | 001126f4 | core_logic | syna_dev_shutdown.c:syna_dev_shutdown | PROMOTED_OFFLINE_EXACT |
 | 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_wrapper.c:syna_dev_connect | HARDENED_STOCK_DEVIATION |
@@ -389,3 +389,5 @@ The `syna_dev_helper_work` context initialization guard is recorded in `attestat
 ## workqueue lifecycle cross-cut (2026-11-02)
 
 The TPD main/report queue admission and teardown deviation is recorded in attestation/workqueue_lifecycle_20261102/lifecycle_review.json (SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd). Two independent canonical Docker builds passed with module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae and matching vermagic. KCFI type IDs match for six comparable stock functions; the stock zte_touch_deinit symbol has no valid KCFI preamble. No kernel runtime or hardware test was run.
+
+The Synaptics helper workqueue allocation rollback is attested in `attestation/syna_dev_probe_helper_workqueue_guard_20261102/`. The exact probe body is preserved under an alias; the wrapper now removes the initialized device and returns `-ENOMEM` if reset-recovery queue allocation failed.
