@@ -673,6 +673,7 @@ def reconstruction_map_check(
         "passed": False,
         "traceability_passed": False,
         "mapping_review_passed": False,
+        "declared_hardening_deviations": [],
     }
     if not path.is_file():
         message = "reconstruction_map.json is missing"
@@ -729,7 +730,43 @@ def reconstruction_map_check(
                     "reconstruction map identity is absent from Ghidra: "
                     f"{stock_name}@{stock_entry}"
                 )
-            if status not in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
+            if status in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
+                pass
+            elif status == "candidate_hardening_deviation":
+                attestation = mapping.get("hardening_attestation")
+                repository_root = repository_root_for_script(Path(__file__))
+                attestation_path = (
+                    (repository_root / attestation).resolve()
+                    if repository_root is not None and isinstance(attestation, str)
+                    else None
+                )
+                expected_disposition = "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION"
+                attested = (
+                    mapping.get("semantic_equivalence") == "NOT_ESTABLISHED_HARDENED_DEVIATION"
+                    and mapping.get("independent_review") == "PASS_WITH_DECLARED_HARDENING_DEVIATION"
+                    and mapping.get("review_disposition") == expected_disposition
+                    and isinstance(attestation, str)
+                    and repository_root is not None
+                    and attestation_path is not None
+                    and attestation_path.is_relative_to(repository_root)
+                    and attestation_path.is_file()
+                    and isinstance(evidence, list)
+                    and attestation in evidence
+                )
+                if not attested:
+                    review_errors.append(
+                        f"mapping {index} declares a hardening deviation without its required review metadata and attestation"
+                    )
+                else:
+                    result["declared_hardening_deviations"].append(
+                        {
+                            "stock_function": stock_name,
+                            "stock_entry": stock_entry,
+                            "review_disposition": expected_disposition,
+                            "hardening_attestation": attestation,
+                        }
+                    )
+            else:
                 review_errors.append(f"mapping {index} is not independently reviewed")
             if not isinstance(evidence, list) or not evidence or not all(
                 isinstance(item, str) and item.strip() for item in evidence
