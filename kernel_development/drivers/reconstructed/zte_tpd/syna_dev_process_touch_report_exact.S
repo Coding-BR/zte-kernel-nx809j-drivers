@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global syna_dev_process_touch_report
-.type syna_dev_process_touch_report, %function
+.global syna_dev_process_touch_report_stock_exact
+.type syna_dev_process_touch_report_stock_exact, %function
 .word 0x9f93c40a
-syna_dev_process_touch_report:
+syna_dev_process_touch_report_stock_exact:
     .inst 0xd503233f
     .inst 0xd10243ff
     .inst 0xa9037bfd
@@ -429,7 +429,7 @@ syna_dev_process_touch_report:
     .inst 0xd42aa240
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, __stack_chk_fail
-.size syna_dev_process_touch_report, .-syna_dev_process_touch_report
+.size syna_dev_process_touch_report_stock_exact, .-syna_dev_process_touch_report_stock_exact
 .section .rodata.str1.1,"aMS",@progbits,1
 .org 0x180
 .L_syna_process_rodata_180:

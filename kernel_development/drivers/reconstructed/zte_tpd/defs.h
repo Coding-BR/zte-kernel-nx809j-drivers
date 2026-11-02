@@ -610,7 +610,31 @@ extern void tpd_reset_gpio_output(unsigned char value);
 extern void cancel_report_lcd_state_delayed_work(void);
 extern void syna_dev_module_exit(void);
 extern void syna_hw_interface_exit(void);
+struct miscdevice;
 extern void syna_cdev_quiesce(void);
+extern void syna_cdev_operation_end(void);
+extern bool syna_cdev_operation_begin(unsigned long generation,
+                                      struct syna_tcm **tcm);
+extern bool syna_cdev_misc_operation_begin(struct miscdevice *misc,
+                                          struct syna_tcm **tcm,
+                                          unsigned long *generation);
+extern bool syna_cdev_lifecycle_is_online(void);
+extern void syna_input_agent_deregister_misc(struct syna_tcm *tcm);
+extern void syna_input_agent_wake_pollers(void);
+extern int syna_dev_process_touch_report_stock_exact(unsigned char report_type,
+						    const unsigned char *report,
+						    unsigned int report_size,
+						    void *context);
+extern void syna_input_agent_retire(struct syna_tcm *tcm);
+extern int syna_input_agent_open(struct inode *inode, struct file *file);
+extern int syna_input_agent_release(struct inode *inode, struct file *file);
+extern __poll_t syna_input_agent_poll(struct file *file,
+                                      struct poll_table_struct *wait);
+extern long syna_input_agent_ioctl(struct file *file, unsigned int cmd,
+                                   unsigned long arg);
+extern int syna_input_agent_mmap(struct file *file,
+                                 struct vm_area_struct *vma);
+extern int syna_dev_connect_stock_exact(struct syna_tcm *tcm);
 extern void syna_cdev_clear_global_data(void);
 extern void tp_free_tp_firmware_data(void);
 extern void tpd_clean_all_event(void);

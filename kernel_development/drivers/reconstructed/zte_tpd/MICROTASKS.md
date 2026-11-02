@@ -163,7 +163,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 157_syna_dev_probe | syna_dev_probe | 00112038 | binding | syna_dev_probe_exact.S:syna_dev_probe | PROMOTED_OFFLINE_EXACT |
 | 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | PROMOTED_OFFLINE_EXACT |
 | 159_syna_dev_shutdown | syna_dev_shutdown | 001126f4 | core_logic | syna_dev_shutdown.c:syna_dev_shutdown | PROMOTED_OFFLINE_EXACT |
-| 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_exact.S:syna_dev_connect | PASS |
+| 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_wrapper.c:syna_dev_connect | HARDENED_STOCK_DEVIATION |
 | 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_dev_disconnect.c:syna_dev_disconnect | PASS |
 | 162_syna_dev_set_up_app_fw | syna_dev_set_up_app_fw | 00112c90 | core_logic | syna_dev_set_up_app_fw.c:syna_dev_set_up_app_fw | PASS |
 | 163_syna_dev_resume | syna_dev_resume | 00112d6c | binding | syna_dev_resume.c:syna_dev_resume | PROMOTED_OFFLINE_EXACT |
@@ -173,12 +173,12 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 167_syna_dev_set_up_input_device | syna_dev_set_up_input_device | 001136c4 | core_logic | syna_dev_set_up_input_device.c:syna_dev_set_up_input_device | PROMOTED_OFFLINE_EXACT |
 | 168_syna_dev_process_unexpected_reset | syna_dev_process_unexpected_reset | 00113a9c | core_logic | syna_dev_process_unexpected_reset.c:syna_dev_process_unexpected_reset | PROMOTED_OFFLINE_EXACT |
 | 169_syna_dev_reflash_startup_work | syna_dev_reflash_startup_work | 00113b40 | async_or_irq | syna_dev_reflash_startup_work_exact.S:syna_dev_reflash_startup_work | PROMOTED_OFFLINE_EXACT |
-| 170_syna_dev_process_touch_report | syna_dev_process_touch_report | 00113c74 | core_logic | syna_dev_process_touch_report.c:syna_dev_process_touch_report | PASS |
+| 170_syna_dev_process_touch_report | syna_dev_process_touch_report | 00113c74 | core_logic | syna_dev_process_touch_report_wrapper.c:syna_dev_process_touch_report | HARDENED_STOCK_DEVIATION |
 | 171_syna_dev_isr | syna_dev_isr | 001141b4 | core_logic | syna_dev_isr.c:syna_dev_isr | PROMOTED_OFFLINE_EXACT |
 | 172_syna_dev_enter_normal_sensing | syna_dev_enter_normal_sensing | 00114294 | core_logic | syna_dev_enter_normal_sensing.c:syna_dev_enter_normal_sensing | PROMOTED_OFFLINE_EXACT |
 | 173_syna_dev_enable_lowpwr_gesture | syna_dev_enable_lowpwr_gesture | 00114348 | core_logic | syna_dev_enable_lowpwr_gesture_exact.S:syna_dev_enable_lowpwr_gesture | PROMOTED_OFFLINE_EXACT |
 | 174_syna_poll | syna_poll | 00114510 | core_logic | syna_poll.c:syna_poll | PASS |
-| 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | PASS |
+| 175_syna_ioctl | syna_ioctl | 00114580 | user_abi | syna_ioctl.c:syna_ioctl | HARDENED_STOCK_DEVIATION |
 | 176_syna_mmap | syna_mmap | 001147ec | core_logic | syna_mmap.c:syna_mmap | PASS |
 | 177_syna_open | syna_open | 001148a0 | user_abi | syna_open.c:syna_open | PROMOTED_OFFLINE_EXACT |
 | 178_syna_release | syna_release | 001148e0 | user_abi | syna_release.c:syna_release | PASS |
@@ -377,3 +377,7 @@ O estado exibido e gerado do mesmo manifesto JSON pelo atestador. PASS exige as 
 ## Branch hardening
 
 On branch codex/zte-tpd-firmware-allocation-hardening, task 012 intentionally differs from stock to clear the dangling firmware descriptor slot after vmalloc failure. The exact branch remains unchanged. The review and Docker build are under attestation/hardening_tp_alloc_firmware_retry_20261102/.
+
+## input_agent lifecycle cross-cut (2026-11-02)
+
+The fops wiring and lifecycle guards for `input_agent` are tracked in `attestation/syna_input_agent_lifecycle_20261102/`. The build passed two independent Docker cycles with module SHA-256 `6c280c7d76c6e7d8aa7cf47580333100da240fe0f9338cdcf88e70999aa120d8`. The `syna_dev_connect`, `syna_dev_process_touch_report`, `syna_ioctl`, `syna_cdev_create`, and `syna_cdev_remove` rows are marked `HARDENED_STOCK_DEVIATION`. The unchanged stock bodies for poll/open/mmap/release remain individually mapped, while their active fops dispatch uses lifecycle wrappers. No kernel runtime or hardware test was run.

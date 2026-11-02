@@ -18,7 +18,9 @@ void syna_cdev_remove(struct syna_tcm *tcm)
     return;
   }
   syna_cdev_quiesce();
+  syna_input_agent_deregister_misc(tcm);
   syna_dev_disconnect(tcm);
+  syna_input_agent_retire(tcm);
   mutex_lock(&qword_316D0);
   v4 = *(_QWORD **)(a1 + 1272);
   v5 = (_QWORD **)(a1 + 1272);

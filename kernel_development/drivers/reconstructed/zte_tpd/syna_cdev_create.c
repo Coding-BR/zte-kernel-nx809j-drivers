@@ -4,8 +4,12 @@
 #include <linux/atomic.h>
 #include <linux/mutex.h>
 #include <linux/wait.h>
+#include <linux/miscdevice.h>
 
 #undef syna_cdev_create___key
+extern void syna_input_agent_deregister_misc(struct syna_tcm *tcm);
+extern void syna_input_agent_wake_pollers(void);
+extern void syna_input_agent_retire(struct syna_tcm *tcm);
 
 DEFINE_MUTEX(syna_cdev_lifecycle_mutex);
 bool syna_cdev_lifecycle_online;
@@ -15,10 +19,54 @@ static DECLARE_WAIT_QUEUE_HEAD(syna_cdev_active_wait);
 static struct syna_tcm *syna_cdev_lifecycle_tcm;
 static bool syna_cdev_waitqueue_initialized;
 
-static void syna_cdev_operation_put(void)
+void syna_cdev_operation_end(void)
 {
     if (atomic_dec_and_test(&syna_cdev_active_operations))
         wake_up_all(&syna_cdev_active_wait);
+}
+
+bool syna_cdev_operation_begin(unsigned long generation,
+                               struct syna_tcm **tcm)
+{
+    bool valid;
+
+    mutex_lock(&syna_cdev_lifecycle_mutex);
+    valid = READ_ONCE(syna_cdev_lifecycle_online) && g_cdev_data &&
+            syna_cdev_lifecycle_tcm &&
+            generation == syna_cdev_lifecycle_generation;
+    if (valid) {
+        atomic_inc(&syna_cdev_active_operations);
+        if (tcm)
+            *tcm = syna_cdev_lifecycle_tcm;
+    }
+    mutex_unlock(&syna_cdev_lifecycle_mutex);
+    return valid;
+}
+
+bool syna_cdev_misc_operation_begin(struct miscdevice *misc,
+                                    struct syna_tcm **tcm,
+                                    unsigned long *generation)
+{
+    bool valid;
+
+    mutex_lock(&syna_cdev_lifecycle_mutex);
+    valid = READ_ONCE(syna_cdev_lifecycle_online) && g_cdev_data &&
+            syna_cdev_lifecycle_tcm &&
+            misc == (struct miscdevice *)((char *)syna_cdev_lifecycle_tcm + 0x4a0);
+    if (valid) {
+        atomic_inc(&syna_cdev_active_operations);
+        if (tcm)
+            *tcm = syna_cdev_lifecycle_tcm;
+        if (generation)
+            *generation = syna_cdev_lifecycle_generation;
+    }
+    mutex_unlock(&syna_cdev_lifecycle_mutex);
+    return valid;
+}
+
+bool syna_cdev_lifecycle_is_online(void)
+{
+    return READ_ONCE(syna_cdev_lifecycle_online);
 }
 
 static bool syna_cdev_operation_get(struct file *filp,
@@ -54,15 +102,29 @@ void syna_cdev_quiesce(void)
     tcm = syna_cdev_waitqueue_initialized ? syna_cdev_lifecycle_tcm : NULL;
     mutex_unlock(&syna_cdev_lifecycle_mutex);
 
-    if (tcm)
+    if (tcm) {
         wake_up_all(&tcm->wait_frame);
+        wake_up_all(&tcm->frame_wait);
+    }
+    syna_input_agent_wake_pollers();
     wait_event(syna_cdev_active_wait,
                atomic_read(&syna_cdev_active_operations) == 0);
 }
 
 void syna_cdev_clear_global_data(void)
 {
+    struct syna_tcm *tcm;
+
     syna_cdev_quiesce();
+    mutex_lock(&syna_cdev_lifecycle_mutex);
+    tcm = syna_cdev_lifecycle_tcm;
+    mutex_unlock(&syna_cdev_lifecycle_mutex);
+
+    if (tcm) {
+        syna_input_agent_deregister_misc(tcm);
+        syna_input_agent_retire(tcm);
+    }
+
     mutex_lock(&syna_cdev_lifecycle_mutex);
     g_cdev_data = 0;
     syna_cdev_lifecycle_tcm = NULL;
@@ -92,7 +154,7 @@ static int device_open(struct inode *inode, struct file *filp)
     ret = syna_cdev_open(inode, filp);
     if (!ret)
         filp->private_data = (void *)(unsigned long)generation;
-    syna_cdev_operation_put();
+    syna_cdev_operation_end();
     return ret;
 }
 
@@ -102,7 +164,7 @@ static int device_release(struct inode *inode, struct file *filp)
 
     if (syna_cdev_operation_get(filp, NULL)) {
         ret = syna_cdev_release(inode, filp);
-        syna_cdev_operation_put();
+        syna_cdev_operation_end();
     }
     filp->private_data = NULL;
     return ret;
@@ -116,7 +178,7 @@ static ssize_t device_read(struct file *filp, char __user *buffer,
     if (!syna_cdev_operation_get(filp, NULL))
         return -ENODEV;
     ret = syna_cdev_read(filp, buffer, count, offset);
-    syna_cdev_operation_put();
+    syna_cdev_operation_end();
     return ret;
 }
 
@@ -128,7 +190,7 @@ static ssize_t device_write(struct file *filp, const char __user *buffer,
     if (!syna_cdev_operation_get(filp, NULL))
         return -ENODEV;
     ret = syna_cdev_write(filp, buffer, count, offset);
-    syna_cdev_operation_put();
+    syna_cdev_operation_end();
     return ret;
 }
 
@@ -140,7 +202,7 @@ static long device_ioctl(struct file *filp, unsigned int cmd,
     if (!syna_cdev_operation_get(filp, NULL))
         return -ENODEV;
     ret = syna_cdev_ioctls(filp, cmd, arg);
-    syna_cdev_operation_put();
+    syna_cdev_operation_end();
     return ret;
 }
 
@@ -241,7 +303,6 @@ LABEL_14:
   syna_cdev_global_state.qword_31700_high = 0;
   mutex_lock(&syna_cdev_lifecycle_mutex);
   syna_cdev_waitqueue_initialized = true;
-  WRITE_ONCE(syna_cdev_lifecycle_online, true);
   mutex_unlock(&syna_cdev_lifecycle_mutex);
   struct device *dev = device_create(cl, NULL, tcm->cdev_num, NULL, "tcm%d", tcm->cdev_num & 0xFFFFF);
   if ( IS_ERR(dev) )
@@ -255,6 +316,9 @@ LABEL_14:
     goto LABEL_14;
   }
   tcm->cdev_device = dev;
+  mutex_lock(&syna_cdev_lifecycle_mutex);
+  WRITE_ONCE(syna_cdev_lifecycle_online, true);
+  mutex_unlock(&syna_cdev_lifecycle_mutex);
   LODWORD(v5) = 0;
   return (unsigned int)v5;
 

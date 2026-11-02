@@ -33,6 +33,12 @@ long syna_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
       while ( 1 )
       {
         v15 = prepare_to_wait_event((struct wait_queue_head *)(v4 + 274), &v28, 1);
+        if ( !syna_cdev_lifecycle_is_online() )
+        {
+          finish_wait((struct wait_queue_head *)(v4 + 274), &v28);
+          result = -19;
+          goto LABEL_RETURN;
+        }
         if ( v4[282] )
           break;
         if ( v15 )

@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0",
+  "target": "zte_tpd/input_agent lifecycle",
+  "generated_utc": "2026-11-02T18:16:01.507651-03:00",
+  "status": "PASS_STATIC_REVIEW_AND_REPRODUCIBLE_CANONICAL_BUILD",
+  "result": {
+    "canonical_build_passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycles_requested": 2,
+    "module_sha256": "6c280c7d76c6e7d8aa7cf47580333100da240fe0f9338cdcf88e70999aa120d8",
+    "module_size": 6551096,
+    "candidate_tree_manifest_sha256": "240a25ed0dedea329d691be007e26c575a9c2fdba8288f6fc1c533cea1a3ae92",
+    "diagnostics": [
+      [],
+      []
+    ]
+  },
+  "source_sync": {
+    "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_input_agent_lifecycle_20261102/source_sync_plan.json",
+    "sha256": "31d45bfd3cf0f48bc72cd6604adbb3c08c5ce068e318c9cc47c97490dcfe8b99",
+    "passed": true,
+    "copied_count": 5,
+    "removed_count": 0
+  },
+  "canonical_build_report": {
+    "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_input_agent_lifecycle_20261102/canonical_build_report.json",
+    "sha256": "4fb24e7d41ce801cb0cb5146d3219d2ff7ca15d1782a4c64d57a3db8baed4a3b",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers"
+  },
+  "root_cause": [
+    "Ghidra confirms input_agent uses zte_fops; misc_register registers the miscdevice embedded at tcm+0x4a0, while syna_open converts that pointer back to tcm.",
+    "The stock poll callback registers epoll waiters on tcm+0x448. Those waitqueue entries can outlive an individual poll call, while remove frees the tcm.",
+    "The stock mmap callback maps the buffer at tcm+0x460; remove previously kfree’d that buffer even if a VMA remained.",
+    "The exact probe registers input_agent before connect; connect failure and cdev-create failure did not reliably deregister the miscdevice."
+  ],
+  "changes": [
+    "Route input_agent open, poll, ioctl, mmap and release through generation-checked wrappers with active-operation references; reject stale opens and callbacks after quiesce.",
+    "Deregister input_agent on connect failure, cdev-create failure and teardown.",
+    "Retain the kmalloc mapping buffer through a per-open owner reference. Linux VMA file references keep the file context until its mappings are closed; final file release frees the retired buffer.",
+    "Use a module-lifetime poll waitqueue so epoll registrations never point into the freed tcm. The wrapper around the preserved exact touch-report handler wakes the global queue after report publication; quiesce wakes it to deliver HUP/ERR.",
+    "Wake both the stock ioctl frame waitqueue and the cdev waitqueue during quiesce; make the blocking input_agent ioctl return -ENODEV after shutdown."
+  ],
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+      "sha256": "a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/defs.h",
+      "sha256": "cf769c02319638cfc9db5eb30ae429ad8d16e0f59e4cb33b689fbd421ce0e454"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/globals.c",
+      "sha256": "9e2aa0a8bfb1a623f0d97cf4ebbf451671ca5a114f3e64b25898488cb6394bd2"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
+      "sha256": "0d6397ec22b88e06a6ff4f0896a6abe6d19a0b27576199e4bfeed7a8b0de5121"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_remove.c",
+      "sha256": "e80289f332dee27ed2b4d0496ed02d46cc2ebcf73743e091e5b30445509c85c4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect_wrapper.c",
+      "sha256": "1bed468bd36dcca1e23017a134060ec6336e4e6eee08eb687113fecb7becf85b"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect_exact.S",
+      "sha256": "14209f0e184fcde60305e3846f7a127b02cc540fc5f0a172aa2466cb8a112dc6"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_touch_report_wrapper.c",
+      "sha256": "4b0d53a479b8439592fbb5fcfb81938cfc1fb72edd091d8293e6801c21482d51"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_touch_report_exact.S",
+      "sha256": "8eb5a2f47dc981d563fed7b64a3bb84bd548aacdcb2be886c7a5f017bd0344bb"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_input_agent.c",
+      "sha256": "764fd68630dcdaef6759a79b87debcab5f6d39827f8ceb8bd159237556f698bb"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_ioctl.c",
+      "sha256": "70493230ea9a6a2cc522510b3769aff588fc382b066731770d47ae331a85083c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe_exact.S",
+      "sha256": "3a6d0c98eb140950bda39b5d85b9a7f06837660a557f93c628395cb9356610c9"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_mmap_exact.S",
+      "sha256": "f3659cabb326bd925e44625a2fd1d1748c75d71a13970823ff4dbf3b4ec0b980"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_open_exact.S",
+      "sha256": "6fc74818dbe2a297c539e93a3e8ecc86a196f7440028c68c228ca5e177dce088"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_release_exact.S",
+      "sha256": "5f33a03430fdb49dccd18c8054b70298d5536727a2613ece332881e2c535a364"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_poll.c",
+      "sha256": "eb502ef5c2787139e75cecfeb0502e9ea424c23a4c633ff5154ff46f7c429ca3"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_disconnect_exact.S",
+      "sha256": "243a85694cf302a770c41a7f8497b00789c2836a174e95bb43d3a90a0796fbca"
+    }
+  ],
+  "ghidra_stock_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0156_00112038_syna_dev_probe.c",
+      "sha256": "01403b177143bebaa14e6c9389f5b5e025a3c23874b97eccefc44c443a810cb2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0159_00112714_syna_dev_connect.c",
+      "sha256": "63257617cd6e8af8f1546830aa257a1972fb899e1b38a08afc316d3140046485"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c",
+      "sha256": "a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0169_00113c74_syna_dev_process_touch_report.c",
+      "sha256": "a071754a417610429e36144f18a1ae62d3ff389c817219f9e8127d6c021017a1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0173_00114510_syna_poll.c",
+      "sha256": "3e16c45ff760b703f1d9c3811af3ba0e54d675b6ee4eb2ac24fc0d25cdfe8f4b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0174_00114580_syna_ioctl.c",
+      "sha256": "98556e99248f3097601b5656a26d22132cc1a7f0e103b9ee5c6cfa953418fc68"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0175_001147ec_syna_mmap.c",
+      "sha256": "b5d84ad2fe4ff0bec8041e39c5c735cfa19d90a4001a7537f5e2b3dda81a01a9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0176_001148a0_syna_open.c",
+      "sha256": "7afbf8d65bf9462c36406c594195d4daef63c461c44dcee71ee1613e4e097cbd"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0177_001148e0_syna_release.c",
+      "sha256": "0a97688f3bc076cbad0850c23dd6aaa3274cd8d4cd10dfb00ec3bd18633892ad"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0183_00114b3c_syna_cdev_create.c",
+      "sha256": "698ccb62c69f47a4df3bb076f3f661613dc699d88ee17cb5c5f3163a05e3bff6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c",
+      "sha256": "0c43242c1987319dd9788d3e395985db814b025fd092383a869a10545657db57"
+    }
+  ],
+  "limits": [
+    "Compile and static lifecycle review only; no kernel runtime, Android device, or hardware test was run.",
+    "Exact assembly bodies for syna_dev_connect and syna_dev_process_touch_report remain under *_stock_exact aliases. The syna_ioctl source includes an explicit offline exit, and public callback wiring is deliberately marked HARDENED_STOCK_DEVIATION."
+  ],
+  "ghidra_pcode_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0156_00112038_syna_dev_probe.jsonl",
+      "sha256": "b9db1158fb8888528271bc9e88b6b2e84dbe9e65fc9a9238480d15f698766908"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0159_00112714_syna_dev_connect.jsonl",
+      "sha256": "0eab8269fd2a2e0cb970389c61c2495d051ef3f19bbc8469c4c4bfbde1be202d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0160_00112b04_syna_dev_disconnect.jsonl",
+      "sha256": "2440f4bf2586678e599a3d5038930152ff7fdfa3816bae5f33eb9ad6aea0f5ac"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0169_00113c74_syna_dev_process_touch_report.jsonl",
+      "sha256": "01491aafba662255054233ea856d3949379e5deeb77efb3ec2af1d71dacb6dfe"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0173_00114510_syna_poll.jsonl",
+      "sha256": "59d4f78e11902dfca7bff38288ae2ae3a8ecfcb949dc76da3702582c4e5d9221"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0174_00114580_syna_ioctl.jsonl",
+      "sha256": "a954d27e7bedd3ea8e87794c1df2579bbb0c15271688e1d42a9e7d76e61c3add"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0175_001147ec_syna_mmap.jsonl",
+      "sha256": "fc5c7dea07d037312f683e0d212cac42855dbc2d29c6ac2ffdf81c44c898c1e6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0176_001148a0_syna_open.jsonl",
+      "sha256": "3768358a069cb815bce55d94d0f6660fb2c6f1768e74a7a406cd6edcefe2b2cc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0177_001148e0_syna_release.jsonl",
+      "sha256": "ed3439e357f559fc04cd9fbe8772a6dc2e137eca6851c615ddab6d6e897dfcce"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0183_00114b3c_syna_cdev_create.jsonl",
+      "sha256": "3e3a21292857e5019299453faa3b198d4b2c4c95c91119844847d8186833d703"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0185_00114e04_syna_cdev_remove.jsonl",
+      "sha256": "9c1bfd0073bbe7754b879a484967bd075faa4dec187f184fae01e55143c80072"
+    }
+  ]
+}

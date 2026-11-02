@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global syna_dev_connect
-.type syna_dev_connect, %function
+.global syna_dev_connect_stock_exact
+.type syna_dev_connect_stock_exact, %function
 .inst 0xae20471c
-syna_dev_connect:
+syna_dev_connect_stock_exact:
     .inst 0xd503233f
     .inst 0xa9bd7bfd
     .inst 0xa90157f6
@@ -362,7 +362,7 @@ syna_dev_connect:
     .inst 0x91000000
     .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, .L_syna_dev_connect_rodata_8b2f
     .inst 0x17ffff2d
-.size syna_dev_connect, .-syna_dev_connect
+.size syna_dev_connect_stock_exact, .-syna_dev_connect_stock_exact
 .section .rodata.str1.1,"aMS",@progbits,1
 .org 0xd17
 .L_syna_dev_connect_rodata_d17:

@@ -2083,19 +2083,15 @@ const struct proc_ops proc_ops_BBAT_test = { .proc_read = tp_BBAT_test_read, .pr
 const struct proc_ops proc_ops_tp_test = { .proc_read = tp_test_read, .proc_write = tp_test_write, };
 const struct proc_ops proc_ops_frame_data = { .proc_read = tp_frame_data_read, .proc_write = tp_frame_data_write, };
 
-// Declare prototypes of functions used in zte_fops
-extern int syna_mmap(struct file *file, struct vm_area_struct *vma);
-extern int syna_open(struct inode *inode, struct file *filp);
-extern int syna_release(struct inode *inode, struct file *filp);
-
+// input_agent callbacks are guarded by the device lifecycle wrappers.
 // Define zte_fops
 struct file_operations zte_fops = {
     .owner          = THIS_MODULE,
-    .poll           = syna_poll,
-    .unlocked_ioctl = syna_ioctl,
-    .mmap           = syna_mmap,
-    .open           = syna_open,
-    .release        = syna_release,
+    .poll           = syna_input_agent_poll,
+    .unlocked_ioctl = syna_input_agent_ioctl,
+    .mmap           = syna_input_agent_mmap,
+    .open           = syna_input_agent_open,
+    .release        = syna_input_agent_release,
 };
 
 // Define active_panel
