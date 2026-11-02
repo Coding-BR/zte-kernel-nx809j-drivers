@@ -1,0 +1,75 @@
+{
+  "schema": "zte_tpd_lifecycle_review_v1",
+  "review_date": "2026-11-02",
+  "baseline_commit": "bce871ca8021dc54e2b79b83827403d8e29e2e88",
+  "scope": [
+    "cdev .release callback after lifecycle quiesce",
+    "cdev .llseek callback after device removal",
+    "cleanup ownership for cdev list and TCM data-duplicator table"
+  ],
+  "verdicts": [
+    {
+      "path": "cdev_release_after_quiesce",
+      "result": "NO_ADDITIONAL_FIX_REQUIRED",
+      "reason": "device_release returns 0 and clears filp->private_data when the lifecycle is offline or the file generation is stale. The stock syna_cdev_release dereferences g_cdev_data, so skipping it prevents use-after-free after cdev teardown clears that global. syna_cdev_remove drains the per-device list before the TCM object is freed. The remaining release effects modify counters or callback slots embedded in that retiring TCM object, or singleton snapshot state that syna_cdev_open reinitializes before the next active file session.",
+      "limits": "Static source and Ghidra review only; no kernel runtime or hardware test."
+    },
+    {
+      "path": "cdev_llseek_after_removal",
+      "result": "SAFE_AS_WIRED",
+      "reason": "device_fops assigns .llseek directly to syna_cdev_llseek. Both reconstructed C and stock Ghidra pseudocode show an unconditional -EINVAL return and no access to file, g_cdev_data, or TCM state.",
+      "limits": "Conclusion is limited to the current stock and reconstructed implementation of syna_cdev_llseek."
+    },
+    {
+      "path": "data_duplicator_cleanup",
+      "result": "NO_EXTERNAL_ALLOCATION_FOUND",
+      "reason": "syna_tcm_clear_data_duplicator zeroes the in-object 256-slot callback table at TCM offset 0x13d8. The reconstructed source search found the table accessed only by set/clear helpers; syna_tcm_remove_device ultimately devm_kfree's the TCM object. Skipping the late stock release therefore does not leave a separately allocated table behind.",
+      "limits": "This does not establish runtime ordering for external consumers that may retain a TCM pointer; platform unbind behavior remains untested."
+    }
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
+      "sha256": "0d6397ec22b88e06a6ff4f0896a6abe6d19a0b27576199e4bfeed7a8b0de5121"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_release.c",
+      "sha256": "9bf9536e62733764e1c6aa1e641a9ac41897faf63ba3157fff4d356a155c437e"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_remove.c",
+      "sha256": "e80289f332dee27ed2b4d0496ed02d46cc2ebcf73743e091e5b30445509c85c4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_remove_device.c",
+      "sha256": "7b7bbac7a7b1622eb8d2a78cab757a67e1000d31b9503a78dd380d16bd60571b"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_clear_data_duplicator.c",
+      "sha256": "af768279a6af17c52fb4e0761a2e2d8addcc00267f90559a7c026a6852e952d5"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_llseek.c",
+      "sha256": "91de35ea0d177324eaf66288be8cc0c18156dd69222a7ef5f512c71ab9d018da"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0186_00114f98_syna_cdev_llseek.c",
+      "sha256": "0b227e7e7143e7265b5ac9cce4c5fc36f18934c7f7612a7d6d9acac7e7fc6137"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c",
+      "sha256": "0c43242c1987319dd9788d3e395985db814b025fd092383a869a10545657db57"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0266_001216d0_syna_tcm_remove_device.c",
+      "sha256": "4590588d9dd1d61a61144ea660fc1faae69ee68871cc9b36f1482a70018a797c"
+    }
+  ],
+  "validation": {
+    "method": "bounded source inspection and Ghidra pseudocode cross-check",
+    "build_run": false,
+    "runtime_test_run": false,
+    "map_changed": false,
+    "source_changed": false
+  }
+}
