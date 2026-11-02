@@ -128,18 +128,27 @@ def load_mapping(path: Path) -> dict[str, dict[str, Any]]:
 
 def mapping_source_state(mapping: dict[str, Any]) -> tuple[str, str, str]:
     mapping_status = mapping.get("status")
-    source_file = (
-        mapping.get("source_file", "")
-        if mapping_status in {"reviewed", "mapped_not_exact"}
-        else ""
-    )
-    source_function = mapping.get("source_function", "") if source_file else ""
-    if mapping_status == "reviewed" and source_file and source_function:
-        task_status = "READY_FOR_IMPLEMENTATION"
-    elif mapping_status == "mapped_not_exact" and source_file and source_function:
-        task_status = "MAPPED_NOT_EXACT"
-    else:
-        task_status = "WAITING_FOR_SOURCE_MAP"
+    normalized_status = mapping_status.lower() if isinstance(mapping_status, str) else ""
+    source_file = mapping.get("source_file", "")
+    source_function = mapping.get("source_function", "")
+
+    if normalized_status == "unmapped":
+        return "", "", "WAITING_FOR_SOURCE_MAP"
+    if not isinstance(source_file, str) or not isinstance(source_function, str):
+        return "", "", "WAITING_FOR_SOURCE_MAP"
+    if not source_file or not source_function:
+        return source_file, source_function, "WAITING_FOR_SOURCE_MAP"
+
+    task_statuses = {
+        "reviewed": "READY_FOR_IMPLEMENTATION",
+        "mapped_not_exact": "MAPPED_NOT_EXACT",
+        "candidate_under_static_validation": "CANDIDATE_UNDER_STATIC_VALIDATION",
+        "candidate_hardening_deviation": "CANDIDATE_HARDENING_DEVIATION",
+        "core_gates_pass_unreviewed": "CORE_GATES_PASS_UNREVIEWED",
+        "implemented_pending_independent_review": "IMPLEMENTED_PENDING_INDEPENDENT_REVIEW",
+        "promoted_offline_exact": "PROMOTED_OFFLINE_EXACT",
+    }
+    task_status = task_statuses.get(normalized_status, "MAPPED_STATUS_REQUIRES_REVIEW")
     return source_file, source_function, task_status
 
 
