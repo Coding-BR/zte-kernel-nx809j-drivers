@@ -95,12 +95,16 @@ def index_hash_matches(
         return True
     candidate = (workspace_root / relative_path).resolve()
     if (
-        candidate.is_file()
-        and candidate.suffix.lower() in TEXT_HASH_SUFFIXES
+        candidate.suffix.lower() in TEXT_HASH_SUFFIXES
     ):
+        normalized_index = indexed.replace(b"\r\n", b"\n")
+        if sha256_bytes(normalized_index) == expected:
+            return True
+        if not candidate.is_file():
+            return False
         working = candidate.read_bytes()
         return (
-            working.replace(b"\r\n", b"\n") == indexed
+            working.replace(b"\r\n", b"\n") == normalized_index
             and sha256_file_raw(candidate) == expected
         )
     return False
