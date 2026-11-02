@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "MTP update temporary-buffer lifetime and cleanup review",
+  "review_status": "STATIC_REVIEW_COMPLETE_STOCK_RETENTION_CONFIRMED",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 3,
+    "unique_call_sites": 3,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_tcm_update_mtp_data"
+    ],
+    "reviewed_total_after_this_round": 80,
+    "remaining_joern_findings": 48
+  },
+  "joern_alerts": [
+    {
+      "call": "mutex_init",
+      "reported_line": 51,
+      "current_line": 51,
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(access.mutex)"
+    },
+    {
+      "call": "devm_kmalloc",
+      "reported_line": 90,
+      "current_line": 90,
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kmalloc(managed_device, rounded_length, 0xdc0)"
+    },
+    {
+      "call": "devm_kfree",
+      "reported_line": 109,
+      "current_line": 109,
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, access.managed_allocation)"
+    }
+  ],
+  "findings": [
+    {
+      "id": "update-mtp-access-mutex",
+      "category": "synchronization",
+      "severity": "NO_LOCK_DEFECT_FOUND",
+      "disposition": "BALANCED_BY_STOCK_WRITE_FLASH_PATH",
+      "details": "The local flash-access mutex is initialized before setup and passed to syna_tcm_write_flash. The callee locks it and its stock common-release path unlocks it on completion and handled failures. This Joern alert is not a lock leak.",
+      "evidence": {
+        "caller_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_mtp_data.c:51",
+        "callee_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash.c:99-204",
+        "stock_callee_ghidra": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0306_0012704c_syna_tcm_write_flash.c:32"
+      }
+    },
+    {
+      "id": "mtp-payload-retained-until-device-detach",
+      "category": "lifetime",
+      "severity": "CONFIRMED_STOCK_MEMORY_RETENTION",
+      "disposition": "INHERITED_STOCK_BEHAVIOR_PRESERVED_FOR_EXACT_RECONSTRUCTION",
+      "details": "The function allocates payload with devm_kmalloc, copies caller data into it, passes it to the synchronous flash writer, and reaches common cleanup without a devm_kfree for payload. The only caller cleanup free uses access.managed_allocation. The stock Ghidra pseudocode and exact stock assembly show the same allocation, call, and cleanup: devm_kmalloc at 0x213bc; payload is passed in x3 to syna_tcm_write_flash at 0x21408; the only devm_kfree call at 0x21454 uses the separate access allocation held in x19/local_b0. The callee reads/copies the input pointer and does not free it. Consequently, each invocation that gets as far as allocating payload retains rounded_length bytes under devres until managed-device teardown; repeated invocations can accumulate retained memory before detach. This is not a permanent leak after device teardown.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_mtp_data.c",
+        "candidate_source_sha256": "5c80e7b0906cd03fb4e1e843d953f0c3db8b0b166f629b8fcfacec8b3d579b35",
+        "candidate_exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_mtp_data_exact.S",
+        "candidate_exact_assembly_sha256": "e7d1d19471170cb8e773f3448afbdb31eb60ffc7cebf0a2cd5eb1b46e8f5c3f6",
+        "stock_ghidra_decomp": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0309_00127b14_syna_tcm_update_mtp_data.c",
+        "stock_ghidra_decomp_sha256": "192daa2b1f509cd5556af1a11ef322438b3d72480e74ea1134e099f33e790099",
+        "stock_ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0309_00127b14_syna_tcm_update_mtp_data.jsonl",
+        "stock_ghidra_pcode_sha256": "782cc29f80ef106644f3e28483233711fe48d728347195255edd1e24d6d942ca",
+        "stock_assembly": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0309_syna_tcm_update_mtp_data_00127b14.asm",
+        "stock_assembly_sha256": "4e65c9aaca3997e7614f22a2be16e5ff3dd1971c31912f15d9d16b60fb955565",
+        "write_flash_stock_ghidra": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0306_0012704c_syna_tcm_write_flash.c",
+        "write_flash_stock_ghidra_sha256": "35d7313dfd4ba5ed648d85e9c4a4ca7fae23f435a3b7d237b31d4cf881f153a3",
+        "write_flash_stock_assembly": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0306_syna_tcm_write_flash_0012704c.asm",
+        "write_flash_stock_assembly_sha256": "ed3b6eac99d0f9a78be19c6bc03dadea11d6939c8ef5903648efcbb5b0cab247"
+      }
+    },
+    {
+      "id": "mtp-cleanup-frees-access-buffer-only",
+      "category": "lifetime",
+      "severity": "EXPECTED_CLEANUP_WITH_UNPAIRED_PAYLOAD",
+      "disposition": "ACCESS_BUFFER_FREE_CONFIRMED_PAYLOAD_FREE_ABSENT",
+      "details": "The Joern devm_kfree call is real and frees access.managed_allocation, the flash writer’s internal transfer buffer. It is not the payload pointer allocated at line 90. The write_flash helper uses its input data as a copy source and its devm_kfree applies to its own old_data buffer.",
+      "evidence": {
+        "caller_source_lines": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_mtp_data.c:90-109",
+        "stock_caller_cleanup": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0309_syna_tcm_update_mtp_data_00127b14.asm:0x21444-0x21454",
+        "stock_callee_free_and_copy": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0306_0012704c_syna_tcm_write_flash.c:66,130"
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_update_mtp_data.c": "5c80e7b0906cd03fb4e1e843d953f0c3db8b0b166f629b8fcfacec8b3d579b35",
+    "syna_tcm_update_mtp_data_exact.S": "e7d1d19471170cb8e773f3448afbdb31eb60ffc7cebf0a2cd5eb1b46e8f5c3f6",
+    "syna_tcm_write_flash.c": "d2cd0639d6c55331ec595c7660c5dd6cd96caf00be64ad77999c87e32bbf42dd",
+    "syna_tcm_write_flash_exact.S": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705"
+  },
+  "joern_evidence": {
+    "report": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "report_sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "input_manifest": "attestation/full_surface_revalidation_20261102/joern/input_manifest.json",
+    "input_manifest_sha256": "60970240de72f1a4930518d7dbaa949bb946db5b59ca1f3394e61e85ae4aeb1a",
+    "target_source_sha256": "5c80e7b0906cd03fb4e1e843d953f0c3db8b0b166f629b8fcfacec8b3d579b35",
+    "target_source_matches_current": true,
+    "target_alerts_reviewed": 3
+  },
+  "host_harness": {
+    "report": "attestation/next310_syna_tcm_update_mtp_data_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "469a0ce458cf079973c1a5f7edc430960a8edb67fc6852cb5edc20feacbedfb5",
+    "source_sha256": "5c80e7b0906cd03fb4e1e843d953f0c3db8b0b166f629b8fcfacec8b3d579b35",
+    "source_matches_current": true,
+    "status": "PASS",
+    "cases": 10,
+    "cycles": 2,
+    "reproducible_binary": true,
+    "cycle_binary_sha256": "e3e1208e08a0589e37a091cb3ef70d8712757a68b7b8d2baaf80c7ef2e29d822",
+    "scope_note": "The retained report does not enumerate a repeated-call devres accounting case; its pass does not refute the static lifetime finding."
+  },
+  "docker_snapshot": {
+    "curated_root": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/zte_tpd",
+    "target_c_matches_repository": true,
+    "target_assembly_matches_repository": true,
+    "kbuild_selects_exact_assembly": true,
+    "kbuild_excludes_c_mirror": true,
+    "kbuild_evidence": "kernel_development/drivers/reconstructed/zte_tpd/Makefile:46,307,398",
+    "canonical_build_report": "attestation/semantic_review_round11_20261102/canonical_build_report.json",
+    "canonical_build_report_sha256": "8f5e31387581a4fe50f23def58cec48dd286006fb825dfed69a6ccd640ff5504",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "kbuild_inputs": 848,
+    "manifest_sha256": "c25efee40ee27b8e5716e23221188abaae819280ebe9d383ca05dc6284ed390f",
+    "module_sha256_each_cycle": "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+    "rebuild_performed_this_round": false,
+    "rebuild_reason": "No Kbuild input changed in this review-only round; the canonical report input manifest includes the exact current C and assembly hashes."
+  },
+  "limitations": [
+    "This review confirms a stock memory-retention behavior; no hardening deviation was applied to the exact assembly selected by Kbuild.",
+    "The current host contract report does not enumerate repeated-call allocation accounting, and no such scenario was run in this review.",
+    "Android runtime behavior and NX809J hardware validation remain unverified.",
+    "Independent human review was not performed."
+  ]
+}
