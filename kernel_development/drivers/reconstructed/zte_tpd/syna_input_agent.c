@@ -2,6 +2,7 @@
 #include <linux/miscdevice.h>
 #include <linux/refcount.h>
 #include <linux/poll.h>
+#include <linux/err.h>
 
 #define SYNA_INPUT_AGENT_MISC_OFFSET 0x4a0
 #define SYNA_INPUT_AGENT_BUFFER_OFFSET 0x460
@@ -20,6 +21,7 @@ struct syna_input_file_context {
 };
 
 static DEFINE_MUTEX(syna_input_owner_lock);
+static DEFINE_MUTEX(syna_input_agent_misc_lock);
 static struct syna_input_buffer_owner *syna_input_owner;
 static DECLARE_WAIT_QUEUE_HEAD(syna_input_agent_poll_wait);
 
@@ -68,13 +70,19 @@ void syna_input_agent_wake_pollers(void)
 void syna_input_agent_deregister_misc(struct syna_tcm *tcm)
 {
 	struct miscdevice *misc;
+	struct device *this_device;
 
 	if (!tcm)
 		return;
 	misc = (struct miscdevice *)((char *)tcm +
 				    SYNA_INPUT_AGENT_MISC_OFFSET);
-	if (READ_ONCE(misc->this_device))
+	mutex_lock(&syna_input_agent_misc_lock);
+	this_device = READ_ONCE(misc->this_device);
+	if (!IS_ERR_OR_NULL(this_device)) {
 		misc_deregister(misc);
+		WRITE_ONCE(misc->this_device, NULL);
+	}
+	mutex_unlock(&syna_input_agent_misc_lock);
 }
 
 void syna_input_agent_retire(struct syna_tcm *tcm)

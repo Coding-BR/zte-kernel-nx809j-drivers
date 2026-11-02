@@ -1,0 +1,61 @@
+{
+  "schema": "zte_tpd_misc_lifecycle_fix_v1",
+  "review_date": "2026-11-02",
+  "baseline_commit": "c7fc3a477e65c855837706a0dc3ffd2020b6339f",
+  "finding": {
+    "severity": "kernel_warning_on_repeated_teardown",
+    "description": "syna_cdev_remove and syna_cdev_clear_global_data both call syna_input_agent_deregister_misc. The old helper tested misc->this_device, called misc_deregister, and left the pointer unchanged, so the second call passed the guard.",
+    "target_api_behavior": "Android Common 6.12 misc_deregister checks list_empty(&misc->list), emits WARN_ON and returns for an already unregistered miscdevice; it does not clear misc->this_device. The repeated call therefore generates a kernel warning and leaves a stale device pointer in the embedded structure.",
+    "reference": "https://android.googlesource.com/kernel/common/+/1641684528815bb7e85737d5d2bceb551c55d5a8/drivers/char/misc.c"
+  },
+  "fix": {
+    "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_input_agent.c",
+    "details": [
+      "Serialize deregistration through a dedicated static mutex.",
+      "Treat NULL and ERR_PTR this_device values as not registered.",
+      "After the first misc_deregister call, clear misc->this_device with WRITE_ONCE so later teardown paths are no-ops."
+    ],
+    "stock_function_bodies_changed": false,
+    "reconstruction_map_changed": false
+  },
+  "source_sync": {
+    "passed": true,
+    "copied": ["syna_input_agent.c"],
+    "removed_stale_source": []
+  },
+  "canonical_build": {
+    "passed": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "module_sha256_by_cycle": [
+      "b051f938b0507effc693c6098aa69a97cf4136d4a7dbc0c463c9aac32203c803",
+      "b051f938b0507effc693c6098aa69a97cf4136d4a7dbc0c463c9aac32203c803"
+    ],
+    "module_size_bytes": 6551640,
+    "diagnostics": []
+  },
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_input_agent.c",
+      "sha256": "8cca2ae85a9d92dee16658e1825684b581d84e15f602564c531c244de361558f"
+    },
+    {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/misc_deregister_idempotence_20261102/source_sync_plan.json",
+      "sha256": "7253fe83dd1b3e9cad0d06aa958f161bb654ae10cc8250e6624841879cd9b1c0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/misc_deregister_idempotence_20261102/canonical_build_report.json",
+      "sha256": "6f7b2c8323f0a7694a460bcff0423cc257a79ea6ff6ba2eb6ad8078e9adc280f"
+    }
+  ],
+  "validation_limits": [
+    "Canonical compile and offline API-source review only.",
+    "No Android kernel runtime, unbind/rebind exercise, or NX809J hardware validation was run."
+  ]
+}
