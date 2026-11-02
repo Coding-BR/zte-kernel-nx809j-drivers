@@ -878,29 +878,37 @@ def canonicalize_mapping_symbol_u16_dispatch_tables(
         """Recognize ``cmp wN,#max; b.hi; adrp/add; adr; ldrh; add; br``."""
         if relocation_instruction < 2 or relocation_instruction + 5 >= len(instructions):
             return None
-        words = [
-            _opcode_word(value)
-            for value in instructions[
-                relocation_instruction - 2 : relocation_instruction + 6
-            ]
-        ]
-        if any(word is None for word in words):
+        window = instructions[relocation_instruction - 2 : relocation_instruction + 6]
+        words = [_opcode_word(value) for value in window]
+        if any(word is None for index, word in enumerate(words) if index != 1):
             return None
-        (
-            compare,
-            branch,
-            adrp,
-            add_immediate,
-            adr,
-            load_halfword,
-            add_register,
-            branch_register,
-        ) = [word for word in words if word is not None]
+        compare = words[0]
+        branch = words[1]
+        adrp = words[2]
+        add_immediate = words[3]
+        adr = words[4]
+        load_halfword = words[5]
+        add_register = words[6]
+        branch_register = words[7]
+        branch_is_hi = (
+            branch is not None
+            and (branch & 0xFF000010) == 0x54000000
+            and (branch & 0xF) == 8
+        ) or (
+            branch is None
+            and re.fullmatch(r"b\.hi <[^>]+>", window[1]) is not None
+        )
         if (
-            (compare & 0x7F00001F) != 0x7100001F
+            compare is None
+            or adrp is None
+            or add_immediate is None
+            or adr is None
+            or load_halfword is None
+            or add_register is None
+            or branch_register is None
+            or (compare & 0x7F00001F) != 0x7100001F
             or compare & (1 << 22)
-            or (branch & 0xFF000010) != 0x54000000
-            or (branch & 0xF) != 8  # B.HI
+            or not branch_is_hi
             or (adrp & 0x9F000000) != 0x90000000
             or (add_immediate & 0xFFC00000) != 0x91000000
             or (adr & 0x9F000000) != 0x10000000
@@ -1109,6 +1117,17 @@ def _is_equality_branch(word: int) -> bool:
     return (word & 0xFF000010) == 0x54000000 and (word & 0xF) in {0, 1}
 
 
+def _equality_branch_condition(instruction: str) -> str | None:
+    """Read EQ/NE from either an opcode or normalized symbolic branch text."""
+    word = _opcode_word(instruction)
+    if word is not None:
+        if not _is_equality_branch(word):
+            return None
+        return "eq" if word & 0xF == 0 else "ne"
+    match = re.fullmatch(r"b\.(?P<condition>eq|ne) <[^>]+>", instruction)
+    return match.group("condition") if match else None
+
+
 def canonicalize_equality_cmp_operand_swaps(
     stock_instructions: list[str],
     candidate_instructions: list[str],
@@ -1124,15 +1143,13 @@ def canonicalize_equality_cmp_operand_swaps(
             continue
         stock_word = _opcode_word(stock[index])
         candidate_word = _opcode_word(candidate[index])
-        stock_branch = _opcode_word(stock[index + 1])
-        candidate_branch = _opcode_word(candidate[index + 1])
+        stock_branch = stock[index + 1]
+        candidate_branch = candidate[index + 1]
         if (
             stock_word is None
             or candidate_word is None
-            or stock_branch is None
-            or candidate_branch is None
             or stock_branch != candidate_branch
-            or not _is_equality_branch(stock_branch)
+            or _equality_branch_condition(stock_branch) is None
         ):
             continue
         stock_canonical = _canonical_equality_cmp_word(stock_word)
@@ -1286,18 +1303,16 @@ def canonicalize_sxtw_int_printk_argument_reordering(
             )
             cmp_word = _opcode_word(stock[prelude + 1])
             candidate_cmp = _opcode_word(candidate[prelude + 1])
-            branch_word = _opcode_word(stock[prelude + 2])
-            candidate_branch = _opcode_word(candidate[prelude + 2])
+            stock_branch = stock[prelude + 2]
+            candidate_branch = candidate[prelude + 2]
             if (
                 stock_extend is not None
                 and stock_extend == candidate_extend
                 and cmp_word is not None
                 and cmp_word == candidate_cmp
                 and (cmp_word & 0xFFE0FC1F) == 0xEB00001F
-                and branch_word is not None
-                and branch_word == candidate_branch
-                and _is_equality_branch(branch_word)
-                and (branch_word & 0xF) == 1
+                and stock_branch == candidate_branch
+                and _equality_branch_condition(stock_branch) == "ne"
             ):
                 matching_preludes.append((prelude, stock_extend))
         if (
