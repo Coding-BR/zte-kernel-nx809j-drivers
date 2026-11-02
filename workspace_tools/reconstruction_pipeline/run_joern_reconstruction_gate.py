@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import bisect
 import collections
 import datetime as dt
 import hashlib
@@ -59,11 +60,12 @@ def source_tree_record(
     root: Path, excluded: set[str] | None = None
 ) -> dict[str, Any]:
     excluded = excluded or set()
-    paths = sorted(
+    paths = [
         path for path in root.rglob("*")
-        if path.is_file() and path.suffix.lower() in {".c", ".h"}
+        if path.is_file() and path.suffix.lower() in {".c", ".h", ".i"}
         and not any(part in excluded for part in path.relative_to(root).parts)
-    )
+    ]
+    paths.sort(key=lambda path: path.relative_to(root).as_posix())
     if not paths:
         raise ValueError(f"source root contains no C/header files: {root}")
     aggregate = hashlib.sha256()
@@ -104,6 +106,57 @@ def load_records(path: Path) -> list[dict[str, Any]]:
     if not isinstance(records, list):
         raise ValueError(f"expected records array: {path}")
     return records
+
+
+def preprocessed_origin_index(source_root: Path | None) -> dict[str, list[tuple[int, str]]]:
+    if source_root is None:
+        return {}
+    result: dict[str, list[tuple[int, str]]] = {}
+    marker = re.compile(r'^\s*#\s*\d+\s+"([^"]+)"')
+    for path in source_root.rglob("*.i"):
+        markers = []
+        with path.open("r", encoding="utf-8", errors="replace") as stream:
+            for line_number, line in enumerate(stream, start=1):
+                match = marker.match(line)
+                if match:
+                    markers.append((line_number, match.group(1)))
+        result.setdefault(path.name, []).extend(markers)
+    return result
+
+
+def record_originates_in_source(
+    row: dict[str, Any],
+    source_root: Path | None,
+    compiled_source_root: Path | None,
+    origin_index: dict[str, list[tuple[int, str]]],
+) -> bool:
+    filename = str(row.get("filename", ""))
+    if not filename:
+        return False
+    source_path = Path(filename)
+    origin = filename
+    if source_path.suffix.lower() == ".i":
+        markers = origin_index.get(source_path.name, [])
+        line = int(row.get("line", 0) or 0)
+        positions = [position for position, _path in markers]
+        index = bisect.bisect_right(positions, line) - 1
+        if index < 0:
+            return False
+        origin = markers[index][1]
+        source_path = Path(origin)
+
+    roots = [root for root in (compiled_source_root, source_root) if root is not None]
+    for root in roots:
+        try:
+            relative = source_path.relative_to(root)
+        except ValueError:
+            continue
+        if relative.suffix.lower() in {".c", ".h"}:
+            return True
+    if not Path(origin).is_absolute() and source_root is not None:
+        candidate = source_root / origin
+        return candidate.is_file() and candidate.suffix.lower() in {".c", ".h"}
+    return False
 
 
 def launcher_names(name: str) -> tuple[str, ...]:
@@ -318,7 +371,16 @@ def exact_assembly_body_matches_stock(source_path: Path, stock_path: Path) -> tu
     """
     source_lines = source_path.read_text(encoding="utf-8").splitlines()
     stock_lines = stock_path.read_text(encoding="utf-8").splitlines()
-    label = source_path.stem.removesuffix("_exact")
+    source_label = source_path.stem.removesuffix("_exact")
+    stock_label = next(
+        (
+            match.group(1).split("+", 1)[0]
+            for line in stock_lines
+            if (match := re.match(r"^\s*[0-9a-fA-F]+\s+<([^>]+)>:\s*$", line))
+        ),
+        None,
+    )
+    label = stock_label or source_label
     source_words: list[tuple[str, bool]] = []
     in_body = False
     for line in source_lines:
@@ -358,6 +420,7 @@ def source_fallback_call_counts(
     source_caller: str,
     missing: collections.Counter[str],
     stock_assembly_root: Path | None = None,
+    source_file_index: dict[str, list[Path]] | None = None,
 ) -> tuple[collections.Counter[str], list[dict[str, Any]]]:
     if source_root is None or not missing:
         return collections.Counter(), []
@@ -367,10 +430,20 @@ def source_fallback_call_counts(
         if str(row.get("source_function", "")) == source_caller
         and row.get("source_file")
     }
-    candidates = [
-        path for path in source_root.rglob("*")
-        if path.is_file() and path.name in source_files
-    ]
+    if source_file_index is None:
+        candidates = [
+            path for path in source_root.rglob("*")
+            if path.is_file() and path.name in source_files
+        ]
+    else:
+        candidates = sorted(
+            {
+                path
+                for name in source_files
+                for path in source_file_index.get(name, [])
+            },
+            key=lambda path: str(path),
+        )
     if len(candidates) != 1:
         return collections.Counter(), [{
             "source_function": source_caller,
@@ -515,6 +588,7 @@ def build_cross_oracle_report(
     selected_functions: list[str] | None = None,
     assembly_only_functions: list[str] | None = None,
     source_root: Path | None = None,
+    compiled_source_root: Path | None = None,
     stock_assembly_root: Path | None = None,
 ) -> dict[str, Any]:
     all_ghidra_functions = read_jsonl(ghidra_export / "functions.jsonl")
@@ -524,6 +598,30 @@ def build_cross_oracle_report(
     all_calls = load_records(source_inventory / "calls.json")
     all_controls = load_records(source_inventory / "control_structures.json")
     profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    preprocessed_origins = preprocessed_origin_index(source_root)
+    driver_methods = [
+        row for row in methods
+        if record_originates_in_source(
+            row, source_root, compiled_source_root, preprocessed_origins
+        )
+    ]
+    driver_calls = [
+        row for row in all_calls
+        if record_originates_in_source(
+            row, source_root, compiled_source_root, preprocessed_origins
+        )
+    ]
+    driver_controls = [
+        row for row in all_controls
+        if record_originates_in_source(
+            row, source_root, compiled_source_root, preprocessed_origins
+        )
+    ]
+    source_file_index: dict[str, list[Path]] = {}
+    if source_root is not None:
+        for path in source_root.rglob("*"):
+            if path.is_file():
+                source_file_index.setdefault(path.name, []).append(path)
 
     requested = sorted(set(selected_functions or []))
     if requested:
@@ -621,6 +719,11 @@ def build_cross_oracle_report(
         str(row.get("name", "")) for row in methods
         if not row.get("is_external") and not str(row.get("name", "")).startswith("<")
     }
+    driver_actual_source = {
+        str(row.get("name", "")) for row in driver_methods
+        if not row.get("is_external") and not str(row.get("name", "")).startswith("<")
+    }
+    modeled_actual_source = driver_actual_source - assembly_only
     if requested:
         selected_source_files = {
             Path(str(row.get("source_file", ""))).name
@@ -628,7 +731,7 @@ def build_cross_oracle_report(
             if row.get("source_file")
         }
         actual_source = {
-            str(row.get("name", "")) for row in methods
+            str(row.get("name", "")) for row in driver_methods
             if not row.get("is_external")
             and not str(row.get("name", "")).startswith("<")
             and (
@@ -636,8 +739,9 @@ def build_cross_oracle_report(
                 or str(row.get("name", "")) in expected_source
             )
         }
+        actual_source -= assembly_only
     else:
-        actual_source = all_actual_source
+        actual_source = modeled_actual_source
     source_method_resolution = {
         expected: next(
             (
@@ -668,7 +772,7 @@ def build_cross_oracle_report(
     }
     mapped_source_names = set(stock_to_source.values())
     stock_calls = ghidra_call_counters(ghidra_export / "calls.jsonl")
-    source_calls = joern_call_counters(all_calls)
+    source_calls = joern_call_counters(driver_calls)
     call_deltas = []
     fallback_evidence = []
     selected_stock_to_source = [
@@ -681,6 +785,7 @@ def build_cross_oracle_report(
         )
         for row in mappings
         if row.get("stock_function") and row.get("source_function")
+        and str(row.get("source_function", "")) not in assembly_only
     ]
     for stock_caller, source_caller in sorted(selected_stock_to_source):
         expected = collections.Counter()
@@ -701,6 +806,7 @@ def build_cross_oracle_report(
             source_caller,
             missing,
             stock_assembly_root=stock_assembly_root,
+            source_file_index=source_file_index,
         )
         fallback_evidence.extend(fallback_rows)
         effective_observed = observed + fallback
@@ -718,18 +824,33 @@ def build_cross_oracle_report(
                 "effective_missing_mapped_calls": dict(sorted(effective_missing.items())),
             })
 
-    scoped_source_names = {source for _stock, source in selected_stock_to_source}
+    scoped_source_names = {
+        source for _stock, source in selected_stock_to_source
+    }
     calls = (
-        [row for row in all_calls if str(row.get("caller", "")) in scoped_source_names]
-        if requested else all_calls
+        [
+            row for row in driver_calls
+            if str(row.get("caller", "")) not in assembly_only
+            and str(row.get("caller", "")) in scoped_source_names
+        ]
+        if requested else [
+            row for row in driver_calls
+            if str(row.get("caller", "")) not in assembly_only
+        ]
     )
     controls = (
         [
-            row for row in all_controls
+            row for row in driver_controls
             if str(row.get("method", row.get("method_name", "")))
+            not in assembly_only
+            and str(row.get("method", row.get("method_name", "")))
             in scoped_source_names
         ]
-        if requested else all_controls
+        if requested else [
+            row for row in driver_controls
+            if str(row.get("method", row.get("method_name", "")))
+            not in assembly_only
+        ]
     )
     unresolved_calls = [
         row for row in calls
@@ -775,6 +896,7 @@ def build_cross_oracle_report(
         "limitations": [
             "Joern does not recover lost struct tags, macros, KCFI type IDs, MMIO meaning, or physical behavior.",
             "Call deltas require review because compiler inlining, macros, wrappers, and source hardening can change graph shape.",
+            "Preprocessed header definitions are retained as parser context but excluded from driver-source coverage and call findings.",
             "The canonical Ghidra 12.1.2 export, ELF relocations, P-Code, assembly, KCFI, build, harness, and hardware gates remain mandatory.",
         ],
         "scope": {
@@ -800,6 +922,7 @@ def build_cross_oracle_report(
             "assembly_only_source_method_count": len(expected_source_all & assembly_only),
             "joern_internal_method_count": len(actual_source),
             "joern_total_internal_method_count": len(all_actual_source),
+            "joern_context_only_method_count": len(all_actual_source - driver_actual_source),
             "missing_source_methods": missing_source_methods,
             "extra_source_methods": extra_source_methods,
             "source_method_resolution": {
@@ -813,10 +936,14 @@ def build_cross_oracle_report(
                 "source_function": name,
                 "reason": (
                     "function is marked assembly_only by the reconstruction job; "
-                    "Joern C method-presence and source-CFG checks do not model its "
-                    "assembly implementation"
+                    "Joern C method-presence, source-CFG, and caller-call checks do "
+                    "not model its assembly implementation"
                 ),
-                "effect": "Joern method-presence and source-CFG requirements are not applicable",
+                "effect": (
+                    "Joern method-presence, source-CFG, and mapped caller-call "
+                    "requirements are not applicable; assembly evidence remains "
+                    "the implementation oracle"
+                ),
             }
             for name in sorted(expected_source_all & assembly_only)
         ],
@@ -1077,6 +1204,7 @@ def main() -> int:
         "generated_utc": utc_now(),
         "driver": args.driver,
         "function_scope": sorted(set(args.function)),
+        "assembly_only_functions": sorted(set(args.assembly_only)),
         "mode": "PREPARE_ONLY" if args.prepare_only else "EXECUTE",
         "source": source_tree_record(source_root, set(args.exclude)),
         "analysis_source_view": source_tree_record(source_view_root, set(args.exclude)),
@@ -1175,7 +1303,15 @@ def main() -> int:
         selected_functions=args.function,
         assembly_only_functions=args.assembly_only,
         source_root=source_view_root,
-        stock_assembly_root=ghidra_export.parent / "stock_assembly",
+        compiled_source_root=source_root,
+        stock_assembly_root=next(
+            (
+                parent / "stock_assembly"
+                for parent in (ghidra_export.parent, *ghidra_export.parent.parents)
+                if (parent / "stock_assembly").is_dir()
+            ),
+            None,
+        ),
     )
     parse_problem_count = count_parse_problems(command_results["source_cpg"])
     cross_oracle["parser"] = {
