@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T22:10:41.890166+00:00",
+  "driver": "zte_tpd",
+  "scope": [
+    "syna_dev_disconnect",
+    "syna_tpd_register_fw_class"
+  ],
+  "finding": {
+    "summary": "The cached battery power_supply reference acquired by power_supply_get_by_name() was never released.",
+    "evidence": [
+      "Both recovered charger paths cache power_supply_get_by_name(\"battery\") in syna_get_charger_status_batt_psy and reuse it for property reads.",
+      "The Android Common 6.12 power_supply_core.c API documentation says get_by_name increments the device reference and callers should call power_supply_put().",
+      "The driver had no power_supply_put call before this change."
+    ]
+  },
+  "change": {
+    "order": [
+      "mark charger lifecycle stopping",
+      "cancel startup delayed work",
+      "unregister notifier and wait for callbacks",
+      "cancel charger delayed work",
+      "clear and destroy charger workqueue",
+      "clear the global battery pointer",
+      "call power_supply_put() once",
+      "invoke retained stock disconnect body"
+    ],
+    "safety_condition": "power_supply_put() runs only after the notifier is unregistered and both queued work paths are drained, so the cached pointer has no remaining reader."
+  },
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_supply_reference_20261102/canonical_build_report.json",
+    "report_sha256": "66b4c64dde005e1ac7928050ec65a4f09b884944c969ef5ba0913f074a2a5084",
+    "passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycle_sha256": [
+      "8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a",
+      "8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a"
+    ],
+    "candidate_module": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_supply_reference_20261102/candidate_module/zte_tpd.ko",
+    "candidate_module_sha256": "8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a",
+    "candidate_module_size": 6784240,
+    "vermagic_accepted": true,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "source_sync": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_supply_reference_20261102/source_sync_plan.json",
+    "report_sha256": "13261839529bef400e5fdb920bc6dbc5b1900c9917c08f4d3007bfaaa89fbc58",
+    "passed": true,
+    "copied": [
+      "syna_tpd_charger_lifecycle.c"
+    ],
+    "removed": null
+  },
+  "source_sha256": {
+    "syna_tpd_charger_lifecycle.c": "18fe1fa03cc5106a758bad21cd1a666a2463c6d246b8b783ad8326655c07d78f"
+  },
+  "reference": {
+    "url": "https://android.googlesource.com/kernel/common/%2B/7fed98f4/drivers/power/supply/power_supply_core.c",
+    "sections": [
+      "power_supply_get_by_name documents its held device reference and required put (lines 364-385).",
+      "power_supply_put drops the use count and device reference (lines 387-400)."
+    ]
+  },
+  "limits": [
+    "Canonical build and reproducibility passed; device runtime and NX809J hardware testing were not performed.",
+    "The power_supply pointer is module-global, consistent with this driver’s singleton global state."
+  ]
+}

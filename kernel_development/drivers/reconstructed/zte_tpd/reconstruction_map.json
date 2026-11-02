@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4",
+  "candidate_sha256": "8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T22:05:24.543754+00:00",
+  "generated_utc": "2026-11-02T22:10:41.890166+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4498,11 +4498,15 @@
         "joern-summary:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:78eaed0099d865b105b69f316e72f965e85a57b8ca1dd5c2359d8adec051a07e",
         "candidate-module:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "attestation:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:a134ff67aaeb2a9c153974828364aaa864f7b2195e712e67674d7251eb5b4518",
-        "hardening-source:syna_tpd_charger_lifecycle.c:sha256:0b527f869c360bddf9918372925f1e577259fb7cf5b8b19c0ae71a5cc9fee063",
+        "hardening-source:syna_tpd_charger_lifecycle.c:sha256:18fe1fa03cc5106a758bad21cd1a666a2463c6d246b8b783ad8326655c07d78f",
         "hardening-build:attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json:sha256:0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb",
         "docker-source-sync:attestation/charger_notifier_lifecycle_20261102/source_sync_plan.json:sha256:740e7103fb3ea98a884f33edbf044e4062e5bc94c006bbd7f10a5e44109cc9a0",
         "lifecycle-review:attestation/charger_notifier_lifecycle_20261102/lifecycle_review.json:sha256:b9433d3233e9e89f7a9413f0241f18eecfd47c1d107cae2d322c90feaff2ad3c",
-        "candidate-module:attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4"
+        "candidate-module:attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4",
+        "reference-lifecycle-review:attestation/charger_supply_reference_20261102/reference_lifecycle_review.json:sha256:be0ddef097aa8d48787061e7314f50ff5a92c05b06279663369f6f79d4aa518d",
+        "hardening-build:attestation/charger_supply_reference_20261102/canonical_build_report.json:sha256:66b4c64dde005e1ac7928050ec65a4f09b884944c969ef5ba0913f074a2a5084",
+        "docker-source-sync:attestation/charger_supply_reference_20261102/source_sync_plan.json:sha256:13261839529bef400e5fdb920bc6dbc5b1900c9917c08f4d3007bfaaa89fbc58",
+        "candidate-module:attestation/charger_supply_reference_20261102/candidate_module/zte_tpd.ko:sha256:8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a"
       ],
       "mapping_basis": "Ghidra stock body plus serialized notifier/workqueue teardown wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
       "review_scope": "lifecycle_hardening_wrapper_with_stock_body_retained",
@@ -4513,7 +4517,7 @@
       "stock_body_bytes": 392,
       "stock_entry": "00112b04",
       "stock_function": "syna_dev_disconnect",
-      "mapping_note": "Intentional lifecycle deviation: the wrapper stops startup work, unregisters the embedded power-supply notifier, cancels charger delayed work and destroys its dedicated queue before calling the retained 392-byte stock disconnect body. Two canonical Docker cycles produced byte-identical modules; runtime and hardware validation remain open."
+      "mapping_note": "Intentional lifecycle deviation: the wrapper stops startup work, unregisters the embedded power-supply notifier, cancels charger delayed work and destroys its dedicated queue before calling the retained 392-byte stock disconnect body. Two canonical Docker cycles produced byte-identical modules; the cached battery reference is released after all charger work drains; runtime and hardware validation remain open."
     },
     {
       "evidence": [
@@ -8905,11 +8909,15 @@
         "joern:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/joern_gate_summary.json:sha256:40cde07471735e4beba5bf807d74c963f39fc5cd7b86c90b83e443a51b13f8a2",
         "aarch64:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/aarch64_comparison.json:sha256:7f23d21a810e63943e1b6ce44017618a5ae858d4098b64f118dfd869cf4ca63e",
         "compile:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/canonical_build_report.json:sha256:c4408d93cbab6f8837a376e5a280ca7bfe45c5e8829b5f7bba61c99919216ee8",
-        "hardening-source:syna_tpd_charger_lifecycle.c:sha256:0b527f869c360bddf9918372925f1e577259fb7cf5b8b19c0ae71a5cc9fee063",
+        "hardening-source:syna_tpd_charger_lifecycle.c:sha256:18fe1fa03cc5106a758bad21cd1a666a2463c6d246b8b783ad8326655c07d78f",
         "hardening-build:attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json:sha256:0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb",
         "docker-source-sync:attestation/charger_notifier_lifecycle_20261102/source_sync_plan.json:sha256:740e7103fb3ea98a884f33edbf044e4062e5bc94c006bbd7f10a5e44109cc9a0",
         "lifecycle-review:attestation/charger_notifier_lifecycle_20261102/lifecycle_review.json:sha256:b9433d3233e9e89f7a9413f0241f18eecfd47c1d107cae2d322c90feaff2ad3c",
-        "candidate-module:attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4"
+        "candidate-module:attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4",
+        "reference-lifecycle-review:attestation/charger_supply_reference_20261102/reference_lifecycle_review.json:sha256:be0ddef097aa8d48787061e7314f50ff5a92c05b06279663369f6f79d4aa518d",
+        "hardening-build:attestation/charger_supply_reference_20261102/canonical_build_report.json:sha256:66b4c64dde005e1ac7928050ec65a4f09b884944c969ef5ba0913f074a2a5084",
+        "docker-source-sync:attestation/charger_supply_reference_20261102/source_sync_plan.json:sha256:13261839529bef400e5fdb920bc6dbc5b1900c9917c08f4d3007bfaaa89fbc58",
+        "candidate-module:attestation/charger_supply_reference_20261102/candidate_module/zte_tpd.ko:sha256:8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a"
       ],
       "mapping_basis": "Ghidra stock body plus idempotent serialized registration wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
       "review_scope": "lifecycle_hardening_wrapper_with_stock_body_retained",
@@ -8920,7 +8928,7 @@
       "stock_body_bytes": 880,
       "stock_entry": "0012b55c",
       "stock_function": "syna_tpd_register_fw_class",
-      "mapping_note": "Intentional lifecycle deviation: the public wrapper serializes registration and suppresses repeated startup/reset registration while retaining the 880-byte stock registration body under an internal symbol. Disconnect removes the notifier and workqueue. Two canonical Docker cycles produced byte-identical modules; runtime and hardware validation remain open."
+      "mapping_note": "Intentional lifecycle deviation: the public wrapper serializes registration and suppresses repeated startup/reset registration while retaining the 880-byte stock registration body under an internal symbol. Disconnect removes the notifier and workqueue. Two canonical Docker cycles produced byte-identical modules; the cached battery reference is released after all charger work drains; runtime and hardware validation remain open."
     },
     {
       "evidence": [

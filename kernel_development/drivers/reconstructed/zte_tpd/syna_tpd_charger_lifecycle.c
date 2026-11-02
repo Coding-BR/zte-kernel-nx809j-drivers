@@ -61,6 +61,7 @@ void syna_tpd_charger_lifecycle_stop(struct syna_tcm *tcm)
 	struct workqueue_struct **charger_workqueue;
 	struct notifier_block *charger_notifier;
 	struct workqueue_struct *workqueue;
+	struct power_supply *battery;
 	bool registered;
 
 	if (!tcm)
@@ -102,6 +103,14 @@ void syna_tpd_charger_lifecycle_stop(struct syna_tcm *tcm)
 		cancel_delayed_work_sync(charger_work);
 		WRITE_ONCE(*charger_workqueue, NULL);
 		destroy_workqueue(workqueue);
+	}
+
+	/* get_by_name() holds a device reference until power_supply_put(). */
+	battery = (struct power_supply *)
+		READ_ONCE(syna_get_charger_status_batt_psy);
+	if (battery) {
+		WRITE_ONCE(syna_get_charger_status_batt_psy, 0);
+		power_supply_put(battery);
 	}
 }
 
