@@ -4651,7 +4651,7 @@ Funcao stock: syna_dev_disconnect
 Entrada Ghidra: 00112b04
 Tamanho stock: 392 bytes
 Categoria: core_logic
-Alvo no fonte: syna_dev_disconnect.c:syna_dev_disconnect
+Alvo no fonte: syna_tpd_charger_lifecycle.c:syna_dev_disconnect
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0160_00112b04_syna_dev_disconnect.jsonl
 
@@ -9465,7 +9465,7 @@ Funcao stock: syna_tpd_register_fw_class
 Entrada Ghidra: 0012b55c
 Tamanho stock: 880 bytes
 Categoria: core_logic
-Alvo no fonte: syna_tpd_register_fw_class.c:syna_tpd_register_fw_class
+Alvo no fonte: syna_tpd_charger_lifecycle.c:syna_tpd_register_fw_class
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0326_0012b55c_syna_tpd_register_fw_class.jsonl
 

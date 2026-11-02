@@ -1,10 +1,10 @@
 .section .text,"ax",@progbits
 .align 2
 .extern syna_get_charger_status_batt_psy
-.global syna_tpd_register_fw_class
-.type syna_tpd_register_fw_class, %function
+.global syna_tpd_register_fw_class_stock_exact
+.type syna_tpd_register_fw_class_stock_exact, %function
     .word 0x3175607e
-syna_tpd_register_fw_class:
+syna_tpd_register_fw_class_stock_exact:
     .inst 0xd503233f
     .inst 0xd100c3ff
     .inst 0xa9017bfd
@@ -346,7 +346,7 @@ syna_tpd_register_fw_class:
     .inst 0xd65f03c0
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, __stack_chk_fail
-.size syna_tpd_register_fw_class, .-syna_tpd_register_fw_class
+.size syna_tpd_register_fw_class_stock_exact, .-syna_tpd_register_fw_class_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

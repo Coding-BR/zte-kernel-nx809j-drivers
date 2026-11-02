@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T22:05:24.543754+00:00",
+  "driver": "zte_tpd",
+  "scope": [
+    "syna_dev_disconnect",
+    "syna_tpd_register_fw_class"
+  ],
+  "finding": {
+    "summary": "The reset/startup path could register the same embedded power-supply notifier repeatedly, while disconnect did not unregister it or destroy the charger workqueue.",
+    "evidence": [
+      "Ghidra stock registration body allocates the charger workqueue at TCM+0x688, initializes delayed work at TCM+0x620, stores the notifier at TCM+0x690, and calls power_supply_reg_notifier.",
+      "The startup reflash worker can invoke registration again after recovery/reset.",
+      "The stock disconnect body cancels startup work and destroys the reflash queue at TCM+0x430, but has no charger notifier/workqueue cleanup."
+    ]
+  },
+  "changes": [
+    "The registration wrapper serializes with disconnect and suppresses duplicate registration for the active TCM instance.",
+    "Connect initializes the module lifecycle owner before the retained stock connect body.",
+    "Disconnect marks registration as stopping, synchronously cancels startup work, unregisters the notifier, cancels charger delayed work, clears the queue slot, destroys the charger queue, then calls the retained stock disconnect body.",
+    "The stock AArch64 bodies remain in their original assembly files under *_stock_exact symbols; the public symbols are C wrappers and are classified as intentional hardening deviations."
+  ],
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json",
+    "report_sha256": "0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb",
+    "passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycle_sha256": [
+      "5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4",
+      "5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4"
+    ],
+    "candidate_module": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko",
+    "candidate_module_sha256": "5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4",
+    "candidate_module_size": 6775416,
+    "vermagic_accepted": true,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "source_sync": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/source_sync_plan.json",
+    "report_sha256": "740e7103fb3ea98a884f33edbf044e4062e5bc94c006bbd7f10a5e44109cc9a0",
+    "passed": true,
+    "copied": [
+      "Makefile",
+      "defs.h",
+      "syna_dev_connect_wrapper.c",
+      "syna_dev_disconnect_exact.S",
+      "syna_tpd_charger_lifecycle.c",
+      "syna_tpd_register_fw_class_exact.S"
+    ],
+    "removed": null
+  },
+  "source_sha256": {
+    "syna_tpd_charger_lifecycle.c": "0b527f869c360bddf9918372925f1e577259fb7cf5b8b19c0ae71a5cc9fee063",
+    "syna_dev_connect_wrapper.c": "c8311b188e6a460c8d604d942f3badb3473b4493c2f7fd037c0bb98ae0e8adff",
+    "syna_dev_disconnect_exact.S": "4479e457855bfae3fe634e9c93b9ae056ba97917202ebc47c8fd351c8bfdcb88",
+    "syna_tpd_register_fw_class_exact.S": "5641bf0c4962129f22adfd40667e37cbfefd9893211a1f789ec7576b8bb742b2"
+  },
+  "reference": {
+    "url": "https://android.googlesource.com/kernel/common/%2B/7fed98f4/drivers/power/supply/power_supply_core.c",
+    "relevance": "power_supply_unreg_notifier delegates to atomic_notifier_chain_unregister, synchronizing notifier-chain removal before queued work is drained."
+  },
+  "limits": [
+    "Canonical build and byte reproducibility passed; no device runtime or NX809J hardware exercise was performed.",
+    "The lifecycle tracker is module-global, consistent with the driver’s global tpd_cdev and charger-state design; a multi-instance driver model would need per-device lifecycle state.",
+    "This hardening change is not function-level offline exactness for the two public symbols. Their stock machine-code bodies are retained under internal names."
+  ]
+}

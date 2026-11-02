@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global syna_dev_disconnect
-.type syna_dev_disconnect, %function
+.global syna_dev_disconnect_stock_exact
+.type syna_dev_disconnect_stock_exact, %function
     .word 0xae20471c
-syna_dev_disconnect:
+syna_dev_disconnect_stock_exact:
     .inst 0xd503233f
     .inst 0xa9bd7bfd
     .inst 0xa90157f6
@@ -111,7 +111,7 @@ syna_dev_disconnect:
     .inst 0xa8c37bfd
     .inst 0xd50323bf
     .inst 0xd65f03c0
-.size syna_dev_disconnect, .-syna_dev_disconnect
+.size syna_dev_disconnect_stock_exact, .-syna_dev_disconnect_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

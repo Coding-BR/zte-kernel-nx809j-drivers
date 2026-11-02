@@ -507,7 +507,7 @@ AFLAGS_syna_tcm_get_partition_id_string_exact.o := -g0 -I$(src)
 AFLAGS_syna_tcm_parse_fw_image_exact.o := -g0 -I$(src)
 AFLAGS_syna_string_change_exact.o := -g0 -I$(src)
 
-# Exact offline reconstruction: syna_tpd_register_fw_class
+# Preserve the exact stock body behind its serialized lifecycle wrapper.
 src-files := $(filter-out $(src)/syna_tpd_register_fw_class.c, $(src-files))
 obj-files := $(filter-out syna_tpd_register_fw_class.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_tpd_register_fw_class.o, $(zte_tpd-objs))
@@ -638,7 +638,7 @@ zte_tpd-objs := $(filter-out tpd_set_frame_data.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_frame_data_exact.o
 AFLAGS_tpd_set_frame_data_exact.o := -g0 -I$(src)
 
-# Exact offline reconstruction: syna_dev_disconnect
+# Preserve the exact stock body behind its charger lifecycle wrapper.
 src-files := $(filter-out $(src)/syna_dev_disconnect.c, $(src-files))
 obj-files := $(filter-out syna_dev_disconnect.o, $(obj-files))
 zte_tpd-objs := $(filter-out syna_dev_disconnect.o, $(zte_tpd-objs))

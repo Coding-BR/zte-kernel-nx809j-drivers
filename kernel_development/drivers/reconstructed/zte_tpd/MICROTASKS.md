@@ -164,7 +164,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | HARDENED_STOCK_DEVIATION |
 | 159_syna_dev_shutdown | syna_dev_shutdown | 001126f4 | core_logic | syna_dev_shutdown.c:syna_dev_shutdown | PROMOTED_OFFLINE_EXACT |
 | 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_wrapper.c:syna_dev_connect | HARDENED_STOCK_DEVIATION |
-| 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_dev_disconnect.c:syna_dev_disconnect | PASS |
+| 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_tpd_charger_lifecycle.c:syna_dev_disconnect | HARDENED_STOCK_DEVIATION |
 | 162_syna_dev_set_up_app_fw | syna_dev_set_up_app_fw | 00112c90 | core_logic | syna_dev_set_up_app_fw.c:syna_dev_set_up_app_fw | PASS |
 | 163_syna_dev_resume | syna_dev_resume | 00112d6c | binding | syna_dev_resume.c:syna_dev_resume | PROMOTED_OFFLINE_EXACT |
 | 164_syna_dev_suspend | syna_dev_suspend | 0011337c | binding | syna_dev_suspend.c:syna_dev_suspend | PROMOTED_OFFLINE_EXACT |
@@ -330,7 +330,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 324_syna_tcm_parse_fw_image | syna_tcm_parse_fw_image | 0012ab6c | core_logic | syna_tcm_parse_fw_image.c:syna_tcm_parse_fw_image | PASS |
 | 325_string_change | string_change | 0012aecc | core_logic | string_change.c:string_change | PROMOTED_OFFLINE_EXACT |
 | 326_trim | trim | 0012b4dc | core_logic | trim.c:trim | PASS |
-| 327_syna_tpd_register_fw_class | syna_tpd_register_fw_class | 0012b55c | core_logic | syna_tpd_register_fw_class.c:syna_tpd_register_fw_class | PROMOTED_OFFLINE_EXACT |
+| 327_syna_tpd_register_fw_class | syna_tpd_register_fw_class | 0012b55c | core_logic | syna_tpd_charger_lifecycle.c:syna_tpd_register_fw_class | HARDENED_STOCK_DEVIATION |
 | 328_syna_work_charger_detect_work | syna_work_charger_detect_work | 0012b8d0 | async_or_irq | syna_work_charger_detect_work.c:syna_work_charger_detect_work | PROMOTED_OFFLINE_EXACT |
 | 329_tpd_init_tpinfo | tpd_init_tpinfo | 0012baac | lifecycle | tpd_init_tpinfo.c:tpd_init_tpinfo | PROMOTED_OFFLINE_EXACT |
 | 330_tpd_get_wakegesture | tpd_get_wakegesture | 0012bb30 | core_logic | tpd_get_wakegesture.c:tpd_get_wakegesture | PROMOTED_OFFLINE_EXACT |

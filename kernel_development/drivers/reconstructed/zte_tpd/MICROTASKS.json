@@ -7349,7 +7349,7 @@
       "stock_entry": "00112b04",
       "stock_body_bytes": 392,
       "category": "core_logic",
-      "source_file": "syna_dev_disconnect.c",
+      "source_file": "syna_tpd_charger_lifecycle.c",
       "source_function": "syna_dev_disconnect",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0160_00112b04_syna_dev_disconnect.jsonl",
@@ -7359,28 +7359,18 @@
         "test",
         "joern"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_disconnect\nEntrada Ghidra: 00112b04\nTamanho stock: 392 bytes\nCategoria: core_logic\nAlvo no fonte: syna_dev_disconnect.c:syna_dev_disconnect\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0160_00112b04_syna_dev_disconnect.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_dev_disconnect\nEntrada Ghidra: 00112b04\nTamanho stock: 392 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tpd_charger_lifecycle.c:syna_dev_disconnect\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0160_00112b04_syna_dev_disconnect.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/161_syna_dev_disconnect.json",
-          "sha256": "de777ed25b859a929911646caeef5bc7589363efd993791817258a2ce3590cd0"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "b9433d3233e9e89f7a9413f0241f18eecfd47c1d107cae2d322c90feaff2ad3c"
         }
       ]
     },
@@ -14861,7 +14851,7 @@
       "stock_entry": "0012b55c",
       "stock_body_bytes": 880,
       "category": "core_logic",
-      "source_file": "syna_tpd_register_fw_class.c",
+      "source_file": "syna_tpd_charger_lifecycle.c",
       "source_function": "syna_tpd_register_fw_class",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0326_0012b55c_syna_tpd_register_fw_class.jsonl",
@@ -14871,38 +14861,18 @@
         "joern",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tpd_register_fw_class\nEntrada Ghidra: 0012b55c\nTamanho stock: 880 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tpd_register_fw_class.c:syna_tpd_register_fw_class\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0326_0012b55c_syna_tpd_register_fw_class.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_tpd_register_fw_class\nEntrada Ghidra: 0012b55c\nTamanho stock: 880 bytes\nCategoria: core_logic\nAlvo no fonte: syna_tpd_charger_lifecycle.c:syna_tpd_register_fw_class\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0326_0012b55c_syna_tpd_register_fw_class.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/canonical_build_report.json",
-          "sha256": "c4408d93cbab6f8837a376e5a280ca7bfe45c5e8829b5f7bba61c99919216ee8"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/kcfi_comparison.json",
-          "sha256": "bec80a063fa4f483cbf9c58d7cadb08a252d436029a4954b92ad379a295b050a"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
-          "sha256": "cd4aaef33105e5573733c83c372ca9be659ffc0814be92db64ddaf22be3c9d71"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/joern_gate_summary.json",
-          "sha256": "40cde07471735e4beba5bf807d74c963f39fc5cd7b86c90b83e443a51b13f8a2"
-        },
-        {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/aarch64_comparison.json",
-          "sha256": "7f23d21a810e63943e1b6ce44017618a5ae858d4098b64f118dfd869cf4ca63e"
-        },
-        {
-          "role": "aarch64",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/aarch64_comparison.json",
-          "sha256": "7f23d21a810e63943e1b6ce44017618a5ae858d4098b64f118dfd869cf4ca63e"
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/charger_notifier_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "b9433d3233e9e89f7a9413f0241f18eecfd47c1d107cae2d322c90feaff2ad3c"
         }
       ]
     },

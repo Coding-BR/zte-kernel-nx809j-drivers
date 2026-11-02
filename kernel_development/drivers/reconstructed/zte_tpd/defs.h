@@ -640,6 +640,10 @@ extern long syna_input_agent_ioctl(struct file *file, unsigned int cmd,
 extern int syna_input_agent_mmap(struct file *file,
                                  struct vm_area_struct *vma);
 extern int syna_dev_connect_stock_exact(struct syna_tcm *tcm);
+extern int syna_dev_disconnect_stock_exact(struct syna_tcm *tcm);
+extern void syna_tpd_register_fw_class_stock_exact(struct syna_tcm *tcm);
+extern void syna_tpd_charger_lifecycle_begin(struct syna_tcm *tcm);
+extern void syna_tpd_charger_lifecycle_stop(struct syna_tcm *tcm);
 extern void syna_cdev_clear_global_data(void);
 extern void tp_free_tp_firmware_data(void);
 extern void tpd_clean_all_event(void);

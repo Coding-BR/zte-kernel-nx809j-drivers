@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "cbffb18f3e547f766bc8f90abca15e40c502a4c62fda953afec0d886564602e9",
+  "candidate_sha256": "5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T21:35:38.779306+00:00",
+  "generated_utc": "2026-11-02T22:05:24.543754+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4485,7 +4485,7 @@
     {
       "evidence": [
         "source:syna_dev_disconnect.c:sha256:3446cdc7b12d264cbd7129a7ed6574239dcaec0dc8427b316c4c20eec9dee1fb",
-        "source-exact:syna_dev_disconnect_exact.S:sha256:243a85694cf302a770c41a7f8497b00789c2836a174e95bb43d3a90a0796fbca",
+        "source-exact:syna_dev_disconnect_exact.S:sha256:4479e457855bfae3fe634e9c93b9ae056ba97917202ebc47c8fd351c8bfdcb88",
         "source-include:syna_dev_disconnect_exact.inc:sha256:fc02ff81fda5e8f1ab0371c4f706558f4d77a4a330b7a31fe5eb4228ddb47686",
         "ghidra-pseudocode:decompiled/0160_00112b04_syna_dev_disconnect.c:sha256:a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e",
         "ghidra-pcode:pcode/0160_00112b04_syna_dev_disconnect.jsonl:sha256:2440f4bf2586678e599a3d5038930152ff7fdfa3816bae5f33eb9ad6aea0f5ac",
@@ -4497,18 +4497,23 @@
         "source-test:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:a69b25cae8c33ea0a47f2fe454452447480ee7ebca6225aebae299e37becbf35",
         "joern-summary:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:78eaed0099d865b105b69f316e72f965e85a57b8ca1dd5c2359d8adec051a07e",
         "candidate-module:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
-        "attestation:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:a134ff67aaeb2a9c153974828364aaa864f7b2195e712e67674d7251eb5b4518"
+        "attestation:attestation/next161_syna_dev_disconnect_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:a134ff67aaeb2a9c153974828364aaa864f7b2195e712e67674d7251eb5b4518",
+        "hardening-source:syna_tpd_charger_lifecycle.c:sha256:0b527f869c360bddf9918372925f1e577259fb7cf5b8b19c0ae71a5cc9fee063",
+        "hardening-build:attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json:sha256:0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb",
+        "docker-source-sync:attestation/charger_notifier_lifecycle_20261102/source_sync_plan.json:sha256:740e7103fb3ea98a884f33edbf044e4062e5bc94c006bbd7f10a5e44109cc9a0",
+        "lifecycle-review:attestation/charger_notifier_lifecycle_20261102/lifecycle_review.json:sha256:b9433d3233e9e89f7a9413f0241f18eecfd47c1d107cae2d322c90feaff2ad3c",
+        "candidate-module:attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4"
       ],
-      "mapping_basis": "Materialized stock AArch64 body with relocation-resolved assembly, stock rodata strings, KCFI, Joern, ASan/UBSan and reproducible Docker evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "source_file": "syna_dev_disconnect.c",
+      "mapping_basis": "Ghidra stock body plus serialized notifier/workqueue teardown wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
+      "review_scope": "lifecycle_hardening_wrapper_with_stock_body_retained",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "source_file": "syna_tpd_charger_lifecycle.c",
       "source_function": "syna_dev_disconnect",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 392,
       "stock_entry": "00112b04",
       "stock_function": "syna_dev_disconnect",
-      "mapping_note": "Offline function-level parity is attested at 98 AArch64 instructions and 392 bytes; indirect callbacks, Android runtime and NX809J hardware behavior remain unverified."
+      "mapping_note": "Intentional lifecycle deviation: the wrapper stops startup work, unregisters the embedded power-supply notifier, cancels charger delayed work and destroys its dedicated queue before calling the retained 392-byte stock disconnect body. Two canonical Docker cycles produced byte-identical modules; runtime and hardware validation remain open."
     },
     {
       "evidence": [
@@ -8890,7 +8895,7 @@
     {
       "evidence": [
         "source:syna_tpd_register_fw_class.c:sha256:9fd76a12d46283c129ec440dc364813a8727f6ac70b6b6d2f355a262cb265ea4",
-        "exact-source:syna_tpd_register_fw_class_exact.S:sha256:e083659ae195ef6d17a81c2ec1d06dbcc51a15d61cbe3fe3336bf00a86481d7c",
+        "exact-source:syna_tpd_register_fw_class_exact.S:sha256:5641bf0c4962129f22adfd40667e37cbfefd9893211a1f789ec7576b8bb742b2",
         "ghidra-pseudocode:decompiled/0326_0012b55c_syna_tpd_register_fw_class.c:sha256:9ec97577539f12781bd4013d18fd5d5d3e81ea99a15ffef0f8c66c42fcfad54d",
         "ghidra-pcode:pcode/0326_0012b55c_syna_tpd_register_fw_class.jsonl:sha256:0d81059f1a5f6b8e807a9ab0f85707304f66a89efb32d837c4da5b93c26cab8d",
         "stock-assembly:0326_syna_tpd_register_fw_class_0012b55c.asm:sha256:46570c2b99c0b71ecd8b3964f7ab6aa6b0a892dfe9c4df658dc8e0ca357fbd46",
@@ -8899,18 +8904,23 @@
         "harness:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json:sha256:cd4aaef33105e5573733c83c372ca9be659ffc0814be92db64ddaf22be3c9d71",
         "joern:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/joern_gate_summary.json:sha256:40cde07471735e4beba5bf807d74c963f39fc5cd7b86c90b83e443a51b13f8a2",
         "aarch64:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/aarch64_comparison.json:sha256:7f23d21a810e63943e1b6ce44017618a5ae858d4098b64f118dfd869cf4ca63e",
-        "compile:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/canonical_build_report.json:sha256:c4408d93cbab6f8837a376e5a280ca7bfe45c5e8829b5f7bba61c99919216ee8"
+        "compile:attestation/next327_syna_tpd_register_fw_class_exact_v3/exact_revalidation_20260831/canonical_build_report.json:sha256:c4408d93cbab6f8837a376e5a280ca7bfe45c5e8829b5f7bba61c99919216ee8",
+        "hardening-source:syna_tpd_charger_lifecycle.c:sha256:0b527f869c360bddf9918372925f1e577259fb7cf5b8b19c0ae71a5cc9fee063",
+        "hardening-build:attestation/charger_notifier_lifecycle_20261102/canonical_build_report.json:sha256:0e5bafecf03326dbb6ebb7bbc3f685964ea09e1b05ce919a7e8794557e3e14cb",
+        "docker-source-sync:attestation/charger_notifier_lifecycle_20261102/source_sync_plan.json:sha256:740e7103fb3ea98a884f33edbf044e4062e5bc94c006bbd7f10a5e44109cc9a0",
+        "lifecycle-review:attestation/charger_notifier_lifecycle_20261102/lifecycle_review.json:sha256:b9433d3233e9e89f7a9413f0241f18eecfd47c1d107cae2d322c90feaff2ad3c",
+        "candidate-module:attestation/charger_notifier_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:5b8b8bcbcc3d677fd0731fa46a8b82fb51b9f0f411ed974d62b2e344cb0e09e4"
       ],
-      "mapping_basis": "Ghidra identity plus exact AArch64, KCFI, Joern and ASan/UBSan harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "source_file": "syna_tpd_register_fw_class.c",
+      "mapping_basis": "Ghidra stock body plus idempotent serialized registration wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
+      "review_scope": "lifecycle_hardening_wrapper_with_stock_body_retained",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "source_file": "syna_tpd_charger_lifecycle.c",
       "source_function": "syna_tpd_register_fw_class",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 880,
       "stock_entry": "0012b55c",
       "stock_function": "syna_tpd_register_fw_class",
-      "mapping_note": "Offline function-level parity is attested against the stock function; Android runtime and NX809J hardware behavior remain unverified until a controlled physical procedure runs."
+      "mapping_note": "Intentional lifecycle deviation: the public wrapper serializes registration and suppresses repeated startup/reset registration while retaining the 880-byte stock registration body under an internal symbol. Disconnect removes the notifier and workqueue. Two canonical Docker cycles produced byte-identical modules; runtime and hardware validation remain open."
     },
     {
       "evidence": [
