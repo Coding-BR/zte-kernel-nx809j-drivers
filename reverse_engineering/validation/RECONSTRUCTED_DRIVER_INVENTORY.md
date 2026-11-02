@@ -15,21 +15,21 @@ Drivers encontrados: **24**; com candidato `.ko`: **24**; com stock: **24**; com
 | `ftmmod` | 9 | 9 | 9/9 | CORE_GATES_PASS_UNREVIEWED:9 | sim | não | não | não | não | nenhum estrutural |
 | `gpio_keys_nubia` | 24 | 24 | 24/24 | PROMOTED_OFFLINE_EXACT:24 | sim | não | não | não | não | nenhum estrutural |
 | `haptic_86938` | 160 | 160 | 160/160 | candidate_hardening_deviation:2, candidate_under_static_validation:158 | sim | não | não | não | não | nenhum estrutural |
-| `nubia_hw_version` | 19 | 19 | 19/19 | PROMOTED_OFFLINE_EXACT:19 | sim | não | não | não | não | map_candidate_hash_mismatch |
+| `nubia_hw_version` | 19 | 19 | 19/19 | PROMOTED_OFFLINE_EXACT:19 | sim | não | não | não | não | nenhum estrutural |
 | `rdbg` | 8 | 8 | 8/8 | candidate_under_static_validation:1, implemented_pending_independent_review:7 | sim | sim | sim | sim | sim | nenhum estrutural |
 | `soc_fan` | 15 | 15 | 15/15 | CORE_GATES_PASS_UNREVIEWED:15 | sim | não | não | não | não | nenhum estrutural |
-| `zlog_common` | 13 | 13 | 13/13 | PROMOTED_OFFLINE_EXACT:13 | sim | não | não | não | não | map_candidate_hash_mismatch |
+| `zlog_common` | 13 | 13 | 13/13 | PROMOTED_OFFLINE_EXACT:13 | sim | não | não | não | não | nenhum estrutural |
 | `zlog_exception` | 10 | 10 | 10/10 | PROMOTED_OFFLINE_EXACT:10 | sim | não | não | não | não | nenhum estrutural |
 | `zlog_test` | 11 | 11 | 11/11 | PROMOTED_OFFLINE_EXACT:11 | sim | não | não | não | não | nenhum estrutural |
 | `zte_charger_policy` | 38 | 38 | 38/38 | promoted_offline_exact:38 | sim | não | não | não | não | nenhum estrutural |
 | `zte_fingerprint` | 30 | 30 | 30/30 | PROMOTED_OFFLINE_EXACT:30 | sim | não | não | não | não | nenhum estrutural |
 | `zte_imem_info` | 6 | 6 | 6/6 | PROMOTED_OFFLINE_EXACT:6 | sim | não | não | não | não | nenhum estrutural |
-| `zte_ir` | 8 | 8 | 8/8 | PROMOTED_OFFLINE_EXACT:8 | sim | não | não | não | não | map_candidate_hash_mismatch |
+| `zte_ir` | 8 | 8 | 8/8 | PROMOTED_OFFLINE_EXACT:8 | sim | não | não | não | não | nenhum estrutural |
 | `zte_led` | 58 | 58 | 58/58 | PROMOTED_OFFLINE_EXACT:58 | sim | não | não | não | não | nenhum estrutural |
 | `zte_misc` | 14 | 14 | 14/14 | PROMOTED_OFFLINE_EXACT:14 | sim | não | não | não | não | nenhum estrutural |
 | `zte_power_supply` | 47 | 47 | 47/47 | PROMOTED_OFFLINE_EXACT:47 | sim | não | não | não | não | nenhum estrutural |
 | `zte_ramdisk_reboot` | 13 | 13 | 13/13 | promoted_offline_exact:13 | sim | não | não | não | não | nenhum estrutural |
-| `zte_reboot_ext` | 14 | 14 | 14/14 | promoted_offline_exact:14 | sim | não | não | não | não | map_candidate_hash_mismatch |
+| `zte_reboot_ext` | 14 | 14 | 14/14 | promoted_offline_exact:14 | sim | não | não | não | não | nenhum estrutural |
 | `zte_sensor_sensitivity` | 21 | 21 | 21/21 | promoted_offline_exact:21 | sim | não | não | não | não | nenhum estrutural |
 | `zte_stats_info` | 8 | 8 | 8/8 | PROMOTED_OFFLINE_EXACT:8 | sim | não | não | não | não | nenhum estrutural |
 | `zte_tpd` | 367 | 367 | 367/367 | PROMOTED_OFFLINE_EXACT:337, promoted_offline_exact:30 | sim | sim | sim | sim | sim | nenhum estrutural |
