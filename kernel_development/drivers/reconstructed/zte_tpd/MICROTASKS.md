@@ -16,7 +16,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 010_get_lcd_panel_name | get_lcd_panel_name | 00107ce0 | core_logic | get_lcd_panel_name.c:get_lcd_panel_name | PASS |
 | 011_tp_free_tp_firmware_data | tp_free_tp_firmware_data | 00107cf0 | core_logic | tp_free_tp_firmware_data.c:tp_free_tp_firmware_data | PASS |
 | 012_tp_alloc_tp_firmware_data | tp_alloc_tp_firmware_data | 00107d54 | core_logic | tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data | HARDENED_STOCK_DEVIATION |
-| 013_tpd_copy_to_tp_firmware_data | tpd_copy_to_tp_firmware_data | 00107eb8 | core_logic | tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data | PASS |
+| 013_tpd_copy_to_tp_firmware_data | tpd_copy_to_tp_firmware_data | 00107eb8 | core_logic | tpd_copy_to_tp_firmware_data.c:tpd_copy_to_tp_firmware_data | HARDENED_STOCK_DEVIATION |
 | 014_tpd_reset_fw_data_pos_and_size | tpd_reset_fw_data_pos_and_size | 00107f84 | core_logic | tpd_reset_fw_data_pos_and_size.c:tpd_reset_fw_data_pos_and_size | PASS |
 | 015_tpd_proc_deinit | tpd_proc_deinit | 00107fa4 | lifecycle | tpd_proc_deinit.c:tpd_proc_deinit | PASS |
 | 016_zte_touch_pdev_register | zte_touch_pdev_register | 001081c8 | core_logic | zte_touch_pdev_register.c:zte_touch_pdev_register | PASS |
@@ -38,7 +38,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 032_tp_smart_cover_write | tp_smart_cover_write | 00109ce4 | user_abi | tp_smart_cover_write.c:tp_smart_cover_write | PROMOTED_OFFLINE_EXACT |
 | 033_tp_glove_read | tp_glove_read | 00109db8 | user_abi | tp_glove_read.c:tp_glove_read | PROMOTED_OFFLINE_EXACT |
 | 034_tp_glove_write | tp_glove_write | 00109eac | user_abi | tp_glove_write.c:tp_glove_write | PROMOTED_OFFLINE_EXACT |
-| 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | PROMOTED_OFFLINE_EXACT |
+| 035_tpfwupgrade_store | tpfwupgrade_store | 00109f80 | user_abi | tpfwupgrade_store.c:tpfwupgrade_store | HARDENED_STOCK_DEVIATION |
 | 036_suspend_show | suspend_show | 0010a1b4 | binding | suspend_show.c:suspend_show | PROMOTED_OFFLINE_EXACT |
 | 037_suspend_store | suspend_store | 0010a2ac | binding | suspend_store.c:suspend_store | PROMOTED_OFFLINE_EXACT |
 | 038_headset_state_show | headset_state_show | 0010a3c4 | user_abi | headset_state_show.c:headset_state_show | PROMOTED_OFFLINE_EXACT |
@@ -54,8 +54,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 048_tp_single_aod_write | tp_single_aod_write | 0010ad1c | user_abi | tp_single_aod_write.c:tp_single_aod_write | PROMOTED_OFFLINE_EXACT |
 | 049_tp_single_game_read | tp_single_game_read | 0010adf4 | user_abi | tp_single_game_read.c:tp_single_game_read | PROMOTED_OFFLINE_EXACT |
 | 050_tp_single_game_write | tp_single_game_write | 0010aee8 | user_abi | tp_single_game_write.c:tp_single_game_write | PROMOTED_OFFLINE_EXACT |
-| 051_get_tp_noise_show | get_tp_noise_show | 0010afc0 | user_abi | get_tp_noise_show.c:get_tp_noise_show | PROMOTED_OFFLINE_EXACT |
-| 052_get_tp_noise_store | get_tp_noise_store | 0010b0dc | user_abi | get_tp_noise_store.c:get_tp_noise_store | PROMOTED_OFFLINE_EXACT |
+| 051_get_tp_noise_show | get_tp_noise_show | 0010afc0 | user_abi | get_tp_noise_show.c:get_tp_noise_show | HARDENED_STOCK_DEVIATION |
+| 052_get_tp_noise_store | get_tp_noise_store | 0010b0dc | user_abi | get_tp_noise_store.c:get_tp_noise_store | HARDENED_STOCK_DEVIATION |
 | 053_tp_edge_report_limit_read | tp_edge_report_limit_read | 0010b150 | user_abi | tp_edge_report_limit_read.c:tp_edge_report_limit_read | PASS |
 | 054_tp_edge_report_limit_write | tp_edge_report_limit_write | 0010b690 | user_abi | tp_edge_report_limit_write.c:tp_edge_report_limit_write | PROMOTED_OFFLINE_EXACT |
 | 055_get_one_key | get_one_key | 0010ba4c | core_logic | get_one_key.c:get_one_key | PROMOTED_OFFLINE_EXACT |
@@ -76,8 +76,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 070_tp_pen_only_write | tp_pen_only_write | 0010c818 | user_abi | tp_pen_only_write.c:tp_pen_only_write | PROMOTED_OFFLINE_EXACT |
 | 071_get_finger_lock_flag | get_finger_lock_flag | 0010c92c | core_logic | get_finger_lock_flag.c:get_finger_lock_flag | PROMOTED_OFFLINE_EXACT |
 | 072_set_finger_lock_flag | set_finger_lock_flag | 0010ca00 | core_logic | set_finger_lock_flag.c:set_finger_lock_flag | PROMOTED_OFFLINE_EXACT |
-| 073_tp_self_test_read | tp_self_test_read | 0010cae8 | user_abi | tp_self_test_read.c:tp_self_test_read | PROMOTED_OFFLINE_EXACT |
-| 074_tp_self_test_write | tp_self_test_write | 0010cc50 | user_abi | tp_self_test_write.c:tp_self_test_write | PROMOTED_OFFLINE_EXACT |
+| 073_tp_self_test_read | tp_self_test_read | 0010cae8 | user_abi | tp_self_test_read.c:tp_self_test_read | HARDENED_STOCK_DEVIATION |
+| 074_tp_self_test_write | tp_self_test_write | 0010cc50 | user_abi | tp_self_test_write.c:tp_self_test_write | HARDENED_STOCK_DEVIATION |
 | 075_tp_palm_mode_read | tp_palm_mode_read | 0010cce8 | user_abi | tp_palm_mode_read.c:tp_palm_mode_read | PROMOTED_OFFLINE_EXACT |
 | 076_tp_palm_mode_write | tp_palm_mode_write | 0010cddc | user_abi | tp_palm_mode_write.c:tp_palm_mode_write | PROMOTED_OFFLINE_EXACT |
 | 077_tp_fold_state_read | tp_fold_state_read | 0010ceb0 | user_abi | tp_fold_state_read.c:tp_fold_state_read | PROMOTED_OFFLINE_EXACT |
@@ -96,8 +96,8 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 090_tp_test_write | tp_test_write | 0010dcdc | user_abi | tp_test_write.c:tp_test_write | PROMOTED_OFFLINE_EXACT |
 | 091_tp_frame_data_read | tp_frame_data_read | 0010dd14 | user_abi | tp_frame_data_read.c:tp_frame_data_read | PROMOTED_OFFLINE_EXACT |
 | 092_tp_frame_data_write | tp_frame_data_write | 0010de08 | user_abi | tp_frame_data_write.c:tp_frame_data_write | PROMOTED_OFFLINE_EXACT |
-| 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | PROMOTED_OFFLINE_EXACT |
-| 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | PROMOTED_OFFLINE_EXACT |
+| 093_tpd_sysfs_fwimage_show | tpd_sysfs_fwimage_show | 0010dedc | user_abi | tpd_sysfs_fwimage_show.c:tpd_sysfs_fwimage_show | HARDENED_STOCK_DEVIATION |
+| 094_tpd_sysfs_fwimage_store | tpd_sysfs_fwimage_store | 0010dff0 | user_abi | tpd_sysfs_fwimage_store.c:tpd_sysfs_fwimage_store | HARDENED_STOCK_DEVIATION |
 | 095_zte_touch_deinit | zte_touch_deinit | 0010e0d0 | lifecycle | zte_touch_deinit_exact.S:zte_touch_deinit | PROMOTED_OFFLINE_EXACT |
 | 096_tpd_touch_press | tpd_touch_press | 0010e254 | core_logic | tpd_touch_press.c:tpd_touch_press | PASS |
 | 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | PASS |

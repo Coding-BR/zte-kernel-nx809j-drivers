@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "1d5fccb202e86121a784b9ac6f153bcb33ca2b626ed4efa41353002d9f54003f",
+  "candidate_sha256": "6f8e4e63f9826e1b75cceb64b9bc333a464f74a00bb9557cafe526c30febc30b",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-07-25T05:35:01.4306359Z",
+  "generated_utc": "2026-11-02T20:19:52.917352+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -353,14 +353,19 @@
         "semantic-review-markdown:attestation/semantic_review_round15_20261102/review.md:sha256:f788465e554488c4c078120dee70ca9d59da81f9e45ecf6bcaa031a527d5e37b",
         "semantic-review:attestation/semantic_review_round16_20261102/review.json:sha256:31b56c0b5f32a00eac8f53df91a32bffc37178db0158f728c38242f06075b55c",
         "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab",
-        "hardening-source:tp_alloc_tp_firmware_data.c:sha256:a449712703852f5fefb9607da6f280fba3532ed53a94eca6498fa5af51d87dab",
         "hardening-review:attestation/hardening_tp_alloc_firmware_retry_20261102/hardening_review.json:sha256:2964b6703ec26e954011e7c3c4fb5bd122247b6f51abbde5084c7ce056026b9b",
         "hardening-review-markdown:attestation/hardening_tp_alloc_firmware_retry_20261102/hardening_review.md:sha256:ba272d6b21d16b99818bd02cecc7493f5455f3043faef19e34858466792929b2",
         "hardening-build:attestation/hardening_tp_alloc_firmware_retry_20261102/canonical_build_report.json:sha256:db883f0ae1604bd0d5fb80db3a15e550c0956447a8b5d931594067eea47b7ce1",
         "docker-source-sync:attestation/hardening_tp_alloc_firmware_retry_20261102/source_sync_plan.json:sha256:b986821d3121a10d7c915d956d2283867962eddf5376261db8e17103b2b6a7aa",
         "hardening-joern:attestation/hardening_tp_alloc_firmware_retry_20261102/joern/joern_gate_report.json:sha256:f53327ef08061e776bb12122b154f62a3e96b417164a700e1a4b06110c1e3855",
         "hardening-joern-manifest:attestation/hardening_tp_alloc_firmware_retry_20261102/joern/input_manifest.json:sha256:6a8e3e28ef06dc33f7987c0da5071d6a373d95aedd2718ba2c4ffc95e0a20e9f",
-        "hardening-disassembly:attestation/hardening_tp_alloc_firmware_retry_20261102/candidate_tp_alloc_disassembly.txt:sha256:a67decfe60a1d79959ba00d55c592e62b2acf7517b1123c98905fc8df95c7ba5"
+        "hardening-disassembly:attestation/hardening_tp_alloc_firmware_retry_20261102/candidate_tp_alloc_disassembly.txt:sha256:a67decfe60a1d79959ba00d55c592e62b2acf7517b1123c98905fc8df95c7ba5",
+        "hardening-source:tp_alloc_tp_firmware_data.c:sha256:4461fd6abb4cb80fcdfebbfed34cf710a7eb74450d7117194c6ba484069d0c43",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern, Docker canonical build and ASan/UBSan harness evidence; hardening deviation validated by reproducible Docker build, strict Joern gate and emitted AArch64 disassembly",
       "review_scope": "offline_exact_function_level",
@@ -369,10 +374,10 @@
       "source_function": "tp_alloc_tp_firmware_data",
       "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 352,
-      "elf_symbol_bytes": 352,
+      "elf_symbol_bytes": 384,
       "stock_entry": "00107d54",
       "stock_function": "tp_alloc_tp_firmware_data",
-      "mapping_note": "Historical source hash 03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336 had function-level OFFLINE_EXACT parity (88 instructions, 352 bytes). This hardening branch intentionally differs on vmalloc failure: it clears cdev+0xc58 before freeing fw_data. Docker emits a 356-byte symbol with one additional AArch64 store before kfree. Sequential retry through proc tp_self_test no longer re-enters cleanup through a dangling slot. Concurrent writers remain unsynchronized. Do not classify this branch's function as OFFLINE_EXACT; see hardening review and build evidence."
+      "mapping_note": "Historical source hash 03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336 had function-level OFFLINE_EXACT parity (88 instructions, 352 bytes). This hardening branch intentionally differs on vmalloc failure: it clears cdev+0xc58 before freeing fw_data. Docker emits a 356-byte symbol with one additional AArch64 store before kfree. Sequential retry through proc tp_self_test no longer re-enters cleanup through a dangling slot. The hardening batch now serializes proc self-test read/write and protects active firmware-slot operations with cmd_mutex. Do not classify this branch's function as OFFLINE_EXACT; see hardening review and build evidence. Hardening branch deviation: clears the slot before freeing on vmalloc failure and locks descriptor replacement with cmd_mutex. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence."
     },
     {
       "evidence": [
@@ -387,19 +392,25 @@
         "host-harness:attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:e4f9ed4f07de78c8ae1022b92439f5379b0ddae62937952f2c2a8c8019650770",
         "joern:attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:f031119c5007630378a34091b0808fbfa7f4da57050a22318e1c05dd7d7bd327",
         "microtask-attestation:attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:129bd3dcf3c4032883fd8532752bb9ad5fe5ff4b10c110fab5f207bc298192c2",
-        "candidate-module:attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        "candidate-module:attestation/next013_tpd_copy_to_tp_firmware_data_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "hardening-source:tpd_copy_to_tp_firmware_data.c:sha256:45e724d31d7aff53d2b03b7bd62c69bbd496dc14925124493627904987297a59",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern, Docker canonical build and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_copy_to_tp_firmware_data.c",
       "source_function": "tpd_copy_to_tp_firmware_data",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 200,
-      "elf_symbol_bytes": 200,
+      "elf_symbol_bytes": 224,
       "stock_entry": "00107eb8",
       "stock_function": "tpd_copy_to_tp_firmware_data",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 50 AArch64 instructions and 200-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0x7bff871d matches. The firmware-descriptor null checks, diagnostics, size/position guards, bounded strlen/memcpy calculation, offset 0x448 update and descriptor offset 0xc58 are preserved; opcode sequence, section and normalized references match. Firmware transport, caller integration, scheduler timing and NX809J hardware remain unverified."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 50 AArch64 instructions and 200-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0x7bff871d matches. The firmware-descriptor null checks, diagnostics, size/position guards, bounded strlen/memcpy calculation, offset 0x448 update and descriptor offset 0xc58 are preserved; opcode sequence, section and normalized references match. Firmware transport, caller integration, scheduler timing and NX809J hardware remain unverified. Hardening branch deviation: holds cmd_mutex across descriptor checks, memcpy and position update. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence."
     },
     {
       "evidence": [
@@ -992,18 +1003,25 @@
         "joern:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:36b24f11a0a3c5317d2c5dd24416ca6ce043b1de28c5143f5073616d9fa733b2",
         "candidate-module:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "candidate-source:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:374e577e2e6263de67165bb61e574c5a6c458fff4dcfcf2069ed7e1c92a08b4f",
-        "attestation:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:3beb3d69885d31b5a34352e3798972cdf0bd0ce60fe113a84461c37a35409aef"
+        "attestation:attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:3beb3d69885d31b5a34352e3798972cdf0bd0ce60fe113a84461c37a35409aef",
+        "hardening-source:tpfwupgrade_store.c:sha256:40406560045812d2cad64394dd397e9d2e651365655485d0a578aa97628c0de6",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpfwupgrade_store.c",
       "source_function": "tpfwupgrade_store",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 560,
       "stock_entry": "00109f80",
       "stock_function": "tpfwupgrade_store",
-      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 140 AArch64 instructions and 560-byte .text size, normalized relocation roles, section and KCFI type ID 0xc3d43b4d/size. The C reconstruction preserves the threshold at 0xb, mutex at tpd_cdev + 0xc60, firmware pointer at +0xc58, state reset at +0x448, callback at +0xe18, cleanup order, zeroing length and ENOMEM paths. Strict Joern is parse-clean with one-to-one identity, 122 calls, 13 control structures and zero unresolved calls; 3 high-severity lifetime and 2 high-severity synchronization findings remain for runtime review. ASan/UBSan host coverage exercises five direct cases. Procfs/userspace, concurrent runtime lifetime and NX809J behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 140 AArch64 instructions and 560-byte .text size, normalized relocation roles, section and KCFI type ID 0xc3d43b4d/size. The C reconstruction preserves the threshold at 0xb, mutex at tpd_cdev + 0xc60, firmware pointer at +0xc58, state reset at +0x448, callback at +0xe18, cleanup order, zeroing length and ENOMEM paths. Strict Joern is parse-clean with one-to-one identity, 122 calls, 13 control structures and zero unresolved calls; 3 high-severity lifetime and 2 high-severity synchronization findings remain for runtime review. ASan/UBSan host coverage exercises five direct cases. Procfs/userspace, concurrent runtime lifetime and NX809J behavior remain unverified. Hardening branch deviation: uses tp_firmware_data_mutex then cmd_mutex and clears cdev+0xc58 before freeing on vmalloc failure. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 560
     },
     {
       "evidence": [
@@ -1443,18 +1461,25 @@
         "joern:attestation/next051_get_tp_noise_show_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:97ea1c674684268703e311543d6899a9b5b22fcd8f849e2f837677e3ff769b29",
         "candidate-module:attestation/next051_get_tp_noise_show_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "candidate-source:attestation/next051_get_tp_noise_show_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:3fd1f8b157e327b4210d51a06d382846701361539566df45b50d80a3e326db15",
-        "attestation:attestation/next051_get_tp_noise_show_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:990481f8b911ddf277e44e3e70a4e243cbf461452ca9431e864c85f50512f202"
+        "attestation:attestation/next051_get_tp_noise_show_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:990481f8b911ddf277e44e3e70a4e243cbf461452ca9431e864c85f50512f202",
+        "hardening-source:get_tp_noise_show.c:sha256:ac7a2f3084b3c5b8fcdd65cdebe7647e75c1d053960799e8f310549736ddd650",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "get_tp_noise_show.c",
       "source_function": "get_tp_noise_show",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 280,
       "stock_entry": "0010afc0",
       "stock_function": "get_tp_noise_show",
-      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 70 AArch64 instructions and 280-byte .text size, normalized relocation roles and section. Function KCFI type 0xf4e9d97c and callback type 0x73fc0d79 at tpd_cdev + 0xee8 match; mutex at +0xc60, noise pointer at +0xc58, output bound 0x1e, callback/data/null flow and simple_read_from_buffer behavior are preserved. Strict Joern is parse-clean with one-to-one identity, 49 calls, four control structures and zero unresolved calls; two high-severity synchronization findings and one high-severity userspace-egress finding remain for review. ASan/UBSan host coverage exercises three direct cases. Procfs integration, concurrent state lifetime and NX809J runtime behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 70 AArch64 instructions and 280-byte .text size, normalized relocation roles and section. Function KCFI type 0xf4e9d97c and callback type 0x73fc0d79 at tpd_cdev + 0xee8 match; mutex at +0xc60, noise pointer at +0xc58, output bound 0x1e, callback/data/null flow and simple_read_from_buffer behavior are preserved. Strict Joern is parse-clean with one-to-one identity, 49 calls, four control structures and zero unresolved calls; two high-severity synchronization findings and one high-severity userspace-egress finding remain for review. ASan/UBSan host coverage exercises three direct cases. Procfs integration, concurrent state lifetime and NX809J runtime behavior remain unverified. Hardening branch deviation: uses tp_firmware_data_mutex then cmd_mutex around callback and shared-slot reads. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 280
     },
     {
       "evidence": [
@@ -1471,18 +1496,25 @@
         "joern:attestation/next052_get_tp_noise_store_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:e4e71f169de642416665d109442db4bdabe52e5b76c111d0b74f79ec672230cb",
         "candidate-module:attestation/next052_get_tp_noise_store_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "candidate-source:attestation/next052_get_tp_noise_store_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:797242d8e699d23c3f41ee0b543aca108ec4b161ed27b7c39a6d75545a96d09b",
-        "attestation:attestation/next052_get_tp_noise_store_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:49b03c4f9381e02e311c72a8af1bb99a66d7bbbbda37b7b0a275bbedb5afdf1b"
+        "attestation:attestation/next052_get_tp_noise_store_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:49b03c4f9381e02e311c72a8af1bb99a66d7bbbbda37b7b0a275bbedb5afdf1b",
+        "hardening-source:get_tp_noise_store.c:sha256:d300ff7161cdc1da04ce820f4ac8d5d9bfc7e47504de0d6586fe1d3d94576757",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra P-Code/pseudocode review plus Docker canonical two-cycle build, exact AArch64 instruction/control-flow sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "get_tp_noise_store.c",
       "source_function": "get_tp_noise_store",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 112,
       "stock_entry": "0010b0dc",
       "stock_function": "get_tp_noise_store",
-      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 28 AArch64 instructions and 112-byte .text size, normalized relocation roles and section. Function KCFI type 0xc3d43b4d is preserved; mutex at +0xc60, resource pointer at +0xc58, buffer slot +8, vfree/kfree order, pointer clearing, field reset at +0x448 and count return are preserved. Strict Joern is parse-clean with one-to-one identity, 44 calls, two control structures and zero unresolved calls; one high-severity lifetime finding and two high-severity synchronization findings remain for review. ASan/UBSan host coverage exercises three direct teardown cases. Allocator semantics, concurrent lifetime and NX809J runtime behavior remain unverified."
+      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: the candidate matches all 28 AArch64 instructions and 112-byte .text size, normalized relocation roles and section. Function KCFI type 0xc3d43b4d is preserved; mutex at +0xc60, resource pointer at +0xc58, buffer slot +8, vfree/kfree order, pointer clearing, field reset at +0x448 and count return are preserved. Strict Joern is parse-clean with one-to-one identity, 44 calls, two control structures and zero unresolved calls; one high-severity lifetime finding and two high-severity synchronization findings remain for review. ASan/UBSan host coverage exercises three direct teardown cases. Allocator semantics, concurrent lifetime and NX809J runtime behavior remain unverified. Hardening branch deviation: uses tp_firmware_data_mutex then cmd_mutex around shared-slot cleanup. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 112
     },
     {
       "evidence": [
@@ -2039,18 +2071,25 @@
         "source-test:attestation/next073_tp_self_test_read_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:790727cf8453e65de2e0732caf7280556ad37404662f32817163af1364bbab09",
         "joern-summary:attestation/next073_tp_self_test_read_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:cd675d0707124f26cba373a757ebe5d92fb7a66949bbec0bfa3b7e4f377fb9b9",
         "microtask-attestation:attestation/next073_tp_self_test_read_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:4b1a03b6d512a1f68a941ad10218749aa5a4235c301c63b7f97f4fa12d1cb68f",
-        "candidate-module:attestation/next073_tp_self_test_read_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        "candidate-module:attestation/next073_tp_self_test_read_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "hardening-source:tp_self_test_read.c:sha256:a174e2c9dfdf794f6bb0cd4ac06195d23dce25cc70e827d2fb1e837ce8d41ae0",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tp_self_test_read.c",
       "source_function": "tp_self_test_read",
-      "status": "promoted_offline_exact",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 356,
       "stock_entry": "0010cae8",
       "stock_function": "tp_self_test_read",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 89 AArch64 instructions and 356-byte ELF symbols; opcode sequence, section, symbol size, call targets and normalized relocations match. KCFI type 0xf4e9d97c matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed four cases in two Docker cycles. One expected userspace-egress finding is documented. Android runtime and NX809J hardware behavior remain unverified."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 89 AArch64 instructions and 356-byte ELF symbols; opcode sequence, section, symbol size, call targets and normalized relocations match. KCFI type 0xf4e9d97c matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed four cases in two Docker cycles. One expected userspace-egress finding is documented. Android runtime and NX809J hardware behavior remain unverified. Hardening branch deviation: uses tp_firmware_data_mutex across the proc read lifecycle and cmd_mutex around shared-slot cleanup. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 468
     },
     {
       "evidence": [
@@ -2067,18 +2106,25 @@
         "microtask-attestation:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:edebd4d3c0c37514a4b8035bca5ac9c28bea66f16758acd578eed31cd1b75958",
         "candidate-module:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "semantic-review:attestation/semantic_review_round16_20261102/review.json:sha256:31b56c0b5f32a00eac8f53df91a32bffc37178db0158f728c38242f06075b55c",
-        "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab"
+        "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab",
+        "hardening-source:tp_self_test_write.c:sha256:f712eb211c4b362b054f898a008cad2c6735aed22c2d0b95f4f7c0eb037db5d5",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tp_self_test_write.c",
       "source_function": "tp_self_test_write",
-      "status": "promoted_offline_exact",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 148,
       "stock_entry": "0010cc50",
       "stock_function": "tp_self_test_write",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 37 AArch64 instructions and 148-byte ELF symbols; opcode sequence, section, symbol size, call targets, exact strings and normalized relocations match. KCFI type 0xc3d43b4d matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed three cases in two Docker cycles. Android runtime and NX809J hardware behavior remain unverified."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 37 AArch64 instructions and 148-byte ELF symbols; opcode sequence, section, symbol size, call targets, exact strings and normalized relocations match. KCFI type 0xc3d43b4d matches, strict Joern resolved one method with no unresolved calls or call deltas, and the direct ASan/UBSan harness passed three cases in two Docker cycles. Android runtime and NX809J hardware behavior remain unverified. Hardening branch deviation: uses tp_firmware_data_mutex across the proc write lifecycle and cmd_mutex around allocation, copy and epilogue access. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 204
     },
     {
       "evidence": [
@@ -2568,18 +2614,25 @@
         "attestation:next093_tpd_sysfs_fwimage_show_exact_v2/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:",
         "5beb90e565b324ed15bfda503756eb27342e11dc489bbc4902a85ad6261be0d1",
         "attestation:next093_tpd_sysfs_fwimage_show_exact_v2/exact_revalidation_20260830/canonical_build_report.json:sha256:",
-        "051a3d4e54b3f16ce8f7bfd8cd78c5582c44686348273ca6d00e6d758e90c714"
+        "051a3d4e54b3f16ce8f7bfd8cd78c5582c44686348273ca6d00e6d758e90c714",
+        "hardening-source:tpd_sysfs_fwimage_show.c:sha256:f82a201bbac0da49e1324b692e448ee300a7d3c0927bb5d915f2f3512f2f7e28",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, strict Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_sysfs_fwimage_show.c",
       "source_function": "tpd_sysfs_fwimage_show",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 272,
       "stock_entry": "0010dedc",
       "stock_function": "tpd_sysfs_fwimage_show",
-      "mapping_note": "Offline exact: 68 AArch64 instructions/272 bytes, 8 normalized relocations, KCFI type 0x30c400c0, strict Joern pass, two-cycle canonical Docker build and 4-case ASan/UBSan host harness pass. Firmware ownership, mutex and cleanup behavior remain hardware/runtime DEFERRED."
+      "mapping_note": "Offline exact: 68 AArch64 instructions/272 bytes, 8 normalized relocations, KCFI type 0x30c400c0, strict Joern pass, two-cycle canonical Docker build and 4-case ASan/UBSan host harness pass. Firmware ownership, mutex and cleanup behavior remain hardware/runtime DEFERRED. Hardening branch deviation: uses tp_firmware_data_mutex then cmd_mutex, with all slot validation and copying under both. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 272
     },
     {
       "evidence": [
@@ -2599,18 +2652,25 @@
         "harness:attestation/next834_tpd_sysfs_fwimage_store_exact_v2/host_harness_report.json:sha256:ad90605659405b7fff46f1d782b739d54d2b515c408e555ff763b6c656a2641d",
         "hard-protocol:attestation/tpd_sysfs_fwimage_store_exact_v3/exact_revalidation_20260902/hard_protocol_report.json:status:CORE_GATES_PASS:sha256:7a56bd77f64ae2b7cc12b35795ccb125c0c92e306749934b668698069f62c2db",
         "ghidra-semantic:attestation/tpd_sysfs_fwimage_store_exact_v3/exact_revalidation_20260902/semantic_comparison.json:sha256:247f491f72c3b1fdb74a69a6df225254badd0043bb46c5d1c2581098bd75c3b5",
-        "host-harness:attestation/tpd_sysfs_fwimage_store_exact_v3/exact_revalidation_20260902/host_harness_report.json:status:PASS:sha256:25b857f5283a1feed67922c2c58bcf46edb302d206863e4933f35e0e0434b484"
+        "host-harness:attestation/tpd_sysfs_fwimage_store_exact_v3/exact_revalidation_20260902/host_harness_report.json:status:PASS:sha256:25b857f5283a1feed67922c2c58bcf46edb302d206863e4933f35e0e0434b484",
+        "hardening-source:tpd_sysfs_fwimage_store.c:sha256:649f2bd16c6412207b8c46a94ef9de57c30601b162140702058533173fa58ac1",
+        "hardening-build:attestation/hardening_fw_buffer_concurrency_20261102/canonical_build_report.json:sha256:87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+        "docker-source-sync:attestation/hardening_fw_buffer_concurrency_20261102/source_sync_plan.json:sha256:dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+        "hardening-disassembly:attestation/hardening_fw_buffer_concurrency_20261102/hardened_lifetime_disassembly.txt:sha256:e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa",
+        "semantic-review:attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json:sha256:f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+        "failed-build-record:attestation/hardening_fw_buffer_concurrency_20261102/first_link_failure.json:sha256:baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_sysfs_fwimage_store.c",
       "source_function": "tpd_sysfs_fwimage_store",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 224,
       "stock_entry": "0010dff0",
       "stock_function": "tpd_sysfs_fwimage_store",
-      "mapping_note": "Promoted by exact_revalidation_20260902 after Docker two-cycle reproducibility, strict AArch64/relocation, KCFI, Joern, repaired Ghidra/P-Code comparison and ASan/UBSan host gates. The Ghidra external-label control-flow artifact is documented; hardware remains deferred."
+      "mapping_note": "Promoted by exact_revalidation_20260902 after Docker two-cycle reproducibility, strict AArch64/relocation, KCFI, Joern, repaired Ghidra/P-Code comparison and ASan/UBSan host gates. The Ghidra external-label control-flow artifact is documented; hardware remains deferred. Hardening branch deviation: uses tp_firmware_data_mutex then cmd_mutex, with all slot validation and copying under both. See attestation/hardening_fw_buffer_concurrency_20261102/hardening_review.json and canonical_build_report.json; historical stock-exact attestations remain baseline evidence.",
+      "elf_symbol_bytes": 224
     },
     {
       "evidence": [

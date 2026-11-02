@@ -2,6 +2,9 @@
 #define _GLOBALS_H
 
 #include <linux/types.h>
+#include <linux/mutex.h>
+
+extern struct mutex tp_firmware_data_mutex;
 
 // qwords
 extern uint64_t qword_30F28;

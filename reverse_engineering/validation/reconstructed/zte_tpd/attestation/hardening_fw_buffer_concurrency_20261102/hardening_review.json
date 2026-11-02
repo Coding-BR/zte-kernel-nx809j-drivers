@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Firmware buffer lifetime hardening and proc concurrency closure",
+  "review_status": "STATIC_HARDENING_REVIEW_PASS_RUNTIME_DEFERRED",
+  "independent_human_review": "NOT_PERFORMED",
+  "branch_context": {
+    "reviewed_branch": "codex/zte-tpd-firmware-allocation-hardening",
+    "reviewed_base": "d5de75cea5915590fd6d1ee473581788d02279eb",
+    "stock_exact_branch": "reconstruction/zte-tpd-syna-release-attested",
+    "stock_exact_head": "c83dbf45e145ad92863eac12f15dca6d58dc65a2",
+    "stock_exact_branch_modified": false,
+    "scope_note": "All changes in this report are intentional hardening deviations on the hardening branch. Historical stock-exact attestations remain the baseline for the untouched reconstruction branch."
+  },
+  "shared_state": {
+    "descriptor_slot": "*(struct tpd_firmware_data **)(tpd_cdev + 0xc58)",
+    "position": "*(u32 *)(tpd_cdev + 0x448)",
+    "outer_mutex": "tp_firmware_data_mutex",
+    "inner_mutex": "*(struct mutex *)(tpd_cdev + 0xc60), initialized as ztp_dev->cmd_mutex",
+    "lock_order": "tp_firmware_data_mutex before cdev+0xc60; no path in the reviewed active call graph acquires these in reverse order",
+    "scope": "The outer mutex serializes complete self-test proc operations and each other active high-level buffer operation. The existing command mutex protects every slot dereference, replacement, memcpy, position update, and free. The command mutex is not held across the self-test callback."
+  },
+  "source_sha256": {
+    "globals.c": "0c84f87f77f5bc527a96f614bc632b29f44e8873e344de322d4b8b7dc25a5c4d",
+    "globals.h": "acdadec6536ee75b5d0fd50eeb5487d4d47e791b1cef07c00fa7d8d42fd10c66",
+    "tp_alloc_tp_firmware_data.c": "4461fd6abb4cb80fcdfebbfed34cf710a7eb74450d7117194c6ba484069d0c43",
+    "tpd_copy_to_tp_firmware_data.c": "45e724d31d7aff53d2b03b7bd62c69bbd496dc14925124493627904987297a59",
+    "tp_self_test_read.c": "a174e2c9dfdf794f6bb0cd4ac06195d23dce25cc70e827d2fb1e837ce8d41ae0",
+    "tp_self_test_write.c": "f712eb211c4b362b054f898a008cad2c6735aed22c2d0b95f4f7c0eb037db5d5",
+    "tpd_sysfs_fwimage_show.c": "f82a201bbac0da49e1324b692e448ee300a7d3c0927bb5d915f2f3512f2f7e28",
+    "tpd_sysfs_fwimage_store.c": "649f2bd16c6412207b8c46a94ef9de57c30601b162140702058533173fa58ac1",
+    "get_tp_noise_show.c": "ac7a2f3084b3c5b8fcdd65cdebe7647e75c1d053960799e8f310549736ddd650",
+    "get_tp_noise_store.c": "d300ff7161cdc1da04ce820f4ac8d5d9bfc7e47504de0d6586fe1d3d94576757",
+    "tpfwupgrade_store.c": "40406560045812d2cad64394dd397e9d2e651365655485d0a578aa97628c0de6",
+    "repo_curated_sources_match": true
+  },
+  "stock_evidence": {
+    "ghidra_calls_jsonl_sha256": "91036ccf7524b9446063248adf032fbe7c568d2c6b3a32d00cc54ef57853bc96",
+    "tp_self_test_read_decompilation_sha256": "272ebb44fc389909df93472b2b8cbbef2cd2c3d006293b812307f6187b270fdb",
+    "tp_self_test_write_decompilation_sha256": "5a19297259e3f9afc8247d6b97611da4dfa598264ee67b6467f1f6fb0bd37945",
+    "tpd_copy_decompilation_sha256": "f7fd328885c01d34115d610b651fbb49436b616024b0d2311ec834aa51e0485c",
+    "tpfwupgrade_store_decompilation_sha256": "e6e2975fc87e722a2e35472928b7e307c8a8b45ad0916fdc968a97836144efad",
+    "tpfwupgrade_reachability": "zte_touch_probe.c:285 registers FW_upgrade with mode 0664; globals.c:2056 binds proc_write to tpfwupgrade_store."
+  },
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "fs/proc/inode.c_sha256": "029a98955f602eaeccc0ea58c0e82e278bbc72f6e57c72abd37a66ec3c937f35",
+    "proc_dispatch": "The target proc_reg_read/proc_reg_write paths directly dispatch to proc_ops. Driver-side serialization was therefore added; no implicit proc callback lock is assumed."
+  },
+  "changes_and_findings": [
+    {
+      "id": "self-test-read-write-buffer-lifetime",
+      "status": "HARDENED_STATICALLY",
+      "details": "A global tp_firmware_data_mutex now covers the complete tp_self_test_read and tp_self_test_write callbacks, so their read/write/free lifecycles cannot overlap. The read cleanup takes cmd_mutex before touching cdev+0xc58 and cdev+0x448. The write epilogue takes cmd_mutex and checks for a null descriptor before updating its size. Allocation and copy helpers take cmd_mutex around descriptor use and memory access."
+    },
+    {
+      "id": "shared-slot-high-level-serialization",
+      "status": "HARDENED_STATICALLY",
+      "details": "The fwimage sysfs show/store callbacks, get_noise proc show/store callbacks, and FW_upgrade proc write callback acquire tp_firmware_data_mutex before cmd_mutex. The fwimage handlers now validate the slot only after acquiring both locks. The outer lock is not held as cmd_mutex, so self-test command callbacks can still use the command mutex internally."
+    },
+    {
+      "id": "tp_alloc_vmalloc-failure-retry",
+      "status": "HARDENED_STATICALLY",
+      "details": "On vmalloc failure, tp_alloc_tp_firmware_data clears cdev+0xc58 before freeing the descriptor. This closes the previously confirmed retry path through tp_self_test_write. Descriptor replacement is protected by cmd_mutex."
+    },
+    {
+      "id": "FW_upgrade_vmalloc-failure-retry",
+      "status": "HARDENED_STATICALLY",
+      "details": "Ghidra stock pseudocode showed that tpfwupgrade_store freed the descriptor on vmalloc failure but left cdev+0xc58 unchanged. A later authorized write to the registered 0664 FW_upgrade proc entry could free the stale pointer again. The hardening branch clears the slot before kfree, under both locks."
+    }
+  ],
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "report_sha256": "87eed781b6aa6bfd655b433a4925ae597e7a8479b78c46bb0d35c255b902c51e",
+    "passed": true,
+    "cycles": 2,
+    "module_sha256_each_cycle": "6f8e4e63f9826e1b75cceb64b9bc333a464f74a00bb9557cafe526c30febc30b",
+    "module_size": 6294536,
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_source_identity": "MATCH",
+    "vermagic": "PASS",
+    "curated_module_sha256_matches_candidate": true
+  },
+  "source_sync": {
+    "report": "source_sync_plan.json",
+    "report_sha256": "dc7420a031e4d5c3bd36c95dbbf4dcf8e5a4deca016175f5ef4d38861219aeeb",
+    "passed": true,
+    "final_remaining_mismatches": 0
+  },
+  "candidate_aarch64_symbol_sizes_bytes": {
+    "tp_alloc_tp_firmware_data": 384,
+    "tpd_copy_to_tp_firmware_data": 224,
+    "tp_self_test_read": 468,
+    "tp_self_test_write": 204,
+    "tpd_sysfs_fwimage_show": 272,
+    "tpd_sysfs_fwimage_store": 224,
+    "get_tp_noise_show": 280,
+    "get_tp_noise_store": 112,
+    "tpfwupgrade_store": 560
+  },
+  "candidate_disassembly": {
+    "path": "hardened_lifetime_disassembly.txt",
+    "sha256": "e7d39eee4991980103f07c9162132ba2f987d41ecce66c50603cbc5e5c6988fa"
+  },
+  "first_failed_build": {
+    "record": "first_link_failure.json",
+    "record_sha256": "baa8a7e93dd22a7855b8d972bcb7b50e192b137c04dbe2655b352e85901e98a4",
+    "cause": "One old tp_self_test_io_mutex reference remained in the read allocation-failure branch after the symbol rename.",
+    "resolution": "Corrected the relocation, reran source synchronization, and produced the passing two-cycle build above."
+  },
+  "mapping": {
+    "changed_function_count": 9,
+    "status": "HARDENED_STOCK_DEVIATION",
+    "candidate_module_sha256_updated": true,
+    "stock_exact_branch_unchanged": true
+  },
+  "limitations": [
+    "No NX809J hardware runtime test, forced allocator failure, concurrency stress test, KASAN or UBSAN run was performed.",
+    "The lock-order review is static; callback behavior on device hardware remains deferred.",
+    "tp_free_tp_firmware_data and tpd_reset_fw_data_pos_and_size have no incoming direct caller in the preserved Ghidra call inventory; their runtime reachability remains outside this batch.",
+    "Independent human review was not performed."
+  ]
+}

@@ -8,22 +8,28 @@ int tpd_copy_to_tp_firmware_data(char *data)
   int copied;
 
   cdev = tpd_cdev;
+  mutex_lock((struct mutex *)(cdev + 0xc60));
   fw_data = *(struct tpd_firmware_data **)(tpd_cdev + 0xc58);
   if ( !fw_data || !fw_data->data )
   {
     printk("\001" "3Need set fw image size first");
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
     return -ENOMEM;
   }
   fw_size = fw_data->size;
   if ( !fw_size )
   {
     printk("\001" "3Invalid firmware size");
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
     return -EINVAL;
   }
 
   position = *(u32 *)(tpd_cdev + 0x448);
   if ( fw_size <= position )
+  {
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
     return 0;
+  }
 
   length = strlen(data);
   if ( fw_size < position + length )
@@ -34,5 +40,6 @@ int tpd_copy_to_tp_firmware_data(char *data)
   memcpy((u8 *)fw_data->data + *(u32 *)(cdev + 0x448), data, (long)copied);
   *(u32 *)(cdev + 0x448) += copied;
 
+  mutex_unlock((struct mutex *)(cdev + 0xc60));
   return copied;
 }

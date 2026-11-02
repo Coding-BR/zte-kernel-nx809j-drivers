@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-11-02",
+  "attempt": "canonical build after renaming tp_self_test_io_mutex to tp_firmware_data_mutex",
+  "result": "FAILED_MODPOST",
+  "source_sync": "PASS",
+  "target_kernel_identity": "MATCH",
+  "diagnostic": "modpost reported tp_self_test_io_mutex undefined in both independent cycles.",
+  "root_cause": "One allocation-failure unlock in tp_self_test_read.c still referenced the old mutex symbol after the rename.",
+  "failed_cycle_logs": [
+    {
+      "cycle": 1,
+      "docker_workspace_path": "validation/zte_tpd/canonical_builds/b8bb17eb4818/20261102T201412Z/cycle_1/build.log",
+      "sha256": "9ebe87ad93eef1475458728e5da9b70a9244673fd45e1a8550b2409c45032037"
+    },
+    {
+      "cycle": 2,
+      "docker_workspace_path": "validation/zte_tpd/canonical_builds/b8bb17eb4818/20261102T201412Z/cycle_2/build.log",
+      "sha256": "2376714da532d5b669bb138d5405de21c260e72345f39484e5f4d0b7e1411590"
+    }
+  ],
+  "resolution": "Replaced the stale assembly reference, resynchronized the curated Docker sources, and rebuilt. The final two-cycle canonical report passes with identical module SHA-256 6f8e4e63f9826e1b75cceb64b9bc333a464f74a00bb9557cafe526c30febc30b.",
+  "final_report": "canonical_build_report.json"
+}

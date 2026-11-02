@@ -24,6 +24,7 @@ ssize_t tpfwupgrade_store(struct file *file, const char __user *buffer, size_t c
   else
   {
     printk("\0015tpd: %s val %d.\n", "tpfwupgrade_store", v15);
+    mutex_lock(&tp_firmware_data_mutex);
     mutex_lock(v4 + 0xc60);
     v6 = *(_QWORD *)(v4 + 0xc58);
     if ( v15 >= 0xB )
@@ -53,7 +54,9 @@ ssize_t tpfwupgrade_store(struct file *file, const char __user *buffer, size_t c
         else
         {
           printk("\0013tpd: alloc tp_firmware->data failed");
-          kfree(*(_QWORD *)(v4 + 0xc58));
+          v6 = *(_QWORD *)(v4 + 0xc58);
+          *(_QWORD *)(v4 + 0xc58) = 0;
+          kfree((void *)v6);
           v3 = -12;
         }
       }
@@ -82,6 +85,7 @@ ssize_t tpfwupgrade_store(struct file *file, const char __user *buffer, size_t c
       *(_DWORD *)(v4 + 0x448) = 0;
     }
     mutex_unlock(v4 + 0xc60);
+    mutex_unlock(&tp_firmware_data_mutex);
   }
   return v3;
 }

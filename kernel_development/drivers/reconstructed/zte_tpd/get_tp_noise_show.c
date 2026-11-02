@@ -24,6 +24,7 @@ ssize_t get_tp_noise_show(struct file *file, char __user *buffer, size_t count, 
   if ( !v5 )
   {
     v8 = tpd_cdev;
+    mutex_lock(&tp_firmware_data_mutex);
     mutex_lock(tpd_cdev + 0xc60);
     v10 = *(int (__fastcall **)(struct ztp_device *))(v8 + 0xee8);
     if ( v10 )
@@ -43,6 +44,7 @@ ssize_t get_tp_noise_show(struct file *file, char __user *buffer, size_t count, 
       v12 = 0;
     }
     mutex_unlock(v8 + 0xc60);
+    mutex_unlock(&tp_firmware_data_mutex);
     result = simple_read_from_buffer(a2, a3, a4, s, v12);
   }
   return result;

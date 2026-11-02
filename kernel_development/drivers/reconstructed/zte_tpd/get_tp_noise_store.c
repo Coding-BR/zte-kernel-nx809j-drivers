@@ -10,6 +10,7 @@ ssize_t get_tp_noise_store(struct file *file, const char __user *buffer, size_t 
   __int64 v5; // x0
 
   v4 = tpd_cdev;
+  mutex_lock(&tp_firmware_data_mutex);
   mutex_lock(tpd_cdev + 0xc60);
   v5 = *(_QWORD *)(v4 + 0xc58);
   if ( v5 )
@@ -25,5 +26,6 @@ ssize_t get_tp_noise_store(struct file *file, const char __user *buffer, size_t 
   }
   *(_DWORD *)(v4 + 0x448) = 0;
   mutex_unlock(v4 + 0xc60);
+  mutex_unlock(&tp_firmware_data_mutex);
   return a3;
 }

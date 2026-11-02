@@ -13,20 +13,24 @@ ssize_t tpd_sysfs_fwimage_show(struct file *file, struct kobject *kobj,
   (void)offset;
 
   cdev = tpd_cdev;
-  fw_data = *(struct tpd_firmware_data **)(tpd_cdev + 0xc58);
+  mutex_lock(&tp_firmware_data_mutex);
+  mutex_lock((struct mutex *)(cdev + 0xc60));
+  fw_data = *(struct tpd_firmware_data **)(cdev + 0xc58);
   if ( !fw_data || !fw_data->data )
   {
     printk("\001" "3Need set fw image size first");
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
+    mutex_unlock(&tp_firmware_data_mutex);
     return -ENOMEM;
   }
   if ( !fw_data->size )
   {
     printk("\001" "3Invalid firmware size");
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
+    mutex_unlock(&tp_firmware_data_mutex);
     return -EINVAL;
   }
 
-  mutex_lock((struct mutex *)(tpd_cdev + 0xc60));
-  fw_data = *(struct tpd_firmware_data **)(cdev + 0xc58);
   position = *(u32 *)(cdev + 0x448);
   fw_size = fw_data->size;
   if ( fw_size <= position )
@@ -38,15 +42,23 @@ ssize_t tpd_sysfs_fwimage_show(struct file *file, struct kobject *kobj,
     *(struct tpd_firmware_data **)(cdev + 0xc58) = NULL;
     printk("\001" "6tpd, tp_firmware free.\n");
     mutex_unlock((struct mutex *)(cdev + 0xc60));
+    mutex_unlock(&tp_firmware_data_mutex);
     return 0;
   }
 
   fw_data = READ_ONCE(*(struct tpd_firmware_data **)(cdev + 0xc58));
+  if ( !fw_data || !fw_data->data )
+  {
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
+    mutex_unlock(&tp_firmware_data_mutex);
+    return -ENOMEM;
+  }
   if ( position + count > fw_size )
     count = fw_size - position;
   memcpy(buffer, (u8 *)fw_data->data + *(u32 *)(cdev + 0x448), count);
   *(u32 *)(cdev + 0x448) += count;
   mutex_unlock((struct mutex *)(cdev + 0xc60));
+  mutex_unlock(&tp_firmware_data_mutex);
 
   return count;
 }

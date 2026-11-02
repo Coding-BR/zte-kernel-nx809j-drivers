@@ -1,0 +1,635 @@
+
+/candidate.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000000c11c <tp_alloc_tp_firmware_data>:
+    c11c:      	paciasp
+    c120:      	stp	x29, x30, [sp, #-0x30]!
+    c124:      	stp	x22, x21, [sp, #0x10]
+    c128:      	stp	x20, x19, [sp, #0x20]
+    c12c:      	mov	x29, sp
+    c130:      	adrp	x20, 0xc000 <syna_testing_pt01_zte+0x224>
+    c134:      	mov	w19, w0
+    c138:      	ldr	x21, [x20]
+    c13c:      	add	x0, x21, #0xc60
+    c140:      	bl	0xc140 <tp_alloc_tp_firmware_data+0x24>
+    c144:      	ldr	x8, [x20]
+    c148:      	ldr	x0, [x8, #0xc58]
+    c14c:      	cbz	x0, 0xc180 <tp_alloc_tp_firmware_data+0x64>
+    c150:      	ldr	x8, [x0, #0x8]
+    c154:      	cbz	x8, 0xc174 <tp_alloc_tp_firmware_data+0x58>
+    c158:      	mov	x0, x8
+    c15c:      	bl	0xc15c <tp_alloc_tp_firmware_data+0x40>
+    c160:      	ldr	x8, [x21, #0xc58]
+    c164:      	str	xzr, [x8, #0x8]
+    c168:      	ldr	x8, [x21, #0xc58]
+    c16c:      	str	xzr, [x8]
+    c170:      	ldr	x0, [x21, #0xc58]
+    c174:      	add	x20, x21, #0xc58
+    c178:      	bl	0xc178 <tp_alloc_tp_firmware_data+0x5c>
+    c17c:      	str	xzr, [x20]
+    c180:      	str	wzr, [x21, #0x448]
+    c184:      	nop
+
+000000000000c724 <tp_self_test_read>:
+    c724:      	paciasp
+    c728:      	stp	x29, x30, [sp, #-0x50]!
+    c72c:      	stp	x26, x25, [sp, #0x10]
+    c730:      	stp	x24, x23, [sp, #0x20]
+    c734:      	stp	x22, x21, [sp, #0x30]
+    c738:      	stp	x20, x19, [sp, #0x40]
+    c73c:      	mov	x29, sp
+    c740:      	adrp	x24, 0xc000 <syna_testing_pt01_zte+0x224>
+    c744:      	mov	x19, x3
+    c748:      	mov	x21, x1
+    c74c:      	ldr	x22, [x24]
+    c750:      	mov	x20, x2
+    c754:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c758:      	add	x0, x0, #0x0
+    c75c:      	bl	0xc75c <tp_self_test_read+0x38>
+    c760:      	ldr	x8, [x19]
+    c764:      	cbnz	x8, 0xc794 <tp_self_test_read+0x70>
+    c768:      	nop
+    c76c:      	adrp	x8, 0xc000 <syna_testing_pt01_zte+0x224>
+    c770:      	mov	w1, #0xdc0              // =3520
+    c774:      	mov	w2, #0x1000             // =4096
+    c778:      	ldr	x0, [x8]
+    c77c:      	bl	0xc77c <tp_self_test_read+0x58>
+    c780:      	mov	x23, x0
+    c784:      	cbz	x23, 0xc8d8 <tp_self_test_read+0x1b4>
+    c788:      	ldr	x8, [x19]
+    c78c:      	cbnz	x8, 0xc884 <tp_self_test_read+0x160>
+    c790:      	b	0xc7cc <tp_self_test_read+0xa8>
+    c794:      	mov	x0, xzr
+    c798:      	adrp	x1, 0xc000 <syna_testing_pt01_zte+0x224>
+    c79c:      	add	x1, x1, #0x0
+    c7a0:      	mov	x0, x1
+    c7a4:      	bl	0xc7a4 <tp_self_test_read+0x80>
+    c7a8:      	mov	x0, xzr
+    c7ac:      	b	0xc7b0 <tp_self_test_read+0x8c>
+    c7b0:      	ldp	x20, x19, [sp, #0x40]
+    c7b4:      	ldp	x22, x21, [sp, #0x30]
+    c7b8:      	ldp	x24, x23, [sp, #0x20]
+    c7bc:      	ldp	x26, x25, [sp, #0x10]
+    c7c0:      	ldp	x29, x30, [sp], #0x50
+    c7c4:      	autiasp
+    c7c8:      	ret
+    c7cc:      	ldr	x8, [x22, #0xf98]
+    c7d0:      	cbz	x8, 0xc800 <tp_self_test_read+0xdc>
+    c7d4:      	mov	x0, x22
+    c7d8:      	mov	x1, x23
+    c7dc:      	ldur	w16, [x8, #-0x4]
+    c7e0:      	movk	w17, #0x5fb2
+    c7e4:      	movk	w17, #0x64f2, lsl #16
+    c7e8:      	cmp	w16, w17
+    c7ec:      	b.eq	0xc7f4 <tp_self_test_read+0xd0>
+    c7f0:      	brk	#0x8228
+    c7f4:      	blr	x8
+    c7f8:      	sxtw	x22, w0
+    c7fc:      	b	0xc804 <tp_self_test_read+0xe0>
+    c800:      	mov	x22, xzr
+    c804:      	mov	x0, x21
+    c808:      	mov	x1, x20
+    c80c:      	mov	x2, x19
+    c810:      	mov	x3, x23
+    c814:      	mov	x4, x22
+    c818:      	bl	0xc818 <tp_self_test_read+0xf4>
+    c81c:      	mov	x0, x23
+    c820:      	bl	0xc820 <tp_self_test_read+0xfc>
+    c824:      	ldr	x19, [x24]
+    c828:      	add	x0, x19, #0xc60
+    c82c:      	bl	0xc82c <tp_self_test_read+0x108>
+    c830:      	ldr	x0, [x19, #0xc58]
+    c834:      	cbz	x0, 0xc864 <tp_self_test_read+0x140>
+    c838:      	ldr	x8, [x0, #0x8]
+    c83c:      	cbz	x8, 0xc85c <tp_self_test_read+0x138>
+    c840:      	mov	x0, x8
+    c844:      	bl	0xc844 <tp_self_test_read+0x120>
+    c848:      	ldr	x8, [x19, #0xc58]
+    c84c:      	str	xzr, [x8, #0x8]
+    c850:      	ldr	x8, [x19, #0xc58]
+    c854:      	str	xzr, [x8]
+    c858:      	ldr	x0, [x19, #0xc58]
+    c85c:      	bl	0xc85c <tp_self_test_read+0x138>
+    c860:      	str	xzr, [x19, #0xc58]
+    c864:      	str	wzr, [x19, #0x448]
+    c868:      	add	x0, x19, #0xc60
+    c86c:      	bl	0xc86c <tp_self_test_read+0x148>
+    c870:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c874:      	add	x0, x0, #0x0
+    c878:      	bl	0xc878 <tp_self_test_read+0x154>
+    c87c:      	mov	x0, x22
+    c880:      	b	0xc7b0 <tp_self_test_read+0x8c>
+    c884:      	mov	x0, x23
+    c888:      	bl	0xc888 <tp_self_test_read+0x164>
+    c88c:      	mov	x22, xzr
+    c890:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c894:      	add	x0, x0, #0x0
+    c898:      	bl	0xc898 <tp_self_test_read+0x174>
+    c89c:      	mov	x0, x22
+    c8a0:      	b	0xc7b0 <tp_self_test_read+0x8c>
+    c8a4:      	adrp	x8, 0xc000 <syna_testing_pt01_zte+0x224>
+    c8a8:      	add	x8, x8, #0x0
+    c8ac:      	mrs	x25, SP_EL0
+    c8b0:      	ldr	x26, [x25, #0x50]
+    c8b4:      	str	x8, [x25, #0x50]
+    c8b8:      	adrp	x8, 0xc000 <syna_testing_pt01_zte+0x224>
+    c8bc:      	ldr	x0, [x8]
+    c8c0:      	mov	w1, #0xdc0              // =3520
+    c8c4:      	mov	w2, #0x1000             // =4096
+    c8c8:      	bl	0xc8c8 <tp_self_test_read+0x1a4>
+    c8cc:      	mov	x23, x0
+    c8d0:      	str	x26, [x25, #0x50]
+    c8d4:      	cbnz	x23, 0xc788 <tp_self_test_read+0x64>
+    c8d8:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c8dc:      	add	x0, x0, #0x0
+    c8e0:      	bl	0xc8e0 <tp_self_test_read+0x1bc>
+    c8e4:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c8e8:      	add	x0, x0, #0x0
+    c8ec:      	bl	0xc8ec <tp_self_test_read+0x1c8>
+    c8f0:      	mov	x0, #-0xc               // =-12
+    c8f4:      	b	0xc7b0 <tp_self_test_read+0x8c>
+
+000000000000c8fc <tp_self_test_write>:
+    c8fc:      	paciasp
+    c900:      	stp	x29, x30, [sp, #-0x30]!
+    c904:      	str	x21, [sp, #0x10]
+    c908:      	stp	x20, x19, [sp, #0x20]
+    c90c:      	mov	x29, sp
+    c910:      	adrp	x21, 0xc000 <syna_testing_pt01_zte+0x224>
+    c914:      	mov	w0, #0x100000           // =1048576
+    c918:      	mov	x19, x2
+    c91c:      	ldr	x20, [x21]
+    c920:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c924:      	add	x0, x0, #0x0
+    c928:      	bl	0xc928 <tp_self_test_write+0x2c>
+    c92c:      	bl	0xc92c <tp_self_test_write+0x30>
+    c930:      	cbnz	w0, 0xc9a8 <tp_self_test_write+0xac>
+    c934:      	ldr	x8, [x20, #0xfa0]
+    c938:      	cbz	x8, 0xc95c <tp_self_test_write+0x60>
+    c93c:      	mov	x0, x20
+    c940:      	ldur	w16, [x8, #-0x4]
+    c944:      	movk	w17, #0xd79
+    c948:      	movk	w17, #0x73fc, lsl #16
+    c94c:      	cmp	w16, w17
+    c950:      	b.eq	0xc958 <tp_self_test_write+0x5c>
+    c954:      	brk	#0x8228
+    c958:      	blr	x8
+    c95c:      	ldr	x20, [x21]
+    c960:      	add	x0, x20, #0xc60
+    c964:      	bl	0xc964 <tp_self_test_write+0x68>
+    c968:      	ldr	w9, [x20, #0x448]
+    c96c:      	ldr	x10, [x20, #0xc58]
+    c970:      	cbz	x10, 0xc978 <tp_self_test_write+0x7c>
+    c974:      	str	x9, [x10]
+    c978:      	str	wzr, [x20, #0x448]
+    c97c:      	add	x0, x20, #0xc60
+    c980:      	bl	0xc980 <tp_self_test_write+0x84>
+    c984:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c988:      	add	x0, x0, #0x0
+    c98c:      	bl	0xc98c <tp_self_test_write+0x90>
+    c990:      	mov	x0, x19
+    c994:      	ldp	x20, x19, [sp, #0x20]
+    c998:      	ldr	x21, [sp, #0x10]
+    c99c:      	ldp	x29, x30, [sp], #0x30
+    c9a0:      	autiasp
+    c9a4:      	ret
+    c9a8:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c9ac:      	add	x0, x0, #0x0
+    c9b0:      	bl	0xc9b0 <tp_self_test_write+0xb4>
+    c9b4:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    c9b8:      	add	x0, x0, #0x0
+    c9bc:      	bl	0xc9bc <tp_self_test_write+0xc0>
+    c9c0:      	mov	x19, #-0xc              // =-12
+    c9c4:      	b	0xc990 <tp_self_test_write+0x94>
+
+000000000000caa0 <tpd_copy_to_tp_firmware_data>:
+    caa0:      	paciasp
+    caa4:      	stp	x29, x30, [sp, #-0x30]!
+    caa8:      	stp	x22, x21, [sp, #0x10]
+    caac:      	stp	x20, x19, [sp, #0x20]
+    cab0:      	mov	x29, sp
+    cab4:      	adrp	x20, 0xc000 <syna_testing_pt01_zte+0x224>
+    cab8:      	mov	x19, x0
+    cabc:      	ldr	x21, [x20]
+    cac0:      	add	x0, x21, #0xc60
+    cac4:      	bl	0xcac4 <tpd_copy_to_tp_firmware_data+0x24>
+    cac8:      	ldr	x8, [x20]
+    cacc:      	ldr	x9, [x8, #0xc58]
+    cad0:      	cbz	x9, 0xcb3c <tpd_copy_to_tp_firmware_data+0x9c>
+    cad4:      	ldr	x10, [x9, #0x8]
+    cad8:      	cbz	x10, 0xcb3c <tpd_copy_to_tp_firmware_data+0x9c>
+    cadc:      	ldr	x20, [x9]
+    cae0:      	cbz	x20, 0xcb50 <tpd_copy_to_tp_firmware_data+0xb0>
+    cae4:      	ldr	w22, [x8, #0x448]
+    cae8:      	cmp	x20, x22
+    caec:      	b.ls	0xcb34 <tpd_copy_to_tp_firmware_data+0x94>
+    caf0:      	mov	x0, x19
+    caf4:      	bl	0xcaf4 <tpd_copy_to_tp_firmware_data+0x54>
+    caf8:      	add	w9, w22, w0
+    cafc:      	sub	w8, w20, w22
+    cb00:      	mov	x1, x19
+    cb04:      	cmp	x20, x9
+    cb08:      	ldr	x9, [x21, #0xc58]
+    cb0c:      	csel	w20, w8, w0, lo
+    cb10:      	ldr	x8, [x9, #0x8]
+    cb14:      	ldr	w9, [x21, #0x448]
+    cb18:      	sxtw	x2, w20
+    cb1c:      	add	x0, x8, x9
+    cb20:      	bl	0xcb20 <tpd_copy_to_tp_firmware_data+0x80>
+    cb24:      	ldr	w8, [x21, #0x448]
+    cb28:      	add	w8, w8, w20
+    cb2c:      	str	w8, [x21, #0x448]
+    cb30:      	b	0xcb60 <tpd_copy_to_tp_firmware_data+0xc0>
+    cb34:      	mov	w20, wzr
+    cb38:      	b	0xcb60 <tpd_copy_to_tp_firmware_data+0xc0>
+    cb3c:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    cb40:      	add	x0, x0, #0x0
+    cb44:      	bl	0xcb44 <tpd_copy_to_tp_firmware_data+0xa4>
+    cb48:      	mov	w20, #-0xc              // =-12
+    cb4c:      	b	0xcb60 <tpd_copy_to_tp_firmware_data+0xc0>
+    cb50:      	adrp	x0, 0xc000 <syna_testing_pt01_zte+0x224>
+    cb54:      	add	x0, x0, #0x0
+    cb58:      	bl	0xcb58 <tpd_copy_to_tp_firmware_data+0xb8>
+    cb5c:      	mov	w20, #-0x16             // =-22
+    cb60:      	add	x0, x21, #0xc60
+    cb64:      	bl	0xcb64 <tpd_copy_to_tp_firmware_data+0xc4>
+    cb68:      	mov	w0, w20
+    cb6c:      	ldp	x20, x19, [sp, #0x20]
+    cb70:      	ldp	x22, x21, [sp, #0x10]
+    cb74:      	ldp	x29, x30, [sp], #0x30
+    cb78:      	autiasp
+    cb7c:      	ret
+
+0000000000017a10 <tpd_sysfs_fwimage_show>:
+   17a10:      	paciasp
+   17a14:      	stp	x29, x30, [sp, #-0x30]!
+   17a18:      	str	x21, [sp, #0x10]
+   17a1c:      	stp	x20, x19, [sp, #0x20]
+   17a20:      	mov	x29, sp
+   17a24:      	adrp	x8, 0x17000 <tp_zlog_debug_write+0x24>
+   17a28:      	ldr	x21, [x8]
+   17a2c:      	ldr	x8, [x21, #0xc58]
+   17a30:      	cbz	x8, 0x17abc <tpd_sysfs_fwimage_show+0xac>
+   17a34:      	ldr	x9, [x8, #0x8]
+   17a38:      	cbz	x9, 0x17abc <tpd_sysfs_fwimage_show+0xac>
+   17a3c:      	ldr	x8, [x8]
+   17a40:      	cbz	x8, 0x17ad0 <tpd_sysfs_fwimage_show+0xc0>
+   17a44:      	add	x0, x21, #0xc60
+   17a48:      	mov	x20, x5
+   17a4c:      	mov	x19, x3
+   17a50:      	bl	0x17a50 <tpd_sysfs_fwimage_show+0x40>
+   17a54:      	ldr	x11, [x21, #0xc58]
+   17a58:      	ldr	w9, [x21, #0x448]
+   17a5c:      	ldr	x10, [x11]
+   17a60:      	subs	x8, x10, x9
+   17a64:      	b.ls	0x17ae4 <tpd_sysfs_fwimage_show+0xd4>
+   17a68:      	ldr	x11, [x21, #0xc58]
+   17a6c:      	add	x9, x9, x20
+   17a70:      	mov	x0, x19
+   17a74:      	cmp	x9, x10
+   17a78:      	ldr	w10, [x21, #0x448]
+   17a7c:      	ldr	x9, [x11, #0x8]
+   17a80:      	csel	x20, x8, x20, hi
+   17a84:      	mov	x2, x20
+   17a88:      	add	x1, x9, x10
+   17a8c:      	bl	0x17a8c <tpd_sysfs_fwimage_show+0x7c>
+   17a90:      	ldr	w8, [x21, #0x448]
+   17a94:      	add	x0, x21, #0xc60
+   17a98:      	add	w8, w8, w20
+   17a9c:      	str	w8, [x21, #0x448]
+   17aa0:      	bl	0x17aa0 <tpd_sysfs_fwimage_show+0x90>
+   17aa4:      	mov	x0, x20
+   17aa8:      	ldp	x20, x19, [sp, #0x20]
+   17aac:      	ldr	x21, [sp, #0x10]
+   17ab0:      	ldp	x29, x30, [sp], #0x30
+   17ab4:      	autiasp
+   17ab8:      	ret
+   17abc:      	adrp	x0, 0x17000 <tp_zlog_debug_write+0x24>
+   17ac0:      	add	x0, x0, #0x0
+   17ac4:      	bl	0x17ac4 <tpd_sysfs_fwimage_show+0xb4>
+   17ac8:      	mov	x20, #-0xc              // =-12
+   17acc:      	b	0x17aa4 <tpd_sysfs_fwimage_show+0x94>
+   17ad0:      	adrp	x0, 0x17000 <tp_zlog_debug_write+0x24>
+   17ad4:      	add	x0, x0, #0x0
+   17ad8:      	bl	0x17ad8 <tpd_sysfs_fwimage_show+0xc8>
+   17adc:      	mov	x20, #-0x16             // =-22
+   17ae0:      	b	0x17aa4 <tpd_sysfs_fwimage_show+0x94>
+   17ae4:      	str	wzr, [x21, #0x448]
+   17ae8:      	ldr	x0, [x11, #0x8]
+   17aec:      	bl	0x17aec <tpd_sysfs_fwimage_show+0xdc>
+   17af0:      	ldr	x8, [x21, #0xc58]
+   17af4:      	str	xzr, [x8, #0x8]
+   17af8:      	ldr	x0, [x21, #0xc58]
+   17afc:      	bl	0x17afc <tpd_sysfs_fwimage_show+0xec>
+   17b00:      	adrp	x0, 0x17000 <tp_zlog_debug_write+0x24>
+   17b04:      	add	x0, x0, #0x0
+   17b08:      	str	xzr, [x21, #0xc58]
+   17b0c:      	bl	0x17b0c <tpd_sysfs_fwimage_show+0xfc>
+   17b10:      	add	x0, x21, #0xc60
+   17b14:      	bl	0x17b14 <tpd_sysfs_fwimage_show+0x104>
+   17b18:      	mov	x20, xzr
+   17b1c:      	b	0x17aa4 <tpd_sysfs_fwimage_show+0x94>
+
+0000000000017b24 <tpd_sysfs_fwimage_store>:
+   17b24:      	paciasp
+   17b28:      	stp	x29, x30, [sp, #-0x30]!
+   17b2c:      	str	x21, [sp, #0x10]
+   17b30:      	stp	x20, x19, [sp, #0x20]
+   17b34:      	mov	x29, sp
+   17b38:      	adrp	x8, 0x17000 <tp_zlog_debug_write+0x24>
+   17b3c:      	ldr	x21, [x8]
+   17b40:      	ldr	x8, [x21, #0xc58]
+   17b44:      	cbz	x8, 0x17b80 <tpd_sysfs_fwimage_store+0x5c>
+   17b48:      	ldr	x9, [x8, #0x8]
+   17b4c:      	cbz	x9, 0x17b80 <tpd_sysfs_fwimage_store+0x5c>
+   17b50:      	ldr	x8, [x8]
+   17b54:      	cbz	x8, 0x17b94 <tpd_sysfs_fwimage_store+0x70>
+   17b58:      	ldr	w1, [x21, #0x448]
+   17b5c:      	subs	x9, x8, x1
+   17b60:      	b.hi	0x17ba4 <tpd_sysfs_fwimage_store+0x80>
+   17b64:      	str	wzr, [x21, #0x448]
+   17b68:      	mov	x0, #-0x16              // =-22
+   17b6c:      	ldp	x20, x19, [sp, #0x20]
+   17b70:      	ldr	x21, [sp, #0x10]
+   17b74:      	ldp	x29, x30, [sp], #0x30
+   17b78:      	autiasp
+   17b7c:      	ret
+   17b80:      	adrp	x0, 0x17000 <tp_zlog_debug_write+0x24>
+   17b84:      	add	x0, x0, #0x0
+   17b88:      	bl	0x17b88 <tpd_sysfs_fwimage_store+0x64>
+   17b8c:      	mov	x0, #-0xc               // =-12
+   17b90:      	b	0x17b6c <tpd_sysfs_fwimage_store+0x48>
+   17b94:      	adrp	x0, 0x17000 <tp_zlog_debug_write+0x24>
+   17b98:      	add	x0, x0, #0x0
+   17b9c:      	bl	0x17b9c <tpd_sysfs_fwimage_store+0x78>
+   17ba0:      	b	0x17b68 <tpd_sysfs_fwimage_store+0x44>
+   17ba4:      	add	x10, x1, x5
+   17ba8:      	adrp	x0, 0x17000 <tp_zlog_debug_write+0x24>
+   17bac:      	add	x0, x0, #0x0
+   17bb0:      	cmp	x10, x8
+   17bb4:      	mov	x20, x3
+   17bb8:      	csel	x19, x9, x5, hi
+   17bbc:      	mov	x2, x19
+   17bc0:      	bl	0x17bc0 <tpd_sysfs_fwimage_store+0x9c>
+   17bc4:      	add	x0, x21, #0xc60
+   17bc8:      	bl	0x17bc8 <tpd_sysfs_fwimage_store+0xa4>
+   17bcc:      	ldr	x8, [x21, #0xc58]
+   17bd0:      	ldr	w9, [x21, #0x448]
+   17bd4:      	mov	x1, x20
+   17bd8:      	mov	x2, x19
+   17bdc:      	ldr	x8, [x8, #0x8]
+   17be0:      	add	x0, x8, x9
+   17be4:      	bl	0x17be4 <tpd_sysfs_fwimage_store+0xc0>
+   17be8:      	ldr	w8, [x21, #0x448]
+   17bec:      	add	x0, x21, #0xc60
+   17bf0:      	add	w8, w8, w19
+   17bf4:      	str	w8, [x21, #0x448]
+   17bf8:      	bl	0x17bf8 <tpd_sysfs_fwimage_store+0xd4>
+   17bfc:      	mov	x0, x19
+   17c00:      	b	0x17b6c <tpd_sysfs_fwimage_store+0x48>
+
+000000000002524c <tpfwupgrade_store>:
+   2524c:      	paciasp
+   25250:      	sub	sp, sp, #0x40
+   25254:      	stp	x29, x30, [sp, #0x10]
+   25258:      	stp	x22, x21, [sp, #0x20]
+   2525c:      	stp	x20, x19, [sp, #0x30]
+   25260:      	add	x29, sp, #0x10
+   25264:      	mrs	x8, SP_EL0
+   25268:      	mov	x19, x2
+   2526c:      	mov	x0, x1
+   25270:      	ldr	x8, [x8, #0x710]
+   25274:      	add	x3, sp, #0x4
+   25278:      	mov	x1, x2
+   2527c:      	mov	w2, #0xa                // =10
+   25280:      	str	x8, [sp, #0x8]
+   25284:      	adrp	x8, 0x25000 <tp_smart_cover_write+0x50>
+   25288:      	ldr	x20, [x8]
+   2528c:      	str	wzr, [sp, #0x4]
+   25290:      	bl	0x25290 <tpfwupgrade_store+0x44>
+   25294:      	cbz	w0, 0x252cc <tpfwupgrade_store+0x80>
+   25298:      	mov	x19, #-0x16             // =-22
+   2529c:      	mrs	x8, SP_EL0
+   252a0:      	ldr	x8, [x8, #0x710]
+   252a4:      	ldr	x9, [sp, #0x8]
+   252a8:      	cmp	x8, x9
+   252ac:      	b.ne	0x25408 <tpfwupgrade_store+0x1bc>
+   252b0:      	mov	x0, x19
+   252b4:      	ldp	x20, x19, [sp, #0x30]
+   252b8:      	ldp	x22, x21, [sp, #0x20]
+   252bc:      	ldp	x29, x30, [sp, #0x10]
+   252c0:      	add	sp, sp, #0x40
+   252c4:      	autiasp
+   252c8:      	ret
+   252cc:      	ldr	w2, [sp, #0x4]
+   252d0:      	adrp	x0, 0x25000 <tp_smart_cover_write+0x50>
+   252d4:      	add	x0, x0, #0x0
+   252d8:      	adrp	x1, 0x25000 <tp_smart_cover_write+0x50>
+   252dc:      	add	x1, x1, #0x0
+   252e0:      	bl	0x252e0 <tpfwupgrade_store+0x94>
+   252e4:      	add	x0, x20, #0xc60
+   252e8:      	bl	0x252e8 <tpfwupgrade_store+0x9c>
+   252ec:      	ldr	w8, [sp, #0x4]
+   252f0:      	ldr	x0, [x20, #0xc58]
+   252f4:      	cmp	w8, #0xb
+   252f8:      	b.lo	0x25380 <tpfwupgrade_store+0x134>
+   252fc:      	cbz	x0, 0x25318 <tpfwupgrade_store+0xcc>
+   25300:      	ldr	x8, [x0, #0x8]
+   25304:      	cbz	x8, 0x25314 <tpfwupgrade_store+0xc8>
+   25308:      	mov	x0, x8
+   2530c:      	bl	0x2530c <tpfwupgrade_store+0xc0>
+   25310:      	ldr	x0, [x20, #0xc58]
+   25314:      	bl	0x25314 <tpfwupgrade_store+0xc8>
+   25318:      	str	wzr, [x20, #0x448]
+   2531c:      	nop
+   25320:      	adrp	x8, 0x25000 <tp_smart_cover_write+0x50>
+   25324:      	mov	w1, #0xdc0              // =3520
+   25328:      	mov	w2, #0x18               // =24
+   2532c:      	ldr	x0, [x8]
+   25330:      	bl	0x25330 <tpfwupgrade_store+0xe4>
+   25334:      	str	x0, [x20, #0xc58]
+   25338:      	cbz	x0, 0x25440 <tpfwupgrade_store+0x1f4>
+   2533c:      	nop
+   25340:      	ldr	w8, [sp, #0x4]
+   25344:      	add	x0, x8, #0x18
+   25348:      	bl	0x25348 <tpfwupgrade_store+0xfc>
+   2534c:      	ldr	x8, [x20, #0xc58]
+   25350:      	str	x0, [x8, #0x8]
+   25354:      	ldr	x8, [x20, #0xc58]
+   25358:      	ldr	x9, [x8, #0x8]
+   2535c:      	cbz	x9, 0x253ec <tpfwupgrade_store+0x1a0>
+   25360:      	ldr	w9, [sp, #0x4]
+   25364:      	mov	w1, wzr
+   25368:      	str	x9, [x8]
+   2536c:      	add	x2, x9, #0x18
+   25370:      	ldr	x8, [x20, #0xc58]
+   25374:      	ldr	x0, [x8, #0x8]
+   25378:      	bl	0x25378 <tpfwupgrade_store+0x12c>
+   2537c:      	b	0x253e0 <tpfwupgrade_store+0x194>
+   25380:      	cbz	x0, 0x253e0 <tpfwupgrade_store+0x194>
+   25384:      	ldr	x8, [x20, #0xe18]
+   25388:      	cbz	x8, 0x253b8 <tpfwupgrade_store+0x16c>
+   2538c:      	mov	x0, x20
+   25390:      	mov	x1, xzr
+   25394:      	mov	w2, wzr
+   25398:      	ldur	w16, [x8, #-0x4]
+   2539c:      	movk	w17, #0x50a4
+   253a0:      	movk	w17, #0x4d76, lsl #16
+   253a4:      	cmp	w16, w17
+   253a8:      	b.eq	0x253b0 <tpfwupgrade_store+0x164>
+   253ac:      	brk	#0x8228
+   253b0:      	blr	x8
+   253b4:      	ldr	x0, [x20, #0xc58]
+   253b8:      	ldr	x8, [x0, #0x8]
+   253bc:      	cbz	x8, 0x253d4 <tpfwupgrade_store+0x188>
+   253c0:      	mov	x0, x8
+   253c4:      	bl	0x253c4 <tpfwupgrade_store+0x178>
+   253c8:      	ldr	x8, [x20, #0xc58]
+   253cc:      	str	xzr, [x8, #0x8]
+   253d0:      	ldr	x0, [x20, #0xc58]
+   253d4:      	bl	0x253d4 <tpfwupgrade_store+0x188>
+   253d8:      	str	xzr, [x20, #0xc58]
+   253dc:      	str	wzr, [x20, #0x448]
+   253e0:      	add	x0, x20, #0xc60
+   253e4:      	bl	0x253e4 <tpfwupgrade_store+0x198>
+   253e8:      	b	0x2529c <tpfwupgrade_store+0x50>
+   253ec:      	adrp	x0, 0x25000 <tp_smart_cover_write+0x50>
+   253f0:      	add	x0, x0, #0x0
+   253f4:      	bl	0x253f4 <tpfwupgrade_store+0x1a8>
+   253f8:      	ldr	x0, [x20, #0xc58]
+   253fc:      	bl	0x253fc <tpfwupgrade_store+0x1b0>
+   25400:      	mov	x19, #-0xc              // =-12
+   25404:      	b	0x253e0 <tpfwupgrade_store+0x194>
+   25408:      	bl	0x25408 <tpfwupgrade_store+0x1bc>
+   2540c:      	adrp	x8, 0x25000 <tp_smart_cover_write+0x50>
+   25410:      	mrs	x21, SP_EL0
+   25414:      	ldr	x22, [x21, #0x50]
+   25418:      	ldr	x0, [x8]
+   2541c:      	adrp	x8, 0x25000 <tp_smart_cover_write+0x50>
+   25420:      	add	x8, x8, #0x0
+   25424:      	mov	w1, #0xdc0              // =3520
+   25428:      	mov	w2, #0x18               // =24
+   2542c:      	str	x8, [x21, #0x50]
+   25430:      	bl	0x25430 <tpfwupgrade_store+0x1e4>
+   25434:      	str	x22, [x21, #0x50]
+   25438:      	str	x0, [x20, #0xc58]
+   2543c:      	cbnz	x0, 0x2533c <tpfwupgrade_store+0xf0>
+   25440:      	adrp	x0, 0x25000 <tp_smart_cover_write+0x50>
+   25444:      	add	x0, x0, #0x0
+   25448:      	bl	0x25448 <tpfwupgrade_store+0x1fc>
+   2544c:      	mov	x19, #-0xc              // =-12
+   25450:      	b	0x253e0 <tpfwupgrade_store+0x194>
+   25454:      	ldr	w8, [sp, #0x4]
+   25458:      	mrs	x21, SP_EL0
+   2545c:      	ldr	x22, [x21, #0x50]
+   25460:      	adrp	x9, 0x25000 <tp_smart_cover_write+0x50>
+   25464:      	add	x9, x9, #0x0
+   25468:      	add	x0, x8, #0x18
+   2546c:      	str	x9, [x21, #0x50]
+   25470:      	bl	0x25470 <tpfwupgrade_store+0x224>
+   25474:      	str	x22, [x21, #0x50]
+   25478:      	b	0x2534c <tpfwupgrade_store+0x100>
+
+0000000000025f88 <get_tp_noise_show>:
+   25f88:      	paciasp
+   25f8c:      	sub	sp, sp, #0x70
+   25f90:      	stp	x29, x30, [sp, #0x30]
+   25f94:      	str	x23, [sp, #0x40]
+   25f98:      	stp	x22, x21, [sp, #0x50]
+   25f9c:      	stp	x20, x19, [sp, #0x60]
+   25fa0:      	add	x29, sp, #0x30
+   25fa4:      	mrs	x8, SP_EL0
+   25fa8:      	mov	x0, xzr
+   25fac:      	ldr	x8, [x8, #0x710]
+   25fb0:      	stur	x8, [x29, #-0x8]
+   25fb4:      	ldr	x8, [x3]
+   25fb8:      	stur	xzr, [sp, #0x1e]
+   25fbc:      	stp	xzr, xzr, [sp, #0x10]
+   25fc0:      	str	xzr, [sp, #0x8]
+   25fc4:      	cbnz	x8, 0x26038 <get_tp_noise_show+0xb0>
+   25fc8:      	adrp	x8, 0x25000 <tp_smart_cover_write+0x50>
+   25fcc:      	mov	x19, x3
+   25fd0:      	mov	x20, x2
+   25fd4:      	ldr	x22, [x8]
+   25fd8:      	mov	x21, x1
+   25fdc:      	add	x0, x22, #0xc60
+   25fe0:      	bl	0x25fe0 <get_tp_noise_show+0x58>
+   25fe4:      	ldr	x8, [x22, #0xee8]
+   25fe8:      	cbz	x8, 0x2600c <get_tp_noise_show+0x84>
+   25fec:      	mov	x0, x22
+   25ff0:      	ldur	w16, [x8, #-0x4]
+   25ff4:      	movk	w17, #0xd79
+   25ff8:      	movk	w17, #0x73fc, lsl #16
+   25ffc:      	cmp	w16, w17
+   26000:      	b.eq	0x26008 <get_tp_noise_show+0x80>
+   26004:      	brk	#0x8228
+   26008:      	blr	x8
+   2600c:      	ldr	x8, [x22, #0xc58]
+   26010:      	cbnz	x8, 0x26068 <get_tp_noise_show+0xe0>
+   26014:      	mov	x23, xzr
+   26018:      	add	x0, x22, #0xc60
+   2601c:      	bl	0x2601c <get_tp_noise_show+0x94>
+   26020:      	add	x3, sp, #0x8
+   26024:      	mov	x0, x21
+   26028:      	mov	x1, x20
+   2602c:      	mov	x2, x19
+   26030:      	mov	x4, x23
+   26034:      	bl	0x26034 <get_tp_noise_show+0xac>
+   26038:      	mrs	x8, SP_EL0
+   2603c:      	ldr	x8, [x8, #0x710]
+   26040:      	ldur	x9, [x29, #-0x8]
+   26044:      	cmp	x8, x9
+   26048:      	b.ne	0x2609c <get_tp_noise_show+0x114>
+   2604c:      	ldp	x20, x19, [sp, #0x60]
+   26050:      	ldr	x23, [sp, #0x40]
+   26054:      	ldp	x22, x21, [sp, #0x50]
+   26058:      	ldp	x29, x30, [sp, #0x30]
+   2605c:      	add	sp, sp, #0x70
+   26060:      	autiasp
+   26064:      	ret
+   26068:      	ldr	x3, [x8]
+   2606c:      	adrp	x2, 0x26000 <get_tp_noise_show+0x78>
+   26070:      	add	x2, x2, #0x0
+   26074:      	add	x0, sp, #0x8
+   26078:      	mov	w1, #0x1e               // =30
+   2607c:      	bl	0x2607c <get_tp_noise_show+0xf4>
+   26080:      	ldr	x8, [x22, #0xc58]
+   26084:      	sxtw	x23, w0
+   26088:      	adrp	x0, 0x26000 <get_tp_noise_show+0x78>
+   2608c:      	add	x0, x0, #0x0
+   26090:      	ldr	x1, [x8]
+   26094:      	bl	0x26094 <get_tp_noise_show+0x10c>
+   26098:      	b	0x26018 <get_tp_noise_show+0x90>
+   2609c:      	bl	0x2609c <get_tp_noise_show+0x114>
+
+00000000000260a4 <get_tp_noise_store>:
+   260a4:      	paciasp
+   260a8:      	stp	x29, x30, [sp, #-0x20]!
+   260ac:      	stp	x20, x19, [sp, #0x10]
+   260b0:      	mov	x29, sp
+   260b4:      	adrp	x8, 0x26000 <get_tp_noise_show+0x78>
+   260b8:      	mov	x19, x2
+   260bc:      	ldr	x20, [x8]
+   260c0:      	add	x0, x20, #0xc60
+   260c4:      	bl	0x260c4 <get_tp_noise_store+0x20>
+   260c8:      	ldr	x0, [x20, #0xc58]
+   260cc:      	cbz	x0, 0x260f4 <get_tp_noise_store+0x50>
+   260d0:      	ldr	x8, [x0, #0x8]
+   260d4:      	cbz	x8, 0x260ec <get_tp_noise_store+0x48>
+   260d8:      	mov	x0, x8
+   260dc:      	bl	0x260dc <get_tp_noise_store+0x38>
+   260e0:      	ldr	x8, [x20, #0xc58]
+   260e4:      	str	xzr, [x8, #0x8]
+   260e8:      	ldr	x0, [x20, #0xc58]
+   260ec:      	bl	0x260ec <get_tp_noise_store+0x48>
+   260f0:      	str	xzr, [x20, #0xc58]
+   260f4:      	add	x0, x20, #0xc60
+   260f8:      	str	wzr, [x20, #0x448]
+   260fc:      	bl	0x260fc <get_tp_noise_store+0x58>
+   26100:      	mov	x0, x19
+   26104:      	ldp	x20, x19, [sp, #0x10]
+   26108:      	ldp	x29, x30, [sp], #0x20
+   2610c:      	autiasp
+   26110:      	ret

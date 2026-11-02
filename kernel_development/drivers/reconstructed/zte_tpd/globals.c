@@ -3,6 +3,8 @@
 #endif
 #include "defs.h"
 
+DEFINE_MUTEX(tp_firmware_data_mutex);
+
 // qwords definitions
 uint64_t qword_30F28 = 0;
 uint64_t qword_30FB0 = 0;

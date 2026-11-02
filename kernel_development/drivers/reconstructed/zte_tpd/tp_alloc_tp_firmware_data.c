@@ -4,6 +4,7 @@ int tp_alloc_tp_firmware_data(int size)
   struct tpd_firmware_data *fw_data;
 
   cdev = tpd_cdev;
+  mutex_lock((struct mutex *)(cdev + 0xc60));
   fw_data = *(struct tpd_firmware_data **)(tpd_cdev + 0xc58);
   if ( fw_data )
   {
@@ -24,6 +25,7 @@ int tp_alloc_tp_firmware_data(int size)
   if ( !fw_data )
   {
     printk("\001" "3tpd:alloc struct firmware failed");
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
     return -ENOMEM;
   }
 
@@ -35,11 +37,13 @@ int tp_alloc_tp_firmware_data(int size)
     printk("\001" "3tpd: alloc tp_firmware->data failed");
     *(struct tpd_firmware_data **)(cdev + 0xc58) = NULL;
     kfree(fw_data);
+    mutex_unlock((struct mutex *)(cdev + 0xc60));
     return -ENOMEM;
   }
 
   fw_data->size = (long)size;
   memset((*(struct tpd_firmware_data **)(cdev + 0xc58))->data,
          0, (long)size + sizeof(*fw_data));
+  mutex_unlock((struct mutex *)(cdev + 0xc60));
   return 0;
 }
