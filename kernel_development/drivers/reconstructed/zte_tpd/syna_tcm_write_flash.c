@@ -121,6 +121,8 @@ int syna_tcm_write_flash(struct tcm_dev *tcm,
 					       "syna_pal_mem_free");
 					managed_device = syna_request_managed_device();
 					if (!managed_device) {
+						access->managed_allocation = NULL;
+						syna_tcm_write_flash_set_buffer_size(access, 0);
 						retval = -243;
 						goto write_error;
 					}
@@ -129,6 +131,8 @@ int syna_tcm_write_flash(struct tcm_dev *tcm,
 			}
 			managed_device = syna_request_managed_device();
 			if (!managed_device) {
+				access->managed_allocation = NULL;
+				syna_tcm_write_flash_set_buffer_size(access, 0);
 				retval = -243;
 				goto write_error;
 			}

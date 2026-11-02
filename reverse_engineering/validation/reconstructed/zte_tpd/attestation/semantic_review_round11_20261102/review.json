@@ -1,0 +1,208 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Flash-write mutex and managed-buffer lifetime review with C mirror alignment",
+  "review_status": "STATIC_REVIEW_COMPLETE",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 3,
+    "unique_call_sites": 3,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_tcm_write_flash"
+    ],
+    "reviewed_total_after_this_round": 77,
+    "remaining_joern_findings": 51
+  },
+  "joern_alerts": [
+    {
+      "call": "mutex_lock",
+      "reported_line": 99,
+      "current_line": 99,
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_lock(access->mutex)"
+    },
+    {
+      "call": "devm_kfree",
+      "reported_line": 117,
+      "current_line": 117,
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, old_data)"
+    },
+    {
+      "call": "devm_kmalloc",
+      "reported_line": 141,
+      "current_line": 145,
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kmalloc(managed_device, required_size, 3520)"
+    }
+  ],
+  "findings": [
+    {
+      "id": "write-flash-mutex-balance",
+      "category": "synchronization",
+      "severity": "NO_LOCK_LEAK_OR_DOUBLE_UNLOCK_FOUND",
+      "disposition": "ALL_POST_LOCK_PATHS_REACH_RELEASE_AND_MUTEX_UNLOCK",
+      "details": "Parameter and geometry guards return before mutex_lock. Once locked, chunk validation, allocation failures, copy checks, missing write callback, command errors, and the successful loop all fall through or jump to write_error. The release helper updates release_required and calls mutex_unlock. Ghidra stock shows the same lock and common unlock tail.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash.c",
+        "current_source_sha256": "d2cd0639d6c55331ec595c7660c5dd6cd96caf00be64ad77999c87e32bbf42dd",
+        "exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash_exact.S",
+        "exact_assembly_sha256": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705",
+        "ghidra_decomp": "offline_static/ghidra_stock/decompiled/0306_0012704c_syna_tcm_write_flash.c",
+        "ghidra_decomp_sha256": "35d7313dfd4ba5ed648d85e9c4a4ca7fae23f435a3b7d237b31d4cf881f153a3",
+        "ghidra_pcode": "offline_static/ghidra_stock/pcode/0306_0012704c_syna_tcm_write_flash.jsonl",
+        "ghidra_pcode_sha256": "5419a38b7ad4bb9bdf3bac118c7dc43d0eed35527eeae68211bda0ef9928aec3",
+        "stock_assembly": "offline_static/stock_assembly/0306_syna_tcm_write_flash_0012704c.asm",
+        "stock_assembly_sha256": "ed3b6eac99d0f9a78be19c6bc03dadea11d6939c8ef5903648efcbb5b0cab247",
+        "mutex_lock_current_line": 99,
+        "release_label_current_line": 208,
+        "mutex_unlock_helper_current_line": 53
+      }
+    },
+    {
+      "id": "write-flash-resize-retains-old-devm-buffer-conditionally",
+      "category": "lifetime",
+      "severity": "CONDITIONAL_OLD_DEVM_ALLOCATION_CAN_REMAIN_UNFREED_UNTIL_DEVICE_TEARDOWN",
+      "disposition": "STOCK_BEHAVIOR_DOCUMENTED; C_MIRROR_ERROR_STATE_ALIGNED_TO_GHIDRA",
+      "details": "When a too-small existing buffer is present, the stock path first asks for the managed device. If that lookup returns NULL but the retry succeeds, it allocates a replacement without freeing old_data, so the old devm block remains registered until device teardown. If both lookups return NULL, stock clears the buffer pointer and size before returning -243; the caller cannot immediately free that old block through the context, though devres owns it until teardown. These are conditional stock lifetime behaviors; a live device-detach interleaving was not dynamically demonstrated. The source mirror previously retained the old pointer/size on the double-NULL branch, unlike Ghidra. The C mirror now clears both fields there, matching the exact stock control flow. The exact .S module is unchanged, so this source correction does not remove the runtime stock behavior.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash.c",
+        "current_source_sha256": "d2cd0639d6c55331ec595c7660c5dd6cd96caf00be64ad77999c87e32bbf42dd",
+        "previous_source_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+        "exact_assembly_sha256": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705",
+        "stock_decomp_sha256": "35d7313dfd4ba5ed648d85e9c4a4ca7fae23f435a3b7d237b31d4cf881f153a3",
+        "stock_assembly_sha256": "ed3b6eac99d0f9a78be19c6bc03dadea11d6939c8ef5903648efcbb5b0cab247",
+        "joern_devm_kfree_reported_line": 117,
+        "joern_devm_kmalloc_reported_line": 141,
+        "devm_kmalloc_current_line": 145,
+        "corrected_failure_branches_current_lines": [
+          123,
+          133
+        ]
+      }
+    },
+    {
+      "id": "write-flash-canonical-source-build",
+      "category": "reconstruction_provenance",
+      "severity": "C_MIRROR_NOW_MATCHES_STOCK_FAILURE_STATE; BUILT_MODULE_UNCHANGED",
+      "disposition": "DOCKER_SYNC_AND_TWO_CYCLE_BUILD_PASSED; EXACT_ASSEMBLY_REMAINS_SELECTED",
+      "details": "The C mirror now clears managed_allocation and the buffer-size field in both no-device allocation-failure exits, matching the Ghidra stock branch. Kbuild filters out syna_tcm_write_flash.c and selects syna_tcm_write_flash_exact.o. After syncing the changed C input, the canonical builder passed two independent builds with identical module SHA-256 5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb, exactly matching the previous canonical module. The runtime stock assembly and its conditional old-buffer behavior therefore remain unchanged.",
+      "evidence": {
+        "makefile": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+        "docker_sync_plan": "attestation/semantic_review_round11_20261102/docker_sync_plan.json",
+        "docker_sync_plan_sha256": "c7e856f7c28c4004b4bfb3a170574939bb541ce0daa2a4e57d5560515148157f",
+        "copied_files": [
+          "syna_tcm_write_flash.c"
+        ],
+        "removed_files": [],
+        "canonical_build_report": "attestation/semantic_review_round11_20261102/canonical_build_report.json",
+        "canonical_build_report_sha256": "8f5e31387581a4fe50f23def58cec48dd286006fb825dfed69a6ccd640ff5504",
+        "canonical_build_passed": true,
+        "cycles": 2,
+        "module_sha256_each_cycle": [
+          "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+          "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb"
+        ],
+        "previous_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+        "previous_module_sha256_each_cycle": [
+          "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+          "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb"
+        ],
+        "manifest_file_count": 848,
+        "manifest_sha256": "c25efee40ee27b8e5716e23221188abaae819280ebe9d383ca05dc6284ed390f",
+        "docker_source_sync_clean": true,
+        "exact_assembly_matches_docker": true
+      }
+    },
+    {
+      "id": "write-flash-prior-static-and-host-evidence-scope",
+      "category": "evidence_freshness",
+      "severity": "JOERN_AND_HOST_REPORTS_PRECEDE_C_MIRROR_CORRECTION",
+      "disposition": "OLD_REPORTS_RETAINED_AS_HISTORICAL; NOT_CLAIMED_FOR_CURRENT_SOURCE_HASH",
+      "details": "The Joern report records the same mutex_lock/devm_kfree/devm_kmalloc sites, but its input manifest hashes the previous C source (cd60b9...). The source edit adds only pointer/size state resets on two missing-device error paths; it does not add or remove lock/allocation/free calls. The host harness passed 20 cases for the previous source hash, not the corrected hash, and was not rerun. These reports are not represented as current-source validation.",
+      "evidence": {
+        "joern_report": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+        "joern_report_sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+        "joern_input_manifest": "attestation/full_surface_revalidation_20261102/joern/input_manifest.json",
+        "joern_input_manifest_sha256": "60970240de72f1a4930518d7dbaa949bb946db5b59ca1f3394e61e85ae4aeb1a",
+        "joern_source_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+        "host_report": "attestation/next307_syna_tcm_write_flash_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+        "host_report_sha256": "8d39f3243a92712be701efdb02876313f1ef12e587c4e9020c1bad5e46dfeea5",
+        "host_report_passed_for_old_source": true,
+        "host_expected_cases": 20,
+        "host_source_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+        "host_matches_current_source": false,
+        "executed_this_round": false
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_write_flash.c": "d2cd0639d6c55331ec595c7660c5dd6cd96caf00be64ad77999c87e32bbf42dd",
+    "syna_tcm_write_flash_exact.S": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705"
+  },
+  "ghidra_sha256": {
+    "decompilation": "35d7313dfd4ba5ed648d85e9c4a4ca7fae23f435a3b7d237b31d4cf881f153a3",
+    "pcode": "5419a38b7ad4bb9bdf3bac118c7dc43d0eed35527eeae68211bda0ef9928aec3",
+    "stock_assembly": "ed3b6eac99d0f9a78be19c6bc03dadea11d6939c8ef5903648efcbb5b0cab247"
+  },
+  "joern_evidence": {
+    "report": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "report_sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "input_manifest": "attestation/full_surface_revalidation_20261102/joern/input_manifest.json",
+    "input_manifest_sha256": "60970240de72f1a4930518d7dbaa949bb946db5b59ca1f3394e61e85ae4aeb1a",
+    "input_source_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+    "predates_source_edit": true,
+    "finding_call_sites_unchanged": true
+  },
+  "old_host_harness": {
+    "report": "attestation/next307_syna_tcm_write_flash_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "8d39f3243a92712be701efdb02876313f1ef12e587c4e9020c1bad5e46dfeea5",
+    "passed_for_previous_source": true,
+    "cases": 20,
+    "previous_source_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+    "current_source_sha256": "d2cd0639d6c55331ec595c7660c5dd6cd96caf00be64ad77999c87e32bbf42dd",
+    "matches_current_source": false,
+    "rerun": false
+  },
+  "docker_sync": {
+    "report": "attestation/semantic_review_round11_20261102/docker_sync_plan.json",
+    "report_sha256": "c7e856f7c28c4004b4bfb3a170574939bb541ce0daa2a4e57d5560515148157f",
+    "passed": true,
+    "applied": true,
+    "copied": [
+      "syna_tcm_write_flash.c"
+    ],
+    "removed": [],
+    "snapshot_matches_candidate": true
+  },
+  "canonical_build": {
+    "report": "attestation/semantic_review_round11_20261102/canonical_build_report.json",
+    "report_sha256": "8f5e31387581a4fe50f23def58cec48dd286006fb825dfed69a6ccd640ff5504",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "module_sha256_each_cycle": [
+      "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+      "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb"
+    ],
+    "module_size": 6291200,
+    "previous_module_sha256_each_cycle": [
+      "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+      "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb"
+    ],
+    "kbuild_inputs": 848,
+    "manifest_sha256": "c25efee40ee27b8e5716e23221188abaae819280ebe9d383ca05dc6284ed390f",
+    "candidate_docker_sync_clean": true
+  },
+  "limitations": [
+    "The old-buffer retry interleaving was not dynamically modeled.",
+    "The current Joern and host harness evidence predates the C mirror correction; no Joern rerun or host test was performed.",
+    "The canonical Docker build validates the current 848-input tree; Android runtime and NX809J hardware remain untested.",
+    "The compiled exact assembly was preserved, so stock runtime lifetime behavior remains."
+  ]
+}
