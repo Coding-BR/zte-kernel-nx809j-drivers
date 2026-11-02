@@ -114,22 +114,60 @@ def module_record(path: Path | None, repo_root: Path) -> dict[str, Any]:
 
 def source_inventory(root: Path) -> dict[str, Any]:
     files: dict[str, str] = {}
+    candidates: list[Path] = []
+    reference_text = ""
     if root.is_dir():
-        for path in root.rglob("*"):
+        for path in sorted(root.rglob("*")):
             if not path.is_file() or ".git" in path.parts or "tests" in path.parts:
                 continue
             if path.name.endswith(".mod.c"):
                 continue
             if path.suffix.lower() not in BUILD_INPUT_SUFFIXES and path.name not in BUILD_INPUT_NAMES:
                 continue
-            files[path.relative_to(root).as_posix()] = sha256_file(path)
-    digest = hashlib.sha256()
-    for name, file_hash in sorted(files.items()):
-        digest.update(name.encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(file_hash.encode("ascii"))
-        digest.update(b"\n")
-    return {"file_count": len(files), "sha256": digest.hexdigest(), "files": files}
+            candidates.append(path)
+            if path.name in BUILD_INPUT_NAMES or path.suffix.lower() in BUILD_INPUT_SUFFIXES:
+                if path.relative_to(root).parts[0] != "functions":
+                    reference_text += path.read_text(encoding="utf-8", errors="ignore") + "\n"
+
+        normalized_references = reference_text.replace("\\", "/")
+        references_functions_directory = bool(
+            re.search(r"(?:^|[\s:=])functions(?:/|\*|\\)", normalized_references)
+        )
+        supplemental: dict[str, str] = {}
+        for path in candidates:
+            relative = path.relative_to(root)
+            if (
+                len(relative.parts) >= 2
+                and relative.parts[0] == "functions"
+                and path.suffix.lower() in {".s"}
+                and not references_functions_directory
+                and relative.as_posix() not in normalized_references
+            ):
+                root_copy = root / path.name
+                if root_copy.is_file() and sha256_file(root_copy) == sha256_file(path):
+                    supplemental[relative.as_posix()] = sha256_file(path)
+                    continue
+            files[relative.as_posix()] = sha256_file(path)
+    else:
+        supplemental = {}
+
+    def inventory_hash(inventory: dict[str, str]) -> str:
+        digest = hashlib.sha256()
+        for name, file_hash in sorted(inventory.items()):
+            digest.update(name.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(file_hash.encode("ascii"))
+            digest.update(b"\n")
+        return digest.hexdigest()
+
+    return {
+        "file_count": len(files),
+        "sha256": inventory_hash(files),
+        "files": files,
+        "supplemental_file_count": len(supplemental),
+        "supplemental_sha256": inventory_hash(supplemental),
+        "supplemental_files": supplemental,
+    }
 
 
 def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -> dict[str, Any]:
@@ -233,6 +271,14 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
         for name in sorted(set(repo_sources["files"]) | set(docker_sources["files"]))
         if repo_sources["files"].get(name) != docker_sources["files"].get(name)
     ]
+    supplemental_differences = [
+        name
+        for name in sorted(
+            set(repo_sources["supplemental_files"]) | set(docker_sources["supplemental_files"])
+        )
+        if repo_sources["supplemental_files"].get(name)
+        != docker_sources["supplemental_files"].get(name)
+    ]
     docker_candidate_path = docker_root / f"{driver}.ko"
     docker_candidate_record = (
         {
@@ -253,6 +299,7 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
             "c_file_count": len(c_sources),
             "build_input_count": repo_sources["file_count"],
             "build_input_sha256": repo_sources["sha256"],
+            "supplemental_source_file_count": repo_sources["supplemental_file_count"],
         },
         "stock_module": module_record(stock_path, repo_root),
         "candidate_module": module_record(candidate_path, repo_root),
@@ -288,6 +335,11 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
             "build_input_sha256": docker_sources["sha256"],
             "build_inputs_match_repository": bool(docker_root.is_dir()) and not source_differences,
             "build_input_differences": source_differences,
+            "supplemental_source_file_count": docker_sources["supplemental_file_count"],
+            "supplemental_source_differences": supplemental_differences,
+            "source_tree_matches_repository": (
+                bool(docker_root.is_dir()) and not source_differences and not supplemental_differences
+            ),
             "candidate_matches_repository_candidate": (
                 docker_candidate_record.get("sha256") == candidate_sha
                 if docker_candidate_record.get("exists") and candidate_sha
@@ -317,10 +369,11 @@ def render_markdown(payload: dict[str, Any]) -> str:
         f"({summary['ghidra_function_total']} funções); "
         f"presentes no snapshot curado do Docker: **{summary['docker_curated_driver_count']}**; "
         f"candidatos Docker iguais ao repositório: **{summary['docker_candidates_matching_repository']}**; "
-        f"snapshots de fonte iguais: **{summary['docker_source_snapshots_matching_repository']}**.",
+        f"inputs de build iguais: **{summary['docker_build_inputs_matching_repository']}**; "
+        f"árvores de fonte completas iguais: **{summary['docker_source_snapshots_matching_repository']}**.",
         "",
-        "| Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` repo | `.ko` Docker | Fontes iguais | Achados |",
-        "|---|---:|---:|---|---|---|---|---|---|",
+        "| Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` repo | `.ko` Docker | Inputs build iguais | Árvore completa igual | Achados |",
+        "|---|---:|---:|---|---|---|---|---|---|---|",
     ]
     for row in payload["drivers"]:
         fmap = row["function_map"]
@@ -332,6 +385,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
             f"| {coverage} | {states} | {'sim' if row['candidate_module']['exists'] else 'não'} "
             f"| {'sim' if row['docker_snapshot']['candidate_module']['exists'] else 'não'} "
             f"| {'sim' if row['docker_snapshot']['build_inputs_match_repository'] else 'não'} "
+            f"| {'sim' if row['docker_snapshot']['source_tree_matches_repository'] else 'não'} "
             f"| {findings} |"
         )
     lines.extend(
@@ -346,6 +400,12 @@ def render_markdown(payload: dict[str, Any]) -> str:
             "interpretados como aprovação do driver inteiro.",
             "- `docker_snapshot.curated_directory_present` indica disponibilidade do "
             "snapshot para a rotina de build, não resultado de build.",
+            "- `build_inputs_match_repository` compara os arquivos de fonte/Makefile "
+            "e separa cópias Assembly suplementares que são byte-idênticas à fonte "
+            "da raiz e não aparecem referenciadas no Makefile/Kbuild ou nas fontes.",
+            "- `source_tree_matches_repository` também exige igualdade dessas cópias "
+            "suplementares; uma diferença nesse campo, sozinha, não significa que "
+            "o snapshot compile outra implementação.",
             "- Revisão independente, teste em hardware e autorização de promoção são "
             "gates separados.",
             "",
@@ -392,8 +452,13 @@ def main() -> int:
             row["docker_snapshot"]["candidate_matches_repository_candidate"] is True
             for row in drivers
         ),
-        "docker_source_snapshots_matching_repository": sum(
+        "docker_build_inputs_matching_repository": sum(
             row["docker_snapshot"]["build_inputs_match_repository"]
+            for row in drivers
+            if row["docker_snapshot"]["curated_directory_present"]
+        ),
+        "docker_source_snapshots_matching_repository": sum(
+            row["docker_snapshot"]["source_tree_matches_repository"]
             for row in drivers
             if row["docker_snapshot"]["curated_directory_present"]
         ),

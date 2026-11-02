@@ -69,6 +69,18 @@ def repository_root_for_curated(curated_root: Path) -> Path | None:
     return None
 
 
+def repository_root_for_script(script: Path) -> Path | None:
+    """Find versioned evidence beside this pipeline when auditing Docker sources."""
+    candidate = script.resolve().parents[2]
+    if (
+        (candidate / "kernel_development" / "config" / "target_kernel.json").is_file()
+        and (candidate / "reference_modules").is_dir()
+        and (candidate / "reverse_engineering" / "validation" / "reconstructed").is_dir()
+    ):
+        return candidate
+    return None
+
+
 def public_evidence_paths(repository_root: Path, driver: str) -> tuple[Path, Path, Path]:
     """Resolve immutable public stock/Ghidra evidence without a private run tree."""
     transition = (
@@ -126,9 +138,7 @@ def resolve_target_kernel_manifest(curated_root: Path, explicit: Path | None) ->
     if repository_root is None:
         # The default curated tree lives in the sibling Docker workspace, but
         # the pinned kernel build manifest is versioned with this repository.
-        script_repository_root = Path(__file__).resolve().parents[2]
-        if (script_repository_root / "kernel_development" / "config" / "target_kernel.json").is_file():
-            repository_root = script_repository_root
+        repository_root = repository_root_for_script(Path(__file__))
     if repository_root is not None:
         return (repository_root / "kernel_development" / "config" / "target_kernel.json").resolve()
     return (curated_root.resolve().parent / "config" / "target_kernel.json").resolve()
@@ -1219,7 +1229,11 @@ def parse_args() -> argparse.Namespace:
     engineering_root = default_engineering_root(Path(__file__))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--curated-root", type=Path, default=engineering_root / "curated")
-    parser.add_argument("--run-root", type=Path)
+    parser.add_argument(
+        "--run-root",
+        type=Path,
+        help="private run containing stock/Ghidra evidence; defaults to versioned repository evidence when available",
+    )
     parser.add_argument("--driver", action="append", dest="drivers")
     parser.add_argument("--rebuild", action="store_true", help="perform two clean Docker builds per regular driver")
     parser.add_argument("--work-root", type=Path, default=engineering_root / "validation" / "work")
@@ -1265,6 +1279,8 @@ def main() -> int:
         and (path / "STATUS.md").is_file()
     )
     repository_root = repository_root_for_curated(curated_root)
+    if repository_root is None and args.run_root is None:
+        repository_root = repository_root_for_script(Path(__file__))
     if args.run_root is not None:
         run_root = args.run_root.resolve()
         evidence_origin = str(run_root)

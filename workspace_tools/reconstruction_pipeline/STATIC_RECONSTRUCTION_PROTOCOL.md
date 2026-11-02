@@ -94,11 +94,12 @@ Para inventariar toda a árvore principal e compará-la com o snapshot curado do
 Docker, use `audit_reconstructed_driver_inventory.py`. Esse inventário lista
 escopo, hashes, cobertura de identidades Ghidra/mapa e disponibilidade no
 Docker, incluindo divergências de inputs e `.ko`; ele não substitui os gates de
-build/paridade. `validate_reconstructed_drivers.py` usa o snapshot Docker por
-padrão e resolve o manifesto do kernel versionado no repositório, inclusive
-quando o build é iniciado de outra raiz. O `--all` do auditor
-offline abaixo continua limitado aos drivers `zte_*`/`zlog_*` presentes em
-`engenharia/curated`.
+build/paridade. Cópias Assembly byte-idênticas, suplementares e sem referência
+nas regras de build são contadas separadamente dos inputs usados pelo snapshot.
+`validate_reconstructed_drivers.py` usa o snapshot Docker por padrão e resolve o
+manifesto do kernel versionado no repositório, inclusive quando o build é
+iniciado de outra raiz. O `--all` do auditor offline abaixo continua limitado
+aos drivers `zte_*`/`zlog_*` presentes em `engenharia/curated`.
 
 ```powershell
 python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py `
