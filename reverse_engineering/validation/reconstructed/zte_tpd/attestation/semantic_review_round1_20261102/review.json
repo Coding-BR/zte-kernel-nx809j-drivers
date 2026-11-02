@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "offline source, Ghidra P-Code, stock assembly, and existing harness triage",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed": 4,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_spi_hw_reset",
+      "syna_sysfs_debug_store",
+      "tp_pen_only_read"
+    ],
+    "additional_lifetime_observation": 1
+  },
+  "source_state": {
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json",
+    "map_status": "PARTIAL_SOURCE_MAP",
+    "review_scope": "structural_identity_only",
+    "semantic_equivalence": "OFFLINE_EXACT",
+    "independent_review": "NOT_PERFORMED",
+    "hardware_validation": "DEFERRED"
+  },
+  "findings": [
+    {
+      "id": "joern-hardware-write-syna-spi-reset",
+      "category": "hardware_write",
+      "severity": "critical",
+      "function": "syna_spi_hw_reset",
+      "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_spi_hw_reset.c",
+      "source_sha256": "dba4ad8bbf0207808fe2c9528cebc198b74a137876876f5bbdb8fa9aecfe77d0",
+      "source_lines": [11, 19],
+      "stock_entry": "00118384",
+      "stock_body": {"instruction_count": 36, "size_bytes": 144},
+      "disposition": "EXPECTED_RESET_SIDE_EFFECT",
+      "review": "The two raw GPIO writes reproduce the active and inactive reset levels. The optional active delay, fixed 80 ms delay, and log order match Ghidra output, P-Code, and stock AArch64 assembly. No candidate divergence was found.",
+      "existing_harness": {
+        "path": "kernel_development/drivers/validation/zte_tpd/host/syna_spi_hw_reset_host_test.c",
+        "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next197_syna_spi_hw_reset_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json",
+        "status": "PASS",
+        "cases": 4,
+        "repetitions": 2,
+        "identical_build_hashes": true
+      },
+      "residual": "Harness stubs GPIO and sleep. Actual NX809J reset polarity and timing remain unverified on hardware."
+    },
+    {
+      "id": "joern-userspace-ingress-syna-sysfs-debug-store",
+      "category": "userspace_ingress",
+      "severity": "high",
+      "function": "syna_sysfs_debug_store",
+      "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_debug_store.c",
+      "source_sha256": "69f37473ed69c6880a02b72a24943b48e68c2f47acf6f49439e039940d64223a",
+      "source_line": 19,
+      "stock_entry": "0011a9a0",
+      "stock_body": {"instruction_count": 78, "size_bytes": 312},
+      "disposition": "EXPECTED_BOUNDED_SYSFS_PARSE",
+      "review": "The input is parsed with kstrtouint into a zero-initialized local. Parse errors return -22; only values 0 and 1 proceed. Existing Ghidra/P-Code and stock assembly match the candidate control flow.",
+      "existing_harness": {
+        "path": "kernel_development/drivers/validation/zte_tpd/host/syna_sysfs_debug_store_host_test.c",
+        "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next212_syna_sysfs_debug_store_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json",
+        "status": "PASS",
+        "cases": 9,
+        "repetitions": 2,
+        "identical_build_hashes": true,
+        "includes_group_creation_failure": true
+      },
+      "residual": "The group-creation failure branch retains a dangling pointer after kobject_put; see the linked lifetime finding. The host harness stubs kobject lifetime and does not execute a second operation on a freed object."
+    },
+    {
+      "id": "manual-lifetime-syna-sysfs-debug-store",
+      "category": "lifetime",
+      "severity": "high",
+      "function": "syna_sysfs_debug_store",
+      "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_sysfs_debug_store.c",
+      "source_sha256": "69f37473ed69c6880a02b72a24943b48e68c2f47acf6f49439e039940d64223a",
+      "stock_entry": "0011a9a0",
+      "disposition": "CONFIRMED_STOCK_DANGLING_POINTER_POTENTIAL_USE_AFTER_PUT",
+      "evidence": [
+        "The driver stores the result of kobject_create_and_add in debug_dir before calling sysfs_create_group.",
+        "If sysfs_create_group returns a negative value, the error path calls kobject_put(debug_dir), returns -20, and does not clear debug_dir.",
+        "The existing group_failure harness case explicitly expects debug_dir to remain nonzero after kobject_put.",
+        "A later disable request follows the nonzero debug_dir branch, calls sysfs_remove_group and kobject_put with that retained pointer, then clears the field.",
+        "Ghidra decompilation, P-Code, stock assembly, candidate assembly, and the source have matching error-path behavior."
+      ],
+      "runtime_assessment": "The stale field is demonstrated statically and by the current harness contract. A use-after-free or double put is likely if the failure-path kobject_put drops the final reference; the current host stub does not model the kernel reference count or reproduce the actual free.",
+      "reconstruction_decision": "Do not alter the candidate in this reconstruction pass: doing so would diverge from the stock module. Keep this hazard open for a separate hardening decision and test."
+    },
+    {
+      "id": "joern-userspace-egress-tp-pen-only-read",
+      "category": "userspace_egress",
+      "severity": "high",
+      "function": "tp_pen_only_read",
+      "source": "kernel_development/drivers/reconstructed/zte_tpd/tp_pen_only_read.c",
+      "source_sha256": "d6ae60cf889dadfd6cb33700f7ed7b8fcb6e2581386e57923a1aa02caa9f5ac6",
+      "source_line": 68,
+      "stock_entry": "0010c724",
+      "stock_body": {"instruction_count": 60, "size_bytes": 240},
+      "disposition": "EXPECTED_BOUNDED_READ",
+      "review": "The function formats one byte of state and a newline into a 10-byte stack buffer, then uses simple_read_from_buffer. The callback is conditional and runs only at offset zero. Candidate, Ghidra/P-Code, and stock assembly agree.",
+      "existing_harness": {
+        "path": "kernel_development/drivers/validation/zte_tpd/host/tp_pen_only_read_host_test.c",
+        "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next069_tp_pen_only_read_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
+        "status": "PASS",
+        "cases": 4,
+        "repetitions": 2,
+        "identical_build_hashes": true
+      },
+      "residual": "The host fixture does not exercise the live file_operations owner, procfs/sysfs registration, or hardware callback."
+    }
+  ],
+  "overall_disposition": "TRIAGE_PARTIAL_NO_RECONSTRUCTION_SOURCE_CHANGES",
+  "next_review_batch": [
+    "Review lifetime and synchronization observations across the remaining functions.",
+    "Resolve the Joern source fallback for syna_dev_helper_work without hiding joern_cpg_gap.",
+    "Keep hardware and independent human review open."
+  ]
+}
