@@ -313,7 +313,7 @@ tpd_touch_release:
     .inst 0x52803e83
     .inst 0x39122388
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_delayed_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_main_delayed_work_on
     .inst 0xb9448f88
     .inst 0xaa1303e0
     .inst 0x7100091f
@@ -490,7 +490,7 @@ tpd_touch_release:
     .inst 0x52800400
     .inst 0x528001a3
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_delayed_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_report_delayed_work_on
     .inst 0x90000017
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, is_fake_sleep_mode
     .inst 0x90000018

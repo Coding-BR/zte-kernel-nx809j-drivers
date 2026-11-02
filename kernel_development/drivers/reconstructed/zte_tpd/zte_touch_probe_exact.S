@@ -1076,7 +1076,7 @@ zte_touch_probe:
     .inst 0x52800400
     .inst 0x52802ee3
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_delayed_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_main_delayed_work_on
     .inst 0xf94002a8
     .reloc .-4, R_AARCH64_LDST64_ABS_LO12_NC, tpd_cdev
     .inst 0x90000009
@@ -1148,7 +1148,7 @@ zte_touch_probe:
     .inst 0xf905f109
     .inst 0xf9425e61
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_delayed_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_report_delayed_work_on
     .inst 0x52801fe8
     .inst 0x90000001
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, .rodata.str1.1+0x2aeb

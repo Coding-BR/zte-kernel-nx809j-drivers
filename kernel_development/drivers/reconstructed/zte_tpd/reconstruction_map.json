@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "5204b5186733e72b87594dd9e327d426b08e0495d3263ecf85a6b8bed6e72be4",
+  "candidate_sha256": "62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T22:27:20.620112+00:00",
+  "generated_utc": "2026-11-02T22:48:19.743952+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -633,19 +633,22 @@
         "host-harness:attestation/next022_tpd_workqueue_init_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:43d9c7bfbecafbd933f1ecec6c0b574c33bbcf495ead1c7d0b9e030ff0526d40",
         "joern:attestation/next022_tpd_workqueue_init_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:8ac2602a2b7c69fca0c85b739b7943f4bb3e1a2fcf94717df2e305ee853af92c",
         "kcfi:attestation/next022_tpd_workqueue_init_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:dae0d68652453b4f1336f11d909437d2c2b9c04d137631e27d26f36080d62634",
-        "attestation:attestation/next022_tpd_workqueue_init_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:f99c9b85544c89cea261d3cc06caa8cb506238316092dec02b3b2c09880c939e"
+        "attestation:attestation/next022_tpd_workqueue_init_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:f99c9b85544c89cea261d3cc06caa8cb506238316092dec02b3b2c09880c939e",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Docker canonical two-cycle build, exact function-level AArch64 instruction sequence, KCFI, normalized relocation roles, strict Joern and ASan/UBSan harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_workqueue_init.c",
       "source_function": "tpd_workqueue_init",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 388,
       "elf_symbol_bytes": 388,
       "stock_entry": "00108508",
       "stock_function": "tpd_workqueue_init",
-      "mapping_note": "Offline exact function-level parity attested by two identical Docker canonical cycles: 97 AArch64 instructions and 388-byte .text size match; .text section and KCFI type ID 0x6fbb3035/size match. The recovered function preserves alloc_workqueue(\"%s\", 393226, 1, \"tpd_wq\"), tpd_cdev slot offset 150, report-work failure cleanup, -ENOMEM return, probe/resume/zlog/ghost delayed-work layouts at the recovered offsets, timer initialization and callback relocations. Strict Joern is parse-clean with one-to-one identity, 64 calls, four control structures and zero unresolved calls; ASan/UBSan host coverage exercises four direct contract cases. Raw relocation identity differs only because the candidate is separately linked; kernel workqueue/timer scheduling and NX809J hardware behavior remain unverified."
+      "mapping_note": "The failure path now destroys and clears an allocated main workqueue if report-queue creation fails, shuts down UFP on the confirmed probe failure path, and opens admission only after all work items initialize. Historical exact-parity evidence remains preserved for the earlier source revision."
     },
     {
       "evidence": [
@@ -720,19 +723,22 @@
         "joern:attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:62100294c80f7c61512199a11920b40a6e7fb9161f735be969c0d341509aac7e",
         "candidate-module:attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "attestation:attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:506dfbb79fb9c7a7282282a7a2d03d8a9a3bd288c678a9c1053dd9ca4b02ed6a",
-        "candidate-source:attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9"
+        "candidate-source:attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Docker canonical two-cycle build, exact AArch64 opcode/control-flow sequence, KCFI, normalized dataflow and relocation roles, strict Joern and ASan/UBSan host evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "zte_touch_probe.c",
       "source_function": "zte_touch_probe",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 3712,
       "stock_entry": "001087e4",
       "stock_function": "zte_touch_probe",
       "elf_symbol_bytes": 3712,
-      "mapping_note": "Function-level offline exact parity is promoted from two identical Docker canonical cycles: stock and candidate contain 928 AArch64 instructions and 3712-byte .text symbols with matching section, KCFI type ID 0xc7f8c87c, opcode/control-flow sequence, normalized dataflow and normalized relocation roles. The recovered probe preserves allocation/store offsets, Device Tree defaults and reads, mutex classes, proc/sysfs creation paths, cleanup calls, workqueue setup, timer initialization and success/error returns. Strict Joern is parse-clean with one-to-one identity, 594 calls, 61 control structures and zero unresolved calls, while retaining one high-severity lifetime and two high-severity synchronization findings for runtime follow-up; scheduler, platform-bus, NX809J hardware and complete module integration remain unverified."
+      "mapping_note": "The probe's initial main/report queue submissions route through the TPD lifecycle admission helpers. Probe-failure UFP cleanup occurs in tpd_workqueue_init's confirmed post-ufp_mac_init error path. This source revision intentionally differs from the stock call targets; runtime and hardware behavior remain unverified."
     },
     {
       "evidence": [
@@ -778,18 +784,21 @@
         "joern:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:ba552808d352b85ebea959dbfa4c9a0e2e29ed29ff21c18548a9ffd67422fb9f",
         "candidate-module:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "attestation:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:c87da9ed87ff139f3551eaa6fab978e97748addd0651d7f6ce55d62414e91814",
-        "candidate-source:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:a9539fc60293fbe8b44d421b19d9214cdb6d55767cc3ffe7a341eb63c0735653"
+        "candidate-source:attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:a9539fc60293fbe8b44d421b19d9214cdb6d55767cc3ffe7a341eb63c0735653",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus Docker canonical two-cycle build, exact AArch64 instruction count/size/call order, KCFI, normalized relocation roles, strict Joern and ASan/UBSan host evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "zte_touch_shutdown.c",
       "source_function": "zte_touch_shutdown",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 224,
       "stock_entry": "001096a0",
       "stock_function": "zte_touch_shutdown",
-      "mapping_note": "Offline exact function-level parity is attested by two identical Docker canonical cycles: 56 AArch64 instructions and 224-byte .text body match, KCFI type ID 0x24a11bb9/size match, and the callback, workqueue teardown, vfree and delayed-work cancellation order matches the stock function. Raw relocation offsets differ only because the candidate module has a different local .rodata layout. Strict Joern is parse-clean with one-to-one identity, 32 calls, one control structure and zero unresolved calls, while retaining three high-severity synchronization findings for runtime follow-up; platform-bus teardown and NX809J runtime behavior remain unverified."
+      "mapping_note": "After the stock shutdown callback, the hardened path closes queue admission, synchronously cancels all initialized main/report work, and destroys both queues. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
@@ -2693,10 +2702,12 @@
         "lifecycle-review:attestation/ufp_pdev_teardown_20261102/lifecycle_review.json:sha256:08786c3149df60f02e49d0ae42aaa673abcb92339955932e9e0c762e9664358e",
         "candidate-module:attestation/ufp_pdev_teardown_20261102/candidate_module/zte_tpd.ko:sha256:5204b5186733e72b87594dd9e327d426b08e0495d3263ecf85a6b8bed6e72be4",
         "hardening-source:zte_touch_deinit.c:sha256:6c9b5aec6fc4591476b7647729c0edfafe125e8ef767e89aa55c54d5c3d88d50",
-        "retained-stock-instruction-stream:zte_touch_deinit_exact.S:sha256:d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033"
+        "retained-stock-instruction-stream:zte_touch_deinit_exact.S:sha256:d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
       ],
-      "mapping_basis": "Ghidra stock teardown ordering plus a lifecycle wrapper that delays clearing the UFP platform-device pointer until report work and stock interfaces are drained; reproducible Android 16 GKI 6.12.23 Docker build. Runtime and hardware remain unverified.",
-      "review_scope": "ufp_pdev_teardown_lifecycle",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
       "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "zte_touch_deinit.c",
       "source_function": "zte_touch_deinit",
@@ -2704,7 +2715,7 @@
       "stock_body_bytes": 376,
       "stock_entry": "0010e0d0",
       "stock_function": "zte_touch_deinit",
-      "mapping_note": "Intentional deviation: ufp_mac_exit closes gesture admission and drains its queue without clearing ufp_tp_ops.pdev. The public zte_touch_deinit wrapper runs the retained stock teardown body, which drains report/probe/resume work and removes interfaces, then clears pdev under the lifecycle mutex. Two canonical Docker cycles were byte-identical; hot-unbind/runtime and NX809J hardware behavior remain unverified."
+      "mapping_note": "The wrapper closes queue admission before the retained stock teardown, neutralizes the stock destroy_workqueue(NULL) branch, then drains LCD/resume/probe/zlog/ghost/report work and destroys valid main/report queues. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
@@ -2798,18 +2809,21 @@
         "source-test:attestation/next099_tpd_touch_release_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:fe263ee118a1bd3ed683d5eb8b36846c75757f4b8c9d01a6592fbb75c4e7f94d",
         "joern-summary:attestation/next099_tpd_touch_release_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:41eef958be36689906b1d25a6abb6fc27ca0487188e5f912caf15df6719dfea2",
         "microtask-attestation:attestation/next099_tpd_touch_release_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:30390e90dac1a3cc756bfcd304dd935017afc1d59b1e1d018490c4a6b2c8a35a",
-        "candidate-module:attestation/next099_tpd_touch_release_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        "candidate-module:attestation/next099_tpd_touch_release_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction and relocation sequence, Joern, ASan/UBSan, reproducible Docker and KCFI type-ID evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_touch_release.c",
       "source_function": "tpd_touch_release",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 1596,
       "stock_entry": "0010ec70",
       "stock_function": "tpd_touch_release",
-      "mapping_note": "Function-level offline parity is attested: 399 instructions, 1596 bytes, exact normalized AArch64 relocations and matching KCFI type ID 0xdb725fb0. Joern, Docker and ASan/UBSan gates pass; hardware behavior remains unverified."
+      "mapping_note": "Main/report delayed-work submissions now pass through the lifecycle admission gate; touch-release logic and return values remain otherwise unchanged. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
@@ -3341,18 +3355,21 @@
         "host-harness:attestation/next797_change_tp_state_exact_v1/host_harness_report.json:sha256:6c3a30667503227cb96d00f8215575b78df17c28107fac4f7353b1e7de1f1960",
         "source-sync:attestation/next797_change_tp_state_exact_v1/source_sync_report.json:sha256:ed6eb29adc1541007986af64524183573fa3c0e042195ace8a69a56be1ba42d2",
         "joern-final:attestation/next797_change_tp_state_exact_v1/joern/joern_gate_summary.json:sha256:64862455d020b30b04c3aeb879cd7a3750a4ec75d8592bd449ea5e83135d109b",
-        "microtask:attestation/next797_change_tp_state_exact_v1/microtask_attestation.json:sha256:8c75e64034f6bbc536351720907f0e9b4cd52dd9ec8cc7d8451d178928546ff0"
+        "microtask:attestation/next797_change_tp_state_exact_v1/microtask_attestation.json:sha256:8c75e64034f6bbc536351720907f0e9b4cd52dd9ec8cc7d8451d178928546ff0",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
       ],
-      "mapping_basis": "Materialized stock AArch64 body with relocation-resolved assembly, KCFI, strict Joern, reproducible Docker build and two-cycle ASan/UBSan host evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "change_tp_state_exact.S",
       "source_function": "change_tp_state",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 376,
       "stock_entry": "00110320",
       "stock_function": "change_tp_state",
-      "mapping_note": "Offline exact: 94 AArch64 instructions/376 symbol bytes, 31 normalized relocation pairs, KCFI type 0xf4d9b23e, strict Joern, two-cycle canonical Docker build and two-cycle 5-case ASan/UBSan host harness pass. Android runtime and NX809J hardware remain DEFERRED."
+      "mapping_note": "All main-workqueue submissions now pass through the lifecycle admission gate; the recovered state-change logic and locking remain otherwise unchanged. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [
@@ -3493,18 +3510,21 @@
         "sync:attestation/next124_ufp_report_lcd_state_delayed_work_exact_v1/source_sync_report.json:sha256:f656f8c9fa5d8e878308c0ccaa9ed48506a595c2fba970c2f6f48066911463b6",
         "kcfi:attestation/next124_ufp_report_lcd_state_delayed_work_exact_v1/kcfi_comparison.json:sha256:6bda6ced8acbd9ad4a972e41479d39308b5b8f3cff3f17a2de32c261f24d657b",
         "assembly-compare:attestation/next124_ufp_report_lcd_state_delayed_work_exact_v1/assembly_comparison.json:sha256:2483a37086d3eb7883094667d251f1bc63d6ab0f6a3128787ac2ecd2467acd5e",
-        "attestation:attestation/next124_ufp_report_lcd_state_delayed_work_exact_v1/microtask_attestation.json:sha256:3914bda25156b836850332815084361b8dcda92d59f9e90d4c46c9abae249d6f"
+        "attestation:attestation/next124_ufp_report_lcd_state_delayed_work_exact_v1/microtask_attestation.json:sha256:3914bda25156b836850332815084361b8dcda92d59f9e90d4c46c9abae249d6f",
+        "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
       ],
-      "mapping_basis": "Materialized stock AArch64 body with relocation-resolved assembly, tpd_cdev offsets, KCFI, Joern, ASan/UBSan and reproducible Docker evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "review_scope": "tpd_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "ufp_report_lcd_state_delayed_work.c",
       "source_function": "ufp_report_lcd_state_delayed_work",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 68,
       "stock_entry": "00110624",
       "stock_function": "ufp_report_lcd_state_delayed_work",
-      "mapping_note": "Offline function-level parity is attested at 17 AArch64 instructions and 68 bytes; exact opcodes and relocations, tpd_cdev offsets 0x4b0 and 0x9e0, CPU 32 delayed-work scheduling, KCFI type ID 0x105d2ee9, strict Joern, ASan/UBSan host coverage and reproducible Docker evidence pass. Android runtime and NX809J hardware behavior remain unverified."
+      "mapping_note": "The main-workqueue delayed submission now passes through the lifecycle admission gate; delay conversion and work-item selection remain unchanged. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
     },
     {
       "evidence": [

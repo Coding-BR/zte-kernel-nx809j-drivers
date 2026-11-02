@@ -15,6 +15,7 @@ void zte_touch_shutdown(struct platform_device *pdev)
   if ( callback )
     callback((struct ztp_device *)v0);
 
+  tpd_workqueue_lifecycle_close();
   v3 = tpd_cdev;
   printk("\0015tpd: %s enter", "tpd_workqueue_deinit");
   tpd_report_work_deinit();
@@ -30,4 +31,5 @@ void zte_touch_shutdown(struct platform_device *pdev)
   vfree(*(_QWORD *)(v6 + 3048));
   *(_QWORD *)(v6 + 3048) = 0;
   cancel_delayed_work_sync(v3 + 2360);
+  tpd_workqueue_lifecycle_deinit();
 }

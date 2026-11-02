@@ -3,8 +3,10 @@ int tpd_workqueue_init(void)
   volatile _QWORD *v3; // x21
   __int64 v4; // x0
   volatile _QWORD *v7; // x23
+  struct workqueue_struct *failed_workqueue;
 
   v3 = (volatile _QWORD *)tpd_cdev;
+  tpd_workqueue_lifecycle_close();
   printk("\0015tpd: enter");
   v4 = alloc_workqueue("%s", 393226, 1, "tpd_wq");
   v3[150] = v4;
@@ -12,9 +14,13 @@ int tpd_workqueue_init(void)
     goto LABEL_2;
   if ( (unsigned int)tpd_report_work_init() )
   {
-    if ( !v3[150] )
-      destroy_workqueue(0);
+    failed_workqueue = (struct workqueue_struct *)v3[150];
+    v3[150] = 0;
+    if ( failed_workqueue )
+      destroy_workqueue(failed_workqueue);
 LABEL_2:
+    /* This initializer is called by the probe only after ufp_mac_init(). */
+    ufp_mac_exit();
     printk("\0015tpd: %s: create tpd workqueue failed\n", "tpd_workqueue_init");
     return -ENOMEM;
   }
@@ -38,5 +44,6 @@ LABEL_2:
   v3[297] = v3 + 296;
   v3[298] = tp_ghost_check_work;
   init_timer_key((void *)(v3 + 299), &delayed_work_timer_fn, 0x200000, 0, 0);
+  tpd_workqueue_lifecycle_open();
   return 0;
 }

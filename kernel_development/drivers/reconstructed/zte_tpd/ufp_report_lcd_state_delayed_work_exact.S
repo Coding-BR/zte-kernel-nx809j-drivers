@@ -20,7 +20,7 @@ ufp_report_lcd_state_delayed_work:
     .inst 0x52800400
     .inst 0xaa1303e1
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, mod_delayed_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_mod_main_delayed_work_on
     .inst 0xa9414ff4
     .inst 0xa8c27bfd
     .inst 0xd50323bf

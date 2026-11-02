@@ -94,11 +94,13 @@ zte_touch_deinit_stock_exact:
     .inst 0xf905f73f
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, cancel_delayed_work_sync
-    .inst 0xf9425ae8
-    .inst 0xb5000068
-    .inst 0xaa1f03e0
-    .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, destroy_workqueue
+    /* The stock branch calls destroy_workqueue(NULL) when the slot is empty.
+     * Queue destruction is handled by the lifecycle wrapper after admission
+     * closes and every delayed work item has been drained. */
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
     .inst 0xf94002d3
     .reloc .-4, R_AARCH64_LDST64_ABS_LO12_NC, tpd_cdev
     .inst 0xf9462a60

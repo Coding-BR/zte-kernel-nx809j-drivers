@@ -67,6 +67,23 @@ int syna_dev_module_init(void);
 int syna_hw_interface_init(void);
 int tpd_report_work_init(void);
 int tpd_workqueue_init(void);
+void tpd_workqueue_lifecycle_open(void);
+void tpd_workqueue_lifecycle_close(void);
+void tpd_workqueue_lifecycle_deinit(void);
+bool tpd_queue_main_work_on(int cpu, struct workqueue_struct *unused,
+			    struct work_struct *work);
+bool tpd_queue_main_delayed_work_on(int cpu,
+				    struct workqueue_struct *unused,
+				    struct delayed_work *work,
+				    unsigned long delay);
+bool tpd_queue_report_delayed_work_on(int cpu,
+				      struct workqueue_struct *unused,
+				      struct delayed_work *work,
+				      unsigned long delay);
+bool tpd_mod_main_delayed_work_on(int cpu,
+				  struct workqueue_struct *unused,
+				  struct delayed_work *work,
+				  unsigned long delay);
 int ufp_get_lcdstate(void);
 int ufp_mac_init(void);
 int zte_touch_init(void);

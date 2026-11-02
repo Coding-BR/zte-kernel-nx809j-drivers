@@ -82,7 +82,7 @@ change_tp_state:
     .inst 0xf9425901
     .inst 0x91270102
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_main_work_on
     .inst 0x90000008
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, ufp_tp_ops+0x8
     .inst 0xb900011f
@@ -101,7 +101,7 @@ change_tp_state:
     .inst 0x91268102
     .inst 0x52800400
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_main_work_on
     .inst 0x91330280
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, mutex_unlock
@@ -123,7 +123,7 @@ change_tp_state:
     .inst 0xf9425901
     .inst 0x91270102
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_work_on
+    .reloc .-4, R_AARCH64_CALL26, tpd_queue_main_work_on
     .inst 0x90000008
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, ufp_tp_ops+0x8
     .inst 0x90000000

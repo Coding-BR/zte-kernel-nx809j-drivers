@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-11-02T21:16:01.507651Z",
+  "generated_utc": "2026-11-02T22:48:19.774482+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -907,8 +907,8 @@
         "joern",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_workqueue_init\nEntrada Ghidra: 00108508\nTamanho stock: 388 bytes\nCategoria: lifecycle\nAlvo no fonte: tpd_workqueue_init.c:tpd_workqueue_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0021_00108508_tpd_workqueue_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0021_00108508_tpd_workqueue_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_workqueue_init\nEntrada Ghidra: 00108508\nTamanho stock: 388 bytes\nCategoria: lifecycle\nAlvo no fonte: tpd_workqueue_init.c:tpd_workqueue_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0021_00108508_tpd_workqueue_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0021_00108508_tpd_workqueue_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nCurrent lifecycle deviation: this function participates in the tpd_workqueue_lifecycle admission gate and must be reviewed with the producer inventory. Do not restore stock direct submissions or reclassify this revision as offline-exact.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -929,8 +929,24 @@
           "role": "joern",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
           "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
         }
-      ]
+      ],
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "023_tp_ghost_check_work",
@@ -1030,8 +1046,8 @@
         "test",
         "joern"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_probe\nEntrada Ghidra: 001087e4\nTamanho stock: 3712 bytes\nCategoria: binding\nAlvo no fonte: zte_touch_probe.c:zte_touch_probe\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0024_001087e4_zte_touch_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0024_001087e4_zte_touch_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_probe\nEntrada Ghidra: 001087e4\nTamanho stock: 3712 bytes\nCategoria: binding\nAlvo no fonte: zte_touch_probe_exact.S:zte_touch_probe; TPD queue admission calls are routed through tpd_workqueue_lifecycle.c\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0024_001087e4_zte_touch_probe.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0024_001087e4_zte_touch_probe.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -1052,9 +1068,24 @@
           "role": "joern",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
           "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830; the 928-instruction opcode/control-flow sequence, 3712-byte symbol size, KCFI, normalized dataflow and normalized relocation roles match. Joern reports one high-severity lifetime finding and two high-severity synchronization findings for runtime follow-up; platform and hardware behavior remain unverified."
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "026_zte_touch_remove",
@@ -1114,8 +1145,8 @@
         "test",
         "joern"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_shutdown\nEntrada Ghidra: 001096a0\nTamanho stock: 224 bytes\nCategoria: core_logic\nAlvo no fonte: zte_touch_shutdown.c:zte_touch_shutdown\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0026_001096a0_zte_touch_shutdown.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0026_001096a0_zte_touch_shutdown.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_shutdown\nEntrada Ghidra: 001096a0\nTamanho stock: 224 bytes\nCategoria: core_logic\nAlvo no fonte: zte_touch_shutdown.c:zte_touch_shutdown\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0026_001096a0_zte_touch_shutdown.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0026_001096a0_zte_touch_shutdown.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nCurrent lifecycle deviation: this function participates in the tpd_workqueue_lifecycle admission gate and must be reviewed with the producer inventory. Do not restore stock direct submissions or reclassify this revision as offline-exact.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -1136,8 +1167,24 @@
           "role": "joern",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
           "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
         }
-      ]
+      ],
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "028_tp_module_info_read",
@@ -4378,7 +4425,7 @@
         "kcfi",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_deinit\nEntrada Ghidra: 0010e0d0\nTamanho stock: 376 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_touch_deinit.c:zte_touch_deinit\nDesvio de lifecycle: o corpo stock e retido em zte_touch_deinit_exact.S; o wrapper limpa ufp_tp_ops.pdev somente depois do teardown stock retornar.\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_deinit\nEntrada Ghidra: 0010e0d0\nTamanho stock: 376 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_touch_deinit.c:zte_touch_deinit\nDesvio de lifecycle: o corpo stock e retido em zte_touch_deinit_exact.S; o wrapper limpa ufp_tp_ops.pdev somente depois do teardown stock retornar.\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nCurrent lifecycle deviation: this function participates in the tpd_workqueue_lifecycle admission gate and must be reviewed with the producer inventory. Do not restore stock direct submissions or reclassify this revision as offline-exact.",
       "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
@@ -4435,9 +4482,19 @@
           "role": "retained_stock_instruction_stream",
           "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit_exact.S",
           "sha256": "d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
         }
       ],
-      "attestation": "HARDENED_STOCK_DEVIATION: exact stock teardown runs after ufp_mac_exit closes gesture admission; the UFP platform-device pointer is cleared only after report queues/interfaces are drained. Runtime and NX809J hardware remain deferred."
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "096_tpd_touch_press",
@@ -4584,8 +4641,8 @@
         "joern",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_touch_release\nEntrada Ghidra: 0010ec70\nTamanho stock: 1596 bytes\nCategoria: user_abi\nAlvo no fonte: tpd_touch_release.c:tpd_touch_release\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0098_0010ec70_tpd_touch_release.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0098_0010ec70_tpd_touch_release.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_touch_release\nEntrada Ghidra: 0010ec70\nTamanho stock: 1596 bytes\nCategoria: user_abi\nAlvo no fonte: tpd_touch_release.c:tpd_touch_release\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0098_0010ec70_tpd_touch_release.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0098_0010ec70_tpd_touch_release.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nCurrent lifecycle deviation: this function participates in the tpd_workqueue_lifecycle admission gate and must be reviewed with the producer inventory. Do not restore stock direct submissions or reclassify this revision as offline-exact.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -4606,9 +4663,24 @@
           "role": "joern",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
           "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
         }
       ],
-      "attestation": "PASS in attestation/next099_tpd_touch_release_exact_v4/exact_revalidation_20260829; the 399-instruction opcode/control-flow sequence, symbol size, KCFI type ID, normalized dataflow and normalized relocation roles match. The direct host contract covers 4 cases under ASan/UBSan; physical hardware behavior remains unverified."
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "100_ghost_check_area",
@@ -5518,8 +5590,8 @@
         "kcfi",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: change_tp_state\nEntrada Ghidra: 00110320\nTamanho stock: 376 bytes\nCategoria: core_logic\nAlvo no fonte: change_tp_state.c:change_tp_state\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0117_00110320_change_tp_state.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0117_00110320_change_tp_state.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: change_tp_state\nEntrada Ghidra: 00110320\nTamanho stock: 376 bytes\nCategoria: core_logic\nAlvo no fonte: change_tp_state.c:change_tp_state\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0117_00110320_change_tp_state.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0117_00110320_change_tp_state.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nCurrent lifecycle deviation: this function participates in the tpd_workqueue_lifecycle admission gate and must be reviewed with the producer inventory. Do not restore stock direct submissions or reclassify this revision as offline-exact.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -5550,8 +5622,24 @@
           "role": "source_sync",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next797_change_tp_state_exact_v1/source_sync_report.json",
           "sha256": "ed6eb29adc1541007986af64524183573fa3c0e042195ace8a69a56be1ba42d2"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
         }
-      ]
+      ],
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "119_suspend_tp_need_awake",
@@ -5793,8 +5881,8 @@
         "joern",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_report_lcd_state_delayed_work\nEntrada Ghidra: 00110624\nTamanho stock: 68 bytes\nCategoria: async_or_irq\nAlvo no fonte: ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0123_00110624_ufp_report_lcd_state_delayed_work.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0123_00110624_ufp_report_lcd_state_delayed_work.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_report_lcd_state_delayed_work\nEntrada Ghidra: 00110624\nTamanho stock: 68 bytes\nCategoria: async_or_irq\nAlvo no fonte: ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0123_00110624_ufp_report_lcd_state_delayed_work.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0123_00110624_ufp_report_lcd_state_delayed_work.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nCurrent lifecycle deviation: this function participates in the tpd_workqueue_lifecycle admission gate and must be reviewed with the producer inventory. Do not restore stock direct submissions or reclassify this revision as offline-exact.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -5815,8 +5903,24 @@
           "role": "joern",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
           "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
         }
-      ]
+      ],
+      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
     },
     {
       "id": "125_cancel_report_lcd_state_delayed_work",

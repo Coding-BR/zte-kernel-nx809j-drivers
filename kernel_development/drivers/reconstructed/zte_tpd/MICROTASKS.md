@@ -25,12 +25,12 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 019_tpd_probe_work_init | tpd_probe_work_init | 00108418 | lifecycle | tpd_probe_work_init.c:tpd_probe_work_init | PASS |
 | 020_ztp_probe_work | ztp_probe_work | 00108494 | binding | ztp_probe_work.c:ztp_probe_work | PASS |
 | 021_tpd_probe_work_deinit | tpd_probe_work_deinit | 001084c0 | lifecycle | tpd_probe_work_deinit.c:tpd_probe_work_deinit | PASS |
-| 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | PASS |
+| 022_tpd_workqueue_init | tpd_workqueue_init | 00108508 | lifecycle | tpd_workqueue_init.c:tpd_workqueue_init | HARDENED_STOCK_DEVIATION |
 | 023_tp_ghost_check_work | tp_ghost_check_work | 00108690 | async_or_irq | tp_ghost_check_work.c:tp_ghost_check_work | PASS |
 | 024_tpd_workqueue_deinit | tpd_workqueue_deinit | 00108744 | lifecycle | tpd_workqueue_deinit.c:tpd_workqueue_deinit | PASS |
-| 025_zte_touch_probe | zte_touch_probe | 001087e4 | binding | zte_touch_probe.c:zte_touch_probe | PASS |
+| 025_zte_touch_probe | zte_touch_probe | 001087e4 | binding | zte_touch_probe.c:zte_touch_probe | HARDENED_STOCK_DEVIATION |
 | 026_zte_touch_remove | zte_touch_remove | 00109668 | binding | zte_touch_remove.c:zte_touch_remove | PASS |
-| 027_zte_touch_shutdown | zte_touch_shutdown | 001096a0 | core_logic | zte_touch_shutdown.c:zte_touch_shutdown | PASS |
+| 027_zte_touch_shutdown | zte_touch_shutdown | 001096a0 | core_logic | zte_touch_shutdown.c:zte_touch_shutdown | HARDENED_STOCK_DEVIATION |
 | 028_tp_module_info_read | tp_module_info_read | 00109784 | user_abi | tp_module_info_read.c:tp_module_info_read | PROMOTED_OFFLINE_EXACT |
 | 029_tp_wake_gesture_read | tp_wake_gesture_read | 00109a28 | user_abi | tp_wake_gesture_read.c:tp_wake_gesture_read | PROMOTED_OFFLINE_EXACT |
 | 030_tp_wake_gesture_write | tp_wake_gesture_write | 00109b1c | user_abi | tp_wake_gesture_write.c:tp_wake_gesture_write | PROMOTED_OFFLINE_EXACT |
@@ -102,7 +102,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 096_tpd_touch_press | tpd_touch_press | 0010e254 | core_logic | tpd_touch_press.c:tpd_touch_press | PASS |
 | 097_point_report_reset | point_report_reset | 0010ea98 | core_logic | point_report_reset.c:point_report_reset | PASS |
 | 098_tpd_touch_report | tpd_touch_report | 0010eb70 | core_logic | tpd_touch_report.c:tpd_touch_report | PROMOTED_OFFLINE_EXACT |
-| 099_tpd_touch_release | tpd_touch_release | 0010ec70 | user_abi | tpd_touch_release.c:tpd_touch_release | PASS |
+| 099_tpd_touch_release | tpd_touch_release | 0010ec70 | user_abi | tpd_touch_release.c:tpd_touch_release | HARDENED_STOCK_DEVIATION |
 | 100_ghost_check_area | ghost_check_area | 0010f2ac | core_logic | ghost_check_area_exact.S:ghost_check_area | PROMOTED_OFFLINE_EXACT |
 | 101_tp_ghost_check | tp_ghost_check | 0010f400 | core_logic | tp_ghost_check_exact.S:tp_ghost_check | PASS |
 | 102_ghost_check_reset | ghost_check_reset | 0010f924 | core_logic | ghost_check_reset_exact.S:ghost_check_reset | PROMOTED_OFFLINE_EXACT |
@@ -121,13 +121,13 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 115_tpd_report_work_deinit | tpd_report_work_deinit | 0010fe60 | lifecycle | tpd_report_work_deinit_exact.S:tpd_report_work_deinit | PROMOTED_OFFLINE_EXACT |
 | 116_point_is_in_limit_area | point_is_in_limit_area | 0010feec | core_logic | point_is_in_limit_area_exact.S:point_is_in_limit_area | PROMOTED_OFFLINE_EXACT |
 | 117_edge_long_press_up | edge_long_press_up | 001100ac | core_logic | edge_long_press_up_exact.S:edge_long_press_up | PROMOTED_OFFLINE_EXACT |
-| 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state_exact.S:change_tp_state | PROMOTED_OFFLINE_EXACT |
+| 118_change_tp_state | change_tp_state | 00110320 | core_logic | change_tp_state_exact.S:change_tp_state | HARDENED_STOCK_DEVIATION |
 | 119_suspend_tp_need_awake | suspend_tp_need_awake | 0011049c | binding | suspend_tp_need_awake_exact.S:suspend_tp_need_awake | PROMOTED_OFFLINE_EXACT |
 | 120_tp_esd_check | tp_esd_check | 001104f0 | core_logic | tp_esd_check.c:tp_esd_check | PASS |
 | 121_set_lcd_reset_processing | set_lcd_reset_processing | 00110544 | core_logic | set_lcd_reset_processing_exact.S:set_lcd_reset_processing | PROMOTED_OFFLINE_EXACT |
 | 122_set_gpio_mode | set_gpio_mode | 00110580 | core_logic | set_gpio_mode.c:set_gpio_mode | PASS |
 | 123_tpd_reset_gpio_output | tpd_reset_gpio_output | 001105d8 | core_logic | tpd_reset_gpio_output.c:tpd_reset_gpio_output | PASS |
-| 124_ufp_report_lcd_state_delayed_work | ufp_report_lcd_state_delayed_work | 00110624 | async_or_irq | ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work | PASS |
+| 124_ufp_report_lcd_state_delayed_work | ufp_report_lcd_state_delayed_work | 00110624 | async_or_irq | ufp_report_lcd_state_delayed_work.c:ufp_report_lcd_state_delayed_work | HARDENED_STOCK_DEVIATION |
 | 125_cancel_report_lcd_state_delayed_work | cancel_report_lcd_state_delayed_work | 0011066c | async_or_irq | cancel_report_lcd_state_delayed_work.c:cancel_report_lcd_state_delayed_work | PASS |
 | 126_tpd_resume_work_init | tpd_resume_work_init | 00110698 | lifecycle | tpd_resume_work_init.c:tpd_resume_work_init | PASS |
 | 127_tpd_resume_work | tpd_resume_work | 0011074c | binding | tpd_resume_work.c:tpd_resume_work | PASS |
@@ -381,3 +381,7 @@ On branch codex/zte-tpd-firmware-allocation-hardening, task 012 intentionally di
 ## input_agent lifecycle cross-cut (2026-11-02)
 
 The fops wiring and lifecycle guards for `input_agent` are tracked in `attestation/syna_input_agent_lifecycle_20261102/`. The build passed two independent Docker cycles with module SHA-256 `6c280c7d76c6e7d8aa7cf47580333100da240fe0f9338cdcf88e70999aa120d8`. The `syna_dev_connect`, `syna_dev_process_touch_report`, `syna_ioctl`, `syna_cdev_create`, and `syna_cdev_remove` rows are marked `HARDENED_STOCK_DEVIATION`. The unchanged stock bodies for poll/open/mmap/release remain individually mapped, while their active fops dispatch uses lifecycle wrappers. No kernel runtime or hardware test was run.
+
+## workqueue lifecycle cross-cut (2026-11-02)
+
+The TPD main/report queue admission and teardown deviation is recorded in attestation/workqueue_lifecycle_20261102/lifecycle_review.json (SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd). Two independent canonical Docker builds passed with module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae and matching vermagic. KCFI type IDs match for six comparable stock functions; the stock zte_touch_deinit symbol has no valid KCFI preamble. No kernel runtime or hardware test was run.

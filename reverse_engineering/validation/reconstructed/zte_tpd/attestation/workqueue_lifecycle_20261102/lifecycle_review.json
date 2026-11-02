@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T22:48:19.702242+00:00",
+  "batch": "workqueue_lifecycle_20261102",
+  "scope": "zte_tpd main/report workqueue initialization, submission admission, probe failure cleanup, shutdown, and deinitialization",
+  "root_cause": [
+    "Stock tpd_workqueue_init allocates the main queue at tpd_cdev+0x4b0. If report-queue allocation fails, its cleanup branch only calls destroy_workqueue(NULL) when the valid main slot is already zero, so the allocated main queue leaks.",
+    "Stock zte_touch_deinit repeats the inverted main-queue check; it can call destroy_workqueue(NULL) when empty and does not destroy the valid main queue. The report queue at tpd_cdev+0x4b8 also had no destroy path.",
+    "Direct main/report queue submissions could race the teardown cancellations and workqueue destruction."
+  ],
+  "stock_evidence": {
+    "tpd_workqueue_init": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0021_00108508_tpd_workqueue_init.c",
+    "zte_touch_deinit": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c",
+    "report_work_init": "kernel_development/drivers/reconstructed/zte_tpd/tpd_report_work_init.c",
+    "resume_work_init_deinit": [
+      "kernel_development/drivers/reconstructed/zte_tpd/tpd_resume_work_init.c",
+      "kernel_development/drivers/reconstructed/zte_tpd/tpd_resume_work_deinit.c"
+    ]
+  },
+  "producer_inventory": {
+    "routed_through_gate": [
+      "change_tp_state",
+      "tpd_touch_release (main and report queues)",
+      "ufp_report_lcd_state_delayed_work",
+      "zte_touch_probe (initial main/report submissions)"
+    ],
+    "remaining_direct_queue_relocations": [
+      "syna_dev_connect (private helper queue)",
+      "ufp_report_gesture_uevent (independent UFP gesture queue)"
+    ]
+  },
+  "implementation": {
+    "admission": "Spinlock-protected submission helpers serialize queue API calls with closure. Admission opens only after both queues and work items initialize; it closes before teardown and rejects later submissions.",
+    "init_failure": "If report queue creation fails, the main queue is destroyed and its tpd_cdev slot is cleared. The common failure path then calls ufp_mac_exit; this initializer has one caller, the probe, and that caller invokes ufp_mac_init first.",
+    "teardown": "The stock destroy_workqueue(NULL) sequence is neutralized. The lifecycle wrapper closes admission, synchronously drains report, resume/LCD, probe, zlog, and ghost work, clears both queue slots, then destroys valid queues.",
+    "status": "Seven stock function mappings are intentionally HARDENED_STOCK_DEVIATION. Historical exact-parity attestations remain available for the earlier source revision."
+  },
+  "source_sync": {
+    "applied": true,
+    "copied_count": 2,
+    "removed_stale_source_count": 1,
+    "remaining": {
+      "content_mismatch": [],
+      "missing_from_curated": [],
+      "unexpected_in_curated": []
+    },
+    "candidate_manifest_sha256": "7d8d2ece9477b8b33372c9f4f0b50e52f3155fd1f93b30b6f23a3ca88dda9729",
+    "curated_manifest_sha256": "7d8d2ece9477b8b33372c9f4f0b50e52f3155fd1f93b30b6f23a3ca88dda9729",
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/source_sync_plan.json",
+    "sha256": "f6809c805a30e3242eaa48858e97b35f17a1ad68bcde1942a41d17029f5f3f23"
+  },
+  "canonical_build": {
+    "passed": true,
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256": "62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae",
+    "module_size": 6897328,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": [],
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
+    "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+  },
+  "kcfi": {
+    "passed": true,
+    "matched_functions": [
+      "change_tp_state",
+      "tpd_touch_release",
+      "tpd_workqueue_init",
+      "ufp_report_lcd_state_delayed_work",
+      "zte_touch_probe",
+      "zte_touch_shutdown"
+    ],
+    "size_ignored": true,
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
+    "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce",
+    "stock_report_sha256": "2941ffa051452653c4f3be02cf1a94567d4a09d1408afe24248206088233cfae",
+    "candidate_report_sha256": "3413679e9ae4cf2b11234c170de0ff691b82a9f10d8f85530aa8f458afa50ca1",
+    "deinit_note": "The stock zte_touch_deinit symbol has no valid KCFI preamble, so direct stock-to-candidate KCFI comparison is unavailable for that wrapper."
+  },
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/defs.h",
+      "sha256": "37e380cb818a6a0e132e06096d59345439879735836342c58ca628a11309e902"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_workqueue_init.c",
+      "sha256": "f00d5b87c4c1454a0ea37883644a31c837635693c369a6577b6345a07defabbd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_workqueue_lifecycle.c",
+      "sha256": "3171a9dd5a3e36f4c354435cf98d06204a92f386c66df1d863ecb8bd97360c95"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit.c",
+      "sha256": "ee79db15fceffcc4aa0d026c65253b8f9432b8851663179ec423f39d7f9758a5"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit_exact.S",
+      "sha256": "5644bfddec31a6b78b399b15beaeb873dcbc1466319e3ca564fbe2d50f536513"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_shutdown.c",
+      "sha256": "dc4bbb73395ae6ab3150052f4239eaaf97237544039adf1e2987477305a85038"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/change_tp_state_exact.S",
+      "sha256": "aaddc2f9d10dd6df627611cc099d2777b5bedfada7808d049babe182e462247c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_touch_release_exact.S",
+      "sha256": "03d9989c1c6b6c83b95b9f85e21bfd61be30741557a62c79e62a30111dbfc6ac"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_report_lcd_state_delayed_work_exact.S",
+      "sha256": "a7dc9fdcf5ea64147aa756577ea1cab3584465fb6e50602670a75140425316cd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_exact.S",
+      "sha256": "0dd754e426046e50015daed7d29e4870634b65dfbe94a6fdedac464548772667"
+    }
+  ],
+  "limitations": [
+    "No kernel runtime or NX809J hardware execution was performed; validation is offline source review, KCFI type comparison where stock metadata exists, and reproducible canonical Docker compilation.",
+    "The stock probe creates proc/sysfs side effects before late workqueue initialization. Comprehensive rollback of those interfaces on a failed probe remains a separate lifecycle follow-up."
+  ]
+}
