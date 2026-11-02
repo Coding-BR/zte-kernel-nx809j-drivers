@@ -348,7 +348,9 @@
         "host-harness:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:7b0e2aa4b8e1c3ddf55e981625a84f75961639e8b813f9c5d42c922e2c0899dc",
         "joern:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:623df3422232be19100897b32bf1f790f793f16f347fc114ef50db4f84dcb7ad",
         "microtask-attestation:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:d1df5be1c2d260e8960651db4386e9db99dd9b3dd501787b2e6dc9c71ed7d119",
-        "candidate-module:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        "candidate-module:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "semantic-review:attestation/semantic_review_round15_20261102/review.json:sha256:ca49b06ac49a4a5dfe0b458e7e8569064ed59b8d6132027d512fb0c01f87165d",
+        "semantic-review-markdown:attestation/semantic_review_round15_20261102/review.md:sha256:f788465e554488c4c078120dee70ca9d59da81f9e45ecf6bcaa031a527d5e37b"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern, Docker canonical build and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
@@ -360,7 +362,7 @@
       "elf_symbol_bytes": 352,
       "stock_entry": "00107d54",
       "stock_function": "tp_alloc_tp_firmware_data",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 88 AArch64 instructions and 352-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xcdde824b matches. The function preserves descriptor cleanup, GFP flags 0xdc0, descriptor size 0x18, vmalloc size size+0x18, zero-fill order and the stock dangling descriptor slot after data-allocation failure; opcode sequence, section and normalized references match. Allocator integration, scheduler timing and NX809J hardware remain unverified."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 88 AArch64 instructions and 352-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xcdde824b matches. The function preserves descriptor cleanup, GFP flags 0xdc0, descriptor size 0x18, vmalloc size size+0x18, zero-fill order and the stock dangling descriptor slot after data-allocation failure; opcode sequence, section and normalized references match. Allocator integration, scheduler timing and NX809J hardware remain unverified. Round 15 confirms the inherited vmalloc-failure use-after-free risk: kfree releases the descriptor while cdev+0xc58 remains dangling, so a later call may dereference freed memory during cleanup. Stock, Ghidra and P-Code agree; preserved for OFFLINE_EXACT. See the Round 15 semantic-review evidence."
     },
     {
       "evidence": [
