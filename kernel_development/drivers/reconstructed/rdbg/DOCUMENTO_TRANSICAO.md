@@ -16,4 +16,6 @@ O snapshot `engenharia/curated/rdbg` foi sincronizado com a árvore versionada p
 
 ## Pendências
 
-A auditoria permanece incompleta porque os oito mapeamentos ainda precisam de revisão independente. Também faltam evidência final do harness de host e lifetime, revisão semântica completa e validação em hardware. Não declarar equivalência funcional total nem carregar este candidato no aparelho.
+`init_module@00101638` agora passa um harness de host limitado executado no Docker fixado: 9 casos, 106 asserções por replay, quatro replays ASan/UBSan e três mutações detectadas por asserções. Relatório: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/host_harness_20261102_v2/host_harness_report.json`. O harness observou que a falha de `platform_driver_register` deixa a alocação de `clients` sem liberação e que a falha de `alloc_chrdev_region` deixa o platform driver registrado. Esses efeitos aguardam revisão de lifetime baseada no stock; o harness não autoriza alterar o comportamento stock nem promover o candidato.
+
+A auditoria segue incompleta: os oito mapeamentos precisam de revisão independente, os outros sete ainda não têm este harness, e faltam evidências de concorrência/lifetime, KMI, KUnit/lockdep/KCSAN, sanitizadores no kernel e hardware. Não declarar equivalência funcional total nem carregar este candidato no aparelho.
