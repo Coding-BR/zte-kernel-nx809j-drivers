@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Input-device mutex balance and registration-retry state review",
+  "review_status": "STATIC_REVIEW_COMPLETE_STOCK_RETRY_FAILURE_CONFIRMED",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "functions": [
+      "syna_dev_set_up_input_device"
+    ],
+    "joern_findings_reviewed_this_round": 3,
+    "current_source_sha256": "272d1814152e803afe9842d48490c8907c384cfc7fd2cb777591bb6286e82e7f",
+    "current_stock_function_entry": "001136c4",
+    "current_stock_body_bytes": 980
+  },
+  "joern_alerts": [
+    {
+      "call": "mutex_lock",
+      "caller": "syna_dev_set_up_input_device",
+      "category": "synchronization",
+      "code": "mutex_lock(a1 + 632)",
+      "filename": "syna_dev_set_up_input_device.c",
+      "line": 99,
+      "severity": "high"
+    },
+    {
+      "call": "mutex_unlock",
+      "caller": "syna_dev_set_up_input_device",
+      "category": "synchronization",
+      "code": "mutex_unlock(a1 + 632)",
+      "filename": "syna_dev_set_up_input_device.c",
+      "line": 155,
+      "severity": "high"
+    },
+    {
+      "call": "mutex_unlock",
+      "caller": "syna_dev_set_up_input_device",
+      "category": "synchronization",
+      "code": "mutex_unlock(a1 + 632)",
+      "filename": "syna_dev_set_up_input_device.c",
+      "line": 174,
+      "severity": "high"
+    }
+  ],
+  "findings": [
+    {
+      "id": "input-device-mutex-balanced",
+      "category": "synchronization",
+      "severity": "NO_LOCK_LEAK_OR_DOUBLE_UNLOCK_FOUND",
+      "disposition": "BOTH_POST_LOCK_EXITS_UNLOCK; ALL_PRELOCK_RETURNS_BYPASS_LOCK",
+      "details": "The parameter/cache fast paths return before mutex_lock. After the lock, the successful registration path unlocks before returning 0, and managed-device/allocation/registration errors reach the common unlock path. Ghidra, stock assembly, and candidate C agree.",
+      "evidence": {
+        "candidate_source_lines": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_set_up_input_device.c:99,155,174",
+        "stock_ghidra_lines": "offline_static/ghidra_stock/decompiled/0166_001136c4_syna_dev_set_up_input_device.c:21,132,140",
+        "stock_assembly_calls": "0166_syna_dev_set_up_input_device_001136c4.asm:0xceac mutex_lock; 0xd04c and 0xd0f0 mutex_unlock"
+      }
+    },
+    {
+      "id": "managed-input-device-free-after-registration-failure-is-valid",
+      "category": "lifetime",
+      "severity": "NO_DOUBLE_FREE_FOUND",
+      "disposition": "INPUT_CORE_DEVRES_RECORD_DESTROYED_BY_INPUT_FREE_DEVICE",
+      "details": "The failure path calls input_free_device only after input_register_device returns an error. In the pinned target kernel implementation, devm_input_allocate_device adds a devres record and marks the input device managed; input_free_device calls devres_destroy for that exact resource before dropping the device reference. This is the documented cleanup path for a failed registration, not a duplicate devres release.",
+      "evidence": {
+        "target_kernel_repository": "Coding-BR/android_kernel_nubia_sm8850_qwjujube",
+        "target_kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+        "input_core_source": "kernel_platform/common/drivers/input/input.c",
+        "input_core_source_sha256": "a06df644d8cb726f28178797bd3b1ec99b4894de5071221deb3e8842e245b526",
+        "relevant_lines": "2026-2034, 2054-2078, 2094-2103, 2386-2394"
+      }
+    },
+    {
+      "id": "registration-failure-caches-new-parameters-before-device-exists",
+      "category": "error_recovery",
+      "severity": "CONFIRMED_CONDITIONAL_STOCK_RETRY_SUPPRESSION",
+      "disposition": "INHERITED_STOCK_BEHAVIOR_PRESERVED_FOR_OFFLINE_EXACT_RECONSTRUCTION",
+      "details": "The function writes the new X/Y/slot values into the cached fields at offsets 0x3b8, 0x3bc, and 0x3c0 before calling input_register_device. If registration fails, it frees the new input object and returns the negative error, while input_device at offset 0x3b0 remains NULL because any old device was already unregistered and cleared. On a later call with the same parameters, the fast path compares only those cached values and returns 0 without checking input_device or retrying registration. Thus a transient registration failure can leave the driver reporting successful setup on re-entry while no input device exists. The same ordering and branch are present in Ghidra and stock AArch64 assembly. This retry scenario was not dynamically exercised.",
+      "evidence": {
+        "candidate_source_cache_writes": "syna_dev_set_up_input_device.c:143-145",
+        "candidate_source_register_and_failure": "syna_dev_set_up_input_device.c:146-165",
+        "candidate_source_fast_path": "syna_dev_set_up_input_device.c:71-96",
+        "stock_ghidra_cache_then_register": "0166_001136c4_syna_dev_set_up_input_device.c:121-141",
+        "stock_assembly_cache_stores": "0xd00c, 0xd014, 0xd01c",
+        "stock_assembly_register_call": "0xd020 R_AARCH64_CALL26 input_register_device",
+        "stock_assembly_failure_branch": "0xd024 branch on negative return to error cleanup",
+        "stock_assembly_early_cache_return": "0166_001136c4_syna_dev_set_up_input_device.asm early parameter comparisons and no-op return before 0xceac mutex_lock",
+        "stock_assembly_sha256": "aa5b1d25790b62c3ecf164d3b2a2a2630ecb9f6841878a508bea47e51903351c"
+      }
+    },
+    {
+      "id": "dispatcher-error-branch-is-unreachable-for-valid-tcm",
+      "category": "error_handling",
+      "severity": "NO_REACHABLE_ERROR_CONFIRMED",
+      "disposition": "HELPER_RETURNS_ZERO_FOR_NON_NULL_TCM",
+      "details": "The caller logs if syna_tcm_set_report_dispatcher returns negative, then returns success. The current helper implementation returns 0 whenever tcm is non-NULL and only returns -241 for a NULL handle; this caller has already dereferenced tcm before that call. The log-only branch is therefore not a reachable failure with the current helper contract.",
+      "evidence": {
+        "caller_source": "syna_dev_set_up_input_device.c:151-156",
+        "helper_source": "syna_tcm_set_report_dispatcher.c:5-20",
+        "helper_source_sha256": "028bb5d1b6d0f1e791beaeb37a37dab96fa54a2e2b1d8115afa799ee9c6d0072"
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_dev_set_up_input_device.c": "272d1814152e803afe9842d48490c8907c384cfc7fd2cb777591bb6286e82e7f"
+  },
+  "ghidra_sha256": {
+    "decompilation": "9ff365673312fec7136c40b9b864e3c9bcec0b5513d5be6caf1ade2461f4f1a4",
+    "pcode": "4cc66e81600129b2b1c540e587dce9871b91dbd6857dce44e998a13df11ae090",
+    "stock_assembly": "aa5b1d25790b62c3ecf164d3b2a2a2630ecb9f6841878a508bea47e51903351c"
+  },
+  "joern": {
+    "report": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "report_sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "input_manifest": "attestation/full_surface_revalidation_20261102/joern/input_manifest.json",
+    "input_manifest_sha256": "60970240de72f1a4930518d7dbaa949bb946db5b59ca1f3394e61e85ae4aeb1a",
+    "status": "PASS",
+    "passed": true,
+    "strict": true,
+    "target_source_sha256": "272d1814152e803afe9842d48490c8907c384cfc7fd2cb777591bb6286e82e7f",
+    "target_source_matches_current": true,
+    "target_alerts": 3
+  },
+  "host_harness": {
+    "report": "attestation/next157_syna_dev_set_up_input_device_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json",
+    "report_sha256": "9bb4a31488e73116f4d8b670651fb233879b3685e04b378d48c68a2c94d79034",
+    "status": "PASS",
+    "passed": true,
+    "cases": 10,
+    "driver_source_sha256": "272d1814152e803afe9842d48490c8907c384cfc7fd2cb777591bb6286e82e7f",
+    "source_matches_current": true,
+    "registration_failure_case": "registration_failure_is_preserved",
+    "retry_after_registration_failure_covered": false,
+    "rerun": false
+  },
+  "canonical_build": {
+    "report": "attestation/semantic_review_round13_20261102/canonical_build_report.json",
+    "report_sha256": "16abd9e50b8c7146083ffd80d88ac96149e9be86b4456ec10ef93e37a9e067ca",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "kbuild_inputs": 848,
+    "module_sha256_each_cycle": "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+    "target_source_sha256_in_build": "272d1814152e803afe9842d48490c8907c384cfc7fd2cb777591bb6286e82e7f",
+    "rebuild_this_round": false,
+    "reason": "No Kbuild source changed in this review-only round; Round 13 canonical build contains this unchanged source hash."
+  },
+  "mapping": {
+    "status": "PROMOTED_OFFLINE_EXACT",
+    "stock_assembly_preserved": true,
+    "source_changed": false,
+    "runtime_behavior_changed": false,
+    "disposition": "Keep the stock behavior documented. A retry fix would be an intentional hardening deviation and must be separately labeled from the exact reconstruction."
+  },
+  "limitations": [
+    "The registration-failure/re-entry sequence was established statically but not dynamically reproduced.",
+    "The existing 10-case host harness covers a single registration failure, not a second same-parameter invocation after that failure.",
+    "No new host test was run; Android runtime and NX809J hardware remain untested.",
+    "Independent human review was not performed."
+  ]
+}

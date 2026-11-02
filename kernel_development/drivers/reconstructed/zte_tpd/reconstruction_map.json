@@ -4565,7 +4565,11 @@
         "attestation:next157_syna_dev_set_up_input_device_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:82161116e56dc9458e690d545e046fbfc1eedbd7201ed5a573ee5bf8665f07c3",
         "attestation:next157_syna_dev_set_up_input_device_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:9bb4a31488e73116f4d8b670651fb233879b3685e04b378d48c68a2c94d79034",
         "attestation:next157_syna_dev_set_up_input_device_exact_v1/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:914f81dfe8e7e8470f7ba2d6b18d4db5e868bec870e8bbbf30a52a587e762a8b",
-        "attestation:next157_syna_dev_set_up_input_device_exact_v1/exact_revalidation_20260830/canonical_build_report.json:sha256:996e76072944756f2f48c5aaadd81cfed95d20436733b9e24a5350736b1d062e"
+        "attestation:next157_syna_dev_set_up_input_device_exact_v1/exact_revalidation_20260830/canonical_build_report.json:sha256:996e76072944756f2f48c5aaadd81cfed95d20436733b9e24a5350736b1d062e",
+        "joern-reviewed:attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json:sha256:1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+        "joern-input:attestation/full_surface_revalidation_20261102/joern/input_manifest.json:sha256:60970240de72f1a4930518d7dbaa949bb946db5b59ca1f3394e61e85ae4aeb1a",
+        "canonical-build:attestation/semantic_review_round13_20261102/canonical_build_report.json:sha256:16abd9e50b8c7146083ffd80d88ac96149e9be86b4456ec10ef93e37a9e067ca",
+        "semantic-review:attestation/semantic_review_round14_20261102/review.json:sha256:0dfd3bc67bed689f0d0a0368eea075bc67e70f468c7e48e9d41d1804e59bb3b1"
       ],
       "mapping_basis": "Ghidra P-Code plus Joern, Docker canonical build, ASan/UBSan host harness, KCFI and AArch64 assembly comparison",
       "review_scope": "offline_exact_function_level",
@@ -4576,7 +4580,7 @@
       "stock_body_bytes": 980,
       "stock_entry": "001136c4",
       "stock_function": "syna_dev_set_up_input_device",
-      "mapping_note": "Offline exact: 245 AArch64 instructions/980 bytes, 38 relocations, printk-format surface parity, strict Joern pass, two-cycle canonical Docker build and 10-case ASan/UBSan host harness pass. KCFI is a negative-evidence match because both modules have the same NO_VALID_KCFI_PREAMBLE condition from adjacent-symbol overlap; actual Android input-core behavior remains DEFERRED."
+      "mapping_note": "Offline exact: 245 AArch64 instructions/980 bytes, 38 relocations, printk-format surface parity, strict Joern pass, two-cycle canonical Docker build and 10-case ASan/UBSan host harness pass. KCFI is a negative-evidence match because both modules have the same NO_VALID_KCFI_PREAMBLE condition from adjacent-symbol overlap; actual Android input-core behavior remains DEFERRED. Static review round 14 confirms an inherited retry failure: after input_register_device fails, cached parameters can make a later same-parameter call return success while the input device remains absent; exact behavior was preserved."
     },
     {
       "evidence": [
