@@ -4,7 +4,7 @@
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
 - Current candidate SHA-256: `175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c`; it matches the repository artifact, Docker curated module and `reconstruction_map.json`.
-- The canonical all-driver Docker audit records `static_verified`, two reproducible clean builds, zero errors and zero warnings for this candidate. This verifies the build/ELF/KMI/traceability scope, not hardware behavior.
+- The canonical all-driver Docker audit records `static_verified`, two reproducible clean builds, zero errors and zero warnings for this candidate. A fresh revalidation is preserved at `attestation/haptic_baseline_revalidation_20261102/docker_audit.json`. This verifies the build/ELF/KMI/traceability scope, not hardware behavior.
 - Fresh assembly extraction compared all 160 mapped stock functions against this exact candidate: 158 match instruction bytes, relocations, sections and sizes; two have different instruction encodings for reviewed unsigned adjacent-boundary predicates. All 160 match in relocations, sections and symbol sizes; the two predicate reports record no unresolved differences. This is not strict binary identity for those two functions.
 - Fresh `.rela.data` inspection confirms `richtap_misc` points to `left_fops`; the `unlocked_ioctl` slot at `+0x50` targets `richtap_file_unlocked_ioctl`, and `mmap` at `+0x60` targets `richtap_file_mmap`. Both bodies and slot relocations match stock.
 - `awrw_show` and `awrw_store` are restored to stock-exact source; the current mapping review records zero active hardening deviations.
