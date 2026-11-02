@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "CS flash data buffer lifetime and local mutex review",
+  "review_status": "STATIC_REVIEW_COMPLETE",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 4,
+    "unique_call_sites": 4,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_tcm_read_cs_data"
+    ],
+    "reviewed_total_after_this_round": 60,
+    "remaining_joern_findings": 68
+  },
+  "findings": [
+    {
+      "id": "syna-tcm-read-cs-data-local-mutex-and-devm-cleanup",
+      "category": "lifetime_and_synchronization",
+      "severity": "NO_UNBALANCED_INIT_OR_FREE_CONFIRMED",
+      "disposition": "ALL_FOUR_JOERN_ALERTS_CLASSIFIED; COMMON_CLEANUP_COVERS_VALID_PARAMETER_PATHS",
+      "details": "The two local mutexes are initialized after parameter validation and before the flash helpers receive their contexts. The boot-config buffer and managed flash-access allocation are released in the common cleanup reached after setup errors, rounding errors, read errors, short-buffer checks, and success. Each devm_kfree is conditional on a non-NULL managed device and pointer. The helper output is copied only after data is present and data_length is at least the requested length. The Ghidra control flow shows the same initialization and cleanup order.",
+      "evidence": {
+        "joern_alerts": [
+          {
+            "line": 46,
+            "call": "mutex_init",
+            "code": "mutex_init(access.mutex)"
+          },
+          {
+            "line": 47,
+            "call": "mutex_init",
+            "code": "mutex_init(boot_config.mutex)"
+          },
+          {
+            "line": 88,
+            "call": "devm_kfree",
+            "code": "devm_kfree(managed_device, boot_config.data)"
+          },
+          {
+            "line": 99,
+            "call": "devm_kfree",
+            "code": "devm_kfree(managed_device, access.managed_allocation)"
+          }
+        ],
+        "ghidra": "offline_static/ghidra_stock/decompiled/0308_001277fc_syna_tcm_read_cs_data.c",
+        "stock_entry": "001277fc",
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_cs_data.c",
+        "cleanup_label_line": 80,
+        "buffer_free_line": 88,
+        "access_free_line": 99
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_read_cs_data.c": "b7af885a2210f92ffe723177be8785e4d802cd5975b1e1f5d0a59ae3b74c51c7",
+    "syna_tcm_read_cs_data_exact.S": "8f60f8bea5ddaab741f20a589d911a2136a362c696ead766c667359916b9178e"
+  },
+  "ghidra_sha256": {
+    "pseudocode": "64dfca70e42b0cf4c88af63ae2e2ba450efe2945d2636692d46c55f86661b991",
+    "pcode": "fbdf0dbcbfc9d0e92ad71911e88ba6e1dc03e86379e4787db82f0be7d540485e"
+  },
+  "existing_host_harness": {
+    "report": "attestation/next309_syna_tcm_read_cs_data_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "1fe5a961adf05f8dd31610a6d8a8c967d951da4edc0df57844805128ad3e2b63",
+    "passed": true,
+    "cases": 10,
+    "source_sha256_matches": true,
+    "executed_this_round": false
+  },
+  "docker_snapshot": {
+    "reused_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+    "build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "build_passed": true,
+    "kbuild_inputs": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "source_c_matches_docker": true,
+    "exact_assembly_matches_docker": true,
+    "new_build_required": false,
+    "reason": "No Kbuild input changed during this analysis-only batch."
+  },
+  "limitations": [
+    "Device detach interleavings during the two devm_kfree lookups were not dynamically modeled.",
+    "No Android runtime or NX809J hardware execution.",
+    "No code or test was changed or executed this round."
+  ]
+}
