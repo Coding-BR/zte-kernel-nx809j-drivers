@@ -138,6 +138,20 @@ corpo e P-Code operation shape devem ser iguais. Somente uma configuração
 explícita de `assembly_only` pode tornar o C normalizado não autoritativo, e
 isso ainda exige Assembly/relocations, KCFI, Joern e Docker independentes.
 
+Antes de usar uma exportação Ghidra como evidência, compare `body_bytes` com o
+`st_size` de cada símbolo `STT_FUNC` homônimo no próprio `.ko` importado. Gere
+um plano que registre hash do módulo, nome, entry, tamanho Ghidra e tamanho ELF.
+Use `audit_ghidra_function_boundaries.py --module <modulo.ko> --functions
+<export>/functions.jsonl --output <auditoria.json>` para produzir as
+comparações e os argumentos candidatos de reparo.
+Repare somente divergências com símbolo único, entry confirmado e extensão
+compatível com os limites da seção; nunca aumente um corpo apenas para fazer o
+P-Code passar. Reexporte e exija que os limites coincidam. Se o decompilador
+falhar no caminho terminal de uma chamada, confirme `__noreturn` na declaração
+do kernel correspondente e aplique essa propriedade ao símbolo no Ghidra com
+`SetGhidraFunctionNoReturn.java`; então reexporte e confira o P-Code e o fluxo
+de controle. Não transfira esse atributo para funções sem evidência de fonte.
+
 Uma ilha não pode mascarar uma função inteira nem alterar a ABI. Um anchor de
 ABI só é permitido quando a relocation/importação ausente está comprovada no
 stock e o anchor é data-only, sem chamadas ou efeitos laterais inventados.
