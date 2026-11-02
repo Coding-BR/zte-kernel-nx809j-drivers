@@ -1,3 +1,23 @@
+## Update 2026-11-02 — aw8693x_play_mode
+
+The function aw8693x_play_mode (stock entry 00104798) was revalidated against
+the current Docker-built module, SHA-256
+d6177430412b5355d6b662eb79b2b8939b14a48c3c32f717b6f4c8e8e65e569f. Its fresh
+candidate Ghidra export has executable MD5 fb463a0a82b6191a9e8d3903c5c28988;
+the older export was stale. Both protocol_core_v8_current and the final
+protocol_core_v9_mapbound pass all eight automated core gates, including exact
+assembly/relocations, Ghidra/P-Code, KCFI, Joern, input identity and current
+map identity. Both Docker build cycles are byte-identical.
+
+The map remains candidate_under_static_validation and semantic equivalence is
+not established. Promotion remains unauthorized; bounded model, complete
+callback-table evidence, host harness, KMI review, KUnit/Lockdep/KCSAN,
+LLVM IR diagnosis, lock/lifetime review, sanitizers, semantic counterexample,
+state/effect ledger and independent review remain outstanding. The entire
+haptic_86938 driver remains incomplete. See the
+aw8693x_play_mode revalidation notes at
+../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_play_mode_20261101/REVALIDATION_NOTES_20261102.md.
+
 ## Update 2026-11-02 — I²C module registration core revalidation
 
 haptic_86938_i2c_init (init_module@001119fc) and
