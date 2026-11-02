@@ -21,6 +21,13 @@ struct expected_i2c_call {
 	u8 value;
 };
 
+struct expected_log {
+	char level;
+	unsigned int site;
+	const char *function;
+	const char *message;
+};
+
 struct actual_i2c_call {
 	struct aw_haptic *device;
 	u8 reg;
@@ -37,7 +44,7 @@ struct guarded_device {
 struct expected_mode {
 	const struct expected_i2c_call *i2c;
 	size_t i2c_count;
-	const char *const *log_fragments;
+	const struct expected_log *logs;
 	size_t log_count;
 	const char *event_order;
 	const char *name;
@@ -76,19 +83,27 @@ static const struct expected_i2c_call mode_5_i2c[] = {
 	{ 0x4c, ~UINT32_C(0x40), 0x40 },
 };
 
-static const char *const mode_0_logs[] = { "enter standby mode" };
-static const char *const mode_1_logs[] = {
-	"enter ram mode", "haptic bst mode = bst"
+static const struct expected_log mode_0_logs[] = {
+	{ '6', 0x23e, "aw8693x_play_mode", "enter standby mode" },
 };
-static const char *const mode_2_logs[] = {
-	"enter rtp mode", "haptic bst mode = bst"
+static const struct expected_log mode_1_logs[] = {
+	{ '6', 0x24f, "aw8693x_play_mode", "enter ram mode" },
+	{ '6', 0x1f8, "aw8693x_bst_mode_config", "haptic bst mode = bst" },
 };
-static const char *const mode_3_logs[] = { "enter trig mode" };
-static const char *const mode_4_logs[] = {
-	"enter cont mode", "haptic bst mode = bypass"
+static const struct expected_log mode_2_logs[] = {
+	{ '6', 0x263, "aw8693x_play_mode", "enter rtp mode" },
+	{ '6', 0x1f8, "aw8693x_bst_mode_config", "haptic bst mode = bst" },
 };
-static const char *const mode_5_logs[] = {
-	"enter ram loop mode", "haptic bst mode = bypass"
+static const struct expected_log mode_3_logs[] = {
+	{ '6', 0x26d, "aw8693x_play_mode", "enter trig mode" },
+};
+static const struct expected_log mode_4_logs[] = {
+	{ '6', 0x275, "aw8693x_play_mode", "enter cont mode" },
+	{ '6', 0x1fe, "aw8693x_bst_mode_config", "haptic bst mode = bypass" },
+};
+static const struct expected_log mode_5_logs[] = {
+	{ '6', 0x259, "aw8693x_play_mode", "enter ram loop mode" },
+	{ '6', 0x1fe, "aw8693x_bst_mode_config", "haptic bst mode = bypass" },
 };
 
 static const struct expected_mode expected_modes[] = {
@@ -232,16 +247,45 @@ static int run_one_mode(unsigned int mode)
 				return 0;
 		}
 		for (i = 0; i < expected_log_count; ++i) {
+			char expected_log[192];
+			char site_marker[16];
+
+			if (!expect_int(mode, "printk prefix", 1,
+					(unsigned char)actual_logs[i][0]))
+				return 0;
+			if (!expect_int(mode, "printk level",
+					expected->logs[i].level,
+					actual_logs[i][1]))
+				return 0;
+			snprintf(site_marker, sizeof(site_marker), "[%04u]",
+				 expected->logs[i].site);
+			if (!expect_true(mode, "printk site code",
+					strstr(actual_logs[i], site_marker) != NULL))
+				return 0;
+			snprintf(expected_log, sizeof(expected_log),
+				 "\001%c[haptic_hv][%04u]%s: %s\n",
+				 expected->logs[i].level, expected->logs[i].site,
+				 expected->logs[i].function,
+				 expected->logs[i].message);
 			if (!expect_true(mode, "log content",
-					strstr(actual_logs[i],
-					       expected->log_fragments[i]) != NULL))
+					strcmp(actual_logs[i], expected_log) == 0))
 				return 0;
 		}
 	} else {
+		char expected_log[192];
+
 		snprintf(invalid_log, sizeof(invalid_log), "play mode %u error",
 			 mode);
+		snprintf(expected_log, sizeof(expected_log),
+			 "\0013[haptic_hv][%04u]aw8693x_play_mode: %s\n",
+			 0x27f, invalid_log);
+		if (!expect_int(mode, "printk prefix", 1,
+				(unsigned char)actual_logs[0][0]))
+			return 0;
+		if (!expect_int(mode, "printk level", '3', actual_logs[0][1]))
+			return 0;
 		if (!expect_true(mode, "invalid mode log",
-				strstr(actual_logs[0], invalid_log) != NULL))
+				strcmp(actual_logs[0], expected_log) == 0))
 			return 0;
 	}
 	return 1;

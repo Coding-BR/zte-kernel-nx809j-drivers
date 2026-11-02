@@ -16,6 +16,14 @@ TOOLCHAIN_VOLUME = "nubia_sm8850_kernel_toolchains"
 CLANG = "/toolchains/clang-r536225/bin/clang"
 MUTATION_SOURCE = "i2c_w_bits(haptic, 8, ~3U, 1);"
 MUTATION_REPLACEMENT = "i2c_w_bits(haptic, 8, ~3U, 0);"
+MUTATIONS = (
+	("rtp_i2c_value", MUTATION_SOURCE, MUTATION_REPLACEMENT, 1,
+	 "FAIL mode=2 I2C value"),
+	("error_log_priority", "printk(KERN_ERR", "printk(KERN_INFO", 2,
+	 "FAIL mode=6 printk level"),
+	("rtp_log_site", "0x263", "0x264", 1,
+	 "FAIL mode=2 printk site code"),
+)
 
 
 def sha256(path: Path) -> str:
@@ -80,9 +88,9 @@ def main() -> int:
 		raise FileNotFoundError("candidate C source, harness, or stub headers are missing")
 
 	original_source = source.read_text(encoding="utf-8")
-	if original_source.count(MUTATION_SOURCE) != 1:
-		raise ValueError("the mode-2 I2C mutation site is not unique")
-	mutant_source = original_source.replace(MUTATION_SOURCE, MUTATION_REPLACEMENT, 1)
+	for name, old, _new, expected_count, _prefix in MUTATIONS:
+		if original_source.count(old) != expected_count:
+			raise ValueError(f"mutation site count changed for {name}")
 
 	args.build_root.mkdir(parents=True)
 	cycles: list[dict[str, object]] = []
@@ -116,23 +124,39 @@ def main() -> int:
 		})
 
 	mutation_cycle = args.build_root / "cycle1"
-	mutant_path = mutation_cycle / "aw8693x_play_mode_mutant.c"
-	mutant_path.write_text(mutant_source, encoding="utf-8", newline="\n")
-	mutant_name = "aw8693x_play_mode_mutant_test"
-	mutant_compile = run(docker_compile_command(
-		mutation_cycle, mutant_name, source_macro="/out/aw8693x_play_mode_mutant.c"
-	))
-	mutant_run = run(docker_run_command(mutation_cycle, mutant_name)) if mutant_compile.returncode == 0 else None
-	mutation_detected = bool(
-		mutant_compile.returncode == 0 and mutant_run is not None
-		and mutant_run.returncode == 1
-		and mutant_run.stdout.startswith("FAIL mode=2 I2C value")
-		and mutant_run.stderr == ""
-	)
+	mutation_results: dict[str, dict[str, object]] = {}
+	for name, old, new, expected_count, expected_prefix in MUTATIONS:
+		mutant_source = original_source.replace(old, new, expected_count)
+		mutant_path = mutation_cycle / f"aw8693x_play_mode_mutant_{name}.c"
+		mutant_path.write_text(mutant_source, encoding="utf-8", newline="\n")
+		mutant_name = f"aw8693x_play_mode_mutant_{name}_test"
+		mutant_compile = run(docker_compile_command(
+			mutation_cycle, mutant_name,
+			source_macro=f"/out/{mutant_path.name}"
+		))
+		mutant_run = run(docker_run_command(mutation_cycle, mutant_name)) if mutant_compile.returncode == 0 else None
+		detected = bool(
+			mutant_compile.returncode == 0 and mutant_run is not None
+			and mutant_run.returncode == 1
+			and mutant_run.stdout.startswith(expected_prefix)
+			and mutant_run.stderr == ""
+		)
+		mutation_results[name] = {
+			"seed": f"replace {old!r} with {new!r}",
+			"mutated_source_sha256": sha256(mutant_path),
+			"compile_returncode": mutant_compile.returncode,
+			"compile_stdout": mutant_compile.stdout,
+			"compile_stderr": mutant_compile.stderr,
+			"run_returncode": None if mutant_run is None else mutant_run.returncode,
+			"run_stdout": "" if mutant_run is None else mutant_run.stdout,
+			"run_stderr": "" if mutant_run is None else mutant_run.stderr,
+			"detected": detected,
+		}
 
 	binary_hashes = {cycle["binary_sha256"] for cycle in cycles}
 	reproducible = len(binary_hashes) == 1 and None not in binary_hashes
-	passed = all(bool(cycle["passed"]) for cycle in cycles) and reproducible and mutation_detected
+	passed = (all(bool(cycle["passed"]) for cycle in cycles) and reproducible
+		  and all(bool(result["detected"]) for result in mutation_results.values()))
 	report = {
 		"schema_version": 1,
 		"driver": "haptic_86938",
@@ -159,17 +183,9 @@ def main() -> int:
 		},
 		"cycles": cycles,
 		"reproducible_binary": reproducible,
-		"mutation": {
-			"seed": "mode 2 RTP: change register 0x08 mask ~3 value from 1 to 0",
-			"mutated_source_sha256": sha256(mutant_path),
-			"compile_returncode": mutant_compile.returncode,
-			"compile_stdout": mutant_compile.stdout,
-			"compile_stderr": mutant_compile.stderr,
-			"run_returncode": None if mutant_run is None else mutant_run.returncode,
-			"run_stdout": "" if mutant_run is None else mutant_run.stdout,
-			"run_stderr": "" if mutant_run is None else mutant_run.stderr,
-			"detected": mutation_detected,
-		},
+		"mutation": mutation_results["rtp_i2c_value"],
+		"log_priority_mutation": mutation_results["error_log_priority"],
+		"log_site_mutation": mutation_results["rtp_log_site"],
 		"passed": passed,
 		"status": "PASS" if passed else "FAIL",
 		"limitations": [
@@ -181,7 +197,9 @@ def main() -> int:
 	args.output.parent.mkdir(parents=True, exist_ok=True)
 	args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n")
 	print(json.dumps({"output": str(args.output), "passed": passed,
-			  "cycles": len(cycles), "mutation_detected": mutation_detected}))
+			  "cycles": len(cycles),
+			  "mutations_detected": {name: result["detected"]
+						 for name, result in mutation_results.items()}}))
 	return 0 if passed else 1
 
 
