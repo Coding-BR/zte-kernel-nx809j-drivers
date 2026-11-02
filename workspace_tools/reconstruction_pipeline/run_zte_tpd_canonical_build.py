@@ -15,8 +15,10 @@ from pathlib import Path
 
 try:
     from .target_kernel_defaults import target_source_volume
+    from .validate_reconstructed_drivers import parse_modinfo, probe_docker_kernel_source
 except ImportError:
     from target_kernel_defaults import target_source_volume
+    from validate_reconstructed_drivers import parse_modinfo, probe_docker_kernel_source
 
 
 GENERATED_NAMES = {
@@ -138,7 +140,13 @@ def main() -> int:
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
     parser.add_argument("--source-volume", default=target_source_volume())
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
+    parser.add_argument("--bindgen-volume", default="nx809j_bindgen_0695")
     parser.add_argument("--clang-revision", default="clang-r536225")
+    parser.add_argument(
+        "--target-kernel-manifest",
+        type=Path,
+        default=script_root / "kernel_development" / "config" / "target_kernel.json",
+    )
     parser.add_argument(
         "--candidate-source",
         type=Path,
@@ -180,6 +188,21 @@ def main() -> int:
     if not (curated / "vendor.Module.symvers").is_file():
         raise FileNotFoundError(f"missing vendor.Module.symvers: {curated}")
 
+    target_manifest_path = args.target_kernel_manifest.resolve()
+    target_kernel = json.loads(target_manifest_path.read_text(encoding="utf-8"))
+    if target_kernel.get("status") != "PASS":
+        raise ValueError(f"target kernel manifest is not PASS: {target_manifest_path}")
+    if target_kernel.get("docker_image") != args.image:
+        raise ValueError(
+            "Docker image does not match target-kernel manifest: "
+            f"expected {target_kernel.get('docker_image')!r}, got {args.image!r}"
+        )
+    if target_kernel.get("docker_source_volume") != args.source_volume:
+        raise ValueError(
+            "Docker source volume does not match target-kernel manifest: "
+            f"expected {target_kernel.get('docker_source_volume')!r}, got {args.source_volume!r}"
+        )
+
     generated = datetime.now(timezone.utc)
     output = (
         args.output
@@ -210,6 +233,16 @@ def main() -> int:
         print(json.dumps({"output": str(output), "passed": False, "failure_stage": "candidate_source_sync"}))
         return 1
 
+    kernel_source_identity = probe_docker_kernel_source(
+        image=args.image,
+        image_id_expected=target_kernel.get("docker_image_id"),
+        source_volume=args.source_volume,
+        toolchain_volume=args.toolchain_volume,
+        bindgen_volume=args.bindgen_volume,
+        clang_revision=args.clang_revision,
+        target_kernel=target_kernel,
+    )
+
     run_id = generated.strftime("%Y%m%dT%H%M%SZ")
     # The full protocol label remains in the report and container M= path, but
     # using it again on the host can exceed Windows MAX_PATH when the caller's
@@ -234,12 +267,17 @@ def main() -> int:
 set -euo pipefail
 export PATH=/work/toolchains/{args.clang_revision}/bin:$PATH
 MODULE={module_path}
+KBUILD_OUTPUT=/work/src/kernel/.codex-kbuild/identity
 PREFIX_MAP="-ffile-prefix-map=$MODULE=/zte_tpd"
+test -s "$KBUILD_OUTPUT/.config"
+test -f "$KBUILD_OUTPUT/include/config/auto.conf"
+test -f "$KBUILD_OUTPUT/include/generated/autoconf.h"
+test -f "$KBUILD_OUTPUT/include/generated/rustc_cfg"
 mkdir -p "$(dirname "$MODULE")"
 cp -a /host/curated/zte_tpd "$MODULE"
 find "$MODULE" -type f -exec touch -d @946684800 {{}} +
-make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" clean > /out/clean.log 2>&1
-make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" KCFLAGS="$PREFIX_MAP" KBUILD_EXTRA_SYMBOLS="$MODULE/vendor.Module.symvers" modules -j{args.parallelism} > /out/build.log 2>&1
+make -C /work/src/kernel/kernel_platform/common O="$KBUILD_OUTPUT" LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" clean > /out/clean.log 2>&1
+make -C /work/src/kernel/kernel_platform/common O="$KBUILD_OUTPUT" LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" KCFLAGS="$PREFIX_MAP" KBUILD_EXTRA_SYMBOLS="$MODULE/vendor.Module.symvers" modules -j{args.parallelism} > /out/build.log 2>&1
 cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
 """.strip()
         command = [
@@ -301,19 +339,59 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         promoted.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(cycle_records[-1]["artifact"]["path"], promoted)
 
+    fresh_modinfo: dict[str, list[str]] = {}
+    vermagic_accepted = False
+    metadata_error = None
+    if promoted is not None:
+        try:
+            fresh_modinfo = parse_modinfo(promoted)
+            vermagic_accepted = (
+                target_kernel.get("vermagic") in fresh_modinfo.get("vermagic", [])
+            )
+        except (OSError, ValueError) as error:
+            metadata_error = str(error)
+    passed = bool(
+        reproducible
+        and kernel_source_identity.get("passed") is True
+        and vermagic_accepted
+    )
+    if not kernel_source_identity.get("passed"):
+        failure_stage = "kernel_source_identity"
+    elif reproducible and not vermagic_accepted:
+        failure_stage = "vermagic"
+    elif not reproducible:
+        failure_stage = "reproducible_build"
+    else:
+        failure_stage = None
+
     report = {
         "schema_version": "1.0",
         "generated_utc": generated.isoformat(),
         "mode": "offline_independent_linux_filesystem_canonical_build",
         "label": args.label,
-        "passed": reproducible,
+        "passed": passed,
         "reproducible": reproducible,
+        "failure_stage": failure_stage,
         "cycles_requested": args.cycles,
         "cycles_accepted": sum(record["accepted"] for record in cycle_records),
         "parallelism": args.parallelism,
         "module_path": module_paths[0],
         "module_paths": module_paths,
         "container": args.image,
+        "docker_image_id": kernel_source_identity.get("observed", {}).get("docker_image_id"),
+        "target_kernel_manifest": {
+            "path": str(target_manifest_path),
+            "sha256": sha256_file(target_manifest_path),
+            "kernel_release": target_kernel.get("kernel_release"),
+            "vermagic": target_kernel.get("vermagic"),
+        },
+        "kernel_source_identity": kernel_source_identity,
+        "vermagic": {
+            "accepted": vermagic_accepted,
+            "expected": target_kernel.get("vermagic"),
+            "observed": fresh_modinfo.get("vermagic", []),
+            "error": metadata_error,
+        },
         "toolchain": args.clang_revision,
         "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
         "output_filesystem": "independent ephemeral container Linux filesystem",
@@ -333,6 +411,8 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
             "Input mtimes are normalized before make clean to prevent host bind-mount clock skew.",
             "KCFLAGS maps the complete module path to /zte_tpd for source objects and generated *.mod.c debug metadata.",
             "Byte identity across the deliberately different M= paths is a mandatory path-independence gate.",
+            "The Docker image and mounted source/toolchain identity must match the versioned target-kernel manifest.",
+            "The fresh module .modinfo vermagic must exactly include the target kernel vermagic.",
             "A cycle is rejected on nonzero exit, missing artifact, warning, error or clock-skew text.",
             "Promotion occurs only when every accepted cycle produces identical artifact bytes and size.",
         ],
@@ -343,14 +423,14 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         json.dumps(
             {
                 "output": str(output),
-                "passed": reproducible,
+                "passed": passed,
                 "cycles": args.cycles,
                 "sha256": report["candidate"]["sha256"],
                 "size": report["candidate"]["size"],
             }
         )
     )
-    return 0 if reproducible else 1
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

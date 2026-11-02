@@ -14,12 +14,14 @@ from workspace_tools.reconstruction_pipeline.run_hard_driver_protocol import (
     find_map_bindings,
     generic_docker_work_root,
     required_gates,
+    report_passed,
     resolve_repo_path,
     run_command,
     runner_script_inventory,
     select_functions,
     validate_job,
     paired_ghidra_semantic_exports,
+    zte_tpd_canonical_artifact_root,
 )
 
 
@@ -49,7 +51,40 @@ def base_job(**overrides):
     return value
 
 
+def write_target_manifest(repo_root: Path) -> None:
+    manifest = repo_root / "kernel_development" / "config" / "target_kernel.json"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(
+        json.dumps({"docker_source_volume": "test_nx809j_source"}),
+        encoding="utf-8",
+    )
+
+
 class HardDriverProtocolTests(unittest.TestCase):
+    def test_zte_tpd_canonical_docker_gate_requires_identity_and_vermagic(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            report = Path(temporary) / "canonical.json"
+            payload = {
+                "passed": True,
+                "reproducible": True,
+                "kernel_source_identity": {"passed": True, "status": "MATCH"},
+                "vermagic": {"accepted": True},
+            }
+            report.write_text(json.dumps(payload), encoding="utf-8")
+            self.assertTrue(report_passed(report, adapter="zte_tpd_canonical"))
+
+            for field, value in (
+                ("kernel_source_identity", {"passed": True, "status": "SOURCE_INPUT_MISMATCH"}),
+                ("kernel_source_identity", {"passed": False, "status": "MATCH"}),
+                ("vermagic", {"accepted": False}),
+                ("reproducible", False),
+                ("passed", False),
+            ):
+                invalid = dict(payload)
+                invalid[field] = value
+                report.write_text(json.dumps(invalid), encoding="utf-8")
+                self.assertFalse(report_passed(report, adapter="zte_tpd_canonical"))
+
     def test_generic_docker_work_root_shortens_long_windows_paths(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -90,6 +125,30 @@ class HardDriverProtocolTests(unittest.TestCase):
             )
 
             self.assertEqual(work_root, output / "docker" / "work")
+
+    def test_zte_tpd_canonical_artifact_root_shortens_long_windows_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            parent = Path(temporary) / ("r" * 100)
+            output = parent / "protocol"
+
+            artifact_root = zte_tpd_canonical_artifact_root(
+                output_dir=output,
+                windows=True,
+                max_path=240,
+            )
+
+            self.assertEqual(artifact_root, parent)
+
+    def test_zte_tpd_canonical_artifact_root_keeps_normal_path_in_output(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "protocol"
+
+            artifact_root = zte_tpd_canonical_artifact_root(
+                output_dir=output,
+                windows=True,
+            )
+
+            self.assertEqual(artifact_root, output / "docker" / "artifacts")
 
     def test_runner_inventory_hashes_scripts_and_detects_changes(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -188,6 +247,7 @@ class HardDriverProtocolTests(unittest.TestCase):
                 "kcfi_required": False,
             }],
         )
+        job["paths"]["candidate_ghidra_export"] = "candidate-ghidra"
 
         gates = required_gates(job, validate_job(job))
 
@@ -205,6 +265,7 @@ class HardDriverProtocolTests(unittest.TestCase):
                 "kcfi_required": True,
             }],
         )
+        job["paths"]["candidate_ghidra_export"] = "candidate-ghidra"
 
         self.assertIn("KCFI", required_gates(job, validate_job(job)))
 
@@ -218,6 +279,7 @@ class HardDriverProtocolTests(unittest.TestCase):
                 "kcfi_required": False,
             }],
         )
+        job["paths"]["candidate_ghidra_export"] = "candidate-ghidra"
         functions = validate_job(job)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -330,7 +392,7 @@ class HardDriverProtocolTests(unittest.TestCase):
                     "stock_entry": "00100010",
                     "source_file": "source.c",
                     "source_function": "source_fn",
-                    "status": "reviewed",
+                    "status": "candidate_under_static_validation",
                 },
                 {
                     "stock_function": "stock_fn",
@@ -350,6 +412,7 @@ class HardDriverProtocolTests(unittest.TestCase):
     def test_plan_contains_both_joern_and_docker_without_promotion(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
+            write_target_manifest(root)
             (root / "source").mkdir()
             (root / "ghidra").mkdir()
             functions = validate_job(base_job())
@@ -377,6 +440,7 @@ class HardDriverProtocolTests(unittest.TestCase):
     def test_per_function_slices_are_literal_and_independent(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
+            write_target_manifest(root)
             (root / "source").mkdir()
             (root / "ghidra").mkdir()
             job = base_job(
@@ -537,6 +601,7 @@ class HardDriverProtocolTests(unittest.TestCase):
 
     def test_direct_call_only_uses_explicit_kcfi_decision_path(self):
         job = base_job(kcfi={"direct_call_only": ["stock_fn"]})
+        job["functions"][0]["kcfi_required"] = False
         functions = validate_job(job)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

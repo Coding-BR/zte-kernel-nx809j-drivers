@@ -549,6 +549,37 @@ def generic_docker_work_root(
     return temp_root / "chdp" / f"{stable_id[:12]}-{output_id}"
 
 
+def zte_tpd_canonical_artifact_root(
+    *,
+    output_dir: Path,
+    windows: bool | None = None,
+    max_path: int = 240,
+) -> Path:
+    """Keep the canonical builder's nested cycle paths below Windows MAX_PATH."""
+    if windows is None:
+        windows = os.name == "nt"
+    default_root = output_dir / "docker" / "artifacts"
+    if not windows:
+        return default_root
+
+    deepest_relative = Path(
+        "zte_tpd"
+    ) / "canonical_builds" / "000000000000" / "20261102T235959Z" / "cycle_1" / "zte_tpd.ko"
+    if len(str((default_root / deepest_relative).resolve())) < max_path:
+        return default_root
+
+    # A versioned ancestor is durable while removing repeated validation and
+    # docker nesting. Walk upward only as far as needed to remain below MAX_PATH.
+    for compact_root in output_dir.parents:
+        if len(str((compact_root / deepest_relative).resolve())) < max_path:
+            return compact_root
+
+    # Extremely deep caller paths still get a safe build location. The report
+    # records it; callers should archive the resulting module into the evidence.
+    identity = hashlib.sha256(str(output_dir.resolve()).encode("utf-8")).hexdigest()[:12]
+    return Path(tempfile.gettempdir()) / "chdp" / f"tpd-{identity}"
+
+
 def build_command_plan(
     *,
     job: dict[str, Any],
@@ -617,6 +648,7 @@ def build_command_plan(
     label = f"hard_protocol_{job['driver']}_{stable_id}"
     if adapter == "zte_tpd_canonical":
         docker_report = output_dir / "docker" / "canonical_build_report.json"
+        artifact_root = zte_tpd_canonical_artifact_root(output_dir=output_dir)
         docker = python_command(
             python,
             tools_root / "run_zte_tpd_canonical_build.py",
@@ -628,9 +660,12 @@ def build_command_plan(
             "--image", image,
             "--source-volume", source_volume,
             "--toolchain-volume", toolchain_volume,
+            "--bindgen-volume", str(docker_config.get("bindgen_volume", "nx809j_bindgen_0695")),
             "--clang-revision", clang_revision,
+            "--target-kernel-manifest",
+            str((repo_root / "kernel_development" / "config" / "target_kernel.json").resolve()),
             "--candidate-source", str(source_root),
-            "--artifact-root", str(output_dir / "docker" / "artifacts"),
+            "--artifact-root", str(artifact_root),
             "--output", str(docker_report),
         )
     else:
@@ -884,6 +919,18 @@ def report_passed(path: Path, *, adapter: str | None = None) -> bool:
             ):
                 return False
         return True
+    if adapter == "zte_tpd_canonical":
+        identity = payload.get("kernel_source_identity")
+        vermagic = payload.get("vermagic")
+        return bool(
+            payload.get("passed") is True
+            and payload.get("reproducible") is True
+            and isinstance(identity, dict)
+            and identity.get("passed") is True
+            and identity.get("status") == "MATCH"
+            and isinstance(vermagic, dict)
+            and vermagic.get("accepted") is True
+        )
     return bool(payload.get("passed"))
 
 

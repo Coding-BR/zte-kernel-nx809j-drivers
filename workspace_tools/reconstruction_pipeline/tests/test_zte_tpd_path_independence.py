@@ -39,6 +39,23 @@ def test_generated_module_object_receives_prefix_map() -> None:
     assert 'f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"' in auditor
 
 
+def test_canonical_builder_uses_prepared_out_of_tree_kernel_output() -> None:
+    builder = CANONICAL_BUILDER.read_text(encoding="utf-8")
+
+    assert "KBUILD_OUTPUT=/work/src/kernel/.codex-kbuild/identity" in builder
+    assert builder.count('O="$KBUILD_OUTPUT"') == 2
+    for generated_input in (
+        "$KBUILD_OUTPUT/.config",
+        "$KBUILD_OUTPUT/include/config/auto.conf",
+        "$KBUILD_OUTPUT/include/generated/autoconf.h",
+        "$KBUILD_OUTPUT/include/generated/rustc_cfg",
+    ):
+        assert f'test -f "{generated_input}"' in builder or (
+            generated_input == "$KBUILD_OUTPUT/.config"
+            and f'test -s "{generated_input}"' in builder
+        )
+
+
 def test_module_sources_receive_matching_prefix_map() -> None:
     makefile = MAKEFILE.read_text(encoding="utf-8")
 
