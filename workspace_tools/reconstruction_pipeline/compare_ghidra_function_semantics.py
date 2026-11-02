@@ -794,10 +794,13 @@ def named_data_address_syntax_fallback(
 
     The comparison is whole-function and token-scoped. The caller additionally
     requires equal body size and P-Code shape, while the
-    ``GHIDRA_DATA_BINDING__`` token exists only after section-relative shared
-    data binding proof. This does not normalize arbitrary pointer syntax.
+    ``GHIDRA_DATA_BINDING__`` or ``GHIDRA_DATA_SHARED_`` token exists only
+    after shared data binding proof. This does not normalize arbitrary
+    pointer syntax.
     """
-    binding_re = re.compile(r"&(?P<symbol>GHIDRA_DATA_BINDING__[A-Za-z0-9_]+)")
+    binding_re = re.compile(
+        r"&(?P<symbol>GHIDRA_DATA_(?:BINDING__|SHARED_)[A-Za-z0-9_]+)"
+    )
     stock_symbols = binding_re.findall(stock)
     candidate_symbols = binding_re.findall(candidate)
     if not stock_symbols and not candidate_symbols:
@@ -815,8 +818,8 @@ def named_data_address_syntax_fallback(
         "candidate_address_of_symbols": candidate_symbols,
         "requirement": (
             "whole normalized C equality after removing address-of only from "
-            "section-relative GHIDRA_DATA_BINDING tokens, with equal body bytes "
-            "and P-Code shape"
+            "verified shared-data binding tokens, with equal body bytes and "
+            "P-Code shape"
         ),
     }
 

@@ -182,3 +182,4 @@ haptic_86938-y += haptic_86938_fn_123_osc_cali_store_exact.o
 haptic_86938-y += haptic_86938_fn_128_haptic_audio_store_exact.o
 haptic_86938-y += haptic_86938_fn_146_audio_work_routine_exact.o
 haptic_86938-y += haptic_86938_fn_124_rtp_osc_cali_exact.o
+haptic_86938-y += haptic_86938_i2c_driver.o
