@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "CALLBACK_ABI"
+  ],
+  "functions": [
+    {
+      "stock_function": "aw8693x_creat_node",
+      "stock_entry": "00103258",
+      "source_function": "aw8693x_creat_node",
+      "candidate_function": "aw8693x_creat_node",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_creat_node_20261102/candidate_ghidra_current"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "require_complete_driver_audit": false
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "source_function": "aw8693x_creat_node",
+      "candidate_function": "aw8693x_creat_node"
+    }
+  },
+  "ghidra": {
+    "allow_section_address_normalization": true,
+    "allow_shared_data_binding_normalization": true,
+    "allow_relocated_same_name_data_normalization": true,
+    "allow_named_data_address_syntax_fallback": true,
+    "fallback_reason": "Stock Ghidra renders the same local STT_OBJECT aw8693x_vibrator_attribute_group as a pointer expression; the current candidate renders address-of on the struct. ELF binds both exact function relocations to same-named 40-byte .data objects (stock offset 0x190, candidate 0x2a0); a fresh ELF audit confirms identical five-entry 0644 sysfs callback tables. Normalize only obj versus &obj after same-section/same-name binding, exact body bytes, equal P-Code shape and independent relocation-aware assembly parity.",
+    "fallback_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_creat_node_20261102/sysfs_group_elf_audit_current.json; reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_creat_node_20261102/ghidra_shared_data_binding_diagnostic.json"
+  }
+}

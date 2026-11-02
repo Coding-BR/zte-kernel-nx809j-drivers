@@ -25,6 +25,12 @@ The entire haptic_86938 driver remains incomplete. See the aw8693x_play_mode
 revalidation notes at
 ../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_play_mode_20261101/REVALIDATION_NOTES_20261102.md.
 
+## Update 2026-11-02 — aw8693x_creat_node
+
+The current Docker candidate module is d6177430412b5355d6b662eb79b2b8939b14a48c3c32f717b6f4c8e8e65e569f. The 104-byte function body, instruction/relocation sequence, P-Code shape, KCFI, Docker reproducibility, Joern gates and final map-bound core_v7 pass. The first fresh Ghidra comparison found only a type-rendering discrepancy for the same 40-byte sysfs group object: stock emits object while candidate emits address-of; the object moved from .data+0x190 to .data+0x2a0. A scoped same-name/same-section binding fallback is now documented and independently backed by the ELF table audit; no other C syntax is normalized.
+
+The fresh ELF audit confirms the five ordered 0644 callbacks and NULL terminator, the Docker ASan/UBSan harness passes, and the current KCFI comparison matches all ten sysfs callback type IDs. The function remains candidate_under_static_validation; raw strict normalized-C equality is false, semantic equivalence is not established, and promotion is unauthorized. Independent review and remaining KMI/semantic-counterexample evidence are still open. See attestation/haptic_aw8693x_creat_node_20261102/README.md.
+
 ## Update 2026-11-02 — I²C module registration core revalidation
 
 haptic_86938_i2c_init (init_module@001119fc) and
