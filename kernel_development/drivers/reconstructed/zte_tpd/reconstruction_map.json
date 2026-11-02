@@ -350,7 +350,9 @@
         "microtask-attestation:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:d1df5be1c2d260e8960651db4386e9db99dd9b3dd501787b2e6dc9c71ed7d119",
         "candidate-module:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/candidate_zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
         "semantic-review:attestation/semantic_review_round15_20261102/review.json:sha256:ca49b06ac49a4a5dfe0b458e7e8569064ed59b8d6132027d512fb0c01f87165d",
-        "semantic-review-markdown:attestation/semantic_review_round15_20261102/review.md:sha256:f788465e554488c4c078120dee70ca9d59da81f9e45ecf6bcaa031a527d5e37b"
+        "semantic-review-markdown:attestation/semantic_review_round15_20261102/review.md:sha256:f788465e554488c4c078120dee70ca9d59da81f9e45ecf6bcaa031a527d5e37b",
+        "semantic-review:attestation/semantic_review_round16_20261102/review.json:sha256:31b56c0b5f32a00eac8f53df91a32bffc37178db0158f728c38242f06075b55c",
+        "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern, Docker canonical build and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
@@ -362,7 +364,7 @@
       "elf_symbol_bytes": 352,
       "stock_entry": "00107d54",
       "stock_function": "tp_alloc_tp_firmware_data",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 88 AArch64 instructions and 352-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xcdde824b matches. The function preserves descriptor cleanup, GFP flags 0xdc0, descriptor size 0x18, vmalloc size size+0x18, zero-fill order and the stock dangling descriptor slot after data-allocation failure; opcode sequence, section and normalized references match. Allocator integration, scheduler timing and NX809J hardware remain unverified. Round 15 confirms the inherited vmalloc-failure use-after-free risk: kfree releases the descriptor while cdev+0xc58 remains dangling, so a later call may dereference freed memory during cleanup. Stock, Ghidra and P-Code agree; preserved for OFFLINE_EXACT. See the Round 15 semantic-review evidence."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 88 AArch64 instructions and 352-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xcdde824b matches. The function preserves descriptor cleanup, GFP flags 0xdc0, descriptor size 0x18, vmalloc size size+0x18, zero-fill order and the stock dangling descriptor slot after data-allocation failure; opcode sequence, section and normalized references match. Allocator integration, scheduler timing and NX809J hardware remain unverified. Round 15 confirms the inherited vmalloc-failure use-after-free risk: kfree releases the descriptor while cdev+0xc58 remains dangling, so a later call may dereference freed memory during cleanup. Stock, Ghidra and P-Code agree; preserved for OFFLINE_EXACT. See the Round 15 semantic-review evidence. Round 16 confirms retry reachability through proc entry tp_self_test (mode 0664): each write calls tp_alloc_tp_firmware_data(0x100000), and the allocation-error path returns -ENOMEM without clearing the stale slot. The subsequent write re-enters allocator cleanup. See Round 16 semantic-review evidence."
     },
     {
       "evidence": [
@@ -2055,7 +2057,9 @@
         "source-test:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:009d148a99b66ae6abe8762a75d76c2e312a1ce44539ea18f4c434a29619eacb",
         "joern-summary:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:443184319bde253f4c1e5ed27fc2bbedd80b7d1345df77d1a4885d9d13f245f1",
         "microtask-attestation:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:edebd4d3c0c37514a4b8035bca5ac9c28bea66f16758acd578eed31cd1b75958",
-        "candidate-module:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3"
+        "candidate-module:attestation/next074_tp_self_test_write_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+        "semantic-review:attestation/semantic_review_round16_20261102/review.json:sha256:31b56c0b5f32a00eac8f53df91a32bffc37178db0158f728c38242f06075b55c",
+        "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab"
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
