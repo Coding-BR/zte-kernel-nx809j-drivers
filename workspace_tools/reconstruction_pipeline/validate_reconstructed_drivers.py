@@ -731,8 +731,8 @@ def build_twice(
             make_args = ["make", "ARCH=arm64", "LLVM=1", "LLVM_IAS=1", f"M={container_dir}"]
         base = docker_prefix + [image] + make_args + [
             (
-                f"KCFLAGS=-ffile-prefix-map={container_dir}=/zte_tpd"
-                f" -fdebug-prefix-map={container_dir}=/zte_tpd"
+                f"KCFLAGS=-ffile-prefix-map={container_dir}=/{driver}"
+                f" -fdebug-prefix-map={container_dir}=/{driver}"
             )
         ]
         if (cycle_dir / "vendor.Module.symvers").is_file():

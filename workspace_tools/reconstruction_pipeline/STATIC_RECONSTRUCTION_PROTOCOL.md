@@ -85,6 +85,19 @@ o runner usa o export canônico e bias zero.
 
 ## Comandos canônicos
 
+Para inventariar toda a árvore principal e compará-la com o snapshot curado do
+Docker, use `audit_reconstructed_driver_inventory.py`. Esse inventário lista
+escopo, hashes, cobertura de identidades Ghidra/mapa e disponibilidade no
+Docker; ele não substitui os gates de build/paridade. O `--all` do auditor
+offline abaixo continua limitado aos drivers `zte_*`/`zlog_*` presentes em
+`engenharia/curated`.
+
+```powershell
+python workspace_tools/reconstruction_pipeline/audit_reconstructed_driver_inventory.py `
+  --repo-root C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers `
+  --engineering-root C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia
+```
+
 ```powershell
 python workspace_tools/reconstruction_pipeline/run_joern_reconstruction_gate.py `
   --driver <driver> --function <name>@<entry> --strict `
