@@ -45,6 +45,8 @@ __int64 __fastcall syna_tcm_read_flash_address(__int64 raw_tcm,
 		}
 	}
 
+	mutex_init(access.mutex);
+
 	if (length) {
 		if (buffer->buf_size < length) {
 			if (buffer->data) {
