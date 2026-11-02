@@ -1,6 +1,19 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado Atual - 2026-08-28
+## Estado atual — 2026-11-02
+
+- **Classificação do build:** `STATIC_VERIFIED_OFFLINE` — auditoria canônica Docker aprovada;
+- **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64;
+- **Módulo stock:** SHA-256 `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`;
+- **Candidato curado:** SHA-256 `7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e`, `6291168` bytes;
+- **Build Docker:** dois builds limpos, ambos com código de saída `0`; 367 funções rastreadas e mapa aprovado;
+- **Aviso:** metadados de dependência do stock diferem do alvo atual; dependências do candidato foram conferidas contra o rebuild do alvo;
+- **Evidência:** `reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json`;
+- **Gates abertos:** revisão humana independente, equivalência semântica integral e teste em hardware NX809J. Nenhum módulo foi carregado.
+
+`STATIC_VERIFIED_OFFLINE` comprova os gates estáticos do candidato; não comprova equivalência comportamental nem validação em hardware.
+
+## Snapshot histórico — 2026-08-28
 
 - **Classificacao do build:** `static_verified`
 - **Veredito do protocolo offline:** `STATIC_STRUCTURAL_REBASE_PASS_SEMANTIC_AND_HARDWARE_GATES_OPEN`
@@ -10,7 +23,7 @@
 - **Candidato:** `6309176` bytes
 - **Teste em hardware desta revisao:** nao executado
 
-## Reconsolidação atual — 2026-09-04
+## Reconsolidação histórica — 2026-09-04
 
 O candidato rastreado foi reconsolidado a partir da árvore curada usada pelo
 Docker. O SHA-256 atual é

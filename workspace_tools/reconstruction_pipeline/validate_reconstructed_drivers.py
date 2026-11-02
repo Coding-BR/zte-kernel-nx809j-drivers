@@ -832,6 +832,27 @@ def fresh_build_is_promotable(build_result: dict[str, Any], metadata: dict[str, 
     )
 
 
+def copy_driver_build_tree(driver: str, source: Path, destination: Path) -> None:
+    """Copy only build inputs for zte_tpd, whose curated root also stores its evidence archive."""
+    if driver != "zte_tpd":
+        shutil.copytree(
+            source,
+            destination,
+            ignore=shutil.ignore_patterns(
+                "*.o", "*.ko", "*.mod", "*.mod.c", "*.mod.o", "Module.symvers",
+                "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
+            ),
+        )
+        return
+
+    destination.mkdir(parents=True)
+    build_suffixes = {".c", ".h", ".s", ".inc", ".symvers", ".lds"}
+    build_files = {"Makefile", "Kbuild", "Kconfig"}
+    for path in source.iterdir():
+        if path.is_file() and (path.name in build_files or path.suffix.lower() in build_suffixes):
+            shutil.copy2(path, destination / path.name)
+
+
 def build_twice(
     *,
     driver: str,
@@ -861,14 +882,7 @@ def build_twice(
 
     def clean_build(cycle: str, command_prefix: str) -> tuple[Path, dict[str, Any]]:
         cycle_dir = work_dir / cycle
-        shutil.copytree(
-            driver_dir,
-            cycle_dir,
-            ignore=shutil.ignore_patterns(
-                "*.o", "*.ko", "*.mod", "*.mod.c", "*.mod.o", "Module.symvers",
-                "modules.order", "built-in.a", ".tmp_versions", "__pycache__",
-            ),
-        )
+        copy_driver_build_tree(driver, driver_dir, cycle_dir)
         for path in cycle_dir.rglob("*"):
             if path.is_file():
                 path.touch()
@@ -1390,8 +1404,8 @@ def main() -> int:
         path.name
         for path in curated_root.iterdir()
         if path.is_dir()
-        and path.name.startswith(("zte_", "zlog_"))
         and (path / "STATUS.md").is_file()
+        and (path / "reconstruction_map.json").is_file()
     )
     repository_root = repository_root_for_curated(curated_root)
     if repository_root is None and args.run_root is None:
