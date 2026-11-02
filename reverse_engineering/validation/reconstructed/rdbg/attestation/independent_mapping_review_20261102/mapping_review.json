@@ -1,0 +1,826 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "generated_utc": "2026-11-02",
+  "review_type": "independent second-pass offline mapping review against the acquired stock module",
+  "reviewed_by": "Codex agent; no second human peer review was performed",
+  "candidate_sha256": "6a25975d91059eae065cd28058515a767ceefe6ec4210347bc5712d3071ca2bc",
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "method": [
+    "Freshly extract the eight candidate function bodies from the current candidate module using the pinned Docker LLVM toolchain.",
+    "Compare every stock and candidate function by exact identity using AArch64 instruction, relocation, section, and symbol-size checks.",
+    "Confirm the stock Ghidra identities and ELF function boundaries are unique, complete, untruncated, and exact.",
+    "Review normalized global-storage relocations against the reconstructed layout static_asserts; normalization is limited to identical instruction sites and matching offsets."
+  ],
+  "review_gates": {
+    "all_eight_function_names_mapped_once": true,
+    "candidate_assembly_extraction_passed": true,
+    "candidate_assembly_function_count": 8,
+    "stock_candidate_assembly_comparison_passed": true,
+    "stock_candidate_assembly_functions_checked": 8,
+    "all_comparison_checks_passed": true,
+    "stock_candidate_ghidra_boundary_status": "BOUNDARIES_MATCH",
+    "ghidra_boundary_exact_count": 8,
+    "ghidra_boundary_mismatch_count": 0,
+    "ghidra_boundary_truncated_count": 0
+  },
+  "manual_source_review_notes": {
+    "on_interrupt_from": "Compared stock P-Code and decompilation with the reconstructed source: complete(dev_id + 8), then return IRQ_HANDLED (stock returns 1); the full function opcodes and relocation pass match.",
+    "cleanup_module": "Compared stock P-Code and decompilation with the reconstructed source: iterate count entries at stride 0x1c8, test byte offset 0x58, destroy only initialized devices, then class/cdev/chrdev/client teardown in stock order. Layout offsets are backed by rdbg_reconstruction_layout.h static_asserts; full function opcodes and relocations match."
+  },
+  "functions": [
+    {
+      "stock_function": "on_interrupt_from",
+      "stock_entry": "00101600",
+      "source_file": "rdbg_fn_00_on_interrupt_from.c",
+      "source_function": "on_interrupt_from",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "on_interrupt_from",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".text",
+      "stock_symbol_size_bytes": 36,
+      "candidate_symbol_size_bytes": 36,
+      "instruction_count": 9,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0005_00101600_on_interrupt_from.jsonl",
+          "sha256": "671a89b11b328eeb2929e6be138f4ac9fdf9c39be0894012f0e08f78fda9cdd2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0005_on_interrupt_from_00101600.asm",
+          "sha256": "15c9a62c261c38ed63d9dc0eeeb91f995c501881e5fc230a609201f1aeefcb3e"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "cleanup_module",
+      "stock_entry": "00101974",
+      "source_file": "rdbg_fn_01_cleanup_module.c",
+      "source_function": "cleanup_module",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "cleanup_module",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".exit.text",
+      "stock_symbol_size_bytes": 180,
+      "candidate_symbol_size_bytes": 180,
+      "instruction_count": 45,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            5,
+            6
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            9,
+            12
+          ]
+        },
+        {
+          "stock_target": ".data+0x88",
+          "candidate_target": "g_rdbg_instance+0x88",
+          "canonical_target": "<same_site_storage:.data+0x88:g_rdbg_instance+0x88>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            13,
+            14
+          ]
+        }
+      ],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0007_00101974_cleanup_module.jsonl",
+          "sha256": "17e9a9f156a172554b7768f19e98e2fdc918a8efa056979af7cac080e8905663"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
+          "sha256": "e409e3bd3f39089b3628250b43861ec76567285153fb11af6079aa2232cef492"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "rdbg_release",
+      "stock_entry": "001014cc",
+      "source_file": "rdbg_fn_02_release.c",
+      "source_function": "rdbg_release",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "rdbg_release",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".text",
+      "stock_symbol_size_bytes": 304,
+      "candidate_symbol_size_bytes": 304,
+      "instruction_count": 76,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            7,
+            8
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<same_site_storage:.data+0x98:g_rdbg_instance+0x98>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            23,
+            47
+          ]
+        }
+      ],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0004_001014cc_rdbg_release.jsonl",
+          "sha256": "7dad6bf532c17e5d7c2252467759cf9f83bdd42b9b5add2c57de6a3cd27f6b79"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0004_rdbg_release_001014cc.asm",
+          "sha256": "5b99207c0499c204981e2f337b25c2370f7350acafdba9f62bb6e5dbce82a2a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_release_microtask_20261028/README.md",
+          "sha256": "c4ebd5b6e6d4258b438bd6bb3bff95393f637cb2c5a4bfbacd956e4c3403b6a8"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_release_microtask_20261028/protocol_final/hard_protocol_report.json",
+          "sha256": "a6a688dc1b4f439d9aaf06aa4f09c43fbd88fe7b48eefa3cea7877c59c2b4af1"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "rdbg_open",
+      "stock_entry": "00100ecc",
+      "source_file": "rdbg_fn_03_open.c",
+      "source_function": "rdbg_open",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "rdbg_open",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".text",
+      "stock_symbol_size_bytes": 1532,
+      "candidate_symbol_size_bytes": 1532,
+      "instruction_count": 383,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            8,
+            9
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<same_site_storage:.data+0x98:g_rdbg_instance+0x98>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            69
+          ]
+        },
+        {
+          "stock_target": "smq_blockmap_ctor._alloc_tag",
+          "candidate_target": "__start_alloc_tags",
+          "canonical_target": "<codetag_alloc_tag:__start_alloc_tags>",
+          "kind": "stripped_codetag_alloc_tag",
+          "instruction_indices": [
+            317,
+            318
+          ]
+        }
+      ],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0003_00100ecc_rdbg_open.jsonl",
+          "sha256": "5c68917c0955610ebe455830313452825c15802af24573de77138d7eabacde9d"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0003_rdbg_open_00100ecc.asm",
+          "sha256": "b50f54a4965a8176b9f0200383d36cb9589bef8fd4e0056e4ae027e613ca626f"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_microtask_20261028/README.md",
+          "sha256": "6bb152b4df850e59786fabc7035960291f828394b7a2f04881380a7004708be1"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_microtask_20261028/protocol_core/hard_protocol_report.json",
+          "sha256": "6c5c03db2380e85692334b62a5c7527e29ae6483c4ba63fc6b1e3cfe5841c188"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_microtask_20261028/docker_source_sync.json",
+          "sha256": "0f55995b6138c6f9dabdbaa2bd18a614b1ec76f729ec9f94f4ca879e518575fc"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_microtask_20261028/docker_curated_audit.json",
+          "sha256": "614580ae1cf47f42c25064bf3cc9742c337ecc79bba328e59a53d558db145641"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "rdbg_probe",
+      "stock_entry": "001004ac",
+      "source_file": "rdbg_fn_04_probe.c",
+      "source_function": "rdbg_probe",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "rdbg_probe",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".text",
+      "stock_symbol_size_bytes": 600,
+      "candidate_symbol_size_bytes": 600,
+      "instruction_count": 150,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            17,
+            18
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            57,
+            58
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            91,
+            92
+          ]
+        },
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<same_site_storage:.data+0x94:g_rdbg_instance+0x94>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            31
+          ]
+        },
+        {
+          "stock_target": "rdbg_probe._alloc_tag",
+          "candidate_target": "rdbg_probe._alloc_tag",
+          "canonical_target": "<codetag_alloc_tag:rdbg_probe._alloc_tag>",
+          "kind": "stripped_codetag_alloc_tag",
+          "instruction_indices": [
+            140,
+            141
+          ]
+        }
+      ],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0000_001004ac_rdbg_probe.jsonl",
+          "sha256": "cdb104a87131326d973a6529cdf73ddaf00bf222237cf94486a7c756d06b9c8d"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0000_rdbg_probe_001004ac.asm",
+          "sha256": "363d63c568c1d02b822efac9d5ce29bd41ab172e1bb8e08c59c7bf0432f9ca5b"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/README.md",
+          "sha256": "e137ef54c521cbe54e8cab3e8fc414d19228a567cf08b07c9002640d8a8e1df8"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/protocol_core/hard_protocol_report.json",
+          "sha256": "50743005b4927a4d14dd711fb41fdc2e648f58d6d2d4ea2db59a6ecdb5f42211"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/protocol_core/assembly/comparison.json",
+          "sha256": "16caaca83b96c826264fde5ff5f8be15cae57dcbcbf04bef31dc3633e084ae22"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/protocol_core/kcfi/comparison.json",
+          "sha256": "1c10e9f83fdef8e6d50434afe74dd46b97a34d39f9febec9498112fb5764893a"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/protocol_core/ghidra/semantic_comparison.json",
+          "sha256": "baa4a2e8f8f2f944c1ed46bb3bbf0ef83d2aed9ce9f208aa8c3dbef6e3420765"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/protocol_core/joern/joern_gate_report.json",
+          "sha256": "921de278775d965c024e74bcd4414ee7c30e39cf158005c9796697505d98cfa9"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/protocol_core/docker/driver_audit.json",
+          "sha256": "1cbe1f497be9886ead9a80e7649b7bbb058c08e36f1af85340052b330477d4b1"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/docker_source_sync.json",
+          "sha256": "dadc7d0e470a2be4278f9161990d2d24164f919eb40978b11a1f9d4638a1f7e1"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/docker_curated_audit.json",
+          "sha256": "0789b0ca6547221fb30141dff91409e082bd7d98b6c9a9062bd80ec555764a05"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_probe_microtask_20261028/candidate_ghidra/rdbg.ko/pcode/0003_00100a08_rdbg_probe.jsonl",
+          "sha256": "6478502bca23dca7da74a5d6aa62777adb3d3db467f13d8354b89df3a65cd34d"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "rdbg_read",
+      "stock_entry": "00100708",
+      "source_file": "rdbg_fn_05_read.c",
+      "source_function": "rdbg_read",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "rdbg_read",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".text",
+      "stock_symbol_size_bytes": 912,
+      "candidate_symbol_size_bytes": 912,
+      "instruction_count": 228,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0001_00100708_rdbg_read.jsonl",
+          "sha256": "e3541600fa7f5f5caad522f5ccaa67c37ecf9d5031b2ddbdd3d13dd6519118e9"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0001_rdbg_read_00100708.asm",
+          "sha256": "6ae825e462e57a2d843ebbd1098161f26931ae763691f69a2f0dd1badd7b9ae3"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/README.md",
+          "sha256": "521d64c86f0a420550f912b733c327832e6ad92ad8c6d180910f15cba9b0c21b"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_plan_v12/hard_protocol_plan.json",
+          "sha256": "e5f0390bff4fdbce51eede5a30620d6832e665c9a648727079d19de731248ea3"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_core_v12/hard_protocol_report.json",
+          "sha256": "db80c425619e45eff19f5823444b25a555c61fb7813f3e03447ed76284460192"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_core_v12/assembly/comparison.json",
+          "sha256": "e6fd6cff0d3d2615ee485cf57d0e30079c391071a41eec304ad660c24c27dda2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_core_v12/kcfi/comparison.json",
+          "sha256": "d7ca67434afb748fd659053df0f229a4c743a13b5fa38ff5a03684a5b636fb47"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_core_v12/ghidra/semantic_comparison.json",
+          "sha256": "b5c5903905b4d017945c6af7371c75f4c15d9dcbc85f672e6aa6ba6112ebb813"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_core_v12/joern/joern_gate_report.json",
+          "sha256": "9703c707f4f38ff8d3837b2a70fd6857175f54c71568c5e390730de472cc8a43"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/protocol_core_v12/docker/driver_audit.json",
+          "sha256": "9e75623ba9bd02fd6719a7b5d3a51d9a0e03f3cd7b71430200ebecce758a13ea"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/docker_source_sync.json",
+          "sha256": "317488877d784b0208a84914c429259ffa9e33b196def281038d2533ecedb522"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/docker_curated_audit.json",
+          "sha256": "c2c869a177765c70af5ffee8d5474742486c58abcc37a582a2852fa1b8b78cf9"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/docker_curated_builds/manifest.json",
+          "sha256": "25a17e2e366c10decc4209d76a36db0fa97655162c443e0e0ea183bc0351d6d3"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_read_microtask_20261028/candidate_ghidra_v11/rdbg.ko/pcode/0004_00100cdc_rdbg_read.jsonl",
+          "sha256": "f04ecfed2b8a0553ca1e656f5ce7e4f74dd3d6f395d54fe7daf5de25735cae4c"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "rdbg_write",
+      "stock_entry": "00100a9c",
+      "source_file": "rdbg_fn_06_write.c",
+      "source_function": "rdbg_write",
+      "previous_status": "implemented_pending_independent_review",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "rdbg_write",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".text",
+      "stock_symbol_size_bytes": 1068,
+      "candidate_symbol_size_bytes": 1068,
+      "instruction_count": 267,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0002_00100a9c_rdbg_write.jsonl",
+          "sha256": "2dedc454f600d4455151a1baa8024ec535fc5df91a2f309202b2944f625aced2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0002_rdbg_write_00100a9c.asm",
+          "sha256": "d9c2c2660011b85913d276cb6842ebefce4b35a524725818ae9bbdc38a4429d0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/README.md",
+          "sha256": "72657b0ff689056fa519307a04a4d97228fe742b0ae97725de65f37490634516"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/protocol_core/hard_protocol_report.json",
+          "sha256": "c5bb58df2e12783a891856c0a56a0e0934f0db6eb2a321dc7fbc4563d200fd5b"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/protocol_core/assembly/comparison.json",
+          "sha256": "8d325a3a0e5bd6a60eeb143651dafddd81c13619ad363da6c3d279347f6bbb0e"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/protocol_core/kcfi/comparison.json",
+          "sha256": "1040bc89740cb5b0b589d44528b05ad0f2d3191604c9e679d8a54975e54a034f"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/protocol_core/ghidra/semantic_comparison.json",
+          "sha256": "f23fbee447c1d650db0162cab849fcb9402dd24d108fe3642fcc85b9ac14ef03"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/protocol_core/joern/joern_gate_report.json",
+          "sha256": "5821eddfbf1cf68124dbd88a7ef2851c5194c965ef5be24855447b412e2e1f00"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/docker_source_sync.json",
+          "sha256": "d47f5d02b9e34f0090aa9ca41bad9f9d62beb5a514b26085ca4addf6003fd3ae"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_write_microtask_20261028/docker_curated_audit.json",
+          "sha256": "2af1369fa64cf2c9a04bef7c7d7a938344f3dc077c4579407a3c30804e012e08"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "00101638",
+      "source_file": "rdbg_fn_07_init_module.c",
+      "source_function": "rdbg_init",
+      "previous_status": "candidate_under_static_validation",
+      "review_status": "PROMOTED_OFFLINE_EXACT",
+      "ghidra_identity_unique": true,
+      "candidate_symbol_resolved": "init_module",
+      "candidate_function_complete": true,
+      "ghidra_body_boundary": "EXACT",
+      "stock_and_candidate_section": ".init.text",
+      "stock_symbol_size_bytes": 824,
+      "candidate_symbol_size_bytes": 824,
+      "instruction_count": 206,
+      "instructions_identical": true,
+      "relocations_equivalent": true,
+      "relocation_equivalences": [
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            8,
+            9
+          ]
+        },
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            14,
+            16
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            23,
+            24
+          ]
+        },
+        {
+          "stock_target": ".data+0x88",
+          "candidate_target": "g_rdbg_instance+0x88",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x88>",
+          "instruction_indices": [
+            60,
+            62
+          ]
+        },
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            64,
+            65
+          ]
+        },
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            101,
+            102
+          ]
+        },
+        {
+          "stock_target": ".data+0x88",
+          "candidate_target": "g_rdbg_instance+0x88",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x88>",
+          "instruction_indices": [
+            122,
+            123
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            155,
+            157
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x98>",
+          "instruction_indices": [
+            174,
+            175
+          ]
+        },
+        {
+          "stock_target": ".data+0x94",
+          "candidate_target": "g_rdbg_instance+0x94",
+          "canonical_target": "<stripped_bss_subfield:g_rdbg_instance+0x94>",
+          "instruction_indices": [
+            193,
+            194
+          ]
+        },
+        {
+          "stock_target": ".data+0x90",
+          "candidate_target": "g_rdbg_instance+0x90",
+          "canonical_target": "<same_site_storage:.data+0x90:g_rdbg_instance+0x90>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            34,
+            35,
+            125,
+            126
+          ]
+        },
+        {
+          "stock_target": ".data+0x88",
+          "candidate_target": "g_rdbg_instance+0x88",
+          "canonical_target": "<same_site_storage:.data+0x88:g_rdbg_instance+0x88>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            74,
+            75
+          ]
+        },
+        {
+          "stock_target": ".data+0x98",
+          "candidate_target": "g_rdbg_instance+0x98",
+          "canonical_target": "<same_site_storage:.data+0x98:g_rdbg_instance+0x98>",
+          "kind": "same_site_storage_target",
+          "instruction_indices": [
+            121,
+            147
+          ]
+        },
+        {
+          "stock_target": "__start_alloc_tags",
+          "candidate_target": "rdbg_init._alloc_tag",
+          "canonical_target": "<codetag_alloc_tag:rdbg_init._alloc_tag>",
+          "kind": "stripped_codetag_alloc_tag",
+          "instruction_indices": [
+            188,
+            189
+          ]
+        }
+      ],
+      "supporting_files": [
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0006_00101638_init_module.jsonl",
+          "sha256": "08cc5f7058f98eb34de5ffc344d711494542e19417b87ab7a7a925d3e8f81856"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0006_init_module_00101638.asm",
+          "sha256": "b954e8e9e4b88a60a9fc12bb6f514b0adb7504b5889bbfdb033fec6f44131928"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_kcfi.json",
+          "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/candidate_ghidra_target_20261101/rdbg.ko/pcode/0007_00101d88_init_module.jsonl",
+          "sha256": "44a6c17b88a2a73de76908f6722e6deebd9031c264b8ff0ecb3e906d34a4ef02"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/protocol_core_v30/hard_protocol_report.json",
+          "sha256": "65d09b2ea6583f175f95c39b9e22612ebaf9fa41b84def1d68774ab016f149c6"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/protocol_core_v30/assembly/comparison.json",
+          "sha256": "657597d6a9f5b9a1cf37a40170c694e73eecfba9cd26c11e0c6f35a8b6625986"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/protocol_core_v30/ghidra/semantic_comparison.json",
+          "sha256": "ac83fd226fead2def7a32f9056c163fe64ab989773ff19ae293eab3460efcb80"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/protocol_core_v30/kcfi/comparison.json",
+          "sha256": "9d5e5b8a2b6897391b9f5658c015887c7540e02cdde925529cc92e2112ea07d6"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/protocol_core_v30/joern/joern_gate_report.json",
+          "sha256": "fb4d5be5017e47a2fb708ef77a11c9a6352777e5debe7f6045a5159b9127e0e7"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_init_module_microtask_20261028/protocol_core_v30/docker/driver_audit.json",
+          "sha256": "3bca86c81c3c53e82176d909975594b63d8a65235819b183ad197b38753789eb"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
+          "sha256": "b83c886c06b659e433b11e6849c76995b8250ee6dc04289aa7e323c2617ee9f0"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+          "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+        },
+        {
+          "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
+          "sha256": "456f5f1c2bd2068b829f4aaf3cf27cd73f3adf9440c9176aebdff67b70c6f97e"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Offline static verification only; no hardware execution or second human peer review."
+  ]
+}
