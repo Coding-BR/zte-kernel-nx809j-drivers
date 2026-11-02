@@ -4369,7 +4369,7 @@
       "stock_entry": "0010e0d0",
       "stock_body_bytes": 376,
       "category": "lifecycle",
-      "source_file": "zte_touch_deinit_exact.S",
+      "source_file": "zte_touch_deinit.c",
       "source_function": "zte_touch_deinit",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl",
@@ -4378,8 +4378,8 @@
         "kcfi",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_deinit\nEntrada Ghidra: 0010e0d0\nTamanho stock: 376 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_touch_deinit.c:zte_touch_deinit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_deinit\nEntrada Ghidra: 0010e0d0\nTamanho stock: 376 bytes\nCategoria: lifecycle\nAlvo no fonte: zte_touch_deinit.c:zte_touch_deinit\nDesvio de lifecycle: o corpo stock e retido em zte_touch_deinit_exact.S; o wrapper limpa ufp_tp_ops.pdev somente depois do teardown stock retornar.\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -4410,8 +4410,34 @@
           "role": "source_sync",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/source_sync_report.json",
           "sha256": "6c5a50b4d9c283ad115fb2de4d755f734e2a0c17cc61d199c6516bb37deface0"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/canonical_build_report.json",
+          "sha256": "b7595d50bddf2f775a5f65f5ecc2027d5931cd63d040f644d411506fb806c01f"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/source_sync_plan.json",
+          "sha256": "a244cabd15c78a8109ae1a9c9dc8c88363b7fed32afa228bc164dfcac30cc14c"
+        },
+        {
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/lifecycle_review.json",
+          "sha256": "08786c3149df60f02e49d0ae42aaa673abcb92339955932e9e0c762e9664358e"
+        },
+        {
+          "role": "lifecycle_source",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_lifecycle.c",
+          "sha256": "14127499d8e6111b2bb6b0a6cf4ffc7ee009f3cebdabfae95873750953bd0562"
+        },
+        {
+          "role": "retained_stock_instruction_stream",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit_exact.S",
+          "sha256": "d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION: exact stock teardown runs after ufp_mac_exit closes gesture admission; the UFP platform-device pointer is cleared only after report queues/interfaces are drained. Runtime and NX809J hardware remain deferred."
     },
     {
       "id": "096_tpd_touch_press",
@@ -6121,6 +6147,26 @@
           "role": "retained_stock_instruction_stream",
           "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_report_gesture_uevent_exact.S",
           "sha256": "a8a4b0bae48c43db6bd9cc2544654bee99e082fa6f15d6b6712279f475ba5c14"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/canonical_build_report.json",
+          "sha256": "b7595d50bddf2f775a5f65f5ecc2027d5931cd63d040f644d411506fb806c01f"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/source_sync_plan.json",
+          "sha256": "a244cabd15c78a8109ae1a9c9dc8c88363b7fed32afa228bc164dfcac30cc14c"
+        },
+        {
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/lifecycle_review.json",
+          "sha256": "08786c3149df60f02e49d0ae42aaa673abcb92339955932e9e0c762e9664358e"
+        },
+        {
+          "role": "lifecycle_source",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_lifecycle.c",
+          "sha256": "14127499d8e6111b2bb6b0a6cf4ffc7ee009f3cebdabfae95873750953bd0562"
         }
       ]
     },
@@ -6370,6 +6416,26 @@
           "role": "source_sync",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json",
           "sha256": "e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/canonical_build_report.json",
+          "sha256": "b7595d50bddf2f775a5f65f5ecc2027d5931cd63d040f644d411506fb806c01f"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/source_sync_plan.json",
+          "sha256": "a244cabd15c78a8109ae1a9c9dc8c88363b7fed32afa228bc164dfcac30cc14c"
+        },
+        {
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/lifecycle_review.json",
+          "sha256": "08786c3149df60f02e49d0ae42aaa673abcb92339955932e9e0c762e9664358e"
+        },
+        {
+          "role": "lifecycle_source",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_lifecycle.c",
+          "sha256": "14127499d8e6111b2bb6b0a6cf4ffc7ee009f3cebdabfae95873750953bd0562"
         }
       ],
       "attestation": "HARDENED_STOCK_DEVIATION: initialization now publishes the platform device through the gesture lifecycle gate; the prior OFFLINE_EXACT attestation remains historical baseline evidence. Runtime and NX809J hardware validation remain deferred."
@@ -6453,6 +6519,26 @@
           "role": "retained_stock_instruction_stream",
           "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_exit_exact.S",
           "sha256": "6e54aef5670d72aae48b16997abb768f08c6420470452d4ffa3aa10db4759442"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/canonical_build_report.json",
+          "sha256": "b7595d50bddf2f775a5f65f5ecc2027d5931cd63d040f644d411506fb806c01f"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/source_sync_plan.json",
+          "sha256": "a244cabd15c78a8109ae1a9c9dc8c88363b7fed32afa228bc164dfcac30cc14c"
+        },
+        {
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/lifecycle_review.json",
+          "sha256": "08786c3149df60f02e49d0ae42aaa673abcb92339955932e9e0c762e9664358e"
+        },
+        {
+          "role": "lifecycle_source",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_lifecycle.c",
+          "sha256": "14127499d8e6111b2bb6b0a6cf4ffc7ee009f3cebdabfae95873750953bd0562"
         }
       ]
     },

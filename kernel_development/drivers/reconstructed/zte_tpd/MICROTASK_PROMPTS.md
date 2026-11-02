@@ -2738,6 +2738,7 @@ Entrada Ghidra: 0010e0d0
 Tamanho stock: 376 bytes
 Categoria: lifecycle
 Alvo no fonte: zte_touch_deinit.c:zte_touch_deinit
+Desvio de lifecycle: o corpo stock e retido em zte_touch_deinit_exact.S; o wrapper limpa ufp_tp_ops.pdev somente depois do teardown stock retornar.
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0094_0010e0d0_zte_touch_deinit.jsonl
 

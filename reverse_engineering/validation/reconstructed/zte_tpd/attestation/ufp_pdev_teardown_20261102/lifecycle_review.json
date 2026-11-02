@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T22:27:20.620112+00:00",
+  "driver": "zte_tpd",
+  "scope": [
+    "ufp_mac_exit",
+    "zte_touch_deinit",
+    "syna_dev_process_touch_report"
+  ],
+  "finding": {
+    "summary": "zte_touch_deinit called ufp_mac_exit before draining TPD report work, while report callbacks still check and later dereference ufp_tp_ops.pdev. Clearing that shared pointer at the start of teardown can race with an in-flight callback.",
+    "evidence": [
+      "Stock Ghidra decompilation for zte_touch_deinit calls ufp_mac_exit before tpd_report_work_deinit.",
+      "The reconstructed syna_dev_process_touch_report callback checks ufp_tp_ops.pdev and subsequently loads ufp_tp_ops.pdev again for kobject_uevent_env.",
+      "The retained stock zte_touch_deinit body drains report/probe/resume work, removes proc/sysfs interfaces, and unregisters the child platform device after the early ufp_mac_exit call."
+    ],
+    "source_paths": [
+      "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0094_0010e0d0_zte_touch_deinit.c",
+      "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_touch_report.c",
+      "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit_exact.S"
+    ]
+  },
+  "change": {
+    "mechanism": "ufp_mac_exit closes gesture admission, detaches and drains its workqueue, and removes the wakeup source while preserving the platform-device pointer. A C wrapper invokes the retained exact stock zte_touch_deinit body; after its report-work drain, interface removal, and platform-device unregister complete, the wrapper clears the pointer under the lifecycle mutex.",
+    "teardown_order": [
+      "close gesture-report admission under the UFP lifecycle mutex and clear the gesture workqueue slot",
+      "cancel and drain delayed gesture work; destroy its queue and remove the wakeup source",
+      "execute the retained stock zte_touch_deinit body, including report/probe/resume work cancellation and interface removal",
+      "after the stock body returns, clear ufp_tp_ops.pdev under the lifecycle mutex"
+    ],
+    "race_property": "TPD paths that test and dereference ufp_tp_ops.pdev during stock teardown continue to see the still-registered device until the stock teardown has drained its built-in report work and removed interfaces. Gesture reporting is separately gated before its queue is destroyed.",
+    "retained_stock_body": "The zte_touch_deinit AArch64 instruction stream is retained under zte_touch_deinit_stock_exact; only the symbol label/size name changed."
+  },
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/canonical_build_report.json",
+    "report_sha256": "b7595d50bddf2f775a5f65f5ecc2027d5931cd63d040f644d411506fb806c01f",
+    "passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycle_sha256": [
+      "5204b5186733e72b87594dd9e327d426b08e0495d3263ecf85a6b8bed6e72be4",
+      "5204b5186733e72b87594dd9e327d426b08e0495d3263ecf85a6b8bed6e72be4"
+    ],
+    "candidate_module": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/candidate_module/zte_tpd.ko",
+    "candidate_module_sha256": "5204b5186733e72b87594dd9e327d426b08e0495d3263ecf85a6b8bed6e72be4",
+    "candidate_module_size": 6886120,
+    "vermagic_accepted": true,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "source_sync": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/source_sync_plan.json",
+    "report_sha256": "a244cabd15c78a8109ae1a9c9dc8c88363b7fed32afa228bc164dfcac30cc14c",
+    "passed": true,
+    "copied": [
+      "Makefile",
+      "defs.h",
+      "ufp_mac_lifecycle.c",
+      "zte_touch_deinit.c",
+      "zte_touch_deinit_exact.S"
+    ],
+    "removed": []
+  },
+  "source_sha256": {
+    "Makefile": "1550ada43e150bc96a7105b91769a18d4deac4ad389cc3a40c5a3ee63c81d4c9",
+    "defs.h": "228a2271fe464119806363d8e4e606ec5de4678091c89c0b798e5fc5fd16f46e",
+    "ufp_mac_lifecycle.c": "14127499d8e6111b2bb6b0a6cf4ffc7ee009f3cebdabfae95873750953bd0562",
+    "zte_touch_deinit.c": "6c9b5aec6fc4591476b7647729c0edfafe125e8ef767e89aa55c54d5c3d88d50",
+    "zte_touch_deinit_exact.S": "d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033"
+  },
+  "limits": [
+    "Canonical Docker build and byte reproducibility passed; runtime scheduler behavior and NX809J hot-unbind/hardware teardown were not exercised.",
+    "The pointer remains available through the retained stock teardown and is cleared immediately after it returns; external platform/event callback behavior remains subject to runtime validation."
+  ]
+}

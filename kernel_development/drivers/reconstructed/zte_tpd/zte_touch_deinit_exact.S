@@ -1,8 +1,8 @@
 .section .text,"ax",@progbits
 .align 2
-.global zte_touch_deinit
-.type zte_touch_deinit, %function
-zte_touch_deinit:
+.global zte_touch_deinit_stock_exact
+.type zte_touch_deinit_stock_exact, %function
+zte_touch_deinit_stock_exact:
     .inst 0xd503233f
     .inst 0xa9bb7bfd
     .inst 0xf9000bf9
@@ -139,7 +139,7 @@ zte_touch_deinit:
     .inst 0xa8c57bfd
     .inst 0xd50323bf
     .inst 0xd65f03c0
-.size zte_touch_deinit, .-zte_touch_deinit
+.size zte_touch_deinit_stock_exact, .-zte_touch_deinit_stock_exact
 
 .section .bss,"aw",@nobits
 .align 3

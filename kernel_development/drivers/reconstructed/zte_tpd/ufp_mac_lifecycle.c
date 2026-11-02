@@ -13,6 +13,14 @@ void ufp_mac_lifecycle_publish(struct platform_device *pdev)
 	mutex_unlock(&ufp_mac_lifecycle_lock);
 }
 
+void ufp_mac_lifecycle_clear_device(void)
+{
+	mutex_lock(&ufp_mac_lifecycle_lock);
+	if (ufp_mac_stopping)
+		WRITE_ONCE(ufp_tp_ops.pdev, NULL);
+	mutex_unlock(&ufp_mac_lifecycle_lock);
+}
+
 void ufp_report_gesture_uevent(char *event)
 {
 	char *envp[] = { event, NULL };
@@ -84,8 +92,4 @@ void ufp_mac_exit(void)
 	}
 	wakeup_source_remove(&tp_wakeup);
 	WRITE_ONCE(ufp_tp_ops.single_tap_pending, 0);
-
-	mutex_lock(&ufp_mac_lifecycle_lock);
-	WRITE_ONCE(ufp_tp_ops.pdev, NULL);
-	mutex_unlock(&ufp_mac_lifecycle_lock);
 }

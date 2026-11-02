@@ -102,7 +102,7 @@ src-files := $(filter-out $(src)/tp_frame_data_read.c, $(src-files))
 src-files := $(filter-out $(src)/tp_frame_data_write.c, $(src-files))
 src-files := $(filter-out $(src)/tpd_sysfs_fwimage_show.c, $(src-files))
 src-files := $(filter-out $(src)/tpd_sysfs_fwimage_store.c, $(src-files))
-src-files := $(filter-out $(src)/zte_touch_deinit.c, $(src-files))
+# Keep the C lifecycle wrapper; the exact stock teardown body is retained below.
 src-files := $(filter-out $(src)/tpd_touch_press.c, $(src-files))
 src-files := $(filter-out $(src)/tpd_touch_release.c, $(src-files))
 src-files := $(filter-out $(src)/ghost_check_area.c, $(src-files))
