@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-11-02T20:18:10.464873+00:00",
+  "generated_utc": "2026-11-02T20:33:55.845545+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -8332,7 +8332,7 @@
         "joern",
         "test"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_cdev_create\nEntrada Ghidra: 00114b3c\nTamanho stock: 632 bytes\nCategoria: core_logic\nAlvo no fonte: syna_cdev_create.c:syna_cdev_create\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0183_00114b3c_syna_cdev_create.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0183_00114b3c_syna_cdev_create.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_cdev_create\nEntrada Ghidra: 00114b3c\nTamanho stock: 632 bytes\nCategoria: core_logic\nAlvo no fonte: syna_cdev_create.c:syna_cdev_create\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0183_00114b3c_syna_cdev_create.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0183_00114b3c_syna_cdev_create.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nVerificacao complementar: compare tambem os relocations ELF da tabela device_fops com o stock; igualdade do corpo da funcao, isoladamente, nao comprova os callbacks registrados.",
       "status": "PROMOTED_OFFLINE_EXACT",
       "evidence": [
         {
@@ -8354,6 +8354,16 @@
           "role": "test",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/host_harness_report.json",
           "sha256": "fb557cd21968804e6322f5c5527da4aac48771749ef10aab91d58f408ee0c1a7"
+        },
+        {
+          "role": "elf-data-relocations",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/fops_table_comparison.json",
+          "sha256": "664b05f30f00ee8865da4818b029f03e54f5cebf78afaba8df448b68e8846c76"
+        },
+        {
+          "role": "elf-data-relocation-raw",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/elf_relocation_evidence.txt",
+          "sha256": "f0bf78505356e79479bea7daa67ec85cf381087aeb19e534369950f95f1a3367"
         }
       ]
     },

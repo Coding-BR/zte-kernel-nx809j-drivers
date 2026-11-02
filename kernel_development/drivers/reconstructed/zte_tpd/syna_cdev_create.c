@@ -3,51 +3,25 @@
 
 #undef syna_cdev_create___key
 
-extern __int64 syna_cdev_read(__int64 a1, __int64 a2, __int64 a3);
-extern __int64 syna_cdev_write(__int64 a1, __int64 a2, __int64 a3);
+extern ssize_t syna_cdev_read(struct file *file, char __user *buffer,
+                              size_t count, loff_t *offset);
+extern ssize_t syna_cdev_write(struct file *file, const char __user *buffer,
+                               size_t count, loff_t *offset);
 extern loff_t syna_cdev_llseek(struct file *file, loff_t offset, int whence);
-extern __int64 syna_cdev_ioctls(__int64 a1, unsigned char a2, unsigned __int64 a3);
-extern int syna_mmap(struct file *filp, struct vm_area_struct *vma);
+extern long syna_cdev_ioctls(struct file *file, unsigned int cmd,
+                             unsigned long arg);
+extern int syna_cdev_open(struct inode *inode, struct file *filp);
+extern int syna_cdev_release(struct inode *inode, struct file *filp);
 extern char *syna_cdev_devnode(const struct device *device, umode_t *mode);
-
-static ssize_t device_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
-{
-    (void)f_pos;
-    return (ssize_t)syna_cdev_read((__int64)filp, (__int64)buf, (__int64)count);
-}
-
-static ssize_t device_write(struct file *filp, const char __user *buf, size_t count, loff_t *f_pos)
-{
-    (void)f_pos;
-    return (ssize_t)syna_cdev_write((__int64)filp, (__int64)buf, (__int64)count);
-}
-
-static loff_t device_llseek(struct file *filp, loff_t off, int whence)
-{
-    return syna_cdev_llseek(filp, off, whence);
-}
-
-static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-{
-    return (long)syna_cdev_ioctls((__int64)filp, (unsigned char)cmd, (unsigned __int64)arg);
-}
-
-static int device_mmap(struct file *filp, struct vm_area_struct *vma)
-{
-    return syna_mmap(filp, vma);
-}
 
 static const struct file_operations device_fops = {
     .owner = THIS_MODULE,
+    .llseek = syna_cdev_llseek,
+    .read = syna_cdev_read,
+    .write = syna_cdev_write,
+    .unlocked_ioctl = syna_cdev_ioctls,
     .open = syna_cdev_open,
     .release = syna_cdev_release,
-    .read = device_read,
-    .write = device_write,
-    .llseek = device_llseek,
-    .unlocked_ioctl = device_ioctl,
-    .compat_ioctl = device_ioctl,
-    .poll = syna_poll,
-    .mmap = device_mmap,
 };
 
 int syna_cdev_create(struct syna_tcm *tcm, struct platform_device *data)

@@ -1,0 +1,181 @@
+{
+  "schema_version": "cdev_file_operations_relocation_audit_v1",
+  "generated_utc": "2026-11-02T20:33:55.809641+00:00",
+  "driver": "zte_tpd",
+  "symbol": "device_fops",
+  "result": "PASS",
+  "stock": {
+    "path": "reference_modules/stock/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "elf_symbol": {
+      "section": ".rodata",
+      "offset": "0x1110",
+      "size": 264
+    },
+    "pointer_slots": [
+      {
+        "offset": "0x00",
+        "field": "owner",
+        "target": "__this_module"
+      },
+      {
+        "offset": "0x10",
+        "field": "llseek",
+        "target": "syna_cdev_llseek",
+        "stock_text_offset": "0xe710"
+      },
+      {
+        "offset": "0x18",
+        "field": "read",
+        "target": "syna_cdev_read",
+        "stock_text_offset": "0xe71c"
+      },
+      {
+        "offset": "0x20",
+        "field": "write",
+        "target": "syna_cdev_write",
+        "stock_text_offset": "0xe7c0"
+      },
+      {
+        "offset": "0x50",
+        "field": "unlocked_ioctl",
+        "target": "syna_cdev_ioctls",
+        "stock_text_offset": "0xe864"
+      },
+      {
+        "offset": "0x68",
+        "field": "open",
+        "target": "syna_cdev_open",
+        "stock_text_offset": "0x109f0"
+      },
+      {
+        "offset": "0x78",
+        "field": "release",
+        "target": "syna_cdev_release",
+        "stock_text_offset": "0x10b58"
+      }
+    ]
+  },
+  "candidate": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\cdev_fops_table_stock_parity_20261102\\zte_tpd\\zte_tpd.ko",
+    "sha256": "c36ca8b8f217f98cc7efd9b22bf97b01c2d4fd9e470efcfb39e741978bcabc09",
+    "size": 6292792,
+    "elf_symbol": {
+      "section": ".rodata",
+      "offset": "0x8c88",
+      "size": 264
+    },
+    "pointer_slots": [
+      {
+        "offset": "0x00",
+        "field": "owner",
+        "target": "__this_module"
+      },
+      {
+        "offset": "0x10",
+        "field": "llseek",
+        "target": "syna_cdev_llseek"
+      },
+      {
+        "offset": "0x18",
+        "field": "read",
+        "target": "syna_cdev_read"
+      },
+      {
+        "offset": "0x20",
+        "field": "write",
+        "target": "syna_cdev_write"
+      },
+      {
+        "offset": "0x50",
+        "field": "unlocked_ioctl",
+        "target": "syna_cdev_ioctls"
+      },
+      {
+        "offset": "0x68",
+        "field": "open",
+        "target": "syna_cdev_open"
+      },
+      {
+        "offset": "0x78",
+        "field": "release",
+        "target": "syna_cdev_release"
+      }
+    ]
+  },
+  "comparison": {
+    "slot_layout_equal": true,
+    "pointer_targets_equal": true,
+    "extra_nonnull_callback_slots": [],
+    "not_registered_in_stock_or_candidate": [
+      "compat_ioctl",
+      "poll",
+      "mmap"
+    ],
+    "scope": "ELF ABS64 relocations inside device_fops; other tables such as zte_fops are outside this symbol audit",
+    "stock_abs64_relocation_count": 7,
+    "candidate_abs64_relocation_count": 7
+  },
+  "inputs": {
+    "source_file": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
+    "source_sha256": "3142fa198726cf9ca1f2192e8a90e8c0578971b0f09df06b215021d373a338ba",
+    "source_sync_report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/source_sync_plan.json",
+    "source_sync_report_sha256": "262834b33b9c533c12f6589ee959ea28cca3aec844308fc7113d8bcd67fccc7d",
+    "source_sync_passed": true,
+    "canonical_build_report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/canonical_build_report.json",
+    "canonical_build_report_sha256": "d05cc69a2bc7377654cf962eb38ddae787b5aff213d086111e76742d8c0f0ff8",
+    "canonical_build_passed": true,
+    "canonical_build_cycles": [
+      {
+        "accepted": true,
+        "artifact": {
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\canonical_builds\\a67ecf0c1218\\20261102T202900Z\\cycle_1\\zte_tpd.ko",
+          "sha256": "c36ca8b8f217f98cc7efd9b22bf97b01c2d4fd9e470efcfb39e741978bcabc09",
+          "size": 6292792
+        },
+        "build_log": {
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\canonical_builds\\a67ecf0c1218\\20261102T202900Z\\cycle_1\\build.log",
+          "sha256": "c7a91e8f49e342e2da3e6f21cf5a89420b332b8b3d5f29a98207ee542a4cc570"
+        },
+        "clean_log": {
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\canonical_builds\\a67ecf0c1218\\20261102T202900Z\\cycle_1\\clean.log",
+          "sha256": "60cae7503ffd6c127c6d8f965cbfb0280745f51aef8d35a40c3c379621c5d6bc"
+        },
+        "cycle": 1,
+        "diagnostics": [],
+        "docker_stderr": "",
+        "docker_stdout": "",
+        "duration_seconds": 81.032,
+        "module_path": "/work/engineering/validation/cdev_fops_table_stock_parity_20261102/a/zte_tpd",
+        "returncode": 0
+      },
+      {
+        "accepted": true,
+        "artifact": {
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\canonical_builds\\a67ecf0c1218\\20261102T202900Z\\cycle_2\\zte_tpd.ko",
+          "sha256": "c36ca8b8f217f98cc7efd9b22bf97b01c2d4fd9e470efcfb39e741978bcabc09",
+          "size": 6292792
+        },
+        "build_log": {
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\canonical_builds\\a67ecf0c1218\\20261102T202900Z\\cycle_2\\build.log",
+          "sha256": "cd97e7e6866993382489a65e8c48200d71d622e0e4ad7c4ccd66e44b080088a2"
+        },
+        "clean_log": {
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_tpd\\canonical_builds\\a67ecf0c1218\\20261102T202900Z\\cycle_2\\clean.log",
+          "sha256": "60cae7503ffd6c127c6d8f965cbfb0280745f51aef8d35a40c3c379621c5d6bc"
+        },
+        "cycle": 2,
+        "diagnostics": [],
+        "docker_stderr": "",
+        "docker_stdout": "",
+        "duration_seconds": 76.953,
+        "module_path": "/work/engineering/validation/cdev_fops_table_stock_parity_20261102/path_independence_much_longer_cycle_2/zte_tpd",
+        "returncode": 0
+      }
+    ],
+    "target_kernel_manifest_sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847",
+    "readelf_tool": "llvm-readelf from nubia-sm8850-kernel-builder:latest",
+    "raw_elf_relocation_evidence": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/elf_relocation_evidence.txt",
+    "raw_elf_relocation_evidence_sha256": "f0bf78505356e79479bea7daa67ec85cf381087aeb19e534369950f95f1a3367"
+  }
+}
