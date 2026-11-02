@@ -16,7 +16,8 @@
 | Host harness | PASS | 13/13 functions covered; two runs and two host binaries are identical |
 | Microtasks | PASS | 13/13 hash-backed compile/KCFI/test attestations |
 | Strict assembly | PASS | 13/13 funções; corpos, tamanhos, instruções e relocations equivalentes |
-| Independent review | PENDING | No reviewer distinct from the implementer has signed this candidate hash |
+| Second-pass offline mapping review | PASS | Codex agent reviewed all 13 mappings against fresh candidate assembly; 21 relocation equivalences are documented; see reverse_engineering/validation/reconstructed/zlog_common/attestation/independent_mapping_review_20261102/ |
+| Independent human review | PENDING | No second human peer reviewer has signed this candidate hash |
 | Controlled hardware | DEFERRED | No `insmod`, userspace ABI or worker-path execution for this exact candidate |
 
 As quatro funções que divergiam no baseline foram materializadas a partir da
