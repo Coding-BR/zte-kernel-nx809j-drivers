@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Lockdown configuration local mutex and flash-buffer lifetime review",
+  "review_status": "STATIC_REVIEW_COMPLETE",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 4,
+    "unique_call_sites": 4,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_tcm_update_lockdown_config"
+    ],
+    "reviewed_total_after_this_round": 70,
+    "remaining_joern_findings": 58
+  },
+  "joern_alerts": [
+    {
+      "function": "syna_tcm_update_lockdown_config",
+      "file": "syna_tcm_update_lockdown_config.c",
+      "line": 84,
+      "call": "mutex_init",
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(access.mutex)"
+    },
+    {
+      "function": "syna_tcm_update_lockdown_config",
+      "file": "syna_tcm_update_lockdown_config.c",
+      "line": 85,
+      "call": "mutex_init",
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(boot_config.mutex)"
+    },
+    {
+      "function": "syna_tcm_update_lockdown_config",
+      "file": "syna_tcm_update_lockdown_config.c",
+      "line": 141,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, boot_config.data)"
+    },
+    {
+      "function": "syna_tcm_update_lockdown_config",
+      "file": "syna_tcm_update_lockdown_config.c",
+      "line": 149,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, access.managed_allocation)"
+    }
+  ],
+  "findings": [
+    {
+      "id": "lockdown-update-local-mutex-initialization",
+      "category": "synchronization",
+      "severity": "NO_UNINITIALIZED_OR_DOUBLE_INITIALIZATION_PATH_FOUND",
+      "disposition": "BOTH_MUTEXES_INITIALIZED_ONCE_AFTER_GUARDS_BEFORE_HELPER_USE",
+      "details": "All argument and lockdown-record guards return before either mutex is initialized. After initialization, setup failure, boot-config read failure, short/missing boot data, already-unavailable lockdown, block-check failure, write failure, and success all reach the shared cleanup. Ghidra stock shows the same two mutex initializations before setup.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_lockdown_config.c",
+        "source_sha256": "93e02116e1a699059137f22a67ca02d085ecaae69b1ebcab70a0c8ed53f99e6d",
+        "exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_lockdown_config_exact.S",
+        "exact_assembly_sha256": "00b2fc44efad294e9280c1670a597473c2037df42f1f1a1e75e9ce0bb2d84ab1",
+        "ghidra_decomp": "offline_static/ghidra_stock/decompiled/0304_00126aec_syna_tcm_update_lockdown_config.c",
+        "ghidra_decomp_sha256": "df345e11b1b88ccbaf5952c8f9c8418cd83c69fa6137a03a1fdc9336f4661250",
+        "ghidra_pcode": "offline_static/ghidra_stock/pcode/0304_00126aec_syna_tcm_update_lockdown_config.jsonl",
+        "ghidra_pcode_sha256": "30fee47178090810a7e8db958d8f23a2441265f2f62cdf5f4ea7fb82346cee5a",
+        "stock_assembly": "offline_static/stock_assembly/0304_syna_tcm_update_lockdown_config_00126aec.asm",
+        "stock_assembly_sha256": "70142dffba635c6a443d9d212b738fc12f950a90e6194952ad7ddc022d0daae1",
+        "joern_lines": [
+          84,
+          85
+        ],
+        "cleanup_label_line": 131
+      }
+    },
+    {
+      "id": "lockdown-update-managed-buffer-cleanup",
+      "category": "lifetime",
+      "severity": "COMMON_CLEANUP_COVERS_FAILURE_AND_SUCCESS; NULL_DEVICE_SKIPS_IMMEDIATE_DEVM_FREE",
+      "disposition": "RESOURCES_RELEASED_WHEN_PROVIDER_RETURNS_DEVICE; CONDITIONAL_STOCK_LIFETIME_GAP_RECORDED",
+      "details": "The boot-config buffer is freed if allocated, including when its read helper returns an error after allocation. The flash-access allocation is checked in the same cleanup after every initialized path. Each free is conditional on syna_request_managed_device() returning non-NULL; if it returns NULL, the devm allocation remains tied to device teardown instead of being released immediately. Ghidra stock has the same two lookups and conditional frees. Static evidence did not establish that the provider becomes unavailable between allocation and cleanup, so this is a conditional retained-devres risk, not a confirmed runtime leak.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_lockdown_config.c",
+        "source_sha256": "93e02116e1a699059137f22a67ca02d085ecaae69b1ebcab70a0c8ed53f99e6d",
+        "exact_assembly_sha256": "00b2fc44efad294e9280c1670a597473c2037df42f1f1a1e75e9ce0bb2d84ab1",
+        "managed_device_provider": "kernel_development/drivers/reconstructed/zte_tpd/syna_request_managed_device.c",
+        "provider_sha256": "b9006d8d2cdb68c5d934635bb7df78a2fcd8e8317a1c6217b9ff52954e1aeb93",
+        "boot_config_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_boot_config.c",
+        "boot_config_helper_sha256": "e62d0319ea5a7771de2f9228af43b4012c03e631132b514ef7793e44e97cf3ac",
+        "setup_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_set_up_flash_access.c",
+        "setup_helper_sha256": "a9e488eb89c0a92cafd27598ed62e94dd6dc28951120c1287831570dffb40249",
+        "free_lines": [
+          141,
+          149
+        ],
+        "cleanup_label_line": 131
+      }
+    },
+    {
+      "id": "lockdown-update-release-required-cleanup-contract",
+      "category": "lock_balance",
+      "severity": "NO_OUTSTANDING_WRITE_MUTEX_CONFIRMED_IN_REVIEWED_CALL_CHAIN",
+      "disposition": "WRITE_HELPER_RELEASES_ON_SUCCESS_AND_POST_LOCK_ERRORS",
+      "details": "The caller logs if access.release_required is nonzero but does not unlock at that point. Its write helper increments the counter after mutex_lock and sends successful completion and every post-lock error through a release routine that updates the counter and calls mutex_unlock. Earlier caller failures occur before the write helper acquires the mutex. No unbalanced lock was found in the reviewed paths.",
+      "evidence": {
+        "write_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash.c",
+        "write_helper_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+        "exact_write_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash_exact.S",
+        "exact_write_helper_sha256": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705",
+        "existing_round4_review": "attestation/semantic_review_round4_20261102/review.json"
+      }
+    },
+    {
+      "id": "lockdown-update-kbuild-baseline",
+      "category": "reconstruction_provenance",
+      "severity": "EXACT_ASSEMBLY_SELECTED_BY_KBUILD",
+      "disposition": "NO_SOURCE_CHANGE; STOCK_BASELINE_PRESERVED",
+      "details": "The Makefile filters out the C mirror and links syna_tcm_update_lockdown_config_exact.o. The C mirror, target assembly, and write-helper assembly match the curated Docker snapshot and corresponding inputs in the canonical 848-file manifest. No Kbuild input changed, so the latest two-cycle Docker report remains applicable. The existing host contract matches this source hash and passed 23 cases in two cycles; it was not rerun.",
+      "evidence": {
+        "makefile": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+        "canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+        "canonical_build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+        "docker_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+        "kbuild_input_count": 848,
+        "source_c_matches_docker": true,
+        "exact_assembly_matches_docker": true,
+        "write_helper_exact_assembly_matches_docker": true,
+        "new_build_required": false,
+        "host_harness_report": "attestation/next305_syna_tcm_update_lockdown_config_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+        "host_harness_sha256": "67f56b6fd9aefcacfeff029b739d3d52d1bfa8dd3ba9e56408c50ee71af671ff",
+        "host_harness_passed": true,
+        "host_cases": 23,
+        "host_cycles": 2,
+        "executed_this_round": false
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_update_lockdown_config.c": "93e02116e1a699059137f22a67ca02d085ecaae69b1ebcab70a0c8ed53f99e6d",
+    "syna_tcm_update_lockdown_config_exact.S": "00b2fc44efad294e9280c1670a597473c2037df42f1f1a1e75e9ce0bb2d84ab1"
+  },
+  "helper_sha256": {
+    "syna_tcm_write_flash.c": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+    "syna_tcm_write_flash_exact.S": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705",
+    "syna_tcm_set_up_flash_access.c": "a9e488eb89c0a92cafd27598ed62e94dd6dc28951120c1287831570dffb40249",
+    "syna_tcm_read_flash_boot_config.c": "e62d0319ea5a7771de2f9228af43b4012c03e631132b514ef7793e44e97cf3ac"
+  },
+  "ghidra_sha256": {
+    "decompilation": "df345e11b1b88ccbaf5952c8f9c8418cd83c69fa6137a03a1fdc9336f4661250",
+    "pcode": "30fee47178090810a7e8db958d8f23a2441265f2f62cdf5f4ea7fb82346cee5a",
+    "stock_assembly": "70142dffba635c6a443d9d212b738fc12f950a90e6194952ad7ddc022d0daae1"
+  },
+  "joern_report": {
+    "path": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "findings_in_scope": 4
+  },
+  "docker_snapshot": {
+    "reused_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+    "build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "build_passed": true,
+    "build_reproducible": true,
+    "accepted_cycles": 2,
+    "kbuild_inputs": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "source_c_matches_docker": true,
+    "exact_assembly_matches_docker": true,
+    "new_build_required": false,
+    "reason": "No Kbuild input changed during this analysis-only batch."
+  },
+  "existing_host_harness": {
+    "report": "attestation/next305_syna_tcm_update_lockdown_config_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "67f56b6fd9aefcacfeff029b739d3d52d1bfa8dd3ba9e56408c50ee71af671ff",
+    "passed": true,
+    "cases": 23,
+    "cycles": 2,
+    "source_sha256_matches": true,
+    "executed_this_round": false
+  },
+  "limitations": [
+    "Device teardown interleavings were not dynamically modeled.",
+    "No Android runtime or NX809J hardware execution.",
+    "Existing host and Docker reports were inspected but not rerun this round.",
+    "No implementation or test files changed this round."
+  ]
+}
