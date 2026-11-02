@@ -1,3 +1,5 @@
+#include "defs.h"
+
 #ifdef ZTE_TPD_HOST_TEST
 #define SYNA_DEV_HELPER_BOOT_INFO_FORMAT unk_35A8D
 #define SYNA_DEV_HELPER_BAD_APP_FORMAT unk_32FB1
@@ -37,7 +39,7 @@ void syna_dev_helper_work(struct work_struct *work)
       v3 = *(unsigned __int8 *)(*v2 + 9);
       if ( v3 == 11 )
       {
-        queue_delayed_work_on(32, *(_QWORD *)(v1 - 248), v1 - 352, 25);
+        syna_dev_helper_schedule_reflash((struct syna_tcm *)v2, 25);
         result = *v2;
         v3 = *(unsigned __int8 *)(*v2 + 9);
       }
@@ -52,7 +54,8 @@ void syna_dev_helper_work(struct work_struct *work)
       {
         result = printk(SYNA_DEV_HELPER_BAD_APP_FORMAT, "syna_dev_helper_work", v5);
         if ( *(_BYTE *)(*v2 + 9) == 11 )
-          result = queue_delayed_work_on(32, *(_QWORD *)(v1 - 248), v1 - 352, 25);
+          result = syna_dev_helper_schedule_reflash((struct syna_tcm *)v2,
+                                                     25);
       }
       else
       {
@@ -62,5 +65,5 @@ void syna_dev_helper_work(struct work_struct *work)
       }
     }
   }
-  *(_DWORD *)(v1 - 8) = 0;
+  syna_dev_helper_work_complete((struct syna_tcm *)v2);
 }

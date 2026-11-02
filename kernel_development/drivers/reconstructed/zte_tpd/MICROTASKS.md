@@ -161,7 +161,7 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 155_syna_dev_module_init | syna_dev_module_init | 00111fcc | lifecycle | syna_dev_module_init.c:syna_dev_module_init | PROMOTED_OFFLINE_EXACT |
 | 156_syna_dev_module_exit | syna_dev_module_exit | 0011200c | lifecycle | syna_dev_module_exit.c:syna_dev_module_exit | PROMOTED_OFFLINE_EXACT |
 | 157_syna_dev_probe | syna_dev_probe | 00112038 | binding | syna_dev_probe_exact.S:syna_dev_probe | PROMOTED_OFFLINE_EXACT |
-| 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | PROMOTED_OFFLINE_EXACT |
+| 158_syna_dev_remove | syna_dev_remove | 001125bc | binding | syna_dev_remove.c:syna_dev_remove | HARDENED_STOCK_DEVIATION |
 | 159_syna_dev_shutdown | syna_dev_shutdown | 001126f4 | core_logic | syna_dev_shutdown.c:syna_dev_shutdown | PROMOTED_OFFLINE_EXACT |
 | 160_syna_dev_connect | syna_dev_connect | 00112714 | core_logic | syna_dev_connect_wrapper.c:syna_dev_connect | HARDENED_STOCK_DEVIATION |
 | 161_syna_dev_disconnect | syna_dev_disconnect | 00112b04 | core_logic | syna_dev_disconnect.c:syna_dev_disconnect | PASS |
@@ -169,9 +169,9 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 163_syna_dev_resume | syna_dev_resume | 00112d6c | binding | syna_dev_resume.c:syna_dev_resume | PROMOTED_OFFLINE_EXACT |
 | 164_syna_dev_suspend | syna_dev_suspend | 0011337c | binding | syna_dev_suspend.c:syna_dev_suspend | PROMOTED_OFFLINE_EXACT |
 | 165_syna_ts_register_for_panel_events | syna_ts_register_for_panel_events | 00113504 | core_logic | syna_ts_register_for_panel_events.c:syna_ts_register_for_panel_events | PROMOTED_OFFLINE_EXACT |
-| 166_syna_dev_helper_work | syna_dev_helper_work | 00113590 | async_or_irq | syna_dev_helper_work.c:syna_dev_helper_work | PROMOTED_OFFLINE_EXACT |
+| 166_syna_dev_helper_work | syna_dev_helper_work | 00113590 | async_or_irq | syna_dev_helper_work.c:syna_dev_helper_work | HARDENED_STOCK_DEVIATION |
 | 167_syna_dev_set_up_input_device | syna_dev_set_up_input_device | 001136c4 | core_logic | syna_dev_set_up_input_device.c:syna_dev_set_up_input_device | PROMOTED_OFFLINE_EXACT |
-| 168_syna_dev_process_unexpected_reset | syna_dev_process_unexpected_reset | 00113a9c | core_logic | syna_dev_process_unexpected_reset.c:syna_dev_process_unexpected_reset | PROMOTED_OFFLINE_EXACT |
+| 168_syna_dev_process_unexpected_reset | syna_dev_process_unexpected_reset | 00113a9c | core_logic | syna_dev_process_unexpected_reset.c:syna_dev_process_unexpected_reset | HARDENED_STOCK_DEVIATION |
 | 169_syna_dev_reflash_startup_work | syna_dev_reflash_startup_work | 00113b40 | async_or_irq | syna_dev_reflash_startup_work_exact.S:syna_dev_reflash_startup_work | PROMOTED_OFFLINE_EXACT |
 | 170_syna_dev_process_touch_report | syna_dev_process_touch_report | 00113c74 | core_logic | syna_dev_process_touch_report_wrapper.c:syna_dev_process_touch_report | HARDENED_STOCK_DEVIATION |
 | 171_syna_dev_isr | syna_dev_isr | 001141b4 | core_logic | syna_dev_isr.c:syna_dev_isr | PROMOTED_OFFLINE_EXACT |

@@ -1,0 +1,116 @@
+{
+  "schema": "zte_tpd_async_lifecycle_hardening_v1",
+  "review_date": "2026-11-02",
+  "baseline_commit": "49afe51ddcc0f4e11bd84ffc96987e36f71d5cbb",
+  "finding": {
+    "risk": "queue_use_after_workqueue_destroy",
+    "stock_sequence": [
+      "syna_dev_remove cancels, flushes, and destroys the helper workqueue",
+      "only afterward it removes panel/sysfs entry points and calls syna_cdev_remove",
+      "syna_cdev_remove later calls syna_dev_disconnect, which releases the IRQ"
+    ],
+    "evidence": [
+      "The Ghidra stock pseudocode for syna_dev_remove preserves this order.",
+      "syna_dev_process_unexpected_reset queues work at tcm+1320 on the helper queue at tcm+1352.",
+      "syna_dev_helper_work can requeue delayed reflash work on the separate queue at tcm+1072."
+    ],
+    "conclusion": "An IRQ callback could enqueue helper work after its queue was destroyed; helper work could also race the later destruction of its reflash queue."
+  },
+  "fix": {
+    "changes": [
+      "Quiesce cdev operations and remove panel/sysfs entry points before worker teardown.",
+      "Use one IRQ-safe spinlock to serialize reset callback queueing, helper workqueue detachment, delayed reflash requeueing, and pending-flag completion.",
+      "Detach the helper workqueue pointer under that lock, then cancel, flush, and destroy the saved queue. Call syna_cdev_remove afterward so disconnect stops the IRQ and destroys the separate reflash queue only after helper work has drained.",
+      "Mark syna_dev_remove, syna_dev_helper_work, and syna_dev_process_unexpected_reset as HARDENED_STOCK_DEVIATION in reconstruction_map.json and MICROTASKS.md."
+    ],
+    "exact_parity_claimed": false
+  },
+  "source_sync": {
+    "passed": true,
+    "copied": [
+      "defs.h",
+      "syna_dev_helper_work.c",
+      "syna_dev_process_unexpected_reset.c",
+      "syna_dev_remove.c"
+    ],
+    "removed_stale_source": []
+  },
+  "canonical_build": {
+    "passed": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "module_sha256_by_cycle": [
+      "cbffb18f3e547f766bc8f90abca15e40c502a4c62fda953afec0d886564602e9",
+      "cbffb18f3e547f766bc8f90abca15e40c502a4c62fda953afec0d886564602e9"
+    ],
+    "module_size_bytes": 6661000,
+    "diagnostics": []
+  },
+  "reconstruction_status": {
+    "candidate_sha256": "cbffb18f3e547f766bc8f90abca15e40c502a4c62fda953afec0d886564602e9",
+    "functions_marked_hardened_deviation": [
+      "syna_dev_remove",
+      "syna_dev_helper_work",
+      "syna_dev_process_unexpected_reset"
+    ],
+    "runtime_or_hardware_validation": "DEFERRED"
+  },
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/defs.h",
+      "sha256": "2a7ac3cb14b62a7374032d48f7382cb46ac9b4d1a35a416ee23fced87669fe54"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c",
+      "sha256": "8e0059c2f6938d2d0ddf829b45456c5c2cb72da128997bf25daf32a69798b5da"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_helper_work.c",
+      "sha256": "59407c62c52bef602d108b82e15622fa5a97b948b32d433291d571f47df29dec"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_unexpected_reset.c",
+      "sha256": "9708384b5354187f4dd2061b51ecfda3086fc2d2af45a4a0d523a58ad06d4013"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json",
+      "sha256": "330579de0b2ae0eb595b29b05fd2e7f2eba73b180c516d48753932a57595b963"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/MICROTASKS.md",
+      "sha256": "9824d570edfa91827267f10f8bef44216d3014885e8f3b81e6fdae2a0dccce10"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c",
+      "sha256": "c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0165_00113590_syna_dev_helper_work.c",
+      "sha256": "40e1a1ae3c348a9f4dd0204bc4cb8bc7dd5feb91400b0b14b0a19934450989b6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0167_00113a9c_syna_dev_process_unexpected_reset.c",
+      "sha256": "cc8e0ebd5dc4b195fb5121268d4aa723c739086e7eb612b1b6863929db3ce872"
+    },
+    {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/helper_workqueue_teardown_20261102/source_sync_plan.json",
+      "sha256": "4cf48575ca5bc6a5d001dbd4089f51c846a3ef66611a9bdb64cd6b4ff78076cd"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/helper_workqueue_teardown_20261102/canonical_build_report.json",
+      "sha256": "1720dca5da2e97d2feb651abb2d28ac79f00ce454ec0e5e12344a314eb2e05f5"
+    }
+  ],
+  "validation_limits": [
+    "Two-cycle canonical Docker compile and offline Ghidra/source review only.",
+    "No IRQ injection, kernel runtime, unbind/rebind, or NX809J hardware test was run."
+  ]
+}

@@ -8,6 +8,7 @@ void syna_dev_remove(struct platform_device *pdev)
   __int64 v9; // x20
   __int64 v10; // x0
   __int64 v12; // x0
+  struct workqueue_struct *helper_workqueue;
 #ifdef __aarch64__
   register unsigned int refs __asm__("w2");
 #else
@@ -18,12 +19,18 @@ void syna_dev_remove(struct platform_device *pdev)
   if ( !v3 )
     printk("\0014[warn ] %s: Invalid handle to remove\n", "syna_dev_remove");
   printk("\0016[info ] %s: enter\n", "syna_dev_remove");
-  cancel_work_sync(v3 + 1320);
-  _flush_workqueue(*(_QWORD *)(v3 + 1352));
-  destroy_workqueue(*(_QWORD *)(v3 + 1352));
+
+  syna_cdev_quiesce();
   if ( active_panel && *(_QWORD *)(v3 + 1360) )
     panel_event_notifier_unregister((void *)*(_QWORD *)(v3 + 1360));
   syna_sysfs_remove_dir((struct syna_tcm *)v3);
+
+  helper_workqueue = syna_dev_helper_workqueue_stop((struct syna_tcm *)v3);
+  cancel_work_sync(v3 + 1320);
+  if (helper_workqueue) {
+    _flush_workqueue(helper_workqueue);
+    destroy_workqueue(helper_workqueue);
+  }
   syna_cdev_remove((struct syna_tcm *)v3);
   v4 = syna_dev_disconnect((struct syna_tcm *)v3);
   v5 = *(_QWORD *)(v3 + 1448);

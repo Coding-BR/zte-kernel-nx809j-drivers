@@ -339,6 +339,11 @@ extern int syna_tcm_identify(struct tcm_dev *tcm,
 extern int syna_dev_process_unexpected_reset(unsigned char report_code,
                                              const unsigned char *payload,
                                              unsigned int length, void *context);
+extern struct workqueue_struct *syna_dev_helper_workqueue_stop(
+    struct syna_tcm *tcm);
+extern bool syna_dev_helper_schedule_reflash(struct syna_tcm *tcm,
+                                             unsigned long delay);
+extern void syna_dev_helper_work_complete(struct syna_tcm *tcm);
 extern irqreturn_t syna_dev_isr(int irq, void *data);
 extern __poll_t syna_poll(struct file *file,
 			  struct poll_table_struct *wait);
