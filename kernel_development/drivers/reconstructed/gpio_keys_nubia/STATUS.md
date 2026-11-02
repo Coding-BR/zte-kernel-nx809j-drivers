@@ -9,14 +9,21 @@ GKI 6.12.23 com `clang-r536225`. Nao e candidato autorizado para `insmod` ou
 substituicao do modulo OEM enquanto `gpio_keys_probe`, revisao independente e
 os gates de hardware nao fecharem.
 
+## Revalidação do candidato atual — 2026-11-02
+
+- Candidato Docker/repositório/mapa: `95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc`; stock: `8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3`.
+- A extração fresca comparou 24/24 identidades: instruções, relocations, seções e tamanhos passaram em todas. As manifests desta extração ligam os resultados aos dois hashes.
+- A auditoria canônica Docker continua `static_verified`, com dois builds reproduzíveis. A igualdade de assembly não fecha equivalência C, revisão humana independente ou validação de hardware.
+- Evidência atual: `attestation/current_candidate_assembly_review_20261102/`; a comparação `stage5_final_full_assembly_comparison.json` é um checkpoint anterior sem o vínculo hash do candidato atual.
+
 | Item | Estado | Evidencia/Bloqueador |
 |---|---|---|
 | Stock | IDENTIFICADO | SHA-256 `8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3`; 24 funcoes Ghidra |
 | Layout por botao | PASS ESTATICO | stride `0x110` e offsets comprovados por P-Code, Assembly e `static_assert` |
 | Build limpo | PASS | duas compilacoes Docker isoladas reproduziveis; candidato SHA-256 `95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc`, 232336 bytes |
-| Mapa stock -> fonte | PASS ESTRUTURAL | 24/24 identidades revisadas com hashes; escopo `structural_identity_only`, equivalencia semantica `UNPROVEN` |
+| Mapa stock -> fonte | PASS ESTRUTURAL | 24/24 identidades com hashes; assembly fresco do candidato atual 24/24 exato; equivalencia C segue `UNPROVEN` |
 | KCFI stage 5 | PASS ESTATICO | 24/24 entradas com presenca, type ID e secao/tamanho correspondentes |
-| Assembly stage 5 | PASS ESTATICO | 24/24 com secao, tamanho, instrucoes e relocacoes exatas |
+| Assembly stage 5 | PASS | 24/24 instrucoes, relocations, secoes e tamanhos exatos no candidato `95e2b7d…` |
 | Joern strict stage 5 | PASS ESTATICO | 24/24 identidades, parsing 0, chamadas nao resolvidas 0; gaps de CPG explicados por 10 comparacoes `.S` exatas |
 | `gpio_keys_probe` | PASS EXATO | `3600` bytes, `900` instrucoes, `164` relocacoes e opcodes exatos |
 | Harness stage 1 | PASS | 11/11 testes offline de wrappers sysfs e lifecycle |
