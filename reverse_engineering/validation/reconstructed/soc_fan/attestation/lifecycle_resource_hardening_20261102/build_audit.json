@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T15:12:38Z",
+  "driver": "soc_fan",
+  "variant": "lifecycle_resource_hardening_non_stock",
+  "canonical_stock_module_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "canonical_reconstruction_module_sha256": "828b4e6e2307fb28edfb6cbf4de451998fe85bf159eeaa2a2f4fdd5b0e34fd3a",
+  "canonical_reconstruction_source_sha256": "eac22d90ae92b3e29f1d6254c4ef9f3e30d8bc6a25f745c60e8d6c5129ae0688",
+  "docker_curated_source_matches_repo": true,
+  "docker_curated_makefile_matches_repo": true,
+  "hardening_source_sha256": "99881db94480cd15023ea38c14d773d7d3e1550681876aeed0f31e39edd3a9e2",
+  "hardening_module_sha256": "5547e8d2465f481bf9b2fa3d6a1425cb28bf783cb9b4a75e4fdbad66292b91ee",
+  "hardening_module_bytes": 283432,
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "toolchain": "clang-r536225",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchains_volume": "nubia_sm8850_kernel_toolchains",
+    "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "builds": [
+      {
+        "cycle": 1,
+        "returncode": 0,
+        "module_sha256": "5547e8d2465f481bf9b2fa3d6a1425cb28bf783cb9b4a75e4fdbad66292b91ee",
+        "log_sha256": "03b6b5ca222a01584845fc84f00a988991600dc14f52d9865b4922cd1990a28d",
+        "kernel_out_volume": "codex-kbuild-soc_fan-1-e014282af9de"
+      },
+      {
+        "cycle": 2,
+        "returncode": 0,
+        "module_sha256": "5547e8d2465f481bf9b2fa3d6a1425cb28bf783cb9b4a75e4fdbad66292b91ee",
+        "log_sha256": "c30b4dcbffeff71ec8e80e655037bd265875260153ed8fecf804a0c00612e619",
+        "kernel_out_volume": "codex-kbuild-soc_fan-2-1f79994147b1"
+      }
+    ],
+    "reproducible_output": true,
+    "btf": "skipped: vmlinux unavailable in builder",
+    "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+    "build_command_template": "make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/cycle_N KCFLAGS=-ffile-prefix-map=/work/validation/cycle_N=/soc_fan -fdebug-prefix-map=/work/validation/cycle_N=/soc_fan -j8 modules"
+  },
+  "assembly": {
+    "stock_functions_compared": 15,
+    "exact_unchanged_functions": [
+      "fan_speed_irq_proc",
+      "nb_fan_probe",
+      "nb_fan_remove",
+      "nb_fan_parse_dt",
+      "fan_hrtimer_hander",
+      "fan_enable_show",
+      "fan_enable_store",
+      "fan_level_set",
+      "fan_level_show",
+      "fan_level_store",
+      "fan_pwm_store",
+      "fan_speed_show",
+      "init_module",
+      "cleanup_module"
+    ],
+    "expected_changed_function": "nb_fan_gpio_proc",
+    "expected_difference": "symbol size 464 -> 472 bytes; replaces gpio_request/request_threaded_irq with devm_gpio_request/devm_request_threaded_irq",
+    "strict_comparator_passed": false,
+    "raw_comparator_failure_is_expected": "nb_fan_gpio_proc: symbol_size, instructions"
+  },
+  "abi": {
+    "elf": {
+      "aarch64_relocatable": true,
+      "class": "ELF64",
+      "endianness": "little",
+      "machine": "AARCH64",
+      "magic": "7f454c46",
+      "type": "ET_REL"
+    },
+    "target_vermagic_match": true,
+    "target_modversions_match": true,
+    "candidate_import_crc_count": 40,
+    "missing_crc_symbols": [],
+    "mismatched_crc_symbols": [],
+    "expected_imports_removed": [
+      "gpio_request",
+      "request_threaded_irq"
+    ],
+    "expected_imports_added": [
+      "devm_gpio_request",
+      "devm_request_threaded_irq"
+    ],
+    "raw_stock_parity_audit_passed": false,
+    "raw_parity_reason": "Import names change intentionally to managed APIs; raw stock parity is not expected for this hardening variant."
+  },
+  "runtime_hardware_validation": "not performed",
+  "scope_limitation": "Only GPIO and threaded IRQ lifecycle was corrected here; separate regulator, kobject, hrtimer and conditional OF child ownership questions remain open in MP4."
+}
