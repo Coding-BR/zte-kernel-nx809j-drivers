@@ -5,7 +5,7 @@ Snapshot Docker: `docker`
 
 Este inventário cobre diretórios em `kernel_development/drivers/reconstructed`. A existência de fonte, mapa ou `.ko` não prova equivalência estática/semântica. A validação completa de cada candidato continua sendo feita pelos gates do protocolo.
 
-Drivers encontrados: **24**; com candidato `.ko`: **24**; com stock: **24**; com inventário Ghidra: **24** (1039 funções); presentes no snapshot curado do Docker: **4**; candidatos Docker iguais ao repositório: **4**; mapas Docker iguais ao repositório: **3**; inputs de build iguais: **4**; árvores de fontes/Assembly iguais: **3**.
+Drivers encontrados: **24**; com candidato `.ko`: **24**; com stock: **24**; com inventário Ghidra: **24** (1039 funções); presentes no snapshot curado do Docker: **4**; candidatos Docker iguais ao repositório: **4**; mapas Docker iguais ao repositório: **4**; inputs de build iguais: **4**; árvores de fontes/Assembly iguais: **3**.
 
 | Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` repo | `.ko` Docker | Mapa Docker igual | Inputs build iguais | Árvore fontes/Assembly igual | Achados |
 |---|---:|---:|---|---|---|---|---|---|---|---|
@@ -16,7 +16,7 @@ Drivers encontrados: **24**; com candidato `.ko`: **24**; com stock: **24**; com
 | `gpio_keys_nubia` | 24 | 24 | 24/24 | PROMOTED_OFFLINE_EXACT:24 | sim | não | não | não | não | nenhum estrutural |
 | `haptic_86938` | 160 | 160 | 160/160 | candidate_hardening_deviation:2, candidate_under_static_validation:158 | sim | não | não | não | não | nenhum estrutural |
 | `nubia_hw_version` | 19 | 19 | 19/19 | PROMOTED_OFFLINE_EXACT:19 | sim | não | não | não | não | map_candidate_hash_mismatch |
-| `rdbg` | 8 | 8 | 8/8 | candidate_under_static_validation:1, implemented_pending_independent_review:7 | sim | sim | não | sim | sim | docker_reconstruction_map_mismatch |
+| `rdbg` | 8 | 8 | 8/8 | candidate_under_static_validation:1, implemented_pending_independent_review:7 | sim | sim | sim | sim | sim | nenhum estrutural |
 | `soc_fan` | 15 | 15 | 15/15 | CORE_GATES_PASS_UNREVIEWED:15 | sim | não | não | não | não | nenhum estrutural |
 | `zlog_common` | 13 | 13 | 13/13 | PROMOTED_OFFLINE_EXACT:13 | sim | não | não | não | não | map_candidate_hash_mismatch |
 | `zlog_exception` | 10 | 10 | 10/10 | PROMOTED_OFFLINE_EXACT:10 | sim | não | não | não | não | nenhum estrutural |
