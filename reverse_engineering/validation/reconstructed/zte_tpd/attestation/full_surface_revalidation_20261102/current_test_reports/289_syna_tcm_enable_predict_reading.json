@@ -1,0 +1,101 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer syna_tcm_enable_predict_reading_harness.c -o build/syna_tcm_enable_predict_reading_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/syna_tcm_enable_predict_reading_harness"
+  ],
+  "coverage": {
+    "disable_path": true,
+    "enable_mask": true,
+    "enabled_offset_0x37a": true,
+    "hardware_paths_exercised": false,
+    "null_tcm": true,
+    "offset_offset_0x37c": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS null_returns_stock_errno\nPASS null_logs_error\nPASS enable_returns_zero\nPASS enable_masks_and_clears\nPASS enable_logs_state\nPASS disable_returns_zero\nPASS disable_clears\nPASS disable_logs_state\nSUMMARY tests=8 failures=0\n",
+      "summary": "SUMMARY tests=8 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "null_returns_stock_errno",
+        "null_logs_error",
+        "enable_returns_zero",
+        "enable_masks_and_clears",
+        "enable_logs_state",
+        "disable_returns_zero",
+        "disable_clears",
+        "disable_logs_state"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS null_returns_stock_errno\nPASS null_logs_error\nPASS enable_returns_zero\nPASS enable_masks_and_clears\nPASS enable_logs_state\nPASS disable_returns_zero\nPASS disable_clears\nPASS disable_logs_state\nSUMMARY tests=8 failures=0\n",
+      "summary": "SUMMARY tests=8 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "null_returns_stock_errno",
+        "null_logs_error",
+        "enable_returns_zero",
+        "enable_masks_and_clears",
+        "enable_logs_state",
+        "disable_returns_zero",
+        "disable_clears",
+        "disable_logs_state"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T04:08:15.964432+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_tcm_enable_predict_reading.c",
+      "sha256": "9434b3c2f64218ee7ffb342a3964acac17fa8526e927774459c08140d776a1d9",
+      "size": 483
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\syna_tcm_enable_predict_reading_harness.c",
+      "sha256": "bc0518df4111dc84330ce27874b220bdd87d71130792091b73269046c15a893f",
+      "size": 2056
+    }
+  ],
+  "limitations": [
+    "The harness uses a deterministic host printk stub.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_direct_source_syna_tcm_enable_predict_reading_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 8,
+    "failed": [],
+    "passed": [
+      "null_returns_stock_errno",
+      "null_logs_error",
+      "enable_returns_zero",
+      "enable_masks_and_clears",
+      "enable_logs_state",
+      "disable_returns_zero",
+      "disable_clears",
+      "disable_logs_state"
+    ],
+    "summary": "SUMMARY tests=8 failures=0"
+  }
+}

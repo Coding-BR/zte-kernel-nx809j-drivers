@@ -1,0 +1,157 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "tp_edge_report_limit_read"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "a11c91aeff6ae4e730a5d758e60c3932d5f6b02e7779546fce9809533c1784b0",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next053_tp_edge_report_limit_read_exact_v4\\host\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-format-security",
+          "-Wno-ignored-attributes",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-edge-report-limit-read",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize=alignment",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tp_edge_report_limit_read_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next053_tp_edge_report_limit_read_exact_v4\\host\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "edge report allocation failed 0 0\n",
+        "stdout": "PASS tp_edge_report_limit_read host tests (5 cases)\n"
+      }
+    },
+    {
+      "binary_sha256": "a11c91aeff6ae4e730a5d758e60c3932d5f6b02e7779546fce9809533c1784b0",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next053_tp_edge_report_limit_read_exact_v4\\host\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-Wno-format-security",
+          "-Wno-ignored-attributes",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-edge-report-limit-read",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-fno-sanitize=alignment",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tp_edge_report_limit_read_host_test.c",
+          "-o",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_next053_tp_edge_report_limit_read_exact_v4\\host\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/host_test_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "edge report allocation failed 0 0\n",
+        "stdout": "PASS tp_edge_report_limit_read host tests (5 cases)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "driver_source_sha256": "1254c90f0156966eafdfbba5e080c608d10f6a8153c3493c7d6363bc3ebf3d9f",
+  "expected_cases": 5,
+  "generated_utc": "2026-08-30T18:29:27.749795+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_edge_report_limit_read_host_test.c",
+      "sha256": "a1e6591d8b749999672db2940afb4732bb9f89349ce5e294e5df5d2b1e8db636",
+      "size": 6609
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_edge_report_limit_read.c",
+      "sha256": "1254c90f0156966eafdfbba5e080c608d10f6a8153c3493c7d6363bc3ebf3d9f",
+      "size": 3731
+    }
+  ],
+  "limitations": [
+    "Kernel allocation and procfs copy helpers are deterministic host stubs.",
+    "The harness checks output fields and recovered cdev offsets without hardware.",
+    "Assembly, KCFI, Ghidra, Joern, and whole-module gates remain separate."
+  ],
+  "mode": "offline_direct_source_tp_edge_report_limit_read_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "reproducible_binary": true,
+  "sanitizer_exceptions": [
+    "alignment: disabled because the recovered stock P-Code performs intentional unaligned byte-layout stores"
+  ],
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "tp_edge_report_limit_read",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}
