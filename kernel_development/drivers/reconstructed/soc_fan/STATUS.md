@@ -1,6 +1,6 @@
 # Status: `soc_fan`
 
-Estado: **IN_PROGRESS — build e paridade estática aprovados; revisão semântica e runtime pendentes**.
+Estado: **STATIC_VERIFIED_OFFLINE — 15/15 funções passaram os gates estáticos; revisão humana e hardware seguem pendentes**.
 
 | Gate | Estado | Evidência |
 |---|---|---|
@@ -12,10 +12,10 @@ Estado: **IN_PROGRESS — build e paridade estática aprovados; revisão semânt
 | Metadados/ABI do módulo | PASS | aliases, namespace PWM, licença, tipo ELF e imports coincidem; vermagic corresponde ao kernel alvo. O candidato conserva os campos stock `built_with`, descrição e softdep |
 | Artefato canônico | PASS | `soc_fan.ko`, SHA-256 `828b4e6e2307fb28edfb6cbf4de451998fe85bf159eeaa2a2f4fdd5b0e34fd3a`, 284296 bytes |
 | Seções executáveis contra R41 | PASS | `.text`, `.data` e `.rodata` do candidato R42 são byte a byte iguais ao candidato R41 que passou os gates centrais |
-| Mapa stock → fonte | INCOMPLETO | 15/15 nomes rastreados; revisão independente ainda não realizada. O mapa mantém `CORE_GATES_PASS_UNREVIEWED` e `semantic_equivalence: UNPROVEN` |
-| Comparação semântica estrita | INCOMPLETO | comparação estrita de P-Code/C não passou; para `nb_fan_probe` foi necessário fallback assembly por limitação de largura de ponteiro do decompilador |
+| Mapa stock → fonte | PASS — 15/15 funções aprovadas em revisão offline de segunda passada; instruções, relocations, seção e tamanho coincidem, sem normalizações. Revisão feita por agente Codex; não houve segundo revisor humano. | reverse_engineering/validation/reconstructed/soc_fan/attestation/independent_mapping_review_20261102/mapping_review.json |
+| Comparação semântica estrita | O comparador C/P-Code continua inconclusivo para alguns casos; a comparação de assembly AArch64, relocations e limites confirma as 15 funções compiladas em instruções. Isso não prova comportamento em runtime. | reverse_engineering/validation/reconstructed/soc_fan/attestation/independent_mapping_review_20261102/assembly_comparison.json |
 | Hardware NX809J | DEFERRED | nenhum teste em dispositivo foi executado; comportamento runtime permanece sem prova |
 
-Auditoria geral R42: `incomplete_or_failed`, sem erros de build ou ABI; a única gate funcional pendente é a revisão independente das 15 entradas do mapa. Relatório: `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_metadata_parity_20261028_r42/driver_audit.json`.
+Auditoria canônica Docker de 2026-11-02: static_verified; dois builds limpos concluídos (return code 0), nenhum erro e um aviso de build-id/debug/BTF. Conteúdo de runtime, layout de seções e modinfo coincidem com o candidato. Relatório: reverse_engineering/validation/reconstructed/soc_fan/attestation/independent_mapping_review_20261102/docker_audit_canonical_20261102.json.
 
-Este status não declara equivalência funcional completa nem validação de hardware. O próximo passo é revisão semântica independente do mapa e a resolução dos deltas que ela encontrar.
+A revisão offline por agente e a auditoria estática passaram. Não houve segundo revisor humano nem execução em hardware NX809J; equivalência comportamental em runtime continua sem prova. Não declarar equivalência funcional completa.
