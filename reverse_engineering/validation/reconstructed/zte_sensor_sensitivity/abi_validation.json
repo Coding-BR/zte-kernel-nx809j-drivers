@@ -3,21 +3,25 @@
   "driver": "zte_sensor_sensitivity",
   "status": "PASS",
   "stock_sha256": "1f1340bea19dddf3aa5d5b48028c47611f8a222f025b43dde883950573c64032",
-  "candidate_sha256": "f3dddeecac42f78adaa2dffa58f4030c1e53ba161f0649bb14c01afaa0a6871e",
-  "document": "engenharia/runs/NX809J-20260711T011653Z/04_documents/zte_sensor_sensitivity.ko/DOCUMENTO_TRANSICAO.md",
-  "header_probe": "engenharia/validation/zte_sensor_sensitivity/kcfi_callback_surface.json",
+  "candidate_sha256": "5eb72ceeb4093627b3f3a720f90e1f71e2d3357c08e4daca8641576ae8efbffa",
+  "document": "kernel_development/drivers/reconstructed/zte_sensor_sensitivity/STATUS.md",
+  "header_probe": "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/kcfi_callback_surface.json",
   "checks": [
-    "18/18 indirect KCFI type IDs match",
     "21/21 Ghidra functions mapped",
     "exact imports, aliases and namespaces",
     "96-byte AArch64 private structure with offsets 0, 8, 16, 64-92 validated",
-    "eight sysfs callback pairs preserve stock signatures"
+    "eight sysfs callback pairs preserve stock signatures",
+    "18/18 callback KCFI type IDs, sections and symbol sizes match current promoted module",
+    "21/21 current module functions match stock AArch64 instructions and relocations",
+    "Target Module.symvers, kernelrelease, vermagic, aliases, imports and modversions verified against pinned Docker identity"
   ],
   "evidence": [
-    "validation/zte_sensor_sensitivity/driver_audit_final.json",
-    "validation/zte_sensor_sensitivity/kcfi_callback_surface.json",
-    "validation/zte_sensor_sensitivity/host_test_report.json",
-    "curated/zte_sensor_sensitivity/reconstruction_map.json"
+    "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/attestation/full_driver_audit_20261102_promoted/driver_audit.json",
+    "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/attestation/full_driver_audit_20261102/abi/module_abi_surface.json",
+    "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/attestation/full_driver_audit_20261102/assembly/comparison_by_name.json",
+    "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/kcfi_comparison.json",
+    "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/host_test_report.json",
+    "reverse_engineering/validation/reconstructed/zte_sensor_sensitivity/microtask_audit.json"
   ],
   "hardware_status": "INCOMPLETO",
   "hardware_blocker": "Requires controlled registration, sysfs and sensor-stack validation on the NX809J target"

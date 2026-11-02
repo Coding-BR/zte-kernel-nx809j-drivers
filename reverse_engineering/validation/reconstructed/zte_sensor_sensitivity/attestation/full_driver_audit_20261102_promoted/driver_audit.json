@@ -1,0 +1,577 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_sensor_sensitivity-1-9ee205ad903b:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_sensor_sensitivity/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_1=/zte_tpd",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "WARNING: modpost: \"sensors_sensitivity_register.__key\" [/work/validation/zte_sensor_sensitivity/cycle_1/zte_sensor_sensitivity] is COMMON symbol\nSkipping BTF generation for /work/validation/zte_sensor_sensitivity/cycle_1/zte_sensor_sensitivity.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/zte_sensor_sensitivity/cycle_1/zte_sensor_sensitivity.o\n  MODPOST /work/validation/zte_sensor_sensitivity/cycle_1/Module.symvers\n  CC [M]  /work/validation/zte_sensor_sensitivity/cycle_1/zte_sensor_sensitivity.mod.o\n  CC [M]  /work/validation/zte_sensor_sensitivity/cycle_1/.module-common.o\n  LD [M]  /work/validation/zte_sensor_sensitivity/cycle_1/zte_sensor_sensitivity.ko\n  BTF [M] /work/validation/zte_sensor_sensitivity/cycle_1/zte_sensor_sensitivity.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_sensor_sensitivity-2-45695c33a452:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_sensor_sensitivity/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_2=/zte_tpd",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "WARNING: modpost: \"sensors_sensitivity_register.__key\" [/work/validation/zte_sensor_sensitivity/cycle_2/zte_sensor_sensitivity] is COMMON symbol\nSkipping BTF generation for /work/validation/zte_sensor_sensitivity/cycle_2/zte_sensor_sensitivity.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/zte_sensor_sensitivity/cycle_2/zte_sensor_sensitivity.o\n  MODPOST /work/validation/zte_sensor_sensitivity/cycle_2/Module.symvers\n  CC [M]  /work/validation/zte_sensor_sensitivity/cycle_2/zte_sensor_sensitivity.mod.o\n  CC [M]  /work/validation/zte_sensor_sensitivity/cycle_2/.module-common.o\n  LD [M]  /work/validation/zte_sensor_sensitivity/cycle_2/zte_sensor_sensitivity.ko\n  BTF [M] /work/validation/zte_sensor_sensitivity/cycle_2/zte_sensor_sensitivity.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_sensor_sensitivity-1-9ee205ad903b:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_sensor_sensitivity/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_1=/zte_tpd",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_sensor_sensitivity-2-45695c33a452:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_sensor_sensitivity/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zte_sensor_sensitivity/cycle_2=/zte_tpd",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "create_kernel_output_volume_first": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-zte_sensor_sensitivity-1-9ee205ad903b"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-zte_sensor_sensitivity-1-9ee205ad903b\n"
+          },
+          "create_kernel_output_volume_second": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-zte_sensor_sensitivity-2-45695c33a452"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-zte_sensor_sensitivity-2-45695c33a452\n"
+          },
+          "prepare_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_sensor_sensitivity-1-9ee205ad903b:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          },
+          "prepare_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_sensor_sensitivity-2-45695c33a452:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted\\zte_sensor_sensitivity\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted\\zte_sensor_sensitivity\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted\\zte_sensor_sensitivity\\cycle_1\\zte_sensor_sensitivity.ko",
+          "sha256": "5eb72ceeb4093627b3f3a720f90e1f71e2d3357c08e4daca8641576ae8efbffa",
+          "size": 245288
+        },
+        "kernel_output_volumes": {
+          "cycle_1": "codex-kbuild-zte_sensor_sensitivity-1-9ee205ad903b",
+          "cycle_2": "codex-kbuild-zte_sensor_sensitivity-2-45695c33a452"
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted\\zte_sensor_sensitivity\\cycle_2\\zte_sensor_sensitivity.ko",
+          "sha256": "5eb72ceeb4093627b3f3a720f90e1f71e2d3357c08e4daca8641576ae8efbffa",
+          "size": 245288
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\zte_sensor_sensitivity\\full_driver_audit_20261102_promoted\\zte_sensor_sensitivity"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_sensor_sensitivity\\zte_sensor_sensitivity.ko",
+        "sha256": "5eb72ceeb4093627b3f3a720f90e1f71e2d3357c08e4daca8641576ae8efbffa",
+        "size": 245288
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_matches_fresh": true,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "kernel_source_identity": true,
+        "makefile": true,
+        "mapping_review": true,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 2,
+        "undefined_symbols_match": true,
+        "vermagic_accepted": true
+      },
+      "driver": "zte_sensor_sensitivity",
+      "errors": [],
+      "ghidra": {
+        "document": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_sensor_sensitivity\\STATUS.md",
+        "export": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_sensor_sensitivity\\offline_static\\ghidra_stock",
+        "function_count": 21,
+        "function_names": [
+          "accel_enable_show",
+          "accel_enable_store",
+          "accel_x_axial_show",
+          "accel_x_axial_store",
+          "accel_y_axial_show",
+          "accel_y_axial_store",
+          "accel_z_axial_show",
+          "accel_z_axial_store",
+          "cleanup_module",
+          "gyro_enable_show",
+          "gyro_enable_store",
+          "gyro_x_axial_show",
+          "gyro_x_axial_store",
+          "gyro_y_axial_show",
+          "gyro_y_axial_store",
+          "gyro_z_axial_show",
+          "gyro_z_axial_store",
+          "init_module",
+          "sensor_create_sysfs_interfaces",
+          "sensors_sensitivity_register",
+          "sensors_sensitivity_unregister"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "e90d3db04861119ab411478f267e9a3d",
+          "function_count": 21,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000bbf",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "zte_sensor_sensitivity.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "kernel_source_identity": {
+        "checks": {
+          "bindgen_sha256": true,
+          "bindgen_version": true,
+          "clang_binary_sha256": true,
+          "clang_revision": true,
+          "clang_version": true,
+          "config_sha256": true,
+          "docker_image_id": true,
+          "kernel_release": true,
+          "localversion_sha256": true,
+          "module_symvers_sha256": true,
+          "rust_toolchain": true,
+          "rustc_sha256": true,
+          "source_head": true,
+          "source_repository": true
+        },
+        "expected": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "image_command": {
+          "argv": [
+            "docker",
+            "image",
+            "inspect",
+            "--format",
+            "{{.Id}}",
+            "nubia-sm8850-kernel-builder:latest"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+        },
+        "mismatches": [],
+        "observed": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "bindgen 0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image": "nubia-sm8850-kernel-builder:latest",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "passed": true,
+        "probe_command": {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-v",
+            "nx809j_bindgen_0695:/work/bindgen:ro",
+            "-e",
+            "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w",
+            "/work/src/kernel",
+            "nubia-sm8850-kernel-builder:latest",
+            "python3",
+            "-c",
+            "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nsource_root = pathlib.Path(\"/work/src/kernel\")\ncommon = source_root / \"kernel_platform/common\"\nbuild_output = source_root / \".codex-kbuild/identity\"\nbuild_inputs = source_root / \"target_build_inputs\"\nlocalversion_rel = \"kernel_platform/common/localversion.nx809j-target\"\nbindgen = pathlib.Path(\"/work/bindgen/bin/bindgen\")\nclang = pathlib.Path(\"/work/toolchains/clang-r536225/bin/clang.real\")\nrustc = pathlib.Path(\"/work/toolchains/rust-1.82.0/bin/rustc\")\nclang_version = run([str(clang), \"--version\"])\nrust_toolchain = run([str(rustc), \"--version\"])\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"-C\", str(source_root), \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"-C\", str(source_root), \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"-C\", str(common), f\"O={build_output}\", \"ARCH=arm64\", \"LLVM=1\", \"LLVM_IAS=1\", \"kernelrelease\"]),\n    \"config_sha256\": digest(build_output / \".config\"),\n    \"module_symvers_sha256\": digest(build_output / \"Module.symvers\"),\n    \"localversion_sha256\": digest(common / \"localversion.nx809j-target\"),\n    \"bindgen_version\": run([str(bindgen), \"--version\"]),\n    \"bindgen_sha256\": digest(bindgen),\n    \"clang_revision\": \"clang-r536225\",\n    \"clang_version\": clang_version.splitlines()[0] if clang_version else None,\n    \"clang_binary_sha256\": digest(clang),\n    \"rust_toolchain\": rust_toolchain,\n    \"rustc_sha256\": digest(rustc),\n}))\n"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\"source_head\": \"3356b35306d35d5a480e3b63df1a9f065b5d9f55\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\", \"config_sha256\": \"b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\", \"localversion_sha256\": \"e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475\", \"bindgen_version\": \"bindgen 0.69.5\", \"bindgen_sha256\": \"548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706\", \"clang_revision\": \"clang-r536225\", \"clang_version\": \"Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\", \"clang_binary_sha256\": \"69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044\", \"rust_toolchain\": \"rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)\", \"rustc_sha256\": \"ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c\"}\n"
+        },
+        "probe_error": null,
+        "required": true,
+        "status": "MATCH"
+      },
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_matches_fresh": true,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__kmalloc_cache_noprof",
+              "__mutex_init",
+              "__stack_chk_fail",
+              "_printk",
+              "alloc_chrdev_region",
+              "class_create",
+              "class_destroy",
+              "device_create",
+              "device_create_file",
+              "device_destroy",
+              "device_remove_file",
+              "kfree",
+              "kmalloc_caches",
+              "kstrtoint",
+              "mem_alloc_profiling_key",
+              "mutex_lock",
+              "mutex_unlock",
+              "sprintf"
+            ]
+          },
+          "modinfo": {
+            "depends": [
+              ""
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": true,
+        "kernel_source_identity": true,
+        "missing_imports": [],
+        "namespace_match": true,
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__kmalloc_cache_noprof",
+              "__mutex_init",
+              "__stack_chk_fail",
+              "_printk",
+              "alloc_chrdev_region",
+              "class_create",
+              "class_destroy",
+              "device_create",
+              "device_create_file",
+              "device_destroy",
+              "device_remove_file",
+              "kfree",
+              "kmalloc_caches",
+              "kstrtoint",
+              "mem_alloc_profiling_key",
+              "mutex_lock",
+              "mutex_unlock",
+              "sprintf"
+            ]
+          },
+          "modinfo": {
+            "depends": [
+              ""
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": true,
+        "undefined_symbols_match": true,
+        "unexpected_imports": [],
+        "vermagic_accepted": true,
+        "vermagic_match": false
+      },
+      "status": "static_verified",
+      "stock": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\full_vendor_boot\\zte_sensor_sensitivity.ko",
+        "sha256": "1f1340bea19dddf3aa5d5b48028c47611f8a222f025b43dde883950573c64032",
+        "size": 33976
+      },
+      "traceability": {
+        "exists": true,
+        "mapped_functions": 21,
+        "mapping_review_errors": [],
+        "mapping_review_passed": true,
+        "passed": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_sensor_sensitivity\\reconstruction_map.json",
+        "stock_sha256": "1f1340bea19dddf3aa5d5b48028c47611f8a222f025b43dde883950573c64032",
+        "traceability_errors": [],
+        "traceability_passed": true,
+        "unmapped_functions": []
+      },
+      "warnings": []
+    }
+  ],
+  "generated_utc": "2026-11-02T06:30:34.672444+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": true,
+  "rebuild_requested": true,
+  "run_root": "public repository evidence: C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "zte_sensor_sensitivity"
+    ],
+    "static_verified": [
+      "zte_sensor_sensitivity"
+    ]
+  },
+  "target_kernel_manifest": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json"
+}

@@ -67,7 +67,8 @@ def load_target_symvers(
     *,
     source_volume: str,
     image: str,
-    path: str = "/work/src/kernel/kernel_platform/common/Module.symvers",
+    # The pinned NX809J source volume stores its prepared O= tree separately.
+    path: str = "/work/src/kernel/.codex-kbuild/identity/Module.symvers",
 ) -> tuple[str, str]:
     command = [
         "docker",
