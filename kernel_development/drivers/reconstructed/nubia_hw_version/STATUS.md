@@ -52,6 +52,30 @@ NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 2. Executar Joern/revisao humana de seguranca.
 3. Executar validacao de hardware separada, autorizada e com rollback.
 
+## Defeito stock confirmado e variante de ciclo de vida — 2026-11-02
+
+- A decompilacao Ghidra e o Assembly stock confirmam que `init_module` chama
+  `__platform_driver_register`, mas `cleanup_module` chama somente
+  `sysfs_remove_group` e `kobject_put`. O modulo tambem ignora o retorno do
+  registro e nao desfaz o registro se a inicializacao do kobject/sysfs falhar.
+- Isso deixa o registro do platform driver ativo quando o modulo sai e pode
+  deixar callbacks apontando para codigo descarregado. O candidato de
+  reconstrucao exata preserva o comportamento stock; seu fonte e `.ko` nao
+  foram alterados.
+- Foi criada uma variante corretiva separada em
+  `reverse_engineering/validation/reconstructed/nubia_hw_version/attestation/lifecycle_hardening_variant_20261102/`.
+  Ela verifica `platform_driver_register`, desfaz o registro nos caminhos de
+  falha e chama `platform_driver_unregister` na saida.
+- Dois builds Docker independentes produziram o mesmo candidato corrigido:
+  SHA-256 `4887459304cf1e68c794f991831c9214c209bc058683cca0a5342a0cf9b50ce2`,
+  `236072` bytes. A comparacao fresca preserva 17/19 funcoes; somente
+  `init_module` e `cleanup_module` divergem intencionalmente.
+- Vermagic e CRCs conferem com o kernel alvo. A auditoria de igualdade de
+  imports com o stock marca a nova importacao `platform_driver_unregister`,
+  que e intencional e tem CRC presente no `Module.symvers` do alvo.
+- A variante nao e equivalente ao stock e nao substitui o candidato exato.
+  Hardware e testes de runtime nao foram executados.
+
 ## Evidencias principais
 
 - `kernel_development/drivers/reconstructed/nubia_hw_version/STAGE3_RECONSTRUCTION_AUDIT.md`
