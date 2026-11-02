@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "offline character-device removal and in-flight I/O lifetime review",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 13,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_cdev_read",
+      "syna_cdev_write",
+      "syna_cdev_remove",
+      "syna_dev_remove",
+      "syna_cdev_ioctl_raw_read",
+      "syna_cdev_ioctl_raw_write"
+    ]
+  },
+  "source_state": {
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json",
+    "map_status": "PARTIAL_SOURCE_MAP",
+    "semantic_equivalence": "OFFLINE_EXACT",
+    "hardware_validation": "DEFERRED",
+    "docker_candidate_snapshot_match": true,
+    "docker_candidate_snapshot_kbuild_inputs": 848
+  },
+  "findings": [
+    {
+      "id": "manual-lifetime-syna-cdev-inflight-file-operations",
+      "category": "lifetime",
+      "severity": "high",
+      "disposition": "CONDITIONAL_USE_AFTER_FREE_AND_INVALID_GLOBAL_DEREFERENCE_INHERITED_FROM_STOCK",
+      "source_hashes": {
+        "syna_cdev_read.c": "094bf4668d3823c5fe98da724dcb6844b9ab8dd2c785058889c93be279a39a42",
+        "syna_cdev_write.c": "913ff33e6fdf2def4566edab7ddb2e3ed5229eeebce8a1731e007782ba2c7d49",
+        "syna_cdev_remove.c": "d1bfaccf414cd2d0c261bfb1e0aed3933c7961256d80662335aab15268d04f63",
+        "syna_dev_remove.c": "0ea90a7fabd47838839ca2b3b560fc8c679af1214d1a74a37f5d237438693f56"
+      },
+      "evidence": [
+        {
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_read.c",
+          "lines": [17, 24],
+          "observation": "Loads tcm_hcd through g_cdev_data before acquiring qword_316A0, then holds qword_316A0 around the raw read."
+        },
+        {
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_write.c",
+          "lines": [17, 24],
+          "observation": "Loads tcm_hcd through g_cdev_data before acquiring qword_316A0, then holds qword_316A0 around the raw write."
+        },
+        {
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_remove.c",
+          "lines": [20, 53, 58, 72, 79, 83],
+          "observation": "Uses qword_316D0 for the client-list teardown, calls cdev_del, warns if qword_31698 is nonzero, frees qword_31658 through devm_kfree, resets shared state, and finally sets g_cdev_data to zero. It does not acquire qword_316A0 or qword_31668 before freeing the I/O state."
+        },
+        {
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_ioctl_raw_read.c",
+          "lines": [42, 47, 52, 73, 97, 124],
+          "observation": "The raw-read path increments the shared reference counter and reads, allocates, clears, and uses qword_31658 as its transfer buffer."
+        },
+        {
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_ioctl_raw_write.c",
+          "lines": [41, 46, 51, 72, 96, 100],
+          "observation": "The raw-write path increments the shared reference counter and reads, allocates, clears, and uses qword_31658 as its transfer buffer."
+        },
+        {
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c",
+          "lines": [21, 27, 28, 41, 55, 64, 65],
+          "observation": "Calls syna_cdev_remove before disconnecting the TCM device and releasing additional managed and heap allocations."
+        }
+      ],
+      "kernel_api_contract": "Linux 6.12 cdev_del prevents new opens, but already-open descriptors retain callable file_operations after cdev_del returns.",
+      "race_scenarios": [
+        "An already-open descriptor invokes read/write after cdev_del; the fop still runs and dereferences g_cdev_data before any null or shutdown check. If removal has set g_cdev_data to zero, the access through g_cdev_data + 168 is invalid.",
+        "A read/write already inside the raw operation holds qword_316A0 and uses qword_31658. Removal does not acquire qword_316A0 or qword_31668; it only logs a nonzero qword_31698 reference count and continues to free qword_31658 and clear the shared state."
+      ],
+      "runtime_assessment": "The cdev API contract and lock/free ordering establish a reachable static race for open descriptors. The existing host harnesses are sequential stub-based tests; they do not model concurrent file descriptors, kernel cdev lifetime, or a live managed allocation. Runtime reproduction has not been performed.",
+      "stock_comparison": {
+        "candidate_matches_stock": true,
+        "map_statuses": {
+          "syna_cdev_remove": "PROMOTED_OFFLINE_EXACT",
+          "syna_cdev_read": "PROMOTED_OFFLINE_EXACT",
+          "syna_cdev_write": "PROMOTED_OFFLINE_EXACT",
+          "syna_dev_remove": "PROMOTED_OFFLINE_EXACT"
+        },
+        "existing_evidence": "Each function has existing canonical Docker and host-harness evidence; read/write/remove microtask attestations report two canonical build cycles."
+      },
+      "reconstruction_decision": "Keep the reconstructed functions stock-exact and record this as a separate hardening deviation. A safe fix needs a shutdown state and a lifetime protocol for already-open descriptors, with all operations acquiring a valid object reference before dereferencing state; then drain in-flight I/O before freeing the shared buffer and TCM context.",
+      "references": [
+        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next186_syna_cdev_remove_v1/host_harness_report.json",
+        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next188_syna_cdev_read_v1/host_harness_report.json",
+        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next189_syna_cdev_write_v1/host_harness_report.json"
+      ]
+    },
+    {
+      "id": "joern-syna-cdev-removal-list-cleanup",
+      "category": "synchronization_and_lifetime",
+      "severity": "high",
+      "disposition": "EXPECTED_LIST_TEARDOWN_LOCK_PAIR_WITH_SEPARATE_IO_LIFETIME_GAP",
+      "function": "syna_cdev_remove",
+      "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_remove.c",
+      "review": "The qword_316D0 lock protects removal of the report/client list, whose enqueue/dequeue paths also use qword_316D0. That explains the list kfree calls. This lock does not protect the separate raw-I/O state, which uses qword_316A0/qword_31668; the first finding records that independent lifetime race."
+    }
+  ],
+  "overall_disposition": "STATICALLY_CONFIRMED_CDEV_LIFETIME_RACE_SOURCE_UNCHANGED",
+  "remaining_work": [
+    "Review open/release/ioctl and device-reference ownership as one cdev lifetime protocol before designing the hardened deviation.",
+    "Continue classifying the remaining Joern lifetime and synchronization findings.",
+    "Keep static stock reconstruction and security hardening separately labeled.",
+    "Hardware and independent human review remain deferred."
+  ]
+}
