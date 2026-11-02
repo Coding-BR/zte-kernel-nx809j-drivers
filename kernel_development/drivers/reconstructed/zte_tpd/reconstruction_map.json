@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "546aad16f46e1f5c9fd6914854967aca3a253642b394d117e005cddd7a37f4c7",
+  "candidate_sha256": "4b9ac82ce6e60bd38d11f13cdc589a91b5198e0e235f81a738dfd93bd00458c6",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T23:19:14Z",
+  "generated_utc": "2026-11-02T23:24:17Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4769,7 +4769,7 @@
     },
     {
       "evidence": [
-        "source:syna_dev_helper_work.c:sha256:59407c62c52bef602d108b82e15622fa5a97b948b32d433291d571f47df29dec",
+        "source:syna_dev_helper_work.c:sha256:b7cc4e1fe42fe5248538d0633c004c85c405cfa164eec4da00d4c9123eacc3c6",
         "ghidra-pseudocode:decompiled/0165_00113590_syna_dev_helper_work.c:sha256:40e1a1ae3c348a9f4dd0204bc4cb8bc7dd5feb91400b0b14b0a19934450989b6",
         "ghidra-pcode:pcode/0165_00113590_syna_dev_helper_work.jsonl:sha256:95ab54f9db4f74f32b5a8b4ed41719b8e939c3b7363a9c76587672b0f3c1eef6",
         "stock-assembly:0165_syna_dev_helper_work_00113590.asm:sha256:1379ca4c4165b50bfdc46b9ae6309848ab94c2d7e772c76ce89f1212f2f09283",
@@ -4779,9 +4779,14 @@
         "kcfi-compare:attestation/next521_syna_dev_helper_work_exact_v1/kcfi_comparison.json:sha256:518784eee16eb571794f5f42496118c3e3b8be9a84e3a6db3e2076670bcb78e5",
         "assembly-compare:attestation/next521_syna_dev_helper_work_exact_v1/assembly_comparison.json:sha256:cfce2bd34e703d4ff672b9832bb1c9890fd631cc06567897a756ef6e8dcf53e8",
         "canonical-build:attestation/helper_workqueue_teardown_20261102/canonical_build_report.json:sha256:1720dca5da2e97d2feb651abb2d28ac79f00ce454ec0e5e12344a314eb2e05f5",
-        "source-sync:attestation/helper_workqueue_teardown_20261102/source_sync_plan.json:sha256:4cf48575ca5bc6a5d001dbd4089f51c846a3ef66611a9bdb64cd6b4ff78076cd"
+        "source-sync:attestation/helper_workqueue_teardown_20261102/source_sync_plan.json:sha256:4cf48575ca5bc6a5d001dbd4089f51c846a3ef66611a9bdb64cd6b4ff78076cd",
+        "source-current:syna_dev_helper_work.c:sha256:b7cc4e1fe42fe5248538d0633c004c85c405cfa164eec4da00d4c9123eacc3c6",
+        "source-sync:attestation/syna_helper_work_context_guard_20261102/source_sync_plan.json:sha256:8fa632c78cd58040f7eb75e6c7189ecdda8e06cdadddfd38b5dabd09c46b03db",
+        "canonical-build:attestation/syna_helper_work_context_guard_20261102/canonical_build_report.json:sha256:ff4610bfcc092ab0209cd70fc36224ffda65402ac914cb3f624d5447b3ca4efe",
+        "kcfi-comparison:attestation/syna_helper_work_context_guard_20261102/kcfi_comparison.json:sha256:ad36e1ec9cc269c55c39c3788eb64a0eab59d92f9e52e74b1d7e8027f1973466",
+        "lifecycle-review:attestation/syna_helper_work_context_guard_20261102/lifecycle_review.json:sha256:9fa66bf47630fb1099ae80b7519ca6bc5ba606492fef660b6b989900f04b4762"
       ],
-      "mapping_basis": "Stock Ghidra/P-Code used as the behavior baseline; delayed reflash requeue and pending-state completion are guarded for teardown. Two canonical Docker cycles pass; runtime scheduling remains deferred.",
+      "mapping_basis": "Ghidra stock clears pending state on both marker branches. The hardened callback derives the embedded TCM owner before the branch so shared locked completion can safely preserve that behavior.",
       "review_scope": "offline_lifecycle_hardening",
       "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "syna_dev_helper_work.c",
@@ -4790,7 +4795,7 @@
       "stock_body_bytes": 308,
       "stock_entry": "00113590",
       "stock_function": "syna_dev_helper_work",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: delayed reflash work is scheduled only while helper-work admission remains open, and pending state is cleared under the shared lock. Two-cycle canonical build passed; runtime scheduling remains unverified."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: derives tcm from the embedded work_struct before checking the pending marker, so the shared spinlock-protected completion helper receives a valid pointer on the stock invalid-marker clear-and-return path. Two-cycle canonical build and matching KCFI type ID passed; runtime scheduling remains unverified."
     },
     {
       "evidence": [

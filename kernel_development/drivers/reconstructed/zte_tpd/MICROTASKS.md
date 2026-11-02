@@ -384,6 +384,8 @@ The fops wiring and lifecycle guards for `input_agent` are tracked in `attestati
 
 The `syna_dev_connect` reflash queue allocation guard is attested in `attestation/syna_reflash_queue_guard_20261102/`. Two canonical Docker cycles produced identical modules; KCFI type ID `0xae20471c` matches stock. On allocation failure, the wrapper now disconnects the successfully registered IRQ/input path and returns `-ENOMEM`.
 
+The `syna_dev_helper_work` context initialization guard is recorded in `attestation/syna_helper_work_context_guard_20261102/`. The callback now derives its owner from `work - 0x528` before the pending-marker branch, so invalid-marker completion preserves the stock clear-and-return path without passing an uninitialized pointer.
+
 ## workqueue lifecycle cross-cut (2026-11-02)
 
 The TPD main/report queue admission and teardown deviation is recorded in attestation/workqueue_lifecycle_20261102/lifecycle_review.json (SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd). Two independent canonical Docker builds passed with module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae and matching vermagic. KCFI type IDs match for six comparable stock functions; the stock zte_touch_deinit symbol has no valid KCFI preamble. No kernel runtime or hardware test was run.

@@ -24,9 +24,9 @@ void syna_dev_helper_work(struct work_struct *work)
 #endif
 
   v1 = result;
+  v2 = (__int64 *)(result - 1320);
   if ( (*(volatile unsigned int *)(result - 8) & 0xff) == 1 )
   {
-    v2 = (__int64 *)(result - 1320);
     result = *(_QWORD *)(result - 1320);
     v3 = *(unsigned __int8 *)(result + 9);
     if ( v3 == 11 )

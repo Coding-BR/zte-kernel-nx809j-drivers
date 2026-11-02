@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T23:23:48Z",
+  "driver": "zte_tpd",
+  "scope": [
+    "syna_dev_helper_work",
+    "syna_dev_helper_work_complete"
+  ],
+  "finding": {
+    "summary": "The hardened helper callback used the owning TCM pointer after a conditional that initialized it only when the pending marker equaled 1.",
+    "stock_evidence": [
+      "offline_static/ghidra_stock/decompiled/0165_00113590_syna_dev_helper_work.c derives the TCM base as work-0x528 only in the valid-marker body, then clears the pending word at work-8 and returns after either branch.",
+      "offline_static/stock_assembly/0165_syna_dev_helper_work_00113590.asm branches on the marker and reaches a shared epilogue that stores zero at work-8; no TCM pointer is used on the invalid-marker branch."
+    ],
+    "reconstruction_issue": "The C hardening moved pending clearing into syna_dev_helper_work_complete(tcm), but left the TCM pointer assignment inside the marker condition. The unconditional completion call therefore received an indeterminate pointer when the condition was false."
+  },
+  "change": {
+    "mechanism": "Derive tcm as work-1320 (0x528), matching the stock owner offset, before evaluating the pending marker. The shared completion helper then clears pending state under its existing spinlock on both paths.",
+    "behavior": "The callback still performs reset handling only when the low marker byte is 1. The false-marker path still clears pending state and returns, now with a valid owner pointer.",
+    "classification": "HARDENED_STOCK_DEVIATION; lifecycle locking remains, and the owner derivation now safely covers the stock shared epilogue path."
+  },
+  "source_sync": {
+    "report": "source_sync_plan.json",
+    "passed": true,
+    "copied": [
+      "syna_dev_helper_work.c"
+    ],
+    "remaining_mismatches": 0
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "passed": true,
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256": "4b9ac82ce6e60bd38d11f13cdc589a91b5198e0e235f81a738dfd93bd00458c6",
+    "module_size": 7157688,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "kcfi": {
+    "report": "kcfi_comparison.json",
+    "passed": true,
+    "function": "syna_dev_helper_work",
+    "stock_type_id": "0xa607748c",
+    "candidate_type_id": "0xa607748c",
+    "size_is_gating": false,
+    "stock_symbol_size": 308,
+    "candidate_symbol_size": 312
+  },
+  "limits": [
+    "No kernel runtime, workqueue state injection, Android boot, or NX809J hardware execution was performed.",
+    "The invalid-marker path was reviewed statically; no runtime fault-injection harness was run."
+  ]
+}
