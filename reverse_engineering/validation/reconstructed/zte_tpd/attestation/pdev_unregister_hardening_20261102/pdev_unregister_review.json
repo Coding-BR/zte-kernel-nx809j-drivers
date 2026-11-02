@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T23:11:27.416154+00:00",
+  "batch": "pdev_unregister_hardening_20261102",
+  "scope": "Replace the inverted zte_touch_pdev_unregister stock body with checked child-device release and route shared probe/deinit cleanup through it.",
+  "root_cause": [
+    "The stock body unregisters only when cdev+0xdd0 is NULL. That branch also enters a trap path before attempting platform_device_unregister(NULL); a valid non-NULL child takes the no-op branch and leaks.",
+    "The hardened probe dispatcher ensures the synthetic uevent child remains unbound, so the shared unregister routine can safely remove it without invoking zte_touch_remove on the global parent state."
+  ],
+  "implementation": {
+    "function": "The C implementation returns when tpd_cdev or the child slot is NULL. For a valid child, it clears cdev+0xdd0 and the uevent callback at cdev+0xea0 before calling platform_device_unregister.",
+    "build_selection": "The Makefile no longer links zte_touch_pdev_unregister_exact.o; it includes the hardened C implementation. The exact stock assembly remains preserved as historical evidence but is not part of the candidate module.",
+    "shared_cleanup": "zte_touch_probe_failure_cleanup now delegates child release to zte_touch_pdev_unregister, so failed probe and normal deinit use the same idempotent path."
+  },
+  "validation": {
+    "source_sync_passed": true,
+    "source_sync_report": "source_sync_plan.json",
+    "source_sync_report_sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93",
+    "canonical_build_passed": true,
+    "canonical_build_reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256": "01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2",
+    "module_size": 7160424,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": [],
+    "canonical_build_report": "canonical_build_report.json",
+    "canonical_build_report_sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3",
+    "kcfi_passed": true,
+    "kcfi_size_ignored": true,
+    "kcfi_functions": [
+      {
+        "function": "tpd_proc_deinit",
+        "stock_type_id": "0xe5c47d60",
+        "candidate_type_id": "0xe5c47d60",
+        "section_match": true,
+        "type_match": true,
+        "passed": true
+      },
+      {
+        "function": "tpd_workqueue_init",
+        "stock_type_id": "0x6fbb3035",
+        "candidate_type_id": "0x6fbb3035",
+        "section_match": true,
+        "type_match": true,
+        "passed": true
+      },
+      {
+        "function": "zte_touch_pdev_register",
+        "stock_type_id": "0x6fbb3035",
+        "candidate_type_id": "0x6fbb3035",
+        "section_match": true,
+        "type_match": true,
+        "passed": true
+      },
+      {
+        "function": "zte_touch_pdev_unregister",
+        "stock_type_id": "0xe5c47d60",
+        "candidate_type_id": "0xe5c47d60",
+        "section_match": true,
+        "type_match": true,
+        "passed": true
+      },
+      {
+        "function": "zte_touch_probe",
+        "stock_type_id": "0xc7f8c87c",
+        "candidate_type_id": "0xc7f8c87c",
+        "section_match": true,
+        "type_match": true,
+        "passed": true
+      }
+    ],
+    "kcfi_comparison": "kcfi_comparison.json",
+    "kcfi_comparison_sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e",
+    "zte_touch_deinit_note": "Not compared: the stock symbol has no valid KCFI preamble."
+  },
+  "limitations": [
+    "No runtime module load or NX809J hardware teardown test was run.",
+    "KCFI validation gates type ID and section; symbol-size parity is intentionally non-gating for hardened functions.",
+    "The child unbound property is established by the callback identity guard in the preceding probe lifecycle batch."
+  ],
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+      "sha256": "e4728aed14a6f88b7fd1a46df08139abfe206797916644d22905137792a14b63"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/defs.h",
+      "sha256": "b281d9b3fe60716e7e01a1d4c230e9f17409b61856a81e9551020d46ef147dc4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_pdev_unregister.c",
+      "sha256": "32f7942a2642af66d6d5f2a534a42c2ad2bf4eb22eb0b891575895361c15d44c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_failure_cleanup.c",
+      "sha256": "a9b73214b2163f0165da83c12c9c05499e28c63eba7c9ab39f8686f5df26fe28"
+    }
+  ]
+}

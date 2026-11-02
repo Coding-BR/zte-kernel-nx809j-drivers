@@ -90,6 +90,7 @@ int zte_touch_init(void);
 int zte_touch_pdev_register(void);
 int zte_touch_probe(struct platform_device *pdev);
 int zte_touch_probe_dispatch(struct platform_device *pdev);
+void zte_touch_pdev_unregister(void);
 
 #define BYTEn(x, n)   (*((unsigned char*)&(x)+(n)))
 #define BYTE0(x)   BYTEn(x,  0)

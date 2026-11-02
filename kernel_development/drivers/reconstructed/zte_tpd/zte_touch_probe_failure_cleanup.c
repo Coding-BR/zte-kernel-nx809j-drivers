@@ -41,9 +41,8 @@ void zte_touch_probe_failure_cleanup(void)
 	}
 
 	*(void (**)(u8))(cdev + 0xea0) = NULL;
-	*(struct platform_device **)(cdev + 0xdd0) = NULL;
 	if (child)
-		platform_device_unregister(child);
+		zte_touch_pdev_unregister();
 
 	if (parent)
 		platform_set_drvdata(parent, NULL);

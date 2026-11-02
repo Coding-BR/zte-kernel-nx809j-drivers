@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-11-02T23:06:27.252122+00:00",
+  "generated_utc": "2026-11-02T23:11:50.697941+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -647,9 +647,29 @@
           "role": "design_iterations",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
           "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/canonical_build_report.json",
+          "sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+          "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/source_sync_plan.json",
+          "sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json",
+          "sha256": "bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
         }
       ],
-      "attestation": "HARDENED_STOCK_DEVIATION: after removing the proc tree, clears global tpd_proc_dir so failure rollback and normal deinit can call the cleanup safely more than once. Historical OFFLINE_EXACT evidence applies to the earlier source revision. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
+      "attestation": "HARDENED_STOCK_DEVIATION: after removing proc entries, clears tpd_proc_dir for idempotent probe rollback and normal deinit; the final canonical build validates this source revision. Latest canonical two-cycle module SHA-256 01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/."
     },
     {
       "id": "016_zte_touch_pdev_register",
@@ -694,9 +714,29 @@
           "role": "design_iterations",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
           "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/canonical_build_report.json",
+          "sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+          "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/source_sync_plan.json",
+          "sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json",
+          "sha256": "bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
         }
       ],
-      "attestation": "HARDENED_STOCK_DEVIATION: uses a local pdev, clears cdev+0xdd0 before releasing add failures with platform_device_put, and preserves the public zte_touch name. The driver callback rejects only this synthetic child by pointer identity, preventing self-probe while preserving other name-matched devices. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
+      "attestation": "HARDENED_STOCK_DEVIATION: clears the pdev slot before platform_device_put on add failure; the generated child is kept unbound by the identity dispatcher and is released through the shared safe unregister routine. Latest canonical two-cycle module SHA-256 01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/."
     },
     {
       "id": "017_tpd_report_uevent",
@@ -756,29 +796,30 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_pdev_unregister\nEntrada Ghidra: 001083b4\nTamanho stock: 96 bytes\nCategoria: core_logic\nAlvo no fonte: zte_touch_pdev_unregister.c:zte_touch_pdev_unregister\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0017_001083b4_zte_touch_pdev_unregister.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0017_001083b4_zte_touch_pdev_unregister.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/canonical_build_report.json",
+          "sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+          "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/018_zte_touch_pdev_unregister.json",
-          "sha256": "b752b5f7a7ba5de65e4dc57c1eb497edcb9c2259437a19c7910bc3a0929c5e70"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/source_sync_plan.json",
+          "sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93"
         },
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json",
+          "sha256": "bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION: the linked C implementation returns for a null cdev/child, clears cdev+0xdd0 and callback cdev+0xea0 before unregistering the valid child. The Makefile no longer links the inverted stock exact assembly. Latest canonical two-cycle module SHA-256 01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/."
     },
     {
       "id": "019_tpd_probe_work_init",
@@ -946,9 +987,29 @@
           "role": "design_iterations",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
           "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/canonical_build_report.json",
+          "sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+          "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/source_sync_plan.json",
+          "sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json",
+          "sha256": "bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
         }
       ],
-      "attestation": "HARDENED_STOCK_DEVIATION: on allocation failure, destroys and clears allocated workqueues, exits UFP, then removes already-published proc/sysfs state and the synthetic child and clears parent drvdata and tpd_cdev. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
+      "attestation": "HARDENED_STOCK_DEVIATION: workqueue failure exits UFP and invokes shared probe rollback, which now releases the child through zte_touch_pdev_unregister and clears parent drvdata and tpd_cdev. Latest canonical two-cycle module SHA-256 01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/."
     },
     {
       "id": "023_tp_ghost_check_work",
@@ -1075,9 +1136,29 @@
           "role": "design_iterations",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
           "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/canonical_build_report.json",
+          "sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+          "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/source_sync_plan.json",
+          "sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json",
+          "sha256": "bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
         }
       ],
-      "attestation": "HARDENED_STOCK_DEVIATION: the recovered body routes its kobject release through a wrapper that clears cdev+0xc50. The registered callback rejects only its synthetic uevent child by pointer identity; workqueue failure invokes full rollback. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
+      "attestation": "HARDENED_STOCK_DEVIATION: uses the identity dispatcher and slot-clearing kobject wrapper; failure rollback now calls the checked zte_touch_pdev_unregister helper. Latest canonical two-cycle module SHA-256 01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/."
     },
     {
       "id": "026_zte_touch_remove",
@@ -4444,9 +4525,29 @@
           "role": "design_iterations",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
           "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
+        },
+        {
+          "role": "compile",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/canonical_build_report.json",
+          "sha256": "94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3"
+        },
+        {
+          "role": "kcfi",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+          "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
+        },
+        {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/source_sync_plan.json",
+          "sha256": "9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93"
+        },
+        {
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json",
+          "sha256": "bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
         }
       ],
-      "attestation": "HARDENED_STOCK_DEVIATION: retains stock work draining and interface removal, routes kobject_put through the slot-clearing wrapper, neutralizes the inverted child unregister sequence, then releases the unbound child and clears parent drvdata/global cdev. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
+      "attestation": "HARDENED_STOCK_DEVIATION: retains stock draining and interface removal, routes kobject_put through the slot-clearing wrapper, neutralizes the inverted pdev branch and releases the child through the checked unregister helper. Latest canonical two-cycle module SHA-256 01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/."
     },
     {
       "id": "096_tpd_touch_press",
