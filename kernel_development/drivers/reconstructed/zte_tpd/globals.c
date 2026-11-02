@@ -883,6 +883,7 @@ char unk_D3C[256] = "zte_tpd_log";
 
 // Functions declarations for casting in structures
 extern int zte_touch_probe(struct platform_device *pdev);
+extern int zte_touch_probe_dispatch(struct platform_device *pdev);
 extern void zte_touch_remove(struct platform_device *pdev);
 extern void zte_touch_shutdown(struct platform_device *pdev);
 
@@ -911,7 +912,7 @@ static const struct of_device_id zte_touch_of_match[] = {
 };
 
 struct platform_driver zte_touch_device_driver = {
-    .probe = zte_touch_probe,
+    .probe = zte_touch_probe_dispatch,
     .remove = zte_touch_remove,
     .shutdown = zte_touch_shutdown,
     .driver = {

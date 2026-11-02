@@ -88,6 +88,8 @@ int ufp_get_lcdstate(void);
 int ufp_mac_init(void);
 int zte_touch_init(void);
 int zte_touch_pdev_register(void);
+int zte_touch_probe(struct platform_device *pdev);
+int zte_touch_probe_dispatch(struct platform_device *pdev);
 
 #define BYTEn(x, n)   (*((unsigned char*)&(x)+(n)))
 #define BYTE0(x)   BYTEn(x,  0)
@@ -670,6 +672,8 @@ extern void tpd_clean_all_event(void);
 extern void tpd_probe_work_deinit(void);
 extern void tpd_probe_work_init(void);
 extern void tpd_proc_deinit(void);
+extern void tpd_probe_kobject_put(struct kobject *kobj);
+extern void zte_touch_probe_failure_cleanup(void);
 extern void tpd_report_work_deinit(void);
 extern void tpd_reset_fw_data_pos_and_size(void);
 extern void tpd_resume_work_deinit(void);

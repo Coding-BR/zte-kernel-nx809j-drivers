@@ -113,24 +113,25 @@ zte_touch_deinit_stock_exact:
     .reloc .-4, R_AARCH64_CALL26, sysfs_remove_bin_file
     .inst 0xf9462a60
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, kobject_put
+    .reloc .-4, R_AARCH64_CALL26, tpd_probe_kobject_put
     .inst 0xf94002d3
     .reloc .-4, R_AARCH64_LDST64_ABS_LO12_NC, tpd_cdev
     .inst 0xf946ea68
     .inst 0xb50001a8
-    .inst 0x52806708
-    .inst 0x52800200
-    .inst 0xf9400108
-    .inst 0xb85fc110
-    .inst 0x72971911
-    .inst 0x72ad9031
-    .inst 0x6b11021f
-    .inst 0x54000040
-    .inst 0xd4304500
-    .inst 0xd63f0100
-    .inst 0xf946ea60
-    .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, platform_device_unregister
+    /* Normal pdev cleanup is handled after the stock body; avoid the
+     * inverted NULL branch and unregister only the validated child pointer. */
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
+    .inst 0xd503201f
     .inst 0x52800028
     .inst 0x390002a8
     .reloc .-4, R_AARCH64_LDST8_ABS_LO12_NC, zte_touch_deinit.ztp_release

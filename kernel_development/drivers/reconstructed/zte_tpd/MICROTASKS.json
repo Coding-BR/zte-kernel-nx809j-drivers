@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-11-02T22:48:19.774482+00:00",
+  "generated_utc": "2026-11-02T23:06:27.252122+00:00",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -621,29 +621,35 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tpd_proc_deinit\nEntrada Ghidra: 00107fa4\nTamanho stock: 544 bytes\nCategoria: lifecycle\nAlvo no fonte: tpd_proc_deinit.c:tpd_proc_deinit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0014_00107fa4_tpd_proc_deinit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0014_00107fa4_tpd_proc_deinit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/canonical_build_report.json",
+          "sha256": "917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/kcfi_comparison.json",
+          "sha256": "029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/015_tpd_proc_deinit.json",
-          "sha256": "8719a77034a49012605ddcb9eb0118cd67d41e77b6047c521f9e1aa3d10f0497"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/source_sync_plan.json",
+          "sha256": "d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab"
         },
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/probe_failure_review.json",
+          "sha256": "d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd"
+        },
+        {
+          "role": "design_iterations",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
+          "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION: after removing the proc tree, clears global tpd_proc_dir so failure rollback and normal deinit can call the cleanup safely more than once. Historical OFFLINE_EXACT evidence applies to the earlier source revision. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
     },
     {
       "id": "016_zte_touch_pdev_register",
@@ -662,29 +668,35 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: zte_touch_pdev_register\nEntrada Ghidra: 001081c8\nTamanho stock: 224 bytes\nCategoria: core_logic\nAlvo no fonte: zte_touch_pdev_register.c:zte_touch_pdev_register\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0015_001081c8_zte_touch_pdev_register.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0015_001081c8_zte_touch_pdev_register.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/canonical_build_report.json",
+          "sha256": "917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/kcfi_comparison.json",
+          "sha256": "029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/016_zte_touch_pdev_register.json",
-          "sha256": "c94c64767b146fcebbe10b823411ba4ba861eb7f4c700df63cd935f7a00df2fe"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/source_sync_plan.json",
+          "sha256": "d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab"
         },
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/probe_failure_review.json",
+          "sha256": "d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd"
+        },
+        {
+          "role": "design_iterations",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
+          "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION: uses a local pdev, clears cdev+0xdd0 before releasing add failures with platform_device_put, and preserves the public zte_touch name. The driver callback rejects only this synthetic child by pointer identity, preventing self-probe while preserving other name-matched devices. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
     },
     {
       "id": "017_tpd_report_uevent",
@@ -912,41 +924,31 @@
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/canonical_build_report.json",
+          "sha256": "917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/kcfi_comparison.json",
+          "sha256": "029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/022_tpd_workqueue_init.json",
-          "sha256": "10489ab05c2883d17f9253dfd3beaba8ccce0f0568dcbdc4b2af694e1f0d8d2c"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
-        },
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
-          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/source_sync_plan.json",
+          "sha256": "d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab"
         },
         {
           "role": "lifecycle_review",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
-          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/probe_failure_review.json",
+          "sha256": "d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
-          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
+          "role": "design_iterations",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
+          "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
         }
       ],
-      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
+      "attestation": "HARDENED_STOCK_DEVIATION: on allocation failure, destroys and clears allocated workqueues, exits UFP, then removes already-published proc/sysfs state and the synthetic child and clears parent drvdata and tpd_cdev. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
     },
     {
       "id": "023_tp_ghost_check_work",
@@ -1051,41 +1053,31 @@
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/canonical_build_report.json",
+          "sha256": "917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/kcfi_comparison.json",
+          "sha256": "029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/025_zte_touch_probe.json",
-          "sha256": "4eb0e2d385a658242d99dd25bb7a4c5d1422c0ebc2f862cac31f04d5121af808"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
-        },
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
-          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/source_sync_plan.json",
+          "sha256": "d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab"
         },
         {
           "role": "lifecycle_review",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
-          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/probe_failure_review.json",
+          "sha256": "d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/kcfi_comparison.json",
-          "sha256": "384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
+          "role": "design_iterations",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
+          "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
         }
       ],
-      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
+      "attestation": "HARDENED_STOCK_DEVIATION: the recovered body routes its kobject release through a wrapper that clears cdev+0xc50. The registered callback rejects only its synthetic uevent child by pointer identity; workqueue failure invokes full rollback. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
     },
     {
       "id": "026_zte_touch_remove",
@@ -4430,71 +4422,31 @@
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/canonical_build_report.json",
-          "sha256": "6d5c50a0adebff31253184d384daec575953b6c75e373889a2740274a2b80b2c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/canonical_build_report.json",
+          "sha256": "917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263"
         },
         {
           "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/kcfi_comparison.json",
-          "sha256": "36d244ce68a1354d9a1e5133ef0f619e9d36a10ce8da9a4f4dd3b250d7447797"
-        },
-        {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/host_harness_report.json",
-          "sha256": "ad3b8205ce535cf21a7eb6c2efbe9e4cb6a79fb798b1368354cfbe461ad3b35c"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/joern/joern_gate_summary.json",
-          "sha256": "6c05a49768277004fe7553d3f5c87da7846ab2f617d1f5e05bcce0f99583a04c"
-        },
-        {
-          "role": "aarch64_assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/aarch64_comparison.json",
-          "sha256": "b7d275ddaa5fe6507ef5dafc6187cd61df02cf84b8f752ab4ed134b6a0ef0d89"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/kcfi_comparison.json",
+          "sha256": "029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952"
         },
         {
           "role": "source_sync",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next820_zte_touch_deinit_exact_v3/source_sync_report.json",
-          "sha256": "6c5a50b4d9c283ad115fb2de4d755f734e2a0c17cc61d199c6516bb37deface0"
-        },
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/canonical_build_report.json",
-          "sha256": "b7595d50bddf2f775a5f65f5ecc2027d5931cd63d040f644d411506fb806c01f"
-        },
-        {
-          "role": "source_sync",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/source_sync_plan.json",
-          "sha256": "a244cabd15c78a8109ae1a9c9dc8c88363b7fed32afa228bc164dfcac30cc14c"
-        },
-        {
-          "role": "hardening_review",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_pdev_teardown_20261102/lifecycle_review.json",
-          "sha256": "08786c3149df60f02e49d0ae42aaa673abcb92339955932e9e0c762e9664358e"
-        },
-        {
-          "role": "lifecycle_source",
-          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_lifecycle.c",
-          "sha256": "14127499d8e6111b2bb6b0a6cf4ffc7ee009f3cebdabfae95873750953bd0562"
-        },
-        {
-          "role": "retained_stock_instruction_stream",
-          "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit_exact.S",
-          "sha256": "d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033"
-        },
-        {
-          "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/canonical_build_report.json",
-          "sha256": "f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/source_sync_plan.json",
+          "sha256": "d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab"
         },
         {
           "role": "lifecycle_review",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/workqueue_lifecycle_20261102/lifecycle_review.json",
-          "sha256": "e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/probe_failure_review.json",
+          "sha256": "d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd"
+        },
+        {
+          "role": "design_iterations",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/design_iterations.json",
+          "sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
         }
       ],
-      "attestation": "Current source intentionally deviates for TPD workqueue lifecycle hardening. Review SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd; canonical two-cycle module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae."
+      "attestation": "HARDENED_STOCK_DEVIATION: retains stock work draining and interface removal, routes kobject_put through the slot-clearing wrapper, neutralizes the inverted child unregister sequence, then releases the unbound child and clears parent drvdata/global cdev. Current canonical two-cycle module SHA-256 e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e. Evidence folder: reverse_engineering/validation/reconstructed/zte_tpd/attestation/probe_failure_unwind_20261102/."
     },
     {
       "id": "096_tpd_touch_press",

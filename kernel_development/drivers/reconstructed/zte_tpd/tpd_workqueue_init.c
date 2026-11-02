@@ -21,6 +21,8 @@ int tpd_workqueue_init(void)
 LABEL_2:
     /* This initializer is called by the probe only after ufp_mac_init(). */
     ufp_mac_exit();
+	/* The probe has published proc/sysfs state and its uevent device already. */
+	zte_touch_probe_failure_cleanup();
     printk("\0015tpd: %s: create tpd workqueue failed\n", "tpd_workqueue_init");
     return -ENOMEM;
   }

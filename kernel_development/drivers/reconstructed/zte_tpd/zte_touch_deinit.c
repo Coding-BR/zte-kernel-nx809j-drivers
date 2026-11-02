@@ -5,4 +5,6 @@ void zte_touch_deinit(void)
 	zte_touch_deinit_stock_exact();
 	tpd_workqueue_lifecycle_deinit();
 	ufp_mac_lifecycle_clear_device();
+	/* The stock pdev branch is inverted; release the unbound uevent child. */
+	zte_touch_probe_failure_cleanup();
 }

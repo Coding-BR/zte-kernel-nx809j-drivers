@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae",
+  "candidate_sha256": "e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T22:48:19.743952+00:00",
+  "generated_utc": "2026-11-02T23:06:27.227972+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -452,19 +452,28 @@
         "host-harness:attestation/next015_tpd_proc_deinit_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:0b80dbce118be9515135223eb9f63ce23e88f8a04018e87cb225bd053044e109",
         "joern:attestation/next015_tpd_proc_deinit_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:6ef27e4cdd0d4fa2d715210077e6283e80b58c52ab45160fdd4e235c658b1c58",
         "kcfi:attestation/next015_tpd_proc_deinit_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:ca7d0d720f146e41fe0406bd684cba86429767bf21c000704a6fb20fc342a7af",
-        "attestation:next015_tpd_proc_deinit_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:4584ec48a3776f5c89a7bf42463e94e4b1844770ca3d20bc947ec2fd6947d5bc"
+        "attestation:next015_tpd_proc_deinit_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:4584ec48a3776f5c89a7bf42463e94e4b1844770ca3d20bc947ec2fd6947d5bc",
+        "source:tpd_proc_deinit.c:sha256:d675ec59d81d75811b47086bd45b987a426dae9744fddfbfa14aa2d404aa27f2",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:06cf64e3e4cd954623bbb346763b188c46295d8001982cb224de5c7caac3e23d",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:ee48d6e2ef6024a6a24bda028dab719cc234f3186a888a86811c96bed6b2ce4c",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:7e4dca0ae9ce777ef34bf22ac767ca20102f1a5c80c713793eb4f4fa5f734bd1",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab",
+        "hardening-review:attestation/probe_failure_unwind_20261102/probe_failure_review.json:sha256:d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd",
+        "design-iterations:attestation/probe_failure_unwind_20261102/design_iterations.json:sha256:7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code plus Docker canonical build, exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan contract evidence",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence, plus lifecycle hardening, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_proc_deinit.c",
       "source_function": "tpd_proc_deinit",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 544,
       "elf_symbol_bytes": 544,
       "stock_entry": "00107fa4",
       "stock_function": "tpd_proc_deinit",
-      "mapping_note": "Function-level offline exact parity is promoted from the Docker canonical two-cycle build. Stock and candidate contain 136 AArch64 instructions and 544-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xe5c47d60, .text section and symbol size match. The NULL-directory early return, exact 30-entry removal order, parent pointer usage for all entries except touchscreen, and final NULL parent are preserved; relocation addresses differ only because of module-specific .rodata placement and are normalized by the AArch64 gate. Joern is strict and parse-clean with one-to-one function identity and zero unresolved calls; ASan/UBSan host tests are reproducible across two Docker cycles. ProcFS lifecycle concurrency and NX809J hardware behavior remain unverified."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: after removing the proc tree, clears global tpd_proc_dir so failure rollback and normal deinit can call the cleanup safely more than once. Historical OFFLINE_EXACT evidence applies to the earlier source revision."
     },
     {
       "evidence": [
@@ -478,19 +487,30 @@
         "host-harness:attestation/next016_zte_touch_pdev_register_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:e9c395fa1b076a9c94f28391bf72c9dea3c33c5841b252a627c5e1f482ef1cb3",
         "joern:attestation/next016_zte_touch_pdev_register_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:7700bc9f6b8b2d96fe4e5c9a65420dfb08317be1442227036005ebbc78da1d7d",
         "kcfi:attestation/next016_zte_touch_pdev_register_exact_v4/exact_revalidation_20260830/kcfi/comparison.json:sha256:5a1ee255a70090dd17950b1c4aceace374caacb230347fdfe1847ec7f3f121ee",
-        "attestation:next016_zte_touch_pdev_register_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:5f32ce65b00e237d563b2703eeeaee4b1cd4335f53b67fd4b1ca5dbe48399290"
+        "attestation:next016_zte_touch_pdev_register_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:5f32ce65b00e237d563b2703eeeaee4b1cd4335f53b67fd4b1ca5dbe48399290",
+        "source:zte_touch_pdev_register.c:sha256:3033ba50d6b37d3f4069087d52f31c2772f866d0e48bd9e4c2fa56b57051bfdd",
+        "source:globals.c:sha256:6d2d6ee02943eac06df34e2477cd4a1cb500c5c0651d19e29dda71f6a9c44e92",
+        "source:zte_touch_probe_dispatch.c:sha256:138bd2826aa157bc8f09c4f1f854e7e48a02b3901b670c3d97dc8991e3e0e1b3",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:06cf64e3e4cd954623bbb346763b188c46295d8001982cb224de5c7caac3e23d",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:ee48d6e2ef6024a6a24bda028dab719cc234f3186a888a86811c96bed6b2ce4c",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:7e4dca0ae9ce777ef34bf22ac767ca20102f1a5c80c713793eb4f4fa5f734bd1",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab",
+        "hardening-review:attestation/probe_failure_unwind_20261102/probe_failure_review.json:sha256:d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd",
+        "design-iterations:attestation/probe_failure_unwind_20261102/design_iterations.json:sha256:7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code plus Docker canonical build, exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan contract evidence",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence, plus lifecycle hardening, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "zte_touch_pdev_register.c",
       "source_function": "zte_touch_pdev_register",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 224,
       "elf_symbol_bytes": 224,
       "stock_entry": "001081c8",
       "stock_function": "zte_touch_pdev_register",
-      "mapping_note": "Function-level offline exact parity is promoted from the Docker canonical two-cycle build. Stock and candidate contain 56 AArch64 instructions and 224-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0x6fbb3035, .text section and symbol size match. The registration log, platform_device_alloc with PLATFORM_DEVID_NONE, storage at offset 0xdd0, allocation/add failure cleanup, callback clear at 0xea0, dev.release call, original error return and success callback installation are preserved; relocation addresses are layout-specific and normalized by the AArch64 gate. Joern is strict and parse-clean with one-to-one function identity and zero unresolved calls; ASan/UBSan host tests cover four direct cases across two reproducible Docker cycles. Platform-bus lifecycle and NX809J hardware behavior remain unverified."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: uses a local pdev, clears cdev+0xdd0 before releasing add failures with platform_device_put, and preserves the public zte_touch name. The driver callback rejects only this synthetic child by pointer identity, preventing self-probe while preserving other name-matched devices."
     },
     {
       "evidence": [
@@ -636,9 +656,19 @@
         "attestation:attestation/next022_tpd_workqueue_init_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:f99c9b85544c89cea261d3cc06caa8cb506238316092dec02b3b2c09880c939e",
         "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
         "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
-        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce",
+        "source:tpd_workqueue_init.c:sha256:fc418e74753f87112542e12c869976135034d7a34f12259e6f8d3100f12b910f",
+        "source:zte_touch_probe_failure_cleanup.c:sha256:e3aaa3d50225ac39ce23039cf9345d729184fa34f809bd1129c6883cea7cd147",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:06cf64e3e4cd954623bbb346763b188c46295d8001982cb224de5c7caac3e23d",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:ee48d6e2ef6024a6a24bda028dab719cc234f3186a888a86811c96bed6b2ce4c",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:7e4dca0ae9ce777ef34bf22ac767ca20102f1a5c80c713793eb4f4fa5f734bd1",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab",
+        "hardening-review:attestation/probe_failure_unwind_20261102/probe_failure_review.json:sha256:d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd",
+        "design-iterations:attestation/probe_failure_unwind_20261102/design_iterations.json:sha256:7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
       ],
-      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence, plus lifecycle hardening, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "tpd_workqueue_lifecycle_hardening",
       "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tpd_workqueue_init.c",
@@ -648,7 +678,7 @@
       "elf_symbol_bytes": 388,
       "stock_entry": "00108508",
       "stock_function": "tpd_workqueue_init",
-      "mapping_note": "The failure path now destroys and clears an allocated main workqueue if report-queue creation fails, shuts down UFP on the confirmed probe failure path, and opens admission only after all work items initialize. Historical exact-parity evidence remains preserved for the earlier source revision."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: on allocation failure, destroys and clears allocated workqueues, exits UFP, then removes already-published proc/sysfs state and the synthetic child and clears parent drvdata and tpd_cdev."
     },
     {
       "evidence": [
@@ -726,9 +756,21 @@
         "candidate-source:attestation/next025_zte_touch_probe_exact_v4/exact_revalidation_20260830/candidate_source.c:sha256:c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9",
         "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
         "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
-        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce",
+        "source:globals.c:sha256:6d2d6ee02943eac06df34e2477cd4a1cb500c5c0651d19e29dda71f6a9c44e92",
+        "source:zte_touch_probe_dispatch.c:sha256:138bd2826aa157bc8f09c4f1f854e7e48a02b3901b670c3d97dc8991e3e0e1b3",
+        "source:zte_touch_probe_failure_cleanup.c:sha256:e3aaa3d50225ac39ce23039cf9345d729184fa34f809bd1129c6883cea7cd147",
+        "source:zte_touch_probe_exact.S:sha256:e3b6044f307f26121abed80c7b0b4407d58e79c8fcaed1622be534c005a826bd",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:06cf64e3e4cd954623bbb346763b188c46295d8001982cb224de5c7caac3e23d",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:ee48d6e2ef6024a6a24bda028dab719cc234f3186a888a86811c96bed6b2ce4c",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:7e4dca0ae9ce777ef34bf22ac767ca20102f1a5c80c713793eb4f4fa5f734bd1",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab",
+        "hardening-review:attestation/probe_failure_unwind_20261102/probe_failure_review.json:sha256:d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd",
+        "design-iterations:attestation/probe_failure_unwind_20261102/design_iterations.json:sha256:7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
       ],
-      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence, plus lifecycle hardening, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "tpd_workqueue_lifecycle_hardening",
       "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "zte_touch_probe.c",
@@ -738,7 +780,7 @@
       "stock_entry": "001087e4",
       "stock_function": "zte_touch_probe",
       "elf_symbol_bytes": 3712,
-      "mapping_note": "The probe's initial main/report queue submissions route through the TPD lifecycle admission helpers. Probe-failure UFP cleanup occurs in tpd_workqueue_init's confirmed post-ufp_mac_init error path. This source revision intentionally differs from the stock call targets; runtime and hardware behavior remain unverified."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: the recovered body routes its kobject release through a wrapper that clears cdev+0xc50. The registered callback rejects only its synthetic uevent child by pointer identity; workqueue failure invokes full rollback."
     },
     {
       "evidence": [
@@ -2704,9 +2746,17 @@
         "hardening-source:zte_touch_deinit.c:sha256:6c9b5aec6fc4591476b7647729c0edfafe125e8ef767e89aa55c54d5c3d88d50",
         "retained-stock-instruction-stream:zte_touch_deinit_exact.S:sha256:d55d21c5bcef783f624e9df416dfd7d4caa1b67d06d7c9e9df66494938a34033",
         "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
-        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd"
+        "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
+        "source:zte_touch_deinit.c:sha256:a7c5c8b6aa00cc8fecd3a684776c869fce076396da5a01cb903d07e17c6f139e",
+        "source:zte_touch_deinit_exact.S:sha256:5db6f99d37f903931465ce456735bb0e6c95ce20254ecf86946c06b3006cfe88",
+        "source:zte_touch_probe_failure_cleanup.c:sha256:e3aaa3d50225ac39ce23039cf9345d729184fa34f809bd1129c6883cea7cd147",
+        "canonical-build:attestation/probe_failure_unwind_20261102/canonical_build_report.json:sha256:917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263",
+        "kcfi:attestation/probe_failure_unwind_20261102/kcfi_comparison.json:sha256:029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952",
+        "source-sync:attestation/probe_failure_unwind_20261102/source_sync_plan.json:sha256:d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab",
+        "hardening-review:attestation/probe_failure_unwind_20261102/probe_failure_review.json:sha256:d5a37ef286fe91b4b155c20e78d3588aabbb37afd01a24ccbd2d2849c75366fd",
+        "design-iterations:attestation/probe_failure_unwind_20261102/design_iterations.json:sha256:7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
       ],
-      "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
+      "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence, plus lifecycle hardening, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "tpd_workqueue_lifecycle_hardening",
       "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "zte_touch_deinit.c",
@@ -2715,7 +2765,7 @@
       "stock_body_bytes": 376,
       "stock_entry": "0010e0d0",
       "stock_function": "zte_touch_deinit",
-      "mapping_note": "The wrapper closes queue admission before the retained stock teardown, neutralizes the stock destroy_workqueue(NULL) branch, then drains LCD/resume/probe/zlog/ghost/report work and destroys valid main/report queues. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: retains stock work draining and interface removal, routes kobject_put through the slot-clearing wrapper, neutralizes the inverted child unregister sequence, then releases the unbound child and clears parent drvdata/global cdev."
     },
     {
       "evidence": [

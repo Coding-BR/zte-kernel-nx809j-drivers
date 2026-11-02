@@ -35,4 +35,5 @@ void tpd_proc_deinit(void)
   remove_proc_entry("frame_data", tpd_proc_dir);
   remove_proc_entry("ghost_debug", tpd_proc_dir);
   remove_proc_entry("touchscreen", NULL);
+  tpd_proc_dir = NULL;
 }

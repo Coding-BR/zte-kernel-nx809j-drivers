@@ -1426,7 +1426,7 @@ zte_touch_probe:
     .reloc .-4, R_AARCH64_CALL26, _printk
     .inst 0xf9462a80
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, kobject_put
+    .reloc .-4, R_AARCH64_CALL26, tpd_probe_kobject_put
     .inst 0x17fffec9
     .inst 0xb94007e8
     .inst 0x90000000

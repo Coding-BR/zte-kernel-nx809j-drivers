@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T23:06:15.405341+00:00",
+  "batch": "probe_failure_unwind_20261102",
+  "scope": "Prevent recursive probing by the synthetic uevent platform device; unwind partial probe failure and release the child on normal teardown.",
+  "root_cause": [
+    "The synthetic device and platform driver both use the name zte_touch. Platform name fallback can match the child to the same driver and re-enter the global probe. The child exists to carry uevents and must remain visible without entering the hardware probe.",
+    "Workqueue initialization occurs after procfs, fwupdate sysfs, the child platform device, UFP publication and parent drvdata are established. A workqueue allocation failure therefore needs a reverse-order unwind before the devm cdev is released.",
+    "The sysfs-create failure branch put the fwupdate kobject but retained its pointer at cdev+0xc50. The pdev add-failure branch directly called dev.release and retained the released pointer at cdev+0xdd0.",
+    "The stock normal-deinit branch inverted its child check: a nonnull child skipped unregister while a null child reached platform_device_unregister(NULL)."
+  ],
+  "implementation": {
+    "probe_dispatch": "The registered callback rejects only the exact synthetic child pointer stored at cdev+0xdd0 and forwards all other matched devices to the recovered zte_touch_probe. This keeps the public zte_touch device name and legacy name-matched probe behavior.",
+    "pdev_register": "Uses a local platform_device pointer, clears cdev+0xdd0 before releasing add failures with platform_device_put, and clears the event callback on failure.",
+    "kobject_reference": "Both probe failure and stock deinit route kobject_put through a wrapper that clears cdev+0xc50 before dropping the reference.",
+    "probe_failure": "After the workqueue gate is closed and UFP exits, cleanup clears UFP publication, removes procfs, removes the fwimage bin file and kobject when still owned, clears the callback, unregisters the unbound child, clears parent drvdata and resets tpd_cdev.",
+    "normal_deinit": "The inverted stock child-unregister instruction sequence is replaced with same-size NOPs. The lifecycle wrapper performs the checked unregister after the retained stock body drains work and removes interfaces. The shared proc cleanup is idempotent because it clears tpd_proc_dir."
+  },
+  "design_iterations": [
+    {
+      "attempt": "driver_override field",
+      "result": "Both cycles rejected the field because the target vendor struct device has no driver_override member. See design_iterations.json for the report digest, diagnostics and canonical build log paths."
+    },
+    {
+      "attempt": "compatible-only dispatcher",
+      "result": "Two-cycle build passed, then the dispatcher was narrowed to the synthetic child pointer identity so other name-matched devices retain prior behavior. See design_iterations.json for the module and report digests."
+    },
+    {
+      "attempt": "probe unwind before normal teardown fix",
+      "result": "Two-cycle build and KCFI passed; the inverted normal-deinit child unregister was then fixed and rebuilt. See design_iterations.json for the module and report digests."
+    }
+  ],
+  "validation": {
+    "source_sync_passed": true,
+    "source_sync_report": "source_sync_plan.json",
+    "source_sync_report_sha256": "d921e2954e259bc692896bb85008d4759966f3ef8114f562b84d6784b6122fab",
+    "canonical_build_passed": true,
+    "canonical_build_reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256": "e24bd3c53d8f4010055874faaa02de0d2a3e8cf7d7820d48e46794d0e4a9b75e",
+    "module_size": 7083488,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": [],
+    "canonical_build_report": "canonical_build_report.json",
+    "canonical_build_report_sha256": "917990df5c4c7cd5e2225d8c4a5992a2e1be7ab37980a831cd6b733c03d7c263",
+    "kcfi_passed": true,
+    "kcfi_size_ignored": true,
+    "kcfi_functions": [
+      {
+        "function": "tpd_proc_deinit",
+        "stock_type_id": "0xe5c47d60",
+        "candidate_type_id": "0xe5c47d60",
+        "section_match": true,
+        "type_match": true,
+        "size_match": false,
+        "passed": true
+      },
+      {
+        "function": "tpd_workqueue_init",
+        "stock_type_id": "0x6fbb3035",
+        "candidate_type_id": "0x6fbb3035",
+        "section_match": true,
+        "type_match": true,
+        "size_match": false,
+        "passed": true
+      },
+      {
+        "function": "zte_touch_pdev_register",
+        "stock_type_id": "0x6fbb3035",
+        "candidate_type_id": "0x6fbb3035",
+        "section_match": true,
+        "type_match": true,
+        "size_match": false,
+        "passed": true
+      },
+      {
+        "function": "zte_touch_probe",
+        "stock_type_id": "0xc7f8c87c",
+        "candidate_type_id": "0xc7f8c87c",
+        "section_match": true,
+        "type_match": true,
+        "size_match": true,
+        "passed": true
+      }
+    ],
+    "kcfi_comparison": "kcfi_comparison.json",
+    "kcfi_comparison_sha256": "029fc4d098d3778d77f62fef7ad6f89a0779f46f18322c54a868383b1647d952",
+    "zte_touch_deinit_kcfi": "Excluded because stock module has no valid KCFI preamble for this symbol.",
+    "design_iterations": "design_iterations.json",
+    "design_iterations_sha256": "7b6a9ce727af16dfa3b118bc02c76895073569711cafac02fe2e5ddbc9fd70d6"
+  },
+  "limitations": [
+    "No module load, runtime fault injection or NX809J hardware testing was performed.",
+    "KCFI type-ID/section comparison was performed with symbol size intentionally non-gating for hardened functions.",
+    "Platform-bus binding and teardown conclusions are based on static source and canonical build; runtime kernel logs remain outstanding."
+  ],
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/defs.h",
+      "sha256": "b16c30431d673db74b8041d2b3e9505cf8b077daaaeb9b987a77a11f005a823f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/globals.c",
+      "sha256": "6d2d6ee02943eac06df34e2477cd4a1cb500c5c0651d19e29dda71f6a9c44e92"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_proc_deinit.c",
+      "sha256": "d675ec59d81d75811b47086bd45b987a426dae9744fddfbfa14aa2d404aa27f2"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_workqueue_init.c",
+      "sha256": "fc418e74753f87112542e12c869976135034d7a34f12259e6f8d3100f12b910f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_pdev_register.c",
+      "sha256": "3033ba50d6b37d3f4069087d52f31c2772f866d0e48bd9e4c2fa56b57051bfdd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_dispatch.c",
+      "sha256": "138bd2826aa157bc8f09c4f1f854e7e48a02b3901b670c3d97dc8991e3e0e1b3"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_failure_cleanup.c",
+      "sha256": "e3aaa3d50225ac39ce23039cf9345d729184fa34f809bd1129c6883cea7cd147"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_exact.S",
+      "sha256": "e3b6044f307f26121abed80c7b0b4407d58e79c8fcaed1622be534c005a826bd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit.c",
+      "sha256": "a7c5c8b6aa00cc8fecd3a684776c869fce076396da5a01cb903d07e17c6f139e"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit_exact.S",
+      "sha256": "5db6f99d37f903931465ce456735bb0e6c95ce20254ecf86946c06b3006cfe88"
+    }
+  ]
+}
