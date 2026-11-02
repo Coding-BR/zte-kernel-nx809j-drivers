@@ -1,3 +1,26 @@
+## Update 2026-11-02 — I²C module registration core revalidation
+
+haptic_86938_i2c_init (init_module@001119fc) and
+haptic_86938_i2c_exit (cleanup_module@00111a64) pass the current hard
+protocol core. The final report at
+reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_registration_20261102/protocol_core_v6_mapbound/hard_protocol_report.json
+records all eight automated gates as PASS. Docker cycles 1 and 2 produced the
+same module SHA-256
+d6177430412b5355d6b662eb79b2b8939b14a48c3c32f717b6f4c8e8e65e569f;
+the checked-in candidate .ko now has that hash. Function-scoped assembly,
+relocations, Ghidra decompilation/P-Code, KCFI and Joern gates pass. The
+registration-object audit separately passes all 31 checks.
+
+The first fresh run exposed a stale candidate Ghidra export; it was regenerated
+from the reproducible Docker module and the final core run now binds the export,
+map, 191 source files and 10 runner scripts by hash. The registration functions
+remain candidate_under_static_validation; semantic equivalence and promotion
+are not claimed. The broader callback-table gate, host harness, KMI type review,
+LLVM IR diagnosis, semantic counterexample and independent review remain
+outstanding. The whole haptic_86938 driver remains incomplete. See the
+revalidation notes at
+../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_registration_20261102/REVALIDATION_NOTES.md.
+
 ## Update 2026-11-01 — aw_remove
 
 The `aw_remove@0010823c` callback has an exact source candidate. Its 300-byte AArch64 body, relocations, and KCFI type match stock; the host teardown harness passes three GPIO scenarios, and two Docker builds are byte-identical. At that point, `richtap_misc.left_fops` lacked both `unlocked_ioctl` and `mmap`; `mmap` has since been reconstructed as recorded below. The ioctl callback and whole-module parity/traceability checks remain open. Promotion and hardware readiness are not claimed. See [the aw_remove attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_remove_20261101/README.md).
