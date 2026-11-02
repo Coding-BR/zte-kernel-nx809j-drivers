@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global ufp_mac_exit
-.type ufp_mac_exit, %function
+.global ufp_mac_exit_stock_exact
+.type ufp_mac_exit_stock_exact, %function
     .word 0xe5c47d60
-ufp_mac_exit:
+ufp_mac_exit_stock_exact:
     .inst 0xd503233f
     .inst 0xa9be7bfd
     .inst 0xf9000bf3
@@ -32,5 +32,5 @@ ufp_mac_exit:
     .inst 0xa8c27bfd
     .inst 0xd50323bf
     .inst 0xd65f03c0
-.size ufp_mac_exit, .-ufp_mac_exit
+.size ufp_mac_exit_stock_exact, .-ufp_mac_exit_stock_exact
 .section .note.GNU-stack,"",@progbits

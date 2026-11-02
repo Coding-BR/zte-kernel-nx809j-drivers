@@ -58,8 +58,7 @@ int ufp_mac_init(void)
 	ufp_tp_ops.field_a2 = 0;
 
 	pdev = *(struct platform_device **)(tpd_cdev + 0xdd0);
-	if (pdev)
-		ufp_tp_ops.pdev = pdev;
+	ufp_mac_lifecycle_publish(pdev);
 
 	return 0;
 }

@@ -6089,7 +6089,7 @@
       "stock_entry": "00110878",
       "stock_body_bytes": 228,
       "category": "core_logic",
-      "source_file": "ufp_report_gesture_uevent.c",
+      "source_file": "ufp_mac_lifecycle.c",
       "source_function": "ufp_report_gesture_uevent",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0131_00110878_ufp_report_gesture_uevent.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0131_00110878_ufp_report_gesture_uevent.jsonl",
@@ -6099,33 +6099,28 @@
         "test",
         "joern"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_report_gesture_uevent\nEntrada Ghidra: 00110878\nTamanho stock: 228 bytes\nCategoria: core_logic\nAlvo no fonte: ufp_report_gesture_uevent.c:ufp_report_gesture_uevent\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0131_00110878_ufp_report_gesture_uevent.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0131_00110878_ufp_report_gesture_uevent.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_report_gesture_uevent\nEntrada Ghidra: 00110878\nTamanho stock: 228 bytes\nCategoria: core_logic\nAlvo no fonte: ufp_mac_lifecycle.c:ufp_report_gesture_uevent\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0131_00110878_ufp_report_gesture_uevent.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0131_00110878_ufp_report_gesture_uevent.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/canonical_build_report.json",
-          "sha256": "246966157ae66c9a8e727725899ed80fbfed2f3256aa352d7abe4fbbe5fdbaeb"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/kcfi/comparison.json",
-          "sha256": "6b654e5090d92d898ac2be33f0ec52ed1e7aa36da272805011dbb9e1592b9f99"
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "6471ebeec658b72d79784ea8750778b00edc850f7bcdbf7e57a2c25927becfd5"
         },
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/joern/joern_gate_summary.json",
-          "sha256": "744ce5a4f1c07d1643192a984d7c47c539efbe444be8eb0c49b17598e6478a10"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json",
+          "sha256": "e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/host_harness_report.json",
-          "sha256": "877f31a2b45fcab508687bb7d8592309edad71d18c7a3137e071a6866c943a6b"
-        },
-        {
-          "role": "assembly",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next646_ufp_report_gesture_uevent_exact_v1/assembly/comparison.json",
-          "sha256": "1185bd1f5c6b11d243d058276fb6d7ba0ac6424389f2a04a09d04ea93b7e6103"
+          "role": "retained_stock_instruction_stream",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_report_gesture_uevent_exact.S",
+          "sha256": "a8a4b0bae48c43db6bd9cc2544654bee99e082fa6f15d6b6712279f475ba5c14"
         }
       ]
     },
@@ -6359,30 +6354,25 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_mac_init\nEntrada Ghidra: 00110fb0\nTamanho stock: 216 bytes\nCategoria: lifecycle\nAlvo no fonte: ufp_mac_init.c:ufp_mac_init\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0137_00110fb0_ufp_mac_init.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0137_00110fb0_ufp_mac_init.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "6471ebeec658b72d79784ea8750778b00edc850f7bcdbf7e57a2c25927becfd5"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/138_ufp_mac_init.json",
-          "sha256": "d6ca2c7b99a929de5e93d4d5b52c80230cc5d22d83096d823a116ff453fec8af"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json",
+          "sha256": "e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e"
         }
       ],
-      "attestation": "OFFLINE_EXACT in attestation/next138_ufp_mac_init_exact_v2; physical hardware validation remains deferred."
+      "attestation": "HARDENED_STOCK_DEVIATION: initialization now publishes the platform device through the gesture lifecycle gate; the prior OFFLINE_EXACT attestation remains historical baseline evidence. Runtime and NX809J hardware validation remain deferred."
     },
     {
       "id": "139_ufp_single_tap_work",
@@ -6431,7 +6421,7 @@
       "stock_entry": "0011109c",
       "stock_body_bytes": 80,
       "category": "lifecycle",
-      "source_file": "ufp_mac_exit.c",
+      "source_file": "ufp_mac_lifecycle.c",
       "source_function": "ufp_mac_exit",
       "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0139_0011109c_ufp_mac_exit.c",
       "ghidra_pcode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0139_0011109c_ufp_mac_exit.jsonl",
@@ -6441,28 +6431,28 @@
         "test",
         "joern"
       ],
-      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_mac_exit\nEntrada Ghidra: 0011109c\nTamanho stock: 80 bytes\nCategoria: lifecycle\nAlvo no fonte: ufp_mac_exit.c:ufp_mac_exit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0139_0011109c_ufp_mac_exit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0139_0011109c_ufp_mac_exit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: ufp_mac_exit\nEntrada Ghidra: 0011109c\nTamanho stock: 80 bytes\nCategoria: lifecycle\nAlvo no fonte: ufp_mac_lifecycle.c:ufp_mac_exit\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0139_0011109c_ufp_mac_exit.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0139_0011109c_ufp_mac_exit.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json",
-          "sha256": "076a2c4b6340f208398442f05442dabdea0d1d116ee9a2b2db3e999afab3d20d"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json",
+          "sha256": "fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/kcfi/comparison_promotable.json",
-          "sha256": "aefdce2483bc3f00a116c5c693a474f37b0be45d089d821f27b92d7f0d0cfc9e"
+          "role": "hardening_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/lifecycle_review.json",
+          "sha256": "6471ebeec658b72d79784ea8750778b00edc850f7bcdbf7e57a2c25927becfd5"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/current_test_reports/140_ufp_mac_exit.json",
-          "sha256": "7f9d502426c51d2987f08bfe217004e8d00d9d4f38cd6cfe1ff3c09dc90e1703"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json",
+          "sha256": "e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e"
         },
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
-          "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+          "role": "retained_stock_instruction_stream",
+          "path": "kernel_development/drivers/reconstructed/zte_tpd/ufp_mac_exit_exact.S",
+          "sha256": "6e54aef5670d72aae48b16997abb768f08c6420470452d4ffa3aa10db4759442"
         }
       ]
     },

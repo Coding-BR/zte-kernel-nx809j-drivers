@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global ufp_report_gesture_uevent
-.type ufp_report_gesture_uevent, %function
+.global ufp_report_gesture_uevent_stock_exact
+.type ufp_report_gesture_uevent_stock_exact, %function
     .word 0xcf0d7fba
-ufp_report_gesture_uevent:
+ufp_report_gesture_uevent_stock_exact:
     .inst 0xd503233f
     .inst 0xd10103ff
     .inst 0xa9027bfd
@@ -82,7 +82,7 @@ ufp_report_gesture_uevent:
     .inst 0xd65f03c0
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, __stack_chk_fail
-.size ufp_report_gesture_uevent, .-ufp_report_gesture_uevent
+.size ufp_report_gesture_uevent_stock_exact, .-ufp_report_gesture_uevent_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a",
+  "candidate_sha256": "277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T22:10:41.890166+00:00",
+  "generated_utc": "2026-11-02T22:16:54.560361+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -3698,18 +3698,25 @@
         "kcfi-comparison:attestation/next646_ufp_report_gesture_uevent_exact_v1/kcfi/comparison.json:sha256:6b654e5090d92d898ac2be33f0ec52ed1e7aa36da272805011dbb9e1592b9f99",
         "compile:attestation/next646_ufp_report_gesture_uevent_exact_v1/canonical_build_report.json:sha256:246966157ae66c9a8e727725899ed80fbfed2f3256aa352d7abe4fbbe5fdbaeb",
         "harness:attestation/next646_ufp_report_gesture_uevent_exact_v1/host_harness_report.json:sha256:877f31a2b45fcab508687bb7d8592309edad71d18c7a3137e071a6866c943a6b",
-        "joern:attestation/next646_ufp_report_gesture_uevent_exact_v1/joern/joern_gate_summary.json:sha256:744ce5a4f1c07d1643192a984d7c47c539efbe444be8eb0c49b17598e6478a10"
+        "joern:attestation/next646_ufp_report_gesture_uevent_exact_v1/joern/joern_gate_summary.json:sha256:744ce5a4f1c07d1643192a984d7c47c539efbe444be8eb0c49b17598e6478a10",
+        "hardening-source:ufp_mac_lifecycle.c:sha256:9569f77ca0cec9faf14e2fa408480216f0666024f8ec74917e44d3210f648edd",
+        "hardening-source:ufp_mac_init.c:sha256:9dfdae37c243a240c2f3c7c489efd88371358f9239a65a5cfd9d9d03b9ecc268",
+        "hardening-build:attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json:sha256:fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88",
+        "docker-source-sync:attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json:sha256:e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e",
+        "lifecycle-review:attestation/ufp_workqueue_lifecycle_20261102/lifecycle_review.json:sha256:6471ebeec658b72d79784ea8750778b00edc850f7bcdbf7e57a2c25927becfd5",
+        "candidate-module:attestation/ufp_workqueue_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090",
+        "retained-stock-instruction-stream:ufp_report_gesture_uevent_exact.S:sha256:a8a4b0bae48c43db6bd9cc2544654bee99e082fa6f15d6b6712279f475ba5c14"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan contract-harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "source_file": "ufp_report_gesture_uevent.c",
+      "mapping_basis": "Ghidra stock behavior plus serialized gesture/workqueue lifecycle wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
+      "review_scope": "gesture_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "source_file": "ufp_mac_lifecycle.c",
       "source_function": "ufp_report_gesture_uevent",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 228,
       "stock_entry": "00110878",
       "stock_function": "ufp_report_gesture_uevent",
-      "mapping_note": "Offline function-level parity is attested against the stock function; Android runtime and NX809J hardware behavior remain unverified until a controlled physical procedure runs."
+      "mapping_note": "Intentional deviation: the gesture path is serialized with teardown, queue-less allocation failure skips delayed work, and teardown closes admission before cancel/flush/destroy. Exact stock bodies are retained under internal symbols. Two canonical Docker cycles were byte-identical; runtime/hardware validation remains open."
     },
     {
       "evidence": [
@@ -3865,18 +3872,24 @@
         "source-sync:attestation/next138_ufp_mac_init_exact_v2/source_sync_report.json:sha256:349a54911f8331b33345b5418a6b899b9999a2dc3c0a0d369305e25be3b01106",
         "harness:attestation/next138_ufp_mac_init_exact_v2/host_harness_report.json:sha256:1bcd506a3be51d0cc7de6b596359e2a8611beb10298a9e24da6ced84e80ae442",
         "joern:attestation/next138_ufp_mac_init_exact_v2/joern/joern_gate_summary.json:sha256:9247252af1e5b213d19b06dfdfd909c63295066ac83986b94b647a2c152bd4c9",
-        "attestation:next138_ufp_mac_init_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT:sha256:6c4e0d585fa7e25c5f2a7718bb56a70f57fc6a05c6bb02f8140c9474042dd58f"
+        "attestation:next138_ufp_mac_init_exact_v2/microtask_attestation.json:status:OFFLINE_EXACT:sha256:6c4e0d585fa7e25c5f2a7718bb56a70f57fc6a05c6bb02f8140c9474042dd58f",
+        "hardening-source:ufp_mac_lifecycle.c:sha256:9569f77ca0cec9faf14e2fa408480216f0666024f8ec74917e44d3210f648edd",
+        "hardening-source:ufp_mac_init.c:sha256:9dfdae37c243a240c2f3c7c489efd88371358f9239a65a5cfd9d9d03b9ecc268",
+        "hardening-build:attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json:sha256:fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88",
+        "docker-source-sync:attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json:sha256:e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e",
+        "lifecycle-review:attestation/ufp_workqueue_lifecycle_20261102/lifecycle_review.json:sha256:6471ebeec658b72d79784ea8750778b00edc850f7bcdbf7e57a2c25927becfd5",
+        "candidate-module:attestation/ufp_workqueue_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Ghidra stock behavior plus serialized gesture/workqueue lifecycle wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
+      "review_scope": "gesture_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "ufp_mac_init.c",
       "source_function": "ufp_mac_init",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 216,
       "stock_entry": "00110fb0",
       "stock_function": "ufp_mac_init",
-      "mapping_note": "Offline function-level parity is promoted: stock and candidate both contain 54 AArch64 instructions and 216 bytes; assembly comparison, KCFI type 0x6fbb3035, two-cycle Docker build, strict Joern and ASan/UBSan host coverage pass. The only normalized relocation is the compiler-named completion lock key matching the stripped stock local .bss target. Android scheduler and NX809J hardware behavior remain unverified."
+      "mapping_note": "Intentional deviation: the gesture path is serialized with teardown, queue-less allocation failure skips delayed work, and teardown closes admission before cancel/flush/destroy. Exact stock bodies are retained under internal symbols. Two canonical Docker cycles were byte-identical; runtime/hardware validation remains open."
     },
     {
       "evidence": [
@@ -3923,18 +3936,25 @@
         "canonical:attestation/next836_ufp_mac_exit_exact_v2/canonical_build_report.json:sha256:1fc0ce5f5ef26486d69e3524515d2ac3741dab447089c84ca4c4e9bcc7ff350e",
         "source-sync:attestation/next836_ufp_mac_exit_exact_v2/curated_source_sync.json:sha256:3f6b5b6f2271cdb3dce71d47808cce2272bfc248c8219033006696f9ab76c601",
         "harness:attestation/next836_ufp_mac_exit_exact_v2/ufp_mac_exit_harness_report.json:sha256:ff827a2485c1e08536d58cd1bcd76ed1969960687464593bf779b7fa467a860d",
-        "joern:attestation/next836_ufp_mac_exit_exact_v2/joern/joern_gate_summary.json:sha256:ad69b33a760ba0c03970c0f42963534f407749247fc25f5954dcbdee201681ae"
+        "joern:attestation/next836_ufp_mac_exit_exact_v2/joern/joern_gate_summary.json:sha256:ad69b33a760ba0c03970c0f42963534f407749247fc25f5954dcbdee201681ae",
+        "hardening-source:ufp_mac_lifecycle.c:sha256:9569f77ca0cec9faf14e2fa408480216f0666024f8ec74917e44d3210f648edd",
+        "hardening-source:ufp_mac_init.c:sha256:9dfdae37c243a240c2f3c7c489efd88371358f9239a65a5cfd9d9d03b9ecc268",
+        "hardening-build:attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json:sha256:fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88",
+        "docker-source-sync:attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json:sha256:e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e",
+        "lifecycle-review:attestation/ufp_workqueue_lifecycle_20261102/lifecycle_review.json:sha256:6471ebeec658b72d79784ea8750778b00edc850f7bcdbf7e57a2c25927becfd5",
+        "candidate-module:attestation/ufp_workqueue_lifecycle_20261102/candidate_module/zte_tpd.ko:sha256:277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090",
+        "retained-stock-instruction-stream:ufp_mac_exit_exact.S:sha256:6e54aef5670d72aae48b16997abb768f08c6420470452d4ffa3aa10db4759442"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern and ASan/UBSan harness evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "source_file": "ufp_mac_exit.c",
+      "mapping_basis": "Ghidra stock behavior plus serialized gesture/workqueue lifecycle wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
+      "review_scope": "gesture_workqueue_lifecycle_hardening",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "source_file": "ufp_mac_lifecycle.c",
       "source_function": "ufp_mac_exit",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 80,
       "stock_entry": "0011109c",
       "stock_function": "ufp_mac_exit",
-      "mapping_note": "Function-level offline parity is promoted: 20 AArch64 instructions, 80 bytes, 4 normalized relocations and KCFI type 0xe5c47d60 match the stock function; two-cycle Docker and ASan/UBSan gates pass. Workqueue teardown concurrency and NX809J hardware behavior remain unverified."
+      "mapping_note": "Intentional deviation: the gesture path is serialized with teardown, queue-less allocation failure skips delayed work, and teardown closes admission before cancel/flush/destroy. Exact stock bodies are retained under internal symbols. Two canonical Docker cycles were byte-identical; runtime/hardware validation remains open."
     },
     {
       "evidence": [

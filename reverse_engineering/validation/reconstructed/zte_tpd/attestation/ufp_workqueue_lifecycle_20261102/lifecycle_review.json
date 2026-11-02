@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T22:16:54.560361+00:00",
+  "driver": "zte_tpd",
+  "scope": [
+    "ufp_mac_init",
+    "ufp_report_gesture_uevent",
+    "ufp_mac_exit"
+  ],
+  "finding": {
+    "summary": "Gesture workqueue creation failure was unchecked, gesture callbacks scheduled through the possibly null queue, and teardown destroyed the queue without closing new submissions.",
+    "evidence": [
+      "ufp_mac_init stores alloc_workqueue() directly and continues initialization without checking for NULL.",
+      "The recovered gesture callback unconditionally calls mod_delayed_work_on() with the stored queue.",
+      "The recovered exit body unconditionally flushes and destroys the stored queue, and it has no admission gate against concurrent gesture reporting."
+    ]
+  },
+  "change": {
+    "mechanism": "A mutex serializes publication of the platform device, gesture event forwarding/scheduling, and workqueue shutdown.",
+    "allocation_failure": "Gesture uevents continue when the platform device exists; delayed work is skipped if the queue allocation failed.",
+    "teardown_order": [
+      "mark lifecycle stopping and clear the queue slot while holding the mutex",
+      "release the mutex",
+      "cancel delayed gesture work synchronously",
+      "flush and destroy the queue only if non-NULL",
+      "remove the wakeup source",
+      "clear the platform-device pointer under the mutex"
+    ],
+    "race_property": "A reporter that enters first completes its queue submission before teardown closes admission; reporters entering after the stop gate do not access the device or queue."
+  },
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/canonical_build_report.json",
+    "report_sha256": "fb0a2fc28af03508e659995d6133548bcad2b92c7ae782e572c4b93eef220a88",
+    "passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycle_sha256": [
+      "277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090",
+      "277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090"
+    ],
+    "candidate_module": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/candidate_module/zte_tpd.ko",
+    "candidate_module_sha256": "277a1f035ec6628cc3b1dad6a6bd63c7245c74ed1782bf0e1194f52ffc42c090",
+    "candidate_module_size": 6884424,
+    "vermagic_accepted": true,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "source_sync": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ufp_workqueue_lifecycle_20261102/source_sync_plan.json",
+    "report_sha256": "e4fb65a00bdf63d3f2706a28844b6e22a6ae28fbc7f9072d6ca49ea00c58747e",
+    "passed": true,
+    "copied": [
+      "Makefile",
+      "defs.h",
+      "ufp_mac_exit_exact.S",
+      "ufp_mac_init.c",
+      "ufp_mac_lifecycle.c",
+      "ufp_report_gesture_uevent_exact.S"
+    ],
+    "removed": null
+  },
+  "source_sha256": {
+    "ufp_mac_lifecycle.c": "9569f77ca0cec9faf14e2fa408480216f0666024f8ec74917e44d3210f648edd",
+    "ufp_mac_init.c": "9dfdae37c243a240c2f3c7c489efd88371358f9239a65a5cfd9d9d03b9ecc268",
+    "ufp_report_gesture_uevent_exact.S": "a8a4b0bae48c43db6bd9cc2544654bee99e082fa6f15d6b6712279f475ba5c14",
+    "ufp_mac_exit_exact.S": "6e54aef5670d72aae48b16997abb768f08c6420470452d4ffa3aa10db4759442"
+  },
+  "limits": [
+    "Canonical build and byte reproducibility passed; runtime event behavior and NX809J hardware teardown were not exercised.",
+    "The queue-allocation failure path is handled by skipping delayed scheduling while preserving the uevent."
+  ]
+}

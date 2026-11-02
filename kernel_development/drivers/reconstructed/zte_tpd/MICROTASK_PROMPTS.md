@@ -3810,7 +3810,7 @@ Funcao stock: ufp_report_gesture_uevent
 Entrada Ghidra: 00110878
 Tamanho stock: 228 bytes
 Categoria: core_logic
-Alvo no fonte: ufp_report_gesture_uevent.c:ufp_report_gesture_uevent
+Alvo no fonte: ufp_mac_lifecycle.c:ufp_report_gesture_uevent
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0131_00110878_ufp_report_gesture_uevent.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0131_00110878_ufp_report_gesture_uevent.jsonl
 
@@ -4042,7 +4042,7 @@ Funcao stock: ufp_mac_exit
 Entrada Ghidra: 0011109c
 Tamanho stock: 80 bytes
 Categoria: lifecycle
-Alvo no fonte: ufp_mac_exit.c:ufp_mac_exit
+Alvo no fonte: ufp_mac_lifecycle.c:ufp_mac_exit
 Pseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0139_0011109c_ufp_mac_exit.c
 P-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0139_0011109c_ufp_mac_exit.jsonl
 

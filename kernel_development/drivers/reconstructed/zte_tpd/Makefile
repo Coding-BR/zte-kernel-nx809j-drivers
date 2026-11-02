@@ -528,7 +528,7 @@ zte_tpd-objs := $(filter-out syna_dev_set_tp_report_rate.o, $(zte_tpd-objs))
 zte_tpd-objs += syna_dev_set_tp_report_rate_exact.o
 AFLAGS_syna_dev_set_tp_report_rate_exact.o := -g0 -I$(src)
 
-# Exact offline reconstruction: ufp_report_gesture_uevent
+# Retain the exact stock body behind the lifecycle-safe gesture wrapper.
 src-files := $(filter-out $(src)/ufp_report_gesture_uevent.c, $(src-files))
 obj-files := $(filter-out ufp_report_gesture_uevent.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_report_gesture_uevent.o, $(zte_tpd-objs))
@@ -1369,7 +1369,7 @@ AFLAGS_tpd_resume_work_exact.o := -g0 -I$(src)
 AFLAGS_tpd_suspend_work_exact.o := -g0 -I$(src)
 AFLAGS_tpd_resume_work_deinit_exact.o := -g0 -I$(src)
 
-# Exact offline reconstruction: ufp_mac_exit
+# Retain the exact stock body behind the lifecycle-safe teardown wrapper.
 src-files := $(filter-out $(src)/ufp_mac_exit.c, $(src-files))
 obj-files := $(filter-out ufp_mac_exit.o, $(obj-files))
 zte_tpd-objs := $(filter-out ufp_mac_exit.o, $(zte_tpd-objs))
