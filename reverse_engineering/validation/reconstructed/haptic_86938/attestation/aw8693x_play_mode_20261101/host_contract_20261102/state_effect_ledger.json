@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_function": "aw8693x_play_mode",
+  "stock_entry": "00104798",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "stock_body_bytes": 740,
+  "kcfi_type_id": "0x1d0adf6e",
+  "input": {
+    "name": "mode",
+    "type": "u8",
+    "domain": "0..255",
+    "exhaustive_domain_size": 256
+  },
+  "preconditions": [
+    "aw is a non-null pointer to the observed aw_haptic layout",
+    "aw_haptic.play_mode is at byte offset 0x17"
+  ],
+  "return_type": "void",
+  "result_handling": {
+    "i2c_w_bits": "return value ignored at every call site",
+    "printk": "return value ignored at every call site"
+  },
+  "state_field": {
+    "offset": "0x17",
+    "width_bytes": 1,
+    "write_on_modes": [0, 1, 2, 3, 4, 5],
+    "unchanged_on_invalid_modes": "6..255"
+  },
+  "branches": [
+    {
+      "mode": 0,
+      "name": "standby",
+      "ordered_effects": [
+        { "kind": "printk", "level": "INFO", "message": "enter standby mode", "site_code": "0x023e" },
+        { "kind": "store", "field_offset": "0x17", "width_bytes": 1, "value": 0 },
+        { "kind": "i2c_w_bits", "reg": "0x45", "mask": "0xffffffdf", "value": "0x20", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x45", "mask": "0xffffffdf", "value": "0x00", "result": "ignored" }
+      ]
+    },
+    {
+      "mode": 1,
+      "name": "ram",
+      "ordered_effects": [
+        { "kind": "printk", "level": "INFO", "message": "enter ram mode", "site_code": "0x024f" },
+        { "kind": "store", "field_offset": "0x17", "width_bytes": 1, "value": 1 },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffc", "value": "0x00", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffb", "value": "0x00", "result": "ignored" },
+        { "kind": "printk", "level": "INFO", "message": "haptic bst mode = bst", "site_code": "0x01f8" },
+        { "kind": "i2c_w_bits", "reg": "0x06", "mask": "0xffffffdf", "value": "0x20", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x4c", "mask": "0xffffffbf", "value": "0x00", "result": "ignored" }
+      ]
+    },
+    {
+      "mode": 2,
+      "name": "rtp",
+      "ordered_effects": [
+        { "kind": "printk", "level": "INFO", "message": "enter rtp mode", "site_code": "0x0263" },
+        { "kind": "store", "field_offset": "0x17", "width_bytes": 1, "value": 2 },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffc", "value": "0x01", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffb", "value": "0x04", "result": "ignored" },
+        { "kind": "printk", "level": "INFO", "message": "haptic bst mode = bst", "site_code": "0x01f8" },
+        { "kind": "i2c_w_bits", "reg": "0x06", "mask": "0xffffffdf", "value": "0x20", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x4c", "mask": "0xffffffbf", "value": "0x00", "result": "ignored" }
+      ]
+    },
+    {
+      "mode": 3,
+      "name": "trigger",
+      "ordered_effects": [
+        { "kind": "printk", "level": "INFO", "message": "enter trig mode", "site_code": "0x026d" },
+        { "kind": "store", "field_offset": "0x17", "width_bytes": 1, "value": 3 },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffc", "value": "0x00", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x4c", "mask": "0xffffffbf", "value": "0x00", "result": "ignored" }
+      ]
+    },
+    {
+      "mode": 4,
+      "name": "continuous",
+      "ordered_effects": [
+        { "kind": "printk", "level": "INFO", "message": "enter cont mode", "site_code": "0x0275" },
+        { "kind": "store", "field_offset": "0x17", "width_bytes": 1, "value": 4 },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffc", "value": "0x02", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffb", "value": "0x04", "result": "ignored" },
+        { "kind": "printk", "level": "INFO", "message": "haptic bst mode = bypass", "site_code": "0x01fe" },
+        { "kind": "i2c_w_bits", "reg": "0x06", "mask": "0xffffffdf", "value": "0x00", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x4c", "mask": "0xffffffbf", "value": "0x40", "result": "ignored" }
+      ]
+    },
+    {
+      "mode": 5,
+      "name": "ram_loop",
+      "ordered_effects": [
+        { "kind": "printk", "level": "INFO", "message": "enter ram loop mode", "site_code": "0x0259" },
+        { "kind": "store", "field_offset": "0x17", "width_bytes": 1, "value": 5 },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffc", "value": "0x00", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x08", "mask": "0xfffffffb", "value": "0x00", "result": "ignored" },
+        { "kind": "printk", "level": "INFO", "message": "haptic bst mode = bypass", "site_code": "0x01fe" },
+        { "kind": "i2c_w_bits", "reg": "0x06", "mask": "0xffffffdf", "value": "0x00", "result": "ignored" },
+        { "kind": "i2c_w_bits", "reg": "0x4c", "mask": "0xffffffbf", "value": "0x40", "result": "ignored" }
+      ]
+    },
+    {
+      "mode_range": "6..255",
+      "name": "invalid",
+      "ordered_effects": [
+        { "kind": "printk", "level": "ERR", "message": "play mode %d error", "site_code": "0x027f" },
+        { "kind": "return", "value": "void" }
+      ],
+      "state_write": false,
+      "i2c_calls": 0
+    }
+  ],
+  "evidence": [
+    {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0017_00104798_aw8693x_play_mode.c",
+      "sha256": "601cb1eb1d3297e8df4743483bbef5969a1b0d382ab3385f6218f2ceed1596ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0017_00104798_aw8693x_play_mode.jsonl",
+      "sha256": "49e91641904badf240cae0d904191abe9ce413e719571b2f817028b1fac84fff"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0017_aw8693x_play_mode_00104798.asm",
+      "sha256": "feab6f9937001b77d1d7b81dfef45083bca6f336dd2886e6c2c8f3af828e9d93"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_139_aw8693x_play_mode.c",
+      "sha256": "82b28063cd4cb08d647425ab3c83176ab27051ddca56586d7d4a7c2afde478d9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/aw8693x_play_mode_20261101/host_contract_20261102/report.json",
+      "sha256": "33a5c8ee5ec0b091cd7c4f83310c78fcf8dca2caee771dc8bc75d31471ddbd99"
+    }
+  ],
+  "status": "CANDIDATE_EVIDENCE_PENDING_REVIEW",
+  "limitations": [
+    "The AArch64 build selects the full-function exact assembly island; this ledger documents stock behavior and the portable C branch but does not claim C compilation parity.",
+    "The host contract supplies a valid non-null device pointer; this function has no null-pointer guard.",
+    "The ordered effects and bounded input domain require independent reviewer acceptance before promotion."
+  ]
+}
