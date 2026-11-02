@@ -44,6 +44,8 @@ int syna_tcm_do_fw_update_ex(
 		return -241;
 	}
 
+	mutex_init(access.mutex);
+
 	flash_flags = (u32 *)(void *)access.reserved_0000;
 	byte_offset = (u32 *)(void *)((u8 *)&access + 0x8c);
 	update_in_progress = (u32 *)(void *)(tcm->reserved_0380 + 0x08);

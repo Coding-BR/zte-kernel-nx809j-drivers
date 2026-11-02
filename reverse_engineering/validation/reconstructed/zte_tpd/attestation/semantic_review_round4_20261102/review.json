@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "reviewed_utc": "2026-11-02T18:35:46.583655+00:00",
+  "review_type": "flash allocation lifetime and stack mutex initialization semantic review",
+  "review_status": "COMPLETED_STATIC_REVIEW",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 18,
+    "joern_findings_total": 128,
+    "findings_by_category": {
+      "lifetime": 14,
+      "synchronization": 4
+    },
+    "functions": [
+      "syna_tcm_read_flash_area",
+      "syna_tcm_read_flash_boot_cs_config",
+      "syna_tcm_update_flash_block",
+      "syna_tcm_do_fw_update_ex"
+    ]
+  },
+  "source_state": {
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json",
+    "map_status": "PARTIAL_SOURCE_MAP",
+    "reviewed_functions_status": "PROMOTED_OFFLINE_EXACT",
+    "hardware_validation": "DEFERRED",
+    "source_hashes_sha256": {
+      "syna_tcm_do_fw_update_ex.c": "99cc5b33fecabc28c29a0870af7e7205e0f2a6ecc704b586976e1eb2abc51851",
+      "syna_tcm_read_flash_area.c": "411d7a28125826153c02654f2aaadfb36b93864901c6524bca5859d66bd65731",
+      "syna_tcm_read_flash_boot_cs_config.c": "26c0e1dfefa7bcf613cee86e09563acbc54076c3123bd5f0ff1e0b856db36356",
+      "syna_tcm_update_flash_block.c": "96886ff0ff1a3b728961be47842a99d31ad756c16e0d879e791cabc498115798"
+    }
+  },
+  "findings": [
+    {
+      "id": "syna-tcm-fw-update-stack-mutex-source-mirror-gap",
+      "category": "synchronization",
+      "severity": "HIGH_IF_C_MIRROR_IS_COMPILED",
+      "disposition": "CORRECTED_IN_C_MIRROR; EXACT_STOCK_ASSEMBLY_ALREADY_INITIALIZED_MUTEX",
+      "details": "Stock Ghidra pseudocode calls __mutex_init for the stack mutex before syna_tcm_set_up_flash_access and syna_tcm_update_flash_block. The exact AArch64 assembly has the corresponding __mutex_init relocation. The C mirror had zero-initialized the access context but omitted mutex_init(access.mutex), while the optimized update path locks access->mutex at offset +0x50. Added mutex_init(access.mutex) after the invalid-parameter guard and updated the reconstruction-map source hash. The Makefile selects syna_tcm_do_fw_update_ex_exact.S and filters out the C file, so this was a semantic source-mirror mismatch; the compiled stock-exact path already initialized the mutex.",
+      "evidence": {
+        "stock_function_entry": "00125c18",
+        "ghidra_file": "offline_static/ghidra_stock/decompiled/0301_00125c18_syna_tcm_do_fw_update_ex.c",
+        "ghidra_mutex_init_line": 67,
+        "exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_do_fw_update_ex_exact.S",
+        "exact_assembly_mutex_init_relocation_line": 87,
+        "context_mutex_offset": "0x50",
+        "source_file": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_do_fw_update_ex.c",
+        "corrected_line": 47
+      }
+    },
+    {
+      "id": "syna-tcm-flash-allocation-and-lock-balance",
+      "category": "lifetime_and_synchronization",
+      "severity": "NO_CONFIRMED_IMBALANCE",
+      "disposition": "18_JOERN_CALLSITE_ALERTS_REVIEWED; NO_LOCAL_LEAK_DOUBLE_FREE_OR_LOCK_LEAK_CONFIRMED",
+      "details": "In syna_tcm_read_flash_area, replacement allocations and the local lockdown allocation converge on cleanup paths; managed access allocation is released at the common out path. In syna_tcm_read_flash_boot_cs_config, temporary buffers converge on cleanup_temporary across read, resize, bounds, and error paths. In syna_tcm_update_flash_block, the mutex is acquired once and success/error exits release it through mutually exclusive branches; managed buffer resizing occurs while locked and the caller releases it at common cleanup. Ghidra pseudocode shows the same cleanup and branch-exclusive unlock structure. Joern findings are syntactic call-site alerts, not independent vulnerability proofs.",
+      "functions": [
+        "syna_tcm_read_flash_area",
+        "syna_tcm_read_flash_boot_cs_config",
+        "syna_tcm_update_flash_block"
+      ],
+      "joern_finding_count": 18,
+      "remaining_limitations": [
+        "Device detach and concurrent removal interleavings were not dynamically modeled.",
+        "Managed-device lifetime under teardown remains a separate cross-function review item."
+      ]
+    }
+  ],
+  "docker_validation": {
+    "sync_passed": true,
+    "files_copied": [
+      "syna_tcm_do_fw_update_ex.c"
+    ],
+    "stale_sources_removed": [],
+    "kbuild_input_count": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "build_passed": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "reproducible": true,
+    "module_sha256": "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+    "module_size_bytes": 6291200,
+    "vermagic_accepted": true,
+    "target_kernel": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "source_sync": {
+      "content_mismatch": [],
+      "missing_from_curated": [],
+      "unexpected_in_curated": []
+    }
+  },
+  "evidence_sha256": {
+    "stock_ghidra_decomp_do_fw_update_ex": "134ac197de133e8b5504a1602d5386190e086278ad4977dac37ef0266b54475e",
+    "stock_ghidra_decomp_read_flash_area": "c79b085f9529c563213dd904d04ad8770f370e981b74f0b0a7e143b1a389a811",
+    "stock_ghidra_decomp_read_flash_boot_cs_config": "ff8a186ab401a33629ee34ba68d451c6b5654729652b5d71e3b8dff642b416ca",
+    "stock_ghidra_decomp_update_flash_block": "52691ee8fa8f223598a9ef6b9cdd0d0975088b3a4952421665b5a4b3f54d7194",
+    "exact_assembly_do_fw_update_ex": "0ffe5013483663ccd6e5fb784396bb0568380e4d533e15d3117d02c174fb7d91",
+    "joern_gate_report": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "canonical_build_report": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "docker_sync_plan": "cbc54ceb9e56efde440a8b0d3b84ad16b8b28aa443453a074149cc6572f9a0f6",
+    "build_log_cycle_1": "c225a6f563b5718c356480a791df938257355ad1631c076da02f03ec0a560cc8",
+    "clean_log_cycle_1": "60cae7503ffd6c127c6d8f965cbfb0280745f51aef8d35a40c3c379621c5d6bc",
+    "build_log_cycle_2": "c61cd828b23b986266de80305b25c43e44c82905e57a313e38c4de19403a7b9f",
+    "clean_log_cycle_2": "60cae7503ffd6c127c6d8f965cbfb0280745f51aef8d35a40c3c379621c5d6bc"
+  },
+  "limitations": [
+    "Static review only; no Android runtime or NX809J hardware execution.",
+    "No independent human review.",
+    "The repository reconstruction map remains PARTIAL_SOURCE_MAP."
+  ],
+  "published_build_logs": [
+    "build_cycle1.log",
+    "build_cycle2.log",
+    "clean_cycle1.log",
+    "clean_cycle2.log"
+  ]
+}
