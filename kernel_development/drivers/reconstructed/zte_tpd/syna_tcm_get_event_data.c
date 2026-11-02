@@ -1,6 +1,9 @@
+#define SYNA_TCM_GET_EVENT_DATA_EXTERNAL_BUF_COPY
+#define syna_tcm_buf_copy_2 syna_tcm_buf_copy
+
 #ifndef SYNA_TCM_GET_EVENT_DATA_EXTERNAL_BUF_COPY
 static int syna_tcm_buf_copy(struct tcm_buffer *dst,
-			     struct tcm_buffer *src);
+				     struct tcm_buffer *src);
 
 #define syna_tcm_buf_copy_2 syna_tcm_buf_copy
 #endif

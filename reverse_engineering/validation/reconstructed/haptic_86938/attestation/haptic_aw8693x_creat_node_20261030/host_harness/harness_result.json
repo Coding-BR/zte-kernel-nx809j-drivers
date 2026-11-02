@@ -1,0 +1,66 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/repo:ro",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030:/evidence:ro",
+    "--entrypoint",
+    "/bin/sh",
+    "nubia-sm8850-kernel-builder:latest",
+    "/evidence/host_harness/run_harness.sh"
+  ],
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "generated_utc": "2026-10-30T03:21:37.888988+00:00",
+  "input_hashes": {
+    "kernel_development\\drivers\\reconstructed\\haptic_86938\\haptic_86938_fn_126_aw8693x_creat_node.c": {
+      "sha256": "91b9b01affd7ca2139ae30cc921273edb52612d3a9a585d41023ab3c7de05454",
+      "size": 2069
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\aw8693x_creat_node_harness.c": {
+      "sha256": "dece5473d650b3342b15f9ff1b5ec6d786ab034513611f1ffbaf729e3ec72955",
+      "size": 3922
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\include\\linux\\device.h": {
+      "sha256": "eac1f997a85e325e804256a1c73c4b352ac8c2567ccaea579247570b6c223a98",
+      "size": 719
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\include\\linux\\kernel.h": {
+      "sha256": "350ae91c976f3e44fc62d3ec70ff2560d41b84a34e38b562cf6c39af4d5ca1b9",
+      "size": 99
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\include\\linux\\printk.h": {
+      "sha256": "97fcd89a818370b6c9a42fb799661870117e20b836096e29491c9e0dbe1c8756",
+      "size": 187
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\include\\linux\\sysfs.h": {
+      "sha256": "00bf9d05ae2a3bce1eba0ee718ef79b18d3413920674141e06515f586da45c4d",
+      "size": 531
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\include\\linux\\types.h": {
+      "sha256": "73533d3bfca6ca8fc75033fdda04e550fe9cad45a2591fb4a954dc9f21424718",
+      "size": 179
+    },
+    "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_aw8693x_creat_node_20261030\\host_harness\\run_harness.sh": {
+      "sha256": "fd110f1c59cb6d59d8da0467d664941a0514abffee64b97e610d246490f72f3a",
+      "size": 535
+    }
+  },
+  "limitations": [
+    "host harness stubs sysfs_create_group and does not prove kernel sysfs lifetime or hardware behavior",
+    "kernel ABI and code generation are covered by the separate Docker/Joern/KCFI/assembly gates"
+  ],
+  "returncode": 0,
+  "schema_version": "1.0",
+  "scope": [
+    "sysfs_create_group receives the pointer at haptic+0xf8 and the reconstructed group",
+    "five ordered attribute names, 0644 modes, callback pointers, and NULL terminator",
+    "success and positive returns normalize to zero",
+    "negative return is preserved and emits the exact stock log format and arguments"
+  ],
+  "status": "PASS",
+  "stderr": "",
+  "stdout": "PASS: sysfs group, five ordered 0644 callbacks, success normalization, and negative error/log behavior\n"
+}

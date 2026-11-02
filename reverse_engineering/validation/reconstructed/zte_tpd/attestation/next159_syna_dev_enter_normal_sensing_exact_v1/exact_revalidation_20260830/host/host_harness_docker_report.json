@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-30T06:48:43.332429+00:00",
+  "mode": "offline_direct_source_syna_dev_enter_normal_sensing_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "syna_dev_enter_normal_sensing",
+  "covered_functions": [
+    "syna_dev_enter_normal_sensing",
+    "syna_tcm_sleep",
+    "syna_dev_enable_lowpwr_gesture"
+  ],
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\syna_dev_enter_normal_sensing_host_test.c",
+  "source_sha256": "1a510a589829fcfdb2423fd913f61cc563efe7962caccc2582facb21b96fd47e",
+  "driver_source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\syna_dev_enter_normal_sensing.c",
+  "driver_source_sha256": "656ce052d878be063954e565d01f6a25be8843569a8565a18ae53a8077da0d28",
+  "expected_cases": 8,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS default_sleep_mode_is_used\nPASS active_gesture_power_forces_zero_mode\nPASS gesture_power_bit_zero_keeps_default_mode\nPASS sleep_failure_returns_before_gesture\nPASS low_power_gesture_success_delays\nPASS low_power_gesture_receives_selected_mode\nPASS gesture_failure_returns_without_delay\nPASS low_power_gesture_requires_exact_one\nSUMMARY tests=8 failures=0\n",
+      "run_stderr": "",
+      "binary_sha256": "e15966c873aa3ecf72eb138b5171e7845f06a161f13f7f1936835e57f1fd53d9",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS default_sleep_mode_is_used\nPASS active_gesture_power_forces_zero_mode\nPASS gesture_power_bit_zero_keeps_default_mode\nPASS sleep_failure_returns_before_gesture\nPASS low_power_gesture_success_delays\nPASS low_power_gesture_receives_selected_mode\nPASS gesture_failure_returns_without_delay\nPASS low_power_gesture_requires_exact_one\nSUMMARY tests=8 failures=0\n",
+      "run_stderr": "",
+      "binary_sha256": "e15966c873aa3ecf72eb138b5171e7845f06a161f13f7f1936835e57f1fd53d9",
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The host-only branch replaces the inline AArch64 load/branch sequence with equivalent offset reads; the original AArch64 assembly remains the non-host path.",
+    "TCM sleep, low-power gesture, printk and msleep are stubs; no real transport, concurrency or hardware is exercised.",
+    "AArch64 exact code/relocation comparison, KCFI and controlled-device validation remain separate gates."
+  ]
+}

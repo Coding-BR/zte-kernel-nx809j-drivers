@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "review_level": "L3 pre-candidate reasoning",
+  "function": "vibrator_timer_func",
+  "conclusions": [
+    {
+      "claim": "The callback argument is the embedded hrtimer at parent+0x330.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "The timer callback clears a 32-bit state at parent+0x40, queues the vibrator work item at parent+0x428 on the workqueue at parent+0x448, and returns NORESTART.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0078_001096ec_vibrator_work_routine.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0077_vibrator_timer_func_001096b4.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "The KCFI callback type is represented by 0xe3cff753.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+      ],
+      "confidence": "high; candidate confirmation pending"
+    }
+  ],
+  "limitations": [
+    "Ghidra prototype is unreliable for this function.",
+    "The meaning/name of parent+0x40 is inferred from its consumers; source keeps the address expression and does not invent a struct definition.",
+    "No runtime or device behavior is claimed."
+  ]
+}

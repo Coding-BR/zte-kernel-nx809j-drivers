@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "063_get_stability_level",
+  "source_function": "get_stability_level",
+  "stock_function": "get_stability_level",
+  "stock_entry": "0010c148",
+  "stock_body_bytes": 240,
+  "candidate_source": "get_stability_level_exact.S",
+  "candidate_source_sha256": "735bbce8e64e4ad636df52246c5f217594448444b9a129326d60f4d4c1f4c5d3",
+  "candidate_module": "candidate_zte_tpd.ko",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "checks": {
+    "canonical_build_two_cycles": true,
+    "aarch64_opcode_and_relocation_comparison": true,
+    "kcfi_type_id_and_size": true,
+    "host_asan_ubsan_two_cycles": true,
+    "joern_strict": true
+  },
+  "observations": {
+    "aarch64_instruction_count": 60,
+    "kcfi_type_id": "0xf4e9d97c",
+    "joern_review_finding_count": 1,
+    "joern_review_finding": "userspace_egress: simple_read_from_buffer(a2, a3, a4, s, v12)",
+    "source_test_sha256": "1eed54e4c61480af18d9f9c2c16d86a5a6043ffc6bd2e00aa2de0dd82ea95fde"
+  },
+  "artifacts": {
+    "canonical_build": {"path": "canonical_build_report.json", "sha256": "cfa083481c22a3e395b28151080f910128ba4777e2c1d71a6c24ec159f28534a"},
+    "aarch64_comparison": {"path": "aarch64_comparison.json", "sha256": "b43f618c6985c70e70a597410f5b0563b66087d696a5e0c444b1befa0e0f8922"},
+    "kcfi_comparison": {"path": "kcfi/kcfi_comparison.json", "sha256": "671709c1c16ab6ac278cfdaf14f534e7ad1f21e432200a19416409853ef669d1"},
+    "host_harness": {"path": "host_harness_docker_report.json", "sha256": "5e7b3de0c734614f791a7fbd43ecf05bb94d6d9f4f4d7062dcf84c1fe9e8c2b3"},
+    "joern": {"path": "joern/joern_gate_summary.json", "sha256": "96b2d6cb8f0e7992621e8f46465f85ac39c74ef33c2c53591bd0be629da088c4"},
+    "microtask_attestation": {"path": "microtask_attestation.json", "sha256": "5a400a0f3a4cf3e1f8740deb72534eaf8bb9b3a0f895ff96c07078dfcc277520"}
+  },
+  "limitations": [
+    "Offline/static validation only; hardware, ADB, insmod, firmware, and device behavior remain unverified.",
+    "The host test includes the reconstructed C source and fake procfs/device callbacks; it does not execute a real kernel procfs path.",
+    "The Joern userspace_egress finding is retained as a review observation because the function intentionally calls simple_read_from_buffer."
+  ]
+}

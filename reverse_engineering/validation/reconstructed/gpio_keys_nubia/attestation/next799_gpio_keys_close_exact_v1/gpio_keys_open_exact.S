@@ -1,0 +1,58 @@
+.section .text,"ax",@progbits
+.align 2
+.global gpio_keys_open
+.type gpio_keys_open, %function
+    .inst 0x9a149bcf
+gpio_keys_open:
+    .inst 0xd503233f
+    .inst 0xa9bd7bfd
+    .inst 0xa90157f6
+    .inst 0xa9024ff4
+    .inst 0x910003fd
+    .inst 0xf9416415
+    .inst 0xf94002a8
+    .inst 0xf9400d09
+    .inst 0xb4000169
+    .inst 0xf9414800
+    .inst 0xb85fc130
+    .inst 0x72878171
+    .inst 0x72a54e11
+    .inst 0x6b11021f
+    .inst 0x54000040
+    .inst 0xd4304520
+    .inst 0xd63f0120
+    .inst 0x35000340
+    .inst 0xf94002a8
+    .inst 0xb9400909
+    .inst 0xf94006b3
+    .inst 0x7100053f
+    .inst 0x540001eb
+    .inst 0xaa1f03f6
+    .inst 0x910122b4
+    .inst 0x14000006
+    .inst 0xb9800909
+    .inst 0x910006d6
+    .inst 0x91044294
+    .inst 0xeb0902df
+    .inst 0x540000ea
+    .inst 0xf9400a89
+    .inst 0xb4ffff49
+    .inst 0xaa1403e0
+    .inst 0x94000021
+    .inst 0xf94002a8
+    .inst 0x17fffff6
+    .inst 0xaa1303e0
+    .inst 0x2a1f03e1
+    .inst 0x2a1f03e2
+    .inst 0x2a1f03e3
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, input_event
+    .inst 0x2a1f03e0
+    .inst 0xa9424ff4
+    .inst 0xa94157f6
+    .inst 0xa8c37bfd
+    .inst 0xd50323bf
+    .inst 0xd65f03c0
+.size gpio_keys_open, .-gpio_keys_open
+
+.space 0x48

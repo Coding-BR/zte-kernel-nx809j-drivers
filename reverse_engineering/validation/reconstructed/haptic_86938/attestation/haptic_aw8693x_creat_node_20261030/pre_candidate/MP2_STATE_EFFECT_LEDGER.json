@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_creat_node@00103258",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "source_state": "PRE_CANDIDATE",
+  "ordered_effects": [
+    {
+      "sequence": 1,
+      "kind": "load",
+      "address": "haptic+0xf8",
+      "width_bytes": 8,
+      "meaning": "sysfs kobject pointer (API-typed inference)"
+    },
+    {
+      "sequence": 2,
+      "kind": "address",
+      "meaning": "address of local static aw8693x_vibrator_attribute_group"
+    },
+    {
+      "sequence": 3,
+      "kind": "call",
+      "target": "sysfs_create_group",
+      "arguments": [
+        "kobject",
+        "attribute_group"
+      ]
+    },
+    {
+      "sequence": 4,
+      "kind": "branch",
+      "predicate": "signed return value < 0",
+      "evidence": "tbnz w0,#0x1f"
+    },
+    {
+      "sequence": 5,
+      "kind": "return",
+      "condition": "create_group return >= 0",
+      "value": 0
+    },
+    {
+      "sequence": 6,
+      "kind": "call",
+      "condition": "create_group return < 0",
+      "target": "_printk",
+      "arguments": [
+        "KERN_ERR format",
+        "haptic_hv",
+        2330,
+        "aw8693x_creat_node"
+      ]
+    },
+    {
+      "sequence": 7,
+      "kind": "return",
+      "condition": "create_group return < 0",
+      "value": "original negative sysfs_create_group result"
+    }
+  ],
+  "function_state_writes": [],
+  "resource_effect": "requests creation of a sysfs attribute group; no local allocation or cleanup in this function",
+  "limitations": [
+    "Ghidra raw P-Code ledger includes prologue stack saves; the list above interprets only externally observable behavior using assembly and API prototypes."
+  ]
+}

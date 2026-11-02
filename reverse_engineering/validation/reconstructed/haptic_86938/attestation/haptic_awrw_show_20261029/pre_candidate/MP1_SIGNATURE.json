@@ -1,0 +1,15 @@
+{
+  "kcfi": "0xae84bcd4",
+  "stock_signature": "Ghidra does not recover the prototype; target struct device_attribute declares ssize_t (*show)(struct device *, struct device_attribute *, char *)",
+  "unknowns": [
+    "stock nominal types absent from Ghidra decompilation; resolved against the pinned kernel callback declaration and matching KCFI type ID",
+    "candidate callback-table registration is not integrated because awrw_store remains unreconstructed"
+  ],
+  "candidate_signature": "ssize_t awrw_show(struct device *, struct device_attribute *, char *)",
+  "signature_basis": "pinned include/linux/device.h callback declaration plus matching stock/candidate KCFI type ID 0xae84bcd4",
+  "observations": [
+    "Assembly dereferences x0+0x98 and retains x2 as output base; x1 unused",
+    "direct calls: snprintf twice and _printk",
+    "candidate module symbol binding is STB_GLOBAL while stock is STB_LOCAL; neither is exported through __ksymtab, so this is internal symbol visibility rather than an external module ABI change"
+  ]
+}

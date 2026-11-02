@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "006_zlog_register_work_deinit",
+  "stock_function": "zlog_register_work_deinit",
+  "stock_entry": "00107874",
+  "ghidra_body_bytes": 80,
+  "elf_symbol_bytes": 80,
+  "selected_functions": ["zlog_register_work_deinit"],
+  "status": "OFFLINE_EXACT",
+  "gate_passed": true,
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source_sha256": "1c6bf9b8a22af8df5c930d3f8b70858b63b674ed08223046f9289e84e8b38f4f",
+  "candidate_module_sha256": "f8ac727f9d3c2ec3fbd06cad74d69bcb67b16eb5b6fce1ed5bb07b0237ef129a",
+  "candidate_module_size": 17688992,
+  "evidence": [
+    {"role": "stock_assembly", "path": "stock_assembly/0000_zlog_register_work_deinit.asm", "sha256": "76e4200c961dad814e479a74a936cc050f4e95aa0abe3c359c2d89794a1d4690"},
+    {"role": "candidate_assembly", "path": "candidate_assembly/0000_zlog_register_work_deinit.asm", "sha256": "76dcb1e6fee293a914fbf40c3e896e3cad993be6944d2a6802320f1438fb4ed7"},
+    {"role": "assembly_compare", "path": "assembly_comparison.json", "sha256": "8344ec5849f83994ea3374a59c865a51d21e67a5596036f11dce0bd3a86e596d"},
+    {"role": "stock_kcfi", "path": "stock_kcfi.json", "sha256": "cfae2e7b8ff5d9fc200e27f3b409a2ac0e945194a004e4760bf6cc329159a4e5"},
+    {"role": "candidate_kcfi", "path": "candidate_kcfi.json", "sha256": "5210d738f551b0e6708b7736868c779bb96affc56633de271e22d18aa60fbcdd"},
+    {"role": "kcfi_compare", "path": "kcfi_comparison.json", "sha256": "fd83ca7119341ba2967990f0044137ae5e42764ca0ebe7225c976618b36d2df1"},
+    {"role": "canonical_build", "path": "canonical_build_report.json", "sha256": "790121709258dc198d299d2b6c72bbd83e966c7e9545bc5ebfe74b3ece72ba22"},
+    {"role": "source_sync", "path": "source_sync_report.json", "sha256": "d03cc51df48239449bc97470c0d1eceb2e6d9a13f2cdc2d7e57bf92cd2695406"},
+    {"role": "host_harness", "path": "host_harness_report.json", "sha256": "9229a2c8abe93eefed5dcaa4b41b20a77233ea0a0846b730f97e70ea46d98a9c"},
+    {"role": "joern", "path": "joern/joern_gate_report.json", "sha256": "9836e82288717e7308258d8b11acf4517783539f92a7b36b99cb647dde081120"},
+    {"role": "joern_summary", "path": "joern/joern_gate_summary.json", "sha256": "f681c2af13f3fcfc85bf61cdffb07d654f3b31015375973a18b93bedecc42caf"}
+  ],
+  "findings": [
+    "Stock and candidate ELF symbols contain 20 AArch64 instructions and 80 bytes; the Ghidra body size and ELF symbol size agree.",
+    "KCFI type ID matches at 0xe5c47d60 in .text with an 80-byte symbol size.",
+    "The function preserves the stock order: log entry, cancel_delayed_work_sync, vfree of the zlog buffer and NULL assignment; opcode sequence, section and normalized references match.",
+    "The current zlog cluster ASan/UBSan harness directly exercises cancellation, freeing and buffer clearing in its lifecycle test and passes in two reproducible cycles.",
+    "Scheduler timing, allocator behavior and NX809J hardware behavior remain unverified."
+  ]
+}

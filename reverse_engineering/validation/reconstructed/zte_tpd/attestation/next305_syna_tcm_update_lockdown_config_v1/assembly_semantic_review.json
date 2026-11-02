@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "305_syna_tcm_update_lockdown_config",
+  "stock_entry": "00126aec",
+  "stock_symbol": "syna_tcm_update_lockdown_config",
+  "candidate_symbol": "syna_tcm_update_lockdown_config",
+  "candidate_compiler": "Android clang r536225 in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0304_00126aec_syna_tcm_update_lockdown_config.c",
+      "sha256": "df345e11b1b88ccbaf5952c8f9c8418cd83c69fa6137a03a1fdc9336f4661250"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0304_00126aec_syna_tcm_update_lockdown_config.jsonl",
+      "sha256": "30fee47178090810a7e8db958d8f23a2441265f2f62cdf5f4ea7fb82346cee5a"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0304_syna_tcm_update_lockdown_config_00126aec.asm",
+      "sha256": "70142dffba635c6a443d9d212b738fc12f950a90e6194952ad7ddc022d0daae1"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_lockdown_config.c",
+      "sha256": "c8f89eafad62070ed868ac75282406f050ce5a93da8779615529c52feba72c4f"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next305_syna_tcm_update_lockdown_config_v1/candidate_assembly/syna_tcm_update_lockdown_config_candidate.s",
+      "sha256": "9825dda927dbe635e9e64df03f291609e462661af99c15721a70ce22d914fc1d"
+    }
+  },
+  "checks": {
+    "parameter_and_partition_offsets": "PASS",
+    "delay_timing_and_mutex_initialization": "PASS",
+    "boot_status_and_short_buffer_gates": "PASS",
+    "flash_check_and_final_eight_byte_write": "PASS",
+    "firmware_mode_recovery_and_cleanup": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The candidate adds safe byte-wise reads and an explicit short-buffer guard at boundaries where stock relies on recovered AArch64 layouts.",
+    "The access scratch word at +0x38 is retained from the stock stack overlay; the shared header names a nearby proven field at +0x3c and does not claim this word is independently typed.",
+    "This review does not establish kernel ABI, KCFI, module relocation, canonical build or physical hardware behavior."
+  ]
+}

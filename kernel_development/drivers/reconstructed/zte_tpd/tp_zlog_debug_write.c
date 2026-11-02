@@ -1,5 +1,9 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
+#ifndef __user
+#define __user
+#endif
+
 ssize_t tp_zlog_debug_write(struct file *file, const char __user *buffer,
 			    size_t len, loff_t *offset)
 {

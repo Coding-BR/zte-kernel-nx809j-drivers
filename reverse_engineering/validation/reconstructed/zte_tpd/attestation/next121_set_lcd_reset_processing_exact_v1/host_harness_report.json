@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-27T08:40:13.964597+00:00",
+  "mode": "offline_direct_source_set_lcd_reset_processing_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "set_lcd_reset_processing",
+  "covered_functions": [
+    "set_lcd_reset_processing"
+  ],
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\set_lcd_reset_processing_host_test.c",
+  "source_sha256": "74f3878671f887395debe801d92e39581ee4bc6ffc980caca5661a8f84137b49",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 3,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+        "-v",
+        ".tmp_next120_probe\\set_lcd_host_build_v2\\cycle1:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-target121-lcd-reset",
+        "-ffile-prefix-map=/drivers=<drivers>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/drivers/validation/zte_tpd/host/set_lcd_reset_processing_host_test.c",
+        "-o",
+        "/output/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        ".tmp_next120_probe\\set_lcd_host_build_v2\\cycle1:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_asan_ubsan"
+      ],
+      "run_returncode": 0,
+      "run_stdout": "PASS set_lcd_reset_processing host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "3d849759348fc355d2459700bae39064462b1b2d1423df7cb5371ac14d25a471",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+        "-v",
+        ".tmp_next120_probe\\set_lcd_host_build_v2\\cycle2:/output",
+        "-v",
+        "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/toolchains/clang-r536225/bin/clang",
+        "-std=gnu11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-omit-frame-pointer",
+        "-fno-pie",
+        "-no-pie",
+        "-frandom-seed=zte-tpd-target121-lcd-reset",
+        "-ffile-prefix-map=/drivers=<drivers>",
+        "-fsanitize=address,undefined",
+        "-Wl,--build-id=none",
+        "/drivers/validation/zte_tpd/host/set_lcd_reset_processing_host_test.c",
+        "-o",
+        "/output/host_test_asan_ubsan"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_command": [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        ".tmp_next120_probe\\set_lcd_host_build_v2\\cycle2:/output:ro",
+        "nubia-sm8850-kernel-builder:latest",
+        "/output/host_test_asan_ubsan"
+      ],
+      "run_returncode": 0,
+      "run_stdout": "PASS set_lcd_reset_processing host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "3d849759348fc355d2459700bae39064462b1b2d1423df7cb5371ac14d25a471",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\set_lcd_reset_processing_host_test.c",
+      "size": 2123,
+      "sha256": "74f3878671f887395debe801d92e39581ee4bc6ffc980caca5661a8f84137b49"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\set_lcd_reset_processing.c",
+      "size": 124,
+      "sha256": "726395e315fe7220ed9565215df38a2e1796c03e5a541fec469abaf056733200"
+    }
+  ],
+  "reproducible": true,
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness proves byte storage at offset 0x18, printk formatting and value masking.",
+    "Module assembly, KCFI, Ghidra and Joern remain independent gates.",
+    "No smartphone or physical touch-controller state is exercised."
+  ]
+}

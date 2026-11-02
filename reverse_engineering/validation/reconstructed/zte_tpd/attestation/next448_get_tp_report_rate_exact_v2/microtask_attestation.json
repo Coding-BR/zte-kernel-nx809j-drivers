@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "microtask": "next448_get_tp_report_rate_exact_v2",
+  "driver": "zte_tpd",
+  "function": "get_tp_report_rate",
+  "stock_entry": "0010bdd0",
+  "status": "OFFLINE_EXACT",
+  "hardware_status": "DEFERRED",
+  "source_sha256": "065ad9a61cb7f89b4979dbd6f59839fcd92bc87429a8bc6bfa19248b07ebc352",
+  "exact_assembly_sha256": "cdd18282dcfc40e3a6edca048e20e5ec9841ffb4c0de72a58380d9a2b87b02d5",
+  "artifact": {
+    "path": "zte_tpd.ko",
+    "sha256": "e4257805331694225e13f3abbd0e567001cb848d9ac66dc206a05624d58e0c92",
+    "size": 28976688
+  },
+  "gates": {
+    "ghidra_pseudocode_and_pcode": "PASS",
+    "joern_strict": "PASS",
+    "host_asan_ubsan": "PASS",
+    "canonical_docker_two_cycles": "PASS",
+    "aarch64_assembly": "PASS",
+    "kcfi": "PASS"
+  },
+  "joern_review_findings": {
+    "blockers": 0,
+    "parse_problem_count": 0,
+    "unresolved_call_count": 0,
+    "userspace_egress_count": 1
+  },
+  "promotion_claim": true,
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "decision_basis": "Function-level AArch64, normalized relocation, KCFI, strict Joern, canonical two-cycle build and ASan/UBSan evidence are exact or passing; hardware remains deferred.",
+  "source_of_truth": "NX809J stock zte_tpd.ko and its local Ghidra exports",
+  "notes": [
+    "Exact offline function-level parity is established by stock/candidate AArch64 comparison, relocation normalization, KCFI and strict Joern gates.",
+    "No smartphone execution was performed; hardware validation remains deferred.",
+    "The expected simple_read_from_buffer userspace-egress finding is retained for review."
+  ]
+}

@@ -4,6 +4,7 @@ int syna_dev_process_unexpected_reset(unsigned char a1,
 {
   __int64 a4 = (__int64)(unsigned long)context;
   void *v5; // x0
+  __int64 workqueue;
 
   (void)a1;
   (void)a2;
@@ -17,12 +18,14 @@ int syna_dev_process_unexpected_reset(unsigned char a1,
   if ( *(_DWORD *)(a4 + 1404) == 1 )
   {
     printk(unk_32499, "syna_dev_process_unexpected_reset");
-    if ( *(_QWORD *)(a4 + 1352) )
+    workqueue = *(_QWORD *)(a4 + 1352);
+    if ( workqueue )
     {
       if ( !*(_DWORD *)(a4 + 1312) )
       {
         *(_DWORD *)(a4 + 1312) = 1;
-        queue_work(*(_QWORD *)(a4 + 1352), a4 + 1320);
+        queue_work_on(32, (struct workqueue_struct *)workqueue,
+                      (struct work_struct *)(a4 + 1320));
       }
       return 0;
     }

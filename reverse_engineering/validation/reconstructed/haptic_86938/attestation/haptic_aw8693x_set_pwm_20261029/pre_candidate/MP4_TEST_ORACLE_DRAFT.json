@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "aw8693x_set_pwm",
+  "cases": [
+    {
+      "name": "mode_mapping",
+      "assert": [
+        "0 -> 0x20",
+        "1 -> 0",
+        "2 -> 0x40",
+        "3 -> 0x60",
+        "each valid call uses register 0x46 and mask 0xffffff9f"
+      ]
+    },
+    {
+      "name": "invalid_modes",
+      "assert": [
+        "all other u8 values log error param",
+        "invalid mode performs no i2c_w_bits call"
+      ]
+    },
+    {
+      "name": "helper_return",
+      "assert": [
+        "i2c_w_bits status is ignored"
+      ]
+    }
+  ],
+  "note": "Static core protocol is the acceptance gate; this oracle is not executed."
+}

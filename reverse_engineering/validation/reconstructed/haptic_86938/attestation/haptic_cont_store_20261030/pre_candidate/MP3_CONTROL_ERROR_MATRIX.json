@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "function_id": "cont_store@0010be5c",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "paths": [
+    {
+      "condition": "kstrtouint returns negative",
+      "effects": "return errno; no callback runs",
+      "return": "ret"
+    },
+    {
+      "condition": "parse succeeds and value is zero",
+      "effects": "call aw8693x_stop",
+      "return": "count"
+    },
+    {
+      "condition": "parse succeeds and value is nonzero",
+      "effects": "call aw8693x_stop, aw8693x_upload_lra(haptic,1), then aw8693x_cont_config",
+      "return": "count"
+    }
+  ],
+  "early_returns": [
+    "negative kstrtouint result"
+  ],
+  "error_results": "Callback return values do not exist (void) or are not propagated.",
+  "bounds": "kstrtouint parses into a zero-initialized u32; no explicit range check in target."
+}

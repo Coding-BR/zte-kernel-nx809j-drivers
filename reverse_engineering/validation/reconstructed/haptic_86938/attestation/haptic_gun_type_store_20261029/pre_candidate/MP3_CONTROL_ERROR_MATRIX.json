@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "function": "gun_type_store",
+  "paths": [
+    {
+      "condition": "kstrtouint returns negative",
+      "return": "parser errno",
+      "effects": [
+        "skip lock",
+        "skip store",
+        "skip unlock"
+      ]
+    },
+    {
+      "condition": "kstrtouint succeeds",
+      "return": "count",
+      "effects": [
+        "mutex_lock",
+        "store parsed 32-bit value",
+        "mutex_unlock"
+      ]
+    }
+  ],
+  "stack_canary": "Stock checks the SP_EL0 guard and calls __stack_chk_fail on mismatch."
+}

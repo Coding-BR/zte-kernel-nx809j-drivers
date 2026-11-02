@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "task_id": "zte_tpd_tpd_set_screen_off_awake_MP3_CONTROL_ERROR_MATRIX",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": true,
+  "stock_identity": {
+    "function": "tpd_set_screen_off_awake@0012ca1c",
+    "module": {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "size": 633536
+    },
+    "module_expected_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "source_environment": {
+    "target_kernel_manifest": {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847",
+      "size": 3587
+    },
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "branch": "reconstruction/zte-tpd-syna-release-attested",
+    "head_at_freeze": "4721a0f003ca1f96e6a06bb9375b3c3f735333b6"
+  },
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v5/exact_revalidation_20260831/stock_assembly.asm",
+      "sha256": "19da162180738ad138f9c025bcd238c108024f5ff488ca1ce71f978eab6c8e33",
+      "size": 1639
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0362_0012ca1c_tpd_set_screen_off_awake.jsonl",
+      "sha256": "96d93994b40bcb75ce27458e12ea18da8e3af5707db0fb32f11e00fb5c6c6044",
+      "size": 8846
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0362_0012ca1c_tpd_set_screen_off_awake.c",
+      "sha256": "c88b570a5096fc3178ebcc51566bed826f21a71de228ae67f0cd0a12ff03065b",
+      "size": 399
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v5/exact_revalidation_20260831/host_harness_docker_report.json",
+      "sha256": "a7526afbf409fdf305333d6a14336f4860575931e457d6bdd6426e1eae7b4938",
+      "size": 1601
+    }
+  ],
+  "work_unit": "MP3_CONTROL_ERROR_MATRIX",
+  "cases": [
+    {
+      "case": "mode==1, any 32-bit requested value",
+      "expected": "write requested to context+0x5f4, context+0x5f0, and global; no printk; return 0",
+      "confidence": "STATIC_ASSEMBLY"
+    },
+    {
+      "case": "mode!=1, any 32-bit requested value",
+      "expected": "write requested only to context+0x5f4; preserve context+0x5f0 and global; printk(format,name); return 0 independent of printk return",
+      "confidence": "STATIC_ASSEMBLY"
+    },
+    {
+      "case": "mode 0, 2, or 0xffffffff",
+      "expected": "all follow the !=1 path",
+      "confidence": "STATIC_CMP_BRANCH"
+    },
+    {
+      "case": "invalid cdev/context pointer",
+      "expected": "not specified; function dereferences without an observed guard",
+      "confidence": "UNDEFINED_OUTSIDE_VALID_CALL_CONTRACT"
+    }
+  ],
+  "known_gap": "The v5 host harness used a printk stub returning zero and therefore did not detect propagation of a nonzero printk result. New relational harness must set printk return to nonzero and include boundary 32-bit values."
+}

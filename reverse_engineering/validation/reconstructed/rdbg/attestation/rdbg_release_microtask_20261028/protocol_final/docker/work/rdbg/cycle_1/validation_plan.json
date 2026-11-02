@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "scope": [
+    "on_interrupt_from@00101600",
+    "cleanup_module@00101974",
+    "rdbg_release@001014cc"
+  ],
+  "risk_class": [
+    "kernel interrupt callback",
+    "shared-memory debug transport",
+    "module teardown and resource lifetime",
+    "file release and shared-memory queue teardown"
+  ],
+  "hardware_validation": "DEFERRED",
+  "device_test_authorized": false,
+  "rollback": "No device load or persistent device change is in scope. If runtime validation is later approved, preserve the stock module and restore stock boot/vendor_boot artifacts on any failure.",
+  "stop_conditions": [
+    "Any KCFI type-ID mismatch",
+    "Any instruction, relocation, return-value, or data-offset mismatch",
+    "Any evidence that callback state, cdev layout, or cleanup lifetime differs from stock"
+  ]
+}

@@ -1,0 +1,516 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "review_type": "fresh_current_candidate_full_function_assembly_review",
+  "reviewer": "Codex second-pass verification; not a distinct human peer review",
+  "reviewed_utc": "2026-11-02T14:45:21.762276+00:00",
+  "verdict": "PASS_30_OF_30_FUNCTION_ASSEMBLY",
+  "artifacts": {
+    "candidate": {
+      "path": "kernel-docker-workspace/engenharia/curated/fp_goodix/fp_goodix.ko",
+      "sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+      "size": 721560
+    },
+    "stock": {
+      "path": "reference_modules/full_vendor_boot/fp_goodix.ko",
+      "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+      "size": 62088
+    },
+    "reconstruction_map_sha256": "a5e2b20bce04029d4767c8d13d33a7db2eab43b2030dcf382aa5ec016cf4f8d3",
+    "canonical_inventory_report": "reverse_engineering/validation/reconstructed/all_drivers_inventory_20261102.json",
+    "canonical_inventory_sha256": "30ce3b9406eaa2d2272a119a7ba2ec0317c67ac4935bc66c9116bde84b330a23",
+    "candidate_manifest_sha256": "dc728047ee06228930ff206ec48f2b0eed29a16fd9e68a8e2f79d0967201bd05",
+    "stock_manifest_sha256": "8a626bb4db5e6526717b9fa76da2c2983c607f60dd54bddf42c741c7c7c3ac12",
+    "assembly_comparison_sha256": "b1bf426f6a3eb4bc603c95400a563cdfcd5b55326f3ee52954c33414f2c9cd00"
+  },
+  "canonical_docker_audit": {
+    "status": "static_verified",
+    "errors": [],
+    "warnings": [
+      "candidate and fresh module SHA-256 differ in allocated build-id metadata and/or non-allocated debug/BTF sections; runtime content, section layout, and modinfo match",
+      "stock module dependency metadata differs from the current target build; candidate dependency metadata is checked against the target rebuild"
+    ],
+    "two_clean_builds_passed": true
+  },
+  "source_sync": {
+    "repository_and_docker_build_inputs_match": true,
+    "file_count": 11,
+    "tree_sha256": "9b5a552a83c77bff9408f64fe2723a91a7a1df22dd3dc0055717edfaa14afb14",
+    "status_files_match": true,
+    "files": [
+      {
+        "path": "Makefile",
+        "sha256": "d704cff16f93fa3edce0dfb28cdd19f19ab07ad1b829ebfdb6c7b616b7d180db"
+      },
+      {
+        "path": "STATUS.md",
+        "sha256": "a5d348b48ee62075fe1addb66469afcd27238db05e4e928f6fd7e4f0eea59e1b"
+      },
+      {
+        "path": "fp_goodix_core.c",
+        "sha256": "cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f"
+      },
+      {
+        "path": "fp_goodix_exact_rodata.S",
+        "sha256": "4bf1c320dbf4b923175dd06a07f0ece8f88ed6739b28c8f903fa29555a128a5c"
+      },
+      {
+        "path": "fp_goodix_inline_exact.S",
+        "sha256": "dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625"
+      },
+      {
+        "path": "fp_goodix_internal.h",
+        "sha256": "b9bca2f92664825b10b98979e86ddd08fa98599980e65631859e96ca4d5597e1"
+      },
+      {
+        "path": "fp_goodix_netlink.c",
+        "sha256": "f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e"
+      },
+      {
+        "path": "fp_goodix_platform.c",
+        "sha256": "6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346"
+      },
+      {
+        "path": "gf_ioctl_exact.S",
+        "sha256": "acbe2b2a4846c2302a55f10a2836b969f9064c648652410a9d2343dd95f40d94"
+      },
+      {
+        "path": "gf_parse_dts_exact.S",
+        "sha256": "0479e6c8b548f6df14a2a0983fc8e10e739ea577365fe5c6693514270b8f5da5"
+      },
+      {
+        "path": "reconstruction_map.json",
+        "sha256": "a5e2b20bce04029d4767c8d13d33a7db2eab43b2030dcf382aa5ec016cf4f8d3"
+      }
+    ]
+  },
+  "assembly_review": {
+    "functions_checked": 30,
+    "functions_exact": 30,
+    "checks_passed_per_dimension": {
+      "instructions": 30,
+      "relocations": 30,
+      "section": 30,
+      "symbol_size": 30
+    },
+    "identity_sets_match_map_ghidra_comparison": true,
+    "passed": true,
+    "functions": [
+      {
+        "stock_entry": "001013e8",
+        "stock_function": "_inline_copy_from_user",
+        "source_file": "fp_goodix_inline_exact.S",
+        "source_function": "_inline_copy_from_user",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "0010133c",
+        "stock_function": "_inline_copy_to_user",
+        "source_file": "fp_goodix_inline_exact.S",
+        "source_function": "_inline_copy_to_user",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00102ac8",
+        "stock_function": "cleanup_module",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "zte_fp_exit",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001026bc",
+        "stock_function": "gf_cleanup",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "gf_cleanup",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00100dc4",
+        "stock_function": "gf_compat_ioctl",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_compat_ioctl",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001010d8",
+        "stock_function": "gf_disable_irq",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_disable_irq",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101118",
+        "stock_function": "gf_enable_irq",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_enable_irq",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001028b4",
+        "stock_function": "gf_hw_reset",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "gf_hw_reset",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00100824",
+        "stock_function": "gf_ioctl",
+        "source_file": "gf_ioctl_exact.S",
+        "source_function": "gf_ioctl",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001014d8",
+        "stock_function": "gf_irq",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_irq",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00102970",
+        "stock_function": "gf_irq_num",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "gf_irq_num",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00100de8",
+        "stock_function": "gf_open",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_open",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "0010237c",
+        "stock_function": "gf_parse_dts",
+        "source_file": "gf_parse_dts_exact.S",
+        "source_function": "gf_parse_dts",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00102810",
+        "stock_function": "gf_power_off",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "gf_power_off",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "0010276c",
+        "stock_function": "gf_power_on",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "gf_power_on",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101554",
+        "stock_function": "gf_probe",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_probe",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00100fe8",
+        "stock_function": "gf_release",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_release",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101968",
+        "stock_function": "gf_remove",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_remove",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101db8",
+        "stock_function": "goodix_fb_state_chg_callback",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "goodix_fb_state_chg_callback",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101c64",
+        "stock_function": "goodixfp_drm_get_pannel",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "goodixfp_drm_get_pannel",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101ac0",
+        "stock_function": "goodixfp_init_drm_notifier",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "goodixfp_init_drm_notifier",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001029b0",
+        "stock_function": "init_module",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "zte_fp_init",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101bf8",
+        "stock_function": "list_del",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "gf_probe_list_del",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "0010116c",
+        "stock_function": "nav_event_input",
+        "source_file": "fp_goodix_core.c",
+        "source_function": "nav_event_input",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001021a8",
+        "stock_function": "netlink_exit",
+        "source_file": "fp_goodix_netlink.c",
+        "source_function": "netlink_exit",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "0010202c",
+        "stock_function": "netlink_init",
+        "source_file": "fp_goodix_netlink.c",
+        "source_function": "netlink_init",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001020c8",
+        "stock_function": "nl_data_ready",
+        "source_file": "fp_goodix_netlink.c",
+        "source_function": "nl_data_ready",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "00101f1c",
+        "stock_function": "sendnlmsg",
+        "source_file": "fp_goodix_netlink.c",
+        "source_function": "sendnlmsg",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001021ec",
+        "stock_function": "zte_goodix_pinctrl_init",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "zte_goodix_pinctrl_init",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      },
+      {
+        "stock_entry": "001022c0",
+        "stock_function": "zte_goodix_pinctrl_select",
+        "source_file": "fp_goodix_platform.c",
+        "source_function": "zte_goodix_pinctrl_select",
+        "checks": {
+          "instructions": true,
+          "relocations": true,
+          "section": true,
+          "symbol_size": true
+        },
+        "passed": true
+      }
+    ]
+  },
+  "historical_evidence_mismatch": {
+    "older_candidate_assembly_sha256": "13ce11deef98d2b2d10ae5b042a2285c3c803e77b6a7c488b1239bff60e445fd",
+    "older_root_comparison_passed": true,
+    "current_candidate_sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+    "older_comparison_is_current": false,
+    "intermediate_rechecks": "27/30 at candidate 68338a…, 28/30 at another intermediate candidate; neither describes current fc9a662…"
+  },
+  "kcfi_context": {
+    "review_summary": "attestation/current_candidate_assembly_review_20261102/kcfi_context.json",
+    "review_summary_sha256": "afdf167a98fd2e16a91f613810113353044259fdab80a5ea11223f42b15e631d",
+    "candidate_sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+    "strict_presence_equality": false,
+    "disposition": "RESOLVED_DIRECT_CALL_ONLY",
+    "scope": "The direct-call-only classification does not change the strict KCFI presence result."
+  },
+  "semantic_scope": {
+    "map_semantic_equivalence": "UNPROVEN",
+    "independent_review_status": "INCOMPLETO",
+    "reviewer": "PENDING_INDEPENDENT_REVIEWER",
+    "hardware": "DEFERRED"
+  },
+  "limitations": [
+    "Exact body assembly parity does not by itself prove source-level C equivalence, API behavior, or hardware behavior.",
+    "The strict KCFI presence comparison remains different; the direct-call-only decision is scoped and is not equality."
+  ]
+}

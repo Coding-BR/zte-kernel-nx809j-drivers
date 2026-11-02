@@ -1,0 +1,59 @@
+.section .text,"ax",@progbits
+.align 2
+.global tp_zlog_debug_write
+.type tp_zlog_debug_write, %function
+.word 0xc3d43b4d
+tp_zlog_debug_write:
+    .inst 0xd503233f
+    .inst 0xd10103ff
+    .inst 0xa9027bfd
+    .inst 0xa9034ff4
+    .inst 0x910083fd
+    .inst 0xd5384108
+    .inst 0xaa0103f4
+    .inst 0x910023e0
+    .inst 0xf9438908
+    .inst 0xf100245f
+    .inst 0xf81f83a8
+    .inst 0x52800128
+    .inst 0x9a883053
+    .inst 0x2a1f03e2
+    .inst 0xb90007ff
+    .inst 0xaa1303e1
+    .inst 0x790023ff
+    .inst 0xf90007ff
+    bl __check_object_size
+    .inst 0x910023e0
+    .inst 0xaa1403e1
+    .inst 0xaa1303e2
+    bl _inline_copy_from_user
+    .inst 0x350000c0
+    .inst 0x910023e0
+    .inst 0x910013e2
+    .inst 0x2a1f03e1
+    bl kstrtouint
+    .inst 0x340001a0
+    .inst 0x928002b3
+    .inst 0xd5384108
+    .inst 0xf9438908
+    .inst 0xf85f83a9
+    .inst 0xeb09011f
+    .inst 0x54000221
+    .inst 0xaa1303e0
+    .inst 0xa9434ff4
+    .inst 0xa9427bfd
+    .inst 0x910103ff
+    .inst 0xd50323bf
+    .inst 0xd65f03c0
+    .inst 0xb94007e0
+    .inst 0x71003c1f
+    .inst 0x54fffe68
+    .inst 0x52800028
+    .inst 0x529dccc9
+    .inst 0x1ac02108
+    .inst 0x6a09011f
+    .inst 0x54fffdc0
+    bl tpd_zlog_record_notify
+    .inst 0x17ffffec
+    bl __stack_chk_fail
+.size tp_zlog_debug_write, .-tp_zlog_debug_write

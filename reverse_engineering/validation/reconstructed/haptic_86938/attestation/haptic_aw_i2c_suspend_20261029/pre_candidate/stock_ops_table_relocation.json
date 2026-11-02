@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "tool": "GNU readelf from the pinned Docker image",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "object_symbol": {
+    "name": "aw8693x_func_list",
+    "section": ".data",
+    "section_index": 4,
+    "value": "0x0",
+    "size_bytes": 400,
+    "binding": "GLOBAL"
+  },
+  "slot_relocation": {
+    "section": ".rela.data",
+    "offset": "0x38",
+    "type": "R_AARCH64_ABS64",
+    "symbol": ".text",
+    "addend": "0xf2c"
+  },
+  "resolved_target": {
+    "function": "aw8693x_stop",
+    "section": ".text",
+    "symbol_value": "0xf2c",
+    "symbol_size": 452,
+    "stock_ghidra_entry": "00103d4c",
+    "kcfi_type_id": "0x847a0830"
+  },
+  "commands": [
+    "readelf -Ws haptic_86938.ko",
+    "readelf -rW haptic_86938.ko"
+  ],
+  "conclusion": "The aw_i2c_suspend callback field at aw8693x_func_list+0x38 resolves to aw8693x_stop in the stock module."
+}

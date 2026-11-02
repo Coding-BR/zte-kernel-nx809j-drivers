@@ -1,0 +1,219 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_exception/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zlog_exception/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zlog_exception/cycle_1=/zte_tpd",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "  CC [M]  /work/validation/zlog_exception/cycle_1/zlog_exception.o\n  MODPOST /work/validation/zlog_exception/cycle_1/Module.symvers\n  CC [M]  /work/validation/zlog_exception/cycle_1/zlog_exception.mod.o\n  CC [M]  /work/validation/zlog_exception/cycle_1/.module-common.o\n  LD [M]  /work/validation/zlog_exception/cycle_1/zlog_exception.ko\n  BTF [M] /work/validation/zlog_exception/cycle_1/zlog_exception.ko\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_exception/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zlog_exception/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zlog_exception/cycle_2=/zte_tpd",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "  CC [M]  /work/validation/zlog_exception/cycle_2/zlog_exception.o\n  MODPOST /work/validation/zlog_exception/cycle_2/Module.symvers\n  CC [M]  /work/validation/zlog_exception/cycle_2/zlog_exception.mod.o\n  CC [M]  /work/validation/zlog_exception/cycle_2/.module-common.o\n  LD [M]  /work/validation/zlog_exception/cycle_2/zlog_exception.ko\n  BTF [M] /work/validation/zlog_exception/cycle_2/zlog_exception.ko\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_exception/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zlog_exception/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zlog_exception/cycle_1=/zte_tpd",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zlog_exception/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zlog_exception/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zlog_exception/cycle_2=/zte_tpd",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work\\zlog_exception\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work\\zlog_exception\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work\\zlog_exception\\cycle_1\\zlog_exception.ko",
+          "sha256": "a38b3fccb92c47ab8203821ae7f9f67d5d1529577512cbafe61d2e6fa75038f5",
+          "size": 232552
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work\\zlog_exception\\cycle_2\\zlog_exception.ko",
+          "sha256": "a38b3fccb92c47ab8203821ae7f9f67d5d1529577512cbafe61d2e6fa75038f5",
+          "size": 232552
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_reconsolidation_20260905\\hard_protocol_zlog_exception_zlog_read_core\\docker\\work\\zlog_exception"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zlog_exception\\zlog_exception.ko",
+        "sha256": "a38b3fccb92c47ab8203821ae7f9f67d5d1529577512cbafe61d2e6fa75038f5",
+        "size": 232552
+      },
+      "checks": {
+        "aarch64_rel": false,
+        "alias_match": false,
+        "candidate_matches_fresh": false,
+        "function_traceability": false,
+        "ghidra_export": false,
+        "makefile": true,
+        "namespace_match": false,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 2,
+        "undefined_symbols_match": false,
+        "vermagic_accepted": false
+      },
+      "driver": "zlog_exception",
+      "errors": [
+        "acquired stock module is missing from the selected evidence source",
+        "Ghidra export missing: manifest.json",
+        "Ghidra export missing: functions.jsonl",
+        "Ghidra export missing: calls.jsonl",
+        "Ghidra export missing: externals.jsonl",
+        "Ghidra export missing: symbols.jsonl",
+        "Ghidra export missing: strings.jsonl",
+        "Ghidra export missing: memory_blocks.jsonl",
+        "Ghidra export missing: pseudocode.c",
+        "transition document is missing"
+      ],
+      "ghidra": {
+        "document": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zlog_exception_zlog_read_protocol_20260905\\04_documents\\zlog_exception.ko\\DOCUMENTO_TRANSICAO.md",
+        "export": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zlog_exception_zlog_read_protocol_20260905\\03_ghidra\\exports\\zlog_exception.ko",
+        "function_count": 0,
+        "function_names": [],
+        "manifest": {},
+        "passed": false
+      },
+      "hardware_verified": false,
+      "metadata": {},
+      "status": "incomplete_or_failed",
+      "stock": {
+        "exists": false,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zlog_exception_zlog_read_protocol_20260905\\01_acquisition\\modules\\zlog_exception.ko"
+      },
+      "traceability": {
+        "exists": true,
+        "mapped_functions": 10,
+        "passed": false,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zlog_exception\\reconstruction_map.json",
+        "stock_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
+        "unmapped_functions": []
+      },
+      "warnings": [
+        "reconstruction map stock SHA-256 does not match acquired module"
+      ]
+    }
+  ],
+  "generated_utc": "2026-09-05T05:21:35.606579+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": false,
+  "rebuild_requested": true,
+  "run_root": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\zlog_exception_zlog_read_protocol_20260905",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "zlog_exception"
+    ],
+    "static_verified": []
+  },
+  "target_kernel_manifest": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json"
+}

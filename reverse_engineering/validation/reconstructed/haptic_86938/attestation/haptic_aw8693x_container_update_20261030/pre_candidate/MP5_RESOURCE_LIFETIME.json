@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_container_update@001039e0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "resources": [
+    {
+      "resource": "readback stack buffer",
+      "size_bytes": 1024,
+      "lifetime": "function stack",
+      "initialization": "zeroed at entry",
+      "release": "automatic return"
+    },
+    {
+      "resource": "haptic mutex",
+      "object": "haptic+0x2f0",
+      "acquire": "before aw8693x_stop",
+      "release": "common cleanup on success or mismatch",
+      "held_during": [
+        "stop",
+        "sleep",
+        "I2C sequence",
+        "write loop",
+        "readback comparison"
+      ]
+    },
+    {
+      "resource": "container",
+      "owner": "ram_load caller",
+      "target_access": "read-only",
+      "retained": false,
+      "caller_frees": "after slot-6 call returns"
+    }
+  ],
+  "allocations_in_target": [],
+  "async_work_in_target": [],
+  "cleanup_exceptions": [
+    "stack canary failure is non-returning"
+  ],
+  "lifetime_unknowns": [
+    "Firmware request/cancellation outside scope; only synchronous target invocation and free-after-return are established."
+  ]
+}

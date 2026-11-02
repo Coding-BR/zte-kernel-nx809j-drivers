@@ -1,0 +1,1 @@
+savedcmd_/work/validation/ftmmod/cycle_2/ftmmod.ko := ld.lld -r -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack --build-id=sha1  -T ./scripts/module.lds -o /work/validation/ftmmod/cycle_2/ftmmod.ko /work/validation/ftmmod/cycle_2/ftmmod.o /work/validation/ftmmod/cycle_2/ftmmod.mod.o /work/validation/ftmmod/cycle_2/.module-common.o;  true

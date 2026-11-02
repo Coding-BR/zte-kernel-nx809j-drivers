@@ -80,6 +80,6 @@ int syna_tcm_identify(struct tcm_dev *tcm,
 copy_error:
   printk("\x01" "3[error] %s: Fail to copy identify info to caller\n",
          "syna_tcm_identify");
-  syna_tcm_buf_unlock((__int64)&tcm->response);
+  syna_tcm_buf_unlock_0((__int64)&tcm->response);
   return -22;
 }

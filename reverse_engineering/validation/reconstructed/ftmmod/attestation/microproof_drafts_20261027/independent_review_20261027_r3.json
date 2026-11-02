@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod-independent-review-20261027-r3",
+  "reviewer": "Hubble",
+  "reviewer_agent_id": "01a17d6e-d604-7ab2-9e10-ac190169a0d0",
+  "review_scope": [
+    "MP4_TEST_ORACLE_DRAFT L3 readiness",
+    "MP5_LOCK_LIFETIME_CONTRACT L4 readiness",
+    "MP6_REGISTER_OR_BUS_LEDGER L3+L4 readiness",
+    "Declared direct and transitive input hashes"
+  ],
+  "source_environment": {
+    "docker_source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098"
+  },
+  "reviewed_artifact_hashes": [
+    {
+      "path": "MP4_TEST_ORACLE_DRAFT.json",
+      "sha256": "77013adef68282db9f970578f386d4ee21260024a2924ab5c4bbfed24bfe40b6"
+    },
+    {
+      "path": "MP5_LOCK_LIFETIME_CONTRACT.json",
+      "sha256": "2ac5b20c81aae551da411929f9603973aacf493f2d13d28a64ee0ec42d669044"
+    },
+    {
+      "path": "MP6_REGISTER_OR_BUS_LEDGER.json",
+      "sha256": "85d4cd90d05b7ba435fa1ccf10d5d4dd8c9be187fc98b95ab07b8a1abab69eb3"
+    },
+    {
+      "path": "offline_static/related_module_evidence/sysfs_teardown_source_contracts_20261027.txt",
+      "sha256": "92727e7aa748ea03af889d0b9ec7d891516ec55e33acbcf7a55c6c26648f306d"
+    }
+  ],
+  "independent_input_audit": {
+    "declared_hash_count_checked": 125,
+    "missing_or_mismatched_hashes": 0,
+    "reviewer_result": "all declared MP0-MP6 inputs and cited evidence matched"
+  },
+  "findings": [
+    "MP4's pdev->dev.kobj object description is supported by stock assembly and pinned kernel structure offsets.",
+    "MP4 OBS-020 and MP6 OBS-001 correctly map arm64_use_ng_mappings == 0 to 0x0068000000000713 and nonzero to 0x0068000000000f13.",
+    "Pinned platform and kernfs source supports partial sysfs group rollback and normal unregister teardown with active callback draining.",
+    "No recorded contradictions were found in the reviewed drafts."
+  ],
+  "readiness": {
+    "MP4_L3": "READY_FOR_GATE_REVIEW_NOT_PASSED",
+    "MP5_L4": "READY_FOR_GATE_REVIEW_NOT_CLOSED",
+    "MP6_L3_L4": "READY_FOR_COMBINED_GATE_REVIEW_NOT_CLOSED",
+    "gate_passes_recorded": 0
+  },
+  "open_items": [
+    "Ownership and release of the OF reference and ofm_iomap/ioremap_prot mappings remain unresolved.",
+    "Platform-device registration-error and no-bind paths require L4 analysis; any stale-reference/UAF outcome remains a hypothesis, not a proven runtime result.",
+    "Runtime overlay application and the physical meaning of the IMEM word remain unknown."
+  ],
+  "candidate_source_edited": false,
+  "review_notes": "This is a readiness review record. It does not approve a gate, establish semantic equivalence, or authorize candidate source edits."
+}

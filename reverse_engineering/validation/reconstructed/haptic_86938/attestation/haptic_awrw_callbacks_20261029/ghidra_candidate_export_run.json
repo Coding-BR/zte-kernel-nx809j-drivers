@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "tool": "Ghidra 12.1.2 analyzeHeadless + ExtendGhidraFunctionBodies.java + ExportKernelModuleAnalysis.java + scope_ghidra_export.py",
+  "candidate_module_sha256": "2e19782ab7257a05973f256beb961b75303c7d0a62adb73df5b3b7a39136e134",
+  "candidate_module_md5": "2d42e291384b2d1c06b4964c74f819e0",
+  "candidate_module_size": 5547464,
+  "candidate_functions": {
+    "awrw_show": {
+      "stock_entry": "0010d518",
+      "candidate_entry": "00105d58",
+      "body_bytes": 260
+    },
+    "awrw_store": {
+      "stock_entry": "0010d620",
+      "candidate_entry": "00105e60",
+      "body_bytes": 856
+    }
+  },
+  "full_export_function_count": 120,
+  "scoped_export_function_count": 2,
+  "scope": [
+    "awrw_show",
+    "awrw_store"
+  ],
+  "ghidra_version": "12.1.2_PUBLIC",
+  "exporter_script": "reverse_engineering/tools/ExportKernelModuleAnalysis.java",
+  "body_repair_script": "reverse_engineering/tools/ExtendGhidraFunctionBodies.java",
+  "scope_script": "workspace_tools/reconstruction_pipeline/scope_ghidra_export.py",
+  "candidate_export_root": "candidate_ghidra_v3/e/haptic_86938.ko",
+  "scoped_export": "candidate_ghidra_v3/s",
+  "ghidra_log": "candidate_ghidra_v3/l/console.log",
+  "script_log": "candidate_ghidra_v3/l/script.log",
+  "result": "success",
+  "source_export_manifest_sha256": "818debc9eaf0a61b828495cc74cd22933ab95da95ef7216aef1ecbf828b39290",
+  "commands": {
+    "analyze_headless": [
+      "reproducible_environment/.tools/ghidra_12.1.2_PUBLIC/support/analyzeHeadless.bat",
+      "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_callbacks_20261029/candidate_ghidra_v3/project",
+      "haptic_awrw_callbacks_v3",
+      "-import",
+      "C:\\Users\\adria\\AppData\\Local\\Temp\\chdp\\91444ff33f71-c52ef9be\\haptic_86938\\cycle_2\\haptic_86938.ko",
+      "-overwrite",
+      "-analysisTimeoutPerFile",
+      "600",
+      "-max-cpu",
+      "4",
+      "-scriptPath",
+      "reverse_engineering/tools",
+      "-postScript",
+      "ExtendGhidraFunctionBodies.java",
+      "00105e60:358",
+      "-postScript",
+      "ExportKernelModuleAnalysis.java",
+      "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_callbacks_20261029/candidate_ghidra_v3/e",
+      "120"
+    ],
+    "scope_export": [
+      "python",
+      "workspace_tools/reconstruction_pipeline/scope_ghidra_export.py",
+      "--source-export",
+      "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_callbacks_20261029/candidate_ghidra_v3/e/haptic_86938.ko",
+      "--output-dir",
+      "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_callbacks_20261029/candidate_ghidra_v3/s",
+      "--function",
+      "awrw_show",
+      "--function",
+      "awrw_store"
+    ]
+  },
+  "kcfi_type_ids": {
+    "f000": "0xae84bcd4",
+    "f001": "0x95c41a97"
+  }
+}

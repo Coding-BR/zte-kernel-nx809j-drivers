@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-01T06:29:43.3336758Z",
+  "driver": "zte_charger_policy",
+  "stock_export": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock",
+  "candidate_export": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_candidate_20260901",
+  "stock_module": "reference_modules/full_vendor_boot/zte_charger_policy.ko",
+  "stock_module_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+  "candidate_module": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+  "candidate_module_sha256": "e603c3f553c4d4375655dc7c9afe2595c449999c15e60acd5efdd2206309e927",
+  "candidate_module_size": 301184,
+  "candidate_ghidra_executable_md5": "cff61b0bc6a656d5797f7f745bc9cf56",
+  "candidate_ghidra_manifest_sha256": "d3d78de0939d87472fa2a9181e753dbc51037986493eb854f1342594e32de3dc",
+  "stock_ghidra_manifest_sha256": "da8b420d6afbe724732520c7de2fff02b0b7b9cb7eaa6279ec065449b1b03c8c",
+  "checked_functions": 38,
+  "strict": {
+    "passed_functions": 4,
+    "body_size_passed": 11,
+    "pcode_operation_shape_passed": 11,
+    "normalized_decompiled_c_passed": 4,
+    "failed_function_count": 34,
+    "representative_failed_functions": [
+      "charger_policy_status_ide",
+      "charger_policy_status_runchging",
+      "charger_policy_status_rundischging",
+      "charger_policy_probe",
+      "charger_policy_probe_work",
+      "charger_policy_timeout_handler_work",
+      "policy_psy_get_property",
+      "policy_psy_set_property"
+    ],
+    "passed": false
+  },
+  "authorized_fallbacks": {
+    "passed_functions": 4,
+    "remaining_function_count": 34,
+    "passed": false
+  },
+  "docker_rebuild_evidence": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_digest": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "kernel_volume": "nubia_sm8850_kernel_src",
+    "toolchain": "clang-r536225",
+    "cycles": [
+      {
+        "cycle": 1,
+        "sha256": "e603c3f553c4d4375655dc7c9afe2595c449999c15e60acd5efdd2206309e927",
+        "size": 301184,
+        "path": "validation/zte_charger_policy_rebuild_20260901/artifacts/zte_charger_policy_cycle_1.ko"
+      },
+      {
+        "cycle": 2,
+        "sha256": "e603c3f553c4d4375655dc7c9afe2595c449999c15e60acd5efdd2206309e927",
+        "size": 301184,
+        "path": "validation/zte_charger_policy_rebuild_20260901/artifacts/zte_charger_policy_cycle_2.ko"
+      }
+    ],
+    "reproducible": true,
+    "matches_candidate": true
+  },
+  "interpretation": "Static Ghidra/Docker checkpoint only. Docker bitwise reproducibility is confirmed, but the independent Ghidra comparison has only 4/38 strict passes. No promotion or total-equivalence claim is authorized."
+}

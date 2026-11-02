@@ -1,3 +1,10 @@
+#ifndef __user
+#define __user
+#endif
+
+struct ztp_device;
+typedef int (*tpd_set_screen_off_awake_fn)(struct ztp_device *cdev, int value);
+
 ssize_t set_screen_off_awake(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
@@ -8,7 +15,7 @@ ssize_t set_screen_off_awake(struct file *file, const char __user *buffer, size_
   __int64 v3; // x19
   __int64 v4; // x20
   _BOOL8 v6; // x2
-  void (__fastcall *v7)(__int64, _BOOL8); // x8
+  tpd_set_screen_off_awake_fn v7; // x8
   _BOOL8 v8; // x1
   _BOOL4 v9; // [xsp+4h] [xbp-Ch] BYREF
   __int64 v10; // [xsp+8h] [xbp-8h]
@@ -23,15 +30,15 @@ ssize_t set_screen_off_awake(struct file *file, const char __user *buffer, size_
   }
   else
   {
-    v6 = v9;
-    v9 = v9;
+    v6 = v9 != 0;
+    v9 = v6;
     printk(unk_374F7, "set_screen_off_awake", v6);
-    v7 = *(void (__fastcall **)(__int64, _BOOL8))(v4 + 3624);
+    v7 = *(tpd_set_screen_off_awake_fn *)(v4 + 0xfe0);
     if ( v7 )
     {
       v8 = v9;
       /* CFI check removed */
-      v7(v4, v8);
+      v7((struct ztp_device *)(unsigned long)v4, (int)v8);
     }
   }
   _ReadStatusReg(SP_EL0);

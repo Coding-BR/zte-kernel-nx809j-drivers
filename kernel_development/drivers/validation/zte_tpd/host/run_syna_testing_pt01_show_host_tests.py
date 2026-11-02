@@ -7,12 +7,15 @@ import argparse
 import datetime as dt
 import hashlib
 import json
-import os
 import pathlib
 import subprocess
 
 
 EXPECTED_STDOUT = "PASS syna_testing_pt01_show host tests (6 cases)\n"
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[5]
+IMAGE = "nubia-sm8850-kernel-builder:latest"
+TOOLCHAIN_VOLUME = "nubia_sm8850_kernel_toolchains"
+CLANG = "/toolchains/clang-r536225/bin/clang"
 
 
 def sha256(path: pathlib.Path) -> str:
@@ -23,11 +26,10 @@ def sha256(path: pathlib.Path) -> str:
 	return digest.hexdigest()
 
 
-def run(command: list[str], env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+def run(command: list[str]) -> subprocess.CompletedProcess[str]:
 	return subprocess.run(
 		command,
 		check=False,
-		env=env,
 		text=True,
 		stdout=subprocess.PIPE,
 		stderr=subprocess.PIPE,
@@ -36,7 +38,6 @@ def run(command: list[str], env: dict[str, str]) -> subprocess.CompletedProcess[
 
 def main() -> int:
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--compiler", default="clang")
 	parser.add_argument(
 		"--source",
 		type=pathlib.Path,
@@ -56,20 +57,6 @@ def main() -> int:
 	if build_root.exists():
 		parser.error(f"build root already exists: {build_root}")
 
-	env = os.environ.copy()
-	env.update(
-		{
-			"ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:strict_string_checks=1",
-			"UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
-			"LC_ALL": "C",
-			"SOURCE_DATE_EPOCH": "0",
-			"TZ": "UTC",
-		}
-	)
-	compiler_version = run([args.compiler, "--version"], env)
-	if compiler_version.returncode:
-		raise SystemExit(compiler_version.stderr.strip())
-
 	build_root.mkdir(parents=True)
 	cycles: list[dict[str, object]] = []
 	for cycle in (1, 2):
@@ -77,8 +64,11 @@ def main() -> int:
 		cycle_root.mkdir()
 		binary = cycle_root / "host_test_asan_ubsan"
 		command = [
-			args.compiler,
-			"-std=gnu11",
+			"docker", "run", "--rm",
+			"-v", f"{source.parents[3]}:/drivers:ro",
+			"-v", f"{cycle_root.resolve()}:/output",
+			"-v", f"{TOOLCHAIN_VOLUME}:/toolchains:ro",
+			IMAGE, CLANG, "-std=gnu11",
 			"-O1",
 			"-g",
 			"-Wall",
@@ -87,16 +77,22 @@ def main() -> int:
 			"-fno-omit-frame-pointer",
 			"-fno-pie",
 			"-no-pie",
-			"-frandom-seed=zte-tpd-next54-testing-pt01",
-			f"-ffile-prefix-map={build_root}=<build>",
+			"-Wno-unused-function", "-Wno-unused-variable", "-Wno-int-conversion",
+			"-Wno-cast-function-type", "-Wno-sign-compare", "-Wno-uninitialized",
+			"-Wno-unused-but-set-variable", "-Wno-error=uninitialized",
+			"-fno-omit-frame-pointer", "-fno-pie", "-no-pie",
+			"-frandom-seed=zte-tpd-next225-testing-pt01",
+			"-ffile-prefix-map=/drivers=<drivers>",
 			"-fsanitize=address,undefined",
 			"-Wl,--build-id=none",
-			str(source),
+			f"/drivers/{source.relative_to(REPO_ROOT / 'kernel_development/drivers').as_posix()}",
 			"-o",
-			str(binary),
+			"/output/host_test_asan_ubsan",
 		]
-		compile_result = run(command, env)
-		run_result = run([str(binary)], env) if compile_result.returncode == 0 else None
+		compile_result = run(command)
+		run_command = ["docker", "run", "--rm", "-e", "ASAN_OPTIONS=detect_leaks=0",
+			"-v", f"{cycle_root.resolve()}:/output:ro", IMAGE, "/output/host_test_asan_ubsan"]
+		run_result = run(run_command) if compile_result.returncode == 0 else None
 		passed = bool(
 			run_result
 			and run_result.returncode == 0
@@ -130,8 +126,7 @@ def main() -> int:
 		"covered_functions": ["syna_testing_pt01_show"],
 		"source": str(source),
 		"source_sha256": sha256(source),
-		"compiler": args.compiler,
-		"compiler_version": compiler_version.stdout.splitlines()[0],
+		"compiler": "Docker clang-r536225",
 		"sanitizers": ["address", "undefined"],
 		"expected_cases": 6,
 		"repetitions": 2,

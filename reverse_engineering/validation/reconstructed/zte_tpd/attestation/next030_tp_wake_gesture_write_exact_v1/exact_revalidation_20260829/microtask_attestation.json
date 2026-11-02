@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "030_tp_wake_gesture_write",
+  "stock_function": "tp_wake_gesture_write",
+  "stock_entry": "00109b1c",
+  "stock_body_bytes": 208,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "6dcf116774e4e0e459c2a0a2cdf11057cadf604982ef06e48350745a25ca36fe",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 52,
+    "instruction_count_candidate": 52,
+    "symbol_size_stock": 208,
+    "symbol_size_candidate": 208,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xc3d43b4d",
+    "candidate_type_id": "0xc3d43b4d",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "compatibility_defines": ["__user", "__init", "__exit"],
+    "excluded_paths": ["validation", "build"],
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 3,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "valid_zero_normalization",
+      "valid_nonzero_normalization",
+      "invalid_input_error"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "9b8bf752c9ea3b5ae7f6c5f715f9a24ad4ef46e30148613b054435c10ac65c45",
+    "aarch64_comparison.json": "0cb5da470db96355d9439b6fae2e398f6937698b8b91edb1ab6610e0756c3f26",
+    "kcfi/comparison.json": "6b82c820e02873e135cc28b2d0011e95d8e2306759980d8313bc8628095baf64",
+    "joern/joern_gate_report.json": "ff0f52750fd561be79c15cbcd88e4cd4b3090c1cf49fe0818b7dc74dddf53533",
+    "host_harness_report.json": "93f0d4630cd37bfea33b4f444bf55ffa18d8eeea6d559a5ae1b6fbe6e97b2a46",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host harness uses fake memory and stubs kstrtouint_from_user, printk and the callback.",
+    "No physical NX809J, procfs runtime, Android service, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "028_tp_module_info_read",
+  "stock_function": "tp_module_info_read",
+  "stock_entry": "00109784",
+  "stock_body_bytes": 672,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "f321f2296d33f72d01faedfd22db9fde920389c1dab2e6bbdfa4e19a13382db2",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 168,
+    "instruction_count_candidate": 168,
+    "symbol_size_stock": 672,
+    "symbol_size_candidate": 672,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xf4e9d97c",
+    "candidate_type_id": "0xf4e9d97c",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "compatibility_defines": ["__user", "__init", "__exit"],
+    "excluded_paths": ["validation", "build"],
+    "review_findings": [
+      {"category": "userspace_egress", "severity": "high", "count": 1}
+    ],
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 2,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "formatted_module_info_read",
+      "nonzero_offset_and_small_count"
+    ],
+    "overflow_brk": "not executed in host harness; confirmed by stock/candidate AArch64 parity",
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "3b8fd584b5d329010d26e57a1aed3dc6cc36ffec7aa86e73d3760b7483cb7155",
+    "aarch64_comparison.json": "c266538a7435b87f29747196f965a7e3f776781d7ff380fd263d0faa28b3d455",
+    "kcfi/comparison.json": "49e698b63167a1318073ba1902490a87bd5e45339a530bb00152e8a18c4bb273",
+    "joern/joern_gate_report.json": "1f397da0b56c60597438fc50ea8e639fc73e0341c7aef96b7448fad60bf92a0a",
+    "host_harness_report.json": "053ff4cedfa6429ce1e0c501228531cc159b710f4123f298ccb60c559b263762",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host contract models the VFS read helper and one cdev callback.",
+    "The fatal overflow BRK path is not executed in the host harness.",
+    "No physical NX809J, scheduler, Android service, SPI, IRQ or MMIO path is exercised."
+  ]
+}

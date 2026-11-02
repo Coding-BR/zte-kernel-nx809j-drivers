@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "clang_revision": "clang-r536225",
+    "cycles": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "parallelism": 8,
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+  },
+  "functions": [
+    {
+      "assembly_only": false,
+      "candidate_function": "brightness_set",
+      "kcfi_required": true,
+      "source_function": "brightness_set",
+      "stock_entry": "0010960c",
+      "stock_function": "brightness_set"
+    }
+  ],
+  "ghidra": {
+    "allow_exact_assembly_island_decompiler_fallback": false,
+    "allow_pcode_authoritative_decompiler_fallback": false,
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true
+  },
+  "joern": {
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "min_num_calls": 1,
+      "mode": "usages",
+      "parallelism": 1
+    },
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938"
+  },
+  "paths": {
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_brightness_set_20261029/ghidra_candidate_scoped",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko"
+  },
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "DISPATCHER_PARSER",
+    "HARDWARE_BUS",
+    "STATEFUL_MEMORY"
+  ]
+}

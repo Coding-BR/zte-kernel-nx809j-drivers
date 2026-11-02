@@ -1,0 +1,60 @@
+{
+  "schema_version": "host_harness_attestation_v1",
+  "mode": "offline_direct_source_syna_cdev_llseek_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "<repo>/kernel_development/drivers:/drivers:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -frandom-seed=zte-tpd-next187-cdev-llseek -fsanitize=address,undefined -Wl,--build-id=none /drivers/validation/zte_tpd/host/syna_cdev_llseek_host_test.c -o /tmp/syna_cdev_llseek_host_test && /tmp/syna_cdev_llseek_host_test"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_llseek.c",
+      "sha256": "91de35ea0d177324eaf66288be8cc0c18156dd69222a7ef5f512c71ab9d018da",
+      "size": 134
+    },
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_llseek_host_test.c",
+      "sha256": "1d0260e5b63f2ab0e0035c5c60a2e17d763598a007dd368af871e3076f4e0f8b",
+      "size": 970
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS syna_cdev_llseek host tests (5 cases)\n",
+      "stderr": ""
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS syna_cdev_llseek host tests (5 cases)\n",
+      "stderr": ""
+    }
+  ],
+  "coverage": {
+    "null_file": true,
+    "positive_offset": true,
+    "negative_offset": true,
+    "offset_minimum": true,
+    "offset_maximum": true,
+    "constant_error_return": true,
+    "hardware_paths_exercised": false
+  },
+  "limitations": [
+    "The harness verifies the observed constant -EINVAL contract across representative file, offset, and whence values only.",
+    "It does not load the module or communicate with touch, display, power, or suspend hardware."
+  ]
+}

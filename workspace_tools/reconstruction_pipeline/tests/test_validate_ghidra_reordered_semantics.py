@@ -121,3 +121,51 @@ def test_rejects_unrelated_bss_symbol() -> None:
     )
 
     assert not passed
+
+
+def test_accepts_rodata_offsets_after_strict_ghidra_resolution() -> None:
+    stock = [
+        "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0x100",
+        "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0x100",
+    ]
+    candidate = [
+        'R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string="value"',
+        'R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string="value"',
+    ]
+
+    passed, evidence = MODULE.relocation_multiset_equivalence(
+        stock,
+        candidate,
+        "suspend_store",
+        allow_resolved_rodata_layout=True,
+    )
+
+    assert passed
+    assert evidence["mode"] == "STRICT_GHIDRA_RESOLVED_RODATA_LAYOUT"
+
+
+def test_rejects_rodata_offsets_without_strict_resolution() -> None:
+    stock = ["R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0x100"]
+    candidate = [
+        'R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string="value"'
+    ]
+
+    passed, _ = MODULE.relocation_multiset_equivalence(
+        stock, candidate, "suspend_store"
+    )
+
+    assert not passed
+
+
+def test_rejects_non_rodata_difference_even_after_strict_resolution() -> None:
+    stock = ["R_AARCH64_ADR_PREL_PG_HI21 global_state"]
+    candidate = ["R_AARCH64_ADR_PREL_PG_HI21 other_state"]
+
+    passed, _ = MODULE.relocation_multiset_equivalence(
+        stock,
+        candidate,
+        "suspend_store",
+        allow_resolved_rodata_layout=True,
+    )
+
+    assert not passed

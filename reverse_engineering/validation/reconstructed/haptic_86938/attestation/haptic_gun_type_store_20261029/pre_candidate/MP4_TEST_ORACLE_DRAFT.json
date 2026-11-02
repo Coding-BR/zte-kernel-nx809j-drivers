@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "gun_type_store",
+  "cases": [
+    {
+      "name": "successful_parse",
+      "assert": [
+        "base-0 unsigned parse is used",
+        "lock at driver_data+0x248 wraps one u32 store at driver_data-0x2c",
+        "returns input count"
+      ]
+    },
+    {
+      "name": "parse_error",
+      "assert": [
+        "returns parser errno",
+        "does not acquire mutex",
+        "does not update field"
+      ]
+    },
+    {
+      "name": "canary",
+      "assert": [
+        "stack protector path remains in candidate object"
+      ]
+    }
+  ],
+  "note": "Static core gates are current acceptance evidence; this oracle has not been executed."
+}

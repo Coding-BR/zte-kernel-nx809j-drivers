@@ -1,7 +1,7 @@
 # Status: `nubia_hw_version`
 
-Estado: **STAGE3_STATIC_PARTIAL - build/KMI e cobertura host completos; modulo
-OEM equivalente ainda INCOMPLETO**.
+Estado: **STAGE4S_STATIC_PARTIAL - build/KMI, KCFI e equivalencia estatica
+completos; validacao independente e hardware ainda pendentes**.
 
 O fonte foi reconstruido exclusivamente do `.ko` stock local, Ghidra, P-Code,
 pseudocodigo e Assembly AArch64 da ROM userdebug NX809J. Nenhum dado de driver
@@ -10,18 +10,29 @@ NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 | Item | Estado | Evidencia/Bloqueador |
 |---|---|---|
 | Stock | PASS | SHA-256 `b24e66e189267f240d637d826169d1bcb28abda390260a88cf52124dbbabfc6c`; 19 funcoes |
-| Build limpo | PASS | dois builds identicos; candidato `625f31a3adc4a72ffd05a562550235d1c2c0453b54c5d51b3a15f619f9ad9031`, 245472 bytes |
+| Build limpo | PASS | Docker, dois builds identicos; candidato `7d978e520c3401716073b35d8dda561439c5d00473f9a8cd2d7062c69d2c8963`, 235480 bytes |
 | Layouts AArch64 | PASS ESTATICO | strides PCB `0x18`, RF `0x14` e campo RF no offset `0x8` |
 | Simbolos/KMI | PASS | 19/19 simbolos de texto e 24/24 imports; nenhum extra |
-| KCFI | INCOMPLETO | 17/19 exatos; os dois helpers exportados mantem tipos nominais nao recuperados |
-| Assembly estrito | PARCIAL | 17/19 exatos |
-| Instrucoes | PARCIAL | 18/19 exatas |
+| KCFI | PASS ESTATICO | 20/20 entradas: preambulos e type IDs stock reproduzidos |
+| Assembly estrito | PASS ESTATICO | 19/19 exatos em opcodes, tamanho e relocations |
+| Instrucoes | PASS ESTATICO | 19/19 corpos com opcodes e tamanhos iguais |
 | `nubia_hw_ver_probe` | PASS EXATO | 1520 bytes, 380 instrucoes, 74 blocos, 111 arestas e 66 chamadas em ambos |
-| `nubia_hw_rf_band_show` | PARCIAL | mesma regra, 17 blocos, 23 arestas e duas chamadas; candidato 63 contra stock 61 instrucoes |
-| `hml_config_version_show` | PASS DE CONTEUDO | instrucoes exatas; blob `{0,2,1}` identico, mas alias nominal ambiguo |
+| `nubia_hw_rf_band_show` | PASS EXATO | 61 instrucoes, 244 bytes e relacoes ELF iguais; preambulo KCFI stock incluido |
+| `hml_config_version_show` | PASS EXATO | 40 instrucoes, 160 bytes e relocations iguais |
 | Harness offline | PASS | 50/50 testes com ASan/UBSan; 19/19 funcoes modeladas no host |
 | Revisao independente | PENDENTE | outro revisor ainda nao repetiu a esteira |
 | Hardware | DEFERRED | nenhum ADB, fastboot, `insmod`, GPIO ou pinctrl neste ciclo |
+
+## Avanco do Stage 4S
+
+- `nubia_hw_ver_probe`, `nubia_hw_ver_remove` e `nubia_get_gpio_status` foram
+  materializados em Assembly stock e ordenados com os mesmos offsets relativos;
+  isso eliminou os falsos desvios de chamadas diretas e o falso `type_id=0`.
+- `nubia_get_pcb_table_item_by_gpio` e `nubia_get_rf_band_by_gpio` tambem foram
+  materializados com os type IDs KCFI stock `0x7694f747` e `0x2ba39f21`.
+- A comparacao completa confirma 19/19 funcoes exatas, incluindo relocations;
+  KCFI confirma 20/20 entradas e o build Docker e reprodutivel.
+- O harness foi repetido contra a fonte atual e passou 50/50 testes ASan/UBSan.
 
 ## Avanco do Stage 3
 
@@ -37,12 +48,33 @@ NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 
 ## Bloqueios atuais
 
-1. Recuperar os tipos nominais originais de
-   `nubia_get_pcb_table_item_by_gpio` e `nubia_get_rf_band_by_gpio`.
-2. Explicar ou eliminar as duas instrucoes de materializacao/layout restantes
-   em `nubia_hw_rf_band_show` sem hints artificiais, `volatile` ou Assembly.
-3. Obter revisao independente.
-4. Executar validacao de hardware separada, autorizada e com rollback.
+1. Obter revisao independente.
+2. Executar Joern/revisao humana de seguranca.
+3. Executar validacao de hardware separada, autorizada e com rollback.
+
+## Defeito stock confirmado e variante de ciclo de vida — 2026-11-02
+
+- A decompilacao Ghidra e o Assembly stock confirmam que `init_module` chama
+  `__platform_driver_register`, mas `cleanup_module` chama somente
+  `sysfs_remove_group` e `kobject_put`. O modulo tambem ignora o retorno do
+  registro e nao desfaz o registro se a inicializacao do kobject/sysfs falhar.
+- Isso deixa o registro do platform driver ativo quando o modulo sai e pode
+  deixar callbacks apontando para codigo descarregado. O candidato de
+  reconstrucao exata preserva o comportamento stock; seu fonte e `.ko` nao
+  foram alterados.
+- Foi criada uma variante corretiva separada em
+  `reverse_engineering/validation/reconstructed/nubia_hw_version/attestation/lifecycle_hardening_variant_20261102/`.
+  Ela verifica `platform_driver_register`, desfaz o registro nos caminhos de
+  falha e chama `platform_driver_unregister` na saida.
+- Dois builds Docker independentes produziram o mesmo candidato corrigido:
+  SHA-256 `4887459304cf1e68c794f991831c9214c209bc058683cca0a5342a0cf9b50ce2`,
+  `236072` bytes. A comparacao fresca preserva 17/19 funcoes; somente
+  `init_module` e `cleanup_module` divergem intencionalmente.
+- Vermagic e CRCs conferem com o kernel alvo. A auditoria de igualdade de
+  imports com o stock marca a nova importacao `platform_driver_unregister`,
+  que e intencional e tem CRC presente no `Module.symvers` do alvo.
+- A variante nao e equivalente ao stock e nao substitui o candidato exato.
+  Hardware e testes de runtime nao foram executados.
 
 ## Evidencias principais
 
@@ -54,6 +86,14 @@ NX809J obtido na Internet foi usado e nenhuma operacao foi feita no aparelho.
 - `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_assembly_comparison.json`
 - `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_kcfi_comparison.json`
 - `reverse_engineering/validation/reconstructed/nubia_hw_version/stage3_complete_harness_report.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4g_driver_audit.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4g_full_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4g_kcfi_comparison.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4g_harness_report.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4s_driver_audit.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4s_full_assembly_comparison.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4s_kcfi_comparison.json`
+- `reverse_engineering/validation/reconstructed/nubia_hw_version/stage4s_harness_report.json`
 
 O `.ko` curado e um **candidato Stage 3 para analise offline**. Nao esta
 autorizado declarar reconstrucao 100% nem substituir o modulo OEM.

@@ -1,0 +1,137 @@
+{
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "covered_functions": [
+    "tpd_init_tpinfo"
+  ],
+  "cycles": [
+    {
+      "binary_sha256": "2938e768188e6cf6bd1ef800e2ad4ae842876f805390b3c31b2df249081c8807",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260808_next164_tpd_init_tpinfo_probe6\\harness_v3\\host-build\\cycle1:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next164-tpinfo",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tpd_init_tpinfo_contract_test.c",
+          "-o",
+          "/output/contract_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 1,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260808_next164_tpd_init_tpinfo_probe6\\harness_v3\\host-build\\cycle1:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/contract_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS tpd_init_tpinfo contract test (6 checks)\n"
+      }
+    },
+    {
+      "binary_sha256": "2938e768188e6cf6bd1ef800e2ad4ae842876f805390b3c31b2df249081c8807",
+      "compile": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers:/drivers:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260808_next164_tpd_init_tpinfo_probe6\\harness_v3\\host-build\\cycle2:/output",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/toolchains/clang-r536225/bin/clang",
+          "-std=gnu11",
+          "-O1",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fno-omit-frame-pointer",
+          "-fno-pie",
+          "-no-pie",
+          "-frandom-seed=zte-tpd-next164-tpinfo",
+          "-ffile-prefix-map=/drivers=<drivers>",
+          "-fsanitize=address,undefined",
+          "-Wl,--build-id=none",
+          "/drivers/validation/zte_tpd/host/tpd_init_tpinfo_contract_test.c",
+          "-o",
+          "/output/contract_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "cycle": 2,
+      "passed": true,
+      "run": {
+        "command": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\analysis\\zte_tpd\\20260808_next164_tpd_init_tpinfo_probe6\\harness_v3\\host-build\\cycle2:/output:ro",
+          "nubia-sm8850-kernel-builder:latest",
+          "/output/contract_asan_ubsan"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS tpd_init_tpinfo contract test (6 checks)\n"
+      }
+    }
+  ],
+  "driver": "zte_tpd",
+  "generated_utc": "2026-08-08T20:42:06.515110+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tpd_init_tpinfo_contract_test.c",
+      "sha256": "d3ce6afe60ed418ca3c3021d4e58ab113d86edc51c2b8880f31f053ebbfac520"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_init_tpinfo.c",
+      "sha256": "d73498601af544b364f2e3d0dc57718d2dedb1b781b683434d13265ec0e6c79a"
+    }
+  ],
+  "limitations": [
+    "The final function contains target-specific AArch64 inline assembly and is not executed on the x86 host.",
+    "Exact AArch64 assembly, KCFI, canonical build, Ghidra and Joern are separate required gates."
+  ],
+  "mode": "offline_contract_model_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "tpd_init_tpinfo"
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "audio_timer_func",
+  "cases": [
+    {
+      "name": "layout_and_requeue",
+      "assert": [
+        "queue_work_on gets CPU 32, queue at parent+0x448, work at parent+0x560"
+      ]
+    },
+    {
+      "name": "interval_conversion",
+      "assert": [
+        "signed microsecond value at parent+0x4dc is converted with the stock quotient/remainder formula",
+        "hrtimer_start_range_ns gets same timer, zero slack, relative mode"
+      ]
+    },
+    {
+      "name": "return",
+      "assert": [
+        "returns HRTIMER_NORESTART"
+      ]
+    }
+  ],
+  "note": "Static core protocol is the current acceptance test; this oracle is not executed."
+}

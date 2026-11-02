@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T20:45:00Z",
+  "driver": "zte_tpd",
+  "microtask": "006_zlog_register_work_deinit",
+  "function": "zlog_register_work_deinit",
+  "stock_entry": "00107874",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zlog_register_work_deinit.c",
+    "sha256": "1c6bf9b8a22af8df5c930d3f8b70858b63b674ed08223046f9289e84e8b38f4f"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "c27e646c0deef520806e66a82100cd9397870bec5619bf90655b03f6477edaf4",
+    "size": 24701176
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 80,
+    "candidate_symbol_bytes": 80,
+    "stock_instructions": 20,
+    "candidate_instructions": 20,
+    "stock_normalized_relocations": 6,
+    "candidate_normalized_relocations": 6,
+    "stock_cfg_blocks": 1,
+    "candidate_cfg_blocks": 1,
+    "stock_direct_calls": 3,
+    "candidate_direct_calls": 3
+  },
+  "kcfi": {
+    "function_type_id": "0xe5c47d60",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 10,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "7200189d6f3dd0efd853a01d49df851e057f251d6a60eacd77032373077e7748"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next122_zlog_register_work_deinit_revalidated_v1/build_report.json",
+      "sha256": "86afb6fc3c7610f5fc98f26b0729083a2244496434dc5c596256e713d0496e63"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next122_zlog_register_work_deinit_revalidated_v1/host_harness_report.json",
+      "sha256": "0d7c49fc1537ee28e227f986dfc87c7fdadd5213d7dab97872ac5b371a21b1be"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next122_zlog_register_work_deinit_revalidated_v1/joern_gate_summary.json",
+      "sha256": "e675259aa9a3565d37b55003430dbff9487a2d1d7ac26338f4c0df3a45017d15"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next122_zlog_register_work_deinit_revalidated_v1/assembly_comparison.json",
+      "sha256": "d589b6862277e379db4b42f38f0ddf203d0733fea884c954aa131fff6924d849"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next122_zlog_register_work_deinit_revalidated_v1/kcfi_comparison.json",
+      "sha256": "b52cb361bbbea10dceb19a14f4462dc5506d69cfb35b9c785328a5bd6c66cbc0"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next122_zlog_register_work_deinit_revalidated_v1/cfg_comparison.json",
+      "sha256": "b086136d5f6ffa7f9bb967de1d3f51b17c976feaa6f42566c3b2a219f6000696"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only zlog_register_work_deinit.",
+    "The host test checks direct teardown flow with stubs, not delayed-work scheduler timing or real zlog allocation behavior.",
+    "No ADB, fastboot, module load, scheduler timing, memory pressure, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "Hardware validation remains deferred to the controlled NX809J procedure."
+  ]
+}

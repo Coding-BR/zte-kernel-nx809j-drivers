@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_rtp_data@00104c50",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "evidence_roots": {
+    "stock_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0024_aw8693x_set_rtp_data_00104c50.asm",
+    "stock_kcfi": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+  },
+  "MP0_identity": {
+    "elf_type": "ET_REL",
+    "machine": "AArch64",
+    "section": ".text",
+    "section_offset": "0x1e30",
+    "ghidra_entry": "00104c50",
+    "body_bytes": 40,
+    "symbol_binding": "LOCAL",
+    "symbol_size": 40
+  },
+  "MP1_call_signature": {
+    "candidate_signature_hypothesis": "void aw8693x_set_rtp_data(struct aw_haptic *, u8 *, u32)",
+    "signature_evidence": [
+      "Stock KCFI type ID 0xc6a7b29b at section offset 0x1e2c",
+      "Stock body forwards x0, x1, and w2 to i2c_w_bytes as x0, x2, and w3",
+      "The called stock helper i2c_w_bytes has the independently attested signature int (struct aw_haptic *, u8, u8 *, u32)"
+    ],
+    "return_contract": "void; the i2c_w_bytes return value is discarded"
+  },
+  "MP2_state_effects": {
+    "ordered_effects": [
+      {"sequence": 1, "kind": "CALL", "target": "i2c_w_bytes", "arguments": ["x0", "0x32", "x1", "w2"]}
+    ],
+    "local_state_writes": [],
+    "conditions": []
+  },
+  "MP3_control_error_matrix": {
+    "branches": 0,
+    "call_count": 1,
+    "normal_exit": "return void after the direct call",
+    "error_paths": "none in this wrapper"
+  },
+  "MP4_event_callback_lifetime": {
+    "callback_table": "aw8693x_func_list+0xd0",
+    "callback_type_id": "0xc6a7b29b",
+    "behavior": "forwards the caller-owned data pointer synchronously to i2c_w_bytes; this wrapper does not retain it"
+  },
+  "MP5_lock_lifetime": {
+    "lock_operations": [],
+    "allocation_or_release": [],
+    "ownership_note": "the wrapper performs no allocation, reference change, or asynchronous enqueue; the called i2c_w_bytes helper makes and frees its own transfer buffer"
+  },
+  "MP6_register_bus_ledger": {
+    "bus_helper": "i2c_w_bytes",
+    "register": "0x32",
+    "data_argument": "original x1",
+    "length_argument": "original w2",
+    "result_used": false,
+    "hardware_runtime": "not performed"
+  },
+  "open_evidence_gates": [
+    "independent review of callback signature and table slot",
+    "hash-bound device-tree context",
+    "hardware runtime behavior"
+  ],
+  "promotion_authorized": false
+}

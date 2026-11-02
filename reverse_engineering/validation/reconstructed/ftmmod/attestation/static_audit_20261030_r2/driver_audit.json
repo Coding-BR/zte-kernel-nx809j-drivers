@@ -1,0 +1,408 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/ftmmod/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/ftmmod/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/ftmmod/cycle_1=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/ftmmod/cycle_1/vendor.Module.symvers",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "  CC [M]  /work/validation/ftmmod/cycle_1/ftmmod.o\n  MODPOST /work/validation/ftmmod/cycle_1/Module.symvers\n  CC [M]  /work/validation/ftmmod/cycle_1/ftmmod.mod.o\n  CC [M]  /work/validation/ftmmod/cycle_1/.module-common.o\n  LD [M]  /work/validation/ftmmod/cycle_1/ftmmod.ko\n  BTF [M] /work/validation/ftmmod/cycle_1/ftmmod.ko\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/ftmmod/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/ftmmod/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/ftmmod/cycle_2=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/ftmmod/cycle_2/vendor.Module.symvers",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "  CC [M]  /work/validation/ftmmod/cycle_2/ftmmod.o\n  MODPOST /work/validation/ftmmod/cycle_2/Module.symvers\n  CC [M]  /work/validation/ftmmod/cycle_2/ftmmod.mod.o\n  CC [M]  /work/validation/ftmmod/cycle_2/.module-common.o\n  LD [M]  /work/validation/ftmmod/cycle_2/ftmmod.ko\n  BTF [M] /work/validation/ftmmod/cycle_2/ftmmod.ko\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/ftmmod/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/ftmmod/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/ftmmod/cycle_1=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/ftmmod/cycle_1/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work:/work/validation",
+              "-e",
+              "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-w",
+              "/work/src/kernel/kernel_platform/common",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/ftmmod/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/ftmmod/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/ftmmod/cycle_2=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/ftmmod/cycle_2/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": ""
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work\\ftmmod\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work\\ftmmod\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work\\ftmmod\\cycle_1\\ftmmod.ko",
+          "sha256": "1c59c7dbc07a4166eea55117f6660961c14c307db36c0f655e3c8fa6be4081e8",
+          "size": 208552
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work\\ftmmod\\cycle_2\\ftmmod.ko",
+          "sha256": "1c59c7dbc07a4166eea55117f6660961c14c307db36c0f655e3c8fa6be4081e8",
+          "size": 208552
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\ftmmod_static_audit_20261030_r2_work\\ftmmod"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\ftmmod\\ftmmod.ko",
+        "sha256": "6e5eb9147bf3061779d0f3059cd8efad291b3a859e7f7689a8e52134df0079de",
+        "size": 208552
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_matches_fresh": false,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "kernel_source_identity": false,
+        "makefile": true,
+        "mapping_review": false,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 1,
+        "undefined_symbols_match": true,
+        "vermagic_accepted": false
+      },
+      "driver": "ftmmod",
+      "errors": [
+        "Docker kernel source identity does not match target manifest: kernel_release, config_sha256",
+        "module parity check failed: kernel_source_identity",
+        "module parity check failed: vermagic_accepted",
+        "module parity check failed: candidate_matches_fresh"
+      ],
+      "ghidra": {
+        "document": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\ftmmod\\STATUS.md",
+        "export": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\ftmmod\\offline_static\\ghidra_stock\\ftmmod.ko",
+        "function_count": 9,
+        "function_names": [
+          "cleanup_module",
+          "ftm_probe",
+          "ftm_remove",
+          "init_module",
+          "show_efs_recovery",
+          "show_permission_status",
+          "show_secboot_status",
+          "show_simlock_status",
+          "store_efs_recovery"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "a8db0d7102e0e044de52f793ea53d1a4",
+          "function_count": 9,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000abf",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "ftmmod.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "kernel_source_identity": {
+        "checks": {
+          "config_sha256": false,
+          "docker_image_id": true,
+          "kernel_release": false,
+          "module_symvers_sha256": true
+        },
+        "expected": {
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83"
+        },
+        "image_command": {
+          "argv": [
+            "docker",
+            "image",
+            "inspect",
+            "--format",
+            "{{.Id}}",
+            "nubia-sm8850-kernel-builder:latest"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+        },
+        "mismatches": [
+          "kernel_release",
+          "config_sha256"
+        ],
+        "observed": {
+          "config_sha256": "2ac6f9259bf4d82a2c8944ea0e0f7c562c7be563cec070174109182f59fd2825",
+          "docker_image": "nubia-sm8850-kernel-builder:latest",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-4k",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "source_head": "e1ea0289c329945af9422e58256a37f7603fa098",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "passed": false,
+        "probe_command": {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "nubia_sm8850_kernel_src:/work/src:ro",
+            "-w",
+            "/work/src/kernel/kernel_platform/common",
+            "nubia-sm8850-kernel-builder:latest",
+            "python3",
+            "-c",
+            "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"kernelrelease\"]),\n    \"config_sha256\": digest(\".config\"),\n    \"module_symvers_sha256\": digest(\"Module.symvers\"),\n}))\n"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\"source_head\": \"e1ea0289c329945af9422e58256a37f7603fa098\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-4k\", \"config_sha256\": \"2ac6f9259bf4d82a2c8944ea0e0f7c562c7be563cec070174109182f59fd2825\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\"}\n"
+        },
+        "probe_error": null,
+        "required": true
+      },
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_matches_fresh": false,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__platform_driver_probe",
+              "__stack_chk_fail",
+              "_printk",
+              "arm64_use_ng_mappings",
+              "ioremap_prot",
+              "is_secboot_device",
+              "of_find_compatible_node",
+              "of_iomap",
+              "platform_device_register",
+              "platform_device_unregister",
+              "platform_driver_unregister",
+              "qcom_scm_qseecom_call",
+              "snprintf",
+              "sscanf",
+              "sysfs_create_group"
+            ]
+          },
+          "modinfo": {
+            "depends": [
+              "kmparam,qcom-scm"
+            ],
+            "license": [
+              "GPL"
+            ],
+            "vermagic": [
+              "6.12.23-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": false,
+        "kernel_source_identity": false,
+        "missing_imports": [],
+        "namespace_match": true,
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__platform_driver_probe",
+              "__stack_chk_fail",
+              "_printk",
+              "arm64_use_ng_mappings",
+              "ioremap_prot",
+              "is_secboot_device",
+              "of_find_compatible_node",
+              "of_iomap",
+              "platform_device_register",
+              "platform_device_unregister",
+              "platform_driver_unregister",
+              "qcom_scm_qseecom_call",
+              "snprintf",
+              "sscanf",
+              "sysfs_create_group"
+            ]
+          },
+          "modinfo": {
+            "depends": [
+              "kmparam,qcom-scm"
+            ],
+            "license": [
+              "GPL"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": false,
+        "undefined_symbols_match": true,
+        "unexpected_imports": [],
+        "vermagic_accepted": false,
+        "vermagic_match": false
+      },
+      "status": "incomplete_or_failed",
+      "stock": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\full_vendor_boot\\ftmmod.ko",
+        "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb",
+        "size": 20552
+      },
+      "traceability": {
+        "exists": true,
+        "mapped_functions": 9,
+        "mapping_review_errors": [
+          "mapping 0 is not independently reviewed",
+          "mapping 1 is not independently reviewed",
+          "mapping 2 is not independently reviewed",
+          "mapping 3 is not independently reviewed",
+          "mapping 4 is not independently reviewed",
+          "mapping 5 is not independently reviewed",
+          "mapping 6 is not independently reviewed",
+          "mapping 7 is not independently reviewed",
+          "mapping 8 is not independently reviewed"
+        ],
+        "mapping_review_passed": false,
+        "passed": false,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\ftmmod\\reconstruction_map.json",
+        "stock_sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb",
+        "traceability_errors": [],
+        "traceability_passed": true,
+        "unmapped_functions": []
+      },
+      "warnings": [
+        "mapping 0 is not independently reviewed",
+        "mapping 1 is not independently reviewed",
+        "mapping 2 is not independently reviewed",
+        "mapping 3 is not independently reviewed",
+        "mapping 4 is not independently reviewed",
+        "mapping 5 is not independently reviewed",
+        "mapping 6 is not independently reviewed",
+        "mapping 7 is not independently reviewed",
+        "mapping 8 is not independently reviewed"
+      ]
+    }
+  ],
+  "generated_utc": "2026-10-30T05:33:22.554542+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": false,
+  "rebuild_requested": true,
+  "run_root": "public repository evidence: C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "ftmmod"
+    ],
+    "static_verified": []
+  },
+  "target_kernel_manifest": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json"
+}

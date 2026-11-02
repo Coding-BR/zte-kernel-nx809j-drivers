@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "tpd_set_screen_off_awake",
+      "stock_entry": "0012ca1c",
+      "source_function": "tpd_set_screen_off_awake",
+      "assembly_only": true,
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/ghidra_fresh_candidate_20261102_v2/zte_tpd.ko",
+    "reconstruction_map": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/inputs/reconstruction_map_candidate.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "per_function": false,
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  },
+  "ghidra": {
+    "allow_exact_assembly_island_decompiler_fallback": true,
+    "fallback_reason": "This target is compiled from a relocation-aware exact AArch64 assembly island; fresh Ghidra function bounds/P-Code shape and independent relocation-aware assembly parity are required. Normalized C decompilation is recorded as non-authoritative for this assembly-only mapping."
+  },
+  "evidence": {
+    "direct_test_required": true,
+    "assembly_bound_required": true,
+    "hardware_runtime": "deferred"
+  }
+}

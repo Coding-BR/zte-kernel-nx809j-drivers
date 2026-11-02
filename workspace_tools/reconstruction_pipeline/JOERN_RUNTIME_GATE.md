@@ -67,6 +67,20 @@ de configuracao em massa: combinacoes contraditorias podem representar um
 programa que nunca foi compilado. Essa limitacao e discutida pelos mantenedores
 do Joern na [orientacao do c2cpg](https://github.com/joernio/joern/issues/1420).
 
+Para o gate de driver completo, confirme que a compilation database cobre todos
+os arquivos C analisados. Uma database parcial pode reduzir o CPG aos arquivos
+listados nela. Se os `.cmd` do Kbuild cobrem apenas parte da arvore, use os
+comandos reais do Docker para gerar arquivos `.i` e coloque-os como sidecars em
+uma arvore de analise completa passada por `--source-view-root`. Preserve os
+marcadores de linha do pre-processador e os hashes dos `.i`; o gate usa esses
+marcadores para separar metodos e chamadas do driver dos headers incluidos.
+
+Marque `--assembly-only` somente com evidencia no mapa e no Kbuild: o simbolo
+vem de uma unidade `.S` incluida no objeto, o Makefile remove o `.c` e inclui o
+`.S` exato, ou a funcao C `naked` consiste em assembly inline. O gate nao cobra
+metodo C, CFG ou chamadas do chamador Joern para esses simbolos; a verificacao
+de instrucoes e demais evidencias de assembly continuam obrigatorias.
+
 ### J2: cobertura cruzada
 
 O gate exige:
@@ -76,6 +90,12 @@ O gate exige:
 3. toda `source_function` mapeada presente no CPG;
 4. funcoes extras explicitamente revisadas;
 5. chamadas internas mapeadas preservadas em modo `--strict`.
+
+Uma chamada ausente do CPG pode ser recuperada pelo scanner de fonte para
+comparacao com o binario. Nesses casos, preserve `source_fallback_evidence` e
+`effective_missing_mapped_calls` no relatorio. O gate pode passar se a chamada
+esperada foi recuperada, mas `joern_cpg_gap=true` continua sinalizando que o CPG
+nao a modelou; nao reclassifique isso como cobertura nativa do Joern.
 
 ### J3: revisao de risco
 

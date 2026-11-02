@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "task_id": "061_rtp_auto_sin_store",
+  "work_unit": "MP6_BUS_REGISTER_LEDGER",
+  "identity": "rtp_auto_sin_store@00106ed0",
+  "register": "0x2d",
+  "mask": "0xdf",
+  "transactions": [
+    {
+      "path": "value==0",
+      "helper": "i2c_w_bits",
+      "value": "0",
+      "effect": "clear masked bit 0x20"
+    },
+    {
+      "path": "0<value<limit",
+      "helper": "i2c_w_bits",
+      "value": "0x20",
+      "effect": "set masked bit 0x20"
+    },
+    {
+      "path": "value>=limit and value!=0",
+      "helper": null,
+      "effect": "no bus access"
+    }
+  ],
+  "helper_contract": "Reconstructed i2c_w_bits reads the register, merges (old & mask) with (value & ~mask), and writes one byte. The caller holds driver_data+0x248 around this operation and ignores the helper return.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_039_i2c_w_bits.c",
+      "sha256": "8991ed07f2c32e013e4fe6635581a0160981a01a0de65b3cfb57dd37063a208b"
+    }
+  ],
+  "unknowns": [
+    "Physical meaning and valid operating range for register 0x2d require hardware documentation/runtime evidence."
+  ]
+}

@@ -1,6 +1,6 @@
 # Status de Reconstrucao do `zte_led`
 
-Data da ultima auditoria estatica: 2026-07-15
+Data da ultima auditoria estatica: 2026-09-04
 
 ## Veredito
 
@@ -14,8 +14,8 @@ etapa.
 ## Artefato atual
 
 - Arquivo: `zte_led.ko`
-- SHA-256: `6876f2a40835018d0859531adbf988a09b8eb8beccad48fe766360fac7cf61e1`
-- Tamanho: 399392 bytes
+- SHA-256: `8902e95076a8c1571ccae2108a2fd10fc8de11f639b32826f6c8a0ee38d8151b`
+- Tamanho: 332440 bytes
 - Kernel alvo: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`
 - Stock analisado: SHA-256 `2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668`
 

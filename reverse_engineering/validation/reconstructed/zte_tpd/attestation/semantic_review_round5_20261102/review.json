@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "ioctl mutex balance and frame-state synchronization review",
+  "review_status": "STATIC_REVIEW_COMPLETE_WITH_CONDITIONAL_CROSS_FUNCTION_RACE",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 8,
+    "unique_call_sites": 4,
+    "joern_findings_total": 128,
+    "reviewed_calls": [
+      "mutex_lock at syna_ioctl.c:56",
+      "mutex_lock at syna_ioctl.c:62",
+      "mutex_unlock at syna_ioctl.c:68",
+      "mutex_unlock at syna_ioctl.c:72"
+    ],
+    "functions": [
+      "syna_ioctl",
+      "syna_dev_probe",
+      "syna_dev_process_touch_report",
+      "zte_reset_frame_list",
+      "tpd_set_frame_data",
+      "syna_dev_suspend"
+    ],
+    "reviewed_total_after_this_round": 49,
+    "remaining_joern_findings": 79
+  },
+  "findings": [
+    {
+      "id": "syna-ioctl-balanced-lock-exits",
+      "category": "synchronization",
+      "severity": "NO_LOCK_LEAK_CONFIRMED",
+      "disposition": "ALL_SUCCESS_AND_COPY_FAULT_PATHS_UNLOCK",
+      "details": "The two ioctl copy commands each acquire the same frame mutex at tcm+0x470. Both converge on a shared completion path that unlocks for successful copy_to_user and for a copy fault. The 8 Joern entries represent 4 unique source call sites because each site appears in two cast/type spellings. The probe initializes this mutex at +0x470 before misc_register exposes the file operations.",
+      "evidence": {
+        "stock_entry": "00114580",
+        "ghidra_file": "offline_static/ghidra_stock/decompiled/0174_00114580_syna_ioctl.c",
+        "stock_lock_sites": [
+          "lines 25 and 91"
+        ],
+        "stock_unlock_sites": [
+          "lines 52 and 119"
+        ],
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_ioctl.c",
+        "candidate_lock_unlock_lines": [
+          56,
+          62,
+          68,
+          72
+        ],
+        "probe_initializer": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe.c:133",
+        "probe_register_after_init": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe.c:140",
+        "mutex_offset": "0x470"
+      }
+    },
+    {
+      "id": "frame-state-snapshot-and-reset-serialization-gap",
+      "category": "conditional_concurrency_risk",
+      "severity": "MEDIUM_FUNCTIONAL_CONSISTENCY",
+      "disposition": "INHERITED_FROM_STOCK; STATIC_INTERLEAVING_PLAUSIBLE; NO_MEMORY_SAFETY_FAILURE_PROVEN",
+      "details": "syna_ioctl snapshots tcm+0x438 and tcm+0x5e0 before acquiring frame_mutex at +0x470. The report callback registered for entity 17 reads +0x5e0 and, when enabled, copies up to 204800 bytes into the frame buffer at +0x460 and updates +0x438/+0x468 without that mutex. tpd_set_frame_data writes +0x5e0 before calling zte_reset_frame_list, which uses +0x470 while clearing frame metadata and the buffer; syna_dev_suspend also clears +0x5e0 without +0x470. Thus the lock in syna_ioctl does not serialize the snapshot with these accesses, and reset can interleave with frame production if the callback and control path overlap. The copy length is capped at the 204800-byte probe allocation, so this evidence does not establish an out-of-bounds write or use-after-free. Runtime scheduling and teardown interleavings were not reproduced.",
+      "evidence": {
+        "frame_mutex_probe_init": "syna_dev_probe.c initializes +0x470 before misc_register",
+        "report_callback_registration": "syna_dev_set_up_input_device.c registers syna_dev_process_touch_report for report/entity 17",
+        "producer_stock": "offline_static/ghidra_stock/decompiled/0169_00113c74_syna_dev_process_touch_report.c lines 40-46; buffer +0x460, length +0x438, ready +0x468",
+        "reset_stock": "offline_static/ghidra_stock/decompiled/0153_00111f64_zte_reset_frame_list.c lines 5-8; lock +0x470, clear metadata and 0x32000 bytes",
+        "setter_stock": "offline_static/ghidra_stock/decompiled/0356_0012c818_tpd_set_frame_data.c",
+        "suspend_stock": "offline_static/ghidra_stock/decompiled/0163_0011337c_syna_dev_suspend.c",
+        "size_cap_bytes": 204800,
+        "mutex_offset": "0x470",
+        "field_snapshot_offsets": [
+          "0x438",
+          "0x5e0"
+        ]
+      },
+      "hardening_follow_up": "If hardening is desired, define one lock contract covering the enable flag, frame-buffer writes/reset, and ioctl snapshots; implement it as an explicit deviation branch and validate callback lock ordering before changing the stock-exact baseline."
+    }
+  ],
+  "docker_snapshot": {
+    "reused_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+    "build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "build_passed": true,
+    "build_cycles": 2,
+    "kbuild_inputs": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "syna_ioctl_source_matches_docker": true,
+    "all_reviewed_source_hashes_match_docker_manifest": true,
+    "new_build_required": false,
+    "reason": "No Kbuild input changed in this round; this batch records analysis only."
+  },
+  "source_sha256": {
+    "syna_ioctl.c": "116e7c103df5eb22d2a4d8c04e92235aa81596c3a484756a78450c03bea80cf9",
+    "syna_dev_probe.c": "a499f12641e99b76e0df5b27889be91f889ff327d502ac9afb410a3bef5f514e",
+    "syna_dev_process_touch_report.c": "046ca214a6e37419b2c951e289e3da4db2315f570d06158e237c757094666258",
+    "zte_reset_frame_list.c": "323d809f3534941136a65b7f7094d676306a31f2e64b041e476d6ce70fb12a4c",
+    "tpd_set_frame_data.c": "c74fc3faee62c25a1caf5db482320d96eb3728e7c25ab193e56c70d2c9b3660d",
+    "syna_dev_suspend.c": "8965d9418478181e349a3660b5a56ee55a3b871779632d2d52b228cf9b451669"
+  },
+  "ghidra_decompiled_sha256": {
+    "0174_00114580_syna_ioctl.c": "98556e99248f3097601b5656a26d22132cc1a7f0e103b9ee5c6cfa953418fc68",
+    "0156_00112038_syna_dev_probe.c": "01403b177143bebaa14e6c9389f5b5e025a3c23874b97eccefc44c443a810cb2",
+    "0169_00113c74_syna_dev_process_touch_report.c": "a071754a417610429e36144f18a1ae62d3ff389c817219f9e8127d6c021017a1",
+    "0153_00111f64_zte_reset_frame_list.c": "32f8315590cd9b61d4b61ff6a16b92f02a5963d890821d6a3681aea46ae9b3ee",
+    "0356_0012c818_tpd_set_frame_data.c": "6c473169a4597b8647f505779169401ac0978ac2d5f98225755b352ce1b07ba8",
+    "0163_0011337c_syna_dev_suspend.c": "260797913caf8af079c2a3ecda154cfa21c36c987ebd5429d2b4822840a60f6a"
+  },
+  "evidence_sha256": {
+    "joern_gate_report": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "syna_ioctl_pcode": "a954d27e7bedd3ea8e87794c1df2579bbb0c15271688e1d42a9e7d76e61c3add",
+    "syna_ioctl_ghidra": "98556e99248f3097601b5656a26d22132cc1a7f0e103b9ee5c6cfa953418fc68"
+  },
+  "limitations": [
+    "Static interleaving analysis only; callback/control-path overlap was not forced at runtime.",
+    "No Android runtime or NX809J hardware execution.",
+    "Exact stock baseline remains unchanged; any locking correction must be tracked as a hardening deviation."
+  ]
+}

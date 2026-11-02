@@ -1,0 +1,2670 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T22:00:03.748350Z",
+  "mode": "aarch64_basic_blocks_calls_relocations",
+  "sources": {
+    "stock": {
+      "path": "reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\stock_assembly\\0011_tp_alloc_tp_firmware_data_00107d54.asm",
+      "sha256": "1e45952949c22b46ef90fd861394bd474a6bbd4a3f27feb835474234546bc4b0"
+    },
+    "candidate": {
+      "path": "F:\\drivers\\analysis\\zte_tpd\\20260801_next128_tp_alloc_tp_firmware_data_revalidation\\candidate_assembly\\0000_tp_alloc_tp_firmware_data.asm",
+      "sha256": "0f8d8843c2c8e09e7ae0063a71fc5315ab6bf167b7a48638b30c993b1d4cc05f"
+    }
+  },
+  "stock": {
+    "function": "tp_alloc_tp_firmware_data",
+    "entry": 5324,
+    "instruction_count": 88,
+    "symbol_size": 352,
+    "basic_block_count": 13,
+    "edge_count": 17,
+    "call_count": 10,
+    "calls": [
+      "vfree",
+      "kfree",
+      "__kmalloc_cache_noprof",
+      "vmalloc_noprof",
+      "memset",
+      "_printk",
+      "kfree",
+      "__kmalloc_cache_noprof",
+      "_printk",
+      "vmalloc_noprof"
+    ],
+    "blocks": [
+      {
+        "id": "B000",
+        "start_offset": 0,
+        "end_offset": 40,
+        "instruction_count": 10,
+        "instructions": [
+          {
+            "address": 5324,
+            "offset": 0,
+            "opcode": "d503233f",
+            "mnemonic": "paciasp",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 5328,
+            "offset": 4,
+            "opcode": "a9bd7bfd",
+            "mnemonic": "stp",
+            "operands": "x29, x30, [sp, #-0x30]!",
+            "relocations": []
+          },
+          {
+            "address": 5332,
+            "offset": 8,
+            "opcode": "a90157f6",
+            "mnemonic": "stp",
+            "operands": "x22, x21, [sp, #0x10]",
+            "relocations": []
+          },
+          {
+            "address": 5336,
+            "offset": 12,
+            "opcode": "a9024ff4",
+            "mnemonic": "stp",
+            "operands": "x20, x19, [sp, #0x20]",
+            "relocations": []
+          },
+          {
+            "address": 5340,
+            "offset": 16,
+            "opcode": "910003fd",
+            "mnemonic": "mov",
+            "operands": "x29, sp",
+            "relocations": []
+          },
+          {
+            "address": 5344,
+            "offset": 20,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev"
+            ]
+          },
+          {
+            "address": 5348,
+            "offset": 24,
+            "opcode": "2a0003f3",
+            "mnemonic": "mov",
+            "operands": "w19, w0",
+            "relocations": []
+          },
+          {
+            "address": 5352,
+            "offset": 28,
+            "opcode": "f9400114",
+            "mnemonic": "ldr",
+            "operands": "x20, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev"
+            ]
+          },
+          {
+            "address": 5356,
+            "offset": 32,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5360,
+            "offset": 36,
+            "opcode": "b4000188",
+            "mnemonic": "cbz",
+            "operands": "x8, 0x1520 <tp_alloc_tp_firmware_data+0x54>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "cbz",
+        "successors": [
+          "B004",
+          "B001"
+        ],
+        "signature": "25fb7bc89c25b91a08ac60a6e4ea71ff5d855dd1e2198a29eb43dcc6040d0692"
+      },
+      {
+        "id": "B001",
+        "start_offset": 40,
+        "end_offset": 48,
+        "instruction_count": 2,
+        "instructions": [
+          {
+            "address": 5364,
+            "offset": 40,
+            "opcode": "f9400500",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 5368,
+            "offset": 44,
+            "opcode": "b40000e0",
+            "mnemonic": "cbz",
+            "operands": "x0, 0x1514 <tp_alloc_tp_firmware_data+0x48>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "cbz",
+        "successors": [
+          "B003",
+          "B002"
+        ],
+        "signature": "00df2fc92d77e6c73f896be29e4a0fb20e2bc26f196a26d110f27e6ee3a1ff75"
+      },
+      {
+        "id": "B002",
+        "start_offset": 48,
+        "end_offset": 72,
+        "instruction_count": 6,
+        "instructions": [
+          {
+            "address": 5372,
+            "offset": 48,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x14fc <tp_alloc_tp_firmware_data+0x30>",
+            "relocations": [
+              "R_AARCH64_CALL26 vfree"
+            ]
+          },
+          {
+            "address": 5376,
+            "offset": 52,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5380,
+            "offset": 56,
+            "opcode": "f900051f",
+            "mnemonic": "str",
+            "operands": "xzr, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 5384,
+            "offset": 60,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5388,
+            "offset": 64,
+            "opcode": "f900011f",
+            "mnemonic": "str",
+            "operands": "xzr, [x8]",
+            "relocations": []
+          },
+          {
+            "address": 5392,
+            "offset": 68,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "vfree"
+        ],
+        "terminator": null,
+        "successors": [
+          "B003"
+        ],
+        "signature": "73dbe227dbf0ba313bdff90be68c18e411ed4d180f53a3b1bc82e9d836409c23"
+      },
+      {
+        "id": "B003",
+        "start_offset": 72,
+        "end_offset": 84,
+        "instruction_count": 3,
+        "instructions": [
+          {
+            "address": 5396,
+            "offset": 72,
+            "opcode": "aa0803e0",
+            "mnemonic": "mov",
+            "operands": "x0, x8",
+            "relocations": []
+          },
+          {
+            "address": 5400,
+            "offset": 76,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1518 <tp_alloc_tp_firmware_data+0x4c>",
+            "relocations": [
+              "R_AARCH64_CALL26 kfree"
+            ]
+          },
+          {
+            "address": 5404,
+            "offset": 80,
+            "opcode": "f9062e9f",
+            "mnemonic": "str",
+            "operands": "xzr, [x20, #0xc58]",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "kfree"
+        ],
+        "terminator": null,
+        "successors": [
+          "B004"
+        ],
+        "signature": "28805421836c86a8409f6b53b93ec2914220ec8eea60723084dcc71bf48f942f"
+      },
+      {
+        "id": "B004",
+        "start_offset": 84,
+        "end_offset": 120,
+        "instruction_count": 9,
+        "instructions": [
+          {
+            "address": 5408,
+            "offset": 84,
+            "opcode": "b9044a9f",
+            "mnemonic": "str",
+            "operands": "wzr, [x20, #0x448]",
+            "relocations": []
+          },
+          {
+            "address": 5412,
+            "offset": 88,
+            "opcode": "d503201f",
+            "mnemonic": "nop",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 5416,
+            "offset": 92,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 5420,
+            "offset": 96,
+            "opcode": "5281b801",
+            "mnemonic": "mov",
+            "operands": "w1, #0xdc0              // =3520",
+            "relocations": []
+          },
+          {
+            "address": 5424,
+            "offset": 100,
+            "opcode": "52800302",
+            "mnemonic": "mov",
+            "operands": "w2, #0x18               // =24",
+            "relocations": []
+          },
+          {
+            "address": 5428,
+            "offset": 104,
+            "opcode": "f9400100",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 5432,
+            "offset": 108,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1538 <tp_alloc_tp_firmware_data+0x6c>",
+            "relocations": [
+              "R_AARCH64_CALL26 __kmalloc_cache_noprof"
+            ]
+          },
+          {
+            "address": 5436,
+            "offset": 112,
+            "opcode": "f9062e80",
+            "mnemonic": "str",
+            "operands": "x0, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5440,
+            "offset": 116,
+            "opcode": "b4000580",
+            "mnemonic": "cbz",
+            "operands": "x0, 0x15f0 <tp_alloc_tp_firmware_data+0x124>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "__kmalloc_cache_noprof"
+        ],
+        "terminator": "cbz",
+        "successors": [
+          "B011",
+          "B005"
+        ],
+        "signature": "cdb94a87bb500b04999b85e5de6c31f161efb9322fd3ff1d23c189d8a86cce37"
+      },
+      {
+        "id": "B005",
+        "start_offset": 120,
+        "end_offset": 140,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 5444,
+            "offset": 120,
+            "opcode": "d503201f",
+            "mnemonic": "nop",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 5448,
+            "offset": 124,
+            "opcode": "2a1303e8",
+            "mnemonic": "mov",
+            "operands": "w8, w19",
+            "relocations": []
+          },
+          {
+            "address": 5452,
+            "offset": 128,
+            "opcode": "93407d08",
+            "mnemonic": "sxtw",
+            "operands": "x8, w8",
+            "relocations": []
+          },
+          {
+            "address": 5456,
+            "offset": 132,
+            "opcode": "91006100",
+            "mnemonic": "add",
+            "operands": "x0, x8, #0x18",
+            "relocations": []
+          },
+          {
+            "address": 5460,
+            "offset": 136,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1554 <tp_alloc_tp_firmware_data+0x88>",
+            "relocations": [
+              "R_AARCH64_CALL26 vmalloc_noprof"
+            ]
+          }
+        ],
+        "calls": [
+          "vmalloc_noprof"
+        ],
+        "terminator": null,
+        "successors": [
+          "B006"
+        ],
+        "signature": "d80b8d7ff64a63aaf104a25afef321ad36e362241c2c90279d3dc36edd7d6db3"
+      },
+      {
+        "id": "B006",
+        "start_offset": 140,
+        "end_offset": 160,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 5464,
+            "offset": 140,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5468,
+            "offset": 144,
+            "opcode": "f9000500",
+            "mnemonic": "str",
+            "operands": "x0, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 5472,
+            "offset": 148,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5476,
+            "offset": 152,
+            "opcode": "f9400509",
+            "mnemonic": "ldr",
+            "operands": "x9, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 5480,
+            "offset": 156,
+            "opcode": "b40001c9",
+            "mnemonic": "cbz",
+            "operands": "x9, 0x15a0 <tp_alloc_tp_firmware_data+0xd4>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "cbz",
+        "successors": [
+          "B009",
+          "B007"
+        ],
+        "signature": "c3ae5d183cb1cde582f9eec4795649769ef121527a3d679d64326a4cf94308b3"
+      },
+      {
+        "id": "B007",
+        "start_offset": 160,
+        "end_offset": 192,
+        "instruction_count": 8,
+        "instructions": [
+          {
+            "address": 5484,
+            "offset": 160,
+            "opcode": "93407e69",
+            "mnemonic": "sxtw",
+            "operands": "x9, w19",
+            "relocations": []
+          },
+          {
+            "address": 5488,
+            "offset": 164,
+            "opcode": "2a1f03e1",
+            "mnemonic": "mov",
+            "operands": "w1, wzr",
+            "relocations": []
+          },
+          {
+            "address": 5492,
+            "offset": 168,
+            "opcode": "f9000109",
+            "mnemonic": "str",
+            "operands": "x9, [x8]",
+            "relocations": []
+          },
+          {
+            "address": 5496,
+            "offset": 172,
+            "opcode": "91006122",
+            "mnemonic": "add",
+            "operands": "x2, x9, #0x18",
+            "relocations": []
+          },
+          {
+            "address": 5500,
+            "offset": 176,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5504,
+            "offset": 180,
+            "opcode": "f9400500",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 5508,
+            "offset": 184,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1584 <tp_alloc_tp_firmware_data+0xb8>",
+            "relocations": [
+              "R_AARCH64_CALL26 memset"
+            ]
+          },
+          {
+            "address": 5512,
+            "offset": 188,
+            "opcode": "2a1f03e0",
+            "mnemonic": "mov",
+            "operands": "w0, wzr",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "memset"
+        ],
+        "terminator": null,
+        "successors": [
+          "B008"
+        ],
+        "signature": "53f9b3834acdcc3b96c555a6c86808d5d6729e2d96ed2cea0ff10c8860d633a5"
+      },
+      {
+        "id": "B008",
+        "start_offset": 192,
+        "end_offset": 212,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 5516,
+            "offset": 192,
+            "opcode": "a9424ff4",
+            "mnemonic": "ldp",
+            "operands": "x20, x19, [sp, #0x20]",
+            "relocations": []
+          },
+          {
+            "address": 5520,
+            "offset": 196,
+            "opcode": "a94157f6",
+            "mnemonic": "ldp",
+            "operands": "x22, x21, [sp, #0x10]",
+            "relocations": []
+          },
+          {
+            "address": 5524,
+            "offset": 200,
+            "opcode": "a8c37bfd",
+            "mnemonic": "ldp",
+            "operands": "x29, x30, [sp], #0x30",
+            "relocations": []
+          },
+          {
+            "address": 5528,
+            "offset": 204,
+            "opcode": "d50323bf",
+            "mnemonic": "autiasp",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 5532,
+            "offset": 208,
+            "opcode": "d65f03c0",
+            "mnemonic": "ret",
+            "operands": "",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "ret",
+        "successors": [],
+        "signature": "4bd4c1d90095148dfa9bc536bccc9cbc58a5399676382fe584181d4912d4d56d"
+      },
+      {
+        "id": "B009",
+        "start_offset": 212,
+        "end_offset": 240,
+        "instruction_count": 7,
+        "instructions": [
+          {
+            "address": 5536,
+            "offset": 212,
+            "opcode": "90000000",
+            "mnemonic": "adrp",
+            "operands": "x0, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0xa49d"
+            ]
+          },
+          {
+            "address": 5540,
+            "offset": 216,
+            "opcode": "91000000",
+            "mnemonic": "add",
+            "operands": "x0, x0, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0xa49d"
+            ]
+          },
+          {
+            "address": 5544,
+            "offset": 220,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x15a8 <tp_alloc_tp_firmware_data+0xdc>",
+            "relocations": [
+              "R_AARCH64_CALL26 _printk"
+            ]
+          },
+          {
+            "address": 5548,
+            "offset": 224,
+            "opcode": "f9462e80",
+            "mnemonic": "ldr",
+            "operands": "x0, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5552,
+            "offset": 228,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x15b0 <tp_alloc_tp_firmware_data+0xe4>",
+            "relocations": [
+              "R_AARCH64_CALL26 kfree"
+            ]
+          },
+          {
+            "address": 5556,
+            "offset": 232,
+            "opcode": "12800160",
+            "mnemonic": "mov",
+            "operands": "w0, #-0xc               // =-12",
+            "relocations": []
+          },
+          {
+            "address": 5560,
+            "offset": 236,
+            "opcode": "17fffff5",
+            "mnemonic": "b",
+            "operands": "0x158c <tp_alloc_tp_firmware_data+0xc0>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "_printk",
+          "kfree"
+        ],
+        "terminator": "b",
+        "successors": [
+          "B008"
+        ],
+        "signature": "ee2edf4f6e152c155159fe745fd395de11967e922b5da9077c464d2a6d562b70"
+      },
+      {
+        "id": "B010",
+        "start_offset": 240,
+        "end_offset": 292,
+        "instruction_count": 13,
+        "instructions": [
+          {
+            "address": 5564,
+            "offset": 240,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 5568,
+            "offset": 244,
+            "opcode": "d5384115",
+            "mnemonic": "mrs",
+            "operands": "x21, SP_EL0",
+            "relocations": []
+          },
+          {
+            "address": 5572,
+            "offset": 248,
+            "opcode": "f9402ab6",
+            "mnemonic": "ldr",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 5576,
+            "offset": 252,
+            "opcode": "f9400100",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 5580,
+            "offset": 256,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x28"
+            ]
+          },
+          {
+            "address": 5584,
+            "offset": 260,
+            "opcode": "91000108",
+            "mnemonic": "add",
+            "operands": "x8, x8, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x28"
+            ]
+          },
+          {
+            "address": 5588,
+            "offset": 264,
+            "opcode": "5281b801",
+            "mnemonic": "mov",
+            "operands": "w1, #0xdc0              // =3520",
+            "relocations": []
+          },
+          {
+            "address": 5592,
+            "offset": 268,
+            "opcode": "52800302",
+            "mnemonic": "mov",
+            "operands": "w2, #0x18               // =24",
+            "relocations": []
+          },
+          {
+            "address": 5596,
+            "offset": 272,
+            "opcode": "f9002aa8",
+            "mnemonic": "str",
+            "operands": "x8, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 5600,
+            "offset": 276,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x15e0 <tp_alloc_tp_firmware_data+0x114>",
+            "relocations": [
+              "R_AARCH64_CALL26 __kmalloc_cache_noprof"
+            ]
+          },
+          {
+            "address": 5604,
+            "offset": 280,
+            "opcode": "f9002ab6",
+            "mnemonic": "str",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 5608,
+            "offset": 284,
+            "opcode": "f9062e80",
+            "mnemonic": "str",
+            "operands": "x0, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 5612,
+            "offset": 288,
+            "opcode": "b5fffac0",
+            "mnemonic": "cbnz",
+            "operands": "x0, 0x1544 <tp_alloc_tp_firmware_data+0x78>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "__kmalloc_cache_noprof"
+        ],
+        "terminator": "cbnz",
+        "successors": [
+          "B005",
+          "B011"
+        ],
+        "signature": "76638af53f6f51dc1a36656a9ff6e466162c75340a3afa844e48c39d06aa521a"
+      },
+      {
+        "id": "B011",
+        "start_offset": 292,
+        "end_offset": 312,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 5616,
+            "offset": 292,
+            "opcode": "90000000",
+            "mnemonic": "adrp",
+            "operands": "x0, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0xb42"
+            ]
+          },
+          {
+            "address": 5620,
+            "offset": 296,
+            "opcode": "91000000",
+            "mnemonic": "add",
+            "operands": "x0, x0, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0xb42"
+            ]
+          },
+          {
+            "address": 5624,
+            "offset": 300,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x15f8 <tp_alloc_tp_firmware_data+0x12c>",
+            "relocations": [
+              "R_AARCH64_CALL26 _printk"
+            ]
+          },
+          {
+            "address": 5628,
+            "offset": 304,
+            "opcode": "12800160",
+            "mnemonic": "mov",
+            "operands": "w0, #-0xc               // =-12",
+            "relocations": []
+          },
+          {
+            "address": 5632,
+            "offset": 308,
+            "opcode": "17ffffe3",
+            "mnemonic": "b",
+            "operands": "0x158c <tp_alloc_tp_firmware_data+0xc0>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "_printk"
+        ],
+        "terminator": "b",
+        "successors": [
+          "B008"
+        ],
+        "signature": "ea80497b46c198ecc3420ed578b2f7c153f0aaa3f9c38a4ae4aaca7895b61c2a"
+      },
+      {
+        "id": "B012",
+        "start_offset": 312,
+        "end_offset": 352,
+        "instruction_count": 10,
+        "instructions": [
+          {
+            "address": 5636,
+            "offset": 312,
+            "opcode": "93407e68",
+            "mnemonic": "sxtw",
+            "operands": "x8, w19",
+            "relocations": []
+          },
+          {
+            "address": 5640,
+            "offset": 316,
+            "opcode": "d5384115",
+            "mnemonic": "mrs",
+            "operands": "x21, SP_EL0",
+            "relocations": []
+          },
+          {
+            "address": 5644,
+            "offset": 320,
+            "opcode": "f9402ab6",
+            "mnemonic": "ldr",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 5648,
+            "offset": 324,
+            "opcode": "90000009",
+            "mnemonic": "adrp",
+            "operands": "x9, 0x1000 <zlog_register_work_deinit+0x14>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x50"
+            ]
+          },
+          {
+            "address": 5652,
+            "offset": 328,
+            "opcode": "91000129",
+            "mnemonic": "add",
+            "operands": "x9, x9, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x50"
+            ]
+          },
+          {
+            "address": 5656,
+            "offset": 332,
+            "opcode": "91006100",
+            "mnemonic": "add",
+            "operands": "x0, x8, #0x18",
+            "relocations": []
+          },
+          {
+            "address": 5660,
+            "offset": 336,
+            "opcode": "f9002aa9",
+            "mnemonic": "str",
+            "operands": "x9, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 5664,
+            "offset": 340,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1620 <tp_alloc_tp_firmware_data+0x154>",
+            "relocations": [
+              "R_AARCH64_CALL26 vmalloc_noprof"
+            ]
+          },
+          {
+            "address": 5668,
+            "offset": 344,
+            "opcode": "f9002ab6",
+            "mnemonic": "str",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 5672,
+            "offset": 348,
+            "opcode": "17ffffcc",
+            "mnemonic": "b",
+            "operands": "0x1558 <tp_alloc_tp_firmware_data+0x8c>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "vmalloc_noprof"
+        ],
+        "terminator": "b",
+        "successors": [
+          "B006"
+        ],
+        "signature": "941db598610b26910a94bfdcd8210a50b3618123ed9a9389b2fc9da7963e723b"
+      }
+    ],
+    "call_regions": [
+      {
+        "id": "C000",
+        "block": "B000",
+        "start_offset": 0,
+        "end_offset": 40,
+        "instruction_count": 10,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "paciasp",
+          "stp",
+          "stp",
+          "stp",
+          "mov",
+          "adrp",
+          "mov",
+          "ldr",
+          "ldr",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C001",
+        "block": "B001",
+        "start_offset": 40,
+        "end_offset": 48,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldr",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C002",
+        "block": "B002",
+        "start_offset": 48,
+        "end_offset": 52,
+        "instruction_count": 1,
+        "boundary": "call",
+        "call": "vfree",
+        "mnemonics": [
+          "bl"
+        ]
+      },
+      {
+        "id": "C003",
+        "block": "B002",
+        "start_offset": 52,
+        "end_offset": 72,
+        "instruction_count": 5,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldr",
+          "str",
+          "ldr",
+          "str",
+          "ldr"
+        ]
+      },
+      {
+        "id": "C004",
+        "block": "B003",
+        "start_offset": 72,
+        "end_offset": 80,
+        "instruction_count": 2,
+        "boundary": "call",
+        "call": "kfree",
+        "mnemonics": [
+          "mov",
+          "bl"
+        ]
+      },
+      {
+        "id": "C005",
+        "block": "B003",
+        "start_offset": 80,
+        "end_offset": 84,
+        "instruction_count": 1,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str"
+        ]
+      },
+      {
+        "id": "C006",
+        "block": "B004",
+        "start_offset": 84,
+        "end_offset": 112,
+        "instruction_count": 7,
+        "boundary": "call",
+        "call": "__kmalloc_cache_noprof",
+        "mnemonics": [
+          "str",
+          "nop",
+          "adrp",
+          "mov",
+          "mov",
+          "ldr",
+          "bl"
+        ]
+      },
+      {
+        "id": "C007",
+        "block": "B004",
+        "start_offset": 112,
+        "end_offset": 120,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C008",
+        "block": "B005",
+        "start_offset": 120,
+        "end_offset": 140,
+        "instruction_count": 5,
+        "boundary": "call",
+        "call": "vmalloc_noprof",
+        "mnemonics": [
+          "nop",
+          "mov",
+          "sxtw",
+          "add",
+          "bl"
+        ]
+      },
+      {
+        "id": "C009",
+        "block": "B006",
+        "start_offset": 140,
+        "end_offset": 160,
+        "instruction_count": 5,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldr",
+          "str",
+          "ldr",
+          "ldr",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C010",
+        "block": "B007",
+        "start_offset": 160,
+        "end_offset": 188,
+        "instruction_count": 7,
+        "boundary": "call",
+        "call": "memset",
+        "mnemonics": [
+          "sxtw",
+          "mov",
+          "str",
+          "add",
+          "ldr",
+          "ldr",
+          "bl"
+        ]
+      },
+      {
+        "id": "C011",
+        "block": "B007",
+        "start_offset": 188,
+        "end_offset": 192,
+        "instruction_count": 1,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "mov"
+        ]
+      },
+      {
+        "id": "C012",
+        "block": "B008",
+        "start_offset": 192,
+        "end_offset": 212,
+        "instruction_count": 5,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldp",
+          "ldp",
+          "ldp",
+          "autiasp",
+          "ret"
+        ]
+      },
+      {
+        "id": "C013",
+        "block": "B009",
+        "start_offset": 212,
+        "end_offset": 224,
+        "instruction_count": 3,
+        "boundary": "call",
+        "call": "_printk",
+        "mnemonics": [
+          "adrp",
+          "add",
+          "bl"
+        ]
+      },
+      {
+        "id": "C014",
+        "block": "B009",
+        "start_offset": 224,
+        "end_offset": 232,
+        "instruction_count": 2,
+        "boundary": "call",
+        "call": "kfree",
+        "mnemonics": [
+          "ldr",
+          "bl"
+        ]
+      },
+      {
+        "id": "C015",
+        "block": "B009",
+        "start_offset": 232,
+        "end_offset": 240,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "mov",
+          "b"
+        ]
+      },
+      {
+        "id": "C016",
+        "block": "B010",
+        "start_offset": 240,
+        "end_offset": 280,
+        "instruction_count": 10,
+        "boundary": "call",
+        "call": "__kmalloc_cache_noprof",
+        "mnemonics": [
+          "adrp",
+          "mrs",
+          "ldr",
+          "ldr",
+          "adrp",
+          "add",
+          "mov",
+          "mov",
+          "str",
+          "bl"
+        ]
+      },
+      {
+        "id": "C017",
+        "block": "B010",
+        "start_offset": 280,
+        "end_offset": 292,
+        "instruction_count": 3,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str",
+          "str",
+          "cbnz"
+        ]
+      },
+      {
+        "id": "C018",
+        "block": "B011",
+        "start_offset": 292,
+        "end_offset": 304,
+        "instruction_count": 3,
+        "boundary": "call",
+        "call": "_printk",
+        "mnemonics": [
+          "adrp",
+          "add",
+          "bl"
+        ]
+      },
+      {
+        "id": "C019",
+        "block": "B011",
+        "start_offset": 304,
+        "end_offset": 312,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "mov",
+          "b"
+        ]
+      },
+      {
+        "id": "C020",
+        "block": "B012",
+        "start_offset": 312,
+        "end_offset": 344,
+        "instruction_count": 8,
+        "boundary": "call",
+        "call": "vmalloc_noprof",
+        "mnemonics": [
+          "sxtw",
+          "mrs",
+          "ldr",
+          "adrp",
+          "add",
+          "add",
+          "str",
+          "bl"
+        ]
+      },
+      {
+        "id": "C021",
+        "block": "B012",
+        "start_offset": 344,
+        "end_offset": 352,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str",
+          "b"
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "function": "tp_alloc_tp_firmware_data",
+    "entry": 123168,
+    "instruction_count": 88,
+    "symbol_size": 352,
+    "basic_block_count": 13,
+    "edge_count": 17,
+    "call_count": 10,
+    "calls": [
+      "vfree",
+      "kfree",
+      "__kmalloc_cache_noprof",
+      "vmalloc_noprof",
+      "memset",
+      "_printk",
+      "kfree",
+      "__kmalloc_cache_noprof",
+      "_printk",
+      "vmalloc_noprof"
+    ],
+    "blocks": [
+      {
+        "id": "B000",
+        "start_offset": 0,
+        "end_offset": 40,
+        "instruction_count": 10,
+        "instructions": [
+          {
+            "address": 123168,
+            "offset": 0,
+            "opcode": "d503233f",
+            "mnemonic": "paciasp",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 123172,
+            "offset": 4,
+            "opcode": "a9bd7bfd",
+            "mnemonic": "stp",
+            "operands": "x29, x30, [sp, #-0x30]!",
+            "relocations": []
+          },
+          {
+            "address": 123176,
+            "offset": 8,
+            "opcode": "a90157f6",
+            "mnemonic": "stp",
+            "operands": "x22, x21, [sp, #0x10]",
+            "relocations": []
+          },
+          {
+            "address": 123180,
+            "offset": 12,
+            "opcode": "a9024ff4",
+            "mnemonic": "stp",
+            "operands": "x20, x19, [sp, #0x20]",
+            "relocations": []
+          },
+          {
+            "address": 123184,
+            "offset": 16,
+            "opcode": "910003fd",
+            "mnemonic": "mov",
+            "operands": "x29, sp",
+            "relocations": []
+          },
+          {
+            "address": 123188,
+            "offset": 20,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 tpd_cdev"
+            ]
+          },
+          {
+            "address": 123192,
+            "offset": 24,
+            "opcode": "2a0003f3",
+            "mnemonic": "mov",
+            "operands": "w19, w0",
+            "relocations": []
+          },
+          {
+            "address": 123196,
+            "offset": 28,
+            "opcode": "f9400114",
+            "mnemonic": "ldr",
+            "operands": "x20, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC tpd_cdev"
+            ]
+          },
+          {
+            "address": 123200,
+            "offset": 32,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123204,
+            "offset": 36,
+            "opcode": "b4000188",
+            "mnemonic": "cbz",
+            "operands": "x8, 0x1e174 <tp_alloc_tp_firmware_data+0x54>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "cbz",
+        "successors": [
+          "B004",
+          "B001"
+        ],
+        "signature": "25fb7bc89c25b91a08ac60a6e4ea71ff5d855dd1e2198a29eb43dcc6040d0692"
+      },
+      {
+        "id": "B001",
+        "start_offset": 40,
+        "end_offset": 48,
+        "instruction_count": 2,
+        "instructions": [
+          {
+            "address": 123208,
+            "offset": 40,
+            "opcode": "f9400500",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 123212,
+            "offset": 44,
+            "opcode": "b40000e0",
+            "mnemonic": "cbz",
+            "operands": "x0, 0x1e168 <tp_alloc_tp_firmware_data+0x48>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "cbz",
+        "successors": [
+          "B003",
+          "B002"
+        ],
+        "signature": "00df2fc92d77e6c73f896be29e4a0fb20e2bc26f196a26d110f27e6ee3a1ff75"
+      },
+      {
+        "id": "B002",
+        "start_offset": 48,
+        "end_offset": 72,
+        "instruction_count": 6,
+        "instructions": [
+          {
+            "address": 123216,
+            "offset": 48,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e150 <tp_alloc_tp_firmware_data+0x30>",
+            "relocations": [
+              "R_AARCH64_CALL26 vfree"
+            ]
+          },
+          {
+            "address": 123220,
+            "offset": 52,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123224,
+            "offset": 56,
+            "opcode": "f900051f",
+            "mnemonic": "str",
+            "operands": "xzr, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 123228,
+            "offset": 60,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123232,
+            "offset": 64,
+            "opcode": "f900011f",
+            "mnemonic": "str",
+            "operands": "xzr, [x8]",
+            "relocations": []
+          },
+          {
+            "address": 123236,
+            "offset": 68,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "vfree"
+        ],
+        "terminator": null,
+        "successors": [
+          "B003"
+        ],
+        "signature": "73dbe227dbf0ba313bdff90be68c18e411ed4d180f53a3b1bc82e9d836409c23"
+      },
+      {
+        "id": "B003",
+        "start_offset": 72,
+        "end_offset": 84,
+        "instruction_count": 3,
+        "instructions": [
+          {
+            "address": 123240,
+            "offset": 72,
+            "opcode": "aa0803e0",
+            "mnemonic": "mov",
+            "operands": "x0, x8",
+            "relocations": []
+          },
+          {
+            "address": 123244,
+            "offset": 76,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e16c <tp_alloc_tp_firmware_data+0x4c>",
+            "relocations": [
+              "R_AARCH64_CALL26 kfree"
+            ]
+          },
+          {
+            "address": 123248,
+            "offset": 80,
+            "opcode": "f9062e9f",
+            "mnemonic": "str",
+            "operands": "xzr, [x20, #0xc58]",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "kfree"
+        ],
+        "terminator": null,
+        "successors": [
+          "B004"
+        ],
+        "signature": "28805421836c86a8409f6b53b93ec2914220ec8eea60723084dcc71bf48f942f"
+      },
+      {
+        "id": "B004",
+        "start_offset": 84,
+        "end_offset": 120,
+        "instruction_count": 9,
+        "instructions": [
+          {
+            "address": 123252,
+            "offset": 84,
+            "opcode": "b9044a9f",
+            "mnemonic": "str",
+            "operands": "wzr, [x20, #0x448]",
+            "relocations": []
+          },
+          {
+            "address": 123256,
+            "offset": 88,
+            "opcode": "d503201f",
+            "mnemonic": "nop",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 123260,
+            "offset": 92,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 123264,
+            "offset": 96,
+            "opcode": "5281b801",
+            "mnemonic": "mov",
+            "operands": "w1, #0xdc0              // =3520",
+            "relocations": []
+          },
+          {
+            "address": 123268,
+            "offset": 100,
+            "opcode": "52800302",
+            "mnemonic": "mov",
+            "operands": "w2, #0x18               // =24",
+            "relocations": []
+          },
+          {
+            "address": 123272,
+            "offset": 104,
+            "opcode": "f9400100",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 123276,
+            "offset": 108,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e18c <tp_alloc_tp_firmware_data+0x6c>",
+            "relocations": [
+              "R_AARCH64_CALL26 __kmalloc_cache_noprof"
+            ]
+          },
+          {
+            "address": 123280,
+            "offset": 112,
+            "opcode": "f9062e80",
+            "mnemonic": "str",
+            "operands": "x0, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123284,
+            "offset": 116,
+            "opcode": "b4000580",
+            "mnemonic": "cbz",
+            "operands": "x0, 0x1e244 <tp_alloc_tp_firmware_data+0x124>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "__kmalloc_cache_noprof"
+        ],
+        "terminator": "cbz",
+        "successors": [
+          "B011",
+          "B005"
+        ],
+        "signature": "cdb94a87bb500b04999b85e5de6c31f161efb9322fd3ff1d23c189d8a86cce37"
+      },
+      {
+        "id": "B005",
+        "start_offset": 120,
+        "end_offset": 140,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 123288,
+            "offset": 120,
+            "opcode": "d503201f",
+            "mnemonic": "nop",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 123292,
+            "offset": 124,
+            "opcode": "2a1303e8",
+            "mnemonic": "mov",
+            "operands": "w8, w19",
+            "relocations": []
+          },
+          {
+            "address": 123296,
+            "offset": 128,
+            "opcode": "93407d08",
+            "mnemonic": "sxtw",
+            "operands": "x8, w8",
+            "relocations": []
+          },
+          {
+            "address": 123300,
+            "offset": 132,
+            "opcode": "91006100",
+            "mnemonic": "add",
+            "operands": "x0, x8, #0x18",
+            "relocations": []
+          },
+          {
+            "address": 123304,
+            "offset": 136,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e1a8 <tp_alloc_tp_firmware_data+0x88>",
+            "relocations": [
+              "R_AARCH64_CALL26 vmalloc_noprof"
+            ]
+          }
+        ],
+        "calls": [
+          "vmalloc_noprof"
+        ],
+        "terminator": null,
+        "successors": [
+          "B006"
+        ],
+        "signature": "d80b8d7ff64a63aaf104a25afef321ad36e362241c2c90279d3dc36edd7d6db3"
+      },
+      {
+        "id": "B006",
+        "start_offset": 140,
+        "end_offset": 160,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 123308,
+            "offset": 140,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123312,
+            "offset": 144,
+            "opcode": "f9000500",
+            "mnemonic": "str",
+            "operands": "x0, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 123316,
+            "offset": 148,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123320,
+            "offset": 152,
+            "opcode": "f9400509",
+            "mnemonic": "ldr",
+            "operands": "x9, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 123324,
+            "offset": 156,
+            "opcode": "b40001c9",
+            "mnemonic": "cbz",
+            "operands": "x9, 0x1e1f4 <tp_alloc_tp_firmware_data+0xd4>",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "cbz",
+        "successors": [
+          "B009",
+          "B007"
+        ],
+        "signature": "c3ae5d183cb1cde582f9eec4795649769ef121527a3d679d64326a4cf94308b3"
+      },
+      {
+        "id": "B007",
+        "start_offset": 160,
+        "end_offset": 192,
+        "instruction_count": 8,
+        "instructions": [
+          {
+            "address": 123328,
+            "offset": 160,
+            "opcode": "93407e69",
+            "mnemonic": "sxtw",
+            "operands": "x9, w19",
+            "relocations": []
+          },
+          {
+            "address": 123332,
+            "offset": 164,
+            "opcode": "2a1f03e1",
+            "mnemonic": "mov",
+            "operands": "w1, wzr",
+            "relocations": []
+          },
+          {
+            "address": 123336,
+            "offset": 168,
+            "opcode": "f9000109",
+            "mnemonic": "str",
+            "operands": "x9, [x8]",
+            "relocations": []
+          },
+          {
+            "address": 123340,
+            "offset": 172,
+            "opcode": "91006122",
+            "mnemonic": "add",
+            "operands": "x2, x9, #0x18",
+            "relocations": []
+          },
+          {
+            "address": 123344,
+            "offset": 176,
+            "opcode": "f9462e88",
+            "mnemonic": "ldr",
+            "operands": "x8, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123348,
+            "offset": 180,
+            "opcode": "f9400500",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8, #0x8]",
+            "relocations": []
+          },
+          {
+            "address": 123352,
+            "offset": 184,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e1d8 <tp_alloc_tp_firmware_data+0xb8>",
+            "relocations": [
+              "R_AARCH64_CALL26 memset"
+            ]
+          },
+          {
+            "address": 123356,
+            "offset": 188,
+            "opcode": "2a1f03e0",
+            "mnemonic": "mov",
+            "operands": "w0, wzr",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "memset"
+        ],
+        "terminator": null,
+        "successors": [
+          "B008"
+        ],
+        "signature": "53f9b3834acdcc3b96c555a6c86808d5d6729e2d96ed2cea0ff10c8860d633a5"
+      },
+      {
+        "id": "B008",
+        "start_offset": 192,
+        "end_offset": 212,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 123360,
+            "offset": 192,
+            "opcode": "a9424ff4",
+            "mnemonic": "ldp",
+            "operands": "x20, x19, [sp, #0x20]",
+            "relocations": []
+          },
+          {
+            "address": 123364,
+            "offset": 196,
+            "opcode": "a94157f6",
+            "mnemonic": "ldp",
+            "operands": "x22, x21, [sp, #0x10]",
+            "relocations": []
+          },
+          {
+            "address": 123368,
+            "offset": 200,
+            "opcode": "a8c37bfd",
+            "mnemonic": "ldp",
+            "operands": "x29, x30, [sp], #0x30",
+            "relocations": []
+          },
+          {
+            "address": 123372,
+            "offset": 204,
+            "opcode": "d50323bf",
+            "mnemonic": "autiasp",
+            "operands": "",
+            "relocations": []
+          },
+          {
+            "address": 123376,
+            "offset": 208,
+            "opcode": "d65f03c0",
+            "mnemonic": "ret",
+            "operands": "",
+            "relocations": []
+          }
+        ],
+        "calls": [],
+        "terminator": "ret",
+        "successors": [],
+        "signature": "4bd4c1d90095148dfa9bc536bccc9cbc58a5399676382fe584181d4912d4d56d"
+      },
+      {
+        "id": "B009",
+        "start_offset": 212,
+        "end_offset": 240,
+        "instruction_count": 7,
+        "instructions": [
+          {
+            "address": 123380,
+            "offset": 212,
+            "opcode": "90000000",
+            "mnemonic": "adrp",
+            "operands": "x0, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0x4e34"
+            ]
+          },
+          {
+            "address": 123384,
+            "offset": 216,
+            "opcode": "91000000",
+            "mnemonic": "add",
+            "operands": "x0, x0, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0x4e34"
+            ]
+          },
+          {
+            "address": 123388,
+            "offset": 220,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e1fc <tp_alloc_tp_firmware_data+0xdc>",
+            "relocations": [
+              "R_AARCH64_CALL26 _printk"
+            ]
+          },
+          {
+            "address": 123392,
+            "offset": 224,
+            "opcode": "f9462e80",
+            "mnemonic": "ldr",
+            "operands": "x0, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123396,
+            "offset": 228,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e204 <tp_alloc_tp_firmware_data+0xe4>",
+            "relocations": [
+              "R_AARCH64_CALL26 kfree"
+            ]
+          },
+          {
+            "address": 123400,
+            "offset": 232,
+            "opcode": "12800160",
+            "mnemonic": "mov",
+            "operands": "w0, #-0xc               // =-12",
+            "relocations": []
+          },
+          {
+            "address": 123404,
+            "offset": 236,
+            "opcode": "17fffff5",
+            "mnemonic": "b",
+            "operands": "0x1e1e0 <tp_alloc_tp_firmware_data+0xc0>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "_printk",
+          "kfree"
+        ],
+        "terminator": "b",
+        "successors": [
+          "B008"
+        ],
+        "signature": "a2f1c70320d3a6fa997757b940670bc7be008d8a2ebb9714a3c2ac0e6434d240"
+      },
+      {
+        "id": "B010",
+        "start_offset": 240,
+        "end_offset": 292,
+        "instruction_count": 13,
+        "instructions": [
+          {
+            "address": 123408,
+            "offset": 240,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 123412,
+            "offset": 244,
+            "opcode": "d5384115",
+            "mnemonic": "mrs",
+            "operands": "x21, SP_EL0",
+            "relocations": []
+          },
+          {
+            "address": 123416,
+            "offset": 248,
+            "opcode": "f9402ab6",
+            "mnemonic": "ldr",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 123420,
+            "offset": 252,
+            "opcode": "f9400100",
+            "mnemonic": "ldr",
+            "operands": "x0, [x8]",
+            "relocations": [
+              "R_AARCH64_LDST64_ABS_LO12_NC kmalloc_caches+0x28"
+            ]
+          },
+          {
+            "address": 123424,
+            "offset": 256,
+            "opcode": "90000008",
+            "mnemonic": "adrp",
+            "operands": "x8, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x1e0"
+            ]
+          },
+          {
+            "address": 123428,
+            "offset": 260,
+            "opcode": "91000108",
+            "mnemonic": "add",
+            "operands": "x8, x8, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x1e0"
+            ]
+          },
+          {
+            "address": 123432,
+            "offset": 264,
+            "opcode": "5281b801",
+            "mnemonic": "mov",
+            "operands": "w1, #0xdc0              // =3520",
+            "relocations": []
+          },
+          {
+            "address": 123436,
+            "offset": 268,
+            "opcode": "52800302",
+            "mnemonic": "mov",
+            "operands": "w2, #0x18               // =24",
+            "relocations": []
+          },
+          {
+            "address": 123440,
+            "offset": 272,
+            "opcode": "f9002aa8",
+            "mnemonic": "str",
+            "operands": "x8, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 123444,
+            "offset": 276,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e234 <tp_alloc_tp_firmware_data+0x114>",
+            "relocations": [
+              "R_AARCH64_CALL26 __kmalloc_cache_noprof"
+            ]
+          },
+          {
+            "address": 123448,
+            "offset": 280,
+            "opcode": "f9002ab6",
+            "mnemonic": "str",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 123452,
+            "offset": 284,
+            "opcode": "f9062e80",
+            "mnemonic": "str",
+            "operands": "x0, [x20, #0xc58]",
+            "relocations": []
+          },
+          {
+            "address": 123456,
+            "offset": 288,
+            "opcode": "b5fffac0",
+            "mnemonic": "cbnz",
+            "operands": "x0, 0x1e198 <tp_alloc_tp_firmware_data+0x78>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "__kmalloc_cache_noprof"
+        ],
+        "terminator": "cbnz",
+        "successors": [
+          "B005",
+          "B011"
+        ],
+        "signature": "fad93ef994895e5846fed786e2bc0c82d5eae5271f57b278f5c0e684f9544244"
+      },
+      {
+        "id": "B011",
+        "start_offset": 292,
+        "end_offset": 312,
+        "instruction_count": 5,
+        "instructions": [
+          {
+            "address": 123460,
+            "offset": 292,
+            "opcode": "90000000",
+            "mnemonic": "adrp",
+            "operands": "x0, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1+0x6ab"
+            ]
+          },
+          {
+            "address": 123464,
+            "offset": 296,
+            "opcode": "91000000",
+            "mnemonic": "add",
+            "operands": "x0, x0, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1+0x6ab"
+            ]
+          },
+          {
+            "address": 123468,
+            "offset": 300,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e24c <tp_alloc_tp_firmware_data+0x12c>",
+            "relocations": [
+              "R_AARCH64_CALL26 _printk"
+            ]
+          },
+          {
+            "address": 123472,
+            "offset": 304,
+            "opcode": "12800160",
+            "mnemonic": "mov",
+            "operands": "w0, #-0xc               // =-12",
+            "relocations": []
+          },
+          {
+            "address": 123476,
+            "offset": 308,
+            "opcode": "17ffffe3",
+            "mnemonic": "b",
+            "operands": "0x1e1e0 <tp_alloc_tp_firmware_data+0xc0>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "_printk"
+        ],
+        "terminator": "b",
+        "successors": [
+          "B008"
+        ],
+        "signature": "67ac687442766b20ac0f6a8ba030c2fd90e9037ee8de990c9a124107997deab6"
+      },
+      {
+        "id": "B012",
+        "start_offset": 312,
+        "end_offset": 352,
+        "instruction_count": 10,
+        "instructions": [
+          {
+            "address": 123480,
+            "offset": 312,
+            "opcode": "93407e68",
+            "mnemonic": "sxtw",
+            "operands": "x8, w19",
+            "relocations": []
+          },
+          {
+            "address": 123484,
+            "offset": 316,
+            "opcode": "d5384115",
+            "mnemonic": "mrs",
+            "operands": "x21, SP_EL0",
+            "relocations": []
+          },
+          {
+            "address": 123488,
+            "offset": 320,
+            "opcode": "f9402ab6",
+            "mnemonic": "ldr",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 123492,
+            "offset": 324,
+            "opcode": "90000009",
+            "mnemonic": "adrp",
+            "operands": "x9, 0x1e000 <tp_BBAT_test_read+0x24>",
+            "relocations": [
+              "R_AARCH64_ADR_PREL_PG_HI21 .codetag.alloc_tags+0x208"
+            ]
+          },
+          {
+            "address": 123496,
+            "offset": 328,
+            "opcode": "91000129",
+            "mnemonic": "add",
+            "operands": "x9, x9, #0x0",
+            "relocations": [
+              "R_AARCH64_ADD_ABS_LO12_NC .codetag.alloc_tags+0x208"
+            ]
+          },
+          {
+            "address": 123500,
+            "offset": 332,
+            "opcode": "91006100",
+            "mnemonic": "add",
+            "operands": "x0, x8, #0x18",
+            "relocations": []
+          },
+          {
+            "address": 123504,
+            "offset": 336,
+            "opcode": "f9002aa9",
+            "mnemonic": "str",
+            "operands": "x9, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 123508,
+            "offset": 340,
+            "opcode": "94000000",
+            "mnemonic": "bl",
+            "operands": "0x1e274 <tp_alloc_tp_firmware_data+0x154>",
+            "relocations": [
+              "R_AARCH64_CALL26 vmalloc_noprof"
+            ]
+          },
+          {
+            "address": 123512,
+            "offset": 344,
+            "opcode": "f9002ab6",
+            "mnemonic": "str",
+            "operands": "x22, [x21, #0x50]",
+            "relocations": []
+          },
+          {
+            "address": 123516,
+            "offset": 348,
+            "opcode": "17ffffcc",
+            "mnemonic": "b",
+            "operands": "0x1e1ac <tp_alloc_tp_firmware_data+0x8c>",
+            "relocations": []
+          }
+        ],
+        "calls": [
+          "vmalloc_noprof"
+        ],
+        "terminator": "b",
+        "successors": [
+          "B006"
+        ],
+        "signature": "82929bc87ddb838f80f135424bc2a9e80575ea36df771728fa81fed066159596"
+      }
+    ],
+    "call_regions": [
+      {
+        "id": "C000",
+        "block": "B000",
+        "start_offset": 0,
+        "end_offset": 40,
+        "instruction_count": 10,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "paciasp",
+          "stp",
+          "stp",
+          "stp",
+          "mov",
+          "adrp",
+          "mov",
+          "ldr",
+          "ldr",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C001",
+        "block": "B001",
+        "start_offset": 40,
+        "end_offset": 48,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldr",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C002",
+        "block": "B002",
+        "start_offset": 48,
+        "end_offset": 52,
+        "instruction_count": 1,
+        "boundary": "call",
+        "call": "vfree",
+        "mnemonics": [
+          "bl"
+        ]
+      },
+      {
+        "id": "C003",
+        "block": "B002",
+        "start_offset": 52,
+        "end_offset": 72,
+        "instruction_count": 5,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldr",
+          "str",
+          "ldr",
+          "str",
+          "ldr"
+        ]
+      },
+      {
+        "id": "C004",
+        "block": "B003",
+        "start_offset": 72,
+        "end_offset": 80,
+        "instruction_count": 2,
+        "boundary": "call",
+        "call": "kfree",
+        "mnemonics": [
+          "mov",
+          "bl"
+        ]
+      },
+      {
+        "id": "C005",
+        "block": "B003",
+        "start_offset": 80,
+        "end_offset": 84,
+        "instruction_count": 1,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str"
+        ]
+      },
+      {
+        "id": "C006",
+        "block": "B004",
+        "start_offset": 84,
+        "end_offset": 112,
+        "instruction_count": 7,
+        "boundary": "call",
+        "call": "__kmalloc_cache_noprof",
+        "mnemonics": [
+          "str",
+          "nop",
+          "adrp",
+          "mov",
+          "mov",
+          "ldr",
+          "bl"
+        ]
+      },
+      {
+        "id": "C007",
+        "block": "B004",
+        "start_offset": 112,
+        "end_offset": 120,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C008",
+        "block": "B005",
+        "start_offset": 120,
+        "end_offset": 140,
+        "instruction_count": 5,
+        "boundary": "call",
+        "call": "vmalloc_noprof",
+        "mnemonics": [
+          "nop",
+          "mov",
+          "sxtw",
+          "add",
+          "bl"
+        ]
+      },
+      {
+        "id": "C009",
+        "block": "B006",
+        "start_offset": 140,
+        "end_offset": 160,
+        "instruction_count": 5,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldr",
+          "str",
+          "ldr",
+          "ldr",
+          "cbz"
+        ]
+      },
+      {
+        "id": "C010",
+        "block": "B007",
+        "start_offset": 160,
+        "end_offset": 188,
+        "instruction_count": 7,
+        "boundary": "call",
+        "call": "memset",
+        "mnemonics": [
+          "sxtw",
+          "mov",
+          "str",
+          "add",
+          "ldr",
+          "ldr",
+          "bl"
+        ]
+      },
+      {
+        "id": "C011",
+        "block": "B007",
+        "start_offset": 188,
+        "end_offset": 192,
+        "instruction_count": 1,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "mov"
+        ]
+      },
+      {
+        "id": "C012",
+        "block": "B008",
+        "start_offset": 192,
+        "end_offset": 212,
+        "instruction_count": 5,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "ldp",
+          "ldp",
+          "ldp",
+          "autiasp",
+          "ret"
+        ]
+      },
+      {
+        "id": "C013",
+        "block": "B009",
+        "start_offset": 212,
+        "end_offset": 224,
+        "instruction_count": 3,
+        "boundary": "call",
+        "call": "_printk",
+        "mnemonics": [
+          "adrp",
+          "add",
+          "bl"
+        ]
+      },
+      {
+        "id": "C014",
+        "block": "B009",
+        "start_offset": 224,
+        "end_offset": 232,
+        "instruction_count": 2,
+        "boundary": "call",
+        "call": "kfree",
+        "mnemonics": [
+          "ldr",
+          "bl"
+        ]
+      },
+      {
+        "id": "C015",
+        "block": "B009",
+        "start_offset": 232,
+        "end_offset": 240,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "mov",
+          "b"
+        ]
+      },
+      {
+        "id": "C016",
+        "block": "B010",
+        "start_offset": 240,
+        "end_offset": 280,
+        "instruction_count": 10,
+        "boundary": "call",
+        "call": "__kmalloc_cache_noprof",
+        "mnemonics": [
+          "adrp",
+          "mrs",
+          "ldr",
+          "ldr",
+          "adrp",
+          "add",
+          "mov",
+          "mov",
+          "str",
+          "bl"
+        ]
+      },
+      {
+        "id": "C017",
+        "block": "B010",
+        "start_offset": 280,
+        "end_offset": 292,
+        "instruction_count": 3,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str",
+          "str",
+          "cbnz"
+        ]
+      },
+      {
+        "id": "C018",
+        "block": "B011",
+        "start_offset": 292,
+        "end_offset": 304,
+        "instruction_count": 3,
+        "boundary": "call",
+        "call": "_printk",
+        "mnemonics": [
+          "adrp",
+          "add",
+          "bl"
+        ]
+      },
+      {
+        "id": "C019",
+        "block": "B011",
+        "start_offset": 304,
+        "end_offset": 312,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "mov",
+          "b"
+        ]
+      },
+      {
+        "id": "C020",
+        "block": "B012",
+        "start_offset": 312,
+        "end_offset": 344,
+        "instruction_count": 8,
+        "boundary": "call",
+        "call": "vmalloc_noprof",
+        "mnemonics": [
+          "sxtw",
+          "mrs",
+          "ldr",
+          "adrp",
+          "add",
+          "add",
+          "str",
+          "bl"
+        ]
+      },
+      {
+        "id": "C021",
+        "block": "B012",
+        "start_offset": 344,
+        "end_offset": 352,
+        "instruction_count": 2,
+        "boundary": "block_end",
+        "call": null,
+        "mnemonics": [
+          "str",
+          "b"
+        ]
+      }
+    ]
+  },
+  "comparison": {
+    "same_cfg_counts": {
+      "basic_blocks": true,
+      "edges": true,
+      "calls": true
+    },
+    "block_signature_ratio": 0.6923076923076923,
+    "block_changes": [
+      {
+        "tag": "replace",
+        "stock": {
+          "start": 9,
+          "end": 13
+        },
+        "candidate": {
+          "start": 9,
+          "end": 13
+        }
+      }
+    ],
+    "mnemonics": {
+      "ratio": 1.0,
+      "changes": []
+    },
+    "opcodes": {
+      "ratio": 1.0,
+      "changes": []
+    },
+    "calls": {
+      "ratio": 1.0,
+      "changes": []
+    }
+  }
+}

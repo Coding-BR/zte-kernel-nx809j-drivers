@@ -38,6 +38,54 @@ class GenerateDriverMicrotasksTests(unittest.TestCase):
             ("driver.c", "", "WAITING_FOR_SOURCE_MAP"),
         )
 
+    def test_candidate_under_static_validation_keeps_source_mapping(self):
+        self.assertEqual(
+            mapping_source_state(
+                {
+                    "status": "candidate_under_static_validation",
+                    "source_file": "driver.c",
+                    "source_function": "driver_probe",
+                }
+            ),
+            ("driver.c", "driver_probe", "CANDIDATE_UNDER_STATIC_VALIDATION"),
+        )
+
+    def test_candidate_hardening_deviation_keeps_source_mapping(self):
+        self.assertEqual(
+            mapping_source_state(
+                {
+                    "status": "candidate_hardening_deviation",
+                    "source_file": "driver.c",
+                    "source_function": "driver_probe",
+                }
+            ),
+            ("driver.c", "driver_probe", "CANDIDATE_HARDENING_DEVIATION"),
+        )
+
+    def test_promoted_mapping_is_not_hidden_as_unmapped(self):
+        self.assertEqual(
+            mapping_source_state(
+                {
+                    "status": "PROMOTED_OFFLINE_EXACT",
+                    "source_file": "driver.c",
+                    "source_function": "driver_probe",
+                }
+            ),
+            ("driver.c", "driver_probe", "PROMOTED_OFFLINE_EXACT"),
+        )
+
+    def test_unknown_mapping_status_keeps_source_but_requires_review(self):
+        self.assertEqual(
+            mapping_source_state(
+                {
+                    "status": "new_status",
+                    "source_file": "driver.c",
+                    "source_function": "driver_probe",
+                }
+            ),
+            ("driver.c", "driver_probe", "MAPPED_STATUS_REQUIRES_REVIEW"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

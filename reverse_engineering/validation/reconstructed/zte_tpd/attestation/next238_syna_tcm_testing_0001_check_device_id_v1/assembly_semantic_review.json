@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "238_syna_tcm_testing_0001_check_device_id",
+  "stock_entry": "0011d6e4",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0237_syna_tcm_testing_0001_check_device_id_0011d6e4.asm",
+      "sha256": "3705fd4982f619ff65f65a7948d8aa9d3c72432aa3b534f924880d3475158053"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next238_syna_tcm_testing_0001_check_device_id_v1/candidate_assembly/device_id_candidate.s",
+      "sha256": "adf43e189ef417ce9f55d32f44c22c56c9e30eca5165ea6ac34e6a3fbe5932b7"
+    }
+  },
+  "checks": {
+    "null_a1_or_s2_returns_zero": "PASS",
+    "n_greater_than_16_logs_and_returns_zero": "PASS",
+    "inclusive_window_0_through_16_minus_n": "PASS",
+    "first_byte_prefilter": "PASS",
+    "strncmp_called_with_bounded_n": "PASS",
+    "success_returns_one": "PASS",
+    "mismatch_logs_and_returns_zero": "PASS",
+    "no_memory_writes": "PASS",
+    "hardware_access": "ABSENT",
+    "indirect_calls": "ABSENT"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP and relocation context that the freestanding candidate assembly does not reproduce.",
+    "The candidate was generated with GCC 13.3.0, not the vendor compiler and flags.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or exact binary equivalence."
+  ]
+}

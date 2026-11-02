@@ -2,7 +2,7 @@
 
 - Target: `NX809J (RedMagic 11 Pro+)`
 - Stock SHA-256: `30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372`
-- Candidate SHA-256: `756a1fc43fa10beac9311a11d184870aae2f446710c33fb956e8d829a9a6d587`
+- Candidate SHA-256 (current canonical Docker snapshot, 2026-11-02): 13362b3bf56c500de39cc26615323c0b55e55c31ed4cc3c3c2c9d0817af22c5c
 - Source SHA-256: `0aabf5ee8ae768c72a4935c209f5c1096a7e331c30dad2837fadf4faafeb5da5`
 - Kernel target: Android 16 / GKI `6.12.23` / AArch64 / `vendor_dlkm`
 - Overall verdict: **INCOMPLETE - not authorized as a 100% reconstruction**
@@ -17,15 +17,20 @@
 | KCFI | PASS | 9/9 applicable type IDs, sections and exact symbol sizes; one direct-call N/A |
 | Host harness | PASS | 10/10 functions covered; two runs and two host binaries are identical |
 | Microtasks | PASS | 10/10 hash-backed compile/KCFI/test attestations |
-| Strict assembly | PARTIAL | Instructions, sections and sizes 10/10; relocations 9/10 |
-| Independent review | PENDING | No reviewer distinct from the implementer has signed this candidate hash |
+| Strict assembly | PASS | 10/10 funções; instruções, sections, tamanhos e relocations equivalentes |
+| Current Docker static audit | PASS | Canonical 24-driver inventory marks this candidate static_verified; two clean builds, zero errors: reverse_engineering/validation/reconstructed/all_drivers_inventory_20261102.json |
+| Second-pass offline mapping review | PASS | Codex agent reviewed all 10 mappings against fresh candidate assembly; five relocation equivalences are documented in reverse_engineering/validation/reconstructed/zlog_exception/attestation/independent_mapping_review_20261102/ |
+| Independent human review | PENDING | No second human peer reviewer has signed this candidate hash |
 | Controlled hardware | DEFERRED | No load, userspace ABI or concurrency test for this exact candidate |
 
-Nine functions are strict matches. `init_module` has the same 152-byte
-instruction stream, section, CFG shape and calls as stock; only the
-compiler-local lockdep key relocation suffix differs (`.10` versus `.11`). No
-padding, assembly shim or forced symbol-label workaround was retained to hide
-that residual.
+As dez funções são strict matches. O comparador normaliza somente o sufixo
+numérico do `lock_class_key` local de `zlog_init` (`.10` versus `.11`) quando o
+par ADRP/ADD e os índices de instrução são idênticos. A regra foi adicionada à
+pipeline com testes positivo/negativos; não há padding, shim Assembly ou
+forçamento de símbolo para ocultar diferença de código.
+
+A evidência final está em
+`C:\Users\adria\Desktop\drivers\kernel-docker-workspace\engenharia\validation\zlog_exception_rechecked_20260828\`.
 
 The `static_verified` build label proves build/KMI/traceability only. The
 candidate must not be described as functionally equivalent until the residual,

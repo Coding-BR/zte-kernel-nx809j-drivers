@@ -61,6 +61,7 @@ typedef int irqreturn_t;
 #define PTR_ERR(pointer) ((long)(intptr_t)(pointer))
 #define IS_ERR(pointer) ((uintptr_t)(pointer) >= (uintptr_t)-4095)
 #define IS_ERR_OR_NULL(pointer) (!(pointer) || IS_ERR(pointer))
+#define PTR_ERR_OR_ZERO(pointer) (IS_ERR(pointer) ? PTR_ERR(pointer) : 0)
 #define static_assert(condition) _Static_assert(condition, #condition)
 #define ARRAY_SIZE(value) (sizeof(value) / sizeof((value)[0]))
 #define barrier() __asm__ volatile("" ::: "memory")
@@ -85,6 +86,7 @@ struct attribute { const char *name; unsigned short mode; };
 struct sk_buff;
 struct zlog_module_info;
 struct device_node { int marker; };
+struct of_phandle_args { struct device_node *np; };
 struct gpio_desc { int gpio; };
 struct work_struct { void (*func)(struct work_struct *); };
 struct device_attribute;
@@ -143,6 +145,7 @@ extern struct net init_net;
 extern int host_fail_device_create;
 
 void host_log(const char *format, ...);
+#define printk host_log
 void host_reset_state(void);
 void *host_kzalloc(size_t size, gfp_t flags);
 void host_kfree(const void *pointer);
@@ -206,6 +209,9 @@ int regulator_enable(struct regulator *regulator);
 int regulator_disable(struct regulator *regulator);
 
 struct device_node *of_parse_phandle(struct device_node *node, const char *name, int index);
+int of_parse_phandle_with_args(const struct device_node *node, const char *list_name,
+				       const char *cells_name, int index,
+				       struct of_phandle_args *out_args);
 int of_count_phandle_with_args(struct device_node *node, const char *name, const char *cells);
 struct drm_panel *of_drm_find_panel(struct device_node *node);
 
@@ -225,6 +231,7 @@ void netlink_kernel_release(struct sock *sock);
 struct sk_buff *alloc_skb(unsigned int size, gfp_t flags);
 void kfree_skb(struct sk_buff *skb);
 void skb_get(struct sk_buff *skb);
+void sk_skb_reason_drop(struct sock *sock, struct sk_buff *skb, int reason);
 struct nlmsghdr *nlmsg_hdr(struct sk_buff *skb);
 void *nlmsg_data(struct nlmsghdr *header);
 struct nlmsghdr *nlmsg_put(struct sk_buff *skb, unsigned int portid,
@@ -238,6 +245,7 @@ int nonseekable_open(struct inode *inode, struct file *file);
 int kstrtoint(const char *text, unsigned int base, int *result);
 void usleep_range(unsigned int min, unsigned int max);
 void udelay(unsigned int usec);
+void mdelay(unsigned int msec);
 
 void *zlog_register_client(struct zlog_module_info *module_info);
 void zlog_unregister_client(void *client);
@@ -255,9 +263,16 @@ void panel_event_notifier_unregister(void *cookie);
 #define dev_err(device, format, ...) host_log(format, ##__VA_ARGS__)
 #define INIT_LIST_HEAD(head) host_init_list(head)
 #define list_add_tail(entry, head) host_list_add_tail(entry, head)
+#define list_add(entry, head) host_list_add_tail(entry, head)
+#define gf_dev_static gf
 #define list_del(entry) host_list_del(entry)
 #define list_entry(pointer, type, member) container_of(pointer, type, member)
 #define list_for_each(position, head) for ((position) = (head)->next; (position) != (head); (position) = (position)->next)
+#define list_for_each_entry(position, head, member) \
+	for ((position) = list_entry((head)->next, __typeof__(*(position)), member); \
+	     &(position)->member != (head); \
+	     (position) = list_entry((position)->member.next, __typeof__(*(position)), member))
+#define list_entry_is_head(position, head, member) (&(position)->member == (head))
 #define mutex_init(lock) host_init_mutex(lock)
 #define mutex_lock(lock) host_mutex_lock(lock)
 #define mutex_unlock(lock) host_mutex_unlock(lock)

@@ -1,21 +1,19 @@
-__int64 __fastcall syna_tcm_buf_unlock_0(__int64 a1)
+void __fastcall syna_tcm_buf_unlock_0(__int64 buffer)
 {
-  __int64 v1; // x2
-  char v2; // w8
-  __int64 v4; // x19
+	__int64 depth;
+	char next_depth;
+	__int64 saved_buffer;
 
-  v1 = *(unsigned __int8 *)(a1 + 64);
-  if ( (_DWORD)v1 == 1 )
-  {
-    v2 = 0;
-  }
-  else
-  {
-    v4 = a1;
-    printk(unk_38244, "syna_tcm_buf_unlock", v1);
-    a1 = v4;
-    v2 = *(_BYTE *)(v4 + 64) - 1;
-  }
-  *(_BYTE *)(a1 + 64) = v2;
-  return mutex_unlock(a1 + 16);
+	depth = *(unsigned __int8 *)(buffer + 64);
+	if ((_DWORD)depth == 1) {
+		next_depth = 0;
+	} else {
+		saved_buffer = buffer;
+		printk("\1" "3[error] %s: Buffer access out-of balance, %d\n",
+		       "syna_tcm_buf_unlock", (unsigned int)depth);
+		buffer = saved_buffer;
+		next_depth = *(_BYTE *)(saved_buffer + 64) - 1;
+	}
+	*(_BYTE *)(buffer + 64) = next_depth;
+	mutex_unlock(buffer + 16);
 }

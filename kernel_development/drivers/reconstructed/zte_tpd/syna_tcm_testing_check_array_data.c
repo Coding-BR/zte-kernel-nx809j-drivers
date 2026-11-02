@@ -1,4 +1,4 @@
-__int64 __fastcall syna_tcm_testing_check_array_data(__int64 a1, unsigned __int64 a2, __int64 a3, unsigned __int64 a4)
+__int64 __fastcall syna_tcm_testing_check_array_data(__int64 a1, unsigned long long a2, __int64 a3, unsigned long long a4)
 {
   __int64 v8; // x23
   __int64 v9; // x25
@@ -27,7 +27,7 @@ __int64 __fastcall syna_tcm_testing_check_array_data(__int64 a1, unsigned __int6
         else
           v13 = 0;
         ++v8;
-        v10 &= syna_tcm_testing_0100_check_data(v11, a3 + v13, v12, 0);
+        v10 &= syna_tcm_testing_0100_check_data(v11, a3 + v13, v12);
       }
       while ( v9 != v8 );
     }

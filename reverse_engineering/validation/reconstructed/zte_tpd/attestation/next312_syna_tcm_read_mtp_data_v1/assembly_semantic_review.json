@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_read_mtp_data",
+  "stock_entry": "00127e84",
+  "stock_assembly": "0311_syna_tcm_read_mtp_data_00127e84.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_read_mtp_data_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34 and armv8.2-a.",
+    "The candidate initializes both local buffer mutexes, selects timeout values and forwards them to flash-access setup.",
+    "Bootloader version gating, write-block rounding, MTP read helper arguments and exact-length copy are preserved.",
+    "The candidate does not set the update flag at tcm+0x388, matching stock read-side assembly.",
+    "Firmware-mode switching and ordered cleanup of returned data followed by setup allocation are preserved."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "synchronization",
+      "finding": "mutex_init on two stack-backed protocol buffers requires independent kernel review against the canonical TCM locking contract."
+    },
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kfree of the returned MTP buffer and setup allocation requires canonical ownership and teardown review."
+    }
+  ],
+  "promotion_allowed": false
+}

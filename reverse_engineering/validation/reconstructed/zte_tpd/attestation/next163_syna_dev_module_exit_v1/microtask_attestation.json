@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_dev_module_exit",
+  "source_function": "syna_dev_module_exit",
+  "stock_function": "syna_dev_module_exit",
+  "status": "MAPPED_NOT_EXACT",
+  "promotion_status": "BLOCKED_BY_STOCK_SYMBOL_ALIAS_PARITY",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_section_size": "PASS",
+    "aarch64_instruction_count_size_section": "PASS",
+    "aarch64_symbol_alias_parity": "BLOCKED"
+  },
+  "semantic_contract": [
+    "Unregister syna_dev_driver first.",
+    "Call syna_hw_interface_exit second."
+  ],
+  "unverified": [
+    "Exact stock object identity for .data+0x270.",
+    "Runtime behavior during module unload on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

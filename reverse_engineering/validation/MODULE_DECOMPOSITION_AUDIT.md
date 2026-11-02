@@ -18,6 +18,10 @@ Estado: `PASS`
 | `zte_sensor_sensitivity` | `primary_reconstruction` | 21 | 21 | 21 | 21 | `PASS` |
 | `zte_stats_info` | `primary_reconstruction` | 8 | 8 | 8 | 8 | `PASS` |
 | `zte_tpd` | `primary_reconstruction` | 367 | 367 | 367 | 367 | `PASS` |
+| `zlog_test` | `primary_reconstruction` | 11 | 11 | 11 | 11 | `PASS` |
+| `fp_goodix` | `primary_reconstruction` | 30 | 30 | 30 | 30 | `PASS` |
+| `gpio_keys_nubia` | `primary_reconstruction` | 24 | 24 | 24 | 24 | `PASS` |
+| `nubia_hw_version` | `primary_reconstruction` | 19 | 19 | 19 | 19 | `PASS` |
 
 `PASS` prova somente que cada funcao stock possui uma identidade unica e evidencias hashadas de pseudocodigo C, P-Code e Assembly AArch64.
 

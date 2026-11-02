@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "008_get_tp_algo_item_id",
+  "stock_function": "get_tp_algo_item_id",
+  "stock_entry": "00107984",
+  "stock_body_bytes": 356,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "f82f5049880f16e82fa37962263bfa1cefff8360ecf9d8d6f949cf1dcca03ff6",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 89,
+    "instruction_count_candidate": 89,
+    "symbol_size_stock": 356,
+    "symbol_size_candidate": 356,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0x7bff871d",
+    "candidate_type_id": "0x7bff871d",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 2,
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "e270d2388c2a01c53d597528ceaae8d0f1732bc9231e7f7100db1441d7b8bffb",
+    "aarch64_comparison.json": "1b4c3244e80047d59264fb16928b4d5b2cd37f57d935ac23ac8a9797ff2df14b",
+    "kcfi/comparison.json": "852ac54f5e9bc08c8d19064b63bbecce4300af002b76444dfbe23be467eb97eb",
+    "joern/joern_gate_report.json": "9a71fabc26b34e031ac837d11b60744ba06f08a45e3ad1fed19d69ad571b73b6",
+    "host_harness_report.json": "32d60344e58399c84960ad794b6989d616e91a4997e1c05ab3aa5a16b14c7679",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host test is an isolated userspace harness; string functions, printk and global algorithm data are deterministic stubs.",
+    "The combined ABI harness remains blocked by unrelated change_tp_state.c stub drift and is documented in host_harness_report.json.",
+    "The exact AArch64 gate proves opcode/relocation identity; hardware behavior remains untested."
+  ]
+}

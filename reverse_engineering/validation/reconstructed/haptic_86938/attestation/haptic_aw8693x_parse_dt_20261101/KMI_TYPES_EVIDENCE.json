@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "target": "aw8693x_parse_dt@00104d80",
+  "status": "SCOPED_ABI_CONFIRMED_KERNEL_KMI_NOT_APPLICABLE",
+  "evidence": {
+    "stock_symbol_binding": "LOCAL",
+    "exported_kernel_symbol": false,
+    "reason": "This function is a private driver callback reached through the module callback table; it is not a kernel module interface exported to other modules.",
+    "stock_caller_kcfi": "0x2e77d32a",
+    "candidate_kcfi": "0x2e77d32a",
+    "candidate_function_dwarf": "callback_abi/candidate_function_dwarf.txt",
+    "candidate_dwarf_arguments": [
+      "struct device *dev",
+      "struct aw_haptic *aw",
+      "struct device_node *np"
+    ],
+    "source_prototype": "void aw8693x_parse_dt(struct device *, struct aw_haptic *, struct device_node *)",
+    "stock_callsite": "aw_i2c_probe@001073c0+0xa24",
+    "btf": "No .BTF section was present in the stock or candidate module evidence; candidate DWARF debug info is available.",
+    "protocol_callsite_comparison": "NOT_APPLICABLE_NO_INDIRECT_CALLS_IN_PARSE_DT; incoming aw_i2c_probe callsite was audited separately."
+  },
+  "limitations": [
+    "The named struct layouts are not proven by this private-function ABI gate.",
+    "KCFI verifies function pointer type compatibility; it does not prove the missing candidate callback table is wired into the full module.",
+    "The protocol function-local KCFI callsite comparison is not evidence about the incoming caller; the stock caller guard was inspected separately."
+  ]
+}

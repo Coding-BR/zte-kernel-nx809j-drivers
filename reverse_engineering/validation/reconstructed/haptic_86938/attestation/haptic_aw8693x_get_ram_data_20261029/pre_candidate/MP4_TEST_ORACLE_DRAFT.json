@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "status": "DRAFT_NOT_EXECUTED",
+  "function": "aw8693x_get_ram_data",
+  "cases": [
+    {
+      "name": "zero_length",
+      "assert": [
+        "returns 0",
+        "does not call i2c_r_bytes"
+      ]
+    },
+    {
+      "name": "chunk_boundary",
+      "assert": [
+        "length 1 uses one read of length 1",
+        "length 1024 uses one read of length 1024",
+        "length 1025 uses reads of 1024 and 1 when the stored length stays stable"
+      ]
+    },
+    {
+      "name": "mutable_length",
+      "assert": [
+        "reloads length after each helper call",
+        "continues or exits using the reloaded value"
+      ]
+    },
+    {
+      "name": "helper_error",
+      "assert": [
+        "helper result is ignored",
+        "offset progression and return do not encode helper status"
+      ]
+    },
+    {
+      "name": "signed_return",
+      "assert": [
+        "returns sign-extension of the low 32-bit offset"
+      ]
+    }
+  ],
+  "note": "Oracle is a design record, not executed; static core gates are the acceptance evidence."
+}

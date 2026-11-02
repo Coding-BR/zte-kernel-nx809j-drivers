@@ -1,15 +1,13 @@
 void tpd_suspend_work(struct work_struct *work)
 {
-  (void)work;
-  void (__fastcall *v0)(_QWORD); // x8
-  __int64 v1; // x0
+  int (*suspend)(void *pdev);
+  void *pdev;
 
-  v0 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 3160);
-  if ( v0 )
-  {
-    v1 = *(_QWORD *)(tpd_cdev + 3104);
-    if ( *((_DWORD *)v0 - 1) != -1066802076 )
-      __break(0x8228u);
-    v0(v1);
-  }
+  (void)work;
+  suspend = *(int (**)(void *))(tpd_cdev + 0xe10);
+  if (!suspend)
+    return;
+
+  pdev = *(void **)(tpd_cdev + 0xdd8);
+  suspend(pdev);
 }

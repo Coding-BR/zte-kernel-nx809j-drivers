@@ -4,37 +4,29 @@ __int64 __fastcall syna_tcm_allocate_device(__int64 *a1, __int64 a2, __int64 a3)
   __int64 result; // x0
   __int64 *v8; // x23
   __int64 v9; // x0
-  __int64 v10; // x2
-  __int64 v11; // x2
+  __int64 v18; // x2
   __int64 v12; // x0
   void *v13; // x0
   const char *v14; // x1
   int v15; // w8
   int v16; // w9
   __int64 v17; // x19
-  __int64 v18; // x2
   unsigned int v19; // w21
   void *v20; // x0
   void *v21; // x20
   __int64 v22; // x0
-  __int64 v23; // x2
   _QWORD *v24; // x20
   __int64 v25; // x0
-  __int64 v26; // x2
   __int64 v27; // x2
   char v28; // w8
-  __int64 v29; // x2
   __int64 v30; // x20
   __int64 v31; // x0
-  __int64 v32; // x2
   __int64 v33; // x2
   __int64 v34; // x20
   __int64 v35; // x0
-  __int64 v36; // x2
   __int64 v37; // x2
   __int64 v38; // x20
   __int64 v39; // x0
-  __int64 v40; // x2
   __int64 v41; // x0
   __int64 v42; // x2
   char v43; // w8
@@ -45,7 +37,7 @@ __int64 __fastcall syna_tcm_allocate_device(__int64 *a1, __int64 a2, __int64 a3)
   {
     v3 = unk_3AC64;
 LABEL_7:
-    printk(v3, "syna_tcm_allocate_device", a3);
+    printk(v3, "syna_tcm_allocate_device");
     return 4294967055LL;
   }
   if ( !*(_QWORD *)(a2 + 32) )
@@ -58,13 +50,13 @@ LABEL_7:
     v3 = unk_343EB;
     goto LABEL_7;
   }
-  printk(unk_367BF, "syna_tcm_allocate_device", a3);
+  printk(unk_367BF, "syna_tcm_allocate_device");
   v8 = a1;
   *a1 = 0;
   v9 = syna_request_managed_device();
   if ( !v9 )
   {
-    printk(unk_3BE43, "syna_pal_mem_alloc", v10);
+    printk(unk_3BE43, "syna_pal_mem_alloc");
 LABEL_12:
     v13 = unk_35C97;
     v14 = "syna_tcm_allocate_device";
@@ -121,7 +113,7 @@ LABEL_12:
   *(_DWORD *)(v17 + 512) = 0;
   *(_BYTE *)(v17 + 516) = 0;
   if ( (_DWORD)v18 )
-    printk(unk_38244, "syna_tcm_buf_lock", v18);
+    printk(unk_38244, "syna_tcm_buf_lock");
   mutex_lock(v17 + 592);
   v19 = *(_DWORD *)(v17 + 584);
   v20 = *(void **)(v17 + 576);
@@ -135,13 +127,13 @@ LABEL_12:
       if ( v22 )
         devm_kfree(v22, v21);
       else
-        printk(unk_3BE43, "syna_pal_mem_free", v23);
+        printk(unk_3BE43, "syna_pal_mem_free");
     }
     v24 = (_QWORD *)(v17 + 576);
     v25 = syna_request_managed_device();
     if ( !v25 )
     {
-      printk(unk_3BE43, "syna_pal_mem_alloc", v26);
+      printk(unk_3BE43, "syna_pal_mem_alloc");
       *v24 = 0;
 LABEL_25:
       printk(unk_3703C, "syna_tcm_buf_alloc", 4);
@@ -155,14 +147,14 @@ LABEL_25:
       }
       else
       {
-        printk(unk_38244, "syna_tcm_buf_unlock", v27);
+      printk(unk_38244, "syna_tcm_buf_unlock");
         v28 = *(_BYTE *)(v17 + 640) - 1;
       }
       *(_BYTE *)(v17 + 640) = v28;
       mutex_unlock(v17 + 592);
-      printk(unk_3B375, "syna_tcm_allocate_device", v29);
+      printk(unk_3B375, "syna_tcm_allocate_device");
       if ( *(_BYTE *)(v17 + 464) )
-        printk(unk_34845, "syna_tcm_buf_release", *(unsigned __int8 *)(v17 + 464));
+        printk(unk_34845, "syna_tcm_buf_release");
       v30 = *(_QWORD *)(v17 + 400);
       v31 = syna_request_managed_device();
       if ( v31 )
@@ -172,13 +164,13 @@ LABEL_25:
       }
       else
       {
-        printk(unk_3BE43, "syna_pal_mem_free", v32);
+        printk(unk_3BE43, "syna_pal_mem_free");
       }
       v33 = *(unsigned __int8 *)(v17 + 320);
       *(_QWORD *)(v17 + 408) = 0;
       *(_BYTE *)(v17 + 464) = 0;
       if ( (_DWORD)v33 )
-        printk(unk_34845, "syna_tcm_buf_release", v33);
+        printk(unk_34845, "syna_tcm_buf_release");
       v34 = *(_QWORD *)(v17 + 256);
       v35 = syna_request_managed_device();
       if ( v35 )
@@ -188,13 +180,13 @@ LABEL_25:
       }
       else
       {
-        printk(unk_3BE43, "syna_pal_mem_free", v36);
+        printk(unk_3BE43, "syna_pal_mem_free");
       }
       v37 = *(unsigned __int8 *)(v17 + 392);
       *(_QWORD *)(v17 + 264) = 0;
       *(_BYTE *)(v17 + 320) = 0;
       if ( (_DWORD)v37 )
-        printk(unk_34845, "syna_tcm_buf_release", v37);
+        printk(unk_34845, "syna_tcm_buf_release");
       v38 = *(_QWORD *)(v17 + 328);
       v39 = syna_request_managed_device();
       if ( v39 )
@@ -204,7 +196,7 @@ LABEL_25:
       }
       else
       {
-        printk(unk_3BE43, "syna_pal_mem_free", v40);
+        printk(unk_3BE43, "syna_pal_mem_free");
       }
       *(_QWORD *)(v17 + 336) = 0;
       *(_BYTE *)(v17 + 392) = 0;
@@ -218,7 +210,7 @@ LABEL_25:
       v13 = unk_3BE43;
       v14 = "syna_pal_mem_free";
 LABEL_13:
-      printk(v13, v14, v11);
+      printk(v13, v14);
       return 4294967053LL;
     }
     v19 = 4;
@@ -234,7 +226,7 @@ LABEL_13:
   *(_QWORD *)(v17 + 584) = 4;
   if ( (_DWORD)v42 != 1 )
   {
-    printk(unk_38244, "syna_tcm_buf_unlock", v42);
+    printk(unk_38244, "syna_tcm_buf_unlock");
     v43 = *(_BYTE *)(v17 + 640) - 1;
   }
   *(_BYTE *)(v17 + 640) = v43;
@@ -249,7 +241,7 @@ LABEL_13:
   *(_BYTE *)(v17 + 9) = 0;
   *(_QWORD *)(v17 + 488) = 0x6400000064LL;
   *v8 = v17;
-  printk(unk_3B99D, "syna_tcm_allocate_device", 2);
+  printk(unk_3B99D, "syna_tcm_allocate_device", 2, 0xc, 0);
   if ( *(_BYTE *)(a2 + 20) )
     v44 = "yes";
   else
@@ -262,7 +254,8 @@ LABEL_13:
       v45 = "yes";
     else
       v45 = (const char *)unk_398C0;
-    printk(unk_3CCBD, "syna_tcm_allocate_device", v45);
+    printk(unk_3CCBD, "syna_tcm_allocate_device", v45,
+           *(_DWORD *)(a2 + 24), *(_DWORD *)(a2 + 28));
     return 0;
   }
   return result;

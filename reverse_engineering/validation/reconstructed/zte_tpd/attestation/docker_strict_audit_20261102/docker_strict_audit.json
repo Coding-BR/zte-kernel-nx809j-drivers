@@ -1,0 +1,4381 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_tpd-1-f2d04f51c608:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_tpd/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_tpd/cycle_1/vendor.Module.symvers",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/zte_tpd/cycle_1/zte_tpd.ko due to unavailability of vmlinux\n",
+            "stdout": "  AS [M]  /work/validation/zte_tpd/cycle_1/tp_single_tap_read_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_single_tap_write_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_single_aod_read_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_single_aod_write_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_single_game_read_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_single_game_write_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/get_tp_noise_show_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/get_tp_noise_store_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_wakegesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_one_key_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_tp_report_rate_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_play_game_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_frame_data_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_palm_mode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_fake_sleep_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_screen_off_awake_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_request_managed_device_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_testing_remove_dir_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_dev_module_exit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_hw_interface_exit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/cleanup_module_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_spi_release_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_dev_module_init_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_open_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_set_game_partition_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_set_palm_mode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_set_fake_sleep_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_set_screen_off_awake_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_clear_command_processing_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_set_post_reset_callback_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_cdev_llseek_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_reset_fw_data_pos_and_size_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ufp_report_lcd_state_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_dev_shutdown_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_goodix_ts_resume_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_goodix_ts_suspend_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/cancel_report_lcd_state_delayed_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ufp_notifier_cb_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/zlog_register_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_release_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/get_lcd_panel_name_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_get_testing_0100_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ufp_single_tap_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ufp_get_lcdstate_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ztp_probe_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/zte_touch_remove_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_probe_work_deinit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ufp_report_lcd_state_delayed_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_cdev_devnode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_pm_suspend_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_pm_resume_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/zlog_register_work_deinit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_free_tp_firmware_data_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/zte_touch_pdev_unregister_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tp_esd_check_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/set_gpio_mode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_reset_gpio_output_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_resume_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_suspend_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_resume_work_deinit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/ufp_mac_exit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_pal_mem_cpy_0_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_buf_lock_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_set_data_duplicator_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_clear_data_duplicator_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_pal_mem_free_0_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_enable_wakegesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_singleaodgesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_get_singlefpgesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/tpd_set_one_key_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_ts_panel_notifier_callback_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_tcm_remove_device_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_testing_pt05_show_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_testing_pt05_zte_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_testing_pt0a_show_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/syna_testing_pt0a_zte_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_1/zte_touch_probe_exact.o\n  LD [M]  /work/validation/zte_tpd/cycle_1/zte_tpd.o\n  MODPOST /work/validation/zte_tpd/cycle_1/Module.symvers\n  CC [M]  /work/validation/zte_tpd/cycle_1/zte_tpd.mod.o\n  CC [M]  /work/validation/zte_tpd/cycle_1/.module-common.o\n  LD [M]  /work/validation/zte_tpd/cycle_1/zte_tpd.ko\n  BTF [M] /work/validation/zte_tpd/cycle_1/zte_tpd.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_tpd-2-bdc66df4126d:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_tpd/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zte_tpd/cycle_2=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_tpd/cycle_2/vendor.Module.symvers",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/zte_tpd/cycle_2/zte_tpd.ko due to unavailability of vmlinux\n",
+            "stdout": "  AS [M]  /work/validation/zte_tpd/cycle_2/tp_single_tap_read_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_single_tap_write_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_single_aod_read_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_single_aod_write_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_single_game_read_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_single_game_write_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/get_tp_noise_show_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/get_tp_noise_store_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_wakegesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_one_key_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_tp_report_rate_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_play_game_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_frame_data_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_palm_mode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_fake_sleep_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_screen_off_awake_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_request_managed_device_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_testing_remove_dir_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_dev_module_exit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_hw_interface_exit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/cleanup_module_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_spi_release_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_dev_module_init_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_open_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_set_game_partition_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_set_palm_mode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_set_fake_sleep_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_set_screen_off_awake_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_clear_command_processing_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_set_post_reset_callback_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_cdev_llseek_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_reset_fw_data_pos_and_size_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ufp_report_lcd_state_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_dev_shutdown_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_goodix_ts_resume_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_goodix_ts_suspend_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/cancel_report_lcd_state_delayed_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ufp_notifier_cb_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/zlog_register_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_release_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/get_lcd_panel_name_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_get_testing_0100_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ufp_single_tap_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ufp_get_lcdstate_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ztp_probe_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/zte_touch_remove_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_probe_work_deinit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ufp_report_lcd_state_delayed_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_cdev_devnode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_pm_suspend_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_pm_resume_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/zlog_register_work_deinit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_free_tp_firmware_data_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/zte_touch_pdev_unregister_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tp_esd_check_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/set_gpio_mode_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_reset_gpio_output_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_resume_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_suspend_work_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_resume_work_deinit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/ufp_mac_exit_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_pal_mem_cpy_0_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_buf_lock_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_set_data_duplicator_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_clear_data_duplicator_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_pal_mem_free_0_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_enable_wakegesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_singleaodgesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_get_singlefpgesture_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/tpd_set_one_key_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_ts_panel_notifier_callback_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_tcm_remove_device_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_testing_pt05_show_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_testing_pt05_zte_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_testing_pt0a_show_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/syna_testing_pt0a_zte_exact.o\n  AS [M]  /work/validation/zte_tpd/cycle_2/zte_touch_probe_exact.o\n  LD [M]  /work/validation/zte_tpd/cycle_2/zte_tpd.o\n  MODPOST /work/validation/zte_tpd/cycle_2/Module.symvers\n  CC [M]  /work/validation/zte_tpd/cycle_2/zte_tpd.mod.o\n  CC [M]  /work/validation/zte_tpd/cycle_2/.module-common.o\n  LD [M]  /work/validation/zte_tpd/cycle_2/zte_tpd.ko\n  BTF [M] /work/validation/zte_tpd/cycle_2/zte_tpd.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_tpd-1-f2d04f51c608:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_tpd/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/zte_tpd/cycle_1=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_tpd/cycle_1/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_tpd-2-bdc66df4126d:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_tpd/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_tpd/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/zte_tpd/cycle_2=/zte_tpd",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_tpd/cycle_2/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "create_kernel_output_volume_first": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-zte_tpd-1-f2d04f51c608"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-zte_tpd-1-f2d04f51c608\n"
+          },
+          "create_kernel_output_volume_second": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-zte_tpd-2-bdc66df4126d"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-zte_tpd-2-bdc66df4126d\n"
+          },
+          "prepare_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_tpd-1-f2d04f51c608:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          },
+          "prepare_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_tpd-2-bdc66df4126d:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2\\zte_tpd\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2\\zte_tpd\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2\\zte_tpd\\cycle_1\\zte_tpd.ko",
+          "sha256": "cca93e75cf8604811e8aae4ebc73ffbd3ed981307621fd7b297c398642a1ef74",
+          "size": 6291168
+        },
+        "kernel_output_volumes": {
+          "cycle_1": "codex-kbuild-zte_tpd-1-f2d04f51c608",
+          "cycle_2": "codex-kbuild-zte_tpd-2-bdc66df4126d"
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2\\zte_tpd\\cycle_2\\zte_tpd.ko",
+          "sha256": "cca93e75cf8604811e8aae4ebc73ffbd3ed981307621fd7b297c398642a1ef74",
+          "size": 6291168
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\ztpdstrict2\\zte_tpd"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+        "sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "size": 6307336
+      },
+      "candidate_hash_binding": {
+        "current_candidate_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "declared_candidate_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+        "matches": true
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_hash_matches_map": true,
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_runtime_content_matches_fresh": true,
+        "candidate_runtime_section_layout_matches_fresh": true,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "kernel_source_identity": true,
+        "makefile": true,
+        "mapping_review": true,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 517,
+        "undefined_symbols_match": true,
+        "vermagic_accepted": true
+      },
+      "driver": "zte_tpd",
+      "errors": [],
+      "ghidra": {
+        "document": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\DOCUMENTO_TRANSICAO.md",
+        "export": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\offline_static\\ghidra_stock",
+        "function_count": 367,
+        "function_identities": [
+          {
+            "stock_entry": "10688c",
+            "stock_function": "tpd_zlog_register"
+          },
+          {
+            "stock_entry": "106998",
+            "stock_function": "tpd_zlog_record_notify"
+          },
+          {
+            "stock_entry": "107718",
+            "stock_function": "tpd_zlog_check"
+          },
+          {
+            "stock_entry": "1077c8",
+            "stock_function": "zlog_register_work_init"
+          },
+          {
+            "stock_entry": "107844",
+            "stock_function": "zlog_register_work"
+          },
+          {
+            "stock_entry": "107874",
+            "stock_function": "zlog_register_work_deinit"
+          },
+          {
+            "stock_entry": "1078c8",
+            "stock_function": "tpd_zlog_init"
+          },
+          {
+            "stock_entry": "107984",
+            "stock_function": "get_tp_algo_item_id"
+          },
+          {
+            "stock_entry": "107aec",
+            "stock_function": "get_tp_chip_id"
+          },
+          {
+            "stock_entry": "107ce0",
+            "stock_function": "get_lcd_panel_name"
+          },
+          {
+            "stock_entry": "107cf0",
+            "stock_function": "tp_free_tp_firmware_data"
+          },
+          {
+            "stock_entry": "107d54",
+            "stock_function": "tp_alloc_tp_firmware_data"
+          },
+          {
+            "stock_entry": "107eb8",
+            "stock_function": "tpd_copy_to_tp_firmware_data"
+          },
+          {
+            "stock_entry": "107f84",
+            "stock_function": "tpd_reset_fw_data_pos_and_size"
+          },
+          {
+            "stock_entry": "107fa4",
+            "stock_function": "tpd_proc_deinit"
+          },
+          {
+            "stock_entry": "1081c8",
+            "stock_function": "zte_touch_pdev_register"
+          },
+          {
+            "stock_entry": "1082ac",
+            "stock_function": "tpd_report_uevent"
+          },
+          {
+            "stock_entry": "1083b4",
+            "stock_function": "zte_touch_pdev_unregister"
+          },
+          {
+            "stock_entry": "108418",
+            "stock_function": "tpd_probe_work_init"
+          },
+          {
+            "stock_entry": "108494",
+            "stock_function": "ztp_probe_work"
+          },
+          {
+            "stock_entry": "1084c0",
+            "stock_function": "tpd_probe_work_deinit"
+          },
+          {
+            "stock_entry": "108508",
+            "stock_function": "tpd_workqueue_init"
+          },
+          {
+            "stock_entry": "108690",
+            "stock_function": "tp_ghost_check_work"
+          },
+          {
+            "stock_entry": "108744",
+            "stock_function": "tpd_workqueue_deinit"
+          },
+          {
+            "stock_entry": "1087e4",
+            "stock_function": "zte_touch_probe"
+          },
+          {
+            "stock_entry": "109668",
+            "stock_function": "zte_touch_remove"
+          },
+          {
+            "stock_entry": "1096a0",
+            "stock_function": "zte_touch_shutdown"
+          },
+          {
+            "stock_entry": "109784",
+            "stock_function": "tp_module_info_read"
+          },
+          {
+            "stock_entry": "109a28",
+            "stock_function": "tp_wake_gesture_read"
+          },
+          {
+            "stock_entry": "109b1c",
+            "stock_function": "tp_wake_gesture_write"
+          },
+          {
+            "stock_entry": "109bf0",
+            "stock_function": "tp_smart_cover_read"
+          },
+          {
+            "stock_entry": "109ce4",
+            "stock_function": "tp_smart_cover_write"
+          },
+          {
+            "stock_entry": "109db8",
+            "stock_function": "tp_glove_read"
+          },
+          {
+            "stock_entry": "109eac",
+            "stock_function": "tp_glove_write"
+          },
+          {
+            "stock_entry": "109f80",
+            "stock_function": "tpfwupgrade_store"
+          },
+          {
+            "stock_entry": "10a1b4",
+            "stock_function": "suspend_show"
+          },
+          {
+            "stock_entry": "10a2ac",
+            "stock_function": "suspend_store"
+          },
+          {
+            "stock_entry": "10a3c4",
+            "stock_function": "headset_state_show"
+          },
+          {
+            "stock_entry": "10a4bc",
+            "stock_function": "headset_state_store"
+          },
+          {
+            "stock_entry": "10a5c8",
+            "stock_function": "_inline_copy_from_user"
+          },
+          {
+            "stock_entry": "10a6c0",
+            "stock_function": "get_rotation_limit_level"
+          },
+          {
+            "stock_entry": "10a7b4",
+            "stock_function": "set_rotation_limit_level"
+          },
+          {
+            "stock_entry": "10a87c",
+            "stock_function": "display_rotation_show"
+          },
+          {
+            "stock_entry": "10a954",
+            "stock_function": "set_display_rotation"
+          },
+          {
+            "stock_entry": "10aa5c",
+            "stock_function": "tp_single_tap_read"
+          },
+          {
+            "stock_entry": "10ab50",
+            "stock_function": "tp_single_tap_write"
+          },
+          {
+            "stock_entry": "10ac28",
+            "stock_function": "tp_single_aod_read"
+          },
+          {
+            "stock_entry": "10ad1c",
+            "stock_function": "tp_single_aod_write"
+          },
+          {
+            "stock_entry": "10adf4",
+            "stock_function": "tp_single_game_read"
+          },
+          {
+            "stock_entry": "10aee8",
+            "stock_function": "tp_single_game_write"
+          },
+          {
+            "stock_entry": "10afc0",
+            "stock_function": "get_tp_noise_show"
+          },
+          {
+            "stock_entry": "10b0dc",
+            "stock_function": "get_tp_noise_store"
+          },
+          {
+            "stock_entry": "10b150",
+            "stock_function": "tp_edge_report_limit_read"
+          },
+          {
+            "stock_entry": "10b690",
+            "stock_function": "tp_edge_report_limit_write"
+          },
+          {
+            "stock_entry": "10ba4c",
+            "stock_function": "get_one_key"
+          },
+          {
+            "stock_entry": "10bb40",
+            "stock_function": "set_one_key"
+          },
+          {
+            "stock_entry": "10bc14",
+            "stock_function": "get_play_game"
+          },
+          {
+            "stock_entry": "10bd08",
+            "stock_function": "set_play_game"
+          },
+          {
+            "stock_entry": "10bdd0",
+            "stock_function": "get_tp_report_rate"
+          },
+          {
+            "stock_entry": "10bec4",
+            "stock_function": "set_tp_report_rate"
+          },
+          {
+            "stock_entry": "10bf8c",
+            "stock_function": "get_follow_hand_level"
+          },
+          {
+            "stock_entry": "10c080",
+            "stock_function": "set_follow_hand_level"
+          },
+          {
+            "stock_entry": "10c148",
+            "stock_function": "get_stability_level"
+          },
+          {
+            "stock_entry": "10c23c",
+            "stock_function": "set_stability_level"
+          },
+          {
+            "stock_entry": "10c304",
+            "stock_function": "tp_sensibility_level_read"
+          },
+          {
+            "stock_entry": "10c3f8",
+            "stock_function": "tp_sensibility_level_write"
+          },
+          {
+            "stock_entry": "10c504",
+            "stock_function": "tp_game_partition_read"
+          },
+          {
+            "stock_entry": "10c5e0",
+            "stock_function": "tp_game_partition_write"
+          },
+          {
+            "stock_entry": "10c724",
+            "stock_function": "tp_pen_only_read"
+          },
+          {
+            "stock_entry": "10c818",
+            "stock_function": "tp_pen_only_write"
+          },
+          {
+            "stock_entry": "10c92c",
+            "stock_function": "get_finger_lock_flag"
+          },
+          {
+            "stock_entry": "10ca00",
+            "stock_function": "set_finger_lock_flag"
+          },
+          {
+            "stock_entry": "10cae8",
+            "stock_function": "tp_self_test_read"
+          },
+          {
+            "stock_entry": "10cc50",
+            "stock_function": "tp_self_test_write"
+          },
+          {
+            "stock_entry": "10cce8",
+            "stock_function": "tp_palm_mode_read"
+          },
+          {
+            "stock_entry": "10cddc",
+            "stock_function": "tp_palm_mode_write"
+          },
+          {
+            "stock_entry": "10ceb0",
+            "stock_function": "tp_fold_state_read"
+          },
+          {
+            "stock_entry": "10cfa4",
+            "stock_function": "tp_fold_state_write"
+          },
+          {
+            "stock_entry": "10d078",
+            "stock_function": "get_fake_sleep"
+          },
+          {
+            "stock_entry": "10d16c",
+            "stock_function": "set_fake_sleep"
+          },
+          {
+            "stock_entry": "10d240",
+            "stock_function": "get_screen_off_awake"
+          },
+          {
+            "stock_entry": "10d334",
+            "stock_function": "set_screen_off_awake"
+          },
+          {
+            "stock_entry": "10d408",
+            "stock_function": "tp_zlog_debug_read"
+          },
+          {
+            "stock_entry": "10d4a8",
+            "stock_function": "tp_zlog_debug_write"
+          },
+          {
+            "stock_entry": "10d57c",
+            "stock_function": "ghost_debug_read"
+          },
+          {
+            "stock_entry": "10d8d0",
+            "stock_function": "ghost_debug_write"
+          },
+          {
+            "stock_entry": "10da90",
+            "stock_function": "tp_BBAT_test_read"
+          },
+          {
+            "stock_entry": "10db98",
+            "stock_function": "tp_BBAT_test_write"
+          },
+          {
+            "stock_entry": "10dbd0",
+            "stock_function": "tp_test_read"
+          },
+          {
+            "stock_entry": "10dcdc",
+            "stock_function": "tp_test_write"
+          },
+          {
+            "stock_entry": "10dd14",
+            "stock_function": "tp_frame_data_read"
+          },
+          {
+            "stock_entry": "10de08",
+            "stock_function": "tp_frame_data_write"
+          },
+          {
+            "stock_entry": "10dedc",
+            "stock_function": "tpd_sysfs_fwimage_show"
+          },
+          {
+            "stock_entry": "10dff0",
+            "stock_function": "tpd_sysfs_fwimage_store"
+          },
+          {
+            "stock_entry": "10e0d0",
+            "stock_function": "zte_touch_deinit"
+          },
+          {
+            "stock_entry": "10e254",
+            "stock_function": "tpd_touch_press"
+          },
+          {
+            "stock_entry": "10ea98",
+            "stock_function": "point_report_reset"
+          },
+          {
+            "stock_entry": "10eb70",
+            "stock_function": "tpd_touch_report"
+          },
+          {
+            "stock_entry": "10ec70",
+            "stock_function": "tpd_touch_release"
+          },
+          {
+            "stock_entry": "10f2ac",
+            "stock_function": "ghost_check_area"
+          },
+          {
+            "stock_entry": "10f400",
+            "stock_function": "tp_ghost_check"
+          },
+          {
+            "stock_entry": "10f924",
+            "stock_function": "ghost_check_reset"
+          },
+          {
+            "stock_entry": "10f95c",
+            "stock_function": "tpd_clean_all_event"
+          },
+          {
+            "stock_entry": "10fa04",
+            "stock_function": "tpd_report_work_init"
+          },
+          {
+            "stock_entry": "10fca8",
+            "stock_function": "tpd_id0_report_work"
+          },
+          {
+            "stock_entry": "10fcd4",
+            "stock_function": "tpd_id1_report_work"
+          },
+          {
+            "stock_entry": "10fd00",
+            "stock_function": "tpd_id2_report_work"
+          },
+          {
+            "stock_entry": "10fd2c",
+            "stock_function": "tpd_id3_report_work"
+          },
+          {
+            "stock_entry": "10fd58",
+            "stock_function": "tpd_id4_report_work"
+          },
+          {
+            "stock_entry": "10fd84",
+            "stock_function": "tpd_id5_report_work"
+          },
+          {
+            "stock_entry": "10fdb0",
+            "stock_function": "tpd_id6_report_work"
+          },
+          {
+            "stock_entry": "10fddc",
+            "stock_function": "tpd_id7_report_work"
+          },
+          {
+            "stock_entry": "10fe08",
+            "stock_function": "tpd_id8_report_work"
+          },
+          {
+            "stock_entry": "10fe34",
+            "stock_function": "tpd_id9_report_work"
+          },
+          {
+            "stock_entry": "10fe60",
+            "stock_function": "tpd_report_work_deinit"
+          },
+          {
+            "stock_entry": "10feec",
+            "stock_function": "point_is_in_limit_area"
+          },
+          {
+            "stock_entry": "1100ac",
+            "stock_function": "edge_long_press_up"
+          },
+          {
+            "stock_entry": "110320",
+            "stock_function": "change_tp_state"
+          },
+          {
+            "stock_entry": "11049c",
+            "stock_function": "suspend_tp_need_awake"
+          },
+          {
+            "stock_entry": "1104f0",
+            "stock_function": "tp_esd_check"
+          },
+          {
+            "stock_entry": "110544",
+            "stock_function": "set_lcd_reset_processing"
+          },
+          {
+            "stock_entry": "110580",
+            "stock_function": "set_gpio_mode"
+          },
+          {
+            "stock_entry": "1105d8",
+            "stock_function": "tpd_reset_gpio_output"
+          },
+          {
+            "stock_entry": "110624",
+            "stock_function": "ufp_report_lcd_state_delayed_work"
+          },
+          {
+            "stock_entry": "11066c",
+            "stock_function": "cancel_report_lcd_state_delayed_work"
+          },
+          {
+            "stock_entry": "110698",
+            "stock_function": "tpd_resume_work_init"
+          },
+          {
+            "stock_entry": "11074c",
+            "stock_function": "tpd_resume_work"
+          },
+          {
+            "stock_entry": "1107a4",
+            "stock_function": "tpd_suspend_work"
+          },
+          {
+            "stock_entry": "1107f0",
+            "stock_function": "ufp_report_lcd_state_work"
+          },
+          {
+            "stock_entry": "110810",
+            "stock_function": "tpd_resume_work_deinit"
+          },
+          {
+            "stock_entry": "110868",
+            "stock_function": "ufp_get_lcdstate"
+          },
+          {
+            "stock_entry": "110878",
+            "stock_function": "ufp_report_gesture_uevent"
+          },
+          {
+            "stock_entry": "110960",
+            "stock_function": "report_ufp_uevent"
+          },
+          {
+            "stock_entry": "110be8",
+            "stock_function": "one_key_report"
+          },
+          {
+            "stock_entry": "110d28",
+            "stock_function": "uf_touch_report"
+          },
+          {
+            "stock_entry": "110ee0",
+            "stock_function": "ufp_report_lcd_state"
+          },
+          {
+            "stock_entry": "110f84",
+            "stock_function": "ufp_notifier_cb"
+          },
+          {
+            "stock_entry": "110fb0",
+            "stock_function": "ufp_mac_init"
+          },
+          {
+            "stock_entry": "11108c",
+            "stock_function": "ufp_single_tap_work"
+          },
+          {
+            "stock_entry": "11109c",
+            "stock_function": "ufp_mac_exit"
+          },
+          {
+            "stock_entry": "1110f0",
+            "stock_function": "syna_dev_free_input_events"
+          },
+          {
+            "stock_entry": "11120c",
+            "stock_function": "syna_dev_set_screen_on_fp_mode"
+          },
+          {
+            "stock_entry": "111298",
+            "stock_function": "syna_dev_set_tp_report_rate"
+          },
+          {
+            "stock_entry": "1113fc",
+            "stock_function": "syna_dev_do_reflash"
+          },
+          {
+            "stock_entry": "111504",
+            "stock_function": "syna_dev_set_charger_mode"
+          },
+          {
+            "stock_entry": "111578",
+            "stock_function": "syna_dev_set_sensibility_level"
+          },
+          {
+            "stock_entry": "111718",
+            "stock_function": "syna_dev_set_follow_hand_level"
+          },
+          {
+            "stock_entry": "1118a4",
+            "stock_function": "syna_dev_set_stability_level"
+          },
+          {
+            "stock_entry": "111a30",
+            "stock_function": "syna_dev_set_display_rotation"
+          },
+          {
+            "stock_entry": "111b38",
+            "stock_function": "syna_dev_set_play_game"
+          },
+          {
+            "stock_entry": "111bac",
+            "stock_function": "syna_recovery_game_mode_after_reset"
+          },
+          {
+            "stock_entry": "111d48",
+            "stock_function": "syna_dev_get_frame_data"
+          },
+          {
+            "stock_entry": "111dc4",
+            "stock_function": "syna_ts_check_dt"
+          },
+          {
+            "stock_entry": "111f64",
+            "stock_function": "zte_reset_frame_list"
+          },
+          {
+            "stock_entry": "111fcc",
+            "stock_function": "syna_dev_module_init"
+          },
+          {
+            "stock_entry": "11200c",
+            "stock_function": "syna_dev_module_exit"
+          },
+          {
+            "stock_entry": "112038",
+            "stock_function": "syna_dev_probe"
+          },
+          {
+            "stock_entry": "1125bc",
+            "stock_function": "syna_dev_remove"
+          },
+          {
+            "stock_entry": "1126f4",
+            "stock_function": "syna_dev_shutdown"
+          },
+          {
+            "stock_entry": "112714",
+            "stock_function": "syna_dev_connect"
+          },
+          {
+            "stock_entry": "112b04",
+            "stock_function": "syna_dev_disconnect"
+          },
+          {
+            "stock_entry": "112c90",
+            "stock_function": "syna_dev_set_up_app_fw"
+          },
+          {
+            "stock_entry": "112d6c",
+            "stock_function": "syna_dev_resume"
+          },
+          {
+            "stock_entry": "11337c",
+            "stock_function": "syna_dev_suspend"
+          },
+          {
+            "stock_entry": "113504",
+            "stock_function": "syna_ts_register_for_panel_events"
+          },
+          {
+            "stock_entry": "113590",
+            "stock_function": "syna_dev_helper_work"
+          },
+          {
+            "stock_entry": "1136c4",
+            "stock_function": "syna_dev_set_up_input_device"
+          },
+          {
+            "stock_entry": "113a9c",
+            "stock_function": "syna_dev_process_unexpected_reset"
+          },
+          {
+            "stock_entry": "113b40",
+            "stock_function": "syna_dev_reflash_startup_work"
+          },
+          {
+            "stock_entry": "113c74",
+            "stock_function": "syna_dev_process_touch_report"
+          },
+          {
+            "stock_entry": "1141b4",
+            "stock_function": "syna_dev_isr"
+          },
+          {
+            "stock_entry": "114294",
+            "stock_function": "syna_dev_enter_normal_sensing"
+          },
+          {
+            "stock_entry": "114348",
+            "stock_function": "syna_dev_enable_lowpwr_gesture"
+          },
+          {
+            "stock_entry": "114510",
+            "stock_function": "syna_poll"
+          },
+          {
+            "stock_entry": "114580",
+            "stock_function": "syna_ioctl"
+          },
+          {
+            "stock_entry": "1147ec",
+            "stock_function": "syna_mmap"
+          },
+          {
+            "stock_entry": "1148a0",
+            "stock_function": "syna_open"
+          },
+          {
+            "stock_entry": "1148e0",
+            "stock_function": "syna_release"
+          },
+          {
+            "stock_entry": "114914",
+            "stock_function": "syna_ts_panel_notifier_callback"
+          },
+          {
+            "stock_entry": "114a44",
+            "stock_function": "tpd_goodix_ts_resume"
+          },
+          {
+            "stock_entry": "114a6c",
+            "stock_function": "tpd_goodix_ts_suspend"
+          },
+          {
+            "stock_entry": "114a94",
+            "stock_function": "syna_pm_suspend"
+          },
+          {
+            "stock_entry": "114ae0",
+            "stock_function": "syna_pm_resume"
+          },
+          {
+            "stock_entry": "114b3c",
+            "stock_function": "syna_cdev_create"
+          },
+          {
+            "stock_entry": "114db8",
+            "stock_function": "syna_cdev_devnode"
+          },
+          {
+            "stock_entry": "114e04",
+            "stock_function": "syna_cdev_remove"
+          },
+          {
+            "stock_entry": "114f98",
+            "stock_function": "syna_cdev_llseek"
+          },
+          {
+            "stock_entry": "114fa4",
+            "stock_function": "syna_cdev_read"
+          },
+          {
+            "stock_entry": "115048",
+            "stock_function": "syna_cdev_write"
+          },
+          {
+            "stock_entry": "1150ec",
+            "stock_function": "syna_cdev_ioctls"
+          },
+          {
+            "stock_entry": "117278",
+            "stock_function": "syna_cdev_open"
+          },
+          {
+            "stock_entry": "1173e0",
+            "stock_function": "syna_cdev_release"
+          },
+          {
+            "stock_entry": "117558",
+            "stock_function": "syna_cdev_ioctl_raw_read"
+          },
+          {
+            "stock_entry": "1178d8",
+            "stock_function": "syna_cdev_ioctl_raw_write"
+          },
+          {
+            "stock_entry": "117c90",
+            "stock_function": "syna_cdev_process_reports"
+          },
+          {
+            "stock_entry": "118364",
+            "stock_function": "syna_request_managed_device"
+          },
+          {
+            "stock_entry": "118384",
+            "stock_function": "syna_spi_hw_reset"
+          },
+          {
+            "stock_entry": "118418",
+            "stock_function": "syna_hw_interface_init"
+          },
+          {
+            "stock_entry": "1184e0",
+            "stock_function": "syna_hw_interface_exit"
+          },
+          {
+            "stock_entry": "118514",
+            "stock_function": "syna_spi_release"
+          },
+          {
+            "stock_entry": "118544",
+            "stock_function": "syna_spi_probe"
+          },
+          {
+            "stock_entry": "119670",
+            "stock_function": "syna_spi_remove"
+          },
+          {
+            "stock_entry": "119800",
+            "stock_function": "syna_spi_read"
+          },
+          {
+            "stock_entry": "119ae4",
+            "stock_function": "syna_spi_write"
+          },
+          {
+            "stock_entry": "119da0",
+            "stock_function": "syna_spi_enable_irq"
+          },
+          {
+            "stock_entry": "119e7c",
+            "stock_function": "syna_spi_power_on"
+          },
+          {
+            "stock_entry": "11a0e4",
+            "stock_function": "syna_spi_alloc_mem"
+          },
+          {
+            "stock_entry": "11a35c",
+            "stock_function": "syna_spi_get_gpio"
+          },
+          {
+            "stock_entry": "11a440",
+            "stock_function": "syna_sysfs_create_dir"
+          },
+          {
+            "stock_entry": "11a518",
+            "stock_function": "syna_sysfs_remove_dir"
+          },
+          {
+            "stock_entry": "11a5a0",
+            "stock_function": "syna_sysfs_info_show"
+          },
+          {
+            "stock_entry": "11a9a0",
+            "stock_function": "syna_sysfs_debug_store"
+          },
+          {
+            "stock_entry": "11aadc",
+            "stock_function": "syna_sysfs_get_delta_show"
+          },
+          {
+            "stock_entry": "11afa8",
+            "stock_function": "syna_sysfs_reset_store"
+          },
+          {
+            "stock_entry": "11b12c",
+            "stock_function": "syna_sysfs_irq_en_store"
+          },
+          {
+            "stock_entry": "11b2c4",
+            "stock_function": "syna_sysfs_pwr_store"
+          },
+          {
+            "stock_entry": "11b3b0",
+            "stock_function": "syna_sysfs_fw_update_store"
+          },
+          {
+            "stock_entry": "11b4c0",
+            "stock_function": "syna_testing_pt0a_zte"
+          },
+          {
+            "stock_entry": "11b818",
+            "stock_function": "syna_testing_pt05_zte"
+          },
+          {
+            "stock_entry": "11bb70",
+            "stock_function": "syna_testing_pt01_zte"
+          },
+          {
+            "stock_entry": "11be28",
+            "stock_function": "syna_testing_create_dir"
+          },
+          {
+            "stock_entry": "11bec4",
+            "stock_function": "syna_testing_remove_dir"
+          },
+          {
+            "stock_entry": "11bf08",
+            "stock_function": "syna_testing_check_dev_id_show"
+          },
+          {
+            "stock_entry": "11c1f4",
+            "stock_function": "syna_testing_check_config_id_show"
+          },
+          {
+            "stock_entry": "11c410",
+            "stock_function": "syna_testing_pt01_show"
+          },
+          {
+            "stock_entry": "11c66c",
+            "stock_function": "syna_testing_pt05_show"
+          },
+          {
+            "stock_entry": "11c944",
+            "stock_function": "syna_testing_pt0a_show"
+          },
+          {
+            "stock_entry": "11cc1c",
+            "stock_function": "syna_tcm_get_testing_0A00"
+          },
+          {
+            "stock_entry": "11cc2c",
+            "stock_function": "syna_tcm_testing_noise"
+          },
+          {
+            "stock_entry": "11ce6c",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "11d0ec",
+            "stock_function": "syna_tcm_testing_check_frame_data"
+          },
+          {
+            "stock_entry": "11d25c",
+            "stock_function": "syna_tcm_testing_0A00_check_upper_bound"
+          },
+          {
+            "stock_entry": "11d2c4",
+            "stock_function": "syna_tcm_testing_0A00_check_lower_bound"
+          },
+          {
+            "stock_entry": "11d32c",
+            "stock_function": "syna_tcm_get_testing_0001"
+          },
+          {
+            "stock_entry": "11d33c",
+            "stock_function": "syna_tcm_testing_build_id"
+          },
+          {
+            "stock_entry": "11d594",
+            "stock_function": "syna_tcm_buf_alloc"
+          },
+          {
+            "stock_entry": "11d67c",
+            "stock_function": "syna_pal_mem_cpy"
+          },
+          {
+            "stock_entry": "11d6e4",
+            "stock_function": "syna_tcm_testing_0001_check_device_id"
+          },
+          {
+            "stock_entry": "11d79c",
+            "stock_function": "syna_tcm_get_testing_0002"
+          },
+          {
+            "stock_entry": "11d7ac",
+            "stock_function": "syna_tcm_testing_config_id"
+          },
+          {
+            "stock_entry": "11d940",
+            "stock_function": "syna_tcm_buf_alloc"
+          },
+          {
+            "stock_entry": "11da1c",
+            "stock_function": "syna_pal_mem_cpy"
+          },
+          {
+            "stock_entry": "11da70",
+            "stock_function": "syna_tcm_testing_0002_check_config_id"
+          },
+          {
+            "stock_entry": "11daec",
+            "stock_function": "syna_tcm_get_testing_0100"
+          },
+          {
+            "stock_entry": "11dafc",
+            "stock_function": "syna_tcm_testing_trx_trx_short"
+          },
+          {
+            "stock_entry": "11dce4",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "11df64",
+            "stock_function": "syna_tcm_testing_check_array_data"
+          },
+          {
+            "stock_entry": "11e01c",
+            "stock_function": "syna_tcm_testing_0100_check_data"
+          },
+          {
+            "stock_entry": "11e204",
+            "stock_function": "syna_tcm_get_testing_0500"
+          },
+          {
+            "stock_entry": "11e214",
+            "stock_function": "syna_tcm_testing_full_raw"
+          },
+          {
+            "stock_entry": "11e454",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "11e6d4",
+            "stock_function": "syna_tcm_testing_check_frame_data"
+          },
+          {
+            "stock_entry": "11e844",
+            "stock_function": "syna_tcm_testing_0500_check_upper_bound"
+          },
+          {
+            "stock_entry": "11e8ac",
+            "stock_function": "syna_tcm_testing_0500_check_lower_bound"
+          },
+          {
+            "stock_entry": "11e914",
+            "stock_function": "syna_tcm_v1_detect"
+          },
+          {
+            "stock_entry": "11ede8",
+            "stock_function": "syna_tcm_buf_lock"
+          },
+          {
+            "stock_entry": "11ee40",
+            "stock_function": "syna_tcm_buf_unlock"
+          },
+          {
+            "stock_entry": "11eeac",
+            "stock_function": "syna_tcm_v1_write_message"
+          },
+          {
+            "stock_entry": "11f6d0",
+            "stock_function": "syna_tcm_v1_parse_idinfo"
+          },
+          {
+            "stock_entry": "11f790",
+            "stock_function": "syna_tcm_v1_check_max_rw_size"
+          },
+          {
+            "stock_entry": "11f838",
+            "stock_function": "syna_tcm_v1_read_message"
+          },
+          {
+            "stock_entry": "120da8",
+            "stock_function": "syna_tcm_v1_set_up_max_rw_size"
+          },
+          {
+            "stock_entry": "120e64",
+            "stock_function": "syna_tcm_v1_terminate"
+          },
+          {
+            "stock_entry": "120eec",
+            "stock_function": "syna_tcm_v1_read"
+          },
+          {
+            "stock_entry": "121034",
+            "stock_function": "syna_tcm_config_timings"
+          },
+          {
+            "stock_entry": "121124",
+            "stock_function": "syna_tcm_allocate_device"
+          },
+          {
+            "stock_entry": "1216d0",
+            "stock_function": "syna_tcm_remove_device"
+          },
+          {
+            "stock_entry": "121944",
+            "stock_function": "syna_tcm_detect_device"
+          },
+          {
+            "stock_entry": "121ad4",
+            "stock_function": "syna_tcm_get_event_data"
+          },
+          {
+            "stock_entry": "121c10",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "121f54",
+            "stock_function": "syna_tcm_identify"
+          },
+          {
+            "stock_entry": "122140",
+            "stock_function": "syna_tcm_buf_unlock"
+          },
+          {
+            "stock_entry": "1221ac",
+            "stock_function": "syna_tcm_reset"
+          },
+          {
+            "stock_entry": "12231c",
+            "stock_function": "syna_tcm_enable_report"
+          },
+          {
+            "stock_entry": "12248c",
+            "stock_function": "syna_tcm_wait_for_report"
+          },
+          {
+            "stock_entry": "1226ec",
+            "stock_function": "syna_tcm_switch_fw_mode"
+          },
+          {
+            "stock_entry": "1229c8",
+            "stock_function": "syna_tcm_get_boot_info"
+          },
+          {
+            "stock_entry": "122c08",
+            "stock_function": "syna_tcm_get_app_info"
+          },
+          {
+            "stock_entry": "122eac",
+            "stock_function": "syna_tcm_get_static_config"
+          },
+          {
+            "stock_entry": "1230dc",
+            "stock_function": "syna_tcm_set_static_config"
+          },
+          {
+            "stock_entry": "123228",
+            "stock_function": "syna_tcm_get_dynamic_config"
+          },
+          {
+            "stock_entry": "1233b4",
+            "stock_function": "syna_tcm_set_dynamic_config"
+          },
+          {
+            "stock_entry": "123518",
+            "stock_function": "syna_tcm_set_game_partition_config"
+          },
+          {
+            "stock_entry": "1237ec",
+            "stock_function": "syna_tcm_rezero"
+          },
+          {
+            "stock_entry": "1238fc",
+            "stock_function": "syna_tcm_sleep"
+          },
+          {
+            "stock_entry": "123a08",
+            "stock_function": "syna_tcm_get_features"
+          },
+          {
+            "stock_entry": "123c34",
+            "stock_function": "syna_tcm_run_production_test"
+          },
+          {
+            "stock_entry": "123dc0",
+            "stock_function": "syna_tcm_send_command"
+          },
+          {
+            "stock_entry": "123fa0",
+            "stock_function": "syna_tcm_enable_predict_reading"
+          },
+          {
+            "stock_entry": "124014",
+            "stock_function": "syna_tcm_set_report_dispatcher"
+          },
+          {
+            "stock_entry": "1240d4",
+            "stock_function": "syna_tcm_set_data_duplicator"
+          },
+          {
+            "stock_entry": "124124",
+            "stock_function": "syna_tcm_clear_data_duplicator"
+          },
+          {
+            "stock_entry": "124178",
+            "stock_function": "syna_tcm_clear_command_processing"
+          },
+          {
+            "stock_entry": "1241bc",
+            "stock_function": "syna_tcm_set_post_reset_callback"
+          },
+          {
+            "stock_entry": "124208",
+            "stock_function": "syna_tcm_read_flash_address"
+          },
+          {
+            "stock_entry": "1244e4",
+            "stock_function": "syna_tcm_set_up_flash_access"
+          },
+          {
+            "stock_entry": "1247c8",
+            "stock_function": "syna_tcm_read_flash"
+          },
+          {
+            "stock_entry": "124ab4",
+            "stock_function": "syna_tcm_read_flash_area"
+          },
+          {
+            "stock_entry": "125290",
+            "stock_function": "syna_tcm_read_flash_boot_config"
+          },
+          {
+            "stock_entry": "1254bc",
+            "stock_function": "syna_tcm_read_flash_boot_cs_config"
+          },
+          {
+            "stock_entry": "125a18",
+            "stock_function": "syna_tcm_read_flash_mtp_config"
+          },
+          {
+            "stock_entry": "125c18",
+            "stock_function": "syna_tcm_do_fw_update_ex"
+          },
+          {
+            "stock_entry": "125f38",
+            "stock_function": "syna_tcm_update_flash_block"
+          },
+          {
+            "stock_entry": "1267b0",
+            "stock_function": "syna_tcm_do_fw_update"
+          },
+          {
+            "stock_entry": "126aec",
+            "stock_function": "syna_tcm_update_lockdown_config"
+          },
+          {
+            "stock_entry": "126e70",
+            "stock_function": "syna_tcm_check_flash_block"
+          },
+          {
+            "stock_entry": "12704c",
+            "stock_function": "syna_tcm_write_flash"
+          },
+          {
+            "stock_entry": "127414",
+            "stock_function": "syna_tcm_update_cs_config"
+          },
+          {
+            "stock_entry": "1277fc",
+            "stock_function": "syna_tcm_read_cs_data"
+          },
+          {
+            "stock_entry": "127b14",
+            "stock_function": "syna_tcm_update_mtp_data"
+          },
+          {
+            "stock_entry": "127e18",
+            "stock_function": "syna_pal_mem_alloc"
+          },
+          {
+            "stock_entry": "127e84",
+            "stock_function": "syna_tcm_read_mtp_data"
+          },
+          {
+            "stock_entry": "1281c8",
+            "stock_function": "syna_tcm_erase_mtp_data"
+          },
+          {
+            "stock_entry": "1284c0",
+            "stock_function": "syna_pal_mem_free"
+          },
+          {
+            "stock_entry": "128514",
+            "stock_function": "syna_tcm_get_touch_data"
+          },
+          {
+            "stock_entry": "12860c",
+            "stock_function": "syna_tcm_parse_touch_report"
+          },
+          {
+            "stock_entry": "12a264",
+            "stock_function": "syna_tcm_set_touch_report_config"
+          },
+          {
+            "stock_entry": "12a478",
+            "stock_function": "syna_pal_mem_cpy"
+          },
+          {
+            "stock_entry": "12a4ec",
+            "stock_function": "syna_pal_mem_free"
+          },
+          {
+            "stock_entry": "12a53c",
+            "stock_function": "syna_tcm_preserve_touch_report_config"
+          },
+          {
+            "stock_entry": "12aaa8",
+            "stock_function": "syna_tcm_set_custom_touch_entity_callback"
+          },
+          {
+            "stock_entry": "12aaf4",
+            "stock_function": "syna_tcm_set_custom_gesture_callback"
+          },
+          {
+            "stock_entry": "12ab40",
+            "stock_function": "syna_tcm_get_partition_id_string"
+          },
+          {
+            "stock_entry": "12ab6c",
+            "stock_function": "syna_tcm_parse_fw_image"
+          },
+          {
+            "stock_entry": "12aecc",
+            "stock_function": "string_change"
+          },
+          {
+            "stock_entry": "12b4dc",
+            "stock_function": "trim"
+          },
+          {
+            "stock_entry": "12b55c",
+            "stock_function": "syna_tpd_register_fw_class"
+          },
+          {
+            "stock_entry": "12b8d0",
+            "stock_function": "syna_work_charger_detect_work"
+          },
+          {
+            "stock_entry": "12baac",
+            "stock_function": "tpd_init_tpinfo"
+          },
+          {
+            "stock_entry": "12bb30",
+            "stock_function": "tpd_get_wakegesture"
+          },
+          {
+            "stock_entry": "12bb4c",
+            "stock_function": "tpd_enable_wakegesture"
+          },
+          {
+            "stock_entry": "12bb9c",
+            "stock_function": "tpd_get_singlegamegesture"
+          },
+          {
+            "stock_entry": "12bc04",
+            "stock_function": "tpd_set_singlegamegesture"
+          },
+          {
+            "stock_entry": "12bccc",
+            "stock_function": "tpd_get_singleaodgesture"
+          },
+          {
+            "stock_entry": "12bd30",
+            "stock_function": "tpd_set_singleaodgesture"
+          },
+          {
+            "stock_entry": "12bde4",
+            "stock_function": "tpd_get_singlefpgesture"
+          },
+          {
+            "stock_entry": "12be48",
+            "stock_function": "tpd_set_singlefpgesture"
+          },
+          {
+            "stock_entry": "12befc",
+            "stock_function": "tpd_set_one_key"
+          },
+          {
+            "stock_entry": "12bf60",
+            "stock_function": "tpd_get_one_key"
+          },
+          {
+            "stock_entry": "12bf7c",
+            "stock_function": "tpd_test_cmd_store"
+          },
+          {
+            "stock_entry": "12c050",
+            "stock_function": "tpd_test_cmd_show"
+          },
+          {
+            "stock_entry": "12c0b0",
+            "stock_function": "tpd_get_tp_report_rate"
+          },
+          {
+            "stock_entry": "12c0cc",
+            "stock_function": "tpd_set_tp_report_rate"
+          },
+          {
+            "stock_entry": "12c18c",
+            "stock_function": "tpd_get_sensibility_level"
+          },
+          {
+            "stock_entry": "12c1a8",
+            "stock_function": "tpd_set_sensibility_level"
+          },
+          {
+            "stock_entry": "12c26c",
+            "stock_function": "tpd_get_follow_hand_level"
+          },
+          {
+            "stock_entry": "12c288",
+            "stock_function": "tpd_set_follow_hand_level"
+          },
+          {
+            "stock_entry": "12c348",
+            "stock_function": "tpd_get_stability_level"
+          },
+          {
+            "stock_entry": "12c364",
+            "stock_function": "tpd_set_stability_level"
+          },
+          {
+            "stock_entry": "12c424",
+            "stock_function": "tpd_get_rotation_limit_level"
+          },
+          {
+            "stock_entry": "12c440",
+            "stock_function": "tpd_set_rotation_limit_level"
+          },
+          {
+            "stock_entry": "12c50c",
+            "stock_function": "tpd_set_display_rotation"
+          },
+          {
+            "stock_entry": "12c6cc",
+            "stock_function": "tpd_get_play_game"
+          },
+          {
+            "stock_entry": "12c6e8",
+            "stock_function": "tpd_set_play_game"
+          },
+          {
+            "stock_entry": "12c7c4",
+            "stock_function": "tpd_set_game_partition"
+          },
+          {
+            "stock_entry": "12c7fc",
+            "stock_function": "tpd_get_frame_data"
+          },
+          {
+            "stock_entry": "12c818",
+            "stock_function": "tpd_set_frame_data"
+          },
+          {
+            "stock_entry": "12c8e4",
+            "stock_function": "tpd_get_palm_mode"
+          },
+          {
+            "stock_entry": "12c900",
+            "stock_function": "tpd_set_palm_mode"
+          },
+          {
+            "stock_entry": "12c940",
+            "stock_function": "syna_ghost_check_reset"
+          },
+          {
+            "stock_entry": "12c9a4",
+            "stock_function": "tpd_set_fake_sleep"
+          },
+          {
+            "stock_entry": "12ca00",
+            "stock_function": "tpd_get_fake_sleep"
+          },
+          {
+            "stock_entry": "12ca1c",
+            "stock_function": "tpd_set_screen_off_awake"
+          },
+          {
+            "stock_entry": "12ca78",
+            "stock_function": "tpd_get_screen_off_awake"
+          },
+          {
+            "stock_entry": "12ca94",
+            "stock_function": "syna_charger_notify_call"
+          },
+          {
+            "stock_entry": "13159c",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "1315e0",
+            "stock_function": "cleanup_module"
+          }
+        ],
+        "function_names": [
+          "_inline_copy_from_user",
+          "cancel_report_lcd_state_delayed_work",
+          "change_tp_state",
+          "cleanup_module",
+          "display_rotation_show",
+          "edge_long_press_up",
+          "get_fake_sleep",
+          "get_finger_lock_flag",
+          "get_follow_hand_level",
+          "get_lcd_panel_name",
+          "get_one_key",
+          "get_play_game",
+          "get_rotation_limit_level",
+          "get_screen_off_awake",
+          "get_stability_level",
+          "get_tp_algo_item_id",
+          "get_tp_chip_id",
+          "get_tp_noise_show",
+          "get_tp_noise_store",
+          "get_tp_report_rate",
+          "ghost_check_area",
+          "ghost_check_reset",
+          "ghost_debug_read",
+          "ghost_debug_write",
+          "headset_state_show",
+          "headset_state_store",
+          "init_module",
+          "one_key_report",
+          "point_is_in_limit_area",
+          "point_report_reset",
+          "report_ufp_uevent",
+          "set_display_rotation",
+          "set_fake_sleep",
+          "set_finger_lock_flag",
+          "set_follow_hand_level",
+          "set_gpio_mode",
+          "set_lcd_reset_processing",
+          "set_one_key",
+          "set_play_game",
+          "set_rotation_limit_level",
+          "set_screen_off_awake",
+          "set_stability_level",
+          "set_tp_report_rate",
+          "string_change",
+          "suspend_show",
+          "suspend_store",
+          "suspend_tp_need_awake",
+          "syna_cdev_create",
+          "syna_cdev_devnode",
+          "syna_cdev_ioctl_raw_read",
+          "syna_cdev_ioctl_raw_write",
+          "syna_cdev_ioctls",
+          "syna_cdev_llseek",
+          "syna_cdev_open",
+          "syna_cdev_process_reports",
+          "syna_cdev_read",
+          "syna_cdev_release",
+          "syna_cdev_remove",
+          "syna_cdev_write",
+          "syna_charger_notify_call",
+          "syna_dev_connect",
+          "syna_dev_disconnect",
+          "syna_dev_do_reflash",
+          "syna_dev_enable_lowpwr_gesture",
+          "syna_dev_enter_normal_sensing",
+          "syna_dev_free_input_events",
+          "syna_dev_get_frame_data",
+          "syna_dev_helper_work",
+          "syna_dev_isr",
+          "syna_dev_module_exit",
+          "syna_dev_module_init",
+          "syna_dev_probe",
+          "syna_dev_process_touch_report",
+          "syna_dev_process_unexpected_reset",
+          "syna_dev_reflash_startup_work",
+          "syna_dev_remove",
+          "syna_dev_resume",
+          "syna_dev_set_charger_mode",
+          "syna_dev_set_display_rotation",
+          "syna_dev_set_follow_hand_level",
+          "syna_dev_set_play_game",
+          "syna_dev_set_screen_on_fp_mode",
+          "syna_dev_set_sensibility_level",
+          "syna_dev_set_stability_level",
+          "syna_dev_set_tp_report_rate",
+          "syna_dev_set_up_app_fw",
+          "syna_dev_set_up_input_device",
+          "syna_dev_shutdown",
+          "syna_dev_suspend",
+          "syna_ghost_check_reset",
+          "syna_hw_interface_exit",
+          "syna_hw_interface_init",
+          "syna_ioctl",
+          "syna_mmap",
+          "syna_open",
+          "syna_pal_mem_alloc",
+          "syna_pal_mem_cpy",
+          "syna_pal_mem_cpy",
+          "syna_pal_mem_cpy",
+          "syna_pal_mem_free",
+          "syna_pal_mem_free",
+          "syna_pm_resume",
+          "syna_pm_suspend",
+          "syna_poll",
+          "syna_recovery_game_mode_after_reset",
+          "syna_release",
+          "syna_request_managed_device",
+          "syna_spi_alloc_mem",
+          "syna_spi_enable_irq",
+          "syna_spi_get_gpio",
+          "syna_spi_hw_reset",
+          "syna_spi_power_on",
+          "syna_spi_probe",
+          "syna_spi_read",
+          "syna_spi_release",
+          "syna_spi_remove",
+          "syna_spi_write",
+          "syna_sysfs_create_dir",
+          "syna_sysfs_debug_store",
+          "syna_sysfs_fw_update_store",
+          "syna_sysfs_get_delta_show",
+          "syna_sysfs_info_show",
+          "syna_sysfs_irq_en_store",
+          "syna_sysfs_pwr_store",
+          "syna_sysfs_remove_dir",
+          "syna_sysfs_reset_store",
+          "syna_tcm_allocate_device",
+          "syna_tcm_buf_alloc",
+          "syna_tcm_buf_alloc",
+          "syna_tcm_buf_copy",
+          "syna_tcm_buf_copy",
+          "syna_tcm_buf_copy",
+          "syna_tcm_buf_copy",
+          "syna_tcm_buf_lock",
+          "syna_tcm_buf_unlock",
+          "syna_tcm_buf_unlock",
+          "syna_tcm_check_flash_block",
+          "syna_tcm_clear_command_processing",
+          "syna_tcm_clear_data_duplicator",
+          "syna_tcm_config_timings",
+          "syna_tcm_detect_device",
+          "syna_tcm_do_fw_update",
+          "syna_tcm_do_fw_update_ex",
+          "syna_tcm_enable_predict_reading",
+          "syna_tcm_enable_report",
+          "syna_tcm_erase_mtp_data",
+          "syna_tcm_get_app_info",
+          "syna_tcm_get_boot_info",
+          "syna_tcm_get_dynamic_config",
+          "syna_tcm_get_event_data",
+          "syna_tcm_get_features",
+          "syna_tcm_get_partition_id_string",
+          "syna_tcm_get_static_config",
+          "syna_tcm_get_testing_0001",
+          "syna_tcm_get_testing_0002",
+          "syna_tcm_get_testing_0100",
+          "syna_tcm_get_testing_0500",
+          "syna_tcm_get_testing_0A00",
+          "syna_tcm_get_touch_data",
+          "syna_tcm_identify",
+          "syna_tcm_parse_fw_image",
+          "syna_tcm_parse_touch_report",
+          "syna_tcm_preserve_touch_report_config",
+          "syna_tcm_read_cs_data",
+          "syna_tcm_read_flash",
+          "syna_tcm_read_flash_address",
+          "syna_tcm_read_flash_area",
+          "syna_tcm_read_flash_boot_config",
+          "syna_tcm_read_flash_boot_cs_config",
+          "syna_tcm_read_flash_mtp_config",
+          "syna_tcm_read_mtp_data",
+          "syna_tcm_remove_device",
+          "syna_tcm_reset",
+          "syna_tcm_rezero",
+          "syna_tcm_run_production_test",
+          "syna_tcm_send_command",
+          "syna_tcm_set_custom_gesture_callback",
+          "syna_tcm_set_custom_touch_entity_callback",
+          "syna_tcm_set_data_duplicator",
+          "syna_tcm_set_dynamic_config",
+          "syna_tcm_set_game_partition_config",
+          "syna_tcm_set_post_reset_callback",
+          "syna_tcm_set_report_dispatcher",
+          "syna_tcm_set_static_config",
+          "syna_tcm_set_touch_report_config",
+          "syna_tcm_set_up_flash_access",
+          "syna_tcm_sleep",
+          "syna_tcm_switch_fw_mode",
+          "syna_tcm_testing_0001_check_device_id",
+          "syna_tcm_testing_0002_check_config_id",
+          "syna_tcm_testing_0100_check_data",
+          "syna_tcm_testing_0500_check_lower_bound",
+          "syna_tcm_testing_0500_check_upper_bound",
+          "syna_tcm_testing_0A00_check_lower_bound",
+          "syna_tcm_testing_0A00_check_upper_bound",
+          "syna_tcm_testing_build_id",
+          "syna_tcm_testing_check_array_data",
+          "syna_tcm_testing_check_frame_data",
+          "syna_tcm_testing_check_frame_data",
+          "syna_tcm_testing_config_id",
+          "syna_tcm_testing_full_raw",
+          "syna_tcm_testing_noise",
+          "syna_tcm_testing_trx_trx_short",
+          "syna_tcm_update_cs_config",
+          "syna_tcm_update_flash_block",
+          "syna_tcm_update_lockdown_config",
+          "syna_tcm_update_mtp_data",
+          "syna_tcm_v1_check_max_rw_size",
+          "syna_tcm_v1_detect",
+          "syna_tcm_v1_parse_idinfo",
+          "syna_tcm_v1_read",
+          "syna_tcm_v1_read_message",
+          "syna_tcm_v1_set_up_max_rw_size",
+          "syna_tcm_v1_terminate",
+          "syna_tcm_v1_write_message",
+          "syna_tcm_wait_for_report",
+          "syna_tcm_write_flash",
+          "syna_testing_check_config_id_show",
+          "syna_testing_check_dev_id_show",
+          "syna_testing_create_dir",
+          "syna_testing_pt01_show",
+          "syna_testing_pt01_zte",
+          "syna_testing_pt05_show",
+          "syna_testing_pt05_zte",
+          "syna_testing_pt0a_show",
+          "syna_testing_pt0a_zte",
+          "syna_testing_remove_dir",
+          "syna_tpd_register_fw_class",
+          "syna_ts_check_dt",
+          "syna_ts_panel_notifier_callback",
+          "syna_ts_register_for_panel_events",
+          "syna_work_charger_detect_work",
+          "tp_BBAT_test_read",
+          "tp_BBAT_test_write",
+          "tp_alloc_tp_firmware_data",
+          "tp_edge_report_limit_read",
+          "tp_edge_report_limit_write",
+          "tp_esd_check",
+          "tp_fold_state_read",
+          "tp_fold_state_write",
+          "tp_frame_data_read",
+          "tp_frame_data_write",
+          "tp_free_tp_firmware_data",
+          "tp_game_partition_read",
+          "tp_game_partition_write",
+          "tp_ghost_check",
+          "tp_ghost_check_work",
+          "tp_glove_read",
+          "tp_glove_write",
+          "tp_module_info_read",
+          "tp_palm_mode_read",
+          "tp_palm_mode_write",
+          "tp_pen_only_read",
+          "tp_pen_only_write",
+          "tp_self_test_read",
+          "tp_self_test_write",
+          "tp_sensibility_level_read",
+          "tp_sensibility_level_write",
+          "tp_single_aod_read",
+          "tp_single_aod_write",
+          "tp_single_game_read",
+          "tp_single_game_write",
+          "tp_single_tap_read",
+          "tp_single_tap_write",
+          "tp_smart_cover_read",
+          "tp_smart_cover_write",
+          "tp_test_read",
+          "tp_test_write",
+          "tp_wake_gesture_read",
+          "tp_wake_gesture_write",
+          "tp_zlog_debug_read",
+          "tp_zlog_debug_write",
+          "tpd_clean_all_event",
+          "tpd_copy_to_tp_firmware_data",
+          "tpd_enable_wakegesture",
+          "tpd_get_fake_sleep",
+          "tpd_get_follow_hand_level",
+          "tpd_get_frame_data",
+          "tpd_get_one_key",
+          "tpd_get_palm_mode",
+          "tpd_get_play_game",
+          "tpd_get_rotation_limit_level",
+          "tpd_get_screen_off_awake",
+          "tpd_get_sensibility_level",
+          "tpd_get_singleaodgesture",
+          "tpd_get_singlefpgesture",
+          "tpd_get_singlegamegesture",
+          "tpd_get_stability_level",
+          "tpd_get_tp_report_rate",
+          "tpd_get_wakegesture",
+          "tpd_goodix_ts_resume",
+          "tpd_goodix_ts_suspend",
+          "tpd_id0_report_work",
+          "tpd_id1_report_work",
+          "tpd_id2_report_work",
+          "tpd_id3_report_work",
+          "tpd_id4_report_work",
+          "tpd_id5_report_work",
+          "tpd_id6_report_work",
+          "tpd_id7_report_work",
+          "tpd_id8_report_work",
+          "tpd_id9_report_work",
+          "tpd_init_tpinfo",
+          "tpd_probe_work_deinit",
+          "tpd_probe_work_init",
+          "tpd_proc_deinit",
+          "tpd_report_uevent",
+          "tpd_report_work_deinit",
+          "tpd_report_work_init",
+          "tpd_reset_fw_data_pos_and_size",
+          "tpd_reset_gpio_output",
+          "tpd_resume_work",
+          "tpd_resume_work_deinit",
+          "tpd_resume_work_init",
+          "tpd_set_display_rotation",
+          "tpd_set_fake_sleep",
+          "tpd_set_follow_hand_level",
+          "tpd_set_frame_data",
+          "tpd_set_game_partition",
+          "tpd_set_one_key",
+          "tpd_set_palm_mode",
+          "tpd_set_play_game",
+          "tpd_set_rotation_limit_level",
+          "tpd_set_screen_off_awake",
+          "tpd_set_sensibility_level",
+          "tpd_set_singleaodgesture",
+          "tpd_set_singlefpgesture",
+          "tpd_set_singlegamegesture",
+          "tpd_set_stability_level",
+          "tpd_set_tp_report_rate",
+          "tpd_suspend_work",
+          "tpd_sysfs_fwimage_show",
+          "tpd_sysfs_fwimage_store",
+          "tpd_test_cmd_show",
+          "tpd_test_cmd_store",
+          "tpd_touch_press",
+          "tpd_touch_release",
+          "tpd_touch_report",
+          "tpd_workqueue_deinit",
+          "tpd_workqueue_init",
+          "tpd_zlog_check",
+          "tpd_zlog_init",
+          "tpd_zlog_record_notify",
+          "tpd_zlog_register",
+          "tpfwupgrade_store",
+          "trim",
+          "uf_touch_report",
+          "ufp_get_lcdstate",
+          "ufp_mac_exit",
+          "ufp_mac_init",
+          "ufp_notifier_cb",
+          "ufp_report_gesture_uevent",
+          "ufp_report_lcd_state",
+          "ufp_report_lcd_state_delayed_work",
+          "ufp_report_lcd_state_work",
+          "ufp_single_tap_work",
+          "zlog_register_work",
+          "zlog_register_work_deinit",
+          "zlog_register_work_init",
+          "zte_reset_frame_list",
+          "zte_touch_deinit",
+          "zte_touch_pdev_register",
+          "zte_touch_pdev_unregister",
+          "zte_touch_probe",
+          "zte_touch_remove",
+          "zte_touch_shutdown",
+          "ztp_probe_work"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "aa6d8877d82961aa20e76e0b8128bee6",
+          "function_count": 367,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000f3f",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "zte_tpd.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "kernel_source_identity": {
+        "checks": {
+          "bindgen_sha256": true,
+          "bindgen_version": true,
+          "clang_binary_sha256": true,
+          "clang_revision": true,
+          "clang_version": true,
+          "config_sha256": true,
+          "docker_image_id": true,
+          "kernel_release": true,
+          "localversion_sha256": true,
+          "module_symvers_sha256": true,
+          "rust_toolchain": true,
+          "rustc_sha256": true,
+          "source_head": true,
+          "source_repository": true
+        },
+        "expected": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "image_command": {
+          "argv": [
+            "docker",
+            "image",
+            "inspect",
+            "--format",
+            "{{.Id}}",
+            "nubia-sm8850-kernel-builder:latest"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+        },
+        "mismatches": [],
+        "observed": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "bindgen 0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image": "nubia-sm8850-kernel-builder:latest",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "passed": true,
+        "probe_command": {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-v",
+            "nx809j_bindgen_0695:/work/bindgen:ro",
+            "-e",
+            "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w",
+            "/work/src/kernel",
+            "nubia-sm8850-kernel-builder:latest",
+            "python3",
+            "-c",
+            "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nsource_root = pathlib.Path(\"/work/src/kernel\")\ncommon = source_root / \"kernel_platform/common\"\nbuild_output = source_root / \".codex-kbuild/identity\"\nbuild_inputs = source_root / \"target_build_inputs\"\nlocalversion_rel = \"kernel_platform/common/localversion.nx809j-target\"\nbindgen = pathlib.Path(\"/work/bindgen/bin/bindgen\")\nclang = pathlib.Path(\"/work/toolchains/clang-r536225/bin/clang.real\")\nrustc = pathlib.Path(\"/work/toolchains/rust-1.82.0/bin/rustc\")\nclang_version = run([str(clang), \"--version\"])\nrust_toolchain = run([str(rustc), \"--version\"])\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"-C\", str(source_root), \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"-C\", str(source_root), \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"-C\", str(common), f\"O={build_output}\", \"ARCH=arm64\", \"LLVM=1\", \"LLVM_IAS=1\", \"kernelrelease\"]),\n    \"config_sha256\": digest(build_output / \".config\"),\n    \"module_symvers_sha256\": digest(build_output / \"Module.symvers\"),\n    \"localversion_sha256\": digest(common / \"localversion.nx809j-target\"),\n    \"bindgen_version\": run([str(bindgen), \"--version\"]),\n    \"bindgen_sha256\": digest(bindgen),\n    \"clang_revision\": \"clang-r536225\",\n    \"clang_version\": clang_version.splitlines()[0] if clang_version else None,\n    \"clang_binary_sha256\": digest(clang),\n    \"rust_toolchain\": rust_toolchain,\n    \"rustc_sha256\": digest(rustc),\n}))\n"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\"source_head\": \"3356b35306d35d5a480e3b63df1a9f065b5d9f55\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\", \"config_sha256\": \"b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\", \"localversion_sha256\": \"e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475\", \"bindgen_version\": \"bindgen 0.69.5\", \"bindgen_sha256\": \"548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706\", \"clang_revision\": \"clang-r536225\", \"clang_version\": \"Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\", \"clang_binary_sha256\": \"69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044\", \"rust_toolchain\": \"rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)\", \"rustc_sha256\": \"ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c\"}\n"
+        },
+        "probe_error": null,
+        "required": true,
+        "status": "MATCH"
+      },
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_allocated_metadata_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "e69d927d19aed91eb7a03931566664f287b2762dab94f0e77c787f7bb83c2d54",
+              "size": 36,
+              "type": 7
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "370c54c167ebe4442fc00c725ec29edd23845f35298f45b0a4daeedb60bfe38a",
+              "size": 36,
+              "type": 7
+            },
+            "section": ".note.gnu.build-id"
+          }
+        ],
+        "candidate_depends_match_target": true,
+        "candidate_loadable_section_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "e69d927d19aed91eb7a03931566664f287b2762dab94f0e77c787f7bb83c2d54",
+              "size": 36,
+              "type": 7
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "370c54c167ebe4442fc00c725ec29edd23845f35298f45b0a4daeedb60bfe38a",
+              "size": 36,
+              "type": 7
+            },
+            "section": ".note.gnu.build-id"
+          }
+        ],
+        "candidate_loadable_sections_match_fresh": false,
+        "candidate_matches_fresh": false,
+        "candidate_modinfo": {
+          "alias": [
+            "of:N*T*Csynaptics,tcm-spi",
+            "of:N*T*Csynaptics,tcm-spiC*",
+            "spi:synaptics_tcm_spi"
+          ],
+          "depends": [
+            "panel_event_notifier",
+            "zlog_common,kmparam"
+          ],
+          "license": [
+            "GPL",
+            "GPL v2"
+          ],
+          "vermagic": [
+            "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_nonloadable_section_differences": [
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "0b77a0e34e54f6bdf04a3ae911f1b531dec7700894b9f123b28303144143772a",
+              "size": 15308,
+              "type": 1
+            },
+            "fresh": null,
+            "section": ".BTF"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "1f94ec69d4193478a551a97de492c53c6ad1f326b443a665e4dc38b5b1cd272e",
+              "size": 1264847,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "e74a52052a90b422dee713f1f0287cd574e3e75ecdc3231cedd7e772d8640983",
+              "size": 1264848,
+              "type": 1
+            },
+            "section": ".debug_info"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "f95241306bd39b1bea1f813539b0f2c9360aff35aeb2a64deca51bb8e02d8291",
+              "size": 16586,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "e58bbff6191c43b475b3b05b20d959c0eb9e5a8a97a4325ba50577b418b76e34",
+              "size": 15645,
+              "type": 1
+            },
+            "section": ".debug_line"
+          },
+          {
+            "candidate": {
+              "flags": 2096,
+              "sha256": "0179c0a2e38121322de9090813ece530ef7f634eda78a19a5946aa5ed86fc8aa",
+              "size": 2073,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2096,
+              "sha256": "cf1ea30e10abe3813082db3ee8981a25c587af9d01c651ed9224261059dc5dad",
+              "size": 2515,
+              "type": 1
+            },
+            "section": ".debug_line_str"
+          },
+          {
+            "candidate": {
+              "flags": 2096,
+              "sha256": "17d179f55c1666cd3abda02119dd11bcb60c6bcba5843a9090ef16832ea1589a",
+              "size": 26119,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2096,
+              "sha256": "315f06f1e45dbe2aee562be6ea0e1f84efb46f585700f897b5dc69bddf753f4f",
+              "size": 26121,
+              "type": 1
+            },
+            "section": ".debug_str"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "e3f4e8266e8e9779b8a4be877bbba6011762c6d3c0d8c3f7eee2db0281054211",
+              "size": 10560,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "9d89c1d471718c6d0aa460d68dc2dfd13a3c7067ffa79e3acafb8de0dc65be53",
+              "size": 10560,
+              "type": 4
+            },
+            "section": ".rela.debug_info"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "1b928335700c84fae8a861d26ca5189cff269a03e2ceabbd7a2001f403281fe8",
+              "size": 219120,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "7be0d6fdc1380b154c625c09812758ce1617661b1982957613dab3fd3498440a",
+              "size": 205680,
+              "type": 4
+            },
+            "section": ".rela.debug_line"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "9a67661eb11eb004ec749ad7bfb8eb578bda406a10847d018c5e9b0fc38a22dc",
+              "size": 3594624,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "f2836126113346001d8158a83de6586e06866c782ca675488a6bf32d30ebc829",
+              "size": 3594624,
+              "type": 4
+            },
+            "section": ".rela.debug_str_offsets"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "0fc87ad9b4d5221d9eaf8658e13f9bed0c19c2c451db97f112e1e59178e26681",
+              "size": 736,
+              "type": 3
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "f3cd6d2edd174b3fd2d74e6bbdc18af52fd6af7af70b8c1adc6bcf6e6577763a",
+              "size": 950,
+              "type": 3
+            },
+            "section": ".shstrtab"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "1ed11ecc7657d7741b7695bcc4ea28766689e129c68130679b4a0820133af21f",
+              "size": 28926,
+              "type": 3
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "749d6e8bf7138f04d5fcbbbecdfd5213d0deebb8b709386f350e15a7e4df06bf",
+              "size": 41860,
+              "type": 3
+            },
+            "section": ".strtab"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "d190f7fbbf5035873683ace8002571d99fbd6d0582b38c3ff3ae06b110a63144",
+              "size": 93336,
+              "type": 2
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "5a4ed88841700f9ce539c7725a4dc24f0ccd35466a940f7f7d140a588ec50e7d",
+              "size": 93336,
+              "type": 2
+            },
+            "section": ".symtab"
+          }
+        ],
+        "candidate_runtime_content_differences": [],
+        "candidate_runtime_content_matches_fresh": true,
+        "candidate_runtime_section_layout_differences": [],
+        "candidate_runtime_section_layout_matches_fresh": true,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__arch_copy_from_user",
+              "__arch_copy_to_user",
+              "__check_object_size",
+              "__copy_overflow",
+              "__flush_workqueue",
+              "__fortify_panic",
+              "__init_swait_queue_head",
+              "__init_waitqueue_head",
+              "__kmalloc_cache_noprof",
+              "__kmalloc_large_noprof",
+              "__kmalloc_noprof",
+              "__list_add_valid_or_report",
+              "__list_del_entry_valid_or_report",
+              "__msecs_to_jiffies",
+              "__mutex_init",
+              "__of_parse_phandle_with_args",
+              "__platform_driver_register",
+              "__spi_register_driver",
+              "__stack_chk_fail",
+              "__wake_up",
+              "_ctype",
+              "_printk",
+              "alloc_chrdev_region",
+              "alloc_workqueue",
+              "alt_cb_patch_nops",
+              "cancel_delayed_work_sync",
+              "cancel_work_sync",
+              "cdev_add",
+              "cdev_del",
+              "cdev_init",
+              "class_create",
+              "class_destroy",
+              "complete",
+              "completion_done",
+              "crc32_le",
+              "delayed_work_timer_fn",
+              "destroy_workqueue",
+              "device_create",
+              "device_destroy",
+              "device_set_wakeup_capable",
+              "device_wakeup_enable",
+              "devm_free_irq",
+              "devm_input_allocate_device",
+              "devm_kfree",
+              "devm_kmalloc",
+              "devm_regulator_get",
+              "devm_regulator_put",
+              "devm_request_threaded_irq",
+              "disable_irq_nosync",
+              "driver_unregister",
+              "enable_irq",
+              "finish_wait",
+              "gpio_free",
+              "gpio_request",
+              "gpio_to_desc",
+              "gpiod_direction_input",
+              "gpiod_direction_output_raw",
+              "gpiod_get_raw_value",
+              "gpiod_set_raw_value",
+              "gpiod_to_irq",
+              "init_timer_key",
+              "init_wait_entry",
+              "input_event",
+              "input_free_device",
+              "input_mt_init_slots",
+              "input_mt_report_slot_state",
+              "input_register_device",
+              "input_set_abs_params",
+              "input_set_capability",
+              "input_unregister_device",
+              "irq_set_irq_wake",
+              "jiffies",
+              "jiffies_to_msecs",
+              "kasprintf",
+              "kfree",
+              "kmalloc_caches",
+              "kobject_create_and_add",
+              "kobject_put",
+              "kobject_uevent_env",
+              "kstrtouint",
+              "kstrtouint_from_user",
+              "ktime_get_real_ts64",
+              "mem_alloc_profiling_key",
+              "memcpy",
+              "memset",
+              "memstart_addr",
+              "misc_register",
+              "mod_delayed_work_on",
+              "msleep",
+              "mutex_lock",
+              "mutex_unlock",
+              "of_count_phandle_with_args",
+              "of_drm_find_panel",
+              "of_find_property",
+              "of_get_named_gpio",
+              "of_property_read_string",
+              "of_property_read_variable_u32_array",
+              "panel_event_notifier_register",
+              "panel_event_notifier_unregister",
+              "platform_device_add",
+              "platform_device_alloc",
+              "platform_device_register",
+              "platform_device_unregister",
+              "platform_driver_unregister",
+              "pm_relax",
+              "pm_stay_awake",
+              "pm_wakeup_ws_event",
+              "power_supply_get_by_name",
+              "power_supply_reg_notifier",
+              "prepare_to_wait_event",
+              "proc_create",
+              "proc_mkdir",
+              "queue_delayed_work_on",
+              "queue_work_on",
+              "register_chrdev_region",
+              "regulator_disable",
+              "regulator_enable",
+              "release_firmware",
+              "remap_pfn_range",
+              "remove_proc_entry",
+              "request_firmware",
+              "schedule",
+              "schedule_timeout",
+              "scnprintf",
+              "simple_read_from_buffer",
+              "simple_strtoul",
+              "snprintf",
+              "spi_setup",
+              "spi_sync",
+              "strchr",
+              "strcmp",
+              "strlen",
+              "strncmp",
+              "strncpy",
+              "strnlen",
+              "strnstr",
+              "strsep",
+              "sysfs_create_bin_file",
+              "sysfs_create_group",
+              "sysfs_remove_bin_file",
+              "sysfs_remove_group",
+              "unregister_chrdev_region",
+              "usleep_range_state",
+              "vfree",
+              "vmalloc_noprof",
+              "wait_for_completion_timeout",
+              "wakeup_source_add",
+              "wakeup_source_remove",
+              "zlog_client_notify",
+              "zlog_client_record",
+              "zlog_register_client",
+              "zte_get_boot_mode"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Csynaptics,tcm-spi",
+              "of:N*T*Csynaptics,tcm-spiC*",
+              "spi:synaptics_tcm_spi"
+            ],
+            "depends": [
+              "panel_event_notifier",
+              "zlog_common,kmparam"
+            ],
+            "license": [
+              "GPL",
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": false,
+        "kernel_source_identity": true,
+        "missing_imports": [],
+        "namespace_match": true,
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__arch_copy_from_user",
+              "__arch_copy_to_user",
+              "__check_object_size",
+              "__copy_overflow",
+              "__flush_workqueue",
+              "__fortify_panic",
+              "__init_swait_queue_head",
+              "__init_waitqueue_head",
+              "__kmalloc_cache_noprof",
+              "__kmalloc_large_noprof",
+              "__kmalloc_noprof",
+              "__list_add_valid_or_report",
+              "__list_del_entry_valid_or_report",
+              "__msecs_to_jiffies",
+              "__mutex_init",
+              "__of_parse_phandle_with_args",
+              "__platform_driver_register",
+              "__spi_register_driver",
+              "__stack_chk_fail",
+              "__wake_up",
+              "_ctype",
+              "_printk",
+              "alloc_chrdev_region",
+              "alloc_workqueue",
+              "alt_cb_patch_nops",
+              "cancel_delayed_work_sync",
+              "cancel_work_sync",
+              "cdev_add",
+              "cdev_del",
+              "cdev_init",
+              "class_create",
+              "class_destroy",
+              "complete",
+              "completion_done",
+              "crc32_le",
+              "delayed_work_timer_fn",
+              "destroy_workqueue",
+              "device_create",
+              "device_destroy",
+              "device_set_wakeup_capable",
+              "device_wakeup_enable",
+              "devm_free_irq",
+              "devm_input_allocate_device",
+              "devm_kfree",
+              "devm_kmalloc",
+              "devm_regulator_get",
+              "devm_regulator_put",
+              "devm_request_threaded_irq",
+              "disable_irq_nosync",
+              "driver_unregister",
+              "enable_irq",
+              "finish_wait",
+              "gpio_free",
+              "gpio_request",
+              "gpio_to_desc",
+              "gpiod_direction_input",
+              "gpiod_direction_output_raw",
+              "gpiod_get_raw_value",
+              "gpiod_set_raw_value",
+              "gpiod_to_irq",
+              "init_timer_key",
+              "init_wait_entry",
+              "input_event",
+              "input_free_device",
+              "input_mt_init_slots",
+              "input_mt_report_slot_state",
+              "input_register_device",
+              "input_set_abs_params",
+              "input_set_capability",
+              "input_unregister_device",
+              "irq_set_irq_wake",
+              "jiffies",
+              "jiffies_to_msecs",
+              "kasprintf",
+              "kfree",
+              "kmalloc_caches",
+              "kobject_create_and_add",
+              "kobject_put",
+              "kobject_uevent_env",
+              "kstrtouint",
+              "kstrtouint_from_user",
+              "ktime_get_real_ts64",
+              "mem_alloc_profiling_key",
+              "memcpy",
+              "memset",
+              "memstart_addr",
+              "misc_register",
+              "mod_delayed_work_on",
+              "msleep",
+              "mutex_lock",
+              "mutex_unlock",
+              "of_count_phandle_with_args",
+              "of_drm_find_panel",
+              "of_find_property",
+              "of_get_named_gpio",
+              "of_property_read_string",
+              "of_property_read_variable_u32_array",
+              "panel_event_notifier_register",
+              "panel_event_notifier_unregister",
+              "platform_device_add",
+              "platform_device_alloc",
+              "platform_device_register",
+              "platform_device_unregister",
+              "platform_driver_unregister",
+              "pm_relax",
+              "pm_stay_awake",
+              "pm_wakeup_ws_event",
+              "power_supply_get_by_name",
+              "power_supply_reg_notifier",
+              "prepare_to_wait_event",
+              "proc_create",
+              "proc_mkdir",
+              "queue_delayed_work_on",
+              "queue_work_on",
+              "register_chrdev_region",
+              "regulator_disable",
+              "regulator_enable",
+              "release_firmware",
+              "remap_pfn_range",
+              "remove_proc_entry",
+              "request_firmware",
+              "schedule",
+              "schedule_timeout",
+              "scnprintf",
+              "simple_read_from_buffer",
+              "simple_strtoul",
+              "snprintf",
+              "spi_setup",
+              "spi_sync",
+              "strchr",
+              "strcmp",
+              "strlen",
+              "strncmp",
+              "strncpy",
+              "strnlen",
+              "strnstr",
+              "strsep",
+              "sysfs_create_bin_file",
+              "sysfs_create_group",
+              "sysfs_remove_bin_file",
+              "sysfs_remove_group",
+              "unregister_chrdev_region",
+              "usleep_range_state",
+              "vfree",
+              "vmalloc_noprof",
+              "wait_for_completion_timeout",
+              "wakeup_source_add",
+              "wakeup_source_remove",
+              "zlog_client_notify",
+              "zlog_client_record",
+              "zlog_register_client",
+              "zte_get_boot_mode"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Csynaptics,tcm-spi",
+              "of:N*T*Csynaptics,tcm-spiC*",
+              "spi:synaptics_tcm_spi"
+            ],
+            "depends": [
+              "zlog_common,kmparam,panel_event_notifier"
+            ],
+            "license": [
+              "GPL",
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "stock_depends_match_target": false,
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": true,
+        "undefined_symbols_match": true,
+        "unexpected_imports": [],
+        "vermagic_accepted": true,
+        "vermagic_match": false
+      },
+      "status": "static_verified",
+      "stock": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\full_vendor_boot\\zte_tpd.ko",
+        "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+        "size": 633536
+      },
+      "traceability": {
+        "exists": true,
+        "mapped_functions": 367,
+        "mapped_identities": [
+          {
+            "stock_entry": "10a5c8",
+            "stock_function": "_inline_copy_from_user"
+          },
+          {
+            "stock_entry": "11066c",
+            "stock_function": "cancel_report_lcd_state_delayed_work"
+          },
+          {
+            "stock_entry": "110320",
+            "stock_function": "change_tp_state"
+          },
+          {
+            "stock_entry": "1315e0",
+            "stock_function": "cleanup_module"
+          },
+          {
+            "stock_entry": "10a87c",
+            "stock_function": "display_rotation_show"
+          },
+          {
+            "stock_entry": "1100ac",
+            "stock_function": "edge_long_press_up"
+          },
+          {
+            "stock_entry": "10d078",
+            "stock_function": "get_fake_sleep"
+          },
+          {
+            "stock_entry": "10c92c",
+            "stock_function": "get_finger_lock_flag"
+          },
+          {
+            "stock_entry": "10bf8c",
+            "stock_function": "get_follow_hand_level"
+          },
+          {
+            "stock_entry": "107ce0",
+            "stock_function": "get_lcd_panel_name"
+          },
+          {
+            "stock_entry": "10ba4c",
+            "stock_function": "get_one_key"
+          },
+          {
+            "stock_entry": "10bc14",
+            "stock_function": "get_play_game"
+          },
+          {
+            "stock_entry": "10a6c0",
+            "stock_function": "get_rotation_limit_level"
+          },
+          {
+            "stock_entry": "10d240",
+            "stock_function": "get_screen_off_awake"
+          },
+          {
+            "stock_entry": "10c148",
+            "stock_function": "get_stability_level"
+          },
+          {
+            "stock_entry": "107984",
+            "stock_function": "get_tp_algo_item_id"
+          },
+          {
+            "stock_entry": "107aec",
+            "stock_function": "get_tp_chip_id"
+          },
+          {
+            "stock_entry": "10afc0",
+            "stock_function": "get_tp_noise_show"
+          },
+          {
+            "stock_entry": "10b0dc",
+            "stock_function": "get_tp_noise_store"
+          },
+          {
+            "stock_entry": "10bdd0",
+            "stock_function": "get_tp_report_rate"
+          },
+          {
+            "stock_entry": "10f2ac",
+            "stock_function": "ghost_check_area"
+          },
+          {
+            "stock_entry": "10f924",
+            "stock_function": "ghost_check_reset"
+          },
+          {
+            "stock_entry": "10d57c",
+            "stock_function": "ghost_debug_read"
+          },
+          {
+            "stock_entry": "10d8d0",
+            "stock_function": "ghost_debug_write"
+          },
+          {
+            "stock_entry": "10a3c4",
+            "stock_function": "headset_state_show"
+          },
+          {
+            "stock_entry": "10a4bc",
+            "stock_function": "headset_state_store"
+          },
+          {
+            "stock_entry": "13159c",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "110be8",
+            "stock_function": "one_key_report"
+          },
+          {
+            "stock_entry": "10feec",
+            "stock_function": "point_is_in_limit_area"
+          },
+          {
+            "stock_entry": "10ea98",
+            "stock_function": "point_report_reset"
+          },
+          {
+            "stock_entry": "110960",
+            "stock_function": "report_ufp_uevent"
+          },
+          {
+            "stock_entry": "10a954",
+            "stock_function": "set_display_rotation"
+          },
+          {
+            "stock_entry": "10d16c",
+            "stock_function": "set_fake_sleep"
+          },
+          {
+            "stock_entry": "10ca00",
+            "stock_function": "set_finger_lock_flag"
+          },
+          {
+            "stock_entry": "10c080",
+            "stock_function": "set_follow_hand_level"
+          },
+          {
+            "stock_entry": "110580",
+            "stock_function": "set_gpio_mode"
+          },
+          {
+            "stock_entry": "110544",
+            "stock_function": "set_lcd_reset_processing"
+          },
+          {
+            "stock_entry": "10bb40",
+            "stock_function": "set_one_key"
+          },
+          {
+            "stock_entry": "10bd08",
+            "stock_function": "set_play_game"
+          },
+          {
+            "stock_entry": "10a7b4",
+            "stock_function": "set_rotation_limit_level"
+          },
+          {
+            "stock_entry": "10d334",
+            "stock_function": "set_screen_off_awake"
+          },
+          {
+            "stock_entry": "10c23c",
+            "stock_function": "set_stability_level"
+          },
+          {
+            "stock_entry": "10bec4",
+            "stock_function": "set_tp_report_rate"
+          },
+          {
+            "stock_entry": "12aecc",
+            "stock_function": "string_change"
+          },
+          {
+            "stock_entry": "10a1b4",
+            "stock_function": "suspend_show"
+          },
+          {
+            "stock_entry": "10a2ac",
+            "stock_function": "suspend_store"
+          },
+          {
+            "stock_entry": "11049c",
+            "stock_function": "suspend_tp_need_awake"
+          },
+          {
+            "stock_entry": "114b3c",
+            "stock_function": "syna_cdev_create"
+          },
+          {
+            "stock_entry": "114db8",
+            "stock_function": "syna_cdev_devnode"
+          },
+          {
+            "stock_entry": "117558",
+            "stock_function": "syna_cdev_ioctl_raw_read"
+          },
+          {
+            "stock_entry": "1178d8",
+            "stock_function": "syna_cdev_ioctl_raw_write"
+          },
+          {
+            "stock_entry": "1150ec",
+            "stock_function": "syna_cdev_ioctls"
+          },
+          {
+            "stock_entry": "114f98",
+            "stock_function": "syna_cdev_llseek"
+          },
+          {
+            "stock_entry": "117278",
+            "stock_function": "syna_cdev_open"
+          },
+          {
+            "stock_entry": "117c90",
+            "stock_function": "syna_cdev_process_reports"
+          },
+          {
+            "stock_entry": "114fa4",
+            "stock_function": "syna_cdev_read"
+          },
+          {
+            "stock_entry": "1173e0",
+            "stock_function": "syna_cdev_release"
+          },
+          {
+            "stock_entry": "114e04",
+            "stock_function": "syna_cdev_remove"
+          },
+          {
+            "stock_entry": "115048",
+            "stock_function": "syna_cdev_write"
+          },
+          {
+            "stock_entry": "12ca94",
+            "stock_function": "syna_charger_notify_call"
+          },
+          {
+            "stock_entry": "112714",
+            "stock_function": "syna_dev_connect"
+          },
+          {
+            "stock_entry": "112b04",
+            "stock_function": "syna_dev_disconnect"
+          },
+          {
+            "stock_entry": "1113fc",
+            "stock_function": "syna_dev_do_reflash"
+          },
+          {
+            "stock_entry": "114348",
+            "stock_function": "syna_dev_enable_lowpwr_gesture"
+          },
+          {
+            "stock_entry": "114294",
+            "stock_function": "syna_dev_enter_normal_sensing"
+          },
+          {
+            "stock_entry": "1110f0",
+            "stock_function": "syna_dev_free_input_events"
+          },
+          {
+            "stock_entry": "111d48",
+            "stock_function": "syna_dev_get_frame_data"
+          },
+          {
+            "stock_entry": "113590",
+            "stock_function": "syna_dev_helper_work"
+          },
+          {
+            "stock_entry": "1141b4",
+            "stock_function": "syna_dev_isr"
+          },
+          {
+            "stock_entry": "11200c",
+            "stock_function": "syna_dev_module_exit"
+          },
+          {
+            "stock_entry": "111fcc",
+            "stock_function": "syna_dev_module_init"
+          },
+          {
+            "stock_entry": "112038",
+            "stock_function": "syna_dev_probe"
+          },
+          {
+            "stock_entry": "113c74",
+            "stock_function": "syna_dev_process_touch_report"
+          },
+          {
+            "stock_entry": "113a9c",
+            "stock_function": "syna_dev_process_unexpected_reset"
+          },
+          {
+            "stock_entry": "113b40",
+            "stock_function": "syna_dev_reflash_startup_work"
+          },
+          {
+            "stock_entry": "1125bc",
+            "stock_function": "syna_dev_remove"
+          },
+          {
+            "stock_entry": "112d6c",
+            "stock_function": "syna_dev_resume"
+          },
+          {
+            "stock_entry": "111504",
+            "stock_function": "syna_dev_set_charger_mode"
+          },
+          {
+            "stock_entry": "111a30",
+            "stock_function": "syna_dev_set_display_rotation"
+          },
+          {
+            "stock_entry": "111718",
+            "stock_function": "syna_dev_set_follow_hand_level"
+          },
+          {
+            "stock_entry": "111b38",
+            "stock_function": "syna_dev_set_play_game"
+          },
+          {
+            "stock_entry": "11120c",
+            "stock_function": "syna_dev_set_screen_on_fp_mode"
+          },
+          {
+            "stock_entry": "111578",
+            "stock_function": "syna_dev_set_sensibility_level"
+          },
+          {
+            "stock_entry": "1118a4",
+            "stock_function": "syna_dev_set_stability_level"
+          },
+          {
+            "stock_entry": "111298",
+            "stock_function": "syna_dev_set_tp_report_rate"
+          },
+          {
+            "stock_entry": "112c90",
+            "stock_function": "syna_dev_set_up_app_fw"
+          },
+          {
+            "stock_entry": "1136c4",
+            "stock_function": "syna_dev_set_up_input_device"
+          },
+          {
+            "stock_entry": "1126f4",
+            "stock_function": "syna_dev_shutdown"
+          },
+          {
+            "stock_entry": "11337c",
+            "stock_function": "syna_dev_suspend"
+          },
+          {
+            "stock_entry": "12c940",
+            "stock_function": "syna_ghost_check_reset"
+          },
+          {
+            "stock_entry": "1184e0",
+            "stock_function": "syna_hw_interface_exit"
+          },
+          {
+            "stock_entry": "118418",
+            "stock_function": "syna_hw_interface_init"
+          },
+          {
+            "stock_entry": "114580",
+            "stock_function": "syna_ioctl"
+          },
+          {
+            "stock_entry": "1147ec",
+            "stock_function": "syna_mmap"
+          },
+          {
+            "stock_entry": "1148a0",
+            "stock_function": "syna_open"
+          },
+          {
+            "stock_entry": "127e18",
+            "stock_function": "syna_pal_mem_alloc"
+          },
+          {
+            "stock_entry": "11d67c",
+            "stock_function": "syna_pal_mem_cpy"
+          },
+          {
+            "stock_entry": "11da1c",
+            "stock_function": "syna_pal_mem_cpy"
+          },
+          {
+            "stock_entry": "12a478",
+            "stock_function": "syna_pal_mem_cpy"
+          },
+          {
+            "stock_entry": "1284c0",
+            "stock_function": "syna_pal_mem_free"
+          },
+          {
+            "stock_entry": "12a4ec",
+            "stock_function": "syna_pal_mem_free"
+          },
+          {
+            "stock_entry": "114ae0",
+            "stock_function": "syna_pm_resume"
+          },
+          {
+            "stock_entry": "114a94",
+            "stock_function": "syna_pm_suspend"
+          },
+          {
+            "stock_entry": "114510",
+            "stock_function": "syna_poll"
+          },
+          {
+            "stock_entry": "111bac",
+            "stock_function": "syna_recovery_game_mode_after_reset"
+          },
+          {
+            "stock_entry": "1148e0",
+            "stock_function": "syna_release"
+          },
+          {
+            "stock_entry": "118364",
+            "stock_function": "syna_request_managed_device"
+          },
+          {
+            "stock_entry": "11a0e4",
+            "stock_function": "syna_spi_alloc_mem"
+          },
+          {
+            "stock_entry": "119da0",
+            "stock_function": "syna_spi_enable_irq"
+          },
+          {
+            "stock_entry": "11a35c",
+            "stock_function": "syna_spi_get_gpio"
+          },
+          {
+            "stock_entry": "118384",
+            "stock_function": "syna_spi_hw_reset"
+          },
+          {
+            "stock_entry": "119e7c",
+            "stock_function": "syna_spi_power_on"
+          },
+          {
+            "stock_entry": "118544",
+            "stock_function": "syna_spi_probe"
+          },
+          {
+            "stock_entry": "119800",
+            "stock_function": "syna_spi_read"
+          },
+          {
+            "stock_entry": "118514",
+            "stock_function": "syna_spi_release"
+          },
+          {
+            "stock_entry": "119670",
+            "stock_function": "syna_spi_remove"
+          },
+          {
+            "stock_entry": "119ae4",
+            "stock_function": "syna_spi_write"
+          },
+          {
+            "stock_entry": "11a440",
+            "stock_function": "syna_sysfs_create_dir"
+          },
+          {
+            "stock_entry": "11a9a0",
+            "stock_function": "syna_sysfs_debug_store"
+          },
+          {
+            "stock_entry": "11b3b0",
+            "stock_function": "syna_sysfs_fw_update_store"
+          },
+          {
+            "stock_entry": "11aadc",
+            "stock_function": "syna_sysfs_get_delta_show"
+          },
+          {
+            "stock_entry": "11a5a0",
+            "stock_function": "syna_sysfs_info_show"
+          },
+          {
+            "stock_entry": "11b12c",
+            "stock_function": "syna_sysfs_irq_en_store"
+          },
+          {
+            "stock_entry": "11b2c4",
+            "stock_function": "syna_sysfs_pwr_store"
+          },
+          {
+            "stock_entry": "11a518",
+            "stock_function": "syna_sysfs_remove_dir"
+          },
+          {
+            "stock_entry": "11afa8",
+            "stock_function": "syna_sysfs_reset_store"
+          },
+          {
+            "stock_entry": "121124",
+            "stock_function": "syna_tcm_allocate_device"
+          },
+          {
+            "stock_entry": "11d594",
+            "stock_function": "syna_tcm_buf_alloc"
+          },
+          {
+            "stock_entry": "11d940",
+            "stock_function": "syna_tcm_buf_alloc"
+          },
+          {
+            "stock_entry": "11ce6c",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "11dce4",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "11e454",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "121c10",
+            "stock_function": "syna_tcm_buf_copy"
+          },
+          {
+            "stock_entry": "11ede8",
+            "stock_function": "syna_tcm_buf_lock"
+          },
+          {
+            "stock_entry": "11ee40",
+            "stock_function": "syna_tcm_buf_unlock"
+          },
+          {
+            "stock_entry": "122140",
+            "stock_function": "syna_tcm_buf_unlock"
+          },
+          {
+            "stock_entry": "126e70",
+            "stock_function": "syna_tcm_check_flash_block"
+          },
+          {
+            "stock_entry": "124178",
+            "stock_function": "syna_tcm_clear_command_processing"
+          },
+          {
+            "stock_entry": "124124",
+            "stock_function": "syna_tcm_clear_data_duplicator"
+          },
+          {
+            "stock_entry": "121034",
+            "stock_function": "syna_tcm_config_timings"
+          },
+          {
+            "stock_entry": "121944",
+            "stock_function": "syna_tcm_detect_device"
+          },
+          {
+            "stock_entry": "1267b0",
+            "stock_function": "syna_tcm_do_fw_update"
+          },
+          {
+            "stock_entry": "125c18",
+            "stock_function": "syna_tcm_do_fw_update_ex"
+          },
+          {
+            "stock_entry": "123fa0",
+            "stock_function": "syna_tcm_enable_predict_reading"
+          },
+          {
+            "stock_entry": "12231c",
+            "stock_function": "syna_tcm_enable_report"
+          },
+          {
+            "stock_entry": "1281c8",
+            "stock_function": "syna_tcm_erase_mtp_data"
+          },
+          {
+            "stock_entry": "122c08",
+            "stock_function": "syna_tcm_get_app_info"
+          },
+          {
+            "stock_entry": "1229c8",
+            "stock_function": "syna_tcm_get_boot_info"
+          },
+          {
+            "stock_entry": "123228",
+            "stock_function": "syna_tcm_get_dynamic_config"
+          },
+          {
+            "stock_entry": "121ad4",
+            "stock_function": "syna_tcm_get_event_data"
+          },
+          {
+            "stock_entry": "123a08",
+            "stock_function": "syna_tcm_get_features"
+          },
+          {
+            "stock_entry": "12ab40",
+            "stock_function": "syna_tcm_get_partition_id_string"
+          },
+          {
+            "stock_entry": "122eac",
+            "stock_function": "syna_tcm_get_static_config"
+          },
+          {
+            "stock_entry": "11d32c",
+            "stock_function": "syna_tcm_get_testing_0001"
+          },
+          {
+            "stock_entry": "11d79c",
+            "stock_function": "syna_tcm_get_testing_0002"
+          },
+          {
+            "stock_entry": "11daec",
+            "stock_function": "syna_tcm_get_testing_0100"
+          },
+          {
+            "stock_entry": "11e204",
+            "stock_function": "syna_tcm_get_testing_0500"
+          },
+          {
+            "stock_entry": "11cc1c",
+            "stock_function": "syna_tcm_get_testing_0A00"
+          },
+          {
+            "stock_entry": "128514",
+            "stock_function": "syna_tcm_get_touch_data"
+          },
+          {
+            "stock_entry": "121f54",
+            "stock_function": "syna_tcm_identify"
+          },
+          {
+            "stock_entry": "12ab6c",
+            "stock_function": "syna_tcm_parse_fw_image"
+          },
+          {
+            "stock_entry": "12860c",
+            "stock_function": "syna_tcm_parse_touch_report"
+          },
+          {
+            "stock_entry": "12a53c",
+            "stock_function": "syna_tcm_preserve_touch_report_config"
+          },
+          {
+            "stock_entry": "1277fc",
+            "stock_function": "syna_tcm_read_cs_data"
+          },
+          {
+            "stock_entry": "1247c8",
+            "stock_function": "syna_tcm_read_flash"
+          },
+          {
+            "stock_entry": "124208",
+            "stock_function": "syna_tcm_read_flash_address"
+          },
+          {
+            "stock_entry": "124ab4",
+            "stock_function": "syna_tcm_read_flash_area"
+          },
+          {
+            "stock_entry": "125290",
+            "stock_function": "syna_tcm_read_flash_boot_config"
+          },
+          {
+            "stock_entry": "1254bc",
+            "stock_function": "syna_tcm_read_flash_boot_cs_config"
+          },
+          {
+            "stock_entry": "125a18",
+            "stock_function": "syna_tcm_read_flash_mtp_config"
+          },
+          {
+            "stock_entry": "127e84",
+            "stock_function": "syna_tcm_read_mtp_data"
+          },
+          {
+            "stock_entry": "1216d0",
+            "stock_function": "syna_tcm_remove_device"
+          },
+          {
+            "stock_entry": "1221ac",
+            "stock_function": "syna_tcm_reset"
+          },
+          {
+            "stock_entry": "1237ec",
+            "stock_function": "syna_tcm_rezero"
+          },
+          {
+            "stock_entry": "123c34",
+            "stock_function": "syna_tcm_run_production_test"
+          },
+          {
+            "stock_entry": "123dc0",
+            "stock_function": "syna_tcm_send_command"
+          },
+          {
+            "stock_entry": "12aaf4",
+            "stock_function": "syna_tcm_set_custom_gesture_callback"
+          },
+          {
+            "stock_entry": "12aaa8",
+            "stock_function": "syna_tcm_set_custom_touch_entity_callback"
+          },
+          {
+            "stock_entry": "1240d4",
+            "stock_function": "syna_tcm_set_data_duplicator"
+          },
+          {
+            "stock_entry": "1233b4",
+            "stock_function": "syna_tcm_set_dynamic_config"
+          },
+          {
+            "stock_entry": "123518",
+            "stock_function": "syna_tcm_set_game_partition_config"
+          },
+          {
+            "stock_entry": "1241bc",
+            "stock_function": "syna_tcm_set_post_reset_callback"
+          },
+          {
+            "stock_entry": "124014",
+            "stock_function": "syna_tcm_set_report_dispatcher"
+          },
+          {
+            "stock_entry": "1230dc",
+            "stock_function": "syna_tcm_set_static_config"
+          },
+          {
+            "stock_entry": "12a264",
+            "stock_function": "syna_tcm_set_touch_report_config"
+          },
+          {
+            "stock_entry": "1244e4",
+            "stock_function": "syna_tcm_set_up_flash_access"
+          },
+          {
+            "stock_entry": "1238fc",
+            "stock_function": "syna_tcm_sleep"
+          },
+          {
+            "stock_entry": "1226ec",
+            "stock_function": "syna_tcm_switch_fw_mode"
+          },
+          {
+            "stock_entry": "11d6e4",
+            "stock_function": "syna_tcm_testing_0001_check_device_id"
+          },
+          {
+            "stock_entry": "11da70",
+            "stock_function": "syna_tcm_testing_0002_check_config_id"
+          },
+          {
+            "stock_entry": "11e01c",
+            "stock_function": "syna_tcm_testing_0100_check_data"
+          },
+          {
+            "stock_entry": "11e8ac",
+            "stock_function": "syna_tcm_testing_0500_check_lower_bound"
+          },
+          {
+            "stock_entry": "11e844",
+            "stock_function": "syna_tcm_testing_0500_check_upper_bound"
+          },
+          {
+            "stock_entry": "11d2c4",
+            "stock_function": "syna_tcm_testing_0A00_check_lower_bound"
+          },
+          {
+            "stock_entry": "11d25c",
+            "stock_function": "syna_tcm_testing_0A00_check_upper_bound"
+          },
+          {
+            "stock_entry": "11d33c",
+            "stock_function": "syna_tcm_testing_build_id"
+          },
+          {
+            "stock_entry": "11df64",
+            "stock_function": "syna_tcm_testing_check_array_data"
+          },
+          {
+            "stock_entry": "11d0ec",
+            "stock_function": "syna_tcm_testing_check_frame_data"
+          },
+          {
+            "stock_entry": "11e6d4",
+            "stock_function": "syna_tcm_testing_check_frame_data"
+          },
+          {
+            "stock_entry": "11d7ac",
+            "stock_function": "syna_tcm_testing_config_id"
+          },
+          {
+            "stock_entry": "11e214",
+            "stock_function": "syna_tcm_testing_full_raw"
+          },
+          {
+            "stock_entry": "11cc2c",
+            "stock_function": "syna_tcm_testing_noise"
+          },
+          {
+            "stock_entry": "11dafc",
+            "stock_function": "syna_tcm_testing_trx_trx_short"
+          },
+          {
+            "stock_entry": "127414",
+            "stock_function": "syna_tcm_update_cs_config"
+          },
+          {
+            "stock_entry": "125f38",
+            "stock_function": "syna_tcm_update_flash_block"
+          },
+          {
+            "stock_entry": "126aec",
+            "stock_function": "syna_tcm_update_lockdown_config"
+          },
+          {
+            "stock_entry": "127b14",
+            "stock_function": "syna_tcm_update_mtp_data"
+          },
+          {
+            "stock_entry": "11f790",
+            "stock_function": "syna_tcm_v1_check_max_rw_size"
+          },
+          {
+            "stock_entry": "11e914",
+            "stock_function": "syna_tcm_v1_detect"
+          },
+          {
+            "stock_entry": "11f6d0",
+            "stock_function": "syna_tcm_v1_parse_idinfo"
+          },
+          {
+            "stock_entry": "120eec",
+            "stock_function": "syna_tcm_v1_read"
+          },
+          {
+            "stock_entry": "11f838",
+            "stock_function": "syna_tcm_v1_read_message"
+          },
+          {
+            "stock_entry": "120da8",
+            "stock_function": "syna_tcm_v1_set_up_max_rw_size"
+          },
+          {
+            "stock_entry": "120e64",
+            "stock_function": "syna_tcm_v1_terminate"
+          },
+          {
+            "stock_entry": "11eeac",
+            "stock_function": "syna_tcm_v1_write_message"
+          },
+          {
+            "stock_entry": "12248c",
+            "stock_function": "syna_tcm_wait_for_report"
+          },
+          {
+            "stock_entry": "12704c",
+            "stock_function": "syna_tcm_write_flash"
+          },
+          {
+            "stock_entry": "11c1f4",
+            "stock_function": "syna_testing_check_config_id_show"
+          },
+          {
+            "stock_entry": "11bf08",
+            "stock_function": "syna_testing_check_dev_id_show"
+          },
+          {
+            "stock_entry": "11be28",
+            "stock_function": "syna_testing_create_dir"
+          },
+          {
+            "stock_entry": "11c410",
+            "stock_function": "syna_testing_pt01_show"
+          },
+          {
+            "stock_entry": "11bb70",
+            "stock_function": "syna_testing_pt01_zte"
+          },
+          {
+            "stock_entry": "11c66c",
+            "stock_function": "syna_testing_pt05_show"
+          },
+          {
+            "stock_entry": "11b818",
+            "stock_function": "syna_testing_pt05_zte"
+          },
+          {
+            "stock_entry": "11c944",
+            "stock_function": "syna_testing_pt0a_show"
+          },
+          {
+            "stock_entry": "11b4c0",
+            "stock_function": "syna_testing_pt0a_zte"
+          },
+          {
+            "stock_entry": "11bec4",
+            "stock_function": "syna_testing_remove_dir"
+          },
+          {
+            "stock_entry": "12b55c",
+            "stock_function": "syna_tpd_register_fw_class"
+          },
+          {
+            "stock_entry": "111dc4",
+            "stock_function": "syna_ts_check_dt"
+          },
+          {
+            "stock_entry": "114914",
+            "stock_function": "syna_ts_panel_notifier_callback"
+          },
+          {
+            "stock_entry": "113504",
+            "stock_function": "syna_ts_register_for_panel_events"
+          },
+          {
+            "stock_entry": "12b8d0",
+            "stock_function": "syna_work_charger_detect_work"
+          },
+          {
+            "stock_entry": "10da90",
+            "stock_function": "tp_BBAT_test_read"
+          },
+          {
+            "stock_entry": "10db98",
+            "stock_function": "tp_BBAT_test_write"
+          },
+          {
+            "stock_entry": "107d54",
+            "stock_function": "tp_alloc_tp_firmware_data"
+          },
+          {
+            "stock_entry": "10b150",
+            "stock_function": "tp_edge_report_limit_read"
+          },
+          {
+            "stock_entry": "10b690",
+            "stock_function": "tp_edge_report_limit_write"
+          },
+          {
+            "stock_entry": "1104f0",
+            "stock_function": "tp_esd_check"
+          },
+          {
+            "stock_entry": "10ceb0",
+            "stock_function": "tp_fold_state_read"
+          },
+          {
+            "stock_entry": "10cfa4",
+            "stock_function": "tp_fold_state_write"
+          },
+          {
+            "stock_entry": "10dd14",
+            "stock_function": "tp_frame_data_read"
+          },
+          {
+            "stock_entry": "10de08",
+            "stock_function": "tp_frame_data_write"
+          },
+          {
+            "stock_entry": "107cf0",
+            "stock_function": "tp_free_tp_firmware_data"
+          },
+          {
+            "stock_entry": "10c504",
+            "stock_function": "tp_game_partition_read"
+          },
+          {
+            "stock_entry": "10c5e0",
+            "stock_function": "tp_game_partition_write"
+          },
+          {
+            "stock_entry": "10f400",
+            "stock_function": "tp_ghost_check"
+          },
+          {
+            "stock_entry": "108690",
+            "stock_function": "tp_ghost_check_work"
+          },
+          {
+            "stock_entry": "109db8",
+            "stock_function": "tp_glove_read"
+          },
+          {
+            "stock_entry": "109eac",
+            "stock_function": "tp_glove_write"
+          },
+          {
+            "stock_entry": "109784",
+            "stock_function": "tp_module_info_read"
+          },
+          {
+            "stock_entry": "10cce8",
+            "stock_function": "tp_palm_mode_read"
+          },
+          {
+            "stock_entry": "10cddc",
+            "stock_function": "tp_palm_mode_write"
+          },
+          {
+            "stock_entry": "10c724",
+            "stock_function": "tp_pen_only_read"
+          },
+          {
+            "stock_entry": "10c818",
+            "stock_function": "tp_pen_only_write"
+          },
+          {
+            "stock_entry": "10cae8",
+            "stock_function": "tp_self_test_read"
+          },
+          {
+            "stock_entry": "10cc50",
+            "stock_function": "tp_self_test_write"
+          },
+          {
+            "stock_entry": "10c304",
+            "stock_function": "tp_sensibility_level_read"
+          },
+          {
+            "stock_entry": "10c3f8",
+            "stock_function": "tp_sensibility_level_write"
+          },
+          {
+            "stock_entry": "10ac28",
+            "stock_function": "tp_single_aod_read"
+          },
+          {
+            "stock_entry": "10ad1c",
+            "stock_function": "tp_single_aod_write"
+          },
+          {
+            "stock_entry": "10adf4",
+            "stock_function": "tp_single_game_read"
+          },
+          {
+            "stock_entry": "10aee8",
+            "stock_function": "tp_single_game_write"
+          },
+          {
+            "stock_entry": "10aa5c",
+            "stock_function": "tp_single_tap_read"
+          },
+          {
+            "stock_entry": "10ab50",
+            "stock_function": "tp_single_tap_write"
+          },
+          {
+            "stock_entry": "109bf0",
+            "stock_function": "tp_smart_cover_read"
+          },
+          {
+            "stock_entry": "109ce4",
+            "stock_function": "tp_smart_cover_write"
+          },
+          {
+            "stock_entry": "10dbd0",
+            "stock_function": "tp_test_read"
+          },
+          {
+            "stock_entry": "10dcdc",
+            "stock_function": "tp_test_write"
+          },
+          {
+            "stock_entry": "109a28",
+            "stock_function": "tp_wake_gesture_read"
+          },
+          {
+            "stock_entry": "109b1c",
+            "stock_function": "tp_wake_gesture_write"
+          },
+          {
+            "stock_entry": "10d408",
+            "stock_function": "tp_zlog_debug_read"
+          },
+          {
+            "stock_entry": "10d4a8",
+            "stock_function": "tp_zlog_debug_write"
+          },
+          {
+            "stock_entry": "10f95c",
+            "stock_function": "tpd_clean_all_event"
+          },
+          {
+            "stock_entry": "107eb8",
+            "stock_function": "tpd_copy_to_tp_firmware_data"
+          },
+          {
+            "stock_entry": "12bb4c",
+            "stock_function": "tpd_enable_wakegesture"
+          },
+          {
+            "stock_entry": "12ca00",
+            "stock_function": "tpd_get_fake_sleep"
+          },
+          {
+            "stock_entry": "12c26c",
+            "stock_function": "tpd_get_follow_hand_level"
+          },
+          {
+            "stock_entry": "12c7fc",
+            "stock_function": "tpd_get_frame_data"
+          },
+          {
+            "stock_entry": "12bf60",
+            "stock_function": "tpd_get_one_key"
+          },
+          {
+            "stock_entry": "12c8e4",
+            "stock_function": "tpd_get_palm_mode"
+          },
+          {
+            "stock_entry": "12c6cc",
+            "stock_function": "tpd_get_play_game"
+          },
+          {
+            "stock_entry": "12c424",
+            "stock_function": "tpd_get_rotation_limit_level"
+          },
+          {
+            "stock_entry": "12ca78",
+            "stock_function": "tpd_get_screen_off_awake"
+          },
+          {
+            "stock_entry": "12c18c",
+            "stock_function": "tpd_get_sensibility_level"
+          },
+          {
+            "stock_entry": "12bccc",
+            "stock_function": "tpd_get_singleaodgesture"
+          },
+          {
+            "stock_entry": "12bde4",
+            "stock_function": "tpd_get_singlefpgesture"
+          },
+          {
+            "stock_entry": "12bb9c",
+            "stock_function": "tpd_get_singlegamegesture"
+          },
+          {
+            "stock_entry": "12c348",
+            "stock_function": "tpd_get_stability_level"
+          },
+          {
+            "stock_entry": "12c0b0",
+            "stock_function": "tpd_get_tp_report_rate"
+          },
+          {
+            "stock_entry": "12bb30",
+            "stock_function": "tpd_get_wakegesture"
+          },
+          {
+            "stock_entry": "114a44",
+            "stock_function": "tpd_goodix_ts_resume"
+          },
+          {
+            "stock_entry": "114a6c",
+            "stock_function": "tpd_goodix_ts_suspend"
+          },
+          {
+            "stock_entry": "10fca8",
+            "stock_function": "tpd_id0_report_work"
+          },
+          {
+            "stock_entry": "10fcd4",
+            "stock_function": "tpd_id1_report_work"
+          },
+          {
+            "stock_entry": "10fd00",
+            "stock_function": "tpd_id2_report_work"
+          },
+          {
+            "stock_entry": "10fd2c",
+            "stock_function": "tpd_id3_report_work"
+          },
+          {
+            "stock_entry": "10fd58",
+            "stock_function": "tpd_id4_report_work"
+          },
+          {
+            "stock_entry": "10fd84",
+            "stock_function": "tpd_id5_report_work"
+          },
+          {
+            "stock_entry": "10fdb0",
+            "stock_function": "tpd_id6_report_work"
+          },
+          {
+            "stock_entry": "10fddc",
+            "stock_function": "tpd_id7_report_work"
+          },
+          {
+            "stock_entry": "10fe08",
+            "stock_function": "tpd_id8_report_work"
+          },
+          {
+            "stock_entry": "10fe34",
+            "stock_function": "tpd_id9_report_work"
+          },
+          {
+            "stock_entry": "12baac",
+            "stock_function": "tpd_init_tpinfo"
+          },
+          {
+            "stock_entry": "1084c0",
+            "stock_function": "tpd_probe_work_deinit"
+          },
+          {
+            "stock_entry": "108418",
+            "stock_function": "tpd_probe_work_init"
+          },
+          {
+            "stock_entry": "107fa4",
+            "stock_function": "tpd_proc_deinit"
+          },
+          {
+            "stock_entry": "1082ac",
+            "stock_function": "tpd_report_uevent"
+          },
+          {
+            "stock_entry": "10fe60",
+            "stock_function": "tpd_report_work_deinit"
+          },
+          {
+            "stock_entry": "10fa04",
+            "stock_function": "tpd_report_work_init"
+          },
+          {
+            "stock_entry": "107f84",
+            "stock_function": "tpd_reset_fw_data_pos_and_size"
+          },
+          {
+            "stock_entry": "1105d8",
+            "stock_function": "tpd_reset_gpio_output"
+          },
+          {
+            "stock_entry": "11074c",
+            "stock_function": "tpd_resume_work"
+          },
+          {
+            "stock_entry": "110810",
+            "stock_function": "tpd_resume_work_deinit"
+          },
+          {
+            "stock_entry": "110698",
+            "stock_function": "tpd_resume_work_init"
+          },
+          {
+            "stock_entry": "12c50c",
+            "stock_function": "tpd_set_display_rotation"
+          },
+          {
+            "stock_entry": "12c9a4",
+            "stock_function": "tpd_set_fake_sleep"
+          },
+          {
+            "stock_entry": "12c288",
+            "stock_function": "tpd_set_follow_hand_level"
+          },
+          {
+            "stock_entry": "12c818",
+            "stock_function": "tpd_set_frame_data"
+          },
+          {
+            "stock_entry": "12c7c4",
+            "stock_function": "tpd_set_game_partition"
+          },
+          {
+            "stock_entry": "12befc",
+            "stock_function": "tpd_set_one_key"
+          },
+          {
+            "stock_entry": "12c900",
+            "stock_function": "tpd_set_palm_mode"
+          },
+          {
+            "stock_entry": "12c6e8",
+            "stock_function": "tpd_set_play_game"
+          },
+          {
+            "stock_entry": "12c440",
+            "stock_function": "tpd_set_rotation_limit_level"
+          },
+          {
+            "stock_entry": "12ca1c",
+            "stock_function": "tpd_set_screen_off_awake"
+          },
+          {
+            "stock_entry": "12c1a8",
+            "stock_function": "tpd_set_sensibility_level"
+          },
+          {
+            "stock_entry": "12bd30",
+            "stock_function": "tpd_set_singleaodgesture"
+          },
+          {
+            "stock_entry": "12be48",
+            "stock_function": "tpd_set_singlefpgesture"
+          },
+          {
+            "stock_entry": "12bc04",
+            "stock_function": "tpd_set_singlegamegesture"
+          },
+          {
+            "stock_entry": "12c364",
+            "stock_function": "tpd_set_stability_level"
+          },
+          {
+            "stock_entry": "12c0cc",
+            "stock_function": "tpd_set_tp_report_rate"
+          },
+          {
+            "stock_entry": "1107a4",
+            "stock_function": "tpd_suspend_work"
+          },
+          {
+            "stock_entry": "10dedc",
+            "stock_function": "tpd_sysfs_fwimage_show"
+          },
+          {
+            "stock_entry": "10dff0",
+            "stock_function": "tpd_sysfs_fwimage_store"
+          },
+          {
+            "stock_entry": "12c050",
+            "stock_function": "tpd_test_cmd_show"
+          },
+          {
+            "stock_entry": "12bf7c",
+            "stock_function": "tpd_test_cmd_store"
+          },
+          {
+            "stock_entry": "10e254",
+            "stock_function": "tpd_touch_press"
+          },
+          {
+            "stock_entry": "10ec70",
+            "stock_function": "tpd_touch_release"
+          },
+          {
+            "stock_entry": "10eb70",
+            "stock_function": "tpd_touch_report"
+          },
+          {
+            "stock_entry": "108744",
+            "stock_function": "tpd_workqueue_deinit"
+          },
+          {
+            "stock_entry": "108508",
+            "stock_function": "tpd_workqueue_init"
+          },
+          {
+            "stock_entry": "107718",
+            "stock_function": "tpd_zlog_check"
+          },
+          {
+            "stock_entry": "1078c8",
+            "stock_function": "tpd_zlog_init"
+          },
+          {
+            "stock_entry": "106998",
+            "stock_function": "tpd_zlog_record_notify"
+          },
+          {
+            "stock_entry": "10688c",
+            "stock_function": "tpd_zlog_register"
+          },
+          {
+            "stock_entry": "109f80",
+            "stock_function": "tpfwupgrade_store"
+          },
+          {
+            "stock_entry": "12b4dc",
+            "stock_function": "trim"
+          },
+          {
+            "stock_entry": "110d28",
+            "stock_function": "uf_touch_report"
+          },
+          {
+            "stock_entry": "110868",
+            "stock_function": "ufp_get_lcdstate"
+          },
+          {
+            "stock_entry": "11109c",
+            "stock_function": "ufp_mac_exit"
+          },
+          {
+            "stock_entry": "110fb0",
+            "stock_function": "ufp_mac_init"
+          },
+          {
+            "stock_entry": "110f84",
+            "stock_function": "ufp_notifier_cb"
+          },
+          {
+            "stock_entry": "110878",
+            "stock_function": "ufp_report_gesture_uevent"
+          },
+          {
+            "stock_entry": "110ee0",
+            "stock_function": "ufp_report_lcd_state"
+          },
+          {
+            "stock_entry": "110624",
+            "stock_function": "ufp_report_lcd_state_delayed_work"
+          },
+          {
+            "stock_entry": "1107f0",
+            "stock_function": "ufp_report_lcd_state_work"
+          },
+          {
+            "stock_entry": "11108c",
+            "stock_function": "ufp_single_tap_work"
+          },
+          {
+            "stock_entry": "107844",
+            "stock_function": "zlog_register_work"
+          },
+          {
+            "stock_entry": "107874",
+            "stock_function": "zlog_register_work_deinit"
+          },
+          {
+            "stock_entry": "1077c8",
+            "stock_function": "zlog_register_work_init"
+          },
+          {
+            "stock_entry": "111f64",
+            "stock_function": "zte_reset_frame_list"
+          },
+          {
+            "stock_entry": "10e0d0",
+            "stock_function": "zte_touch_deinit"
+          },
+          {
+            "stock_entry": "1081c8",
+            "stock_function": "zte_touch_pdev_register"
+          },
+          {
+            "stock_entry": "1083b4",
+            "stock_function": "zte_touch_pdev_unregister"
+          },
+          {
+            "stock_entry": "1087e4",
+            "stock_function": "zte_touch_probe"
+          },
+          {
+            "stock_entry": "109668",
+            "stock_function": "zte_touch_remove"
+          },
+          {
+            "stock_entry": "1096a0",
+            "stock_function": "zte_touch_shutdown"
+          },
+          {
+            "stock_entry": "108494",
+            "stock_function": "ztp_probe_work"
+          }
+        ],
+        "mapping_review_errors": [],
+        "mapping_review_passed": true,
+        "passed": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\reconstruction_map.json",
+        "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+        "traceability_errors": [],
+        "traceability_passed": true,
+        "unmapped_functions": []
+      },
+      "warnings": [
+        "candidate and fresh module SHA-256 differ in allocated build-id metadata and/or non-allocated debug/BTF sections; runtime content, section layout, and modinfo match",
+        "stock module dependency metadata differs from the current target build; candidate dependency metadata is checked against the target rebuild"
+      ]
+    }
+  ],
+  "generated_utc": "2026-11-02T07:33:03.378347+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": false,
+  "rebuild_requested": true,
+  "run_root": "public repository evidence: C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "zte_tpd"
+    ],
+    "static_verified": [
+      "zte_tpd"
+    ]
+  },
+  "target_kernel_manifest": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json"
+}

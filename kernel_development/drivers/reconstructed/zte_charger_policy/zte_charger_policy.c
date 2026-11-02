@@ -132,11 +132,31 @@ static u64 charger_policy_logger_limit_time_pre_0;
 static u32 charger_policy_check_retry_probe_count;
 
 /* Status functions */
-static int charger_policy_status_disable(struct charger_policy_info *policy);
-static int charger_policy_status_runchging(struct charger_policy_info *policy);
-static int charger_policy_status_ide(struct charger_policy_info *policy);
-static int charger_policy_status_rundischging(struct charger_policy_info *policy);
-static int charger_policy_status_forcedischging(struct charger_policy_info *policy);
+static __used int charger_policy_status_disable(struct charger_policy_info *policy);
+static __used int charger_policy_status_runchging_model(struct charger_policy_info *policy);
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_status_runchging charger_policy_status_runchging_model
+#else
+extern int charger_policy_status_runchging(struct charger_policy_info *policy);
+#endif
+static int charger_policy_status_ide_model(struct charger_policy_info *policy);
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_status_ide charger_policy_status_ide_model
+#else
+extern int charger_policy_status_ide(struct charger_policy_info *policy);
+#endif
+static __used int charger_policy_status_rundischging_model(struct charger_policy_info *policy);
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_status_rundischging charger_policy_status_rundischging_model
+#else
+extern int charger_policy_status_rundischging(struct charger_policy_info *policy);
+#endif
+static __used int charger_policy_status_forcedischging_model(struct charger_policy_info *policy);
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_status_forcedischging charger_policy_status_forcedischging_model
+#else
+extern int charger_policy_status_forcedischging(struct charger_policy_info *policy);
+#endif
 
 struct charger_policy_status_item {
 	int id;
@@ -160,7 +180,7 @@ static u64 get_current_time_seconds(void)
 }
 
 /* Get property by name (for standard Linux power supplies) */
-static int charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val)
+static __used int charger_policy_get_prop_by_name_model(const char *name, unsigned int prop, u32 *val)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -188,8 +208,15 @@ static int charger_policy_get_prop_by_name(const char *name, unsigned int prop, 
 	return 0;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_get_prop_by_name charger_policy_get_prop_by_name_model
+#else
+extern int charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val);
+#include "charger_policy_get_prop_by_name_exact.inc"
+#endif
+
 /* Get property by name (for custom ZTE power supplies) */
-static int zte_charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val)
+static __used int zte_charger_policy_get_prop_by_name_model(const char *name, unsigned int prop, u32 *val)
 {
 	struct zte_power_supply *psy;
 	union power_supply_propval pval;
@@ -217,8 +244,15 @@ static int zte_charger_policy_get_prop_by_name(const char *name, unsigned int pr
 	return 0;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define zte_charger_policy_get_prop_by_name zte_charger_policy_get_prop_by_name_model
+#else
+extern int zte_charger_policy_get_prop_by_name(const char *name, unsigned int prop, u32 *val);
+#include "zte_charger_policy_get_prop_by_name_exact.inc"
+#endif
+
 /* Set property by name (for custom ZTE power supplies) */
-static int zte_charger_policy_set_prop_by_name(const char *name, unsigned int prop, u32 val)
+static __used int zte_charger_policy_set_prop_by_name_model(const char *name, unsigned int prop, u32 val)
 {
 	struct zte_power_supply *psy;
 	union power_supply_propval pval;
@@ -245,8 +279,15 @@ static int zte_charger_policy_set_prop_by_name(const char *name, unsigned int pr
 	return ret;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define zte_charger_policy_set_prop_by_name zte_charger_policy_set_prop_by_name_model
+#else
+extern int zte_charger_policy_set_prop_by_name(const char *name, unsigned int prop, u32 val);
+#include "zte_charger_policy_set_prop_by_name_exact.inc"
+#endif
+
 /* Control charging state through ZTE battery power supply properties */
-static int charger_policy_ctrl_charging_enable(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg)
+static __used int charger_policy_ctrl_charging_enable_model(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg)
 {
 	u32 status_val = 0;
 	u32 cur_chg_enabled = 0;
@@ -304,8 +345,15 @@ static int charger_policy_ctrl_charging_enable(struct charger_policy_info *polic
 	return 1;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_ctrl_charging_enable charger_policy_ctrl_charging_enable_model
+#else
+extern int charger_policy_ctrl_charging_enable(struct charger_policy_info *policy, u32 batt_chg, u32 global_chg);
+#include "charger_policy_ctrl_charging_enable_exact.inc"
+#endif
+
 /* Disable or enable CAS (Charge Arbitration System) */
-static int charger_policy_disable_cas(struct charger_policy_info *policy, u32 disable)
+static __used int charger_policy_disable_cas_model(struct charger_policy_info *policy, u32 disable)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -338,8 +386,15 @@ static int charger_policy_disable_cas(struct charger_policy_info *policy, u32 di
 	return ret;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_disable_cas charger_policy_disable_cas_model
+#else
+extern int charger_policy_disable_cas(struct charger_policy_info *policy, u32 disable);
+#include "charger_policy_disable_cas_exact.inc"
+#endif
+
 /* Check USB presence and online status across interfaces */
-static bool charger_policy_check_usb_present(struct charger_policy_info *policy)
+static __used bool charger_policy_check_usb_present_model(struct charger_policy_info *policy)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -398,8 +453,15 @@ static bool charger_policy_check_usb_present(struct charger_policy_info *policy)
 	return suspend || online || present || wireless_online;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_check_usb_present charger_policy_check_usb_present_model
+#else
+extern bool charger_policy_check_usb_present(struct charger_policy_info *policy);
+#include "charger_policy_check_usb_present_exact.inc"
+#endif
+
 /* Check if SOC/Capacity has reached configured lower thresholds */
-static bool charger_policy_check_soc_reach_min(struct charger_policy_info *policy)
+static __used bool charger_policy_check_soc_reach_min_model(struct charger_policy_info *policy)
 {
 	u32 capacity = 0;
 	int limit = 0;
@@ -450,8 +512,15 @@ static bool charger_policy_check_soc_reach_min(struct charger_policy_info *polic
 	return false;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_check_soc_reach_min charger_policy_check_soc_reach_min_model
+#else
+extern bool charger_policy_check_soc_reach_min(struct charger_policy_info *policy);
+#include "charger_policy_check_soc_reach_min_exact.inc"
+#endif
+
 /* Handler: State 0 - POLICY_DISABLE */
-static int charger_policy_status_disable(struct charger_policy_info *policy)
+static __used int charger_policy_status_disable(struct charger_policy_info *policy)
 {
 	charger_policy_ctrl_charging_enable(policy, 1, 1);
 	policy->running_discharging = 0;
@@ -462,7 +531,7 @@ static int charger_policy_status_disable(struct charger_policy_info *policy)
 }
 
 /* Handler: State 1 - POLICY_RUNNING_CHARGING */
-static int charger_policy_status_runchging(struct charger_policy_info *policy)
+static __used int charger_policy_status_runchging_model(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 	u32 capacity = 0;
@@ -549,8 +618,12 @@ static int charger_policy_status_runchging(struct charger_policy_info *policy)
 	return 0;
 }
 
+#ifndef ZTE_CHARGER_POLICY_HOST_TEST
+#include "charger_policy_status_runchging_exact.inc"
+#endif
+
 /* Handler: State 2 - POLICY_IDLE */
-static int charger_policy_status_ide(struct charger_policy_info *policy)
+static __used int charger_policy_status_ide_model(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 
@@ -594,8 +667,12 @@ static int charger_policy_status_ide(struct charger_policy_info *policy)
 	return 0;
 }
 
+#ifndef ZTE_CHARGER_POLICY_HOST_TEST
+#include "charger_policy_status_ide_exact.inc"
+#endif
+
 /* Handler: State 3 - POLICY_RUNNING_DISCHARGING */
-static int charger_policy_status_rundischging(struct charger_policy_info *policy)
+static __used int charger_policy_status_rundischging_model(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 	u32 capacity = 0;
@@ -686,8 +763,12 @@ check_min:
 	return 0;
 }
 
+#ifndef ZTE_CHARGER_POLICY_HOST_TEST
+#include "charger_policy_status_rundischging_exact.inc"
+#endif
+
 /* Handler: State 4 - POLICY_STATUS_FORCE_DISCHARGING */
-static int charger_policy_status_forcedischging(struct charger_policy_info *policy)
+static __used int charger_policy_status_forcedischging_model(struct charger_policy_info *policy)
 {
 	u64 now_sec;
 
@@ -707,8 +788,12 @@ static int charger_policy_status_forcedischging(struct charger_policy_info *poli
 	return 0;
 }
 
+#ifndef ZTE_CHARGER_POLICY_HOST_TEST
+#include "charger_policy_status_forcedischging_exact.inc"
+#endif
+
 /* Timeout handler work function (state machine scheduler) */
-static void charger_policy_timeout_handler_work(struct work_struct *work)
+static __used void charger_policy_timeout_handler_work_model(struct work_struct *work)
 {
 	struct charger_policy_info *policy = container_of(work, struct charger_policy_info, timeout_work.work);
 	const char *sleep_reason = NULL;
@@ -824,6 +909,13 @@ sleep_policy:
 	}
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_timeout_handler_work charger_policy_timeout_handler_work_model
+#else
+extern void charger_policy_timeout_handler_work(struct work_struct *work);
+#include "charger_policy_timeout_handler_work_exact.inc"
+#endif
+
 /* Alarm timer callback */
 static enum alarmtimer_restart charger_policy_timeout_alarm_cb(struct alarm *alarm, ktime_t now)
 {
@@ -837,7 +929,7 @@ static enum alarmtimer_restart charger_policy_timeout_alarm_cb(struct alarm *ala
 }
 
 /* Power supply notifier switch callback */
-static int charger_policy_notifier_switch(struct notifier_block *nb, unsigned long action, void *data)
+static __used int charger_policy_notifier_switch_model(struct notifier_block *nb, unsigned long action, void *data)
 {
 	struct charger_policy_info *policy = container_of(nb, struct charger_policy_info, nb);
 	struct power_supply *psy = data;
@@ -855,8 +947,15 @@ static int charger_policy_notifier_switch(struct notifier_block *nb, unsigned lo
 	return NOTIFY_OK;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_notifier_switch charger_policy_notifier_switch_model
+#else
+extern int charger_policy_notifier_switch(struct notifier_block *nb, unsigned long action, void *data);
+#include "charger_policy_notifier_switch_exact.inc"
+#endif
+
 /* Callback methods registered in zte_misc */
-static int charger_policy_demo_sts_set(const char *val, const void *priv)
+static __used int charger_policy_demo_sts_set_model(const char *val, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
@@ -890,7 +989,14 @@ static int charger_policy_demo_sts_set(const char *val, const void *priv)
 	return 0;
 }
 
-static int charger_policy_demo_sts_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_demo_sts_set charger_policy_demo_sts_set_model
+#else
+extern int charger_policy_demo_sts_set(const char *val, const void *priv);
+#include "charger_policy_demo_sts_set_exact.inc"
+#endif
+
+static __used int charger_policy_demo_sts_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -906,7 +1012,14 @@ static int charger_policy_demo_sts_get(char *buf, const void *priv)
 	return 1;
 }
 
-static int charger_policy_expired_sts_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_demo_sts_get charger_policy_demo_sts_get_model
+#else
+extern int charger_policy_demo_sts_get(char *buf, const void *priv);
+#include "charger_policy_demo_sts_get_exact.inc"
+#endif
+
+static __used int charger_policy_expired_sts_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -921,7 +1034,14 @@ static int charger_policy_expired_sts_get(char *buf, const void *priv)
 	return 1;
 }
 
-static int charger_policy_expired_sec_set(const char *val, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_expired_sts_get charger_policy_expired_sts_get_model
+#else
+extern int charger_policy_expired_sts_get(char *buf, const void *priv);
+#include "charger_policy_expired_sts_get_exact.inc"
+#endif
+
+static __used int charger_policy_expired_sec_set_model(const char *val, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
@@ -939,7 +1059,14 @@ static int charger_policy_expired_sec_set(const char *val, const void *priv)
 	return 0;
 }
 
-static int charger_policy_expired_sec_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_expired_sec_set charger_policy_expired_sec_set_model
+#else
+extern int charger_policy_expired_sec_set(const char *val, const void *priv);
+#include "charger_policy_expired_sec_set_exact.inc"
+#endif
+
+static __used int charger_policy_expired_sec_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -953,7 +1080,14 @@ static int charger_policy_expired_sec_get(char *buf, const void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->timeout_seconds_runtime);
 }
 
-static int charger_policy_force_disching_sec_set(const char *val, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_expired_sec_get charger_policy_expired_sec_get_model
+#else
+extern int charger_policy_expired_sec_get(char *buf, const void *priv);
+#include "charger_policy_expired_sec_get_exact.inc"
+#endif
+
+static __used int charger_policy_force_disching_sec_set_model(const char *val, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
@@ -963,15 +1097,21 @@ static int charger_policy_force_disching_sec_set(const char *val, const void *pr
 		return -EINVAL;
 	}
 
-	if (sscanf(val, "%d", &val_int) != 1)
-		return -EINVAL;
+	sscanf(val, "%d", &val_int);
 
 	policy->force_discharging_sec = val_int;
 	pr_info("policy: %s(): Set force_disching_seconds = %d\n", "charger_policy_force_disching_sec_set", val_int);
 	return 0;
 }
 
-static int charger_policy_force_disching_sec_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_force_disching_sec_set charger_policy_force_disching_sec_set_model
+#else
+extern int charger_policy_force_disching_sec_set(const char *val, const void *priv);
+#include "charger_policy_force_disching_sec_set_exact.inc"
+#endif
+
+static __used int charger_policy_force_disching_sec_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -985,7 +1125,14 @@ static int charger_policy_force_disching_sec_get(char *buf, const void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->force_discharging_sec);
 }
 
-static int charger_policy_cap_min_set(const char *val, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_force_disching_sec_get charger_policy_force_disching_sec_get_model
+#else
+extern int charger_policy_force_disching_sec_get(char *buf, const void *priv);
+#include "charger_policy_force_disching_sec_get_exact.inc"
+#endif
+
+static __used int charger_policy_cap_min_set_model(const char *val, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
@@ -995,8 +1142,7 @@ static int charger_policy_cap_min_set(const char *val, const void *priv)
 		return -EINVAL;
 	}
 
-	if (sscanf(val, "%d", &val_int) != 1)
-		return -EINVAL;
+	sscanf(val, "%d", &val_int);
 
 	policy->demo_min_cap = val_int;
 	policy->expired_min_cap = val_int;
@@ -1004,7 +1150,14 @@ static int charger_policy_cap_min_set(const char *val, const void *priv)
 	return 0;
 }
 
-static int charger_policy_cap_min_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_cap_min_set charger_policy_cap_min_set_model
+#else
+extern int charger_policy_cap_min_set(const char *val, const void *priv);
+#include "charger_policy_cap_min_set_exact.inc"
+#endif
+
+static __used int charger_policy_cap_min_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -1017,7 +1170,14 @@ static int charger_policy_cap_min_get(char *buf, const void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->expired_min_cap);
 }
 
-static int charger_policy_cap_max_set(const char *val, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_cap_min_get charger_policy_cap_min_get_model
+#else
+extern int charger_policy_cap_min_get(char *buf, const void *priv);
+#include "charger_policy_cap_min_get_exact.inc"
+#endif
+
+static __used int charger_policy_cap_max_set_model(const char *val, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
@@ -1027,8 +1187,7 @@ static int charger_policy_cap_max_set(const char *val, const void *priv)
 		return -EINVAL;
 	}
 
-	if (sscanf(val, "%d", &val_int) != 1)
-		return -EINVAL;
+	sscanf(val, "%d", &val_int);
 
 	policy->no_powerpath_delta = 0;
 	policy->demo_max_cap = val_int;
@@ -1037,7 +1196,14 @@ static int charger_policy_cap_max_set(const char *val, const void *priv)
 	return 0;
 }
 
-static int charger_policy_cap_max_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_cap_max_set charger_policy_cap_max_set_model
+#else
+extern int charger_policy_cap_max_set(const char *val, const void *priv);
+#include "charger_policy_cap_max_set_exact.inc"
+#endif
+
+static __used int charger_policy_cap_max_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -1050,7 +1216,14 @@ static int charger_policy_cap_max_get(char *buf, const void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->expired_max_cap);
 }
 
-static int charger_policy_enable_status_set(const char *val, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_cap_max_get charger_policy_cap_max_get_model
+#else
+extern int charger_policy_cap_max_get(char *buf, const void *priv);
+#include "charger_policy_cap_max_get_exact.inc"
+#endif
+
+static __used int charger_policy_enable_status_set_model(const char *val, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 	int val_int = 0;
@@ -1060,15 +1233,21 @@ static int charger_policy_enable_status_set(const char *val, const void *priv)
 		return -EINVAL;
 	}
 
-	if (sscanf(val, "%d", &val_int) != 1)
-		return -EINVAL;
+	sscanf(val, "%d", &val_int);
 
 	policy->policy_disabled = (val_int == 0);
 	pr_info("policy: %s(): force_disable = %d\n", "charger_policy_enable_status_set", policy->policy_disabled);
 	return 0;
 }
 
-static int charger_policy_enable_status_get(char *buf, const void *priv)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_enable_status_set charger_policy_enable_status_set_model
+#else
+extern int charger_policy_enable_status_set(const char *val, const void *priv);
+#include "charger_policy_enable_status_set_exact.inc"
+#endif
+
+static __used int charger_policy_enable_status_get_model(char *buf, const void *priv)
 {
 	struct charger_policy_info *policy = (struct charger_policy_info *)priv;
 
@@ -1081,43 +1260,50 @@ static int charger_policy_enable_status_get(char *buf, const void *priv)
 	return snprintf(buf, PAGE_SIZE, "%u", policy->policy_disabled == 0);
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_enable_status_get charger_policy_enable_status_get_model
+#else
+extern int charger_policy_enable_status_get(char *buf, const void *priv);
+#include "charger_policy_enable_status_get_exact.inc"
+#endif
+
 /* zte_misc node structure registrations */
-static const struct zte_misc_cb demo_charging_policy_node = {
+static struct zte_misc_cb demo_charging_policy_node = {
 	.name = "demo_charging_policy",
 	.set = charger_policy_demo_sts_set,
 	.get = charger_policy_demo_sts_get,
 };
 
-static const struct zte_misc_cb expired_charging_policy_node = {
+static struct zte_misc_cb expired_charging_policy_node = {
 	.name = "expired_charging_policy",
 	.get = charger_policy_expired_sts_get,
 };
 
-static const struct zte_misc_cb charging_time_sec_node = {
+static struct zte_misc_cb charging_time_sec_node = {
 	.name = "charging_time_sec",
 	.set = charger_policy_expired_sec_set,
 	.get = charger_policy_expired_sec_get,
 };
 
-static const struct zte_misc_cb force_disching_sec_node = {
+static struct zte_misc_cb force_disching_sec_node = {
 	.name = "force_disching_sec",
 	.set = charger_policy_force_disching_sec_set,
 	.get = charger_policy_force_disching_sec_get,
 };
 
-static const struct zte_misc_cb policy_cap_min_node = {
+static struct zte_misc_cb policy_cap_min_node = {
 	.name = "policy_cap_min",
 	.set = charger_policy_cap_min_set,
 	.get = charger_policy_cap_min_get,
 };
 
-static const struct zte_misc_cb policy_cap_max_node = {
+static struct zte_misc_cb policy_cap_max_node = {
 	.name = "policy_cap_max",
 	.set = charger_policy_cap_max_set,
 	.get = charger_policy_cap_max_get,
 };
 
-static const struct zte_misc_cb policy_enable_node = {
+static struct zte_misc_cb policy_enable_node = {
 	.name = "policy_enable",
 	.set = charger_policy_enable_status_set,
 	.get = charger_policy_enable_status_get,
@@ -1130,7 +1316,7 @@ static enum power_supply_property policy_psy_properties[] = {
 	POWER_SUPPLY_PROP_AUTHENTIC,
 };
 
-static int policy_psy_get_property(struct power_supply *psy,
+static __used int policy_psy_get_property_model(struct power_supply *psy,
 				   enum power_supply_property psp,
 				   union power_supply_propval *val)
 {
@@ -1166,9 +1352,18 @@ static int policy_psy_get_property(struct power_supply *psy,
 	return 0;
 }
 
-static int policy_psy_set_property(struct power_supply *psy,
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define policy_psy_get_property policy_psy_get_property_model
+#else
+extern int policy_psy_get_property(struct power_supply *psy,
 				   enum power_supply_property psp,
-				   const union power_supply_propval *val)
+				   union power_supply_propval *val);
+#include "policy_psy_get_property_exact.inc"
+#endif
+
+static __used int policy_psy_set_property_model(struct power_supply *psy,
+					   enum power_supply_property psp,
+					   const union power_supply_propval *val)
 {
 	struct charger_policy_info *policy = power_supply_get_drvdata(psy);
 
@@ -1194,16 +1389,40 @@ static int policy_psy_set_property(struct power_supply *psy,
 	return 0;
 }
 
-static int policy_property_is_writeable(struct power_supply *psy,
-					enum power_supply_property psp)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define policy_psy_set_property policy_psy_set_property_model
+#else
+extern int policy_psy_set_property(struct power_supply *psy,
+					   enum power_supply_property psp,
+					   const union power_supply_propval *val);
+#include "policy_psy_set_property_exact.inc"
+#endif
+
+static __used int policy_property_is_writeable_model(struct power_supply *psy,
+					 enum power_supply_property psp)
 {
 	return (psp >= POWER_SUPPLY_PROP_PRESENT && psp <= POWER_SUPPLY_PROP_AUTHENTIC);
 }
 
-static void policy_external_power_changed(struct power_supply *psy)
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define policy_property_is_writeable policy_property_is_writeable_model
+#else
+extern int policy_property_is_writeable(struct power_supply *psy,
+					 enum power_supply_property psp);
+#include "policy_property_is_writeable_exact.inc"
+#endif
+
+static __used void policy_external_power_changed_model(struct power_supply *psy)
 {
 	/* Unused, dummy implementation matching binary symbol */
 }
+
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define policy_external_power_changed policy_external_power_changed_model
+#else
+extern void policy_external_power_changed(struct power_supply *psy);
+#include "policy_external_power_changed_exact.inc"
+#endif
 
 static const struct power_supply_desc policy_psy_desc = {
 	.name = "policy",
@@ -1217,7 +1436,7 @@ static const struct power_supply_desc policy_psy_desc = {
 };
 
 /* Externally exposed API for checking active policy status */
-bool charger_policy_get_status(void)
+static __used bool charger_policy_get_status_model(void)
 {
 	struct power_supply *psy;
 	union power_supply_propval pval;
@@ -1239,8 +1458,15 @@ bool charger_policy_get_status(void)
 	return pval.intval != 0;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_get_status charger_policy_get_status_model
+#else
+extern bool charger_policy_get_status(void);
+#include "charger_policy_get_status_exact.inc"
+#endif
+
 /* Delayed Probe work */
-static void charger_policy_probe_work(struct work_struct *work)
+static __used void charger_policy_probe_work_model(struct work_struct *work)
 {
 	struct charger_policy_info *policy = container_of(work, struct charger_policy_info, probe_work.work);
 	struct power_supply_config psy_cfg = {};
@@ -1319,8 +1545,15 @@ check_retry:
 	queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(5000));
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_probe_work charger_policy_probe_work_model
+#else
+extern void charger_policy_probe_work(struct work_struct *work);
+#include "charger_policy_probe_work_exact.inc"
+#endif
+
 /* Probe driver initialization */
-static int charger_policy_probe(struct platform_device *pdev)
+static __used int charger_policy_probe_model(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct device_node *np = dev->of_node;
@@ -1508,8 +1741,15 @@ parse_string_error:
 	return 0;
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_probe charger_policy_probe_model
+#else
+extern int charger_policy_probe(struct platform_device *pdev);
+#include "charger_policy_probe_exact.inc"
+#endif
+
 /* Remove platform driver instance */
-static void charger_policy_remove(struct platform_device *pdev)
+static __used void charger_policy_remove_model(struct platform_device *pdev)
 {
 	struct charger_policy_info *policy = platform_get_drvdata(pdev);
 
@@ -1527,12 +1767,19 @@ static void charger_policy_remove(struct platform_device *pdev)
 	pr_info("policy: %s(): driver successfully removed\n", "charger_policy_remove");
 }
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
+#define charger_policy_remove charger_policy_remove_model
+#else
+extern void charger_policy_remove(struct platform_device *pdev);
+#include "charger_policy_remove_exact.inc"
+#endif
+
 static const struct of_device_id charger_policy_match_table[] = {
 	{ .compatible = "zte,charger-policy-service", },
 	{ },
 };
 
-static struct platform_driver charger_policy_driver = {
+static __used struct platform_driver charger_policy_driver = {
 	.probe = charger_policy_probe,
 	.remove = charger_policy_remove,
 	.driver = {
@@ -1541,7 +1788,14 @@ static struct platform_driver charger_policy_driver = {
 	},
 };
 
+#ifdef ZTE_CHARGER_POLICY_HOST_TEST
 module_platform_driver(charger_policy_driver);
+#else
+extern int init_module(void);
+#include "init_module_exact.inc"
+extern void cleanup_module(void);
+#include "cleanup_module_exact.inc"
+#endif
 
 MODULE_LICENSE("GPL v2");
 MODULE_INFO(built_with, "DDK");

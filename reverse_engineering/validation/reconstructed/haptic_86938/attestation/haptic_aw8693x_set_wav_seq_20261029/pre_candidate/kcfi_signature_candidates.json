@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "stock_function": "aw8693x_set_wav_seq",
+  "stock_entry": "00104bb0",
+  "stock_type_id": "0x7b877e65",
+  "stock_body_bytes": 88,
+  "decompiler_prototype": "void aw8693x_set_wav_seq(undefined8, int, undefined1)",
+  "candidate_prototype": "void aw8693x_set_wav_seq(struct aw_haptic *, u8, u8)",
+  "observed_aliases": [
+    "Ghidra reports the second argument as int and the third as an 8-bit value.",
+    "aw8693x_set_wav_seq and aw8693x_set_wav_loop share the same stock KCFI type ID despite different decompiler width guesses."
+  ],
+  "candidate_declarations": [
+    "void (struct aw_haptic *, u8, u8)",
+    "void (struct aw_haptic *, unsigned int, unsigned char)",
+    "void (struct aw_haptic *, u8, u8)"
+  ],
+  "status": "KCFI_CANDIDATE_SELECTED",
+  "limits": "The 32-bit KCFI hash is not treated as proof of exact integer widths. Callsite and source typedef evidence do not uniquely resolve the second parameter."
+}

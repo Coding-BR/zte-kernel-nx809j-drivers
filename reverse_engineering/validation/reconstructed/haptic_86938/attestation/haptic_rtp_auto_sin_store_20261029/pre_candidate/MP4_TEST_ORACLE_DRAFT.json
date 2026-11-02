@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "task_id": "061_rtp_auto_sin_store",
+  "work_unit": "MP4_TEST_ORACLE_DRAFT",
+  "identity": "rtp_auto_sin_store@00106ed0",
+  "scenarios": [
+    {
+      "name": "invalid input",
+      "oracle": "negative kstrtouint errno returned; exactly one failure printk; no mutex, bus, state, or queue call"
+    },
+    {
+      "name": "zero",
+      "oracle": "clear state flag, one masked bit clear, unlock before queue_work_on(0x20,...), return count"
+    },
+    {
+      "name": "valid positive below limit",
+      "oracle": "flag=1, save parsed value, set bit 0x20 in register 0x2d, unlock before work queue, return count"
+    },
+    {
+      "name": "equal-to-limit positive",
+      "oracle": "clear flag, log parsed value, no i2c_w_bits call, unlock and queue work, return count"
+    },
+    {
+      "name": "greater-than-limit positive",
+      "oracle": "same out-of-range path: clear flag, log value, skip bus update, queue work"
+    }
+  ],
+  "independent_MP8_review": false,
+  "status": "DRAFT_FROM_STOCK_DISASSEMBLY_PCODE_AND_DECOMPILATION",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0060_00106ed0_rtp_auto_sin_store.c",
+      "sha256": "a44a38e6f8d89b85456a0be62ac155d496c34ca25d9305d13fc25dcc3299b2e2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0060_00106ed0_rtp_auto_sin_store.jsonl",
+      "sha256": "c787608fb9952cf4a5271ae9a17ff7a344132c5d635ead5c36f012530c143f8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_rtp_auto_sin_store_20261029/pre_candidate/stock_log_strings.jsonl",
+      "sha256": "16d3371d8f4958c4b7a0a0a220bae14972b775ee07d7ff5efd0a3175753176ed"
+    }
+  ]
+}

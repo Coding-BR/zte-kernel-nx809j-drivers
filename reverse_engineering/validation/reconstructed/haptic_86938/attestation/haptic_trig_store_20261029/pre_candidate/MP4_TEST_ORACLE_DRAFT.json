@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "function": "trig_store@00106940",
+  "oracle_only_not_executed": true,
+  "vectors": [
+    {"input": "fewer than nine valid integers", "expected": "count; no writes or helper calls"},
+    {"input": "trigger 0 or 4", "expected": "range log; count; no writes"},
+    {"input": "trigger 1 while one-wire state is 1", "expected": "one-wire log; count; no writes"},
+    {"input": "RAM-init bit clear", "expected": "RAM-init log; count; no writes"},
+    {"input": "sequence equals maximum", "expected": "record update and matching helper call"},
+    {"input": "either sequence exceeds maximum", "expected": "sequence-range log; count; no writes"},
+    {"input": "valid trigger numbers 1, 2, and 3", "expected": "matching trigger record and helper under mutex"}
+  ]
+}

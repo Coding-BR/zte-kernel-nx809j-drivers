@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "function": "tpd_report_uevent",
+  "source_file": "kernel_development/drivers/reconstructed/zte_tpd/tpd_report_uevent.c",
+  "source_sha256": "4c88b8dcca67e6d7fbc854c44b1643ddcc7f38d1ebf34cdbcc44fb1c425a2bfb",
+  "driver_source_sha256": "4c88b8dcca67e6d7fbc854c44b1643ddcc7f38d1ebf34cdbcc44fb1c425a2bfb",
+  "test_source": "kernel_development/drivers/validation/zte_tpd/host/tpd_report_uevent_contract_test.c",
+  "test_source_sha256": "c0299a40f0180e6614bd4417522f981d6e437e3cdc27033fb353335d73dc2a70",
+  "test_report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_docker_tpd_report_uevent_current_v1/host_harness_report.json",
+  "test_report_status": "PASS",
+  "gates": {
+    "host_asan_ubsan": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "reproducible_binary": "PASS"
+  },
+  "contract": [
+    "value 0 emits single_tap=true",
+    "value 1 emits double_tap=true",
+    "value 2 emits pen_capacity_low=true",
+    "unknown byte emits no uevent",
+    "uevent target, action and terminator are checked"
+  ],
+  "limitations": [
+    "The host harness stubs printk, SP_EL0 and kobject_uevent_env.",
+    "Physical hardware and the smartphone kernel uevent subsystem remain deferred."
+  ]
+}

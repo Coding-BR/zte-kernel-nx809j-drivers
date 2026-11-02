@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "018_zte_touch_pdev_unregister",
+  "stock_function": "zte_touch_pdev_unregister",
+  "stock_entry": "001083b4",
+  "stock_body_bytes": 96,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "3671a9ef55d6c4c7d9922ab357cabacbb01e386b643b21bf82f7815f567d82ab",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 24,
+    "instruction_count_candidate": 24,
+    "symbol_size_stock": 96,
+    "symbol_size_candidate": 96,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 4,
+    "reproducible_binary": true,
+    "direct_cases": [
+      "nonzero_slot_is_noop",
+      "zero_slot_calls_guard_and_unregisters_null",
+      "zero_slot_is_not_cleared",
+      "guard_pointer_is_used_each_call"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "62d0c7d7891ca8ca69671c79866b911bbca08c617ae823ce361530458d04512d",
+    "aarch64_comparison.json": "43e269e6798b403bd959194f945c78adf83ffd6e943627b63004733ef06f106a",
+    "kcfi/comparison.json": "22805938610b2c7cec180a154f9b32763e3521f09df2f04e0a9330e52a5fe8b3",
+    "joern/joern_gate_report.json": "42809f8ecf8040e7d5b7a060909d6cdaadc7d4c5d66138e9ef5c2b4db33c3098",
+    "host_harness_report.json": "f0fe4465a80bc72b85a3dbd905bcc61b0a1d51265fccd5c2207ec576ba66fc8e",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host contract stubs off_338 and platform_device_unregister.",
+    "The stock null-slot behavior is reproduced deliberately; it is not a safety approval.",
+    "No physical NX809J, platform bus, Android service, SPI, IRQ or MMIO path is exercised."
+  ]
+}

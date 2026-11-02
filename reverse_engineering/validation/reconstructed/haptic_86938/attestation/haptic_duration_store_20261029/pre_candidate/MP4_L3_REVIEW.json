@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_store@0010a368",
+  "review": [
+    "Input conversion is unsigned with base 0, so prefixes and leading-zero base rules follow kstrtouint.",
+    "A successfully parsed zero does not clear or overwrite the stored duration.",
+    "The field write is 32 bits and occurs only after successful conversion.",
+    "Parse failures return the parser error; successful paths return count.",
+    "The stock function has no mutex or direct hardware operation."
+  ],
+  "limitations": ["The raw structure offset is tied to this stock module build; no independent source-level structure definition was available.", "Static review does not establish runtime sysfs behavior on hardware."]
+}

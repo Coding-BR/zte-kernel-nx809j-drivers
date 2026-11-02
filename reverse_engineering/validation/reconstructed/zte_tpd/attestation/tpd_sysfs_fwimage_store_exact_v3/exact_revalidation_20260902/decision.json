@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "tpd_sysfs_fwimage_store",
+  "stock_entry": "0010dff0",
+  "stock_body_bytes": 224,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "core_protocol": "CORE_GATES_PASS",
+  "gates": {
+    "input_identity": true,
+    "docker_reproducible_two_cycles": true,
+    "aarch64_instruction_and_relocation_parity": true,
+    "kcfi": true,
+    "joern_scoped": true,
+    "joern_slice": true,
+    "ghidra_pcode_and_body": true,
+    "host_asan_ubsan_two_cycles": true,
+    "hardware": "DEFERRED"
+  },
+  "ghidra_exception": {
+    "kind": "ghidra_external_label_control_flow_artifact",
+    "authority": "P_CODE_AND_RELOCATION_AWARE_ASSEMBLY",
+    "reason": "The current Ghidra C view truncates after an imported printk, while the repaired 224-byte body and all 175 P-Code records remain present. No assembly, relocation, KCFI or Joern gate was weakened."
+  },
+  "claim": "The candidate preserves the stock function at the offline function level: 224 bytes, 56 AArch64 instructions, 8 relocations, matching KCFI and matching P-Code operation shape, with the host contract passing under ASan/UBSan.",
+  "limitations": [
+    "Android runtime, kernel sysfs integration and NX809J physical hardware behavior remain unverified.",
+    "The claim does not establish equivalence of unrelated functions or whole-driver behavior.",
+    "The exact assembly remains the behavior authority for this target; the Ghidra C truncation is retained as a documented diagnostic artifact."
+  ]
+}

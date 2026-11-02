@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "014_tpd_reset_fw_data_pos_and_size",
+  "stock_function": "tpd_reset_fw_data_pos_and_size",
+  "stock_entry": "00107f84",
+  "stock_body_bytes": 28,
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "704d8773a2c21d18c4c73b7b61fec273962f9e7ef66f3810516f7a51275a9427",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 7,
+    "instruction_count_candidate": 7,
+    "symbol_size_stock": 28,
+    "symbol_size_candidate": 28,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xe5c47d60",
+    "candidate_type_id": "0xe5c47d60",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "module_size": 6307336,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 4,
+    "direct_cases": [
+      "position_is_committed_and_cleared",
+      "zero_position_is_idempotent",
+      "unsigned_position_width",
+      "repeated_reset_uses_current_position"
+    ],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "f150304c793189982cea014a2eaceaf4cb8feaa4e87dda6d35bdb361d5d5a6b8",
+    "aarch64_comparison.json": "38fc6d2ca465c4b536f9759d21cb8f2d1a7673aab1948c2102c1ce621fd8e1b1",
+    "kcfi/comparison.json": "0efecf1802dd9bc71bcba6787771df228d81de22619ed9c9c72bda187ab74112",
+    "joern/joern_gate_report.json": "eb5e412aee2f219c26a42389c49ff7121a5c1b622f3f8a13c6c0a3b70f798cc7",
+    "host_harness_report.json": "fc335769178537e7e29a868398164eb990f95658a72aa1985c343721e023fe8a",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The dedicated harness models the cdev memory layout and firmware-size slot in user space.",
+    "No physical NX809J, Android service, SPI, IRQ or MMIO path is exercised.",
+    "The exact AArch64 gate proves opcode, relocation and symbol-size identity; hardware behavior remains untested."
+  ]
+}

@@ -19,30 +19,69 @@ extern uint64_t qword_31438;
 extern uint64_t qword_31440;
 extern uint64_t qword_31448;
 extern uint64_t qword_31498;
-extern uint64_t qword_31658;
-extern uint64_t qword_31660;
-extern uint64_t qword_31668;
-extern uint64_t qword_31670;
-extern uint64_t qword_31678;
-extern uint64_t qword_31680;
-extern uint64_t qword_31688;
-extern uint64_t qword_31690;
-extern uint64_t qword_31698;
-extern uint64_t qword_316A0;
-extern uint64_t qword_316A8;
-extern uint64_t qword_316B0;
-extern uint64_t qword_316B8;
-extern uint64_t qword_316C0;
-extern uint64_t qword_316C8;
-extern uint64_t qword_316D0;
-extern uint64_t qword_316D8;
-extern uint64_t qword_316E0;
-extern uint64_t qword_316E8;
-extern uint64_t qword_316F0;
-extern uint64_t qword_316F8;
-extern uint64_t qword_31700;
-extern uint64_t qword_31708;
-extern uint64_t qword_31710;
+struct syna_cdev_global_state {
+    __int64 g_cdev_data;
+    uint64_t qword_31658;
+    uint64_t qword_31660;
+    uint64_t qword_31668;
+    uint64_t qword_31670;
+    uint64_t qword_31678;
+    uint64_t qword_31680;
+    uint64_t qword_31688;
+    uint64_t qword_31690;
+    uint8_t qword_31698;
+    uint8_t reserved_31699[7];
+    uint64_t qword_316A0;
+    uint64_t qword_316A8;
+    uint64_t qword_316B0;
+    uint64_t qword_316B8;
+    uint64_t qword_316C0;
+    uint64_t qword_316C8;
+    uint64_t qword_316D0;
+    uint64_t qword_316D8;
+    uint64_t qword_316E0;
+    uint64_t qword_316E8;
+    uint64_t qword_316F0;
+    uint64_t qword_316F8;
+    union {
+        uint64_t qword_31700;
+        struct {
+            uint32_t qword_31700_low;
+            uint32_t qword_31700_high;
+        };
+    };
+    uint64_t qword_31708;
+    uint64_t qword_31710;
+};
+
+extern struct syna_cdev_global_state syna_cdev_global_state
+    __asm__("g_cdev_data");
+
+#define g_cdev_data syna_cdev_global_state.g_cdev_data
+#define qword_31658 syna_cdev_global_state.qword_31658
+#define qword_31660 syna_cdev_global_state.qword_31660
+#define qword_31668 syna_cdev_global_state.qword_31668
+#define qword_31670 syna_cdev_global_state.qword_31670
+#define qword_31678 syna_cdev_global_state.qword_31678
+#define qword_31680 syna_cdev_global_state.qword_31680
+#define qword_31688 syna_cdev_global_state.qword_31688
+#define qword_31690 syna_cdev_global_state.qword_31690
+#define qword_31698 syna_cdev_global_state.qword_31698
+#define qword_316A0 syna_cdev_global_state.qword_316A0
+#define qword_316A8 syna_cdev_global_state.qword_316A8
+#define qword_316B0 syna_cdev_global_state.qword_316B0
+#define qword_316B8 syna_cdev_global_state.qword_316B8
+#define qword_316C0 syna_cdev_global_state.qword_316C0
+#define qword_316C8 syna_cdev_global_state.qword_316C8
+#define qword_316D0 syna_cdev_global_state.qword_316D0
+#define qword_316D8 syna_cdev_global_state.qword_316D8
+#define qword_316E0 syna_cdev_global_state.qword_316E0
+#define qword_316E8 syna_cdev_global_state.qword_316E8
+#define qword_316F0 syna_cdev_global_state.qword_316F0
+#define qword_316F8 syna_cdev_global_state.qword_316F8
+#define qword_31700 syna_cdev_global_state.qword_31700
+#define qword_31708 syna_cdev_global_state.qword_31708
+#define qword_31710 syna_cdev_global_state.qword_31710
 extern uint64_t qword_BE8;
 extern uint64_t qword_BF4;
 extern uint64_t qword_C90;
@@ -1049,8 +1088,6 @@ extern unsigned long syna_dev_probe__alloc_tag;
 extern unsigned long tpfwupgrade_store__alloc_tag_195;
 extern unsigned long tp_alloc_tp_firmware_data__alloc_tag_28;
 extern unsigned long dummy_task_struct[256];
-extern __int64 g_cdev_data;
-
 struct lock_class_key;
 extern struct lock_class_key dummy_lock_key;
 

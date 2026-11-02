@@ -1,0 +1,12 @@
+#ifndef HAPTIC_HOST_LINUX_PRINTK_H
+#define HAPTIC_HOST_LINUX_PRINTK_H
+
+#define KERN_ERR "\0013"
+#define KERN_INFO "\0016"
+
+int haptic_test_printk(const char *format, ...)
+	__attribute__((format(printf, 1, 2)));
+
+#define printk haptic_test_printk
+
+#endif

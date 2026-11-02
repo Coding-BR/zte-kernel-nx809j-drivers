@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "target": "tpd_report_uevent",
+  "mode": "offline_aarch64_semantic_and_normalized_control_flow_comparison",
+  "instruction_count": {
+    "stock": 65,
+    "candidate": 66,
+    "exact": false
+  },
+  "symbol_size": {
+    "stock": 260,
+    "candidate": 264,
+    "exact": false,
+    "delta_bytes": 4
+  },
+  "section": {
+    "stock": ".text",
+    "candidate": ".text",
+    "match": true
+  },
+  "kcfi_type_id": {
+    "stock": "0xa2fce979",
+    "candidate": "0xa2fce979",
+    "match": true
+  },
+  "dispatch_form": {
+    "stock": [
+      "and",
+      "cmp",
+      "b.eq",
+      "cmp",
+      "b.eq",
+      "cbnz"
+    ],
+    "candidate": [
+      "and",
+      "cmp",
+      "b.eq",
+      "cmp",
+      "b.eq",
+      "cbnz"
+    ],
+    "normalized_match": true
+  },
+  "call_targets": {
+    "stock": [
+      "_printk",
+      "_printk",
+      "_printk",
+      "kobject_uevent_env",
+      "_printk",
+      "__stack_chk_fail"
+    ],
+    "candidate": [
+      "_printk",
+      "kobject_uevent_env",
+      "__stack_chk_fail",
+      "_printk",
+      "_printk",
+      "_printk"
+    ],
+        "normalized_match": true,
+        "comparison": "order-insensitive external call multiset; compiler cold-block layout reorders textual relocations"
+  },
+  "offset_contract": {
+    "platform_device_slot": "tpd_cdev + 0xdd0",
+    "match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "Module-specific .rodata offsets and symbol spellings differ; resolved format strings, event strings, tpd_cdev slot and external call targets match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": true,
+  "limitations": [
+    "Raw function layout is not exact: candidate has one additional branch in the unknown-value path.",
+    "SP_EL0, printk and kobject_uevent_env are stubbed in the host harness.",
+    "No smartphone, kernel uevent subsystem or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "4d7011105d724d735b5c05b765c555a48bb9c33657368995969d2d65347767b5",
+    "candidate_assembly_sha256": "b1167d854f18832a8aca01861523e634d95f3f9c9ef31a128bb9ba1c836ebe3f"
+  }
+}

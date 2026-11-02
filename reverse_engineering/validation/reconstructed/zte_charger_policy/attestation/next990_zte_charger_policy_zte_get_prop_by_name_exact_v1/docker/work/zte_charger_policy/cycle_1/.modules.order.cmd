@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_charger_policy/cycle_1/modules.order := {   echo /work/validation/zte_charger_policy/cycle_1/zte_charger_policy.o; :; } > /work/validation/zte_charger_policy/cycle_1/modules.order

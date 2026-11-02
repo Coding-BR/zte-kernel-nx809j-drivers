@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_stats_info",
+  "stock_sha256": "20f5f60ddbdc5412de08a5ec0a62d34bfe3dd8cebba0cb54cda6ffc7bdb64d96",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "source_root": "kernel_development/drivers/reconstructed/zte_stats_info",
+  "ghidra_export": "reverse_engineering/validation/reconstructed/zte_stats_info/offline_static/ghidra_stock",
+  "functions": [
+    {
+      "stock_function": "zte_taskstats_user_cmd",
+      "stock_entry": "00100344",
+      "source_function": "zte_taskstats_user_cmd",
+      "candidate_function": "zte_taskstats_user_cmd",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_stats_info",
+    "stock_module": "reference_modules/stock/zte_stats_info.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_stats_info/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_stats_info/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_stats_info_zte_taskstats_user_cmd_protocol_20260906"
+  },
+  "kcfi": {"ignore_size": true},
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_stats_info",
+    "define": ["__user", "__init", "__exit", "noinline", "__used"],
+    "slice": {
+      "mode": "usages",
+      "depth": 12,
+      "parallelism": 1,
+      "sink_filter": "(zte_taskstats_user_cmd|zte_prepare_reply|zte_mk_reply|zte_parse|zte_add_del_listener|nla_get_u32|nla_put|genlmsg|kmalloc|kfree|down_write|up_write|rcu|task|cgroup)"
+    }
+  }
+}

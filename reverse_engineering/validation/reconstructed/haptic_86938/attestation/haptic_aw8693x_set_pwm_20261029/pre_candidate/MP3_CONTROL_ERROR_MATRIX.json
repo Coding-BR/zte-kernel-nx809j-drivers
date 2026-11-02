@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_pwm",
+  "branches": "nested mode checks for values 0, 1, 2, and 3",
+  "invalid_behavior": "logs the stock error and returns without calling i2c_w_bits",
+  "valid_behavior": "calls i2c_w_bits once and ignores its return value",
+  "sequence": [
+    "decode byte mode",
+    "for modes 0..3 update register 0x46 with mask 0xffffff9f",
+    "otherwise emit error param diagnostic"
+  ]
+}

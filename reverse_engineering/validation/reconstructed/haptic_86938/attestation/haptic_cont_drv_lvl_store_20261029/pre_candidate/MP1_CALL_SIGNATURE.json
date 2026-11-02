@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "task_id": "050_cont_drv_lvl_store",
+  "work_unit": "MP1_CALL_SIGNATURE",
+  "identity": "cont_drv_lvl_store@00106554",
+  "observed_callback_abi": "struct device_attribute store callback: ssize_t (struct device *, struct device_attribute *, const char *, size_t)",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_brk_time_store_20261029/pre_candidate/kernel_device_attribute_header_excerpt.txt",
+      "sha256": "e30bc060a6b90d8a490b4dc031a68a5804d78689fb21053c2e03ab57832ed7be",
+      "locator": "kernel device_attribute.store declaration"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP0_IDENTITY.json",
+      "sha256": "598786f8381370ec7668107d30c41affc94df4b9d654826066a6514d57eb64e6",
+      "locator": "stock KCFI decision PREAMBLE_PRESENT at 0x3730; type ID cross-checked by driver-wide KCFI inventory"
+    }
+  ],
+  "kcfi": {
+    "required": true,
+    "type_id": "0x95c41a97",
+    "stock_preamble_offset": "0x3730"
+  },
+  "return_contract": "Every normal path returns the original count; no errno is surfaced for sscanf or I2C failures.",
+  "unknowns": [
+    "The stock stripped Ghidra prototype has no recovered parameters; callback ABI is inferred from the attribute relocation and corroborated by the kernel header and KCFI inventory."
+  ]
+}

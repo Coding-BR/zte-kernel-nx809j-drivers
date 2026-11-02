@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {"method":"aw8693x_get_ram_data","type":"IF","code":"if (ram_length == 0)\n        return 0;","filename":"haptic_86938_fn_080_aw8693x_get_ram_data.i","line":37},
+    {"method":"aw8693x_get_ram_data","type":"DO","code":"do {\n        u32 chunk = ram_length - offset;\n\n        if (chunk > 0x400)\n            chunk = 0x400;\n\n        (void)i2c_r_bytes(haptic, 0x42, ram_data + (s32)offset, chunk);\n        ram_length = *(u32 *)((char *)haptic + 0x450);\n        offset = chunk + offset;\n    } while (offset < ram_length);","filename":"haptic_86938_fn_080_aw8693x_get_ram_data.i","line":41},
+    {"method":"aw8693x_get_ram_data","type":"IF","code":"if (chunk > 0x400)\n            chunk = 0x400;","filename":"haptic_86938_fn_080_aw8693x_get_ram_data.i","line":44}
+  ]
+}

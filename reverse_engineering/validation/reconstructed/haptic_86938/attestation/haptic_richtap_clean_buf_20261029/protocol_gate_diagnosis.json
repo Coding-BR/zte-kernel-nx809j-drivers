@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-10-29",
+  "issue": "COMPILER_SENSITIVE required KCFI even when the selected function explicitly declared kcfi_required=false.",
+  "initial_run": {
+    "report": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_clean_buf_20261029/core_run/hard_protocol_report.json",
+    "core_status": "CORE_GATES_FAIL",
+    "gate_status": {
+      "ASSEMBLY_RELOCATIONS": "PASS",
+      "CANDIDATE_GHIDRA_PCODE": "PASS",
+      "DOCKER_REPRODUCIBLE": "PASS",
+      "INPUT_IDENTITY": "PASS",
+      "JOERN_SCOPED": "PASS",
+      "JOERN_SLICE": "PASS",
+      "KCFI": "FAIL",
+      "MAP_IDENTITY": "PASS"
+    },
+    "job_profiles": [
+      "STATEFUL_MEMORY",
+      "COMPILER_SENSITIVE",
+      "CONCURRENCY_LIFETIME"
+    ],
+    "kcfi_required": false,
+    "stock_kcfi": "NO_VALID_KCFI_PREAMBLE; the preceding bytes are part of richtap_file_release+0x24",
+    "candidate_kcfi_type_id": "0x847a0830",
+    "comparison_decision": "KCFI_PRESENCE_MISMATCH",
+    "interpretation": "The body itself matched strict assembly and Ghidra/P-Code. The KCFI failure was an applicability error in the runner, not a function-body mismatch."
+  },
+  "correction": {
+    "file": "workspace_tools/reconstruction_pipeline/run_hard_driver_protocol.py",
+    "behavior": "COMPILER_SENSITIVE keeps its IR and fresh-Ghidra checks but only adds KCFI when a selected function sets kcfi_required=true. CALLBACK_ABI still requires the KCFI/callsite audit. The report records NOT_REQUIRED when no KCFI gate applies.",
+    "regression_tests": {
+      "passed": 24,
+      "focused_kcfi_cases_passed": 5,
+      "suite": "workspace_tools.reconstruction_pipeline.tests.test_run_hard_driver_protocol",
+      "names": [
+        "test_compiler_sensitive_profile_only_requires_kcfi_when_function_does",
+        "test_compiler_sensitive_profile_keeps_explicit_function_kcfi_gate",
+        "test_non_required_kcfi_is_reported_without_running_comparator",
+        "test_profiles_form_a_union_of_required_gates",
+        "test_direct_call_only_uses_explicit_kcfi_decision_path"
+      ]
+    }
+  },
+  "corrected_run": {
+    "report": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/cleanfinal/hard_protocol_report.json",
+    "expected_core_status": "CORE_GATES_PASS",
+    "expected_kcfi_status": "NOT_REQUIRED"
+  }
+}

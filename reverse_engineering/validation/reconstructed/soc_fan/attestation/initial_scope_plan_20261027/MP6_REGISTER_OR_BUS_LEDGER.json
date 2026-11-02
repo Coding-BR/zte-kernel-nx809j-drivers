@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc_fan_MP6",
+  "work_unit": "MP6_REGISTER_OR_BUS_LEDGER",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": false,
+  "stock_identity": {
+    "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+  },
+  "source_environment": {
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "mode": "read-only source/DT/API inspection"
+  },
+  "scope": {
+    "status": "IN_SCOPE_CONFIRMED_BY_NX809J_DEVICE_TREE",
+    "target_dt": "vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+    "overlay_runtime_application_confirmed": false,
+    "hardware_validation": "DEFERRED"
+  },
+  "observations": [
+    {
+      "id": "OBS-001",
+      "claim": "The stock module alias compatible soc,fan matches the NX809J target overlay node qcom,fan@ef00. The scoped source review also matches the stock alias and the overlay hash.",
+      "evidence": [
+        "SOC_FAN_SCOPE_REVIEW.json stock.of_aliases and target_dt locator",
+        "soc_fan_scope_source_evidence.txt overlay lines 650-664"
+      ],
+      "classification": "device ownership/scope confirmed; runtime overlay application not confirmed"
+    },
+    {
+      "id": "OBS-002",
+      "claim": "The target overlay ties fan,avdd-supply to pmh0101_l8 and sets fan,voltage=3300000; the stock probe calls regulator_get with id fan,avdd, reads fan,voltage, falls back to 2800000 if the read fails, and passes the selected value as both min_uV and max_uV to regulator_set_voltage.",
+      "evidence": [
+        "pwm_source_contracts_MP6_20261027.txt overlay lines 650-659",
+        "stock probe decompilation lines 29-40",
+        "pwm_source_contracts_MP6_20261027.txt consumer.h regulator_set_voltage prototype lines 226-233",
+        "pwm_source_contracts_MP6_20261027.txt drivers/regulator/of_regulator.c:611-625"
+      ],
+      "classification": "static property/API mapping; 3.3 V interpretation is a unit-level inference, physical voltage unverified"
+    },
+    {
+      "id": "OBS-003",
+      "claim": "The overlay sets pinctrl-names default and pinctrl-0 to fan_speed and fan_pwm. The stock probe requests pinctrl, looks up state default, and calls pinctrl_select_state.",
+      "evidence": [
+        "pwm_source_contracts_MP6_20261027.txt overlay lines 654-656",
+        "stock probe decompilation lines 65-82"
+      ],
+      "classification": "static pinctrl mapping"
+    },
+    {
+      "id": "OBS-004",
+      "claim": "The overlay maps fan,speed-gpio to TLMM GPIO 211 active-high and fan,pwm-gpio to PMH0101 GPIO 9 active-high. Stock nb_fan_gpio_proc requests the speed GPIO, converts it to IRQ, registers the threaded handler and disables the IRQ; it reads the raw PWM GPIO, while fan_level_set uses gpiod_direction_output_raw for level-dependent output.",
+      "evidence": [
+        "pwm_source_contracts_MP6_20261027.txt overlay lines 657-658",
+        "stock GPIO decompilation lines 9-42",
+        "MP2_STATE_EFFECT_LEDGER.json GPIO and IRQ effects",
+        "calls.jsonl fan_level_set callsites 0010137c and 001013bc"
+      ],
+      "classification": "static property-to-API map; line polarity and physical signal behavior not hardware validated"
+    },
+    {
+      "id": "OBS-005",
+      "claim": "The child node is label fan and contains pwms=&fan_pwm_dev, channel cell 3, period cell 40000; stock parser requires one available child, matches the fan label, obtains a PWM through devm_fwnode_pwm_get and invokes the PWM apply callback.",
+      "evidence": [
+        "pwm_source_contracts_MP6_20261027.txt overlay lines 660-663",
+        "stock parse_dt decompilation lines 35-87",
+        "MP1_CALL_SIGNATURE.json indirect PWM site/type evidence",
+        "pwm_source_contracts_MP6_20261027.txt drivers/pwm/core.c:451-470"
+      ],
+      "classification": "static DT/PWM consumer mapping; provider binding at runtime unconfirmed"
+    },
+    {
+      "id": "OBS-006",
+      "claim": "The referenced fan_pwm_dev node has compatible qcom,pm8350c-pwm, reg 0xeb00 and #pwm-cells=2. Pinned leds-qcom-lpg.c matches this compatible; its PM8350C data has four channels and channel entry 3 at base 0xeb00, and lpg_pwm_ops.apply points to lpg_pwm_apply.",
+      "evidence": [
+        "pwm_source_contracts_MP6_20261027.txt overlay provider lines 640-648",
+        "pwm_source_contracts_MP6_20261027.txt leds-qcom-lpg.c: lpg_pwm_ops and pm8350c_pwm_data",
+        "SOC_FAN_SCOPE_REVIEW.json stock.softdep pre: leds-qcom-lpg"
+      ],
+      "classification": "static compatible/channel match; not proof the overlay/provider is active at runtime"
+    },
+    {
+      "id": "OBS-007",
+      "claim": "The stock module has three KCFI-checked indirect calls through pwm_device->chip->ops->apply with type ID 0xddd097d0; pinned pwm_ops.apply has the matching int (pwm_chip*, pwm_device*, const pwm_state*) prototype, and the local provider implementation has that signature.",
+      "evidence": [
+        "MP1_CALL_SIGNATURE.json indirect_call_sites",
+        "pwm_source_contracts_MP6_20261027.txt include/linux/pwm.h callback ABI and lpg_pwm_apply signature"
+      ],
+      "classification": "ABI/callback mapping; target implementation conditional on runtime bind"
+    },
+    {
+      "id": "OBS-008",
+      "claim": "The stock uses period 40000 in its level setter and PWM sysfs store; the store derives duty as input_percent*400, while level control derives duty from level*8000 and has a special zero-duty path. pwm_state period/duty_cycle units are nanoseconds in the pinned header.",
+      "evidence": [
+        "MP2_STATE_EFFECT_LEDGER.json fan_level_set and fan_pwm_store entries",
+        "stock assembly 0008_fan_level_set and 0011_fan_pwm_store",
+        "pwm_source_contracts_MP6_20261027.txt pwm_state definition"
+      ],
+      "classification": "static requested-state arithmetic; provider/electrical result conditional"
+    },
+    {
+      "id": "OBS-009",
+      "claim": "The fan node includes reg=0xef00; pm8350c_pwm_data separately lists triled_base=0xef00 and channel 3 base=0xeb00. The stock direct-call/relocation inventory contains no named readl/writel, ioremap, regmap, I2C, SPI, or resource-mapping API call. This inventory does not rule out pointer-based or other indirect register access, and the numeric equality does not establish semantics.",
+      "evidence": [
+        "pwm_source_contracts_MP6_20261027.txt overlay and PM8350C data",
+        "Ghidra calls.jsonl complete 133-call corpus",
+        "stock relocations and assembly inputs"
+      ],
+      "classification": "address coincidence and call inventory only; no register semantics inferred"
+    },
+    {
+      "id": "OBS-010",
+      "claim": "The stock module soft-depends on leds-qcom-lpg; pinned source has a matching compatible entry. The source scope report says the implementation search found no soc_fan C source in the searched roots.",
+      "evidence": [
+        "SOC_FAN_SCOPE_REVIEW.json stock.softdep and source_search",
+        "pwm_source_contracts_MP6_20261027.txt lpg_of_table excerpt"
+      ],
+      "classification": "dependency/source inventory; not proof of bind or complete source absence"
+    }
+  ],
+  "bus_ledger": [
+    {
+      "interface": "AVDD regulator",
+      "dt_binding": "fan,avdd-supply -> pmh0101_l8",
+      "driver_access": "regulator_get(\"fan,avdd\"), regulator_set_voltage(value,value), regulator_is_enabled/enable/disable",
+      "unit": "uV API parameter names; overlay value 3300000; fallback 2800000",
+      "status": "STATIC_MAPPING_RUNTIME_VOLTAGE_UNVERIFIED"
+    },
+    {
+      "interface": "pinctrl",
+      "dt_binding": "pinctrl-names default; pinctrl-0 fan_speed,fan_pwm",
+      "driver_access": "devm_pinctrl_get, pinctrl_lookup_state(default), pinctrl_select_state",
+      "status": "STATIC_MAPPING_RUNTIME_STATE_UNVERIFIED"
+    },
+    {
+      "interface": "tach GPIO/IRQ",
+      "dt_binding": "TLMM GPIO 211 active-high",
+      "driver_access": "of_get_named_gpio, gpio_request, gpio_to_desc, gpiod_to_irq, request_threaded_irq, disable_irq; hrtimer enables/disables",
+      "status": "STATIC_MAPPING_RAW_OWNERSHIP_OPEN"
+    },
+    {
+      "interface": "PWM-side GPIO",
+      "dt_binding": "PMH0101 GPIO 9 active-high",
+      "driver_access": "of_get_named_gpio, gpio_to_desc, gpiod_get_raw_value, and gpiod_direction_output_raw for level-dependent GPIO output",
+      "status": "STATIC_MAPPING_RAW_OWNERSHIP_OPEN"
+    },
+    {
+      "interface": "PWM provider",
+      "dt_binding": "fan_pwm_dev compatible qcom,pm8350c-pwm, reg 0xeb00, channel 3, period cell 40000",
+      "driver_access": "devm_fwnode_pwm_get and three KCFI-checked ops.apply calls",
+      "provider_source": "drivers/leds/rgb/leds-qcom-lpg.c; lpg_pwm_apply; softdep pre leds-qcom-lpg",
+      "status": "STATIC_MATCH_RUNTIME_BINDING_UNCONFIRMED"
+    },
+    {
+      "interface": "fan node reg",
+      "dt_binding": "reg=0xef00",
+      "driver_access": "no named resource-mapping/MMIO helper call in the direct-call inventory; pointer-based or indirect access is not excluded",
+      "provider_relation": "same numeric address as PM8350C triled_base in provider data",
+      "status": "UNKNOWN_SEMANTICS_NO_MMIO_CLAIM"
+    }
+  ],
+  "inferences": [
+    "If this overlay is applied and the GPIO/regulator/PWM providers bind as described, the stock consumer requests its fan voltage and routes PWM channel 3 through the qcom LPG provider; current static evidence does not establish these runtime conditions.",
+    "regulator_set_voltage argument names indicate microvolt units; 3300000 corresponds to 3.3 V as a requested API value, not a measured rail voltage.",
+    "The matching qcom,pm8350c-pwm compatible, PM8350C channel map, and module softdep make leds-qcom-lpg the statically supported provider candidate, while actual runtime provider binding remains unknown."
+  ],
+  "unknowns": [
+    "Whether the NX809J image applies this overlay and whether later overlays alter/disable the fan or PWM nodes.",
+    "Whether the real regulator, pinctrl, GPIO and PWM providers bind successfully on the device.",
+    "Electrical polarity, voltage and fan response under actual load; no hardware data is included.",
+    "Semantics of fan-specific properties beyond the observed stock/API behavior.",
+    "Meaning of fan node reg=0xef00 and its numeric overlap with provider triled_base; the call inventory does not exclude pointer-based or indirect MMIO, and no relation is proven.",
+    "Runtime channel state and return behavior of lpg_pwm_apply for this actual fan consumer."
+  ],
+  "contradictions": [],
+  "requested_escalation": "Independent L3/L4 review of the property-to-call mapping, channel selection, provider match, unit interpretation, and limits of the direct-call inventory. Keep overlay application and hardware behavior deferred.",
+  "revision_notes": [
+    "MP6 records source and DT contracts, not physical register semantics or a test result.",
+    "The device-tree scope report says runtime overlay application is not confirmed; do not upgrade the device or hardware verdict.",
+    "Absence of named direct APIs in the call/relocation inventory is not proof that pointer-based or indirect MMIO does not occur.",
+    "No candidate source was edited and no hardware or harness tests were run.",
+    "Hash-bound PWM core and regulator OF lookup excerpts were added to substantiate period/channel-cell and supply-name translation."
+  ],
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP0_IDENTITY.json",
+      "sha256": "ac88f5d0816bbf57584b25a213d24682407846550e6a73c800ce42cf004dde75"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "a757053fbc8010b310ac234fbdc94ab28bd4fd3fce3117912003ca7a7f9f2bb6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "595079c1c4d3f44898a0fbfd50a4dd36f3ad760172e90cfd1b093b56539357e0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "b240daa45fdbc39c88eb683b06300c2ebe96d7fbb112129e1a249624cfa07c8a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP4_EVENT_CALLBACK_LIFETIME.json",
+      "sha256": "f521c029bc26b31363a9487bce63a6502c2fba8dc871b0bc559e11ccbcfbbe59"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP5_LOCK_LIFETIME_CONTRACT.json",
+      "sha256": "e2b20b16d7116c9031e936584cc51e847108b4260b97ee017c07445d0e5ae49c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/SOC_FAN_SCOPE_REVIEW.json",
+      "sha256": "d151ebe27df244e419c79a626d8c5de601ea068799d49b4a5ca0c582dec9580d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/soc_fan_scope_source_evidence.txt",
+      "sha256": "0456805e16191b75a4334f52d6fba6e5b3b5e58c3c521916eb5b9e41ef485813"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/pwm_source_contracts_MP6_20261027.txt",
+      "sha256": "97b79db266986a10b82f9d124b20f318ded17173f2354b0daeea8473aca31aa4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/manifest.json",
+      "sha256": "21c89648abcdbe7b80ea6738aa10728b78eeadff28729dc2f5bca287ccef045d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/functions.jsonl",
+      "sha256": "f767904d61eb3bea84a63bd46a560d7d30aa2bdeb7e9e7e03822a22f8a9621c3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/calls.jsonl",
+      "sha256": "476bb7156695005a5f71d7c901df30a8357bfc110b3dda63a6cd82ba6c9b19d1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kcfi_stock.json",
+      "sha256": "80d3446bf67c9b743710a6666b98111841873675a64a296a24d70d2955cf3a6d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_relocations.txt",
+      "sha256": "20475a9898c8e9b21f81f29dd7b0a3a78b524bdfacdd3458a0505bc8e483cb7f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kernel_header_evidence_MP1_20261027.txt",
+      "sha256": "e92546b29c99b745c482317cf361d432c473f0c0cbd7e7c619cfc6a3c8d41bf8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/manifest.json",
+      "sha256": "1f375a3920e16c21816d84cf82037f664eb8fe4c47ba56f2104cb5f50a349b8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0001_nb_fan_probe_0010052c.asm",
+      "sha256": "293cc1987db531aa43a8f73b7a7c711e5bb1e01e40d85ce7d0ba5d2d587a1c6a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0003_nb_fan_parse_dt_00100a90.asm",
+      "sha256": "2e17e89384cc8504e190d36d391f4b2864b17c3437f10c9051a335735d768d60"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0004_nb_fan_gpio_proc_00100dac.asm",
+      "sha256": "4007fcbdf3d078e7abc56b2aba2e69e79ad6e4170e54849bf6ce7eaa785b85ca"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0008_fan_level_set_0010127c.asm",
+      "sha256": "58909b910ec70d342ecee1713a01df1f5fdf5a1a323e711e34829952e2a7c09b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0011_fan_pwm_store_00101654.asm",
+      "sha256": "55741c3317e4ac96f78fe73b14a7d08a49de960c00ac61cb1e945e01d3915789"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0001_0010052c_nb_fan_probe.c",
+      "sha256": "3d7712cb5dd75959d41d602c9ff1976621f4a168aed2d161954a861be24d86ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0003_00100a90_nb_fan_parse_dt.c",
+      "sha256": "e6510a6eb893463049c26e06a6316cd64eff57910bc148b83c7d55226305c793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0004_00100dac_nb_fan_gpio_proc.c",
+      "sha256": "994c904617fb82eb80c8323d11aeecbc6216900b1ba9ec5e35e19102531c86b8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0008_0010127c_fan_level_set.c",
+      "sha256": "62f504499ebf5c93bad596af8b1c5932685c7ed35c0e5235a40a6cb7e5679513"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/decompiled/0011_00101654_fan_pwm_store.c",
+      "sha256": "8d04c100c679f82a332daecf47f840a9e0207c2bdb07f1c4ad116f4bcf2ab93c"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T08:08:58.040717+00:00",
+  "passed": true,
+  "scope": "host-only wrapper argument contract; no kernel or physical device execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_040_aw8693x_set_rtp_aei.c",
+  "candidate_source_sha256": "0464d414b7463072ece502e769f9f391f740f03a412b19fe7f670fd9a5d0f04b",
+  "harness_source_sha256": "1d83a87e4839b4602fab3186e5da8d288f363426d0aa9ccd6e1ccdb441933f46",
+  "harness_runner_sha256": "aaf59b6198611a1301f80e7baabe07386606eec72f6958b64f6a8545be8c181d",
+  "kcfi_signature": "void (struct aw_haptic *, u8) [KCFI-equivalent aliases: bool, unsigned char]",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "expected": "pass",
+      "expected_failure": null,
+      "observed_returncode": 0,
+      "failure_diagnostic_matched": false,
+      "passed": true,
+      "output": "PASS: flag bit 0 maps to active-low RTP_AEI mask update"
+    },
+    "mutant_wrong_register": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: i2c_w_bits arguments or call count mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: i2c_w_bits arguments or call count mismatch"
+    },
+    "mutant_wrong_mask": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: i2c_w_bits arguments or call count mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: i2c_w_bits arguments or call count mismatch"
+    },
+    "mutant_inverted_flag": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: i2c_w_bits arguments or call count mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: i2c_w_bits arguments or call count mismatch"
+    },
+    "mutant_nonzero_test": {
+      "expected": "reject with exact contract diagnostic",
+      "expected_failure": "FAIL: i2c_w_bits arguments or call count mismatch",
+      "observed_returncode": 1,
+      "failure_diagnostic_matched": true,
+      "passed": true,
+      "output": "FAIL: i2c_w_bits arguments or call count mismatch"
+    }
+  },
+  "docker_output_tail": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCASE_RESULT:baseline:0\nPASS: flag bit 0 maps to active-low RTP_AEI mask update\nCASE_END\nCASE_RESULT:mutant_wrong_register:1\nFAIL: i2c_w_bits arguments or call count mismatch\nCASE_END\nCASE_RESULT:mutant_wrong_mask:1\nFAIL: i2c_w_bits arguments or call count mismatch\nCASE_END\nCASE_RESULT:mutant_inverted_flag:1\nFAIL: i2c_w_bits arguments or call count mismatch\nCASE_END\nCASE_RESULT:mutant_nonzero_test:1\nFAIL: i2c_w_bits arguments or call count mismatch\nCASE_END\n"
+}

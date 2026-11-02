@@ -2,9 +2,10 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-07-15T19:28:22.377957+00:00`
-- Run de evidência: `C:\Users\adriano\Desktop\emulador\kernel-docker-workspace\engenharia\runs\NX809J-20260711T011653Z`
-- Rebuild limpo: `True`
+- Gerado em: `2026-11-02T06:30:34.672444+00:00`
+- Run de evidência: `public repository evidence: C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers`
+- Rebuild limpo: `sim`
+- Manifesto do kernel alvo: `C:\Users\adria\Desktop\drivers\zte-kernel-nx809j-drivers\kernel_development\config\target_kernel.json`
 
 | Driver | Resultado estático | Hardware | Evidência que falta |
 |---|---|---|---|

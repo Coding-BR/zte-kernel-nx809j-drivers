@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "richtap_clean_buf@0010eaa0",
+  "stage": "PRE_CANDIDATE",
+  "generated_date": "2026-10-29",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "classification": [
+    "STATEFUL_MEMORY",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME"
+  ],
+  "microproofs": {
+    "MP0_IDENTITY": {
+      "status": "PASS",
+      "elf_section": ".text",
+      "elf_symbol_value": "0xbc80",
+      "ghidra_entry": "0010eaa0",
+      "body_bytes": 428,
+      "instruction_count": 107,
+      "kcfi_required": false,
+      "reason": "No valid KCFI preamble; this is a direct-call internal routine.",
+      "evidence_sha256": {
+        "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+        "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+        "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+        "kcfi_inventory": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+        "function_decomp": "5b0f015710250b80d08795d799fad0c466e26d4fb8e64b0da2f13930cf22e835",
+        "function_pcode": "aa67461b42d1e1a87f73a0253e0625d12aa327ea13d6f67c1412b04e717bf121",
+        "function_assembly": "057a0d80a519bda2f60d2577b0af3cdab34c465848277a07a4d5274bf9d5f32d",
+        "caller_decomp": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824",
+        "caller_assembly": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad",
+        "identity_manifest": "598786f8381370ec7668107d30c41affc94df4b9d654826066a6514d57eb64e6"
+      }
+    },
+    "MP1_CALL_SIGNATURE": {
+      "status": "SUPPORTED_BY_DIRECT_CALL_AND_CALLER_CONTEXT",
+      "prototype": "void (struct aw_haptic *)",
+      "basis": [
+        "The stock caller passes lVar6 in x0 to richtap_clean_buf.",
+        "The call occurs in richtap_file_unlocked_ioctl on ioctl command 0x520a."
+      ],
+      "caller": "richtap_file_unlocked_ioctl@0010e374"
+    },
+    "MP2_STATE_EFFECT_LEDGER": {
+      "status": "EXTRACTED_REVIEW_REQUIRED",
+      "effects": [
+        "Loads the first buffer-node pointer from aw_haptic + 0x610.",
+        "For 16 nodes, zeroes 1000 bytes starting at node + 0x18 and stores 0xff at node byte offset 0.",
+        "Follows the next-node pointer at node + 0x8 exactly 15 times.",
+        "Does not allocate or free nodes and does not check pointers or chain length."
+      ],
+      "memset_calls": 16,
+      "sentinel_stores": 16,
+      "next_pointer_loads": 15,
+      "function_pcode_sha256": "aa67461b42d1e1a87f73a0253e0625d12aa327ea13d6f67c1412b04e717bf121"
+    },
+    "MP3_CONTROL_ERROR_MATRIX": {
+      "status": "PASS_STATIC_CONTROL_FLOW",
+      "paths": [
+        {
+          "condition": "unconditional fixed sequence",
+          "effects": "16 buffer clears, 16 sentinel stores, 15 next-pointer loads",
+          "return": "void"
+        }
+      ],
+      "branch_count": 0
+    },
+    "MP4_EVENT_CALLBACK_LIFETIME": {
+      "status": "DIRECT_CALL_REFERENCE_OBSERVED",
+      "callsite": {
+        "caller": "richtap_file_unlocked_ioctl",
+        "caller_entry": "0010e374",
+        "callsite": "0010e7f8",
+        "target": "richtap_clean_buf@0010eaa0",
+        "caller_passes": "lVar6 in x0"
+      },
+      "callback_table": "NOT_APPLICABLE"
+    },
+    "MP5_RESOURCE_LIFETIME": {
+      "status": "OWNERSHIP_AND_SYNCHRONIZATION_REVIEW_REQUIRED",
+      "observation": "The stock caller invokes richtap_clean_buf before mutex_lock(lVar6 + 0x2f0). The cleanup helper itself has no lock, allocation, free, or null/length check.",
+      "risk": "Concurrent mutation and linked-node lifetime assumptions are not established by this static evidence.",
+      "callsite_decomp_sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+    },
+    "MP6_REGISTER_BUS_LEDGER": {
+      "status": "NOT_APPLICABLE_TO_THIS_FUNCTION",
+      "basis": "The target only clears memory and follows linked-list pointers; it has no bus or register access."
+    }
+  },
+  "pre_edit_decision": {
+    "candidate_source_created": false,
+    "source_edit_allowed": true,
+    "promotion_authorized": false,
+    "remaining_proofs": [
+      "Docker build and strict 428-byte assembly/relocation comparison",
+      "candidate Ghidra normalized C and P-Code shape",
+      "Joern scoped state/lifetime analysis",
+      "host linked-list harness with seeded mutation tests",
+      "independent review of unchecked chain and caller lock ordering"
+    ]
+  }
+}

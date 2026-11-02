@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "kind": "guided_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "320_syna_tcm_preserve_touch_report_config",
+  "stock_function": "syna_tcm_preserve_touch_report_config",
+  "stock_entry": "0012a53c",
+  "status": "HOST_JOERN_TYPED_TRANSITION_PASS_WITH_REVIEW_BLOCKERS",
+  "promotion_allowed": false,
+  "promotion_blockers": [
+    "independent review of devm allocation/free lifetime and reallocation ownership",
+    "instruction-level comparison of typed lock cleanup against all stock failure paths",
+    "differential review of parser bounds and stale format_offset state",
+    "canonical zte_tpd vendor_dlkm build and KCFI evidence were not run for this isolated target",
+    "independent reviewer approval has not been recorded",
+    "smartphone validation was intentionally not run"
+  ],
+  "evidence": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_preserve_touch_report_config.c",
+      "sha256": "a5c4594064a5b25d9c109ea8bcd8461b793bebb609e18a07c02c2c187e10ae0f"
+    },
+    "layout_header": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_tcm_layout.h",
+      "sha256": "83fc66dd05c806fd26b546ddc34dcf5c9889997c7e045789c65f0cc74d66712b"
+    },
+    "host_harness_source": {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_tcm_preserve_touch_report_config_host_test.c",
+      "sha256": "9fd7a50c9c22005a5f6100311158bfbea85295240645857fd27f5d11d33a6976"
+    },
+    "aarch64_assembly_input": {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_tcm_preserve_touch_report_config_aarch64_assembly_input.c",
+      "sha256": "8adb84fc4480875d5565cfb69760ffb4bf2a1469adaaa031e9bdd5ee60a69f16"
+    },
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0319_0012a53c_syna_tcm_preserve_touch_report_config.c",
+      "sha256": "2882a67d5ea24a38d609f0ea66bb50590ebad6e66c7cf77b273c44e016e935d8"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0319_0012a53c_syna_tcm_preserve_touch_report_config.jsonl",
+      "sha256": "99341d0c883450cb723d38e7e1c5b747efbe0728493fcca9ceeaa660f4767511"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0319_syna_tcm_preserve_touch_report_config_0012a53c.asm",
+      "sha256": "dcf177a71f2623261338395db882fb76ef30ef4d45fe8ae83eb07d14e22b0e80"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next320_syna_tcm_preserve_touch_report_config_v1/candidate_assembly/syna_tcm_preserve_touch_report_config_candidate.s",
+      "sha256": "6e66dd74c7227d2f08e5d35ff61501da6464b98de1b234f4216d3d2b222f2e22"
+    },
+    "host_harness_report": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next320_syna_tcm_preserve_touch_report_config_v1/host_harness_report.json",
+      "sha256": "not_self_referential"
+    },
+    "joern_gate_summary": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next320_syna_tcm_preserve_touch_report_config_v1/joern_final/joern_gate_summary.json",
+      "sha256": "df573ec6d284837ded8591f9d566ffcb68935990bb80692b58a406b1fa3c8514",
+      "status": "PASS",
+      "mapped_identity_count": 1,
+      "mapped_call_deltas": 0,
+      "unresolved_call_count": 0,
+      "parse_problem_count": 0,
+      "call_count": 123,
+      "control_structure_count": 14,
+      "review_finding_count": 2
+    }
+  },
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS_TYPED_TRANSITION",
+    "MP2_STATE_EFFECT_LEDGER": "PASS_WITH_TOUCH_REPORT_OVERLAY_REVIEW",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS_WITH_LOCK_AND_BOUNDS_REVIEW",
+    "MP4_TEST_ORACLE": "PASS_WITH_COMPATIBILITY_LAYOUT_PROBE",
+    "MP5_JOERN_STRICT": "PASS_WITH_LIFETIME_FINDINGS",
+    "MP6_ASSEMBLY_SEMANTIC_REVIEW": "PASS_WITH_REVIEW_BLOCKERS",
+    "MP7_CANDIDATE_PATCH": "PARTIAL_TYPED_GKI_TRANSLATION_PENDING",
+    "MP8_INDEPENDENT_REVIEW": "PENDING"
+  }
+}

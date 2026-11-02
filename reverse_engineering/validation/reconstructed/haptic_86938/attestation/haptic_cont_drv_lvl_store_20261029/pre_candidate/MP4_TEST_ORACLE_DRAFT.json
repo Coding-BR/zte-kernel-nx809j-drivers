@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "task_id": "050_cont_drv_lvl_store",
+  "work_unit": "MP4_TEST_ORACLE_DRAFT",
+  "identity": "cont_drv_lvl_store@00106554",
+  "scenarios": [
+    {
+      "name": "two valid hex values and read byte bit7 clear",
+      "oracle": "return count; update bytes +0x3f2/+0x3f3; one read of reg 0x1d length 1; one write reg 0x1d length 2; output [low8(first),low8(second)] under mutex"
+    },
+    {
+      "name": "two valid values and read byte bit7 set",
+      "oracle": "write first byte with bit7 preserved from read; replace all low seven bits with low8(first)"
+    },
+    {
+      "name": "zero or one conversion",
+      "oracle": "return count; no state write, lock, or bus calls"
+    },
+    {
+      "name": "read helper error",
+      "oracle": "still issue write and unlock; no error propagated; initialize temporary read buffer to zero to match stock pre-call stores"
+    },
+    {
+      "name": "write helper error",
+      "oracle": "unlock and return count; no error propagated"
+    },
+    {
+      "name": "overflowing hex input",
+      "oracle": "sscanf %x conversion semantics, then truncate each converted word to low byte; do not substitute kstrtou8 or add range checks"
+    }
+  ],
+  "oracle_status": "DRAFT_FROM_STOCK_ASSEMBLY_AND_PCODE",
+  "independent_MP8_review": false,
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0049_00106554_cont_drv_lvl_store.c",
+      "sha256": "09903cca66c07d6f4fb612083605a0de10333338966073acdc09cb5c2def9018"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0049_00106554_cont_drv_lvl_store.jsonl",
+      "sha256": "4d8a93ab983f5c3242c1766f8be5d842f3bd9305980e28b05ab4bf917266a889"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0049_cont_drv_lvl_store_00106554.asm",
+      "sha256": "63774192887d30f9af2e5f9db6b388692806ee733500eba63e7608db5669c64c"
+    }
+  ]
+}

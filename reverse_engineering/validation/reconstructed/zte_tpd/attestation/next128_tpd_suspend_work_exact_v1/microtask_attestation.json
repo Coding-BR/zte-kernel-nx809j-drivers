@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "128_tpd_suspend_work",
+  "stock_function": "tpd_suspend_work",
+  "stock_entry": "001107a4",
+  "stock_body_bytes": 72,
+  "stock_instruction_count": 18,
+  "candidate_instruction_count": 18,
+  "candidate_body_bytes": 72,
+  "status": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_suspend_work.c",
+    "sha256": "2d8f01e3ffe7d65ae8b2d342fed1e56b0a00769f4a63886c6b9a43e205c50e9f"
+  },
+  "exact_assembly": {
+    "path": "candidate_assembly/0000_tpd_suspend_work.asm",
+    "sha256": "6aaf046d9f14ba40fa96f6fb4501b2c928b69a6b27cc005e54f64f246231fc76",
+    "comparison_sha256": "d31ae1add603044f91068a959a1074bbffe83f3441038a9f2c239a8b7994a951"
+  },
+  "kcfi": {
+    "type_id": "0xa607748c",
+    "comparison_sha256": "b39c1461650b80893c98d6a41d6e3d11d49feb935c81226096bbd7b0e6ebab05"
+  },
+  "gates": {
+    "canonical_build": {
+      "path": "canonical_build_report.json",
+      "sha256": "7ac6f2480179a665e56038e24fcdcbdf277d5d0e5ecadd10196b3082b0734522",
+      "passed": true,
+      "reproducible": true,
+      "cycles": 2
+    },
+    "host_asan_ubsan": {
+      "path": "host_harness_report.json",
+      "sha256": "e00e873ea1acc9e429d5d9d395a4c41d3d21460f9854ff2cd265ef6f70628932",
+      "passed": true,
+      "cases": 2
+    },
+    "joern_strict": {
+      "report_path": "joern/joern_gate_report.json",
+      "report_sha256": "b6ba7778499193c23dcb59290bac90cae7cb027fa4a3815deb4ca07ce30b4d75",
+      "summary_path": "joern/joern_gate_summary.json",
+      "summary_sha256": "e28329d35d337d9b07f988d47dbf8516ebbf80ab71476a93a99e0dce5120dfca",
+      "passed": true,
+      "strict": true,
+      "parse_problem_count": 0,
+      "unresolved_call_count": 0
+    }
+  },
+  "limitations": [
+    "Android runtime and NX809J hardware behavior remain unverified.",
+    "The canonical build attests the reconstructed source tree; function-level exactness is established by assembly, relocation, KCFI, Joern and direct host gates."
+  ]
+}

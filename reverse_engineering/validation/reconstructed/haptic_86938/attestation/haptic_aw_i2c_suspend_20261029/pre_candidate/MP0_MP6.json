@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "aw_i2c_suspend@0010ec50",
+  "stage": "PRE_CANDIDATE",
+  "generated_date": "2026-10-29",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "classification": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS"
+  ],
+  "microproofs": {
+    "MP0_IDENTITY": {
+      "status": "PASS",
+      "elf_section": ".text",
+      "elf_symbol_value": "0xbe30",
+      "ghidra_entry": "0010ec50",
+      "body_bytes": 96,
+      "instruction_count": 24,
+      "kcfi_required": true,
+      "kcfi_type_id": "0x2a703c0b",
+      "evidence_sha256": {
+        "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+        "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+        "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+        "kcfi_inventory": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+        "function_decomp": "c2fb504d0682031621564bbd1bb8d88efcf35faa91c14bd6495125be043b7435",
+        "function_pcode": "b2e38050700c8c2ddcd176f6076ff286b7e6a1af519f9ebb7a07a57049b749b3",
+        "function_assembly": "695a0e265b410456bca1f03b6780692bb8c0737fe25699045e4431dd908d397b",
+        "mp1_call_signature": "9e628d5cc22fced58942c07bc2b667f8d83a1ce2ce854d795abe46cb8ef1170f"
+      }
+    },
+    "MP1_CALL_SIGNATURE": {
+      "status": "SUPPORTED_BY_KERNEL_PM_ABI_AND_KCFI",
+      "prototype": "int (struct device *)",
+      "basis": [
+        "The pinned Linux 6.12.23 source declares dev_pm_ops.suspend as int (*)(struct device *dev).",
+        "The stock aw_i2c_suspend and aw_i2c_resume entries share KCFI type ID 0x2a703c0b.",
+        "The first load reads device driver_data at offset 0x98."
+      ],
+      "callback_target_prototype": "void (struct aw_haptic *)",
+      "callback_target_basis": "The stock indirect-call KCFI ID 0x847a0830 matches aw8693x_stop and ten other stock chip operations."
+    },
+    "MP2_STATE_EFFECT_LEDGER": {
+      "status": "EXTRACTED_REVIEW_REQUIRED",
+      "ordered_effects": [
+        "Load struct aw_haptic * from device + 0x98.",
+        "Lock the mutex at haptic + 0x2f0.",
+        "Load the operations-table pointer from haptic + 0x5c8.",
+        "Load its callback at byte offset 0x38.",
+        "Check the callback's KCFI preamble against 0x847a0830.",
+        "Call the callback with haptic as its only argument.",
+        "Unlock haptic + 0x2f0.",
+        "Return zero."
+      ],
+      "loads": 4,
+      "calls": ["mutex_lock", "indirect_callback", "mutex_unlock"],
+      "stores": 0,
+      "null_checks": 0,
+      "function_pcode_sha256": "b2e38050700c8c2ddcd176f6076ff286b7e6a1af519f9ebb7a07a57049b749b3"
+    },
+    "MP3_CONTROL_ERROR_MATRIX": {
+      "status": "PASS_STATIC_CONTROL_FLOW",
+      "paths": [
+        {
+          "condition": "callback KCFI ID equals 0x847a0830",
+          "effects": "lock, invoke callback, unlock",
+          "return": 0
+        },
+        {
+          "condition": "callback KCFI ID differs",
+          "effects": "BRK #0x8228 at 0010ec8c; non-returning trap",
+          "return": "does not return"
+        }
+      ],
+      "conditionals": 1,
+      "null_or_error_paths": 0
+    },
+    "MP4_EVENT_CALLBACK_LIFETIME": {
+      "status": "CALLBACK_TABLE_SLOT_AND_TARGET_CORROBORATED",
+      "registration_abi": "dev_pm_ops.suspend",
+      "operations_table": {
+        "symbol": "aw8693x_func_list",
+        "section": ".data",
+        "size_bytes": 400,
+        "slot_offset": "0x38",
+        "relocation_target": ".text+0xf2c",
+        "target_function": "aw8693x_stop@00103d4c",
+        "target_kcfi_type_id": "0x847a0830"
+      },
+      "evidence": "The pinned stock ELF's .rela.data relocation at aw8693x_func_list+0x38 targets .text+0xf2c, the aw8693x_stop symbol."
+    },
+    "MP5_RESOURCE_LIFETIME": {
+      "status": "LOCK_SCOPE_OBSERVED_REVIEW_REQUIRED",
+      "observation": "The haptic mutex remains held for the complete indirect stop callback. aw8693x_stop has no nested mutex_lock/unlock, but performs I2C operations and waits for standby before returning.",
+      "risks": [
+        "device driver_data and the operations table are used without null checks.",
+        "The callback can sleep while the haptic mutex is held.",
+        "The stock lock order and PM teardown interaction still require independent review and kernel lockdep/KCSAN evidence."
+      ]
+    },
+    "MP6_REGISTER_BUS_LEDGER": {
+      "status": "TRANSITIVE_BUS_EFFECT_CONFIRMED_REVIEW_REQUIRED",
+      "basis": "The selected slot resolves to aw8693x_stop, which calls i2c_w_bits, i2c_w_bytes, and i2c_r_bytes and waits using usleep_range_state.",
+      "hardware_runtime": "NOT_PERFORMED"
+    }
+  },
+  "pre_edit_decision": {
+    "candidate_source_created": false,
+    "source_edit_allowed": true,
+    "promotion_authorized": false,
+    "remaining_proofs": [
+      "Docker build and strict 96-byte Assembly/relocation parity",
+      "Fresh candidate Ghidra normalized-C/P-Code comparison",
+      "KCFI function preamble and callback type parity",
+      "Joern callback, lock, and bus-effect slice",
+      "Host harness for driver_data, lock/callback/unlock order, and seeded mutants",
+      "Independent lock/lifetime review and controlled hardware validation"
+    ]
+  }
+}

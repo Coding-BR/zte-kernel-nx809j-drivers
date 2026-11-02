@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-28T17:05:00Z",
+  "driver": "fp_goodix",
+  "scope": "isolated source-level gf_ioctl experiment promoted after full-module regression check",
+  "source": {
+    "file": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix_core.c",
+    "sha256": "e3b3b339189690be3e3589b449df4488c82fece029a69ef68ba5b907702df11c",
+    "change": "rewrite if (power_offset > 1) error form as if (power_offset <= 1) success else error, preserving behavior and matching stock branch polarity/layout"
+  },
+  "docker": {
+    "curated_snapshot": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\fp_goodix",
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "variant_sha256": "1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c",
+    "variant_size": 730720,
+    "reproducible_against_external_variant": true,
+    "curated_snapshot_build": "PASS; SHA-256 identical to canonical 1ab0da939bf2a5664824dff50aa913a922c18ef45238f513a30b7163e348500c"
+  },
+  "assembly": {
+    "comparison_evidence": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\fp_goodix_power_promoted_recheck_20260828\\canonical_compare.json",
+    "function_scope": "30/30 extracted",
+    "full_module_failures": [
+      "gf_ioctl@00100824: symbol_size, instructions",
+      "gf_open@00100de8: instructions",
+      "gf_parse_dts@0010237c: instructions, relocations",
+      "gf_probe@00101554: instructions"
+    ],
+    "gf_ioctl_isolated": "stock 1436 bytes/359 instructions; variant 1424 bytes/356 instructions; relocations match under the same Docker extractor",
+    "decision": "PROMOTE_SOURCE_ONLY; binary identity remains open"
+  },
+  "tests": {
+    "host_harness": "PASS; reproducible; 30 functions covered",
+    "hardware": "DEFERRED"
+  }
+}

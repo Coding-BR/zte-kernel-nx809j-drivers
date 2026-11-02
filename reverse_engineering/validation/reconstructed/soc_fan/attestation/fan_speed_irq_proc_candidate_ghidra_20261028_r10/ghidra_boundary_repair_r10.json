@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "method": "Ghidra body extent extended to the ELF symbol size independently confirmed by llvm-nm; export regenerated after the repair.",
+  "candidate_module": {
+    "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_control_surface_r10_20261028_core/docker/work/soc_fan/cycle_2/soc_fan.ko",
+    "sha256": "b49e2becc115f3510c3d54f62ac766daab43e14d26183fdc0fa45592b22dc101"
+  },
+  "function": {
+    "name": "fan_speed_irq_proc",
+    "entry": "0010038c",
+    "initial_ghidra_body_bytes": 40,
+    "elf_symbol_start": "0x4",
+    "elf_symbol_size_bytes": 60,
+    "repaired_ghidra_body_bytes": 60,
+    "strict_instruction_count": 15
+  },
+  "evidence": [
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_candidate_ghidra_20261028_r10/exports/soc_fan.ko/functions.jsonl",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_candidate_ghidra_20261028_r10/ghidra_boundary_repaired.log",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_candidate_ghidra_20261028_r10/script_boundary_repaired.log",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_candidate_ghidra_20261028_r10/exports_boundary_repaired/soc_fan.ko/functions.jsonl",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_candidate_ghidra_20261028_r10/exports_boundary_repaired/soc_fan.ko/decompiled/0000_0010038c_fan_speed_irq_proc.c",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_candidate_ghidra_20261028_r10/exports_boundary_repaired/soc_fan.ko/pcode/0000_0010038c_fan_speed_irq_proc.jsonl",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_control_surface_r10_20261028_core/assembly/comparison.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_altinstructions_r10_20261028/comparison.json",
+    "reverse_engineering/validation/reconstructed/soc_fan/attestation/fan_speed_irq_proc_elf_extent_r10_20261028.json"
+  ],
+  "notes": "The initial Ghidra flow followed the LL/SC branch and omitted the LSE island. Docker llvm-nm confirms the stock and candidate ELF symbols both start at .text+0x4 and measure 0x3c bytes. The repaired export covers both branches; strict instruction and P-Code comparisons pass."
+}

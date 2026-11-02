@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "attestation": "gf_ioctl_parse_exact_v1",
+  "status": "INCOMPLETO",
+  "candidate": {
+    "sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+    "size": 721008,
+    "built_from": "kernel-docker-workspace/engenharia/curated/fp_goodix",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225"
+  },
+  "stock": {
+    "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+    "path": "reference_modules/full_vendor_boot/fp_goodix.ko"
+  },
+  "exact_source_units": [
+    {
+      "file": "gf_ioctl_exact.S",
+      "sha256": "acbe2b2a4846c2302a55f10a2836b969f9064c648652410a9d2343dd95f40d94",
+      "functions": ["gf_ioctl"]
+    },
+    {
+      "file": "gf_parse_dts_exact.S",
+      "sha256": "0479e6c8b548f6df14a2a0983fc8e10e739ea577365fe5c6693514270b8f5da5",
+      "functions": ["gf_parse_dts"]
+    },
+    {
+      "file": "fp_goodix_inline_exact.S",
+      "sha256": "dfbcaa1cbc453d01b8cda0d46cffdc544eaeddcbf5af7d6471996ed9874ac625",
+      "functions": ["_inline_copy_to_user", "_inline_copy_from_user"]
+    },
+    {
+      "file": "fp_goodix_exact_rodata.S",
+      "sha256": "4bf1c320dbf4b923175dd06a07f0ece8f88ed6739b28c8f903fa29555a128a5c",
+      "functions": ["relocation_targets"]
+    }
+  ],
+  "gates": {
+    "assembly": {
+      "passed": true,
+      "checked": 30,
+      "failures": 0,
+      "evidence": "assembly_comparison.json"
+    },
+    "kcfi": {
+      "passed": true,
+      "checked": 23,
+      "evidence": "kcfi_comparison.json"
+    },
+    "host": {
+      "passed": true,
+      "reproducible": true,
+      "evidence": "host_test_attestation.json"
+    },
+    "offline_validation": {
+      "passed": true,
+      "static_status": "static_verified",
+      "cycle_1_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+      "cycle_2_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+      "evidence": "offline_validation.json"
+    }
+  },
+  "limitations": [
+    "semantic_equivalence remains UNPROVEN",
+    "independent review was not performed",
+    "hardware validation on NX809J is deferred",
+    "host harness does not execute kernel Assembly or hardware paths",
+    "ABI audit retains stock metadata/dependency formatting differences"
+  ]
+}

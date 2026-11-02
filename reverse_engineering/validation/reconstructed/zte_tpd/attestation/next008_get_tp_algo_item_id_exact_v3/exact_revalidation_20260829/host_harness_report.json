@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-29T15:00:00Z",
+  "mode": "offline_direct_source_get_tp_algo_item_id_asan_ubsan",
+  "driver": "zte_tpd",
+  "target": "get_tp_algo_item_id",
+  "passed": true,
+  "expected_cases": 2,
+  "repetitions": 2,
+  "toolchain": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225",
+    "sanitizers": ["address", "undefined"]
+  },
+  "inputs": [
+    {
+      "path": "host/next008_get_tp_algo_item_id_harness.c",
+      "sha256": "4abdddfb5a06b5448b4cfb12cc0e7d6652b4ffd587075a92981d0f0ff26ba7a3",
+      "size": 2067
+    },
+    {
+      "path": "candidate_source.c",
+      "sha256": "f82f5049880f16e82fa37962263bfa1cefff8360ecf9d8d6f949cf1dcca03ff6",
+      "size": 1438
+    }
+  ],
+  "cycles": [
+    {
+      "cycle": 1,
+      "binary_sha256": "f8abf8a73af562134da1fffa4e277d5cdc1098df5d247880144f02130319cbc1",
+      "stdout": "PASS test_all_algo_items_and_order\nPASS test_unknown_and_empty_errors\nSUMMARY total=2 passed=2 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "binary_sha256": "f8abf8a73af562134da1fffa4e277d5cdc1098df5d247880144f02130319cbc1",
+      "stdout": "PASS test_all_algo_items_and_order\nPASS test_unknown_and_empty_errors\nSUMMARY total=2 passed=2 failed=0\n",
+      "returncode": 0,
+      "passed": true
+    }
+  ],
+  "reproducible": true,
+  "limitations": [
+    "The combined next_abi_harness was not used because an unrelated change_tp_state.c dependency is currently missing ZTE_TPD_BRK_5512 and gesture_complete stubs; the dedicated harness isolates this target.",
+    "The dedicated harness covers all seven algorithm entries, order, substring matching, unknown input and empty input; printk is stubbed.",
+    "No smartphone, Android service, SPI, IRQ, MMIO or physical hardware is exercised."
+  ]
+}

@@ -16,14 +16,33 @@
 
 #include "nubia_hw_version.h"
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern u8 nubia_pcb_gpio1_v;
+extern u8 nubia_pcb_gpio2_v;
+extern u8 nubia_pcb_gpio3_v;
+extern int pcb_gpio3;
+extern u8 nubia_rf_gpio1_v;
+extern u8 nubia_rf_gpio2_v;
+#else
 u8 nubia_pcb_gpio1_v;
 u8 nubia_pcb_gpio2_v;
 u8 nubia_pcb_gpio3_v;
 int pcb_gpio3;
 u8 nubia_rf_gpio1_v;
 u8 nubia_rf_gpio2_v;
+#endif
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern int debug_value;
+extern ssize_t nubia_hw_rf_band_show(struct kobject *kobj,
+					     struct kobj_attribute *attr, char *buf);
+#else
 static int debug_value;
+#endif
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern struct kobject *hw_version_kobj;
+#else
 struct kobject *hw_version_kobj;
+#endif
 
 static const struct nubia_pcb_gpio_map hw_pcb_gpio_map[] = {
 	{ 0, 0, 0, "MB_A" },
@@ -117,9 +136,16 @@ err_free:
 	return ret;
 }
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern struct nubia_pcb_gpio_map *
+nubia_get_pcb_table_item_by_gpio(struct nubia_pcb_gpio_map *table,
+					 unsigned int count);
+#else
 struct nubia_pcb_gpio_map *
 nubia_get_pcb_table_item_by_gpio(struct nubia_pcb_gpio_map *table,
-				 unsigned int count)
+					 unsigned int count)
+#endif
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 {
 	unsigned int i;
 
@@ -134,7 +160,9 @@ nubia_get_pcb_table_item_by_gpio(struct nubia_pcb_gpio_map *table,
 
 	return NULL;
 }
+#endif
 
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 int nubia_get_hw_id(void)
 {
 	struct nubia_pcb_gpio_map *item;
@@ -150,8 +178,10 @@ int nubia_get_hw_id(void)
 
 	return item->hw_id;
 }
+#endif
 EXPORT_SYMBOL_GPL(nubia_get_hw_id);
 
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 void nubia_get_hw_pcb_version(char *result)
 {
 	struct nubia_pcb_gpio_map *item;
@@ -166,6 +196,7 @@ void nubia_get_hw_pcb_version(char *result)
 	else
 		memcpy(result, "unknow", sizeof("unknow"));
 }
+#endif
 EXPORT_SYMBOL_GPL(nubia_get_hw_pcb_version);
 
 int charger_100W(void)
@@ -180,8 +211,14 @@ int charger_80W(void)
 }
 EXPORT_SYMBOL(charger_80W);
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern char *nubia_get_rf_band_by_gpio(struct nubia_rf_band_gpio_map *table,
+				unsigned int count);
+#else
 char *nubia_get_rf_band_by_gpio(struct nubia_rf_band_gpio_map *table,
 				unsigned int count)
+#endif
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 {
 	unsigned int i;
 
@@ -196,9 +233,15 @@ char *nubia_get_rf_band_by_gpio(struct nubia_rf_band_gpio_map *table,
 
 	return "unknow";
 }
+#endif
 EXPORT_SYMBOL_GPL(nubia_get_rf_band_by_gpio);
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern int nubia_get_gpio_status(int gpio);
+#else
 static int nubia_get_gpio_status(int gpio)
+#endif
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 {
 	struct gpio_desc *desc;
 	int value;
@@ -212,8 +255,14 @@ static int nubia_get_gpio_status(int gpio)
 
 	return value;
 }
+#endif
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern int nubia_hw_ver_probe(struct platform_device *pdev);
+#else
 static int nubia_hw_ver_probe(struct platform_device *pdev)
+#endif
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 {
 	struct device_node *node;
 	struct gpio_desc *desc;
@@ -377,8 +426,14 @@ err_rf:
 	dev_err(&pdev->dev, "parse rf_gpio error!!\n");
 	return -EPROBE_DEFER;
 }
+#endif
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern void nubia_hw_ver_remove(struct platform_device *pdev);
+#else
 static void nubia_hw_ver_remove(struct platform_device *pdev)
+#endif
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 {
 	struct nubia_hw_gpio_info *info = platform_get_drvdata(pdev);
 
@@ -386,6 +441,7 @@ static void nubia_hw_ver_remove(struct platform_device *pdev)
 		devm_pinctrl_put(info->pinctrl);
 	devm_kfree(&pdev->dev, info);
 }
+#endif
 
 static ssize_t debug_value_show(struct kobject *kobj,
 				struct kobj_attribute *attr, char *buf)
@@ -414,6 +470,7 @@ static ssize_t nubia_hw_pcb_version_show(struct kobject *kobj,
 	return snprintf(buf, NUBIA_VERSION_LEN, "%s", buf);
 }
 
+#ifndef NUBIA_HW_RF_BAND_SHOW_EXACT
 static ssize_t nubia_hw_rf_band_show(struct kobject *kobj,
 				     struct kobj_attribute *attr, char *buf)
 {
@@ -465,6 +522,7 @@ report:
 
 	return snprintf(buf, NUBIA_VERSION_LEN, "%s", band);
 }
+#endif
 
 static ssize_t nubia_charge_version_show(struct kobject *kobj,
 					 struct kobj_attribute *attr, char *buf)
@@ -480,6 +538,10 @@ static ssize_t nubia_charge_version_show(struct kobject *kobj,
 	return snprintf(buf, NUBIA_VERSION_LEN, "%s", buf);
 }
 
+#ifdef NUBIA_HW_RF_BAND_SHOW_EXACT
+extern ssize_t hml_config_version_show(struct kobject *kobj,
+					       struct kobj_attribute *attr, char *buf);
+#else
 static ssize_t hml_config_version_show(struct kobject *kobj,
 				       struct kobj_attribute *attr, char *buf)
 {
@@ -495,6 +557,7 @@ static ssize_t hml_config_version_show(struct kobject *kobj,
 
 	return snprintf(buf, 5, "%d", version);
 }
+#endif
 
 static struct kobj_attribute debug_value_attr =
 	__ATTR(debug_value, 0664, debug_value_show, debug_value_store);

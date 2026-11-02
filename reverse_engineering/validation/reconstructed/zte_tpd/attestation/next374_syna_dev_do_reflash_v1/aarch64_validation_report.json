@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "target": "syna_dev_do_reflash",
+  "mode": "offline_aarch64_opcode_and_relocation_normalized_comparison",
+  "instruction_count": {"stock": 65, "candidate": 65, "match": true},
+  "symbol_size": {"stock": 260, "candidate": 260, "match": true},
+  "section": {"stock": ".text", "candidate": ".text", "match": true},
+  "kcfi_type_id": {"stock": "0x796eea76", "candidate": "0x796eea76", "match": true},
+  "relocation_normalization": {
+    "raw_match": false,
+    "code_call_targets_match": true,
+    "same_string_references": true,
+    "reason": "Stock and candidate use different module-specific .rodata offsets for identical firmware and printk strings."
+  },
+  "decision": "OFFLINE_EXACT_FUNCTION_LEVEL",
+  "promotion_allowed": true,
+  "comparison": "assembly_comparison.json",
+  "limitations": [
+    "The host harness stubs firmware loading and update transport; it checks call, error, force-mask and cleanup contracts.",
+    "No smartphone, SPI, firmware transport or physical hardware was used."
+  ]
+}

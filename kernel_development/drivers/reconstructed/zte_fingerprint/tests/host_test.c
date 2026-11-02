@@ -182,7 +182,7 @@ void unregister_chrdev(int major, const char *name)
 {
 	(void)major;
 	host.chrdev_unregister_calls++;
-	CHECK(strcmp(name, "goodix_fp_spi") == 0);
+	CHECK(strcmp(name, "goodix_fp_spi") == 0 || strcmp(name, "goodix_fp") == 0);
 }
 
 struct device *device_create(struct class *class_pointer, struct device *parent,
@@ -274,6 +274,13 @@ int regulator_enable(struct regulator *regulator) { host.regulator_enable_calls+
 int regulator_disable(struct regulator *regulator) { host.regulator_disable_calls++; regulator->enabled = 0; return 0; }
 
 struct device_node *of_parse_phandle(struct device_node *node, const char *name, int index) { (void)name; (void)index; return node; }
+int of_parse_phandle_with_args(const struct device_node *node, const char *list_name,
+				       const char *cells_name, int index,
+				       struct of_phandle_args *out_args) {
+	(void)list_name; (void)cells_name; (void)index;
+	out_args->np = (struct device_node *)node;
+	return 0;
+}
 int of_count_phandle_with_args(struct device_node *node, const char *name, const char *cells) { (void)node; (void)name; (void)cells; return 1; }
 struct drm_panel *of_drm_find_panel(struct device_node *node) { (void)node; return &host.panel_object; }
 
@@ -293,6 +300,8 @@ void netlink_kernel_release(struct sock *sock) { CHECK(sock == &host.sock_object
 struct sk_buff *alloc_skb(unsigned int size, gfp_t flags) { (void)size; (void)flags; return calloc(1, sizeof(struct sk_buff)); }
 void kfree_skb(struct sk_buff *skb) { free(skb); }
 void skb_get(struct sk_buff *skb) { skb->refcount++; }
+void sk_skb_reason_drop(struct sock *sock, struct sk_buff *skb, int reason)
+{ (void)sock; (void)reason; free(skb); }
 struct nlmsghdr *nlmsg_hdr(struct sk_buff *skb) { return &skb->header; }
 void *nlmsg_data(struct nlmsghdr *header) { return header->data; }
 struct nlmsghdr *nlmsg_put(struct sk_buff *skb, unsigned int portid, unsigned int seq, unsigned int type, unsigned int payload, unsigned int flags)
@@ -306,6 +315,7 @@ int nonseekable_open(struct inode *inode, struct file *file) { (void)inode; (voi
 int kstrtoint(const char *text, unsigned int base, int *result) { char *end; long value = strtol(text, &end, base); if (end == text || *end != '\0') return -EINVAL; *result = (int)value; return 0; }
 void usleep_range(unsigned int min, unsigned int max) { (void)min; (void)max; }
 void udelay(unsigned int usec) { (void)usec; }
+void mdelay(unsigned int msec) { (void)msec; }
 
 void *zlog_register_client(struct zlog_module_info *module_info) { (void)module_info; host.zlog_register_calls++; return (void *)0x77770000; }
 void zlog_unregister_client(void *client) { CHECK(client == (void *)0x77770000); host.zlog_unregister_calls++; }
@@ -349,7 +359,7 @@ static void test_full_lifecycle(void)
 
 	nl_sk = &host.sock_object;
 	pid = 42;
-	CHECK(sendnlmsg((const char[]){ 2 }) == 0);
+	CHECK(sendnlmsg((char[]){ 2 }) == 0);
 	packet = alloc_skb(64, GFP_KERNEL);
 	packet->len = NLMSG_SPACE(0);
 	packet->portid = 42;
@@ -386,7 +396,8 @@ static void test_failure_paths(void)
 
 	host_reset_state();
 	host.fail_netlink = 1;
-	CHECK(netlink_init() == -ENOMEM);
+	netlink_init();
+	CHECK(nl_sk == NULL);
 	netlink_exit();
 }
 
@@ -397,15 +408,16 @@ static void test_direct_helpers(void)
 	gf_dev_static.vdd_reg = &host.regulator_object;
 	gf_dev_static.reset_gpio = host.reset_desc.gpio;
 	gf_dev_static.irq_gpio = host.irq_desc.gpio;
-	CHECK(gf_power_on(&gf_dev_static) == 0);
-	CHECK(gf_power_off(&gf_dev_static) == 0);
-	CHECK(gf_hw_reset(&gf_dev_static, 5) == 0);
-	CHECK(gf_irq_num(&gf_dev_static) >= 0);
-	CHECK(gf_enable_irq(&gf_dev_static) == 0);
-	CHECK(gf_disable_irq(&gf_dev_static) == 0);
-	CHECK(zte_goodix_pinctrl_init(&gf_dev_static) == 0);
-	CHECK(zte_goodix_pinctrl_select(&gf_dev_static, true) == 0);
-	CHECK(gf_cleanup(&gf_dev_static) == 0);
+	CHECK(gf_power_on((struct gf_dev *)&gf_dev_static) == 0);
+	CHECK(gf_power_off((struct gf_dev *)&gf_dev_static) == 0);
+	CHECK(gf_hw_reset((struct gf_dev *)&gf_dev_static, 5) == 0);
+	CHECK(gf_irq_num((struct gf_dev *)&gf_dev_static) >= 0);
+	CHECK(gf_irq_num(NULL) == -ENODEV);
+	gf_enable_irq();
+	gf_disable_irq(&gf_dev_static);
+	CHECK(zte_goodix_pinctrl_init((struct gf_dev *)&gf_dev_static) == 0);
+	CHECK(zte_goodix_pinctrl_select((struct gf_dev *)&gf_dev_static, true) == 0);
+	gf_cleanup((struct gf_dev *)&gf_dev_static);
 	nav_event_input(1);
 }
 

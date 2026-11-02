@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_imem_info",
+  "generated_utc": "2026-08-28T15:00:00Z",
+  "status": "STATIC_RECHECK_PARTIAL",
+  "stock": {
+    "path": "reference_modules/stock/zte_imem_info.ko",
+    "sha256": "6a0fff182e40e9676a321e6c55796ed94d382faf3ec1e1999a53e5076ffd3e65",
+    "size": 21336
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_imem_info/zte_imem_info.ko",
+    "source_sha256": "25d1b9b55e6251fdca518f35bc1d7aa2bc999551b15733e6f0b4fe8b584922c9",
+    "sha256": "147d946a2472a201c8451856d5e1562dcfa474a406f7b4690e3daf01a35c6064",
+    "size": 198464
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "clang_revision": "clang-r536225",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "cycles": [
+      {
+        "cycle": 1,
+        "sha256": "147d946a2472a201c8451856d5e1562dcfa474a406f7b4690e3daf01a35c6064",
+        "clean_log_sha256": "ba87d0a7fe01e303c903b124aaa8ecf22209cf691484457a01643a173dbd9b9f",
+        "build_log_sha256": "bc0452b2e22d4598d331fb7342d39421f0918a588c48d4a3305f3163db2b7f79"
+      },
+      {
+        "cycle": 2,
+        "sha256": "147d946a2472a201c8451856d5e1562dcfa474a406f7b4690e3daf01a35c6064",
+        "clean_log_sha256": "ba87d0a7fe01e303c903b124aaa8ecf22209cf691484457a01643a173dbd9b9f",
+        "build_log_sha256": "87493a2e9f96f72526f1893cb7e60c0fc9c0940820b74954d67f1d368c5f422b"
+      }
+    ]
+  },
+  "gates": {
+    "assembly": {
+      "passed": false,
+      "checked": 6,
+      "exact": 5,
+      "failure": "ddr_id_read_proc: cmp w21, #10; b.hs versus cmp w21, #9; b.hi"
+    },
+    "semantic_predicate": {
+      "passed": true,
+      "claim": "unsigned x >= 10 and x > 9 have the same reachable set and branch target"
+    },
+    "kcfi": { "passed": true, "functions": 6 },
+    "abi_kmi": { "passed": true },
+    "symbol_inventory": { "passed": true },
+    "host_harness": { "passed": true, "reproducible": true }
+  },
+  "repository_evidence": {
+    "candidate_assembly": "offline_static/candidate_assembly_current_20260828",
+    "assembly_comparison": "offline_static/assembly_comparison_current_20260828.json",
+    "candidate_kcfi": "attestation/candidate_kcfi_current_20260828.json",
+    "kcfi_comparison": "attestation/kcfi_comparison_current_20260828.json",
+    "abi_audit": "attestation/abi_audit_current_20260828.json",
+    "symbol_inventory": "attestation/symbol_inventory_current_20260828.json",
+    "host_test_report": "attestation/host_test_report_current_20260828.json"
+  },
+  "remaining_gates": [
+    "strict opcode identity for ddr_id_read_proc",
+    "independent review",
+    "controlled NX809J hardware validation"
+  ]
+}

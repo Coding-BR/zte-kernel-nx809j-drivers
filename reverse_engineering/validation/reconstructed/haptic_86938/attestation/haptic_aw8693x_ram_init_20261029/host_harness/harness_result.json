@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-29T10:01:57.941629+00:00",
+  "passed": true,
+  "scope": "host-only wrapper contract; no kernel or physical device execution",
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_055_aw8693x_ram_init.c",
+  "candidate_source_sha256": "557823f3a210ea770a3019a3254b4db80e7b60d77d0cb6b95042f56565ce0405",
+  "harness_source_sha256": "6cfa9d82075f7bc7ca83a1203d4b0e44679394a004083914793607a8a2f76f79",
+  "harness_runner_sha256": "c39ca23d753e8c472a1f3a258fda91a375019e52e8bd5f45d54cf023cb3a7f5f",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "cases": {
+    "baseline": {
+      "passed": true,
+      "observed_returncode": 0,
+      "output": "PASS: RAM-init bit, masked write, and conditional delay contract"
+    },
+    "mutant_register": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: mode, register, mask, value, or write count mismatch"
+    },
+    "mutant_mask": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: mode, register, mask, value, or write count mismatch"
+    },
+    "mutant_branch": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: mode, register, mask, value, or write count mismatch"
+    },
+    "mutant_delay": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: conditional delay contract mismatch"
+    },
+    "mutant_set_value": {
+      "passed": true,
+      "observed_returncode": 1,
+      "output": "FAIL: mode, register, mask, value, or write count mismatch"
+    }
+  },
+  "docker_output_tail": "CASE_RESULT:baseline:0\nPASS: RAM-init bit, masked write, and conditional delay contract\nCASE_END\nCASE_RESULT:mutant_register:1\nFAIL: mode, register, mask, value, or write count mismatch\nCASE_END\nCASE_RESULT:mutant_mask:1\nFAIL: mode, register, mask, value, or write count mismatch\nCASE_END\nCASE_RESULT:mutant_branch:1\nFAIL: mode, register, mask, value, or write count mismatch\nCASE_END\nCASE_RESULT:mutant_delay:1\nFAIL: conditional delay contract mismatch\nCASE_END\nCASE_RESULT:mutant_set_value:1\nFAIL: mode, register, mask, value, or write count mismatch\nCASE_END\n"
+}

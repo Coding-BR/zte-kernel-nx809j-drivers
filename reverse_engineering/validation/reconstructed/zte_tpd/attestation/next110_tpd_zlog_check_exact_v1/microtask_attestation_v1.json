@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-01T17:31:00Z",
+  "driver": "zte_tpd",
+  "microtask": "003_tpd_zlog_check",
+  "function": "tpd_zlog_check",
+  "stock_entry": "00107718",
+  "status": "PASS_OFFLINE_EXACT",
+  "passed": true,
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_zlog_check.c",
+    "sha256": "4a546685dd659b95c9293d75c70eac451405b23964db6131d93eb634bbde6652"
+  },
+  "stock_module": {
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "candidate_module": {
+    "sha256": "9d712e098d4b406ada6aef2e58a6b7e7cfdfe6126264b526b118ea2d37a56d14",
+    "size": 24696960
+  },
+  "checks": {
+    "ghidra_pseudocode_review": true,
+    "ghidra_pcode_review": true,
+    "joern_strict": true,
+    "joern_source_function_present": true,
+    "joern_parse_clean": true,
+    "host_harness_asan_ubsan": true,
+    "host_harness_two_cycles": true,
+    "host_harness_reproducible_binary": true,
+    "two_clean_independent_module_builds": true,
+    "canonical_module_reproducible": true,
+    "strict_aarch64_instruction_order_match": true,
+    "aarch64_relocations_match": true,
+    "aarch64_symbol_size_match": true,
+    "cfg_match": true,
+    "kcfi_function_type_match": true,
+    "physical_hardware_validation": false
+  },
+  "structural_parity": {
+    "stock_symbol_bytes": 172,
+    "candidate_symbol_bytes": 172,
+    "stock_instructions": 43,
+    "candidate_instructions": 43,
+    "stock_relocations": 10,
+    "candidate_relocations": 10,
+    "stock_cfg_blocks": 7,
+    "candidate_cfg_blocks": 7,
+    "stock_direct_calls": 3,
+    "candidate_direct_calls": 3
+  },
+  "kcfi": {
+    "function_type_id": "0xc3c3f247",
+    "pointer_cast_bypass_used": false
+  },
+  "host_harness": {
+    "cases": 5,
+    "cycles": 2,
+    "sanitizers": ["address", "undefined"],
+    "binary_sha256": "34b63149762d4269753f6ab0e98546504a5a073bc9073227169fd3de05478e54"
+  },
+  "evidence": [
+    {
+      "role": "canonical_build",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/build_report.json",
+      "sha256": "90f625570506620f31325b355e1dbee8a0234a32782d9a1ead9f510cdc6ca52f"
+    },
+    {
+      "role": "host_harness_asan_ubsan",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/host_harness_report.json",
+      "sha256": "ca80c383758526cebccc0ba98ee985fd399edc7da1f34236163dcc4881d02651"
+    },
+    {
+      "role": "joern_source_view",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/joern_source_view.json",
+      "sha256": "3ffd081e942614ab9d4de9156b22c1b32bba5cbe38ef4cd64793a85341bc0402"
+    },
+    {
+      "role": "joern_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/joern_gate_summary.json",
+      "sha256": "49cd1a2d2cf526ad9ec4acff5ce8b17cccb9cd98201f39e09f7f3f040a4575c9"
+    },
+    {
+      "role": "assembly_manifest",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/candidate_assembly_manifest.json",
+      "sha256": "28988483cde625d1c63d0edad49fc04c7c7f591cfc166165c4e81fa84c666fb9"
+    },
+    {
+      "role": "assembly_strict",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/assembly_comparison.json",
+      "sha256": "db96ac30902a1d6330c79104a99412d45da7d24f9d207d93ac216d86b88029a3"
+    },
+    {
+      "role": "kcfi",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/kcfi_comparison.json",
+      "sha256": "c5408b8e096beb7e81c5f88f8a39aebc299974a772de28c169fc55b5efa86722"
+    },
+    {
+      "role": "cfg",
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next110_tpd_zlog_check_exact_v1/cfg_comparison.json",
+      "sha256": "e370b3f99adfabbe76402944fec373093c5915675855d7f494cdf8de5a04e408"
+    }
+  ],
+  "limitations": [
+    "This attestation covers only tpd_zlog_check.",
+    "The host test checks direct reconstructed control flow with a millisecond jiffies conversion stub, not kernel timing.",
+    "The invalid enum path is verified statically because the exact stock behavior is brk #0x5512.",
+    "No ADB, fastboot, module load, SPI, IRQ, or touch-controller hardware operation was performed.",
+    "The blocked syna_cdev_ioctl_raw_read and syna_cdev_ioctl_raw_write candidates are not part of this build or commit."
+  ]
+}

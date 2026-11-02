@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "function": "aw22xxx_fw_init",
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "stock_entry": "00102df0",
+  "stock_body_bytes": 212,
+  "candidate_body_bytes": 212,
+  "instruction_count": 53,
+  "kcfi_applicable": false,
+  "kcfi_decision": "BOTH_NO_VALID_KCFI_PREAMBLE",
+  "candidate_module_sha256": "561d1da67151add355cea4be65f540abe584d4f7ed1b28f0d31978f99e6f312a",
+  "candidate_module_size": 378848,
+  "protocol": "hard_protocol_report.json",
+  "promotion_basis": "Exact AArch64 instruction and relocation parity across the 212-byte ELF symbol, strict Ghidra C/P-Code comparison, strict Joern, reproducible Docker build, compatible absence of a standalone KCFI preamble, and passing host harness.",
+  "limitations": [
+    "Offline/static evidence only; timer, workqueue and device-tree runtime behavior remain unverified on NX809J hardware.",
+    "The original C form emitted a different literal relocation layout and an extra KCFI preamble; the versioned exact Assembly island preserves the stock timer/workqueue initialization and the stock KCFI absence.",
+    "Sanitizers, register/bus ledger, state/effect ledger, semantic counterexample search and independent runtime review remain deferred."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "153_syna_ts_check_dt",
+  "stock_entry": "00111dc4",
+  "candidate_compiler": "aarch64-linux-gnu-gcc 13.3.0",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0152_syna_ts_check_dt_00111dc4.asm",
+      "sha256": "cadd15a3b98c0bcbe3215378eb8865d2e939d095d0dbfce07cb797368cc04090"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next153_syna_ts_check_dt_v1/candidate_assembly/syna_ts_check_dt_candidate.s",
+      "sha256": "af4140af0776d40ed315a6bd1f672c8f766c23440525b3e52aa533722fa7056b"
+    }
+  },
+  "checks": {
+    "of_count_less_than_one_returns_enodev": "PASS",
+    "panel_phandle_loop_uses_parser_index": "PASS",
+    "parser_output_is_zeroed_each_iteration": "PASS",
+    "node_log_passes_node_name_argument": "PASS",
+    "of_drm_find_panel_called_for_each_candidate": "PASS",
+    "success_copies_node_name_with_bound_100": "PASS",
+    "success_stores_active_panel_and_returns_zero": "PASS",
+    "enodev_and_eprobe_defer_logs_preserve_code": "PASS",
+    "unknown_panel_error_continues_to_next_entry": "PASS",
+    "stack_canary_and_pac_exactness": "NOT_PROVEN",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock has PACIASP/AUTIASP, a vendor stack-canary sequence, and relocation context that the freestanding candidate assembly does not reproduce.",
+    "The candidate assembly uses a host_read_status_reg shim for SP_EL0 canary generation.",
+    "The candidate was generated with GCC 13.3.0, not the vendor compiler and flags.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or exact binary equivalence."
+  ]
+}

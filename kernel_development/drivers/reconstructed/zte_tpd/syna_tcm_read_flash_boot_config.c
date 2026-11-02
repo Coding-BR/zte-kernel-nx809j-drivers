@@ -1,110 +1,108 @@
-__int64 __fastcall syna_tcm_read_flash_boot_config(__int64 a1, __int64 a2, __int64 a3, int a4)
-{
-  void *v4; // x0
-  __int64 result; // x0
-  unsigned __int8 *v6; // x9
-  int v7; // w8
-  __int64 v8; // x8
-  __int64 v9; // x10
-  __int64 v10; // x11
-  __int64 v11; // x12
-  int v12; // w12
-  int v13; // w11
-  unsigned int v14; // w20
-  int v15; // w4
-  unsigned int v16; // w19
-  __int64 v19; // x23
-  unsigned int v20; // w8
-  void *v21; // x0
-  __int64 v22; // x2
-  unsigned int v23; // w21
-  __int64 v24; // x2
+extern void *syna_pal_mem_alloc(int size);
+extern void syna_pal_mem_free(void *memory);
+extern int syna_tcm_read_flash(struct tcm_dev *tcm, unsigned int address,
+			       u8 *destination, unsigned int length,
+			       int delay_ms);
 
-  if ( !a2 )
-  {
-    v4 = unk_33F04;
-LABEL_5:
-    printk(v4, "syna_tcm_read_flash_boot_config", a3);
-    return 4294967055LL;
-  }
-  if ( !a3 )
-  {
-    v4 = unk_350F7;
-    goto LABEL_5;
-  }
-  if ( *(_BYTE *)(a1 + 9) == 1 )
-  {
-    v4 = unk_326E1;
-    a3 = 1;
-    goto LABEL_5;
-  }
-  v6 = *(unsigned __int8 **)(a2 + 32);
-  v7 = *v6;
-  if ( v7 == 1 )
-  {
-    v8 = 15;
-    v9 = 14;
-    v10 = 13;
-    v11 = 12;
-  }
-  else
-  {
-    if ( v7 != 3 )
-    {
-      v4 = unk_3C1D7;
-      a3 = *v6;
-      goto LABEL_5;
-    }
-    v8 = 19;
-    v9 = 18;
-    v10 = 17;
-    v11 = 16;
-  }
-  v12 = v6[v11] | (v6[v10] << 8);
-  v13 = *(_DWORD *)(a2 + 44);
-  v14 = v13 * v12;
-  if ( !(v13 * v12) || (v15 = v6[v9] | (v6[v8] << 8), (v16 = v13 * v15) == 0) )
-  {
-    v4 = unk_33205;
-    goto LABEL_5;
-  }
-  if ( *(_DWORD *)(a2 + 56) != v14 )
-    *(_DWORD *)(a2 + 56) = v14;
-  v19 = a3;
-  if ( *(_DWORD *)(a2 + 52) != v15 )
-    *(_DWORD *)(a2 + 52) = v15;
-  printk(unk_33F2D, "syna_tcm_read_flash_boot_config", v14);
-  v20 = *(_DWORD *)(v19 + 8);
-  v21 = *(void **)v19;
-  if ( v20 < v16 )
-  {
-    if ( v21 )
-      syna_pal_mem_free();
-    v21 = (void *)syna_pal_mem_alloc(v16);
-    *(_QWORD *)v19 = v21;
-    if ( !v21 )
-    {
-      printk(unk_3703C, "syna_tcm_buf_alloc", v16);
-      *(_QWORD *)(v19 + 8) = 0;
-      printk(unk_33E5C, "syna_tcm_read_flash_boot_config", v24);
-      return 4294967053LL;
-    }
-    *(_DWORD *)(v19 + 8) = v16;
-    v20 = v16;
-  }
-  memset(v21, 0, v20);
-  v22 = *(_QWORD *)v19;
-  *(_DWORD *)(v19 + 12) = 0;
-  result = syna_tcm_read_flash(a1, v14, v22, v16, a4);
-  if ( (result & 0x80000000) != 0 )
-  {
-    v23 = result;
-    printk(unk_3271C, "syna_tcm_read_flash_boot_config", v14);
-    return v23;
-  }
-  else
-  {
-    *(_DWORD *)(v19 + 12) = v16;
-  }
-  return result;
+__int64 __fastcall syna_tcm_read_flash_boot_config(
+	struct tcm_dev *tcm,
+	struct syna_tcm_flash_access_context *access,
+	struct tcm_buffer *buffer,
+	int delay_ms)
+{
+	struct tcm_boot_info *boot_info;
+	u8 *boot_bytes;
+	u32 *stored_block_count;
+	u32 *stored_address;
+	u32 address_blocks;
+	u32 block_count;
+	u32 address;
+	u32 read_length;
+	u32 zero_length;
+	u32 address_offset;
+	u32 length_offset;
+	int retval;
+
+	if (!tcm || !access || !buffer) {
+		printk("\0013[error] %s: Invalid parameter\n",
+		       "syna_tcm_read_flash_boot_config");
+		return -241;
+	}
+	if (tcm->firmware_mode == 0x01) {
+		printk("\0013[error] %s: Application mode is not supported\n",
+		       "syna_tcm_read_flash_boot_config");
+		return -241;
+	}
+
+	boot_info = access->boot_info;
+	if (!boot_info) {
+		printk("\0013[error] %s: Missing boot information\n",
+		       "syna_tcm_read_flash_boot_config");
+		return -241;
+	}
+
+	boot_bytes = (u8 *)boot_info;
+	if (boot_info->version == 0x01) {
+		address_offset = 0x0c;
+		length_offset = 0x0e;
+	} else if (boot_info->version == 0x03) {
+		address_offset = 0x10;
+		length_offset = 0x12;
+	} else {
+		printk("\0013[error] %s: Unsupported boot version=%u\n",
+		       "syna_tcm_read_flash_boot_config",
+		       (unsigned int)boot_info->version);
+		return -241;
+	}
+
+	address_blocks = (u32)boot_bytes[address_offset] |
+			 ((u32)boot_bytes[address_offset + 1] << 8);
+	block_count = (u32)boot_bytes[length_offset] |
+		      ((u32)boot_bytes[length_offset + 1] << 8);
+	address = access->write_block_size_bytes * address_blocks;
+	read_length = access->write_block_size_bytes * block_count;
+	if (!address || !read_length) {
+		printk("\0013[error] %s: Invalid boot configuration geometry\n",
+		       "syna_tcm_read_flash_boot_config");
+		return -241;
+	}
+
+	stored_block_count = (u32 *)(void *)access->reserved_0034;
+	stored_address = (u32 *)(void *)(access->reserved_0034 + 4);
+	if (*stored_address != address)
+		*stored_address = address;
+	if (*stored_block_count != block_count)
+		*stored_block_count = block_count;
+
+	zero_length = buffer->buf_size;
+	if (buffer->buf_size < read_length) {
+		if (buffer->data)
+			syna_pal_mem_free(buffer->data);
+		buffer->data = syna_pal_mem_alloc((int)read_length);
+		if (!buffer->data) {
+			buffer->buf_size = 0;
+			printk("\0013[error] %s: Failed to allocate %u bytes\n",
+			       "syna_tcm_read_flash_boot_config", read_length);
+			return -243;
+		}
+		buffer->buf_size = read_length;
+		zero_length = read_length;
+	}
+	if (!buffer->data) {
+		printk("\0013[error] %s: Missing destination buffer\n",
+		       "syna_tcm_read_flash_boot_config");
+		return -22;
+	}
+
+	memset(buffer->data, 0, zero_length);
+	buffer->data_length = 0;
+	retval = syna_tcm_read_flash(tcm, address, buffer->data, read_length,
+				     delay_ms);
+	if (retval < 0) {
+		printk("\0013[error] %s: Flash read failed at %u\n",
+		       "syna_tcm_read_flash_boot_config", address);
+		return retval;
+	}
+	buffer->data_length = read_length;
+	return retval;
 }

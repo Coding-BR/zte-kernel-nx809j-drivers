@@ -1,11 +1,11 @@
-__int64 __fastcall syna_pal_mem_free_0(__int64 a1)
+void syna_pal_mem_free_0(void *memory)
 {
-  __int64 v2; // x0
-  __int64 v3; // x2
+  void *managed_device;
 
-  v2 = syna_request_managed_device();
-  if ( v2 )
-    return devm_kfree(v2, a1);
+  managed_device = syna_request_managed_device();
+  if (managed_device)
+    devm_kfree(managed_device, memory);
   else
-    return printk(unk_3BE43, "syna_pal_mem_free", v3);
+    printk("\x01" "3[error] %s: Invalid managed device\n",
+           "syna_pal_mem_free");
 }

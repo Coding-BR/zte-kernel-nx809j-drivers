@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "target": "ram_load@0010b2e0",
+  "candidate_module": {
+    "path": "candidate_module/haptic_86938.ko",
+    "sha256": "abf59d499834b0909141b4256c09a4c0ef4cb14fab2b41c5e069b30da4f1a948",
+    "md5": "1c0f757055fc01aaf5501b4f5cd7fd13",
+    "size_bytes": 5820144,
+    "source_build_artifact": "Docker cycle_2 output; same SHA-256 as cycle_1"
+  },
+  "ghidra": {
+    "version": "12.1.2",
+    "export_script": "reverse_engineering/tools/ExportKernelModuleAnalysis.java",
+    "boundary_repair_script": "reverse_engineering/tools/ExtendGhidraFunctionBodies.java",
+    "candidate_entry": "001042ec",
+    "ghidra_initial_body_bytes": 820,
+    "elf_symbol_size_bytes": 872,
+    "repaired_body_size_bytes": 872,
+    "repair_basis": [
+      "candidate ELF symbol ram_load has size 872 bytes",
+      "fresh Docker extraction uses ELF-bounded symbol extent",
+      "relocation-aware stock/candidate assembly comparison passes for all 218 instructions"
+    ],
+    "candidate_export": "candidate_ghidra_v1/haptic_86938.ko",
+    "manifest": "candidate_ghidra_v1/haptic_86938.ko/manifest.json",
+    "logs": {
+      "ghidra": "ghidra_run_v1/ghidra.log",
+      "script": "ghidra_run_v1/script.log"
+    },
+    "decompiler_observation": "Ghidra reports bad instruction data near 0x00104654. Normalized C equality is not claimed; the report records the explicit exact-assembly-island fallback. P-Code operation shape comparison passes."
+  },
+  "core_validation": {
+    "job": "workspace_tools/reconstruction_pipeline/hard_driver_job.haptic_86938_ram_load_refresh_20261030.json",
+    "report": "core_final_v5/hard_protocol_report.json",
+    "status": "CORE_GATES_PASS",
+    "automated_gate_count": 8,
+    "assembly_instructions": 218,
+    "assembly_bytes": 872,
+    "assembly_relocations_match": true,
+    "kcfi_type_id": "0x879dc3f4",
+    "ghidra_normalized_c_equivalence_claimed": false,
+    "ghidra_pcode_operation_shape_match": true
+  },
+  "scope_limit": "Function-scoped static evidence only. This does not establish whole-driver equivalence, hardware behavior, or module promotion."
+}

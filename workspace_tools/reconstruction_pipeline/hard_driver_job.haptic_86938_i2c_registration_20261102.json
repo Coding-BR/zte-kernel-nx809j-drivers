@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "init_module",
+      "stock_entry": "001119fc",
+      "source_function": "haptic_86938_i2c_init",
+      "candidate_function": "init_module",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "cleanup_module",
+      "stock_entry": "00111a64",
+      "source_function": "haptic_86938_i2c_exit",
+      "candidate_function": "cleanup_module",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_i2c_registration_20261102/candidate_ghidra/scoped"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "require_complete_driver_audit": false
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1,
+      "per_function": true
+    }
+  },
+  "ghidra": {
+    "allow_shared_data_binding_normalization": true,
+    "allow_relocated_same_name_data_normalization": true,
+    "allow_named_data_address_syntax_fallback": true,
+    "named_data_address_syntax_fallback_reason": "Stock Ghidra types aw_i2c_driver as a pointer while candidate Ghidra types the exact same relocatable object as a struct and prints an address-of operator. The narrowly scoped fallback requires both ELF exports to bind the same aw_i2c_driver symbol in .data, equal body bytes, equal P-Code shape, and the separate relocation-aware assembly gate."
+  }
+}

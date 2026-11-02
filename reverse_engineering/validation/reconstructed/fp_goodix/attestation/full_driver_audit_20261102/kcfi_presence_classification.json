@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "strict_kcfi_pass": false,
+  "classification_status": "RESOLVED_KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "record_counts": {
+    "stock": 23,
+    "current_candidate": 26,
+    "fresh_candidate": 26
+  },
+  "comparison_reports": {
+    "current_candidate": {
+      "path": "assembly/kcfi_comparison_current_candidate.json",
+      "sha256": "ebbae8e9379567dc197e1df2559ab4685c97a777409df4899c96f195ee85e790",
+      "passed": false,
+      "mismatch_count": 3
+    },
+    "fresh_candidate": {
+      "path": "assembly/kcfi_comparison_fresh_candidate.json",
+      "sha256": "fe43083e6d2858c7cc618f0dd023988a913e5483780f2f7ff3717d8ccbd24752",
+      "passed": false,
+      "mismatch_count": 3
+    }
+  },
+  "stock_report": {
+    "path": "assembly/kcfi_stock.json",
+    "sha256": "5cd507e660031343364d3d069c363c625146254641879ba180e9a6405c640460"
+  },
+  "candidate_reports": {
+    "current": {
+      "path": "assembly/kcfi_current_candidate.json",
+      "sha256": "190c41d8294268c7f02f2c52b4ad08955ff240a057add671323f2c9d8de2f41c"
+    },
+    "fresh": {
+      "path": "assembly/kcfi_fresh_candidate.json",
+      "sha256": "4c78fd4c5357acee9ed8e734d4f1bd043fdcd1f60c401ba59a7b151999d0e3f5"
+    }
+  },
+  "unmatched_functions": [
+    {
+      "function": "gf_disable_irq",
+      "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+      "stock_exclusion_reason": "candidate preamble overlaps function body: gf_release+0xec",
+      "candidate_type_id": "0x2ab82364",
+      "candidate_decision": "PRESENT",
+      "current_comparison_passed": false,
+      "fresh_comparison_passed": false,
+      "stock_symbol_offset": "0x8b8",
+      "stock_entry": "001010d8",
+      "stock_symbol_size": 64,
+      "candidate_symbol_size": 64
+    },
+    {
+      "function": "gf_enable_irq",
+      "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+      "stock_exclusion_reason": "candidate preamble overlaps function body: gf_disable_irq+0x3c",
+      "candidate_type_id": "0xe5c47d60",
+      "candidate_decision": "PRESENT",
+      "current_comparison_passed": false,
+      "fresh_comparison_passed": false,
+      "stock_symbol_offset": "0x8f8",
+      "stock_entry": "00101118",
+      "stock_symbol_size": 84,
+      "candidate_symbol_size": 84
+    },
+    {
+      "function": "nav_event_input",
+      "stock_decision": "NO_VALID_KCFI_PREAMBLE",
+      "stock_exclusion_reason": "candidate preamble overlaps function body: gf_enable_irq+0x50",
+      "candidate_type_id": "0x454a91cb",
+      "candidate_decision": "PRESENT",
+      "current_comparison_passed": false,
+      "fresh_comparison_passed": false,
+      "stock_symbol_offset": "0x94c",
+      "stock_entry": "0010116c",
+      "stock_symbol_size": 464,
+      "candidate_symbol_size": 464
+    }
+  ],
+  "ghidra_direct_call_evidence": {
+    "path": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/calls.jsonl",
+    "sha256": "a166651b9972a8ee12b6e7ccfa48d2b1c0fb3cb412d965e877e9b8399dea97e8",
+    "calls": [
+      {
+        "caller": "gf_ioctl",
+        "callsite": "00100954",
+        "target": "gf_disable_irq",
+        "target_address": "001010d8",
+        "reference_type": "UNCONDITIONAL_CALL"
+      },
+      {
+        "caller": "gf_ioctl",
+        "callsite": "00100c70",
+        "target": "nav_event_input",
+        "target_address": "0010116c",
+        "reference_type": "UNCONDITIONAL_CALL"
+      },
+      {
+        "caller": "gf_ioctl",
+        "callsite": "00100c8c",
+        "target": "gf_enable_irq",
+        "target_address": "00101118",
+        "reference_type": "UNCONDITIONAL_CALL"
+      }
+    ],
+    "entries": {
+      "gf_disable_irq": "001010d8",
+      "gf_enable_irq": "00101118",
+      "nav_event_input": "0010116c"
+    }
+  },
+  "interpretation": [
+    "The strict stock-versus-candidate KCFI comparisons still fail for exactly three symbols in both current and fresh candidate reports; strict presence equality remains false.",
+    "The stock functions have local symbol binding and their preceding words are branch instructions within the preceding function extents, not valid KCFI preambles. The candidate functions have global binding because gf_ioctl_exact.S calls them across translation units.",
+    "The preserved stock Ghidra call graph records exactly one unconditional direct call from gf_ioctl to each function. The current candidate ELF relocation audit records exactly one R_AARCH64_CALL26 from gf_ioctl to each, with no other symbol-based incoming references and no kernel __ksymtab export entries for these names.",
+    "The stock and candidate function body hashes match for all three functions. Candidate-only KCFI preambles are classified as extra metadata with no indirect-call boundary in this module: KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY.",
+    "This resolves the KCFI applicability review only. It does not change strict KCFI parity to PASS and does not close the driver-wide semantic or hardware gates."
+  ],
+  "applicability_review": {
+    "status": "PASS",
+    "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+    "strict_presence_equality": false,
+    "functions": {
+      "gf_disable_irq": {
+        "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+        "passed": true,
+        "path": "attestation/kcfi_direct_call_only_review_20261102/decision_gf_disable_irq.json",
+        "sha256": "ad62bac445cf3629a7b8976542478264fc79897e269375befb6ef9334ac60ca2",
+        "stock_incoming_calls": 1,
+        "candidate_incoming_calls": 1
+      },
+      "gf_enable_irq": {
+        "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+        "passed": true,
+        "path": "attestation/kcfi_direct_call_only_review_20261102/decision_gf_enable_irq.json",
+        "sha256": "8b8627a50c3c1f4f406db0efc358d15add89bce6d45656c3be324edcbdd0f483",
+        "stock_incoming_calls": 1,
+        "candidate_incoming_calls": 1
+      },
+      "nav_event_input": {
+        "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+        "passed": true,
+        "path": "attestation/kcfi_direct_call_only_review_20261102/decision_nav_event_input.json",
+        "sha256": "5353bcc6022400fbcba8fcd2a03c7e037b3f27b4bda579b1f607b8b1134c8585",
+        "stock_incoming_calls": 1,
+        "candidate_incoming_calls": 1
+      }
+    },
+    "evidence": {
+      "review_summary": "attestation/kcfi_direct_call_only_review_20261102/review_summary.json",
+      "review_summary_sha256": "afdf167a98fd2e16a91f613810113353044259fdab80a5ea11223f42b15e631d",
+      "elf_reference_inventory": "attestation/kcfi_direct_call_only_review_20261102/elf_reference_inventory.json",
+      "elf_reference_inventory_sha256": "4e50bd7e6d2403f55089eef34e05b663d27e957f6de4303cf4a2eba36002fe5a",
+      "candidate_elf_reference_report": "attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json",
+      "candidate_elf_reference_report_sha256": "91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a",
+      "docker_static_revalidation": "attestation/kcfi_direct_call_only_review_20261102/docker_static_revalidation.json",
+      "docker_static_revalidation_sha256": "1e5d34a41d37adc3eebb0055fe59f87783abf55f85326d13ef64b1e37f61dbd6"
+    }
+  }
+}

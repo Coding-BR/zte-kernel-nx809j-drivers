@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "task_id": "070_tp_pen_only_write",
+  "driver": "zte_tpd",
+  "source_function": "tp_pen_only_write",
+  "stock_function": "tp_pen_only_write",
+  "stock_entry": "0010c818",
+  "stock_body_bytes": 272,
+  "candidate_source": "tp_pen_only_write.c (inline AArch64 assembly)",
+  "candidate_source_sha256": "054fa1a15957117b27069098cf485fda929f3349ec11b86e8e5a2a8d582f442a",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "checks": {
+    "canonical_docker_build": true,
+    "aarch64_assembly_comparison": true,
+    "kcfi_comparison": true,
+    "direct_source_host_test": true,
+    "strict_joern_gate": true,
+    "microtask_attestation": true
+  },
+  "observations": {
+    "instruction_count": 68,
+    "body_bytes": 272,
+    "kcfi_type_id": "0xc3d43b4d",
+    "source_test_cases": 5,
+    "source_test_repetitions": 2,
+    "joern_review_finding": "userspace_ingress via bounded user-copy and parsing"
+  },
+  "limitations": [
+    "Offline static reconstruction only.",
+    "The host harness models fake device memory, user-copy and callback metadata.",
+    "No Android runtime, physical hardware or insmod validation was available."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T15:07:21Z",
+  "reviewer": "Hubble",
+  "review_type": "independent_read_only_scope_review",
+  "reviewed_dossier_before_correction": {
+    "path": "reverse_engineering/validation/reconstructed/attestation/reconsolidation_20261027_current/device_vendor_scope_review_20261027.json",
+    "sha256": "3a07a55958d6bd5bff056e50b1ac3385b4ea9e264ff6246244e501021c424a12"
+  },
+  "result": "CORRECTIONS_APPLIED_AND_FOLLOWUP_CONFIRMED",
+  "findings": [
+    {
+      "finding": "The seven names in the scope review are in modules.load.recovery and absent from normal modules.load; soc_fan is also recovery-only listed.",
+      "verification": "Independently checked local lists and SHA-256 against FULL_VENDOR_BOOT_MANIFEST.json.",
+      "modules_load_recovery_sha256": "5046fcd765b0e573f0ed8ff5d4d5acb9404455a16ef3b003995fb177a89072cf",
+      "modules_load_sha256": "efeeda68ad55d666642d03eaf4a784a8e050927583cc2551900412d589f367ae"
+    },
+    {
+      "finding": "modules.dep contains no reverse-dependent rows for these eight names; that does not support a dependency-only classification.",
+      "verification": "Reverse-dependent scan over hash-verified modules.dep.",
+      "modules_dep_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43"
+    },
+    {
+      "finding": "awp1921 target-DT compatible overlap is not a proven driver match because stock exposes i2c:awp1921 but no OF alias; source-stock association remains open."
+    },
+    {
+      "finding": "nb7vpq904m absence was checked only in the ZTE target source subtree, not in a final composed DTBO; stock-source relation is unconfirmed."
+    },
+    {
+      "finding": "st54jese and st54jnfc have exact stock OF aliases matching target overlay compatibles; this supports static candidacy, not runtime binding."
+    },
+    {
+      "finding": "Limit completion claims to the searched source/overlay tree; final DTBO selection, runtime module loading, and normal-boot usage remain unknown."
+    },
+    {
+      "finding": "Renamed nb7vpq904m source field to candidate_source_in_pinned_tree and explicitly set stock_binary_relationship_confirmed=false.",
+      "verification": "Wording change only; source-stock relation remains unconfirmed."
+    }
+  ],
+  "corrections_applied": true,
+  "corrected_dossier_sha256": "1cc0a090b24dedadf44934630c287c1c92855b48080e546b143e2875624b00a6",
+  "followup_review_requested": true,
+  "ownership_proven": false,
+  "runtime_loading_proven": false,
+  "followup_review_confirmed": true,
+  "followup_result": "candidate_source_in_pinned_tree is explicit; stock_binary_relationship_confirmed=false; triage points to corrected dossier hash."
+}

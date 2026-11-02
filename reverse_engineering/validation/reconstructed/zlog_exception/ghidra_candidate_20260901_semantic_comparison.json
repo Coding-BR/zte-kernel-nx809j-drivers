@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-01T06:07:15.935189+00:00",
+  "driver": "zlog_exception",
+  "stock_export": "reverse_engineering/validation/reconstructed/zlog_exception/offline_static/ghidra_stock",
+  "candidate_export": "reverse_engineering/validation/reconstructed/zlog_exception/offline_static/ghidra_candidate_20260901",
+  "stock_module": "reference_modules/full_vendor_boot/zlog_exception.ko",
+  "stock_module_sha256": "30948fd9026aa0a33d5602c0a395f8bf89c9aaa717317c4c2866e29ab7cad372",
+  "candidate_module": "kernel_development/drivers/reconstructed/zlog_exception/zlog_exception.ko",
+  "candidate_module_sha256": "93ddac9f92973e0c8e13c438ccca8fca68ccd5334303de2f1a7baac2dd073d41",
+  "candidate_module_size": 232552,
+  "candidate_ghidra_executable_md5": "75921fe0df1938bb9323cde229bcecd3",
+  "candidate_ghidra_manifest_sha256": "ece1014d523b32dc9cf4af92bf1f95dd0ab63991ef1473b328cde60384915cb6",
+  "checked_functions": 10,
+  "strict": {
+    "passed_functions": 7,
+    "body_size_passed": 10,
+    "pcode_operation_shape_passed": 10,
+    "failed_functions": ["zlog_open", "zlog_release", "init_module"],
+    "passed": false
+  },
+  "authorized_fallbacks": {
+    "passed_functions": 7,
+    "remaining_functions": ["zlog_open", "zlog_release", "init_module"],
+    "passed": false
+  },
+  "docker_rebuild_evidence": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "toolchain": "clang-r536225",
+    "artifacts": [
+      {
+        "path": "validation/zlog_exception_layout_transplant_20260828/zlog_exception.ko",
+        "sha256": "93ddac9f92973e0c8e13c438ccca8fca68ccd5334303de2f1a7baac2dd073d41",
+        "size": 232552
+      },
+      {
+        "path": "validation/zlog_exception_rechecked_20260828/clean_builds/cycle_1/zlog_exception.ko",
+        "sha256": "93ddac9f92973e0c8e13c438ccca8fca68ccd5334303de2f1a7baac2dd073d41",
+        "size": 232552
+      },
+      {
+        "path": "validation/zlog_exception_rechecked_20260828/clean_builds/cycle_2/zlog_exception.ko",
+        "sha256": "93ddac9f92973e0c8e13c438ccca8fca68ccd5334303de2f1a7baac2dd073d41",
+        "size": 232552
+      }
+    ],
+    "reproducible": true,
+    "matches_candidate": true
+  },
+  "interpretation": "Static Ghidra/Docker checkpoint only. All checked functions match in body size and P-Code operation shape; normalized decompiled-C equality remains open for zlog_open, zlog_release and init_module. Independent review, hardware validation and promotion remain open."
+}

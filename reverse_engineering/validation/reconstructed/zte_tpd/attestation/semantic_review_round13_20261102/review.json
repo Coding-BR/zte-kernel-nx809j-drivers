@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Flash address reader C-mirror mutex initialization and buffer lifetime review",
+  "review_status": "STATIC_REVIEW_COMPLETE_C_MIRROR_ALIGNED",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "functions": [
+      "syna_tcm_read_flash_address"
+    ],
+    "joern_findings_reviewed_this_round": 4,
+    "current_scoped_joern_alerts": 4,
+    "previous_full_surface_report_findings": 128,
+    "previous_full_surface_reviewed_count_before_this_round": 80,
+    "full_surface_total_recomputed_after_source_edit": false,
+    "note": "The previous full-surface Joern report predates the added mutex_init. The current strict target gate is current-source and passes; no updated driver-wide total is claimed."
+  },
+  "joern_alerts": [
+    {
+      "call": "mutex_init",
+      "caller": "syna_tcm_read_flash_address",
+      "category": "synchronization",
+      "code": "mutex_init(access.mutex)",
+      "filename": "syna_tcm_read_flash_address.c",
+      "line": 48,
+      "severity": "high"
+    },
+    {
+      "call": "devm_kfree",
+      "caller": "syna_tcm_read_flash_address",
+      "category": "lifetime",
+      "code": "devm_kfree(managed_device, buffer->data)",
+      "filename": "syna_tcm_read_flash_address.c",
+      "line": 55,
+      "severity": "high"
+    },
+    {
+      "call": "devm_kmalloc",
+      "caller": "syna_tcm_read_flash_address",
+      "category": "lifetime",
+      "code": "devm_kmalloc(managed_device, length, 3520)",
+      "filename": "syna_tcm_read_flash_address.c",
+      "line": 80,
+      "severity": "high"
+    },
+    {
+      "call": "devm_kfree",
+      "caller": "syna_tcm_read_flash_address",
+      "category": "lifetime",
+      "code": "devm_kfree(managed_device, access.managed_allocation)",
+      "filename": "syna_tcm_read_flash_address.c",
+      "line": 111,
+      "severity": "high"
+    }
+  ],
+  "findings": [
+    {
+      "id": "restore-stock-access-mutex-init-in-c-mirror",
+      "category": "source_parity",
+      "severity": "C_MIRROR_MISMATCH_CORRECTED_RUNTIME_STOCK_UNAFFECTED",
+      "disposition": "ADDED_MUTEX_INIT_ACCESS_MUTEX_AFTER_FLASH_SETUP",
+      "details": "The reconstructed C mirror previously zero-initialized the access context but omitted the explicit __mutex_init present in stock Ghidra and assembly. The setup helper does not initialize this field. Added mutex_init(access.mutex) after the setup block and before the length branch, matching stock placement on both the successful setup path and the already-in-bootloader path. The exact .S remains selected by Kbuild and already contained the stock initialization, so this corrects the readable C mirror; it does not change the shipped candidate module. No active lock use of this local field in the read helper was established, so this is recorded as a source-parity defect rather than a proven stock runtime deadlock.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_address.c",
+        "previous_source_sha256": "eaa1781589aef510d5067b05498055f41b2f46750fa64094988c66822ea686f6",
+        "current_source_sha256": "0894d1c4d0bc8cedf26e05c9e84b619438e4154948cef1069d3e30bc83a7da1e",
+        "corrected_line": 48,
+        "stock_ghidra_decomp": "offline_static/ghidra_stock/decompiled/0294_00124208_syna_tcm_read_flash_address.c",
+        "stock_ghidra_decomp_sha256": "88c67cff1b420457e5599ffe15156c32ae69c16c9be906468e561bfb192939c6",
+        "ghidra_init_line": 82,
+        "stock_assembly": "offline_static/stock_assembly/0294_syna_tcm_read_flash_address_00124208.asm",
+        "stock_assembly_sha256": "dbfd6f00363a8b92a0488003026a6cf2da7d5b81186e9c7747ac7b4fdedf4756",
+        "stock_mutex_init_call": "0x1da4c R_AARCH64_CALL26 __mutex_init",
+        "setup_helper_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_set_up_flash_access.c",
+        "setup_helper_source_sha256": "a9e488eb89c0a92cafd27598ed62e94dd6dc28951120c1287831570dffb40249",
+        "access_mutex_layout": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_tcm_layout.h:144-145 (mutex begins at offset 0x50)"
+      }
+    },
+    {
+      "id": "flash-output-buffer-lifetime",
+      "category": "lifetime",
+      "severity": "CALLER_BUFFER_RETAINED_BY_DESIGN_WITH_DEVICE_MANAGED_LIFETIME",
+      "disposition": "NO_LOCAL_LEAK_PROVEN_OUTPUT_POINTER_STORED_IN_CALLER_BUFFER",
+      "details": "devm_kmalloc allocates the requested flash output and stores it in buffer->data with buffer->buf_size. The function fills buffer->data_length and returns the buffer to its caller; it does not treat this as a temporary local payload. Resizing frees the old buffer when a managed device is available, and devres releases allocations on device teardown. The broader teardown of every external caller was not re-audited in this round.",
+      "evidence": {
+        "candidate_source_lines": "syna_tcm_read_flash_address.c:48-100",
+        "stock_ghidra_decomp_lines": "0294_00124208_syna_tcm_read_flash_address.c:83-135",
+        "stock_assembly": "0294_syna_tcm_read_flash_address_00124208.asm:0x1da98 devm_kmalloc; output pointer stored through caller buffer"
+      }
+    },
+    {
+      "id": "conditional-old-output-buffer-retention-on-device-lookup-retry",
+      "category": "lifetime",
+      "severity": "CONDITIONAL_STOCK_DEVRES_RETENTION",
+      "disposition": "INHERITED_STOCK_BRANCH_PRESERVED_INTERLEAVING_UNPROVEN",
+      "details": "When an undersized output buffer already has data, the function tries to obtain a managed device before devm_kfree. If that lookup fails, it logs and retries. If a later lookup succeeds, the old pointer can be overwritten by the new allocation without an explicit free, retaining the old devres allocation until device teardown. Ghidra and stock assembly contain the same retry path. This lookup interleaving was not dynamically demonstrated; the exact stock assembly is preserved.",
+      "evidence": {
+        "candidate_source_lines": "syna_tcm_read_flash_address.c:49-86",
+        "stock_ghidra_lines": "0294_00124208_syna_tcm_read_flash_address.c:86-118",
+        "stock_assembly_calls": "0x1da6c syna_request_managed_device; 0x1da78 devm_kfree; 0x1da7c retry; 0x1da98 devm_kmalloc",
+        "stock_assembly_sha256": "dbfd6f00363a8b92a0488003026a6cf2da7d5b81186e9c7747ac7b4fdedf4756"
+      }
+    },
+    {
+      "id": "flash-access-context-cleanup",
+      "category": "lifetime",
+      "severity": "CONDITIONAL_DEVRES_RELEASE",
+      "disposition": "COMMON_CLEANUP_MATCHES_STOCK",
+      "details": "The final devm_kfree releases access.managed_allocation, the flash-access context scratch buffer. When the managed-device lookup returns NULL, the function logs and devres retains that allocation until teardown. This is the context allocation, not buffer->data.",
+      "evidence": {
+        "candidate_source_lines": "syna_tcm_read_flash_address.c:107-112",
+        "stock_ghidra_lines": "0294_00124208_syna_tcm_read_flash_address.c:144-151",
+        "stock_assembly_call": "0x1db10 R_AARCH64_CALL26 devm_kfree"
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_read_flash_address.c": "0894d1c4d0bc8cedf26e05c9e84b619438e4154948cef1069d3e30bc83a7da1e",
+    "syna_tcm_read_flash_address_exact.S": "23d48eca8606bc63d1fd75bf5b436a9cec097f0a9bbd05850ae71cbdc84203fd",
+    "syna_tcm_read_flash.c": "2cb39feba1c5f01fc8a17f58846fff41f5f4dc17b132d42f445c242d5e07a0d8"
+  },
+  "ghidra_sha256": {
+    "target_decomp": "88c67cff1b420457e5599ffe15156c32ae69c16c9be906468e561bfb192939c6",
+    "target_pcode": "01239cf6fbd36c035924736d25643a8efa485a3efbc1f53556b6c64acd074bc5",
+    "target_stock_assembly": "dbfd6f00363a8b92a0488003026a6cf2da7d5b81186e9c7747ac7b4fdedf4756",
+    "setup_helper_decomp": "25f5d8713198df6470b66184362c18cc1387f2bd00a268ea5e198a73bccf6dce"
+  },
+  "joern": {
+    "report": "attestation/semantic_review_round13_20261102/joern/joern_gate_report.json",
+    "report_sha256": "5fc8b9f24e1b6c5d8180f46f6360480d0e685dde90c1363c05b0abe869f12dcc",
+    "summary": "attestation/semantic_review_round13_20261102/joern/joern_gate_summary.json",
+    "summary_sha256": "7865d89e0167114fb6e0d52df71dc38fcf37b4f4c56348aa712dd55d1d776b4d",
+    "input_manifest": "attestation/semantic_review_round13_20261102/joern/input_manifest.json",
+    "input_manifest_sha256": "3a6f5da8f031344cdc7429f38d90551badaf2966c77b7d5f2c9310ecce8e74e3",
+    "status": "PASS",
+    "strict": true,
+    "passed": true,
+    "target_source_sha256": "0894d1c4d0bc8cedf26e05c9e84b619438e4154948cef1069d3e30bc83a7da1e",
+    "target_source_matches": true,
+    "target_alerts": 4
+  },
+  "host_harness": {
+    "report": "attestation/next295_syna_tcm_read_flash_address_exact_v1/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "a81c3a0eab3fffbd8120cb4fca960025b4a468901648e43899d65fc537727c70",
+    "status": "PASS",
+    "passed_for_previous_source": true,
+    "cases": 8,
+    "previous_source_sha256": "eaa1781589aef510d5067b05498055f41b2f46750fa64094988c66822ea686f6",
+    "matches_current_source": false,
+    "rerun": false,
+    "note": "Historical ASan/UBSan contract report predates this mutex-init correction and is not current-source validation."
+  },
+  "binary_parity": {
+    "aarch64_comparison": "attestation/next295_syna_tcm_read_flash_address_exact_v1/exact_revalidation_20260831/aarch64_comparison.json",
+    "aarch64_comparison_sha256": "fe8bbd503c9e1f942833c63143627bc43438c77d3c7cfe0e20469de5363b537d",
+    "aarch64_comparison_passed": true,
+    "kcfi_comparison": "attestation/next295_syna_tcm_read_flash_address_exact_v1/exact_revalidation_20260831/kcfi_comparison.json",
+    "kcfi_comparison_sha256": "a7d84775ccd19f70fd5597752941a28e2e116b56610f848d7a0a2c9abbea0d77",
+    "kcfi_comparison_passed": true,
+    "exact_assembly_unchanged": true,
+    "kbuild_excludes_c_mirror": true,
+    "kbuild_selects_exact_assembly": true,
+    "kbuild_evidence": "kernel_development/drivers/reconstructed/zte_tpd/Makefile:33,294,398"
+  },
+  "docker_sync": {
+    "report": "attestation/semantic_review_round13_20261102/docker_sync_plan.json",
+    "report_sha256": "566a1d979edb020b8cd1da1d81004ef64ffcd5e49fb67ffa9cffa28a4b1b973a",
+    "passed": true,
+    "applied": true,
+    "copied": [
+      "syna_tcm_read_flash_address.c"
+    ],
+    "removed_stale_source": [],
+    "remaining": {
+      "content_mismatch": [],
+      "missing_from_curated": [],
+      "unexpected_in_curated": []
+    },
+    "curated_tree_files": 848,
+    "target_c_matches_curated": true,
+    "target_assembly_matches_curated": true
+  },
+  "canonical_build": {
+    "report": "attestation/semantic_review_round13_20261102/canonical_build_report.json",
+    "report_sha256": "16abd9e50b8c7146083ffd80d88ac96149e9be86b4456ec10ef93e37a9e067ca",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "kbuild_inputs": 848,
+    "manifest_sha256": "d4cb08b58b92aebe99c185786c95784f53a6792b924ffba80d790403ebe9fd3b",
+    "module_sha256_each_cycle": "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+    "module_size": 6291200,
+    "same_module_sha_as_round11": true,
+    "note": "The changed C mirror is an input to the curated tree, but Makefile excludes it from the module and selects the unchanged stock .S."
+  },
+  "limitations": [
+    "The correction aligns readable C with the stock __mutex_init call; the Kbuild-selected assembly was already correct, so no runtime module behavior changed.",
+    "The prior host ASan/UBSan report is for the previous source hash; no host test was rerun.",
+    "The current strict Joern gate and Docker module build passed, but Docker does not compile the C mirror because Kbuild selects the exact .S.",
+    "The full-driver Joern total was not recomputed after this source edit; 128 is the prior full-surface baseline, not a current total.",
+    "Conditional devres retention branches were confirmed in stock, but their runtime interleavings were not exercised.",
+    "Android runtime and NX809J hardware validation remain unverified; independent human review was not performed."
+  ]
+}

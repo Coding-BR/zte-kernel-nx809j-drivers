@@ -1,0 +1,7 @@
+#ifndef AWRW_SHOW_HOST_LINUX_ERRNO_H
+#define AWRW_SHOW_HOST_LINUX_ERRNO_H
+
+#define EINVAL 22
+#define ERANGE 34
+
+#endif

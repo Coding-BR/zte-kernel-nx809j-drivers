@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "tp_alloc_tp_firmware_data lifetime and allocation-failure review",
+  "review_status": "STATIC_REVIEW_COMPLETE_STOCK_USE_AFTER_FREE_RISK_CONFIRMED",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "functions": [
+      "tp_alloc_tp_firmware_data"
+    ],
+    "stock_function_entry": "00107d54",
+    "stock_body_bytes": 352,
+    "joern_findings_reviewed_this_round": 3,
+    "current_source_sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "docker_curated_source_sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336"
+  },
+  "joern_alerts": [
+    {
+      "call": "kfree",
+      "caller": "tp_alloc_tp_firmware_data",
+      "category": "lifetime",
+      "code": "kfree(fw_data)",
+      "filename": "tp_alloc_tp_firmware_data.c",
+      "line": 17,
+      "severity": "high"
+    },
+    {
+      "call": "kmalloc",
+      "caller": "tp_alloc_tp_firmware_data",
+      "category": "lifetime",
+      "code": "kmalloc(sizeof(*fw_data), (gfp_t)3520)",
+      "filename": "tp_alloc_tp_firmware_data.c",
+      "line": 22,
+      "severity": "high"
+    },
+    {
+      "call": "kfree",
+      "caller": "tp_alloc_tp_firmware_data",
+      "category": "lifetime",
+      "code": "kfree(*(struct tpd_firmware_data **)(cdev + 0xc58))",
+      "filename": "tp_alloc_tp_firmware_data.c",
+      "line": 36,
+      "severity": "high"
+    }
+  ],
+  "source_sha256": {
+    "candidate_c": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "docker_curated_c": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336"
+  },
+  "ghidra_sha256": {
+    "decompilation": "c77d4d4c4a73dc674f2a997f3bb1ab1de9c05cded802baab70933aa01e998235",
+    "pcode": "79e5ed33ddab5e0d2a3d3f8ad0a5cc2a72e7a12915931bd91751e114b00b43de",
+    "stock_assembly": "1e45952949c22b46ef90fd861394bd474a6bbd4a3f27feb835474234546bc4b0",
+    "candidate_assembly": "0f8d8843c2c8e09e7ae0063a71fc5315ab6bf167b7a48638b30c993b1d4cc05f",
+    "assembly_comparison": "0204ba9bf57ed6ef3fdb2a13c0f3392eb3e8b33a8c4cce4ef182b190ada7d0a2"
+  },
+  "joern": {
+    "report": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "report_sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "input_manifest": "attestation/full_surface_revalidation_20261102/joern/input_manifest.json",
+    "input_manifest_sha256": "60970240de72f1a4930518d7dbaa949bb946db5b59ca1f3394e61e85ae4aeb1a",
+    "status": "PASS",
+    "passed": true,
+    "strict": true,
+    "target_source_sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "target_source_matches_current": true,
+    "target_alerts": 3,
+    "classification": "Allocation and cleanup are intended ownership transitions; the final kfree is a confirmed dangling-slot path when vmalloc fails."
+  },
+  "host_harness": {
+    "report": "attestation/next128_tp_alloc_tp_firmware_data_revalidated_v1/host_harness_report.json",
+    "report_sha256": "cf7717ac8f04c5a9e30f7dd25bd87374b3ac6284400f7de246d4c33d41922c9e",
+    "status": "PASS",
+    "passed": true,
+    "executions": 2,
+    "cases_per_execution": 12,
+    "driver_source_sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "source_matches_current": true,
+    "data_allocation_failure_behavior_covered": true,
+    "subsequent_call_after_failure_covered": false,
+    "rerun": false
+  },
+  "canonical_build": {
+    "report": "attestation/semantic_review_round13_20261102/canonical_build_report.json",
+    "report_sha256": "16abd9e50b8c7146083ffd80d88ac96149e9be86b4456ec10ef93e37a9e067ca",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "kbuild_inputs": 848,
+    "module_sha256_each_cycle": "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+    "target_source_sha256_in_curated_tree": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "docker_curated_source_matches_repo": true,
+    "kbuild_selects_stock_assembly_for_this_exact_function": true,
+    "rebuild_this_round": false,
+    "reason": "No source or Kbuild input changed; the Docker report includes this unchanged C mirror in the curated source tree, while Kbuild selects preserved exact assembly."
+  },
+  "findings": [
+    {
+      "id": "vmalloc-failure-frees-descriptor-without-clearing-global-slot",
+      "category": "lifetime",
+      "severity": "CONFIRMED_CONDITIONAL_USE_AFTER_FREE_RISK",
+      "disposition": "INHERITED_STOCK_BEHAVIOR_PRESERVED_FOR_OFFLINE_EXACT_RECONSTRUCTION",
+      "details": "After storing the descriptor at cdev+0xc58, vmalloc failure logs and kfree's it, then returns -ENOMEM without storing NULL to cdev+0xc58. A later call can read the dangling slot and dereference freed descriptor memory during initial cleanup, with possible invalid vfree or repeated free depending on reused contents.",
+      "evidence": {
+        "candidate_c": "tp_alloc_tp_firmware_data.c:29-37",
+        "ghidra_decompilation": "decompiled/0011_00107d54_tp_alloc_tp_firmware_data.c: vmalloc failure calls kfree and returns -12 without clearing cdev+0xc58",
+        "ghidra_pcode": "pcode/0011_00107d54_tp_alloc_tp_firmware_data.jsonl: failure path loads slot at 00107e34 and returns -12 at 00107e3c; no NULL store on this path",
+        "stock_assembly": "offline_static/stock_assembly/0011_tp_alloc_tp_firmware_data_00107d54.asm; stock/candidate comparison passes for 88 instructions and 352 bytes",
+        "existing_harness": "12/12 cases twice, including alloc_data_failure_preserves_stock_slot; follow-up call after failure is not covered"
+      }
+    },
+    {
+      "id": "joern-lifetime-alerts-require-ownership-context",
+      "category": "static_analysis_triage",
+      "severity": "THREE_HEURISTIC_ALERTS_ONE_CONFIRMED_FAILURE_PATH",
+      "disposition": "REVIEWED_AGAINST_CONTROL_FLOW_AND_STOCK_EVIDENCE",
+      "details": "The first kfree is replacement cleanup and kmalloc creates the new descriptor. The final kfree releases the descriptor on vmalloc failure, but the global pointer remains dangling. Call-level Joern alerts are not by themselves proof of leaks; they lead to the confirmed failure-path finding above."
+    }
+  ],
+  "mapping": {
+    "status": "PROMOTED_OFFLINE_EXACT",
+    "semantic_equivalence": "OFFLINE_EXACT",
+    "source_changed": false,
+    "runtime_behavior_changed": false,
+    "stock_assembly_preserved": true,
+    "disposition": "Keep the behavior documented for exact reconstruction. Clearing the slot would be an explicit hardening deviation and should be tracked separately."
+  },
+  "limitations": [
+    "The follow-up invocation after vmalloc failure was not dynamically exercised; the use-after-free risk follows from verified control flow.",
+    "The existing host harness records the dangling slot without dereferencing it.",
+    "No new host harness or hardware test was run in this review-only round.",
+    "Offline build and assembly comparison do not establish Android runtime or NX809J hardware behavior.",
+    "Independent human review was not performed."
+  ]
+}

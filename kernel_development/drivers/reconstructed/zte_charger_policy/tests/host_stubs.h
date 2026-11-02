@@ -25,6 +25,9 @@ typedef s64 ktime_t;
 #define POWER_SUPPLY_STATUS_FULL 4
 #define __init
 #define __exit
+#ifndef __used
+#define __used __attribute__((used))
+#endif
 #define ARRAY_SIZE(value) (sizeof(value) / sizeof((value)[0]))
 #define static_assert(condition) _Static_assert(condition, #condition)
 #define container_of(pointer, type, member) ((type *)((char *)(pointer) - offsetof(type, member)))

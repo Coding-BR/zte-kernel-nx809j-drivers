@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "identity": "aw_remove@0010823c",
+  "status": "PASS",
+  "production_source": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+    "sha256": "14da2f127a98cc9810286b26b6dea32d70a2404adc27743d1186d2723c5136bf"
+  },
+  "harness_source": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw_remove_20261101/host_harness/aw_remove_host_harness.c",
+    "sha256": "e1040f2b381f37c1d7ae819afd62116f23a4c9542e6c8c6dcbaed65dbdb2b94f"
+  },
+  "host_api_header_sha256": "36897fce5c430db6894f73f6b59b65ba21ce56b40ecfa34eae535339c93db910",
+  "stub_headers_sha256": {
+    "host_include/linux/bitops.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/gpio/consumer.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/gpio.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/hrtimer.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/i2c.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/interrupt.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/miscdevice.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/mm.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/printk.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/slab.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad",
+    "host_include/linux/workqueue.h": "711d9931e8ffc781852050c36bdd11d0f23a13cc8c54c0a8de579062307ec7ad"
+  },
+  "execution": {
+    "container_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "container_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "compiler": "gcc",
+    "flags": [
+      "-std=gnu11",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "result": "3/3 passed"
+  },
+  "cases": [
+    {
+      "name": "both_gpios_valid",
+      "gpio_0x50": 23,
+      "gpio_0x5c": 26,
+      "ordered_teardown_events": 17,
+      "result": "PASS"
+    },
+    {
+      "name": "reset_gpio_negative",
+      "gpio_0x50": -1,
+      "gpio_0x5c": 26,
+      "ordered_teardown_events": 16,
+      "result": "PASS"
+    },
+    {
+      "name": "both_gpios_negative",
+      "gpio_0x50": -1,
+      "gpio_0x5c": -1,
+      "ordered_teardown_events": 15,
+      "result": "PASS"
+    }
+  ],
+  "assertions": [
+    "exact teardown call order and pointer offsets",
+    "unconditional reset GPIO descriptor to IRQ path",
+    "conditional gpio_free branches",
+    "kfree pointer",
+    "clear only page flag bit 14",
+    "free_pages order 2",
+    "misc_deregister receives richtap_misc"
+  ],
+  "limitations": [
+    "Kernel APIs are deterministic host stubs; no live device or hardware behavior was tested."
+  ]
+}

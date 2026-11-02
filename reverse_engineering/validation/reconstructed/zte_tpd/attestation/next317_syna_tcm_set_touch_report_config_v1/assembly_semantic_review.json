@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_set_touch_report_config",
+  "stock_entry": "0012a264",
+  "stock_assembly": "0316_syna_tcm_set_touch_report_config_0012a264.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_set_touch_report_config_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "The typed transition preserves null/config/length guards and the application-firmware mode check.",
+    "The transition preserves the transport flag delay selection, command delay fallback and explicit delay path.",
+    "The transition uses the proven application-info words, checks the maximum configuration size, allocates with flag 0xdc0, copies the requested length and sends command 0x26 with the full configured buffer size.",
+    "The transition releases the allocated buffer after both copy failure and write completion, and propagates the copy/write result.",
+    "The AArch64 Assembly fixture emits the complete typed target function and the probe wrapper with Android clang target aarch64-linux-android34.",
+    "Joern confirms one mapped stock identity, zero unresolved calls and zero parser problems."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "joern_lifetime",
+      "finding": "Joern flags devm_kmalloc as a high-severity lifetime finding. The local control flow calls syna_pal_mem_free_0 after copy and write paths, but the release contract and devm ownership require independent review."
+    },
+    {
+      "severity": "high",
+      "category": "typed_layout",
+      "finding": "The words at tcm_dev+0xb0 and +0xbc are accessed through the application-info overlay; their semantic labels and endian interpretation require independent confirmation from P-Code and the surrounding application-info producer."
+    },
+    {
+      "severity": "medium",
+      "category": "callback_cfi",
+      "finding": "The write_message callback signature and KCFI type identity require a canonical module comparison before promotion."
+    }
+  ],
+  "promotion_allowed": false
+}

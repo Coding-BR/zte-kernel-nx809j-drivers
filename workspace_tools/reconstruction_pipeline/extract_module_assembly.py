@@ -136,7 +136,11 @@ def select_symbol_range(
     candidates: list[tuple[str, int, int]],
     section: str | None,
     relative_entry: int | None,
+    explicit_offset: int | None = None,
 ) -> tuple[str, int, int] | None:
+    if explicit_offset is not None:
+        exact = [item for item in candidates if item[1] == explicit_offset]
+        return exact[0] if len(exact) == 1 else None
     if section is not None and relative_entry is not None:
         exact = [item for item in candidates if item[0] == section and item[1] == relative_entry]
         if len(exact) == 1:
@@ -152,6 +156,31 @@ def select_symbol_range(
     if len(candidates) == 1:
         return candidates[0]
     return None
+
+
+def command_line_function_spec(value: str) -> dict[str, Any]:
+    """Parse NAME or NAME@0xOFFSET without losing duplicate-symbol identity."""
+    match = re.fullmatch(r"(.+)@(0x[0-9a-fA-F]+)", value)
+    if match is None:
+        return {
+            "name": value,
+            "entry": None,
+            "relative_entry": None,
+            "section": None,
+            "body_bytes": None,
+            "explicit_offset": None,
+            "function_id": value,
+        }
+    name, raw_offset = match.groups()
+    return {
+        "name": name,
+        "entry": None,
+        "relative_entry": None,
+        "section": None,
+        "body_bytes": None,
+        "explicit_offset": int(raw_offset, 16),
+        "function_id": f"{name}@0x{int(raw_offset, 16):x}",
+    }
 
 
 def parse_args() -> argparse.Namespace:
@@ -171,17 +200,7 @@ def main() -> int:
     module = args.module.resolve()
     if not module.is_file():
         raise FileNotFoundError(module)
-    specs = [
-        {
-            "name": name,
-            "entry": None,
-            "relative_entry": None,
-            "section": None,
-            "body_bytes": None,
-            "function_id": name,
-        }
-        for name in args.functions
-    ]
+    specs = [command_line_function_spec(name) for name in args.functions]
     if args.functions_jsonl:
         specs.extend(read_function_specs(args.functions_jsonl.resolve()))
     unique_specs: list[dict[str, Any]] = []
@@ -206,11 +225,25 @@ def main() -> int:
         toolchain_volume=args.toolchain_volume,
         clang_revision=args.clang_revision,
     )
+    duplicate_counts: dict[str, int] = {}
+    for spec in specs:
+        duplicate_counts[spec["name"]] = duplicate_counts.get(spec["name"], 0) + 1
+    duplicate_indices: dict[str, int] = {}
     for index, spec in enumerate(specs):
         function = spec["name"]
         function_id = spec["function_id"]
+        duplicate_index = duplicate_indices.get(function, 0)
+        duplicate_indices[function] = duplicate_index + 1
+        resolved_function = function
+        if duplicate_counts.get(function, 0) > 1 and duplicate_index:
+            alias = f"{function}_{duplicate_index - 1}"
+            if alias in symbol_ranges:
+                resolved_function = alias
         symbol_range = select_symbol_range(
-            symbol_ranges.get(function, []), spec.get("section"), spec.get("relative_entry")
+            symbol_ranges.get(resolved_function, []),
+            spec.get("section"),
+            spec.get("relative_entry"),
+            spec.get("explicit_offset"),
         )
         range_source = "elf_symbol"
         if symbol_range is None and spec.get("relative_entry") is not None and spec.get("body_bytes"):
@@ -230,7 +263,7 @@ def main() -> int:
             )
         else:
             start = symbol_size = 0
-            arguments.append(f"--disassemble-symbols={function}")
+            arguments.append(f"--disassemble-symbols={resolved_function}")
         command = docker_tool_command(
             module=module,
             tool=entrypoint,
@@ -250,7 +283,7 @@ def main() -> int:
             if (match := re.match(r"^\s*([0-9a-fA-F]+)\s+<([^>]+)>:$", line))
         ]
         found = completed.returncode == 0 and bool(addresses)
-        label_match = any(item["name"] == function for item in labels)
+        label_match = any(item["name"] == resolved_function for item in labels)
         complete = bool(
             found
             and symbol_range
@@ -267,6 +300,7 @@ def main() -> int:
             {
                 "function": function,
                 "function_id": function_id,
+                "resolved_symbol": resolved_function,
                 "ghidra_entry": spec.get("entry"),
                 "section": section if symbol_range else spec.get("section"),
                 "file": filename,

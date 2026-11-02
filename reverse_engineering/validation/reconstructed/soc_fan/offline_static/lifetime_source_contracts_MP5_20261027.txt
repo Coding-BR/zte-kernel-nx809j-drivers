@@ -1,0 +1,431 @@
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+source_root=kernel_platform/common
+405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930  drivers/base/dd.c
+39dee6dfc6f46c7ac8ab2a6b79b8fc7f12136db892e5b7bb733cee89c7d41f24  drivers/base/devres.c
+336caf6fab45f863814963d09b9d5d0983fdbb0e389121e9d472aaa748f21688  include/linux/gpio.h
+591296abdea7065d8846511fd50c8ea77931f72a0954bb299994db6b84a0ef89  drivers/gpio/gpiolib-legacy.c
+83769c398674e6d8ff453dad4a2dc6f162fc33f818cad9c013e05eaa6cbab8e3  include/linux/hrtimer.h
+1c58df0d5c9931504450d7a74f0c641d0c394724adf8c55f9d7e17167f3443ed  kernel/time/hrtimer.c
+ecbd38d79ea3513b7138d42a0ca7104f41ca28bac95c139529c131440925e64b  fs/sysfs/group.c
+f1a463c8976410a37aed61f3677a35afe044fce51fda50d60ed9f6e4869bb1e9  fs/kernfs/dir.c
+
+=== remove and devres cleanup ordering: drivers/base/dd.c ===
+   547	static void device_unbind_cleanup(struct device *dev)
+   548	{
+   549		devres_release_all(dev);
+   550		arch_teardown_dma_ops(dev);
+   551		kfree(dev->dma_range_map);
+   552		dev->dma_range_map = NULL;
+   553		dev->driver = NULL;
+   554		dev_set_drvdata(dev, NULL);
+   555		if (dev->pm_domain && dev->pm_domain->dismiss)
+   556			dev->pm_domain->dismiss(dev);
+   557		pm_runtime_reinit(dev);
+   558		dev_pm_set_driver_flags(dev, 0);
+   559	}
+   560	
+   561	static void device_remove(struct device *dev)
+   562	{
+   563		device_remove_file(dev, &dev_attr_state_synced);
+   564		device_remove_groups(dev, dev->driver->dev_groups);
+   565	
+   566		if (dev->bus && dev->bus->remove)
+   567			dev->bus->remove(dev);
+   568		else if (dev->driver->remove)
+   569			dev->driver->remove(dev);
+   570	}
+   630	
+   631	re_probe:
+   632		// FIXME - this cast should not be needed "soon"
+   633		dev->driver = (struct device_driver *)drv;
+   634	
+   635		/* If using pinctrl, bind pins now before probing */
+   636		ret = pinctrl_bind_pins(dev);
+   637		if (ret)
+   638			goto pinctrl_bind_failed;
+   639	
+   640		if (dev->bus->dma_configure) {
+   641			ret = dev->bus->dma_configure(dev);
+   642			if (ret)
+   643				goto pinctrl_bind_failed;
+   644		}
+   645	
+   646		ret = driver_sysfs_add(dev);
+   647		if (ret) {
+   648			dev_err(dev, "%s: driver_sysfs_add failed\n", __func__);
+   649			goto sysfs_failed;
+   650		}
+   651	
+   652		if (dev->pm_domain && dev->pm_domain->activate) {
+   653			ret = dev->pm_domain->activate(dev);
+   654			if (ret)
+   655				goto probe_failed;
+   656		}
+   657	
+   658		ret = call_driver_probe(dev, drv);
+   659		if (ret) {
+   660			/*
+   661			 * If fw_devlink_best_effort is active (denoted by -EAGAIN), the
+   662			 * device might actually probe properly once some of its missing
+   663			 * suppliers have probed. So, treat this as if the driver
+   664			 * returned -EPROBE_DEFER.
+   665			 */
+   666			if (link_ret == -EAGAIN)
+   667				ret = -EPROBE_DEFER;
+   668	
+   669			/*
+   670			 * Return probe errors as positive values so that the callers
+   671			 * can distinguish them from other errors.
+   672			 */
+   673			ret = -ret;
+   674			goto probe_failed;
+   675		}
+   676	
+   677		ret = device_add_groups(dev, drv->dev_groups);
+   678		if (ret) {
+   679			dev_err(dev, "device_add_groups() failed\n");
+   680			goto dev_groups_failed;
+   681		}
+   682	
+   683		if (dev_has_sync_state(dev)) {
+   684			ret = device_create_file(dev, &dev_attr_state_synced);
+   685			if (ret) {
+   686				dev_err(dev, "state_synced sysfs add failed\n");
+   687				goto dev_sysfs_state_synced_failed;
+   688			}
+   689		}
+   690	
+   691		if (test_remove) {
+   692			test_remove = false;
+   693	
+   694			device_remove(dev);
+   695			driver_sysfs_remove(dev);
+   696			if (dev->bus && dev->bus->dma_cleanup)
+   697				dev->bus->dma_cleanup(dev);
+   698			device_unbind_cleanup(dev);
+   699	
+   700			goto re_probe;
+   701		}
+   702	
+   703		pinctrl_init_done(dev);
+   704	
+   705		if (dev->pm_domain && dev->pm_domain->sync)
+   706			dev->pm_domain->sync(dev);
+   707	
+   708		driver_bound(dev);
+   709		dev_dbg(dev, "bus: '%s': %s: bound device to driver %s\n",
+   710			drv->bus->name, __func__, drv->name);
+   711		goto done;
+   712	
+   713	dev_sysfs_state_synced_failed:
+   714	dev_groups_failed:
+   715		device_remove(dev);
+   716	probe_failed:
+   717		driver_sysfs_remove(dev);
+   718	sysfs_failed:
+   719		bus_notify(dev, BUS_NOTIFY_DRIVER_NOT_BOUND);
+   720		if (dev->bus && dev->bus->dma_cleanup)
+   721			dev->bus->dma_cleanup(dev);
+   722	pinctrl_bind_failed:
+   723		device_links_no_driver(dev);
+   724		device_unbind_cleanup(dev);
+   725	done:
+   726		return ret;
+   727	}
+   728	
+   729	/*
+   730	 * For initcall_debug, show the driver probe time.
+  1267			driver_sysfs_remove(dev);
+  1268	
+  1269			bus_notify(dev, BUS_NOTIFY_UNBIND_DRIVER);
+  1270	
+  1271			pm_runtime_put_sync(dev);
+  1272	
+  1273			device_remove(dev);
+  1274	
+  1275			if (dev->bus && dev->bus->dma_cleanup)
+  1276				dev->bus->dma_cleanup(dev);
+  1277	
+  1278			device_unbind_cleanup(dev);
+  1279			device_links_driver_cleanup(dev);
+  1280	
+  1281			klist_remove(&dev->p->knode_driver);
+  1282			device_pm_check_callbacks(dev);
+
+=== managed-resource release: drivers/base/devres.c ===
+   511	 * devres_release_all - Release all managed resources
+   512	 * @dev: Device to release resources for
+   513	 *
+   514	 * Release all resources associated with @dev.  This function is
+   515	 * called on driver detach.
+   516	 */
+   517	int devres_release_all(struct device *dev)
+   518	{
+   519		unsigned long flags;
+   520		LIST_HEAD(todo);
+   521		int cnt;
+   522	
+   523		/* Looks like an uninitialized device structure */
+   524		if (WARN_ON(dev->devres_head.next == NULL))
+   525			return -ENODEV;
+   526	
+   527		/* Nothing to release if list is empty */
+   528		if (list_empty(&dev->devres_head))
+   529			return 0;
+   530	
+   531		spin_lock_irqsave(&dev->devres_lock, flags);
+   532		cnt = remove_nodes(dev, dev->devres_head.next, &dev->devres_head, &todo);
+   533		spin_unlock_irqrestore(&dev->devres_lock, flags);
+   534	
+   535		release_nodes(dev, &todo);
+   536		return cnt;
+   537	}
+
+=== raw GPIO request/free interface: include/linux/gpio.h ===
+    76	/* Always use the library code for GPIO management calls,
+    77	 * or when sleeping may be involved.
+    78	 */
+    79	int gpio_request(unsigned gpio, const char *label);
+    80	void gpio_free(unsigned gpio);
+    81	
+    82	static inline int gpio_direction_input(unsigned gpio)
+
+=== raw GPIO free implementation: drivers/gpio/gpiolib-legacy.c ===
+    15	/*
+    16	 * **DEPRECATED** This function is deprecated and must not be used in new code.
+    17	 */
+    18	void gpio_free(unsigned gpio)
+    19	{
+    20		gpiod_free(gpio_to_desc(gpio));
+    21	}
+    22	EXPORT_SYMBOL_GPL(gpio_free);
+    23	
+
+=== hrtimer start/cancel interface: include/linux/hrtimer.h ===
+   261	/* Basic timer operations: */
+   262	extern void hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
+   263					   u64 range_ns, const enum hrtimer_mode mode);
+   264	
+   265	/**
+   266	 * hrtimer_start - (re)start an hrtimer
+   267	 * @timer:	the timer to be added
+   268	 * @tim:	expiry time
+   269	 * @mode:	timer mode: absolute (HRTIMER_MODE_ABS) or
+   270	 *		relative (HRTIMER_MODE_REL), and pinned (HRTIMER_MODE_PINNED);
+   271	 *		softirq based mode is considered for debug purpose only!
+   272	 */
+   273	static inline void hrtimer_start(struct hrtimer *timer, ktime_t tim,
+   274					 const enum hrtimer_mode mode)
+   275	{
+   276		hrtimer_start_range_ns(timer, tim, 0, mode);
+   277	}
+   278	
+   279	extern int hrtimer_cancel(struct hrtimer *timer);
+   280	extern int hrtimer_try_to_cancel(struct hrtimer *timer);
+
+=== hrtimer_cancel waits for running handler: kernel/time/hrtimer.c ===
+  1504	 * hrtimer_cancel - cancel a timer and wait for the handler to finish.
+  1505	 * @timer:	the timer to be cancelled
+  1506	 *
+  1507	 * Returns:
+  1508	 *  0 when the timer was not active
+  1509	 *  1 when the timer was active
+  1510	 */
+  1511	int hrtimer_cancel(struct hrtimer *timer)
+  1512	{
+  1513		int ret;
+  1514	
+  1515		do {
+  1516			ret = hrtimer_try_to_cancel(timer);
+  1517	
+  1518			if (ret < 0)
+  1519				hrtimer_cancel_wait_running(timer);
+  1520		} while (ret < 0);
+  1521		return ret;
+  1522	}
+  1523	EXPORT_SYMBOL_GPL(hrtimer_cancel);
+
+=== sysfs partial-file rollback and group creation: fs/sysfs/group.c ===
+    76				error = sysfs_add_file_mode_ns(parent, *attr, mode, uid,
+    77							       gid, NULL);
+    78				if (unlikely(error))
+    79					break;
+    80			}
+    81			if (error) {
+    82				remove_files(parent, grp);
+    83				goto exit;
+    84			}
+    85		}
+   120	static int internal_create_group(struct kobject *kobj, int update,
+   121					 const struct attribute_group *grp)
+   122	{
+   123		struct kernfs_node *kn;
+   124		kuid_t uid;
+   125		kgid_t gid;
+   126		int error;
+   127	
+   128		if (WARN_ON(!kobj || (!update && !kobj->sd)))
+   129			return -EINVAL;
+   130	
+   131		/* Updates may happen before the object has been instantiated */
+   132		if (unlikely(update && !kobj->sd))
+   133			return -EINVAL;
+   134	
+   135		if (!grp->attrs && !grp->bin_attrs) {
+   136			pr_debug("sysfs: (bin_)attrs not set by subsystem for group: %s/%s, skipping\n",
+   137				 kobj->name, grp->name ?: "");
+   138			return 0;
+   175		} else {
+   176			kn = kobj->sd;
+   177		}
+   178	
+   179		kernfs_get(kn);
+   180		error = create_files(kn, kobj, uid, gid, grp, update);
+   181		if (error) {
+   182			if (grp->name)
+   183				kernfs_remove(kn);
+   184		}
+   185		kernfs_put(kn);
+   186	
+   187		if (grp->name && update)
+   188			kernfs_put(kn);
+   189	
+   190		return error;
+   191	}
+   192	
+   193	/**
+   194	 * sysfs_create_group - given a directory kobject, create an attribute group
+   195	 * @kobj:	The kobject to create the group on
+   196	 * @grp:	The attribute group to create
+   197	 *
+   198	 * This function creates a group for the first time.  It will explicitly
+   199	 * warn and error if any of the attribute files being created already exist.
+   200	 *
+   201	 * Returns 0 on success or error code on failure.
+   202	 */
+   203	int sysfs_create_group(struct kobject *kobj,
+   204			       const struct attribute_group *grp)
+   205	{
+   206		return internal_create_group(kobj, 0, grp);
+   207	}
+
+=== sysfs/kernfs active-reference drain implementation: fs/kernfs/dir.c ===
+   479		__releases(&kernfs_root(kn)->kernfs_rwsem)
+   480		__acquires(&kernfs_root(kn)->kernfs_rwsem)
+   481	{
+   482		struct kernfs_root *root = kernfs_root(kn);
+   483	
+   484		lockdep_assert_held_write(&root->kernfs_rwsem);
+   485		WARN_ON_ONCE(kernfs_active(kn));
+   486	
+   487		/*
+   488		 * Skip draining if already fully drained. This avoids draining and its
+   489		 * lockdep annotations for nodes which have never been activated
+   490		 * allowing embedding kernfs_remove() in create error paths without
+   491		 * worrying about draining.
+   492		 */
+   493		if (atomic_read(&kn->active) == KN_DEACTIVATED_BIAS &&
+   494		    !kernfs_should_drain_open_files(kn))
+   495			return;
+   496	
+   497		up_write(&root->kernfs_rwsem);
+   498	
+   499		if (kernfs_lockdep(kn)) {
+   500			rwsem_acquire(&kn->dep_map, 0, 0, _RET_IP_);
+   501			if (atomic_read(&kn->active) != KN_DEACTIVATED_BIAS)
+   502				lock_contended(&kn->dep_map, _RET_IP_);
+   503		}
+   504	
+   505		wait_event(root->deactivate_waitq,
+   506			   atomic_read(&kn->active) == KN_DEACTIVATED_BIAS);
+   507	
+   508		if (kernfs_lockdep(kn)) {
+   509			lock_acquired(&kn->dep_map, _RET_IP_);
+   510			rwsem_release(&kn->dep_map, _RET_IP_);
+   511		}
+   512	
+   513		if (kernfs_should_drain_open_files(kn))
+   514			kernfs_drain_open_files(kn);
+   515	
+   516		down_write(&root->kernfs_rwsem);
+   517	}
+   518	
+  1435			if (kn->flags & KERNFS_ACTIVATED)
+  1436				kernfs_activate_one(kn);
+  1437		} else {
+  1438			kn->flags |= KERNFS_HIDDEN;
+  1439			if (kernfs_active(kn))
+  1440				atomic_add(KN_DEACTIVATED_BIAS, &kn->active);
+  1441			kernfs_drain(kn);
+  1442		}
+  1443	
+  1444		up_write(&root->kernfs_rwsem);
+  1445	}
+  1446	
+  1447	static void __kernfs_remove(struct kernfs_node *kn)
+  1448	{
+  1449		struct kernfs_node *pos;
+  1450	
+  1451		/* Short-circuit if non-root @kn has already finished removal. */
+  1452		if (!kn)
+  1453			return;
+  1454	
+  1455		lockdep_assert_held_write(&kernfs_root(kn)->kernfs_rwsem);
+  1456	
+  1457		/*
+  1458		 * This is for kernfs_remove_self() which plays with active ref
+  1459		 * after removal.
+  1460		 */
+  1461		if (kn->parent && RB_EMPTY_NODE(&kn->rb))
+  1462			return;
+  1463	
+  1464		pr_debug("kernfs %s: removing\n", kn->name);
+  1465	
+  1466		/* prevent new usage by marking all nodes removing and deactivating */
+  1467		pos = NULL;
+  1468		while ((pos = kernfs_next_descendant_post(pos, kn))) {
+  1469			pos->flags |= KERNFS_REMOVING;
+  1470			if (kernfs_active(pos))
+  1471				atomic_add(KN_DEACTIVATED_BIAS, &pos->active);
+  1472		}
+  1473	
+  1474		/* deactivate and unlink the subtree node-by-node */
+  1475		do {
+
+=== devres registration and release order: drivers/base/devres.c ===
+source_revision=e1ea0289c329945af9422e58256a37f7603fa098
+source_sha256=39dee6dfc6f46c7ac8ab2a6b79b8fc7f12136db892e5b7bb733cee89c7d41f24
+   132	static void add_dr(struct device *dev, struct devres_node *node)
+   133	{
+   134		devres_log(dev, node, "ADD");
+   135		BUG_ON(!list_empty(&node->entry));
+   136		list_add_tail(&node->entry, &dev->devres_head);
+   137	}
+   138	
+   243	void devres_add(struct device *dev, void *res)
+   244	{
+   245		struct devres *dr = container_of(res, struct devres, data);
+   248		spin_lock_irqsave(&dev->devres_lock, flags);
+   249		add_dr(dev, &dr->node);
+   250		spin_unlock_irqrestore(&dev->devres_lock, flags);
+   251	}
+   252	
+   496	static void release_nodes(struct device *dev, struct list_head *todo)
+   497	{
+   498		struct devres *dr, *tmp;
+   503		list_for_each_entry_safe_reverse(dr, tmp, todo, node.entry) {
+   504			devres_log(dev, &dr->node, "REL");
+   505			dr->node.release(dev, dr->data);
+   506			kfree(dr);
+   507		}
+   508	}
+   517	int devres_release_all(struct device *dev)
+   518	{
+   519		unsigned long flags;
+   520		LIST_HEAD(todo);
+   531		spin_lock_irqsave(&dev->devres_lock, flags);
+   532		cnt = remove_nodes(dev, dev->devres_head.next, &dev->devres_head, &todo);
+   533		spin_unlock_irqrestore(&dev->devres_lock, flags);
+   535		release_nodes(dev, &todo);
+   536		return cnt;
+   537	}

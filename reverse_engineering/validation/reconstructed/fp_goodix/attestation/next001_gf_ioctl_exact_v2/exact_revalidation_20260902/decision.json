@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "driver": "fp_goodix",
+  "function": "gf_ioctl",
+  "stock_entry": "00100824",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "scope": "offline_static_function_attestation",
+  "hardware_claim": false,
+  "gates": {
+    "assembly_relocations": "PASS",
+    "candidate_ghidra_pcode": "PASS",
+    "docker_reproducible": "PASS",
+    "input_identity": "PASS",
+    "joern_scoped": "PASS",
+    "joern_slice": "PASS",
+    "kcfi": "PASS",
+    "map_identity": "PASS"
+  },
+  "assembly": {
+    "instruction_count": 359,
+    "body_bytes": 1436,
+    "sha256": "dafc30c5cb0f2d9174e2d4593ba3c1b3ae9a362afab61a070cbf0c71e139298a"
+  },
+  "kcfi": {
+    "type_id": "0x2af6cdbb",
+    "symbol_size": 1436
+  },
+  "modules": {
+    "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+    "candidate_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+    "candidate_size": 721008
+  },
+  "ghidra_fallback": {
+    "kind": "ghidra_synthetic_call_symbol_resolution_artifact",
+    "authority": "P-Code plus exact assembly/relocation parity",
+    "reason": "Ghidra rendered seven identical call targets as FUN_<address> in the candidate export and wrapped shared strings as GHIDRA_STRING[literal]; ordered call positions and normalized body otherwise match."
+  },
+  "limitations": [
+    "This is static/offline evidence and does not claim physical hardware behavior.",
+    "Joern call deltas are covered by exact assembly fallback evidence for this assembly island.",
+    "The older gf_ioctl_parse_exact_v1 attestation remains incomplete and was not overwritten."
+  ],
+  "protocol_report": "hard_protocol_report.json",
+  "docker_report": "docker_reproducibility.json"
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "function": "richtap_rtp_start",
+  "stock_entry": "0010e1dc",
+  "stock_body_bytes": 380,
+  "prototype": "bool (struct aw_haptic *)",
+  "kcfi_required": false,
+  "observed_contract": [
+    "Lock haptic mutex at +0x2f0.",
+    "Call operations +0x98 with value 2, then +0x60 with value 1.",
+    "Sleep for 2000 microseconds before polling operations +0x160.",
+    "Return true when global state low nibble equals 8; log RTP_GO and sleep 2000-2500 microseconds.",
+    "Otherwise poll at 2000-2500 microsecond intervals for 200 attempts; on timeout log no RTP_GO, call operations +0x38, and return false.",
+    "Unlock the haptic mutex on both success and timeout."
+  ],
+  "indirect_call_kcfi": {
+    "operations +0x98/+0x60": "0x1d0adf6e",
+    "operations +0x160": "0x784b3854",
+    "operations +0x38": "0x847a0830"
+  },
+  "evidence": [
+    "offline_static/stock_assembly/0148_richtap_rtp_start_0010e1dc.asm",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0148_0010e1dc_richtap_rtp_start.c",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0148_0010e1dc_richtap_rtp_start.jsonl"
+  ],
+  "validation_state": "Initial source candidate; jointly validated with richtap_file_unlocked_ioctl"
+}

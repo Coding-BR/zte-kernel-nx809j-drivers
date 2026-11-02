@@ -10,9 +10,9 @@ ssize_t display_rotation_show(struct file *file, char __user *buffer, size_t cou
   __int64 v6; // x22
   int v10; // w0
   char s[32]; // [xsp+8h] [xbp-28h] BYREF
-  __int64 v12; // [xsp+10h] [xbp-20h]
+  __attribute__((unused)) __int64 v12; // [xsp+10h] [xbp-20h]
   _WORD v13[7]; // [xsp+18h] [xbp-18h] BYREF
-  __int64 v14; // [xsp+28h] [xbp-8h]
+  __attribute__((unused)) __int64 v14; // [xsp+28h] [xbp-8h]
 
   result = 0;
   v14 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
@@ -27,6 +27,5 @@ ssize_t display_rotation_show(struct file *file, char __user *buffer, size_t cou
     v10 = snprintf(s, 0x1Eu, "display rotation: %d\n", *(_DWORD *)(v6 + 16));
     result = simple_read_from_buffer(a2, a3, a4, s, v10);
   }
-  _ReadStatusReg(SP_EL0);
   return result;
 }

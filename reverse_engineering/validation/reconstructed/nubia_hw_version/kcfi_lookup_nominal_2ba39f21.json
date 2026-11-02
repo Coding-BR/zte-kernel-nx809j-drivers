@@ -1,0 +1,55 @@
+{
+  "build": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\validation\\zte_tpd\\kcfi_bruteforce:/work/probe",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/probe/lookup",
+      "lookup_probe.o"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "  CC [M]  /work/probe/lookup/lookup_probe.o\n"
+  },
+  "candidate_count": 15120,
+  "extract": {
+    "command": [
+      "python",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\workspace_tools\\reconstruction_pipeline\\extract_kcfi.py",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\validation\\zte_tpd\\kcfi_bruteforce\\lookup\\lookup_probe.o",
+      "--output",
+      "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\validation\\zte_tpd\\kcfi_bruteforce\\lookup\\lookup_probe.kcfi.json"
+    ],
+    "report": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\validation\\zte_tpd\\kcfi_bruteforce\\lookup\\lookup_probe.kcfi.json",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "family": "lookup",
+  "generated_utc": "2026-08-29T00:12:44.708520+00:00",
+  "matches": [],
+  "mode": "offline_kbuild_kcfi_signature_search",
+  "passed": false,
+  "probe_source": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\validation\\zte_tpd\\kcfi_bruteforce\\lookup\\lookup_probe.c",
+    "sha256": "9c79ff9d97fe0870cbfb57383f9dab12b3fc64318ea84d88c41512d4e1eaa171",
+    "size": 1419437
+  },
+  "schema_version": "1.0",
+  "target_type_id": "0x2ba39f21"
+}

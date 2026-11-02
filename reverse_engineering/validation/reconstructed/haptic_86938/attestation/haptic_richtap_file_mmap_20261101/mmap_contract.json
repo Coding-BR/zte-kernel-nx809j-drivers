@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "stock_function": "richtap_file_mmap",
+  "stock_entry": "0010e92c",
+  "stock_body_bytes": 248,
+  "abi": "int (struct file *, struct vm_area_struct *)",
+  "observed_contract": {
+    "system_capabilities": "Requires ARM64_ALWAYS_SYSTEM finalization; stock alternative entry uses cpufeature id 0x8001 and branches to BUG if unavailable",
+    "tagged_page_alternatives": "Stock and candidate preserve ARM64_BTI (0x02), ARM64_MTE (0x3b), and ARM64_HAS_S1POE (0x2a) entries; each replacement branches to the next instruction.",
+    "null_vma": "Compiler trap; stock branches to brk #1",
+    "arm64_alternative_slots": "Four stock entries at +0x18..+0x24: ARM64_ALWAYS_SYSTEM, ARM64_BTI, ARM64_MTE, ARM64_HAS_S1POE. Candidate records match feature IDs and preserve the same no-op path.",
+    "page_protection": "Must equal vm_get_page_prot(current->mm->def_flags | 0xfb)",
+    "protection_failure": "-EPERM",
+    "mapping_length": "Exactly 0x4000 bytes",
+    "length_failure": "-ENOMEM",
+    "page_base": "*(unsigned long *)(file->private_data + 0x610)",
+    "pfn_conversion": "virt_to_pfn(page_base)",
+    "mapping": "remap_pfn_range(vma, vm_start, pfn, 0x4000, vm_page_prot)",
+    "mapping_failure": "Log 'Error mmap failed\\n' through device at file->private_data + 0x320 and return original error"
+  },
+  "evidence": [
+    "offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/strings.jsonl",
+    "offline_static/kcfi_stock.json",
+    "attestation/haptic_aw_remove_20261101/richtap_misc_candidate_data_audit.json",
+    "Docker kernel source commit 3356b35306d35d5a480e3b63df1a9f065b5d9f55; arm64 virt_to_pfn and vm_get_page_prot headers"
+  ],
+  "validation_state": "protocol_core_v10 CORE_GATES_PASS; body, relocations, KCFI, reproducible build, and alternative_slot_audit.json pass. Whole-driver promotion remains unauthorized."
+}

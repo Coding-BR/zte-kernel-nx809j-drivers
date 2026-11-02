@@ -88,6 +88,31 @@ class AttestTestedDriverMicrotasksTests(unittest.TestCase):
             )
             self.assertEqual(indexed, {"current.c": report})
 
+    def test_test_index_accepts_hash_bound_assembly_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source_dir = Path(temporary)
+            current = source_dir / "current_exact.S"
+            current.write_text(".text\n.global current_exact\n", encoding="ascii")
+            report = Path("assembly-test.json")
+            indexed = MODULE.direct_tested_sources(
+                source_dir,
+                [
+                    (
+                        report,
+                        {
+                            "passed": True,
+                            "inputs": [
+                                {
+                                    "path": "/old/current_exact.S",
+                                    "sha256": MODULE.sha256_file(current),
+                                }
+                            ],
+                        },
+                    )
+                ],
+            )
+            self.assertEqual(indexed, {"current_exact.S": report})
+
     def test_joern_index_requires_strict_current_tree_coverage(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             source_dir = Path(temporary)

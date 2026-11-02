@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "function": "prct_mode_show",
+  "effects": [
+    {
+      "order": 1,
+      "kind": "load_driver_state",
+      "expression": "*(void **)((char *)dev + 0x98)",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ]
+    },
+    {
+      "order": 2,
+      "kind": "load_callback_table",
+      "expression": "*(void **)((char *)driver_data + 0x520)",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ]
+    },
+    {
+      "order": 3,
+      "kind": "load_indirect_callback",
+      "expression": "*(u8 (**)(struct aw_haptic *))((char *)function_table + 0x150)",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ]
+    },
+    {
+      "order": 4,
+      "kind": "indirect_call",
+      "argument": "(struct aw_haptic *)((char *)driver_data - 0xa8)",
+      "return": "u8 prctmode",
+      "kcfi_type_id": "0x784b3854",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+      ]
+    },
+    {
+      "order": 5,
+      "kind": "format_output",
+      "helper": "snprintf",
+      "format": "prctmode = %d\\n",
+      "size": 4096,
+      "value": "zero-extended low byte returned by callback",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ]
+    },
+    {
+      "order": 6,
+      "kind": "return",
+      "value": "snprintf return, sign-extended from int",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0118_0010c198_prct_mode_show.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0118_prct_mode_show_0010c198.asm"
+      ]
+    }
+  ]
+}

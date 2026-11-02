@@ -1,0 +1,18 @@
+{
+  "inputs": [
+    "haptic pointer"
+  ],
+  "pre_call_effect": "if byte at haptic+0x11 equals 1, write u16 0x005b to *(u16 *)(*(pointer *)(haptic+0x328)+2)",
+  "call": {
+    "name": "i2c_r_bytes",
+    "args": [
+      "haptic",
+      "0x02",
+      "&data",
+      1
+    ],
+    "return_used": false
+  },
+  "post_call_effect": "reload byte at haptic+0x11; if equal 1, write u16 zero to the same field",
+  "return": "(data >> 3) & 1"
+}

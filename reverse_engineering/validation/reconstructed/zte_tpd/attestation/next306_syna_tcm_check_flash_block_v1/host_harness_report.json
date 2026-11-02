@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "target": "syna_tcm_check_flash_block",
+  "stock_contract": "Ghidra decompilation, P-Code and Assembly entry 00126e70",
+  "mode": "direct_source_asan_ubsan_host_oracle",
+  "expected_cases": 17,
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "container_image_sha256": "25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "clang": "Android clang version 19.0.1 (r536225)",
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_check_flash_block host contract\n",
+      "stderr": "",
+      "binary_sha256": "53c6e1a81e4610011b786c901604b392f421ba5d32201e57091381a24af8e243",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "run_returncode": 0,
+      "stdout": "PASS: syna_tcm_check_flash_block host contract\n",
+      "stderr": "",
+      "binary_sha256": "53c6e1a81e4610011b786c901604b392f421ba5d32201e57091381a24af8e243",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "asan_ubsan_stderr_empty": true,
+  "aarch64_syntax_check": true,
+  "candidate_assembly_emitted": true,
+  "alignment_sanitizer_enabled_by_safe_reads": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness uses deterministic TCM and flash-access overlays and does not exercise the kernel driver core, KCFI, SPI, IRQ, MMIO or physical hardware.",
+    "The candidate adds a missing boot-info guard at a boundary where stock setup normally guarantees a non-null pointer.",
+    "Canonical module build, relocation comparison and independent review remain required."
+  ]
+}

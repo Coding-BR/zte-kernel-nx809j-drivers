@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_tpd",
+  "function": "syna_tcm_v1_check_max_rw_size",
+  "stock_entry": "0011f790",
+  "stock_symbol_offset": "0x18f08",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "body": {"instructions": 41, "bytes": 164},
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "host_harness": {
+    "passed": true,
+    "cycles": 2,
+    "expected_cases": 5,
+    "asan_ubsan_stderr_empty": true,
+    "reproducible_binary": true
+  },
+  "ghidra_repair": {
+    "clear_no_return": "_printk",
+    "extended_function_body_bytes": 164,
+    "fallback": "ghidra_call_return_constant_propagation_artifact",
+    "body_bytes_equal": true,
+    "pcode_operation_shape_equal": true,
+    "normalized_decompiled_c_textual_match": false
+  },
+  "limitations": [
+    "No hardware, SPI, IRQ, firmware transport, or module-loading validation was performed.",
+    "The Docker candidate is the canonical rebuilt module; the external binary is referenced by its SHA-256.",
+    "The Ghidra C export propagates the external printk return value textually; the machine-level constant return is independently proven."
+  ],
+  "evidence": {
+    "hard_protocol_report_sha256": "a53d1ee7e9211b044c4a110ea40ea263bf80f9df2faf750694f1683ad9986448",
+    "docker_reproducibility_sha256": "069adc071b33067a9bbebf2090aff4284082c7d0bd8a4cafcd54e5907247dce5",
+    "assembly_comparison_sha256": "0081184896254afa8d3dfb936964f9509fa63c2b4dfb13c97437f4bf74857fd0",
+    "kcfi_comparison_sha256": "1bb5ef31affc8b514e4a0aa7a0ade336a83f6b68da28a8e0e18967cd77fe4ed5",
+    "joern_gate_report_sha256": "e64e404915c6090ffa8d63eb4a4eeff9271bd63f1120d8141040ad482575d492",
+    "semantic_comparison_sha256": "4bd4a28960754dc25e732848fee344155bacead39698a96bd0dfff0b70fe631f",
+    "host_harness_report_sha256": "d03083b899ecc36b6ad0c38bdd8a5dfbbc5b016f57c6f29eedf2d14214459137"
+  }
+}

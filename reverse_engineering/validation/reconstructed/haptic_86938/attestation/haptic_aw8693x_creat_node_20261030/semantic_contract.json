@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "identity": "aw8693x_creat_node@00103258",
+  "stock_function_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "status": "STATIC_CONTRACT_MATCH",
+  "control_contract": [
+    {
+      "condition": "sysfs_create_group result bit 31 is clear",
+      "stock_effect": "return 0 without error log",
+      "candidate_effect": "return 0 without error log",
+      "evidence": "exact 26-instruction / 104-byte body and relocation match; host harness covers 0 and +1"
+    },
+    {
+      "condition": "sysfs_create_group result bit 31 is set",
+      "stock_effect": "emit one stock error log and return the original 32-bit result",
+      "candidate_effect": "emit one stock error log and return the original 32-bit result",
+      "evidence": "exact 26-instruction / 104-byte body and relocation match; host harness covers -EIO"
+    }
+  ],
+  "data_contract": "ELF audit confirms the exact five ordered 0644 sysfs attributes and callback targets, plus the NULL terminator.",
+  "counterexample_search": {
+    "method": "Partition the 32-bit return domain on the stock TBNZ w0,#31 branch; compare identical instructions/relocations and execute one representative from each branch class in the sanitizer harness.",
+    "representatives": [0, 1, -5],
+    "counterexample_found": false,
+    "scope_limit": "This is a function-level static contract and stubbed host harness, not a test of kernel sysfs behavior or teardown."
+  },
+  "independent_review": "PENDING"
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_wav_seq",
+  "stock_entry": "00104bb0",
+  "stock_body_bytes": 88,
+  "kcfi_type_id": "0x7b877e65",
+  "static_observation": {
+    "assembly": "The stock saves a stack canary, stores the third argument as one byte on the stack, adds 10 to the second argument, and calls i2c_w_bytes(haptic, register, &byte, 1). It checks the canary before returning and calls __stack_chk_fail on mismatch.",
+    "decompiler_prototype": "void aw8693x_set_wav_seq(undefined8 haptic, int index, undefined1 wav)",
+    "candidate_prototype": "void aw8693x_set_wav_seq(struct aw_haptic *haptic, int index, u8 wav)",
+    "return": "void; i2c_w_bytes return is discarded",
+    "limits": "KCFI identifies the stock type ID but does not resolve whether the index is int or a narrower unsigned integer. The candidate uses byte-sized arguments, matching the KCFI class shared with aw8693x_set_wav_loop. Whole-driver semantic equivalence remains unestablished."
+  },
+  "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_044_aw8693x_set_wav_seq.c"
+}

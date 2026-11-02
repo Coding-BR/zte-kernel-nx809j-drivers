@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "reviewed_utc": "2026-11-02T14:39:14.680972+00:00",
+  "toolchain": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "clang_revision": "clang-r536225",
+    "commands": [
+      "llvm-nm -S",
+      "llvm-readelf -rW"
+    ]
+  },
+  "candidate_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "source_file": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_globals.c",
+  "source_file_sha256": "742147506cc03f2f21a11f75ba01e236908642d1deb8a837a1cbd250b76155fa",
+  "initializer_checks": {
+    "unlocked_ioctl": true,
+    "mmap": true,
+    "misc_fops_points_to_left_fops": true
+  },
+  "candidate": {
+    "artifact": "candidate",
+    "symbols": {
+      "left_fops": {
+        "value": 408,
+        "size": 264,
+        "type": "d"
+      },
+      "richtap_file_mmap": {
+        "value": 26056,
+        "size": 248,
+        "type": "T"
+      },
+      "richtap_file_unlocked_ioctl": {
+        "value": 26320,
+        "size": 1460,
+        "type": "T"
+      },
+      "richtap_misc": {
+        "value": 328,
+        "size": 80,
+        "type": "D"
+      }
+    },
+    "rela_data": {
+      "0x158": {
+        "type": "R_AARCH64_ABS64",
+        "target": "0000000000000000 .data + 198",
+        "raw": "0000000000000158  000008a800000101 R_AARCH64_ABS64        0000000000000000 .data + 198"
+      },
+      "0x1e8": {
+        "type": "R_AARCH64_ABS64",
+        "target": "00000000000066d0 richtap_file_unlocked_ioctl + 0",
+        "raw": "00000000000001e8  0000092b00000101 R_AARCH64_ABS64        00000000000066d0 richtap_file_unlocked_ioctl + 0"
+      },
+      "0x1f8": {
+        "type": "R_AARCH64_ABS64",
+        "target": "00000000000065c8 richtap_file_mmap + 0",
+        "raw": "00000000000001f8  0000092c00000101 R_AARCH64_ABS64        00000000000065c8 richtap_file_mmap + 0"
+      }
+    }
+  },
+  "stock": {
+    "artifact": "stock",
+    "symbols": {
+      "left_fops": {
+        "value": 2696,
+        "size": 264,
+        "type": "d"
+      },
+      "richtap_file_mmap": {
+        "value": 47884,
+        "size": 248,
+        "type": "t"
+      },
+      "richtap_file_unlocked_ioctl": {
+        "value": 46420,
+        "size": 1460,
+        "type": "t"
+      },
+      "richtap_misc": {
+        "value": 2616,
+        "size": 80,
+        "type": "d"
+      }
+    },
+    "rela_data": {
+      "0xa48": {
+        "type": "R_AARCH64_ABS64",
+        "target": "0000000000000000 .data + a88",
+        "raw": "0000000000000a48  0000025000000101 R_AARCH64_ABS64        0000000000000000 .data + a88"
+      },
+      "0xad8": {
+        "type": "R_AARCH64_ABS64",
+        "target": "0000000000000000 .text + b554",
+        "raw": "0000000000000ad8  0000025300000101 R_AARCH64_ABS64        0000000000000000 .text + b554"
+      },
+      "0xae8": {
+        "type": "R_AARCH64_ABS64",
+        "target": "0000000000000000 .text + bb0c",
+        "raw": "0000000000000ae8  0000025300000101 R_AARCH64_ABS64        0000000000000000 .text + bb0c"
+      }
+    }
+  },
+  "layout_comparison": {
+    "left_fops_size_match": true,
+    "richtap_misc_size_match": true,
+    "misc_to_left_fops_relocation_relative_offset": "0x10",
+    "unlocked_ioctl_slot_relative_offset": "0x50",
+    "mmap_slot_relative_offset": "0x60",
+    "unlocked_ioctl_size_match": true,
+    "mmap_size_match": true,
+    "passed": true
+  },
+  "scope": "ELF relocation evidence that current richtap_misc points to left_fops and that the current ioctl/mmap slots target stock-corresponding function bodies; not runtime ABI proof."
+}

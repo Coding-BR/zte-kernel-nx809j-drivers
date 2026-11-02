@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_pal_mem_cpy",
+  "stock_entry": "0011d67c",
+  "stock_body_bytes": 104,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "core_protocol": "CORE_GATES_PASS",
+  "candidate_module_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+  "gates": {
+    "input_identity": true,
+    "docker_reproducible_two_cycles": true,
+    "aarch64_instruction_and_relocation_parity": true,
+    "kcfi": true,
+    "joern_scoped": true,
+    "joern_slice": true,
+    "ghidra_pcode_and_body": true,
+    "host_asan_ubsan_two_cycles": true,
+    "hardware": "DEFERRED"
+  },
+  "ghidra_exception": {
+    "kind": "ghidra_syna_pal_mem_cpy_branch_inversion_artifact",
+    "authority": "P_CODE_AND_RELOCATION_AWARE_ASSEMBLY",
+    "reason": "Stock and candidate Ghidra C views invert the non-null and size branches and place early returns differently. Both contain exactly one printk and one memcpy, while the exact 104-byte body and P-Code operation shape agree."
+  },
+  "claim": "The candidate preserves syna_pal_mem_cpy at the offline function level: 104 bytes, 26 AArch64 instructions, equivalent normalized relocations, matching KCFI and matching P-Code operation shape, with the 11-test host contract passing twice under ASan/UBSan.",
+  "limitations": [
+    "Android runtime, kernel integration and NX809J physical hardware behavior remain unverified.",
+    "The claim does not establish equivalence of unrelated functions or whole-driver behavior.",
+    "The exact Assembly and P-Code shape remain the behavior authority; the Ghidra C branch inversion is retained as a documented diagnostic artifact."
+  ]
+}

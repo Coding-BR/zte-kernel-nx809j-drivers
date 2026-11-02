@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01T18:26:17.784881+00:00",
+  "passed": true,
+  "method": "finite FIFO transition enumeration plus explicit stock arithmetic counterexample",
+  "source_sha256": "77d8572d35c9ebeab1202375e93bea5aad3efe038c318ea62afb3f5807f1643e",
+  "valid_domain": {
+    "states": [
+      "U",
+      "0xaa",
+      "invalid"
+    ],
+    "ready_node_data_size": "0..4, nonnegative producer invariant",
+    "requested_length": "0..8",
+    "queue": "two bounded nodes followed by an empty sentinel",
+    "cases_explored": 441,
+    "maximum_outer_iterations": 31,
+    "invariants": [
+      "terminates within the finite queue and 31 retry checks",
+      "copied bytes never exceed requested length",
+      "every payload read stays within modeled node capacity",
+      "drained nodes transition to 0xff and advance the cursor",
+      "partial copy keeps the cursor on the current node"
+    ]
+  },
+  "stock_counterexample": {
+    "previously_copied": 1,
+    "requested_length": 4,
+    "next_node_data_size_s16": -1,
+    "wrapped_u32_end": 0,
+    "stock_full_copy_branch": true,
+    "stock_memcpy_size_t": 18446744073709551615,
+    "impact_if_negative_size_is_reachable": "oversized memcpy from the FIFO node payload"
+  },
+  "producer_audit": {
+    "target_config": "kernel_development/config/nx809j_target_kernel_20260711.config",
+    "init_on_alloc_default_on": true,
+    "probe_allocation": "aw_i2c_probe links sixteen 0x400-byte nodes and writes the per-node index byte; no nonzero data_size store was identified in the Ghidra decompilation.",
+    "public_file_operations": "richtap_write returns the requested byte count without touching the FIFO; richtap_read returns zero; richtap_file_mmap traps; ioctl 0x5209 copies to the separate RTP buffer.",
+    "reachability": "The arithmetic counterexample is not shown reachable from the audited initialization and file-operation paths; an external producer or other write path remains unproven."
+  },
+  "promotion_blocker": "The writer/lifetime contract for FIFO metadata is unresolved. Preserve stock code generation, retain the counterexample, and do not promote until external reachability and nonnegative data_size are proven.",
+  "limits": [
+    "The model assumes valid pointers and a finite FIFO ending in a 0xaa sentinel.",
+    "It does not model concurrent mutation, KCSAN, hardware timing, or producer reachability.",
+    "The negative-size case is an arithmetic counterexample, not proof that a runtime attacker can reach it."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_pwm",
+  "effects": [
+    {
+      "order": 1,
+      "kind": "decode_mode",
+      "input": "u8 mode",
+      "mapping": {
+        "0": "0x20",
+        "1": "0x00",
+        "2": "0x40",
+        "3": "0x60"
+      },
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c"
+    },
+    {
+      "order": 2,
+      "kind": "register_update",
+      "register": "0x46",
+      "mask": "0xffffff9f",
+      "value": "decoded mode",
+      "helper": "i2c_w_bits",
+      "helper_return": "ignored",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0063_0010722c_i2c_w_bits.c"
+      ]
+    },
+    {
+      "order": 3,
+      "kind": "error_log",
+      "condition": "mode not in 0..3",
+      "severity": "KERN_ERR",
+      "format": "[%s][%04d]%s: error param\\n",
+      "arguments": [
+        "haptic_hv",
+        342,
+        "aw8693x_set_pwm"
+      ],
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/strings.jsonl"
+      ]
+    }
+  ]
+}

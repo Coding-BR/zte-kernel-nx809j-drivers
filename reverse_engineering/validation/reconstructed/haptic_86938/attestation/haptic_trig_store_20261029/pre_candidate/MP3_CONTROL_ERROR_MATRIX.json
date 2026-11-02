@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "function": "trig_store@00106940",
+  "cases": [
+    {"condition": "sscanf result != 9", "log_line": null, "state_effect": "none", "return": "count"},
+    {"condition": "trigger number outside 1..3", "log_line": "0x89c", "state_effect": "none", "return": "count"},
+    {"condition": "trigger number 1 and driver_data[0x417] == 1", "log_line": "0x8a0", "state_effect": "none", "return": "count"},
+    {"condition": "driver_data[-0xa2] bit 0 is clear", "log_line": "0x8a4", "state_effect": "none", "return": "count"},
+    {"condition": "positive or negative sequence > driver_data[0x3b4]", "log_line": "0x8a9", "state_effect": "none", "return": "count"},
+    {"condition": "all checks pass", "log_line": "0x89a", "state_effect": "write record, lock, configure trigger, unlock", "return": "count"}
+  ],
+  "ordering": ["parse", "log parsed values", "range check", "one-wire check", "RAM-init check", "sequence bounds", "record writes", "mutex and hardware helper"]
+}

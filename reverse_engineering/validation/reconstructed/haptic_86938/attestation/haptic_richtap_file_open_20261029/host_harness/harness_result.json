@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0",
+  "generated_local": "2026-10-29T03:15:50-03:00",
+  "target": {
+    "driver": "haptic_86938",
+    "function": "richtap_file_open",
+    "stock_entry": "0010ea28",
+    "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_035_richtap_file_open.c",
+    "source_sha256": "8ee629d2f0a5f1c0cf38631bb55d10609d1cfc927039f287339970cb50f489d7",
+    "global_symbol": "g_aw_haptic",
+    "candidate_module_sha256": "34ed18cce9cc6d0418c41a139cb015c84d8e4bf9872189855887103dce03f655"
+  },
+  "execution": {
+    "environment": "Docker Linux container",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "compiler": "GCC 13.3.0-6ubuntu2~24.04.1",
+    "command": "sh /harness/run_harness.sh",
+    "flags": "-std=c11 -Wall -Wextra -Werror",
+    "exit_status": 0
+  },
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_035_richtap_file_open.c",
+      "sha256": "8ee629d2f0a5f1c0cf38631bb55d10609d1cfc927039f287339970cb50f489d7",
+      "bytes": 324
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+      "sha256": "2a43df716ca797e78a8c23ed22127587cd2f9c33ccdc7f3c886df6a7a7af2a2c",
+      "bytes": 168
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_globals.c",
+      "sha256": "c328078493a5bcb4246b923b354d3902937814c1666ff576863664be9e1f6fd1",
+      "bytes": 103
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/main.c",
+      "sha256": "5f3a15fb5e700c16a348488c8ef36e64b8424071409611a4340fbe6ba6c8a139",
+      "bytes": 2555
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/mutant_omit_try_module_get.c",
+      "sha256": "fcf6e7e6fba159b7e2fe32a35feb4845b07723cc791a0b3e791872710ecc0205",
+      "bytes": 191
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/mutant_skip_private_data.c",
+      "sha256": "dbb1b4a9ababf05d80498180d8272ec759b3b72feef9601b1abf6a43b54ad73b",
+      "bytes": 238
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/mutant_wrong_error.c",
+      "sha256": "d984d2d5b294bbeba7517984a67ccb2d463194909c673a93832f5053d9496258",
+      "bytes": 250
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/run_harness.sh",
+      "sha256": "6c94b6a0b3273a28adbddd4e83b3050ea5543029c61311ffa0fa3ca1e2a2986d",
+      "bytes": 1507
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/stock_model.c",
+      "sha256": "59b20e9c27f9e39565689d5963858d92f24cd0655d886cb1f633d732d0dec70f",
+      "bytes": 282
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/include/linux/errno.h",
+      "sha256": "7ad245a0ded19fff06eb161b6478348dc1fa1397cf3914d5e24d29bde7802ac1",
+      "bytes": 129
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/include/linux/fs.h",
+      "sha256": "d97a01f9905040a59489968deb55bccdc7798b57c8ba7e08b1cbad8c7ac5ea40",
+      "bytes": 190
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_open_20261029/host_harness/include/linux/module.h",
+      "sha256": "54f3942ea6dcbcb4c86fd0c29aed90b4fa2f3ea917936508dcbe7fd75ac0b6c4",
+      "bytes": 508
+    }
+  ],
+  "observations": [
+    {
+      "case": "try_module_get_failure",
+      "result": "PASS",
+      "return_value": -19,
+      "try_module_get_calls": 1,
+      "argument_is_THIS_MODULE": true,
+      "private_data_changed": false
+    },
+    {
+      "case": "try_module_get_success",
+      "result": "PASS",
+      "return_value": 0,
+      "try_module_get_calls": 1,
+      "argument_is_THIS_MODULE": true,
+      "private_data_equals_g_aw_haptic": true
+    },
+    {
+      "case": "mutant_omit_try_module_get",
+      "result": "REJECTED",
+      "observed": "return mismatch: stock=-19 candidate=0"
+    },
+    {
+      "case": "mutant_skip_private_data_store",
+      "result": "REJECTED",
+      "observed": "private_data differs on successful open"
+    },
+    {
+      "case": "mutant_wrong_error",
+      "result": "REJECTED",
+      "observed": "return mismatch: stock=-19 candidate=-14"
+    }
+  ],
+  "scope": "Bounded host-side differential harness comparing the reconstructed callback to a transcribed stock model for both try_module_get outcomes; verifies THIS_MODULE argument and file private_data effects.",
+  "limitations": [
+    "Uses host stubs for module and file structures; it does not execute kernel code.",
+    "The harness initializes g_aw_haptic directly; it does not test the stock aw_i2c_probe initialization path.",
+    "No hardware/runtime behavior is claimed.",
+    "This harness does not authorize promotion."
+  ]
+}

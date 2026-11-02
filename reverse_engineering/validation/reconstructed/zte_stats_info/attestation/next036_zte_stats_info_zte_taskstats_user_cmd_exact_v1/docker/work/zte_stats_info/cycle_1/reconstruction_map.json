@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_stats_info",
+  "stock_sha256": "20f5f60ddbdc5412de08a5ec0a62d34bfe3dd8cebba0cb54cda6ffc7bdb64d96",
+  "ghidra_export": "engenharia/runs/NX809J-20260711T011653Z/03_ghidra/exports/zte_stats_info.ko",
+  "mappings": [
+    {
+      "stock_function": "__zte_lock_task_sighand",
+      "stock_entry": "001002bc",
+      "source_file": "zte_stats_info.c",
+      "source_function": "__zte_lock_task_sighand",
+      "evidence": [
+        "Ghidra stock pseudocode/P-Code at 001002bc reviewed",
+        "exact 33-instruction/132-byte AArch64 body matched stock",
+        "KCFI type ID 0x0b63a705 matched",
+        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
+        "Joern scoped and usage-slice gates passed",
+        "host harness passed reproducibly",
+        "direct helper has no indirect callback boundary; no callback KCFI claim is required",
+        "no hardware execution claim"
+      ],
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "stock_body_bytes": 132,
+      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next030_zte_stats_info___zte_lock_task_sighand_exact_v1",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 33 matching AArch64 instructions and 132-byte symbols, matching KCFI type ID 0x0b63a705, two reproducible Docker builds, strict Joern scope and direct RCU/spinlock lifecycle tests. This is static/offline evidence; scheduler and kernel concurrency behavior remain unverified."
+    },
+    {
+      "stock_function": "zte_taskstats_user_cmd",
+      "stock_entry": "00100344",
+      "source_file": "zte_stats_info.c",
+      "source_function": "zte_taskstats_user_cmd",
+      "evidence": ["decompiled/0001_00100344_zte_taskstats_user_cmd.c", "pcode/0001_00100344_zte_taskstats_user_cmd.jsonl"],
+      "status": "reviewed"
+    },
+    {
+      "stock_function": "zte_cgroupstats_user_cmd",
+      "stock_entry": "00100aac",
+      "source_file": "zte_stats_info.c",
+      "source_function": "zte_cgroupstats_user_cmd",
+      "evidence": [
+        "Ghidra stock pseudocode/P-Code at 00100aac reviewed",
+        "exact 2-instruction/8-byte AArch64 callback body matched stock",
+        "KCFI type ID 0x9a5b8f4f matched",
+        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
+        "Joern scoped and usage-slice gates passed",
+        "host harness passed reproducibly",
+        "Genetlink callback ABI preserved",
+        "no hardware execution claim"
+      ],
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "stock_body_bytes": 8,
+      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next031_zte_stats_info_zte_cgroupstats_user_cmd_exact_v1",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_note": "Function-level offline parity is promoted for the minimal Genetlink callback. The attestation records 2 matching AArch64 instructions and 8-byte symbols, matching KCFI type ID 0x9a5b8f4f, two reproducible Docker builds, strict Joern scope and direct callback tests. This is static/offline evidence; kernel Genetlink behavior remains unverified."
+    },
+    {
+      "stock_function": "zte_parse",
+      "stock_entry": "00100ab4",
+      "source_file": "zte_stats_info.c",
+      "source_function": "zte_parse",
+      "evidence": [
+        "Ghidra stock pseudocode/P-Code at 00100ab4 reviewed",
+        "exact 57-instruction/228-byte AArch64 body matched stock",
+        "stock and candidate both report NO_VALID_KCFI_PREAMBLE for this direct helper",
+        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
+        "Joern scoped and usage-slice gates passed",
+        "host harness passed reproducibly",
+        "direct helper has no indirect callback boundary; no callback KCFI claim is required",
+        "no hardware execution claim"
+      ],
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "stock_body_bytes": 228,
+      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next032_zte_stats_info_zte_parse_exact_v1",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI exception handling, Docker reproducibility, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 57 matching AArch64 instructions and 228-byte symbols, matching NO_VALID_KCFI_PREAMBLE exception status, two reproducible Docker builds, strict Joern scope and direct parse/error-path tests. This is static/offline evidence; bitmap parser and kernel allocator behavior remain unverified."
+    },
+    {
+      "stock_function": "zte_add_del_listener",
+      "stock_entry": "00100b98",
+      "source_file": "zte_stats_info.c",
+      "source_function": "zte_add_del_listener",
+      "evidence": [
+        "Ghidra stock pseudocode/P-Code at 00100b98 reviewed",
+        "exact 162-instruction/648-byte AArch64 body matched stock",
+        "stock and candidate both report NO_VALID_KCFI_PREAMBLE for this direct helper",
+        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
+        "Joern scoped and usage-slice gates passed",
+        "host harness passed reproducibly",
+        "direct listener registry, mask, namespace and allocation-error tests passed",
+        "no hardware execution claim"
+      ],
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "stock_body_bytes": 648,
+      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next033_zte_stats_info_zte_add_del_listener_exact_v1",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI exception handling, Docker reproducibility, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 162 matching AArch64 instructions and 648-byte symbols, matching the NO_VALID_KCFI_PREAMBLE exception status, two reproducible Docker builds, strict Joern scope and direct listener lifecycle/error-path tests. This is static/offline evidence; kernel namespace, locking and allocator behavior remain unverified."
+    },
+    {
+      "stock_function": "zte_prepare_reply",
+      "stock_entry": "00100e20",
+      "source_file": "zte_stats_info.c",
+      "source_function": "zte_prepare_reply",
+      "evidence": [
+        "Ghidra stock pseudocode/P-Code at 00100e20 reviewed",
+        "exact 67-instruction/268-byte AArch64 body matched stock",
+        "stock and candidate both report NO_VALID_KCFI_PREAMBLE for this direct helper",
+        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
+        "Joern scoped and usage-slice gates passed",
+        "host harness passed reproducibly",
+        "direct netlink reply allocation and error-path tests passed",
+        "no hardware execution claim"
+      ],
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "stock_body_bytes": 268,
+      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next034_zte_stats_info_zte_prepare_reply_exact_v1",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI exception handling, Docker reproducibility, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 67 matching AArch64 instructions and 268-byte symbols, matching the NO_VALID_KCFI_PREAMBLE exception status, two reproducible Docker builds, strict Joern scope and direct netlink reply/error-path tests. This is static/offline evidence; kernel netlink allocator and message behavior remain unverified."
+    },
+    {
+      "stock_function": "zte_mk_reply",
+      "stock_entry": "00100f2c",
+      "source_file": "zte_stats_info.c",
+      "source_function": "zte_mk_reply",
+      "evidence": [
+        "Ghidra stock pseudocode/P-Code at 00100f2c reviewed",
+        "exact 71-instruction/284-byte AArch64 body matched stock",
+        "stock and candidate both report NO_VALID_KCFI_PREAMBLE for this direct helper",
+        "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
+        "Joern scoped and usage-slice gates passed",
+        "host harness passed reproducibly",
+        "direct taskstats reply construction and error-path tests passed",
+        "no hardware execution claim"
+      ],
+      "status": "PROMOTED_OFFLINE_EXACT",
+      "stock_body_bytes": 284,
+      "attestation": "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/next035_zte_stats_info_zte_mk_reply_exact_v1",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI exception handling, Docker reproducibility, Joern and direct harness evidence",
+      "review_scope": "offline_exact_function_level",
+      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 71 matching AArch64 instructions and 284-byte symbols, matching the NO_VALID_KCFI_PREAMBLE exception status, two reproducible Docker builds, strict Joern scope and direct taskstats reply/error-path tests. This is static/offline evidence; kernel netlink and taskstats semantics remain unverified."
+    },
+    {
+      "stock_function": "init_module",
+      "stock_entry": "00101060",
+      "source_file": "zte_stats_info.c",
+      "source_function": "init_module",
+      "evidence": ["decompiled/0007_00101060_init_module.c", "pcode/0007_00101060_init_module.jsonl"],
+      "status": "reviewed"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "after": {
+    "candidate_matches_both_cycles": true,
+    "candidate_sha256": "7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
+    "cycle_1_sha256": "7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
+    "cycle_2_sha256": "7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
+    "docker_curated_candidate_sha256": "7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
+    "function_size_bytes": 88,
+    "map_candidate_sha256": "7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
+    "relocation_target": ".rodata.str1.1",
+    "reproducible": true
+  },
+  "before": {
+    "bad_relocation_target": ".data:unk_3B5E0 (writable 256-byte global)",
+    "candidate_sha256": "55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
+    "fresh_build_sha256": "3b95fd1b64fb3f9d65c6b6fecc58b121c20f52a4d2bbf12c940bcb65929028ad"
+  },
+  "docker_audit": {
+    "checks": {
+      "aarch64_rel": true,
+      "alias_match": true,
+      "candidate_hash_matches_map": true,
+      "candidate_modinfo_matches_fresh": true,
+      "candidate_runtime_content_matches_fresh": true,
+      "candidate_runtime_section_layout_matches_fresh": true,
+      "function_traceability": true,
+      "ghidra_export": true,
+      "kernel_source_identity": true,
+      "makefile": true,
+      "mapping_review": true,
+      "namespace_match": true,
+      "reproducible_build": true,
+      "source_directory": true,
+      "source_files": 517,
+      "undefined_symbols_match": true,
+      "vermagic_accepted": true
+    },
+    "errors": [],
+    "hardware_verified": false,
+    "status": "static_verified",
+    "warnings": [
+      "stock module dependency metadata differs from the current target build; candidate dependency metadata is checked against the target rebuild"
+    ]
+  },
+  "driver": "zte_tpd",
+  "evidence_files": [
+    "docker_audit.json",
+    "docker_audit.md",
+    "source_sync_summary.json"
+  ],
+  "hardware_validation": "NOT_PERFORMED",
+  "inventory_context": {
+    "current_static_verified_count_after_this_driver_fix": 20,
+    "previous_full_audit_incomplete": [
+      "ftmmod",
+      "haptic_86938",
+      "rdbg",
+      "soc_fan",
+      "zte_tpd"
+    ],
+    "previous_full_audit_static_verified_count": 19,
+    "remaining_incomplete_drivers": [
+      "ftmmod",
+      "haptic_86938",
+      "rdbg",
+      "soc_fan"
+    ]
+  },
+  "problem": "The active Makefile compiled tpd_set_screen_off_awake.c, whose printk format argument referenced the writable global unk_3B5E0 in .data. The exact stock-reconstruction assembly already existed but was not selected by the Makefile.",
+  "repair": {
+    "change": "Exclude tpd_set_screen_off_awake.c and its object; link tpd_set_screen_off_awake_exact.o.",
+    "makefile": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+    "promotion_binding": "validate_reconstructed_drivers.py now atomically updates reconstruction_map.json candidate_sha256 when --promote-fresh promotes a verified module."
+  },
+  "schema_version": "1.0",
+  "source_sync_after_promotion_passed": true,
+  "stock_evidence": {
+    "format_pointer": "&DAT_0013c39a",
+    "function": "tpd_set_screen_off_awake",
+    "ghidra_decompilation": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0362_0012ca1c_tpd_set_screen_off_awake.c",
+    "ghidra_entry": "0012ca1c",
+    "interpretation": "The stock decompilation points to its constant format string. The exact .S source places the string in .rodata.str1.1."
+  }
+}

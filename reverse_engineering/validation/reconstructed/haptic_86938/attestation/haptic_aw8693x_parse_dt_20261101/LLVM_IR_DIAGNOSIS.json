@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "target": "aw8693x_parse_dt@00104d80",
+  "status": "PASS_IR_CAPTURED_AND_INITIAL_CODEGEN_MISMATCH_DIAGNOSED",
+  "candidate_ir": {
+    "path": "llvm_ir/aw8693x_parse_dt.ll",
+    "sha256": "e72b66b7734ee141ed827d17c863ab22fa1fdb26bd80a7d833d91ac163d53beb",
+    "bytes": 284842,
+    "compiler": "clang-r536225 from nubia-sm8850-kernel-builder:nx809j-repro",
+    "derived_from": "Exact saved Kbuild command in the reproducible cycle_2 .cmd; -c/-o changed only to -S -emit-llvm/-o.",
+    "relevant_ir": "The format global begins with LLVM escape \\\\01 followed by ASCII 6 exactly once; the calls receive haptic_hv and the original decimal line ids.",
+    "kbuild_command_path": "llvm_ir/aw8693x_parse_dt.kbuild.cmd",
+    "kbuild_command_sha256": "c30ee26294f9111ba27bd09ffc8b578ee87e4db86661383779a8186d60fbc616"
+  },
+  "diagnosis": [
+    {
+      "observed": "First candidate emitted a doubled printk severity prefix.",
+      "cause": "KERN_INFO already expands to the kernel severity prefix; source also inserted a literal 6 before [%s].",
+      "repair": "Remove the extra literal 6 from all 19 format strings; retain KERN_INFO."
+    },
+    {
+      "observed": "Duration and trigger array basic-block layout differed from stock despite equivalent condition logic.",
+      "cause": "Error-first source layout put the negative branch before the success copy.",
+      "repair": "Use if (ret >= 0) { memcpy(...) } else { printk(...) }, matching the stock success hot path and AArch64 block order."
+    }
+  ],
+  "final_validation": {
+    "strict_aarch64_opcode_and_relocation_comparison": "PASS",
+    "stock_instruction_count": 340,
+    "candidate_instruction_count": 340,
+    "stock_symbol_size": 1360,
+    "candidate_symbol_size": 1360,
+    "kcfi": "PASS; 0x2e77d32a",
+    "docker_two_cycle_reproducibility": "PASS",
+    "candidate_module_sha256": "92692abd53f54939c56e92a0a4d342559f340291d8415829365056b9fb12e9ca",
+    "hard_protocol_report_path": "protocol_core_v2/hard_protocol_report.json",
+    "hard_protocol_report_sha256": "544da16d8e82a7516a82826594bce3d426432df212a111bf85751139b917486e"
+  }
+}

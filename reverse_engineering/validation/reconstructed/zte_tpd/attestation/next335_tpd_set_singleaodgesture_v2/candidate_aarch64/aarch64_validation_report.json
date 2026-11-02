@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-08-12T23:05:00Z",
+  "driver": "zte_tpd",
+  "target": "tpd_set_singleaodgesture",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_set_singleaodgesture.c",
+  "source_sha256": "27354dd966048513de4a1be2aeec7fe33c2ce0284a13f0dfa33eab862873aec4",
+  "correction": {
+    "previous_root_offset": "0xc00",
+    "stock_root_offset": "0xdb8",
+    "stock_body_bytes": 176,
+    "state_offsets": ["0x57c", "0x5b8", "0x5bc", "0x5b4", "0x5b0"],
+    "reason": "Ghidra and stock AArch64 assembly require the root pointer at 0xdb8; register-order barriers preserve the observed W-register OR sequence."
+  },
+  "syntax_check": "PASS",
+  "assembly_generation": "PASS",
+  "object_generation": "PASS",
+  "candidate_assembly_sha256": "3A7064A89D16231A936CD221ECB42DFFBFA405DFAB02F6DE3593571CD2FE6C9B",
+  "candidate_object_sha256": "DAD0B79A74863B8C03DBB84A108ACA7DE7D95C969B32A66211856D54E09FE65F",
+  "required_instruction_checks": [
+    {"regex": "ldr\\s+x20,\\s+\\[x0,\\s+#0xdb8\\]", "found": true},
+    {"regex": "ldr\\s+w8,\\s+\\[x20,\\s+#0x57c\\]", "found": true},
+    {"regex": "ldr\\s+w2,\\s+\\[x20,\\s+#0x5b8\\]", "found": true},
+    {"regex": "ldr\\s+w8,\\s+\\[x20,\\s+#0x5bc\\]", "found": true},
+    {"regex": "cset\\s+w9,\\s+gt", "found": true},
+    {"regex": "orr\\s+w8,\\s+w2,\\s+w8", "found": true},
+    {"regex": "str\\s+w9,\\s+\\[x20,\\s+#0x5b4\\]", "found": true},
+    {"regex": "orr\\s+w8,\\s+w8,\\s+w9", "found": true},
+    {"regex": "str\\s+w8,\\s+\\[x20,\\s+#0x5b0\\]", "found": true},
+    {"regex": "mov\\s+w0,\\s+wzr", "found": true},
+    {"regex": "ret", "found": true}
+  ],
+  "required_instruction_checks_passed": true,
+  "exact_stock_opcode_parity": "NOT_ESTABLISHED",
+  "exact_stock_opcode_parity_reason": "The critical dataflow and register order match the stock listing; complete opcode and relocation parity requires the stock ELF comparison."
+}

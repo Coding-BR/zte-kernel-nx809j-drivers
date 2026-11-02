@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_aw_store@0010d9fc",
+  "oracle_only_not_executed": true,
+  "vectors": [
+    {"input": "valid nonzero decimal", "expected": "store u32 value; return count"},
+    {"input": "valid zero", "expected": "leave field unchanged; return count"},
+    {"input": "valid hexadecimal with 0x prefix", "expected": "store parsed u32; return count"},
+    {"input": "invalid or overflowing input", "expected": "leave field unchanged; return negative kstrtouint error"}
+  ]
+}

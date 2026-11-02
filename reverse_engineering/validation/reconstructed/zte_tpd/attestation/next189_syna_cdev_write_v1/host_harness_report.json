@@ -1,0 +1,60 @@
+{
+  "schema_version": "host_harness_attestation_v1",
+  "mode": "offline_direct_source_syna_cdev_write_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "<repo>/kernel_development/drivers:/drivers:ro",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/toolchains:ro",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -g -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-pie -no-pie -frandom-seed=zte-tpd-next189-cdev-write -fsanitize=address,undefined -Wl,--build-id=none /drivers/validation/zte_tpd/host/syna_cdev_write_host_test.c -o /tmp/syna_cdev_write_host_test && /tmp/syna_cdev_write_host_test"
+  ],
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_write.c",
+      "sha256": "913ff33e6fdf2def4566edab7ddb2e3ed5229eeebce8a1731e007782ba2c7d49",
+      "size": 694
+    },
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_cdev_write_host_test.c",
+      "sha256": "604c8180a702f41b2a8c48f1518cf02b02c259724af52faf44fc950380cb0839",
+      "size": 6339
+    }
+  ],
+  "executions": [
+    {
+      "index": 1,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS syna_cdev_write host tests (4 cases)\n",
+      "stderr": ""
+    },
+    {
+      "index": 2,
+      "returncode": 0,
+      "passed": true,
+      "stdout": "PASS syna_cdev_write host tests (4 cases)\n",
+      "stderr": ""
+    }
+  ],
+  "coverage": {
+    "zero_length_short_circuit": true,
+    "full_write_success": true,
+    "partial_write_logger": true,
+    "negative_error": true,
+    "u32_request_truncation": true,
+    "mutex_lock_unlock_balance": true,
+    "hardware_paths_exercised": false
+  },
+  "limitations": [
+    "The harness verifies observed raw-write arguments, lock balance, count truncation, return propagation, and logger contracts only.",
+    "It does not load the module or communicate with touch, display, power, or suspend hardware."
+  ]
+}

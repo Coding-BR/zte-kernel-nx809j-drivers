@@ -1,0 +1,261 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc_fan_MP4",
+  "work_unit": "MP4_EVENT_CALLBACK_LIFETIME",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": false,
+  "stock_identity": {
+    "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+  },
+  "source_environment": {
+    "docker_source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390"
+  },
+  "direct_call_count": 133,
+  "indirect_pwm_call_sites": 3,
+  "callback_bindings": [
+    {
+      "registration": "platform driver table",
+      "source": "init_module -> __platform_driver_register",
+      "object_offsets": [
+        {
+          "data_offset": "0x0",
+          "target": "nb_fan_probe",
+          "prototype": "int (struct platform_device *)",
+          "kcfi": "0xc7f8c87c"
+        },
+        {
+          "data_offset": "0x8",
+          "target": "nb_fan_remove",
+          "prototype": "void (struct platform_device *)",
+          "kcfi": "0x24a11bb9"
+        }
+      ],
+      "evidence": "stock_relocations.txt .rela.data; kernel_header_evidence_MP1: platform_device.h:242-253"
+    },
+    {
+      "registration": "sysfs attribute group",
+      "source": "nb_fan_probe -> kobject_create_and_add(name, kernel_kobj) -> sysfs_create_group(chip_kobj, chip_attr_group)",
+      "remove": "nb_fan_remove -> sysfs_remove_group(chip_kobj, chip_attr_group)",
+      "callbacks": [
+        {
+          "data_offset": "0x150",
+          "function": "fan_enable_show",
+          "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, char *)",
+          "kcfi": "0x4e31a072"
+        },
+        {
+          "data_offset": "0x158",
+          "function": "fan_enable_store",
+          "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, const char *, size_t)",
+          "kcfi": "0x9ce291cd"
+        },
+        {
+          "data_offset": "0x170",
+          "function": "fan_level_show",
+          "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, char *)",
+          "kcfi": "0x4e31a072"
+        },
+        {
+          "data_offset": "0x178",
+          "function": "fan_level_store",
+          "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, const char *, size_t)",
+          "kcfi": "0x9ce291cd"
+        },
+        {
+          "data_offset": "0x198",
+          "function": "fan_pwm_store",
+          "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, const char *, size_t)",
+          "kcfi": "0x9ce291cd"
+        },
+        {
+          "data_offset": "0x1b0",
+          "function": "fan_speed_show",
+          "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, char *)",
+          "kcfi": "0x4e31a072"
+        }
+      ],
+      "evidence": "stock_relocations.txt .rela.data; header kobject.h:150-155; Ghidra calls.jsonl"
+    },
+    {
+      "registration": "threaded GPIO IRQ",
+      "source": "nb_fan_gpio_proc -> request_threaded_irq(irq, fan_speed_irq_proc, NULL, 0x200002, \\\"fan_speed_int\\\", chip_pointer)",
+      "callback_prototype": "irqreturn_t (int, void *)",
+      "callback_kcfi": "0xd2f00be1",
+      "post_registration": "disable_irq(irq)",
+      "callback_effect": "atomically increments subordinate state count at +0x04",
+      "evidence": "decompiled nb_fan_gpio_proc/fan_speed_irq_proc; relocation .text+0x978 -> .text+0x4; interrupt.h:104,151-153",
+      "teardown_contract": "request_threaded_irq is a non-devm registration; the matching release to investigate is free_irq(irq, dev_id). devm_free_irq does not match this acquisition path."
+    },
+    {
+      "registration": "high-resolution timer",
+      "source": "nb_fan_probe -> hrtimer_init(timer, 1, 1); store timer.function = fan_hrtimer_hander",
+      "callback_prototype": "enum hrtimer_restart (struct hrtimer *)",
+      "callback_kcfi": "0xe3cff753",
+      "control": "fan_speed_show starts a 1 ms window; callback transitions phase, starts a 500 ms window, enables then disables IRQ",
+      "evidence": "probe relocation .text+0x464 -> .text+0xa98; hrtimer_types.h:42; stock decomp and assembly"
+    },
+    {
+      "registration": "PWM provider callback",
+      "source": "three KCFI-checked indirect calls through pwm_device->chip->ops->apply",
+      "sites": [
+        "nb_fan_parse_dt .text+0x73c",
+        "fan_level_set .text+0xf04",
+        "fan_pwm_store .text+0x1220"
+      ],
+      "prototype": "int (struct pwm_chip *, struct pwm_device *, const struct pwm_state *)",
+      "kcfi": "0xddd097d0",
+      "evidence": "MP1_CALL_SIGNATURE.json; pinned pwm.h:265-266",
+      "resolution": "slot and ABI resolved; concrete runtime provider remains dynamic"
+    }
+  ],
+  "event_order": [
+    "module init registers platform driver",
+    "probe prepares regulator/pinctrl and allocates state",
+    "DT parser acquires PWM; GPIO proc requests then disables tach IRQ",
+    "probe initializes hrtimer and binds callback; creates kobject and sysfs group",
+    "fan_speed_show starts timer and waits for sample",
+    "timer and IRQ exchange count state; sysfs group removed on remove",
+    "module cleanup unregisters driver"
+  ],
+  "statically_absent_cleanup_targets": [
+    "free_irq",
+    "gpio_free",
+    "hrtimer_cancel",
+    "hrtimer_try_to_cancel",
+    "kobject_put",
+    "of_node_put",
+    "regulator_put"
+  ],
+  "absence_interpretation": "Absence is limited to direct call targets in the 15-function stock corpus. Pinned API contracts expose ownership/release questions on regulator, conditional OF child references, kobject, GPIO/IRQ and hrtimer paths; this is not proof of runtime leaks, UAF, or exact runtime binding.",
+  "open_items": [
+    "Trace regulator_get handle and regulator_put obligation across every probe error edge and normal remove.",
+    "Trace each of_get_next_available_child reference and early exit; the pinned API refcount behavior depends on CONFIG_OF_DYNAMIC, whose stock-target setting is not bound to this evidence.",
+    "Trace kobject_create_and_add reference through sysfs_create_group failure and normal remove; sysfs_remove_group is not kobject_put.",
+    "Trace gpio_request and request_threaded_irq partial failures and normal remove; the acquisition is raw and needs gpio_free/free_irq analysis.",
+    "Establish whether the hrtimer can be active at remove or probe failure and whether devm state can be released before timer quiescence.",
+    "Resolve dynamic PWM provider implementation and actual runtime binding separately.",
+    "Formal L3/L4 attestation remains pending; no gate PASS is recorded and candidate source remains absent."
+  ],
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP0_IDENTITY.json",
+      "sha256": "ac88f5d0816bbf57584b25a213d24682407846550e6a73c800ce42cf004dde75"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "a757053fbc8010b310ac234fbdc94ab28bd4fd3fce3117912003ca7a7f9f2bb6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "595079c1c4d3f44898a0fbfd50a4dd36f3ad760172e90cfd1b093b56539357e0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/initial_scope_plan_20261027/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "b240daa45fdbc39c88eb683b06300c2ebe96d7fbb112129e1a249624cfa07c8a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/manifest.json",
+      "sha256": "21c89648abcdbe7b80ea6738aa10728b78eeadff28729dc2f5bca287ccef045d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/functions.jsonl",
+      "sha256": "f767904d61eb3bea84a63bd46a560d7d30aa2bdeb7e9e7e03822a22f8a9621c3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/calls.jsonl",
+      "sha256": "476bb7156695005a5f71d7c901df30a8357bfc110b3dda63a6cd82ba6c9b19d1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kcfi_stock.json",
+      "sha256": "80d3446bf67c9b743710a6666b98111841873675a64a296a24d70d2955cf3a6d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_relocations.txt",
+      "sha256": "20475a9898c8e9b21f81f29dd7b0a3a78b524bdfacdd3458a0505bc8e483cb7f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kernel_header_evidence_MP1_20261027.txt",
+      "sha256": "e92546b29c99b745c482317cf361d432c473f0c0cbd7e7c619cfc6a3c8d41bf8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/manifest.json",
+      "sha256": "1f375a3920e16c21816d84cf82037f664eb8fe4c47ba56f2104cb5f50a349b8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0000_fan_speed_irq_proc_001004ec.asm",
+      "sha256": "6a64340c68b77402e40201dd0a9c210f9371d6ec05037a3377c5e0331d7893b0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0001_nb_fan_probe_0010052c.asm",
+      "sha256": "293cc1987db531aa43a8f73b7a7c711e5bb1e01e40d85ce7d0ba5d2d587a1c6a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0002_nb_fan_remove_00100a54.asm",
+      "sha256": "75955d670c2ad985787080e0db0dad25e896b2f1f584f0fc3783621c8c953d8f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0004_nb_fan_gpio_proc_00100dac.asm",
+      "sha256": "4007fcbdf3d078e7abc56b2aba2e69e79ad6e4170e54849bf6ce7eaa785b85ca"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0005_fan_hrtimer_hander_00100f80.asm",
+      "sha256": "3bffdc2860ad44236812bf0f500a81b3b40227394e579b417e15b82f8890742f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0013_init_module_00101acc.asm",
+      "sha256": "1667fe6227abb285c7d7edf92b82bfdb5372bce5c232274d13dda85bd7f936f8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0014_cleanup_module_00101afc.asm",
+      "sha256": "30a5080dccc1f7458204316c6476e7104a41e6cfbe2204827bd39849a338abfe"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/related_source_contracts_20261027.txt",
+      "sha256": "7faa3cfa5a218891e81db6ce06fc39dc4bc8a3ac3ca8749a096e7fe1941f35ed"
+    }
+  ],
+  "not_applicable_cleanup_apis": [
+    {
+      "api": "devm_free_irq",
+      "reason": "Stock registration uses request_threaded_irq, not devm_request_threaded_irq; analyze free_irq(irq, dev_id) as its matching release."
+    }
+  ],
+  "resource_lifetime_findings": [
+    {
+      "id": "LIFE-REGULATOR",
+      "acquire": "regulator_get in nb_fan_probe",
+      "expected_release": "regulator_put",
+      "stock_call_observation": "No regulator_put in the stock direct-call ledger",
+      "status": "OPEN_OWNERSHIP_AND_UNWIND_REVIEW"
+    },
+    {
+      "id": "LIFE-OF-CHILD",
+      "acquire": "of_get_next_available_child",
+      "source_contract": "Pinned include/linux/of.h makes of_node_get/put refcount operations conditional on CONFIG_OF_DYNAMIC. The source-tree .config is not a stock-build input, so no runtime reference outcome is inferred.",
+      "expected_release": "of_node_put for an acquired child on early exit",
+      "stock_call_observation": "No of_node_put in the stock direct-call ledger",
+      "status": "OPEN_CONDITIONAL_CONFIG_AND_EARLY_EXIT"
+    },
+    {
+      "id": "LIFE-KOBJECT",
+      "acquire": "kobject_create_and_add",
+      "expected_release": "kobject_put",
+      "stock_call_observation": "No kobject_put; sysfs_create_group failure and remove path need release review",
+      "status": "OPEN_PROBE_FAILURE_AND_REMOVE_REVIEW"
+    },
+    {
+      "id": "LIFE-IRQ",
+      "acquire": "request_threaded_irq with chip pointer as dev_id",
+      "expected_release": "free_irq(irq, dev_id)",
+      "stock_call_observation": "No free_irq in stock call ledger",
+      "status": "OPEN_PARTIAL_PROBE_AND_REMOVE_REVIEW"
+    }
+  ]
+}

@@ -5,11 +5,13 @@
 #define TCM_STATUS_INVALID -241
 
 int syna_tcm_set_game_partition_config(struct tcm_dev *tcm, u8 config_id,
-				       int data_length, u8 *data,
+	int data_length, u8 *data,
 				       u32 delay_ms)
 {
 	size_t payload_length;
 	u8 *payload;
+	char *out_values;
+	int out_length;
 	int result;
 
 	if (!tcm) {
@@ -37,9 +39,26 @@ int syna_tcm_set_game_partition_config(struct tcm_dev *tcm, u8 config_id,
 	if (!payload)
 		return -ENOMEM;
 
+	out_values = kmalloc((size_t)data_length * 6 + 0x20, GFP_KERNEL);
+	out_length = 0;
+	if (out_values)
+		out_length = snprintf(out_values, (size_t)data_length * 6 + 0x20,
+				      "out values: ");
+
 	payload[0] = config_id;
-	if (data_length)
-		memcpy(payload + 1, data, data_length);
+	for (int index = 0; index < data_length; ++index) {
+		payload[index + 1] = data[index];
+		if (out_values && out_length < data_length * 6 + 0x18)
+			out_length += snprintf(out_values + out_length,
+					      (size_t)data_length * 6 + 0x20 -
+					      (size_t)out_length,
+					      "%02x ", data[index]);
+	}
+	if (out_values) {
+		printk("\x01" "6[info ] %s: %s",
+		       "syna_tcm_set_game_partition_config", out_values);
+		kfree(out_values);
+	}
 
 	result = tcm->write_message(tcm, TCM_CMD_SET_GAME_PARTITION_CONFIG,
 				    payload, payload_length, NULL, delay_ms);

@@ -1,0 +1,56 @@
+
+void syna_tcm_enable_report(long param_1,undefined1 param_2,ulong param_3,int param_4)
+
+{
+  char *pcVar1;
+  long lVar2;
+  code *pcVar3;
+  int iVar4;
+  undefined4 uVar5;
+  undefined1 local_3c [4];
+  long local_38;
+  
+  lVar2 = sp_el0;
+  local_38 = *(long *)(lVar2 + 0x710);
+  local_3c[0] = param_2;
+  if (param_1 == 0) {
+                    /* WARNING: Subroutine does not return */
+    _printk(&DAT_0017eb2d,"syna_tcm_enable_report");
+  }
+  if (*(char *)(param_1 + 9) != '\x01') {
+                    /* WARNING: Subroutine does not return */
+    _printk(&DAT_0017edfb,"syna_tcm_enable_report");
+  }
+  if (param_4 == 0) {
+    if ((*(byte *)(*(long *)(param_1 + 0x48) + 0x14) & 1) == 0) {
+                    /* WARNING: Subroutine does not return */
+      _printk(&DAT_00182628,"syna_tcm_enable_report");
+    }
+    param_4 = 0;
+  }
+  uVar5 = 5;
+  if ((param_3 & 1) == 0) {
+    uVar5 = 6;
+  }
+  if (*(int *)(*(code **)(param_1 + 0x398) + -4) != 0x24203a8e) {
+                    /* WARNING: Does not return */
+    pcVar3 = (code *)SoftwareBreakpoint(0x8229,0x140184);
+    (*pcVar3)();
+  }
+  iVar4 = (**(code **)(param_1 + 0x398))(param_1,uVar5,local_3c,1,0,param_4);
+  if (iVar4 < 0) {
+    pcVar1 = "enable";
+    if ((param_3 & 1) == 0) {
+      pcVar1 = "disable";
+    }
+                    /* WARNING: Subroutine does not return */
+    _printk(&DAT_00181b46,"syna_tcm_enable_report",uVar5,pcVar1,local_3c[0]);
+  }
+  lVar2 = sp_el0;
+  if (*(long *)(lVar2 + 0x710) == local_38) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+

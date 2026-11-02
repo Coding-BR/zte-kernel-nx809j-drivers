@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "syna_dev_set_screen_on_fp_mode",
+  "source_function": "syna_dev_set_screen_on_fp_mode",
+  "stock_function": "syna_dev_set_screen_on_fp_mode",
+  "status": "OFFLINE_EXACT",
+  "promotion_status": "PROMOTED_OFFLINE_EXACT",
+  "gates": {
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_type_id": "PASS",
+    "kcfi_symbol_size": "PASS",
+    "aarch64_section": "PASS",
+    "aarch64_instruction_and_normalized_relocation_parity": "PASS"
+  },
+  "semantic_contract": [
+    "Log entry and reject a null tcm with -22.",
+    "Call dynamic config 0xd4 with value 3 and the requested enable value.",
+    "Propagate negative transport errors and normalize non-negative transport results to zero."
+  ],
+  "unverified": [
+    "Physical fingerprint controller behavior and firmware side effects.",
+    "Runtime behavior on NX809J hardware."
+  ],
+  "evidence": {
+    "source_sync": "source_sync_report.json",
+    "joern": "joern_gate_summary.json",
+    "build": "canonical_build_report.json",
+    "host": "host_harness_report.json",
+    "kcfi": "kcfi_comparison.json",
+    "aarch64": "assembly_comparison.json"
+  }
+}

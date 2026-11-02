@@ -1,0 +1,77 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "125_cancel_report_lcd_state_delayed_work",
+  "function": "cancel_report_lcd_state_delayed_work",
+  "stock_entry": "0011066c",
+  "stock_body_bytes": 40,
+  "candidate_body_bytes": 40,
+  "stock_instruction_count": 10,
+  "candidate_instruction_count": 10,
+  "status": "OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "gates": {
+    "ghidra_decompilation": {
+      "passed": true,
+      "decompiled_sha256": "21c935aa5c5f207864e333bf040b93975a882c7939a7f6ea7847e5b2a674de67",
+      "pcode_sha256": "214b132d14ba050266da3741be523cceada4421f1268c2b7d5953f52a3d13148",
+      "stock_assembly_sha256": "ff7c1250aa3876622322462ffe3adabf186809ddb74a20ea6682ca0ccbeafecb"
+    },
+    "source_sync": {
+      "passed": true,
+      "report_sha256": "959dd75321069a24b1638c469ae08978d76e25ed7f6c958b6af0276861e3678f"
+    },
+    "joern_strict": {
+      "passed": true,
+      "report_sha256": "38a18d3229b0c665c0ab8b3986fdc70bc2c50eb0fb77c0898abb566fc446bfee"
+    },
+    "host_harness_asan_ubsan": {
+      "passed": true,
+      "repetitions": 2,
+      "report_sha256": "684b828e9ce990d68f56434eb396f0bff95edab8b574348b768978a0b149f48b"
+    },
+    "canonical_docker_build": {
+      "passed": true,
+      "cycles": 2,
+      "module_sha256": "7852b3bf1f21815952b9e547cb0aa6e6266e50b12f2a693a7c255af411b05f42",
+      "module_size": 17910160,
+      "report_sha256": "7ee35cd6bbb3488bf0826d7ef03b61518c9e080f284bf60044683872f80e1912"
+    },
+    "kcfi": {
+      "passed": true,
+      "type_id": "0xe5c47d60",
+      "stock_size": 40,
+      "candidate_size": 40,
+      "report_sha256": "d81d2093b391f3a9b544458d3ff528428be137983110f71935f730f1a3579d7d"
+    },
+    "aarch64_assembly": {
+      "passed": true,
+      "stock_instructions": 10,
+      "candidate_instructions": 10,
+      "opcode_parity": true,
+      "relocation_parity": true,
+      "report_sha256": "ee46a58c80d14d34e37499cbfccaf18affed16dda021cc4ce5250ea979b6c9c0"
+    }
+  },
+  "inputs": {
+    "candidate_source_sha256": "137efb02e70c3745d604bcd793678f97b344e7449879eb88fe88c99f501b5ed0",
+    "candidate_assembly_sha256": "c8a0ed41f5029bb0783c1d478fff75dab4b8e892b8e88e85587eab78f21da7b7",
+    "candidate_kcfi_sha256": "90e2f2f221aeb88c63c61a32a56c721447fef5b2a90585c255a95d6b4f7b6d43",
+    "stock_kcfi_sha256": "782a8f6eeafee47ea35b017f7c8e066948e28955b85b3d586572b95b680b79ec"
+  },
+  "evidence": {
+    "canonical_build_report": "canonical_build_report.json",
+    "source_sync_report": "source_sync_report.json",
+    "assembly_comparison": "assembly_comparison.json",
+    "candidate_assembly": "candidate_assembly/0000_cancel_report_lcd_state_delayed_work.asm",
+    "kcfi_comparison": "kcfi_comparison.json",
+    "joern_gate": "joern/joern_gate_report.json",
+    "joern_summary": "joern/joern_gate_summary.json",
+    "host_harness": "host_harness_report.json"
+  },
+  "limitations": [
+    "The offline gates prove the delayed-work cancellation offset, KCFI and machine-code parity; they do not prove runtime LCD event behavior on the handset.",
+    "No smartphone, touch controller or runtime kernel integration was exercised."
+  ]
+}

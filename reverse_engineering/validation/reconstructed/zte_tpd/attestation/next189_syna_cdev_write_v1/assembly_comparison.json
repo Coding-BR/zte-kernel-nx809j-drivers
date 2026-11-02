@@ -1,0 +1,174 @@
+{
+  "checked_functions": 1,
+  "failures": [],
+  "generated_utc": "2026-08-14T11:30:15.405516+00:00",
+  "ghidra_semantic_report": null,
+  "mode": "aarch64_opcode_relocation_resolved_branch_rodata_pointer_and_elf_symbol_comparison",
+  "passed": true,
+  "requested_functions": [
+    "syna_cdev_write"
+  ],
+  "results": [
+    {
+      "candidate": {
+        "instruction_count": 40,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target189\\candidate_assembly\\0000_syna_cdev_write.asm",
+        "relocations": [
+          "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data",
+          "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data",
+          "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data+0x50",
+          "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data+0x50",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_cdev_write\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_cdev_write\""
+        ],
+        "relocations_compared": [
+          "R_AARCH64_ADR_PREL_PG_HI21 <postindexed_g_cdev_mutex:g_cdev_data>",
+          "R_AARCH64_ADD_ABS_LO12_NC <postindexed_g_cdev_mutex:g_cdev_data>",
+          "R_AARCH64_ADR_PREL_PG_HI21 <postindexed_g_cdev_mutex:g_cdev_data+0x50>",
+          "R_AARCH64_ADD_ABS_LO12_NC <postindexed_g_cdev_mutex:g_cdev_data+0x50>",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_cdev_write\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_cdev_write\""
+        ],
+        "relocations_raw": [
+          "R_AARCH64_ADR_PREL_PG_HI21\tg_cdev_data",
+          "R_AARCH64_ADD_ABS_LO12_NC\tg_cdev_data",
+          "R_AARCH64_CALL26\tmutex_lock",
+          "R_AARCH64_CALL26\tsyna_cdev_ioctl_raw_write",
+          "R_AARCH64_ADR_PREL_PG_HI21\tg_cdev_data+0x50",
+          "R_AARCH64_ADD_ABS_LO12_NC\tg_cdev_data+0x50",
+          "R_AARCH64_CALL26\tmutex_unlock",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x4185",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x4185",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x6eab",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x6eab",
+          "R_AARCH64_CALL26\t_printk"
+        ],
+        "section": ".text",
+        "sha256": "df52a2a8912835d170cda52c481a59c32df7c901714fe78c8b0a2afcb7dcd8d5",
+        "symbol_size": 160
+      },
+      "candidate_function": "syna_cdev_write",
+      "candidate_function_id": "syna_cdev_write",
+      "checks": {
+        "instructions": true,
+        "relocations": true,
+        "section": true,
+        "symbol_size": true
+      },
+      "function": "syna_cdev_write",
+      "function_pair": "syna_cdev_write",
+      "instruction_equivalences": [
+        {
+          "call": "bl <syna_cdev_ioctl_raw_write>",
+          "call_index": 17,
+          "candidate_setup": [
+            "92407e62",
+            "aa1503e0",
+            "aa1403e1",
+            "2a1303e3"
+          ],
+          "instruction_indices": [
+            13,
+            14,
+            15,
+            16
+          ],
+          "kind": "u32_argument_zero_extend_reordering",
+          "reason": "AND Xd, Xn, #0xffffffff and MOV Wd, Wn both produce the same zero-extended u32; the moved instructions write independent argument registers and do not change flags.",
+          "stock_setup": [
+            "aa1503e0",
+            "aa1403e1",
+            "2a1303e2",
+            "2a1303e3"
+          ]
+        },
+        {
+          "call_index": 38,
+          "candidate_value_move": "aa0003e3",
+          "instruction_indices": [
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "kind": "sxtw_int_printk_argument_reordering",
+          "reason": "the unchanged SXTW establishes W20 and W0 with identical low 32 bits; both sequences pass that int as W3 to the same _printk call after independent format and request setup.",
+          "stock_value_move": "2a1403e3",
+          "sxtw_index": 18
+        }
+      ],
+      "passed": true,
+      "relocation_equivalences": [
+        {
+          "base_instruction_indices": [
+            6,
+            7
+          ],
+          "candidate_base_target": "g_cdev_data",
+          "candidate_mutex_target": "g_cdev_data+0x50",
+          "candidate_queue_target": null,
+          "instruction_schedule": "staged_lock_setup",
+          "kind": "postindexed_g_cdev_mutex_storage",
+          "mutex_instruction_indices": [
+            21,
+            22
+          ],
+          "queue_instruction_indices": null,
+          "reason": "a unique direct g_cdev_data pair and +0x50 pair match stripped .bss storage with the same 0x50 displacement; unchanged code contains LDR X8, [X0], #0x50, mutex_lock, and mutex_unlock",
+          "stock_base_target": ".bss+0x7c0",
+          "stock_mutex_target": ".bss+0x810",
+          "stock_queue_target": null
+        }
+      ],
+      "stock": {
+        "instruction_count": 40,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\.tmp_target189\\stock_assembly\\0000_syna_cdev_write.asm",
+        "relocations": [
+          "R_AARCH64_ADR_PREL_PG_HI21 g_cdev_data",
+          "R_AARCH64_ADD_ABS_LO12_NC g_cdev_data",
+          "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x810",
+          "R_AARCH64_ADD_ABS_LO12_NC .bss+0x810",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_cdev_write\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_cdev_write\""
+        ],
+        "relocations_compared": [
+          "R_AARCH64_ADR_PREL_PG_HI21 <postindexed_g_cdev_mutex:g_cdev_data>",
+          "R_AARCH64_ADD_ABS_LO12_NC <postindexed_g_cdev_mutex:g_cdev_data>",
+          "R_AARCH64_ADR_PREL_PG_HI21 <postindexed_g_cdev_mutex:g_cdev_data+0x50>",
+          "R_AARCH64_ADD_ABS_LO12_NC <postindexed_g_cdev_mutex:g_cdev_data+0x50>",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"\\u00013[error] %s: Invalid write operation, request:%d, return:%d\\n\"",
+          "R_AARCH64_ADR_PREL_PG_HI21 .rodata.str1.1:string=\"syna_cdev_write\"",
+          "R_AARCH64_ADD_ABS_LO12_NC .rodata.str1.1:string=\"syna_cdev_write\""
+        ],
+        "relocations_raw": [
+          "R_AARCH64_ADR_PREL_PG_HI21\t.bss+0x7c0",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.bss+0x7c0",
+          "R_AARCH64_CALL26\tmutex_lock",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.bss+0x810",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.bss+0x810",
+          "R_AARCH64_CALL26\tmutex_unlock",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0x7633",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0x7633",
+          "R_AARCH64_ADR_PREL_PG_HI21\t.rodata.str1.1+0xc15d",
+          "R_AARCH64_ADD_ABS_LO12_NC\t.rodata.str1.1+0xc15d",
+          "R_AARCH64_CALL26\t_printk"
+        ],
+        "section": ".text",
+        "sha256": "49def8d01d74b64a87d18ef032240fadce67529da29427089b3f1ac3d806e44f",
+        "symbol_size": 160
+      },
+      "stock_function": "syna_cdev_write",
+      "stock_function_id": "syna_cdev_write"
+    }
+  ],
+  "schema_version": "1.0"
+}

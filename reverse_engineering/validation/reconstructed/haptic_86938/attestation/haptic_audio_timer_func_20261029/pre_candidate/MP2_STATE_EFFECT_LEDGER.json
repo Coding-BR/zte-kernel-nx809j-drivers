@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "function": "audio_timer_func",
+  "effects": [
+    {
+      "order": 1,
+      "kind": "enqueue_work",
+      "cpu": 32,
+      "workqueue": "timer-0xd8 (parent+0x448)",
+      "work_struct": "timer+0x40 (parent+0x560)",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0145_0010dcc4_audio_timer_func.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0068_00108608_haptic_init.c"
+      ]
+    },
+    {
+      "order": 2,
+      "kind": "read",
+      "width_bytes": 4,
+      "expression": "timer-0x44 (parent+0x4dc)",
+      "interpretation": "signed interval in microseconds",
+      "cross_check": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0128_0010cd9c_haptic_audio_store.c"
+    },
+    {
+      "order": 3,
+      "kind": "rearm_timer",
+      "timer": "same timer pointer",
+      "interval_ns": "(usec % 1000000) * 1000 + (usec / 1000000) * 1000000000, using signed 32-bit division/remainder before widening",
+      "slack_ns": 0,
+      "mode": 1,
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0145_0010dcc4_audio_timer_func.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0145_audio_timer_func_0010dcc4.asm"
+      ]
+    }
+  ],
+  "return": "HRTIMER_NORESTART"
+}

@@ -1,0 +1,22 @@
+{
+  "zero_count": {
+    "return": "snprintf result",
+    "path": "final snprintf receives buf-1"
+  },
+    "stock_edges_and_hazards": [
+    "conditional state count=0 with non-NULL data: final snprintf starts one byte before supplied buffer and writes newline at buf[-1], then NUL at buf[0]; stock awrw_store rejects zero count before updating the state",
+    "count=820 makes total=4100; PAGE_SIZE-total underflows size_t; target kernel vsnprintf warns and returns 0 for size > INT_MAX before dereferencing buf+4099; awrw_show returns 4100 and sysfs clamps the visible result to PAGE_SIZE-1",
+    "for counts 1..818, final formatter replaces trailing comma with newline but reported return is one greater than visible string length",
+    "count=819 leaves one byte for the final formatter, which writes NUL over the comma and returns 1; awrw_show returns 4096"
+  ],
+  "buffer_null": {
+    "return": "-34 (Linux -ERANGE)",
+    "line": "0xc54",
+    "log": "awrw lack param"
+  },
+  "mode_not_one": {
+    "return": "-34 (Linux -ERANGE)",
+    "line": "0xc50",
+    "log": "no read mode"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "target": "tpd_zlog_register",
+  "mode": "offline_aarch64_opcode_and_relocation_normalized_comparison",
+  "instruction_count": {"stock": 66, "candidate": 66, "match": true},
+  "symbol_size": {"stock": 264, "candidate": 264, "match": true},
+  "section": {"stock": ".text", "candidate": ".text", "match": true},
+  "kcfi_type_id": {"stock": "0xd02e5b64", "candidate": "0xd02e5b64", "match": true},
+  "relocation_normalization": {
+    "raw_match": false,
+    "code_call_targets_match": true,
+    "same_string_references": true,
+    "reason": "Stock and candidate use different module-specific .rodata and allocation-tag offsets; symbol identities, strings and call targets are equivalent."
+  },
+  "decision": "OFFLINE_EXACT_FUNCTION_LEVEL",
+  "promotion_allowed": true,
+  "known_safety_observation": "The stock vmalloc failure path calls memset with the still-null buffer pointer; the harness instruments this call without dereferencing null.",
+  "comparison": "assembly_comparison.json",
+  "limitations": [
+    "The zlog client, allocator, printk and notification transport are stubbed.",
+    "No smartphone, SPI, firmware transport or physical hardware was used."
+  ]
+}

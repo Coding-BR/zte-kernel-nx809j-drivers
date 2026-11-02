@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "CONCURRENCY_LIFETIME",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "stock_function": "aw8693x_container_update",
+      "stock_entry": "001039e0",
+      "source_function": "aw8693x_container_update",
+      "candidate_function": "aw8693x_container_update",
+      "kcfi_required": true,
+      "assembly_only": false
+    },
+    {
+      "stock_function": "ram_load",
+      "stock_entry": "0010b2e0",
+      "source_function": "ram_load",
+      "candidate_function": "ram_load",
+      "kcfi_required": true,
+      "assembly_only": false
+    }
+  ],
+  "assembly_predicate_equivalence": {
+    "functions": [
+      "aw8693x_container_update"
+    ],
+    "kinds": [
+      "unsigned_adjacent_boundary"
+    ]
+  },
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "stock_module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 8,
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "require_complete_driver_audit": false
+  },
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/haptic_86938",
+    "define": [
+      "__user",
+      "__init",
+      "__exit"
+    ],
+    "slice": {
+      "mode": "usages",
+      "min_num_calls": 1,
+      "parallelism": 1
+    }
+  }
+}

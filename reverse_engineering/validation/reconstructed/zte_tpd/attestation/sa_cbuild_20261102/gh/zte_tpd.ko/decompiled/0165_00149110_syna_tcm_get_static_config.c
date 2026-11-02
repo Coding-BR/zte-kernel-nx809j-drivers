@@ -1,0 +1,47 @@
+
+void syna_tcm_get_static_config(long param_1,long param_2,uint param_3,int param_4)
+
+{
+  code *pcVar1;
+  int iVar2;
+  
+  if (param_1 == 0) {
+                    /* WARNING: Subroutine does not return */
+    _printk(&DAT_00168ac4,"syna_tcm_get_static_config");
+  }
+  if (*(char *)(param_1 + 9) != '\x01') {
+                    /* WARNING: Subroutine does not return */
+    _printk(&DAT_001692c2,"syna_tcm_get_static_config");
+  }
+  if (param_4 == 0) {
+    if ((*(byte *)(*(long *)(param_1 + 0x48) + 0x14) & 1) == 0) {
+                    /* WARNING: Subroutine does not return */
+      _printk(&DAT_00171564,"syna_tcm_get_static_config");
+    }
+    param_4 = 0;
+  }
+  if (*(ushort *)(param_1 + 0xb4) <= param_3) {
+    if (*(int *)(*(code **)(param_1 + 0x398) + -4) != 0x24203a8e) {
+                    /* WARNING: Does not return */
+      pcVar1 = (code *)SoftwareBreakpoint(0x8228,0x149198);
+      (*pcVar1)();
+    }
+    iVar2 = (**(code **)(param_1 + 0x398))(param_1,0x21,0,0,0,param_4);
+    if (-1 < iVar2) {
+      if ((param_2 != 0) && (*(uint *)(param_1 + 0x154) <= param_3)) {
+        if (*(char *)(param_1 + 0x188) == '\0') {
+                    /* WARNING: Subroutine does not return */
+          mutex_lock(param_1 + 0x158);
+        }
+                    /* WARNING: Subroutine does not return */
+        _printk(&DAT_0016da90,"syna_tcm_buf_lock");
+      }
+      return;
+    }
+                    /* WARNING: Subroutine does not return */
+    _printk(&DAT_0016f482,"syna_tcm_get_static_config",0x21);
+  }
+                    /* WARNING: Subroutine does not return */
+  _printk(&DAT_00166d14,"syna_tcm_get_static_config",param_3);
+}
+

@@ -1,0 +1,59 @@
+{
+  "schema_version": "reconstruction_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "171_syna_dev_isr",
+  "stock_entry": "001141b4",
+  "stock_function": "syna_dev_isr",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "semantic_equivalence": "UNPROVEN",
+  "source_of_truth": {
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "ghidra_decompiled_sha256": "20c3b93677abcdb6dc022862f7c1aece693ac75a191bfdeb5611be68f42007ec",
+    "ghidra_pcode_sha256": "93106eab929a5371df213d4c3e4be0d2da9d3eb6fff71681712e38e268edce6c",
+    "stock_assembly_sha256": "1ba133d7494ae1fd4cea60f74b932e459a57925a2d5fb3de333b89ff6a223cbd"
+  },
+  "candidate": {
+    "module_sha256": "330cd36a93ade2153df1f6b79cd8f0499d8e29e967f2a1c06da2489d8b1fd40a",
+    "module_size": 30037272,
+    "source_sha256": "84eeacfd783fca59caca0e58b0b15b3f1c9f81f90aafe1f103d94b836518d77c",
+    "clang_revision": "clang-r536225",
+    "docker_image": "nubia-sm8850-kernel-builder:latest"
+  },
+  "gates": {
+    "ghidra_exports_present": "PASS",
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "host_harness_asan_ubsan": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "kcfi_type_id": {
+      "status": "PASS",
+      "stock_type_id": "0xd2f00be1",
+      "candidate_type_id": "0xd2f00be1",
+      "stock_symbol_size": 224,
+      "candidate_symbol_size": 224
+    },
+    "aarch64_symbol_size": "PASS",
+    "aarch64_instruction_parity": {
+      "status": "PASS",
+      "stock": 56,
+      "candidate": 56
+    },
+    "aarch64_exact_opcode_parity": "PASS",
+    "relocation_identity": "BLOCKED",
+    "hardware_validation": "NOT_RUN"
+  },
+  "limitations": [
+    "Relocation identity remains blocked because stock and out-of-tree symbols use different ELF section identities.",
+    "The host harness covers PM timeout, bypass, GPIO mismatch, event success and event failure contracts only.",
+    "No smartphone, interrupt controller or Synaptics hardware interaction was used."
+  ],
+  "artifacts": {
+    "source_sync_report.json": "acd6d43a87a0ce46be21c29fa618c4b945c1646b76a23a77f8380557f2166423",
+    "joern_gate_report.json": "5e03728a156efc0466ef7a698be3c2bcdb094270f5102c400fbf75d929c86132",
+    "host_harness_report.json": "d52b2e8094ec0f6003a93a9a790b05c83ac0c2b3d3e7413c637e247a34855153",
+    "canonical_build_report.json": "5a0c8daccbad547d1d91a3d4dd21dff4fed988acf840b64c6f2418d7296d5c3c",
+    "kcfi_comparison.json": "904a8137b7e1f70fc1c17e7d903a8463145fb7de351688d145135293e9856a84",
+    "assembly_comparison.json": "ff99df2e8f753ed9c7947a0e1a246e30111b02680e23f95605974dfb9c1a35ac"
+  }
+}

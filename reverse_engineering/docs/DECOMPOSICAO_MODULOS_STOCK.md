@@ -24,12 +24,10 @@ registra SHA-256, tamanho e metadados de faixa.
 O contrato em
 `reverse_engineering/validation/MODULE_DECOMPOSITION_TARGETS.json` cobre todo
 diretorio em `kernel_development/drivers/reconstructed/` que possui um candidato
-`.ko`: 14 modulos. `zlog_common` e classificado como dependencia de suporte; os
-demais sao alvos primarios.
-
-`gpio_keys_nubia` e `nubia_hw_version` possuem stock e exports Ghidra preservados,
-mas permanecem como alvos futuros porque ainda nao existe candidato reconstruido
-publicado. Eles nao podem ser silenciosamente contabilizados como completos.
+`.ko`: 18 modulos. `zlog_common` e classificado como dependencia de suporte; os
+demais sao alvos primarios. Os tres auxiliares `fp_goodix`, `gpio_keys_nubia` e
+`nubia_hw_version` passaram a integrar o contrato depois de seus candidatos
+Docker determinísticos serem promovidos em 2026-09-04.
 
 ## Contrato por funcao
 

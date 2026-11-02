@@ -1,0 +1,60 @@
+{
+  "schema_version": "reconstruction_attestation_v1",
+  "driver": "zte_tpd",
+  "microtask": "172_syna_dev_enter_normal_sensing",
+  "stock_entry": "00114294",
+  "stock_function": "syna_dev_enter_normal_sensing",
+  "status": "PARTIAL",
+  "promotion_claim": false,
+  "semantic_equivalence": "UNPROVEN",
+  "source_of_truth": {
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "ghidra_decompiled_sha256": "a28f4dde63fa98784587500ab9e11821aa96c445f09d717dd98920fda44ff937",
+    "ghidra_pcode_sha256": "9f5726278f409f44e54484dc7ceb963c3acaa5099bf8a63bee522d7492ee2fc3",
+    "stock_assembly_sha256": "76e67e3461a7ca2ee2f3fe7589993214a3a399fa486d6c1e7ca2cf46276f5bb7"
+  },
+  "candidate": {
+    "module_sha256": "330cd36a93ade2153df1f6b79cd8f0499d8e29e967f2a1c06da2489d8b1fd40a",
+    "module_size": 30037272,
+    "source_sha256": "f9ec49b4c5df77f074b1ab733612ae091520b50e3507566a24a565910d7a38db",
+    "clang_revision": "clang-r536225",
+    "docker_image": "nubia-sm8850-kernel-builder:latest"
+  },
+  "gates": {
+    "ghidra_exports_present": "PASS",
+    "source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "kcfi_presence_and_size": {
+      "status": "PASS",
+      "stock_preamble": "NO_VALID_KCFI_PREAMBLE",
+      "candidate_preamble": "NO_VALID_KCFI_PREAMBLE",
+      "stock_symbol_size": 180,
+      "candidate_symbol_size": 180
+    },
+    "contract_model_two_cycles": "PASS",
+    "direct_source_harness": "BLOCKED",
+    "aarch64_symbol_size": "PASS",
+    "aarch64_instruction_count": {
+      "status": "PASS",
+      "stock": 45,
+      "candidate": 45
+    },
+    "aarch64_exact_opcode_parity": "BLOCKED",
+    "relocation_identity": "BLOCKED",
+    "hardware_validation": "NOT_RUN"
+  },
+  "limitations": [
+    "The strict Assembly comparator reports a prologue load-order difference even though size and instruction count match.",
+    "The available five-check contract is a model test and does not include the reconstructed function source.",
+    "Both stock and candidate have no valid KCFI preamble for this 180-byte symbol; only presence/size parity is recorded.",
+    "No smartphone or Synaptics hardware interaction was used."
+  ],
+  "artifacts": {
+    "source_sync_report.json": "2f2aa29841cef7d0180f101b3d59dfc41a29434cb4df1f0051c56a1390110f39",
+    "joern_gate_report.json": "90cf46ca95fa9df0c021e2d3aa024637fba8c89349aab6b002cac2faacb9ec96",
+    "canonical_build_report.json": "5223d32f9f715d4521427fe0f02b4f4dbc2a97eccd7a7b046a2992bbdb1c6460",
+    "kcfi_comparison.json": "3eb5bafdffce9f0347110ad4bbd71ebbdf6977f458cbe15924e0bb0af7fb9522",
+    "assembly_comparison.json": "472a21e2b7e6a78cffef0ddd3b28c1b5b531f3fd0a6c7db08f745892a11851c1"
+  }
+}

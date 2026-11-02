@@ -3,7 +3,7 @@ void tpd_probe_work_init(void)
   _QWORD *v3; // x19
 
   v3 = (_QWORD *)tpd_cdev;
-  printk(unk_322AA, "tpd_probe_work_init");
+  printk("\0015tpd: %s enter", "tpd_probe_work_init");
   v3[282] = 0xFFFFFFFE00000LL;
   v3[283] = v3 + 283;
   v3[284] = v3 + 283;

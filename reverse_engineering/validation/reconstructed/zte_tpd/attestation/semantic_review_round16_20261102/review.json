@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Reachability review for firmware allocation retry after vmalloc failure",
+  "review_status": "STATIC_RETRY_REACHABILITY_CONFIRMED",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "functions": [
+      "tp_alloc_tp_firmware_data",
+      "tp_self_test_write"
+    ],
+    "proc_entry": "tp_self_test",
+    "joern_findings_reviewed_this_round": 0,
+    "analysis_basis": "Ghidra call xrefs, stock AArch64 control flow, proc_ops registration and matching reconstructed/Docker sources"
+  },
+  "source_sha256": {
+    "tp_alloc_tp_firmware_data_c": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "tp_self_test_write_c": "d6574aa44a629e01f5bcffafd5d85be225b303d662a591d4b9002cb0b0fb3c99",
+    "globals_c": "098044b18c36a87791e46f7e679a320cfe2d0d7f3d6b2179b4f49add8261adfd",
+    "zte_touch_probe_c": "c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9",
+    "docker_curated_sources_match": true
+  },
+  "ghidra_sha256": {
+    "calls_jsonl": "91036ccf7524b9446063248adf032fbe7c568d2c6b3a32d00cc54ef57853bc96",
+    "tp_self_test_write_decompilation": "5a19297259e3f9afc8247d6b97611da4dfa598264ee67b6467f1f6fb0bd37945",
+    "tp_self_test_write_stock_assembly": "c3c77b74e4ab429361d9d57adfa5d0814303a9f59b461b6d87f3c71f6e4d1a18"
+  },
+  "joern": {
+    "report": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "report_sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "status": "PASS",
+    "strict": true,
+    "target_source_sha256": "d6574aa44a629e01f5bcffafd5d85be225b303d662a591d4b9002cb0b0fb3c99",
+    "assembly_only_exemption": true,
+    "target_alerts": 0,
+    "note": "Joern does not model the AArch64 inline assembly call edge for this assembly-only method; Ghidra calls.jsonl and stock assembly establish the edge."
+  },
+  "caller_chain": [
+    {
+      "step": 1,
+      "evidence": "zte_touch_probe.c:323",
+      "detail": "proc_create(\"tp_self_test\", 436, tpd_proc_dir, &proc_ops_tp_self_test); decimal mode 436 is octal 0664."
+    },
+    {
+      "step": 2,
+      "evidence": "globals.c:2073",
+      "detail": "proc_ops_tp_self_test.proc_write points to tp_self_test_write."
+    },
+    {
+      "step": 3,
+      "evidence": "Ghidra calls.jsonl: caller tp_self_test_write, callsite 0010cc74, target tp_alloc_tp_firmware_data at 00107d54.",
+      "detail": "Every write calls the allocator with size 0x100000."
+    },
+    {
+      "step": 4,
+      "evidence": "stock AArch64 0073_tp_self_test_write_0010cc50.asm: call at 0x63ec, error branch at 0x63f0 to 0x6448.",
+      "detail": "On allocator error the handler logs and returns -12; it does not call tp_free_tp_firmware_data or clear cdev+0xc58."
+    },
+    {
+      "step": 5,
+      "evidence": "tp_alloc_tp_firmware_data stock/Ghidra failure path.",
+      "detail": "A failed vmalloc frees the descriptor but leaves cdev+0xc58 dangling; a subsequent authorized write re-enters the allocator and reaches its initial dereference/cleanup."
+    }
+  ],
+  "findings": [
+    {
+      "id": "dangling-descriptor-retry-is-reachable-through-proc-write",
+      "category": "error_recovery_reachability",
+      "severity": "CONFIRMED_CONDITIONAL_USE_AFTER_FREE_RISK_REACHABLE",
+      "disposition": "STOCK_BEHAVIOR_RETAINED_ON_EXACT_BRANCH; FIX TRACKED AS SEPARATE HARDENING DEVIATION",
+      "details": "The stale-slot condition can be retried through the registered tp_self_test proc write entry. A first write whose 1 MiB vmalloc fails receives -ENOMEM; the handler returns without cleanup. A later write calls tp_alloc_tp_firmware_data again, which reads and inspects the freed descriptor through cdev+0xc58. This does not prove a deterministic crash; the exact invalid access depends on allocator reuse and poisoning.",
+      "evidence": {
+        "proc_registration": "zte_touch_probe.c:323",
+        "proc_write_ops": "globals.c:2073",
+        "stock_xref": "ghidra_stock/calls.jsonl caller tp_self_test_write callsite 0010cc74 target tp_alloc_tp_firmware_data",
+        "error_return": "stock_assembly/0073_tp_self_test_write_0010cc50.asm offsets 0x6448-0x6458",
+        "allocator_failure": "Round 15 review and Ghidra P-Code at 00107e34-00107e3c"
+      }
+    }
+  ],
+  "recommendation": "On a separate hardening branch, set *(struct tpd_firmware_data **)(cdev + 0xc58) to NULL immediately after freeing the descriptor on vmalloc failure. Preserve the exact reconstruction branch and its attestation.",
+  "canonical_build": {
+    "report": "attestation/semantic_review_round13_20261102/canonical_build_report.json",
+    "report_sha256": "16abd9e50b8c7146083ffd80d88ac96149e9be86b4456ec10ef93e37a9e067ca",
+    "passed": true,
+    "cycles": 2,
+    "module_sha256_each_cycle": "5c464fbd0b21907b80b1941f183f32b406ad080bc4ce9d58a6482e987c18b4eb",
+    "sources_unchanged": true,
+    "rebuild_this_round": false
+  },
+  "mapping": {
+    "allocator_status": "PROMOTED_OFFLINE_EXACT",
+    "caller_status": "promoted_offline_exact",
+    "source_changed": false,
+    "disposition": "Reachability is documented without changing the exact reconstruction."
+  },
+  "limitations": [
+    "This review establishes the path statically; it does not force a vmalloc failure or execute a second proc write.",
+    "The proc entry is writable by owner/group according to mode 0664; actual runtime credentials and deployment permissions were not tested.",
+    "No new build, host harness or hardware test was run in this read-only caller review.",
+    "Independent human review was not performed."
+  ]
+}

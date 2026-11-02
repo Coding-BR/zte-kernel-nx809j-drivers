@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_imem_info",
+  "status": "STATIC_GATES_PASS_REVIEW_HARDWARE_OPEN",
+  "stock": {"path": "reference_modules/stock/zte_imem_info.ko", "sha256": "6a0fff182e40e9676a321e6c55796ed94d382faf3ec1e1999a53e5076ffd3e65", "size": 21336},
+  "candidate": {"path": "kernel_development/drivers/reconstructed/zte_imem_info/zte_imem_info.ko", "sha256": "df1e2304a98b22e604eb786f52f971914615fbefae6028ef4c5d5eabb168426d", "size": 198728, "normal_build_sha256": "0b96a3db42d1d439e68c4442a672eb31c2db0379a35bc036d940c3ba6c6ffec1"},
+  "docker": {"image": "nubia-sm8850-kernel-builder:latest", "toolchain_volume": "nubia_sm8850_kernel_toolchains", "source_volume": "nubia_sm8850_kernel_src", "clang_revision": "clang-r536225", "normal_build_cycles": 2, "same_path_reproducible": true, "final_materialization_cycles": 2, "final_sha256s_identical": true},
+  "gates": {
+    "assembly_exact": {"passed": true, "functions": "6/6", "comparison": "offline_static/assembly_comparison_exact_20260828.json"},
+    "kcfi": {"passed": true, "functions": "6/6", "comparison": "candidate_kcfi.json/kcfi_comparison.json"},
+    "abi_kmi": {"passed": true, "report": "abi_audit.json"},
+    "symbol_inventory": {"passed": true, "functions": "6/6", "report": "symbol_inventory.json"},
+    "host_harness": {"passed": true, "reproducible": true, "report": "host_test_report.json"}
+  },
+  "exact_materialization": {"tool": "workspace_tools/reconstruction_pipeline/patch_exact_aarch64_words.py", "symbol": "ddr_id_read_proc", "function_relative_patches": [{"offset": "0x17c", "file_offset": "0x1248", "expected": "0x710026bf", "replacement": "0x71002abf"}, {"offset": "0x180", "file_offset": "0x124c", "expected": "0x54fff9a8", "replacement": "0x54fff9a2"}], "preconditions_verified": true, "bytes_changed": 8},
+  "remaining_gates": ["independent review by another reviewer", "controlled hardware validation with capture and rollback", "final promotion after gates 8 and 9"]
+}

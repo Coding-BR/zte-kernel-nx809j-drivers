@@ -1,0 +1,1 @@
+savedcmd_/work/validation/aw9620x/cycle_2/aw9620x.o := ld.lld -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack   -r -o /work/validation/aw9620x/cycle_2/aw9620x.o @/work/validation/aw9620x/cycle_2/aw9620x.mod 

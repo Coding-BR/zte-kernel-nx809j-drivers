@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod_MP3",
+  "work_unit": "MP3_CONTROL_ERROR_MATRIX",
+  "draft_status": "DRAFT_UNREVIEWED",
+  "candidate_edit_authorized": false,
+  "input_hashes": [
+    {
+      "path": "reference_modules/full_vendor_boot/ftmmod.ko",
+      "sha256": "fe598a656ef1dbbcc48c78b0f9eb94ee1e6fe05c07f4e073f3e1c6470abbc4eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP0_IDENTITY.json",
+      "sha256": "2f6cb179668f13e7419d7b8129f5ba757a79676b4ff22afaf5b3007025a018b4"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP1_CALL_SIGNATURE.json",
+      "sha256": "f6401987c36dc1eca96cd8fd56235aec0953fed85ab4ef241df4e741ee6e754c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/attestation/microproof_drafts_20261027/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "f216f592615a399888012efb59b07017fe1f949b69ef57c94303b61b9b9e4d07"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/FTMMOD_SCOPE_REVIEW.json",
+      "sha256": "f5bbf80e97219a617b74b60b7523fcb923e9befc1e1211e1fa47672a760595cc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/ghidra_stock/ftmmod.ko/strings.jsonl",
+      "sha256": "308c6137abbf748b0d402c85b183fedaeaa856e56f7619b0e82c96d1d8c181eb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0000_cleanup_module.asm",
+      "sha256": "9e1573e528c75b6ae3713d2294ded74128e183fdb60f40dc445baca44d0f9351"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "sha256": "acdecc230375cdbe3d484ce71b66153929fd4168b25d4784be7105c409374b4c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0002_ftm_remove.asm",
+      "sha256": "1073a1fe1cae9d71d6d5c0044c80800ce8f69173181e04714d165d98937103d9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm",
+      "sha256": "7e1d28f01043893ffa0a7b0f0a41872df8b50dc0282885ebe9d9e363ab4abd98"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "sha256": "0ea5df582863f593eca794c81a681c1237e9b89ce2be29e3f708a5a48c9b2288"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0005_show_permission_status.asm",
+      "sha256": "c84c46b437ebc030b1c4fb308e3885821491100bb16ae8c08cf3a941bc9b9f08"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0006_show_secboot_status.asm",
+      "sha256": "3b4d3cb7254fcafadfbd72cf2b297e8070411398b84eddf975394e96e244d6f0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "sha256": "4eb933109cc88973a431f674238b25f47392a9457a2ad8d44ad9f731127da1e5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "sha256": "c5079ffbe3e9a61ab51aabe687d60bbb479d8da7f320dc552a56ffb5a1f8135e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/manifest.json",
+      "sha256": "4f358c5e22cde2f1d7484deb385809589312e1d87645cd7018cefa4e945194fb"
+    }
+  ],
+  "observations": [
+    {
+      "id": "OBS-001",
+      "claim": "init_module: platform_device_register != 0 retorna -19; se zero chama __platform_driver_probe; erro deste segundo call é propagado; sucesso retorna zero.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0003_init_module.asm",
+      "locator": "section=.init.text offsets=0x28-0xac"
+    },
+    {
+      "id": "OBS-002",
+      "claim": "ftm_probe: nó compatível nulo gera log e continua; nó não nulo chama of_iomap(node,0), grava retorno e loga se nulo; ambos convergem a ioremap_prot.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "section=.init.text offsets=0xe4-0x120"
+    },
+    {
+      "id": "OBS-003",
+      "claim": "ftm_probe: ioremap_prot nulo retorna -12 sem sysfs_create_group; ponteiro não nulo chama sysfs_create_group e propaga seu retorno.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0001_ftm_probe.asm",
+      "locator": "section=.init.text offsets=0x154-0x1c0"
+    },
+    {
+      "id": "OBS-004",
+      "claim": "show_efs_recovery: .bss+0x10 nulo retorna -14; senão lê word +4, formata decimal e retorna snprintf sign-extended.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0004_show_efs_recovery.asm",
+      "locator": "section=.text offsets=0x220-0x250"
+    },
+    {
+      "id": "OBS-005",
+      "claim": "store_efs_recovery: pointer nulo retorna -14; caso contrário sscanf(\"%d\") tem retorno ignorado, local zero-init vira booleano, grava 32-bit, DSB SY, retorna count.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0008_store_efs_recovery.asm",
+      "locator": "section=.text offsets=0x2a0-0x340"
+    },
+    {
+      "id": "OBS-006",
+      "claim": "show_simlock_status: retorno QSEE zero lê output; não zero loga e usa zero; saída true apenas se bits 30 e 31 do word baixo estão setados; propaga snprintf.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0007_show_simlock_status.asm",
+      "locator": "section=.text offsets=0x110-0x198"
+    },
+    {
+      "id": "OBS-007",
+      "claim": "show_secboot_status chama is_secboot_device e passa w0 a snprintf(\"%d\\n\"); show_permission_status passa constante zero à mesma forma de saída.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0006_show_secboot_status.asm",
+      "locator": "secboot .text 0x60-0x90; permission .text 0x1c8-0x1e0"
+    },
+    {
+      "id": "OBS-008",
+      "claim": "ftm_remove emite duas chamadas printk; cleanup_module chama platform_driver_unregister antes de platform_device_unregister.",
+      "evidence_path": "reverse_engineering/validation/reconstructed/ftmmod/offline_static/stock_assembly/0002_ftm_remove.asm",
+      "locator": "remove .text 0x4-0x48; cleanup .exit.text 0x4-0x30"
+    }
+  ],
+  "inferences": [],
+  "unknowns": [
+    "Razão para continuar após ausência de nó/IO map não determinada.",
+    "Limpeza de mappings/grupo após sysfs_create_group falhar não localizada.",
+    "Fluxo descreve ELF stock e não afirma correção funcional."
+  ],
+  "contradictions": [],
+  "requested_escalation": null
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "target": "syna_tcm_update_mtp_data",
+  "stock_entry": "00127b14",
+  "stock_assembly": "0309_syna_tcm_update_mtp_data_00127b14.asm",
+  "candidate_assembly": "candidate_assembly/syna_tcm_update_mtp_data_candidate.s",
+  "review_status": "PASS_WITH_REVIEW_BLOCKERS",
+  "verified_semantics": [
+    "AArch64 syntax accepted with Android clang target aarch64-linux-android34 and armv8.2-a.",
+    "The candidate initializes the stack-backed flash-access mutex, sets the stock update flag and forwards delay values to setup.",
+    "Bootloader version gating, write-block alignment, v3 page-base offset, devm payload allocation and exact input copy are preserved.",
+    "The candidate forwards the rounded payload and delay mode to syna_tcm_write_flash and preserves non-negative length replacement on success.",
+    "Firmware-mode switching, update-flag clearing and managed setup-allocation cleanup are preserved; the payload remains devm-owned as in stock."
+  ],
+  "review_findings": [
+    {
+      "severity": "high",
+      "category": "synchronization",
+      "finding": "mutex_init on the stack-backed access context requires independent kernel review against the canonical TCM locking contract."
+    },
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kmalloc and the intentionally retained devm payload lifetime require canonical device-ownership review."
+    },
+    {
+      "severity": "high",
+      "category": "lifetime",
+      "finding": "devm_kfree of access.managed_allocation must be checked against setup ownership and teardown ordering."
+    }
+  ],
+  "promotion_allowed": false
+}

@@ -2,16 +2,37 @@
   "schema_version": "1.0",
   "status": "INCOMPLETO",
   "driver": "fp_goodix",
-  "promotion_scope": "static candidate only; not approved as 100 percent equivalent",
+  "promotion_scope": "static candidate with source-level exact AArch64 Assembly bodies for gf_ioctl, gf_parse_dts and compiler-generated copy helpers; not approved as 100 percent equivalent",
   "artifacts": [
     "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix.ko",
     "kernel_development/drivers/reconstructed/fp_goodix/STATUS.md",
-    "reverse_engineering/validation/reconstructed/fp_goodix/driver_audit.json"
+    "reverse_engineering/validation/reconstructed/fp_goodix/driver_audit.json",
+    "reverse_engineering/validation/reconstructed/fp_goodix/assembly_comparison.json",
+    "reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1"
   ],
-  "candidate_sha256": "d114e25b29fc39831c4d0ea565a1a30fba526d118031942be5d2e10f797f7e81",
+  "candidate_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+  "candidate_size": 721008,
+  "assembly_parity": {
+    "passed": true,
+    "checked": 30,
+    "failures": 0,
+    "comparison": "reverse_engineering/validation/reconstructed/fp_goodix/assembly_comparison.json"
+  },
+  "kcfi_parity": {
+    "passed": true,
+    "checked": 23,
+    "comparison": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1/kcfi_comparison.json"
+  },
+  "reproducible_build": {
+    "passed": true,
+    "cycle_1_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+    "cycle_2_sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+    "evidence": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/gf_ioctl_parse_exact_v1/offline_validation.json"
+  },
   "blockers": [
-    "parity is 26/30 rather than 30/30",
     "independent review is pending",
-    "hardware validation is deferred"
+    "hardware validation is deferred",
+    "host harness validates the C reference API and does not execute kernel Assembly on hardware",
+    "ABI audit retains stock metadata/dependency formatting differences even though target KMI/imports/aliases/ELF/vermagic gates pass"
   ]
 }

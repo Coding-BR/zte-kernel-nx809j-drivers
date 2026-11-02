@@ -20,6 +20,14 @@ def sha256(path: pathlib.Path) -> str:
     return digest.hexdigest()
 
 
+DRIVER_SOURCE_C = pathlib.Path(
+    "kernel_development/drivers/reconstructed/zte_tpd/tp_ghost_check.c"
+)
+DRIVER_SOURCE_ASM = pathlib.Path(
+    "kernel_development/drivers/reconstructed/zte_tpd/tp_ghost_check_exact.S"
+)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--build-root", type=pathlib.Path, required=True)
@@ -28,6 +36,7 @@ def main() -> int:
     args = parser.parse_args()
     source = pathlib.Path(__file__).with_name("tp_ghost_check_host_test.c").resolve()
     root = source.parents[3]
+    repo_root = source.parents[5]
     if args.build_root.exists():
         shutil.rmtree(args.build_root)
     args.build_root.mkdir(parents=True)
@@ -50,7 +59,20 @@ def main() -> int:
                        "passed": result.returncode == 0 and not result.stderr})
     passed = all(c["passed"] for c in cycles) and len({c["sha256"] for c in cycles}) == 1
     report = {"schema_version": 1, "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-              "target": "tp_ghost_check", "mode": "direct_source_asan_ubsan", "cycles": cycles,
+              "target": "tp_ghost_check", "mode": "direct_source_asan_ubsan",
+              "source": str(source), "source_sha256": sha256(source),
+              "driver_source": str(repo_root / DRIVER_SOURCE_C),
+              "driver_source_sha256": sha256(repo_root / DRIVER_SOURCE_C),
+              "inputs": [
+                  {"path": DRIVER_SOURCE_C.as_posix(),
+                   "sha256": sha256(repo_root / DRIVER_SOURCE_C)},
+                  {"path": DRIVER_SOURCE_ASM.as_posix(),
+                   "sha256": sha256(repo_root / DRIVER_SOURCE_ASM)},
+                  {"path": "kernel_development/drivers/validation/zte_tpd/host/"
+                          "tp_ghost_check_host_test.c",
+                   "sha256": sha256(source)},
+              ],
+              "covered_functions": ["tp_ghost_check"], "cycles": cycles,
               "reproducible_binary": len({c["sha256"] for c in cycles}) == 1,
               "passed": passed, "status": "PASS" if passed else "FAIL"}
     args.output.parent.mkdir(parents=True, exist_ok=True)

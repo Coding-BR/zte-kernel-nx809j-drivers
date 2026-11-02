@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "function": "bullet_nr_store",
+  "paths": [
+    {
+      "condition": "kstrtouint returns <0",
+      "return": "parser errno",
+      "actions": [
+        "no lock",
+        "no write"
+      ]
+    },
+    {
+      "condition": "parse succeeds",
+      "return": "count",
+      "actions": [
+        "mutex_lock",
+        "u32 store",
+        "mutex_unlock"
+      ]
+    }
+  ],
+  "stack_canary": "Stock checks SP_EL0 and calls __stack_chk_fail if changed."
+}

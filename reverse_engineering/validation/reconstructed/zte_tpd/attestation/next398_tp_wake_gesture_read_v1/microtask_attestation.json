@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_wake_gesture_read",
+  "attestation_id": "next398_tp_wake_gesture_read_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_LOCAL_STORE_SCHEDULE_AND_USERSPACE_EGRESS_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS_WITH_REVIEW_FINDINGS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "kcfi_indirect_callback_type": "PASS_0x73fc0d79",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "FAIL_DEAD_LOCAL_STORE_SCHEDULE_ONLY",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_LAYOUT_ONLY",
+    "aarch64_control_flow_and_device_offsets": "PASS",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero without invoking the callback when *ppos is nonzero",
+    "load the optional callback from tpd_cdev + 0xe28 and pass tpd_cdev as struct ztp_device *",
+    "preserve the stock KCFI callback type 0x73fc0d79",
+    "log the handler name and read the wake-gesture value from tpd_cdev + 0",
+    "format the unsigned value as %u\\n with a ten-byte snprintf limit",
+    "copy the result through simple_read_from_buffer and preserve the stack-canary return path"
+  ],
+  "evidence": {
+    "stock_body_bytes": 240,
+    "candidate_body_bytes": 240,
+    "stock_instruction_count": 60,
+    "candidate_instruction_count": 60,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "callback_kcfi_type_id": "0x73fc0d79",
+    "candidate_module_sha256": "cefdab7511635e09a95cc7840b39d47353470e9e266a6026b296be307d67ee0b",
+    "candidate_function_assembly_sha256": "8af8c50df6dc7fd85c9e6fcb63e69453e048ea219e4e4cda9e544be7cfcfe34f",
+    "stock_function_assembly_sha256": "df8dd1467adc0a2083936e855e9fc1e52fc35315c33c5e393468858b9f2e50f4",
+    "host_cases": 2,
+    "host_repetitions": 2,
+    "host_binary_sha256": "22f42cb504bb6c880b4d4b2530208a4ae78cccf4f9a1255fdfc36f60e422a5c0",
+    "joern_unresolved_calls": 0,
+    "joern_userspace_egress_high_findings": 1,
+    "raw_instruction_difference": "The candidate schedules the dead v14 zero store after the *ppos branch and emits a wider local store; the device read, callback, KCFI guard, formatting and return control flow are unchanged."
+  },
+  "follow_up_required": [
+    "Review the Joern userspace_egress finding for simple_read_from_buffer against the target 6.12 ABI before hardware promotion.",
+    "Keep the dead-local store scheduling difference separate from functional parity; use an architecture-specific layout experiment only if exact byte parity becomes mandatory.",
+    "Run controlled procfs/userspace read and NX809J runtime validation only after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs registration, userspace fault handling and copy semantics in the target kernel",
+    "callback lifetime under concurrent teardown",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, matching 60-instruction/240-byte body size, exact tpd_cdev + 0xe28 device offset, matching function and indirect callback KCFI types, strict Joern gate with one explicit userspace-egress finding, reproducible Docker build, and two-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

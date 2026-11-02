@@ -1,0 +1,46 @@
+{
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/validation/zte_tpd/host/tp_fold_state_read_host_test.c",
+      "sha256": "d359abcf585346aba7ab5cf0bbbfb7c8c4c0ed221539c63d457133f6075e8612"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tp_fold_state_read.c",
+      "sha256": "dfb3da506e4136b5b35eecc55628ec8a8ed27cc95e9c7ba0744e7da626fc83fa"
+    }
+  ],
+  "runs": [
+    {
+      "stdout": "PASS tp_fold_state_read: 4 cases",
+      "passed": true,
+      "cycle": 1
+    },
+    {
+      "stdout": "PASS tp_fold_state_read: 4 cases",
+      "passed": true,
+      "cycle": 2
+    }
+  ],
+  "schema_version": "1.0",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "reproducible_binary": true,
+  "passed": true,
+  "mode": "offline_direct_source_tp_fold_state_read_asan_ubsan",
+  "expected_cases": 4,
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "limitations": [
+    "The host harness replaces system-register access, proc callback and user-buffer helpers with deterministic contracts.",
+    "The indirect callback guard is represented by the stock AArch64 sequence; physical callback behavior is not executed.",
+    "Assembly, KCFI, Ghidra, Joern, canonical build and hardware gates remain separate."
+  ],
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "binary_sha256": "b1baf8b0bf785f14b5d3d22a1ebf47617015422ac81bb077ba5283bc78c0ea98",
+  "repetitions": 2,
+  "target": "tp_fold_state_read",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+}

@@ -1,4 +1,10 @@
 #define ZTE_FINGERPRINT_HOST_TEST
+#include "../fp_goodix_internal.h"
+static long gf_ioctl_source_reference(struct file *file, unsigned int cmd,
+					      unsigned long arg);
+static int gf_parse_dts_source_reference(struct gf_dev *gf_dev);
+#define gf_ioctl gf_ioctl_source_reference
+#define gf_parse_dts gf_parse_dts_source_reference
 #include "../fp_goodix_core.c"
 #include "../fp_goodix_netlink.c"
 #include "../fp_goodix_platform.c"
@@ -123,6 +129,14 @@ void host_mutex_lock(struct mutex *lock) { lock->locked++; }
 void host_mutex_unlock(struct mutex *lock) { CHECK(lock->locked > 0); lock->locked--; }
 void host_init_mutex(struct mutex *lock) { lock->locked = 0; }
 void host_init_list(struct list_head *head) { head->next = head; head->prev = head; }
+
+void host_list_add(struct list_head *entry, struct list_head *head)
+{
+	entry->next = head->next;
+	entry->prev = head;
+	head->next->prev = entry;
+	head->next = entry;
+}
 
 void host_list_add_tail(struct list_head *entry, struct list_head *head)
 {

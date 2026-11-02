@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "task_id": "134_one_key_report",
+  "stock_function": "one_key_report",
+  "stock_entry": "00110be8",
+  "stock_body_bytes": 316,
+  "stock_instruction_count": 79,
+  "candidate_instruction_count": 79,
+  "candidate_body_bytes": 316,
+  "status": "OFFLINE_EXACT",
+  "hardware_validation": "DEFERRED",
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/one_key_report.c",
+    "sha256": "ba93f685a5dad5270b70e5880ba249a2368613b2294cacf8d149c4111265f1d9"
+  },
+  "exact_source": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/one_key_report_exact.S",
+    "sha256": "4bccd6948272abf568afe2065c915fa9ed2ff6dcbd81bd2319bbdaeb70c4c62c"
+  },
+  "exact_assembly": {
+    "path": "candidate_assembly/0000_one_key_report.asm",
+    "sha256": "fef66469d4f30956574eb9958294d1281d3318f3d8e7aed93197b887e04de78b",
+    "comparison_sha256": "0966f0841d76638edd6ec20fc8da31e35c5022bacf841da10cdeb5e8fe565ffc"
+  },
+  "kcfi": {
+    "type_id": "0xeb35dc7c",
+    "comparison_sha256": "0021e294f863fb711f73dec83a85edc17bf274d35c2067e3a956e4fb15c57e9d"
+  },
+  "gates": {
+    "source_sync": {
+      "path": "source_sync_report.json",
+      "sha256": "c1bb08425249212c4ecf71d67918a8816e8908485df54799feb99ad120141b83",
+      "passed": true,
+      "copied": 1
+    },
+    "canonical_build": {
+      "path": "canonical_build_report.json",
+      "sha256": "3fb3b4e097bc5428696624613fae15b1916344e18c918c92e1f386abf74ea76d",
+      "candidate_sha256": "342b34a39611bc9c1b59e8109d391345e972d801873b8b63692a838654cf48c7",
+      "passed": true,
+      "reproducible": true,
+      "cycles": 2
+    },
+    "host_asan_ubsan": {
+      "path": "host_harness_report.json",
+      "sha256": "21a2d7a123f3acfc0cf34d2daf0ac04ed2e729b5422de3c9ba0332e722c8f643",
+      "passed": true,
+      "cases": 3,
+      "repetitions": 2
+    },
+    "joern_strict": {
+      "report_path": "joern/joern_gate_report.json",
+      "report_sha256": "d622137224e56e5b73772485cc8dbfd6d2c7b69a3d87c6f0c84b152dcb9d4bf5",
+      "summary_path": "joern/joern_gate_summary.json",
+      "summary_sha256": "d7cf174c4d12f658d1e6068c70251c0f09224465ed4464616672eff93a070ee9",
+      "passed": true,
+      "strict": true,
+      "parse_problem_count": 0,
+      "unresolved_call_count": 0
+    }
+  },
+  "limitations": [
+    "The exact assembly preserves the stock invalid-index trap; the C source keeps a non-trapping safety guard for direct host testing and is excluded from the canonical object by Makefile override.",
+    "Android runtime and NX809J hardware behavior remain unverified."
+  ]
+}

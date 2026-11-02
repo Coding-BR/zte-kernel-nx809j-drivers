@@ -1,0 +1,107 @@
+{
+  "MP0_identity": {
+    "body_bytes": 52,
+    "elf_type": "ET_REL",
+    "evidence_sha256": {
+      "function_decomp": "7aa8c07f97e68b3a12fd664554aa42de9ba1c00ab0822d3f6b7e6d9e67f19ac4",
+      "function_pcode": "fd5d25fc4960459f7897b3e5f7a223592ecafcebcf2508a5ac0289e41335e129",
+      "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+      "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+      "signature_candidates": "047e3bbb0ba1b30c1bc5d05b016a3a24c7a7926c1cae5174df2044df6e856199",
+      "signature_resolution": "070b75aa1c4280b3e1f39abea623c00e8557e4074e52ca5ddc010a4eb8265708",
+      "stock_assembly": "fce6822f45f81092dd814943c39021a769b528dbc3fd13f428ec66b6311ae02f",
+      "stock_kcfi": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+      "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    "ghidra_entry": "00104b40",
+    "kcfi_preamble_offset": "0x1d1c",
+    "machine": "AArch64",
+    "section": ".text",
+    "stock_assembly_section_offset": "0x1d20",
+    "symbol_size": 52
+  },
+  "MP1_call_signature": {
+    "ambiguity": "KCFI matched bool, plain char, unsigned char, and u8 for the second argument. The implementation retains u8 byte semantics; independent caller-type review remains open.",
+    "inferred_prototype": "void aw8693x_auto_bst_enable(struct aw_haptic *, u8)",
+    "kcfi_type_id": "0x1d0adf6e",
+    "signature_oracle": "Pinned Docker Kbuild KCFI batch tested 120 declarations.",
+    "signature_oracle_matches": [
+      "void (struct aw_haptic * haptic, bool flag)",
+      "void (struct aw_haptic * haptic, char flag)",
+      "void (struct aw_haptic * haptic, unsigned char flag)",
+      "void (struct aw_haptic * haptic, u8 flag)"
+    ]
+  },
+  "MP2_state_effects": {
+    "heap_effects": [],
+    "ordered_effects": [
+      {
+        "effect": "store the original flag byte at haptic + 0x18",
+        "sequence": 1
+      },
+      {
+        "effect": "derive value 0x10 when flag is nonzero; otherwise zero",
+        "sequence": 2
+      },
+      {
+        "effect": "call i2c_w_bits(haptic, 0x08, 0xffffffef, value); discard its return",
+        "sequence": 3
+      }
+    ],
+    "persistent_memory_writes": [
+      {
+        "offset": "haptic + 0x18",
+        "value": "flag byte",
+        "width": "8 bits"
+      }
+    ]
+  },
+  "MP3_control_error_matrix": {
+    "branches": 1,
+    "cases": [
+      {
+        "condition": "flag == 0",
+        "result": "store zero and clear register bit 4 through the helper mask"
+      },
+      {
+        "condition": "flag != 0",
+        "result": "store input byte and set register bit 4 through the helper mask"
+      }
+    ],
+    "helper_errors": "i2c_w_bits return is ignored by this void function"
+  },
+  "MP4_event_callback_lifetime": {
+    "callback_table": "not established by direct-call inventory; possible indirect caller is unresolved",
+    "direct_incoming_call_count": 0,
+    "hardware_runtime": "not performed",
+    "retained_pointers": []
+  },
+  "MP5_lock_lifetime": {
+    "allocation_or_release": [],
+    "lock_operations": [],
+    "ownership_note": "one byte store to the haptic state object; no allocation, lock, work item, IRQ registration, or pointer retention"
+  },
+  "MP6_register_bus_ledger": {
+    "effect": "update only bit 4, then write through the I2C helper",
+    "helper": "i2c_w_bits",
+    "mask": "0xffffffef",
+    "register": "0x08",
+    "return": "void; helper status discarded",
+    "value": "(flag != 0) << 4"
+  },
+  "MP7_callers": {
+    "confidence_note": "do not infer that the callback has no callers from the direct-call inventory",
+    "direct_callsite_count": 0,
+    "indirect_call_surface": "not resolved by direct Ghidra call inventory"
+  },
+  "driver": "haptic_86938",
+  "evidence_roots": {
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0020_aw8693x_auto_bst_enable_00104b40.asm",
+    "stock_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+    "stock_kcfi": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json"
+  },
+  "function": "aw8693x_auto_bst_enable@00104b40",
+  "schema_version": "1.0",
+  "stage": "PRE_CANDIDATE",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+}

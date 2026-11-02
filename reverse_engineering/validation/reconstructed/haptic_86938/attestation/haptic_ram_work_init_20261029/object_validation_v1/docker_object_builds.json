@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "target": "haptic_86938_fn_067_ram_work_init.o",
+  "source_volume": "nubia_sm8850_kernel_src",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "image": "nubia-sm8850-kernel-builder:latest",
+  "clang_revision": "clang-r536225",
+  "builds": [
+    {
+      "cycle": 1,
+      "returncode": 0,
+      "object": "C:\\Users\\adria\\AppData\\Local\\Temp\\ramworkinit20261029\\haptic_86938\\cycle_1\\haptic_86938_fn_067_ram_work_init.o",
+      "size": 10488,
+      "sha256": "d9a723d9eea43064ff516eb270e1f744cf2a59defd8febd35853dc0e499a8d7b"
+    },
+    {
+      "cycle": 2,
+      "returncode": 0,
+      "object": "C:\\Users\\adria\\AppData\\Local\\Temp\\ramworkinit20261029\\haptic_86938\\cycle_1\\haptic_86938_fn_067_ram_work_init.o",
+      "size": 10488,
+      "sha256": "d9a723d9eea43064ff516eb270e1f744cf2a59defd8febd35853dc0e499a8d7b"
+    }
+  ],
+  "command": {
+    "clean_argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adria\\AppData\\Local\\Temp\\ramworkinit20261029:/work/validation",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/validation/haptic_86938/cycle_1",
+      "KCFLAGS=-ffile-prefix-map=/work/validation/haptic_86938/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/haptic_86938/cycle_1=/zte_tpd",
+      "-j",
+      "8",
+      "clean"
+    ],
+    "build_argv": [
+      "docker",
+      "run",
+      "--rm",
+      "-v",
+      "nubia_sm8850_kernel_src:/work/src:ro",
+      "-v",
+      "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+      "-v",
+      "C:\\Users\\adria\\AppData\\Local\\Temp\\ramworkinit20261029:/work/validation",
+      "-e",
+      "PATH=/work/toolchains/clang-r536225/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/work/src/kernel/kernel_platform/common",
+      "nubia-sm8850-kernel-builder:latest",
+      "make",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/validation/haptic_86938/cycle_1",
+      "KCFLAGS=-ffile-prefix-map=/work/validation/haptic_86938/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/haptic_86938/cycle_1=/zte_tpd",
+      "-j",
+      "8",
+      "haptic_86938_fn_067_ram_work_init.o"
+    ],
+    "source_argv_from": "docker_preflight_v1/driver_audit.json"
+  },
+  "inputs": {
+    "source_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\haptic_86938\\haptic_86938_fn_067_ram_work_init.c",
+    "source_sha256": "a337e7a48139df77ca1424ea8433026e71001f648edf9b05c99019dbf05afbee",
+    "makefile_path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\haptic_86938\\Makefile",
+    "makefile_sha256": "c472f6c37be68de7dc8b0d1ae53dfb095bfa01a93d52ff77c4b0a7643b22fdb8",
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0069_ram_work_init_0010887c.asm"
+  },
+  "module_link_status": {
+    "status": "BLOCKED",
+    "reason": "Kbuild modpost reports unresolved local symbol ram_work_routine; the full module was not produced."
+  },
+  "limitations": [
+    "This is reproducible object-only compilation and exact function assembly comparison.",
+    "It does not validate KCFI/module metadata, produce a linkable .ko, or establish whole-driver semantic equivalence.",
+    "Strict Joern scoped source and usages slice passed independently."
+  ]
+}

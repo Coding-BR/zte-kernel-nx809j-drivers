@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "task_id": "054_cont_brk_time_store",
+  "work_unit": "MP1_CALL_SIGNATURE",
+  "identity": "cont_brk_time_store@0010679c",
+  "input_hashes": [
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl", "sha256": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json", "sha256": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_brk_time_store_20261029/pre_candidate/stock_data_relocations_excerpt.txt", "sha256": "e98b5d4b5af256cc7e96068d349360dde9beefa842adee0166853d91346cbc0e"},
+    {"path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_brk_time_store_20261029/pre_candidate/kernel_device_attribute_header_excerpt.txt", "sha256": "e30bc060a6b90d8a490b4dc031a68a5804d78689fb21053c2e03ab57832ed7be"}
+  ],
+  "observations": [
+    {"claim": "The store callback occupies dev_attr_cont_brk_time's store slot: relocation at .rela.data+0x240 targets .text+0x397c; the object begins at .data+0x228 and its show slot at +0x10 targets .text+0x3940.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_brk_time_store_20261029/pre_candidate/stock_data_relocations_excerpt.txt", "locator": "ELF symbols and .rela.data offsets 0x228, 0x238, 0x240"},
+    {"claim": "The exact store callback ABI in the Docker kernel header is ssize_t (struct device *, struct device_attribute *, const char *, size_t).", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_cont_brk_time_store_20261029/pre_candidate/kernel_device_attribute_header_excerpt.txt", "locator": "device.h lines 106-112"},
+    {"claim": "Stock KCFI preamble identifies type ID 0x95c41a97 at .text+0x3978, immediately before the 120-byte function at .text+0x397c.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json", "locator": "record function=cont_brk_time_store, lines 654-661"},
+    {"claim": "Direct calls are kstrtou8, mutex_lock, i2c_w_bytes and mutex_unlock; the P-Code has no CALLIND or BRANCHIND in this body.", "evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl", "locator": "records with caller=cont_brk_time_store, callsites 001067c4, 001067d4, 001067e8, 001067f0; cross-check P-Code file in MP0"}
+  ],
+  "inferences": ["The KCFI type and relocated store slot independently corroborate the device_attribute store prototype."],
+  "unknowns": ["Ghidra's own function prototype remains undefined; the independent ABI evidence is stronger for implementation typing."],
+  "contradictions": [],
+  "requested_escalation": null
+}

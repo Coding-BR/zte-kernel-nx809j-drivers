@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_container_update@001039e0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "status": "DIRECT_BUS_SEQUENCE_EXTRACTED; REGISTER_SEMANTICS_UNCLAIMED",
+  "hardware_calls": [
+    {
+      "order": 1,
+      "kind": "call",
+      "target": "aw8693x_stop"
+    },
+    {
+      "order": 2,
+      "kind": "read-modify-write",
+      "register": "0x45",
+      "mask": "0xfffffffb",
+      "value": "0x04"
+    },
+    {
+      "order": 3,
+      "kind": "sleep",
+      "range_us": [
+        500,
+        600
+      ],
+      "state": 2
+    },
+    {
+      "order": 4,
+      "kind": "write",
+      "register": "0x2f",
+      "length": 3,
+      "payload": "derived from base address"
+    },
+    {
+      "order": 5,
+      "kind": "read",
+      "register": "0x2f",
+      "length": 3
+    },
+    {
+      "order": 6,
+      "kind": "read-modify-write",
+      "register": "0x2d",
+      "mask": "0xffffffe0",
+      "value": "base address >> 8"
+    },
+    {
+      "order": 7,
+      "kind": "write",
+      "register": "0x2e",
+      "length": 1
+    },
+    {
+      "order": 8,
+      "kind": "write",
+      "register": "0x40",
+      "length": 2,
+      "payload": "encoded start address"
+    },
+    {
+      "order": 9,
+      "kind": "write-loop",
+      "register": "0x42",
+      "max_length": 2048,
+      "payload": "container bytes from offset 4"
+    },
+    {
+      "order": 10,
+      "kind": "write",
+      "register": "0x40",
+      "length": 2,
+      "payload": "encoded start address repeated"
+    },
+    {
+      "order": 11,
+      "kind": "read-loop",
+      "register": "0x42",
+      "max_length": 1024,
+      "payload": "readback compared to container"
+    },
+    {
+      "order": 12,
+      "kind": "read-modify-write",
+      "register": "0x45",
+      "mask": "0xfffffffb",
+      "value": 0
+    }
+  ],
+  "bus_client": "I2C helpers resolve client from haptic+0x328; mutex at +0x2f0 is held",
+  "helper_results_checked": false,
+  "register_semantics": "unknown beyond observed address, mask, value, direction, length, and order"
+}

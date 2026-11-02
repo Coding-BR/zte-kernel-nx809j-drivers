@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "task_id": "050_cont_drv_lvl_store",
+  "work_unit": "MP3_CONTROL_ERROR_MATRIX",
+  "identity": "cont_drv_lvl_store@00106554",
+  "input_hashes": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0049_00106554_cont_drv_lvl_store.jsonl",
+      "sha256": "4d8a93ab983f5c3242c1766f8be5d842f3bd9305980e28b05ab4bf917266a889"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0049_00106554_cont_drv_lvl_store.c",
+      "sha256": "09903cca66c07d6f4fb612083605a0de10333338966073acdc09cb5c2def9018"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0049_cont_drv_lvl_store_00106554.asm",
+      "sha256": "63774192887d30f9af2e5f9db6b388692806ee733500eba63e7608db5669c64c"
+    }
+  ],
+  "cases": [
+    {
+      "condition": "sscanf returns exactly 2",
+      "result": "Store two low bytes to state before mutex; perform locked 1-byte register read and 2-byte write; unlock; return count."
+    },
+    {
+      "condition": "sscanf returns 0 or 1",
+      "result": "Do not update state or touch mutex/bus; return count."
+    },
+    {
+      "condition": "i2c_r_bytes returns negative or partial result",
+      "result": "Return value is ignored; code still builds write buffer from temporary storage plus state, writes two bytes, unlocks, and returns count. The initialized stack temporary starts at zero."
+    },
+    {
+      "condition": "i2c_w_bytes returns negative",
+      "result": "Ignore result, unlock, return count."
+    }
+  ],
+  "control_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "6f4248f03511311f003696861295f89c0bd157f0330417164ae033db113f5e9d",
+      "locator": "functions[cont_drv_lvl_store@00106554].ordered_control_events"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0049_cont_drv_lvl_store_00106554.asm",
+      "sha256": "63774192887d30f9af2e5f9db6b388692806ee733500eba63e7608db5669c64c",
+      "locator": "cmp sscanf result with 2; branch to common return otherwise; bus calls are followed without result tests"
+    }
+  ],
+  "unknowns": [
+    "Exact externally visible behavior of a failed one-byte read depends on i2c_r_bytes implementation and is not modeled here."
+  ]
+}

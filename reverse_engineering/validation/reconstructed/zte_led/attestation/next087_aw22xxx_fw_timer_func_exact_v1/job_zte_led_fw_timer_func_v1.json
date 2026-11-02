@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_led",
+  "stock_sha256": "2aefcaaaae64006ddfcb21205ce2d0ffb55349c9506d06ed29d346c3f567c668",
+  "profiles": ["CALLBACK_ABI", "CONCURRENCY_LIFETIME", "STATEFUL_MEMORY"],
+  "functions": [
+    {
+      "stock_function": "aw22xxx_fw_timer_func",
+      "stock_entry": "001051e8",
+      "source_function": "aw22xxx_fw_timer_func",
+      "kcfi_required": true,
+      "kcfi_type_id": "0xe3cff753"
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_led",
+    "stock_module": "reference_modules/stock/zte_led.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_led/offline_static/ghidra_stock",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_led/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "generic_driver_audit",
+    "cycles": 2,
+    "parallelism": 2,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "run_root": "runs/zte_led_fw_timer_func_protocol_20260905"
+  },
+  "kcfi": {"ignore_size": true},
+  "joern": {
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_led",
+    "define": ["__user", "__init", "__exit", "noinline"],
+    "slice": {
+      "mode": "usages",
+      "depth": 12,
+      "parallelism": 1,
+      "sink_filter": "(printk|queue_work_on|work|timer)"
+    }
+  }
+}

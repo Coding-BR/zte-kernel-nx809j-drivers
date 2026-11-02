@@ -120,7 +120,7 @@ static void finish_wait(struct wait_queue_head *head,
   last_wait_entry = entry;
 }
 
-#include "../../../curated/zte_tpd/syna_ioctl.c"
+#include "../../../../../kernel_development/drivers/reconstructed/zte_tpd/syna_ioctl.c"
 
 typedef long (*ioctl_fn)(struct file *file, unsigned int cmd,
                          unsigned long arg);

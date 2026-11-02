@@ -1,4 +1,9 @@
-ssize_t tp_single_aod_write(struct file *file, const char __user *buffer, size_t count, loff_t *offset)
+struct ztp_device;
+typedef int (*tp_single_aod_write_callback_t)(struct ztp_device *cdev,
+                                              int value);
+
+ssize_t tp_single_aod_write(struct file *file, const char __user *buffer,
+                            size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
   __int64 a3 = (__int64)count;
@@ -7,14 +12,11 @@ ssize_t tp_single_aod_write(struct file *file, const char __user *buffer, size_t
   (void)offset;
   __int64 v3; // x19
   __int64 v4; // x20
-  __int64 v6; // x2
-  void (__fastcall *v7)(__int64, __int64); // x8
-  __int64 v8; // x1
+  int v6; // w2
+  tp_single_aod_write_callback_t v7; // x8
   unsigned int v9; // [xsp+4h] [xbp-Ch] BYREF
-  __int64 v10; // [xsp+8h] [xbp-8h]
 
   v3 = a3;
-  v10 = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
   v4 = tpd_cdev;
   v9 = 0;
   if ( (unsigned int)kstrtouint_from_user(a2, a3, 10, &v9) )
@@ -29,14 +31,12 @@ ssize_t tp_single_aod_write(struct file *file, const char __user *buffer, size_t
       v6 = 0;
     v9 = v6;
     printk(unk_374F7, "tp_single_aod_write", v6);
-    v7 = *(void (__fastcall **)(__int64, __int64))(v4 + 3352);
+    v7 = *(tp_single_aod_write_callback_t *)(v4 + 0xed0);
     if ( v7 )
     {
-      v8 = v9;
       /* CFI check removed */
-      v7(v4, v8);
+      v7((struct ztp_device *)v4, (int)v9);
     }
   }
-  _ReadStatusReg(SP_EL0);
   return v3;
 }

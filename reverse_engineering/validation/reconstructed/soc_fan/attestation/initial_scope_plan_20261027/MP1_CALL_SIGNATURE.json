@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc_fan_MP1",
+  "work_unit": "MP1_CALL_SIGNATURE",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": false,
+  "stock_identity": {
+    "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+    "size_bytes": 42728,
+    "architecture": "AArch64"
+  },
+  "source_environment": {
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098"
+  },
+  "direct_calls": {
+    "count": 133,
+    "reference_type": "UNCONDITIONAL_CALL",
+    "caller_counts": [
+      {
+        "caller": "cleanup_module",
+        "direct_call_count": 1
+      },
+      {
+        "caller": "fan_enable_show",
+        "direct_call_count": 2
+      },
+      {
+        "caller": "fan_enable_store",
+        "direct_call_count": 9
+      },
+      {
+        "caller": "fan_hrtimer_hander",
+        "direct_call_count": 5
+      },
+      {
+        "caller": "fan_level_set",
+        "direct_call_count": 15
+      },
+      {
+        "caller": "fan_level_show",
+        "direct_call_count": 1
+      },
+      {
+        "caller": "fan_level_store",
+        "direct_call_count": 8
+      },
+      {
+        "caller": "fan_pwm_store",
+        "direct_call_count": 8
+      },
+      {
+        "caller": "fan_speed_show",
+        "direct_call_count": 19
+      },
+      {
+        "caller": "init_module",
+        "direct_call_count": 1
+      },
+      {
+        "caller": "nb_fan_gpio_proc",
+        "direct_call_count": 14
+      },
+      {
+        "caller": "nb_fan_parse_dt",
+        "direct_call_count": 14
+      },
+      {
+        "caller": "nb_fan_probe",
+        "direct_call_count": 35
+      },
+      {
+        "caller": "nb_fan_remove",
+        "direct_call_count": 1
+      }
+    ],
+    "evidence_path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/calls.jsonl"
+  },
+  "indirect_call_sites": [
+    {
+      "caller": "nb_fan_parse_dt",
+      "section": ".text",
+      "section_offset": "0x73c",
+      "ghidra_address": "00100c24",
+      "instruction": "blr x8",
+      "indirect_object_path": "pwm_device -> chip -> pwm_ops.apply",
+      "kcfi_type_id": "0xddd097d0",
+      "prototype": "int (struct pwm_chip *, struct pwm_device *, const struct pwm_state *)",
+      "prototype_evidence": "kernel_platform/common/include/linux/pwm.h:265-266",
+      "target_resolution": "ABI/slot resolved; concrete runtime provider unresolved"
+    },
+    {
+      "caller": "fan_level_set",
+      "section": ".text",
+      "section_offset": "0xf04",
+      "ghidra_address": "001013ec",
+      "instruction": "blr x8",
+      "indirect_object_path": "pwm_device -> chip -> pwm_ops.apply",
+      "kcfi_type_id": "0xddd097d0",
+      "prototype": "int (struct pwm_chip *, struct pwm_device *, const struct pwm_state *)",
+      "prototype_evidence": "kernel_platform/common/include/linux/pwm.h:265-266",
+      "target_resolution": "ABI/slot resolved; concrete runtime provider unresolved"
+    },
+    {
+      "caller": "fan_pwm_store",
+      "section": ".text",
+      "section_offset": "0x1220",
+      "ghidra_address": "00101708",
+      "instruction": "blr x10",
+      "indirect_object_path": "pwm_device -> chip -> pwm_ops.apply",
+      "kcfi_type_id": "0xddd097d0",
+      "prototype": "int (struct pwm_chip *, struct pwm_device *, const struct pwm_state *)",
+      "prototype_evidence": "kernel_platform/common/include/linux/pwm.h:265-266",
+      "target_resolution": "ABI/slot resolved; concrete runtime provider unresolved"
+    }
+  ],
+  "callback_prototypes": [
+    {
+      "callback": "fan_speed_irq_proc",
+      "prototype": "irqreturn_t (int, void *)",
+      "type_id": "0xd2f00be1",
+      "evidence": "irq_handler_t and request_threaded_irq in linux/interrupt.h:104,151-153; probe relocation .text+0x978 -> .text+0x4"
+    },
+    {
+      "callback": "fan_hrtimer_hander",
+      "prototype": "enum hrtimer_restart (struct hrtimer *)",
+      "type_id": "0xe3cff753",
+      "evidence": "hrtimer_types.h:42; probe initializes hrtimer and relocation .text+0x464 -> .text+0xa98"
+    },
+    {
+      "callback": "platform_driver.probe",
+      "prototype": "int (struct platform_device *)",
+      "target": "nb_fan_probe",
+      "type_id": "0xc7f8c87c",
+      "evidence": "platform_device.h:242-243; .data+0x0 relocation"
+    },
+    {
+      "callback": "platform_driver.remove",
+      "prototype": "void (struct platform_device *)",
+      "target": "nb_fan_remove",
+      "type_id": "0x24a11bb9",
+      "evidence": "platform_device.h:250-253; .data+0x8 relocation"
+    },
+    {
+      "callback": "kobj_attribute.show",
+      "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, char *)",
+      "targets": [
+        "fan_enable_show",
+        "fan_level_show",
+        "fan_speed_show"
+      ],
+      "type_id": "0x4e31a072",
+      "evidence": "kobject.h:150-153; .data relocations +0x150, +0x170, +0x1b0"
+    },
+    {
+      "callback": "kobj_attribute.store",
+      "prototype": "ssize_t (struct kobject *, struct kobj_attribute *, const char *, size_t)",
+      "targets": [
+        "fan_enable_store",
+        "fan_level_store",
+        "fan_pwm_store"
+      ],
+      "type_id": "0x9ce291cd",
+      "evidence": "kobject.h:150-155; .data relocations +0x158, +0x178, +0x198"
+    }
+  ],
+  "control_flow_note": "Three BRK instructions adjacent to the CALLIND sites are KCFI failure traps, not additional computed-call targets; P-code labels those trap instructions BRANCHIND.",
+  "source_inputs": [
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/manifest.json",
+      "sha256": "21c89648abcdbe7b80ea6738aa10728b78eeadff28729dc2f5bca287ccef045d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/functions.jsonl",
+      "sha256": "f767904d61eb3bea84a63bd46a560d7d30aa2bdeb7e9e7e03822a22f8a9621c3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/calls.jsonl",
+      "sha256": "476bb7156695005a5f71d7c901df30a8357bfc110b3dda63a6cd82ba6c9b19d1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kcfi_stock.json",
+      "sha256": "80d3446bf67c9b743710a6666b98111841873675a64a296a24d70d2955cf3a6d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_relocations.txt",
+      "sha256": "20475a9898c8e9b21f81f29dd7b0a3a78b524bdfacdd3458a0505bc8e483cb7f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/kernel_header_evidence_MP1_20261027.txt",
+      "sha256": "e92546b29c99b745c482317cf361d432c473f0c0cbd7e7c619cfc6a3c8d41bf8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/pcode/0003_00100a90_nb_fan_parse_dt.jsonl",
+      "sha256": "07df5b1a1c6cbc8d5d63f92ecc8745f6e80cd7d84ef7e49a865bd13371b9724a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/pcode/0008_0010127c_fan_level_set.jsonl",
+      "sha256": "3a2af9c5c9dc797671eed89eb7ec49f2098449a0d7118ecbd6a726da822a2aea"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock_repaired_20261027/soc_fan.ko/pcode/0011_00101654_fan_pwm_store.jsonl",
+      "sha256": "470d82211ea098eb0cfb8ea001ebcdd48e2bbf75e971523f73444fa6ac96a139"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0003_nb_fan_parse_dt_00100a90.asm",
+      "sha256": "2e17e89384cc8504e190d36d391f4b2864b17c3437f10c9051a335735d768d60"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0008_fan_level_set_0010127c.asm",
+      "sha256": "58909b910ec70d342ecee1713a01df1f5fdf5a1a323e711e34829952e2a7c09b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0011_fan_pwm_store_00101654.asm",
+      "sha256": "55741c3317e4ac96f78fe73b14a7d08a49de960c00ac61cb1e945e01d3915789"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly_repaired_20261027/0001_nb_fan_probe_0010052c.asm",
+      "sha256": "293cc1987db531aa43a8f73b7a7c711e5bb1e01e40d85ce7d0ba5d2d587a1c6a"
+    }
+  ],
+  "open_items": [
+    "Concrete runtime target/provider for pwm_ops.apply remains unresolved from this module alone.",
+    "Independent review of this signature and callback ledger is pending.",
+    "Candidate source remains empty; this work unit does not authorize implementation.",
+    "KCFI compatibility does not establish runtime behavior or semantic equivalence."
+  ]
+}

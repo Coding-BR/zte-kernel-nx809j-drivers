@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "COMPILER_SENSITIVE",
+    "HARDWARE_BUS"
+  ],
+  "functions": [
+    {
+      "stock_function": "tpd_sysfs_fwimage_store",
+      "stock_entry": "0010dff0",
+      "stock_symbol_offset": "0x7768",
+      "source_function": "tpd_sysfs_fwimage_store",
+      "candidate_function": "tpd_sysfs_fwimage_store",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_candidate_tpd_sysfs_store/zte_tpd.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225"
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "The current Ghidra export truncates the decompiled C view after an imported printk even though the repaired body is 224 bytes and the complete P-Code has 175 records. Accept only the documented external-label control-flow artifact; exact P-Code shape, independent AArch64/relocation parity, KCFI, Docker and Joern remain mandatory.",
+    "allow_return_propagation_fallback": false,
+    "allow_section_address_normalization": true
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  }
+}

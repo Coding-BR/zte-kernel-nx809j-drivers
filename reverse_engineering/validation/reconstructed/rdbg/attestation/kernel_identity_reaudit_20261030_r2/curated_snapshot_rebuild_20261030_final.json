@@ -1,0 +1,391 @@
+{
+  "build": {
+    "commands": {
+      "build_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final:/work/validation",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-v",
+          "codex-kbuild-rdbg-1-0f8d6b55683c:/work/kernel_out",
+          "-e",
+          "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-e",
+          "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+          "-e",
+          "KBUILD_BUILD_USER=codex",
+          "-e",
+          "KBUILD_BUILD_HOST=reproducible",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "make",
+          "-C",
+          "/work/src/kernel/kernel_platform/common",
+          "O=/work/kernel_out",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/rdbg/cycle_1",
+          "KCFLAGS=-ffile-prefix-map=/work/validation/rdbg/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/rdbg/cycle_1=/zte_tpd",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/rdbg/cycle_1/vendor.Module.symvers",
+          "-j",
+          "4",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "Skipping BTF generation for /work/validation/rdbg/cycle_1/rdbg.ko due to unavailability of vmlinux\n",
+        "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_00_on_interrupt_from.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_01_cleanup_module.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_02_release.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_03_open.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_04_probe.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_05_read.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_06_write.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_fn_07_init_module.o\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg_metadata.o\n  LD [M]  /work/validation/rdbg/cycle_1/rdbg.o\n  MODPOST /work/validation/rdbg/cycle_1/Module.symvers\n  CC [M]  /work/validation/rdbg/cycle_1/rdbg.mod.o\n  CC [M]  /work/validation/rdbg/cycle_1/.module-common.o\n  LD [M]  /work/validation/rdbg/cycle_1/rdbg.ko\n  BTF [M] /work/validation/rdbg/cycle_1/rdbg.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+      },
+      "build_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final:/work/validation",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-v",
+          "codex-kbuild-rdbg-2-734df8538d19:/work/kernel_out",
+          "-e",
+          "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-e",
+          "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+          "-e",
+          "KBUILD_BUILD_USER=codex",
+          "-e",
+          "KBUILD_BUILD_HOST=reproducible",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "make",
+          "-C",
+          "/work/src/kernel/kernel_platform/common",
+          "O=/work/kernel_out",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/rdbg/cycle_2",
+          "KCFLAGS=-ffile-prefix-map=/work/validation/rdbg/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/rdbg/cycle_2=/zte_tpd",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/rdbg/cycle_2/vendor.Module.symvers",
+          "-j",
+          "4",
+          "modules"
+        ],
+        "returncode": 0,
+        "stderr": "Skipping BTF generation for /work/validation/rdbg/cycle_2/rdbg.ko due to unavailability of vmlinux\n",
+        "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_00_on_interrupt_from.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_01_cleanup_module.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_02_release.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_03_open.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_04_probe.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_05_read.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_06_write.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_fn_07_init_module.o\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg_metadata.o\n  LD [M]  /work/validation/rdbg/cycle_2/rdbg.o\n  MODPOST /work/validation/rdbg/cycle_2/Module.symvers\n  CC [M]  /work/validation/rdbg/cycle_2/rdbg.mod.o\n  CC [M]  /work/validation/rdbg/cycle_2/.module-common.o\n  LD [M]  /work/validation/rdbg/cycle_2/rdbg.ko\n  BTF [M] /work/validation/rdbg/cycle_2/rdbg.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+      },
+      "clean_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final:/work/validation",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-v",
+          "codex-kbuild-rdbg-1-0f8d6b55683c:/work/kernel_out",
+          "-e",
+          "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-e",
+          "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+          "-e",
+          "KBUILD_BUILD_USER=codex",
+          "-e",
+          "KBUILD_BUILD_HOST=reproducible",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "make",
+          "-C",
+          "/work/src/kernel/kernel_platform/common",
+          "O=/work/kernel_out",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/rdbg/cycle_1",
+          "KCFLAGS=-ffile-prefix-map=/work/validation/rdbg/cycle_1=/zte_tpd -fdebug-prefix-map=/work/validation/rdbg/cycle_1=/zte_tpd",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/rdbg/cycle_1/vendor.Module.symvers",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+      },
+      "clean_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final:/work/validation",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-v",
+          "codex-kbuild-rdbg-2-734df8538d19:/work/kernel_out",
+          "-e",
+          "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-e",
+          "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+          "-e",
+          "KBUILD_BUILD_USER=codex",
+          "-e",
+          "KBUILD_BUILD_HOST=reproducible",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "make",
+          "-C",
+          "/work/src/kernel/kernel_platform/common",
+          "O=/work/kernel_out",
+          "ARCH=arm64",
+          "LLVM=1",
+          "LLVM_IAS=1",
+          "M=/work/validation/rdbg/cycle_2",
+          "KCFLAGS=-ffile-prefix-map=/work/validation/rdbg/cycle_2=/zte_tpd -fdebug-prefix-map=/work/validation/rdbg/cycle_2=/zte_tpd",
+          "KBUILD_EXTRA_SYMBOLS=/work/validation/rdbg/cycle_2/vendor.Module.symvers",
+          "clean"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+      },
+      "create_kernel_output_volume_first": {
+        "argv": [
+          "docker",
+          "volume",
+          "create",
+          "codex-kbuild-rdbg-1-0f8d6b55683c"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "codex-kbuild-rdbg-1-0f8d6b55683c\n"
+      },
+      "create_kernel_output_volume_second": {
+        "argv": [
+          "docker",
+          "volume",
+          "create",
+          "codex-kbuild-rdbg-2-734df8538d19"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "codex-kbuild-rdbg-2-734df8538d19\n"
+      },
+      "prepare_first": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-v",
+          "codex-kbuild-rdbg-1-0f8d6b55683c:/work/kernel_out",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final:/work/validation",
+          "-e",
+          "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-e",
+          "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+          "-e",
+          "KBUILD_BUILD_USER=codex",
+          "-e",
+          "KBUILD_BUILD_HOST=reproducible",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "bash",
+          "-lc",
+          "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+        ],
+        "returncode": 0,
+        "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+        "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+      },
+      "prepare_second": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-v",
+          "codex-kbuild-rdbg-2-734df8538d19:/work/kernel_out",
+          "-v",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final:/work/validation",
+          "-e",
+          "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-e",
+          "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+          "-e",
+          "KBUILD_BUILD_USER=codex",
+          "-e",
+          "KBUILD_BUILD_HOST=reproducible",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "bash",
+          "-lc",
+          "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+        ],
+        "returncode": 0,
+        "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+        "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+      }
+    },
+    "cycle_dirs": [
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final\\rdbg\\cycle_1",
+      "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final\\rdbg\\cycle_2"
+    ],
+    "first_build": {
+      "exists": true,
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final\\rdbg\\cycle_1\\rdbg.ko",
+      "sha256": "7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70",
+      "size": 781720
+    },
+    "kernel_output_volumes": {
+      "cycle_1": "codex-kbuild-rdbg-1-0f8d6b55683c",
+      "cycle_2": "codex-kbuild-rdbg-2-734df8538d19"
+    },
+    "passed": true,
+    "reproducible": true,
+    "second_build": {
+      "exists": true,
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final\\rdbg\\cycle_2\\rdbg.ko",
+      "sha256": "7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70",
+      "size": 781720
+    },
+    "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\runs\\rdbg_curated_rebuild_20261030_final\\rdbg"
+  },
+  "docker_curated_module": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\rdbg\\rdbg.ko",
+  "docker_curated_module_sha256_before_build": "7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70",
+  "docker_module_matches_fresh": true,
+  "driver": "rdbg",
+  "errors": [],
+  "expected_sha256": "7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70",
+  "fresh_module_sha256": "7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70",
+  "mode": "docker_curated_snapshot_rebuild",
+  "passed": true,
+  "repository_candidate_matches_fresh": true,
+  "repository_candidate_sha256": "7b8ec475c9e72c1c016ee66cf9058b3db2425828e158f27738173e563abbae70",
+  "schema_version": "1.0",
+  "source_snapshot": {
+    "file_count": 16,
+    "files": [
+      {
+        "file": "DOCUMENTO_TRANSICAO.md",
+        "sha256": "df016af6ef8cdbb97cd2cb823ba1f298046eb4b13a2d939fbf0f4cff0ae07e22",
+        "size_bytes": 2274
+      },
+      {
+        "file": "Makefile",
+        "sha256": "fa6cb6901f45e11c5914ba3cedeb55ece025a47b28debe2ec27e4450c41e3310",
+        "size_bytes": 221
+      },
+      {
+        "file": "STATUS.md",
+        "sha256": "5829e35bb9eb57eb698c7e3e56f620e79cd47c27cba2748ce466ff84edddc2a7",
+        "size_bytes": 1899
+      },
+      {
+        "file": "rdbg_fn_00_on_interrupt_from.c",
+        "sha256": "b96f25b4092140cb0eb6d23982de5a87be77ab75cbb4080ef195338adffb928f",
+        "size_bytes": 545
+      },
+      {
+        "file": "rdbg_fn_01_cleanup_module.c",
+        "sha256": "98ef1ad824c74e511a757f047ec076303dbcdb05357f571a57f9641bf814c796",
+        "size_bytes": 1089
+      },
+      {
+        "file": "rdbg_fn_02_release.c",
+        "sha256": "58c8cac4e4979c9dd399d732cab7fe151a0918b16941bc2cff557b2dbfa168d4",
+        "size_bytes": 1516
+      },
+      {
+        "file": "rdbg_fn_03_open.c",
+        "sha256": "b2b1952b7376fb70abb1b8a1b14efd9dbd3505343d6e756af34c80784f8c3edd",
+        "size_bytes": 8032
+      },
+      {
+        "file": "rdbg_fn_04_probe.c",
+        "sha256": "b3d7c11349e63ffb4e6f90aa1437c5b40bd106562b431bf1b5c68fb96db3830a",
+        "size_bytes": 6186
+      },
+      {
+        "file": "rdbg_fn_05_read.c",
+        "sha256": "0450dada8a24f2cbb3cf71ce812bbece48f74989f8141510db1b0783c229a869",
+        "size_bytes": 4715
+      },
+      {
+        "file": "rdbg_fn_06_write.c",
+        "sha256": "afed5e10c1ec8ff6eea685de3aca141a95514140192b8ee90319a300465fdab5",
+        "size_bytes": 5046
+      },
+      {
+        "file": "rdbg_fn_07_init_module.c",
+        "sha256": "9547c1652432f631e65d014978a4d55d362efd66659834e7420b3f4eb70157fb",
+        "size_bytes": 4159
+      },
+      {
+        "file": "rdbg_metadata.c",
+        "sha256": "d9442d87752e6bcbb5ee2b8179a18d9d05287c7f66b8a7b0a0758a6627039c7a",
+        "size_bytes": 126
+      },
+      {
+        "file": "rdbg_reconstruction_layout.h",
+        "sha256": "aff8c1161966aac74d3f5017bcfacdcf1d4d8704fe8cc36097c83b089efdaddd",
+        "size_bytes": 4347
+      },
+      {
+        "file": "reconstruction_map.json",
+        "sha256": "f585ad1779ab680f1e2045c9871a7e5d7f18ebaaf902b664131289e99dcb8b73",
+        "size_bytes": 11270
+      },
+      {
+        "file": "validation_plan.json",
+        "sha256": "8c71e8e4026bc6b569b9b0ce763eda46b3adc79854a5acfda3be411724be784a",
+        "size_bytes": 984
+      },
+      {
+        "file": "vendor.Module.symvers",
+        "sha256": "3634581b1aaf8680a82cbde132f5b6aa48e2a4fcd5f6c3e8f95307db82890b34",
+        "size_bytes": 49
+      }
+    ],
+    "manifest_sha256": "d48ac8d7585ebddfe43c1adf1500b6ab9b224519fbf0d1195309411b1ec3cfd5",
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\rdbg"
+  },
+  "target_kernel_manifest": "kernel_development/config/target_kernel.json"
+}

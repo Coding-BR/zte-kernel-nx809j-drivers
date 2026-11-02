@@ -1,145 +1,138 @@
-int syna_tcm_do_fw_update(struct tcm_dev *tcm_dev,
-                          const unsigned char *image,
-                          unsigned int image_size,
-                          unsigned int flash_area,
-                          bool force_reflash)
-{
-  __int64 a1 = (__int64)tcm_dev;
-  __int64 a2 = (__int64)image;
-  __int64 a3 = image_size;
-  unsigned int a4 = flash_area;
-  char a5 = force_reflash;
-  void *v5; // x0
-  unsigned int v7; // w22
-  __int64 v9; // x24
-  unsigned int v10; // w21
-  unsigned int v11; // w20
-  unsigned int v12; // w19
-  __int64 result; // x0
-  __int64 v14; // x2
-  unsigned int v15; // w0
-  __int64 v16; // x2
-  __int64 v17; // x2
-  __int64 v18; // x0
-  unsigned int v19; // w19
-  void *v20; // x0
-  int v21; // w26
-  __int64 v22; // x25
-  __int64 v23; // x9
-  unsigned int v24; // w23
-  int v25; // w22
-  __int64 v26; // x8
-  unsigned __int8 *v27; // x8
-  void *v28; // x22
-  unsigned int v29; // w25
-  void *v30; // x0
-  __int64 v31; // x2
-  _QWORD s[99]; // [xsp+8h] [xbp-318h] BYREF
+extern int syna_tcm_parse_fw_image(const u8 *image, u32 image_size,
+					void *parsed_image);
+extern int syna_tcm_do_fw_update_ex(struct tcm_dev *tcm,
+					    void *parsed_image,
+					    u32 request_flags,
+					    u32 data_offset,
+					    u32 data_length,
+					    u32 mode_delay_ms,
+					    u8 optimize);
 
-  s[98] = *(_QWORD *)(_ReadStatusReg(SP_EL0) + 1808);
-  if ( a1 )
-  {
-    if ( !a2 || !(_DWORD)a3 )
-    {
-      v5 = unk_37F8D;
-      goto LABEL_8;
-    }
-    v7 = a3;
-    if ( a4 )
-    {
-      v12 = HIWORD(a4);
-      v11 = *(_DWORD *)(a1 + 488);
-      v9 = a1;
-      v10 = (unsigned __int16)a4;
-    }
-    else
-    {
-      v9 = a1;
-      v10 = 0;
-      v11 = 0;
-      v12 = 0;
-    }
-    memset(s, 0, 0x310u);
-    printk(unk_34450, "syna_tcm_do_fw_update", v14);
-    v15 = ((__int64 (__fastcall *)(__int64, _QWORD, _QWORD *))syna_tcm_parse_fw_image)(a2, v7, s);
-    if ( (v15 & 0x80000000) != 0 )
-    {
-      v19 = v15;
-      printk(unk_331C0, "syna_tcm_do_fw_update", v16);
-      result = v19;
-      goto LABEL_14;
-    }
-    if ( (a5 & 1) != 0 )
-    {
-      v17 = 9;
-      v18 = v9;
-LABEL_13:
-      result = syna_tcm_do_fw_update_ex(v18, s, v17, v12, v10, v11, 1u);
-      goto LABEL_14;
-    }
-    if ( LODWORD(s[16]) < 0x22 )
-    {
-      v20 = unk_3858A;
-LABEL_18:
-      printk(v20, "syna_tcm_compare_image_id_info", v16);
-      result = 0;
-      goto LABEL_14;
-    }
-    v21 = *(unsigned __int8 *)(v9 + 8);
-    v22 = s[15];
-    v23 = 14;
-    v24 = *(_DWORD *)(v9 + 12);
-    if ( v21 == 2 )
-      v23 = 16;
-    v25 = *(_DWORD *)(s[15] + v23);
-    printk(unk_3BB70, "syna_tcm_compare_image_id_info", v24);
-    if ( v25 == v24 )
-    {
-      v26 = 18;
-      if ( v21 == 2 )
-        v26 = 20;
-      v27 = (unsigned __int8 *)(v22 + v26);
-      if ( *v27 == *(unsigned __int8 *)(v9 + 192)
-        && v27[1] == *(unsigned __int8 *)(v9 + 193)
-        && v27[2] == *(unsigned __int8 *)(v9 + 194)
-        && v27[3] == *(unsigned __int8 *)(v9 + 195)
-        && v27[4] == *(unsigned __int8 *)(v9 + 196)
-        && v27[5] == *(unsigned __int8 *)(v9 + 197)
-        && v27[6] == *(unsigned __int8 *)(v9 + 198)
-        && v27[7] == *(unsigned __int8 *)(v9 + 199)
-        && v27[8] == *(unsigned __int8 *)(v9 + 200)
-        && v27[9] == *(unsigned __int8 *)(v9 + 201)
-        && v27[10] == *(unsigned __int8 *)(v9 + 202)
-        && v27[11] == *(unsigned __int8 *)(v9 + 203)
-        && v27[12] == *(unsigned __int8 *)(v9 + 204)
-        && v27[13] == *(unsigned __int8 *)(v9 + 205)
-        && v27[14] == *(unsigned __int8 *)(v9 + 206)
-        && v27[15] == *(unsigned __int8 *)(v9 + 207) )
-      {
-        v20 = unk_321A7;
-        goto LABEL_18;
-      }
-      v28 = unk_3688D;
-      v29 = 1;
-      v30 = unk_385C2;
-    }
-    else
-    {
-      v28 = unk_3C83E;
-      v29 = 9;
-      v30 = unk_3BBAA;
-    }
-    printk(v30, "syna_tcm_compare_image_id_info", v16);
-    printk(v28, "syna_tcm_compare_image_id_info", v31);
-    v18 = v9;
-    v17 = v29;
-    goto LABEL_13;
-  }
-  v5 = unk_3365A;
-LABEL_8:
-  printk(v5, "syna_tcm_do_fw_update", a3);
-  result = 4294967055LL;
-LABEL_14:
-  _ReadStatusReg(SP_EL0);
-  return result;
+struct syna_tcm_parsed_partition {
+	u8 enabled;
+	u8 reserved_0001[0x07];
+	u8 *data;
+	u32 data_length;
+	u32 data_offset;
+	u8 partition_id;
+	u8 reserved_0019[0x03];
+	u32 checksum;
+};
+
+/* This is the parser's proven 0x310-byte output, not a firmware-file header. */
+struct syna_tcm_parsed_image {
+	u32 image_size;
+	u8 reserved_0004[0x04];
+	u8 *image_data;
+	struct syna_tcm_parsed_partition partitions[24];
+};
+
+static u8 syna_tcm_protocol_version(const struct tcm_dev *tcm)
+{
+	return *(const u8 *)((const u8 *)tcm + 0x08);
+}
+
+static u32 syna_tcm_build_id(const struct tcm_dev *tcm)
+{
+	const u8 *bytes = (const u8 *)tcm + 0x0c;
+
+	return (u32)bytes[0] | ((u32)bytes[1] << 8) |
+		((u32)bytes[2] << 16) | ((u32)bytes[3] << 24);
+}
+
+static u32 syna_tcm_read_le32(const u8 *bytes)
+{
+	return (u32)bytes[0] | ((u32)bytes[1] << 8) |
+		((u32)bytes[2] << 16) | ((u32)bytes[3] << 24);
+}
+
+static bool syna_tcm_image_id_matches(const struct tcm_dev *tcm,
+					      const struct syna_tcm_parsed_partition *part)
+{
+	const u8 *image_id;
+	const u8 *device_id;
+	u32 id_offset;
+	u32 i;
+
+	if (!part->data)
+		return false;
+	id_offset = syna_tcm_protocol_version(tcm) == 2 ? 0x10 : 0x0e;
+	image_id = part->data + id_offset;
+	device_id = (const u8 *)tcm + 0xc0;
+	for (i = 0; i < 0x10; ++i) {
+		if (image_id[i] != device_id[i])
+			return false;
+	}
+	return true;
+}
+
+int syna_tcm_do_fw_update(struct tcm_dev *tcm,
+				  const u8 *image,
+				  u32 image_size,
+				  u32 flash_area,
+				  bool force_reflash)
+{
+	struct syna_tcm_parsed_image parsed = {};
+	const struct syna_tcm_parsed_partition *compare_partition;
+	u32 request_flags;
+	u32 data_offset;
+	u32 data_length;
+	u32 mode_delay_ms;
+	u32 device_build_id;
+	u32 image_build_id;
+	int parse_result;
+
+	if (!tcm || !image || !image_size) {
+		printk("\\0013[error] %s: Invalid parameter\\n",
+		       "syna_tcm_do_fw_update");
+		return -241;
+	}
+
+	if (flash_area) {
+		data_offset = flash_area >> 16;
+		request_flags = 0;
+		mode_delay_ms = tcm->timing_01e8;
+		data_length = flash_area & 0xffff;
+	} else {
+		data_offset = 0;
+		request_flags = 0;
+		mode_delay_ms = 0;
+		data_length = 0;
+	}
+
+	memset(&parsed, 0, sizeof(parsed));
+	printk("\\0016[info] %s: Parsing firmware image\\n",
+	       "syna_tcm_do_fw_update");
+	parse_result = syna_tcm_parse_fw_image(image, image_size, &parsed);
+	if (parse_result < 0) {
+		printk("\\0013[error] %s: Firmware parse failed\\n",
+		       "syna_tcm_do_fw_update");
+		return parse_result;
+	}
+
+	if (force_reflash) {
+		request_flags = 9;
+	} else {
+		compare_partition = &parsed.partitions[3];
+		if (compare_partition->data_length < 0x22) {
+			printk("\\0016[info] %s: Image identification is unavailable\\n",
+			       "syna_tcm_do_fw_update");
+			return 0;
+		}
+
+		device_build_id = syna_tcm_build_id(tcm);
+		image_build_id = syna_tcm_read_le32(compare_partition->data +
+						(syna_tcm_protocol_version(tcm) == 2 ?
+						 0x10 : 0x0e));
+		if (image_build_id == device_build_id &&
+		    syna_tcm_image_id_matches(tcm, compare_partition)) {
+			printk("\\0016[info] %s: Image already matches device\\n",
+			       "syna_tcm_do_fw_update");
+			return 0;
+		}
+		request_flags = image_build_id == device_build_id ? 1 : 9;
+	}
+
+	return syna_tcm_do_fw_update_ex(tcm, &parsed, request_flags,
+					data_offset, data_length, mode_delay_ms, 1);
 }

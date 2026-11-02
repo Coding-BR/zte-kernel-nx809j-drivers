@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "function": "ram_work_init@0010887c",
+  "review": [
+    "The delayed_work object is embedded in the owning haptic object at byte offset 0x3c0.",
+    "The callback type matches work_struct.func; the timer callback is delayed_work_timer_fn.",
+    "The literal delay passed to queue_delayed_work_on is 2000 jiffies; it is not converted here.",
+    "The owner must remain alive while the delayed callback is queued or running.",
+    "The stock code does not test queue_delayed_work_on's boolean result."
+  ],
+  "limitations": ["No device-tree context or runtime lifetime trace is included in this function-scoped packet."]
+}

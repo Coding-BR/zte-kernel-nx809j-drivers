@@ -1,0 +1,124 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers:/work/workspace",
+    "-v",
+    "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+    "-w",
+    "/work/workspace/reverse_engineering/validation/reconstructed/zte_tpd/harness",
+    "nubia-sm8850-kernel-builder:latest",
+    "sh",
+    "-lc",
+    "/work/toolchains/clang-r536225/bin/clang -std=gnu11 -O1 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer touch_report_harness.c -o build/touch_report_harness && ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ./build/touch_report_harness"
+  ],
+  "coverage": {
+    "direct_source_functions": 1,
+    "full_optional_event_path": true,
+    "hardware_paths_exercised": false,
+    "mutex_offset_0xc90": true,
+    "zero_optional_event_path": true
+  },
+  "executions": [
+    {
+      "index": 1,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS full_mutex_count\nPASS full_mutex_lock_offset\nPASS full_mutex_unlock_offset\nPASS full_slot_state\nPASS full_event_count\nPASS full_slot_event\nPASS full_touch_key_event\nPASS full_x_event\nPASS full_y_event\nPASS full_pressure_event\nPASS full_touch_major_event\nPASS optional_mutex_count\nPASS optional_slot_state\nPASS optional_event_count\nPASS optional_slot_event\nPASS optional_y_event\nSUMMARY tests=16 failures=0\n",
+      "summary": "SUMMARY tests=16 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "full_mutex_count",
+        "full_mutex_lock_offset",
+        "full_mutex_unlock_offset",
+        "full_slot_state",
+        "full_event_count",
+        "full_slot_event",
+        "full_touch_key_event",
+        "full_x_event",
+        "full_y_event",
+        "full_pressure_event",
+        "full_touch_major_event",
+        "optional_mutex_count",
+        "optional_slot_state",
+        "optional_event_count",
+        "optional_slot_event",
+        "optional_y_event"
+      ]
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS full_mutex_count\nPASS full_mutex_lock_offset\nPASS full_mutex_unlock_offset\nPASS full_slot_state\nPASS full_event_count\nPASS full_slot_event\nPASS full_touch_key_event\nPASS full_x_event\nPASS full_y_event\nPASS full_pressure_event\nPASS full_touch_major_event\nPASS optional_mutex_count\nPASS optional_slot_state\nPASS optional_event_count\nPASS optional_slot_event\nPASS optional_y_event\nSUMMARY tests=16 failures=0\n",
+      "summary": "SUMMARY tests=16 failures=0",
+      "tests_failed": [],
+      "tests_passed": [
+        "full_mutex_count",
+        "full_mutex_lock_offset",
+        "full_mutex_unlock_offset",
+        "full_slot_state",
+        "full_event_count",
+        "full_slot_event",
+        "full_touch_key_event",
+        "full_x_event",
+        "full_y_event",
+        "full_pressure_event",
+        "full_touch_major_event",
+        "optional_mutex_count",
+        "optional_slot_state",
+        "optional_event_count",
+        "optional_slot_event",
+        "optional_y_event"
+      ]
+    }
+  ],
+  "generated_utc": "2026-08-06T01:30:48.643560+00:00",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_touch_report.c",
+      "sha256": "b5bc500eca7ef8e154280cb070b9b646446541c541c37117ce35e2c639d98107",
+      "size": 587
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\harness\\touch_report_harness.c",
+      "sha256": "35ab1fc3f8d99dc469b3644b812fd42ed968d46f64e278bb123b23470d4d75d0",
+      "size": 3710
+    }
+  ],
+  "limitations": [
+    "The harness uses deterministic host stubs for kernel input and mutex APIs.",
+    "No smartphone, module loading, SPI, IRQ, MMIO, firmware transport or physical hardware is exercised."
+  ],
+  "mode": "offline_direct_source_touch_report_asan_ubsan",
+  "passed": true,
+  "repetitions": 2,
+  "schema_version": "1.0",
+  "tests": {
+    "expected": 16,
+    "failed": [],
+    "passed": [
+      "full_mutex_count",
+      "full_mutex_lock_offset",
+      "full_mutex_unlock_offset",
+      "full_slot_state",
+      "full_event_count",
+      "full_slot_event",
+      "full_touch_key_event",
+      "full_x_event",
+      "full_y_event",
+      "full_pressure_event",
+      "full_touch_major_event",
+      "optional_mutex_count",
+      "optional_slot_state",
+      "optional_event_count",
+      "optional_slot_event",
+      "optional_y_event"
+    ],
+    "summary": "SUMMARY tests=16 failures=0"
+  }
+}

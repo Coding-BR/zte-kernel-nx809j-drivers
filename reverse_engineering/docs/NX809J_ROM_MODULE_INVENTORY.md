@@ -52,18 +52,26 @@ These **12 modules** were selected only by conservative filename triage. They ma
 
 | Module | Sources | Reconstruction |
 |---|---|---|
-| `aw86320.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
-| `aw9620x.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
+| `aw86320.ko` | `vendor_boot`, `vendor_dlkm` | `present` |
+| `aw9620x.ko` | `vendor_boot`, `vendor_dlkm` | `present` |
 | `awp1921.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
 | `dmesg_dumper.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
 | `fp_goodix.ko` | `vendor_boot`, `vendor_dlkm` | `present` |
-| `ftmmod.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
+| `ftmmod.ko` | `vendor_boot`, `vendor_dlkm` | `present` |
 | `haptic_86938.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
 | `nb7vpq904m.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
 | `rdbg.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
-| `soc_fan.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
+| `soc_fan.ko` | `vendor_boot`, `vendor_dlkm` | `present` |
 | `st54jese.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
 | `st54jnfc.ko` | `vendor_boot`, `vendor_dlkm` | `not_started` |
+
+Update de estado em 2026-10-28: `aw86320` e `aw9620x` passaram a auditoria
+estática com dois builds Docker reproduzíveis cada; `fp_goodix` passou na
+auditoria do contrato principal. `ftmmod` e `soc_fan` já têm candidatos e
+builds reproduzíveis, mas continuam incompletos porque o mapa do candidato
+aguarda revisão independente. `haptic_86938` e os outros seis itens ainda não
+têm candidato canônico. Evidência do lote: `reverse_engineering/validation/audits/vendor_queue_docker_audit_20261028/`;
+evidência do contrato principal: `reverse_engineering/validation/audits/core18_docker_audit_20261028/`.
 
 ## Scope Rule
 

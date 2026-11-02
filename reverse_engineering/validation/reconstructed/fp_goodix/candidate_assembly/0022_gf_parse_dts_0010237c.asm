@@ -89,9 +89,9 @@ Disassembly of section .text:
     1c30: f9004e60     	str	x0, [x19, #0x98]
     1c34: 54000263     	b.lo	0x1c80 <gf_parse_dts+0x130>
     1c38: 90000000     	adrp	x0, 0x1000 <gf_probe+0x2d8>
-		0000000000001c38:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2e4
+		0000000000001c38:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2b6
     1c3c: 91000000     	add	x0, x0, #0x0
-		0000000000001c3c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2e4
+		0000000000001c3c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2b6
     1c40: 90000001     	adrp	x1, 0x1000 <gf_probe+0x2d8>
 		0000000000001c40:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3bb
     1c44: 91000021     	add	x1, x1, #0x0
@@ -114,9 +114,9 @@ Disassembly of section .text:
 		0000000000001c6c:  R_AARCH64_CALL26	_dev_err
     1c70: 128002b4     	mov	w20, #-0x16             // =-22
     1c74: 90000000     	adrp	x0, 0x1000 <gf_probe+0x2d8>
-		0000000000001c74:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2b6
+		0000000000001c74:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2da
     1c78: 91000000     	add	x0, x0, #0x0
-		0000000000001c78:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2b6
+		0000000000001c78:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2da
     1c7c: 14000052     	b	0x1dc4 <gf_parse_dts+0x274>
     1c80: 94000000     	bl	0x1c80 <gf_parse_dts+0x130>
 		0000000000001c80:  R_AARCH64_CALL26	regulator_enable
@@ -257,9 +257,9 @@ Disassembly of section .text:
     1dcc: 94000000     	bl	0x1dcc <gf_parse_dts+0x27c>
 		0000000000001dcc:  R_AARCH64_CALL26	_printk
     1dd0: 90000000     	adrp	x0, 0x1000 <gf_probe+0x2d8>
-		0000000000001dd0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3c8
+		0000000000001dd0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3d3
     1dd4: 91000000     	add	x0, x0, #0x0
-		0000000000001dd4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3c8
+		0000000000001dd4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3d3
     1dd8: 90000001     	adrp	x1, 0x1000 <gf_probe+0x2d8>
 		0000000000001dd8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3bb
     1ddc: 91000021     	add	x1, x1, #0x0
@@ -282,9 +282,9 @@ Disassembly of section .text:
 		0000000000001e0c:  R_AARCH64_CALL26	_printk
     1e10: b9403e61     	ldr	w1, [x19, #0x3c]
     1e14: 90000002     	adrp	x2, 0x1000 <gf_probe+0x2d8>
-		0000000000001e14:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3fe
+		0000000000001e14:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3c8
     1e18: 91000042     	add	x2, x2, #0x0
-		0000000000001e18:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3fe
+		0000000000001e18:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3c8
     1e1c: 910042c0     	add	x0, x22, #0x10
     1e20: 94000000     	bl	0x1e20 <gf_parse_dts+0x2d0>
 		0000000000001e20:  R_AARCH64_CALL26	devm_gpio_request

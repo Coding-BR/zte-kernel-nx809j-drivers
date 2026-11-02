@@ -1,0 +1,17 @@
+
+undefined8 syna_pal_mem_cpy_1(void *param_1,uint param_2,void *param_3,uint param_4,uint param_5)
+
+{
+  undefined8 uVar1;
+  
+  if (param_1 == (void *)0x0) {
+    return 0xffffffea;
+  }
+  if ((param_5 <= param_2) && (param_5 <= param_4)) {
+    memcpy(param_1,param_3,(ulong)param_5);
+    return 0;
+  }
+  uVar1 = _printk(&DAT_00181608,"syna_pal_mem_cpy",param_4,param_2);
+  return uVar1;
+}
+

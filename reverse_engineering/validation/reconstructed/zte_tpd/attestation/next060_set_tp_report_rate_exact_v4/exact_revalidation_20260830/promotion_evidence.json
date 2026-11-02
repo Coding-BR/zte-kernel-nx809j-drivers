@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "function": "set_tp_report_rate",
+  "stock_entry": "0010bec4",
+  "stock_body_bytes": 196,
+  "status": "PROMOTED_OFFLINE_EXACT",
+  "candidate_source": "candidate_source.c",
+  "candidate_exact_source": "candidate_source_exact.S",
+  "gates": {
+    "canonical_docker": {"cycles": 2, "passed": true},
+    "aarch64_assembly": {"instructions": 49, "bytes": 196, "passed": true},
+    "kcfi": {"type_id": "0xc3d43b4d", "section": ".text", "size": 196, "passed": true},
+    "joern": {"calls": 28, "control_structures": 3, "unresolved_calls": 0, "parser_problems": 0, "passed": true},
+    "host_asan_ubsan": {"cases": 4, "cycles": 2, "passed": true}
+  },
+  "review_findings": [],
+  "limitations": [
+    "The direct harness exercises setter behavior with fake device state.",
+    "No physical NX809J hardware execution.",
+    "No real sysfs integration or concurrent lifetime proof."
+  ]
+}

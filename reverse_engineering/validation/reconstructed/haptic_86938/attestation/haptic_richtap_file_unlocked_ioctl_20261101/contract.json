@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "function": "richtap_file_unlocked_ioctl",
+  "stock_entry": "0010e374",
+  "stock_body_bytes": 1460,
+  "stock_kcfi_type_id": "0x2af6cdbb",
+  "abi": "long (struct file *, unsigned int, unsigned long)",
+  "state": {
+    "haptic": "file->private_data",
+    "operations": "*(void **)(haptic + 0x5c8)",
+    "device": "*(struct device **)(haptic + 0x320)",
+    "mutex": "haptic + 0x2f0",
+    "rtp_buffer": "*(u8 **)(haptic + 0x608)"
+  },
+  "commands": {
+    "0x5203": {
+      "action": "copy integer 5 to user argument",
+      "copy_failure": "-EFAULT"
+    },
+    "0x5205": {
+      "action": "call operations +0x88 with argument capped at 0x80"
+    },
+    "0x5206": {
+      "action": "no operation"
+    },
+    "0x5209": {
+      "action": "lock; call operations +0x38; unlock; copy 16000 bytes from user into RTP buffer; validate first integer <= 0x3e7c; call operations +0x118 with 2 and +0xa0 with *(u32 *)(haptic + 0x30); start RTP; if result bit 0 is set, call operations +0xd0 with buffer+4 and length",
+      "copy_failure": "copy_from_user zeroes uncopied tail; return -EFAULT",
+      "length_failure": "log rtp mode date len error %d; return -EINVAL"
+    },
+    "0x520a": {
+      "action": "log RICHTAP_STREAM_MODE; clean Richtap buffer; lock; call operations +0xf0 and +0x38; unlock; call operations +0x110 with 0; clear *(u32 *)(haptic + 0x6bc); call operations +0x118 with 2 and +0xa0 with *(u32 *)(haptic + 0x30); queue work on CPU 0x20 at haptic + 0x648"
+    },
+    "0x5206-0x5208_other": {
+      "action": "log unknown cmd and return 0"
+    },
+    "0x5211": {
+      "action": "copy *(int *)(haptic + 0x60) to user argument",
+      "copy_failure": "-EFAULT"
+    },
+    "0x5212": {
+      "action": "queue work on CPU 0x20 at haptic + 0x668"
+    },
+    "0x5213": {
+      "action": "log TIKTAP_RTP_MIX_MODE"
+    },
+    "other": {
+      "action": "dev_err \"%s, unknown cmd\\n\" and return 0"
+    }
+  },
+  "user_access": "Stock performs ARM64 access-range checks, pointer untagging, TTBR/DAIF transitions and residual handling around __arch_copy_{to,from}_user. The candidate uses target kernel copy_{to,from}_user APIs and must match the stock assembly under the pinned Docker build.",
+  "indirect_call_kcfi": {
+    "operations +0x38/+0xf0": "0x847a0830",
+    "operations +0x88/+0xa0/+0x110": "0x1d0adf6e",
+    "operations +0x118": "0xd37b6e95",
+    "operations +0xd0": "0xc6a7b29b"
+  },
+  "evidence": [
+    "offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0151_0010e374_richtap_file_unlocked_ioctl.jsonl",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl",
+    "offline_static/ghidra_stock_repaired/haptic_86938.ko/strings.jsonl"
+  ],
+  "validation_state": "Initial candidate, not yet validated"
+}

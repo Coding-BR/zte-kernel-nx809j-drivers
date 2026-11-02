@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "limitations": [
+    "Device Tree and DRM calls are deterministic host stubs.",
+    "Privileged system registers and hardware transport are not executed.",
+    "Assembly, KCFI, Ghidra, Joern, canonical build and hardware gates remain separate."
+  ],
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "runs": [
+    {
+      "passed": true,
+      "cycle": 1,
+      "stdout": "PASS syna_ts_check_dt host tests (6 scenarios)"
+    },
+    {
+      "passed": true,
+      "cycle": 2,
+      "stdout": "PASS syna_ts_check_dt host tests (6 scenarios)"
+    }
+  ],
+  "schema_version": "1.0",
+  "binary_sha256": "aef9ae705d2cdc6430bb1054187bfef798474056018575d769f970d840110766",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "repetitions": 2,
+  "mode": "offline_direct_source_syna_ts_check_dt_asan_ubsan",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "reproducible_binary": true,
+  "status": "PASS",
+  "inputs": [
+    {
+      "sha256": "8d21948002c3d82a473a36b14c28b2bef687f7f120f14fcde3b50779dd588016",
+      "path": "kernel_development/drivers/validation/zte_tpd/host/syna_ts_check_dt_host_test.c"
+    },
+    {
+      "sha256": "188da25de1daf4ee486291b827bb4a7eebe8c1b0fd6a67834e6a2fa82a684bb7",
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_ts_check_dt.c"
+    }
+  ],
+  "expected_cases": 6,
+  "driver": "zte_tpd",
+  "target": "syna_ts_check_dt",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ]
+}

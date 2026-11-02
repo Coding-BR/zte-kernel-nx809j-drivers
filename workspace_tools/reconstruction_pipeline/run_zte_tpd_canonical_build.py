@@ -13,6 +13,13 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    from .target_kernel_defaults import target_source_volume
+    from .validate_reconstructed_drivers import parse_modinfo, probe_docker_kernel_source
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+    from validate_reconstructed_drivers import parse_modinfo, probe_docker_kernel_source
+
 
 GENERATED_NAMES = {
     "Module.symvers",
@@ -23,6 +30,9 @@ GENERATED_NAMES = {
     "zte_tpd.o",
 }
 GENERATED_SUFFIXES = (".o", ".ko", ".mod", ".cmd")
+KBUILD_INPUT_NAMES = {"Kbuild", "Kconfig", "Makefile", "vendor.Module.symvers"}
+KBUILD_INPUT_SUFFIXES = {".S", ".c", ".h", ".inc", ".s"}
+KBUILD_INPUT_SELECTION = "kbuild_input_allowlist_v1"
 DIAGNOSTIC_RE = re.compile(r"warning:|error:|clock skew", re.IGNORECASE)
 
 
@@ -34,6 +44,11 @@ def module_path_for_cycle(audit_name: str, cycle: int) -> str:
     return f"/work/engineering/validation/{audit_name}/{path_label}/zte_tpd"
 
 
+def host_artifact_label(label: str) -> str:
+    """Keep Windows artifact paths short without losing deterministic identity."""
+    return hashlib.sha256(label.encode("utf-8")).hexdigest()[:12]
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -43,6 +58,7 @@ def sha256_file(path: Path) -> str:
 
 
 def source_files(root: Path) -> list[Path]:
+    """Return only versioned files that can affect this external-module build."""
     files = []
     for path in root.rglob("*"):
         if not path.is_file() or path.name in GENERATED_NAMES:
@@ -50,6 +66,8 @@ def source_files(root: Path) -> list[Path]:
         if path.name.startswith(".") and path.name.endswith(".cmd"):
             continue
         if path.suffix in GENERATED_SUFFIXES:
+            continue
+        if path.name not in KBUILD_INPUT_NAMES and path.suffix not in KBUILD_INPUT_SUFFIXES:
             continue
         files.append(path)
     return sorted(files, key=lambda path: path.relative_to(root).as_posix())
@@ -69,9 +87,31 @@ def source_tree_record(root: Path) -> dict[str, object]:
         aggregate.update(b"\n")
     return {
         "path": str(root),
+        "selection": KBUILD_INPUT_SELECTION,
+        "included_names": sorted(KBUILD_INPUT_NAMES),
+        "included_suffixes": sorted(KBUILD_INPUT_SUFFIXES),
         "file_count": len(records),
         "manifest_sha256": aggregate.hexdigest(),
         "files": records,
+    }
+
+
+def source_tree_mismatches(
+    expected: dict[str, object], actual: dict[str, object]
+) -> dict[str, list[str]]:
+    """Return deterministic source-tree differences without inspecting build output."""
+    expected_files = {
+        item["path"]: item["sha256"] for item in expected["files"]
+    }
+    actual_files = {item["path"]: item["sha256"] for item in actual["files"]}
+    return {
+        "missing_from_curated": sorted(expected_files.keys() - actual_files.keys()),
+        "unexpected_in_curated": sorted(actual_files.keys() - expected_files.keys()),
+        "content_mismatch": sorted(
+            path
+            for path in expected_files.keys() & actual_files.keys()
+            if expected_files[path] != actual_files[path]
+        ),
     }
 
 
@@ -98,9 +138,34 @@ def main() -> int:
     parser.add_argument("--cycles", type=int, default=2)
     parser.add_argument("--parallelism", type=int, default=8)
     parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
-    parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
+    parser.add_argument("--source-volume", default=target_source_volume())
     parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
+    parser.add_argument("--bindgen-volume", default="nx809j_bindgen_0695")
     parser.add_argument("--clang-revision", default="clang-r536225")
+    parser.add_argument(
+        "--target-kernel-manifest",
+        type=Path,
+        default=script_root / "kernel_development" / "config" / "target_kernel.json",
+    )
+    parser.add_argument(
+        "--candidate-source",
+        type=Path,
+        default=script_root
+        / "kernel_development"
+        / "drivers"
+        / "reconstructed"
+        / "zte_tpd",
+        help="Versioned source tree that must exactly match engineering/curated/zte_tpd.",
+    )
+    parser.add_argument(
+        "--artifact-root",
+        type=Path,
+        help=(
+            "Root for temporary canonical-build cycles and the promoted module. "
+            "Defaults to ENGINEERING_ROOT/validation; use an external volume to "
+            "avoid consuming the engineering workspace disk."
+        ),
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", args.label):
@@ -113,21 +178,82 @@ def main() -> int:
         parser.error("--parallelism must be at least 1")
 
     root = args.engineering_root.resolve()
+    artifact_root = (args.artifact_root or root / "validation").resolve()
     curated = root / "curated" / "zte_tpd"
+    candidate_source = args.candidate_source.resolve()
     if not curated.is_dir():
         raise FileNotFoundError(f"missing curated source tree: {curated}")
+    if not candidate_source.is_dir():
+        raise FileNotFoundError(f"missing candidate source tree: {candidate_source}")
     if not (curated / "vendor.Module.symvers").is_file():
         raise FileNotFoundError(f"missing vendor.Module.symvers: {curated}")
 
+    target_manifest_path = args.target_kernel_manifest.resolve()
+    target_kernel = json.loads(target_manifest_path.read_text(encoding="utf-8"))
+    if target_kernel.get("status") != "PASS":
+        raise ValueError(f"target kernel manifest is not PASS: {target_manifest_path}")
+    if target_kernel.get("docker_image") != args.image:
+        raise ValueError(
+            "Docker image does not match target-kernel manifest: "
+            f"expected {target_kernel.get('docker_image')!r}, got {args.image!r}"
+        )
+    if target_kernel.get("docker_source_volume") != args.source_volume:
+        raise ValueError(
+            "Docker source volume does not match target-kernel manifest: "
+            f"expected {target_kernel.get('docker_source_volume')!r}, got {args.source_volume!r}"
+        )
+
     generated = datetime.now(timezone.utc)
+    output = (
+        args.output
+        or root / "validation" / "zte_tpd" / f"build_{args.label}_report.json"
+    ).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    candidate_source_record = source_tree_record(candidate_source)
+    curated_source_record = source_tree_record(curated)
+    source_sync = source_tree_mismatches(candidate_source_record, curated_source_record)
+    if any(source_sync.values()):
+        report = {
+            "schema_version": "1.0",
+            "generated_utc": generated.isoformat(),
+            "label": args.label,
+            "mode": "offline_independent_linux_filesystem_canonical_build",
+            "passed": False,
+            "reproducible": False,
+            "failure_stage": "candidate_source_sync",
+            "candidate_source_tree": candidate_source_record,
+            "source_tree": curated_source_record,
+            "source_sync": source_sync,
+            "notes": [
+                "The curated Docker snapshot must be byte-identical to the versioned Kbuild input set before a canonical build can start.",
+                "Use sync_zte_tpd_curated_source.py with --apply and retain its hash-bound report outside the source tree.",
+            ],
+        }
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(json.dumps({"output": str(output), "passed": False, "failure_stage": "candidate_source_sync"}))
+        return 1
+
+    kernel_source_identity = probe_docker_kernel_source(
+        image=args.image,
+        image_id_expected=target_kernel.get("docker_image_id"),
+        source_volume=args.source_volume,
+        toolchain_volume=args.toolchain_volume,
+        bindgen_volume=args.bindgen_volume,
+        clang_revision=args.clang_revision,
+        target_kernel=target_kernel,
+    )
+
     run_id = generated.strftime("%Y%m%dT%H%M%SZ")
-    run_root = root / "validation" / "zte_tpd" / "canonical_builds" / args.label / run_id
+    # The full protocol label remains in the report and container M= path, but
+    # using it again on the host can exceed Windows MAX_PATH when the caller's
+    # temporary output root is already nested deeply.
+    run_root = artifact_root / "zte_tpd" / "canonical_builds" / host_artifact_label(args.label) / run_id
     run_root.mkdir(parents=True, exist_ok=False)
     module_paths = [
         module_path_for_cycle(args.audit_name, cycle)
         for cycle in range(1, args.cycles + 1)
     ]
-    source_record = source_tree_record(curated)
+    source_record = curated_source_record
     cycle_records = []
 
     for cycle in range(1, args.cycles + 1):
@@ -141,12 +267,17 @@ def main() -> int:
 set -euo pipefail
 export PATH=/work/toolchains/{args.clang_revision}/bin:$PATH
 MODULE={module_path}
+KBUILD_OUTPUT=/work/src/kernel/.codex-kbuild/identity
 PREFIX_MAP="-ffile-prefix-map=$MODULE=/zte_tpd"
+test -s "$KBUILD_OUTPUT/.config"
+test -f "$KBUILD_OUTPUT/include/config/auto.conf"
+test -f "$KBUILD_OUTPUT/include/generated/autoconf.h"
+test -f "$KBUILD_OUTPUT/include/generated/rustc_cfg"
 mkdir -p "$(dirname "$MODULE")"
 cp -a /host/curated/zte_tpd "$MODULE"
 find "$MODULE" -type f -exec touch -d @946684800 {{}} +
-make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" clean > /out/clean.log 2>&1
-make -C /work/src/kernel/kernel_platform/common LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" KCFLAGS="$PREFIX_MAP" KBUILD_EXTRA_SYMBOLS="$MODULE/vendor.Module.symvers" modules -j{args.parallelism} > /out/build.log 2>&1
+make -C /work/src/kernel/kernel_platform/common O="$KBUILD_OUTPUT" LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" clean > /out/clean.log 2>&1
+make -C /work/src/kernel/kernel_platform/common O="$KBUILD_OUTPUT" LLVM=1 LLVM_IAS=1 ARCH=arm64 M="$MODULE" KCFLAGS="$PREFIX_MAP" KBUILD_EXTRA_SYMBOLS="$MODULE/vendor.Module.symvers" modules -j{args.parallelism} > /out/build.log 2>&1
 cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
 """.strip()
         command = [
@@ -204,31 +335,70 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
     reproducible = accepted and len(set(hashes)) == 1 and len(set(sizes)) == 1
     promoted = None
     if reproducible:
-        promoted = root / "validation" / args.audit_name / "zte_tpd" / "zte_tpd.ko"
+        promoted = artifact_root / args.audit_name / "zte_tpd" / "zte_tpd.ko"
         promoted.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(cycle_records[-1]["artifact"]["path"], promoted)
 
-    output = (
-        args.output
-        or root / "validation" / "zte_tpd" / f"build_{args.label}_report.json"
-    ).resolve()
+    fresh_modinfo: dict[str, list[str]] = {}
+    vermagic_accepted = False
+    metadata_error = None
+    if promoted is not None:
+        try:
+            fresh_modinfo = parse_modinfo(promoted)
+            vermagic_accepted = (
+                target_kernel.get("vermagic") in fresh_modinfo.get("vermagic", [])
+            )
+        except (OSError, ValueError) as error:
+            metadata_error = str(error)
+    passed = bool(
+        reproducible
+        and kernel_source_identity.get("passed") is True
+        and vermagic_accepted
+    )
+    if not kernel_source_identity.get("passed"):
+        failure_stage = "kernel_source_identity"
+    elif reproducible and not vermagic_accepted:
+        failure_stage = "vermagic"
+    elif not reproducible:
+        failure_stage = "reproducible_build"
+    else:
+        failure_stage = None
+
     report = {
         "schema_version": "1.0",
         "generated_utc": generated.isoformat(),
         "mode": "offline_independent_linux_filesystem_canonical_build",
         "label": args.label,
-        "passed": reproducible,
+        "passed": passed,
         "reproducible": reproducible,
+        "failure_stage": failure_stage,
         "cycles_requested": args.cycles,
         "cycles_accepted": sum(record["accepted"] for record in cycle_records),
         "parallelism": args.parallelism,
         "module_path": module_paths[0],
         "module_paths": module_paths,
         "container": args.image,
+        "docker_image_id": kernel_source_identity.get("observed", {}).get("docker_image_id"),
+        "target_kernel_manifest": {
+            "path": str(target_manifest_path),
+            "sha256": sha256_file(target_manifest_path),
+            "kernel_release": target_kernel.get("kernel_release"),
+            "vermagic": target_kernel.get("vermagic"),
+        },
+        "kernel_source_identity": kernel_source_identity,
+        "vermagic": {
+            "accepted": vermagic_accepted,
+            "expected": target_kernel.get("vermagic"),
+            "observed": fresh_modinfo.get("vermagic", []),
+            "error": metadata_error,
+        },
         "toolchain": args.clang_revision,
         "target": "AArch64 ARCH=arm64 LLVM=1 LLVM_IAS=1 KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=vendor.Module.symvers",
         "output_filesystem": "independent ephemeral container Linux filesystem",
+        "artifact_root": str(artifact_root),
         "source_tree": source_record,
+        "candidate_source_tree": candidate_source_record,
+        "source_sync": source_sync,
         "cycles": cycle_records,
         "candidate": {
             "path": str(promoted) if promoted else None,
@@ -237,9 +407,12 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         },
         "notes": [
             "Every cycle starts in a new container and copies the curated source into a deliberately different M= path.",
+            "Source synchronization is limited to files that can affect the Kbuild external-module artifact; evidence manifests and documentation are not compiler inputs.",
             "Input mtimes are normalized before make clean to prevent host bind-mount clock skew.",
             "KCFLAGS maps the complete module path to /zte_tpd for source objects and generated *.mod.c debug metadata.",
             "Byte identity across the deliberately different M= paths is a mandatory path-independence gate.",
+            "The Docker image and mounted source/toolchain identity must match the versioned target-kernel manifest.",
+            "The fresh module .modinfo vermagic must exactly include the target kernel vermagic.",
             "A cycle is rejected on nonzero exit, missing artifact, warning, error or clock-skew text.",
             "Promotion occurs only when every accepted cycle produces identical artifact bytes and size.",
         ],
@@ -250,14 +423,14 @@ cp "$MODULE/zte_tpd.ko" /out/zte_tpd.ko
         json.dumps(
             {
                 "output": str(output),
-                "passed": reproducible,
+                "passed": passed,
                 "cycles": args.cycles,
                 "sha256": report["candidate"]["sha256"],
                 "size": report["candidate"]["size"],
             }
         )
     )
-    return 0 if reproducible else 1
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

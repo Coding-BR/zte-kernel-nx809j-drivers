@@ -1,0 +1,1 @@
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_000_aw8693x_set_bst_peak_cur.o

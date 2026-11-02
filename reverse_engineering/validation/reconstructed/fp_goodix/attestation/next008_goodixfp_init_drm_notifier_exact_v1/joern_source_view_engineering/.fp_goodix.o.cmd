@@ -1,0 +1,1 @@
+savedcmd_/work/engineering/curated/fp_goodix/fp_goodix.o := ld.lld -EL  -maarch64elf -z norelro --compress-debug-sections=zstd -z noexecstack   -r -o /work/engineering/curated/fp_goodix/fp_goodix.o @/work/engineering/curated/fp_goodix/fp_goodix.mod 

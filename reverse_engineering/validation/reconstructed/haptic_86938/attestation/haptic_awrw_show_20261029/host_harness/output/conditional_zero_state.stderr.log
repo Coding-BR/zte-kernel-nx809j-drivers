@@ -1,0 +1,36 @@
+=================================================================
+==19==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5210000000ff at pc 0x79c729a15a03 bp 0x7ffeaf08d990 sp 0x7ffeaf08d120
+WRITE of size 2 at 0x5210000000ff thread T0
+    #0 0x79c729a15a02 in __vsnprintf_chk ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1657
+    #1 0x63262af30b09 in vsnprintf /usr/include/x86_64-linux-gnu/bits/stdio2.h:68
+    #2 0x63262af30b09 in kernel_snprintf /workspace/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_show_20261029/host_harness/awrw_show_harness.c:62
+    #3 0x63262af30f51 in awrw_show ../../../../../../../kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_107_awrw_show.c:39
+    #4 0x63262af32722 in run_conditional_zero_state /workspace/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_show_20261029/host_harness/awrw_show_harness.c:382
+    #5 0x63262af32722 in main /workspace/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_show_20261029/host_harness/awrw_show_harness.c:418
+    #6 0x79c7291491c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #7 0x79c72914928a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #8 0x63262af30464 in _start (/tmp/awrw_show_harness+0x5464) (BuildId: 587d79bd2e586f64b3a5f47febde4e5aae6bd88f)
+
+0x5210000000ff is located 1 bytes before 4096-byte region [0x521000000100,0x521000001100)
+AddressSanitizer: CHECK failed: sanitizer_common.h:522 "((i)) < ((size_))" (0xa000000, 0x1) (tid=19)
+    #0 0x79c729a4fa47 in CheckUnwind ../../../../src/libsanitizer/asan/asan_rtl.cpp:69
+    #1 0x79c729a77875 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) ../../../../src/libsanitizer/sanitizer_common/sanitizer_termination.cpp:86
+    #2 0x79c729a53ee7 in __sanitizer::InternalMmapVectorNoCtor<__sanitizer::ThreadContextBase*>::operator[](unsigned long) ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.h:522
+    #3 0x79c729a53ee7 in __sanitizer::ThreadRegistry::GetThreadLocked(unsigned int) ../../../../src/libsanitizer/sanitizer_common/sanitizer_thread_registry.h:104
+    #4 0x79c729a53ee7 in __sanitizer::ThreadRegistry::GetThreadLocked(unsigned int) ../../../../src/libsanitizer/sanitizer_common/sanitizer_thread_registry.h:103
+    #5 0x79c729a53ee7 in __asan::GetThreadContextByTidLocked(unsigned int) ../../../../src/libsanitizer/asan/asan_thread.cpp:88
+    #6 0x79c72998dc44 in __asan::HeapAddressDescription::Print() const ../../../../src/libsanitizer/asan/asan_descriptions.cpp:416
+    #7 0x79c729990d5f in __asan::AddressDescription::Print(char const*) const ../../../../src/libsanitizer/asan/asan_descriptions.h:241
+    #8 0x79c729990d5f in __asan::ErrorGeneric::Print() ../../../../src/libsanitizer/asan/asan_errors.cpp:613
+    #9 0x79c729a4f6d7 in __asan::ScopedInErrorReport::~ScopedInErrorReport() ../../../../src/libsanitizer/asan/asan_report.cpp:143
+    #10 0x79c729a4eb6c in __asan::ReportGenericError(unsigned long, unsigned long, unsigned long, unsigned long, bool, unsigned long, unsigned int, bool) ../../../../src/libsanitizer/asan/asan_report.cpp:497
+    #11 0x79c729a15a24 in __vsnprintf_chk ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1657
+    #12 0x63262af30b09 in vsnprintf /usr/include/x86_64-linux-gnu/bits/stdio2.h:68
+    #13 0x63262af30b09 in kernel_snprintf /workspace/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_show_20261029/host_harness/awrw_show_harness.c:62
+    #14 0x63262af30f51 in awrw_show ../../../../../../../kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_107_awrw_show.c:39
+    #15 0x63262af32722 in run_conditional_zero_state /workspace/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_show_20261029/host_harness/awrw_show_harness.c:382
+    #16 0x63262af32722 in main /workspace/reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_awrw_show_20261029/host_harness/awrw_show_harness.c:418
+    #17 0x79c7291491c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #18 0x79c72914928a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #19 0x63262af30464 in _start (/tmp/awrw_show_harness+0x5464) (BuildId: 587d79bd2e586f64b3a5f47febde4e5aae6bd88f)
+

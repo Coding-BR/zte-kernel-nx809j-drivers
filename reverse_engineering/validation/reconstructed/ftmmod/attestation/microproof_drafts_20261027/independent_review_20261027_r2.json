@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ftmmod_independent_review_20261027_r2",
+  "reviewer": "Hubble",
+  "reviewer_agent_id": "01a17d6e-d604-7ab2-9e10-ac190169a0d0",
+  "review_scope": [
+    "MP4_TEST_ORACLE_DRAFT L3",
+    "MP5_LOCK_LIFETIME_CONTRACT L4",
+    "MP6_REGISTER_OR_BUS_LEDGER L3+L4"
+  ],
+  "decision": "NO_GATE_PASS",
+  "reviewed_artifact_hashes": [
+    {
+      "path": "MP4_TEST_ORACLE_DRAFT.json",
+      "sha256": "f239534676a0953aae1a4306753d9bf4f5cfb74c1d08a52143cd0396ce58c9a5"
+    },
+    {
+      "path": "MP5_LOCK_LIFETIME_CONTRACT.json",
+      "sha256": "1d9f151bec5257b3e7a8bad332defad62fad6fc49f12c5a8b707022f3f3f2c7b"
+    },
+    {
+      "path": "MP6_REGISTER_OR_BUS_LEDGER.json",
+      "sha256": "a3bcfab1088ee74dd633df017146bf33d821a8535df12dc3452f4e16540b1ae5"
+    },
+    {
+      "path": "kernel_header_evidence.json",
+      "sha256": "23e765bfbddd8d4c8bd7e749cd3b56545d4d98cdb4fed8318186de2513c7cc2b"
+    },
+    {
+      "path": "platform_lifetime_source_contracts_20261027.txt",
+      "sha256": "0558e94cf4dbf89867c33d2e0a7c6084919e722300a7dd7a9925585188f39db9"
+    },
+    {
+      "path": "sysfs_callback_source_contracts_20261027.txt",
+      "sha256": "082e849d26ee13fe7e3de939d4ec4945b5fa9414a3c61e336e009a2c7ce03ea4"
+    }
+  ],
+  "findings": [
+    {
+      "id": "REV2-001",
+      "artifact": "MP4",
+      "observation": "OBS-001",
+      "finding": "State platform_device_register and __platform_driver_probe explicitly; registration error skips __platform_driver_probe and returns fixed -ENODEV."
+    },
+    {
+      "id": "REV2-002",
+      "artifact": "MP4",
+      "observation": "OBS-007",
+      "finding": "The sysfs_create_group first argument is pdev->dev.kobj, the embedded device/kobject address at platform_device+0x10."
+    },
+    {
+      "id": "REV2-003",
+      "artifact": "MP4/MP6",
+      "observation": "OBS-020/OBS-001",
+      "finding": "Make the arm64_use_ng_mappings branch-to-prot mapping explicit: zero -> 0x0068000000000713; nonzero -> 0x0068000000000f13."
+    },
+    {
+      "id": "REV2-004",
+      "artifact": "MP4",
+      "observation": "OBS-018/OBS-021/OBS-022",
+      "finding": "Direct input hash coverage omitted the two cited platform/sysfs source excerpts."
+    },
+    {
+      "id": "REV2-005",
+      "artifact": "MP5",
+      "finding": "Pinned source resolves normal sysfs teardown and active callback draining; keep platform-device, OF reference, and I/O mapping ownership questions open."
+    }
+  ],
+  "readyness": {
+    "MP4": "NOT_READY",
+    "MP5": "NOT_READY",
+    "MP6": "NOT_READY"
+  },
+  "candidate_source_edited": false
+}

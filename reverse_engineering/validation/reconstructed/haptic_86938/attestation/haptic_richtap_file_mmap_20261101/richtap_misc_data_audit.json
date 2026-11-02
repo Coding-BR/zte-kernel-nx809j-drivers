@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_module_sha256": "44a432f2517f55b631d350dd056e366bba6291b33e27485d610a926143491d52",
+  "kernel_headers": {
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "file_operations_layout_offsets": {
+      "0x0": "owner",
+      "0x18": "read",
+      "0x20": "write",
+      "0x50": "unlocked_ioctl",
+      "0x60": "mmap",
+      "0x68": "open",
+      "0x78": "release"
+    }
+  },
+  "stock": {
+    "richtap_misc": {
+      "section": ".data",
+      "offset": "0xa38",
+      "size": "0x50",
+      "minor": 255,
+      "name": "awinic_haptic",
+      "fops_target": ".data+0xa88"
+    },
+    "left_fops": {
+      "section": ".data",
+      "offset": "0xa88",
+      "size": "0x108",
+      "raw_bytes_sha256": "44b8aa4d28701168922acf61435ea4bb442f97b0b14ad7a2510ed68874ee2a72",
+      "callbacks": {
+        "0x18": "richtap_read",
+        "0x20": "richtap_write",
+        "0x50": "richtap_file_unlocked_ioctl",
+        "0x60": "richtap_file_mmap",
+        "0x68": "richtap_file_open",
+        "0x78": "richtap_file_release"
+      }
+    }
+  },
+  "candidate": {
+    "richtap_misc": {
+      "section": ".data",
+      "offset": "0x8",
+      "size": "0x50",
+      "minor": 255,
+      "name": "awinic_haptic",
+      "fops_target": ".data+0x58"
+    },
+    "left_fops": {
+      "section": ".data",
+      "offset": "0x58",
+      "size": "0x108",
+      "raw_bytes_sha256": "44b8aa4d28701168922acf61435ea4bb442f97b0b14ad7a2510ed68874ee2a72",
+      "callback_relocations": {
+        "0x0": "__this_module",
+        "0x18": "richtap_read",
+        "0x20": "richtap_write",
+        "0x60": "richtap_file_mmap",
+        "0x68": "richtap_file_open",
+        "0x78": "richtap_file_release"
+      },
+      "unimplemented_slots": {
+        "0x50": "unlocked_ioctl remains NULL"
+      }
+    }
+  },
+  "result": "PARTIAL_PENDING_RICHTAP_FILE_IOCTL",
+  "confirmed": [
+    "richtap_misc uses the stock dynamic minor, name, and left_fops relationship",
+    "left_fops.mmap at +0x60 relocates to richtap_file_mmap in the reproducible candidate module",
+    "richtap_file_mmap body, relocations, KCFI, and four ARM64 alternative entries pass protocol_core_v10 and alternative_slot_audit.json"
+  ],
+  "missing": [
+    "left_fops.unlocked_ioctl at +0x50 is NULL; stock target is richtap_file_unlocked_ioctl"
+  ],
+  "whole_driver_status": "incomplete_or_failed; promotion_authorized=false",
+  "note": "The full module audit remains incomplete: the current curated .ko is absent, alias parity and undefined-symbol parity fail, and no hardware run or promotion is authorized."
+}

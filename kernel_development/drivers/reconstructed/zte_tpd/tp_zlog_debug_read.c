@@ -1,5 +1,9 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
+#ifndef __user
+#define __user
+#endif
+
 ssize_t tp_zlog_debug_read(struct file *file, char __user *buffer,
 			   size_t count, loff_t *offset)
 {

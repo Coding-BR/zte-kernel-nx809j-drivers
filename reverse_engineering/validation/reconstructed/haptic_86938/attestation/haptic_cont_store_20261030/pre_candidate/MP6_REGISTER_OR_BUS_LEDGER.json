@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "function_id": "cont_store@0010be5c",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "status": "NO_DIRECT_REGISTER_OR_BUS_ACCESS; CALLBACK_EFFECTS_RESOLVED",
+  "direct_bus_calls": [],
+  "direct_register_writes": [],
+  "callback_effects": [
+    {
+      "order": 1,
+      "target": "aw8693x_stop",
+      "effect_summary": "callback performs stop-mode hardware operations; see its separately attested source"
+    },
+    {
+      "order": 2,
+      "target": "aw8693x_upload_lra",
+      "condition": "parsed value != 0",
+      "argument": "mode=1",
+      "effect_summary": "callback uploads/calibrates LRA trim"
+    },
+    {
+      "order": 3,
+      "target": "aw8693x_cont_config",
+      "condition": "parsed value != 0",
+      "effect_summary": "callback configures continuous play mode"
+    }
+  ],
+  "register_semantics": "No register semantics inferred beyond callback targets."
+}

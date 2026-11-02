@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "301_syna_tcm_read_flash_mtp_config",
+  "stock_entry": "00125a18",
+  "stock_symbol": "syna_tcm_read_flash_mtp_config",
+  "candidate_symbol": "syna_tcm_read_flash_mtp_config",
+  "candidate_compiler": "GCC aarch64-linux-gnu cross-compiler in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0300_00125a18_syna_tcm_read_flash_mtp_config.c",
+      "sha256": "0794c9818695fb5016d32ded6761147f0785246f9d37b370cc68530713e195e2"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0300_00125a18_syna_tcm_read_flash_mtp_config.jsonl",
+      "sha256": "a35a64ea2a6fc118dad6773e704adead3b783c2ebf4009ee5ebc2e9c2f73e8f4"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0300_syna_tcm_read_flash_mtp_config_00125a18.asm",
+      "sha256": "55f1188a6c1792c8ac213668a01ebc853314d80b4061666d81d2baa0f5dc7d8d"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_mtp_config.c",
+      "sha256": "574f5ffb3c036c05efc0462f03522189bd4366c6f78ba87814b351c5256f6723"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next301_syna_tcm_read_flash_mtp_config_v1/candidate_assembly/syna_tcm_read_flash_mtp_config_candidate.s",
+      "sha256": "5d62b7fa5718357d24ece9dbe04c8d15860c2817a5333a24c39fb4da29a7959c"
+    }
+  },
+  "checks": {
+    "argument_and_mode_validation": "PASS",
+    "boot_version_three_gate": "PASS",
+    "zero_length_erase_page_fallback": "PASS",
+    "v3_page_plus_offset_address": "PASS",
+    "resize_zero_and_flash_delegation": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The candidate explicitly rejects null pointers and zero derived lengths that the stock path may dereference or pass onward.",
+    "Dependency implementations are outside this isolated target.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}

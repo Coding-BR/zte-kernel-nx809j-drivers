@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "task_id": "soc-fan-independent-review-MP4-MP5-20261027-r2",
+  "reviewer": "Hubble",
+  "reviewer_agent_id": "01a17d6e-d604-7ab2-9e10-ac190169a0d0",
+  "reviewed_utc": "2026-10-27T14:21:22Z",
+  "review_scope": [
+    "MP4_EVENT_CALLBACK_LIFETIME L3 readiness",
+    "MP5_LOCK_LIFETIME_CONTRACT follow-up and L4 readiness",
+    "Declared input hashes"
+  ],
+  "source_environment": {
+    "docker_source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098"
+  },
+  "reviewed_artifact_hashes": [
+    {
+      "path": "MP4_EVENT_CALLBACK_LIFETIME.json",
+      "sha256": "f521c029bc26b31363a9487bce63a6502c2fba8dc871b0bc559e11ccbcfbbe59"
+    },
+    {
+      "path": "MP5_LOCK_LIFETIME_CONTRACT.json",
+      "sha256": "e2b20b16d7116c9031e936584cc51e847108b4260b97ee017c07445d0e5ae49c"
+    },
+    {
+      "path": "offline_static/lifetime_source_contracts_MP5_20261027.txt",
+      "sha256": "c8b0929e74c4cf7360ef4898ef27046e9d66b5ad439d32a530cf4ab4ef0a2d06"
+    }
+  ],
+  "independent_input_audit": {
+    "MP4_declared_hash_count_checked": 20,
+    "MP4_missing_or_mismatched": 0,
+    "MP5_declared_hash_count_checked": 29,
+    "MP5_missing_or_mismatched": 0,
+    "total_hashes_checked": 49,
+    "reviewer_result": "All declared MP4 and MP5 input hashes match the reviewed artifacts and pinned source evidence."
+  },
+  "findings": [
+    "MP4 is L3 evidence-ready with no corrections required in the reviewed refinements; the artifact remains EXTRACTED_REVIEW_REQUIRED.",
+    "The MP5 CONFIG_OF_DYNAMIC qualifier accurately limits the child-node reference inference to configurations where dynamic OF references are refcounted.",
+    "MP5 OBS-013 accurately records generic devres reverse-registration release order through add_dr/list_add_tail and reverse release_nodes iteration, without asserting an unproven target-specific inter-resource order.",
+    "No new factual mismatch was found in the reviewed MP5 corrections."
+  ],
+  "readiness": {
+    "MP4_L3": "READY_FOR_GATE_REVIEW_NOT_PASSED",
+    "MP5_L4": "READY_FOR_L4_REVIEW_NOT_SIGNED_OFF",
+    "formal_gate_passes_recorded": 0
+  },
+  "open_items": [
+    "L4 teardown remains open for regulator, raw GPIO/IRQ, kobject, hrtimer quiescence, lock coverage, and module-global chip pointer lifetime.",
+    "Actual target CONFIG_OF_DYNAMIC, device/DT runtime binding, and PWM provider binding remain unconfirmed."
+  ],
+  "candidate_source_edited": false,
+  "semantic_equivalence_established": false,
+  "hardware_validation_performed": false,
+  "review_notes": "Independent readiness review only; no formal gate PASS, semantic-equivalence proof, candidate-source authorization, or hardware validation is established."
+}

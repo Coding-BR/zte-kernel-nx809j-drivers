@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "function": "trig_store@00106940",
+  "reads": [
+    {"offset": "driver_data[0x417]", "condition": "slot 0", "meaning": "reject trigger 1 when one-wire mode is active"},
+    {"offset": "driver_data[-0xa2] bit 0", "meaning": "require RAM initialization state"},
+    {"offset": "driver_data[0x3b4]", "meaning": "maximum allowed sequence value"}
+  ],
+  "writes": [
+    {"base": "driver_data + (trigger_number - 1) * 13", "offset": "0x53f", "source": "value[1] trigger level"},
+    {"base": "same", "offset": "0x540", "source": "value[2] polarity"},
+    {"base": "same", "offset": "0x541", "source": "value[3] positive enable"},
+    {"base": "same", "offset": "0x543", "source": "value[4] positive sequence"},
+    {"base": "same", "offset": "0x542", "source": "value[5] negative enable"},
+    {"base": "same", "offset": "0x544", "source": "value[6] negative sequence"},
+    {"base": "same", "offset": "0x53d", "source": "value[7] brake setting"},
+    {"base": "same", "offset": "0x53e", "source": "value[8] boost setting"}
+  ],
+  "return": "byte count in every path",
+  "effects_basis": ["stock Ghidra decompilation", "stock AArch64 body", "three trigger configuration helpers"]
+}

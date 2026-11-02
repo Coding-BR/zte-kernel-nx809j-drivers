@@ -94,7 +94,9 @@ void netlink_exit(void);
 
 int zte_goodix_pinctrl_init(struct gf_dev *gf_dev);
 int zte_goodix_pinctrl_select(struct gf_dev *gf_dev, bool active);
+#ifndef ZTE_FINGERPRINT_HOST_TEST
 int gf_parse_dts(struct gf_dev *gf_dev);
+#endif
 void gf_cleanup(struct gf_dev *gf_dev);
 int gf_power_on(struct gf_dev *gf_dev);
 int gf_power_off(struct gf_dev *gf_dev);

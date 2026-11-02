@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "tiktap_work_routine",
+  "stock_identity": "tiktap_work_routine@00108c68",
+  "status": "STATIC_ALIGNED_CANDIDATE",
+  "promotion_claim": false,
+  "independent_review_status": "NOT_YET_REVIEWED",
+  "candidate_module_sha256": "30297afdbf492e5e566e71318ba1075d091dc2521cb18d985ef79586bad6ff80",
+  "core_gate_status": {
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "INPUT_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "KCFI": "PASS",
+    "MAP_IDENTITY": "PASS"
+  },
+  "core_status": "CORE_GATES_PASS",
+  "strict_assembly": true,
+  "strict_ghidra_c": true,
+  "strict_ghidra_pcode": true,
+  "kcfi_entry_and_callsites": "PASS",
+  "semantic_corrections": [
+    {
+      "id": "stop_requested_preserves_flag",
+      "stock_evidence": "Stock assembly at entry+0xb8 tests tiktap_stop bit 0 and branches to entry+0x148, after the stop-byte store at entry+0x140.",
+      "old_candidate_behavior": "The initial stop branch shared the timeout cleanup label and wrote tiktap_stop=1 before unlocking.",
+      "counterexample_condition": "A concurrent writer sets tiktap_stop to a byte with bit 0 set and another bit set (for example 0x03) while the startup wait is active. Stock preserves the byte; the old candidate replaced it with 0x01.",
+      "fix": "The stop-request branch now targets work_unlock_only, bypassing the stop-byte store. Timeout and QoS cleanup still set the flag.",
+      "source_location": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_138_tiktap_work_routine.c:131",
+      "final_evidence": "protocol_core_v14 strict assembly and Ghidra C/P-Code comparisons pass."
+    },
+    {
+      "id": "send_node_does_not_add_wait_delay",
+      "stock_evidence": "After set_rtp_data, stock marks the node complete, advances the link, samples time, and branches to entry+0x254; the 1 ms delay call is at entry+0x248 and is only used by the wait path.",
+      "old_candidate_behavior": "The successful send path jumped to wait_for_fifo and executed an extra udelay(1000) before sampling time and polling again.",
+      "counterexample_condition": "A node is ready and the FIFO AES callback reports space. Stock proceeds directly to time sampling; the old candidate adds one delay call.",
+      "fix": "The send path now jumps to sample_time; only the not-ready/default-state path executes udelay(1000).",
+      "source_location": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_138_tiktap_work_routine.c:198",
+      "final_evidence": "protocol_core_v14 strict assembly and Ghidra C/P-Code comparisons pass."
+    }
+  ],
+  "callback_table": [
+    {
+      "slot": "aw8693x_func_list+0x98",
+      "callback": "aw8693x_play_mode",
+      "prototype": "void (struct aw_haptic *, u8)",
+      "kcfi_type_id": "0x1d0adf6e"
+    },
+    {
+      "slot": "aw8693x_func_list+0x118",
+      "callback": "aw8693x_upload_lra",
+      "prototype": "void (struct aw_haptic *, unsigned int)",
+      "kcfi_type_id": "0xd37b6e95"
+    },
+    {
+      "slot": "aw8693x_func_list+0x60",
+      "callback": "aw8693x_play_go",
+      "prototype": "void (struct aw_haptic *, u8)",
+      "kcfi_type_id": "0x1d0adf6e"
+    },
+    {
+      "slot": "aw8693x_func_list+0x178",
+      "callback": "aw8693x_rtp_get_fifo_aes",
+      "prototype": "u8 (struct aw_haptic *)",
+      "kcfi_type_id": "0x784b3854"
+    },
+    {
+      "slot": "aw8693x_func_list+0x160",
+      "callback": "aw8693x_get_glb_state",
+      "prototype": "u8 (struct aw_haptic *)",
+      "kcfi_type_id": "0x784b3854"
+    },
+    {
+      "slot": "aw8693x_func_list+0xd0",
+      "callback": "aw8693x_set_rtp_data",
+      "prototype": "void (struct aw_haptic *, u8 *, u32)",
+      "kcfi_type_id": "0xc6a7b29b"
+    }
+  ],
+  "state_effect_ledger": [
+    "Lock aw_haptic+0x290; set stop=0; play_mode(2); upload_lra(2).",
+    "Startup wait observes node state and stop bit and performs 1 ms delays; a preexisting stop unlocks without rewriting the flag.",
+    "On valid start: play_go(1), delay 1 ms, require retry counter > 0; set started=1; unlock aw_haptic+0x290; lock aw_haptic+0x370.",
+    "Ensure shared aw_pm_qos_req_vb is active, adding CPU latency QoS request with value 0 only if inactive.",
+    "Poll FIFO AES then global state; reject low-nibble zero; read stop byte before FIFO node state.",
+    "For valid node and FIFO-ready: log signed 16-bit length, read payload bytes 0,1,0x0a,0x0c, call set_rtp_data(pointer, sign-extended length converted to u32), mark node 0xaa, advance next, update time/count, then sample time without an added delay.",
+    "For a nonterminal wait path: udelay(1000), sample time; timeout after 800 ms relative to the current anchor.",
+    "Exit/error/timeout path removes QoS only if active, sets stop=1, then unlocks the current mutex; startup preexisting-stop path only unlocks the first mutex."
+  ],
+  "lock_lifetime_draft": {
+    "entry_mutex": "aw_haptic+0x290",
+    "processing_mutex": "aw_haptic+0x370",
+    "qos_request": "global aw_pm_qos_req_vb, stock ELF object size 48",
+    "review_limit": "Static function ownership is described, but cross-worker serialization of the shared QoS request, queue/cancel ordering, and teardown owner are not independently resolved."
+  },
+  "additional_required_gates_not_satisfied": [
+    "BOUNDED_MODEL",
+    "CALLBACK_TABLE",
+    "HOST_HARNESS",
+    "INDEPENDENT_REVIEW",
+    "KMI_TYPES",
+    "KUNIT_LOCKDEP_KCSAN",
+    "LLVM_IR_DIAGNOSIS",
+    "LOCK_LIFETIME",
+    "SANITIZERS",
+    "SEMANTIC_COUNTEREXAMPLE",
+    "STATE_EFFECT_LEDGER"
+  ],
+  "limitations": [
+    "Core translation validation is not runtime or hardware proof.",
+    "Host harness, bounded model, sanitizers, KUnit/lockdep/KCSAN, LLVM IR diagnosis and independent review have not been completed.",
+    "Do not promote the microtask to complete from this artifact."
+  ]
+}

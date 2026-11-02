@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "CS configuration local mutex and flash-buffer lifetime review",
+  "review_status": "STATIC_REVIEW_COMPLETE",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 4,
+    "unique_call_sites": 4,
+    "joern_findings_total": 128,
+    "functions": [
+      "syna_tcm_update_cs_config"
+    ],
+    "reviewed_total_after_this_round": 74,
+    "remaining_joern_findings": 54
+  },
+  "joern_alerts": [
+    {
+      "function": "syna_tcm_update_cs_config",
+      "file": "syna_tcm_update_cs_config.c",
+      "line": 68,
+      "call": "mutex_init",
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(access.mutex)"
+    },
+    {
+      "function": "syna_tcm_update_cs_config",
+      "file": "syna_tcm_update_cs_config.c",
+      "line": 69,
+      "call": "mutex_init",
+      "category": "synchronization",
+      "severity": "high",
+      "code": "mutex_init(boot_config.mutex)"
+    },
+    {
+      "function": "syna_tcm_update_cs_config",
+      "file": "syna_tcm_update_cs_config.c",
+      "line": 175,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, boot_config.data)"
+    },
+    {
+      "function": "syna_tcm_update_cs_config",
+      "file": "syna_tcm_update_cs_config.c",
+      "line": 186,
+      "call": "devm_kfree",
+      "category": "lifetime",
+      "severity": "high",
+      "code": "devm_kfree(managed_device, access.managed_allocation)"
+    }
+  ],
+  "findings": [
+    {
+      "id": "cs-update-local-mutex-initialization",
+      "category": "synchronization",
+      "severity": "NO_UNINITIALIZED_OR_DOUBLE_INITIALIZATION_PATH_FOUND",
+      "disposition": "BOTH_MUTEXES_INITIALIZED_AFTER_ARGUMENT_GUARDS_BEFORE_HELPER_USE",
+      "details": "The invalid-parameter return is before mutex initialization and before the update flag is set. Every subsequent setup/read/geometry/scan/write result reaches the common cleanup. Ghidra stock shows the same pair of __mutex_init calls before setup. The boot-config helper does not change this local buffer’s lock_depth, and the function does not directly acquire either local mutex.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_cs_config.c",
+        "source_sha256": "42214c15c8b1970da074d1c41ad6b6ca455acafbd96c3bb17258e32b208fec9e",
+        "exact_assembly": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_cs_config_exact.S",
+        "exact_assembly_sha256": "b5b548169e56bb4dafc48bf94df4538f57ac71b089517a08e3e735f31677cfe1",
+        "ghidra_decomp": "offline_static/ghidra_stock/decompiled/0307_00127414_syna_tcm_update_cs_config.c",
+        "ghidra_decomp_sha256": "e01a23f15cf27fbba86e6d6ccd4f2783171628e2663e56578c5a9ed6532edc23",
+        "ghidra_pcode": "offline_static/ghidra_stock/pcode/0307_00127414_syna_tcm_update_cs_config.jsonl",
+        "ghidra_pcode_sha256": "3ac1be3ff4e873e171bf1b24d57f8f815c52a0d72fcc1600bab798157a0b6a4a",
+        "stock_assembly": "offline_static/stock_assembly/0307_syna_tcm_update_cs_config_00127414.asm",
+        "stock_assembly_sha256": "59023a5754b02d8f844c8b2f97f9aaf81de20823a0911a03c2c630bbca7c9ad7",
+        "joern_lines": [
+          68,
+          69
+        ],
+        "cleanup_label_line": 166
+      }
+    },
+    {
+      "id": "cs-update-managed-buffer-cleanup",
+      "category": "lifetime",
+      "severity": "COMMON_CLEANUP_COVERS_FAILURE_AND_SUCCESS; NULL_DEVICE_SKIPS_IMMEDIATE_DEVM_FREE",
+      "disposition": "RESOURCES_RELEASED_WHEN_PROVIDER_RETURNS_DEVICE; CONDITIONAL_STOCK_LIFETIME_GAP_RECORDED",
+      "details": "The boot-config data buffer is freed if allocated, including after a read error that may follow allocation. The flash-access managed allocation is checked and freed in the same common cleanup. The two devm_kfree calls require a non-NULL managed device; otherwise devres retains the allocation until device teardown. Ghidra stock has the same two conditional frees. Static evidence did not establish that the device provider becomes unavailable during the operation, so this is a conditional retained-devres risk, not a confirmed runtime leak.",
+      "evidence": {
+        "candidate_source": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_update_cs_config.c",
+        "source_sha256": "42214c15c8b1970da074d1c41ad6b6ca455acafbd96c3bb17258e32b208fec9e",
+        "exact_assembly_sha256": "b5b548169e56bb4dafc48bf94df4538f57ac71b089517a08e3e735f31677cfe1",
+        "managed_device_provider": "kernel_development/drivers/reconstructed/zte_tpd/syna_request_managed_device.c",
+        "provider_sha256": "b9006d8d2cdb68c5d934635bb7df78a2fcd8e8317a1c6217b9ff52954e1aeb93",
+        "boot_config_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash_boot_config.c",
+        "boot_config_helper_sha256": "e62d0319ea5a7771de2f9228af43b4012c03e631132b514ef7793e44e97cf3ac",
+        "free_lines": [
+          175,
+          186
+        ],
+        "cleanup_label_line": 166
+      }
+    },
+    {
+      "id": "cs-update-write-lock-balance",
+      "category": "lock_balance",
+      "severity": "NO_OUTSTANDING_WRITE_MUTEX_CONFIRMED_IN_REVIEWED_CALL_CHAIN",
+      "disposition": "WRITE_HELPER_RELEASES_ON_SUCCESS_AND_POST_LOCK_ERRORS",
+      "details": "The function logs if access.release_required remains nonzero and then resets the local counter, but does not unlock at that point. The called write helper increments the counter after mutex_lock and routes successful completion and post-lock errors through its release routine, which updates the counter and calls mutex_unlock. The boot-config read and pre-write validation paths do not acquire this flash-access mutex.",
+      "evidence": {
+        "write_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash.c",
+        "write_helper_sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+        "exact_write_helper": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash_exact.S",
+        "exact_write_helper_sha256": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705",
+        "prior_write_helper_review": "attestation/semantic_review_round9_20261102/review.json",
+        "prior_write_helper_review_sha256": "9569aa4ff2db4d7e59d5f5e268812bb207ad74dc19089a88a56fb042e6fb4054"
+      }
+    },
+    {
+      "id": "cs-update-kbuild-baseline",
+      "category": "reconstruction_provenance",
+      "severity": "EXACT_ASSEMBLY_SELECTED_BY_KBUILD",
+      "disposition": "NO_SOURCE_CHANGE; STOCK_BASELINE_PRESERVED",
+      "details": "The Makefile filters out the C mirror and links syna_tcm_update_cs_config_exact.o. The C mirror, exact assembly, and write-helper assembly match the curated Docker snapshot and entries in its canonical 848-input manifest. The reused canonical report passed two independent cycles. The existing host ASan/UBSan contract matches the current source hash and passed 11 cases in two cycles; it was not rerun.",
+      "evidence": {
+        "makefile": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+        "canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+        "canonical_build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+        "docker_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+        "kbuild_input_count": 848,
+        "source_c_matches_docker": true,
+        "exact_assembly_matches_docker": true,
+        "write_helper_exact_assembly_matches_docker": true,
+        "new_build_required": false,
+        "host_harness_report": "attestation/next308_syna_tcm_update_cs_config_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+        "host_harness_sha256": "8dcf8a656f74350632c8a2a2854d575ea830d504f937ef694802a2460660c786",
+        "host_harness_passed": true,
+        "host_cases": 11,
+        "host_cycles": 2,
+        "executed_this_round": false
+      }
+    }
+  ],
+  "source_sha256": {
+    "syna_tcm_update_cs_config.c": "42214c15c8b1970da074d1c41ad6b6ca455acafbd96c3bb17258e32b208fec9e",
+    "syna_tcm_update_cs_config_exact.S": "b5b548169e56bb4dafc48bf94df4538f57ac71b089517a08e3e735f31677cfe1"
+  },
+  "helper_sha256": {
+    "syna_tcm_read_flash_boot_config.c": "e62d0319ea5a7771de2f9228af43b4012c03e631132b514ef7793e44e97cf3ac",
+    "syna_tcm_write_flash.c": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101",
+    "syna_tcm_write_flash_exact.S": "7ba5751694a34f3d966c06cc01687b3a92933280d820726c4818d871a6794705"
+  },
+  "ghidra_sha256": {
+    "decompilation": "e01a23f15cf27fbba86e6d6ccd4f2783171628e2663e56578c5a9ed6532edc23",
+    "pcode": "3ac1be3ff4e873e171bf1b24d57f8f815c52a0d72fcc1600bab798157a0b6a4a",
+    "stock_assembly": "59023a5754b02d8f844c8b2f97f9aaf81de20823a0911a03c2c630bbca7c9ad7"
+  },
+  "joern_report": {
+    "path": "attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+    "sha256": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "findings_in_scope": 4
+  },
+  "docker_snapshot": {
+    "reused_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+    "build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "build_passed": true,
+    "build_reproducible": true,
+    "accepted_cycles": 2,
+    "kbuild_inputs": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "source_c_matches_docker": true,
+    "exact_assembly_matches_docker": true,
+    "new_build_required": false,
+    "reason": "No Kbuild input changed during this analysis-only batch."
+  },
+  "existing_host_harness": {
+    "report": "attestation/next308_syna_tcm_update_cs_config_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "8dcf8a656f74350632c8a2a2854d575ea830d504f937ef694802a2460660c786",
+    "passed": true,
+    "cases": 11,
+    "cycles": 2,
+    "source_sha256_matches": true,
+    "executed_this_round": false
+  },
+  "limitations": [
+    "Device teardown interleavings were not dynamically modeled.",
+    "No Android runtime or NX809J hardware execution.",
+    "Existing host and Docker reports were inspected but not rerun this round.",
+    "No implementation or test files changed this round."
+  ]
+}

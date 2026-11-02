@@ -23,7 +23,7 @@ ssize_t tp_frame_data_read(struct file *file, char __user *buffer, size_t count,
   if ( !v5 )
   {
     v8 = tpd_cdev;
-    v10 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 3656);
+    v10 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 0x1000);
     if ( v10 )
     {
       v11 = tpd_cdev;

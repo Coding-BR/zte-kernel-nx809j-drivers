@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "decision": "PROMOTED_OFFLINE_EXACT",
+  "driver": "zte_ir",
+  "function": "zte_ir_probe",
+  "stock_entry": "00100918",
+  "stock_module_sha256": "b7a70d47bbdad67e184f968808b2c448172fc1ff16bb22e80b9beaa08d9641a1",
+  "candidate_module_sha256": "14d7ab4f8696d422e6c300fd4c4d8a6a67d0af939de4a954c0f0f542797ef9bc",
+  "body": {
+    "instructions": 141,
+    "bytes": 564,
+    "kcfi_type_id": "0xba1082a1",
+    "stock_assembly_sha256": "1f6051248b68a8efd644be52397480977474421375d77df5cd31d5fb6a9111b6",
+    "candidate_assembly_sha256": "95ce4b99144bda23bd1310389f795490f983da8ae7e9ed734496dbd876851397"
+  },
+  "data_layout": {
+    "device_list_lock": ".data+0x0",
+    "device_list": ".data+0x30",
+    "spidev_major": ".bss+0x0",
+    "zte_ir_class": ".bss+0x8",
+    "zte_ir_probe.__key": ".bss+0x10",
+    "minors": ".bss+0x18",
+    "evidence": "assembly/comparison.json, candidate Ghidra symbols and section-address normalization proof"
+  },
+  "automated_gates": {
+    "INPUT_IDENTITY": "PASS",
+    "MAP_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "KCFI": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS"
+  },
+  "host_harness": {"passed": true, "reproducible": true, "report": "host_test_report.json"},
+  "limitations": [
+    "The result is static/offline and has no hardware claim.",
+    "The exact island preserves stock allocation, mutex, minor and list-registration behavior; the C safety implementation remains outside this island.",
+    "Ghidra absolute data addresses are normalized only when both exports prove the same section-relative offset; Assembly and P-Code remain independent gates.",
+    "Independent review O10 and controlled NX809J runtime validation remain pending."
+  ],
+  "evidence": {
+    "hard_protocol": "hard_protocol_report.json",
+    "assembly": "assembly/comparison.json",
+    "kcfi": "kcfi/comparison.json",
+    "ghidra": "semantic_comparison.json",
+    "joern": "joern/joern_gate_report.json",
+    "docker": "docker_reproducibility.json",
+    "audit": "docker/driver_audit.json"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "function": "duration_aw_show",
+  "prototype": "ssize_t duration_aw_show(struct device *, struct device_attribute *, char *)",
+  "registration": {
+    "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/functions.jsonl",
+    "observation": "The stock callback is a device_attribute show handler; the KCFI type matches the other sysfs show callbacks."
+  },
+  "external_calls": [
+    "hrtimer_active",
+    "__hrtimer_get_remaining",
+    "snprintf"
+  ],
+  "kcfi_type_id": "0xae84bcd4",
+  "confidence": "high; callback ABI is confirmed by the shared sysfs show KCFI type and candidate KCFI gate."
+}

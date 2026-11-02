@@ -1,0 +1,154 @@
+{
+  "applicable": false,
+  "checks": {
+    "caller_multiplicity_matches": true,
+    "candidate_has_incoming_calls": true,
+    "candidate_has_no_kcfi_exclusion": true,
+    "candidate_has_one_target_address": true,
+    "candidate_has_single_kcfi_record": true,
+    "candidate_incoming_calls_are_direct": true,
+    "candidate_module_matches_kcfi_report": true,
+    "incoming_call_count_matches": true,
+    "stock_exclusion_is_recorded": true,
+    "stock_has_incoming_calls": true,
+    "stock_has_no_kcfi_record": true,
+    "stock_has_one_target_address": true,
+    "stock_incoming_calls_are_direct": true,
+    "stock_module_matches_kcfi_report": true
+  },
+  "comparisons": [
+    {
+      "applicable": false,
+      "candidate_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "gf_ioctl",
+            "count": 1,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "gf_ioctl",
+            "caller_entry": "00101e34",
+            "callsite": "00101f64",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "gf_disable_irq",
+            "target_address": "0010077c"
+          }
+        ],
+        "count": 1,
+        "target_addresses": [
+          "0010077c"
+        ]
+      },
+      "candidate_extra_instrumentation": true,
+      "candidate_kcfi_record": {
+        "function": "f000",
+        "preamble_bytes_le": "6423b82a",
+        "preamble_offset": "0x58",
+        "section": ".text",
+        "symbol_name": "gf_disable_irq",
+        "symbol_offset": "0x5c",
+        "symbol_size": 64,
+        "type_id": "0x2ab82364"
+      },
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "function": "gf_disable_irq",
+      "passed": true,
+      "reason": "The stock ELF has no valid KCFI preamble for this function, and every incoming stock and candidate reference is a direct UNCONDITIONAL_CALL.",
+      "stock_call_graph": {
+        "by_caller_and_reference_type": [
+          {
+            "caller": "gf_ioctl",
+            "count": 1,
+            "reference_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "calls": [
+          {
+            "caller": "gf_ioctl",
+            "caller_entry": "00100824",
+            "callsite": "00100954",
+            "external": false,
+            "reference_type": "UNCONDITIONAL_CALL",
+            "target": "gf_disable_irq",
+            "target_address": "001010d8"
+          }
+        ],
+        "count": 1,
+        "target_addresses": [
+          "001010d8"
+        ]
+      },
+      "stock_kcfi_exclusion": {
+        "decision": "NO_VALID_KCFI_PREAMBLE",
+        "function": "f000",
+        "reason": "candidate preamble overlaps function body: gf_release+0xec",
+        "section": ".text",
+        "symbol_name": "gf_disable_irq",
+        "symbol_offset": "0x8b8",
+        "symbol_size": 64
+      },
+      "stock_kcfi_record": null
+    }
+  ],
+  "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "driver": "fp_goodix",
+  "function": "gf_disable_irq",
+  "generated_utc": "2026-09-01T20:02:55.754525+00:00",
+  "inputs": {
+    "candidate_calls": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\gf_disable_repair_export\\fp_goodix.ko\\calls.jsonl",
+      "sha256": "20cc9cc9eb2f6cad76988e08984dc3c289c777ab60accab7efa2141874084f1e",
+      "size": 50442
+    },
+    "candidate_kcfi_report": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\gf_disable_protocol_run2\\kcfi\\candidate.json",
+      "sha256": "84223b71d6c093c522db478eea3cf57609dff62099c403764ad6bc2bc85f5320",
+      "size": 695
+    },
+    "candidate_module": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\gf_disable_protocol_run2\\docker\\work\\fp_goodix\\cycle_2\\fp_goodix.ko",
+      "sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+      "size": 721008
+    },
+    "stock_calls": {
+      "path": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/calls.jsonl",
+      "sha256": "a166651b9972a8ee12b6e7ccfa48d2b1c0fb3cb412d965e877e9b8399dea97e8",
+      "size": 51165
+    },
+    "stock_kcfi_report": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\ghidra_nav_repair_20260902\\gf_disable_protocol_run2\\kcfi\\stock.json",
+      "sha256": "f41d060dfa67019b400a4df622b1d4204b68914b365f69bf615e22e3357aaf60",
+      "size": 690
+    },
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/fp_goodix.ko",
+      "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+      "size": 62088
+    }
+  },
+  "limitations": [
+    "This decision proves only that no stock indirect KCFI boundary was observed.",
+    "The candidate compiler emitted an extra KCFI preamble; it is not claimed as a stock type-ID match.",
+    "Direct-call equivalence does not replace Assembly, P-Code, host, or hardware validation."
+  ],
+  "modules": {
+    "candidate": {
+      "sha256": "7c2772bf16112e80b4311ec686696156f46adf985d67fac9ae257ef7cc70241d",
+      "sha256_matches": true,
+      "size": 721008,
+      "size_matches": true
+    },
+    "stock": {
+      "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+      "sha256_matches": true,
+      "size": 62088,
+      "size_matches": true
+    }
+  },
+  "passed": true,
+  "schema_version": "1.0"
+}

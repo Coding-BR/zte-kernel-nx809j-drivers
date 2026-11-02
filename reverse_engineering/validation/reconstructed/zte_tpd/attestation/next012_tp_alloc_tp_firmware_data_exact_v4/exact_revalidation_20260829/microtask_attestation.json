@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "status": "PASS",
+  "driver": "zte_tpd",
+  "microtask_id": "012_tp_alloc_tp_firmware_data",
+  "stock_function": "tp_alloc_tp_firmware_data",
+  "stock_entry": "00107d54",
+  "stock_body_bytes": 352,
+  "manifest_correction": "The prior 260-byte metadata was stale; authoritative stock and candidate ELF symbols are both 352 bytes.",
+  "candidate_module_sha256": "a3c6e0f637b526e088b8ca87b503105c1621dc68c242c5b6fa2dda444e0385f3",
+  "candidate_source_sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+  "assembly": {
+    "passed": true,
+    "instruction_count_stock": 88,
+    "instruction_count_candidate": 88,
+    "symbol_size_stock": 352,
+    "symbol_size_candidate": 352,
+    "comparison": "aarch64_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "stock_type_id": "0xcdde824b",
+    "candidate_type_id": "0xcdde824b",
+    "comparison": "kcfi/comparison.json"
+  },
+  "docker": {
+    "passed": true,
+    "cycles": 2,
+    "reproducible": true,
+    "canonical_build_report": "canonical_build_report.json"
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problem_count": 0,
+    "report": "joern/joern_gate_report.json"
+  },
+  "host_test": {
+    "passed": true,
+    "sanitizers": ["address", "undefined"],
+    "cycles": 2,
+    "cases_per_cycle": 12,
+    "direct_cases": ["alloc_success", "alloc_replaces_existing_buffer", "alloc_descriptor_failure", "alloc_data_failure_preserves_stock_slot"],
+    "report": "host_harness_report.json"
+  },
+  "evidence_sha256": {
+    "canonical_build_report.json": "dd9dd37d4a281b1e1009050a15b5f023bfd9bfc8e579fec4fed7702dea75562a",
+    "aarch64_comparison.json": "dd19c6240234485367cf8ee69a2c7ef76a6135cdb49f52ef74b75c3902656ff9",
+    "kcfi/comparison.json": "fb918e724a7cbbf9219a1ee24f9296032acc4b19e7ba4a4f1a1e2990f3c5aa27",
+    "joern/joern_gate_report.json": "9a076cf0934b61b13c921c98b30f8a17023e278be3cc22b2a982c6ba13622cb2",
+    "host_harness_report.json": "fb38fabd295aca41d2a588b1711a21c0ee59b61729bd3d806318f2fd64ab3b5b",
+    "microtask_attestation.json": "SELF_HASH_NOT_APPLICABLE"
+  },
+  "limitations": [
+    "The host harness stubs kmalloc, vmalloc, vfree, kfree and cdev memory while exercising all direct allocation and failure branches.",
+    "No smartphone, Android service, SPI, IRQ, MMIO or physical hardware is exercised.",
+    "The exact AArch64 gate proves opcode/relocation identity; hardware behavior remains untested."
+  ]
+}

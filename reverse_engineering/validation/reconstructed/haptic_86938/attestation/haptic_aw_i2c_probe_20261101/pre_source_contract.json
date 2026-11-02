@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "aw_i2c_probe",
+  "classification": "CANDIDATE_UNDER_STATIC_VALIDATION",
+  "stock_identity": {
+    "module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "entry": "001073c0",
+    "body_bytes": 3704,
+    "section": ".text",
+    "kcfi_type_id": "0x0c5e2bbf",
+    "kcfi_preamble_offset": "0x459c"
+  },
+  "call_contract": {
+    "prototype": "int aw_i2c_probe(struct i2c_client *client)",
+    "calling_convention": "AArch64 kernel C ABI; client in x0; int result in w0",
+    "evidence": [
+      "offline_static/ghidra_stock_repaired/haptic_86938.ko/functions.jsonl",
+      "offline_static/kcfi_stock.json",
+      "offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm"
+    ]
+  },
+  "state_and_dispatch_contract": {
+    "allocation": "devm_kmalloc allocates 0x6f8 bytes for the haptic state.",
+    "clientdata": "The probe stores the allocated state in i2c clientdata at client offset 0xb8.",
+    "callback_table": "For chip id 0x9380, the probe assigns aw8693x_func_list at state offset 0x5c8, then dispatches aw8693x_parse_dt through slot 0x0e0 and other callbacks through their stock slots.",
+    "probe_side_effects": [
+      "reads and requests reset/interrupt GPIOs",
+      "resets and probes the chip ID over I2C",
+      "loads device-tree and firmware configuration",
+      "initializes RAM/workqueues, haptic state, misc device, and IRQ resources",
+      "unwinds acquired resources on failure"
+    ],
+    "error_contract": "Return the stock negative errno on each failure path and unwind the resources acquired before that path."
+  },
+  "implementation_strategy": {
+    "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_143_aw_i2c_probe_exact.S",
+    "semantic_model": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_143_aw_i2c_probe_semantic_model.c",
+    "compiled_source": "exact materialized stock AArch64 body with explicit audited section relocations; semantic model is Joern-only",
+    "reason": "The 3,704-byte probe contains 307 stock relocations, callback dispatch, and extensive error unwinding. The exact body preserves the stock control flow and relocation contract while the semantic model exposes its call/state graph to Joern."
+  },
+  "known_limits": [
+    "Static equivalence does not validate the I2C device on physical hardware.",
+    "Module registration and the complete haptic driver remain separate reconstruction gates."
+  ]
+}

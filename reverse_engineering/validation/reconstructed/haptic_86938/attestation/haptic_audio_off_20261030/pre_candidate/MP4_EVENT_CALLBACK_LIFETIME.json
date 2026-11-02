@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "function_id": "audio_off@0010d148",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "event": "synchronous audio shutdown and queued audio-command cleanup",
+  "caller": {
+    "identity": "haptic_audio_store@0010cd9c",
+    "callsite": "0010cffc",
+    "condition": "audio command byte 1 equals 0xff and hrtimer_active is true",
+    "synchronous": true
+  },
+  "table_relation": {
+    "owner": "haptic+0x5c8 operations table",
+    "slots": [
+      {"offset": "0x88", "type_id": "0x1d0adf6e"},
+      {"offset": "0x38", "type_id": "0x847a0830"}
+    ]
+  },
+  "lifetime": {
+    "queued_nodes_created_by": "haptic_audio_store allocates 0x18-byte nodes and inserts their list_head at haptic+0x590",
+    "target_frees_nodes": true,
+    "target_retains_pointers": false,
+    "caller_uses_return_after_cleanup": false
+  },
+  "concurrency": {
+    "target_mutex": "haptic+0x2f0",
+    "caller_audio_mutex": "haptic+0x4f0 is held by haptic_audio_store when it calls audio_off",
+    "whole_driver_lock_order": "UNRESOLVED; audio_work_routine also processes the same list under its audio mutex"
+  },
+  "limitations": ["The target is synchronous, but interactions with concurrent audio work need full lock/lifetime analysis."]
+}

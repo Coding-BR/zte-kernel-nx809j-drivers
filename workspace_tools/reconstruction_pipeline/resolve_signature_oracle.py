@@ -21,6 +21,11 @@ from typing import Any
 
 from extract_kcfi import Elf64
 
+try:
+    from .target_kernel_defaults import target_source_volume
+except ImportError:
+    from target_kernel_defaults import target_source_volume
+
 
 SYMVER_RE = re.compile(r"^#SYMVER\s+(\S+)\s+(0x[0-9a-fA-F]{8})$", re.MULTILINE)
 
@@ -265,7 +270,7 @@ def parse_args() -> argparse.Namespace:
 				default=engineering_root / "validation" / "signature_oracle")
 	parser.add_argument("--output", type=Path)
 	parser.add_argument("--image", default="nubia-sm8850-kernel-builder:latest")
-	parser.add_argument("--source-volume", default="nubia_sm8850_kernel_src")
+	parser.add_argument("--source-volume", default=target_source_volume())
 	parser.add_argument("--toolchain-volume", default="nubia_sm8850_kernel_toolchains")
 	parser.add_argument("--clang-revision", default="clang-r536225")
 	parser.add_argument(

@@ -1,0 +1,28 @@
+{
+  "schema_version": "microtask_attestation_v1",
+  "target": "190_1a_application_info",
+  "driver": "zte_tpd",
+  "status": "PARTIAL",
+  "promotion": "NOT_PROMOTED",
+  "semantic_status": "UNPROVEN",
+  "hardware": "NOT_RUN",
+  "gates": {
+    "joern_parent": "PASS",
+    "joern_route_scope": "FAIL_INLINE_NO_STOCK_SYMBOL",
+    "host_harness": "PASS",
+    "canonical_docker_build": "PASS",
+    "kcfi_parent": "BLOCKED",
+    "aarch64_parent": "BLOCKED"
+  },
+  "artifact": {
+    "sha256": "2317f773f2a28d35c1b164cac6f00d8d432941cc67f3b78687681dcd24e55e77",
+    "size": 30037472,
+    "cycles": 2
+  },
+  "blockers": [
+    "parent KCFI mismatch: stock 0x2af6cdbb/8584 versus candidate 0xe513074c/7872",
+    "parent AArch64 comparison differs in symbol_size, instructions and relocations",
+    "route is inline and has no independent stock ELF symbol",
+    "devm allocation, arm64 user-pointer handling, fortify behavior and CFI require target/block-level validation"
+  ]
+}

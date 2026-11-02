@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_glove_read",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_glove_read.c",
+  "source_sha256": "b8097446b9b6222759c8c1fd8087e2f101a48c3a33db3695e902254732fdcae1",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_glove_read.c",
+      "size": 964,
+      "sha256": "b8097446b9b6222759c8c1fd8087e2f101a48c3a33db3695e902254732fdcae1"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_glove_read.c",
+      "size": 964,
+      "sha256": "b8097446b9b6222759c8c1fd8087e2f101a48c3a33db3695e902254732fdcae1"
+    }
+  ],
+  "driver_source_sha256": "b8097446b9b6222759c8c1fd8087e2f101a48c3a33db3695e902254732fdcae1",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_glove_read_host_test.c",
+  "harness_sha256": "80023d2669374d7c4efa1c6d50ad48193bae5d5a8f652e86fd9a47b0e5fc742f",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 2,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_glove_read host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "ade40cc51ee2c1d45c4b448029f480de55b2bf3ad44af7bd07058c2fbc8d82ba",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_glove_read host tests (2 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "ade40cc51ee2c1d45c4b448029f480de55b2bf3ad44af7bd07058c2fbc8d82ba",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness validates the +0xe48 callback offset, +0x8 value read, partial read and EOF contract with fake memory.",
+    "It does not execute the real procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

@@ -8,24 +8,25 @@ int syna_mmap(struct file *file, struct vm_area_struct *vma)
 {
   unsigned long size = vma->vm_end - vma->vm_start;
   void *private_data = file->private_data;
-  void *buffer;
+  long buffer;
+  long offset;
+  long pfn;
 
   if ( size > 0x32000 )
   {
-    printk(unk_3990A, "syna_mmap", (unsigned int)size);
+    printk(unk_3990A, "syna_mmap", (unsigned int)size, 0x32000);
     return -22; // -EINVAL
   }
 
-  if ( !private_data )
-    return -22;
+  buffer = *(long *)((char *)private_data + 1120);
 
-  buffer = *(void **)((char *)private_data + 1120);
-  if ( !buffer )
-    return -22;
+  offset = (((long)vma->vm_pgoff * 0x100000L) +
+            (buffer * 0x100L)) >> 8;
+  pfn = (((long)(memstart_addr >> PAGE_SHIFT) * 0x40L) +
+         ((offset + 0x8000000000L) >> 6)) >> 6;
 
   if ( remap_pfn_range(vma, vma->vm_start,
-                       (((unsigned long)buffer - PAGE_OFFSET + memstart_addr) >> PAGE_SHIFT) +
-                       vma->vm_pgoff,
+                       pfn,
                        size, vma->vm_page_prot) )
   {
     return -11;

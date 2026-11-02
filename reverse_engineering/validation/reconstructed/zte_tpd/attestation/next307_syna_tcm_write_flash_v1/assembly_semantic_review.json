@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "307_syna_tcm_write_flash",
+  "stock_entry": "0012704c",
+  "stock_symbol": "syna_tcm_write_flash",
+  "candidate_symbol": "syna_tcm_write_flash",
+  "candidate_compiler": "Android clang r536225 in nubia-sm8850-kernel-builder",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0306_0012704c_syna_tcm_write_flash.c",
+      "sha256": "35d7313dfd4ba5ed648d85e9c4a4ca7fae23f435a3b7d237b31d4cf881f153a3"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0306_0012704c_syna_tcm_write_flash.jsonl",
+      "sha256": "5419a38b7ad4bb9bdf3bac118c7dc43d0eed35527eeae68211bda0ef9928aec3"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0306_syna_tcm_write_flash_0012704c.asm",
+      "sha256": "ed3b6eac99d0f9a78be19c6bc03dadea11d6939c8ef5903648efcbb5b0cab247"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_write_flash.c",
+      "sha256": "cd60b90265a541744e73d7aebf3e48fe2cfabb84e53085442ea7915af4501101"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next307_syna_tcm_write_flash_v1/candidate_assembly/syna_tcm_write_flash_candidate.s",
+      "sha256": "269b13e9e764bb4deacb5e2e41054fe6566260bd79750b83356c25f264fcbf12"
+    }
+  },
+  "checks": {
+    "mutex_and_release_depth": "PASS",
+    "chunk_geometry_and_header": "PASS",
+    "managed_buffer_replacement": "PASS",
+    "delay_transport_and_command_0x12": "PASS",
+    "partial_write_accounting_and_errors": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The candidate adds guards for zero block geometry, chunk overflow and null write callbacks at invalid-input boundaries.",
+    "The access total-written word at +0x90 is retained as a recovered scratch extension rather than added to the shared header size.",
+    "This review does not establish kernel ABI, KCFI, module relocation, canonical build or physical hardware behavior."
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-01",
+  "microproof": "MP0_MP7_PRE_CANDIDATE",
+  "driver": "haptic_86938",
+  "function_identity": "aw8693x_offset_cali@00104250",
+  "status": "PRE_CANDIDATE_EVIDENCE_CAPTURED",
+  "promotion_authorized": false,
+  "hardware_validation": "NOT_RUN",
+  "stock": {
+    "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "size": 189328,
+    "section": ".text",
+    "elf_text_offset": "0x1430",
+    "ghidra_entry": "00104250",
+    "body_bytes": 432,
+    "instruction_count": 108
+  },
+  "evidence": {
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0010_aw8693x_offset_cali_00104250.asm",
+      "sha256": "036dfc3984e0dd7d897fb7bec7b4c14d45394b53717dc8880bd5c8794b2fb929"
+    },
+    "stock_decompilation": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0010_00104250_aw8693x_offset_cali.c",
+      "sha256": "c1cde5a851b680c2a25f1045a6f00d4f42404fb7cd19f295e8f4f3c94a2c7305"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0010_00104250_aw8693x_offset_cali.jsonl",
+      "sha256": "f25d6c27c16ac44fd13fcb225c077bdf69933b22ee0bf8dd91cb956305bd3244"
+    },
+    "callback_relocations": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP4_EVENT_CALLBACK_LIFETIME.json",
+      "sha256": "674525b0bc8f5375a645a7cac742ca5a2bc8f2fc9b89f594c38d377338d9feb5"
+    },
+    "stock_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/kcfi_stock.json",
+      "sha256": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4"
+    },
+    "stock_strings": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/strings.jsonl",
+      "sha256": "fe3af3c8c1898605a35ab9fbc653d410d74029a039c7271d190649f091c57eee"
+    },
+    "docker_constant_and_string_extract": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_offset_cali_20261101/microproofs/RODATA_CST32.json",
+      "sha256": "880c3f2cab2b2582eca92bd648d9bc8c1a39c381ccd0a8e9215209e98a33d96e"
+    }
+  },
+  "MP0_identity": {
+    "result": "PASS",
+    "identity_rule": "stock_function@stock_entry",
+    "name": "aw8693x_offset_cali",
+    "entry": "00104250",
+    "body_range": ".text+0x1430..0x15e0",
+    "source_mapping_before_work": null,
+    "map_status_before_work": "NOT_STARTED"
+  },
+  "MP1_signature_and_callback": {
+    "result": "EVIDENCE_CONSISTENT",
+    "kcfi": {
+      "required": true,
+      "preamble_offset": "0x142c",
+      "preamble_bytes_le": "30087a84",
+      "type_id": "0x847a0830"
+    },
+    "callback_slot": {
+      "relocation_section": ".rela.data",
+      "relocation_offset": "0x50",
+      "owner_object": "aw8693x_func_list",
+      "owner_offset": "0x50",
+      "relocation_type": "R_AARCH64_ABS64",
+      "target": ".text+0x1430",
+      "resolved_function": "aw8693x_offset_cali@00104250"
+    },
+    "callsite": {
+      "caller": "haptic_init@00108608",
+      "loads_callback_at_text_offset": "0x59f4",
+      "checks_kcfi_type_id_at_text_offset": "0x59f8..0x5a08",
+      "indirect_call_at_text_offset": "0x5a10",
+      "arguments_observed": "x0 = haptic_init parameter"
+    },
+    "prototype_assessment": "void(struct aw_haptic *) is the best-supported C prototype; KCFI and the single-pointer callsite are consistent with it. The KCFI hash alone is not treated as a unique source-level type proof."
+  },
+  "MP2_state_and_memory_effects": {
+    "result": "EXTRACTED",
+    "haptic_object_reads": [
+      {"offset": "0x495", "width": 1, "purpose": "index for initial register write"},
+      {"offset": "0x495", "width": 1, "purpose": "divisor table index after I2C sequence"}
+    ],
+    "direct_haptic_object_writes": [],
+    "stack_effects": [
+      "zero bytes at sp+0x4..sp+0x6 before the I2C read",
+      "I2C helper receives sp+0x4 and length 2",
+      "result bytes are read from sp+0x4 and sp+0x5"
+    ],
+    "read_only_data": ["eight-entry divisor table at .rodata.cst32"],
+    "external_effects": ["I2C bit writes", "I2C byte read", "sleep calls", "printk logs"],
+    "return": "void; only stack-canary failure is non-returning"
+  },
+  "MP3_control_and_error_matrix": {
+    "result": "EXTRACTED",
+    "index_0_to_7": "load signed 32-bit divisor from the stock table",
+    "index_8_to_255": "log line 0x609 using the stock d2s_gain error format, set divisor to 0",
+    "i2c_helper_returns": "all are ignored; no early exit or recovery branch is present in this function",
+    "zero_divisor": "the stock AArch64 function still executes SDIV; the architecture instruction returns 0 for a zero divisor, so offset is 0",
+    "sample_decode": "raw = (byte1) | ((byte0 & 3) << 8)",
+    "offset_formula": "((raw * 0x988) - 0x131000) / divisor, signed 32-bit division",
+    "out_of_range_predicate": "offset < -15 || offset > 15; log only, then continue to return",
+    "boundary_values": [-15, 15]
+  },
+  "MP4_callback_and_event_lifetime": {
+    "result": "EVIDENCE_CONSISTENT",
+    "registration": "aw8693x_func_list slot +0x50 resolves by relocation to this function",
+    "dispatch": "haptic_init loads and KCFI-checks the slot, then invokes it once with the haptic pointer",
+    "retained_callback_or_async_schedule_in_target": false
+  },
+  "MP5_lock_and_resource_lifetime": {
+    "result": "EXTRACTED",
+    "target_acquires_or_releases_lock": false,
+    "caller_lock_context": "haptic_init calls mutex_lock at .text+0x5898 before this callback and mutex_unlock at .text+0x5a48 after it",
+    "blocking_calls": ["usleep_range_state(500, 600, 2)", "usleep_range_state(3000, 3500, 2)"],
+    "allocation_irq_timer_work_rcu_or_retained_pointer": false
+  },
+  "MP6_hardware_bus_ledger": {
+    "result": "EXTRACTED",
+    "ordered_operations": [
+      {"op": "i2c_w_bits", "reg": "0x4e", "mask": "0xfffffff8", "value": "*(u8 *)(haptic+0x495)"},
+      {"op": "i2c_w_bits", "reg": "0x45", "mask": "0xfffffffb", "value": "0x04"},
+      {"op": "usleep_range_state", "min_us": 500, "max_us": 600, "state": 2},
+      {"op": "i2c_w_bits", "reg": "0x4e", "mask": "0xffffff87", "value": "0x20"},
+      {"op": "i2c_w_bits", "reg": "0x4d", "mask": "0xfffffffc", "value": "0x01"},
+      {"op": "usleep_range_state", "min_us": 3000, "max_us": 3500, "state": 2},
+      {"op": "i2c_w_bits", "reg": "0x4d", "mask": "0xfffffffc", "value": "0x00"},
+      {"op": "i2c_r_bytes", "reg": "0x4f", "length": 2},
+      {"op": "i2c_w_bits", "reg": "0x45", "mask": "0xfffffffb", "value": "0x00"}
+    ],
+    "all_helper_return_values_observed": false,
+    "register_meanings": "not inferred; addresses and masks are recorded from stock only"
+  },
+  "MP7_compiler_and_literal_constraints": {
+    "result": "EXTRACTED",
+    "constant_table_artifact": "microproofs/RODATA_CST32.json",
+    "stock_log_strings": [
+      {"section_offset": "0x130a", "text": "\\0013[%s][%04d]%s: d2s_gain is error\\n"},
+      {"section_offset": "0x28bc", "text": "\\0016[%s][%04d]%s: os_code = %d\\n"},
+      {"section_offset": "0x1d97", "text": "\\0016[%s][%04d]%s: offset calibration out of range\\n"}
+    ],
+    "codegen_sensitive_features": ["KCFI preamble", "three-byte stack initialization", "signed AArch64 division including zero-divisor behavior", "table relocation", "exact printk strings and line numbers"]
+  }
+}

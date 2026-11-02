@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "function": "vibrator_timer_func",
+  "locks_acquired": [],
+  "locks_released": [],
+  "context": "hrtimer callback registered by vibrator_init; callback body performs a state store and queues work, with no mutex or sleeping operation.",
+  "lifetime_contract": "The timer object, its workqueue pointer, and the embedded work_struct must remain valid while the callback runs and while the queued worker is pending.",
+  "teardown_evidence": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+    "observed_order": [
+      "cancel_work_sync(parent+0x428)",
+      "hrtimer_cancel(parent+0x330)"
+    ],
+    "assessment": "This order is preserved as observed. It may merit a separate producer/consumer teardown race audit; this function reconstruction does not reorder teardown or claim the sequence is race-free."
+  },
+  "candidate_rule": "Do not add locking or lifetime changes absent stock evidence."
+}

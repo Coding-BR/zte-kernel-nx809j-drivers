@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "method": "fan_speed_show",
+  "status": "METHOD_STATICALLY_RECONSTRUCTED_VERIFIED_FOR_ARTIFACT",
+  "candidate_sha256": "57fde12b5614958fd8f901545d4a3f12594c4e50bbda351566a8519b91e9cdbb",
+  "candidate_size_bytes": 268920,
+  "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+    "sha256": "0c3660ad7ee1337bdb2e1b9b786fead7e80c422effe7eaa1eb2d4b4329591e55",
+    "size_bytes": 37364
+  },
+  "candidate_module_path_in_run": "C:/Users/adria/Desktop/drivers/zte-kernel-nx809j-drivers/reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_final_r30/docker/work/soc_fan/cycle_2/soc_fan.ko",
+  "core_gates": {
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "INPUT_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "KCFI": "PASS",
+    "MAP_IDENTITY": "PASS"
+  },
+  "strict_assembly_comparison_passed": true,
+  "strict_ghidra_pcode_comparison_passed": true,
+  "ghidra_fallbacks_enabled": {
+    "absolute_data_address_shared_binding_normalization_allowed": false,
+    "exact_assembly_island_decompiler_fallback_allowed": false,
+    "ghidra_data_field_slice_fallback_allowed": false,
+    "ghidra_return_propagation_fallback_allowed": false,
+    "named_data_address_syntax_fallback_allowed": false,
+    "pcode_authoritative_decompiler_fallback_allowed": false,
+    "relocated_same_name_data_normalization_allowed": false,
+    "section_address_normalization_allowed": true,
+    "shared_data_binding_normalization_allowed": false
+  },
+  "elf_symbol_audit": {
+    "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_elf_symbol_audit_20261028_r30.json",
+    "sha256": "38ec684d50d5d04c46b492ffa20f062abdf3eefc565ff2fb6c292348b2bf1c93",
+    "size_bytes": 1282
+  },
+  "promotion_authorized": false,
+  "driver_complete": false,
+  "limitations": [
+    "Only method-level reconstruction is attested.",
+    "nb_fan_probe and nb_fan_parse_dt have no candidate implementations.",
+    "The repository-wide strict driver audit remains incomplete: the current reconstructed .ko, full Ghidra package, transition document, and reconstruction_map.json are absent; alias/namespace/undefined-symbol parity is not established.",
+    "Driver-wide callback/data tables, runtime/hardware validation, and broader evidence gates remain incomplete."
+  ],
+  "independent_review": {
+    "status": "PASS",
+    "reviewer": "Hubble",
+    "read_only": true,
+    "source_sha256": "0c3660ad7ee1337bdb2e1b9b786fead7e80c422effe7eaa1eb2d4b4329591e55",
+    "findings": [
+      "No method-scope behavior blocker.",
+      "Stock and candidate BSS layout and symbol bindings match: chip STB_GLOBAL at +0 size 8; counter STB_LOCAL at +0xc size 4; .bss size 16.",
+      "The 724-byte body has two relocated call placeholders targeting fan_level_set; all remaining relocation targets match.",
+      "Normalized Ghidra C equality and ordered P-Code operation-shape equality passed across 555 records without fallback.",
+      "All 56 Ghidra input hashes validated."
+    ],
+    "scope": "fan_speed_show only; does not attest the other 12 methods or full-driver completion."
+  },
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_final_r30/hard_protocol_report.json",
+      "sha256": "9e63fed2b7feb73c25f5123477b60896bfece6d32e9ddfd61de6c4797f574005",
+      "size_bytes": 34465
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_final_r30/ghidra/semantic_comparison.json",
+      "sha256": "4f276a6f099db9a3b8402b193c1034ec777dca0abdf3cbd377cfc146f7884ade",
+      "size_bytes": 80909
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_final_r30/assembly/comparison.json",
+      "sha256": "da5f33ae45fbb78afe6e4f7ee26ebcc89cd52860746950973c7d341eb7a4ca7f",
+      "size_bytes": 136187
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_final_r30/kcfi/comparison.json",
+      "sha256": "fe4f27737eb97844e62dca63683d6be60bc8ded9a18b3476946ed5a5282f0bf0",
+      "size_bytes": 7696
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_bootstrap_r29/hard_protocol_report.json",
+      "sha256": "2c8e9842a788137acb0d1edf5baff7e54932554d86d42d749993805a402ff612",
+      "size_bytes": 31201
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/ghidra_r29/soc_fan.ko/manifest.json",
+      "sha256": "08500b1280be56dbe5a224955981c1818e4fa256a285e3ade0005d4456888108",
+      "size_bytes": 387
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/ghidra_r29/soc_fan.ko/decompiled/0009_00100cc8_fan_speed_show.c",
+      "sha256": "bf3884d3cfb581e128117c8644cd1a321ccd0681c288f2c8d21e326d5145f606",
+      "size_bytes": 2435
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/ghidra_r29/soc_fan.ko/pcode/0009_00100cc8_fan_speed_show.jsonl",
+      "sha256": "2d549b8925ff4eb882719df64a33949f3ee2754e1397b34d4ca18b0f5c7c0aa9",
+      "size_bytes": 76845
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_elf_symbol_audit_20261028_r30.json",
+      "sha256": "38ec684d50d5d04c46b492ffa20f062abdf3eefc565ff2fb6c292348b2bf1c93",
+      "size_bytes": 1282
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_all_implemented_20261028_final_r30/docker/driver_audit.json",
+      "sha256": "b3473651a6c55a266769f17a3c7d51c75d042bbf55ccae689b174997c96f4adc",
+      "size_bytes": 15095
+    }
+  ]
+}

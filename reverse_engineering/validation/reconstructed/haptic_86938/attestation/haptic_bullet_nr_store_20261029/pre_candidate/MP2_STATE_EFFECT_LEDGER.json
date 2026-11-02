@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "function": "bullet_nr_store",
+  "effects": [
+    {
+      "condition": "unsigned parse succeeds",
+      "effect": "write parsed u32 at driver_data-0x28 (parent+0x80)",
+      "protection": "mutex at driver_data+0x248 (parent+0x2f0)",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0135_0010d480_bullet_nr_store.c"
+    },
+    {
+      "condition": "parse fails",
+      "effect": "return errno without taking lock or writing state",
+      "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0135_0010d480_bullet_nr_store.c"
+    }
+  ],
+  "layout_note": "Offset and width are preserved without inventing a containing C struct."
+}

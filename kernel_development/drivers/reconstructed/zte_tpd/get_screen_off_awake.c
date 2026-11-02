@@ -1,3 +1,7 @@
+#ifndef __user
+#define __user
+#endif
+
 ssize_t get_screen_off_awake(struct file *file, char __user *buffer, size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
@@ -23,7 +27,7 @@ ssize_t get_screen_off_awake(struct file *file, char __user *buffer, size_t coun
   if ( !v5 )
   {
     v8 = tpd_cdev;
-    v10 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 3616);
+    v10 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 0xfd8);
     if ( v10 )
     {
       v11 = tpd_cdev;

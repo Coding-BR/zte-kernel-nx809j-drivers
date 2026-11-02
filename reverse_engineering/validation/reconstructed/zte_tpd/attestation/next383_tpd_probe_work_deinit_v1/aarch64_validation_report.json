@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "target": "tpd_probe_work_deinit",
+  "mode": "offline_aarch64_semantic_and_normalized_relocation_comparison",
+  "instruction_count": { "stock": 17, "candidate": 17, "exact": true },
+  "symbol_size": { "stock": 68, "candidate": 68, "exact": true, "delta_bytes": 0 },
+  "section": { "stock": ".text", "candidate": ".text", "match": true },
+  "kcfi_type_id": { "stock": "0xe5c47d60", "candidate": "0xe5c47d60", "match": true },
+  "instruction_sequence": { "normalized_match": true, "comparison": "opcode and control-flow sequence exact" },
+  "offset_contract": {
+    "delayed_work": "tpd_cdev + 0x8d0",
+    "normalized_match": true,
+    "evidence": "stock add x0, x19, #0x8d0 and candidate emits the same opcode sequence"
+  },
+  "call_targets": {
+    "stock": ["_printk", "cancel_delayed_work_sync"],
+    "candidate": ["_printk", "cancel_delayed_work_sync"],
+    "normalized_match": true
+  },
+  "relocation_normalization": {
+    "raw_match": false,
+    "normalized_match": true,
+    "reason": "The separately linked module has different module-local .rodata offsets; resolved format/function strings, tpd_cdev load, delayed-work offset and external calls match."
+  },
+  "decision": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_allowed": true,
+  "binary_layout_followup_required": false,
+  "limitations": [
+    "Raw ELF relocation identity is not byte-level equal across independently linked modules.",
+    "printk and cancel_delayed_work_sync are stubbed in the host harness.",
+    "No smartphone, workqueue scheduler or physical hardware was used."
+  ],
+  "artifacts": {
+    "stock_assembly_sha256": "88b52f015290052319783989672fb0a564eef577f8f2f2e5701c2d4a6881847b",
+    "candidate_assembly_sha256": "a4d2bb0e1fd06e3c649e1e6ade6fd24d86d9e95c566946627f73c2b0541faec8"
+  }
+}

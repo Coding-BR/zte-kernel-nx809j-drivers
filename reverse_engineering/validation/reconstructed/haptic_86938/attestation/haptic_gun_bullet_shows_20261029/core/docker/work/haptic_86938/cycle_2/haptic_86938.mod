@@ -1,0 +1,13 @@
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_000_aw8693x_set_bst_peak_cur.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_001_state_store.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_002_brightness_get.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_003_aw_i2c_resume.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_004_richtap_write.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_005_richtap_read.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_006_state_show.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_007_activate_show.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_008_activate_mode_show.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_009_vmax_show.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_010_gain_show.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_011_gun_type_show.o
+/work/validation/haptic_86938/cycle_2/haptic_86938_fn_012_bullet_nr_show.o

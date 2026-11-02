@@ -3,6 +3,7 @@
 #define _ZTE_TPD_SYNA_LAYOUT_H
 
 #include <linux/build_bug.h>
+#include <linux/cdev.h>
 #include <linux/completion.h>
 #include <linux/mutex.h>
 #include <linux/platform_device.h>
@@ -96,7 +97,13 @@ struct syna_tcm {
 	u8 reserved_0278[0x30];
 	struct syna_event_data_buffer event_data;
 	pid_t isr_pid;
-	u8 reserved_02f4[0xa4];
+	u8 reserved_02f4[0x04];
+	struct cdev cdev;
+	u8 reserved_02f8_to_0380[0x380 - 0x2f8 - sizeof(struct cdev)];
+	dev_t cdev_num;
+	u32 cdev_frame_count;
+	struct class *cdev_class;
+	struct device *cdev_device;
 	struct kobject *sysfs_dir;
 	struct kobject *utility_dir;
 	struct kobject *testing_dir;
@@ -104,7 +111,10 @@ struct syna_tcm {
 	wait_queue_head_t frame_wait;
 	u8 reserved_0460[0x08];
 	u32 frame_available;
-	u8 reserved_046c[0xec];
+	u8 reserved_046c_to_04f8[0x8c];
+	struct list_head frame_list;
+	wait_queue_head_t wait_frame;
+	u8 reserved_0508_to_0558[0x558 - 0x508 - sizeof(wait_queue_head_t)];
 	struct completion pm_resume_completion;
 	u8 pm_resume_wait_enabled;
 	u8 reserved_0579[0x03];
@@ -177,11 +187,20 @@ static_assert(offsetof(struct syna_tcm, pdev) == 0x08);
 static_assert(offsetof(struct syna_tcm, hw_if) == 0x270);
 static_assert(offsetof(struct syna_tcm, event_data) == 0x2a8);
 static_assert(offsetof(struct syna_tcm, isr_pid) == 0x2f0);
+static_assert(offsetof(struct syna_tcm, cdev) == 0x2f8);
+static_assert(sizeof(struct cdev) <= 0x88);
+static_assert(offsetof(struct syna_tcm, cdev_num) == 0x380);
+static_assert(offsetof(struct syna_tcm, cdev_frame_count) == 0x384);
+static_assert(offsetof(struct syna_tcm, cdev_class) == 0x388);
+static_assert(offsetof(struct syna_tcm, cdev_device) == 0x390);
 static_assert(offsetof(struct syna_tcm, sysfs_dir) == 0x398);
 static_assert(offsetof(struct syna_tcm, utility_dir) == 0x3a0);
 static_assert(offsetof(struct syna_tcm, testing_dir) == 0x3a8);
 static_assert(offsetof(struct syna_tcm, frame_wait) == 0x448);
 static_assert(offsetof(struct syna_tcm, frame_available) == 0x468);
+static_assert(offsetof(struct syna_tcm, frame_list) == 0x4f8);
+static_assert(offsetof(struct syna_tcm, wait_frame) == 0x508);
+static_assert(sizeof(wait_queue_head_t) <= 0x50);
 static_assert(offsetof(struct syna_tcm, pm_resume_completion) == 0x558);
 static_assert(offsetof(struct syna_tcm, pm_resume_wait_enabled) == 0x578);
 static_assert(offsetof(struct syna_tcm, pm_resume_wait_bypass) == 0x57c);

@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "richtap_file_mmap",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_module_sha256": "44a432f2517f55b631d350dd056e366bba6291b33e27485d610a926143491d52",
+  "stock_function_symbol": {
+    "section": ".text",
+    "offset": "0xbb0c",
+    "size": 248
+  },
+  "candidate_function_symbol": {
+    "section": ".text",
+    "offset": "0x65f8",
+    "size": 248
+  },
+  "cpucap_source": "Docker kernel source commit 3356b35306d35d5a480e3b63df1a9f065b5d9f55; generated arch/arm64/include/asm/cpucap-defs.h",
+  "slots": [
+    {
+      "function_offset": "0x18",
+      "stock_text_offset": "0xbb24",
+      "candidate_text_offset": "0x6610",
+      "stock_altinstructions_offset": "0x60",
+      "candidate_altinstructions_offset": "0x0c",
+      "cpucap_id": "0x8001",
+      "cpucap_name": "ARM64_ALWAYS_SYSTEM",
+      "stock_original_length": 4,
+      "stock_replacement_length": 0,
+      "candidate_original_length": 4,
+      "candidate_replacement_length": 0,
+      "stock_replacement": "alt_cb_patch_nops",
+      "candidate_replacement": "alt_cb_patch_nops",
+      "result": "PASS"
+    },
+    {
+      "function_offset": "0x1c",
+      "stock_text_offset": "0xbb28",
+      "candidate_text_offset": "0x6614",
+      "stock_altinstructions_offset": "0x6c",
+      "candidate_altinstructions_offset": "0x18",
+      "cpucap_id": "0x0002",
+      "cpucap_name": "ARM64_BTI",
+      "stock_original_length": 4,
+      "stock_replacement_length": 4,
+      "candidate_original_length": 4,
+      "candidate_replacement_length": 4,
+      "stock_replacement_text_offset": "0xbeb4",
+      "candidate_replacement_text_offset": "0x66f0",
+      "stock_replacement_branch_target": "0xbb2c",
+      "candidate_replacement_branch_target": "0x6618",
+      "branch_target_function_offset": "0x20",
+      "result": "PASS"
+    },
+    {
+      "function_offset": "0x20",
+      "stock_text_offset": "0xbb2c",
+      "candidate_text_offset": "0x6618",
+      "stock_altinstructions_offset": "0x78",
+      "candidate_altinstructions_offset": "0x24",
+      "cpucap_id": "0x003b",
+      "cpucap_name": "ARM64_MTE",
+      "stock_original_length": 4,
+      "stock_replacement_length": 4,
+      "candidate_original_length": 4,
+      "candidate_replacement_length": 4,
+      "stock_replacement_text_offset": "0xbeb8",
+      "candidate_replacement_text_offset": "0x66f4",
+      "stock_replacement_branch_target": "0xbb30",
+      "candidate_replacement_branch_target": "0x661c",
+      "branch_target_function_offset": "0x24",
+      "result": "PASS"
+    },
+    {
+      "function_offset": "0x24",
+      "stock_text_offset": "0xbb30",
+      "candidate_text_offset": "0x661c",
+      "stock_altinstructions_offset": "0x84",
+      "candidate_altinstructions_offset": "0x30",
+      "cpucap_id": "0x002a",
+      "cpucap_name": "ARM64_HAS_S1POE",
+      "stock_original_length": 4,
+      "stock_replacement_length": 4,
+      "candidate_original_length": 4,
+      "candidate_replacement_length": 4,
+      "stock_replacement_text_offset": "0xbebc",
+      "candidate_replacement_text_offset": "0x66f8",
+      "stock_replacement_branch_target": "0xbb34",
+      "candidate_replacement_branch_target": "0x6620",
+      "branch_target_function_offset": "0x28",
+      "result": "PASS"
+    }
+  ],
+  "checks": {
+    "all_four_stock_entries_present": true,
+    "all_four_candidate_entries_present": true,
+    "cpucap_ids_match": true,
+    "replacement_lengths_match": true,
+    "replacement_branches_preserve_noop_path": true,
+    "function_body_bytes_identical": true,
+    "function_size_and_instruction_count_match": true
+  },
+  "evidence": [
+    "protocol_core_v10/assembly/comparison.json",
+    "protocol_core_v10/kcfi/comparison.json",
+    "protocol_core_v10/docker/driver_audit.json",
+    "protocol_core_v10/hard_protocol_report.json",
+    "Docker llvm-readelf .altinstructions and .rela.altinstructions for stock/candidate; llvm-objdump of replacement blocks"
+  ],
+  "result": "PASS",
+  "scope": "The four alternative records scoped to richtap_file_mmap match in feature ID and behavior. Whole-driver parity and hardware behavior are not established."
+}

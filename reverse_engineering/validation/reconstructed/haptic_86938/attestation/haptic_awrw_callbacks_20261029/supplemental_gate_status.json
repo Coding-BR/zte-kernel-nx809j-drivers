@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "pair": [
+    "awrw_show@0010d518",
+    "awrw_store@0010d620"
+  ],
+  "generated_local_date": "2026-10-29",
+  "core_report": "core_v2/hard_protocol_report.json",
+  "status": "CANDIDATE_STATIC_PAIR_CORE_PASS_INTEGRATION_INCOMPLETE",
+  "promotion_authorized": false,
+  "candidate_module": {
+    "path": "C:\\Users\\adria\\AppData\\Local\\Temp\\chdp\\91444ff33f71-3fd101e2\\haptic_86938\\cycle_2\\haptic_86938.ko",
+    "sha256": "2e19782ab7257a05973f256beb961b75303c7d0a62adb73df5b3b7a39136e134",
+    "size": 5547464
+  },
+  "core_gates": {
+    "ASSEMBLY_RELOCATIONS": "PASS",
+    "CANDIDATE_GHIDRA_PCODE": "PASS",
+    "DOCKER_REPRODUCIBLE": "PASS",
+    "INPUT_IDENTITY": "PASS",
+    "JOERN_SCOPED": "PASS",
+    "JOERN_SLICE": "PASS",
+    "KCFI": "PASS",
+    "MAP_IDENTITY": "PASS"
+  },
+  "ghidra_fallbacks": [
+    {
+      "fallbacks": {
+        "pcode_authoritative_decompiler_fallback": {
+          "candidate_type": "undefined1 *",
+          "kind": "awrw_store_opaque_format_pointer_pointee_width_artifact",
+          "requirement": "whole normalized C equality after rewriting this one inferred local pointer declaration, equal ELF body bytes and ordered P-Code operation shape; independent ELF opcode/relocation, KCFI, Docker and Joern gates remain mandatory",
+          "stock_type": "undefined *",
+          "variable": "puVar5"
+        }
+      },
+      "function": "awrw_store@0010d620"
+    }
+  ],
+  "supplemental_gates": {
+    "BOUNDED_MODEL": "NOT_SATISFIED_FOR_PAIR",
+    "CALLBACK_TABLE": "NOT_SATISFIED_FOR_PAIR",
+    "CFG_SEGMENTATION": "NOT_SATISFIED_FOR_PAIR",
+    "DT_CONTEXT": "NOT_SATISFIED_FOR_PAIR",
+    "FUZZ_CORPUS": "NOT_SATISFIED_FOR_PAIR",
+    "HARDWARE_RUNTIME": "NOT_SATISFIED_FOR_PAIR",
+    "HOST_HARNESS": "NOT_SATISFIED_FOR_PAIR",
+    "INDEPENDENT_REVIEW": "NOT_SATISFIED_FOR_PAIR",
+    "KMI_TYPES": "NOT_SATISFIED_FOR_PAIR",
+    "KUNIT_LOCKDEP_KCSAN": "NOT_SATISFIED_FOR_PAIR",
+    "LLVM_IR_DIAGNOSIS": "NOT_SATISFIED_FOR_PAIR",
+    "LOCK_LIFETIME": "NOT_SATISFIED_FOR_PAIR",
+    "MUTATION_TEST": "NOT_SATISFIED_FOR_PAIR",
+    "REGISTER_BUS_LEDGER": "NOT_SATISFIED_FOR_PAIR",
+    "SANITIZERS": "NOT_SATISFIED_FOR_PAIR",
+    "SEMANTIC_COUNTEREXAMPLE": "NOT_SATISFIED_FOR_PAIR",
+    "STATE_EFFECT_LEDGER": "NOT_SATISFIED_FOR_PAIR"
+  },
+  "known_findings": {
+    "CALLBACK_TABLE": "INCOMPLETE: current candidate reconstructs both callbacks but not their device-attribute registration/table.",
+    "LOCK_LIFETIME": "INCOMPLETE: stock awrw_store frees/replaces shared data before taking the mutex; awrw_show reads the shared mode/pointer/count without that mutex. Per-open kernfs mutexes do not serialize independent opens.",
+    "KUNIT_LOCKDEP_KCSAN": "NOT_RUN: no target-kernel concurrency result is present.",
+    "INDEPENDENT_REVIEW": "INCOMPLETE_LIFETIME_BLOCKER",
+    "SANITIZERS": "Existing show-only harness recorded a conditional stock underwrite; paired/concurrent callbacks were not covered.",
+    "BOUNDED_MODEL": "No CBMC/KLEE proof recorded for the pair."
+  },
+  "resolution": "Replaced stale single-callback Ghidra evidence with a fresh export of the exact reproducible Docker candidate. The recovered awrw_store body boundary was corrected to its ELF symbol extent (856 bytes). The pair passes all eight automated core gates; stock concurrency risk remains unpromoted."
+}

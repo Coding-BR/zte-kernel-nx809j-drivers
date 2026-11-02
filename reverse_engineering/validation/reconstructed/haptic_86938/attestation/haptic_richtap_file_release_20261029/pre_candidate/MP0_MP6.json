@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "richtap_file_release@0010ea78",
+  "stage": "PRE_CANDIDATE",
+  "generated_date": "2026-10-29",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "classification": [
+    "CALLBACK_ABI",
+    "CONCURRENCY_LIFETIME",
+    "COMPILER_SENSITIVE"
+  ],
+  "microproofs": {
+    "MP0_IDENTITY": {
+      "status": "PASS",
+      "elf_section": ".text",
+      "elf_offset": "0xbc58",
+      "ghidra_entry": "0010ea78",
+      "body_bytes": 40,
+      "kcfi_preamble_offset": "0xbc54",
+      "kcfi_type_id": "0x9829071d",
+      "evidence_sha256": {
+        "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+        "ghidra_functions": "26db69bfc0f4d0483180d0c30c857db7a9d894331e696eb05b0ecf2256234c40",
+        "ghidra_calls": "9a9a6272c6791d695c3fc4acf911386f7c3998d6f15c3206ae3435f3bb8ba9a4",
+        "kcfi_inventory": "a29a549a4913dfd5c3b4839f47384e9d2991033288e7ca0be4b9435f797a53b4",
+        "identity_manifest": "598786f8381370ec7668107d30c41affc94df4b9d654826066a6514d57eb64e6"
+      },
+      "function_evidence_sha256": {
+        "ghidra_decompiled_c": "649c7b7b4fb604f9db9a03ee7790559a2efffff3a08c4b8256e5c8d9e139a94d",
+        "ghidra_pcode": "4031e0c45a161e98f5d349773ad2eb9c7cf06acdc0adcfc115e3dfb61fece33b",
+        "stock_assembly": "d1af3ad42062bedcc592de3a2128ba99de50bf7db7e6587cc75b3ebdbfa920be"
+      }
+    },
+    "MP1_CALL_SIGNATURE": {
+      "status": "SUPPORTED_BY_KERNEL_ABI_AND_STOCK_KCFI",
+      "prototype": "int (struct inode *, struct file *)",
+      "basis": [
+        "The pinned kernel source volume declares file_operations.release with this prototype in include/linux/fs.h.",
+        "The stock KCFI ID 0x9829071d is identical for richtap_file_open and richtap_file_release, whose file_operations callback signatures match."
+      ],
+      "callee": "module_put(struct module *)",
+      "argument_observed": "&__this_module"
+    },
+    "MP2_STATE_EFFECT_LEDGER": {
+      "status": "EXTRACTED_REVIEW_REQUIRED",
+      "effects": [
+        "The function makes one unconditional call to module_put with &__this_module.",
+        "The function returns integer zero after the call.",
+        "The two stack stores and two stack loads in P-Code are saved/restored frame state; no caller-owned memory access is observed."
+      ],
+      "ledger_sha256": "018b74c5b0bf5454e8b0be2813fc2950c031a73412a62624222e537f4ec65870",
+      "function_pcode_sha256": "4031e0c45a161e98f5d349773ad2eb9c7cf06acdc0adcfc115e3dfb61fece33b"
+    },
+    "MP3_CONTROL_ERROR_MATRIX": {
+      "status": "PASS_STATIC_CONTROL_FLOW",
+      "paths": [
+        {
+          "condition": "unconditional",
+          "external_effect": "module_put(&__this_module) exactly once",
+          "return": 0
+        }
+      ],
+      "no_error_branch": true,
+      "matrix_sha256": "6f4248f03511311f003696861295f89c0bd157f0330417164ae033db113f5e9d"
+    },
+    "MP4_EVENT_CALLBACK_LIFETIME": {
+      "status": "CALLBACK_REFERENCE_OBSERVED",
+      "stock_relocation": {
+        "section": ".rela.data",
+        "offset": "0xb00",
+        "owner_object": "left_fops",
+        "owner_offset": "0x78",
+        "target": ".text+0xbc58 (richtap_file_release)",
+        "type": "R_AARCH64_ABS64"
+      },
+      "stock_kcfi_type_id": "0x9829071d",
+      "inventory_sha256": "674525b0bc8f5375a645a7cac742ca5a2bc8f2fc9b89f594c38d377338d9feb5",
+      "limitation": "Raw relocation ownership is recorded; the candidate callback table is not yet reconstructed."
+    },
+    "MP5_RESOURCE_LIFETIME": {
+      "status": "STOCK_PAIR_OBSERVED_CANDIDATE_PAIR_INCOMPLETE",
+      "acquire_side": {
+        "function": "richtap_file_open@0010ea28",
+        "effect": "try_module_get(&__this_module); on success, save g_aw_haptic in file private_data; on failure, return -ENODEV"
+      },
+      "release_side": {
+        "function": "richtap_file_release@0010ea78",
+        "effect": "module_put(&__this_module); return 0"
+      },
+      "inventory_sha256": "55a4ea691be7a50a883d3b42aea622800f89dd8af4ee467ee845b0971b09aac7",
+      "limitation": "The stock reference-count pair is visible, but richtap_file_open has not yet been reconstructed in the candidate."
+    },
+    "MP6_REGISTER_BUS_LEDGER": {
+      "status": "NOT_APPLICABLE_TO_THIS_FUNCTION",
+      "basis": "No I2C, SPI, GPIO, regmap, MMIO, or firmware call/reference occurs in the target function."
+    }
+  },
+  "pre_edit_decision": {
+    "candidate_source_created": false,
+    "source_edit_allowed": true,
+    "promotion_authorized": false,
+    "remaining_proofs": [
+      "candidate Docker rebuild and strict assembly/relocation comparison",
+      "candidate KCFI and Ghidra/P-Code comparison",
+      "Joern scoped analysis and callback/lifetime slice",
+      "host harness with a mutation that must fail",
+      "independent review"
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "microtask": "092",
+  "function": "tp_frame_data_write",
+  "stock_entry": "0010de08",
+  "stock_body_bytes": 208,
+  "candidate_symbol_bytes": 208,
+  "stock_instruction_count": 52,
+  "candidate_instruction_count": 52,
+  "stock_relocation_count": 6,
+  "candidate_relocation_count": 6,
+  "protocol": [
+    "Ghidra pseudocode and P-Code preserved",
+    "Joern strict function gate",
+    "ASan/UBSan host harness, two runs and four cases",
+    "canonical Docker build, two cycles",
+    "KCFI type and surface comparison",
+    "AArch64 instruction, relocation and symbol-size comparison",
+    "curated-source synchronization"
+  ],
+  "gates": {
+    "host_harness": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "kcfi_type_match": true,
+    "kcfi_surface_exact": true,
+    "aarch64_instruction_relocation_parity": true,
+    "source_sync": true,
+    "hardware": "DEFERRED"
+  },
+  "artifacts": {
+    "candidate_module_sha256": "93ae6428ca9a2df44ab744d67910d5d6624be01295f92ea8c87595f46044ca5d",
+    "candidate_module_size": 26770232,
+    "candidate_source_sha256": "ec3ab6ac8ed61d7226781841a5d9aa7d35f7b5f5d5f0dd50b1e9f7255a2e67b2",
+    "readable_source_sha256": "c4a445090951046e175dcafe681f59949d79df54921e8cbc149f31aa3e3331ee",
+    "rodata_include_sha256": "2bac5e90d9b01d69242bfd533d515db19ddacda3e22d831bb05f918b7f89cb96",
+    "candidate_assembly_sha256": "3736da8494cdfb35b93be63814f49396e3b44f96df41d9d71bfe0f5ef000d341",
+    "stock_assembly_sha256": "5ff961b7b0428e1c0a7f9d111de28cf5f9902a97cb4e25cfbf2af0576b45d945",
+    "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "kcfi_type_id": "0xf4e9d97c"
+  },
+  "promotion": "PROMOTED_OFFLINE_EXACT",
+  "semantic_equivalence": "OFFLINE_EXACT",
+  "passed": true,
+  "claim": "The candidate matches the stock function's extracted AArch64 instructions, relocations, symbol size, KCFI type and offline validation contract.",
+  "limitations": [
+    "No smartphone or physical hardware test was run.",
+    "Kernel callback, printk and cdev storage are represented by deterministic host stubs.",
+    "DT, DRM, MMIO and physical userspace behavior remain deferred to hardware validation."
+  ]
+}

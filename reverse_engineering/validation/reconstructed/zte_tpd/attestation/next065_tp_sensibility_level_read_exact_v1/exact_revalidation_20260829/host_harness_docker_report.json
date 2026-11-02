@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_sensibility_level_read",
+  "mode": "offline_direct_source_asan_ubsan",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_sensibility_level_read.c",
+  "source_sha256": "6cf4d25e19ea5f17b63a8ca1a4884c11245a318261018df7cf4871236b3e9f66",
+  "candidate_source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tp_sensibility_level_read_exact.S",
+  "candidate_source_sha256": "041bf2aed834bcde79159d4b561f645749c6a614e41ebd1e8f6706dbd6104763",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tp_sensibility_level_read_source_host_test.c",
+  "harness_sha256": "fd88616196be8b046637c00e9e3facf7eb50fe342c230d99b3d405c1671c5073",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "expected_cases": 3,
+  "repetitions": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_sensibility_level_read source host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "f43a643f9f914ce1504f1310c60dbe27390a86a74e8b798b3ea146f3f2ad1b29",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tp_sensibility_level_read source host tests (3 cases)\n",
+      "run_stderr": "",
+      "binary_sha256": "f43a643f9f914ce1504f1310c60dbe27390a86a74e8b798b3ea146f3f2ad1b29",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The harness includes the reconstructed C source and uses fake device memory, procfs helpers and callbacks.",
+    "It does not execute a real kernel procfs path or NX809J hardware.",
+    "Joern, KCFI, AArch64 and canonical whole-module build are separate gates."
+  ]
+}

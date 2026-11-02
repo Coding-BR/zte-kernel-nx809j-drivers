@@ -8,6 +8,8 @@ ROOT = Path(__file__).resolve().parents[3]
 CANONICAL_BUILDER = ROOT / "workspace_tools/reconstruction_pipeline/run_zte_tpd_canonical_build.py"
 INDEPENDENT_AUDITOR = ROOT / "workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py"
 MAKEFILE = ROOT / "kernel_development/drivers/reconstructed/zte_tpd/Makefile"
+IMEM_MAKEFILE = ROOT / "kernel_development/drivers/reconstructed/zte_imem_info/Makefile"
+POWER_MAKEFILE = ROOT / "kernel_development/drivers/reconstructed/zte_power_supply/Makefile"
 
 
 def load_canonical_builder():
@@ -34,13 +36,40 @@ def test_generated_module_object_receives_prefix_map() -> None:
     auditor = INDEPENDENT_AUDITOR.read_text(encoding="utf-8")
 
     assert 'KCFLAGS="$PREFIX_MAP"' in builder
-    assert "KCFLAGS=-ffile-prefix-map=/work/validation/{driver}=/zte_tpd" in auditor
+    assert 'f"KCFLAGS=-ffile-prefix-map={container_dir}=/{driver}"' in auditor
+    assert 'f" -fdebug-prefix-map={container_dir}=/{driver}"' in auditor
+
+
+def test_canonical_builder_uses_prepared_out_of_tree_kernel_output() -> None:
+    builder = CANONICAL_BUILDER.read_text(encoding="utf-8")
+
+    assert "KBUILD_OUTPUT=/work/src/kernel/.codex-kbuild/identity" in builder
+    assert builder.count('O="$KBUILD_OUTPUT"') == 2
+    for generated_input in (
+        "$KBUILD_OUTPUT/.config",
+        "$KBUILD_OUTPUT/include/config/auto.conf",
+        "$KBUILD_OUTPUT/include/generated/autoconf.h",
+        "$KBUILD_OUTPUT/include/generated/rustc_cfg",
+    ):
+        assert f'test -f "{generated_input}"' in builder or (
+            generated_input == "$KBUILD_OUTPUT/.config"
+            and f'test -s "{generated_input}"' in builder
+        )
 
 
 def test_module_sources_receive_matching_prefix_map() -> None:
     makefile = MAKEFILE.read_text(encoding="utf-8")
 
     assert "ccflags-y := -ffile-prefix-map=$(src)=/zte_tpd" in makefile
+
+
+def test_assembler_sources_receive_stable_debug_prefix_maps() -> None:
+    assert "asflags-y += -fdebug-prefix-map=$(src)=/zte_imem_info" in IMEM_MAKEFILE.read_text(
+        encoding="utf-8"
+    )
+    assert "asflags-y += -fdebug-prefix-map=$(src)=/zte_power_supply" in POWER_MAKEFILE.read_text(
+        encoding="utf-8"
+    )
 
 
 def test_canonical_cycles_use_deliberately_different_paths() -> None:
@@ -52,6 +81,18 @@ def test_canonical_cycles_use_deliberately_different_paths() -> None:
     assert len(first) != len(second)
     assert first.endswith("/zte_tpd")
     assert second.endswith("/zte_tpd")
+
+
+def test_host_artifact_label_is_short_and_deterministic() -> None:
+    builder = load_canonical_builder()
+    label = "hard_protocol_zte_tpd_syna_tcm_clear_data_duplicator_core_v1"
+
+    first = builder.host_artifact_label(label)
+    second = builder.host_artifact_label(label)
+
+    assert first == second
+    assert len(first) == 12
+    assert first != label
 
 
 def test_target_kernel_manifest_defaults_next_to_curated_root(tmp_path: Path) -> None:

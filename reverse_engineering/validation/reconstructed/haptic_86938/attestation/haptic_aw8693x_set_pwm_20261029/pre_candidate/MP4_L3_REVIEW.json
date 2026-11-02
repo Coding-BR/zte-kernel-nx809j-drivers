@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "function": "aw8693x_set_pwm",
+  "claims": [
+    {
+      "claim": "Mode values 0, 1, 2 and 3 map to 0x20, 0, 0x40 and 0x60, respectively.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0015_aw8693x_set_pwm_00104694.asm"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "Valid modes update register 0x46 through i2c_w_bits with mask 0xffffff9f; its return is ignored.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0063_0010722c_i2c_w_bits.c"
+      ],
+      "confidence": "high"
+    },
+    {
+      "claim": "Other byte values log the error-param diagnostic and do not write the register.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0015_00104694_aw8693x_set_pwm.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/strings.jsonl"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "limitations": [
+    "This function preserves the helper call and does not independently certify bus behavior."
+  ]
+}

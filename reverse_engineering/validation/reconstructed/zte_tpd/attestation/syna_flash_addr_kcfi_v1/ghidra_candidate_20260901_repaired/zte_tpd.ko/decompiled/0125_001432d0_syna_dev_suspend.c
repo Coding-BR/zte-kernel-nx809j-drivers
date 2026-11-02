@@ -1,0 +1,13 @@
+
+undefined8 syna_dev_suspend(long param_1)
+
+{
+  undefined8 uVar1;
+  
+  if (*(int *)(*(long *)(param_1 + 0x98) + 0x57c) != 1) {
+    return 0;
+  }
+  uVar1 = _printk(&DAT_00171a94,"syna_dev_suspend");
+  return uVar1;
+}
+

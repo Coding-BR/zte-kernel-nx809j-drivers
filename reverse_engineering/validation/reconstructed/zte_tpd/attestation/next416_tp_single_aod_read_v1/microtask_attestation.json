@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_single_aod_read",
+  "attestation_id": "next416_tp_single_aod_read_v1",
+  "status": "OFFLINE_SEMANTIC_PARITY",
+  "promotion_status": "PROMOTED_SEMANTIC_OFFLINE_WITH_LOCAL_SCHEDULE_AND_RELOCATION_FOLLOWUP",
+  "gates": {
+    "curated_source_sync": "PASS",
+    "joern_strict": "PASS",
+    "canonical_docker_build_two_cycles": "PASS",
+    "host_asan_ubsan_two_cycles": "PASS",
+    "kcfi_function_type_and_symbol_size": "PASS",
+    "aarch64_instruction_count_and_size": "PASS",
+    "aarch64_instruction_sequence_raw": "FAIL_LOCAL_STACK_AND_REGISTER_SCHEDULE",
+    "aarch64_relocations_raw": "FAIL_MODULE_LOCAL_RODATA_LAYOUT",
+    "aarch64_section": "PASS"
+  },
+  "semantic_contract": [
+    "return zero and do not perform side effects when *offset is nonzero",
+    "load the refresh callback from tpd_cdev + 0xec8 and invoke it as int (*)(struct ztp_device *) when present",
+    "log tp_single_aod_read with the unsigned value at tpd_cdev + 0x450",
+    "format the value as %u\\n with snprintf size 10 and pass it to simple_read_from_buffer",
+    "preserve the stock function KCFI type 0xf4e9d97c, callback KCFI type 0x73fc0d79 and 240-byte body"
+  ],
+  "evidence": {
+    "stock_body_bytes": 240,
+    "candidate_body_bytes": 240,
+    "stock_instruction_count": 60,
+    "candidate_instruction_count": 60,
+    "function_kcfi_type_id": "0xf4e9d97c",
+    "callback_kcfi_type_id": "0x73fc0d79",
+    "candidate_module_sha256": "b3e65928211f551ed9808c5bb959bd41fe84f2fc9cdcb08892fc58fc665a6ec1",
+    "candidate_function_assembly_sha256": "4842650e6b97c6bc9c6e55c2c65ef95274a06578e33b051e3a2480d521ee9375",
+    "stock_function_assembly_sha256": "d8721f81b6f162119176460b9a6161bf30ce577c61b25227b92bf77a4d4cd7cf",
+    "host_cases": 3,
+    "host_repetitions": 2,
+    "host_binary_sha256": "815dc5c607aebdf87ecbbf8fb20369d821211465c56cec33f8eba3bc00b623",
+    "joern_unresolved_calls": 0,
+    "joern_parse_problem_count": 0,
+    "raw_difference": "The candidate preserves the 60-instruction and 240-byte body but differs in local stack/register scheduling and module-local rodata relocation placement."
+  },
+  "follow_up_required": [
+    "Review local stack/register scheduling only if exact opcode identity is required.",
+    "Review module-local rodata placement only if exact relocation parity is required.",
+    "Run controlled procfs/userspace and NX809J runtime validation after the offline driver set is complete."
+  ],
+  "unverified": [
+    "actual procfs ABI behavior",
+    "callback lifetime under concurrent teardown",
+    "runtime behavior on NX809J hardware"
+  ],
+  "decision_basis": "Ghidra pseudocode/P-Code, exact 60-instruction/240-byte AArch64 body, matching function and callback KCFI contracts, strict Joern with zero unresolved calls, reproducible Docker build, and three-case two-cycle ASan/UBSan host contract. No smartphone test was performed."
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "function": "aw8693x_play_mode",
+  "stock_entry": "00104798",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_module_sha256": "2cbabeac3f9c1d427eb11f69bc648bb1a3eadc4073e85ab4f6983eb87d461d83",
+  "root_cause": "The pinned Clang optimizer emitted a semantically equivalent but smaller/differently ordered body from ordinary C (692 bytes/173 instructions versus stock 740/185), failing strict opcode and relocation identity.",
+  "correction": "Materialized all stock AArch64 instruction words and relocations with the repository materializer, rebound only .rodata.str1.1 relocations to local strings extracted byte-for-byte from the stock ELF, and placed those statements in the AArch64 naked C wrapper so the compiler emits KCFI metadata for the declared C prototype.",
+  "materializer": "workspace_tools/reconstruction_pipeline/materialize_stock_function_assembly.py",
+  "materializer_inputs": {
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0017_aw8693x_play_mode_00104798.asm",
+    "stock_elf_rodata_section": ".rodata.str1.1"
+  },
+  "materializer_command_options": {
+    "function": "aw8693x_play_mode",
+    "kcfi_type_id": "0x1d0adf6e",
+    "instruction_count": 185,
+    "relocation_count": 69,
+    "local_string_aliases": {
+      ".rodata.str1.1": ".Lhaptic_86938_play_mode_string_0000",
+      ".rodata.str1.1+0x25f9": ".Lhaptic_86938_play_mode_string_25f9",
+      ".rodata.str1.1+0x88e": ".Lhaptic_86938_play_mode_string_088e",
+      ".rodata.str1.1+0x10a1": ".Lhaptic_86938_play_mode_string_10a1",
+      ".rodata.str1.1+0x17c": ".Lhaptic_86938_play_mode_string_017c",
+      ".rodata.str1.1+0xc6c": ".Lhaptic_86938_play_mode_string_0c6c",
+      ".rodata.str1.1+0x29dc": ".Lhaptic_86938_play_mode_string_29dc",
+      ".rodata.str1.1+0x1081": ".Lhaptic_86938_play_mode_string_1081",
+      ".rodata.str1.1+0x26b2": ".Lhaptic_86938_play_mode_string_26b2",
+      ".rodata.str1.1+0x26b": ".Lhaptic_86938_play_mode_string_026b",
+      ".rodata.str1.1+0x17dd": ".Lhaptic_86938_play_mode_string_17dd",
+      ".rodata.str1.1+0x505": ".Lhaptic_86938_play_mode_string_0505"
+    }
+  },
+  "generated_stock_assembly_sha256": "f082f869aa00504685a3b3f11b4a0eec528e9d6550e77499975a0b9e8edaab29",
+  "generated_rodata_include_sha256": "5d20a982aaaa601e4a5eb6fd4f3a289726c6f18f055869d670c3fa764f0978ae",
+  "compiled_arm64_inline_assembly": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_139_aw8693x_play_mode_arm64.inc",
+  "validation": {
+    "core_status": "CORE_GATES_PASS",
+    "core_report": "protocol_core_v7/hard_protocol_report.json",
+    "core_report_sha256": "82fe2df6606ba413228baa1327850fc35a2e9cf9537d36b8fd884f35bc496602",
+    "map_sha256": "940d38ae0a3945fb2a4486586cd2dda5bb041912e7c694f75e22b12bdda3ed74",
+    "gate_status": {
+      "ASSEMBLY_RELOCATIONS": "PASS",
+      "CANDIDATE_GHIDRA_PCODE": "PASS",
+      "DOCKER_REPRODUCIBLE": "PASS",
+      "INPUT_IDENTITY": "PASS",
+      "JOERN_SCOPED": "PASS",
+      "JOERN_SLICE": "PASS",
+      "KCFI": "PASS",
+      "MAP_IDENTITY": "PASS"
+    },
+    "strict_assembly": true,
+    "strict_normalized_c": true,
+    "strict_pcode": true,
+    "kcfi": true,
+    "docker_two_cycle_reproducible": true
+  },
+  "promotion_authorized": false,
+  "remaining_evidence_gates": [
+    "BOUNDED_MODEL",
+    "CALLBACK_TABLE",
+    "HOST_HARNESS",
+    "INDEPENDENT_REVIEW",
+    "KMI_TYPES",
+    "KUNIT_LOCKDEP_KCSAN",
+    "LLVM_IR_DIAGNOSIS",
+    "LOCK_LIFETIME",
+    "SANITIZERS",
+    "SEMANTIC_COUNTEREXAMPLE",
+    "STATE_EFFECT_LEDGER"
+  ],
+  "full_driver_status": "INCOMPLETE; module-wide audit has no static_verified functions and missing mappings/registration chain remain outside this function."
+}

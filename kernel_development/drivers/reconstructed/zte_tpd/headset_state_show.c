@@ -1,3 +1,6 @@
+struct ztp_device;
+typedef int (*headset_state_show_callback_t)(struct ztp_device *cdev);
+
 ssize_t headset_state_show(struct file *file, char __user *buffer, size_t count, loff_t *offset)
 {
   __int64 a2 = (__int64)buffer;
@@ -8,8 +11,7 @@ ssize_t headset_state_show(struct file *file, char __user *buffer, size_t count,
   __int64 result; // x0
   __int64 v5; // x8
   __int64 v8; // x22
-  void (__fastcall *v10)(_QWORD); // x8
-  __int64 v11; // x0
+  headset_state_show_callback_t v10; // x8
   int v12; // w0
   char s[32]; // [xsp+8h] [xbp-28h] BYREF
   __int64 v14; // [xsp+10h] [xbp-20h]
@@ -25,17 +27,15 @@ ssize_t headset_state_show(struct file *file, char __user *buffer, size_t count,
   if ( !v5 )
   {
     v8 = tpd_cdev;
-    v10 = *(void (__fastcall **)(_QWORD))(tpd_cdev + 3264);
+    v10 = *(headset_state_show_callback_t *)(tpd_cdev + 0xe78);
     if ( v10 )
     {
-      v11 = tpd_cdev;
       /* CFI check removed */
-      v10(v11);
+      v10((struct ztp_device *)tpd_cdev);
     }
     printk(unk_3A127, "headset_state_show", *(unsigned __int8 *)(v8 + 23));
     v12 = snprintf(s, 0x1Eu, "headset state: %u\n", *(unsigned __int8 *)(v8 + 23));
     result = simple_read_from_buffer(a2, a3, a4, s, v12);
   }
-  _ReadStatusReg(SP_EL0);
   return result;
 }

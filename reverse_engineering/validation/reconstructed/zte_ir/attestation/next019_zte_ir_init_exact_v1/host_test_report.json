@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_ir",
+  "mode": "docker_host_harness",
+  "source": "kernel_development/drivers/reconstructed/zte_ir/zte_ir.c",
+  "source_sha256": "dfee2800c5f1205acbebad46802f05a2e6b7b5d071f766f745756170be3b57b0",
+  "test_source": "kernel_development/drivers/reconstructed/zte_ir/tests/host_test.c",
+  "test_source_sha256": "77d724493d5d8a23b093821645d2aae1a6739b57e9df84f8773a0aec4e19cfee",
+  "candidate_module_sha256": "2cb1abf86b452c0265aeadee92ac022a83b4fef461f6a42c3089ee40cda3a997",
+  "toolchain": "clang-r536225",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "runs": [
+    {"binary_sha256": "e859eb6e5638a6244a0f51e530f5ad7743daacedd6149f26eea402a8393b9c06", "returncode": 0, "stdout": "PASS zte_ir host tests (8/8 stock functions + 2 helpers covered)"},
+    {"binary_sha256": "e859eb6e5638a6244a0f51e530f5ad7749f26eea402a8393b9c06", "returncode": 0, "stdout": "PASS zte_ir host tests (8/8 stock functions + 2 helpers covered)"}
+  ],
+  "covered_functions": ["zte_ir_write", "zte_ir_ioctl", "zte_ir_open", "zte_ir_release", "zte_ir_probe", "zte_ir_remove", "init_module", "cleanup_module"],
+  "covered_helpers": ["zte_ir_encode_pulses"],
+  "passed": true,
+  "reproducible": true,
+  "limitations": ["Host stubs do not prove live kernel, DMA, SPI-bus or hardware behavior."]
+}

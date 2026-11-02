@@ -163,6 +163,7 @@ void host_mutex_lock(struct mutex *lock);
 void host_mutex_unlock(struct mutex *lock);
 void host_init_mutex(struct mutex *lock);
 void host_init_list(struct list_head *head);
+void host_list_add(struct list_head *entry, struct list_head *head);
 void host_list_add_tail(struct list_head *entry, struct list_head *head);
 void host_list_del(struct list_head *entry);
 void __list_del_entry(struct list_head *entry);
@@ -268,6 +269,7 @@ void panel_event_notifier_unregister(void *cookie);
 #define pr_warn host_log
 #define dev_err(device, format, ...) host_log(format, ##__VA_ARGS__)
 #define INIT_LIST_HEAD(head) host_init_list(head)
+#define list_add(entry, head) host_list_add(entry, head)
 #define list_add_tail(entry, head) host_list_add_tail(entry, head)
 #define list_del(entry) host_list_del(entry)
 #define list_entry(pointer, type, member) container_of(pointer, type, member)

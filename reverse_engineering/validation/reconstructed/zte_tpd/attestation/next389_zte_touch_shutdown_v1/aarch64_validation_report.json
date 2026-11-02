@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "zte_touch_shutdown",
+  "status": "PASS_NORMALIZED_SEMANTIC_WITH_JOERN_AND_RELOCATION_FOLLOWUP",
+  "stock": {
+    "instructions": 56,
+    "symbol_size": 224,
+    "section": ".text",
+    "assembly_sha256": "d3db62780a620a6c2be8a9662dba6dfcb8d0aba8849c77bb56e5647a18f13314",
+    "raw_relocations": 27
+  },
+  "candidate": {
+    "instructions": 56,
+    "symbol_size": 224,
+    "section": ".text",
+    "assembly_sha256": "9bd7806550fd71e190aee2ca586e6749da872099648a3ed2461ed35a877a45b8",
+    "raw_relocations": 27
+  },
+  "kcfi": {
+    "stock_type_id": "0x24a11bb9",
+    "candidate_type_id": "0x24a11bb9",
+    "size_match": true,
+    "section_match": true
+  },
+  "comparison": {
+    "instruction_sequence": "PASS",
+    "normalized_call_order": [
+      "_printk",
+      "callback indirect call with KCFI type 0x73fc0d79 when non-null",
+      "_printk",
+      "tpd_report_work_deinit",
+      "tpd_resume_work_deinit",
+      "_printk",
+      "cancel_delayed_work_sync +0x8d0",
+      "_printk",
+      "cancel_delayed_work_sync +0xa50",
+      "vfree +0xbe8",
+      "cancel_delayed_work_sync +0x938"
+    ],
+    "normalized_semantics": "PASS",
+    "raw_relocations": "FAIL_MODULE_LOCAL_RODATA_SYMBOL_OFFSETS_ONLY"
+  },
+  "scope": "Offline AArch64 function-level validation. This does not prove callback lifetime, scheduler behavior, or hardware teardown."
+}

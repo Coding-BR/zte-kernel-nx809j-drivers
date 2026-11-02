@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "generated_local": "2026-10-29",
+  "target": {
+    "driver": "haptic_86938",
+    "function": "richtap_file_release",
+    "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_034_richtap_file_release.c",
+    "source_sha256": "b2096c04e54c242489c4cb2d42669f8d3c3418b3bc75a2f257bccf596929f350",
+    "candidate_module": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/candidate_module/haptic_86938.ko",
+    "candidate_module_sha256": "23623a53a178ca5e8c7f4913afbbdcea840d1af59dd5a0b0c6606e5d009f3da9"
+  },
+  "execution": {
+    "environment": "Docker Linux container",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "compiler": "GCC 13.3.0-6ubuntu2~24.04.1",
+    "command": "sh /harness/run_harness.sh",
+    "flags": "-std=c11 -Wall -Wextra -Werror",
+    "exit_status": 0
+  },
+  "inputs": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_034_richtap_file_release.c",
+      "sha256": "b2096c04e54c242489c4cb2d42669f8d3c3418b3bc75a2f257bccf596929f350",
+      "bytes": 218
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/main.c",
+      "sha256": "92ec747ddc191b59331a022eb09b8c96a8c46bb578da8300952e856bb40f8c3d",
+      "bytes": 1549
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/mutant_nonzero_return.c",
+      "sha256": "a9f02c7a94eed1fc7cdd79b4d22c0c064498e22c30e3204d238abd3991d40018",
+      "bytes": 198
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/mutant_omit_module_put.c",
+      "sha256": "0ba6a6162a0bb56af3a8902e234f6fcef4b070cae30460bf6c18609c5540887c",
+      "bytes": 142
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/run_harness.sh",
+      "sha256": "1883e2244428d0ab17aaf369a55c36760f6a0ebe55b1bffe21ea7f06b5beadba",
+      "bytes": 924
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/stock_model.c",
+      "sha256": "d24709de156dc0f37689c76548c4692790e7cc4f0b3f093c1f68a3e40143acf1",
+      "bytes": 176
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/include/linux/fs.h",
+      "sha256": "b365d2bd87b94857f4f32b36d1dd7074542b7b47ff828226c5f8f62b0396d895",
+      "bytes": 175
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_file_release_20261029/host_harness/include/linux/module.h",
+      "sha256": "cb9efe1d193ceaf63f46536d826344b4476f1c03d5b87c25503974a026462602",
+      "bytes": 440
+    }
+  ],
+  "observations": [
+    {
+      "case": "differential_model",
+      "result": "PASS",
+      "return_value": 0,
+      "module_put_calls": 1,
+      "argument_is_THIS_MODULE": true
+    },
+    {
+      "case": "mutant_omit_module_put",
+      "result": "REJECTED",
+      "observed": "module_put count mismatch: stock=1 candidate=0"
+    },
+    {
+      "case": "mutant_nonzero_return",
+      "result": "REJECTED",
+      "observed": "return mismatch: stock=0 candidate=-1"
+    }
+  ],
+  "scope": "Bounded host-side differential check of the candidate against the transcribed stock behavior model; stubs module_put and checks return value, call count, and THIS_MODULE identity.",
+  "limitations": [
+    "Does not execute inside the kernel or on hardware.",
+    "Does not prove whole-driver lifecycle correctness; richtap_file_open remains a separate unfinished candidate.",
+    "Harness success does not change semantic_equivalence from NOT_ESTABLISHED or authorize promotion."
+  ]
+}

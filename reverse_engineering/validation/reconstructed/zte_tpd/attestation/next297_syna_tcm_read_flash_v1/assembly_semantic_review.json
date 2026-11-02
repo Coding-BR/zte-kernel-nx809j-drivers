@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "kind": "aarch64_semantic_review",
+  "task_id": "297_syna_tcm_read_flash",
+  "stock_entry": "001247c8",
+  "stock_symbol": "syna_tcm_read_flash",
+  "candidate_symbol": "syna_tcm_read_flash",
+  "candidate_compiler": "Clang 19.0.1 aarch64-linux-gnu",
+  "exact_opcode_equivalence": false,
+  "review_status": "SEMANTIC_SHAPE_PASS",
+  "evidence": {
+    "stock_decompiled_c": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0296_001247c8_syna_tcm_read_flash.c",
+      "sha256": "6b82c6e1ec970edf4a1c949732e4e17311a4d44870a208421d8547bfaab0ef0d"
+    },
+    "stock_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0296_001247c8_syna_tcm_read_flash.jsonl",
+      "sha256": "f45584b646b83668cb8e071105c534e71113d8866a35a150f3dca448bdbb7738"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0296_syna_tcm_read_flash_001247c8.asm",
+      "sha256": "de3f94337d163e6aa75103c993f8e0dee0fced1f533ac8bb1b83374da9e1ac1e"
+    },
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_read_flash.c",
+      "sha256": "2cb39feba1c5f01fc8a17f58846fff41f5f4dc17b132d42f445c242d5e07a0d8"
+    },
+    "candidate_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next297_syna_tcm_read_flash_v1/candidate_assembly/syna_tcm_read_flash_candidate.s",
+      "sha256": "2639296230af91b67021597758b6707d3ce6650e6cdd0f8f4ca3f92c5eb8e92d"
+    }
+  },
+  "checks": {
+    "null_destination_address_length_validation": "PASS",
+    "six_byte_flash_command_encoding": "PASS",
+    "delay_and_transport_flag_selection": "PASS",
+    "typed_write_message_callback": "PASS",
+    "callback_error_propagation": "PASS",
+    "response_length_validation": "PASS",
+    "response_buffer_capacity_validation": "PASS",
+    "response_copy": "PASS",
+    "max_write_size_six_special_branch": "PASS",
+    "hardware_access": "ABSENT_IN_FUNCTION"
+  },
+  "known_non_equivalences": [
+    "Vendor stock contains PAC/relocation and explicit callback type-ID checks that do not establish final module equivalence.",
+    "Candidate Assembly is a semantic-shape artifact, not an opcode identity proof.",
+    "The write_message callback implementation and transport response producer are outside this isolated target.",
+    "The source retains the observed zero-chunk max-write-six branch; no behavioral correction was inferred.",
+    "This review does not establish kernel ABI, KCFI, module relocation, or physical hardware behavior."
+  ]
+}

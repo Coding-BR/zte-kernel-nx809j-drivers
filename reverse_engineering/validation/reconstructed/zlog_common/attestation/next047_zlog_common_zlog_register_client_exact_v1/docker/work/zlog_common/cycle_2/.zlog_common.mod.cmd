@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zlog_common/cycle_2/zlog_common.mod := printf '%s\n'   zlog_exact_bases.o zlog_client_record_exact.o zlog_register_client_exact.o zlog_unregister_client_exact.o zlog_handle_work_exact.o zlog_common_main.o zlog_exports.o | awk '!x[$$0]++ { print("/work/validation/zlog_common/cycle_2/"$$0) }' > /work/validation/zlog_common/cycle_2/zlog_common.mod

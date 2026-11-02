@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "kind": "guided_microproof_attestation",
+  "driver": "zte_tpd",
+  "task_id": "270_syna_tcm_buf_copy",
+  "stock_function": "syna_tcm_buf_copy",
+  "stock_entry": "00121c10",
+  "status": "HOST_JOERN_MICROPROOFS_PASS",
+  "promotion_allowed": false,
+  "promotion_blockers": [
+    "full canonical zte_tpd module build and KCFI evidence were not run for this isolated candidate",
+    "independent L4 review has not been recorded",
+    "smartphone validation was intentionally not run"
+  ],
+  "evidence": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_buf_copy_2.c",
+      "sha256": "2e5ecaa36be6bfa8905cd8047cdda6d87e11636fbf9227251267bacf0c146cca"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0269_syna_tcm_buf_copy_00121c10.asm",
+      "sha256": "2a2d60a8ddebe9bd97e9a4daf38d275f6337d40dd02d47dec81942cc5e5fd40c"
+    },
+    "host_harness": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next270_syna_tcm_buf_copy_v1/host_harness_report.json"
+    },
+    "joern_gate_summary": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next270_syna_tcm_buf_copy_v1/joern_final/joern_gate_summary.json",
+      "sha256": "f804e45592805c951bf98e6ea230317675d5f9a87d5460806bc9a4f38c02a306"
+    }
+  },
+  "microproofs": {
+    "MP0_IDENTITY": "PASS",
+    "MP1_CALL_SIGNATURE": "PASS",
+    "MP2_STATE_EFFECT_LEDGER": "PASS",
+    "MP3_CONTROL_ERROR_MATRIX": "PASS",
+    "MP4_TEST_ORACLE": "PASS",
+    "MP7_CANDIDATE_PATCH": "PENDING_CANONICAL_BUILD",
+    "MP8_INDEPENDENT_REVIEW": "PENDING"
+  },
+  "joern_gate": {
+    "release": "v4.0.548",
+    "strict": true,
+    "passed": true,
+    "promotion_claim": false,
+    "mapped_identity_count": 1,
+    "call_count": 200,
+    "control_structure_count": 33,
+    "unresolved_call_count": 0,
+    "mapped_call_deltas": []
+  },
+  "observed_contract": {
+    "destination_buffer_layout": "data@0x00, capacity@0x08, length@0x0c, lock@0x10, depth@0x40",
+    "source_buffer_layout": "data@0x00, capacity@0x08, length@0x0c, lock@0x10, depth@0x40",
+    "growth_size": "source_length + 1",
+    "allocation_failure_return_raw": "0xffffff0d",
+    "copy_error_return_raw": "0xffffffea",
+    "indirect_calls": false,
+    "hardware_access": false
+  },
+  "host_harness": {
+    "passed": true,
+    "reproducible_binary": true,
+    "asan_ubsan_stderr_empty": true,
+    "cycles": 2,
+    "cases": 5,
+    "alignment_sanitizer_disabled": true
+  }
+}

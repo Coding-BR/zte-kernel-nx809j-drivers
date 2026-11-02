@@ -1,0 +1,1 @@
+savedcmd_/work/validation/zte_fingerprint/cycle_2/Module.symvers :=  ./scripts/mod/modpost -M -m -b -x  -E     -o /work/validation/zte_fingerprint/cycle_2/Module.symvers -T /work/validation/zte_fingerprint/cycle_2/modules.order -i ./Module.symvers -e -i /work/validation/zte_fingerprint/cycle_2/vendor.Module.symvers -p protected_module_names_list

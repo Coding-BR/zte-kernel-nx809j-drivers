@@ -1,0 +1,11 @@
+{
+  "semantic_equivalence": "NOT_ESTABLISHED",
+  "show_lock_ops": [],
+  "risk": "show reads the shared data pointer and count without a lock or reference; awrw_store changes count, frees/replaces the pointer, and only locks later for bus I/O; concurrent use may observe a freed pointer or mismatched count/allocation",
+  "store_observation": "stock awrw_store@0010d620 parses mode/count, stores count and mode, frees the old buffer, allocates count bytes, stores the new pointer, and takes the mutex only for subsequent bus operations",
+  "reachable_boundary_input": "stock awrw_store parses hexadecimal mode/count; mode=1,count=0x334 reaches awrw_show count 820 when allocation succeeds; count=0 is rejected before state updates",
+  "integration_status": "INCOMPLETE: awrw_store is NOT_STARTED in the reconstruction map; candidate module lacks the writer",
+  "required": "independent lifetime review plus integrated KASAN/KCSAN or equivalent concurrency test; sysfs serialization must be established from the target kernel",
+  "kernfs_serialization": "The pinned target kernfs source uses of->mutex only to serialize callbacks for the same kernfs_open_file; each open file gets a separate mutex. Thus separate opens can run show and store concurrently. See kernel_kernfs_lifetime_evidence.json.",
+  "source_hash_kernfs": "93d24a909ef8113b16a29c8d505e3a81861b60351f10d3b3ab6b83abfbeca4e9"
+}

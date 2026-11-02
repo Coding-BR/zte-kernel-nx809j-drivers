@@ -5,7 +5,6 @@ int syna_cdev_open(struct inode *inode, struct file *filp)
   int v2; // w8
   unsigned int *v3; // x19
   unsigned int **v4; // x21
-  __int64 v5 = 0; // x2
   __int64 v9; // x0
   unsigned int v10; // w8
 
@@ -54,6 +53,6 @@ int syna_cdev_open(struct inode *inode, struct file *filp)
   mutex_unlock(&qword_316D0);
   syna_tcm_clear_data_duplicator(*(_QWORD *)v0);
   mutex_unlock(&qword_316A0);
-  printk(unk_34E37, "syna_cdev_open", v5);
+  printk(unk_34E37, "syna_cdev_open");
   return 0;
 }

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "kind": "bounded_assembly_semantic_review",
+  "task_id": "326_trim",
+  "status": "SEMANTIC_SHAPE_PASS_EXACT_EQUIVALENCE_PENDING",
+  "stock": {
+    "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0325_trim_0012b4dc.asm",
+    "sha256": "6bca473c86660e49a3b25d24540ecc458f81775010546d4d0874ea733c7417a6",
+    "entry": "0012b4dc",
+    "instruction_count_observed": 30,
+    "calls": ["strlen"],
+    "returns": 1,
+    "stores": ["strb"],
+    "control_features": ["cbz null", "tbnz leading whitespace", "cbz end", "reverse loop", "b.ls boundary"]
+  },
+  "candidate": {
+    "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next326_trim_host_v1/candidate_assembly/trim_candidate.s",
+    "sha256": "1408296b03cfd55176a2fd6b6104cbf1b01feea3cf2f18dfddcb9e20eef45713",
+    "calls": ["strlen"],
+    "returns": 1,
+    "stores": ["strb"],
+    "control_features": ["cbz null", "whitespace range predicate", "cbz end", "reverse loop", "pointer boundary"]
+  },
+  "checks": {
+    "null_path": true,
+    "leading_whitespace_path": true,
+    "empty_after_leading_path": true,
+    "strlen_call": true,
+    "reverse_trailing_scan": true,
+    "single_terminating_store": true,
+    "indirect_branch": false,
+    "mmio_or_barrier": false
+  },
+  "limitations": [
+    "The candidate was compiled with GCC 13 AArch64, while stock was built by the vendor toolchain.",
+    "This report compares semantic shape and host behavior, not exact opcode identity.",
+    "Relocation and KCFI comparison require the canonical module build and remain pending."
+  ],
+  "exact_equivalence_proven": false
+}

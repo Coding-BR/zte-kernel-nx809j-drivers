@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "target": "aw8693x_parse_dt@00104d80",
+  "status": "PARTIAL_STOCK_CALLBACK_PROVEN_CANDIDATE_TABLE_MISSING",
+  "stock": {
+    "module": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "table_symbol": "aw8693x_func_list",
+    "table_section": ".data",
+    "table_size_bytes": 400,
+    "table_base_offset": "0",
+    "parser_slot_offset": "0xe0",
+    "slot_index": 28,
+    "parser_symbol": "aw8693x_parse_dt",
+    "parser_binding": "LOCAL",
+    "parser_section": ".text",
+    "parser_offset": "0x1f60",
+    "parser_size_bytes": 1360,
+    "relocation": "R_AARCH64_ABS64 at .rela.data+0xe0 -> .text+0x1f60",
+    "caller": "aw_i2c_probe@001073c0",
+    "caller_table_store": "aw struct+0x5c8 = &aw8693x_func_list",
+    "caller_slot_load": "table+0xe0",
+    "callsite": "aw_i2c_probe+0xa24 (00107de4), indirect BLR guarded by KCFI 0x2e77d32a",
+    "prototype_evidence": "(dev, aw, np) in x0/x1/x2; 3 pointer arguments, void return"
+  },
+  "candidate": {
+    "module_path": "protocol_core_v1/docker candidate build output",
+    "module_sha256": "92692abd53f54939c56e92a0a4d342559f340291d8415829365056b9fb12e9ca",
+    "parser_symbol": "aw8693x_parse_dt",
+    "binding": "GLOBAL",
+    "size_bytes": 1360,
+    "kcfi_type_id": "0x2e77d32a",
+    "callback_table_symbol_present": false,
+    "integration": "The reconstructed source tree has the callback struct declaration and a consumer, but no aw8693x_func_list object definition; candidate module readelf symbol scan found no table symbol.",
+    "protocol_callsite_comparison": "NOT_APPLICABLE_NO_INDIRECT_CALLS_IN_PARSE_DT",
+    "caller_guard_evidence": "Stock aw_i2c_probe independently checks KCFI type 0x2e77d32a before invoking the slot; see callback_abi/stock_aw_i2c_probe_excerpt.txt."
+  },
+  "evidence_files": [
+    "callback_abi/stock_symbols.txt",
+    "callback_abi/stock_parser_table_relocation.txt",
+    "callback_abi/candidate_symbols.txt",
+    "callback_abi/stock_aw_i2c_probe_excerpt.txt",
+    "protocol_core_v1/assembly/comparison.json",
+    "protocol_core_v1/kcfi/callsite_comparison.json",
+    "callback_abi/stock_rela_data_section.txt",
+    "callback_abi/candidate_function_dwarf.txt"
+  ],
+  "next_action": "Reconstruct and verify the complete 400-byte callback object and all slots before claiming haptic_86938 module-level completeness. The protocol internal-callsite comparison does not cover the incoming aw_i2c_probe call.",
+  "module_audit": {
+    "status": "incomplete_or_failed",
+    "static_verified": [],
+    "errors": [
+      "current reconstructed .ko is missing",
+      "module parity check failed: alias_match",
+      "module parity check failed: undefined_symbols_match",
+      "module parity check failed: candidate_matches_fresh"
+    ]
+  }
+}

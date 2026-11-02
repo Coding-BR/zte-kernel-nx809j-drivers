@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "function_id": "aw8693x_container_update@001039e0",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "event": "synchronous RAM firmware container update through operation table",
+  "table_relation": {
+    "owner_object": "aw8693x_func_list",
+    "relocation_section": ".rela.data",
+    "owner_offset": "0x30",
+    "target": "aw8693x_container_update@001039e0",
+    "pointer_width": 8,
+    "derived_slot_index": 6,
+    "confidence": "HIGH"
+  },
+  "caller": {
+    "identity": "ram_load@0010b2e0",
+    "operation": "functions[6](haptic, container)",
+    "type": "int (*)(struct aw_haptic *, struct aw_haptic_container *)",
+    "kcfi_type_id": "0xd1700c10"
+  },
+  "lifetime": {
+    "caller_allocates_container": true,
+    "call_is_synchronous": true,
+    "caller_frees_after_return": true,
+    "target_retains_pointer": false,
+    "target_mutates_container": false
+  },
+  "concurrency": {
+    "mutex": "haptic+0x2f0",
+    "acquired_before_hardware_sequence": true,
+    "released_on_success_and_mismatch": true
+  },
+  "limitations": [
+    "Outer firmware callback may be asynchronous; this call itself is synchronous inside ram_load.",
+    "Indirect call guard and candidate callback-table relocation remain final core gates."
+  ]
+}

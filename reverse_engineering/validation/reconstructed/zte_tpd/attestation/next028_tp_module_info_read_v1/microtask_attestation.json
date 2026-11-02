@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tp_module_info_read",
+  "stock_entry": "00109784",
+  "protocol": "offline_reconstruction_attestation_v1",
+  "gates": {
+    "host_contract_harness": true,
+    "host_reproducible": true,
+    "joern_strict": true,
+    "canonical_build": true,
+    "canonical_reproducible": true,
+    "kcfi_type_section_size": true,
+    "candidate_aarch64_assembly_extracted": true,
+    "stock_instruction_relocation_parity": false
+  },
+  "promotion_status": "BLOCKED_BY_STOCK_REFERENCE_PARITY",
+  "smartphone_test": "NOT_RUN_BY_DESIGN",
+  "canonical_module_sha256": "f4c58cb9b14dccc6253c1848ffc84d0ee4208f89304452e6cd029137fea936cf",
+  "canonical_module_size": 29350144,
+  "joern_findings": [
+    "high userspace_egress: simple_read_from_buffer at tp_module_info_read.c:82"
+  ],
+  "notes": [
+    "The two-case ASAN/UBSAN host harness passed in two reproducible cycles.",
+    "Docker canonical builds passed in two cycles with identical module SHA-256.",
+    "Joern strict parsing passed with one mapped source method, 123 calls, 23 control structures and zero unresolved calls.",
+    "KCFI type ID, section and symbol size match the directly extracted stock module reference.",
+    "The candidate body size matches 672 bytes, but instruction and relocation parity failed.",
+    "The fatal BRK overflow branch and smartphone execution were not run."
+  ]
+}

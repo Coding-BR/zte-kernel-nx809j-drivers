@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T13:13:39.468778+00:00",
+  "driver": "soc_fan",
+  "scope_status": "IN_SCOPE_CONFIRMED_BY_NX809J_DEVICE_TREE",
+  "device": {
+    "codename": "NX809J",
+    "product": "REDMAGIC 11 Pro+"
+  },
+  "stock": {
+    "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+    "size_bytes": 42728,
+    "modinfo_evidence": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/soc_fan_scope_source_evidence.txt",
+    "description": "NUBIA FAN driver",
+    "of_aliases": [
+      "of:N*T*Csoc,fan",
+      "of:N*T*Csoc,fanC*"
+    ],
+    "softdep": [
+      "pre: leds-qcom-lpg"
+    ]
+  },
+  "target_dt": {
+    "source_volume": "nubia_sm8850_kernel_src",
+    "source_revision": "e1ea0289c329945af9422e58256a37f7603fa098",
+    "path": "vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+    "sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d",
+    "locator": "lines 650-664; node qcom,fan@ef00, compatible soc,fan",
+    "matched_properties": {
+      "reg": "0xef00",
+      "fan,avdd-supply": "pmh0101_l8",
+      "pinctrl": "fan_speed, fan_pwm",
+      "fan,pwm-gpio": "pmh0101_gpios 9 GPIO_ACTIVE_HIGH",
+      "fan,speed-gpio": "tlmm 211 GPIO_ACTIVE_HIGH",
+      "fan,voltage": "3300000",
+      "pwms": "fan_pwm_dev 3 40000"
+    },
+    "runtime_overlay_application_confirmed": false
+  },
+  "source_search": {
+    "evidence_path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/soc_fan_scope_source_evidence.txt",
+    "search_roots": [
+      "kernel_platform/common/drivers",
+      "kernel_platform/soc-repo/drivers",
+      "vendor/qcom/proprietary"
+    ],
+    "terms": [
+      "soc_fan",
+      "soc,fan",
+      "nb_fan_probe",
+      "nb_fan_parse_dt",
+      "nb_fan_gpio_proc",
+      "fan_speed_irq_proc",
+      "fan_hrtimer_hander",
+      "fan_level_set"
+    ],
+    "finding": "DT compatible match is present; no source implementation match appeared in these pinned roots; this does not prove source is absent outside searched paths"
+  },
+  "reconstruction_state": {
+    "candidate_source_present": false,
+    "candidate_module_present": false,
+    "reconstruction_map_present": false,
+    "semantics_proven": false,
+    "hardware_validated": false
+  },
+  "unknowns": [
+    "Whether the NX809J overlay is applied on the target at runtime.",
+    "Meaning and unit of private fan properties until corroborated against stock function behavior and framework APIs.",
+    "No candidate implementation or source-level type contract exists yet."
+  ]
+}

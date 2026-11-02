@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "string parser allocation and cleanup review",
+  "review_status": "STATIC_REVIEW_COMPLETE_WITH_CONDITIONAL_C_SOURCE_FALLBACK_LEAK",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 7,
+    "unique_call_sites": 5,
+    "joern_findings_total": 128,
+    "duplicate_representation_note": "kfree at lines 139 and 315 is each represented twice by Joern with cast/type variants; each is one source call.",
+    "functions": [
+      "string_change"
+    ],
+    "reviewed_total_after_this_round": 56,
+    "remaining_joern_findings": 72
+  },
+  "findings": [
+    {
+      "id": "string-change-allocation-and-return-ownership",
+      "category": "lifetime",
+      "severity": "NO_LEAK_OR_DOUBLE_FREE_CONFIRMED_ON_NORMAL_AND_ALLOCATION_FAILURE_PATHS",
+      "disposition": "JOERN_CALLS_CLASSIFIED_AS_BALANCED_OR_OWNERSHIP_TRANSFER",
+      "details": "Empty input returns a one-byte zeroed allocation (or NULL on allocation failure) with output length zero. Failure to allocate s_copy returns NULL and length zero. Failure to allocate out_buf frees s_copy before returning. Normal parsing frees s_copy once, sets the output length, and returns out_buf to the caller; this is ownership transfer, so the absence of an in-function kfree(out_buf) is expected. The two kfree sites are disjoint control-flow paths.",
+      "evidence": {
+        "source": "kernel_development/drivers/reconstructed/zte_tpd/string_change.c",
+        "source_hash": "409d350e2a78ab01f39197cfc634649339770db132d083470e40e9a4ab32d2cf",
+        "ghidra": "offline_static/ghidra_stock/decompiled/0324_0012aecc_string_change.c",
+        "stock_entry": "0012aecc",
+        "joern_sites": [
+          {
+            "line": 119,
+            "call": "kzalloc",
+            "code": "kzalloc(1, GFP_KERNEL)"
+          },
+          {
+            "line": 127,
+            "call": "kmalloc",
+            "code": "kmalloc(len + 1, GFP_KERNEL)"
+          },
+          {
+            "line": 136,
+            "call": "kmalloc",
+            "code": "kmalloc(out_max, GFP_KERNEL)"
+          },
+          {
+            "line": 139,
+            "call": "kfree",
+            "code": "kfree((const void *)(s_copy))"
+          },
+          {
+            "line": 139,
+            "call": "kfree",
+            "code": "kfree(s_copy)"
+          },
+          {
+            "line": 315,
+            "call": "kfree",
+            "code": "kfree((const void *)(s_copy))"
+          },
+          {
+            "line": 315,
+            "call": "kfree",
+            "code": "kfree(s_copy)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "string-change-nonfatal-break-fallback-can-retain-s-copy",
+      "category": "conditional_lifetime_risk_in_C_mirror",
+      "severity": "LOW_CONDITIONAL_SOURCE_PATH_ONLY",
+      "disposition": "NOT_PRESENT_IN_CURRENT_COMPILED_STOCK_EXACT_ASSEMBLY; TRACKED_FOR_C_MIRROR_HARDENING",
+      "details": "Four output-bound guards call __break and then goto LABEL_77. The C mirror defs.h maps __break to pr_warn, which returns; LABEL_77 sets the output length to zero and returns without freeing s_copy. If one of those guards fires when this C path is used, s_copy leaks (out_buf is returned to the caller, so its ownership is separate). Ghidra marks the corresponding stock branch as a non-returning SoftwareBreakpoint and the exact assembly contains BRK #1. The Makefile filters out string_change.c and links syna_string_change_exact.S, so the current candidate runtime retains the stock trap and does not take this returning C fallback. The 3*strlen allocation and per-write bounds checks make guard activation unlikely for ordinary valid input, but this pass did not prove an invariant over all malformed strings.",
+      "evidence": {
+        "c_guard_lines": [
+          170,
+          206,
+          224,
+          295
+        ],
+        "fallback_label_lines": [
+          319,
+          320,
+          321
+        ],
+        "break_macro": "kernel_development/drivers/reconstructed/zte_tpd/defs.h:90 maps __break to pr_warn",
+        "stock_ghidra_break": "offline_static/ghidra_stock/decompiled/0324_0012aecc_string_change.c:185-188",
+        "exact_stock_instruction": "kernel_development/drivers/reconstructed/zte_tpd/syna_string_change_exact.S contains instruction 0xd4200020 (BRK #1)",
+        "makefile_c_filtered": "kernel_development/drivers/reconstructed/zte_tpd/Makefile:59",
+        "makefile_exact_object": "kernel_development/drivers/reconstructed/zte_tpd/Makefile:267"
+      }
+    }
+  ],
+  "docker_snapshot": {
+    "reused_canonical_build_report": "attestation/semantic_review_round4_20261102/canonical_build_report.json",
+    "build_report_sha256": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa",
+    "build_passed": true,
+    "build_cycles": 2,
+    "kbuild_input_count": 848,
+    "input_manifest_sha256": "7954caae60f800dde7099bd9da89b5648a9af0b5d5a5f3708be2525247a6694d",
+    "string_change_c_matches_docker": true,
+    "exact_assembly_matches_docker": true,
+    "new_build_required": false,
+    "reason": "No Kbuild input changed; the C parser is excluded from the module build and the exact assembly is already in the current Docker manifest."
+  },
+  "existing_host_harness": {
+    "report": "attestation/next325_string_change_exact_v3/exact_revalidation_20260831/host_harness_attestation_report.json",
+    "report_sha256": "a0c78a8e1ee87a03f3070cec70130d8583644f8228e3a5466151e8e3c25ad0dd",
+    "source_sha256_matches": true,
+    "passed": true,
+    "cases": 7,
+    "repetitions": 2,
+    "executed_this_round": false,
+    "coverage_note": "Existing ASan/UBSan evidence covers allocation failures, empty input, hex prefix parsing, coordinate parsing and rotations 0, 1 and 3; it does not force the defensive bound-break fallback."
+  },
+  "source_sha256": {
+    "string_change.c": "409d350e2a78ab01f39197cfc634649339770db132d083470e40e9a4ab32d2cf",
+    "syna_string_change_exact.S": "dae7b216b8963abc2e97ecc154dc4acc85b006c8be28113cd4f598fa2baed558",
+    "defs.h": "02e27b78548d1102e621e8b65fc800581646d16625ee9d4ecbf40174f41bc19f"
+  },
+  "evidence_sha256": {
+    "joern_gate_report": "1b992d589e3301af7d589ef16df6ba580dc768b1fec257f1290a7270841d7a4b",
+    "ghidra_pseudocode": "a584738b0fe86a6cd38bdeb8eabdfae1a82fb9306b70766c1ef9025b6a7c24e9",
+    "ghidra_pcode": "54811f383081a4afc8d74c0628b53b938d924d6972a88d0498a19ece4fb65890",
+    "host_harness_report": "a0c78a8e1ee87a03f3070cec70130d8583644f8228e3a5466151e8e3c25ad0dd",
+    "canonical_build_report": "0e406359a23cdbdfbd75f57f9f593ccf26a0ecc289dde5cb3daa862ae77433fa"
+  },
+  "limitations": [
+    "No caller of string_change was found in the reconstructed C/assembly source inventory; external ownership of the returned output was not audited.",
+    "The bound-break fallback was not dynamically forced in this round.",
+    "No Android runtime or NX809J hardware execution.",
+    "The C mirror remains outside Kbuild; exact assembly remains authoritative."
+  ]
+}

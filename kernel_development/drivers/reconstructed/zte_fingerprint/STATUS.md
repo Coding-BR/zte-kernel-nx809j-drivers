@@ -11,7 +11,7 @@ Estado atual:
 - inventario e multiplicidade de chamadas Ghidra agora passam em 30/30 funcoes;
 - KCFI passa em 12/12 callbacks indiretos;
 - ABI ioctl corrigida para `0x40086709` e `0x4008670d`, com tres copias de usuario comprovadas;
-- candidato estatico promovido e reproduzivel: SHA-256 `553846049bafaf30e0e7ee0349f08f0b168c93a96cdc1b0b44ae8b2264f94b34`;
+- candidato estatico promovido e reproduzivel: SHA-256 `61a330c960f29a145e8db823e667ded35d476d0eb442ef844730f6fa8d8c804b` (393120 bytes);
 - harness host passou duas vezes com cobertura nominal das 30 funcoes;
 - atestacao hashada passou em 30/30 microtarefas;
 - paridade comportamental estatica final passou;

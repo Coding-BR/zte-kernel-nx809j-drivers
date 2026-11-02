@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "mode": "offline_kernel_translation_unit_build",
+  "driver": "zte_tpd",
+  "target": "string_change",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "kernel_source_volume": "nubia_sm8850_kernel_src",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "command": "make -C /work/src/kernel/kernel_platform/common LLVM=/toolchains/clang-r536225/bin/ LLVM_IAS=1 ARCH=arm64 M=<source> KCFLAGS=-ffile-prefix-map=<M>=/zte_tpd KBUILD_EXTRA_SYMBOLS=<M>/vendor.Module.symvers string_change.o -j2",
+  "object": "kernel_development/drivers/reconstructed/zte_tpd/string_change.o",
+  "object_sha256": "53a0d5d39a957fd96c4a709f70992b71bab056567d3bf6982fb6c967c3ebfb79",
+  "object_size": 115648,
+  "symbol": {
+    "name": "string_change",
+    "offset": "0x4",
+    "size": "0x6a8",
+    "size_bytes": 1704
+  },
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "This proves the target translation unit compiles in the kernel container; it is not a whole-module .ko build.",
+    "The existing full-tree build remains blocked by unrelated pre-existing declarations in syna_tcm_erase_mtp_data.c and syna_tcm_buf_copy_2/syna_tcm_func_base_unit.c."
+  ]
+}
