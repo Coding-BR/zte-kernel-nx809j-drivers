@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "c36ca8b8f217f98cc7efd9b22bf97b01c2d4fd9e470efcfb39e741978bcabc09",
+  "candidate_sha256": "ab4d614ba94727c10f660d8732af49f3b3d7b7af9102934cbd315b89ee50d3cf",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T20:33:55.828602+00:00",
+  "generated_utc": "2026-11-02T20:56:06Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -5078,30 +5078,24 @@
     },
     {
       "evidence": [
+        "source:syna_cdev_create.c:sha256:7406d2059f366a3bfa3ac4267ed128e5396caee4f800c5a2e350d5abdb632a67",
         "ghidra-pseudocode:decompiled/0183_00114b3c_syna_cdev_create.c:sha256:698ccb62c69f47a4df3bb076f3f661613dc699d88ee17cb5c5f3163a05e3bff6",
         "ghidra-pcode:pcode/0183_00114b3c_syna_cdev_create.jsonl:sha256:3e3a21292857e5019299453faa3b198d4b2c4c95c91119844847d8186833d703",
-        "stock-assembly:0183_syna_cdev_create_00114b3c.asm:sha256:e3281faef78305ee946adb3682541726b71e7c0552ea784ccffbd96e76f8c7bf",
-        "joern:attestation/next184_syna_cdev_create_v1/joern_gate_report.json:sha256:85ef5a7e943b40ac344c962c4e71e3bf4a99b76f5fe48861b69e0d4ab43bc11c",
-        "source-sync:attestation/next184_syna_cdev_create_v1/source_sync_report.json:sha256:23ca94d79063d7386234330ca2f1c86696cca76f33159c17550a20d1a4b4a5d3",
-        "host-harness:attestation/next184_syna_cdev_create_v1/host_harness_report.json:sha256:47c529dc7187040ce2c84717a4055712bd3d972846e3d666e1e6982c83c35e11",
-        "canonical-build:attestation/next184_syna_cdev_create_v1/canonical_build_report.json:sha256:f1e46536d474a30cf83ca3d608de67de48d7178866a3b9a353126577d91dc912",
-        "kcfi:attestation/next184_syna_cdev_create_v1/kcfi_comparison.json:sha256:0effea3fd8eb181e08504f77fa00d30bbf6d54752dbbb887dc24ad5372b4f266",
-        "assembly-compare:attestation/next184_syna_cdev_create_v1/assembly_comparison.json:sha256:b61946e828e8c23deb989ca63bf3d80f1e0415224e598a05498e94a8ae1a95e1",
-        "attestation:attestation/next184_syna_cdev_create_v1/microtask_attestation.json:sha256:c5c5e5b1d267a9d804057da2e8a08942ceeb080ebc8e0446e36285fdb9ad027c",
-        "source:syna_cdev_create.c:sha256:3142fa198726cf9ca1f2192e8a90e8c0578971b0f09df06b215021d373a338ba",
-        "attestation:attestation/cdev_fops_table_20261102/fops_table_comparison.json:sha256:664b05f30f00ee8865da4818b029f03e54f5cebf78afaba8df448b68e8846c76",
-        "attestation:attestation/cdev_fops_table_20261102/elf_relocation_evidence.txt:sha256:f0bf78505356e79479bea7daa67ec85cf381087aeb19e534369950f95f1a3367"
+        "source-sync:attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json:sha256:a4598ae7854dcf4ea2d134bc242f1767f9bbdb1682c0e2183a2ac64c396d2c06",
+        "canonical-build:attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json:sha256:f05cd2786fe090c01b5c19d58b7059a51f4bf71011fe5dc74c75cd4391130a13",
+        "lifecycle-review:attestation/syna_cdev_lifecycle_quiesce_20261102/lifecycle_review.json:sha256:625e37290584f530361e6c2440fdb216673849db5ad4b033743508f171c87f3f",
+        "static-disassembly:attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt:sha256:e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63"
       ],
-      "mapping_basis": "Ghidra decompilation and P-Code plus Joern, host sanitizer harness, canonical Docker build, KCFI and AArch64 comparison",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Ghidra stock lifetime/control-flow evidence, lifecycle gate review, curated source sync, and reproducible two-cycle canonical Docker build",
+      "review_scope": "offline_lifecycle_hardening",
+      "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
       "source_file": "syna_cdev_create.c",
       "source_function": "syna_cdev_create",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 632,
       "stock_entry": "00114b3c",
       "stock_function": "syna_cdev_create",
-      "mapping_note": "Function body remains offline exact; ELF relocation audit confirms all seven device_fops callback slots match stock, with no extra compat_ioctl/poll/mmap entries. Joern strict, six-case ASan/UBSan harness and two-cycle canonical Docker build pass. KCFI type ID, function size, 158 instructions and exact opcodes/relocations match stock (0x720adbbe, 632 bytes); hardware was not run."
+      "mapping_note": "device_fops now uses generation-checked wrappers and active-operation references. Prior stock fops relocation evidence is a historical baseline; current callback wiring is intentionally hardened. Two-cycle canonical Docker build passes; runtime/hardware remains unverified."
     },
     {
       "evidence": [
@@ -5130,28 +5124,24 @@
     },
     {
       "evidence": [
-        "source:syna_cdev_remove.c:sha256:d1bfaccf414cd2d0c261bfb1e0aed3933c7961256d80662335aab15268d04f63",
+        "source:syna_cdev_remove.c:sha256:da38d64de6fab39a7eba630b6b18cdbbf30a0d0ebe16b75a3399dd6d2060f984",
         "ghidra-pseudocode:decompiled/0185_00114e04_syna_cdev_remove.c:sha256:0c43242c1987319dd9788d3e395985db814b025fd092383a869a10545657db57",
         "ghidra-pcode:pcode/0185_00114e04_syna_cdev_remove.jsonl:sha256:9c1bfd0073bbe7754b879a484967bd075faa4dec187f184fae01e55143c80072",
-        "stock-assembly:0185_syna_cdev_remove_00114e04.asm:sha256:e042b087b01d1645d18992297e4fff3020467ed59f6e2f911b908d061f950e9c",
-        "joern:attestation/next186_syna_cdev_remove_v1/joern_gate_report.json:sha256:dd2e5959a250e48c6ff91d0852362ffeb73bfbfbfdb4e0e63a48c92631c5f297",
-        "source-sync:attestation/next186_syna_cdev_remove_v1/source_sync_report.json:sha256:510f4a1180cbc6b1423813c7dcb5d494552a6b4628561e8be3b427cc34ae21b1",
-        "host-harness:attestation/next186_syna_cdev_remove_v1/host_harness_report.json:sha256:099e4f92110c98567d3c8efa5df0353c9ab9308f8f7c1471decbeb41445cb168",
-        "canonical-build:attestation/next186_syna_cdev_remove_v1/canonical_build_report.json:sha256:be81904b86af75acca3a7e534d2018a57ac1edf4612055dc67b25284b1374e71",
-        "kcfi:attestation/next186_syna_cdev_remove_v1/kcfi_comparison.json:sha256:75505636ba3b4176d6fc74cb3ce66641fcd9cc720a93ee7a5aaa94616518da89",
-        "assembly-compare:attestation/next186_syna_cdev_remove_v1/assembly_comparison.json:sha256:04c6bab6f683923c73b9c78fa7e233f96e0fcad4d3d274b6341f5ec0668e467f",
-        "attestation:attestation/next186_syna_cdev_remove_v1/microtask_attestation.json:sha256:3d86034be18e6f66a60c27c0f2aa1a16c4e1b80803021fae65694f3ee5b85359"
+        "source-sync:attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json:sha256:a4598ae7854dcf4ea2d134bc242f1767f9bbdb1682c0e2183a2ac64c396d2c06",
+        "canonical-build:attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json:sha256:f05cd2786fe090c01b5c19d58b7059a51f4bf71011fe5dc74c75cd4391130a13",
+        "lifecycle-review:attestation/syna_cdev_lifecycle_quiesce_20261102/lifecycle_review.json:sha256:625e37290584f530361e6c2440fdb216673849db5ad4b033743508f171c87f3f",
+        "static-disassembly:attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt:sha256:e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63"
       ],
-      "mapping_basis": "Ghidra decompilation and P-Code plus Joern, host sanitizer harness, canonical Docker build, KCFI and AArch64 comparison",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Ghidra stock lifetime/control-flow evidence, lifecycle gate review, curated source sync, and reproducible two-cycle canonical Docker build",
+      "review_scope": "offline_lifecycle_hardening",
+      "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
       "source_file": "syna_cdev_remove.c",
       "source_function": "syna_cdev_remove",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 400,
       "stock_entry": "00114e04",
       "stock_function": "syna_cdev_remove",
-      "mapping_note": "Joern strict, four-case ASan/UBSan harness and two-cycle canonical Docker build pass. KCFI type ID, function size, 100 instructions and exact opcodes/relocations match stock (0x3175607e, 400 bytes); one equality-compare operand swap was normalized by the comparator; hardware was not run."
+      "mapping_note": "Teardown now quiesces user callbacks and disconnects/synchronizes the IRQ before draining frame-list and cdev resources. Stock body parity is intentionally not claimed. Two-cycle canonical Docker build passes; runtime/hardware remains unverified."
     },
     {
       "evidence": [
@@ -5230,30 +5220,24 @@
     },
     {
       "evidence": [
-        "source:syna_cdev_ioctls.c:sha256:5e0d09a4ae2cdd432c1789fb423b5414d1e6af1c683ca4b27c97d72ff41ed57a",
-        "source-exact:syna_cdev_ioctls_exact.S:sha256:1b5bfa64bc1b1cda3e118f755cc8ef0c3f58f780fe45be8d4854e524de9b2368",
+        "source:syna_cdev_ioctls_exact.S:sha256:478fc4ff22875ec506eced968f1932cf37abc249e0a7485b7395ab8f725de4ca",
         "ghidra-pseudocode:decompiled/0189_001150ec_syna_cdev_ioctls.c:sha256:73f05587c429142b81fb485efa5fd90071c9e9debfd2e294109b0864b99a1414",
         "ghidra-pcode:pcode/0189_001150ec_syna_cdev_ioctls.jsonl:sha256:9c60c3c2aac12e0a3db2d7f8b4419bb356f0ba62595648d51aa7af53dbf97095",
-        "stock-assembly:0000_syna_cdev_ioctls.asm:sha256:b3cce5022c16dea45c38ec8e91ce08915820fffc979dea16554022a3baf61593",
-        "candidate-assembly:0000_syna_cdev_ioctls.asm:sha256:742c9d692b2a531f08d24414ab13208ea277b21360ca04c75370de25e96cd8f0",
-        "assembly-compare:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/aarch64_comparison.json:sha256:ca631fd27672f89f5df53ccfa74de3690a1f54e42a9d0ed7dedaa51959ecbc18",
-        "candidate-module:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/candidate_module/zte_tpd.ko:sha256:55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce",
-        "canonical:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/canonical_build_report.json:sha256:c6b4dabc5436f3e2aed35725ddb8fe56404b73047fe82f7d67a608ef73bd751c",
-        "kcfi:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:bbb11530359a93d88b01bd035d72179a2abcc63555826028a1c4ea479a602e70",
-        "host-route-contracts:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:5e41bb05ea0ce346ac713ff34a6bce53478aa91ca8e8916cf0460efa815a0e6f",
-        "joern:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json:sha256:29a29db036a882e258cd29481b767e272faf3671263e13acd4cfd3d7666b1a5b",
-        "attestation:attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/microtask_attestation.json:sha256:c79fa59341ac99e8f2268fc5baeac13dbf0928c68d537212e21bcc988356fe3f"
+        "source-sync:attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json:sha256:a4598ae7854dcf4ea2d134bc242f1767f9bbdb1682c0e2183a2ac64c396d2c06",
+        "canonical-build:attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json:sha256:f05cd2786fe090c01b5c19d58b7059a51f4bf71011fe5dc74c75cd4391130a13",
+        "lifecycle-review:attestation/syna_cdev_lifecycle_quiesce_20261102/lifecycle_review.json:sha256:625e37290584f530361e6c2440fdb216673849db5ad4b033743508f171c87f3f",
+        "static-disassembly:attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt:sha256:e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63"
       ],
-      "mapping_basis": "Ghidra decompilation/P-Code, exact AArch64 object comparison, KCFI type-ID comparison, canonical Docker build, and target-scoped 14-route ASan/UBSan contract harness",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Ghidra stock lifetime/control-flow evidence, lifecycle gate review, curated source sync, and reproducible two-cycle canonical Docker build",
+      "review_scope": "offline_lifecycle_hardening",
+      "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
       "source_file": "syna_cdev_ioctls_exact.S",
       "source_function": "syna_cdev_ioctls",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 8584,
       "stock_entry": "001150ec",
       "stock_function": "syna_cdev_ioctls",
-      "mapping_note": "Exact candidate has 2146 instructions and 8584 bytes, matching stock, with KCFI type ID 0x2af6cdbb. The host gate passes 14 constituent ioctl route contracts for two ASan/UBSan cycles; it does not directly execute the exact .S symbol. Joern is strict and parse-clean but has a CPG gap for assembly (0 syntactic calls, 8 layout-fallback groups, 1 grouped delta); hardware and Android runtime behavior remain unverified."
+      "mapping_note": "The exact assembly now checks lifecycle state in both timed wait loops and exits via timeout cleanup during removal. Function-level exact parity is intentionally not claimed; direct runtime coverage was not run. Two-cycle canonical Docker build passes."
     },
     {
       "evidence": [

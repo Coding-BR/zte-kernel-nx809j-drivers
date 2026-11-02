@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-11-02T20:33:55.845545+00:00",
+  "generated_utc": "2026-11-02T20:56:06Z",
   "driver": "zte_tpd",
   "status": "INCOMPLETE",
   "stock": {
@@ -8333,39 +8333,30 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_cdev_create\nEntrada Ghidra: 00114b3c\nTamanho stock: 632 bytes\nCategoria: core_logic\nAlvo no fonte: syna_cdev_create.c:syna_cdev_create\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0183_00114b3c_syna_cdev_create.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0183_00114b3c_syna_cdev_create.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.\n\nVerificacao complementar: compare tambem os relocations ELF da tabela device_fops com o stock; igualdade do corpo da funcao, isoladamente, nao comprova os callbacks registrados.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_batch_21_current_v2_20260828/joern_gate_report.json",
-          "sha256": "21fec4ccc3fca6c178c6c8ea1f772b72f6b87a4abbdbddb23fc7df8d83464fc8"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json",
+          "sha256": "a4598ae7854dcf4ea2d134bc242f1767f9bbdb1682c0e2183a2ac64c396d2c06"
         },
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/build_report.json",
-          "sha256": "2c56b8244d31e010f2402bc469ef692c47c91b8d6203c42cd0262da1ea00c1f1"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json",
+          "sha256": "f05cd2786fe090c01b5c19d58b7059a51f4bf71011fe5dc74c75cd4391130a13"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/kcfi_comparison.json",
-          "sha256": "4243c2ef6e865e8e3032fcd0416185550a719c080f9c9d4086d3f0342f836029"
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/lifecycle_review.json",
+          "sha256": "625e37290584f530361e6c2440fdb216673849db5ad4b033743508f171c87f3f"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next118_syna_cdev_create_v1/host_harness_report.json",
-          "sha256": "fb557cd21968804e6322f5c5527da4aac48771749ef10aab91d58f408ee0c1a7"
-        },
-        {
-          "role": "elf-data-relocations",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/fops_table_comparison.json",
-          "sha256": "664b05f30f00ee8865da4818b029f03e54f5cebf78afaba8df448b68e8846c76"
-        },
-        {
-          "role": "elf-data-relocation-raw",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/cdev_fops_table_20261102/elf_relocation_evidence.txt",
-          "sha256": "f0bf78505356e79479bea7daa67ec85cf381087aeb19e534369950f95f1a3367"
+          "role": "assembly_static",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt",
+          "sha256": "e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION; lifecycle review and reproducible two-cycle Docker build pass. Runtime and hardware tests remain deferred."
     },
     {
       "id": "185_syna_cdev_devnode",
@@ -8425,29 +8416,30 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_cdev_remove\nEntrada Ghidra: 00114e04\nTamanho stock: 400 bytes\nCategoria: binding\nAlvo no fonte: syna_cdev_remove.c:syna_cdev_remove\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0185_00114e04_syna_cdev_remove.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hard_protocol_joern_batch_21_current_v2_20260828/joern_gate_report.json",
-          "sha256": "21fec4ccc3fca6c178c6c8ea1f772b72f6b87a4abbdbddb23fc7df8d83464fc8"
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json",
+          "sha256": "a4598ae7854dcf4ea2d134bc242f1767f9bbdb1682c0e2183a2ac64c396d2c06"
         },
         {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_syna_cdev_remove_v1/build_report.json",
-          "sha256": "2809b78208701fd4bcc0427632fa60cd8461fe46716685b2443354d2b5aad3ac"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json",
+          "sha256": "f05cd2786fe090c01b5c19d58b7059a51f4bf71011fe5dc74c75cd4391130a13"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_syna_cdev_remove_v1/kcfi_comparison.json",
-          "sha256": "896a7e9c16fd57eedae8a8fe3d8274c1cda063dd3bb5bcf12d2538eba21682de"
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/lifecycle_review.json",
+          "sha256": "625e37290584f530361e6c2440fdb216673849db5ad4b033743508f171c87f3f"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next120_syna_cdev_remove_v1/host_harness_report.json",
-          "sha256": "a5824cda2226cf57c9b8c821282a8d5b0e2da51ccba7889847b3ec34117e414e"
+          "role": "assembly_static",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt",
+          "sha256": "e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION; lifecycle review and reproducible two-cycle Docker build pass. Runtime and hardware tests remain deferred."
     },
     {
       "id": "187_syna_cdev_llseek",
@@ -8588,29 +8580,30 @@
         "test"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: syna_cdev_ioctls\nEntrada Ghidra: 001150ec\nTamanho stock: 8584 bytes\nCategoria: user_abi\nAlvo no fonte: syna_cdev_ioctls_exact.S:syna_cdev_ioctls\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0189_001150ec_syna_cdev_ioctls.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0189_001150ec_syna_cdev_ioctls.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
+          "role": "source_sync",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json",
+          "sha256": "a4598ae7854dcf4ea2d134bc242f1767f9bbdb1682c0e2183a2ac64c396d2c06"
+        },
+        {
           "role": "compile",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
-          "sha256": "c6b4dabc5436f3e2aed35725ddb8fe56404b73047fe82f7d67a608ef73bd751c"
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json",
+          "sha256": "f05cd2786fe090c01b5c19d58b7059a51f4bf71011fe5dc74c75cd4391130a13"
         },
         {
-          "role": "kcfi",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/kcfi/kcfi_comparison.json",
-          "sha256": "bbb11530359a93d88b01bd035d72179a2abcc63555826028a1c4ea479a602e70"
+          "role": "lifecycle_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/lifecycle_review.json",
+          "sha256": "625e37290584f530361e6c2440fdb216673849db5ad4b033743508f171c87f3f"
         },
         {
-          "role": "test",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/host/host_harness_docker_report.json",
-          "sha256": "5e41bb05ea0ce346ac713ff34a6bce53478aa91ca8e8916cf0460efa815a0e6f"
-        },
-        {
-          "role": "joern",
-          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next190_syna_cdev_ioctls_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
-          "sha256": "29a29db036a882e258cd29481b767e272faf3671263e13acd4cfd3d7666b1a5b"
+          "role": "assembly_static",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt",
+          "sha256": "e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63"
         }
-      ]
+      ],
+      "attestation": "HARDENED_STOCK_DEVIATION; lifecycle review and reproducible two-cycle Docker build pass. Runtime and hardware tests remain deferred."
     },
     {
       "id": "191_syna_cdev_open",

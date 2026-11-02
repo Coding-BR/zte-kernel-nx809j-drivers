@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T20:57:12Z",
+  "driver": "zte_tpd",
+  "scope": "Cdev callback lifetime, in-flight operations, IRQ ordering, and ioctl wait cancellation.",
+  "status": "OFFLINE_REVIEW_AND_CANONICAL_BUILD_PASS",
+  "findings": [
+    {
+      "severity": "high",
+      "finding": "The stock cdev callbacks dereference g_cdev_data; an open file can outlive device removal and later callbacks can reach the cleared or freed TCM context.",
+      "evidence": [
+        "Ghidra syna_cdev_open at 00117278",
+        "Ghidra syna_cdev_release at 001173e0"
+      ]
+    },
+    {
+      "severity": "high",
+      "finding": "The stock remove order drains/destroys cdev state before IRQ disconnection. The ISR can dispatch report data into syna_cdev_process_reports, which mutates the cdev frame list.",
+      "evidence": [
+        "Ghidra syna_dev_remove at 001125bc",
+        "Ghidra syna_dev_isr at 001141b4",
+        "Ghidra syna_tcm_get_event_data at 00121ad4",
+        "Ghidra syna_cdev_process_reports at 00117c90"
+      ]
+    },
+    {
+      "severity": "medium",
+      "finding": "syna_cdev_ioctls contains two timed waits using a userspace-provided timeout. Holding the lifecycle mutex across the callback could delay or block teardown.",
+      "evidence": [
+        "Ghidra syna_cdev_ioctls at 001150ec"
+      ]
+    }
+  ],
+  "changes": [
+    "device_fops now routes open, release, read, write and ioctl through generation-checked wrappers. Wrappers take an atomic in-flight reference under the lifecycle mutex, release the mutex before calling the stock body, then drop the reference.",
+    "Quiesce marks the cdev offline, advances the generation, wakes the TCM frame waitqueue, and waits for in-flight callbacks to leave. Both exact ioctl wait loops check the offline flag after joining the waitqueue and exit through the timeout cleanup path.",
+    "syna_cdev_remove now quiesces callbacks and disconnects the device/IRQ before draining frame-list nodes and releasing cdev resources. Existing caller disconnects are idempotent because syna_dev_disconnect checks its connected state.",
+    "Creation failure paths clear the cdev global state and invalidate the generation. Old file descriptors return -ENODEV for new data operations; stale release avoids dereferencing a retired TCM context."
+  ],
+  "intentional_deviations": [
+    "syna_cdev_create: lifecycle wrappers and generation gate replace direct stock file_operations callbacks.",
+    "syna_cdev_ioctls: two lifecycle cancellation checks were added to the exact assembly implementation.",
+    "syna_cdev_remove: quiesce and IRQ disconnection precede stock frame/resource cleanup."
+  ],
+  "source_sha256": {
+    "defs.h": "b650e6c019fd1a9a3911fcc52a46e75a63c3d75f860fb6a8b21c287b1b00a2cc",
+    "globals.h": "eda8785be3ca244e538bb094c5f43f8bebe6a3f5fae6586066945194590a3d68",
+    "syna_cdev_create.c": "7406d2059f366a3bfa3ac4267ed128e5396caee4f800c5a2e350d5abdb632a67",
+    "syna_cdev_ioctls_exact.S": "478fc4ff22875ec506eced968f1932cf37abc249e0a7485b7395ab8f725de4ca",
+    "syna_cdev_remove.c": "da38d64de6fab39a7eba630b6b18cdbbf30a0d0ebe16b75a3399dd6d2060f984"
+  },
+  "stock_ghidra_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c",
+      "sha256": "0c43242c1987319dd9788d3e395985db814b025fd092383a869a10545657db57"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0190_00117278_syna_cdev_open.c",
+      "sha256": "8a5c8a090fa35a9b72e0cd2609c65fd4e5458acbaeb00e1f682bc993a291b64d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0189_001150ec_syna_cdev_ioctls.c",
+      "sha256": "73f05587c429142b81fb485efa5fd90071c9e9debfd2e294109b0864b99a1414"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0194_00117c90_syna_cdev_process_reports.c",
+      "sha256": "3e37fb83d07b94c809f6ff0fdf9ac5850a26599b361320e09338fb97f9f23410"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c",
+      "sha256": "c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0170_001141b4_syna_dev_isr.c",
+      "sha256": "20c3b93677abcdb6dc022862f7c1aece693ac75a191bfdeb5611be68f42007ec"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c",
+      "sha256": "a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0268_00121ad4_syna_tcm_get_event_data.c",
+      "sha256": "f566b7a72b272b46d9ba3843d163950d14b7ca69273ffc0ea8dc5c0eebc81dcb"
+    }
+  ],
+  "validation": {
+    "source_sync_passed": true,
+    "source_sync_plan": "attestation/syna_cdev_lifecycle_quiesce_20261102/source_sync_plan.json",
+    "canonical_docker_build_passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycle_artifacts": [
+      {
+        "cycle": 1,
+        "sha256": "ab4d614ba94727c10f660d8732af49f3b3d7b7af9102934cbd315b89ee50d3cf",
+        "size": 6311496,
+        "returncode": 0
+      },
+      {
+        "cycle": 2,
+        "sha256": "ab4d614ba94727c10f660d8732af49f3b3d7b7af9102934cbd315b89ee50d3cf",
+        "size": 6311496,
+        "returncode": 0
+      }
+    ],
+    "candidate_sha256": "ab4d614ba94727c10f660d8732af49f3b3d7b7af9102934cbd315b89ee50d3cf",
+    "candidate_size": 6311496,
+    "vermagic_accepted": true,
+    "build_report": "attestation/syna_cdev_lifecycle_quiesce_20261102/canonical_build_report.json",
+    "source_tree_manifest_sha256": "56ab2c37b8440f2bbf3e7cf91457fd2dbbd023ebde4aff571214813bfea72969",
+    "ioctl_wait_static_disassembly": {
+      "path": "attestation/syna_cdev_lifecycle_quiesce_20261102/ioctl_wait_disassembly.txt",
+      "sha256": "e9ff6d134c5084d416e709f08f1f36a063fc06bed954381630d9299d1d027b63",
+      "tool": "llvm-objdump -dr --disassemble-symbols=syna_cdev_ioctls",
+      "wait_loops_checked": 2,
+      "lifecycle_flag_relocations": 4,
+      "offline_branch_routes_to": "finish_wait cleanup",
+      "timeout_registers": [
+        "x23",
+        "x22"
+      ]
+    }
+  },
+  "limitations": [
+    "No host or hardware runtime tests were run in this batch.",
+    "The separate input_agent misc-device zte_fops callbacks remain a distinct lifetime audit.",
+    "Hardware validation remains deferred."
+  ]
+}

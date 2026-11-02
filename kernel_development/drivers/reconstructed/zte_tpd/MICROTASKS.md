@@ -187,13 +187,13 @@ Cada linha representa uma unica funcao stock. Nenhuma funcao pode ser promovida 
 | 181_tpd_goodix_ts_suspend | tpd_goodix_ts_suspend | 00114a6c | binding | tpd_goodix_ts_suspend.c:tpd_goodix_ts_suspend | PASS |
 | 182_syna_pm_suspend | syna_pm_suspend | 00114a94 | binding | syna_pm_suspend.c:syna_pm_suspend | PASS |
 | 183_syna_pm_resume | syna_pm_resume | 00114ae0 | binding | syna_pm_resume.c:syna_pm_resume | PASS |
-| 184_syna_cdev_create | syna_cdev_create | 00114b3c | core_logic | syna_cdev_create.c:syna_cdev_create | PROMOTED_OFFLINE_EXACT |
+| 184_syna_cdev_create | syna_cdev_create | 00114b3c | core_logic | syna_cdev_create.c:syna_cdev_create | HARDENED_STOCK_DEVIATION |
 | 185_syna_cdev_devnode | syna_cdev_devnode | 00114db8 | core_logic | syna_cdev_devnode.c:syna_cdev_devnode | PASS |
-| 186_syna_cdev_remove | syna_cdev_remove | 00114e04 | binding | syna_cdev_remove.c:syna_cdev_remove | PROMOTED_OFFLINE_EXACT |
+| 186_syna_cdev_remove | syna_cdev_remove | 00114e04 | binding | syna_cdev_remove.c:syna_cdev_remove | HARDENED_STOCK_DEVIATION |
 | 187_syna_cdev_llseek | syna_cdev_llseek | 00114f98 | core_logic | syna_cdev_llseek.c:syna_cdev_llseek | PASS |
 | 188_syna_cdev_read | syna_cdev_read | 00114fa4 | user_abi | syna_cdev_read.c:syna_cdev_read | PROMOTED_OFFLINE_EXACT |
 | 189_syna_cdev_write | syna_cdev_write | 00115048 | user_abi | syna_cdev_write.c:syna_cdev_write | PROMOTED_OFFLINE_EXACT |
-| 190_syna_cdev_ioctls | syna_cdev_ioctls | 001150ec | user_abi | syna_cdev_ioctls_exact.S:syna_cdev_ioctls | PROMOTED_OFFLINE_EXACT |
+| 190_syna_cdev_ioctls | syna_cdev_ioctls | 001150ec | user_abi | syna_cdev_ioctls_exact.S:syna_cdev_ioctls | HARDENED_STOCK_DEVIATION |
 | 191_syna_cdev_open | syna_cdev_open | 00117278 | user_abi | syna_cdev_open_exact.S:syna_cdev_open | PROMOTED_OFFLINE_EXACT |
 | 192_syna_cdev_release | syna_cdev_release | 001173e0 | user_abi | syna_cdev_release_exact.S:syna_cdev_release | PROMOTED_OFFLINE_EXACT |
 | 193_syna_cdev_ioctl_raw_read | syna_cdev_ioctl_raw_read | 00117558 | user_abi | syna_cdev_ioctl_raw_read_exact.S:syna_cdev_ioctl_raw_read | PROMOTED_OFFLINE_EXACT |

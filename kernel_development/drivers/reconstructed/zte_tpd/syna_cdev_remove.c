@@ -17,6 +17,8 @@ void syna_cdev_remove(struct syna_tcm *tcm)
     printk("\0013[error] %s: Invalid tcm driver handle\n", "syna_cdev_remove");
     return;
   }
+  syna_cdev_quiesce();
+  syna_dev_disconnect(tcm);
   mutex_lock(&qword_316D0);
   v4 = *(_QWORD **)(a1 + 1272);
   v5 = (_QWORD **)(a1 + 1272);
@@ -80,5 +82,5 @@ list_entry_validated:
   qword_31660 = 0;
   LOBYTE(qword_31698) = 0;
   *(_QWORD *)(a1 + 912) = 0;
-  g_cdev_data = 0;
+  syna_cdev_clear_global_data();
 }

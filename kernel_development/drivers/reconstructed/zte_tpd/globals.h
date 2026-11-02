@@ -5,6 +5,9 @@
 #include <linux/mutex.h>
 
 extern struct mutex tp_firmware_data_mutex;
+extern struct mutex syna_cdev_lifecycle_mutex;
+extern bool syna_cdev_lifecycle_online;
+extern unsigned long syna_cdev_lifecycle_generation;
 
 // qwords
 extern uint64_t qword_30F28;

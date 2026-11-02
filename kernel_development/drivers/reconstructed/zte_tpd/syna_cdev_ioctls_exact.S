@@ -285,6 +285,12 @@ syna_cdev_ioctls:
     .inst 0x52800022
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, prepare_to_wait_event
+    adrp x16, syna_cdev_lifecycle_online
+    ldrb w16, [x16, :lo12:syna_cdev_lifecycle_online]
+    cbnz w16, .L_syna_ioctl_wait1_initial_online
+    mov x23, xzr
+    b .L_syna_ioctl_wait1_finish
+.L_syna_ioctl_wait1_initial_online:
     .inst 0xb944f288
     .inst 0xf10002ff
     .inst 0x7a400904
@@ -301,12 +307,19 @@ syna_cdev_ioctls:
     .inst 0x52800022
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, prepare_to_wait_event
+    adrp x16, syna_cdev_lifecycle_online
+    ldrb w16, [x16, :lo12:syna_cdev_lifecycle_online]
+    cbnz w16, .L_syna_ioctl_wait1_loop_online
+    mov x23, xzr
+    b .L_syna_ioctl_wait1_finish
+.L_syna_ioctl_wait1_loop_online:
     .inst 0xb944f288
     .inst 0xf10002ff
     .inst 0x7a400904
     .inst 0x9a9f06f7
     .inst 0x35000048
     .inst 0xb5fffe77
+.L_syna_ioctl_wait1_finish:
     .inst 0x91142280
     .inst 0x910083e1
     .inst 0x94000000
@@ -562,6 +575,12 @@ syna_cdev_ioctls:
     .inst 0x52800022
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, prepare_to_wait_event
+    adrp x16, syna_cdev_lifecycle_online
+    ldrb w16, [x16, :lo12:syna_cdev_lifecycle_online]
+    cbnz w16, .L_syna_ioctl_wait2_initial_online
+    mov x22, xzr
+    b .L_syna_ioctl_wait2_finish
+.L_syna_ioctl_wait2_initial_online:
     .inst 0xb944f288
     .inst 0xf10002df
     .inst 0x7a400904
@@ -578,12 +597,19 @@ syna_cdev_ioctls:
     .inst 0x52800022
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, prepare_to_wait_event
+    adrp x16, syna_cdev_lifecycle_online
+    ldrb w16, [x16, :lo12:syna_cdev_lifecycle_online]
+    cbnz w16, .L_syna_ioctl_wait2_loop_online
+    mov x22, xzr
+    b .L_syna_ioctl_wait2_finish
+.L_syna_ioctl_wait2_loop_online:
     .inst 0xb944f288
     .inst 0xf10002df
     .inst 0x7a400904
     .inst 0x9a9f06d6
     .inst 0x35000048
     .inst 0xb5fffe76
+.L_syna_ioctl_wait2_finish:
     .inst 0x91142280
     .inst 0x910083e1
     .inst 0x94000000

@@ -610,6 +610,8 @@ extern void tpd_reset_gpio_output(unsigned char value);
 extern void cancel_report_lcd_state_delayed_work(void);
 extern void syna_dev_module_exit(void);
 extern void syna_hw_interface_exit(void);
+extern void syna_cdev_quiesce(void);
+extern void syna_cdev_clear_global_data(void);
 extern void tp_free_tp_firmware_data(void);
 extern void tpd_clean_all_event(void);
 extern void tpd_probe_work_deinit(void);
