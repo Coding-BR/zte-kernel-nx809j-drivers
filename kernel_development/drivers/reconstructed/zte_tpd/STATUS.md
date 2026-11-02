@@ -1655,3 +1655,24 @@ harness de ciclo de vida passou `11/11`, cobrindo cleanup e completion.
 
 Nenhum comando ADB, fastboot, `insmod`, `rmmod` ou escrita de particao foi
 executado nesta revisao.
+
+## Auditoria estrita Docker — 2026-11-02
+
+- Resultado: `static_verified`; os dois builds limpos passaram com hash idêntico
+  `cca93e75cf8604811e8aae4ebc73ffbd3ed981307621fd7b297c398642a1ef74`.
+- Candidato versionado: SHA-256
+  `55e13b0eaf704397a21ba4d5fa21e31afedaec52e9dd728416f459f7e46dffce`,
+  6.307.336 bytes. O snapshot curado Docker agora contém cópias byte-idênticas
+  do candidato e de `reconstruction_map.json`.
+- O mapa cobre os 367 pares Ghidra `nome@endereço`. Seis nomes de símbolo se
+  repetem em endereços distintos no stock; o auditor foi corrigido para validar
+  a identidade composta, sem rejeitar esses clones legítimos.
+- Conteúdo/layout de código e dados carregáveis, `modinfo`, imports, aliases,
+  namespace, vermagic, identidade do kernel e rastreabilidade passaram. O SHA
+  integral difere nos metadados `.note.gnu.build-id` e em seções de debug/BTF;
+  isso não é igualdade binária integral. O módulo stock também tem metadados de
+  dependências diferentes do build alvo, enquanto o candidato corresponde ao
+  build alvo.
+- Hardware não foi testado. `static_verified` não significa equivalência
+  semântica integral nem declaração de 100%.
+- Evidência: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/docker_strict_audit_20261102/`.

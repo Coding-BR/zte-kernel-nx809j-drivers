@@ -290,6 +290,16 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
         if docker_candidate_path.is_file()
         else {"exists": False, "path": f"docker/curated/{driver}/{driver}.ko"}
     )
+    docker_map_path = docker_root / "reconstruction_map.json"
+    repo_map_sha = sha256_file(map_path) if map_path.is_file() else None
+    docker_map_sha = sha256_file(docker_map_path) if docker_map_path.is_file() else None
+    docker_map_matches_repository = (
+        docker_map_sha == repo_map_sha if docker_map_sha and repo_map_sha else None
+    )
+    if docker_root.is_dir() and not docker_map_path.is_file():
+        findings.append("docker_reconstruction_map_missing")
+    elif docker_map_matches_repository is False:
+        findings.append("docker_reconstruction_map_mismatch")
 
     return {
         "driver": driver,
@@ -331,6 +341,12 @@ def inspect_driver(repo_root: Path, engineering_root: Path, driver_root: Path) -
             "makefile_present": (docker_root / "Makefile").is_file(),
             "candidate_present": (docker_root / f"{driver}.ko").is_file(),
             "candidate_module": docker_candidate_record,
+            "reconstruction_map": {
+                "exists": docker_map_path.is_file(),
+                "path": f"docker/curated/{driver}/reconstruction_map.json",
+                "sha256": docker_map_sha,
+                "matches_repository": docker_map_matches_repository,
+            },
             "build_input_count": docker_sources["file_count"],
             "build_input_sha256": docker_sources["sha256"],
             "build_inputs_match_repository": bool(docker_root.is_dir()) and not source_differences,
@@ -369,11 +385,12 @@ def render_markdown(payload: dict[str, Any]) -> str:
         f"({summary['ghidra_function_total']} funções); "
         f"presentes no snapshot curado do Docker: **{summary['docker_curated_driver_count']}**; "
         f"candidatos Docker iguais ao repositório: **{summary['docker_candidates_matching_repository']}**; "
+        f"mapas Docker iguais ao repositório: **{summary['docker_reconstruction_maps_matching_repository']}**; "
         f"inputs de build iguais: **{summary['docker_build_inputs_matching_repository']}**; "
-        f"árvores de fonte completas iguais: **{summary['docker_source_snapshots_matching_repository']}**.",
+        f"árvores de fontes/Assembly iguais: **{summary['docker_source_snapshots_matching_repository']}**.",
         "",
-        "| Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` repo | `.ko` Docker | Inputs build iguais | Árvore completa igual | Achados |",
-        "|---|---:|---:|---|---|---|---|---|---|---|",
+        "| Driver | Ghidra | Mapeadas | Cobertura de identidade | Status por função | `.ko` repo | `.ko` Docker | Mapa Docker igual | Inputs build iguais | Árvore fontes/Assembly igual | Achados |",
+        "|---|---:|---:|---|---|---|---|---|---|---|---|",
     ]
     for row in payload["drivers"]:
         fmap = row["function_map"]
@@ -384,6 +401,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
             f"| `{row['driver']}` | {row['ghidra']['function_count']} | {fmap['mapping_count']} "
             f"| {coverage} | {states} | {'sim' if row['candidate_module']['exists'] else 'não'} "
             f"| {'sim' if row['docker_snapshot']['candidate_module']['exists'] else 'não'} "
+            f"| {'sim' if row['docker_snapshot']['reconstruction_map']['matches_repository'] else 'não'} "
             f"| {'sim' if row['docker_snapshot']['build_inputs_match_repository'] else 'não'} "
             f"| {'sim' if row['docker_snapshot']['source_tree_matches_repository'] else 'não'} "
             f"| {findings} |"
@@ -400,6 +418,8 @@ def render_markdown(payload: dict[str, Any]) -> str:
             "interpretados como aprovação do driver inteiro.",
             "- `docker_snapshot.curated_directory_present` indica disponibilidade do "
             "snapshot para a rotina de build, não resultado de build.",
+            "- `docker_snapshot.reconstruction_map` verifica separadamente o mapa "
+            "que os gates de rastreabilidade precisam ler, embora ele não seja input de Kbuild.",
             "- `build_inputs_match_repository` compara os arquivos de fonte/Makefile "
             "e separa cópias Assembly suplementares que são byte-idênticas à fonte "
             "da raiz e não aparecem referenciadas no Makefile/Kbuild ou nas fontes.",
@@ -451,6 +471,11 @@ def main() -> int:
         "docker_candidates_matching_repository": sum(
             row["docker_snapshot"]["candidate_matches_repository_candidate"] is True
             for row in drivers
+        ),
+        "docker_reconstruction_maps_matching_repository": sum(
+            row["docker_snapshot"]["reconstruction_map"]["matches_repository"] is True
+            for row in drivers
+            if row["docker_snapshot"]["curated_directory_present"]
         ),
         "docker_build_inputs_matching_repository": sum(
             row["docker_snapshot"]["build_inputs_match_repository"]

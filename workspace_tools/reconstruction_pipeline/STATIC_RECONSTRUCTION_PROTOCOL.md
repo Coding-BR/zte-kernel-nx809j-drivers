@@ -101,6 +101,13 @@ manifesto do kernel versionado no repositório, inclusive quando o build é
 iniciado de outra raiz. O `--all` do auditor offline abaixo continua limitado
 aos drivers `zte_*`/`zlog_*` presentes em `engenharia/curated`.
 
+O mapa de reconstrução precisa estar presente no diretório curado do Docker
+para os gates de rastreabilidade. A auditoria de inventário compara seu hash
+com o mapa versionado, mesmo que esse JSON não seja input de Kbuild. Identidades
+Ghidra repetidas por nome são válidas quando seus endereços diferem; a
+rastreabilidade deve comparar `(stock_function, stock_entry)` e rejeitar apenas
+identidades compostas duplicadas ou ausentes.
+
 ```powershell
 python workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py `
   --driver <driver> --rebuild --strict

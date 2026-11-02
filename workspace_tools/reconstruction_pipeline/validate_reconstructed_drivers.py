@@ -575,6 +575,21 @@ def find_run(engineering_root: Path, drivers: list[str]) -> Path:
     )
 
 
+def normalize_function_entry(entry: Any) -> str | None:
+    """Normalize a Ghidra/ELF hexadecimal entry address for identity matching."""
+    if isinstance(entry, int):
+        value = format(entry, "x")
+    elif isinstance(entry, str):
+        value = entry.strip().lower()
+        if value.startswith("0x"):
+            value = value[2:]
+    else:
+        return None
+    if not value or not re.fullmatch(r"[0-9a-f]+", value):
+        return None
+    return value.lstrip("0") or "0"
+
+
 def ghidra_check(export: Path, document: Path) -> tuple[dict[str, Any], list[str]]:
     errors: list[str] = []
     for filename in REQUIRED_GHIDRA_FILES:
@@ -603,12 +618,21 @@ def ghidra_check(export: Path, document: Path) -> tuple[dict[str, Any], list[str
         for record in records
         if isinstance(record.get("name"), str) and record["name"]
     )
+    function_identities: list[dict[str, str]] = []
+    for index, record in enumerate(records):
+        name = record.get("name")
+        entry = normalize_function_entry(record.get("entry"))
+        if not isinstance(name, str) or not name or entry is None:
+            errors.append(f"Ghidra function record {index} lacks a valid name or entry address")
+            continue
+        function_identities.append({"stock_function": name, "stock_entry": entry})
     return (
         {
             "export": str(export),
             "document": str(document),
             "function_count": len(records),
             "function_names": names,
+            "function_identities": function_identities,
             "manifest": manifest,
             "passed": not errors,
         },
@@ -617,7 +641,9 @@ def ghidra_check(export: Path, document: Path) -> tuple[dict[str, Any], list[str
 
 
 def reconstruction_map_check(
-    driver_dir: Path, stock_sha256: str | None, ghidra_names: list[str]
+    driver_dir: Path,
+    stock_sha256: str | None,
+    ghidra_identities: list[dict[str, str]],
 ) -> tuple[dict[str, Any], list[str]]:
     path = driver_dir / "reconstruction_map.json"
     traceability_errors: list[str] = []
@@ -643,13 +669,21 @@ def reconstruction_map_check(
         if not isinstance(mappings, list):
             traceability_errors.append("reconstruction map has no mappings array")
             mappings = []
-        mapped_names: set[str] = set()
-        duplicate_names: set[str] = set()
+        ghidra_ids = {
+            (item["stock_function"], item["stock_entry"])
+            for item in ghidra_identities
+        }
+        duplicate_ghidra_ids = len(ghidra_ids) != len(ghidra_identities)
+        if duplicate_ghidra_ids:
+            traceability_errors.append("Ghidra export contains duplicate function identities")
+        mapped_ids: set[tuple[str, str]] = set()
+        duplicate_ids: set[tuple[str, str]] = set()
         for index, mapping in enumerate(mappings):
             if not isinstance(mapping, dict):
                 traceability_errors.append(f"mapping {index} is not an object")
                 continue
             stock_name = mapping.get("stock_function")
+            stock_entry = normalize_function_entry(mapping.get("stock_entry"))
             source_file = mapping.get("source_file")
             source_function = mapping.get("source_function")
             status = mapping.get("status")
@@ -659,22 +693,35 @@ def reconstruction_map_check(
                     f"mapping {index} lacks stock_function/source_file/source_function"
                 )
                 continue
+            if stock_entry is None:
+                traceability_errors.append(
+                    f"mapping {index} lacks a valid hexadecimal stock_entry"
+                )
+                continue
             if not (driver_dir / source_file).is_file():
                 traceability_errors.append(
                     f"mapping {index} refers to missing source file: {source_file}"
                 )
-            if stock_name in mapped_names:
-                duplicate_names.add(stock_name)
+            identity = (stock_name, stock_entry)
+            if identity in mapped_ids:
+                duplicate_ids.add(identity)
+            if identity not in ghidra_ids:
+                traceability_errors.append(
+                    "reconstruction map identity is absent from Ghidra: "
+                    f"{stock_name}@{stock_entry}"
+                )
             if status not in {"reviewed", "PROMOTED_OFFLINE_EXACT", "promoted_offline_exact"}:
                 review_errors.append(f"mapping {index} is not independently reviewed")
             if not isinstance(evidence, list) or not evidence or not all(
                 isinstance(item, str) and item.strip() for item in evidence
             ):
                 review_errors.append(f"mapping {index} has no review evidence")
-            mapped_names.add(stock_name)
-        for name in sorted(duplicate_names):
-            traceability_errors.append(f"reconstruction map has duplicate stock function: {name}")
-        unmapped = sorted(set(ghidra_names) - mapped_names)
+            mapped_ids.add(identity)
+        for name, entry in sorted(duplicate_ids):
+            traceability_errors.append(
+                f"reconstruction map has duplicate stock identity: {name}@{entry}"
+            )
+        unmapped = sorted(ghidra_ids - mapped_ids)
         if unmapped:
             traceability_errors.append(
                 f"reconstruction map leaves {len(unmapped)} Ghidra functions unmapped"
@@ -682,8 +729,15 @@ def reconstruction_map_check(
         result.update(
             {
                 "stock_sha256": payload.get("stock_sha256"),
-                "mapped_functions": len(mapped_names),
-                "unmapped_functions": unmapped,
+                "mapped_functions": len(mapped_ids),
+                "mapped_identities": [
+                    {"stock_function": name, "stock_entry": entry}
+                    for name, entry in sorted(mapped_ids)
+                ],
+                "unmapped_functions": [
+                    {"stock_function": name, "stock_entry": entry}
+                    for name, entry in unmapped
+                ],
                 "traceability_passed": not traceability_errors,
                 "mapping_review_passed": not review_errors,
                 "traceability_errors": traceability_errors,
@@ -937,7 +991,7 @@ def validate_regular_driver(
     candidate_record = file_record(candidate)
 
     map_result, map_errors = reconstruction_map_check(
-        driver_dir, stock_record.get("sha256"), ghidra["function_names"]
+        driver_dir, stock_record.get("sha256"), ghidra["function_identities"]
     )
     checks["function_traceability"] = map_result["traceability_passed"]
     checks["mapping_review"] = map_result["mapping_review_passed"]
