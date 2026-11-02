@@ -4,6 +4,7 @@ typedef unsigned long long _QWORD;
 typedef unsigned int _DWORD;
 typedef unsigned short _WORD;
 struct syna_tcm;
+struct ztp_device;
 
 #define _ReadStatusReg(reg) ((void)0)
 #define __break(value) __builtin_trap()
@@ -54,7 +55,7 @@ extern void tpd_set_palm_mode(void);
 extern void syna_ghost_check_reset(void);
 extern void tpd_set_fake_sleep(void);
 extern void tpd_get_fake_sleep(void);
-extern void tpd_set_screen_off_awake(void);
+extern int tpd_set_screen_off_awake(struct ztp_device *cdev, int value);
 extern void tpd_get_screen_off_awake(void);
 extern void delayed_work_timer_fn(void);
 extern const char unk_390F2[];

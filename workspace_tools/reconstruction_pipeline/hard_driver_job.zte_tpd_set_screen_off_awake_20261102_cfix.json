@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "CONCURRENCY_LIFETIME",
+    "COMPILER_SENSITIVE"
+  ],
+  "functions": [
+    {
+      "stock_function": "tpd_set_screen_off_awake",
+      "stock_entry": "0012ca1c",
+      "source_function": "tpd_set_screen_off_awake",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_tpd",
+    "stock_module": "reference_modules/stock/zte_tpd.ko",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock",
+    "candidate_ghidra_export": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/sa_cbuild_20261102/gh/zte_tpd.ko",
+    "reconstruction_map": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/inputs/reconstruction_map_candidate.json"
+  },
+  "docker": {
+    "adapter": "zte_tpd_canonical",
+    "cycles": 2,
+    "parallelism": 4,
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "bindgen_volume": "nx809j_bindgen_0695",
+    "clang_revision": "clang-r536225"
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "per_function": true,
+      "parallelism": 2,
+      "min_num_calls": 1
+    }
+  },
+  "kcfi": {
+    "callsite_required": false
+  },
+  "ghidra": {
+    "allow_pcode_authoritative_decompiler_fallback": true,
+    "fallback_reason": "Fresh candidate Ghidra marks the imported _printk call as non-returning and drops only the trailing return 0. The warning is preserved, the call and full preceding normalized C are identical, and stock normalized C equals the complete candidate plus only return 0. The comparator applies this exact fallback only with equal ELF function extent and P-Code shape; relocation-aware assembly parity, Docker reproducibility, input identity, Joern and KCFI remain mandatory.",
+    "fallback_evidence": "Fresh candidate Ghidra export and source are retained with the protocol report. Candidate and stock functions have equal 88-byte extents and equal 64-record P-Code shapes; independent relocation-aware assembly comparison proves byte/relocation parity. The host mutation harness, canonical Docker build and Joern slice remain separate required gates."
+  },
+  "evidence": {
+    "host_harness": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/host_contract_20261102_cfix/report.json",
+      "sha256": "efc8538060ee55e467d119784b2012323f78878ba1bcfabe87ffad620c8a5600"
+    },
+    "state_effect_ledger": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/microproves_20261102/MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "175f4d4e8d67c9e389569d81923aba922a6456f6e105b1250a8e7315ff2f00a9"
+    },
+    "semantic_counterexample": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/microproves_20261102/MP3_CONTROL_ERROR_MATRIX.json",
+        "sha256": "df7d61c7c9bd6b69df2cf5e963e492c6ed0fbf7c789f12809c6aa80334bee0ae"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/host_contract_20261102_cfix/report.json",
+        "sha256": "efc8538060ee55e467d119784b2012323f78878ba1bcfabe87ffad620c8a5600"
+      }
+    ],
+    "callback_contract": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/microproves_20261102/MP1_CALL_SIGNATURE.json",
+        "sha256": "9ad9c410bf6f82a9ac09898a6402084202e3db7ced39a93a72773ded53ccb427"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/microproves_20261102/MP4_CALLBACK_LIFETIME.json",
+        "sha256": "10ae4fb6dadf22468c5e1e32756c31ef0295862b2bc7aefbb497942741db28ce"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/manual_cbuild_20261102_cfix/kcfi_callsite_comparison.json",
+        "sha256": "3e37fe1a11133168745ccaf53c63022c521f3b9996b97aaef930b98d23354f50"
+      }
+    ],
+    "lock_lifetime": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/microproves_20261102/MP5_CONCURRENCY_CONTRACT.json",
+      "sha256": "d01919dab2f761398887743725e860a8d67ad58383df949cc95641980cacafab"
+    },
+    "baseline_identity": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v6/microproves_20261102/MP0_IDENTITY.json",
+      "sha256": "3f7603e9c6483779aae567368b101a0491561009716a887f8e08f934dd1bc53e"
+    }
+  }
+}

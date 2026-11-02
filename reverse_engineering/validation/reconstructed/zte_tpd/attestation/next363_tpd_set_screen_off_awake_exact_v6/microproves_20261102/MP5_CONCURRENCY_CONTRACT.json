@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "task_id": "zte_tpd_tpd_set_screen_off_awake_MP5_CONCURRENCY_CONTRACT",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": true,
+  "stock_identity": {
+    "function": "tpd_set_screen_off_awake@0012ca1c",
+    "module": {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "size": 633536
+    },
+    "module_expected_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "source_environment": {
+    "target_kernel_manifest": {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847",
+      "size": 3587
+    },
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "branch": "reconstruction/zte-tpd-syna-release-attested",
+    "head_at_freeze": "4721a0f003ca1f96e6a06bb9375b3c3f735333b6"
+  },
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v5/exact_revalidation_20260831/stock_assembly.asm",
+      "sha256": "19da162180738ad138f9c025bcd238c108024f5ff488ca1ce71f978eab6c8e33",
+      "size": 1639
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0098_0010ec70_tpd_touch_release.c",
+      "sha256": "1890f4a56d989b73d6872a70dad2f82dc0caa85f5c6fe3d96aea554c102682d5",
+      "size": 9065
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c",
+      "sha256": "9ec97577539f12781bd4013d18fd5d5d3e81ea99a15ffef0f8c66c42fcfad54d",
+      "size": 4159
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0081_0010d334_set_screen_off_awake.c",
+      "sha256": "56809559ee540c50140dfe8e015e70c610cb51fb78b0694e3fa6edbb2ef207a1",
+      "size": 1021
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0362_0012ca1c_tpd_set_screen_off_awake.c",
+      "sha256": "c88b570a5096fc3178ebcc51566bed826f21a71de228ae67f0cd0a12ff03065b",
+      "size": 399
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0362_0012ca1c_tpd_set_screen_off_awake.jsonl",
+      "sha256": "96d93994b40bcb75ce27458e12ea18da8e3af5707db0fb32f11e00fb5c6c6044",
+      "size": 8846
+    }
+  ],
+  "work_unit": "MP5_CONCURRENCY_CONTRACT",
+  "observations": [
+    "Target body contains no observed lock, atomic operation, RCU, IRQ, workqueue, or reference-count operation.",
+    "Target writes module global is_screen_off_awake_mode on mode==1. Stock tpd_touch_release reads that global in at least two sites.",
+    "No body-local evidence proves that writes and reads are serialized or that the cdev context remains live for the callback duration.",
+    "Do not add locking or lifetime changes without surrounding stock evidence because this could alter behavior."
+  ],
+  "required_followup": [
+    "Map registration, callback invocation, touch-release readers, and teardown into one lifetime model.",
+    "KUnit/lockdep/KCSAN is unavailable in this offline host proof and remains open."
+  ]
+}

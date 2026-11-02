@@ -1153,12 +1153,8 @@ zte_tpd-objs := $(filter-out tpd_set_fake_sleep.o, $(zte_tpd-objs))
 zte_tpd-objs += tpd_set_fake_sleep_exact.o
 AFLAGS_tpd_set_fake_sleep_exact.o := -g0 -I$(src)
 
-# Exact offline reconstruction: tpd_set_screen_off_awake
-src-files := $(filter-out $(src)/tpd_set_screen_off_awake.c, $(src-files))
-obj-files := $(filter-out tpd_set_screen_off_awake.o, $(obj-files))
-zte_tpd-objs := $(filter-out tpd_set_screen_off_awake.o, $(zte_tpd-objs))
-zte_tpd-objs += tpd_set_screen_off_awake_exact.o
-AFLAGS_tpd_set_screen_off_awake_exact.o := -g0 -I$(src)
+# Build the reconstruction from C. The full-function exact assembly file is
+# retained as stock evidence and is deliberately not part of the build.
 
 # Exact offline reconstruction: syna_testing_remove_dir
 src-files := $(filter-out $(src)/syna_testing_remove_dir.c, $(src-files))

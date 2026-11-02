@@ -1507,6 +1507,39 @@ def lossy_decompiler_truncation(
     }
 
 
+def decompiler_external_call_no_return_artifact(
+    stock_normalized: str,
+    candidate_normalized: str,
+    candidate_has_no_return_warning: bool,
+) -> dict[str, Any] | None:
+    """Recognize Ghidra dropping only the final zero return after ``_printk``.
+
+    This applies only when Ghidra explicitly annotated the candidate call as
+    non-returning, the candidate ends at that exact ``_printk`` call, and the
+    stock normalized C equals the entire candidate plus ``return 0``. The
+    caller also requires equal ELF body size and P-Code shape; relocation-aware
+    assembly comparison remains an independent protocol gate.
+    """
+    if not candidate_has_no_return_warning or not candidate_normalized.endswith("}"):
+        return None
+    candidate_body = candidate_normalized[:-1]
+    call_match = re.search(r"(?P<call>_(?:printk)|printk)\([^;]*\);$", candidate_body)
+    if call_match is None or stock_normalized != candidate_body + "return0;}":
+        return None
+    return {
+        "kind": "ghidra_no_return_external_call_tail_truncation",
+        "external_call": call_match.group("call"),
+        "omitted_stock_suffix": "return0;",
+        "candidate_warning": "Subroutine does not return",
+        "requirement": (
+            "candidate must carry Ghidra's no-return warning and end at the same "
+            "_printk call; stock normalized C must equal the complete candidate "
+            "plus only return 0; equal ELF body bytes and P-Code shape plus "
+            "independent relocation-aware assembly parity remain mandatory"
+        ),
+    }
+
+
 def decompiler_bad_instruction_boundary_artifact(
     stock_normalized: str, candidate_normalized: str
 ) -> dict[str, Any] | None:
@@ -2486,12 +2519,16 @@ def compare_function(
             }
         paths[side] = {"decompiled": decompiled, "pcode": pcode}
 
+    stock_decompiled_text = paths["stock"]["decompiled"].read_text(encoding="utf-8")
+    candidate_decompiled_text = paths["candidate"]["decompiled"].read_text(
+        encoding="utf-8"
+    )
     (
         stock_normalized,
         stock_string_evidence,
         stock_artifact_evidence,
     ) = normalize_decompiled(
-        paths["stock"]["decompiled"].read_text(encoding="utf-8"),
+        stock_decompiled_text,
         stock_strings,
         stock_elf_strings,
         stock_symbol_strings,
@@ -2504,7 +2541,7 @@ def compare_function(
         candidate_string_evidence,
         candidate_artifact_evidence,
     ) = normalize_decompiled(
-        paths["candidate"]["decompiled"].read_text(encoding="utf-8"),
+        candidate_decompiled_text,
         candidate_strings,
         candidate_elf_strings,
         candidate_symbol_strings,
@@ -2626,6 +2663,14 @@ def compare_function(
         )
         fallback = fallback or lossy_decompiler_truncation(
             stock_normalized, candidate_normalized
+        )
+        fallback = fallback or decompiler_external_call_no_return_artifact(
+            stock_normalized,
+            candidate_normalized,
+            candidate_decompiled_text.count(
+                "/* WARNING: Subroutine does not return */"
+            )
+            == 1,
         )
         return fallback or decompiler_bad_instruction_boundary_artifact(
             stock_normalized, candidate_normalized

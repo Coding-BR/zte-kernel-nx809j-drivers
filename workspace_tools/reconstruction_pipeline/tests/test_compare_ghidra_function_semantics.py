@@ -861,6 +861,38 @@ class GhidraSemanticComparisonTests(unittest.TestCase):
         )
         self.assertEqual(evidence["omitted_stock_body_fragment"], "x=1;")
 
+    def test_external_no_return_annotation_only_accepts_missing_zero_return(self) -> None:
+        stock = (
+            'undefined8target(longparam_1,undefined4param_2){'
+            'if(condition){return0;}_printk("message","target");return0;}'
+        )
+        candidate = (
+            'undefined8target(longparam_1,undefined4param_2){'
+            'if(condition){return0;}_printk("message","target");}'
+        )
+
+        evidence = MODULE.decompiler_external_call_no_return_artifact(
+            stock, candidate, candidate_has_no_return_warning=True
+        )
+
+        self.assertIsNotNone(evidence)
+        self.assertEqual(
+            evidence["kind"], "ghidra_no_return_external_call_tail_truncation"
+        )
+        self.assertEqual(evidence["omitted_stock_suffix"], "return0;")
+        self.assertIsNone(
+            MODULE.decompiler_external_call_no_return_artifact(
+                stock, candidate, candidate_has_no_return_warning=False
+            )
+        )
+        self.assertIsNone(
+            MODULE.decompiler_external_call_no_return_artifact(
+                stock.replace("return0;}", "return-1;}"),
+                candidate,
+                candidate_has_no_return_warning=True,
+            )
+        )
+
     def test_external_label_fallback_requires_equal_pcode_call_count(self) -> None:
         stock = "void target(void){_printk();zlog_client_record();zlog_client_notify();return;}"
         candidate = "void target(void){_printk();return;return;}"

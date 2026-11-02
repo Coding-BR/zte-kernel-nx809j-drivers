@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "driver": "zte_tpd",
+  "target": "tpd_set_screen_off_awake",
+  "mode": "offline_stock_model_relational_asan_ubsan_with_mutation",
+  "source": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\zte_tpd\\tpd_set_screen_off_awake.c",
+  "source_sha256": "ffea4d2b065d384dac9206447bd76cc5fa45a09a19f2a8bf56523f46b897a7e7",
+  "harness": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\tpd_set_screen_off_awake_contract_test.c",
+  "harness_sha256": "973e49a3b21cee72f87f05c5e97be5a4d9a97c7f0cc04056503bd48d8256c8f9",
+  "runner": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\validation\\zte_tpd\\host\\run_tpd_set_screen_off_awake_host_tests.py",
+  "runner_sha256": "b8613246fda9aadabc4f64ffb11fe9fdc6c973d9d9e8f859b2828f361cc80cc6",
+  "compiler": "/toolchains/clang-r536225/bin/clang",
+  "container_image": "nubia-sm8850-kernel-builder:latest",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "case_matrix": {
+    "mode_values": [
+      0,
+      1,
+      2,
+      "0xffffffff"
+    ],
+    "requested_values": [
+      0,
+      1,
+      "0xffffffff",
+      "0x12345678",
+      "INT_MIN",
+      "INT_MAX"
+    ],
+    "printk_return_values": [
+      0,
+      -5,
+      "INT_MAX"
+    ],
+    "case_count": 72,
+    "assertion_count": 576
+  },
+  "cycles": [
+    {
+      "cycle": 1,
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tpd_set_screen_off_awake relational contract: 72 cases, 576 checks\n",
+      "run_stderr": "",
+      "binary_sha256": "62c8b1e28af29fe71d060cd6b681af7862968958e60727635051955ea098177d",
+      "passed": true
+    },
+    {
+      "cycle": 2,
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "PASS tpd_set_screen_off_awake relational contract: 72 cases, 576 checks\n",
+      "run_stderr": "",
+      "binary_sha256": "62c8b1e28af29fe71d060cd6b681af7862968958e60727635051955ea098177d",
+      "passed": true
+    }
+  ],
+  "reproducible_binary": true,
+  "mutation": {
+    "seed": "replace ignored printk call with return printk(...) on inactive path",
+    "compile_returncode": 0,
+    "compile_stdout": "",
+    "compile_stderr": "",
+    "run_returncode": 1,
+    "run_stdout": "FAIL return actual=-5 expected=0\n",
+    "run_stderr": "",
+    "detected": true
+  },
+  "passed": true,
+  "status": "PASS",
+  "limitations": [
+    "The oracle models only the observed stock Assembly/P-Code effects and valid fixture memory.",
+    "The host harness does not execute kernel procfs or NX809J hardware.",
+    "Callback KCFI callsite, KMI type, concurrency/lifetime and hardware gates remain separate."
+  ]
+}

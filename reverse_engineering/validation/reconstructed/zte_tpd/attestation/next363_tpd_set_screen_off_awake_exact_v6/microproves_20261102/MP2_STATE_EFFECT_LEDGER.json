@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "task_id": "zte_tpd_tpd_set_screen_off_awake_MP2_STATE_EFFECT_LEDGER",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": true,
+  "stock_identity": {
+    "function": "tpd_set_screen_off_awake@0012ca1c",
+    "module": {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "size": 633536
+    },
+    "module_expected_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "source_environment": {
+    "target_kernel_manifest": {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847",
+      "size": 3587
+    },
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "branch": "reconstruction/zte-tpd-syna-release-attested",
+    "head_at_freeze": "4721a0f003ca1f96e6a06bb9375b3c3f735333b6"
+  },
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v5/exact_revalidation_20260831/stock_assembly.asm",
+      "sha256": "19da162180738ad138f9c025bcd238c108024f5ff488ca1ce71f978eab6c8e33",
+      "size": 1639
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0362_0012ca1c_tpd_set_screen_off_awake.jsonl",
+      "sha256": "96d93994b40bcb75ce27458e12ea18da8e3af5707db0fb32f11e00fb5c6c6044",
+      "size": 8846
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0362_0012ca1c_tpd_set_screen_off_awake.c",
+      "sha256": "c88b570a5096fc3178ebcc51566bed826f21a71de228ae67f0cd0a12ff03065b",
+      "size": 399
+    }
+  ],
+  "work_unit": "MP2_STATE_EFFECT_LEDGER",
+  "ordered_effects": [
+    {
+      "order": 1,
+      "effect": "load 8-byte context pointer from cdev+0xdb8",
+      "width_bytes": 8,
+      "confidence": "STATIC_ASSEMBLY_PCODE"
+    },
+    {
+      "order": 2,
+      "effect": "load 4-byte mode from context+0x57c",
+      "width_bytes": 4,
+      "confidence": "STATIC_ASSEMBLY_PCODE"
+    },
+    {
+      "order": 3,
+      "effect": "store requested 4-byte value to context+0x5f4 unconditionally",
+      "width_bytes": 4,
+      "condition": "always after context loads",
+      "confidence": "STATIC_ASSEMBLY_PCODE"
+    },
+    {
+      "order": 4,
+      "effect": "compare loaded mode for exact equality to 1",
+      "width_bytes": 4,
+      "condition": "mode == 1",
+      "confidence": "STATIC_ASSEMBLY_PCODE"
+    },
+    {
+      "order": 5,
+      "effect": "store requested value to context+0x5f0 and global is_screen_off_awake_mode",
+      "width_bytes": 4,
+      "condition": "mode == 1",
+      "confidence": "STATIC_ASSEMBLY_PCODE"
+    },
+    {
+      "order": 6,
+      "effect": "call _printk with error format and function name",
+      "width_bytes": 0,
+      "condition": "mode != 1",
+      "confidence": "STATIC_RELOCATION_AND_ASSEMBLY"
+    },
+    {
+      "order": 7,
+      "effect": "return integer zero regardless of the printk result",
+      "width_bytes": 4,
+      "condition": "all paths",
+      "confidence": "STATIC_ASSEMBLY"
+    }
+  ],
+  "alias_and_bounds": [
+    "No null check is observed before reading cdev+0xdb8 or the context fields.",
+    "The observed stores are 32-bit; memory ownership, object size, and serialization are not established by this function body."
+  ]
+}

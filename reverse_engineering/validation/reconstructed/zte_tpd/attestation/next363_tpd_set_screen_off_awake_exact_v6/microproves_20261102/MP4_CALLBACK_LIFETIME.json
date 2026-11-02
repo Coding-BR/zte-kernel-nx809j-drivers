@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "task_id": "zte_tpd_tpd_set_screen_off_awake_MP4_CALLBACK_LIFETIME",
+  "draft_status": "EXTRACTED_REVIEW_REQUIRED",
+  "candidate_edit_authorized": true,
+  "stock_identity": {
+    "function": "tpd_set_screen_off_awake@0012ca1c",
+    "module": {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "size": 633536
+    },
+    "module_expected_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+  },
+  "source_environment": {
+    "target_kernel_manifest": {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847",
+      "size": 3587
+    },
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "branch": "reconstruction/zte-tpd-syna-release-attested",
+    "head_at_freeze": "4721a0f003ca1f96e6a06bb9375b3c3f735333b6"
+  },
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0326_0012b55c_syna_tpd_register_fw_class.c",
+      "sha256": "9ec97577539f12781bd4013d18fd5d5d3e81ea99a15ffef0f8c66c42fcfad54d",
+      "size": 4159
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0081_0010d334_set_screen_off_awake.c",
+      "sha256": "56809559ee540c50140dfe8e015e70c610cb51fb78b0694e3fa6edbb2ef207a1",
+      "size": 1021
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v5/exact_revalidation_20260831/stock_assembly.asm",
+      "sha256": "19da162180738ad138f9c025bcd238c108024f5ff488ca1ce71f978eab6c8e33",
+      "size": 1639
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0362_0012ca1c_tpd_set_screen_off_awake.jsonl",
+      "sha256": "96d93994b40bcb75ce27458e12ea18da8e3af5707db0fb32f11e00fb5c6c6044",
+      "size": 8846
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_set_screen_off_awake.c",
+      "sha256": "ffea4d2b065d384dac9206447bd76cc5fa45a09a19f2a8bf56523f46b897a7e7",
+      "size": 366
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next363_tpd_set_screen_off_awake_exact_v5/exact_revalidation_20260831/kcfi/comparison.json",
+      "sha256": "33cef51cf983880e4d6be19c3c03c3379888bea787ac0e2c63765789657ce297",
+      "size": 1001
+    }
+  ],
+  "work_unit": "MP4_CALLBACK_LIFETIME",
+  "callback_edges": [
+    {
+      "registration_function": "syna_tpd_register_fw_class@0012b55c",
+      "slot_offset": "0xfe0",
+      "callback": "tpd_set_screen_off_awake@0012ca1c",
+      "fact": "stock decompiler and P-Code show callback address stored in object slot",
+      "status": "OBSERVED"
+    },
+    {
+      "consumer_function": "set_screen_off_awake@0010d334",
+      "slot_offset": "0xfe0",
+      "fact": "stock decompiler/P-Code load and indirect-call slot",
+      "status": "OBSERVED"
+    },
+    {
+      "target_prototype": "int(struct ztp_device *, int)",
+      "basis": "target C typing plus stock x0/w1 and w0 return behavior",
+      "status": "HIGH_CONFIDENCE_PENDING_KCFI_CALLSITE_RECHECK"
+    }
+  ],
+  "open_gates": [
+    "Fresh callback table slot/type relocation comparison after C build.",
+    "KCFI callsite guard/type ID comparison at consumer.",
+    "Producer and consumer object lifetime/teardown provenance beyond these functions."
+  ]
+}
