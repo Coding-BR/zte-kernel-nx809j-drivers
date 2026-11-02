@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "Hardening deviation: clear firmware descriptor slot after vmalloc failure",
+  "review_status": "HARDENING_BUILD_AND_STRICT_STATIC_GATE_PASS",
+  "independent_human_review": "NOT_PERFORMED",
+  "branch": "codex/zte-tpd-firmware-allocation-hardening",
+  "exact_baseline_commit": "c83dbf45",
+  "target": {
+    "function": "tp_alloc_tp_firmware_data",
+    "stock_entry": "00107d54",
+    "kbuild_input": "tp_alloc_tp_firmware_data.c",
+    "compiled_from_c_by_directory_wildcard": true
+  },
+  "finding": {
+    "id": "reachable-stale-slot-on-vmalloc-failure",
+    "root_cause": "Stock frees the descriptor after vmalloc failure but leaves cdev+0xc58 pointing to freed memory. Repeated writes to the registered tp_self_test proc entry invoke tp_alloc_tp_firmware_data(0x100000) again.",
+    "reachability_evidence": "Round 16 review: proc_create(\"tp_self_test\", 436, ...) with proc_ops_tp_self_test.proc_write=tp_self_test_write; Ghidra xref at 0010cc74; handler returns -ENOMEM without cleanup.",
+    "stock_behavior": "Confirmed in Ghidra, P-Code and stock AArch64. Preserved on reconstruction/zte-tpd-syna-release-attested."
+  },
+  "change": {
+    "file": "kernel_development/drivers/reconstructed/zte_tpd/tp_alloc_tp_firmware_data.c",
+    "old_source_sha256": "03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+    "new_source_sha256": "a449712703852f5fefb9607da6f280fba3532ed53a94eca6498fa5af51d87dab",
+    "docker_curated_source_sha256": "a449712703852f5fefb9607da6f280fba3532ed53a94eca6498fa5af51d87dab",
+    "code": "Set *(struct tpd_firmware_data **)(cdev + 0xc58) = NULL before kfree(fw_data) on the vmalloc-failure path.",
+    "compiled_instruction": "str xzr, [x21, #0xc58] at candidate offset 0xc200 immediately before kfree at 0xc204.",
+    "stock_symbol_bytes": 352,
+    "hardened_symbol_bytes": 356,
+    "added_aarch64_instructions": 1,
+    "behavior_scope": "Fixes sequential retry after vmalloc failure. No locking/refcounting was added; concurrent writers remain outside this narrow change."
+  },
+  "docker_sync": {
+    "report": "attestation/hardening_tp_alloc_firmware_retry_20261102/source_sync_plan.json",
+    "report_sha256": "b986821d3121a10d7c915d956d2283867962eddf5376261db8e17103b2b6a7aa",
+    "passed": true,
+    "copied": [
+      "tp_alloc_tp_firmware_data.c"
+    ],
+    "remaining_mismatches": 0
+  },
+  "canonical_build": {
+    "report": "attestation/hardening_tp_alloc_firmware_retry_20261102/canonical_build_report.json",
+    "report_sha256": "db883f0ae1604bd0d5fb80db3a15e550c0956447a8b5d931594067eea47b7ce1",
+    "passed": true,
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "kbuild_inputs": 848,
+    "module_path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/validation/zte_tpd_firmware_alloc_hardening_20261102/zte_tpd/zte_tpd.ko",
+    "module_sha256": "1d5fccb202e86121a784b9ac6f153bcb33ca2b626ed4efa41353002d9f54003f",
+    "module_size": 6291368,
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390"
+  },
+  "joern": {
+    "report": "attestation/hardening_tp_alloc_firmware_retry_20261102/joern/joern_gate_report.json",
+    "report_sha256": "f53327ef08061e776bb12122b154f62a3e96b417164a700e1a4b06110c1e3855",
+    "input_manifest": "attestation/hardening_tp_alloc_firmware_retry_20261102/joern/input_manifest.json",
+    "input_manifest_sha256": "6a8e3e28ef06dc33f7987c0da5071d6a373d95aedd2718ba2c4ffc95e0a20e9f",
+    "status": "PASS",
+    "strict": true,
+    "target_source_sha256": "a449712703852f5fefb9607da6f280fba3532ed53a94eca6498fa5af51d87dab",
+    "target_source_matches": true,
+    "target_alerts": 3,
+    "disposition": "The broad call-level alerts remain; control-flow review confirms the failure path now clears the published pointer before freeing the descriptor."
+  },
+  "disassembly": {
+    "report": "attestation/hardening_tp_alloc_firmware_retry_20261102/candidate_tp_alloc_disassembly.txt",
+    "report_sha256": "a67decfe60a1d79959ba00d55c592e62b2acf7517b1123c98905fc8df95c7ba5",
+    "function_symbol_bytes": 356,
+    "verified_slot_clear_before_kfree": true
+  },
+  "mapping": {
+    "status": "HARDENED_STOCK_DEVIATION",
+    "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+    "stock_offline_exact_claim": "Retained only on the parent reconstruction branch.",
+    "current_branch_claim": "Build and strict static analysis pass; this function intentionally differs from stock."
+  },
+  "verification": {
+    "canonical_docker_build": "PASS, two independent cycles",
+    "targeted_joern": "PASS, strict",
+    "microtask_exact_gate": "Not run; its allowed statuses require offline-exact parity, which this branch intentionally changes.",
+    "host_harness": "Not run; the existing harness asserts stock dangling-slot behavior and is bound to the old source hash.",
+    "hardware": "Not tested"
+  },
+  "limitations": [
+    "The patch covers sequential retry; no synchronization was added for concurrent proc writers or concurrent firmware consumers.",
+    "No dynamic ASan/UBSan retry case was run, and the prior stock harness is not valid evidence for the hardened source.",
+    "The change intentionally invalidates function-level OFFLINE_EXACT equivalence on this branch.",
+    "Android runtime, actual memory-pressure injection and NX809J hardware were not exercised."
+  ]
+}

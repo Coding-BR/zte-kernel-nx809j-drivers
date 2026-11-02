@@ -480,7 +480,7 @@
         "joern"
       ],
       "implementation_prompt": "Atue somente na microtarefa atomica abaixo; nao altere outras funcoes.\nDriver: zte_tpd\nFuncao stock: tp_alloc_tp_firmware_data\nEntrada Ghidra: 00107d54\nTamanho stock: 352 bytes\nCategoria: core_logic\nAlvo no fonte: tp_alloc_tp_firmware_data.c:tp_alloc_tp_firmware_data\nPseudocodigo Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0011_00107d54_tp_alloc_tp_firmware_data.c\nP-Code Ghidra: reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0011_00107d54_tp_alloc_tp_firmware_data.jsonl\n\nRegras obrigatorias:\n1. Leia o pseudocodigo e o P-Code completos e preserve assinatura, retornos, ordem de efeitos, offsets, constantes e chamadas comprovadas.\n2. O modulo e out-of-tree para Android 16 GKI 6.12.23/vendor_dlkm; nao acesse estruturas internas sem API exportada, namespace ou Vendor Hook documentado.\n3. Preserve KCFI/CFI: nao use casts de ponteiro de funcao para esconder incompatibilidades. Compare o type ID stock com o reconstruido.\n4. Trate erros estritamente com IS_ERR/PTR_ERR quando aplicavel e labels goto para cleanup em ordem inversa. Nao adicione alocacoes, locks ou helpers sem evidencia.\n5. Aplique KISS e DRY sem refatorar comportamento stock. Use pr_debug/dev_dbg apenas em ramos criticos para diagnostico KASAN, sem alterar a ABI observavel.\n6. Implemente testes de sucesso, cada falha observada, limites e teardown aplicaveis. Nao reutilize um PASS de outra funcao sem provar cobertura direta.\n\nEntregaveis obrigatorios para esta unica funcao:\n- patch restrito a funcao e aos stubs/testes indispensaveis;\n- relatorio de compilacao limpa e reproduzivel;\n- comparacao KCFI stock x candidato;\n- relatorio de teste com comando, saida, resultado e SHA-256;\n- bloqueadores remanescentes. Nao marque PASS por inspecao visual.",
-      "status": "PASS",
+      "status": "HARDENED_STOCK_DEVIATION",
       "evidence": [
         {
           "role": "compile",
@@ -501,8 +501,24 @@
           "role": "joern",
           "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/strict_eligible_subset/joern_gate_summary.json",
           "sha256": "52dfd7c6a8025d08eaccc2f084bfdff93de9161aa103e98bc65894c1673281b3"
+        },
+        {
+          "role": "hardening_build",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hardening_tp_alloc_firmware_retry_20261102/canonical_build_report.json",
+          "sha256": "db883f0ae1604bd0d5fb80db3a15e550c0956447a8b5d931594067eea47b7ce1"
+        },
+        {
+          "role": "hardening_static_review",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hardening_tp_alloc_firmware_retry_20261102/hardening_review.json",
+          "sha256": "2964b6703ec26e954011e7c3c4fb5bd122247b6f51abbde5084c7ce056026b9b"
+        },
+        {
+          "role": "hardening_disassembly",
+          "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/hardening_tp_alloc_firmware_retry_20261102/candidate_tp_alloc_disassembly.txt",
+          "sha256": "a67decfe60a1d79959ba00d55c592e62b2acf7517b1123c98905fc8df95c7ba5"
         }
-      ]
+      ],
+      "status_note": "This branch fixes the reachable vmalloc-failure retry bug and intentionally diverges from stock. Previous exact compile/KCFI/test/Joern evidence applies only to source hash 03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336."
     },
     {
       "id": "013_tpd_copy_to_tp_firmware_data",

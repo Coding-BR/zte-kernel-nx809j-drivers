@@ -33,7 +33,8 @@ int tp_alloc_tp_firmware_data(int size)
   if ( !fw_data->data )
   {
     printk("\001" "3tpd: alloc tp_firmware->data failed");
-    kfree(*(struct tpd_firmware_data **)(cdev + 0xc58));
+    *(struct tpd_firmware_data **)(cdev + 0xc58) = NULL;
+    kfree(fw_data);
     return -ENOMEM;
   }
 

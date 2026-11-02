@@ -1,5 +1,5 @@
 {
-  "candidate_sha256": "7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
+  "candidate_sha256": "1d5fccb202e86121a784b9ac6f153bcb33ca2b626ed4efa41353002d9f54003f",
   "driver": "zte_tpd",
   "function_count": 367,
   "generated_utc": "2026-07-25T05:35:01.4306359Z",
@@ -39,7 +39,7 @@
       ],
       "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Joern and ASan/UBSan harness evidence",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
       "source_file": "tpd_zlog_register.c",
       "source_function": "tpd_zlog_register",
       "status": "PROMOTED_OFFLINE_EXACT",
@@ -337,7 +337,7 @@
     },
     {
       "evidence": [
-        "source:tp_alloc_tp_firmware_data.c:sha256:03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
+        "stock-source:tp_alloc_tp_firmware_data.c:sha256:03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336",
         "ghidra-pseudocode:decompiled/0011_00107d54_tp_alloc_tp_firmware_data.c:sha256:c77d4d4c4a73dc674f2a997f3bb1ab1de9c05cded802baab70933aa01e998235",
         "ghidra-pcode:pcode/0011_00107d54_tp_alloc_tp_firmware_data.jsonl:sha256:79e5ed33ddab5e0d2a3d3f8ad0a5cc2a72e7a12915931bd91751e114b00b43de",
         "stock-assembly:attestation/next012_tp_alloc_tp_firmware_data_exact_v4/exact_revalidation_20260830/stock_assembly/0000_tp_alloc_tp_firmware_data.asm:sha256:1e45952949c22b46ef90fd861394bd474a6bbd4a3f27feb835474234546bc4b0",
@@ -352,19 +352,27 @@
         "semantic-review:attestation/semantic_review_round15_20261102/review.json:sha256:ca49b06ac49a4a5dfe0b458e7e8569064ed59b8d6132027d512fb0c01f87165d",
         "semantic-review-markdown:attestation/semantic_review_round15_20261102/review.md:sha256:f788465e554488c4c078120dee70ca9d59da81f9e45ecf6bcaa031a527d5e37b",
         "semantic-review:attestation/semantic_review_round16_20261102/review.json:sha256:31b56c0b5f32a00eac8f53df91a32bffc37178db0158f728c38242f06075b55c",
-        "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab"
+        "semantic-review-markdown:attestation/semantic_review_round16_20261102/review.md:sha256:9392d90293eac6ff052cf43ae93288c57a7d9ba1bc6fd5a55a38a888a330b6ab",
+        "hardening-source:tp_alloc_tp_firmware_data.c:sha256:a449712703852f5fefb9607da6f280fba3532ed53a94eca6498fa5af51d87dab",
+        "hardening-review:attestation/hardening_tp_alloc_firmware_retry_20261102/hardening_review.json:sha256:2964b6703ec26e954011e7c3c4fb5bd122247b6f51abbde5084c7ce056026b9b",
+        "hardening-review-markdown:attestation/hardening_tp_alloc_firmware_retry_20261102/hardening_review.md:sha256:ba272d6b21d16b99818bd02cecc7493f5455f3043faef19e34858466792929b2",
+        "hardening-build:attestation/hardening_tp_alloc_firmware_retry_20261102/canonical_build_report.json:sha256:db883f0ae1604bd0d5fb80db3a15e550c0956447a8b5d931594067eea47b7ce1",
+        "docker-source-sync:attestation/hardening_tp_alloc_firmware_retry_20261102/source_sync_plan.json:sha256:b986821d3121a10d7c915d956d2283867962eddf5376261db8e17103b2b6a7aa",
+        "hardening-joern:attestation/hardening_tp_alloc_firmware_retry_20261102/joern/joern_gate_report.json:sha256:f53327ef08061e776bb12122b154f62a3e96b417164a700e1a4b06110c1e3855",
+        "hardening-joern-manifest:attestation/hardening_tp_alloc_firmware_retry_20261102/joern/input_manifest.json:sha256:6a8e3e28ef06dc33f7987c0da5071d6a373d95aedd2718ba2c4ffc95e0a20e9f",
+        "hardening-disassembly:attestation/hardening_tp_alloc_firmware_retry_20261102/candidate_tp_alloc_disassembly.txt:sha256:a67decfe60a1d79959ba00d55c592e62b2acf7517b1123c98905fc8df95c7ba5"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern, Docker canonical build and ASan/UBSan harness evidence",
+      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64, KCFI, Joern, Docker canonical build and ASan/UBSan harness evidence; hardening deviation validated by reproducible Docker build, strict Joern gate and emitted AArch64 disassembly",
       "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "tp_alloc_tp_firmware_data.c",
       "source_function": "tp_alloc_tp_firmware_data",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 352,
       "elf_symbol_bytes": 352,
       "stock_entry": "00107d54",
       "stock_function": "tp_alloc_tp_firmware_data",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate contain 88 AArch64 instructions and 352-byte ELF symbols; the Ghidra body size and ELF symbol size agree. KCFI type ID 0xcdde824b matches. The function preserves descriptor cleanup, GFP flags 0xdc0, descriptor size 0x18, vmalloc size size+0x18, zero-fill order and the stock dangling descriptor slot after data-allocation failure; opcode sequence, section and normalized references match. Allocator integration, scheduler timing and NX809J hardware remain unverified. Round 15 confirms the inherited vmalloc-failure use-after-free risk: kfree releases the descriptor while cdev+0xc58 remains dangling, so a later call may dereference freed memory during cleanup. Stock, Ghidra and P-Code agree; preserved for OFFLINE_EXACT. See the Round 15 semantic-review evidence. Round 16 confirms retry reachability through proc entry tp_self_test (mode 0664): each write calls tp_alloc_tp_firmware_data(0x100000), and the allocation-error path returns -ENOMEM without clearing the stale slot. The subsequent write re-enters allocator cleanup. See Round 16 semantic-review evidence."
+      "mapping_note": "Historical source hash 03a7e3e619d072f6d445f3cc3f535041fc9d6879f0c27fa96ac0311e59c9a336 had function-level OFFLINE_EXACT parity (88 instructions, 352 bytes). This hardening branch intentionally differs on vmalloc failure: it clears cdev+0xc58 before freeing fw_data. Docker emits a 356-byte symbol with one additional AArch64 store before kfree. Sequential retry through proc tp_self_test no longer re-enters cleanup through a dangling slot. Concurrent writers remain unsynchronized. Do not classify this branch's function as OFFLINE_EXACT; see hardening review and build evidence."
     },
     {
       "evidence": [
@@ -9923,9 +9931,9 @@
   ],
   "override_count": 17,
   "review_scope": "structural_identity_only",
-  "review_status": "PASS",
+  "review_status": "PASS_WITH_HARDENING_DEVIATION",
   "schema_version": "2.0",
-  "semantic_equivalence": "OFFLINE_EXACT",
+  "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
   "stock_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
   "status": "PARTIAL_SOURCE_MAP"
 }
