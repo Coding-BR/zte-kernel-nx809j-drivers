@@ -308,7 +308,7 @@ syna_dev_connect_stock_exact:
     .inst 0x52800400
     .inst 0x52800643
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, queue_delayed_work_on
+    .reloc .-4, R_AARCH64_CALL26, syna_dev_queue_reflash_if_available
     .inst 0xf9400268
     .inst 0xb9057e74
     .inst 0x90000000

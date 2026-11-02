@@ -382,6 +382,8 @@ On branch codex/zte-tpd-firmware-allocation-hardening, task 012 intentionally di
 
 The fops wiring and lifecycle guards for `input_agent` are tracked in `attestation/syna_input_agent_lifecycle_20261102/`. The build passed two independent Docker cycles with module SHA-256 `6c280c7d76c6e7d8aa7cf47580333100da240fe0f9338cdcf88e70999aa120d8`. The `syna_dev_connect`, `syna_dev_process_touch_report`, `syna_ioctl`, `syna_cdev_create`, and `syna_cdev_remove` rows are marked `HARDENED_STOCK_DEVIATION`. The unchanged stock bodies for poll/open/mmap/release remain individually mapped, while their active fops dispatch uses lifecycle wrappers. No kernel runtime or hardware test was run.
 
+The `syna_dev_connect` reflash queue allocation guard is attested in `attestation/syna_reflash_queue_guard_20261102/`. Two canonical Docker cycles produced identical modules; KCFI type ID `0xae20471c` matches stock. On allocation failure, the wrapper now disconnects the successfully registered IRQ/input path and returns `-ENOMEM`.
+
 ## workqueue lifecycle cross-cut (2026-11-02)
 
 The TPD main/report queue admission and teardown deviation is recorded in attestation/workqueue_lifecycle_20261102/lifecycle_review.json (SHA-256 e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd). Two independent canonical Docker builds passed with module SHA-256 62aed41248277d835f455dee4e12c87436e2b52273c3ced025089690d0405eae and matching vermagic. KCFI type IDs match for six comparable stock functions; the stock zte_touch_deinit symbol has no valid KCFI preamble. No kernel runtime or hardware test was run.

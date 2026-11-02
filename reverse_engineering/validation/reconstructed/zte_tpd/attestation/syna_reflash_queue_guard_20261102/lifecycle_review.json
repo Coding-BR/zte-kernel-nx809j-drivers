@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-02T23:18:40Z",
+  "driver": "zte_tpd",
+  "scope": [
+    "syna_dev_connect",
+    "syna_dev_disconnect",
+    "syna_dev_queue_reflash_if_available"
+  ],
+  "finding": {
+    "summary": "syna_dev_connect did not check alloc_workqueue() before passing the queue pointer to queue_delayed_work_on().",
+    "stock_evidence": [
+      "offline_static/ghidra_stock/decompiled/0159_00112714_syna_dev_connect.c shows alloc_workqueue followed by queue_delayed_work_on(cpu 32, tcm+0x430, delayed_work at tcm+0x3c8, delay 50).",
+      "offline_static/ghidra_stock/pcode/0159_00112714_syna_dev_connect.jsonl and the preserved exact assembly confirm the call order and arguments."
+    ],
+    "failure_impact": "The Linux 6.12 workqueue implementation warns when the queue is NULL but continues through the delayed-work path. With this nonzero delay, the work can retain a NULL queue pointer for the timer callback."
+  },
+  "change": {
+    "mechanism": "Only the exact body's queue_delayed_work_on relocation is redirected to a signature-matched C helper that declines to queue when the queue or work pointer is NULL.",
+    "rollback": "After the exact body returns, the public connect wrapper checks tcm+0x430. If the queue is NULL, it calls the existing disconnect wrapper, which stops charger lifecycle state and invokes the exact disconnect body to release the IRQ and input device; connect then returns -ENOMEM and deregisters input_agent.",
+    "normal_path": "When allocation succeeds, the helper forwards the original CPU 32, delayed-work pointer, and 50-jiffy delay unchanged to queue_delayed_work_on().",
+    "classification": "HARDENED_STOCK_DEVIATION; the 1004-byte stock body and KCFI preamble remain, but one call relocation and the public wrapper behavior are intentionally hardened."
+  },
+  "source_sync": {
+    "report": "source_sync_plan.json",
+    "passed": true,
+    "remaining_mismatches": 0
+  },
+  "canonical_build": {
+    "report": "canonical_build_report.json",
+    "passed": true,
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "module_sha256": "546aad16f46e1f5c9fd6914854967aca3a253642b394d117e005cddd7a37f4c7",
+    "module_size": 7157696,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "diagnostics": []
+  },
+  "kcfi": {
+    "report": "kcfi_comparison.json",
+    "passed": true,
+    "function": "syna_dev_connect",
+    "stock_type_id": "0xae20471c",
+    "candidate_type_id": "0xae20471c",
+    "size_is_gating": false,
+    "stock_symbol_size": 1004,
+    "candidate_symbol_size": 108
+  },
+  "limits": [
+    "No kernel runtime, fault injection, Android boot, or NX809J hardware execution was performed.",
+    "The allocation-failure rollback is established by static control-flow review and canonical compilation, not dynamic fault-injection evidence."
+  ]
+}

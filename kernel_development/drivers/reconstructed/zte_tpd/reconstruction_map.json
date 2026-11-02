@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "01712936adeb6d2e93328c63a1b0a1a233a06f075959def2cfab3ce6668d36d2",
+  "candidate_sha256": "546aad16f46e1f5c9fd6914854967aca3a253642b394d117e005cddd7a37f4c7",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T23:11:50.679760+00:00",
+  "generated_utc": "2026-11-02T23:19:14Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4611,10 +4611,15 @@
         "canonical-build:attestation/syna_input_agent_lifecycle_20261102/canonical_build_report.json:sha256:4fb24e7d41ce801cb0cb5146d3219d2ff7ca15d1782a4c64d57a3db8baed4a3b",
         "source-sync:attestation/syna_input_agent_lifecycle_20261102/source_sync_plan.json:sha256:31d45bfd3cf0f48bc72cd6604adbb3c08c5ce068e318c9cc47c97490dcfe8b99",
         "lifecycle-review:attestation/syna_input_agent_lifecycle_20261102/lifecycle_review.json:sha256:78b94d7800c503c326a2512f81b8674fac4beb8f0ab9756d32720735f1dfd4c7",
-        "source-current:syna_dev_connect_wrapper.c:sha256:1bed468bd36dcca1e23017a134060ec6336e4e6eee08eb687113fecb7becf85b",
-        "source-current:syna_dev_connect_exact.S:sha256:14209f0e184fcde60305e3846f7a127b02cc540fc5f0a172aa2466cb8a112dc6"
+        "source-current:syna_dev_connect_wrapper.c:sha256:5fcc72fc8875410a750cdb587729dbe367b98295c5bcd75647f1e2b3b63f3e09",
+        "source-current:syna_dev_connect_exact.S:sha256:b0e87fe0cc38e8b429c42006b6f342ce26fd55ce34157e66631abe7bae46c8b2",
+        "source-current:syna_dev_reflash_queue_guard.c:sha256:23b90be4893580b9e94ed8e6ac7e4b58089b206eee8d6de24230ba91148db217",
+        "source-sync:attestation/syna_reflash_queue_guard_20261102/source_sync_plan.json:sha256:059efd9a507f4c51d549768c2f30260da5bd338761b758a53b83e426e46e3c05",
+        "canonical-build:attestation/syna_reflash_queue_guard_20261102/canonical_build_report.json:sha256:ed91686f8d690463761a5addf08dcecf989c2435be8ec9b2762cb7f90fa201a5",
+        "kcfi-comparison:attestation/syna_reflash_queue_guard_20261102/kcfi_comparison.json:sha256:32d1c50f4f755d1f0b525306feb92e256641d9a4018f74113aeab510590e2d8d",
+        "lifecycle-review:attestation/syna_reflash_queue_guard_20261102/lifecycle_review.json:sha256:e9d8c97cef5e23fbbda380ecccc3a2d4fcec5ec69203a0e2bda96fbb57a00e2e"
       ],
-      "mapping_basis": "Exact AArch64 object reproduces the 1004-byte stock body, relocation/string surface and KCFI preamble",
+      "mapping_basis": "Preserves the 1004-byte stock AArch64 body and KCFI preamble; one delayed-work queue call is guarded, and the public wrapper rolls back IRQ/input registration on allocation failure.",
       "review_scope": "offline_exact_function_level",
       "semantic_equivalence": "MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION",
       "source_file": "syna_dev_connect_wrapper.c",
@@ -4623,7 +4628,7 @@
       "stock_body_bytes": 1004,
       "stock_entry": "00112714",
       "stock_function": "syna_dev_connect",
-      "mapping_note": "The active syna_dev_connect entry is a guard wrapper that preserves the exact stock body under syna_dev_connect_stock_exact and deregisters input_agent on connect failure. Callback behavior is intentionally hardened; runtime/hardware remains unverified."
+      "mapping_note": "The stock connect body remains under syna_dev_connect_stock_exact. The delayed-work submission now rejects a NULL reflash queue; the wrapper detects the missing queue, runs the recovered disconnect path, deregisters input_agent, and returns -ENOMEM. This intentional HARDENED_STOCK_DEVIATION passed two reproducible canonical Docker builds and a matching KCFI type-ID check; runtime/hardware remains unverified."
     },
     {
       "evidence": [
