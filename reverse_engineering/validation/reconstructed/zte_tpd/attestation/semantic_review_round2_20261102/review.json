@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-02",
+  "review_type": "offline interprocedural lifetime and workqueue review",
+  "independent_human_review": "NOT_PERFORMED",
+  "scope": {
+    "joern_findings_reviewed_this_round": 6,
+    "joern_findings_total": 128,
+    "cross_function_lifetime_findings": 1,
+    "functions": [
+      "tpd_touch_release",
+      "tp_ghost_check_work",
+      "tp_ghost_check",
+      "tpd_zlog_record_notify",
+      "tpd_workqueue_deinit",
+      "zte_touch_shutdown",
+      "zte_touch_deinit"
+    ]
+  },
+  "source_state": {
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_tpd/reconstruction_map.json",
+    "map_status": "PARTIAL_SOURCE_MAP",
+    "semantic_equivalence": "OFFLINE_EXACT",
+    "hardware_validation": "DEFERRED",
+    "joern_global_gate": "PASS",
+    "joern_cpg_gap": true,
+    "docker_candidate_snapshot_match": true,
+    "docker_candidate_snapshot_kbuild_inputs": 848,
+    "docker_candidate_snapshot": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/zte_tpd"
+  },
+  "findings": [
+    {
+      "id": "manual-lifetime-tpd-ghost-check-zlog-teardown",
+      "category": "lifetime",
+      "severity": "high",
+      "disposition": "CONDITIONAL_USE_AFTER_FREE_INHERITED_FROM_STOCK",
+      "schedule_path": {
+        "function": "tpd_touch_release",
+        "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_touch_release.c",
+        "line": 121,
+        "operation": "queue_delayed_work_on(32, tpd_cdev->tpd_wq, tpd_cdev + 0x938, 500)",
+        "work_callback": "tp_ghost_check_work",
+        "initialization": "kernel_development/drivers/reconstructed/zte_tpd/tpd_workqueue_init.c:36-40"
+      },
+      "use_path": [
+        {
+          "function": "tp_ghost_check_work",
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/tp_ghost_check_work.c",
+          "line": 11,
+          "operation": "calls tp_ghost_check"
+        },
+        {
+          "function": "tp_ghost_check",
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/tp_ghost_check.c",
+          "source_lines": [256, 258],
+          "operation": "checks the zlog buffer pointer, writes to the buffer, then calls tpd_zlog_record_notify"
+        },
+        {
+          "function": "tpd_zlog_record_notify",
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_zlog_record_notify.c",
+          "source_lines": [46, 57],
+          "operation": "checks the buffer pointer, then reads and writes through it"
+        }
+      ],
+      "free_paths": [
+        {
+          "function": "tpd_workqueue_deinit",
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/tpd_workqueue_deinit.c",
+          "source_lines": [16, 18],
+          "order": "vfree and clear tpd_cdev + 0xbe8 before cancel_delayed_work_sync(tpd_cdev + 0x938)"
+        },
+        {
+          "function": "zte_touch_shutdown",
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_shutdown.c",
+          "source_lines": [30, 32],
+          "order": "vfree and clear tpd_cdev + 0xbe8 before cancel_delayed_work_sync(tpd_cdev + 0x938)"
+        },
+        {
+          "function": "zte_touch_deinit",
+          "source": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit.c",
+          "source_lines": [18, 20, 32, 34],
+          "order": "frees the buffer before producer work is fully canceled, then performs another free/clear sequence before canceling the ghost-check work"
+        }
+      ],
+      "runtime_assessment": "The race is statically established: if tp_ghost_check_work is running and has observed a non-null buffer when teardown frees it, its subsequent snprintf/strlen/write can access freed memory. Runtime reproduction on NX809J has not been performed.",
+      "stock_comparison": {
+        "candidate_matches_stock": true,
+        "evidence": [
+          "reconstruction_map.json promotes tpd_workqueue_deinit, zte_touch_shutdown, zte_touch_deinit, tpd_touch_release, tp_ghost_check_work, tp_ghost_check, and tpd_zlog_record_notify as PROMOTED_OFFLINE_EXACT",
+          "tpd_workqueue_deinit and zte_touch_shutdown have existing two-cycle canonical Docker build evidence",
+          "the current repository and Docker curated source trees match across all 848 Kbuild inputs"
+        ]
+      },
+      "reconstruction_decision": "Do not silently change the stock-exact reconstruction. Track a separate hardening deviation. Before applying it, quiesce every producer of tpd_touch_release and tp_ghost_check work, including touch-report and input-release/remove paths; moving the cancel call alone is not proven sufficient.",
+      "references": [
+        "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_zlog.h:88",
+        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next024_tpd_workqueue_deinit_exact_v4/exact_revalidation_20260830/canonical_build_report.json",
+        "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next027_zte_touch_shutdown_exact_v4/exact_revalidation_20260830/canonical_build_report.json"
+      ]
+    },
+    {
+      "id": "joern-cpg-gap-syna-dev-helper-work",
+      "category": "analysis_coverage",
+      "severity": "medium",
+      "function": "syna_dev_helper_work",
+      "stock_entry": "00113590",
+      "disposition": "CALL_RECOVERED_BY_SOURCE_FALLBACK_CPG_GAP_RETAINED",
+      "joern_report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/full_surface_revalidation_20261102/joern/joern_gate_report.json",
+      "evidence": {
+        "expected_call": "syna_tcm_get_boot_info",
+        "expected_count": 1,
+        "cpg_observed_count": 0,
+        "source_fallback_count": 1,
+        "fallback_method": "comment_and_literal_aware_identifier_call_scan",
+        "effective_missing_mapped_calls": 0,
+        "unresolved_call_count": 0,
+        "parse_problem_count": 0,
+        "strict_gate": "PASS",
+        "joern_cpg_gap": true,
+        "source_callsite": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_helper_work.c:32"
+      },
+      "review": "The call is present directly in candidate source and is recovered by the documented source scanner. The strict gate passes because expected call coverage is restored, but the CPG itself did not model the edge. Preserve joern_cpg_gap=true; do not describe this as native Joern coverage.",
+      "reconstruction_decision": "No source change. Retain the fallback evidence and include this function in future parser/CPG regression work."
+    }
+  ],
+  "overall_disposition": "STATICALLY_CONFIRMED_INHERITED_TEARDOWN_RACE_SOURCE_UNCHANGED",
+  "remaining_work": [
+    "Trace all producers of tpd_touch_release and prove they are quiesced on remove, shutdown, and module exit before a hardened deviation is applied.",
+    "Review the remaining lifetime and synchronization observations; this round classified six Joern findings and one cross-function lifetime issue.",
+    "Keep the CPG gap visible and test a Joern parser/query improvement without removing source-fallback validation.",
+    "Hardware and independent human review remain deferred."
+  ]
+}
