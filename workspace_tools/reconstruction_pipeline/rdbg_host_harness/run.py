@@ -8,6 +8,7 @@ import datetime as dt
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 
 
@@ -15,11 +16,22 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 DRIVER = ROOT / "kernel_development/drivers/reconstructed/rdbg"
 SOURCE = DRIVER / "rdbg_fn_07_init_module.c"
+CLEANUP_SOURCE = DRIVER / "rdbg_fn_01_cleanup_module.c"
 MAP_PATH = DRIVER / "reconstruction_map.json"
 CORE_REPORT = (
     ROOT
     / "reverse_engineering/validation/reconstructed/rdbg/attestation/"
     / "rdbg_init_module_microtask_20261028/protocol_core_v30/hard_protocol_report.json"
+)
+STOCK_CLEANUP_PSEUDOCODE = (
+    ROOT
+    / "reverse_engineering/validation/reconstructed/rdbg/offline_static/"
+    / "ghidra_stock/rdbg.ko/decompiled/0007_00101974_cleanup_module.c"
+)
+STOCK_CLEANUP_ASSEMBLY = (
+    ROOT
+    / "reverse_engineering/validation/reconstructed/rdbg/offline_static/"
+    / "stock_assembly/0007_cleanup_module_00101974.asm"
 )
 IMAGE = "nubia-sm8850-kernel-builder:latest"
 EXPECTED_IMAGE_ID = (
@@ -64,26 +76,32 @@ def main() -> int:
 
     source_text = SOURCE.read_text(encoding="utf-8")
     mutations = {
-        "wrong_count_errno": require_replacement(
+        "wrong_count_errno": (SOURCE, require_replacement(
             source_text, "return -EDOM;", "return -EINVAL;", "wrong_count_errno"
-        ),
-        "wrong_success_result": require_replacement(
+        )),
+        "wrong_success_result": (SOURCE, require_replacement(
             source_text,
             "if (devices_created)\n\t\t\treturn 0;",
             "if (devices_created)\n\t\t\treturn -EINVAL;",
             "wrong_success_result",
-        ),
-        "wrong_rollback_flag": require_replacement(
+        )),
+        "wrong_rollback_flag": (SOURCE, require_replacement(
             source_text,
             "device_initialized == 1)",
             "device_initialized == 0)",
             "wrong_rollback_flag",
-        ),
+        )),
+        "wrong_cleanup_stride": (CLEANUP_SOURCE, require_replacement(
+            CLEANUP_SOURCE.read_text(encoding="utf-8"),
+            "#define RDBG_CLIENT_STRIDE 0x1c8",
+            "#define RDBG_CLIENT_STRIDE 0x1c4",
+            "wrong_cleanup_stride",
+        )),
     }
-    for name, value in mutations.items():
+    for name, (mutant_source, value) in mutations.items():
         mutant_dir = output / "mutants" / name
         mutant_dir.mkdir(parents=True)
-        (mutant_dir / SOURCE.name).write_text(value, encoding="utf-8")
+        (mutant_dir / mutant_source.name).write_text(value, encoding="utf-8")
 
     repo_mount = f"{ROOT}:/work/repo:ro"
     harness_mount = f"{HERE}:/work/harness:ro"
@@ -98,26 +116,26 @@ base_includes=(-I/work/harness/include -I/work/harness -I"$module")
 mkdir -p /work/output/build_a /work/output/build_b
 for build in build_a build_b; do
   "$clang" "${common[@]}" "${base_includes[@]}" \
-    /work/harness/harness.c -o "/work/output/$build/rdbg_init_harness"
-  sha256sum "/work/output/$build/rdbg_init_harness" > "/work/output/$build/binary.sha256"
+    /work/harness/harness.c -o "/work/output/$build/rdbg_lifecycle_harness"
+  sha256sum "/work/output/$build/rdbg_lifecycle_harness" > "/work/output/$build/binary.sha256"
   for replay in 1 2; do
     ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 \
     UBSAN_OPTIONS=halt_on_error=1 \
-      "/work/output/$build/rdbg_init_harness" \
+      "/work/output/$build/rdbg_lifecycle_harness" \
       > "/work/output/$build/replay_${replay}.stdout" \
       2> "/work/output/$build/replay_${replay}.stderr"
   done
 done
 sha256sum "$clang" > /work/output/clang.sha256
 "$clang" --version > /work/output/clang.version
-for mutant in wrong_count_errno wrong_success_result wrong_rollback_flag; do
+for mutant in wrong_count_errno wrong_success_result wrong_rollback_flag wrong_cleanup_stride; do
   mutant_dir="/work/output/mutants/$mutant"
   "$clang" "${common[@]}" -I"$mutant_dir" "${base_includes[@]}" \
-    /work/harness/harness.c -o "$mutant_dir/rdbg_init_harness"
+    /work/harness/harness.c -o "$mutant_dir/rdbg_lifecycle_harness"
   set +e
   ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 \
   UBSAN_OPTIONS=halt_on_error=1 \
-    "$mutant_dir/rdbg_init_harness" \
+    "$mutant_dir/rdbg_lifecycle_harness" \
     > "$mutant_dir/replay.stdout" 2> "$mutant_dir/replay.stderr"
   result=$?
   set -e
@@ -129,7 +147,7 @@ for mutant in wrong_count_errno wrong_success_result wrong_rollback_flag; do
 done
 cat /work/output/build_a/replay_1.stdout
 cat /work/output/build_b/replay_1.stdout
-sha256sum /work/output/build_a/rdbg_init_harness /work/output/build_b/rdbg_init_harness
+sha256sum /work/output/build_a/rdbg_lifecycle_harness /work/output/build_b/rdbg_lifecycle_harness
 "$clang" --version | head -n 1
 "$clang" --print-target-triple
 """
@@ -184,24 +202,38 @@ sha256sum /work/output/build_a/rdbg_init_harness /work/output/build_b/rdbg_init_
         for build in ("build_a", "build_b")
         for replay in (1, 2)
     ]
-    expected_stdout = "PASS cases=9 assertions=106 promotion_authorized=false"
-    if len(set(build_hashes)) != 1 or set(replay_outputs) != {expected_stdout}:
+    replay_assertions = []
+    for replay_output in replay_outputs:
+        match = re.fullmatch(
+            r"PASS cases=10 assertions=(\d+) promotion_authorized=false",
+            replay_output,
+        )
+        if match is None:
+            raise SystemExit("baseline replay did not satisfy the ten-case oracle")
+        replay_assertions.append(int(match.group(1)))
+    if len(set(build_hashes)) != 1 or len(set(replay_assertions)) != 1:
         raise SystemExit("baseline builds/replays are not byte-stable or did not pass")
 
     report = {
         "schema_version": "1.0",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "driver": "rdbg",
-        "function": "init_module@00101638",
+        "functions": ["init_module@00101638", "cleanup_module@00101974"],
         "status": "PASS_HOST_HARNESS_BOUNDED",
         "promotion_authorized": False,
         "source_path": SOURCE.relative_to(ROOT).as_posix(),
         "source_sha256": sha256(SOURCE),
+        "cleanup_source_path": CLEANUP_SOURCE.relative_to(ROOT).as_posix(),
+        "cleanup_source_sha256": sha256(CLEANUP_SOURCE),
         "candidate_module_sha256": sha256(DRIVER / "rdbg.ko"),
         "reconstruction_map_path": MAP_PATH.relative_to(ROOT).as_posix(),
         "reconstruction_map_sha256": sha256(MAP_PATH),
         "core_gate_report_path": CORE_REPORT.relative_to(ROOT).as_posix(),
         "core_gate_report_sha256": sha256(CORE_REPORT),
+        "stock_cleanup_evidence": {
+            STOCK_CLEANUP_PSEUDOCODE.relative_to(ROOT).as_posix(): sha256(STOCK_CLEANUP_PSEUDOCODE),
+            STOCK_CLEANUP_ASSEMBLY.relative_to(ROOT).as_posix(): sha256(STOCK_CLEANUP_ASSEMBLY),
+        },
         "harness_input_sha256": {
             path.relative_to(HERE).as_posix(): sha256(path)
             for path in [HERE / "run.py", HERE / "harness.c", HERE / "rdbg_host_shim.h"]
@@ -215,15 +247,24 @@ sha256sum /work/output/build_a/rdbg_init_harness /work/output/build_b/rdbg_init_
         "compiler_version": (output / "clang.version").read_text(encoding="utf-8").splitlines()[0],
         "baseline_build_sha256": build_hashes[0],
         "baseline_replays": 4,
-        "cases": 9,
-        "assertions_per_replay": 106,
+        "cases": 10,
+        "assertions_per_replay": replay_assertions[0],
         "mutation_controls": [
-            {"name": name, "detected_by_oracle": True, "source_sha256": sha256(output / "mutants" / name / SOURCE.name)}
-            for name in mutations
+            {
+                "name": name,
+                "source_path": mutant_source.relative_to(ROOT).as_posix(),
+                "detected_by_oracle": True,
+                "source_sha256": sha256(output / "mutants" / name / mutant_source.name),
+            }
+            for name, (mutant_source, _) in mutations.items()
         ],
         "observed_failure_paths": [
             "platform_driver_register failure returns without freeing the clients allocation",
             "alloc_chrdev_region failure frees clients but leaves the registered platform driver active",
+        ],
+        "stock_confirmed_module_exit_effects": [
+            "cleanup_module destroys initialized device minors, destroys the class, deletes the cdev, calls unregister_chrdev_region with count=1, then frees clients",
+            "cleanup_module does not call platform_driver_unregister",
         ],
         "limitations": [
             "Host stubs model API results and call order; they do not test kernel concurrency, real platform probing, or hardware.",

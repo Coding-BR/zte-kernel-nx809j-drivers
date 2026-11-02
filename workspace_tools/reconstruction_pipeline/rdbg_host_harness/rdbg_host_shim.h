@@ -16,11 +16,13 @@ typedef int64_t loff_t;
 
 #define __user
 #define __init
+#define __exit
 #define __used __attribute__((used))
 #define __packed __attribute__((packed))
 #define GFP_KERNEL 0
 #define THIS_MODULE ((struct module *)0x1)
 #define module_init(function)
+#define module_exit(function)
 #define static_assert(condition, ...) _Static_assert(condition, #condition)
 
 #define EDOM 33

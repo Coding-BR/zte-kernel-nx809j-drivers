@@ -7,11 +7,13 @@
 
 #include "rdbg_host_shim.h"
 #include "rdbg_fn_07_init_module.c"
+#include "rdbg_fn_01_cleanup_module.c"
 
 enum event_kind {
 	EV_LOG,
 	EV_KCALLOC,
 	EV_DRIVER_REGISTER,
+	EV_DRIVER_UNREGISTER,
 	EV_ALLOC_REGION,
 	EV_CDEV_INIT,
 	EV_CDEV_ADD,
@@ -44,6 +46,7 @@ static int class_create_error;
 static int device_create_error_minor = -1;
 static int device_create_error = -ENOMEM;
 static unsigned int device_create_count;
+static bool cleanup_running;
 
 static unsigned int assertions;
 
@@ -178,11 +181,14 @@ int alloc_chrdev_region(dev_t *dev, unsigned int first_minor,
 
 void unregister_chrdev_region(dev_t dev, unsigned int count)
 {
-	if (dev != 0x12345000U || count != (unsigned int)g_rdbg_instance.count) {
+	unsigned int expected_count = cleanup_running ? 1U :
+		(unsigned int)g_rdbg_instance.count;
+
+	if (dev != 0x12345000U || count != expected_count) {
 		fprintf(stderr, "unexpected unregister_chrdev_region arguments\n");
 		exit(2);
 	}
-	record_event(EV_UNREGISTER_REGION, 0, NULL);
+	record_event(EV_UNREGISTER_REGION, (long)count, NULL);
 }
 
 int platform_driver_register(struct platform_driver *driver)
@@ -201,8 +207,7 @@ void platform_driver_unregister(struct platform_driver *driver)
 		fprintf(stderr, "unexpected platform_driver_unregister argument\n");
 		exit(2);
 	}
-	fprintf(stderr, "unexpected platform_driver_unregister call\n");
-	exit(2);
+	record_event(EV_DRIVER_UNREGISTER, 0, NULL);
 }
 
 void *kcalloc(size_t count, size_t size, unsigned int flags)
@@ -261,6 +266,7 @@ static void reset_scenario(void)
 	device_create_error_minor = -1;
 	device_create_error = -ENOMEM;
 	device_create_count = 0;
+	cleanup_running = false;
 }
 
 static void cleanup_scenario(void)
@@ -433,14 +439,44 @@ static bool test_success(void)
 	return true;
 }
 
+static bool test_success_teardown(void)
+{
+	const enum event_kind expected[] = {
+		EV_KCALLOC, EV_DRIVER_REGISTER, EV_ALLOC_REGION, EV_CDEV_INIT,
+		EV_CDEV_ADD, EV_CLASS_CREATE, EV_DEVICE_CREATE, EV_DEVICE_CREATE,
+		EV_DEVICE_CREATE, EV_DEVICE_CREATE,
+		EV_DEVICE_DESTROY, EV_DEVICE_DESTROY, EV_DEVICE_DESTROY,
+		EV_DEVICE_DESTROY, EV_CLASS_DESTROY, EV_CDEV_DEL,
+		EV_UNREGISTER_REGION, EV_KFREE,
+	};
+	const long destroyed_minors[] = {1, 2, 4, 5};
+
+	reset_scenario();
+	CHECK(rdbg_init() == 0);
+	cleanup_running = true;
+	cleanup_module();
+	cleanup_running = false;
+	CHECK(trace_is(expected, sizeof(expected) / sizeof(expected[0])));
+	for (size_t i = 0; i < sizeof(destroyed_minors) / sizeof(destroyed_minors[0]);
+	     i++)
+		CHECK(events[10 + i].value == destroyed_minors[i]);
+	CHECK(events[16].value == 1);
+	CHECK(allocation_freed);
+	for (size_t i = 0; i < event_count; i++)
+		CHECK(events[i].kind != EV_DRIVER_UNREGISTER);
+	cleanup_scenario();
+	return true;
+}
+
 int main(void)
 {
 	if (!test_count_boundaries() || !test_allocation_failure() ||
 	    !test_driver_register_failure() || !test_region_failure() ||
 	    !test_cdev_add_failure() || !test_class_failure() ||
 	    !test_no_matching_device() ||
-	    !test_device_failure_rolls_back_prior_devices() || !test_success())
+	    !test_device_failure_rolls_back_prior_devices() || !test_success() ||
+	    !test_success_teardown())
 		return 1;
-	printf("PASS cases=9 assertions=%u promotion_authorized=false\n", assertions);
+	printf("PASS cases=10 assertions=%u promotion_authorized=false\n", assertions);
 	return 0;
 }
