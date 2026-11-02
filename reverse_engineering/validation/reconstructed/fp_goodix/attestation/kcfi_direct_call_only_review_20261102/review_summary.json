@@ -1,0 +1,92 @@
+{
+  "candidate_elf_reference_report": {
+    "path": "attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json",
+    "sha256": "91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a"
+  },
+  "cause": "The three stock function symbols have local binding and only direct incoming calls. The candidate keeps them global so the separate gf_ioctl_exact.S object can call them; candidate KCFI emits extra type preambles for those global symbols. The function bodies are byte-identical, and the candidate ELF has exactly one R_AARCH64_CALL26 to each from gf_ioctl, with no kernel __ksymtab exports for these names.",
+  "checks": {
+    "candidate_callers_are_gf_ioctl": true,
+    "candidate_calls_are_unconditional_direct_calls": true,
+    "candidate_each_target_has_one_incoming_relocation": true,
+    "candidate_elf_reference_report_matches_module": true,
+    "candidate_symbol_references_are_all_call26": true,
+    "candidate_symbols_are_global_module_local_only": true,
+    "candidate_target_symbols_not_exported_via_ksymtab": true,
+    "stock_candidate_function_bodies_identical": true,
+    "stock_ghidra_each_target_has_one_incoming_call": true,
+    "stock_ghidra_incoming_calls_are_unconditional": true,
+    "stock_symbols_are_local": true
+  },
+  "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "docker_static_revalidation": {
+    "candidate_sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+    "checks": {
+      "aarch64_rel": true,
+      "alias_match": true,
+      "candidate_hash_matches_map": true,
+      "candidate_modinfo_matches_fresh": true,
+      "candidate_runtime_content_matches_fresh": true,
+      "candidate_runtime_section_layout_matches_fresh": true,
+      "function_traceability": true,
+      "ghidra_export": true,
+      "kernel_source_identity": true,
+      "makefile": true,
+      "mapping_review": true,
+      "namespace_match": true,
+      "reproducible_build": true,
+      "source_directory": true,
+      "source_files": 4,
+      "undefined_symbols_match": true,
+      "vermagic_accepted": true
+    },
+    "path": "attestation/kcfi_direct_call_only_review_20261102/docker_static_revalidation.json",
+    "sha256": "1e5d34a41d37adc3eebb0055fe59f87783abf55f85326d13ef64b1e37f61dbd6",
+    "static_verified": true,
+    "status": "static_verified",
+    "warnings": [
+      "candidate and fresh module SHA-256 differ in allocated build-id metadata and/or non-allocated debug/BTF sections; runtime content, section layout, and modinfo match",
+      "stock module dependency metadata differs from the current target build; candidate dependency metadata is checked against the target rebuild"
+    ]
+  },
+  "driver": "fp_goodix",
+  "elf_reference_inventory": {
+    "path": "attestation/kcfi_direct_call_only_review_20261102/elf_reference_inventory.json",
+    "sha256": "4e50bd7e6d2403f55089eef34e05b663d27e957f6de4303cf4a2eba36002fe5a"
+  },
+  "functions": {
+    "gf_disable_irq": {
+      "candidate_incoming_calls": 1,
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "passed": true,
+      "path": "attestation/kcfi_direct_call_only_review_20261102/decision_gf_disable_irq.json",
+      "sha256": "ad62bac445cf3629a7b8976542478264fc79897e269375befb6ef9334ac60ca2",
+      "stock_incoming_calls": 1
+    },
+    "gf_enable_irq": {
+      "candidate_incoming_calls": 1,
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "passed": true,
+      "path": "attestation/kcfi_direct_call_only_review_20261102/decision_gf_enable_irq.json",
+      "sha256": "8b8627a50c3c1f4f406db0efc358d15add89bce6d45656c3be324edcbdd0f483",
+      "stock_incoming_calls": 1
+    },
+    "nav_event_input": {
+      "candidate_incoming_calls": 1,
+      "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+      "passed": true,
+      "path": "attestation/kcfi_direct_call_only_review_20261102/decision_nav_event_input.json",
+      "sha256": "5353bcc6022400fbcba8fcd2a03c7e037b3f27b4bda579b1f607b8b1134c8585",
+      "stock_incoming_calls": 1
+    }
+  },
+  "generated_utc": "2026-11-02T13:33:43.280849+00:00",
+  "limitations": [
+    "The strict stock-versus-candidate KCFI presence comparison remains false; this report classifies applicability and does not alter that comparison.",
+    "This focused review does not complete the driver-wide semantic review or hardware validation."
+  ],
+  "passed": true,
+  "schema_version": "1.0",
+  "status": "RESOLVED_DIRECT_CALL_ONLY",
+  "strict_kcfi_presence_pass": false,
+  "strict_presence_difference_retained": true
+}

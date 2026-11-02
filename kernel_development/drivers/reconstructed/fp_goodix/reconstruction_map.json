@@ -2,7 +2,7 @@
   "candidate_sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
   "driver": "fp_goodix",
   "function_count": 30,
-  "generated_utc": "2026-08-28T20:43:18.036708+00:00",
+  "generated_utc": "2026-11-02T13:33:43.296569+00:00",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -135,7 +135,9 @@
         "joern:attestation/next010_gf_disable_irq_exact_v1/joern.json:sha256:72414afc15f81ae3b7a67e8e58681ef54ba9f5c2aa7be0fb8041e0bd6ef13592",
         "host-harness:attestation/next010_gf_disable_irq_exact_v1/test.json:sha256:a064651c123b8fe3ee86b94e177ae369cf6ef01ce5adac64bb990c09c6745e70",
         "hard-protocol:attestation/next010_gf_disable_irq_exact_v1/hard_protocol_report.json:sha256:0fd3832c115f7a0df4278a9ad2e816776b51197afca74c1103a2146444709058",
-        "promotion-decision:attestation/next010_gf_disable_irq_exact_v1/decision.json:sha256:01f03f2f012650c25b52a618ca1ad46a7f10288af99fa29c8dedd1bdf5546e57"
+        "promotion-decision:attestation/next010_gf_disable_irq_exact_v1/decision.json:sha256:01f03f2f012650c25b52a618ca1ad46a7f10288af99fa29c8dedd1bdf5546e57",
+        "kcfi-applicability-review:attestation/kcfi_direct_call_only_review_20261102/decision_gf_disable_irq.json:sha256:ad62bac445cf3629a7b8976542478264fc79897e269375befb6ef9334ac60ca2",
+        "candidate-elf-reference-audit:attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json:sha256:91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a"
       ],
       "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope/slice, KCFI direct-call applicability check and direct helper harness evidence",
       "review_scope": "offline_exact_function_level",
@@ -146,7 +148,7 @@
       "stock_body_bytes": 64,
       "stock_entry": "001010d8",
       "stock_function": "gf_disable_irq",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 16 matching AArch64 instructions and 64-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The Ghidra call-target repair is backed by the candidate Assembly R_AARCH64_CALL26 relocation from gf_ioctl at 00101f64 to gf_disable_irq; the raw stock evidence remains unchanged. Hardware behavior remains unverified."
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 16 matching AArch64 instructions and 64-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The Ghidra call-target repair is backed by the candidate Assembly R_AARCH64_CALL26 relocation from gf_ioctl at 00101f64 to gf_disable_irq; the raw stock evidence remains unchanged. Hardware behavior remains unverified. The 2026-11-02 candidate ELF audit confirms one R_AARCH64_CALL26 from gf_ioctl and byte-identical function body; strict KCFI presence differs, but the extra candidate metadata is classified as not applicable to direct calls."
     },
     {
       "evidence": [
@@ -162,7 +164,9 @@
         "joern:attestation/next009_gf_enable_irq_exact_v1/joern.json:sha256:d0dfa0e095aae72930133430ce8872b9f2b24f02f0e2a7b47b45fe3e544a0e58",
         "host-harness:attestation/next009_gf_enable_irq_exact_v1/test.json:sha256:4e99779f7769fcd0689f3999a28bdeabd7a55ef42b58a4025b8e39bee10d9b08",
         "hard-protocol:attestation/next009_gf_enable_irq_exact_v1/hard_protocol_report.json:sha256:de6ad3fa13b77b04b1fe3d45d2002ef8e391da77ac00734d9be0f80d3b6b1554",
-        "promotion-decision:attestation/next009_gf_enable_irq_exact_v1/decision.json:sha256:7e455ad35345092d4c71853725584d86ccd1ef295b18c38299fc05ac1352bec3"
+        "promotion-decision:attestation/next009_gf_enable_irq_exact_v1/decision.json:sha256:7e455ad35345092d4c71853725584d86ccd1ef295b18c38299fc05ac1352bec3",
+        "kcfi-applicability-review:attestation/kcfi_direct_call_only_review_20261102/decision_gf_enable_irq.json:sha256:8b8627a50c3c1f4f406db0efc358d15add89bce6d45656c3be324edcbdd0f483",
+        "candidate-elf-reference-audit:attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json:sha256:91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a"
       ],
       "mapping_basis": "Ghidra/P-Code comparison plus exact function-level AArch64 instruction and relocation parity, Docker reproducibility, strict Joern scope/slice, KCFI direct-call applicability check and direct helper harness evidence",
       "review_scope": "offline_exact_function_level",
@@ -173,7 +177,7 @@
       "stock_body_bytes": 84,
       "stock_entry": "00101118",
       "stock_function": "gf_enable_irq",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 21 matching AArch64 instructions and 84-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The repaired candidate Ghidra body was extended to the exact 84-byte boundary; semantic comparison uses only the explicit candidate-side data-field-slice normalization and known global-warning removal after exact body/P-Code checks. Hardware behavior remains unverified."
+      "mapping_note": "Function-level offline parity is promoted. The attestation records 21 matching AArch64 instructions and 84-byte symbols, two reproducible Docker builds with identical module hashes, strict Joern scope/slice, direct helper host coverage, and a passing KCFI direct-call-only applicability check. The repaired candidate Ghidra body was extended to the exact 84-byte boundary; semantic comparison uses only the explicit candidate-side data-field-slice normalization and known global-warning removal after exact body/P-Code checks. Hardware behavior remains unverified. The 2026-11-02 candidate ELF audit confirms one R_AARCH64_CALL26 from gf_ioctl and byte-identical function body; strict KCFI presence differs, but the extra candidate metadata is classified as not applicable to direct calls."
     },
     {
       "evidence": [
@@ -189,7 +193,9 @@
         "host-harness:attestation/next007_nav_event_input_exact_v2/test.json:sha256:dcbf3b13b5e27025659d293ebff02824b6210be177e5eaf098fca7fdd538f1b8",
         "joern:attestation/next007_nav_event_input_exact_v2/joern.json:sha256:2e884787b38876e2c6a6227627b7963b2b26b572ddbca1fa02c661c580555614",
         "hard-protocol:attestation/next007_nav_event_input_exact_v2/hard_protocol_report.json:sha256:0d674f4a27990dcf199125b2f534c66c005cee9e13b27d96ee9d3ea6c3ba3515",
-        "promotion-decision:attestation/next007_nav_event_input_exact_v2/decision.json:sha256:c58cf6e0f75aad5138600c56729213fbe87868a15c514087362df1ff0ef13d51"
+        "promotion-decision:attestation/next007_nav_event_input_exact_v2/decision.json:sha256:c58cf6e0f75aad5138600c56729213fbe87868a15c514087362df1ff0ef13d51",
+        "kcfi-applicability-review:attestation/kcfi_direct_call_only_review_20261102/decision_nav_event_input.json:sha256:5353bcc6022400fbcba8fcd2a03c7e037b3f27b4bda579b1f607b8b1134c8585",
+        "candidate-elf-reference-audit:attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json:sha256:91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a"
       ],
       "mapping_basis": "Ghidra boundary repair plus normalized Ghidra/P-Code equality, exact function-level AArch64 instruction and relocation parity, Docker reproducibility, direct-call KCFI decision, Joern and navigation harness evidence",
       "review_scope": "offline_exact_function_level",
@@ -200,7 +206,7 @@
       "stock_body_bytes": 464,
       "stock_entry": "0010116c",
       "stock_function": "nav_event_input",
-      "mapping_note": "Function-level offline parity is promoted. The fresh candidate Ghidra export repairs nav_event_input to the ELF-proven 464-byte body; normalized Ghidra C and 384-operation P-Code shape match stock, with 116 matching AArch64 instructions and equivalent relocations. Two Docker builds are reproducible, Joern and navigation harness gates pass, and KCFI is explicitly classified as not applicable because both incoming references are unconditional direct calls; the candidate-only KCFI preamble is recorded as extra instrumentation, not a fabricated stock type match. Hardware behavior remains unverified."
+      "mapping_note": "Function-level offline parity is promoted. The fresh candidate Ghidra export repairs nav_event_input to the ELF-proven 464-byte body; normalized Ghidra C and 384-operation P-Code shape match stock, with 116 matching AArch64 instructions and equivalent relocations. Two Docker builds are reproducible, Joern and navigation harness gates pass, and KCFI is explicitly classified as not applicable because both incoming references are unconditional direct calls; the candidate-only KCFI preamble is recorded as extra instrumentation, not a fabricated stock type match. Hardware behavior remains unverified. The 2026-11-02 candidate ELF audit confirms one R_AARCH64_CALL26 from gf_ioctl and byte-identical function body; strict KCFI presence differs, but the extra candidate metadata is classified as not applicable to direct calls."
     },
     {
       "evidence": [

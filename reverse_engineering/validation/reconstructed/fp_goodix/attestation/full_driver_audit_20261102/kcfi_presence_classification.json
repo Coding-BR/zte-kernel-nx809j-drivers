@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "driver": "fp_goodix",
   "strict_kcfi_pass": false,
-  "classification_status": "UNRESOLVED_REVIEW_REQUIRED",
+  "classification_status": "RESOLVED_KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
   "record_counts": {
     "stock": 23,
     "current_candidate": 26,
@@ -110,9 +110,51 @@
     }
   },
   "interpretation": [
-    "The strict stock-versus-candidate KCFI comparisons fail for exactly these three symbols in both the current and fresh candidate reports.",
-    "The stock extractor records no valid preamble for these symbols because each candidate 4-byte preamble overlaps the preceding stock function body; the exact overlap is recorded per function above.",
-    "Ghidra records direct unconditional calls from gf_ioctl to all three symbols. The direct-call inventory does not prove that no indirect/address-taken references exist elsewhere.",
-    "Do not describe KCFI as a strict PASS until an independent review classifies the presence differences and checks address-taken/callback usage."
-  ]
+    "The strict stock-versus-candidate KCFI comparisons still fail for exactly three symbols in both current and fresh candidate reports; strict presence equality remains false.",
+    "The stock functions have local symbol binding and their preceding words are branch instructions within the preceding function extents, not valid KCFI preambles. The candidate functions have global binding because gf_ioctl_exact.S calls them across translation units.",
+    "The preserved stock Ghidra call graph records exactly one unconditional direct call from gf_ioctl to each function. The current candidate ELF relocation audit records exactly one R_AARCH64_CALL26 from gf_ioctl to each, with no other symbol-based incoming references and no kernel __ksymtab export entries for these names.",
+    "The stock and candidate function body hashes match for all three functions. Candidate-only KCFI preambles are classified as extra metadata with no indirect-call boundary in this module: KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY.",
+    "This resolves the KCFI applicability review only. It does not change strict KCFI parity to PASS and does not close the driver-wide semantic or hardware gates."
+  ],
+  "applicability_review": {
+    "status": "PASS",
+    "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+    "strict_presence_equality": false,
+    "functions": {
+      "gf_disable_irq": {
+        "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+        "passed": true,
+        "path": "attestation/kcfi_direct_call_only_review_20261102/decision_gf_disable_irq.json",
+        "sha256": "ad62bac445cf3629a7b8976542478264fc79897e269375befb6ef9334ac60ca2",
+        "stock_incoming_calls": 1,
+        "candidate_incoming_calls": 1
+      },
+      "gf_enable_irq": {
+        "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+        "passed": true,
+        "path": "attestation/kcfi_direct_call_only_review_20261102/decision_gf_enable_irq.json",
+        "sha256": "8b8627a50c3c1f4f406db0efc358d15add89bce6d45656c3be324edcbdd0f483",
+        "stock_incoming_calls": 1,
+        "candidate_incoming_calls": 1
+      },
+      "nav_event_input": {
+        "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+        "passed": true,
+        "path": "attestation/kcfi_direct_call_only_review_20261102/decision_nav_event_input.json",
+        "sha256": "5353bcc6022400fbcba8fcd2a03c7e037b3f27b4bda579b1f607b8b1134c8585",
+        "stock_incoming_calls": 1,
+        "candidate_incoming_calls": 1
+      }
+    },
+    "evidence": {
+      "review_summary": "attestation/kcfi_direct_call_only_review_20261102/review_summary.json",
+      "review_summary_sha256": "afdf167a98fd2e16a91f613810113353044259fdab80a5ea11223f42b15e631d",
+      "elf_reference_inventory": "attestation/kcfi_direct_call_only_review_20261102/elf_reference_inventory.json",
+      "elf_reference_inventory_sha256": "4e50bd7e6d2403f55089eef34e05b663d27e957f6de4303cf4a2eba36002fe5a",
+      "candidate_elf_reference_report": "attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json",
+      "candidate_elf_reference_report_sha256": "91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a",
+      "docker_static_revalidation": "attestation/kcfi_direct_call_only_review_20261102/docker_static_revalidation.json",
+      "docker_static_revalidation_sha256": "1e5d34a41d37adc3eebb0055fe59f87783abf55f85326d13ef64b1e37f61dbd6"
+    }
+  }
 }

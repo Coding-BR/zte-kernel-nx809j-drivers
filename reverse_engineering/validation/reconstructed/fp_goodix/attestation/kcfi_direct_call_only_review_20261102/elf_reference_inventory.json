@@ -1,0 +1,230 @@
+{
+  "candidate_direct_calls": [
+    {
+      "caller": "gf_ioctl",
+      "caller_entry": "0x1714",
+      "callsite": "0x1844",
+      "external": false,
+      "reference_type": "UNCONDITIONAL_CALL",
+      "relocation_section": ".rela.text",
+      "relocation_type": "R_AARCH64_CALL26",
+      "target": "gf_disable_irq",
+      "target_address": "0x5c"
+    },
+    {
+      "caller": "gf_ioctl",
+      "caller_entry": "0x1714",
+      "callsite": "0x1b7c",
+      "external": false,
+      "reference_type": "UNCONDITIONAL_CALL",
+      "relocation_section": ".rela.text",
+      "relocation_type": "R_AARCH64_CALL26",
+      "target": "gf_enable_irq",
+      "target_address": "0x4"
+    },
+    {
+      "caller": "gf_ioctl",
+      "caller_entry": "0x1714",
+      "callsite": "0x1b60",
+      "external": false,
+      "reference_type": "UNCONDITIONAL_CALL",
+      "relocation_section": ".rela.text",
+      "relocation_type": "R_AARCH64_CALL26",
+      "target": "nav_event_input",
+      "target_address": "0xa0"
+    }
+  ],
+  "candidate_export_table": {
+    "ksymtab_sections": [],
+    "target_export_symbols": []
+  },
+  "candidate_relocation_tool_output": {
+    "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/kcfi_direct_call_only_review_20261102/candidate_elf_references.json",
+    "sha256": "91b8f72f5be50aaa2c200c598bd1f7c24b5eda580e3be7848d9f6261341ca11a"
+  },
+  "checks": {
+    "candidate_callers_are_gf_ioctl": true,
+    "candidate_calls_are_unconditional_direct_calls": true,
+    "candidate_each_target_has_one_incoming_relocation": true,
+    "candidate_elf_reference_report_matches_module": true,
+    "candidate_symbol_references_are_all_call26": true,
+    "candidate_symbols_are_global_module_local_only": true,
+    "candidate_target_symbols_not_exported_via_ksymtab": true,
+    "stock_candidate_function_bodies_identical": true,
+    "stock_ghidra_each_target_has_one_incoming_call": true,
+    "stock_ghidra_incoming_calls_are_unconditional": true,
+    "stock_symbols_are_local": true
+  },
+  "decision": "KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY",
+  "driver": "fp_goodix",
+  "limitations": [
+    "The stock Ghidra call inventory is static and covers the preserved analyzed module.",
+    "ELF relocation inventory identifies all symbol-based references in the current relocatable candidate; source and disassembly review was also used to rule out runtime-created target addresses.",
+    "This review classifies KCFI applicability only; it does not replace the pending driver-wide semantic review or hardware validation."
+  ],
+  "modules": {
+    "candidate": {
+      "path": "kernel_development/drivers/reconstructed/fp_goodix/fp_goodix.ko",
+      "sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+      "size": 721560,
+      "symbols": {
+        "gf_disable_irq": {
+          "binding": "STB_GLOBAL",
+          "body_sha256": "e30c691a3a5777cfa94403f82c3f6cb49db60bd40456066629c9c6d70577bb2b",
+          "entry": "0x5c",
+          "ksymtab_export_symbol_present": false,
+          "preceding_word_le": "6423b82a",
+          "preceding_word_u32": "0x2ab82364",
+          "relocations": [
+            {
+              "caller": "gf_ioctl",
+              "caller_entry": "0x1714",
+              "offset": "0x1844",
+              "relocation_section": ".rela.text",
+              "target_section": ".text",
+              "type_name": "R_AARCH64_CALL26",
+              "type_number": 283
+            }
+          ],
+          "section": ".text",
+          "size": 64,
+          "visibility": "STV_DEFAULT"
+        },
+        "gf_enable_irq": {
+          "binding": "STB_GLOBAL",
+          "body_sha256": "2398f2983759ba62692d008445c99c385872148e4bdccc6d33d8f6a353546701",
+          "entry": "0x4",
+          "ksymtab_export_symbol_present": false,
+          "preceding_word_le": "607dc4e5",
+          "preceding_word_u32": "0xe5c47d60",
+          "relocations": [
+            {
+              "caller": "gf_ioctl",
+              "caller_entry": "0x1714",
+              "offset": "0x1b7c",
+              "relocation_section": ".rela.text",
+              "target_section": ".text",
+              "type_name": "R_AARCH64_CALL26",
+              "type_number": 283
+            }
+          ],
+          "section": ".text",
+          "size": 84,
+          "visibility": "STV_DEFAULT"
+        },
+        "nav_event_input": {
+          "binding": "STB_GLOBAL",
+          "body_sha256": "6ee77e617e680ea4d8de20293b15d56d486b38d838a9ca99c7f95cc0e3d15c34",
+          "entry": "0xa0",
+          "ksymtab_export_symbol_present": false,
+          "preceding_word_le": "cb914a45",
+          "preceding_word_u32": "0x454a91cb",
+          "relocations": [
+            {
+              "caller": "gf_ioctl",
+              "caller_entry": "0x1714",
+              "offset": "0x1b60",
+              "relocation_section": ".rela.text",
+              "target_section": ".text",
+              "type_name": "R_AARCH64_CALL26",
+              "type_number": 283
+            }
+          ],
+          "section": ".text",
+          "size": 464,
+          "visibility": "STV_DEFAULT"
+        }
+      }
+    },
+    "stock": {
+      "path": "reference_modules/full_vendor_boot/fp_goodix.ko",
+      "sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+      "size": 62088,
+      "symbols": {
+        "gf_disable_irq": {
+          "binding": "STB_LOCAL",
+          "body_sha256": "e30c691a3a5777cfa94403f82c3f6cb49db60bd40456066629c9c6d70577bb2b",
+          "entry": "0x8b8",
+          "ksymtab_export_symbol_present": false,
+          "preceding_word_le": "eeffff17",
+          "preceding_word_u32": "0x17ffffee",
+          "relocations": [],
+          "section": ".text",
+          "size": 64,
+          "visibility": "STV_DEFAULT"
+        },
+        "gf_enable_irq": {
+          "binding": "STB_LOCAL",
+          "body_sha256": "2398f2983759ba62692d008445c99c385872148e4bdccc6d33d8f6a353546701",
+          "entry": "0x8f8",
+          "ksymtab_export_symbol_present": false,
+          "preceding_word_le": "faffff17",
+          "preceding_word_u32": "0x17fffffa",
+          "relocations": [],
+          "section": ".text",
+          "size": 84,
+          "visibility": "STV_DEFAULT"
+        },
+        "nav_event_input": {
+          "binding": "STB_LOCAL",
+          "body_sha256": "6ee77e617e680ea4d8de20293b15d56d486b38d838a9ca99c7f95cc0e3d15c34",
+          "entry": "0x94c",
+          "ksymtab_export_symbol_present": false,
+          "preceding_word_le": "f9ffff17",
+          "preceding_word_u32": "0x17fffff9",
+          "relocations": [],
+          "section": ".text",
+          "size": 464,
+          "visibility": "STV_DEFAULT"
+        }
+      }
+    }
+  },
+  "passed": true,
+  "review_date": "2026-11-02",
+  "schema_version": "1.0",
+  "scope": "static symbol linkage, all ELF relocation references in candidate, Ghidra stock incoming call inventory, and exact function body bytes",
+  "stock_ghidra_calls": {
+    "incoming": {
+      "gf_disable_irq": [
+        {
+          "caller": "gf_ioctl",
+          "caller_entry": "00100824",
+          "callsite": "00100954",
+          "external": false,
+          "reference_type": "UNCONDITIONAL_CALL",
+          "target": "gf_disable_irq",
+          "target_address": "001010d8"
+        }
+      ],
+      "gf_enable_irq": [
+        {
+          "caller": "gf_ioctl",
+          "caller_entry": "00100824",
+          "callsite": "00100c8c",
+          "external": false,
+          "reference_type": "UNCONDITIONAL_CALL",
+          "target": "gf_enable_irq",
+          "target_address": "00101118"
+        }
+      ],
+      "nav_event_input": [
+        {
+          "caller": "gf_ioctl",
+          "caller_entry": "00100824",
+          "callsite": "00100c70",
+          "external": false,
+          "reference_type": "UNCONDITIONAL_CALL",
+          "target": "nav_event_input",
+          "target_address": "0010116c"
+        }
+      ]
+    },
+    "path": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/calls.jsonl",
+    "sha256": "a166651b9972a8ee12b6e7ccfa48d2b1c0fb3cb412d965e877e9b8399dea97e8"
+  },
+  "tool": {
+    "path": "workspace_tools/reconstruction_pipeline/audit_elf_direct_call_references.py",
+    "sha256": "e9993d855fa50ba30f8741f00e766d2398f8d332c8d12646e5353d03abff0681"
+  }
+}
