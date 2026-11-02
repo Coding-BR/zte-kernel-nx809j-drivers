@@ -1,6 +1,6 @@
 # Status: `ftmmod`
 
-Estado: **IN_PROGRESS — identidade de kernel e rebuild corrigidos; revisão independente dos nove mapeamentos pendente**.
+Estado: **STATIC_VERIFIED_OFFLINE — 9/9 funções passaram os gates estáticos; revisão humana e hardware seguem pendentes**.
 
 | Gate | Estado | Evidência |
 |---|---|---|
@@ -12,10 +12,10 @@ Estado: **IN_PROGRESS — identidade de kernel e rebuild corrigidos; revisão in
 | Build independente | PASS | dois builds em árvores `O=` isoladas; SHA idêntico `dbfd12aa737e5ae4a3719e359b400cc555bf80bc9cb579fd3312a0a5ae21ca38` (208008 bytes) |
 | Paridade do módulo | PASS | AArch64/REL, aliases, namespace, imports indefinidos e vermagic alvo conferem com as evidências |
 | Binário curado | PASS | atualizado pelo gate `--promote-fresh`; SHA curado igual ao SHA reproduzido acima |
-| Mapa stock → fonte | RASTREÁVEL; REVISÃO PENDENTE | 9/9 funções mapeadas, mas 0/9 marcadas com revisão independente |
+| Mapa stock → fonte | PASS — 9/9 funções aprovadas em revisão offline de segunda passada; instruções, relocations, seção e tamanho coincidem, sem normalizações. Revisão feita por agente Codex; não houve segundo revisor humano. | reverse_engineering/validation/reconstructed/ftmmod/attestation/independent_mapping_review_20261102/mapping_review.json |
 | Harness de host | PASS, escopo limitado | dois builds determinísticos; 241 casos por execução, quatro execuções sem falha, 11 mutantes rejeitados, ASan/UBSan; harness x86_64 com stubs, sem validar AArch64/KCFI/hardware |
 | Hardware NX809J | DEFERRED | nenhum teste no dispositivo; comportamento em runtime não provado |
-| Auditoria atual | INCOMPLETE | `reverse_engineering/validation/reconstructed/ftmmod/attestation/static_audit_20261030_r8.json` |
+| Auditoria canônica atual | static_verified; dois builds limpos concluídos (return code 0), nenhum erro e um aviso de build-id/debug/BTF. Conteúdo de runtime, layout de seções e modinfo coincidem com o candidato. | reverse_engineering/validation/reconstructed/ftmmod/attestation/independent_mapping_review_20261102/docker_audit_canonical_20261102.json |
 
 ## Causa corrigida
 
@@ -30,6 +30,6 @@ Por fim, o `modpost` precisa criar `.vmlinux.protected-exports.c`. O auditor mon
 - Manifesto: `kernel_development/config/target_kernel.json`
 - Verificação do `UTS_RELEASE` e SHA da `Image`: `reverse_engineering/validation/kernel_source/target_kernel_image_20261030.json`
 - Preparação Docker: `reverse_engineering/validation/kernel_source/target_kernel_source_20261030.json`
-- Auditoria mais recente: `reverse_engineering/validation/reconstructed/ftmmod/attestation/static_audit_20261030_r8.json`
+- Auditoria canônica mais recente: reverse_engineering/validation/reconstructed/ftmmod/attestation/independent_mapping_review_20261102/docker_audit_canonical_20261102.json
 
-Os nove mapeamentos ainda precisam de revisão independente antes de declarar o driver estaticamente concluído. Nenhum status de função foi promovido; o que foi atualizado é somente o binário curado, após os gates de build e paridade. Não declarar equivalência funcional completa sem a revisão e a validação de hardware.
+Os nove mapeamentos foram promovidos a PROMOTED_OFFLINE_EXACT após revisão offline de segunda passada e auditoria Docker canônica. A revisão foi feita por agente Codex, sem segundo revisor humano; não houve teste no NX809J. O status não prova equivalência comportamental completa nem validação de hardware.
