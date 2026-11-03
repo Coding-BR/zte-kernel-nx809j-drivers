@@ -9,6 +9,10 @@ This supplemental attestation records the target-kernel layout contract used whe
 - The read-only Docker source volume `nubia_sm8850_kernel_src_nx809j_oout_20261030` confirms the NX809J `struct file` field order in `include/linux/fs.h`: `f_count`, `f_lock`, `f_mode`, `f_op`, `f_mapping`, then `private_data`. With the target ARM64 field sizes/alignment, `private_data` is at `+0x20`.
 - [haptic_86938_lifetime.c](../../../../../../kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c#L416) now has a compile-time assertion that `offsetof(struct file, private_data) == 0x20`. It is at end of file so it does not shift existing callsite line metadata.
 
+## Open/close module references
+
+Stock `richtap_file_open` calls `try_module_get` at `0010ea44`, paired with `module_put` in `richtap_file_release` at `0010ea8c`. The candidate wrappers preserve that pair: a failed lifetime open immediately drops the explicit pin, and successful release drops it after releasing the sidecar reference. Candidate `left_fops.owner = THIS_MODULE` also uses the target VFS pin: `misc_open` calls `fops_get` (`drivers/char/misc.c:149`), and final file cleanup calls `.release` before `fops_put` (`fs/file_table.c:430-436`). Those explicit and VFS references are independently balanced. The target `misc_open` holds `misc_mtx` across its callback; remove releases `haptic_lifetime_registry_lock` before calling `misc_deregister`, so the two paths do not hold those locks in opposite order. The remove path's `misc_deregister` and active-operation drain remain necessary for state lifetime.
+
 ## Docker validation
 
 - Target release: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.

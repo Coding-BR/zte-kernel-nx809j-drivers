@@ -303,6 +303,13 @@
     "fifo_pages": "transfer to sidecar while VMAs remain; release on last VMA close",
     "probe_remove_global_gate": "one transition mutex spans complete stock probe and complete remove"
   },
+  "module_reference_review": {
+    "stock_open_close_pair": "richtap_file_open calls try_module_get at 0010ea44; richtap_file_release calls module_put at 0010ea8c.",
+    "candidate_pair": "richtap_file_open preserves try_module_get and drops it if the lifetime open fails; richtap_file_release drops the explicit pin after releasing its sidecar reference.",
+    "vfs_fops_owner": "Candidate left_fops.owner is THIS_MODULE. Target misc_open obtains that owner reference through fops_get; target __fput invokes release then fops_put, balancing the separate VFS pin.",
+    "misc_open_vs_remove": "Target misc_open holds misc_mtx through the open callback. Remove releases haptic_lifetime_registry_lock before misc_deregister takes that mutex, so these paths do not hold the locks in opposite order.",
+    "disposition": "No unmatched explicit or VFS module reference identified by static review. misc_deregister and active-operation drain still gate state teardown."
+  },
   "lock_order_review": {
     "probe_and_remove": "Both acquire haptic_lifecycle_transition_lock before haptic_lifetime_registry_lock; file operations do not acquire the transition lock.",
     "irq_and_stop_worker": "Both acquire haptic_irq_stop_lock before entering stock IRQ code or taking the stop-work state mutex. Stock irq_config registers irq_handle as the threaded handler (primary=NULL), so the wrapper mutex is used in thread context.",
