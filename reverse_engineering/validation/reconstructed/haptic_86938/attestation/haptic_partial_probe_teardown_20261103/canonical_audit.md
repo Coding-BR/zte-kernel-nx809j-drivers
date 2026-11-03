@@ -4,11 +4,11 @@ Dispositivo: **REDMAGIC 11 Pro+ (NX809J)**
 
 Esta auditoria nao usa o smartphone. O resultado maximo permitido e `STATIC_ALIGNED_CANDIDATE`; hardware permanece `DEFERRED`.
 
-Gerado em: `2026-11-03T07:48:52.572077+00:00`
+Gerado em: `2026-11-03T07:55:01.383789+00:00`
 
 | Driver | Veredito offline | Gates PASS | Bloqueadores |
 |---|---|---:|---|
-| `haptic_86938` | `INCOMPLETE` | 1/10 | no run contains both stock and Ghidra evidence<br>engineering run is missing<br>no assembly manifest found<br>mapping is not reviewed: activate_aw_show |
+| `haptic_86938` | `INCOMPLETE` | 1/10 | no run contains both stock and Ghidra evidence<br>engineering run is missing<br>no assembly manifest found<br>Ghidra function inventory is empty; map coverage cannot be verified |
 
 ## Regra de leitura
 

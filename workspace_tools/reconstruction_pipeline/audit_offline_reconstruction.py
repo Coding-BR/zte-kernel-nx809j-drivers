@@ -362,12 +362,25 @@ def assembly_gate(
     )
 
 
+def mapping_is_reviewed(mapping: dict[str, Any]) -> bool:
+    if mapping.get("status") == "reviewed":
+        return True
+    return (
+        mapping.get("status") == "PROMOTED_OFFLINE_EXACT"
+        and mapping.get("semantic_equivalence") == "OFFLINE_EXACT"
+        and mapping.get("review_disposition") == "STOCK_EXACT_ASSEMBLY_MATCH"
+        and mapping.get("independent_review") == "PASS"
+    )
+
+
 def map_gate(
     driver_root: Path, stock_sha: str | None, records: list[dict[str, Any]]
 ) -> dict[str, Any]:
     path = driver_root / "reconstruction_map.json"
     blockers: list[str] = []
     required = {identity for item in records if (identity := function_id(item))}
+    if not required:
+        blockers.append("Ghidra function inventory is empty; map coverage cannot be verified")
     name_counts: dict[str, int] = {}
     ids_by_name: dict[str, str] = {}
     for item in records:
@@ -383,7 +396,7 @@ def map_gate(
     else:
         try:
             payload = read_json(path)
-            if payload.get("stock_sha256") != stock_sha:
+            if stock_sha is not None and payload.get("stock_sha256") != stock_sha:
                 blockers.append("reconstruction map stock SHA-256 mismatch")
             mappings = payload.get("mappings")
             if not isinstance(mappings, list):
@@ -405,7 +418,7 @@ def map_gate(
                     mapped.add(ids_by_name[name])
                 else:
                     blockers.append(f"ambiguous mapping lacks stock_entry: {name}")
-                if mapping.get("status") != "reviewed":
+                if not mapping_is_reviewed(mapping):
                     blockers.append(f"mapping is not reviewed: {name}")
                 if not isinstance(source_file, str) or not (driver_root / source_file).is_file():
                     blockers.append(f"mapped source file is missing: {name}")

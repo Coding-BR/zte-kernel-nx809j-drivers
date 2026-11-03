@@ -23,7 +23,7 @@ Two clean builds using the canonical NX809J Docker image and source/toolchain vo
 
 The module ABI audit confirms AArch64 relocatable format, matching metadata/exports/dependencies, matching target vermagic, and 93 target symbol CRC entries with no CRC mismatch or missing CRC. Strict import parity remains false by design: the candidate drops the stock `gpio_free` import and has nine additional lifecycle imports. See [module_abi_audit.json](module_abi_audit.json).
 
-The offline reconstruction audit is still `INCOMPLETE` (1/10 gates). It reports a missing paired stock/Ghidra run, missing engineering run, missing assembly manifest, and `activate_aw_show` still needing review. The haptic reconstruction is not complete.
+The canonical offline reconstruction audit remains `INCOMPLETE` (1/10 gates). The auditor accepts promoted offline-exact mappings only when the review disposition and independent review are both `PASS`. In this run, the map gate is held `INCOMPLETE` because no Ghidra function inventory/run is available, so map coverage cannot be evaluated; it no longer reports a false `activate_aw_show` review failure. Other missing evidence includes paired stock/Ghidra and engineering runs, an assembly manifest, ABI/layout and microtask reports, current-stock KCFI comparisons, a current double-clean build audit and parity report, and independent review. The haptic reconstruction remains incomplete.
 
 ## Limits
 
