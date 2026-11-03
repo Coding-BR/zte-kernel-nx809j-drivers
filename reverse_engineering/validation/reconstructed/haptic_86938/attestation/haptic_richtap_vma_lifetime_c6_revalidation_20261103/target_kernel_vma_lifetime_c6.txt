@@ -1,0 +1,305 @@
+kernel_commit: 3356b35306d35d5a480e3b63df1a9f065b5d9f55
+d77208bb829f3038812f44f36f34a6d1fdf62df85fa4edc1ac433c6d09aa1aac  /mnt/kernel/kernel_platform/common/kernel/fork.c
+d4a34240fafebcecdb7f48017d07a4cc11d276b0232357e9923d8354823f63d9  /mnt/kernel/kernel_platform/common/mm/vma.c
+63f897f869c39a9cd587445f4796268989678965c1bb169ddd621f8246b6a56d  /mnt/kernel/kernel_platform/common/mm/mmap.c
+a94600840f0c9ead07d4a61dbe8d3ea7712f9445cdf00af0b9cec6ce0fb18d46  /mnt/kernel/kernel_platform/common/mm/memory.c
+469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e  /mnt/kernel/kernel_platform/common/mm/internal.h
+
+--- kernel/fork.c dup_mmap VMA open and page copy ---
+			tmp->anon_vma = NULL;
+		} else if (anon_vma_fork(tmp, mpnt))
+			goto fail_nomem_anon_vma_fork;
+		vm_flags_clear(tmp, VM_LOCKED_MASK);
+		/*
+		 * Copy/update hugetlb private vma information.
+		 */
+		if (is_vm_hugetlb_page(tmp))
+			hugetlb_dup_vma_private(tmp);
+
+		/*
+		 * Link the vma into the MT. After using __mt_dup(), memory
+		 * allocation is not necessary here, so it cannot fail.
+		 */
+		vma_iter_bulk_store(&vmi, tmp);
+
+		mm->map_count++;
+
+		if (tmp->vm_ops && tmp->vm_ops->open)
+			tmp->vm_ops->open(tmp);
+
+		file = tmp->vm_file;
+		if (file) {
+			struct address_space *mapping = file->f_mapping;
+
+			get_file(file);
+			i_mmap_lock_write(mapping);
+			if (vma_is_shared_maywrite(tmp))
+				mapping_allow_writable(mapping);
+			flush_dcache_mmap_lock(mapping);
+			/* insert tmp into the share list, just after mpnt */
+			vma_interval_tree_insert_after(tmp, mpnt,
+					&mapping->i_mmap);
+			flush_dcache_mmap_unlock(mapping);
+			i_mmap_unlock_write(mapping);
+		}
+
+		if (!(tmp->vm_flags & VM_WIPEONFORK))
+			retval = copy_page_range(tmp, mpnt);
+
+		if (retval) {
+			mpnt = vma_next(&vmi);
+			goto loop_out;
+		}
+	}
+	/* a new mm has just been created */
+
+--- kernel/fork.c dup_mm failure cleanup ---
+
+	if (!mm_init(mm, tsk, mm->user_ns))
+		goto fail_nomem;
+
+	uprobe_start_dup_mmap();
+	err = dup_mmap(mm, oldmm);
+	if (err)
+		goto free_pt;
+	uprobe_end_dup_mmap();
+
+	mm->hiwater_rss = get_mm_rss(mm);
+	mm->hiwater_vm = mm->total_vm;
+
+	if (mm->binfmt && !try_module_get(mm->binfmt->module))
+		goto free_pt;
+
+	return mm;
+
+
+--- kernel/fork.c __mmput calls exit_mmap ---
+EXPORT_SYMBOL_IF_KUNIT(mm_alloc);
+
+static inline void __mmput(struct mm_struct *mm)
+{
+	VM_BUG_ON(atomic_read(&mm->mm_users));
+
+	uprobe_clear_state(mm);
+	exit_aio(mm);
+	ksm_exit(mm);
+	khugepaged_exit(mm); /* must run before exit_mmap */
+	exit_mmap(mm);
+	mm_put_huge_zero_folio(mm);
+	set_mm_exe_file(mm, NULL);
+	if (!list_empty(&mm->mmlist)) {
+		spin_lock(&mmlist_lock);
+		list_del(&mm->mmlist);
+
+--- mm/mmap.c exit_mmap removes VMAs ---
+void exit_mmap(struct mm_struct *mm)
+{
+	struct mmu_gather tlb;
+	struct vm_area_struct *vma;
+	unsigned long nr_accounted = 0;
+	VMA_ITERATOR(vmi, mm, 0);
+	int count = 0;
+
+	/* mm's last user has gone, and its about to be pulled down */
+	mmu_notifier_release(mm);
+
+	mmap_read_lock(mm);
+	arch_exit_mmap(mm);
+
+	vma = vma_next(&vmi);
+	if (!vma || unlikely(xa_is_zero(vma))) {
+		/* Can happen if dup_mmap() received an OOM */
+		mmap_read_unlock(mm);
+		mmap_write_lock(mm);
+		goto destroy;
+	}
+
+	lru_add_drain();
+	flush_cache_mm(mm);
+	tlb_gather_mmu_fullmm(&tlb, mm);
+	trace_android_vh_swapmem_gather_init(mm);
+	/* update_hiwater_rss(mm) here? but nobody should be looking */
+	/* Use ULONG_MAX here to ensure all VMAs in the mm are unmapped */
+	unmap_vmas(&tlb, &vmi.mas, vma, 0, ULONG_MAX, ULONG_MAX, false);
+	trace_android_vh_swapmem_gather_finish(mm);
+	mmap_read_unlock(mm);
+
+	/*
+	 * Set MMF_OOM_SKIP to hide this task from the oom killer/reaper
+	 * because the memory has been already freed.
+	 */
+	set_bit(MMF_OOM_SKIP, &mm->flags);
+	mmap_write_lock(mm);
+	mt_clear_in_rcu(&mm->mm_mt);
+	vma_iter_set(&vmi, vma->vm_end);
+	free_pgtables(&tlb, &vmi.mas, vma, FIRST_USER_ADDRESS,
+		      USER_PGTABLES_CEILING, true);
+	tlb_finish_mmu(&tlb);
+
+	/*
+	 * Walk the list again, actually closing and freeing it, with preemption
+	 * enabled, without holding any MM locks besides the unreachable
+	 * mmap_write_lock.
+	 */
+	vma_iter_set(&vmi, vma->vm_end);
+	do {
+		if (vma->vm_flags & VM_ACCOUNT)
+			nr_accounted += vma_pages(vma);
+		vma_mark_detached(vma);
+		remove_vma(vma);
+		count++;
+		cond_resched();
+		vma = vma_next(&vmi);
+	} while (vma && likely(!xa_is_zero(vma)));
+
+	BUG_ON(count != mm->map_count);
+
+	trace_exit_mmap(mm);
+destroy:
+	__mt_destroy(&mm->mm_mt);
+
+--- mm/vma.c cloned VMA open ---
+
+	err = anon_vma_clone(new, vma);
+	if (err)
+		goto out_free_mpol;
+
+	if (new->vm_file)
+		get_file(new->vm_file);
+
+	if (new->vm_ops && new->vm_ops->open)
+		new->vm_ops->open(new);
+
+	vma_start_write(vma);
+	vma_start_write(new);
+
+	init_vma_prep(&vp, vma);
+	vp.insert = new;
+
+--- mm/vma.c split VMA open and error close ---
+			goto out;
+		vma_set_range(new_vma, addr, addr + len, pgoff);
+		if (vma_dup_policy(vma, new_vma))
+			goto out_free_vma;
+		if (anon_vma_clone(new_vma, vma))
+			goto out_free_mempol;
+		if (new_vma->vm_file)
+			get_file(new_vma->vm_file);
+		if (new_vma->vm_ops && new_vma->vm_ops->open)
+			new_vma->vm_ops->open(new_vma);
+		if (vma_link(mm, new_vma))
+			goto out_vma_link;
+		*need_rmap_locks = false;
+	}
+	return new_vma;
+
+out_vma_link:
+	vma_close(new_vma);
+
+	if (new_vma->vm_file)
+		fput(new_vma->vm_file);
+
+	unlink_anon_vmas(new_vma);
+out_free_mempol:
+	mpol_put(vma_policy(new_vma));
+out_free_vma:
+
+--- mm/mmap.c initial mmap and error unwind ---
+		goto free_vma;
+	}
+
+	if (file) {
+		vma->vm_file = get_file(file);
+		error = mmap_file(file, vma);
+		if (error)
+			goto unmap_and_free_file_vma;
+
+		/* Drivers cannot alter the address of the VMA. */
+		WARN_ON_ONCE(addr != vma->vm_start);
+		/*
+
+unmap_and_free_file_vma:
+	fput(vma->vm_file);
+	vma->vm_file = NULL;
+
+	vma_iter_set(&vmi, vma->vm_end);
+	/* Undo any partial mapping done by a device driver. */
+	unmap_region(&vmi.mas, vma, vmg.prev, vmg.next);
+free_iter_vma:
+	vma_iter_free(&vmi);
+free_vma:
+	vm_area_free(vma);
+unacct_error:
+	if (charged)
+		vm_unacct_memory(charged);
+
+abort_munmap:
+	vms_abort_munmap_vmas(&vms, &mas_detach);
+gather_failed:
+	return error;
+
+--- mm/memory.c partial PFN-map rollback ---
+int remap_pfn_range_notrack(struct vm_area_struct *vma, unsigned long addr,
+		unsigned long pfn, unsigned long size, pgprot_t prot)
+{
+	int error = remap_pfn_range_internal(vma, addr, pfn, size, prot);
+
+	if (!error)
+		return 0;
+
+	/*
+	 * A partial pfn range mapping is dangerous: it does not
+	 * maintain page reference counts, and callers may free
+	 * pages due to the error. So zap it early.
+	 */
+	zap_page_range_single(vma, addr, size, NULL);
+	return error;
+}
+
+/**
+ * remap_pfn_range - remap kernel memory to userspace
+ * @vma: user vma to map to
+ * @addr: target page aligned user address to start at
+ * @pfn: page frame number of kernel physical memory address
+ * @size: size of mapping area
+ * @prot: page protection flags for this mapping
+ *
+ * Note: this is only safe if the mm semaphore is held when called.
+ *
+ * Return: %0 on success, negative error code otherwise.
+ */
+int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr,
+		    unsigned long pfn, unsigned long size, pgprot_t prot)
+{
+	int err;
+
+	err = track_pfn_remap(vma, &prot, pfn, addr, PAGE_ALIGN(size));
+	if (err)
+		return -EINVAL;
+
+	err = remap_pfn_range_notrack(vma, addr, pfn, size, prot);
+	if (err)
+		untrack_pfn(vma, pfn, PAGE_ALIGN(size), true);
+	return err;
+}
+EXPORT_SYMBOL(remap_pfn_range);
+
+/**
+ * vm_iomap_memory - remap memory to userspace
+
+--- mm/internal.h VMA close dispatch ---
+ * If the VMA has a close hook then close it, and since closing it might leave
+ * it in an inconsistent state which makes the use of any hooks suspect, clear
+ * them down by installing dummy empty hooks.
+ */
+static inline void vma_close(struct vm_area_struct *vma)
+{
+	if (vma->vm_ops && vma->vm_ops->close) {
+		vma->vm_ops->close(vma);
+
+		/*
+		 * The mapping is in an inconsistent state, and no further hooks
+		 * may be invoked upon it.
+		 */
+		vma->vm_ops = &vma_dummy_vm_ops;
+	}
