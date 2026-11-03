@@ -6,7 +6,7 @@ import argparse, datetime as dt, hashlib, json, pathlib, subprocess
 IMAGE = "nubia-sm8850-kernel-builder:latest"
 TOOLCHAIN_VOLUME = "nubia_sm8850_kernel_toolchains"
 CLANG = "/toolchains/clang-r536225/bin/clang"
-EXPECTED_STDOUT = "PASS syna_dev_remove host tests (4 scenarios)\n"
+EXPECTED_STDOUT = "PASS syna_dev_remove host tests (6 scenarios)\n"
 
 def sha256(path: pathlib.Path) -> str:
     digest = hashlib.sha256()
@@ -69,7 +69,7 @@ def main() -> int:
     report = {"schema_version": 1, "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
               "mode": "offline_direct_source_syna_dev_remove_asan_ubsan", "driver": "zte_tpd",
               "target": "syna_dev_remove", "covered_functions": ["syna_dev_remove"],
-              "source": str(source), "source_sha256": sha256(source), "expected_scenarios": 4,
+              "source": str(source), "source_sha256": sha256(source), "expected_scenarios": 6,
               "repetitions": 2, "cycles": cycles, "reproducible": reproducible,
               "reproducible_binary": reproducible, "passed": passed,
               "status": "PASS" if passed else "FAIL",

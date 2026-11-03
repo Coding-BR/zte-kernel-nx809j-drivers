@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "f56d61c4a1b31d518fb2a2047c179c03baba96401bbf67ea2b26fd50e2e9e13b",
+  "candidate_sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-02T23:28:26Z",
+  "generated_utc": "2026-11-03T02:00:41Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4547,7 +4547,6 @@
     },
     {
       "evidence": [
-        "source:syna_dev_remove.c:sha256:8e0059c2f6938d2d0ddf829b45456c5c2cb72da128997bf25daf32a69798b5da",
         "ghidra-pseudocode:decompiled/0157_001125bc_syna_dev_remove.c:sha256:c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff",
         "ghidra-pcode:pcode/0157_001125bc_syna_dev_remove.jsonl:sha256:19d4433d0d790e395fe434c61b868c385e478ec710a66c711bf5080b3bef5be0",
         "stock-assembly:0157_syna_dev_remove_001125bc.asm:sha256:ace4aaba332c4f2d9b1eec7ab442fcb57827d590889449bbf1c25af0f042e5e5",
@@ -4559,9 +4558,17 @@
         "attestation:next824_syna_dev_remove_exact_v2/kcfi_comparison.json:sha256:a41819ba41c9805e41d9ff2c7b5de013db690de5f8d7718a04ff7524d3695777",
         "attestation:next824_syna_dev_remove_exact_v2/aarch64_comparison.json:sha256:de75927f6b5727385294fca0d223604dd15b0e37fb3bfa0c5b52580a435cfa3d",
         "canonical-build:attestation/helper_workqueue_teardown_20261102/canonical_build_report.json:sha256:1720dca5da2e97d2feb651abb2d28ac79f00ce454ec0e5e12344a314eb2e05f5",
-        "source-sync:attestation/helper_workqueue_teardown_20261102/source_sync_plan.json:sha256:4cf48575ca5bc6a5d001dbd4089f51c846a3ef66611a9bdb64cd6b4ff78076cd"
+        "source-sync:attestation/helper_workqueue_teardown_20261102/source_sync_plan.json:sha256:4cf48575ca5bc6a5d001dbd4089f51c846a3ef66611a9bdb64cd6b4ff78076cd",
+        "source:syna_dev_remove.c:sha256:de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae",
+        "candidate-module:zte_tpd.ko:sha256:5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
+        "attestation:syna_dev_remove_null_guard_20261102/review.json:sha256:6175e4389af2baba63fec3b5bb50ef49301b3e00ba201a3056781cb3ad2a7567",
+        "attestation:syna_dev_remove_null_guard_20261102/host_harness_report.json:sha256:8e6bab07235af609e93e8eb3e4b601baa6d32b28abb9b4985b9498c3ad872b97",
+        "attestation:syna_dev_remove_null_guard_20261102/source_sync_report.json:sha256:40089e8c2455792a1a167580540d7e3f3735afc6f8604397f81bf2e6dbf20af2",
+        "attestation:syna_dev_remove_null_guard_20261102/canonical_build_report.json:sha256:5358bca3b75a7de9f6049d085a019eb12439c8ccf41e4bccac554f3226ab57b9",
+        "attestation:syna_dev_remove_null_guard_20261102/assembly_comparison.json:sha256:340e0bfc4c118a8545a4d9dbd5acea4c48125ee9e6b588739f135e327225b8f4",
+        "attestation:syna_dev_remove_null_guard_20261102/kcfi_type_only_comparison.json:sha256:35640e7f5f9e75fb1e1b2b3d8d7762c82106dbd4b1c52b4152c57f267f3649f5"
       ],
-      "mapping_basis": "Stock Ghidra pseudocode/P-Code used as the ordering baseline; helper queue teardown is hardened under a shared IRQ-safe lock and validated by two canonical Docker cycles. Runtime scheduling remains deferred.",
+      "mapping_basis": "Stock Ghidra pseudocode/P-Code and AArch64 assembly were reviewed; the candidate adds early returns for null platform/context pointers before teardown side effects.",
       "review_scope": "offline_lifecycle_hardening",
       "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "syna_dev_remove.c",
@@ -4570,7 +4577,8 @@
       "stock_body_bytes": 308,
       "stock_entry": "001125bc",
       "stock_function": "syna_dev_remove",
-      "mapping_note": "Quiesces cdev operations, removes panel/sysfs entry points, closes helper-work admission under the shared spinlock, then cancels and drains the helper queue before disconnect frees the IRQ and reflash queue. HARDENED_STOCK_DEVIATION; two-cycle canonical build passed; runtime scheduling remains unverified."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified.",
+      "candidate_body_bytes": 336
     },
     {
       "evidence": [

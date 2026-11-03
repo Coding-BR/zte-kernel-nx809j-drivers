@@ -13,6 +13,7 @@ typedef unsigned int _DWORD;
 typedef unsigned char _BYTE;
 struct platform_device { unsigned char bytes[0x110]; };
 struct syna_tcm { unsigned char bytes[0x800]; };
+struct workqueue_struct;
 struct device { unsigned char bytes[16]; };
 
 static unsigned char context_storage[0x800];
@@ -71,6 +72,18 @@ static void syna_cdev_remove(struct syna_tcm *tcm)
 {
 	if (tcm != (struct syna_tcm *)context_storage) failures++;
 	calls[5]++;
+}
+
+static void syna_cdev_quiesce(void)
+{
+	calls[11]++;
+}
+
+static struct workqueue_struct *syna_dev_helper_workqueue_stop(struct syna_tcm *tcm)
+{
+	if (tcm != (struct syna_tcm *)context_storage) failures++;
+	calls[12]++;
+	return NULL;
 }
 
 static int syna_dev_disconnect(struct syna_tcm *tcm)
@@ -184,13 +197,53 @@ static void test_optional_managed_buffers_absent(void)
 	expect_int("TCM removal", calls[10], 1);
 }
 
+static void free_unconsumed_test_buffers(void)
+{
+	free((void *)(uintptr_t)*(__int64 *)(context_storage + 1448));
+	free((void *)(uintptr_t)*(__int64 *)(context_storage + 680));
+	free((void *)(uintptr_t)*(__int64 *)(context_storage + 1120));
+	*(__int64 *)(context_storage + 1448) = 0;
+	*(__int64 *)(context_storage + 680) = 0;
+	*(__int64 *)(context_storage + 1120) = 0;
+}
+
+static void expect_no_cleanup_calls(void)
+{
+	for (size_t i = 0; i < sizeof(calls) / sizeof(calls[0]); i++) {
+		if (calls[i] != 0) {
+			fprintf(stderr, "unexpected cleanup call %zu: %u\n", i, calls[i]);
+			failures++;
+		}
+	}
+}
+
+static void test_null_platform_device(void)
+{
+	reset_trace();
+	syna_dev_remove(NULL);
+	expect_no_cleanup_calls();
+	free_unconsumed_test_buffers();
+}
+
+static void test_missing_tcm_context(void)
+{
+	struct platform_device *pdev = (struct platform_device *)pdev_storage;
+	reset_trace();
+	*(__int64 *)(pdev_storage + 168) = 0;
+	syna_dev_remove(pdev);
+	expect_no_cleanup_calls();
+	free_unconsumed_test_buffers();
+}
+
 int main(void)
 {
 	test_full_cleanup_with_panel_and_buffer();
 	test_cleanup_without_panel_or_buffer();
 	test_managed_device_unavailable();
 	test_optional_managed_buffers_absent();
+	test_null_platform_device();
+	test_missing_tcm_context();
 	if (failures) return 1;
-	puts("PASS syna_dev_remove host tests (4 scenarios)");
+	puts("PASS syna_dev_remove host tests (6 scenarios)");
 	return 0;
 }

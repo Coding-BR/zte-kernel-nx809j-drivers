@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_dev_remove",
+  "stock_entry": "001125bc",
+  "result": "PASS_WITH_HARDENING_DEVIATION",
+  "finding": "Stock path warns when the driver-data TCM pointer is null and then continues to dereference it during teardown.",
+  "fix": "Return before cleanup for a null platform_device or null driver-data context.",
+  "stock": {
+    "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c",
+    "stock_assembly": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0157_syna_dev_remove_001125bc.asm",
+    "instruction_count": 77,
+    "symbol_size": 308
+  },
+  "candidate": {
+    "source_sha256": "de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae",
+    "module_size": 7264256,
+    "source": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c",
+    "module_sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f"
+  },
+  "gates": {
+    "host_repetitions": 2,
+    "stock_candidate_sizes": {
+      "stock": 308,
+      "candidate": 336
+    },
+    "kcfi_type_id": "0x24a11bb9",
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "canonical_build_passed": true,
+    "host_harness_passed": true,
+    "stock_candidate_instructions": {
+      "stock": 77,
+      "candidate": 84
+    },
+    "assembly_parity": "EXPECTED_HARDENING_DIFFERENCE",
+    "host_scenarios": 6,
+    "docker_source_sync_passed": true,
+    "relocations_match": true,
+    "canonical_cycles": 2,
+    "canonical_reproducible": true,
+    "vermagic_passed": true,
+    "kcfi_type_match": true
+  },
+  "limitations": [
+    "No in-kernel runtime or NX809J hardware validation.",
+    "This function remains a deliberate stock deviation; byte-for-byte instruction parity is not claimed.",
+    "Independent review was not performed."
+  ]
+}

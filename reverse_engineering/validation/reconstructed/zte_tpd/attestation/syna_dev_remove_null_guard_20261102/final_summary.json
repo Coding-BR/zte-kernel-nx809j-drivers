@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "function": "syna_dev_remove",
+  "result": "PASS_WITH_HARDENING_STOCK_DEVIATION",
+  "candidate_module_sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
+  "host_harness": {
+    "passed": true,
+    "scenarios": 6,
+    "repetitions": 2,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "reproducible": true
+  },
+  "canonical_build": {
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "vermagic": true
+  },
+  "kcfi_type_match": true,
+  "assembly": {
+    "strict_stock_parity": false,
+    "expected_hardening_delta": true,
+    "stock_size": 308,
+    "candidate_size": 336,
+    "stock_instructions": 77,
+    "candidate_instructions": 84,
+    "relocations_match": true
+  },
+  "joern": {
+    "passed": true,
+    "strict": true,
+    "parse_problems": 0,
+    "mapped_call_deltas": [],
+    "review_selectors": [
+      {
+        "call": "cancel_work_sync",
+        "caller": "syna_dev_remove",
+        "category": "synchronization",
+        "code": "cancel_work_sync(v3 + 1320)",
+        "filename": "syna_dev_remove.c",
+        "line": 38,
+        "severity": "high"
+      },
+      {
+        "call": "devm_kfree",
+        "caller": "syna_dev_remove",
+        "category": "lifetime",
+        "code": "devm_kfree(v6, v5)",
+        "filename": "syna_dev_remove.c",
+        "line": 57,
+        "severity": "high"
+      },
+      {
+        "call": "devm_kfree",
+        "caller": "syna_dev_remove",
+        "category": "lifetime",
+        "code": "devm_kfree(v10, v9)",
+        "filename": "syna_dev_remove.c",
+        "line": 71,
+        "severity": "high"
+      },
+      {
+        "call": "kfree",
+        "caller": "syna_dev_remove",
+        "category": "lifetime",
+        "code": "kfree(v12)",
+        "filename": "syna_dev_remove.c",
+        "line": 80,
+        "severity": "high"
+      }
+    ],
+    "map_hash": "02babbd5b4a1bb91c202c3e584004bf25141ecc03ca8b290c1c1c0ebb3b8729c"
+  },
+  "repository_inventory": {
+    "candidate_module_count": 24,
+    "docker_build_inputs_matching_repository": 24,
+    "docker_candidates_matching_repository": 24,
+    "docker_curated_driver_count": 24,
+    "docker_reconstruction_maps_matching_repository": 24,
+    "docker_source_snapshots_matching_repository": 24,
+    "driver_count": 24,
+    "drivers_with_ghidra_inventory": 24,
+    "drivers_with_structural_findings": 0,
+    "ghidra_function_total": 1039,
+    "stock_module_count": 24
+  },
+  "limitations": [
+    "No in-kernel runtime or NX809J hardware validation.",
+    "Joern review selectors identify cleanup calls for manual review; they are not vulnerability findings.",
+    "The null-context correction intentionally changes stock control flow and remains HARDENED_STOCK_DEVIATION."
+  ]
+}

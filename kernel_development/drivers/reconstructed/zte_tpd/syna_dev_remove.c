@@ -1,6 +1,6 @@
 void syna_dev_remove(struct platform_device *pdev)
 {
-  __int64 a1 = (__int64)pdev;
+  __int64 a1;
   __int64 v3; // x19
   __int64 v4; // x0
   __int64 v5; // x20
@@ -15,9 +15,18 @@ void syna_dev_remove(struct platform_device *pdev)
   unsigned int refs;
 #endif
 
-  v3 = *(_QWORD *)(a1 + 168);
-  if ( !v3 )
+  if (!pdev) {
     printk("\0014[warn ] %s: Invalid handle to remove\n", "syna_dev_remove");
+    return;
+  }
+
+  a1 = (__int64)pdev;
+  v3 = *(_QWORD *)(a1 + 168);
+  if (!v3) {
+    printk("\0014[warn ] %s: Invalid handle to remove\n", "syna_dev_remove");
+    return;
+  }
+
   printk("\0016[info ] %s: enter\n", "syna_dev_remove");
 
   syna_cdev_quiesce();
