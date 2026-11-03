@@ -3,11 +3,11 @@
 ## Current canonical snapshot — 2026-11-03
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
-- Lifetime-hardened candidate SHA-256: `7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098` (6,700,096 bytes), bound in `reconstruction_map.json` and synchronized to the Docker curated tree.
-- Two independent clean canonical Docker builds produced byte-identical modules with this exact SHA-256. The source change drains work items at `+0x628`, `+0x648` and `+0x668` before `devm_free_irq`; the built disassembly confirms that ordering. The source is bound by SHA-256 `59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55`.
-- The strict reconstruction audit remains incomplete. ABI comparison still reports one stock import absent (`gpio_free`) and nine additional lifetime-support imports; the candidate is therefore not stock-equivalent. See the prepromotion build record and the canonical postpromotion audit in `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_workers_before_irq_revalidation_20261103/`.
-- Twenty-one function mappings retain `NOT_ESTABLISHED_HARDENED_DEVIATION`; independent review is pending.
-- The module remains **INCOMPLETE** as a full reconstruction/replacement candidate. Runtime concurrency, firmware-unload behavior, whole-driver independent review and NX809J hardware behavior remain unverified. No hardware load is claimed.
+- Lifetime-hardened candidate SHA-256: `6cbdd9dbab1a4581f98654fa845e77a94b99d4ef68bc4d64bf656c4c6f5e1fb3` (6,700,392 bytes), bound in `reconstruction_map.json` and synchronized with the Docker curated snapshot.
+- Two isolated canonical Docker builds produced byte-identical modules for target kernel commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`; inputs and outputs are recorded in `haptic_ram_firmware_revalidation_20261103/docker_builds.json`.
+- The ABI audit passes target vermagic and symbol CRC checks, but strict stock import parity remains false: `gpio_free` is absent and nine lifetime-support imports are additional. This is a declared lifetime-hardened candidate, not a stock-equivalent module; see `haptic_ram_firmware_revalidation_20261103/module_abi_audit.json`.
+- Twenty-one function mappings remain declared hardening deviations with semantic equivalence not established; a distinct independent whole-driver review is pending.
+- The module remains **INCOMPLETE** as a full reconstruction/replacement candidate. Full C-level semantic equivalence, runtime concurrency, firmware-unload behavior, whole-driver independent review and NX809J hardware behavior remain unverified. No hardware load is claimed.
 
 ## Update 2026-11-03 — Richtap/TikTap worker teardown
 
