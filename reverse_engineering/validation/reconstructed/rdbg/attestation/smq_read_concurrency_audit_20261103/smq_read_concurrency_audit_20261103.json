@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "review_id": "rdbg_smq_read_concurrency_audit_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_LOCAL_READ_CONCURRENCY_HAZARD_FOUND; REMOTE_PROTOCOL_PARTIALLY_UNVERIFIED",
+  "runtime_race_reproduced": false,
+  "candidate": {
+    "module_path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+    "module_sha256": "6a25975d91059eae065cd28058515a767ceefe6ec4210347bc5712d3071ca2bc",
+    "map_path": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json",
+    "map_sha256": "29e3e5e934e487107786f1279c1f5347664be15315b1887943470040be8dfde0",
+    "docker_curated_module_and_map_match": true,
+    "mapping_status_counts": {
+      "PROMOTED_OFFLINE_EXACT": 8
+    }
+  },
+  "reconstruction_sources": [
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_05_read.c",
+      "sha256": "0450dada8a24f2cbb3cf71ce812bbece48f74989f8141510db1b0783c229a869"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_06_write.c",
+      "sha256": "afed5e10c1ec8ff6eea685de3aca141a95514140192b8ee90319a300465fdab5"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_03_open.c",
+      "sha256": "b2b1952b7376fb70abb1b8a1b14efd9dbd3505343d6e756af34c80784f8c3edd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_reconstruction_layout.h",
+      "sha256": "aff8c1161966aac74d3f5017bcfacdcf1d4d8704fe8cc36097c83b089efdaddd"
+    }
+  ],
+  "stock_and_candidate_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0001_rdbg_read_00100708.asm",
+      "sha256": "6ae825e462e57a2d843ebbd1098161f26931ae763691f69a2f0dd1badd7b9ae3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0002_rdbg_write_00100a9c.asm",
+      "sha256": "d9c2c2660011b85913d276cb6842ebefce4b35a524725818ae9bbdc38a4429d0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0001_00100708_rdbg_read.c",
+      "sha256": "4d875dc82cbc587218deb8b9eaa2cccfba21237bd58f107532cae92a6224ffd1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/0001_rdbg_read_00100708.asm",
+      "sha256": "426fab74834c9d83dea2d495488b3f850622233fab670332b841659f37960658"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
+      "sha256": "9e7ef708a2f9fc8eb7f1c80be68479624b4e36dd380a18869db7021690b29161"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/candidate_ghidra_fresh_20261102/rdbg.ko/decompiled/0004_00100ef4_rdbg_read.c",
+      "sha256": "09c725216e3f98f1f295276c004b5354fb00ef9278df2913ba10b6f9f4c58b2f"
+    }
+  ],
+  "pinned_kernel_sources": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "mount_read_only": true,
+    "files": [
+      {
+        "path": "kernel_platform/common/fs/open.c",
+        "sha256": "987a374465d2e3025ff42167e9cad38931fbd876c26f42e29f92e03f40ea2c24",
+        "relevant_lines": [937, 938]
+      },
+      {
+        "path": "kernel_platform/common/fs/file.c",
+        "sha256": "a77f1b0b30826e18892b48cc608b038b971fdecbdf14ef820b2de33265ff22b7",
+        "relevant_lines": [1148, 1166]
+      },
+      {
+        "path": "kernel_platform/common/fs/read_write.c",
+        "sha256": "5ca4291e5dcea76325f269247ad8ef0994245315b9016f045db50bc4393b8b73",
+        "relevant_lines": [702, 715]
+      },
+      {
+        "path": "kernel_platform/common/drivers/soc/qcom/smem_state.c",
+        "sha256": "39360f4a65caf991621d7c19438b500cb0bd807d617491bd95fbda9cfb0b3265",
+        "relevant_lines": [38, 57]
+      },
+      {
+        "path": "kernel_platform/common/drivers/soc/qcom/smp2p.c",
+        "sha256": "372f7eca2129e779693843e032facbb62b245c526446414d19cbb4ee3cb3f465",
+        "relevant_lines": [167, 180, 411, 430]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "RDBG-SMQ-001",
+      "severity": "medium",
+      "summary": "Concurrent reads through one shared character-device file can race on consumer SMQ indices.",
+      "evidence": [
+        "device_opened restricts opens, not concurrent read calls through a shared file description.",
+        "The consumer SMQ is initialized without a lock pointer, and rdbg_read conditionally skips locking when that pointer is NULL.",
+        "The pinned VFS sets FMODE_ATOMIC_POS only for regular files/directories; file position locking is therefore absent for this character device.",
+        "ksys_read calls fdget_pos, but fdget_pos does not serialize this file because FMODE_ATOMIC_POS is unset."
+      ],
+      "interpretation": "With multiple pending completion tokens, concurrent read calls can race on index_sent_read, index_free_write, and free-node entries, causing duplicate/omitted packets or queue bookkeeping corruption. Static inference only; not reproduced."
+    }
+  ],
+  "host_side_barrier_observations": [
+    "Stock rdbg_read contains dsb ld before copying the received SMQ block.",
+    "Stock rdbg_write serializes producer operations with its write mutex and executes the read barrier used in the free-node path.",
+    "The pinned SMP2P provider calls wmb() before notifying the remote through mailbox/IPC after qcom_smem_state_update_bits."
+  ],
+  "protocol_limit": "These host-side barriers do not prove the remote firmware's matching memory-order protocol. No defect in the remote peer is asserted.",
+  "reconstruction_disposition": "All observations match stock and the offline-exact candidate. No source or map change was made; keep rdbg offline-only and preserve exact mapping statuses.",
+  "runtime_or_hardware_validation": false
+}
