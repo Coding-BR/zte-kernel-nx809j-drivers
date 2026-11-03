@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T05:19:56.096549+00:00",
+  "driver": "zte_tpd",
+  "scope": "Focused static audit of charger notifier, delayed work, cached power_supply reference, startup work, and retained stock disconnect body, rebound to the current candidate module.",
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+    "size": 7274192,
+    "curated_docker_snapshot_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+    "curated_docker_snapshot_sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+    "byte_identical_to_repository_candidate": true
+  },
+  "canonical_build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/canonical_build_report.json",
+    "report_sha256": "ca1194710dfd0253cc1304b903d38cf0888a0580fd09ff1aa4626c2bfb1cc7a9",
+    "passed": true,
+    "reproducible": true,
+    "accepted_clean_cycles": 2,
+    "module_sha256_each_cycle": [
+      "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+      "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38"
+    ],
+    "source_sync_clean": true,
+    "source_tree_file_count": 858
+  },
+  "fresh_assembly": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "clang_revision": "clang-r536225",
+    "candidate_manifest": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/manifest.json",
+    "candidate_manifest_sha256": "92bf7b1b045349edb61d0558148e6c47e0d46e37b192487e21ca1480dcb1697f",
+    "candidate_passed": true,
+    "stock_manifest": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/stock_assembly/manifest.json",
+    "stock_manifest_sha256": "a0771f88c577c1c17eba15a56f33b6a54f43c285c70ba5c102780e1e5545ce88",
+    "stock_passed": true,
+    "comparison": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/disconnect_exact_comparison.json",
+    "comparison_sha256": "826c223bfeb53099504ebfea6801853407d4d8f6ea2980b0c0b5b84a06e4e5ad",
+    "comparison_passed": true,
+    "matched_stock_body": {
+      "stock_symbol": "syna_dev_disconnect",
+      "candidate_symbol": "syna_dev_disconnect_stock_exact",
+      "bytes": 392,
+      "instructions": 98,
+      "checks": {
+        "instructions": true,
+        "relocations": true,
+        "section": true,
+        "symbol_size": true
+      }
+    },
+    "candidate_functions": [
+      {
+        "symbol": "syna_tpd_charger_lifecycle_stop",
+        "bytes": 204,
+        "assembly_sha256": "b58bd2f0086e27d4883c5ebb8c66fb31181f159b47cc12a0b145c37cfd09bcb3"
+      },
+      {
+        "symbol": "syna_tpd_register_fw_class",
+        "bytes": 148,
+        "assembly_sha256": "8d00b4669355752a2b629780d25ef54fbfe6e0517b16202a821dc905f38cd480"
+      },
+      {
+        "symbol": "syna_dev_disconnect",
+        "bytes": 48,
+        "assembly_sha256": "8d7cb9174b088f4c89bfc4d57660c4630adde6ee692623b111424644547441d2"
+      },
+      {
+        "symbol": "syna_dev_disconnect_stock_exact",
+        "bytes": 392,
+        "assembly_sha256": "d375581d700d2af2f3f31d7b52434629fc5e744bc76fd02e86059b18ee3696e6"
+      },
+      {
+        "symbol": "syna_charger_notify_call",
+        "bytes": 132,
+        "assembly_sha256": "2c53f0c9e7bd2d5644725d89b612cb962adae5f115a2e3e4663c39453baf7cc3"
+      },
+      {
+        "symbol": "syna_work_charger_detect_work",
+        "bytes": 472,
+        "assembly_sha256": "4e5f26d75313a0656470f5bc1544ab3695ada013809183c3d2e8517c27845792"
+      }
+    ]
+  },
+  "lifecycle_sequence": [
+    "syna_tpd_charger_lifecycle_stop takes the lifecycle mutex, marks this tcm as stopping, clears the registered flag, then releases the mutex.",
+    "syna_tpd_register_fw_class uses the same mutex and refuses registration while stopping; stock registration runs under the mutex so stop observes its completed queue/notifier setup.",
+    "The stock connect body stores the reflash workqueue at tcm+0x430, initializes startup delayed work at tcm+0x3c8, then queues it on that workqueue. Stop checks the same queue slot and synchronously cancels that startup work before disconnect continues.",
+    "Stop unregisters the power-supply notifier before dismantling the charger queue. The notifier callback only queues the embedded charger delayed work; no other queue site for this specific work item was found in the reconstructed source.",
+    "After notifier callback drain, stop cancels charger delayed work synchronously, clears the queue slot, destroys/drains the queue, then clears the cached battery pointer and calls power_supply_put.",
+    "Only after the charger lifetime is drained does the wrapper call syna_dev_disconnect_stock_exact; its 392-byte body matches stock instructions and relocations."
+  ],
+  "kernel_api_contracts": [
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/kernel_platform/common/drivers/power/supply/power_supply_core.c",
+      "sha256": "e02c8813380a478a00665788c28c0f0ca09f349e57213d61efe765b14101afb2",
+      "lines": "power_supply_unreg_notifier 1344-1347; power_supply_get_by_name 458-480; power_supply_put 492-497",
+      "contract": "power_supply_unreg_notifier delegates to blocking_notifier_chain_unregister; get_by_name holds a device/use reference and power_supply_put drops it."
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/kernel_platform/common/kernel/notifier.c",
+      "sha256": "1f4a1b2384a8751d780d39a748ef5beda21149f6e715af54df131ff9add2c44e",
+      "lines": "blocking_notifier_chain_unregister 321-339; blocking_notifier_call_chain 380-389",
+      "contract": "Notifier callbacks run under the rwsem read side; unregister takes the write side and therefore returns after active read-side callbacks complete."
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/kernel_platform/common/kernel/workqueue.c",
+      "sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+      "lines": "cancel_delayed_work_sync 4418-4430; destroy_workqueue 5837-5860",
+      "contract": "cancel_delayed_work_sync uses __cancel_work_sync; destroy_workqueue marks the queue destroying and drains it before freeing resources."
+    }
+  ],
+  "findings": [
+    {
+      "id": "startup_registration_serialization",
+      "result": "stop prevents a concurrent startup registration from escaping teardown",
+      "basis": "Shared lifecycle mutex and stopping/registered state gate in syna_tpd_charger_lifecycle.c; startup cancellation is synchronous before the stock disconnect body destroys the reflash queue. The stock connect source confirms the queue/work offsets and queue-before-schedule order used by stop."
+    },
+    {
+      "id": "notifier_callback_drain",
+      "result": "unregister waits for active power-supply notifier callbacks on the normal runtime path",
+      "basis": "Target kernel blocking notifier call holds rwsem read lock across callbacks; unregister takes rwsem write lock. Callback only enqueues charger delayed work."
+    },
+    {
+      "id": "charger_work_and_battery_reference_lifetime",
+      "result": "worker access is drained before the cached power_supply reference is released",
+      "basis": "cancel_delayed_work_sync plus destroy_workqueue drain worker execution; the target power_supply_get_by_name/power_supply_put contract balances the retained reference."
+    },
+    {
+      "id": "retained_stock_disconnect_body",
+      "result": "exact stock body retained in current module",
+      "basis": "Fresh stock-versus-candidate AArch64 instruction and relocation comparison passed: 392 bytes, 98 instructions."
+    }
+  ],
+  "overall_result": "STATIC_LIFETIME_REVIEW_COMPLETE_NO_SOURCE_CHANGE_JUSTIFIED",
+  "limitations": [
+    "No runtime race detector, kernel stress, or NX809J hardware validation was performed.",
+    "This focused result covers the observed synchronous disconnect path and does not claim full-driver semantic equivalence.",
+    "The map remains PARTIAL_SOURCE_MAP; HARDENED_STOCK_DEVIATION classifications are unchanged."
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+      "sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+      "sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38"
+    },
+    {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/canonical_build_report.json",
+      "sha256": "ca1194710dfd0253cc1304b903d38cf0888a0580fd09ff1aa4626c2bfb1cc7a9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/manifest.json",
+      "sha256": "92bf7b1b045349edb61d0558148e6c47e0d46e37b192487e21ca1480dcb1697f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/stock_assembly/manifest.json",
+      "sha256": "a0771f88c577c1c17eba15a56f33b6a54f43c285c70ba5c102780e1e5545ce88"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/disconnect_exact_comparison.json",
+      "sha256": "826c223bfeb53099504ebfea6801853407d4d8f6ea2980b0c0b5b84a06e4e5ad"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tpd_charger_lifecycle.c",
+      "sha256": "18fe1fa03cc5106a758bad21cd1a666a2463c6d246b8b783ad8326655c07d78f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_charger_notify_call.c",
+      "sha256": "68d53c6bb0033d18be0ce66b7ce401cf85d3c4c997dca505b98cfdd2cb9ef04e"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_work_charger_detect_work.c",
+      "sha256": "9b3d656efd3fcd7be89daad9095c16b63682f28820f62bddcd92ea76627800ee"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_disconnect_exact.S",
+      "sha256": "4479e457855bfae3fe634e9c93b9ae056ba97917202ebc47c8fd351c8bfdcb88"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/0000_syna_tpd_charger_lifecycle_stop.asm",
+      "sha256": "b58bd2f0086e27d4883c5ebb8c66fb31181f159b47cc12a0b145c37cfd09bcb3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/0001_syna_tpd_register_fw_class.asm",
+      "sha256": "8d00b4669355752a2b629780d25ef54fbfe6e0517b16202a821dc905f38cd480"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/0002_syna_dev_disconnect.asm",
+      "sha256": "8d7cb9174b088f4c89bfc4d57660c4630adde6ee692623b111424644547441d2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/0003_syna_dev_disconnect_stock_exact.asm",
+      "sha256": "d375581d700d2af2f3f31d7b52434629fc5e744bc76fd02e86059b18ee3696e6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/0004_syna_charger_notify_call.asm",
+      "sha256": "2c53f0c9e7bd2d5644725d89b612cb962adae5f115a2e3e4663c39453baf7cc3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/candidate_assembly/0005_syna_work_charger_detect_work.asm",
+      "sha256": "4e5f26d75313a0656470f5bc1544ab3695ada013809183c3d2e8517c27845792"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_charger_lifecycle_review_20261103/stock_assembly/0000_syna_dev_disconnect.asm",
+      "sha256": "0bc89518da127a95b6d05b2b39c5df4f945352b8c6099feb335629b29dc594f1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c",
+      "sha256": "a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0160_syna_dev_disconnect_00112b04.asm",
+      "sha256": "0bc89518da127a95b6d05b2b39c5df4f945352b8c6099feb335629b29dc594f1"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect.c",
+      "sha256": "f3ab5d8b4f0fa61e48a82ef5c88c10a5a6afec2d2cb325ecbb3c5c657f4acac6"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect_wrapper.c",
+      "sha256": "5fcc72fc8875410a750cdb587729dbe367b98295c5bcd75647f1e2b3b63f3e09"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect_exact.S",
+      "sha256": "b0e87fe0cc38e8b429c42006b6f342ce26fd55ce34157e66631abe7bae46c8b2"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_reflash_startup_work_exact.S",
+      "sha256": "8d5f43362be9bfef38c198faf1d2c0d66e57b585020e5fd56949b7152dd8d3fb"
+    }
+  ]
+}

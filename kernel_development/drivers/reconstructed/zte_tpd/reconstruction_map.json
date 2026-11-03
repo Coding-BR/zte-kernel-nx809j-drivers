@@ -4704,7 +4704,8 @@
         "docker-source-sync:attestation/charger_supply_reference_20261102/source_sync_plan.json:sha256:13261839529bef400e5fdb920bc6dbc5b1900c9917c08f4d3007bfaaa89fbc58",
         "candidate-module:attestation/charger_supply_reference_20261102/candidate_module/zte_tpd.ko:sha256:8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a",
         "lifecycle-order-review:attestation/syna_dev_disconnect_lifecycle_order_review_20261102/review.json:sha256:bf49aeee775cd66e23b63c62ff640b8e639f9f11ff39192b0fd7f23676e88c66",
-        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0",
+        "lifecycle-current-review:attestation/syna_charger_lifecycle_review_20261103/review.json:sha256:84bc1d6b0c60a872e2bf79094ce2d1d00a9e4d8ecaf7be10240806e0ebf90c58"
       ],
       "mapping_basis": "Ghidra stock body plus serialized notifier/workqueue teardown wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
       "review_scope": "lifecycle_hardening_wrapper_with_stock_body_retained",
@@ -4715,7 +4716,7 @@
       "stock_body_bytes": 392,
       "stock_entry": "00112b04",
       "stock_function": "syna_dev_disconnect",
-      "mapping_note": "Intentional lifecycle deviation: the wrapper stops startup work, unregisters the embedded power-supply notifier, cancels charger delayed work and destroys its dedicated queue before calling the retained 392-byte stock disconnect body. Two canonical Docker cycles produced byte-identical modules; the cached battery reference is released after all charger work drains; runtime and hardware validation remain open."
+      "mapping_note": "Intentional lifecycle deviation: the wrapper stops startup work, unregisters the embedded power-supply notifier, cancels charger delayed work and destroys its dedicated queue before calling the retained 392-byte stock disconnect body. Two canonical Docker cycles produced byte-identical modules; the cached battery reference is released after all charger work drains; runtime and hardware validation remain open. Current-candidate review (SHA-256 58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38) freshly extracted stock/candidate assembly and audited the target-kernel notifier, delayed-work, and power_supply reference contracts; no source change was justified. See attestation/syna_charger_lifecycle_review_20261103/review.json."
     },
     {
       "evidence": [
