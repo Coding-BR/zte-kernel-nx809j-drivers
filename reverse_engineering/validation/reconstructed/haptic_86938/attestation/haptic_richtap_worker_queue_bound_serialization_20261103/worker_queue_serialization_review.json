@@ -1,0 +1,67 @@
+{
+  "schema": "haptic-richtap-worker-queue-serialization/v1",
+  "review_date": "2026-11-03",
+  "finding": "richtap_rtp_work (+0x648) and richtap_stop_work (+0x668) are serialized by the same single-active unbound workqueue under the pinned NX809J kernel configuration.",
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "ioctl_ghidra": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+      "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824",
+      "line_anchors": [
+        189,
+        190,
+        234,
+        235,
+        237
+      ]
+    },
+    "probe_ghidra": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+      "line_anchor": 222
+    }
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "25b2ff207e3cd56368e8f9256bb5a534e9c6486bf1a5a3004137399c9e2fc7d2",
+    "queue_and_probe_disassembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_worker_queue_bound_serialization_20261103/candidate_workqueue_callsites.txt",
+      "sha256": "211ec5c5052db37d8492f0f41c01263235db591d88abaec3a09b112b21304706"
+    }
+  },
+  "target_kernel": {
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "config": {
+      "CONFIG_NR_CPUS": 32,
+      "CONFIG_NUMA": false
+    },
+    "queue_flags": "0x6000a",
+    "WQ_UNBOUND_bit": "1 << 1",
+    "max_active": 1,
+    "WORK_CPU_UNBOUND": "NR_CPUS (32)",
+    "queue_cpu_argument": "0x20",
+    "workqueue_source_excerpt": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_worker_queue_bound_serialization_20261103/target_workqueue_source_evidence.txt",
+      "sha256": "c353911924663cb8243bb462146a0123726e128f9df81af5f7ac160914e70933"
+    },
+    "source_anchors": [
+      "include/linux/workqueue.h:92",
+      "include/linux/workqueue.h:375",
+      "kernel/workqueue.c:317-327",
+      "kernel/workqueue.c:2270-2275",
+      "kernel/workqueue.c:1577-1621",
+      "include/asm-generic/topology.h:34-35",
+      "output .config: CONFIG_NR_CPUS=32; CONFIG_NUMA not set"
+    ]
+  },
+  "conclusion": {
+    "status": "STATICALLY_SERIALIZED_FOR_THE_PINNED_CONFIGURATION",
+    "reasoning": "Both stock queue sites use state+0x448, the CPU argument is WORK_CPU_UNBOUND, and the unbound queue has max_active=1. The target has NUMA disabled and maps CPUs to node 0, so the per-node active cap is one for this shared queue.",
+    "scope_limit": "Does not prove serialization against synchronous ioctl execution, IRQs, other workqueues, or runtime/hardware behavior."
+  },
+  "validation": {
+    "source_changed": false,
+    "docker_rebuild_required": false,
+    "candidate_module_matches_curated_snapshot": true
+  }
+}

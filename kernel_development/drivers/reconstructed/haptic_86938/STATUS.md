@@ -13,6 +13,12 @@
 
 Stock ioctl 0x5212 queues richtap_stop_work at +0x668; the worker stops playback and disables RTP AEI. That work could overlap ioctl 0x5209 while it changed playback mode and started RTP. The candidate now serializes stop work with the 0x5209/0x520a stream transitions using stream-lock then IRQ/stop-lock ordering. Candidate disassembly confirms balanced unlocks on shutdown exits and normal completion. Two independent canonical Docker builds produced identical modules at SHA-256 25b2ff207e3cd56368e8f9256bb5a534e9c6486bf1a5a3004137399c9e2fc7d2. This remains a declared hardening deviation; runtime and hardware behavior are unverified. See [the start/stop attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_start_stop_serialization_20261103/README.md).
 
+## Static revalidation 2026-11-03 — Richtap worker queue serialization
+
+Stock ioctl `0x520a` queues `richtap_rtp_work` at `+0x648`; ioctl `0x5212` queues `richtap_stop_work` at `+0x668`. Both use the queue at `state + 0x448`. The probe creates it with `WQ_UNBOUND` flags (`0x6000a`) and `max_active=1`. On the pinned kernel, `WORK_CPU_UNBOUND=NR_CPUS=32`, `0x20` is that sentinel, unbound active limits are per NUMA node, and `CONFIG_NUMA` is disabled with all CPUs mapped to node 0. These two worker callbacks therefore cannot execute concurrently on this target configuration.
+
+This closes only worker-to-worker overlap for these two queued items; it does not establish serialization against synchronous ioctl bodies, IRQs, other queues, or runtime hardware behavior. No source changed and no rebuild was needed. Evidence: [worker queue serialization review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_worker_queue_bound_serialization_20261103/README.md). The driver remains incomplete.
+
 ## Historical checkpoint 2026-11-03 — Richtap/TikTap worker teardown
 
 The source closes user file access, waits for active RAM callbacks, then synchronously drains the TikTap/Richtap workers at `+0x628`, `+0x648` and `+0x668` before releasing the IRQ. Static inspection found ioctl producers for `+0x648` (`0x520a`) and `+0x668` (`0x5212`); the teardown blocks and drains those user operations first. No queue producer for `+0x628` was found in the reconstructed source. The module disassembly confirms all three cancellation calls precede `devm_free_irq`, and destroys the workqueue before retiring state. This is offline static evidence; it does not establish runtime race freedom.
