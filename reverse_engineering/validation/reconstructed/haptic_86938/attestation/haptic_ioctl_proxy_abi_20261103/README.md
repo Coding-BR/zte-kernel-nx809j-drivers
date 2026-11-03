@@ -17,6 +17,8 @@ Stock `richtap_file_open` calls `try_module_get` at `0010ea44`, paired with `mod
 
 The stock `richtap_read` body returns `0`, and `richtap_write` returns the requested count without reading the file argument. They remain safe with the sidecar in `file->private_data`. The ioctl wrapper enters the sidecar operation, builds the verified proxy with raw haptic state in `private_data`, calls the stock-exact body, and exits the operation. The mmap wrapper instead enters the sidecar directly and attaches a VMA reference after a successful remap. The reviewed fops set has no other path that treats the sidecar pointer as raw haptic state.
 
+The pinned target MM source also retains a file reference for each mapped VMA (`mm/mmap.c:1468`, `vma->vm_file = get_file(file)`) and drops it when the VMA is removed (`mm/vma.c:335`, `fput(vma->vm_file)`). Thus the VFS `fops.owner` module pin survives while a VMA can call its `vm_ops`; the sidecar VMA reference separately retains the FIFO pages and lifetime object.
+
 ## Docker validation
 
 - Target release: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.

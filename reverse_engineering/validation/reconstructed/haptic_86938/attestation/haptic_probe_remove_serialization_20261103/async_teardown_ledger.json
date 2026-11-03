@@ -307,6 +307,7 @@
     "stock_open_close_pair": "richtap_file_open calls try_module_get at 0010ea44; richtap_file_release calls module_put at 0010ea8c.",
     "candidate_pair": "richtap_file_open preserves try_module_get and drops it if the lifetime open fails; richtap_file_release drops the explicit pin after releasing its sidecar reference.",
     "vfs_fops_owner": "Candidate left_fops.owner is THIS_MODULE. Target misc_open obtains that owner reference through fops_get; target __fput invokes release then fops_put, balancing the separate VFS pin.",
+    "vma_file_reference": "Target mmap_region stores get_file(file) in vma->vm_file; VMA teardown calls fput. This retains the fops.owner pin while vm_ops can execute; the separate sidecar VMA ref retains lifetime/FIFO-page state.",
     "misc_open_vs_remove": "Target misc_open holds misc_mtx through the open callback. Remove releases haptic_lifetime_registry_lock before misc_deregister takes that mutex, so these paths do not hold the locks in opposite order.",
     "disposition": "No unmatched explicit or VFS module reference identified by static review. misc_deregister and active-operation drain still gate state teardown."
   },
@@ -314,7 +315,7 @@
     "read": "Stock richtap_read returns 0 without dereferencing struct file; candidate behavior is unchanged.",
     "write": "Stock richtap_write returns count without dereferencing struct file; candidate behavior is unchanged.",
     "unlocked_ioctl": "Lifetime wrapper enters the sidecar operation, passes a proxy whose private_data is raw haptic state to the stock-exact ioctl, then exits the operation.",
-    "mmap": "Candidate wrapper resolves state through the sidecar and attaches a VMA reference on successful remap.",
+    "mmap": "Candidate wrapper resolves state through the sidecar and attaches a VMA reference on successful remap; target MM retains the file itself for the VMA lifetime.",
     "disposition": "Every registered Richtap fops slot was accounted for; no reviewed path interprets the sidecar pointer as raw haptic state."
   },
   "lock_order_review": {
