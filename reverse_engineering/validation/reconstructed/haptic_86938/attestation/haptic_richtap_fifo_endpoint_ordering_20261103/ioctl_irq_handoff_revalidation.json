@@ -1,0 +1,76 @@
+{
+  "schema_version": "haptic-richtap-ioctl-irq-handoff/v1",
+  "review_date": "2026-11-03",
+  "finding_id": "HAP-RICHTAP-IRQ-HANDOFF-01",
+  "result": "CONDITIONAL_IOCTL_TO_WORKER_IRQ_WINDOW_CLOSED_STATICALLY",
+  "candidate": {
+    "previous_sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
+    "sha256": "8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7",
+    "size_bytes": 6711648,
+    "repository_and_curated_artifacts_match": true,
+    "candidate_installed_on_device": false
+  },
+  "stock_sequence": {
+    "ioctl": "0x520a",
+    "evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+    "sequence": [
+      "clean Richtap buffer",
+      "take device mutex, clear IRQ status, stop playback, release device mutex",
+      "disable RTP almost-full interrupt, set loop flag to zero, select RTP mode and gain",
+      "queue richtap_rtp_work at state+0x648 on state+0x448 workqueue",
+      "return from stock ioctl"
+    ],
+    "irq_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+    "conditional_legacy_branch": "The threaded handler may consume aw_rtp when IRQ status is clear, state+0x5 is 1, and play mode is 2. The stock stop callback does not clear state+0x5."
+  },
+  "previous_candidate_gap": {
+    "description": "The ioctl wrapper released haptic_irq_stop_lock immediately after the stock ioctl queued +0x648. A pending IRQ thread could win the mutex before richtap_rtp_work acquired it and observe mode 2 with loop flag 0 and a possibly stale state+0x5.",
+    "status": "CONDITIONAL_STATIC_RACE; NOT_REPRODUCED_AT_RUNTIME"
+  },
+  "candidate_correction": {
+    "arming_gate": "For ioctl 0x520a, set haptic_richtap_arming while holding haptic_irq_stop_lock and before invoking the stock-exact ioctl body.",
+    "irq_thread": "Wait on haptic_richtap_arming_idle without holding haptic_irq_stop_lock; acquire the mutex only after the gate clears; recheck the gate and shutdown state under the mutex before calling irq_handle_stock_exact.",
+    "worker_completion": "richtap_rtp_work clears the gate and wakes waiters on shutdown, validation/start failures, and successful initial stream setup. Non-shutdown failure paths disable AEI and clear chip IRQ status before waking the handler.",
+    "teardown": "The shutdown gate wakes the IRQ waitqueue; probe resets the arming flag before publishing a new device instance.",
+    "static_order": [
+      "ioctl acquires haptic_irq_stop_lock",
+      "ioctl sets haptic_richtap_arming=1",
+      "stock ioctl initializes RTP state and queues +0x648",
+      "ioctl releases haptic_irq_stop_lock",
+      "pending IRQ thread waits without holding the mutex",
+      "worker completes the start/data/AEI/loop transition and clears the gate while holding the mutex",
+      "IRQ thread wakes, acquires the mutex, rechecks the gate, and dispatches the stock handler"
+    ],
+    "independent_workqueue_does_not_serialize_irq": true
+  },
+  "candidate_disassembly": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_endpoint_ordering_20261103/candidate_ioctl_irq_handoff_disassembly.txt",
+    "sha256": "789f1d05b9ff40715dad158f4fee9ccf4e9c19df9c50fe5be7cb05f46121e254",
+    "symbols": {
+      "arming_begin": "0x7484",
+      "arming_complete": "0x7498",
+      "irq_handle": "0x7560",
+      "richtap_file_unlocked_ioctl": "0x7730",
+      "ioctl_arming_store": "0x7808",
+      "richtap_rtp_work": "0x859c"
+    },
+    "relocations_confirm_waitqueue_and_handler_calls": true
+  },
+  "build": {
+    "record": "docker_builds.json",
+    "input_manifest": "prebuild_input_manifest.json",
+    "isolated_cycles": 2,
+    "cycle_1_sha256": "8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7",
+    "cycle_2_sha256": "8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7",
+    "byte_identical": true,
+    "undefined_symbol_count": 93,
+    "strict_stock_import_parity": false
+  },
+  "residual_risks": [
+    "The worker still holds haptic_irq_stop_lock over the hardware start poll and initial data setup; the timeout path requests approximately 602.5-752.6 ms of sleep, plus I2C and scheduling time. This remains a threaded-IRQ latency risk.",
+    "The candidate has not been installed or exercised on the NX809J; runtime race closure and Lockdep behavior remain unverified.",
+    "The HAL writer was not observed during the tested Android prebaked effect; a path-specific TikTap/Richtap event remains untraced.",
+    "The HAL FIFO state store/load ordering remains unpaired with the kernel acquire/release operations.",
+    "Strict stock import parity and independent review remain incomplete."
+  ]
+}

@@ -110,13 +110,16 @@ extern bool richtap_update_fifo_data(struct aw_haptic *aw, u32 length);
 
 void richtap_rtp_work(struct work_struct *work)
 {
-    if (haptic_lifetime_is_shutting_down())
+	if (haptic_lifetime_is_shutting_down()) {
+        haptic_lifetime_richtap_arming_complete();
         return;
+	}
 
     /* AEI masking does not drain an IRQ thread already updating the FIFO. */
     haptic_lifetime_irq_stop_lock();
     if (haptic_lifetime_is_shutting_down()) {
         haptic_lifetime_irq_stop_unlock();
+        haptic_lifetime_richtap_arming_complete();
         return;
     }
 
@@ -165,12 +168,16 @@ void richtap_rtp_work(struct work_struct *work)
 		haptic_lifetime_irq_stop_lock();
 		if (haptic_lifetime_is_shutting_down()) {
 			haptic_lifetime_irq_stop_unlock();
+			haptic_lifetime_richtap_arming_complete();
 			return;
 		}
 		if (!haptic_richtap_fifo_node_valid(RTP_HEAD, RTP_CURSOR) ||
 		    RTP_LENGTH > HAPTIC_RICHTAP_RTP_BUFFER_BYTES ||
 		    !RTP_DATA) {
 			haptic_lifetime_richtap_fifo_reset(aw);
+			RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
+			RICHTAP_FUNC(irq_clear)(aw);
+			haptic_lifetime_richtap_arming_complete();
 			haptic_lifetime_irq_stop_unlock();
 			return;
 		}
@@ -184,6 +191,9 @@ void richtap_rtp_work(struct work_struct *work)
 			    node_size > HAPTIC_RICHTAP_FIFO_PAYLOAD_BYTES ||
 			    copied > RTP_LENGTH) {
 				haptic_lifetime_richtap_fifo_reset(aw);
+				RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
+				RICHTAP_FUNC(irq_clear)(aw);
+				haptic_lifetime_richtap_arming_complete();
 				haptic_lifetime_irq_stop_unlock();
 				return;
 			}
@@ -196,6 +206,9 @@ void richtap_rtp_work(struct work_struct *work)
 				if (!haptic_richtap_fifo_next_valid(RTP_HEAD, fifo,
 								    next_fifo)) {
 					haptic_lifetime_richtap_fifo_reset(aw);
+					RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
+					RICHTAP_FUNC(irq_clear)(aw);
+					haptic_lifetime_richtap_arming_complete();
 					haptic_lifetime_irq_stop_unlock();
 					return;
 				}
@@ -241,9 +254,13 @@ void richtap_rtp_work(struct work_struct *work)
 	haptic_lifetime_irq_stop_lock();
 	if (haptic_lifetime_is_shutting_down()) {
 		haptic_lifetime_irq_stop_unlock();
+		haptic_lifetime_richtap_arming_complete();
 		return;
 	}
 	if ((richtap_rtp_start(aw) & 1U) == 0U) {
+		RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
+		RICHTAP_FUNC(irq_clear)(aw);
+		haptic_lifetime_richtap_arming_complete();
 		haptic_lifetime_irq_stop_unlock();
 		return;
 	}
@@ -256,6 +273,7 @@ void richtap_rtp_work(struct work_struct *work)
 				haptic_lifetime_richtap_fifo_reset(aw);
 				RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
 				RICHTAP_FUNC(irq_clear)(aw);
+				haptic_lifetime_richtap_arming_complete();
 				haptic_lifetime_irq_stop_unlock();
 				return;
 			}
@@ -267,6 +285,7 @@ void richtap_rtp_work(struct work_struct *work)
 			if (!richtap_update_fifo_data(aw, RTP_LENGTH >> 2)) {
 				RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
 				RICHTAP_FUNC(irq_clear)(aw);
+				haptic_lifetime_richtap_arming_complete();
 				haptic_lifetime_irq_stop_unlock();
 				return;
 			}
@@ -280,5 +299,6 @@ void richtap_rtp_work(struct work_struct *work)
 		RICHTAP_FUNC(irq_clear)(aw);
 		WRITE_ONCE(RTP_LOOP, 1U);
 	}
+	haptic_lifetime_richtap_arming_complete();
 	haptic_lifetime_irq_stop_unlock();
 }

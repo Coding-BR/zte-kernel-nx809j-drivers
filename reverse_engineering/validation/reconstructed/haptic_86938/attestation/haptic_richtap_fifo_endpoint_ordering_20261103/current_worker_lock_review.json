@@ -1,0 +1,257 @@
+{
+  "schema_version": "haptic-richtap-worker-start-lock-review/v1",
+  "reviewed_utc": "2026-11-03T20:13:19Z",
+  "review_type": "static comparison against stock Ghidra C and AArch64 assembly",
+  "candidate": {
+    "sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
+    "size_bytes": 6721424,
+    "source_worker_sha256": "b85c300f3460f3c94e3b8b71147a38adf91f05c90f8ee8e5ab70b9cb4ec1b6e5",
+    "canonical_docker_builds_identical": true,
+    "repository_module_synchronized_to_canonical_build": true
+  },
+  "stock_irq_registration": {
+    "threaded_handler": "irq_handle",
+    "primary_handler_is_null": true,
+    "flags_hex": "0x2002",
+    "stock_handler_contains_rtp_and_fifo_state_updates": true
+  },
+  "candidate_lock_interval": {
+    "global_mutex": "haptic_irq_stop_lock",
+    "same_global_mutex_wraps_threaded_irq": true,
+    "worker_lock_acquire_vma": "0x8640",
+    "richtap_rtp_start_call_vma": "0x8650",
+    "common_worker_unlock_vma": "0x85f4",
+    "covers": [
+      "RTP start transition",
+      "initial RTP data transfer callback",
+      "FIFO/IRQ state setup",
+      "AEI enable and IRQ clear"
+    ]
+  },
+  "stock_start_sequence": {
+    "richtap_rtp_start_device_mutex_offset": "0x2f0",
+    "callback_table_offsets": {
+      "play_mode": "0x98",
+      "play_go": "0x60",
+      "get_glb_state": "0x160",
+      "stop_on_timeout": "0x38"
+    },
+    "play_mode_value": 2,
+    "play_go_value": 1,
+    "initial_sleep_us": [
+      2000,
+      2000
+    ],
+    "poll_target": "(aw8693x_get_glb_state(haptic) & 0xf) == 8",
+    "poll_source": "aw8693x_get_glb_state reads hardware register 0x3f through i2c_r_bytes",
+    "timeout_poll_count": 200,
+    "timeout_sleep_us": [
+      2000,
+      2500
+    ],
+    "timeout_callback": "aw8693x_stop",
+    "timeout_stop_initial_sleep_us": [
+      500,
+      600
+    ],
+    "timeout_stop_poll_count": 100,
+    "timeout_stop_sleep_us": [
+      2000,
+      2500
+    ],
+    "static_irq_completion_wait_in_start": false,
+    "callback_table_audit_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_func_list_20261101/callback_table_audit.json",
+    "callback_table_audit_sha256": "770a19cec349b7dc6cd327a5e3ddc95f0676aaffe41cc4ac743f87ff9f6a741c",
+    "callback_table_audit_passed": true
+  },
+  "latency_assessment": {
+    "timeout_path_requested_sleep_ms": [
+      602.5,
+      752.6
+    ],
+    "excludes_i2c_printk_scheduling": true,
+    "threaded_irq_wait_runtime_measured": false,
+    "irq_stall_reproduced": false,
+    "finding": "Static threaded-IRQ latency risk on the timeout path; no missed interrupt or hardware failure is established."
+  },
+  "lock_scope_assessment": {
+    "scope_reduction_during_richtap_rtp_start": "NOT JUSTIFIED BY CURRENT STATIC EVIDENCE",
+    "stock_irq_alternate_rtp_branch_condition": "RTP loop state is not 1, IRQ status is clear, state byte +0x5 is 1, and play_mode +0x17 is 2",
+    "alternate_branch_effect": "takes device mutex +0x370 and may transfer bytes from aw_rtp with aw8693x_set_rtp_data; the normal RTP worker sets state byte +0x5 to 1",
+    "conclusion": "The global mutex protects the worker's start/data/AEI setup only after the worker acquires it. The shared max_active=1 workqueue limits overlap between work items but does not serialize or drain the threaded IRQ, and the mutex alone did not close the ioctl queue/unlock-to-worker-acquire handoff gap. That separate conditional gap is revalidated and statically addressed in ioctl_irq_handoff_revalidation.json. The mutex remains across start/data setup; no narrower lock interval is established."
+  },
+  "validation": {
+    "candidate_runtime_tested": false,
+    "lockdep_run": false,
+    "independent_review": "PENDING",
+    "source_changed": false,
+    "docker_rebuild_needed": false,
+    "map_rows_promoted": 0,
+    "fifo_function_rows_still_under_static_validation": 2
+  },
+  "evidence": [
+    {
+      "role": "candidate_module",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86"
+    },
+    {
+      "role": "candidate_worker_source",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "b85c300f3460f3c94e3b8b71147a38adf91f05c90f8ee8e5ab70b9cb4ec1b6e5"
+    },
+    {
+      "role": "candidate_lifetime_source",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "4ea538fdec18451e8cc9abcf0dca2e2386898df5ccf794eca449fd26552cdd92"
+    },
+    {
+      "role": "candidate_function_list",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_func_list.c",
+      "sha256": "0ee497171297c04685479fe0f6379efaf4e5febee2502b1cc41cb1a4f4f43a35"
+    },
+    {
+      "role": "candidate_disassembly",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_endpoint_ordering_20261103/candidate_lifetime_lock_fifo_disassembly.txt",
+      "sha256": "9b0360bc871dd5ba39d8b260e92eef45c0b3aa5b066844b45274377b67faba3b"
+    },
+    {
+      "role": "canonical_build_record",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_endpoint_ordering_20261103/docker_builds.json",
+      "sha256": "3858bae81eed19effbc4c671098320d80dcce0ddd1b5b7b6311f378be599edbf"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "richtap_rtp_work",
+      "entry": "001088f8",
+      "ghidra_c_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+      "assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "richtap_rtp_start",
+      "entry": "0010e1dc",
+      "ghidra_c_sha256": "b207ff0484bd501c67ac35950be6b9936e497cc6bc2aa6651f89c62ae719a9b3",
+      "assembly_sha256": "4564c12a37fbfccb680da5a678a52ad81f415133c06872859dfbd1c5e74c209b",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0148_0010e1dc_richtap_rtp_start.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0148_richtap_rtp_start_0010e1dc.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "irq_handle",
+      "entry": "00109090",
+      "ghidra_c_sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279",
+      "assembly_sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "irq_config",
+      "entry": "00108368",
+      "ghidra_c_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+      "assembly_sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0066_irq_config_00108368.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "aw8693x_play_go",
+      "entry": "00104404",
+      "ghidra_c_sha256": "a1bdb3908a9654014f40b23e3a7a37f266f89f1f3a1d94e4ba404f9587914db8",
+      "assembly_sha256": "5d7328a1f4dbc80fd0faa2b6b883da7789788f7d7671053a5913d256805c93ab",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0011_00104404_aw8693x_play_go.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0011_aw8693x_play_go_00104404.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "aw8693x_get_glb_state",
+      "entry": "0010620c",
+      "ghidra_c_sha256": "285b1439f0366ec6997a51bb851c9665bfad658a11e624ad0abdec14d9e03add",
+      "assembly_sha256": "dbb7b56ffc92f462cfe4aea9ba9baed1bac4780a775ea0f5e3ca0349bef9312b",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0042_0010620c_aw8693x_get_glb_state.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0042_aw8693x_get_glb_state_0010620c.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "aw8693x_stop",
+      "entry": "00103d4c",
+      "ghidra_c_sha256": "017483a186ed349feecb572aef77ccd37e10c47e391785485563cf16fc092300",
+      "assembly_sha256": "e981210fc1a403ed4030ca227b02dafc83b8c564329829f23c26bccfdccf88fd",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0007_00103d4c_aw8693x_stop.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0007_aw8693x_stop_00103d4c.asm"
+    },
+    {
+      "role": "stock_ghidra_and_assembly",
+      "function": "rtp_work_routine",
+      "entry": "00109c48",
+      "ghidra_c_sha256": "dc8f79dadbae7edb897f10d63762f0aa9a9ffd92c246c89dd8d563051280761d",
+      "assembly_sha256": "dba567616cf9f8ac4f217a07f993092f787c6dec3404875e0b89b620b42a7693",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0079_00109c48_rtp_work_routine.c",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0079_rtp_work_routine_00109c48.asm"
+    },
+    {
+      "role": "stock_callback_table_relocation_audit",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_func_list_20261101/callback_table_audit.json",
+      "sha256": "770a19cec349b7dc6cd327a5e3ddc95f0676aaffe41cc4ac743f87ff9f6a741c",
+      "status": "PASS",
+      "play_go_slot_offset": "0x60",
+      "play_mode_slot_offset": "0x98"
+    },
+    {
+      "role": "stock_workqueue_and_submission_evidence",
+      "function": "aw_i2c_probe",
+      "entry": "001073c0",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "ghidra_c_sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "assembly_sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb"
+    },
+    {
+      "role": "stock_workqueue_and_submission_evidence",
+      "function": "aw_rtp_store",
+      "entry": "0010af38",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0101_0010af38_aw_rtp_store.c",
+      "ghidra_c_sha256": "4543005d7b14c430f6cf650348e7bb2b1ecd77fb011c6086897ebf8224f33434",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0101_aw_rtp_store_0010af38.asm",
+      "assembly_sha256": "d3686faccd4476df6bd1e205ef11d6c58c93a6803a353b05175508cadffea801"
+    },
+    {
+      "role": "stock_workqueue_and_submission_evidence",
+      "function": "richtap_file_unlocked_ioctl",
+      "entry": "0010e374",
+      "ghidra_c_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+      "ghidra_c_sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824",
+      "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+      "assembly_sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad"
+    }
+  ],
+  "stock_workqueue_interaction": {
+    "workqueue_allocating_function": "aw_i2c_probe",
+    "state_workqueue_offset": "0x448",
+    "allocation_call": "alloc_workqueue(name, flags=0x6000a, max_active=1, ...)",
+    "configured_max_active": 1,
+    "standard_rtp_submitter": "aw_rtp_store",
+    "standard_rtp_work_item_offset": "0x3a0",
+    "richtap_submitter": "richtap_file_unlocked_ioctl",
+    "richtap_work_item_offset": "0x648",
+    "both_submit_to_same_workqueue_pointer": true,
+    "threaded_irq_is_outside_workqueue": true,
+    "irq_drained_by_workqueue_serialization": false,
+    "normal_rtp_state_byte_offset": "0x5",
+    "normal_rtp_worker_sets_state_byte_to_1": true,
+    "normal_rtp_irq_branch_requires_mode_2_and_state_byte_1": true,
+    "richtap_worker_sets_rtp_loop_to_0_before_start_and_to_1_after_setup": true,
+    "disposition": "The shared workqueue limits worker overlap but does not serialize or drain the threaded IRQ. The mutex protects the Richtap transition after worker acquisition, but does not establish priority across the ioctl queue-to-worker handoff."
+  },
+  "review_scope": "Historical lock review bound to candidate 594c7a2b; superseded for ioctl-to-worker handoff by ioctl_irq_handoff_revalidation.json.",
+  "superseded_by": "ioctl_irq_handoff_revalidation.json",
+  "ioctl_to_worker_handoff_gap": {
+    "status": "IDENTIFIED_IN_CANDIDATE_594C7A2B",
+    "description": "The serialized ioctl released haptic_irq_stop_lock after queueing state+0x648. A pending IRQ thread could acquire the mutex before the queued worker and inspect the mode-2/loop-zero transition; the mutex alone did not provide worker priority.",
+    "not_proven_reproduced": true,
+    "revalidation": "ioctl_irq_handoff_revalidation.json"
+  }
+}

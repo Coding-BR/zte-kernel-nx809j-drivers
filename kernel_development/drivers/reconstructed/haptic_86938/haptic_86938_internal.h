@@ -95,6 +95,8 @@ void haptic_lifetime_wait_ram_callbacks(void);
 int haptic_lifetime_request_ram_firmware(void *state);
 void haptic_lifetime_irq_stop_lock(void);
 void haptic_lifetime_irq_stop_unlock(void);
+void haptic_lifetime_richtap_arming_begin(void);
+void haptic_lifetime_richtap_arming_complete(void);
 void haptic_lifetime_richtap_stream_lock(void);
 void haptic_lifetime_richtap_stream_unlock(void);
 void haptic_lifetime_richtap_fifo_reset(void *state);

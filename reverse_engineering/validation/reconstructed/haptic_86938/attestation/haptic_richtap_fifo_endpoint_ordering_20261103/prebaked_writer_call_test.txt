@@ -1,0 +1,12 @@
+Authorized NX809J prebaked-effect uprobe test — 2026-11-03
+
+The user authorized triggering a short haptic action for testing. The phone remained on the OEM stock haptic module; the reconstructed candidate was not transferred or installed.
+
+Test action: `adb shell cmd vibrator_manager synced prebaked -b 2` (Android prebaked effect ID 2, tick; fallback enabled).
+Capture: `/system/bin/simpleperf record` with a uprobe at `/vendor/lib64/libaacvibrator.so:0x1c198`, the body of `write_data_to_buffer`, scoped to the active `vendor.qti.hardware.vibrator.service` process. The event was registered as `uprobes:codex_haptic_writer_20261103`, sample period 1, duration 15.0031 seconds.
+
+Result: simpleperf reported 0 samples and 0 lost samples. The vibrator manager returned to `IDLE`; DND mode was 0. This prebaked effect did not enter the mapped HAL FIFO writer. It does not rule out the statically reachable TikTap/Richtap streaming paths.
+
+An installed `cn.nubia.gameassist/.test.Game3DTestActivity` was identified as a possible diagnostic screen, but Android denied shell launch because the activity is not exported. No privilege or export restriction was bypassed, and that activity did not run.
+
+The temporary trace script, perf output, and UI dump were removed; `/sys/kernel/tracing/uprobe_events` was empty after capture. No persistent settings or module state were changed. The only user-visible action was the brief prebaked haptic effect.

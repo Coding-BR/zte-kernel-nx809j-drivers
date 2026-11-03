@@ -50,7 +50,9 @@ static bool haptic_probe_complete;
 static bool haptic_aw_node_creation_allowed;
 static atomic_t haptic_shutdown = ATOMIC_INIT(1);
 static atomic_t haptic_ram_callbacks = ATOMIC_INIT(0);
+static atomic_t haptic_richtap_arming = ATOMIC_INIT(0);
 static DECLARE_WAIT_QUEUE_HEAD(haptic_ram_callbacks_idle);
+static DECLARE_WAIT_QUEUE_HEAD(haptic_richtap_arming_idle);
 
 extern int aw_i2c_probe_stock_exact(struct i2c_client *client);
 extern irqreturn_t irq_handle_stock_exact(int irq, void *data);
@@ -112,6 +114,8 @@ int aw_i2c_probe(struct i2c_client *client)
 		mutex_unlock(&haptic_lifecycle_transition_lock);
 		return -EBUSY;
 	}
+	atomic_set(&haptic_richtap_arming, 0);
+	wake_up_all(&haptic_richtap_arming_idle);
 	atomic_set(&haptic_shutdown, 0);
 	WRITE_ONCE(haptic_probe_complete, false);
 	WRITE_ONCE(haptic_aw_node_creation_allowed, false);
@@ -337,6 +341,7 @@ bool haptic_lifetime_block_file_access(void *state)
 	bool published;
 
 	atomic_set(&haptic_shutdown, 1);
+	wake_up_all(&haptic_richtap_arming_idle);
 	WRITE_ONCE(haptic_probe_complete, false);
 	mutex_lock(&haptic_lifetime_registry_lock);
 	published = READ_ONCE(g_aw_haptic) == state;
@@ -461,6 +466,17 @@ void haptic_lifetime_irq_stop_unlock(void)
 	mutex_unlock(&haptic_irq_stop_lock);
 }
 
+void haptic_lifetime_richtap_arming_begin(void)
+{
+	atomic_set(&haptic_richtap_arming, 1);
+}
+
+void haptic_lifetime_richtap_arming_complete(void)
+{
+	atomic_set(&haptic_richtap_arming, 0);
+	wake_up_all(&haptic_richtap_arming_idle);
+}
+
 void haptic_lifetime_richtap_stream_lock(void)
 {
 	mutex_lock(&haptic_richtap_stream_lock);
@@ -506,15 +522,28 @@ irqreturn_t irq_handle(int irq, void *data)
 {
 	irqreturn_t ret;
 
-	if (haptic_lifetime_is_shutting_down())
-		return IRQ_HANDLED;
-	mutex_lock(&haptic_irq_stop_lock);
-	if (haptic_lifetime_is_shutting_down())
-		ret = IRQ_HANDLED;
-	else
+	for (;;) {
+		wait_event(haptic_richtap_arming_idle,
+			   !atomic_read(&haptic_richtap_arming) ||
+			   haptic_lifetime_is_shutting_down());
+		if (haptic_lifetime_is_shutting_down())
+			return IRQ_HANDLED;
+
+		mutex_lock(&haptic_irq_stop_lock);
+		if (haptic_lifetime_is_shutting_down()) {
+			ret = IRQ_HANDLED;
+			mutex_unlock(&haptic_irq_stop_lock);
+			return ret;
+		}
+		/* Recheck after locking: ioctl may have armed Richtap while we waited. */
+		if (atomic_read(&haptic_richtap_arming)) {
+			mutex_unlock(&haptic_irq_stop_lock);
+			continue;
+		}
 		ret = irq_handle_stock_exact(irq, data);
-	mutex_unlock(&haptic_irq_stop_lock);
-	return ret;
+		mutex_unlock(&haptic_irq_stop_lock);
+		return ret;
+	}
 }
 
 void vibrator_work_routine(struct work_struct *work)
@@ -543,6 +572,7 @@ long richtap_file_unlocked_ioctl(struct file *file, unsigned int command,
 	void *state;
 	long ret;
 	bool serialize_rtp = command == 0x5209 || command == 0x520a;
+	bool arm_richtap = command == 0x520a;
 
 	ret = haptic_lifetime_enter_file(file, &lifetime, &state);
 	if (ret)
@@ -552,6 +582,8 @@ long richtap_file_unlocked_ioctl(struct file *file, unsigned int command,
 		mutex_lock(&haptic_richtap_stream_lock);
 		cancel_work_sync((struct work_struct *)((char *)state + 0x648));
 		haptic_lifetime_irq_stop_lock();
+		if (arm_richtap)
+			haptic_lifetime_richtap_arming_begin();
 	}
 	proxy.private_data = state;
 	ret = richtap_file_unlocked_ioctl_stock_exact(&proxy, command, argument);

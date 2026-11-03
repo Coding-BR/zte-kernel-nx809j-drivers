@@ -1,65 +1,61 @@
 {
-  "schema": "haptic-richtap-fifo-endpoint-ordering-builds/v1",
+  "schema": "haptic-richtap-ioctl-irq-handoff-builds/v1",
   "build_date": "2026-11-03",
   "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
   "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
   "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
   "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
   "toolchain_volume": "nubia_sm8850_kernel_toolchains",
-  "ccache_volume": "nubia_sm8850_kernel_cache",
+  "bindgen_volume": "nx809j_bindgen_0695",
+  "output_volumes": [
+    "codex-kbuild-haptic_86938-arming-race-20261103-c1",
+    "codex-kbuild-haptic_86938-arming-race-20261103-c2"
+  ],
   "input_snapshot": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938",
+  "isolated_build_root": "C:/haptic_irq_handoff_20261103/haptic_86938",
   "prebuild_input_manifest": {
     "path": "prebuild_input_manifest.json",
-    "file_count": 311,
-    "sha256": "120773761dbdb8854183402ab8c84b87ae6d55947dbf6421b392d7be749455af"
+    "file_count": 193,
+    "sha256": "3a56d376ff053bd9b40342f377bf56cfed8cb504365cdb460c160a98082bacb8"
   },
   "scoped_source_hashes": {
-    "haptic_86938_fn_036_richtap_clean_buf.c": "6797b7349dd9d54ee441638533ab3f4a3bc64ed0926562bbe87873431c71e44b",
-    "haptic_86938_fn_136_richtap_update_fifo_data.c": "2b7907f550d608ee94d780db2cea07007a13ca72fdb5f31b42a3a2540f33ba6c",
-    "haptic_86938_fn_137_richtap_rtp_work.c": "b85c300f3460f3c94e3b8b71147a38adf91f05c90f8ee8e5ab70b9cb4ec1b6e5",
-    "haptic_86938_fn_138_tiktap_work_routine.c": "2af2c00ee722ca4b6f8779c9eebc963ecd9a8eb2e81ca588927e8f0c9b8a368f"
+    "haptic_86938_internal.h": "996dd5f19d7d2463dd7665d64283f0e98a9ca3a1e03308885fc3fb068be6392c",
+    "haptic_86938_lifetime.c": "184bc1107e3689ad21a0aae0b80d9fe9face4615d2e6b16cc74389269111e992",
+    "haptic_86938_fn_137_richtap_rtp_work.c": "e4b8c1a124317c5d670648b3db97ee1c153ef325f966c18e4d7b8bc9bab52e6e"
   },
-  "command": "make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/haptic_86938/source -j8 modules",
+  "command": "docker run --rm with pinned source/toolchain/bindgen volumes, independent kernel_out volumes; prepare O=/work/kernel_out from /work/src/kernel/.codex-kbuild/identity; make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/haptic_86938/cycle_N KCFLAGS=-ffile-prefix-map=/work/validation/haptic_86938/cycle_N=/haptic_86938 -fdebug-prefix-map=/work/validation/haptic_86938/cycle_N=/haptic_86938 -j8 modules",
   "environment": {
-    "PATH": "/toolchains/clang-r536225/bin:/toolchains/rust-1.82.0/bin:/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     "KBUILD_BUILD_TIMESTAMP": "2000-01-01 00:00:00 UTC",
     "KBUILD_BUILD_USER": "codex",
-    "KBUILD_BUILD_HOST": "reproducible"
-  },
-  "curated_source_dry_run": {
-    "report": "source_curated_parity_dry_run_pre_evidence_sync.json",
-    "missing_from_curated": 0,
-    "content_mismatch": 0,
-    "curated_only_evidence_files": 116,
-    "applied": false,
-    "note": "Scoped source files were copied manually; broad apply was avoided because it would remove curated-only evidence."
+    "KBUILD_BUILD_HOST": "reproducible",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k"
   },
   "cycles": [
     {
       "cycle": 1,
-      "output_volume": "codex-kbuild-haptic_86938-fifo-release-20261103-c1",
+      "output_volume": "codex-kbuild-haptic_86938-arming-race-20261103-c1",
       "exit_code": 0,
-      "output_bytes": 6721424,
-      "output_sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
+      "output_bytes": 6711648,
+      "output_sha256": "8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7",
       "build_log": "docker_build_cycle_1.log",
-      "build_log_sha256": "3d6e49c07766a8d2d6bc4ecba68352792bd29eb3b006e34674e57c813c27892c"
+      "build_log_sha256": "7f173b4489bacac836427daf9c38965fedc9eb11c1ba53d62dcae468c0229c49"
     },
     {
       "cycle": 2,
-      "output_volume": "codex-kbuild-haptic_86938-fifo-release-20261103-c2",
+      "output_volume": "codex-kbuild-haptic_86938-arming-race-20261103-c2",
       "exit_code": 0,
-      "output_bytes": 6721424,
-      "output_sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
+      "output_bytes": 6711648,
+      "output_sha256": "8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7",
       "build_log": "docker_build_cycle_2.log",
-      "build_log_sha256": "3d6e49c07766a8d2d6bc4ecba68352792bd29eb3b006e34674e57c813c27892c"
+      "build_log_sha256": "437b313f2de22368a01d6a3165d1961108a887d56a8fa8cf6209c876f6e104ff"
     }
   ],
   "result": "PASS_TWO_ISOLATED_BUILDS_BYTE_IDENTICAL",
-  "btf_note": "BTF generation was skipped because vmlinux was unavailable.",
   "undefined_import_check": {
     "previous_candidate_count": 93,
     "current_candidate_count": 93,
-    "sets_identical": true,
+    "set_equality_checked": false,
     "strict_stock_parity_still_unresolved": true
-  }
+  },
+  "btf_note": "BTF generation was skipped because vmlinux was unavailable."
 }

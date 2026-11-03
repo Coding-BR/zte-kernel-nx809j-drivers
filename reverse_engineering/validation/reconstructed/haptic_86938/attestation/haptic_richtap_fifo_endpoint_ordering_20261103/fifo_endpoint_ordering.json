@@ -2,21 +2,24 @@
   "schema_version": "1.0",
   "review_id": "haptic_richtap_fifo_endpoint_ordering_20261103",
   "review_date": "2026-11-03",
-  "result": "KERNEL_FIFO_ENDPOINT_ACQUIRE_RELEASE_EXPLICIT; HAL_SYNCHRONIZATION_PAIR_UNPROVEN; STATIC_ONLY",
+  "result": "KERNEL_FIFO_ENDPOINT_ACQUIRE_RELEASE_EXPLICIT; HAL_SYNCHRONIZATION_PAIR_UNPROVEN; IOCTL_IRQ_HANDOFF_CLOSED_STATICALLY; STATIC_ONLY",
   "candidate": {
-    "previous_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
-    "sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
-    "size_bytes": 6721424,
+    "previous_sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
+    "sha256": "8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7",
+    "size_bytes": 6711648,
     "stock_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
-    "reconstruction_map_sha256_before": "ad7f238296d7b7122a70f4292ef7cc0803d88a9e9e680ddd8e4af7ada62fce01",
-    "reconstruction_map_sha256_after": "1952aa2d6d6206a4be675ca6bf3a605ff3e4428f86d9ca4e4b9195a5f0297def",
-    "docker_curated_module_matches": true
+    "reconstruction_map_sha256_before": "1952aa2d6d6206a4be675ca6bf3a605ff3e4428f86d9ca4e4b9195a5f0297def",
+    "reconstruction_map_sha256_after": "d9afa11baaf038738a31593448bd3f48ae236cdc88c7aa7cd46d54be215407d0",
+    "docker_curated_module_matches": true,
+    "previous_historical_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8"
   },
   "source_sha256": {
     "haptic_86938_fn_036_richtap_clean_buf.c": "6797b7349dd9d54ee441638533ab3f4a3bc64ed0926562bbe87873431c71e44b",
     "haptic_86938_fn_136_richtap_update_fifo_data.c": "2b7907f550d608ee94d780db2cea07007a13ca72fdb5f31b42a3a2540f33ba6c",
-    "haptic_86938_fn_137_richtap_rtp_work.c": "b85c300f3460f3c94e3b8b71147a38adf91f05c90f8ee8e5ab70b9cb4ec1b6e5",
-    "haptic_86938_fn_138_tiktap_work_routine.c": "2af2c00ee722ca4b6f8779c9eebc963ecd9a8eb2e81ca588927e8f0c9b8a368f"
+    "haptic_86938_fn_137_richtap_rtp_work.c": "e4b8c1a124317c5d670648b3db97ee1c153ef325f966c18e4d7b8bc9bab52e6e",
+    "haptic_86938_fn_138_tiktap_work_routine.c": "2af2c00ee722ca4b6f8779c9eebc963ecd9a8eb2e81ca588927e8f0c9b8a368f",
+    "haptic_86938_internal.h": "996dd5f19d7d2463dd7665d64283f0e98a9ca3a1e03308885fc3fb068be6392c",
+    "haptic_86938_lifetime.c": "184bc1107e3689ad21a0aae0b80d9fe9face4615d2e6b16cc74389269111e992"
   },
   "stock_evidence": {
     "richtap_clean_buf_decompiled": {
@@ -76,17 +79,17 @@
   "kernel_endpoints": {
     "state_U_readers": {
       "richtap_update_fifo_data": [
-        "0x82b0 LDARB"
+        "0x8404 LDARB"
       ],
       "richtap_rtp_work": [
-        "0x8508 LDARB",
-        "0x8708 LDARB"
+        "0x8670 LDARB",
+        "0x8844 LDARB"
       ],
       "tiktap_work_routine": [
-        "0x8928 LDARB",
-        "0x89a0 LDARB",
-        "0x8b60 LDARB",
-        "0x8bb4 LDARB"
+        "0x8a88 LDARB",
+        "0x8b00 LDARB",
+        "0x8cc0 LDARB",
+        "0x8d14 LDARB"
       ]
     },
     "kernel_state_publications": {
@@ -109,16 +112,16 @@
         "0xc80"
       ],
       "richtap_update_fifo_data": [
-        "0x8370 STLRB FF"
+        "0x84c4 STLRB FF"
       ],
       "richtap_rtp_work": [
-        "0x85c8 STLRB FF"
+        "0x8730 STLRB FF"
       ],
       "tiktap_work_routine": [
-        "0x8c20 STLRB AA"
+        "0x8d80 STLRB AA"
       ],
       "haptic_lifetime_richtap_fifo_reset": [
-        "0x74bc STLRB FF"
+        "0x7544 STLRB FF"
       ]
     },
     "opcode_counts": {
@@ -127,34 +130,45 @@
     },
     "disassembly": {
       "endpoint_file": "candidate_fifo_endpoint_disassembly.txt",
-      "endpoint_sha256": "feacf0b8cd484428a96271c92b5f9c75df8858ec508c961e717c128b1c25710d",
+      "endpoint_sha256": "0f1eaf3549c1fdc98888a9c761921bc4d3b324e9dd764f36071a488a00770cc8",
       "combined_lock_file": "candidate_lifetime_lock_fifo_disassembly.txt",
-      "combined_lock_sha256": "9b0360bc871dd5ba39d8b260e92eef45c0b3aa5b066844b45274377b67faba3b"
+      "combined_lock_sha256": "1e95b7f9bc2ba78712d99f65221bf4eddb4c6c6dd695ec52687e88481a951e7e"
     }
   },
   "lock_revalidation": {
-    "irq_handle_global_lock": "0x7510",
-    "irq_handle_unlock": "0x753c",
+    "irq_handle_global_lock": "0x760c",
+    "irq_handle_unlock": "0x7660",
     "richtap_rtp_start_device_lock": "0x80d0",
     "richtap_rtp_start_unlock": "0x8214",
-    "richtap_rtp_work_global_lock": "0x8640",
-    "richtap_rtp_start_call": "0x8650",
-    "richtap_rtp_work_common_unlock": "0x85f4",
+    "richtap_rtp_work_global_lock": "0x85cc",
+    "richtap_rtp_start_call": "0x878c",
+    "richtap_rtp_work_common_unlock": "0x8950",
     "timeout_requested_sleep_total_ms": "602.5-752.6",
     "latency_risk_still_present": true,
-    "runtime_stall_reproduced": false
+    "runtime_stall_reproduced": false,
+    "detail_artifact": "ioctl_irq_handoff_revalidation.json",
+    "ioctl_arming_store": "0x7808",
+    "irq_wait_entry": "0x75a8",
+    "irq_gate_recheck_under_mutex": "0x761c",
+    "worker_arming_complete_calls": [
+      "0x85c4",
+      "0x8610",
+      "0x894c"
+    ],
+    "ioctl_to_worker_handoff_gap_closed_static": true
   },
   "build": {
     "record": "docker_builds.json",
-    "record_sha256": "3858bae81eed19effbc4c671098320d80dcce0ddd1b5b7b6311f378be599edbf",
-    "source_manifest_file_count": 311,
-    "source_manifest_sha256": "120773761dbdb8854183402ab8c84b87ae6d55947dbf6421b392d7be749455af",
+    "record_sha256": "3b5e9f1df4be424a06ee2b4b0bed8de1cb7e52e7c2ea51e9c9e7cc674ec1fbc7",
+    "source_manifest_file_count": 193,
+    "source_manifest_sha256": "3a56d376ff053bd9b40342f377bf56cfed8cb504365cdb460c160a98082bacb8",
     "cycle_count": 2,
     "both_outputs_same_sha256": true,
     "undefined_imports_previous": 93,
     "undefined_imports_current": 93,
-    "undefined_import_sets_identical": true,
-    "strict_stock_import_parity": false
+    "undefined_import_sets_identical": false,
+    "strict_stock_import_parity": false,
+    "undefined_import_set_equality_checked": false
   },
   "mapping_status": {
     "mapping_count": 160,
@@ -170,11 +184,11 @@
   },
   "limitations": [
     "The HAL publishes U with an ordinary store and reads kernel AA/FF statuses with ordinary loads; no complete release/acquire pair exists in either direction.",
-    "Kernel-side barriers order local accesses but cannot supply the missing HAL-side release/acquire operations.",
-    "No runtime race or haptic failure was reproduced; the candidate was not installed on the NX809J.",
-    "richtap_clean_buf no longer matches the stock exact binary after the release-store hardening and is explicitly mapped as a declared deviation.",
-    "The global IRQ-stop mutex still spans the RTP start timeout and initial data callback; the current static latency risk remains.",
-    "Formal independent review, whole-driver semantic equivalence, strict stock import parity and hardware/runtime behavior remain unverified."
+    "Kernel-side barriers order local accesses but cannot supply missing HAL-side release/acquire operations.",
+    "The ioctl-to-worker IRQ handoff window in candidate 594c7a2b is statically closed by an arming gate and IRQ wait/recheck in candidate 8e09dd59; runtime race behavior is unverified.",
+    "The global IRQ-stop mutex still spans the RTP start timeout and initial data callback; the current static threaded-IRQ latency risk remains.",
+    "A short Android prebaked effect did not invoke the HAL FIFO writer; a path-specific TikTap/Richtap event remains untraced.",
+    "Formal independent review, whole-driver semantic equivalence, strict stock import parity, Lockdep, and candidate hardware behavior remain unverified."
   ],
   "latest_device_probe": {
     "probe_path": "device_probe_current_recheck.txt",
@@ -204,26 +218,23 @@
     "timestamp_precision": "date"
   },
   "latest_function_call_test": {
-    "test_path": "live_writer_call_test.txt",
+    "test_path": "prebaked_writer_call_test.txt",
     "test_date": "2026-11-03",
-    "test_kind": "standard_android_oneshot",
-    "command": "cmd vibrator_manager synced oneshot -a 100 32",
+    "test_kind": "android_prebaked_effect",
+    "command": "adb shell cmd vibrator_manager synced prebaked -b 2",
     "command_exit_code": 0,
     "do_not_disturb_mode": 0,
     "uprobe_method": "simpleperf --uprobe",
     "uprobe_event": "uprobes:codex_haptic_writer_20261103",
     "uprobe_library": "/vendor/lib64/libaacvibrator.so",
     "uprobe_file_offset": "0x1c198",
-    "writer_entry_vma": "0x1c194",
     "writer_body_vma": "0x1c198",
-    "first_load_segment_offset": "0x0",
-    "first_load_segment_virtual_address": "0x0",
     "sample_period": 1,
-    "capture_seconds": 20.0051,
+    "capture_seconds": 15.0031,
     "samples_recorded": 0,
     "samples_lost": 0,
     "writer_entry_observed_during_test": false,
-    "ordinary_oneshot_exercises_writer": false,
+    "prebaked_effect_exercises_writer": false,
     "path_specific_tiktap_or_richtap_invocation_tested": false,
     "candidate_installed": false,
     "temporary_trace_files_removed": true
