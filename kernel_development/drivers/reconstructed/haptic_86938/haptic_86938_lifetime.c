@@ -37,6 +37,7 @@ struct haptic_ram_request {
 };
 
 static DEFINE_MUTEX(haptic_lifetime_registry_lock);
+static DEFINE_MUTEX(haptic_lifecycle_transition_lock);
 static DEFINE_MUTEX(haptic_ram_callback_lock);
 static DEFINE_MUTEX(haptic_irq_stop_lock);
 static struct haptic_lifetime *active_lifetime;
@@ -86,9 +87,12 @@ int aw_i2c_probe(struct i2c_client *client)
 {
 	int ret;
 
+	/* Serialize the singleton shutdown gate across probe and remove. */
+	mutex_lock(&haptic_lifecycle_transition_lock);
 	mutex_lock(&haptic_lifetime_registry_lock);
 	if (active_lifetime || READ_ONCE(g_aw_haptic)) {
 		mutex_unlock(&haptic_lifetime_registry_lock);
+		mutex_unlock(&haptic_lifecycle_transition_lock);
 		return -EBUSY;
 	}
 	atomic_set(&haptic_shutdown, 0);
@@ -97,7 +101,18 @@ int aw_i2c_probe(struct i2c_client *client)
 	ret = aw_i2c_probe_stock_exact(client);
 	if (ret)
 		atomic_set(&haptic_shutdown, 1);
+	mutex_unlock(&haptic_lifecycle_transition_lock);
 	return ret;
+}
+
+void haptic_lifetime_transition_begin(void)
+{
+	mutex_lock(&haptic_lifecycle_transition_lock);
+}
+
+void haptic_lifetime_transition_end(void)
+{
+	mutex_unlock(&haptic_lifecycle_transition_lock);
 }
 
 int haptic_lifetime_file_open(struct file *file)

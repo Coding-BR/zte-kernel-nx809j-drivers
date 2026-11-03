@@ -15,15 +15,19 @@
 
 void aw_remove(struct i2c_client *client)
 {
-	u8 *haptic = i2c_get_clientdata(client);
+	u8 *haptic;
 	struct led_classdev *led_cdev;
 	struct workqueue_struct *workqueue;
 	struct gpio_desc *reset_desc;
 	int gpio;
 	int irq;
 
-	if (!haptic)
+	haptic_lifetime_transition_begin();
+	haptic = i2c_get_clientdata(client);
+	if (!haptic) {
+		haptic_lifetime_transition_end();
 		return;
+	}
 
 	printk(KERN_INFO "[%s][%04d]%s: enter\n", "haptic_hv", 0x11d9,
 	       "aw_remove");
@@ -82,4 +86,5 @@ void aw_remove(struct i2c_client *client)
 	gpio = *(int *)(haptic + 0x5c);
 	if (gpio >= 0)
 		gpio_free(gpio);
+	haptic_lifetime_transition_end();
 }

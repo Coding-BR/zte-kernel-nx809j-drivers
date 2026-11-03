@@ -17,6 +17,8 @@ extern struct aw_haptic *g_aw_haptic;
 extern struct miscdevice richtap_misc;
 
 int aw_i2c_probe(struct i2c_client *client);
+void haptic_lifetime_transition_begin(void);
+void haptic_lifetime_transition_end(void);
 irqreturn_t irq_handle(int irq, void *data);
 void vibrator_work_routine(struct work_struct *work);
 void rtp_work_routine(struct work_struct *work);

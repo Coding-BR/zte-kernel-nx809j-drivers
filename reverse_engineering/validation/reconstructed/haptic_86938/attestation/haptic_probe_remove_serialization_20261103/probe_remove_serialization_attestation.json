@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "date": "2026-11-03",
+  "finding": "GLOBAL_SHUTDOWN_GATE_CAN_BE_REACTIVATED_DURING_OLD_DEVICE_REMOVE",
+  "stock_functions": [
+    "aw_i2c_probe@001073c0",
+    "aw_remove@0010823c"
+  ],
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "previous_candidate_sha256": "7bb5ac661c2807e5ebc15c1efce91d5a978b04d22edd5eee11c5e52ea971348b",
+  "candidate_sha256": "6d5b7e9d5b108668a58f51b93be3350ea5116d8f5034d6cd3ac215490d8a14f6",
+  "candidate_size_bytes": 6692928,
+  "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+  "evidence": [
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+    "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c"
+  ],
+  "mitigation": "One global transition mutex serializes stock probe and complete manual remove teardown so probe cannot reset the global shutdown gate while an older state is draining.",
+  "prebind_build": {
+    "passed": true,
+    "reproducible": true,
+    "first_sha256": "6d5b7e9d5b108668a58f51b93be3350ea5116d8f5034d6cd3ac215490d8a14f6",
+    "second_sha256": "6d5b7e9d5b108668a58f51b93be3350ea5116d8f5034d6cd3ac215490d8a14f6",
+    "source_identity": true,
+    "candidate_rebound_before_final_audit": true,
+    "final_audit": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_remove_serialization_20261103/docker/final_audit.json",
+    "first_build_preserved_artifact": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_remove_serialization_20261103/docker/build_cycle_1/haptic_86938.ko",
+    "second_build_artifact": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "final_candidate_runtime_content_matches_fresh": true,
+    "final_candidate_runtime_section_layout_matches_fresh": true,
+    "final_mapping_review": true,
+    "final_kernel_source_identity": true,
+    "final_vermagic_accepted": true,
+    "final_undefined_symbols_match": false,
+    "final_additional_imports": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ]
+  },
+  "final_audit_pending": false,
+  "runtime_verified": false,
+  "hardware_verified": false,
+  "independent_review": "PENDING",
+  "driver_status": "INCOMPLETE",
+  "final_audit_status": "incomplete_or_failed",
+  "final_audit_errors": [
+    "module parity check failed: undefined_symbols_match"
+  ],
+  "strict_import_parity_gate": false
+}
