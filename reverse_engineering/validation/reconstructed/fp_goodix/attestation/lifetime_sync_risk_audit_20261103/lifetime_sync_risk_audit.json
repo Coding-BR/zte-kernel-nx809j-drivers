@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "fp_goodix_notifier_irq_teardown_20261103",
+  "driver": "fp_goodix",
+  "date": "2026-11-03",
+  "source_changed": false,
+  "build_validation": "NOT_RUN_NO_SOURCE_CHANGE",
+  "runtime_failure_reproduced": false,
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030"
+  },
+  "candidate_identity": {
+    "core_source_sha256": "cb02fb10e2986593c8c057b9975d579f53c78a634453247e8163f863e05fa78f",
+    "platform_source_sha256": "6aecc5204f6d44b9778383c9d5ff053cfe1a6c9ff4b956f10477602b8d87f346",
+    "netlink_source_sha256": "f56afc14549950051784b9ecbab34aeca64c0a75f38d549a0f13f213bf42031e",
+    "reconstruction_map_sha256": "a5e2b20bce04029d4767c8d13d33a7db2eab43b2030dcf382aa5ec016cf4f8d3",
+    "module_sha256": "fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595",
+    "canonical_docker_snapshot": "core, platform, netlink, map and module hashes match repository candidate"
+  },
+  "stock_identity": {
+    "module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  },
+  "stock_ghidra_evidence": {
+    "gf_remove": {
+      "entry": "00101968",
+      "pseudocode_sha256": "0d0a26ac2425f70b142bbe2f9074cc74a63fcdfde584826a98651f3fe818cd62"
+    },
+    "goodixfp_init_drm_notifier": {
+      "entry": "00101ac0",
+      "pseudocode_sha256": "fbc42272ac7b9c839f9dcf972544e59cf7d1c430160a34fb6df88c3e94086494"
+    },
+    "cleanup_module": {
+      "entry": "00102ac8",
+      "pseudocode_sha256": "4e7e0f6f674dace58930c7136b97b2dd1c52cb41d9f701f20c8d060fcd6532cf"
+    }
+  },
+  "current_candidate_assembly_review": {
+    "path": "attestation/current_candidate_assembly_review_20261102/assembly_comparison.json",
+    "sha256": "b1bf426f6a3eb4bc603c95400a563cdfcd5b55326f3ee52954c33414f2c9cd00",
+    "overall": "PASS 30/30 functions; zero failures",
+    "functions": {
+      "goodixfp_init_drm_notifier": "78/78 instructions, 312/312 bytes; instruction, relocation, section and symbol-size checks pass",
+      "gf_remove": "85/85 instructions, 340/340 bytes; instruction, relocation, section and symbol-size checks pass",
+      "cleanup_module": "22/22 instructions, 88/88 bytes; instruction, relocation, section and symbol-size checks pass"
+    }
+  },
+  "finding_1": {
+    "classification": "POTENTIAL_STOCK_INHERITED_NOTIFIER_REGISTRATION_AFTER_UNREGISTER",
+    "confidence": "HIGH_FOR_STATIC_INTERLEAVING",
+    "sequence": [
+      "gf_probe queues screen_state_work with a delay of 1250",
+      "goodixfp_init_drm_notifier can retry panel discovery for up to 25 one-second waits and then registers the notifier, storing the returned cookie",
+      "gf_remove calls panel_event_notifier_unregister(cookie) before cancel_delayed_work_sync(screen_state_work)",
+      "if the worker is active and has not stored its cookie when unregister runs, the unregister can miss the registration; cancel_delayed_work_sync then waits for the worker but does not unregister the newly stored cookie",
+      "gf_remove destroys the workqueue and returns with the panel notifier potentially still registered"
+    ],
+    "impact": "A panel callback may remain registered beyond device removal. If the driver is subsequently unloaded, the notifier may retain a callback pointer and client_data address in module text/data that have been released. The code also allows the callback to call sendnlmsg while module exit has already begun netlink teardown.",
+    "runtime_failure_reproduced": false
+  },
+  "finding_2": {
+    "classification": "CONDITIONAL_IRQ_TEARDOWN_GAP_ON_UNBIND_WITH_OPEN_FILE",
+    "confidence": "MEDIUM_STATIC_ORDERING",
+    "sequence": [
+      "gf_open requests the IRQ on the first open",
+      "gf_release disables and frees the IRQ only when the last open file closes",
+      "gf_remove removes fp_wakelock and destroys the device/work resources but does not disable or free that IRQ",
+      "the IRQ handler calls __pm_wakeup_event and sendnlmsg"
+    ],
+    "impact": "If platform unbind occurs while the character device is open, the IRQ can remain live after gf_remove has removed the wakeup source; the handler can still run until the last file is released. This is an unverified teardown/lifetime gap, not a demonstrated invalid memory access.",
+    "runtime_failure_reproduced": false
+  },
+  "module_exit_order": [
+    "Ghidra stock cleanup_module and current source call netlink_exit first",
+    "platform_driver_unregister runs afterwards and invokes gf_remove",
+    "netlink_exit releases nl_sk before the remove path quiesces notifier/work/possible IRQ callbacks"
+  ],
+  "limits": [
+    "The teardown sequences are preserved by exact stock/candidate assembly for the current candidate hash; these are OEM-inherited risks, not reconstruction mismatches.",
+    "No device unbind, module load/unload, notifier event, IRQ stimulus, or hardware test was performed.",
+    "The driver remains STATIC_VERIFIED_OFFLINE; semantic equivalence and hardware validation are not established, and independent human review remains pending."
+  ],
+  "recommended_correction": "For a declared hardening deviation, first cancel and drain screen_state_work, then unregister the final notifier cookie; quiesce any open-time IRQ before removing its wakeup source, with shared state that prevents double-free from gf_release; and unregister the platform driver before tearing down netlink. Rebuild in the canonical Docker workspace and independently review before promotion.",
+  "reconstruction_status": "Exact stock reconstruction status is preserved. Both lifecycle findings remain open and are not runtime-confirmed."
+}

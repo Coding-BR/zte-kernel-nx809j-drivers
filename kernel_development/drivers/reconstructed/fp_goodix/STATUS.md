@@ -70,3 +70,7 @@ Rechecagem e promoÃ§Ã£o de `gf_open` em 2026-08-28:
 - O mÃ³dulo canÃ´nico foi recompilado independentemente no Docker; o recheck completo passou 28/30 funÃ§Ãµes, removendo `gf_open` sem regressÃ£o nas 27 funÃ§Ãµes anteriormente exatas.
 - O harness host passou de forma reproduzÃ­vel, cobrindo 30 funÃ§Ãµes.
 - EvidÃªncia: `reverse_engineering/validation/reconstructed/fp_goodix/gf_open_exact_promotion_20260828.json`.
+
+## Lifetime/synchronization risk audit — 2026-11-03
+
+A static audit found two OEM-inherited teardown risks: `gf_remove` unregisters the current panel cookie before draining delayed work that can create a new registration, and an open-time IRQ is freed by last-file release rather than by platform remove. `zte_fp_exit` also tears down netlink before unregistering the platform driver. The current candidate's exact assembly review confirms the stock order; neither race was reproduced. Source/map remain unchanged; see the [lifetime/synchronization audit](../../../../reverse_engineering/validation/reconstructed/fp_goodix/attestation/lifetime_sync_risk_audit_20261103/README.md). Any correction must be declared as a hardening deviation, rebuilt in canonical Docker, and reviewed. Independent human review and hardware validation remain pending.
