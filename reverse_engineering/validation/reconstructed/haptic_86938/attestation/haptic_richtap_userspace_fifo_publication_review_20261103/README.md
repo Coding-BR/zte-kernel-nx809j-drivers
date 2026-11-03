@@ -1,5 +1,7 @@
 # Richtap shared FIFO publication review — 2026-11-03
 
+> Historical candidate scope: this review is bound to SHA-256 `37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca`, before the later FIFO metadata hardening. Its producer-ordering conclusion remains open, but its candidate and source hashes do not identify the current module. See the [current-candidate revalidation](../haptic_richtap_fifo_integrity_20261103/userspace_publication_revalidation.json) and the [FIFO hardening attestation](../haptic_richtap_fifo_integrity_20261103/README.md).
+
 ## Result
 
 The FIFO is mapped to userspace, but the producer's publication ordering cannot be verified from the available sources. This is an open protocol assumption, not a reproduced race or confirmed runtime failure.
