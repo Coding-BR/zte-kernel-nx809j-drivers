@@ -4560,7 +4560,8 @@
         "canonical-build:attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/canonical_build_report.json:sha256:44980323146dab790e5878ac4e4ae19660df2fb2936b84275e2454fd67408646",
         "source-sync:attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/source_sync_plan.json:sha256:f64568543834915f77663a613ffdf2c4a0e8a34ffafdc1869c9cdca9ad0b4a17",
         "kcfi-comparison:attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/kcfi_comparison.json:sha256:ee6824ac8071ade80afba0eb87f437017f63386a93b0eac7b92cdaf44071d640",
-        "candidate-module:attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/syna_dev_probe_misc_register_failure_cleanup_20261103/zte_tpd/zte_tpd.ko:sha256:adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143"
+        "candidate-module:attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/syna_dev_probe_misc_register_failure_cleanup_20261103/zte_tpd/zte_tpd.ko:sha256:adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df"
       ],
       "mapping_basis": "Retains the 1408-byte stock probe instruction stream while intentionally redirecting the misc_register call at +0x2b0 through a failure-cleanup helper. The wrapper also rejects success when either the input buffer or reset-recovery workqueue is missing. The strict assembly comparison is retained as a failure for these deviations and raw relocation labels; no full semantic equivalence is claimed.",
       "review_scope": "offline_lifecycle_hardening",
@@ -4571,7 +4572,7 @@
       "stock_body_bytes": 1408,
       "stock_entry": "00112038",
       "stock_function": "syna_dev_probe",
-      "mapping_note": "Ghidra stock evidence shows __kmalloc_large_noprof(0x32000) stored at tcm+0x460 and misc_register called with the object at tcm+0x4a0. Its misc_register error branch returns before the later common kfree, leaking the non-devm buffer. The candidate redirects only that call site (+0x2b0) to syna_dev_probe_misc_register; on error the helper nulls tcm+0x460, frees the buffer, and returns the original error. The public wrapper requires both tcm+0x548 helper workqueue and tcm+0x460 input buffer, otherwise it calls syna_dev_remove, clears drvdata, and returns -ENOMEM. The body remains 1408 bytes and all 352 instruction words match stock; the deliberate call relocation and raw BSS relocation labels keep strict comparison classified as a hardening deviation. Canonical Docker build passed 2/2 reproducible cycles and KCFI type ID matches stock with size ignored. Runtime fault injection and NX809J hardware remain unverified."
+      "mapping_note": "Ghidra stock evidence shows __kmalloc_large_noprof(0x32000) stored at tcm+0x460 and misc_register called with the object at tcm+0x4a0. Its misc_register error branch returns before the later common kfree, leaking the non-devm buffer. The candidate redirects only that call site (+0x2b0) to syna_dev_probe_misc_register; on error the helper nulls tcm+0x460, frees the buffer, and returns the original error. The public wrapper requires both tcm+0x548 helper workqueue and tcm+0x460 input buffer, otherwise it calls syna_dev_remove, clears drvdata, and returns -ENOMEM. The body remains 1408 bytes and all 352 instruction words match stock; the deliberate call relocation and raw BSS relocation labels keep strict comparison classified as a hardening deviation. Canonical Docker build passed 2/2 reproducible cycles and KCFI type ID matches stock with size ignored. Runtime fault injection and NX809J hardware remain unverified. Current-candidate lifecycle review confirms input_agent cleanup on misc-registration and connect failures; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json."
     },
     {
       "evidence": [
@@ -4595,7 +4596,8 @@
         "attestation:syna_dev_remove_null_guard_20261102/canonical_build_report.json:sha256:5358bca3b75a7de9f6049d085a019eb12439c8ccf41e4bccac554f3226ab57b9",
         "attestation:syna_dev_remove_null_guard_20261102/assembly_comparison.json:sha256:340e0bfc4c118a8545a4d9dbd5acea4c48125ee9e6b588739f135e327225b8f4",
         "attestation:syna_dev_remove_null_guard_20261102/kcfi_type_only_comparison.json:sha256:35640e7f5f9e75fb1e1b2b3d8d7762c82106dbd4b1c52b4152c57f267f3649f5",
-        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0",
+        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df"
       ],
       "mapping_basis": "Stock Ghidra pseudocode/P-Code and AArch64 assembly were reviewed; the candidate adds early returns for null platform/context pointers before teardown side effects.",
       "review_scope": "offline_lifecycle_hardening",
@@ -4606,7 +4608,7 @@
       "stock_body_bytes": 308,
       "stock_entry": "001125bc",
       "stock_function": "syna_dev_remove",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence.",
+      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence. Current-candidate review confirms sequential duplicate disconnect returns early after the connected-state byte clears; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json.",
       "candidate_body_bytes": 336
     },
     {
@@ -4661,7 +4663,8 @@
         "source-sync:attestation/syna_reflash_queue_guard_20261102/source_sync_plan.json:sha256:059efd9a507f4c51d549768c2f30260da5bd338761b758a53b83e426e46e3c05",
         "canonical-build:attestation/syna_reflash_queue_guard_20261102/canonical_build_report.json:sha256:ed91686f8d690463761a5addf08dcecf989c2435be8ec9b2762cb7f90fa201a5",
         "kcfi-comparison:attestation/syna_reflash_queue_guard_20261102/kcfi_comparison.json:sha256:32d1c50f4f755d1f0b525306feb92e256641d9a4018f74113aeab510590e2d8d",
-        "lifecycle-review:attestation/syna_reflash_queue_guard_20261102/lifecycle_review.json:sha256:e9d8c97cef5e23fbbda380ecccc3a2d4fcec5ec69203a0e2bda96fbb57a00e2e"
+        "lifecycle-review:attestation/syna_reflash_queue_guard_20261102/lifecycle_review.json:sha256:e9d8c97cef5e23fbbda380ecccc3a2d4fcec5ec69203a0e2bda96fbb57a00e2e",
+        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df"
       ],
       "mapping_basis": "Preserves the 1004-byte stock AArch64 body and KCFI preamble; one delayed-work queue call is guarded, and the public wrapper rolls back IRQ/input registration on allocation failure.",
       "review_scope": "offline_exact_function_level",
@@ -4672,7 +4675,7 @@
       "stock_body_bytes": 1004,
       "stock_entry": "00112714",
       "stock_function": "syna_dev_connect",
-      "mapping_note": "The stock connect body remains under syna_dev_connect_stock_exact. The delayed-work submission now rejects a NULL reflash queue; the wrapper detects the missing queue, runs the recovered disconnect path, deregisters input_agent, and returns -ENOMEM. This intentional HARDENED_STOCK_DEVIATION passed two reproducible canonical Docker builds and a matching KCFI type-ID check; runtime/hardware remains unverified."
+      "mapping_note": "The stock connect body remains under syna_dev_connect_stock_exact. The delayed-work submission now rejects a NULL reflash queue; the wrapper detects the missing queue, runs the recovered disconnect path, deregisters input_agent, and returns -ENOMEM. This intentional HARDENED_STOCK_DEVIATION passed two reproducible canonical Docker builds and a matching KCFI type-ID check; runtime/hardware remains unverified. Current-candidate review confirms a failed connect deregisters the node before probe cleanup releases state; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json."
     },
     {
       "evidence": [
@@ -5336,7 +5339,8 @@
         "source-current:syna_input_agent.c:sha256:764fd68630dcdaef6759a79b87debcab5f6d39827f8ceb8bd159237556f698bb",
         "source-current:globals.c:sha256:9e2aa0a8bfb1a623f0d97cf4ebbf451671ca5a114f3e64b25898488cb6394bd2",
         "source-current:defs.h:sha256:cf769c02319638cfc9db5eb30ae429ad8d16e0f59e4cb33b689fbd421ce0e454",
-        "source-current:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455"
+        "source-current:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455",
+        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df"
       ],
       "mapping_basis": "Ghidra stock lifetime/control-flow evidence, lifecycle gate review, curated source sync, and reproducible two-cycle canonical Docker build",
       "review_scope": "offline_lifecycle_hardening",
@@ -5347,7 +5351,7 @@
       "stock_body_bytes": 632,
       "stock_entry": "00114b3c",
       "stock_function": "syna_cdev_create",
-      "mapping_note": "Lifecycle online publication now occurs only after device_create succeeds. Failure cleanup deregisters input_agent; quiesce wakes both frame waitqueues and the stable epoll queue. Two-cycle canonical Docker build passes; runtime/hardware remains unverified."
+      "mapping_note": "Lifecycle online publication now occurs only after device_create succeeds. Failure cleanup deregisters input_agent; quiesce wakes both frame waitqueues and the stable epoll queue. Two-cycle canonical Docker build passes; runtime/hardware remains unverified. Current-candidate review confirms the lifecycle stays offline until device creation succeeds and failure cleanup deregisters input_agent; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json."
     },
     {
       "evidence": [
@@ -5391,7 +5395,8 @@
         "source-current:globals.c:sha256:9e2aa0a8bfb1a623f0d97cf4ebbf451671ca5a114f3e64b25898488cb6394bd2",
         "source-current:defs.h:sha256:cf769c02319638cfc9db5eb30ae429ad8d16e0f59e4cb33b689fbd421ce0e454",
         "source-current:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455",
-        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0",
+        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df"
       ],
       "mapping_basis": "Ghidra stock lifetime/control-flow evidence, lifecycle gate review, curated source sync, and reproducible two-cycle canonical Docker build",
       "review_scope": "offline_lifecycle_hardening",
@@ -5402,7 +5407,7 @@
       "stock_body_bytes": 400,
       "stock_entry": "00114e04",
       "stock_function": "syna_cdev_remove",
-      "mapping_note": "Teardown quiesces callbacks, deregisters input_agent, disconnects/synchronizes the IRQ, and retires the mapped buffer behind per-open references so VMAs remain backed until final file release. Two-cycle canonical Docker build passes; runtime/hardware remains unverified."
+      "mapping_note": "Teardown quiesces callbacks, deregisters input_agent, disconnects/synchronizes the IRQ, and retires the mapped buffer behind per-open references so VMAs remain backed until final file release. Two-cycle canonical Docker build passes; runtime/hardware remains unverified. Current-candidate review confirms quiesce, guarded repeated deregistration, and owner retirement for module adaccd92; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json."
     },
     {
       "evidence": [

@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T04:41:40Z",
+  "target": "zte_tpd input_agent and cdev lifecycle",
+  "status": "PASS_STATIC_REVIEW_CURRENT_CANDIDATE_WITH_LIMITATIONS",
+  "reviewer": "Codex static review; not an independent human review",
+  "candidate": {
+    "repository_module": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "docker_module": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+    "sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+    "docker_sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+    "byte_identical": true,
+    "size": 7259840
+  },
+  "build_binding": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/canonical_build_report.json",
+    "report_sha256": "44980323146dab790e5878ac4e4ae19660df2fb2936b84275e2454fd67408646",
+    "passed": true,
+    "reproducible": true,
+    "cycles_accepted": 2,
+    "cycles_requested": 2,
+    "cycle_outputs": [
+      {
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\syna_dev_probe_misc_register_failure_cleanup_20261103\\zte_tpd\\canonical_builds\\d3c0929d7deb\\20261103T034008Z\\cycle_1\\zte_tpd.ko",
+        "sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+        "size": 7259840
+      },
+      {
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\zte_tpd\\attestation\\syna_dev_probe_misc_register_failure_cleanup_20261103\\zte_tpd\\canonical_builds\\d3c0929d7deb\\20261103T034008Z\\cycle_2\\zte_tpd.ko",
+        "sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+        "size": 7259840
+      }
+    ],
+    "source_tree_file_count": 858,
+    "source_tree_manifest_sha256": "03e0fa3190197e5e9b4bed0deb29c62c038efe526cf4ff34e98ffc4fb0c714dd",
+    "repo_input_mismatches": 0,
+    "docker_input_mismatches": 0
+  },
+  "kernel_api": {
+    "source_identity": "NX809J target kernel volume used by the canonical Docker image",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "file": "/kernel/kernel/kernel_platform/common/drivers/char/misc.c",
+    "sha256": "0e6017b294d6dbd395c383de3d17a9171ef898de65fc52bbc98e883295b4922a",
+    "observed_contract": [
+      "misc_register assigns this_device from device_create_with_groups and may leave an error pointer on failure.",
+      "misc_deregister removes the entry and destroys the device but does not clear misc->this_device."
+    ]
+  },
+  "previous_review_binding": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json",
+    "report_sha256": "8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0",
+    "bound_module_sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
+    "current_module_sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+    "classification": "historical snapshot bound to a prior module; current-candidate review is this attestation"
+  },
+  "findings": [
+    {
+      "id": "probe-registration-failure-order",
+      "result": "PASS_STATIC",
+      "detail": "Stock probe evidence places misc_register before connect and cdev creation. The candidate misc-registration helper frees and nulls the non-devm input buffer on registration error while preserving the original error."
+    },
+    {
+      "id": "connect-failure-deregistration",
+      "result": "PASS_STATIC",
+      "detail": "The candidate syna_dev_connect wrapper calls the preserved stock body and deregisters input_agent on a negative return before probe error cleanup releases the TCM state."
+    },
+    {
+      "id": "callback-online-gate",
+      "result": "PASS_STATIC",
+      "detail": "input_agent operations require the lifecycle online gate and matching miscdevice. cdev creation starts offline and publishes online only after device_create succeeds, so the early registered node cannot enter callbacks during probe setup."
+    },
+    {
+      "id": "misc-error-pointer-and-repeat-deregistration",
+      "result": "PASS_STATIC",
+      "detail": "The target kernel leaves error pointers in this_device on device creation failure and does not clear this_device after deregistration. The candidate serializes deregistration, checks IS_ERR_OR_NULL, and writes NULL after successful deregistration, making its repeated cleanup calls safe."
+    },
+    {
+      "id": "quiesce-before-retire",
+      "result": "PASS_STATIC",
+      "detail": "Quiesce closes the online gate, advances generation, wakes blocked waiters, and waits for active callbacks to drain before deregistration and owner retirement."
+    },
+    {
+      "id": "open-vma-buffer-lifetime",
+      "result": "PASS_STATIC",
+      "detail": "The per-open owner reference retains the mmap backing buffer after device retirement; release drops the file reference and the final owner reference frees the buffer. The stock release body itself does not dereference TCM or private_data."
+    },
+    {
+      "id": "sequential-duplicate-disconnect",
+      "result": "PASS_STATIC",
+      "detail": "The candidate teardown paths may call disconnect again after cdev removal. The preserved stock disconnect checks its connected-state byte and returns early after the first call clears it; this establishes sequential idempotence only."
+    }
+  ],
+  "limitations": [
+    "Static source, Ghidra evidence, target-kernel API, and artifact review only; no Android runtime, NX809J hardware, fault-injection, KASAN, or KCSAN validation.",
+    "The candidate intentionally contains lifecycle hardening deviations and is not claimed to be fully stock-semantics equivalent.",
+    "No source code changed in this review; it does not constitute independent human approval."
+  ],
+  "evidence": [
+    {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_input_agent.c",
+      "sha256": "2221b13fed6cf28e6656c8f8778586ac8b007197e6704451b6bdc5bb6e680d82"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect_wrapper.c",
+      "sha256": "5fcc72fc8875410a750cdb587729dbe367b98295c5bcd75647f1e2b3b63f3e09"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe_exact.S",
+      "sha256": "85144d99545368ac4e310218226de273d5e7089e6f73e11898d0e85ac3ad3ec8"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe_wrapper.c",
+      "sha256": "61958712e5e652df7a98bad7df949fc882c9ad99f18bc70ffb52f10043791c67"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
+      "sha256": "0d6397ec22b88e06a6ff4f0896a6abe6d19a0b27576199e4bfeed7a8b0de5121"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_remove.c",
+      "sha256": "e80289f332dee27ed2b4d0496ed02d46cc2ebcf73743e091e5b30445509c85c4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c",
+      "sha256": "de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_disconnect_exact.S",
+      "sha256": "4479e457855bfae3fe634e9c93b9ae056ba97917202ebc47c8fd351c8bfdcb88"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+      "sha256": "e4728aed14a6f88b7fd1a46df08139abfe206797916644d22905137792a14b63"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0156_00112038_syna_dev_probe.c",
+      "sha256": "01403b177143bebaa14e6c9389f5b5e025a3c23874b97eccefc44c443a810cb2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c",
+      "sha256": "c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c",
+      "sha256": "a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0173_00114510_syna_poll.c",
+      "sha256": "3e16c45ff760b703f1d9c3811af3ba0e54d675b6ee4eb2ac24fc0d25cdfe8f4b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0175_001147ec_syna_mmap.c",
+      "sha256": "b5d84ad2fe4ff0bec8041e39c5c735cfa19d90a4001a7537f5e2b3dda81a01a9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0176_001148a0_syna_open.c",
+      "sha256": "7afbf8d65bf9462c36406c594195d4daef63c461c44dcee71ee1613e4e097cbd"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0177_001148e0_syna_release.c",
+      "sha256": "0a97688f3bc076cbad0850c23dd6aaa3274cd8d4cd10dfb00ec3bd18633892ad"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0183_00114b3c_syna_cdev_create.c",
+      "sha256": "698ccb62c69f47a4df3bb076f3f661613dc699d88ee17cb5c5f3163a05e3bff6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c",
+      "sha256": "0c43242c1987319dd9788d3e395985db814b025fd092383a869a10545657db57"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/canonical_build_report.json",
+      "sha256": "44980323146dab790e5878ac4e4ae19660df2fb2936b84275e2454fd67408646"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/source_sync_plan.json",
+      "sha256": "f64568543834915f77663a613ffdf2c4a0e8a34ffafdc1869c9cdca9ad0b4a17"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/probe_failure_path_review.json",
+      "sha256": "747970485d622863e56215cf9af8744a563fd3ee08fa8779b16e78ca7d4cfbac"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json",
+      "sha256": "8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
+    }
+  ]
+}
