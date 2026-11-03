@@ -18,6 +18,12 @@ A module-wide transition mutex now covers the entire stock probe call and the co
 - Kernel source commit: `3356b35306d35d5a480e3b63df1a9f065b5d9f55`; expected release `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.
 - The canonical Docker pre-bind produced two identical modules and matched kernel identity; its report is `docker/prebind.json` (it still compared the preceding candidate). After rebinding candidate and map, the final audit `docker/final_audit.json` confirms byte-identical builds, candidate runtime content and section layout, kernel identity, vermagic, and map review. Its sole error is strict stock import parity: the same nine lifetime-hardening imports recorded in the prior batch. The first final-cycle module is preserved at `docker/build_cycle_1/haptic_86938.ko`; the repository candidate is the matching second-cycle module.
 
+## Adjacent callback boundaries reviewed
+
+Both stock sysfs groups are created on the LED child device at state offset `+0xf8`: the group in `vibrator_init` and the group in `aw8693x_creat_node`. The hardened `aw_remove` unregisters the LED child before freeing state. In the pinned kernel, `led_classdev_unregister` flushes brightness work and calls `device_unregister`; device removal deletes the kobject directory, and kernfs marks nodes removing, deactivates them, and drains active callbacks. This covers those sysfs stores and the brightness callback before teardown proceeds.
+
+The driver registers only system-sleep PM callbacks through `SET_SYSTEM_SLEEP_PM_OPS`. Stock `aw_i2c_suspend` takes the embedded state mutex and invokes stop; `aw_i2c_resume` is a no-op. The pinned device PM callback path and driver remove path use the same per-device `device_lock`, so system-sleep callbacks serialize with remove. This does not claim runtime-PM behavior or replace hardware concurrency testing.
+
 ## Limits
 
 This is static synchronization hardening. Runtime unbind/reprobe stress, lockdep, KCSAN, target hardware behavior, and an independent review remain open. The haptic driver is still incomplete and the new wrappers are not stock-equivalent. The strict import-parity audit may flag lifetime-only imports; see the final report for the exact result.

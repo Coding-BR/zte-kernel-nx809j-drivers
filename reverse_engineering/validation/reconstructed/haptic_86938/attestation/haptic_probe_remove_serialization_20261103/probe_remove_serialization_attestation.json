@@ -58,5 +58,30 @@
   "final_audit_errors": [
     "module parity check failed: undefined_symbols_match"
   ],
-  "strict_import_parity_gate": false
+  "strict_import_parity_gate": false,
+  "adjacent_callback_lifetime_review": {
+    "sysfs_groups": {
+      "stock_registration_sites": [
+        "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_semantic_model.c: sysfs_create_group(state+0xf8, ...)",
+        "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_126_aw8693x_creat_node.c: sysfs_create_group(state+0xf8, ...)"
+      ],
+      "remove_order": "aw_remove unregisters the LED class device at state+0xa8 before draining/freeing the device state; both groups are attached to its device at state+0xf8.",
+      "target_kernel_evidence": [
+        "drivers/leds/led-class.c:581-612: led_classdev_unregister flushes brightness work and calls device_unregister.",
+        "drivers/base/core.c:3809-3819 and 3854-3876: device_del removes attributes and deletes the kobject directory.",
+        "fs/kernfs/dir.c:1466-1487: removal deactivates nodes and calls kernfs_drain before unlinking."
+      ],
+      "disposition": "STATICALLY_DRAINED_BEFORE_STATE_FREE; runtime stress pending"
+    },
+    "system_sleep_callbacks": {
+      "registration": "haptic_86938_i2c_driver.c uses SET_SYSTEM_SLEEP_PM_OPS(aw_i2c_suspend, aw_i2c_resume).",
+      "suspend_behavior": "Stock aw_i2c_suspend locks state+0x2f0, calls the stop callback, then unlocks; resume is a no-op.",
+      "target_kernel_evidence": [
+        "drivers/base/power/main.c system-sleep callback path takes device_lock(dev).",
+        "drivers/base/dd.c driver release/remove path requires and holds the same per-device lock."
+      ],
+      "disposition": "SYSTEM_SLEEP_CALLBACK_SERIALIZED_WITH_REMOVE_BY_DRIVER_CORE; runtime PM behavior not inferred from this PM_OPS table"
+    },
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55"
+  }
 }
