@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "review_id": "timer_state_second_pass_20261103",
+  "review_status": "PASS_STATIC_SECOND_PASS_WITH_DECLARED_TIMING_RESIDUAL",
+  "reviewer_scope": "same-workflow second-pass static review; not an independent reviewer",
+  "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+  "candidate_module_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+  "stock_module_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "function_status_preserved": {
+    "fan_speed_irq_proc@001004ec": "PROMOTED_OFFLINE_EXACT",
+    "fan_hrtimer_hander@00100f80": "PROMOTED_OFFLINE_EXACT",
+    "fan_speed_show@001017f4": "candidate_hardening_deviation; NOT_ESTABLISHED_HARDENED_DEVIATION"
+  },
+  "findings": [
+    {
+      "state": "fan_state[0x02] phase byte",
+      "evidence": "Stock Ghidra shows the callback transitions phase 1->2->3 and fan_speed_show writes phase 1 before arming the hrtimer. Candidate callback uses READ_ONCE/WRITE_ONCE; fan_speed_show remains a hand-authored instruction body.",
+      "assessment": "Callback annotations preserve single-copy compiler semantics for its C accesses. They do not serialize a delayed callback against a later sysfs sample; the one-second wait and timer behavior remain stock. This review does not claim the callback always runs before the sysfs read."
+    },
+    {
+      "state": "fan_state[0x04] IRQ counter",
+      "evidence": "The stock IRQ body increments the aligned 32-bit counter using the AArch64 LSE/LL-SC atomic path. The timer callback uses atomic_set/atomic_read for reset and observations; its assembly comparison is exact.",
+      "assessment": "The access width and offset are aligned. The IRQ update is inline assembly, so this static review cannot claim KCSAN instrumentation or a runtime race-free result."
+    },
+    {
+      "state": "fan_state[0x08] sampled snapshot",
+      "evidence": "The callback publishes the 32-bit snapshot with WRITE_ONCE after reading the counter. Stock fan_speed_show sleeps for one second and then reads the snapshot; it does not cancel the timer before that read.",
+      "assessment": "If timer execution is delayed, the read can observe a previous snapshot, as in stock. Adding cancellation, completion, or a new lock would alter timing/control flow and is not justified by this parity-only review."
+    },
+    {
+      "state": "timer teardown lifetime",
+      "evidence": "The current remove path cancels the hrtimer before clearing driver state and releasing the context.",
+      "assessment": "This supports the teardown ordering statically; runtime timing and hardware behavior remain unverified."
+    }
+  ],
+  "decision": "No source change or status promotion is justified. Preserve stock-matched timing and record the delayed-timer residual.",
+  "build_validation": {
+    "source_changed": false,
+    "docker_rebuild_run_this_review": false,
+    "basis": "The existing two-cycle Docker report is hash-bound to the unchanged current source and module; this batch changes documentation only.",
+    "docker_report": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json"
+  },
+  "limitations": [
+    "No new KCSAN, runtime, or NX809J hardware validation.",
+    "Whole-driver audit remains incomplete; other intentional hardening deviations remain.",
+    "Independent human review remains pending; this second pass does not replace it."
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+      "sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.ko",
+      "sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076"
+    },
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0000_001004ec_fan_speed_irq_proc.c",
+      "sha256": "83d97325953e1acd2e740bfbe8db3f729f19153202a878da033bd8044156bb21"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0005_00100f80_fan_hrtimer_hander.c",
+      "sha256": "f76e4c6e803aa6f41ec20ec0b10f18860e4d8a24ceeb898ec738fce03f2d0111"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0012_001017f4_fan_speed_show.c",
+      "sha256": "ccbf9a0c0552c24ca3ac3195c2f5cdd6d44b28cda4007b7ffbf595c47213c5a5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0000_fan_speed_irq_proc_001004ec.asm",
+      "sha256": "6a64340c68b77402e40201dd0a9c210f9371d6ec05037a3377c5e0331d7893b0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0005_fan_hrtimer_hander_00100f80.asm",
+      "sha256": "3bffdc2860ad44236812bf0f500a81b3b40227394e579b417e15b82f8890742f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0012_fan_speed_show_001017f4.asm",
+      "sha256": "235729aa3fc3492ae017719fdf1b5848e310a01ed41b3e6e52f409b512dd35aa"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/timer_state_access_review.json",
+      "sha256": "a67f2085e1592a1492422632f8fa8529bdbdd9f80f476fc77279a8160ce6fb7d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/assembly_comparison.json",
+      "sha256": "927e0c2e600f63e082dc90ab08016053e194538a537196cbe8a55172628a8bc0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/candidate_sync.json",
+      "sha256": "bb1be1b0f19b73eadf79adf65ebd27e0e8524655d045711dc548d8f384f7d1f0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json",
+      "sha256": "29bcc0c3642edc36debd253ca113f7554be376aa4661c53401a4ce6876b6e817"
+    }
+  ]
+}

@@ -65,3 +65,8 @@ A revisão confirmou a ordem de drenagem sysfs/timer/IRQ/devres e a cobertura do
 A leitura do `drivers/regulator/core.c` do kernel alvo confirma que um erro pode ocorrer antes da baixa da referência do consumidor ou depois que a contagem local já foi decrementada. O retorno negativo, sozinho, não permite ao driver reconciliar seu contador privado. `regulator_force_disable` pode desligar uma linha compartilhada; não é um fallback genérico seguro. O loop de remoção permanece limitado e o residual de falha do provider continua declarado, sem promover o status do driver.
 
 O overlay `qwjujube` do source tree contém um nó `soc,fan`; isso não prova qual overlay foi carregado no aparelho. A atestação versionada está em `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_regulator_disable_contract_20261103/`.
+## Segunda passagem sobre estado compartilhado do timer — 2026-11-03
+
+A revisão estática confirmou que o callback usa `READ_ONCE`/`WRITE_ONCE` para fase/snapshot e `atomic_t` no contador alinhado em `fan_state + 0x04`; o IRQ stock incrementa esse contador pelo caminho AArch64 LSE/LL-SC. A função do callback mantém assembly idêntica ao stock. O `fan_speed_show` stock arma o timer, espera um segundo e lê o snapshot sem cancelar o timer; se o callback atrasar, pode permanecer uma amostra anterior, comportamento preservado. Não foi justificada alteração de código ou promoção de status.
+
+A revisão adicional está em `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_state_second_pass_20261103/`. Ela não substitui revisão independente, KCSAN, runtime ou hardware; esses pontos seguem pendentes.
