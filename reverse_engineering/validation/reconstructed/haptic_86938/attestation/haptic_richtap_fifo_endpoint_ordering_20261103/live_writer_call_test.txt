@@ -1,0 +1,22 @@
+Authorized live function-call probe — NX809J, 2026-11-03
+
+Purpose: determine whether an ordinary Android one-shot effect enters the HAL function statically identified as the mmap FIFO writer.
+
+Live binary and mapping identity:
+- Active service: vendor.qti.hardware.vibrator.service.
+- The service mapped /vendor/lib64/libaacvibrator.so and /dev/awinic_haptic; the device mapping was rw-s and 0x4000 bytes.
+- HAL library SHA-256: 8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61, matching the DSO used by the static call-site scan.
+- Writer: write_data_to_buffer, symbol entry VMA 0x1c194 and body VMA 0x1c198. The first executable PT_LOAD has file offset 0 and virtual address 0, so the uprobe file offset was 0x1c198.
+- ELF inspection reports 25 direct BL sites to the writer body in the DSO. The writer is statically reachable from generate_wave_with_brake and tiktap_start paths.
+
+Test:
+- Uprobe: p:codex_haptic_writer_20261103 /vendor/lib64/libaacvibrator.so:0x1c198.
+- Collector: simpleperf, event uprobes:codex_haptic_writer_20261103, sample period 1, scoped to the active vibrator service process. The perf header confirms that this uprobe event was registered.
+- Capture duration: 20.0051 seconds; samples recorded: 0; samples lost: 0.
+- During capture, issued `cmd vibrator_manager synced oneshot -a 100 32`; command exit code 0, Do Not Disturb mode 0. The manager was IDLE after the test.
+
+Result and scope:
+No entry to write_data_to_buffer was observed during this standard one-shot test. This does not show that the writer is unused in Richtap/TikTap dynamic-stream paths: the exact live DSO is mapped alongside the shared FIFO, and its static call graph contains direct callers. It does show that a generic one-shot is not sufficient to exercise this writer. A path-specific TikTap/Richtap invocation remains untraced.
+
+Cleanup:
+No candidate module was transferred or installed. The temporary simpleperf script and perf.data were removed from the phone. The temporary tracefs instance was removed; /sys/kernel/tracing/uprobe_events was empty afterward. No settings or module state were changed; the only device action was the user-authorized short one-shot request.

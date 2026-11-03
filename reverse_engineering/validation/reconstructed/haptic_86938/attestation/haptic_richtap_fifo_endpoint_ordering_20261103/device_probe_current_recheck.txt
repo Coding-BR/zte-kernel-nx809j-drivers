@@ -1,0 +1,19 @@
+Read-only live ADB recheck — 2026-11-03 19:33 UTC
+Device: NX809J (Android 16), connected through USB debugging.
+Root context: uid=0(root), context=u:r:ksu:s0.
+
+Live process observation:
+- vendor.qti.hardware.vibrator.service was active as a system process; PID intentionally omitted.
+- Its /proc/<pid>/maps contained /vendor/lib64/libaacvibrator.so.
+- The same process mapped /dev/awinic_haptic as rw-s shared memory, length 0x4000 (16,384 bytes). Address ranges and device serial are intentionally omitted.
+
+On-device identities:
+- /vendor/lib64/libaacvibrator.so SHA-256: 8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61.
+- /vendor_dlkm/lib/modules/haptic_86938.ko SHA-256: 05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e (matches repository stock module).
+- /dev/awinic_haptic: character device major 10, minor 112; owner system:system; mode 0666.
+- /proc/modules listed haptic_86938 as loaded. The hash of the loaded in-memory module was not established.
+
+Function tie-in:
+The HAL DSO hash exactly matches the binary inspected in producer_callsite_scan.txt. That scan identifies write_data_to_buffer at VMA 0x1c194 (body 0x1c198) and 25 direct BL call sites in the same library. This proves the active HAL maps the exact library containing the statically identified FIFO writer and maps the driver's shared FIFO node. The probe did not trace a live invocation of write_data_to_buffer, and did not establish that it ran during this inspection.
+
+This read-only ADB recheck itself did not trigger vibration. A separate user-authorized one-shot function-call test is recorded in live_writer_call_test.txt. No files, module, settings, or other device state were changed during this recheck. The reconstructed candidate was not transferred or installed.

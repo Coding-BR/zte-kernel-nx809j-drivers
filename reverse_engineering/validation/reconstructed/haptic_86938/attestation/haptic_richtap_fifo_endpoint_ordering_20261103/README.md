@@ -24,7 +24,7 @@ Two isolated builds used the canonical NX809J Docker image and target kernel com
 
 The producer library and kernel are still not synchronized by a matched release/acquire protocol. The threaded IRQ latency concern also remains: the worker takes the global IRQ-stop mutex at VMA `0x8640`, calls `richtap_rtp_start` at `0x8650`, and reaches its common unlock at `0x85f4`. The timeout path still requests about 602.5–752.6 ms of sleeps, plus I2C and scheduling time. This is a static latency risk, not a reproduced IRQ stall.
 
-No haptic effect was triggered, the candidate was not installed, and no runtime race or hardware result is claimed. The goal remains incomplete pending HAL-side ordering evidence or repair, the remaining worker review, independent review, strict ABI/import resolution, and runtime/hardware validation.
+A user-authorized standard 100 ms one-shot was tested with a simpleperf uprobe at the writer body; it produced zero samples. The candidate was not installed and no runtime race or hardware-equivalence result is claimed. The goal remains incomplete pending HAL-side ordering evidence or repair, the remaining worker review, independent review, strict ABI/import resolution, and runtime/hardware validation.
 
 ## Evidence files
 
@@ -39,3 +39,11 @@ No haptic effect was triggered, the candidate was not installed, and no runtime 
 ## Curated snapshot manifest
 
 postbuild_curated_snapshot_manifest.json records SHA-256 and byte size for every file in the final Docker curated snapshot, including the rebuilt module and this attestation. The manifest is also copied into the snapshot; it excludes only its own path to avoid a self-referential hash.
+
+## Fresh live ADB confirmation
+
+A read-only recheck on 2026-11-03 found the active `vendor.qti.hardware.vibrator.service` mapping both `/vendor/lib64/libaacvibrator.so` and the writable shared `/dev/awinic_haptic` region of 16 KiB. The on-device HAL hash matches the exact DSO analyzed for `write_data_to_buffer`; the installed module file hash matches stock. This identifies the real HAL producer path needed for the FIFO handoff review. It does not prove that `write_data_to_buffer` executed during the read-only probe. PID and ASLR addresses are omitted. Details are in `device_probe_current_recheck.txt`.
+
+## Live function-call test
+
+A simpleperf uprobe was armed at file offset `0x1c198` in the exact DSO currently mapped by the vibrator service. During a 20.0051-second capture, a standard `vibrator_manager` one-shot request completed with zero writer samples and zero lost samples. This confirms that the generic one-shot test did not enter `write_data_to_buffer`; it does not disprove the statically reachable Richtap/TikTap producer path. The precise command, event registration, scope, and cleanup are in `live_writer_call_test.txt`. A path-specific dynamic-stream invocation remains untraced.
