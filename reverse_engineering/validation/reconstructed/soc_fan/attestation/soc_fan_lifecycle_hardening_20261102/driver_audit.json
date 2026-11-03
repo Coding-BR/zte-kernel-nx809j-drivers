@@ -1,0 +1,1697 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-soc_fan-1-24c8ab0f6bed:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/soc_fan/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/soc_fan/cycle_1=/soc_fan -fdebug-prefix-map=/work/validation/soc_fan/cycle_1=/soc_fan",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/soc_fan/cycle_1/soc_fan.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/soc_fan/cycle_1/soc_fan.o\n  MODPOST /work/validation/soc_fan/cycle_1/Module.symvers\n  CC [M]  /work/validation/soc_fan/cycle_1/soc_fan.mod.o\n  CC [M]  /work/validation/soc_fan/cycle_1/.module-common.o\n  LD [M]  /work/validation/soc_fan/cycle_1/soc_fan.ko\n  BTF [M] /work/validation/soc_fan/cycle_1/soc_fan.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-soc_fan-2-c3d705f9cb21:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/soc_fan/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/soc_fan/cycle_2=/soc_fan -fdebug-prefix-map=/work/validation/soc_fan/cycle_2=/soc_fan",
+              "-j",
+              "4",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/soc_fan/cycle_2/soc_fan.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/soc_fan/cycle_2/soc_fan.o\n  MODPOST /work/validation/soc_fan/cycle_2/Module.symvers\n  CC [M]  /work/validation/soc_fan/cycle_2/soc_fan.mod.o\n  CC [M]  /work/validation/soc_fan/cycle_2/.module-common.o\n  LD [M]  /work/validation/soc_fan/cycle_2/soc_fan.ko\n  BTF [M] /work/validation/soc_fan/cycle_2/soc_fan.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-soc_fan-1-24c8ab0f6bed:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/soc_fan/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/soc_fan/cycle_1=/soc_fan -fdebug-prefix-map=/work/validation/soc_fan/cycle_1=/soc_fan",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-soc_fan-2-c3d705f9cb21:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/soc_fan/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/soc_fan/cycle_2=/soc_fan -fdebug-prefix-map=/work/validation/soc_fan/cycle_2=/soc_fan",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "create_kernel_output_volume_first": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-soc_fan-1-24c8ab0f6bed"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-soc_fan-1-24c8ab0f6bed\n"
+          },
+          "create_kernel_output_volume_second": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-soc_fan-2-c3d705f9cb21"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-soc_fan-2-c3d705f9cb21\n"
+          },
+          "prepare_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-soc_fan-1-24c8ab0f6bed:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          },
+          "prepare_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-soc_fan-2-c3d705f9cb21:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102\\soc_fan\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102\\soc_fan\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102\\soc_fan\\cycle_1\\soc_fan.ko",
+          "sha256": "5554b8d8c1fb1183a5ea8807f97563690254a1ed1c3811affb1c470c2de7f54b",
+          "size": 289760
+        },
+        "kernel_output_volumes": {
+          "cycle_1": "codex-kbuild-soc_fan-1-24c8ab0f6bed",
+          "cycle_2": "codex-kbuild-soc_fan-2-c3d705f9cb21"
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102\\soc_fan\\cycle_2\\soc_fan.ko",
+          "sha256": "5554b8d8c1fb1183a5ea8807f97563690254a1ed1c3811affb1c470c2de7f54b",
+          "size": 289760
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\work\\soc_fan_lifecycle_hardening_20261102\\soc_fan"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\soc_fan\\soc_fan.ko",
+        "sha256": "828b4e6e2307fb28edfb6cbf4de451998fe85bf159eeaa2a2f4fdd5b0e34fd3a",
+        "size": 284296
+      },
+      "candidate_hash_binding": {
+        "current_candidate_sha256": "828b4e6e2307fb28edfb6cbf4de451998fe85bf159eeaa2a2f4fdd5b0e34fd3a",
+        "declared_candidate_sha256": "828b4e6e2307fb28edfb6cbf4de451998fe85bf159eeaa2a2f4fdd5b0e34fd3a",
+        "matches": true
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_hash_matches_map": true,
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_runtime_content_matches_fresh": false,
+        "candidate_runtime_section_layout_matches_fresh": false,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "kernel_source_identity": true,
+        "makefile": true,
+        "mapping_review": false,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 1,
+        "undefined_symbols_match": false,
+        "vermagic_accepted": true
+      },
+      "driver": "soc_fan",
+      "errors": [
+        "module parity check failed: undefined_symbols_match",
+        "module parity check failed: candidate_runtime_content_matches_fresh",
+        "module parity check failed: candidate_runtime_section_layout_matches_fresh"
+      ],
+      "ghidra": {
+        "document": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\soc_fan\\STATUS.md",
+        "export": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\soc_fan\\offline_static\\ghidra_stock\\soc_fan.ko",
+        "function_count": 15,
+        "function_identities": [
+          {
+            "stock_entry": "1004ec",
+            "stock_function": "fan_speed_irq_proc"
+          },
+          {
+            "stock_entry": "10052c",
+            "stock_function": "nb_fan_probe"
+          },
+          {
+            "stock_entry": "100a54",
+            "stock_function": "nb_fan_remove"
+          },
+          {
+            "stock_entry": "100a90",
+            "stock_function": "nb_fan_parse_dt"
+          },
+          {
+            "stock_entry": "100dac",
+            "stock_function": "nb_fan_gpio_proc"
+          },
+          {
+            "stock_entry": "100f80",
+            "stock_function": "fan_hrtimer_hander"
+          },
+          {
+            "stock_entry": "10109c",
+            "stock_function": "fan_enable_show"
+          },
+          {
+            "stock_entry": "101114",
+            "stock_function": "fan_enable_store"
+          },
+          {
+            "stock_entry": "10127c",
+            "stock_function": "fan_level_set"
+          },
+          {
+            "stock_entry": "1014c0",
+            "stock_function": "fan_level_show"
+          },
+          {
+            "stock_entry": "10150c",
+            "stock_function": "fan_level_store"
+          },
+          {
+            "stock_entry": "101654",
+            "stock_function": "fan_pwm_store"
+          },
+          {
+            "stock_entry": "1017f4",
+            "stock_function": "fan_speed_show"
+          },
+          {
+            "stock_entry": "101acc",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "101afc",
+            "stock_function": "cleanup_module"
+          }
+        ],
+        "function_names": [
+          "cleanup_module",
+          "fan_enable_show",
+          "fan_enable_store",
+          "fan_hrtimer_hander",
+          "fan_level_set",
+          "fan_level_show",
+          "fan_level_store",
+          "fan_pwm_store",
+          "fan_speed_irq_proc",
+          "fan_speed_show",
+          "init_module",
+          "nb_fan_gpio_proc",
+          "nb_fan_parse_dt",
+          "nb_fan_probe",
+          "nb_fan_remove"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "705dc868b1e35c2708f7aad81695eacc",
+          "function_count": 15,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000b7f",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "soc_fan.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "kernel_source_identity": {
+        "checks": {
+          "bindgen_sha256": true,
+          "bindgen_version": true,
+          "clang_binary_sha256": true,
+          "clang_revision": true,
+          "clang_version": true,
+          "config_sha256": true,
+          "docker_image_id": true,
+          "kernel_release": true,
+          "localversion_sha256": true,
+          "module_symvers_sha256": true,
+          "rust_toolchain": true,
+          "rustc_sha256": true,
+          "source_head": true,
+          "source_repository": true
+        },
+        "expected": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "image_command": {
+          "argv": [
+            "docker",
+            "image",
+            "inspect",
+            "--format",
+            "{{.Id}}",
+            "nubia-sm8850-kernel-builder:latest"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+        },
+        "mismatches": [],
+        "observed": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "bindgen 0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image": "nubia-sm8850-kernel-builder:latest",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "passed": true,
+        "probe_command": {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-v",
+            "nx809j_bindgen_0695:/work/bindgen:ro",
+            "-e",
+            "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w",
+            "/work/src/kernel",
+            "nubia-sm8850-kernel-builder:latest",
+            "python3",
+            "-c",
+            "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nsource_root = pathlib.Path(\"/work/src/kernel\")\ncommon = source_root / \"kernel_platform/common\"\nbuild_output = source_root / \".codex-kbuild/identity\"\nbuild_inputs = source_root / \"target_build_inputs\"\nlocalversion_rel = \"kernel_platform/common/localversion.nx809j-target\"\nbindgen = pathlib.Path(\"/work/bindgen/bin/bindgen\")\nclang = pathlib.Path(\"/work/toolchains/clang-r536225/bin/clang.real\")\nrustc = pathlib.Path(\"/work/toolchains/rust-1.82.0/bin/rustc\")\nclang_version = run([str(clang), \"--version\"])\nrust_toolchain = run([str(rustc), \"--version\"])\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"-C\", str(source_root), \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"-C\", str(source_root), \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"-C\", str(common), f\"O={build_output}\", \"ARCH=arm64\", \"LLVM=1\", \"LLVM_IAS=1\", \"kernelrelease\"]),\n    \"config_sha256\": digest(build_output / \".config\"),\n    \"module_symvers_sha256\": digest(build_output / \"Module.symvers\"),\n    \"localversion_sha256\": digest(common / \"localversion.nx809j-target\"),\n    \"bindgen_version\": run([str(bindgen), \"--version\"]),\n    \"bindgen_sha256\": digest(bindgen),\n    \"clang_revision\": \"clang-r536225\",\n    \"clang_version\": clang_version.splitlines()[0] if clang_version else None,\n    \"clang_binary_sha256\": digest(clang),\n    \"rust_toolchain\": rust_toolchain,\n    \"rustc_sha256\": digest(rustc),\n}))\n"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\"source_head\": \"3356b35306d35d5a480e3b63df1a9f065b5d9f55\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\", \"config_sha256\": \"b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\", \"localversion_sha256\": \"e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475\", \"bindgen_version\": \"bindgen 0.69.5\", \"bindgen_sha256\": \"548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706\", \"clang_revision\": \"clang-r536225\", \"clang_version\": \"Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\", \"clang_binary_sha256\": \"69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044\", \"rust_toolchain\": \"rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)\", \"rustc_sha256\": \"ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c\"}\n"
+        },
+        "probe_error": null,
+        "required": true,
+        "status": "MATCH"
+      },
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_allocated_metadata_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "830987dc3a441f4451b465abaeac1bbb1c34578b6eb4f04c9f6128c40ac2d7d5",
+              "size": 36,
+              "type": 7
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "91c5bad4437f4d3b983b0fe0e179d25b6db51c53e6c226f110fc4c742532b408",
+              "size": 36,
+              "type": 7
+            },
+            "section": ".note.gnu.build-id"
+          }
+        ],
+        "candidate_depends_match_target": true,
+        "candidate_loadable_section_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "b7837de72f7a0bc1bde40237c8ae1cc8b7aa1fc7bc36157d17d649f3a983feb7",
+              "size": 12,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "0d19ceb9a15b48bad7df4251877ac75b9519d8937789e7a6da519ace3d5ea8be",
+              "size": 36,
+              "type": 1
+            },
+            "section": ".altinstructions"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "7067d1115981363620401caed79823d24cf65b813df981fd19314874d574ea78",
+              "size": 656,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "9843540092887010e2c14fdc6664aa7f9fe5d80e38352727112049fd113acb9c",
+              "size": 824,
+              "type": 1
+            },
+            "section": ".init.eh_frame"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "830987dc3a441f4451b465abaeac1bbb1c34578b6eb4f04c9f6128c40ac2d7d5",
+              "size": 36,
+              "type": 7
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "91c5bad4437f4d3b983b0fe0e179d25b6db51c53e6c226f110fc4c742532b408",
+              "size": 36,
+              "type": 7
+            },
+            "section": ".note.gnu.build-id"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "25fc150d346e3074b2f8c0f1970867653082de95088ba59c3096020d27abe965",
+              "size": 48,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "10c90dc7a50ffc58cb2e388f61d87036887a2a1b75d963e9b9398a4c1871e2e9",
+              "size": 144,
+              "type": 4
+            },
+            "section": ".rela.altinstructions"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "b11fd022176b76db2b4ea9f476080101c489f9f63fdc84694e9cf690a061eaf2",
+              "size": 456,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "6ca44db1ea0a8a06a746f74fc7ab8ccd820d1efe1210c738e5c92968a2b5c83f",
+              "size": 456,
+              "type": 4
+            },
+            "section": ".rela.data"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "ab126391c2a61ecc0911bb76f7e354fbd87d434d113b9b136a2cbd1249abddea",
+              "size": 72,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "66f0030a28df3cef582fa11e39ffa24a718ba4c1e7633a5f4748985eb789fe49",
+              "size": 72,
+              "type": 4
+            },
+            "section": ".rela.exit.text"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "d75636af75d6c1f8ba9dc9007145b2b255a8bd1f811236ea0b5c012a8a952ff9",
+              "size": 48,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "8c23fcd170459d2a68447d8f65dac08495263baf696b196af22341753760ff7c",
+              "size": 48,
+              "type": 4
+            },
+            "section": ".rela.gnu.linkonce.this_module"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "65cf50cfd327f5718efd248c64ccbfb03b8fda4628495c72dd528d3d615c5d87",
+              "size": 360,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "2a48d47c3404b55e3a0756c07a045cb31b0138a972f8d9dc5016c3f104542d44",
+              "size": 432,
+              "type": 4
+            },
+            "section": ".rela.init.eh_frame"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "79b0be977515477e72b69a222baa2140105452c6b4b15673fbd74cf26573995b",
+              "size": 120,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "4996bf4ec297345c42a5ac3ca4a61354ee575305390001c5587e0578210b9309",
+              "size": 120,
+              "type": 4
+            },
+            "section": ".rela.init.text"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "354572e037d590faf931d8af8c309b149a2e405ffebb1ccf34ef35b33e0d8f25",
+              "size": 288,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "cb610404f46509f83806ff850d68a14ef08960d3b349eef6609802a4636fb069",
+              "size": 288,
+              "type": 4
+            },
+            "section": ".rela.rodata"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "9acd6dd55a41520fb4230ed2daf1fbd281c5e6912bc95e67aa2a486ebb2cce34",
+              "size": 13608,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "6fe2fb3055284cd79c078fe611418e8225e6e97bb72b8ecc9ea850a8f153e985",
+              "size": 14184,
+              "type": 4
+            },
+            "section": ".rela.text"
+          },
+          {
+            "candidate": {
+              "flags": 50,
+              "sha256": "538879e7a4c1cac191a3bb1e5bd7cf11ab922b781ab1de06e05faf9a6011f177",
+              "size": 3144,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 50,
+              "sha256": "c64454ab9684f6773542137d64c4e93b12eaf35978dc5f66a5fb87ba5ea084d8",
+              "size": 3195,
+              "type": 1
+            },
+            "section": ".rodata.str1.1"
+          },
+          {
+            "candidate": {
+              "flags": 6,
+              "sha256": "902c0c8d5a90ec02dbf87182bfe2ef5fa5761202a0f02060bee207f3278259a9",
+              "size": 5600,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 6,
+              "sha256": "e7da887efa4fcd42a6fcee32cb9c7a386a23ff7ccca0a67873785872e46eb7d9",
+              "size": 6220,
+              "type": 1
+            },
+            "section": ".text"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "f127d9db7210aae9f1886462a69ba0b6f3ca32a4ddb7cdc5a0c291375b898aef",
+              "size": 164,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "f75d53f0c21a32cdabd12f93702ad6e8a8c2d17844c7915764837e76fc713e2a",
+              "size": 172,
+              "type": 1
+            },
+            "section": "__version_ext_crcs"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "312d4128047f2e208b48fafd2c61a145da942df118b99f2ff82ca5e86925a547",
+              "size": 711,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "6787e0b867401d842e780b6a34ee7cd3edc2d1b5dcf6919cfe45f704ca91fbfc",
+              "size": 753,
+              "type": 1
+            },
+            "section": "__version_ext_names"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "fd1459c9c2b2d3e06ed3ffa32fb273a8fb822ab894151b42c468140ce40ec687",
+              "size": 2624,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "6eeffb7a7179916552691f3184b6aaf45b44f981ae49edc011ed02a90d345071",
+              "size": 2752,
+              "type": 1
+            },
+            "section": "__versions"
+          }
+        ],
+        "candidate_loadable_sections_match_fresh": false,
+        "candidate_matches_fresh": false,
+        "candidate_modinfo": {
+          "alias": [
+            "of:N*T*Csoc,fan",
+            "of:N*T*Csoc,fanC*"
+          ],
+          "depends": [
+            ""
+          ],
+          "import_ns": [
+            "PWM"
+          ],
+          "license": [
+            "GPL v2"
+          ],
+          "vermagic": [
+            "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_nonloadable_section_differences": [
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "f71c87962075545065fa824d1ee315b28fa10f63912fa47ea4d435f42efe35b2",
+              "size": 851,
+              "type": 1
+            },
+            "fresh": null,
+            "section": ".BTF"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "4d2469a30ae9c1dd6043a3acdb293ba6c017207c3670cb129ae85faddbae9f5d",
+              "size": 1137,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "0c31eecd0cb5d1aabe03fb095835e608429395ab43dcd30058a6dde07d15478d",
+              "size": 1234,
+              "type": 1
+            },
+            "section": ".debug_abbrev"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "ba3c09fcf0990f6583afdab252b254d32900984b2f029d460bb5fd0b6ef0cfe2",
+              "size": 59,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "ce73052c723d1d0aeee72905c3bd00fb0d9f46e7641f52a83a804b3decee28a8",
+              "size": 59,
+              "type": 1
+            },
+            "section": ".debug_addr"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "d0bb0a8f95ba2aa3dfa9f062e1e3410a4bf8568622328832fe6aa1ee9a404983",
+              "size": 61083,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "af097e0fc1435d982270cd588769060df21730ae1a8710431ddb3ad1d06bdb7b",
+              "size": 62349,
+              "type": 1
+            },
+            "section": ".debug_info"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "8cce13feec69b5d5c838bdfe72eb52ef2834fee42e1827ddc791b9e9550b2147",
+              "size": 4774,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "7e7046088993f2a2179154eef06e938343e0f121cbf8b869e63633e279540e5d",
+              "size": 5165,
+              "type": 1
+            },
+            "section": ".debug_line"
+          },
+          {
+            "candidate": {
+              "flags": 2096,
+              "sha256": "234e2f24feb18fe900ac544fcb3f8f4be0aa7e1f894304624b9ccd006e7f76bc",
+              "size": 1136,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2096,
+              "sha256": "2fc6fd98548e7ae27c1b032a68ea8ba4cc144eb6980bda3f541adbd4418ff637",
+              "size": 1518,
+              "type": 1
+            },
+            "section": ".debug_line_str"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "4bf488cc804e22c5259dbbef2ef1e8692649edaff52e43bd3ffeca87e169780d",
+              "size": 1273,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "4f2f8bf97e0c75691978df040cdf24d0811244bc3caaf9d415b8e1cd629e2d25",
+              "size": 1662,
+              "type": 1
+            },
+            "section": ".debug_loclists"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "e0ebdfc5cd58746c6b558f7f29884ff943cc19cbe6f3c5f55ffb34188d57f298",
+              "size": 67,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "6268f106dbaf640ea8462979ca2e1dc6d1446e4e954bcad6924e1890be293609",
+              "size": 118,
+              "type": 1
+            },
+            "section": ".debug_rnglists"
+          },
+          {
+            "candidate": {
+              "flags": 2096,
+              "sha256": "e1eac1bb161e68ba61a0dd5e3a910e9f386d3b8d3a8e848be224a4d7d2a885ed",
+              "size": 18645,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2096,
+              "sha256": "f3c02a1aa7aeb209c9af8cd189df043d9b57b169a6ecc79085c73ecd78b32d5c",
+              "size": 18893,
+              "type": 1
+            },
+            "section": ".debug_str"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "c87c3a3aff487694fdf2222bb251260162ab2dda888e5cbca30171511e4f4237",
+              "size": 61,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "d9450af6a7be2683f57821575c08ad10a9ca47dc5084fc46c7414331461ba4aa",
+              "size": 61,
+              "type": 1
+            },
+            "section": ".debug_str_offsets"
+          },
+          {
+            "candidate": {
+              "flags": 2147483648,
+              "sha256": "9bf4c96f74e48d11ac4b1d2f209e42be00595d78ffd7eb02bb1bd8289968e25e",
+              "size": 63,
+              "type": 1879002115
+            },
+            "fresh": {
+              "flags": 2147483648,
+              "sha256": "c24fda1dab907054b9d7ee523fe454819d466d34a789de39b89f8a2a348f9afe",
+              "size": 66,
+              "type": 1879002115
+            },
+            "section": ".llvm_addrsig"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "51a5b179a523e2ea1125f3fb65a689fcc8a1b77cb05ebb15886ad8ac42e5cb12",
+              "size": 3960,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "75ce46266df03018dd25ebc713800daad387eb1ada83b1176cfc138aad5f3016",
+              "size": 4608,
+              "type": 4
+            },
+            "section": ".rela.debug_addr"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "cae6c574e71a4de6d5f9a9ddb9171733c2fca12555a449de0deb8e35549c342c",
+              "size": 336,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "05fa271e2ab40d4ed8cf245a0df7731215e5f00cb1a9564be5fefec2eff0bc14",
+              "size": 336,
+              "type": 4
+            },
+            "section": ".rela.debug_info"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "4df7008290185670e469a62303f89ab9574d943b35881732d3b7692bea0314c9",
+              "size": 8208,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "1d8c9d5f2bf1b1401537bda6fdfa219cb76dfa117e86d687930b41cb6b3482db",
+              "size": 7896,
+              "type": 4
+            },
+            "section": ".rela.debug_line"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "c723e7998b501c792a59dc7ecffa8706ef01f0fb4b1759aad70d304d14779c42",
+              "size": 137280,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "ecbdf777c331fca9f9698fb293449e21fc5ce2f7c71ae2860ff6d214b1b20412",
+              "size": 138312,
+              "type": 4
+            },
+            "section": ".rela.debug_str_offsets"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "8a5cd679b2774d3f142bace14487cadd9b58247fc15d803c85f0ea96da4a550f",
+              "size": 659,
+              "type": 3
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "928bd7648048719d52b57542832ca9a762f69f8fb9aab64b6ae0d0e9a9e607be",
+              "size": 819,
+              "type": 3
+            },
+            "section": ".shstrtab"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "937adc038c5bfa53a69dc1a85ef4d72afcb8afb5171ec65ec83a92109fafa2ae",
+              "size": 2182,
+              "type": 3
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "811282f005bd30236db2340c8ba0cc9338c81e75dbfad52a56a97c1d640fe88a",
+              "size": 2417,
+              "type": 3
+            },
+            "section": ".strtab"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "f5dc45896392c0dacd2606a3784ce362aeadb1d354bf946088afa012109f4e55",
+              "size": 4704,
+              "type": 2
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "bdd7203b7524c6c55fe7cd64c68d1b1cd04915224c54ca3f3b765ccfce69cf1e",
+              "size": 4920,
+              "type": 2
+            },
+            "section": ".symtab"
+          }
+        ],
+        "candidate_runtime_content_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "b7837de72f7a0bc1bde40237c8ae1cc8b7aa1fc7bc36157d17d649f3a983feb7",
+              "size": 12,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "0d19ceb9a15b48bad7df4251877ac75b9519d8937789e7a6da519ace3d5ea8be",
+              "size": 36,
+              "type": 1
+            },
+            "section": ".altinstructions"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "7067d1115981363620401caed79823d24cf65b813df981fd19314874d574ea78",
+              "size": 656,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "9843540092887010e2c14fdc6664aa7f9fe5d80e38352727112049fd113acb9c",
+              "size": 824,
+              "type": 1
+            },
+            "section": ".init.eh_frame"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "25fc150d346e3074b2f8c0f1970867653082de95088ba59c3096020d27abe965",
+              "size": 48,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "10c90dc7a50ffc58cb2e388f61d87036887a2a1b75d963e9b9398a4c1871e2e9",
+              "size": 144,
+              "type": 4
+            },
+            "section": ".rela.altinstructions"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "b11fd022176b76db2b4ea9f476080101c489f9f63fdc84694e9cf690a061eaf2",
+              "size": 456,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "6ca44db1ea0a8a06a746f74fc7ab8ccd820d1efe1210c738e5c92968a2b5c83f",
+              "size": 456,
+              "type": 4
+            },
+            "section": ".rela.data"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "ab126391c2a61ecc0911bb76f7e354fbd87d434d113b9b136a2cbd1249abddea",
+              "size": 72,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "66f0030a28df3cef582fa11e39ffa24a718ba4c1e7633a5f4748985eb789fe49",
+              "size": 72,
+              "type": 4
+            },
+            "section": ".rela.exit.text"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "d75636af75d6c1f8ba9dc9007145b2b255a8bd1f811236ea0b5c012a8a952ff9",
+              "size": 48,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "8c23fcd170459d2a68447d8f65dac08495263baf696b196af22341753760ff7c",
+              "size": 48,
+              "type": 4
+            },
+            "section": ".rela.gnu.linkonce.this_module"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "65cf50cfd327f5718efd248c64ccbfb03b8fda4628495c72dd528d3d615c5d87",
+              "size": 360,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "2a48d47c3404b55e3a0756c07a045cb31b0138a972f8d9dc5016c3f104542d44",
+              "size": 432,
+              "type": 4
+            },
+            "section": ".rela.init.eh_frame"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "79b0be977515477e72b69a222baa2140105452c6b4b15673fbd74cf26573995b",
+              "size": 120,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "4996bf4ec297345c42a5ac3ca4a61354ee575305390001c5587e0578210b9309",
+              "size": 120,
+              "type": 4
+            },
+            "section": ".rela.init.text"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "354572e037d590faf931d8af8c309b149a2e405ffebb1ccf34ef35b33e0d8f25",
+              "size": 288,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "cb610404f46509f83806ff850d68a14ef08960d3b349eef6609802a4636fb069",
+              "size": 288,
+              "type": 4
+            },
+            "section": ".rela.rodata"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "9acd6dd55a41520fb4230ed2daf1fbd281c5e6912bc95e67aa2a486ebb2cce34",
+              "size": 13608,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "6fe2fb3055284cd79c078fe611418e8225e6e97bb72b8ecc9ea850a8f153e985",
+              "size": 14184,
+              "type": 4
+            },
+            "section": ".rela.text"
+          },
+          {
+            "candidate": {
+              "flags": 50,
+              "sha256": "538879e7a4c1cac191a3bb1e5bd7cf11ab922b781ab1de06e05faf9a6011f177",
+              "size": 3144,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 50,
+              "sha256": "c64454ab9684f6773542137d64c4e93b12eaf35978dc5f66a5fb87ba5ea084d8",
+              "size": 3195,
+              "type": 1
+            },
+            "section": ".rodata.str1.1"
+          },
+          {
+            "candidate": {
+              "flags": 6,
+              "sha256": "902c0c8d5a90ec02dbf87182bfe2ef5fa5761202a0f02060bee207f3278259a9",
+              "size": 5600,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 6,
+              "sha256": "e7da887efa4fcd42a6fcee32cb9c7a386a23ff7ccca0a67873785872e46eb7d9",
+              "size": 6220,
+              "type": 1
+            },
+            "section": ".text"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "f127d9db7210aae9f1886462a69ba0b6f3ca32a4ddb7cdc5a0c291375b898aef",
+              "size": 164,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "f75d53f0c21a32cdabd12f93702ad6e8a8c2d17844c7915764837e76fc713e2a",
+              "size": 172,
+              "type": 1
+            },
+            "section": "__version_ext_crcs"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "312d4128047f2e208b48fafd2c61a145da942df118b99f2ff82ca5e86925a547",
+              "size": 711,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "6787e0b867401d842e780b6a34ee7cd3edc2d1b5dcf6919cfe45f704ca91fbfc",
+              "size": 753,
+              "type": 1
+            },
+            "section": "__version_ext_names"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "fd1459c9c2b2d3e06ed3ffa32fb273a8fb822ab894151b42c468140ce40ec687",
+              "size": 2624,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "6eeffb7a7179916552691f3184b6aaf45b44f981ae49edc011ed02a90d345071",
+              "size": 2752,
+              "type": 1
+            },
+            "section": "__versions"
+          }
+        ],
+        "candidate_runtime_content_matches_fresh": false,
+        "candidate_runtime_section_layout_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "size": 12,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "size": 36,
+              "type": 1
+            },
+            "section": ".altinstructions"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "size": 656,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "size": 824,
+              "type": 1
+            },
+            "section": ".init.eh_frame"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "size": 48,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "size": 144,
+              "type": 4
+            },
+            "section": ".rela.altinstructions"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "size": 360,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "size": 432,
+              "type": 4
+            },
+            "section": ".rela.init.eh_frame"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "size": 13608,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "size": 14184,
+              "type": 4
+            },
+            "section": ".rela.text"
+          },
+          {
+            "candidate": {
+              "flags": 50,
+              "size": 3144,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 50,
+              "size": 3195,
+              "type": 1
+            },
+            "section": ".rodata.str1.1"
+          },
+          {
+            "candidate": {
+              "flags": 6,
+              "size": 5600,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 6,
+              "size": 6220,
+              "type": 1
+            },
+            "section": ".text"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "size": 164,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "size": 172,
+              "type": 1
+            },
+            "section": "__version_ext_crcs"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "size": 711,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "size": 753,
+              "type": 1
+            },
+            "section": "__version_ext_names"
+          },
+          {
+            "candidate": {
+              "flags": 2,
+              "size": 2624,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2,
+              "size": 2752,
+              "type": 1
+            },
+            "section": "__versions"
+          }
+        ],
+        "candidate_runtime_section_layout_matches_fresh": false,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__mutex_init",
+              "__platform_driver_register",
+              "__stack_chk_fail",
+              "_printk",
+              "alt_cb_patch_nops",
+              "devm_fwnode_pwm_get",
+              "devm_gpio_request",
+              "devm_kmalloc",
+              "devm_pinctrl_get",
+              "devm_regulator_get",
+              "devm_request_threaded_irq",
+              "disable_irq",
+              "disable_irq_nosync",
+              "enable_irq",
+              "gpio_to_desc",
+              "gpiod_direction_output_raw",
+              "gpiod_get_raw_value",
+              "gpiod_to_irq",
+              "hrtimer_cancel",
+              "hrtimer_init",
+              "hrtimer_start_range_ns",
+              "kernel_kobj",
+              "kobject_create_and_add",
+              "kobject_put",
+              "msleep",
+              "mutex_lock",
+              "mutex_unlock",
+              "of_get_named_gpio",
+              "of_get_next_available_child",
+              "of_get_property",
+              "of_property_read_variable_u32_array",
+              "pinctrl_lookup_state",
+              "pinctrl_select_state",
+              "platform_driver_unregister",
+              "regulator_disable",
+              "regulator_enable",
+              "regulator_is_enabled",
+              "regulator_set_voltage",
+              "sprintf",
+              "sscanf",
+              "sysfs_create_group",
+              "sysfs_remove_group"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Csoc,fan",
+              "of:N*T*Csoc,fanC*"
+            ],
+            "depends": [
+              ""
+            ],
+            "import_ns": [
+              "PWM"
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": false,
+        "kernel_source_identity": true,
+        "missing_imports": [
+          "gpio_request",
+          "regulator_get",
+          "request_threaded_irq"
+        ],
+        "namespace_match": true,
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__mutex_init",
+              "__platform_driver_register",
+              "__stack_chk_fail",
+              "_printk",
+              "alt_cb_patch_nops",
+              "devm_fwnode_pwm_get",
+              "devm_kmalloc",
+              "devm_pinctrl_get",
+              "disable_irq",
+              "disable_irq_nosync",
+              "enable_irq",
+              "gpio_request",
+              "gpio_to_desc",
+              "gpiod_direction_output_raw",
+              "gpiod_get_raw_value",
+              "gpiod_to_irq",
+              "hrtimer_init",
+              "hrtimer_start_range_ns",
+              "kernel_kobj",
+              "kobject_create_and_add",
+              "msleep",
+              "mutex_lock",
+              "mutex_unlock",
+              "of_get_named_gpio",
+              "of_get_next_available_child",
+              "of_get_property",
+              "of_property_read_variable_u32_array",
+              "pinctrl_lookup_state",
+              "pinctrl_select_state",
+              "platform_driver_unregister",
+              "regulator_disable",
+              "regulator_enable",
+              "regulator_get",
+              "regulator_is_enabled",
+              "regulator_set_voltage",
+              "request_threaded_irq",
+              "sprintf",
+              "sscanf",
+              "sysfs_create_group",
+              "sysfs_remove_group"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Csoc,fan",
+              "of:N*T*Csoc,fanC*"
+            ],
+            "depends": [
+              ""
+            ],
+            "import_ns": [
+              "PWM"
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "stock_depends_match_target": true,
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": true,
+        "undefined_symbols_match": false,
+        "unexpected_imports": [
+          "devm_gpio_request",
+          "devm_regulator_get",
+          "devm_request_threaded_irq",
+          "hrtimer_cancel",
+          "kobject_put"
+        ],
+        "vermagic_accepted": true,
+        "vermagic_match": false
+      },
+      "status": "incomplete_or_failed",
+      "stock": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reference_modules\\full_vendor_boot\\soc_fan.ko",
+        "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+        "size": 42728
+      },
+      "traceability": {
+        "declared_hardening_deviations": [],
+        "exists": true,
+        "mapped_functions": 15,
+        "mapped_identities": [
+          {
+            "stock_entry": "101afc",
+            "stock_function": "cleanup_module"
+          },
+          {
+            "stock_entry": "10109c",
+            "stock_function": "fan_enable_show"
+          },
+          {
+            "stock_entry": "101114",
+            "stock_function": "fan_enable_store"
+          },
+          {
+            "stock_entry": "100f80",
+            "stock_function": "fan_hrtimer_hander"
+          },
+          {
+            "stock_entry": "10127c",
+            "stock_function": "fan_level_set"
+          },
+          {
+            "stock_entry": "1014c0",
+            "stock_function": "fan_level_show"
+          },
+          {
+            "stock_entry": "10150c",
+            "stock_function": "fan_level_store"
+          },
+          {
+            "stock_entry": "101654",
+            "stock_function": "fan_pwm_store"
+          },
+          {
+            "stock_entry": "1004ec",
+            "stock_function": "fan_speed_irq_proc"
+          },
+          {
+            "stock_entry": "1017f4",
+            "stock_function": "fan_speed_show"
+          },
+          {
+            "stock_entry": "101acc",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "100dac",
+            "stock_function": "nb_fan_gpio_proc"
+          },
+          {
+            "stock_entry": "100a90",
+            "stock_function": "nb_fan_parse_dt"
+          },
+          {
+            "stock_entry": "10052c",
+            "stock_function": "nb_fan_probe"
+          },
+          {
+            "stock_entry": "100a54",
+            "stock_function": "nb_fan_remove"
+          }
+        ],
+        "mapping_review_errors": [
+          "mapping 1 is not independently reviewed",
+          "mapping 2 is not independently reviewed",
+          "mapping 4 is not independently reviewed",
+          "mapping 8 is not independently reviewed",
+          "mapping 12 is not independently reviewed"
+        ],
+        "mapping_review_passed": false,
+        "passed": false,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\soc_fan\\reconstruction_map.json",
+        "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+        "traceability_errors": [],
+        "traceability_passed": true,
+        "unmapped_functions": []
+      },
+      "warnings": [
+        "mapping 1 is not independently reviewed",
+        "mapping 2 is not independently reviewed",
+        "mapping 4 is not independently reviewed",
+        "mapping 8 is not independently reviewed",
+        "mapping 12 is not independently reviewed"
+      ]
+    }
+  ],
+  "generated_utc": "2026-11-03T02:39:28.529847+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": true,
+  "rebuild_requested": true,
+  "run_root": "public repository evidence: C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "soc_fan"
+    ],
+    "static_verified": []
+  },
+  "target_kernel_manifest": "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\config\\target_kernel.json"
+}

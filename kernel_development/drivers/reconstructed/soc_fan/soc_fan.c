@@ -141,7 +141,28 @@ __asm__(
 
 
 static int nb_fan_probe(struct platform_device *pdev);
+static int nb_fan_probe_stock_exact(struct platform_device *pdev);
 static void nb_fan_remove(struct platform_device *pdev);
+static enum hrtimer_restart fan_hrtimer_hander(struct hrtimer *timer);
+static int fan_level_set(u8 *fan_state, u8 level);
+static int nb_fan_regulator_enable(struct regulator *regulator);
+static int nb_fan_regulator_disable(struct regulator *regulator);
+
+struct nb_fan_remove_context {
+	struct device *dev;
+	u8 *fan_state;
+	struct kobject *sysfs_kobj;
+	u8 reserved_18[0x20];
+	atomic_t regulator_enable_count;
+	u8 reserved_3c[0x0c];
+	struct regulator *vdd_fan;
+	void *pinctrl_state;
+};
+
+static_assert(offsetof(struct nb_fan_remove_context,
+		       regulator_enable_count) == 0x38);
+static_assert(offsetof(struct nb_fan_remove_context, vdd_fan) == 0x48);
+static_assert(sizeof(struct nb_fan_remove_context) == 0x58);
 static ssize_t fan_enable_show(struct kobject *kobj,
 			       struct kobj_attribute *attr, char *buf);
 static ssize_t fan_enable_store(struct kobject *kobj,
@@ -563,7 +584,7 @@ static __used __attribute__((naked)) int nb_fan_parse_dt(long *context)
 }
 
 /* Stock-derived exact probe body; BSS lock key and outgoing callbacks are relocation-bound. */
-static __used __attribute__((naked)) int nb_fan_probe(struct platform_device *pdev)
+static __used __attribute__((naked)) int nb_fan_probe_stock_exact(struct platform_device *pdev)
 {
 	asm volatile(
 		".inst 0xd503233f /* +0x000: paciasp */\n"
@@ -637,7 +658,7 @@ static __used __attribute__((naked)) int nb_fan_probe(struct platform_device *pd
 		".inst 0xb90007ff /* +0x0b0: str wzr, [sp, #0x4] */\n"
 		" .Lndprel12:\n"
 		".inst 0x94000000 /* +0x0b4: bl 0xf8 <nb_fan_probe+0xb4> */\n"
-		".reloc .Lndprel12, R_AARCH64_CALL26, regulator_get\n"
+		".reloc .Lndprel12, R_AARCH64_CALL26, devm_regulator_get\n"
 		".inst 0xaa1503e8 /* +0x0b8: mov x8, x21 */\n"
 		".inst 0xb140041f /* +0x0bc: cmn x0, #0x1, lsl #12       // =0x1000 */\n"
 		".inst 0xf90026a0 /* +0x0c0: str x0, [x21, #0x48] */\n"
@@ -1290,6 +1311,61 @@ static __used __attribute__((naked)) int nb_fan_probe(struct platform_device *pd
 		);
 }
 
+static __used __attribute__((__noinline__)) int nb_fan_regulator_enable(struct regulator *regulator)
+{
+	struct nb_fan_remove_context *context = READ_ONCE(chip);
+	int ret = regulator_enable(regulator);
+
+	if (!ret && context && context->vdd_fan == regulator)
+		atomic_inc(&context->regulator_enable_count);
+	return ret;
+}
+
+static __used __attribute__((__noinline__)) int nb_fan_regulator_disable(struct regulator *regulator)
+{
+	struct nb_fan_remove_context *context = READ_ONCE(chip);
+	int ret = regulator_disable(regulator);
+
+	if (!ret && context && context->vdd_fan == regulator)
+		atomic_dec_if_positive(&context->regulator_enable_count);
+	return ret;
+}
+
+static void nb_fan_cancel_timer(struct nb_fan_remove_context *context)
+{
+	struct hrtimer *timer;
+
+	if (!context || !context->fan_state)
+		return;
+	timer = (struct hrtimer *)(context->fan_state + 0x28);
+	if (READ_ONCE(timer->function) == fan_hrtimer_hander)
+		hrtimer_cancel(timer);
+}
+
+/* Keep the stock probe body, but unwind its device-managed resources and
+ * module-global pointer when any nonzero probe result reaches the driver core.
+ */
+static __used int nb_fan_probe(struct platform_device *pdev)
+{
+	struct nb_fan_remove_context *context;
+	int ret;
+
+	ret = nb_fan_probe_stock_exact(pdev);
+	if (!ret)
+		return 0;
+
+	context = READ_ONCE(chip);
+	if (context && context->dev == &pdev->dev) {
+		nb_fan_cancel_timer(context);
+		if (context->sysfs_kobj)
+			kobject_put(context->sysfs_kobj);
+		if (READ_ONCE(chip) == context)
+			WRITE_ONCE(chip, NULL);
+	}
+	platform_set_drvdata(pdev, NULL);
+	return ret;
+}
+
 static __used int nb_fan_gpio_proc(long *context)
 {
 	struct device_node *node;
@@ -1308,12 +1384,14 @@ static __used int nb_fan_gpio_proc(long *context)
 		       "NB_FAN", "nb_fan_gpio_proc", 0x343);
 		ret = *(int *)(context[1] + 0x14);
 	} else {
-		ret = gpio_request(ret, "fan_speed_gpio");
+		ret = devm_gpio_request((struct device *)context[0],
+				 ret, "fan_speed_gpio");
 		if (ret == 0) {
 			gpio = *(int *)(context[1] + 0x14);
 			gpio = gpiod_to_irq(gpio_to_desc(gpio));
 			*(int *)(context[1] + 0x1c) = gpio;
-			ret = request_threaded_irq(
+			ret = devm_request_threaded_irq(
+				(struct device *)context[0],
 				*(int *)(context[1] + 0x1c),
 				fan_speed_irq_proc, NULL, 0x00200002UL,
 				"fan_speed_int", context);
@@ -1352,18 +1430,35 @@ static __used int nb_fan_gpio_proc(long *context)
 	return ret;
 }
 
-struct nb_fan_remove_context {
-	struct device *dev;
-	u64 reserved_08;
-	struct kobject *sysfs_kobj;
-};
-
 static __used void nb_fan_remove(struct platform_device *pdev)
 {
 	struct nb_fan_remove_context *context = platform_get_drvdata(pdev);
 
-	sysfs_remove_group(context->sysfs_kobj, &chip_attr_group);
-	dev_set_drvdata(context->dev, NULL);
+	if (!context)
+		return;
+	if (context->sysfs_kobj)
+		sysfs_remove_group(context->sysfs_kobj, &chip_attr_group);
+	nb_fan_cancel_timer(context);
+	mutex_lock((struct mutex *)((u8 *)context + 0x18));
+	if (context->fan_state && context->fan_state[0])
+		fan_level_set(context->fan_state, 0);
+	while (atomic_read(&context->regulator_enable_count) > 0) {
+		int count_before = atomic_read(&context->regulator_enable_count);
+		int ret = nb_fan_regulator_disable(context->vdd_fan);
+
+		if (ret || atomic_read(&context->regulator_enable_count) >=
+			   count_before) {
+			printk(KERN_ERR "soc_fan: failed to release regulator enable: %d\n",
+			       ret);
+			break;
+		}
+	}
+	mutex_unlock((struct mutex *)((u8 *)context + 0x18));
+	platform_set_drvdata(pdev, NULL);
+	if (context->sysfs_kobj)
+		kobject_put(context->sysfs_kobj);
+	if (READ_ONCE(chip) == context)
+		WRITE_ONCE(chip, NULL);
 }
 
 __used void __exit cleanup_module(void)
@@ -1486,13 +1581,13 @@ static __used int fan_level_set(u8 *fan_state, u8 level)
 
 	if (level == 0) {
 		if (vdd_fan && regulator_is_enabled(vdd_fan)) {
-			ret = regulator_disable(vdd_fan);
+			ret = nb_fan_regulator_disable(vdd_fan);
 			printk(KERN_DEBUG
 			       "[%s] [%s:%d] NB_FAN: close fan power!ret=%d.\n",
 			       "NB_FAN", "nb_fan_power_set", 0xe5, ret);
 		}
 	} else if (vdd_fan && !regulator_is_enabled(vdd_fan)) {
-		ret = regulator_enable(vdd_fan);
+		ret = nb_fan_regulator_enable(vdd_fan);
 		msleep(10);
 		printk(KERN_DEBUG
 		       "[%s] [%s:%d] NB_FAN: open fan power!ret=%d.\n",
@@ -1938,7 +2033,7 @@ static __used __attribute__((naked)) ssize_t fan_speed_show(
 
         ".inst 0x94000000 /* +0x158: bl	0x1464 <fan_speed_show+0x158> */\n"
 
-        ".reloc .Lsfrel86, R_AARCH64_CALL26, regulator_disable\n"
+        ".reloc .Lsfrel86, R_AARCH64_CALL26, nb_fan_regulator_disable\n"
 
         ".inst 0x2a0003e4 /* +0x15c: mov	w4, w0 */\n"
 
@@ -2020,7 +2115,7 @@ static __used __attribute__((naked)) ssize_t fan_speed_show(
 
         ".inst 0x94000000 /* +0x1a4: bl	0x14b0 <fan_speed_show+0x1a4> */\n"
 
-        ".reloc .Lsfrel105, R_AARCH64_CALL26, regulator_enable\n"
+        ".reloc .Lsfrel105, R_AARCH64_CALL26, nb_fan_regulator_enable\n"
 
         ".inst 0x2a0003f6 /* +0x1a8: mov	w22, w0 */\n"
 

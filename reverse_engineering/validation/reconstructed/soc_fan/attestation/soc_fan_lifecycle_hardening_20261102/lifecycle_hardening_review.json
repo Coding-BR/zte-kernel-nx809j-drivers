@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "batch": "soc_fan_lifecycle_hardening_20261102",
+  "generated_utc": "2026-11-03T02:37:35.385022+00:00",
+  "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "source_sha256": "4ea8a7b3b09786454460405f3bcaac8c51342ae9c92ec6d31de2571634a408b1",
+  "review_kind": "agent_self_review_not_independent",
+  "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+  "review_status": "BUILD_REPRODUCIBLE; INDEPENDENT_REVIEW_AND_HARDWARE_PENDING",
+  "independent_review": "PENDING",
+  "hardware_validation": "DEFERRED",
+  "functions": [
+    {
+      "stock_function": "nb_fan_probe",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "change_and_basis": "O corpo stock foi preservado como nb_fan_probe_stock_exact, trocando regulator_get por devm_regulator_get; o wrapper nb_fan_probe desfaz timer inicializado, kobject, drvdata e o ponteiro global em qualquer retorno de erro."
+    },
+    {
+      "stock_function": "nb_fan_gpio_proc",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "change_and_basis": "Substitui gpio_request e request_threaded_irq por variantes devm; o driver core libera IRQ e GPIO antes da memória devm do chip."
+    },
+    {
+      "stock_function": "nb_fan_remove",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "change_and_basis": "Remove o grupo sysfs e drena callbacks, cancela o hrtimer, tenta desligar o nível do fan, drena as referências de enable do regulador, limpa drvdata, libera o kobject e despublica chip."
+    },
+    {
+      "stock_function": "fan_level_set",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "change_and_basis": "Encaminha os enables/disables do regulador por wrappers que contam referências de enable pertencentes a este consumidor para o teardown."
+    },
+    {
+      "stock_function": "fan_speed_show",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
+      "change_and_basis": "Os dois callsites stock em assembly passam pelos wrappers de regulador para manter a contagem das referências durante a leitura de RPM."
+    }
+  ],
+  "lifecycle_order": [
+    "sysfs_remove_group drains active sysfs callbacks",
+    "hrtimer_cancel waits for and stops callback rearm",
+    "fan state is set to level zero and owned regulator enables are drained while chip remains published",
+    "platform drvdata, kobject, and global chip pointer are cleared",
+    "driver core devres then frees IRQ, GPIO, regulator handle, and devm chip memory in reverse acquisition order"
+  ],
+  "evidence_inputs": {
+    "ghidra_probe": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0001_0010052c_nb_fan_probe.c",
+    "ghidra_remove": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0002_00100a54_nb_fan_remove.c",
+    "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+    "docker_source_revision": "nubia_sm8850_kernel_src@3356b35306d35d5a480e3b63df1a9f065b5d9f55"
+  },
+  "limitations": [
+    "Não houve revisão independente após estes desvios.",
+    "Não houve validação em hardware NX809J.",
+    "Se regulator_disable falhar no teardown, a rotina registra erro e segue; o desligamento físico não pode ser garantido.",
+    "A referência condicional de nó OF permanece sem conclusão até confirmar CONFIG_OF_DYNAMIC do alvo.",
+    "A equivalência funcional de runtime não foi provada; a paridade de assembly não é alegada para as cinco funções alteradas."
+  ],
+  "build_attempts": [
+    {
+      "attempt": 1,
+      "result": "LINK_FAILED",
+      "cause": "Clang removed nb_fan_regulator_enable because naked assembly relocations are not compiler-visible; modpost reported an undefined relocation target.",
+      "candidate_promoted": false
+    },
+    {
+      "attempt": 2,
+      "result": "COMPILE_FAILED",
+      "cause": "The Linux noinline macro cannot be nested as an attribute argument; Clang rejected the expanded syntax.",
+      "candidate_promoted": false
+    },
+    {
+      "attempt": 3,
+      "result": "PASS_REPRODUCIBLE",
+      "cycle_1_sha256": "5554b8d8c1fb1183a5ea8807f97563690254a1ed1c3811affb1c470c2de7f54b",
+      "cycle_2_sha256": "5554b8d8c1fb1183a5ea8807f97563690254a1ed1c3811affb1c470c2de7f54b",
+      "candidate_synchronized": true
+    }
+  ],
+  "candidate_sha256": "5554b8d8c1fb1183a5ea8807f97563690254a1ed1c3811affb1c470c2de7f54b",
+  "validation_report": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json",
+  "candidate_sync": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/candidate_sync.json"
+}
