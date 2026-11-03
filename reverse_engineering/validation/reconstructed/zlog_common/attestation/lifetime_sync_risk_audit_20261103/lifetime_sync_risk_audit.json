@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "zlog_common_client_buffer_work_lifetime_20261103",
+  "driver": "zlog_common",
+  "date": "2026-11-03",
+  "classification": "POTENTIAL_STOCK_INHERITED_CLIENT_BUFFER_USE_AFTER_FREE",
+  "confidence": "HIGH_FOR_STATIC_INTERLEAVING",
+  "runtime_failure_reproduced": false,
+  "source_changed": false,
+  "build_validation": "NOT_RUN_NO_SOURCE_CHANGE",
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030"
+  },
+  "candidate_identity": {
+    "source_sha256": "56079b4a64b5a0183bcb8286a72236030fc225a6cefbbc4eca1ed777c75f9145",
+    "header_sha256": "8603e698b4774323634c15478bb6b22cd664ea4f12411cbe81220316fc5de534",
+    "reconstruction_map_sha256": "52dd8bc70738d3e0b23ede796fc8a7cea8e036425614db1cd195a09ba536b8dd",
+    "module_sha256": "f8666e5c1cbbf446407c5488074fa33f973e206e02a7d54bf6e14a1f5b642457",
+    "canonical_docker_snapshot": "source, header, map and module hashes match the repository candidate"
+  },
+  "stock_identity": {
+    "module_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0"
+  },
+  "stock_ghidra_evidence": {
+    "zlog_unregister_client": {
+      "entry": "00100984",
+      "pseudocode": "offline_static/ghidra_stock/decompiled/0003_00100984_zlog_unregister_client.c",
+      "pseudocode_sha256": "b04022a2237ed2f0d4e649ff8ad19d97513cc0d630efb3b79a037f82d2958f71"
+    },
+    "zlog_reset_client": {
+      "entry": "00100ac0",
+      "pseudocode": "offline_static/ghidra_stock/decompiled/0004_00100ac0_zlog_reset_client.c",
+      "pseudocode_sha256": "6042495832208c9436b5e7cf1c99d8465974cb4b3c394107991dd1c5f54bcf50"
+    },
+    "zlog_handle_work": {
+      "entry": "00100b80",
+      "pseudocode": "offline_static/ghidra_stock/decompiled/0005_00100b80_zlog_handle_work.c",
+      "pseudocode_sha256": "9d5e18f0d1e793b22db1474079cf2ed43111020293b5caab4c69a788286e7296"
+    }
+  },
+  "assembly_evidence": {
+    "zlog_reset_client": {
+      "comparison": "attestation/next046_zlog_common_zlog_reset_client_exact_v1/assembly/comparison.json",
+      "comparison_sha256": "14286c773dd53d43aeeb3ec3731d0765845d92a8d9b5b2deb1138b51725b7eff",
+      "passed": true,
+      "instruction_count_stock_and_candidate": 47,
+      "symbol_size_stock_and_candidate": 188,
+      "checks": ["instructions", "relocations", "section", "symbol_size"]
+    },
+    "zlog_unregister_client": {
+      "comparison": "attestation/next048_zlog_common_zlog_unregister_client_exact_v1/assembly/comparison.json",
+      "comparison_sha256": "ae664bee6778fa4d6f9428b5820f6e51e30f6b8c3769579be5ee9794e8f43fb8",
+      "passed": true,
+      "instruction_count_stock_and_candidate": 78,
+      "symbol_size_stock_and_candidate": 312,
+      "checks": ["instructions", "relocations", "section", "symbol_size"]
+    },
+    "zlog_handle_work": {
+      "comparison": "attestation/next049_zlog_common_zlog_handle_work_exact_v1/assembly/comparison.json",
+      "comparison_sha256": "af3f29dc9717c442222e3c5c07c392f9c5f50df7f7ba382e8b207cbee1e6ecf1",
+      "passed": true,
+      "instruction_count_stock_and_candidate": 259,
+      "symbol_size_stock_and_candidate": 1036,
+      "checks": ["instructions", "relocations", "section", "symbol_size"]
+    }
+  },
+  "observed_source_order": {
+    "zlog_handle_work": [
+      "copies client->record_buffer into a separate event_buffer while holding client_lock",
+      "unlocks client_lock",
+      "calls zlog_write_internal(event_buffer, ...)",
+      "frees event_buffer",
+      "calls zlog_reset_client(client)"
+    ],
+    "zlog_unregister_client": [
+      "locks client_lock",
+      "kfree(client->record_buffer) when non-NULL",
+      "does not clear client->record_buffer",
+      "sets record_length to 0 and record_capacity to ZLOG_RECORD_SIZE (0x800)",
+      "marks registered false and unlocks client_lock"
+    ],
+    "zlog_reset_client": [
+      "locks client_lock",
+      "sets record_length to 0",
+      "calls memset(client->record_buffer, 0, client->record_capacity)",
+      "unlocks client_lock"
+    ]
+  },
+  "interleaving": [
+    "zlog_handle_work copies the event and releases client_lock before zlog_write_internal",
+    "while that write is in progress, zlog_unregister_client acquires client_lock, frees record_buffer, leaves the pointer unchanged, sets capacity to 0x800 and unlocks",
+    "zlog_handle_work returns from zlog_write_internal and calls zlog_reset_client",
+    "zlog_reset_client locks the same mutex but then memsets 0x800 bytes through the freed pointer"
+  ],
+  "impact": "Potential write-after-free of a per-client record buffer during notification processing and concurrent client unregister. The mutex serializes each critical section but does not protect the buffer across zlog_write_internal, where the worker releases it.",
+  "limits": [
+    "This path is derived from stock Ghidra pseudocode and is preserved by exact stock/candidate opcode and relocation comparisons; it is inherited stock behavior, not a reconstruction mismatch.",
+    "The race and memory corruption were not reproduced at runtime.",
+    "The full driver remains INCOMPLETE; independent human review and controlled hardware validation remain pending.",
+    "No module was loaded/unloaded and no device was accessed."
+  ],
+  "recommended_correction": "Any hardening must synchronize in-flight report_work with per-client buffer release and ensure the worker cannot access a freed or newly replaced buffer after dropping client_lock. Merely nulling the pointer or using the existing non-synchronous cancel_delayed_work call is not sufficient. A behavior change must be declared, rebuilt in the canonical Docker snapshot and reviewed before promotion.",
+  "reconstruction_status": "Offline exact function mappings are preserved. This audit adds an open stock-inherited concurrent buffer-lifetime risk and does not authorize hardware use."
+}

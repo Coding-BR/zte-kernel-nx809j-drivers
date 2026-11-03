@@ -31,3 +31,7 @@ hardware. O código C continua presente para o harness host e para auditoria do
 contrato fonte.
 The `static_verified` build label proves build/KMI/traceability only; it does not
 override the partial assembly, review or hardware gates.
+
+## Lifetime/synchronization risk audit — 2026-11-03
+
+A static review found a potential stock-inherited write-after-free: `zlog_handle_work` drops `client_lock` around `zlog_write_internal` and calls `zlog_reset_client` afterwards. Concurrent `zlog_unregister_client` can free `record_buffer` in that gap without clearing the pointer; `zlog_reset_client` then memsets 0x800 bytes through the freed pointer. Ghidra and exact stock/candidate assembly confirm the sequence. This is not reproduced at runtime. Source/map remain unchanged to preserve exact-stock status; see the [lifetime/synchronization audit](../../../../reverse_engineering/validation/reconstructed/zlog_common/attestation/lifetime_sync_risk_audit_20261103/README.md). A correction must synchronize in-flight worker ownership before freeing the buffer, then be rebuilt and reviewed as a declared hardening deviation. Independent review and controlled hardware validation remain pending.
