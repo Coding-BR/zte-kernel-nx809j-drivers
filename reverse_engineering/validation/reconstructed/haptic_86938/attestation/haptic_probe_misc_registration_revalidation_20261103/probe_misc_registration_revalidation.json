@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_probe_misc_registration_revalidation_20261103",
+  "disposition": "NO_PARTIAL_MISC_REGISTRATION_LEAK_PATH_FOUND",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "docker_curated_candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "reasoning": [
+    "Stock Ghidra and AArch64 assembly place misc_register on the terminal successful probe path. The call is followed by publication of g_aw_haptic and the success return; there is no recoverable branch between registration and publication.",
+    "The candidate wrapper records whether misc_register returned success. If it failed, the post-probe lifecycle wrapper observes haptic_misc_registered=false and enters teardown without calling misc_deregister.",
+    "If misc_register succeeded, the stock body immediately publishes the same state pointer to g_aw_haptic before returning. The remove path therefore sees published=true and registered=true and deregisters it.",
+    "Allocation-failure paths that return a partial state occur before misc_register, so haptic_misc_registered remains false. During the brief register-before-publish interval, file_open is rejected while haptic_probe_complete is false; probe/remove transitions are serialized."
+  ],
+  "conclusion": "The suspected case (registered misc device with an unpublished partial state reaching aw_remove) is not reachable in the reviewed normal control flow. No source change is justified. Allocation-fault runtime behavior remains untested.",
+  "validation": "Read-only llvm-objdump disassembly from canonical Docker curated module; no source change and no rebuild.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_143_aw_i2c_probe_exact.S",
+      "sha256": "db68f11430347ce1653d0ddd65f579ec1873d661961da44c176d14a96c24b616"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "9a3222a3b44a6533ff0b95d799786bc3c3d4f8b4854febe6e46bf5a73a5b586b"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+    },
+    {
+      "path": "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_probe_misc_registration_revalidation_20261103\\candidate_probe_registration_disassembly.txt",
+      "sha256": "f0b1f489b9c58ca93e136f8794e0dffbbd42adf907a77ded10f03f1386eded07"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    },
+    {
+      "path": "docker_curated/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    }
+  ]
+}
