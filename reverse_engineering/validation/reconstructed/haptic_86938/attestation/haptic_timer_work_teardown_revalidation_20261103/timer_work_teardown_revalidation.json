@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "finding_id": "HAP-TIMER-WQ-01",
+  "status": "STATICALLY_ADDRESSED_IN_CURRENT_HARDENED_CANDIDATE",
+  "confidence": "high_static_binary_and_target_kernel_source",
+  "conclusion": "The historical single-drain race is accurately documented for stock. The current hardened candidate blocks callback admission at shutdown, synchronizes active timers, drains the timer-associated work, then repeats timer and work cancellation before workqueue/state teardown.",
+  "scope": {
+    "timers": [
+      "state+0x520 audio_timer_func",
+      "state+0x330 vibrator_timer_func"
+    ],
+    "work": [
+      "state+0x560 audio_work_routine",
+      "state+0x428 vibrator_work_routine"
+    ],
+    "remove_sequence": [
+      "haptic_lifetime_block_file_access sets shutdown before teardown",
+      "hrtimer_cancel +0x520",
+      "hrtimer_cancel +0x330",
+      "cancel_work_sync +0x560, +0x3a0, +0x428",
+      "repeat hrtimer_cancel +0x520 and +0x330",
+      "repeat cancel_work_sync +0x560, +0x3a0, +0x428",
+      "destroy_workqueue"
+    ]
+  },
+  "observations": [
+    "Both timer callbacks test haptic_lifetime_is_shutting_down before queueing; audio callback rearms only after the check.",
+    "The three work wrappers check the shutdown gate before calling the stock worker bodies.",
+    "Candidate disassembly confirms the shutdown gate, timer/work offsets, repeated cancellation order, and workqueue destruction after the final drain.",
+    "Exact target-kernel hrtimer_cancel loops until the handler is no longer running; cancel_work_sync waits until the work is not pending or executing when there are no racing enqueues. The shutdown gates close the relevant submit paths before these drains."
+  ],
+  "candidate": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\haptic_86938\\haptic_86938.ko",
+    "sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "size_bytes": 6700096,
+    "sha256_matches_map": true,
+    "sha256_matches_two_clean_builds": true,
+    "map_candidate_sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+  },
+  "canonical_build": {
+    "audit_file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_workers_before_irq_revalidation_20261103/canonical_postpromotion_audit.json",
+    "audit_sha256": "58c751263c0871f881a196cea984695a3f32cde4bfbfba7d0474f97faf2890df",
+    "first_build_sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "second_build_sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "reproducible": true,
+    "checks": {
+      "canonical_audit_status": "incomplete_or_failed",
+      "two_clean_builds_reproducible": true,
+      "candidate_hash_matches_map": true,
+      "function_traceability": true,
+      "mapping_review": true,
+      "kernel_source_identity": true,
+      "undefined_symbols_match": false,
+      "hardware_verified": false,
+      "runtime_reproduced": false
+    },
+    "note": "This revalidation did not rebuild or alter the candidate. Strict undefined-symbol parity remains false; canonical audit status remains incomplete_or_failed."
+  },
+  "inputs": {
+    "source_files": [
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_072_vibrator_timer_func.c",
+        "sha256": "eb1747ef7fc2ecc7a844d971986999cc1372212fd4ed81f1d5407938ae53dc29"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_076_audio_timer_func.c",
+        "sha256": "72d4a807b0dde8182d61b313142fcf7e3489e60f769d8f1bdb192f170c0d838c"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+        "sha256": "3d958fc19b04eeaa062f6a6bcf2d33345d5aff99aaad7afe266dbcbef0e2e718"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+        "sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+        "sha256": "b38bce4be3ca427c140c8f62b24af8407b8fa0e00c8682d5dae6de3a489e27cd"
+      }
+    ],
+    "historical_finding": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/timer_work_teardown_review.json",
+      "sha256": "bfc9b9f77366888b7776d8d6a6e111d984fdbe142c9df27ff1ed684d18b002c6"
+    },
+    "reconstruction_map_sha256": "847b87b30c5d3f3aa0587782f405b2c602efdf4f2fe8603ab7b505e8b28b4f72",
+    "status_sha256": "40224389c5212454c59fa49965f20655af69172272b48bfcd1b4f5ff114daddb",
+    "candidate_disassembly": {
+      "path": "docker_timer_work_teardown_disassembly.txt",
+      "sha256": "f8b68a4a967b0d43b2b7c91050fbbc5401500bee0a77557e907c51482daa2ba5"
+    },
+    "target_kernel": {
+      "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+      "hrtimer_source_sha256": "1c58df0d5c9931504450d7a74f0c641d0c394724adf8c55f9d7e17167f3443ed",
+      "workqueue_source_sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+      "evidence_file": "docker_target_kernel_cancel_semantics.txt",
+      "evidence_sha256": "0c31eae65cea3e1de5ab93bf18d6ca6b53b97c0bd1ae07eea91b4c0b28ac84ba"
+    },
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_tree_sync_report": {
+      "path": "source_tree_sync_dry_run.json",
+      "sha256": "0d677bd4261a39cc2a81e0f778f6b75f3d734ad84729fa977136c608a6c35d5b"
+    }
+  },
+  "docker_curated_sync": {
+    "tool": "workspace_tools/reconstruction_pipeline/sync_hard_driver_curated_source.py",
+    "applied": false,
+    "tool_report_passed": false,
+    "exit_code": 1,
+    "missing_from_curated": 0,
+    "content_mismatch": 0,
+    "curated_only_preserved": 44,
+    "interpretation": "The dry-run found no missing or mismatched versioned files. It reports false because 44 Docker-curated-only evidence files are outside the reconstructed source tree; none were removed."
+  },
+  "runtime_validation": {
+    "performed": false,
+    "hardware_tested": false
+  }
+}
