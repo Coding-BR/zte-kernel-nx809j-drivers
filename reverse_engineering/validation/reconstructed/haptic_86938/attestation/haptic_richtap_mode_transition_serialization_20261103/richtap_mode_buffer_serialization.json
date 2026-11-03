@@ -1,0 +1,87 @@
+{
+  "schema": "haptic-richtap-mode-buffer-serialization/v1",
+  "finding": "Stock 0x5209 writes state+0x608 while an already queued 0x520a worker at state+0x648 uses the same playback buffer; concurrent transition ioctls are not serialized.",
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "evidence": [
+      {
+        "path": "offline_static/ghidra_stock/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+        "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+      },
+      {
+        "path": "offline_static/ghidra_stock/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+        "sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+      },
+      {
+        "path": "offline_static/ghidra_stock/haptic_86938.ko/decompiled/0148_0010e1dc_richtap_rtp_start.c",
+        "sha256": "b207ff0484bd501c67ac35950be6b9936e497cc6bc2aa6651f89c62ae719a9b3"
+      },
+      {
+        "path": "offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+        "sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad"
+      },
+      {
+        "path": "offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+        "sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83"
+      },
+      {
+        "path": "offline_static/stock_assembly/0148_richtap_rtp_start_0010e1dc.asm",
+        "sha256": "4564c12a37fbfccb680da5a678a52ad81f415133c06872859dfbd1c5e74c209b"
+      }
+    ],
+    "observed_paths": {
+      "ioctl_0x5209": "copy_from_user writes 16000 bytes to state+0x608 before calling richtap_rtp_start and set_rtp_data",
+      "ioctl_0x520a": "queues work at state+0x648",
+      "richtap_rtp_work": "derives device state from the work item, fills state+0x608 from FIFO nodes at state+0x620, then starts/submits RTP",
+      "per_device_mutex": "state+0x2f0 protects only selected calls and does not serialize the full buffer copy against the +0x648 worker"
+    }
+  },
+  "candidate": {
+    "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+    "source_sha256": "212b2bfa0071ae2d52c8de05a50e033b4a57f6ae55d6b7bcfdbdc9f00a6b64b5",
+    "module": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "module_sha256": "a5b75d70578d3482c06e58937d8b6c8332e60d09c24c9a5469440d2f8354b9d7",
+    "module_bytes": 6714200,
+    "map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "map_sha256": "1fe7dca2ca36bde9de25a8093aab8a0bb707ea7f92543a61f0ebe040eed0121e",
+    "candidate_disassembly": "docker_candidate_ioctl_disassembly.txt",
+    "candidate_disassembly_sha256": "fdd6f9dc70697c457ca1134921b6930c47a5fd20f339b1158f588532ff665d91",
+    "import_comparison": "undefined_imports_candidate_vs_previous.txt",
+    "import_comparison_sha256": "c87172c62ce46c030079c25e9fcf5644a4eec50b0a8061ff8e780b2b432d86a5"
+  },
+  "mitigation": {
+    "shared_mutex": "haptic_richtap_stream_lock",
+    "serialized_commands": [
+      "0x5209",
+      "0x520a"
+    ],
+    "ordering": [
+      "haptic_lifetime_enter_file",
+      "mutex_lock(haptic_richtap_stream_lock)",
+      "cancel_work_sync(state+0x648)",
+      "for 0x520a only: haptic_lifetime_irq_stop_lock",
+      "richtap_file_unlocked_ioctl_stock_exact",
+      "for 0x520a only: haptic_lifetime_irq_stop_unlock",
+      "mutex_unlock(haptic_richtap_stream_lock)",
+      "haptic_lifetime_exit_file"
+    ],
+    "worker_wait_occurs_without_irq_stop_mutex": true,
+    "mode_commands_are_mutually_exclusive": true
+  },
+  "build": {
+    "docker_builds": "docker_builds.json",
+    "docker_builds_sha256": "d7065ae9b54717fc5e0c29784d31d0ba3e786517225ad96a3b9f5e3b2f354b67",
+    "two_independent_outputs_byte_identical": true,
+    "undefined_imports_equal_to_prior_candidate": true,
+    "undefined_import_count": 93,
+    "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "strict_stock_import_parity": "FALSE_AS_PREVIOUSLY_REPORTED"
+  },
+  "verdict": "STATIC_SHARED_BUFFER_RACE_MITIGATED_CANONICAL_BUILDS_BYTE_IDENTICAL",
+  "limits": [
+    "No runtime concurrency test",
+    "No NX809J hardware validation",
+    "Full driver semantic equivalence remains incomplete",
+    "Strict stock import parity remains false"
+  ]
+}
