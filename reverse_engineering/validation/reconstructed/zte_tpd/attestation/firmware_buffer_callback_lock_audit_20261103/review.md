@@ -2,17 +2,34 @@
 
 ## Resultado
 
-A auditoria não encontrou defeito adicional nos caminhos analisados. O bloqueio de vida útil do descritor e a ordem dos mutexes estão coerentes estaticamente com a hardening já aplicada. As nove funções mantêm o estado `HARDENED_STOCK_DEVIATION`; esta evidência não as promove a equivalência stock-exact.
+A revisão cruzada de Ghidra, assembly stock, inventário de chamadas, fontes da branch hardening e Joern não encontrou defeito adicional nos nove caminhos de buffer. A ordem estática observada é `tp_firmware_data_mutex` → `cmd_mutex`; o alocador e o helper de cópia usam somente `cmd_mutex`. As nove funções continuam marcadas `HARDENED_STOCK_DEVIATION`; esta auditoria não as promove a equivalência stock-exact.
 
-## Evidência decisiva
+## Joern atual
 
-- O Ghidra stock mostra `zte_touch_probe` alocando `0x1008` bytes com flags `0xdc0`. No kernel montado do volume Docker, `GFP_KERNEL = 0xcc0` e `__GFP_ZERO = 0x100`; `devm_kmalloc` recebe o mesmo mask. Os slots +`0xe18` (`FW_upgrade`) e +`0xee8` (`get_noise`) começam zerados nesse caminho.
-- A rotina stock de registro preenche callbacks em +`0xf98` e +`0xfa0`, mas não esses dois slots. A varredura do assembly stock encontrou somente dois loads nesses offsets, cada um protegido por teste de nulo; nenhum store foi encontrado.
-- A ordem observada é `tp_firmware_data_mutex` → `cmd_mutex`. Os helpers de alocação e cópia usam apenas `cmd_mutex`; o callback do self-test é chamado sem manter `cmd_mutex`, evitando aquisição recursiva no caminho de cópia.
-- Os 12 arquivos-fonte revisados coincidem com a árvore curada do Docker. Os 12 hashes também coincidem com a árvore de fontes do build canônico de duas passagens já concluído, cujo módulo tem SHA-256 `adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143`. Não houve alteração de C nesta auditoria, portanto não foi feito build redundante.
+O gate estrito terminou em `PASS`, sem problemas de parser ou blockers, com identidade/cobertura de 9/9 funções. Ele emitiu 56 callsite markers, todos retidos no relatório:
 
-## Alertas ainda abertos
+| Função | Mutex | Lifetime | Egress |
+|---|---:|---:|---:|
+| `get_tp_noise_show` | 4 | 0 | 1 |
+| `get_tp_noise_store` | 4 | 1 | 0 |
+| `tp_alloc_tp_firmware_data` | 4 | 3 | 0 |
+| `tp_self_test_read` | 0 | 3 | 1 |
+| `tpd_copy_to_tp_firmware_data` | 5 | 0 | 0 |
+| `tpd_sysfs_fwimage_show` | 12 | 1 | 0 |
+| `tpd_sysfs_fwimage_store` | 10 | 0 | 0 |
+| `tpfwupgrade_store` | 4 | 3 | 0 |
 
-As contagens Joern preservadas são de relatórios exact-v4 anteriores à hardening; não as reclassifiquei nem as marquei como resolvidas. É necessário executar Joern novamente sobre a branch hardening e revisar seus resultados. Execução no aparelho, stress concorrente, falha forçada do alocador, KASAN/UBSAN e revisão humana independente continuam pendentes.
+Os 43 itens de sincronização são 12 chamadas `mutex_lock` e 31 `mutex_unlock`; Joern contabiliza os callsites, sem provar inversão de lock. Os 11 itens de lifetime são nove `kfree` e duas `kmalloc`; a revisão conferiu seus ramos de substituição, falha, EOF e limpeza junto aos mutexes. Os dois itens de egress são `simple_read_from_buffer` para strings locais limitadas. O protocolo classifica esses resultados como seletores de revisão, não prova de vulnerabilidade. O relatório completo, manifesto e inventário estão sob `joern_current/`; os CPGs internos são intermediários regeneráveis e não foram incluídos no commit.
 
-A atestação com hashes de entrada e detalhes da inspeção está em `review.json` (SHA-256 `5ac5b9f2c1b753bba80338d09c6153d5280adfd2d80af31471b833b0242bb397`). O mapa foi atualizado para apontá-la; hash do mapa depois da atualização: `344aaec170d068d07f69ccecf30d682b05eb5cca609374de6de330dc6566b149`.
+## Callback e flags stock
+
+- O Ghidra stock mostra `zte_touch_probe` alocando `0x1008` bytes com flags `0xdc0`. Nos headers do kernel NX809J montados somente leitura pelo Docker, `GFP_KERNEL = 0xcc0` e `__GFP_ZERO = 0x100`. Assim, os slots +`0xe18` (`FW_upgrade`) e +`0xee8` (`get_noise`) iniciam zerados.
+- A rotina stock atribui callbacks em +`0xf98` e +`0xfa0`, não nesses slots. O assembly stock contém somente dois loads desses offsets e ambos são protegidos por teste de nulo.
+- `tp_alloc_tp_firmware_data` tem um caller direto no inventário Ghidra (`tp_self_test_write`); `tpd_copy_to_tp_firmware_data` tem três callers, todos testes chamados por `tpd_test_cmd_store`. No write, o mutex global cobre o ciclo e `cmd_mutex` é liberado antes do callback de teste.
+- Os 12 fontes C/H auditados coincidem com a árvore curada Docker e com os hashes de entrada do build canônico de duas passagens, módulo SHA-256 `adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143`. Não houve alteração de C neste lote; não foi repetido o build.
+
+## Limites e próximos passos
+
+Os relatórios Joern exact-v4 antigos foram preservados como histórico; a execução atual cobre a branch hardening. A auditoria permanece estática: execução em NX809J, stress concorrente, falha forçada do alocador, KASAN/UBSAN e revisão humana independente continuam pendentes. O próximo alvo de lifetime será o teardown de workqueues/IRQs no probe/remove, seguindo Ghidra → assembly → Joern → build Docker quando houver mudança de fonte.
+
+Atestação: `review.json` (SHA-256 `53566f7df259a6f81a8f959a4571e6eea5288fd3f12a12426465b357b15afb71`). Joern report: SHA-256 normalizado `5c6cf26d61911e51666555168881f78004b032f7ddfb3af3c0b51563444354a5`; summary: `a35003b0bf4ab2e275e8708f7695a34f51084b75b61c060013305293ccee85d9`. Hash normalizado do mapa após anexar as evidências: `2aabe4645de9ee77e88f2877dce4b22d24b6d4d60f3c19c2cb9449fed6a2bcd4`.

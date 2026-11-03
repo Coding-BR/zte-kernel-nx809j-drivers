@@ -3,7 +3,7 @@
   "driver": "zte_tpd",
   "review_date": "2026-11-03",
   "review_type": "Firmware descriptor lifetime, callback initialization, and lock-order audit",
-  "review_status": "STATIC_REVIEW_NO_NEW_DEFECT_IN_SCOPE;_RUNTIME_AND_CURRENT_JOERN_REANALYSIS_DEFERRED",
+  "review_status": "STATIC_REVIEW_NO_ADDITIONAL_DEFECT; CURRENT_JOERN_STRICT_PASS_WITH_REVIEW_MARKERS; RUNTIME_DEFERRED",
   "new_source_change": false,
   "branch_context": {
     "branch": "codex/zte-tpd-firmware-allocation-hardening",
@@ -255,11 +255,178 @@
     },
     "stock_assembly_manifest_sha256": "8167e0357db7be7f872131dff34f233f8be8403eefb32193cad2281d19ac469b",
     "hardening_review_sha256": "f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
-    "map_sha256_before_update": "203e25b07c241f187005d5fea8d7ea2a5344906ef61eb52de0e3dae7a3c66bce"
+    "map_sha256_before_update": "203e25b07c241f187005d5fea8d7ea2a5344906ef61eb52de0e3dae7a3c66bce",
+    "current_joern_report_normalized_sha256": "5c6cf26d61911e51666555168881f78004b032f7ddfb3af3c0b51563444354a5",
+    "current_joern_summary_normalized_sha256": "a35003b0bf4ab2e275e8708f7695a34f51084b75b61c060013305293ccee85d9",
+    "current_joern_manifest_normalized_sha256": "cd57f256d187ffa65058ce3ff14c91101477d976277d8b80a5bf5eae0e1e32d1",
+    "map_sha256_before_joern_attachment_raw": "344aaec170d068d07f69ccecf30d682b05eb5cca609374de6de330dc6566b149",
+    "map_sha256_before_joern_attachment_normalized": "fac6062e2b41175ef28e4e8178ed12a8570d214b5f83887b98ec060911bd812a"
   },
   "limitations": [
     "No NX809J hardware execution, forced allocation failure, runtime concurrency stress, KASAN/UBSAN run, or independent human review was performed in this audit.",
-    "Historical Joern high-severity counts are from pre-hardening exact-v4 reports and were not rerun on the current hardening branch. They remain recorded, not waived.",
+    "Joern passed strict identity, parser, and coverage checks but emitted 56 API-level review markers (11 lifetime, 43 synchronization, 2 userspace egress). They were manually triaged and retained; Joern does not prove lock ordering or runtime lifetime safety.",
     "The audit establishes static initialization and locking evidence only for the listed buffer/callback paths; it does not prove whole-driver semantic equivalence or runtime behavior."
-  ]
+  ],
+  "current_joern_run": {
+    "status": "PASS",
+    "passed": true,
+    "strict": true,
+    "generated_utc": "2026-11-03T04:05:29.851078+00:00",
+    "report_path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/firmware_buffer_callback_lock_audit_20261103/joern_current/joern_gate_report.json",
+    "report_normalized_sha256": "5c6cf26d61911e51666555168881f78004b032f7ddfb3af3c0b51563444354a5",
+    "summary_path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/firmware_buffer_callback_lock_audit_20261103/joern_current/joern_gate_summary.json",
+    "summary_sha256": "a35003b0bf4ab2e275e8708f7695a34f51084b75b61c060013305293ccee85d9",
+    "input_manifest_path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/firmware_buffer_callback_lock_audit_20261103/joern_current/input_manifest.json",
+    "input_manifest_sha256": "cd57f256d187ffa65058ce3ff14c91101477d976277d8b80a5bf5eae0e1e32d1",
+    "scope": {
+      "assembly_only_source_functions": [],
+      "mode": "FUNCTIONS",
+      "requested_functions": [
+        "get_tp_noise_show",
+        "get_tp_noise_store",
+        "tp_alloc_tp_firmware_data",
+        "tp_self_test_read",
+        "tp_self_test_write",
+        "tpd_copy_to_tp_firmware_data",
+        "tpd_sysfs_fwimage_show",
+        "tpd_sysfs_fwimage_store",
+        "tpfwupgrade_store"
+      ],
+      "resolved_source_functions": [
+        "get_tp_noise_show",
+        "get_tp_noise_store",
+        "tp_alloc_tp_firmware_data",
+        "tp_self_test_read",
+        "tp_self_test_write",
+        "tpd_copy_to_tp_firmware_data",
+        "tpd_sysfs_fwimage_show",
+        "tpd_sysfs_fwimage_store",
+        "tpfwupgrade_store"
+      ],
+      "resolved_stock_functions": [
+        "get_tp_noise_show",
+        "get_tp_noise_store",
+        "tp_alloc_tp_firmware_data",
+        "tp_self_test_read",
+        "tp_self_test_write",
+        "tpd_copy_to_tp_firmware_data",
+        "tpd_sysfs_fwimage_show",
+        "tpd_sysfs_fwimage_store",
+        "tpfwupgrade_store"
+      ],
+      "unresolved_requests": []
+    },
+    "coverage": {
+      "assembly_only_source_method_count": 0,
+      "expected_source_method_count": 9,
+      "extra_source_methods": [],
+      "ghidra_function_count": 9,
+      "joern_context_only_method_count": 0,
+      "joern_internal_method_count": 9,
+      "joern_total_internal_method_count": 615,
+      "mapped_identity_count": 9,
+      "missing_map_entries": [],
+      "missing_source_methods": [],
+      "source_method_resolution": {
+        "get_tp_noise_show": "get_tp_noise_show",
+        "get_tp_noise_store": "get_tp_noise_store",
+        "tp_alloc_tp_firmware_data": "tp_alloc_tp_firmware_data",
+        "tp_self_test_read": "tp_self_test_read",
+        "tp_self_test_write": "tp_self_test_write",
+        "tpd_copy_to_tp_firmware_data": "tpd_copy_to_tp_firmware_data",
+        "tpd_sysfs_fwimage_show": "tpd_sysfs_fwimage_show",
+        "tpd_sysfs_fwimage_store": "tpd_sysfs_fwimage_store",
+        "tpfwupgrade_store": "tpfwupgrade_store"
+      },
+      "unexpected_map_entries": []
+    },
+    "parser": {
+      "parse_problem_count": 0,
+      "strict_effect": "BLOCK"
+    },
+    "blockers": [],
+    "finding_counts": {
+      "synchronization": 43,
+      "userspace_egress": 2,
+      "lifetime": 11
+    },
+    "finding_calls_by_category": {
+      "synchronization": {
+        "mutex_lock": 12,
+        "mutex_unlock": 31
+      },
+      "userspace_egress": {
+        "simple_read_from_buffer": 2
+      },
+      "lifetime": {
+        "kfree": 9,
+        "kmalloc": 2
+      }
+    },
+    "findings_by_function": {
+      "get_tp_noise_show": {
+        "synchronization": 4,
+        "userspace_egress": 1
+      },
+      "get_tp_noise_store": {
+        "synchronization": 4,
+        "lifetime": 1
+      },
+      "tp_alloc_tp_firmware_data": {
+        "synchronization": 4,
+        "lifetime": 3
+      },
+      "tp_self_test_read": {
+        "lifetime": 3,
+        "userspace_egress": 1
+      },
+      "tpd_copy_to_tp_firmware_data": {
+        "synchronization": 5
+      },
+      "tpd_sysfs_fwimage_show": {
+        "synchronization": 12,
+        "lifetime": 1
+      },
+      "tpd_sysfs_fwimage_store": {
+        "synchronization": 10
+      },
+      "tpfwupgrade_store": {
+        "synchronization": 4,
+        "lifetime": 3
+      }
+    },
+    "source_tree_sha256": "bfcd7bc2a51a7173f12658208753fb1723ea1c582daf39afbce2becd70f84449",
+    "source_file_count": 534,
+    "reconstruction_map_normalized_sha256_at_run": "fac6062e2b41175ef28e4e8178ed12a8570d214b5f83887b98ec060911bd812a",
+    "source_inventory_hashes": {
+      "calls.json": {
+        "sha256": "87fefff46ccc4c6a203040ba2551c0caa5d5f8c36565b9e7873d4d5977fa8790",
+        "size": 5633350
+      },
+      "control_structures.json": {
+        "sha256": "c0dc5fd158309fee3faec62973c019efa23b128cf840d7bf50d597f68112d18e",
+        "size": 1125047
+      },
+      "inventory.json": {
+        "sha256": "bfa2b831e94470a8e7d1a81c0602a78d8b53d60b60b7cda414cb51279af207ba",
+        "size": 338
+      },
+      "methods.json": {
+        "sha256": "483bd67e704bf5e3abdf8f4d5d4d39cd07c7fa21e9fd61533fad8115270b4416",
+        "size": 258029
+      }
+    },
+    "triage": {
+      "synchronization": "43 markers are explicit mutex_lock/mutex_unlock callsites. Joern reports API presence; it does not prove lock inversion. The Ghidra call inventory and source/assembly review establish the only observed order as tp_firmware_data_mutex then cdev+0xc60; helper-only paths acquire cdev+0xc60 and do not request the outer mutex.",
+      "lifetime": "11 markers are nine kfree and two kmalloc callsites in allocation, failure-cleanup, EOF-cleanup, and teardown branches. The reviewed paths clear the shared slot before frees on the hardened vmalloc-failure branches and execute slot operations under cmd_mutex plus outer serialization where applicable.",
+      "userspace_egress": "Two simple_read_from_buffer callsites return bounded local output strings from proc read handlers; these are expected egress sites, not a discovered leak.",
+      "unclassified_findings": 0,
+      "interpretation": "All 56 findings are retained as review findings; none is an automated proof of a vulnerability. This manual triage found no new concrete defect, while runtime and independent review remain deferred."
+    },
+    "intermediate_artifacts": {
+      "source_cpg_and_joern_workspace": "generated locally for this run; reproducible from the hashed manifest and intentionally not included in the public commit",
+      "source_inventory": "committed with its per-file hashes from joern_gate_summary.json"
+    }
+  },
+  "historical_joern_findings_note": "The cited exact-v4 Joern summaries predate the 2026-11-02 hardening. They are retained as history; the strict current run above covers the current 9-function source revision."
 }
