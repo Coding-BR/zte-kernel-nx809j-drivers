@@ -1,0 +1,38 @@
+3356b35306d35d5a480e3b63df1a9f065b5d9f55
+192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e  /work/src/kernel/kernel_platform/common/kernel/workqueue.c
+bool cancel_work(struct work_struct *work)
+{
+	return __cancel_work(work, 0);
+}
+EXPORT_SYMBOL(cancel_work);
+
+/**
+ * cancel_work_sync - cancel a work and wait for it to finish
+ * @work: the work to cancel
+ *
+ * Cancel @work and wait for its execution to finish. This function can be used
+ * even if the work re-queues itself or migrates to another workqueue. On return
+ * from this function, @work is guaranteed to be not pending or executing on any
+ * CPU as long as there aren't racing enqueues.
+ *
+ * cancel_work_sync(&delayed_work->work) must not be used for delayed_work's.
+ * Use cancel_delayed_work_sync() instead.
+ *
+ * Must be called from a sleepable context if @work was last queued on a non-BH
+ * workqueue. Can also be called from non-hardirq atomic contexts including BH
+ * if @work was last queued on a BH workqueue.
+ *
+ * Returns %true if @work was pending, %false otherwise.
+ */
+bool cancel_work_sync(struct work_struct *work)
+{
+	return __cancel_work_sync(work, 0);
+}
+EXPORT_SYMBOL_GPL(cancel_work_sync);
+
+/**
+ * cancel_delayed_work - cancel a delayed work
+ * @dwork: delayed_work to cancel
+ *
+ * Kill off a pending delayed_work.
+ *
