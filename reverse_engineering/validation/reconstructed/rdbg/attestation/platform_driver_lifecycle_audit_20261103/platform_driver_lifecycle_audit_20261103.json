@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "review_id": "rdbg_platform_driver_lifecycle_audit_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_LIFETIME_HAZARDS_FOUND_IN_STOCK_AND_EXACT_CANDIDATE",
+  "runtime_failure_reproduced": false,
+  "candidate": {
+    "module_path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+    "module_sha256": "6a25975d91059eae065cd28058515a767ceefe6ec4210347bc5712d3071ca2bc",
+    "module_size_bytes": 781712,
+    "docker_curated_module_matches": true,
+    "reconstruction_map_path": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json",
+    "reconstruction_map_sha256": "29e3e5e934e487107786f1279c1f5347664be15315b1887943470040be8dfde0",
+    "map_status_counts": {
+      "PROMOTED_OFFLINE_EXACT": 8
+    }
+  },
+  "stock_module": {
+    "path": "reference_modules/full_vendor_boot/rdbg.ko",
+    "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12"
+  },
+  "source_evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_07_init_module.c",
+      "sha256": "9547c1652432f631e65d014978a4d55d362efd66659834e7420b3f4eb70157fb"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_01_cleanup_module.c",
+      "sha256": "98ef1ad824c74e511a757f047ec076303dbcdb05357f571a57f9641bf814c796"
+    }
+  ],
+  "stock_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0006_init_module_00101638.asm",
+      "sha256": "b954e8e9e4b88a60a9fc12bb6f514b0adb7504b5889bbfdb033fec6f44131928"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
+      "sha256": "e409e3bd3f39089b3628250b43861ec76567285153fb11af6079aa2232cef492"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_stock_repaired/rdbg.ko/decompiled/0006_00101638_init_module.c",
+      "sha256": "7c1b2db312c99f9555857ce105ad548fd44c92db0c1c278843108be4e0da304e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_stock_repaired/rdbg.ko/decompiled/0007_00101974_cleanup_module.c",
+      "sha256": "536ecbc39e8aac56844bb49ea27d7921ebe8715d7e2d916d9f10df5bf0329adb"
+    }
+  ],
+  "pinned_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "mount_read_only": true,
+    "files": [
+      {
+        "path": "kernel_platform/common/drivers/base/platform.c",
+        "sha256": "deb56bde49fca1e12ec4e81fb7107713db3d3e8e6a953ddc6d8218c3d6dfc1c8",
+        "relevant_lines": [861, 879]
+      },
+      {
+        "path": "kernel_platform/common/drivers/base/driver.c",
+        "sha256": "49b475f7566ce9d56a80066b4c8f00c5506dfe9055db0f1cddba38b5e33e048a",
+        "relevant_lines": [222, 276]
+      },
+      {
+        "path": "kernel_platform/common/drivers/base/bus.c",
+        "sha256": "7212dfe51411f1bbd814881a6fbf1cdd6c6cd266ecda62d8df3fbf5b1834fa3f",
+        "relevant_lines": [644, 675, 730, 751]
+      },
+      {
+        "path": "kernel_platform/common/kernel/module/main.c",
+        "sha256": "59ac8a6ba1bedda5311205a834a4210d2f4f37f37d67afac8f872f5b1a5f3354",
+        "relevant_lines": [2963, 2992, 3077, 3088]
+      },
+      {
+        "path": "kernel_platform/common/fs/char_dev.c",
+        "sha256": "5e079cf1b203f40e09d6975751cbdfd19e2ff704790ddc7bd623b9a439c70a15",
+        "relevant_lines": [172, 184, 303, 320]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "RDBG-LIFE-001",
+      "severity": "high",
+      "summary": "Successful platform-driver registration is not undone on later init failures or normal module cleanup.",
+      "evidence": [
+        "Stock init assembly registers the driver with __this_module at section offset 0x80 before alloc_chrdev_region at 0xa8.",
+        "Stock init error edges after a successful registration do not call platform_driver_unregister.",
+        "Stock cleanup_module has no platform_driver_unregister call.",
+        "Pinned bus_add_driver adds the driver to the bus list and calls driver_attach; platform_driver_unregister removes it through driver_unregister and bus_remove_driver.",
+        "Pinned do_init_module failure path frees the module without invoking its exit callback."
+      ],
+      "interpretation": "A registration may remain on the platform bus while callback or driver storage is released. This is a static lifetime hazard and potential stale callback reference; runtime use-after-free was not reproduced."
+    },
+    {
+      "id": "RDBG-LIFE-002",
+      "severity": "medium",
+      "summary": "cleanup_module requests release of one character-device minor although init reserved a range of 16.",
+      "evidence": [
+        "Init passes g_rdbg_instance.count, initialized to 16, to alloc_chrdev_region.",
+        "Stock cleanup assembly passes count 1 to unregister_chrdev_region.",
+        "Pinned __unregister_chrdev_region requires the stored minorct to equal the requested count, so the count-1 call does not remove the count-16 range."
+      ],
+      "interpretation": "The device-number range remains reserved after cleanup. This is statically established from the pinned implementation; no runtime reload test was run."
+    },
+    {
+      "id": "RDBG-LIFE-003",
+      "severity": "low",
+      "summary": "A failed platform_driver_register return leaves the previously allocated clients array unfreed.",
+      "evidence": [
+        "Init allocates 16 client entries of stride 0x1c8, then returns ret directly when platform_driver_register fails.",
+        "The failed driver-core registration path unwinds its own partial bus registration, but the separate clients allocation has no kfree on this edge."
+      ],
+      "interpretation": "A 7296-byte allocation can leak when platform-driver registration fails."
+    }
+  ],
+  "reconstruction_disposition": "All three behaviors are stock-matching; no source or map change was made. Keep the eight offline-exact mapping statuses, but do not describe rdbg as runtime-safe or fully validated.",
+  "runtime_and_hardware_validation": false
+}
