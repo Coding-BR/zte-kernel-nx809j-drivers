@@ -298,10 +298,16 @@
   },
   "other_lifetime_gates": {
     "misc_fds": "misc_deregister plus active file-operation drain before work cancellation/free",
-    "irq": "devm_free_irq synchronously before final work drain",
+    "irq": "Stock irq_config at 00108368 calls devm_request_threaded_irq at 001083e8 with primary handler NULL, thread function irq_handle, and flags 0x2002. The candidate irq wrapper and richtap_stop_work serialize on haptic_irq_stop_lock; remove closes the shutdown gate, calls devm_free_irq, then drains work before state release.",
     "sysfs": "both groups reside on LED child; unregister/child device removal before state resource release",
     "fifo_pages": "transfer to sidecar while VMAs remain; release on last VMA close",
     "probe_remove_global_gate": "one transition mutex spans complete stock probe and complete remove"
+  },
+  "lock_order_review": {
+    "probe_and_remove": "Both acquire haptic_lifecycle_transition_lock before haptic_lifetime_registry_lock; file operations do not acquire the transition lock.",
+    "irq_and_stop_worker": "Both acquire haptic_irq_stop_lock before entering stock IRQ code or taking the stop-work state mutex. Stock irq_config registers irq_handle as the threaded handler (primary=NULL), so the wrapper mutex is used in thread context.",
+    "remove_drain": "Remove does not hold haptic_irq_stop_lock while devm_free_irq synchronizes the threaded handler; shutdown gate is set first, IRQ is freed before work cancellation, and the transition lock is released on both the NULL-state early return and normal exit.",
+    "static_review_result": "No reverse lock order or unmatched transition unlock was identified in this review; runtime lockdep/stress remains unverified."
   },
   "static_review_disposition": "No unmatched enqueue identified for active work items. The +0x628 TikTap item is initialized with tiktap_work_routine, but the full decompilation/reference scan and direct-call inventory show no in-module enqueue path; ioctl 0x5213 is print-only. Remove keeps a defensive cancellation, and out-of-module scheduling remains outside this evidence.",
   "runtime_stress_verified": false,
