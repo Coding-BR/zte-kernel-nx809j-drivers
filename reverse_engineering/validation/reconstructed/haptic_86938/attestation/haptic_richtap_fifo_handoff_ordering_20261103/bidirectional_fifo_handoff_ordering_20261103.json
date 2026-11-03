@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_fifo_handoff_ordering_20261103",
+  "review_date": "2026-11-03",
+  "result": "BIDIRECTIONAL_FIFO_HANDOFF_UNORDERED; STATIC_RACE_WINDOW_IDENTIFIED; NOT_REPRODUCED",
+  "device": {
+    "model": "NX809J",
+    "module_name_listed_loaded": "haptic_86938",
+    "installed_module_path": "/vendor_dlkm/lib/modules/haptic_86938.ko",
+    "installed_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "repository_stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+    "loaded_candidate_binary_identity_proven": false,
+    "runtime_failure_reproduced": false,
+    "haptic_effect_triggered": false
+  },
+  "userspace_producer": {
+    "service": "vendor.qti.hardware.vibrator.service",
+    "library": "/vendor/lib64/libaacvibrator.so",
+    "library_sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "mapping": {
+      "path": "/dev/awinic_haptic",
+      "length_bytes": 16384,
+      "shared": true,
+      "writable": true
+    },
+    "node_offsets": {
+      "state": 0,
+      "data_size": 2,
+      "kernel_consumer_next": 8,
+      "hal_initialized_next": 16,
+      "payload": 24
+    },
+    "writer": {
+      "symbol": "write_data_to_buffer(tiktap_operation*, signed char)",
+      "state_load_vma": "0x1c208",
+      "payload_store_vma": "0x1c38c",
+      "data_size_store_vma": "0x1c39c",
+      "ready_state_store_vma": "0x1c22c",
+      "ready_state": "0x55 ('U')",
+      "release_instruction_present": false,
+      "acquire_instruction_on_free_state_load": false,
+      "kernel_shares_pthread_mutex": false
+    }
+  },
+  "stock_kernel_consumer": {
+    "module_function_vma": "0x664c",
+    "state_load_vma": "0x6680",
+    "free_state_store_vma": "0x6710",
+    "data_size_clear_vma": "0x6718",
+    "kernel_next_load_vma": "0x6720",
+    "free_store_precedes_size_clear": true,
+    "barrier_between_free_store_and_size_clear": false,
+    "acquire_instruction_on_ready_state_load": false
+  },
+  "reconstructed_candidate_consumer": {
+    "module_sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+    "map_sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b",
+    "source_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+    "source_sha256": "b0955fdcd2d554b2edcd95e1d708a7055e2f7a30bfebb926481c93b2d076ad34",
+    "ready_state_load_uses_read_once_without_acquire": true,
+    "free_state_store_vma": "0x8368",
+    "data_size_clear_vma": "0x836c",
+    "free_store_precedes_size_clear": true,
+    "barrier_between_free_store_and_size_clear": false
+  },
+  "evidence_hashes": {
+    "stock_consumer_decomp": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+    "stock_consumer_assembly": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+    "stock_probe_decomp": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+  },
+  "interpretation": "The kernel frees a FIFO node by storing state 0xff before clearing data_size. The HAL reuses a node after an ordinary load sees 0xff and can then reset/increment that size. An interleaving can therefore let the kernel's later zero erase a producer update. In the opposite direction, the HAL writes payload and size then state U without an explicit release, while the kernel uses ordinary state and size loads without an acquire. These observations identify an unproven two-way shared-memory handoff and a static concurrency window, not a reproduced failure.",
+  "disposition": "Preserve stock/candidate mapping status; do not claim cross-boundary synchronization or runtime safety. No source or map change was made."
+}
