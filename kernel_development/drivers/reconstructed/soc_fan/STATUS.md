@@ -70,3 +70,9 @@ O overlay `qwjujube` do source tree contém um nó `soc,fan`; isso não prova qu
 A revisão estática confirmou que o callback usa `READ_ONCE`/`WRITE_ONCE` para fase/snapshot e `atomic_t` no contador alinhado em `fan_state + 0x04`; o IRQ stock incrementa esse contador pelo caminho AArch64 LSE/LL-SC. A função do callback mantém assembly idêntica ao stock. O `fan_speed_show` stock arma o timer, espera um segundo e lê o snapshot sem cancelar o timer; se o callback atrasar, pode permanecer uma amostra anterior, comportamento preservado. Não foi justificada alteração de código ou promoção de status.
 
 A revisão adicional está em `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_state_second_pass_20261103/`. Ela não substitui revisão independente, KCSAN, runtime ou hardware; esses pontos seguem pendentes.
+
+## Revisão da ordem devres para GPIO/IRQ — 2026-11-03
+
+A inspeção do kernel alvo no volume Docker confirmou a ordem: `devm_gpio_request` registra GPIO antes de `devm_request_threaded_irq`; a liberação devres é LIFO; `devm_irq_release` chama `free_irq`, que sincroniza os handlers antes de retornar. O core executa essa limpeza tanto em falha de probe quanto em detach. Os blocos `devm_kmalloc` usam flags `0xdc0` (`GFP_KERNEL | __GFP_ZERO`), então o callback do hrtimer não inicializado permanece nulo até `hrtimer_init`, condição checada por `nb_fan_cancel_timer`.
+
+Não foi demonstrado use-after-free nem cancelamento de timer não inicializado nesse caminho. Nenhum código ou status foi alterado. A atestação com hashes do kernel alvo e do candidato está em `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_devres_irq_lifetime_20261103/`; runtime e hardware seguem sem validação.

@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "review_id": "devres_irq_lifetime_20261103",
+  "review_status": "PASS_STATIC_RESOURCE_ORDER_REVIEW_WITH_RUNTIME_LIMITATION",
+  "target_kernel": {
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55"
+  },
+  "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+  "candidate_module_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+  "stock_module_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "function_status_preserved": {
+    "nb_fan_probe@0010052c": "candidate_hardening_deviation; NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "nb_fan_gpio_proc@00100dac": "candidate_hardening_deviation; NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "nb_fan_remove@00100a54": "candidate_hardening_deviation; NOT_ESTABLISHED_HARDENED_DEVIATION"
+  },
+  "resource_order": [
+    "nb_fan_probe allocates the 0x58-byte context with devm_kmalloc before the other managed resources; the encoded flags are 0xdc0, equal to target GFP_KERNEL|__GFP_ZERO. The target gfp_types.h places __GFP_ZERO at bit 8.",
+    "nb_fan_parse_dt allocates the 0xa8-byte fan state with the same zeroing flag before hrtimer_init. Therefore the timer callback pointer is null until hrtimer_init, and nb_fan_cancel_timer only calls hrtimer_cancel after it observes the initialized callback pointer.",
+    "nb_fan_gpio_proc calls devm_gpio_request first and devm_request_threaded_irq second, passing the allocated context as dev_id. The IRQ handler reads the fan_state pointer from context offset +8, matching the context layout.",
+    "Target devres_release_all extracts resources and release_nodes walks them in reverse order. On probe failure, drivers/base/dd.c reaches device_unbind_cleanup; on detach, the same cleanup path releases managed resources.",
+    "devm_irq_release calls free_irq. Target free_irq removes the action and calls __synchronize_irq before returning. Thus the IRQ handler is quiesced before the earlier GPIO resource and managed context/state allocations are released.",
+    "On normal remove, nb_fan_remove removes sysfs, cancels the hrtimer, and clears the global pointer; the managed context remains allocated until driver-core devres cleanup. An IRQ still arriving in that interval receives the stable dev_id context, and free_irq drains it before memory release."
+  ],
+  "decision": "No use-after-free or uninitialized-timer cancellation was demonstrated in the reviewed devres path. No source change or status promotion is justified.",
+  "limitations": [
+    "Static source/API proof only; no runtime IRQ stress or hardware validation.",
+    "Global chip singleton and unrelated regulator-disable ambiguity remain separate declared residuals.",
+    "Whole-driver audit remains incomplete; other hardening deviations are unchanged."
+  ],
+  "docker_build_validation": {
+    "source_changed": false,
+    "rebuild_run": false,
+    "existing_two_cycle_report": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json",
+    "candidate_module_hash_matches_report": true
+  },
+  "repo_evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+      "sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.ko",
+      "sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076"
+    },
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0001_0010052c_nb_fan_probe.c",
+      "sha256": "3d7712cb5dd75959d41d602c9ff1976621f4a168aed2d161954a861be24d86ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0002_00100a54_nb_fan_remove.c",
+      "sha256": "18527b61687144d07809fa27053237e9e26776914c6843cd5546223282b98c24"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0004_00100dac_nb_fan_gpio_proc.c",
+      "sha256": "994c904617fb82eb80c8323d11aeecbc6216900b1ba9ec5e35e19102531c86b8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0001_nb_fan_probe_0010052c.asm",
+      "sha256": "293cc1987db531aa43a8f73b7a7c711e5bb1e01e40d85ce7d0ba5d2d587a1c6a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0002_nb_fan_remove_00100a54.asm",
+      "sha256": "75955d670c2ad985787080e0db0dad25e896b2f1f584f0fc3783621c8c953d8f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0004_nb_fan_gpio_proc_00100dac.asm",
+      "sha256": "4007fcbdf3d078e7abc56b2aba2e69e79ad6e4170e54849bf6ce7eaa785b85ca"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "sha256": "0c5f3ce5e2ae4633e3b759a7842f6ff825af835d9ff01283c709ceff86139338"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json",
+      "sha256": "791a0abc67c52f417885fe3060ebde28ba81ad69f22d99de8809194feb7ce0b8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/candidate_sync.json",
+      "sha256": "46da33077c8abd778d8f51ef84ec7c8d26d371e26d73c0476caecfe86028904c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json",
+      "sha256": "29bcc0c3642edc36debd253ca113f7554be376aa4661c53401a4ce6876b6e817"
+    }
+  ],
+  "docker_source_evidence": [
+    {
+      "path": "/kernel/kernel/kernel_platform/common/drivers/base/devres.c",
+      "sha256": "39dee6dfc6f46c7ac8ab2a6b79b8fc7f12136db892e5b7bb733cee89c7d41f24"
+    },
+    {
+      "path": "/kernel/kernel/kernel_platform/common/drivers/base/dd.c",
+      "sha256": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930"
+    },
+    {
+      "path": "/kernel/kernel/kernel_platform/common/kernel/irq/devres.c",
+      "sha256": "fb75fdd63d44cd3a71edfcc437b8857424d3df40a4c593ed6d782c68cc31fae1"
+    },
+    {
+      "path": "/kernel/kernel/kernel_platform/common/kernel/irq/manage.c",
+      "sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b"
+    },
+    {
+      "path": "/kernel/kernel/kernel_platform/common/drivers/gpio/gpiolib-legacy.c",
+      "sha256": "591296abdea7065d8846511fd50c8ea77931f72a0954bb299994db6b84a0ef89"
+    },
+    {
+      "path": "/kernel/kernel/kernel_platform/common/include/linux/gfp_types.h",
+      "sha256": "7a1859355beccb5185b9a8a0f2884dc22abab15d4e7f5bc1b4244758e03a5876"
+    }
+  ]
+}
