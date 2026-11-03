@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_device_hal_producer_20261103",
+  "review_date": "2026-11-03",
+  "result": "PRODUCER_IDENTIFIED; FIFO_MMAP_PUBLICATION_ORDER_UNPROVEN",
+  "device_probe": {
+    "model": "NX809J",
+    "access": "ADB with su UID 0",
+    "actions_read_only": true,
+    "vibration_triggered": false,
+    "device_files_changed": false,
+    "serial_recorded": false,
+    "process_id_or_aslr_address_recorded": false,
+    "loaded_kernel_module_name": "haptic_86938",
+    "loaded_module_binary_hash_obtained": false
+  },
+  "live_userspace_owner": {
+    "process": "vendor.qti.hardware.vibrator.service",
+    "executable": "/vendor/bin/hw/vendor.qti.hardware.vibrator.service",
+    "service_executable_sha256": "4af5a59e1ab7ea19162102c56513a17d05f3ad22530fd5131c50a2ead64a13fd",
+    "producer_library": "/vendor/lib64/libaacvibrator.so",
+    "producer_library_size": 289616,
+    "producer_library_sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "richtap_interface_library": "/vendor/lib64/vendor.aac.hardware.richtap.vibrator-V2-ndk.so",
+    "richtap_interface_library_sha256": "3bc30f927b124aab68e85e2fbe005de93b689ecfdfb63ff9c97bec394da3027"
+  },
+  "live_mapping": {
+    "backing_path": "/dev/awinic_haptic",
+    "permissions": "rw-s",
+    "length_bytes": 16384,
+    "file_offset": 0,
+    "device_type": "misc character device",
+    "major": 10,
+    "minor": 112,
+    "mapped_by_vibrator_service": true
+  },
+  "producer_binary_analysis": {
+    "elf_class": "ELF64",
+    "machine": "AArch64",
+    "imports": ["__open_2", "mmap", "ioctl", "close"],
+    "relevant_strings": [
+      "/dev/awinic_haptic",
+      "mmap_memrory_with_driver",
+      "data_write_mmap_format"
+    ],
+    "mmap_setup": {
+      "open_flags": "2 (O_RDWR)",
+      "length_bytes": 16384,
+      "protection": "3 (PROT_READ | PROT_WRITE)",
+      "flags": "1 (MAP_SHARED)",
+      "offset": 0,
+      "file_descriptor_closed_after_mapping": true,
+      "open_call_vma": "0x23fbc",
+      "mmap_call_vma": "0x23ffc"
+    },
+    "node_layout": {
+      "count": 16,
+      "stride_bytes": 1024,
+      "producer_initialized_link_offset": 16,
+      "kernel_consumer_link_offset": 8,
+      "state_offset": 0,
+      "data_size_offset": 2,
+      "payload_offset": 24,
+      "ready_state": "0x55 ('U')"
+    },
+    "writer": {
+      "symbol": "write_data_to_buffer(tiktap_operation*, signed char)",
+      "symbol_vma": "0x1c194",
+      "body_entry_vma": "0x1c198",
+      "payload_store_vma": "0x1c38c",
+      "size_update_vma": "0x1c39c",
+      "ready_state_store_vma": "0x1c22c",
+      "explicit_release_instruction_in_writer": false,
+      "pthread_mutex_used": true,
+      "kernel_shares_that_mutex": false
+    }
+  },
+  "kernel_consumer_analysis": {
+    "stock_probe_decomp_sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+    "stock_consumer_decomp_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+    "stock_consumer_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+    "candidate_consumer_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+    "candidate_consumer_source_sha256": "b0955fdcd2d554b2edcd95e1d708a7055e2f7a30bfebb926481c93b2d076ad34",
+    "stock_next_pointer_offset": 8,
+    "stock_state_size_payload_offsets": [0, 2, 24],
+    "stock_acquire_instruction_in_consumer": false,
+    "candidate_uses_read_once_without_acquire": true
+  },
+  "candidate_identity": {
+    "module_sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+    "map_sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b",
+    "docker_curated_copy_matches": true
+  },
+  "interpretation": "The installed vendor vibrator HAL is the userspace process that maps the Richtap FIFO. The HAL initializes a producer-side link at node+0x10; stock initializes and consumes a separate kernel-side link at node+0x08, so this is not a layout mismatch. The producer writes payload and size then sets state U, but the inspected writer has no explicit release operation and the kernel reader has no matching acquire. This leaves cross-boundary publication ordering unproven and suggests a possible weak-memory visibility race; no runtime failure was reproduced.",
+  "limitations": [
+    "The installed haptic_86938 module binary was not extracted; the phone's loaded module is not identified as the current reconstructed candidate.",
+    "No active vibration or runtime stress test was performed.",
+    "No user application or framework caller was attributed to a particular effect request.",
+    "The static memory-order review does not prove a runtime failure."
+  ]
+}
