@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "review": "Richtap PFN VMA failed-remap cleanup",
+  "review_date": "2026-11-03",
+  "status": "SCOPED_STATIC_CONCERN_CLOSED",
+  "candidate": {
+    "module_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "module_bytes": 6720000,
+    "reconstruction_map_sha256_at_capture": "78edd6c046bc58cbfb710f5c885c693a6c5c9afba197c69f98f0fbb68d772a6a",
+    "reconstruction_map_sha256_after_evidence_links": "774a8bc3f12f2ed4036db9b8a44820fbf7a21b6036364a907ac28262406a0307",
+    "base_git_commit": "63b3db4412f3b4050a98bd982f982a93f459aae0"
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "richtap_file_mmap_entry": "0010e92c",
+    "assembly_sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+    "ghidra_decompilation_sha256": "6a62ae37c5c18c7377f1c72aa36baf7f3fa9372e09f6b1d95098fdeede63ba4e"
+  },
+  "candidate_source_sha256": {
+    "haptic_86938_fn_133_richtap_file_mmap.c": "45f44b7c153a6c68dcd053c5ff77a5a2e1a8a53ce5f9048c44c0cda389301c3c",
+    "haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "haptic_86938_lifetime.c": "4ea538fdec18451e8cc9abcf0dca2e2386898df5ccf794eca449fd26552cdd92"
+  },
+  "docker_source": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_platform_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "read_only_probe": true,
+    "source_sha256": {
+      "kernel/kernel_platform/common/mm/memory.c": "a94600840f0c9ead07d4a61dbe8d3ea7712f9445cdf00af0b9cec6ce0fb18d46",
+      "kernel/kernel_platform/common/mm/mmap.c": "63f897f869c39a9cd587445f4796268989678965c1bb169ddd621f8246b6a56d",
+      "kernel/kernel_platform/common/mm/vma.c": "d4a34240fafebcecdb7f48017d07a4cc11d276b0232357e9923d8354823f63d9",
+      "kernel/kernel_platform/common/mm/internal.h": "469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e"
+    }
+  },
+  "canonical_curated_snapshot": {
+    "path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938",
+    "module_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "map_sha256": "774a8bc3f12f2ed4036db9b8a44820fbf7a21b6036364a907ac28262406a0307",
+    "readme_sha256": "7a6d93f4d0fe70a985a933328d4895d83ce890f6c34e50ffe1f74bc7a01bf3c2",
+    "status_sha256": "fef767cf135b57e596f76a1eaaa613e0f11fe777d3883f4d6f9f51dfecef91f1",
+    "matching_candidate_source_sha256": {
+      "haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+      "haptic_86938_fn_133_richtap_file_mmap.c": "45f44b7c153a6c68dcd053c5ff77a5a2e1a8a53ce5f9048c44c0cda389301c3c",
+      "haptic_86938_lifetime.c": "4ea538fdec18451e8cc9abcf0dca2e2386898df5ccf794eca449fd26552cdd92"
+    }
+  },
+  "candidate_evidence_sha256": {
+    "candidate_richtap_file_mmap_full_range.txt": "d334fdb07ddf9943cb9f5328090e635146c3e62f4d94e9a29729bf446e201b02",
+    "candidate_vma_lifetime_disassembly.txt": "41386334b250be4170baf0b8149887a8a13082588c31e435d8a5765512766f62",
+    "target_kernel_remap_failure_excerpt.txt": "5818549a952d4cf479d62ad2db3690c5dabb1db0fd15fb5d0666a739dce3282c"
+  },
+  "stock_aw_remove_evidence_sha256": {
+    "assembly": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+    "ghidra_decompilation": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+  },
+  "assessment": {
+    "candidate_mmap_order": [
+      "Enter active-file accounting before accessing the haptic state.",
+      "Call remap_pfn_range for the exact 0x4000-byte VMA.",
+      "On a nonzero result, skip haptic_lifetime_attach_vma, log the error, and call haptic_lifetime_exit_file before returning.",
+      "On success, attach the initial VMA reference before calling haptic_lifetime_exit_file."
+    ],
+    "pinned_kernel_failure_cleanup": [
+      "remap_pfn_range_notrack calls zap_page_range_single after an internal partial PFN mapping error.",
+      "zap_page_range_single unmaps the requested range and calls tlb_finish_mmu before returning.",
+      "remap_pfn_range untracks the PFN range after the notrack helper returns an error.",
+      "mmap_region also calls unmap_region when the driver's mmap_file callback returns an error; unmap_region removes VMAs, frees page tables, and finishes the TLB gather."
+    ],
+    "remove_order": [
+      "aw_remove invokes haptic_lifetime_block_file_access before resource teardown.",
+      "haptic_lifetime_block_file_access unpublishes the device, marks the lifetime dying, deregisters the misc device, and waits for active file operations to reach zero.",
+      "aw_remove later invokes haptic_lifetime_retire_state; successful VMA references defer page release until the final close."
+    ],
+    "current_candidate_imports": {
+      "candidate_unique_undefined_imports": 93,
+      "stock_unique_undefined_imports": 85,
+      "missing_from_candidate": ["gpio_free"],
+      "additional_in_candidate": [
+        "__init_waitqueue_head",
+        "__wake_up",
+        "destroy_workqueue",
+        "finish_wait",
+        "init_wait_entry",
+        "led_classdev_unregister",
+        "prepare_to_wait_event",
+        "refcount_warn_saturate",
+        "schedule"
+      ],
+      "strict_parity": false
+    }
+  },
+  "limits": [
+    "No runtime partial page-table mapping failure was injected.",
+    "No mmap/unbind race, KASAN, Lockdep, KCSAN, or hardware behavior was exercised.",
+    "The result closes only the failed-remap partial-PFN lifetime concern for this candidate and pinned kernel source.",
+    "The module remains an offline reconstruction candidate; no hardware load is claimed."
+  ]
+}

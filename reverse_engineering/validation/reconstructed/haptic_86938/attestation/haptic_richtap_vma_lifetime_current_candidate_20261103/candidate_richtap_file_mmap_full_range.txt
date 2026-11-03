@@ -1,0 +1,108 @@
+
+/tmp/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000000799c <richtap_file_mmap>:
+    799c:      	paciasp
+    79a0:      	sub	sp, sp, #0x50
+    79a4:      	stp	x29, x30, [sp, #0x20]
+    79a8:      	str	x21, [sp, #0x30]
+    79ac:      	stp	x20, x19, [sp, #0x40]
+    79b0:      	add	x29, sp, #0x20
+    79b4:      	mrs	x8, SP_EL0
+    79b8:      	ldr	x8, [x8, #0x710]
+    79bc:      	stur	x8, [x29, #-0x8]
+    79c0:      	stp	xzr, xzr, [sp, #0x8]
+    79c4:      	b	0x7aec <richtap_file_mmap+0x150>
+    79c8:      	nop
+    79cc:      	nop
+    79d0:      	nop
+    79d4:      	mov	x20, x1
+    79d8:      	mov	x19, x1
+    79dc:      	add	x1, sp, #0x10
+    79e0:      	add	x2, sp, #0x8
+    79e4:      	bl	0x79e4 <richtap_file_mmap+0x48>
+		00000000000079e4:  R_AARCH64_CALL26	haptic_lifetime_enter_file
+    79e8:      	cbnz	w0, 0x7aa0 <richtap_file_mmap+0x104>
+    79ec:      	cbz	x20, 0x7ae8 <richtap_file_mmap+0x14c>
+    79f0:      	mrs	x8, SP_EL0
+    79f4:      	mov	w9, #0xfb               // =251
+    79f8:      	ldr	x20, [sp, #0x8]
+    79fc:      	ldr	x8, [x8, #0x688]
+    7a00:      	ldr	x21, [x19, #0x18]
+    7a04:      	ldr	x8, [x8, #0x128]
+    7a08:      	orr	x0, x8, x9
+    7a0c:      	bl	0x7a0c <richtap_file_mmap+0x70>
+		0000000000007a0c:  R_AARCH64_CALL26	vm_get_page_prot
+    7a10:      	cmp	x21, x0
+    7a14:      	b.ne	0x7a88 <richtap_file_mmap+0xec>
+    7a18:      	ldp	x1, x8, [x19]
+    7a1c:      	sub	x8, x8, x1
+    7a20:      	cmp	x8, #0x4, lsl #12       // =0x4000
+    7a24:      	b.ne	0x7a90 <richtap_file_mmap+0xf4>
+    7a28:      	ldr	x8, [x20, #0x610]
+    7a2c:      	mov	x9, #0x8000000000       // =549755813888
+    7a30:      	adrp	x10, 0x7000 <haptic_lifetime_retire_state+0x130>
+		0000000000007a30:  R_AARCH64_ADR_PREL_PG_HI21	memstart_addr
+    7a34:      	adrp	x11, 0x7000 <haptic_lifetime_retire_state+0x130>
+		0000000000007a34:  R_AARCH64_ADR_PREL_PG_HI21	kimage_voffset
+    7a38:      	ldr	x10, [x10]
+		0000000000007a38:  R_AARCH64_LDST64_ABS_LO12_NC	memstart_addr
+    7a3c:      	ldr	x4, [x19, #0x18]
+    7a40:      	sbfx	x8, x8, #0, #56
+    7a44:      	ldr	x11, [x11]
+		0000000000007a44:  R_AARCH64_LDST64_ABS_LO12_NC	kimage_voffset
+    7a48:      	mov	x0, x19
+    7a4c:      	mov	w3, #0x4000             // =16384
+    7a50:      	add	x9, x8, x9
+    7a54:      	sub	x8, x8, x11
+    7a58:      	lsr	x12, x9, #38
+    7a5c:      	add	x9, x9, x10
+    7a60:      	cmp	x12, #0x0
+    7a64:      	csel	x8, x9, x8, eq
+    7a68:      	lsr	x2, x8, #12
+    7a6c:      	bl	0x7a6c <richtap_file_mmap+0xd0>
+		0000000000007a6c:  R_AARCH64_CALL26	remap_pfn_range
+    7a70:      	cbnz	w0, 0x7acc <richtap_file_mmap+0x130>
+    7a74:      	ldr	x0, [sp, #0x10]
+    7a78:      	mov	x1, x19
+    7a7c:      	bl	0x7a7c <richtap_file_mmap+0xe0>
+		0000000000007a7c:  R_AARCH64_CALL26	haptic_lifetime_attach_vma
+    7a80:      	mov	w19, wzr
+    7a84:      	b	0x7a94 <richtap_file_mmap+0xf8>
+    7a88:      	mov	w19, #-0x1              // =-1
+    7a8c:      	b	0x7a94 <richtap_file_mmap+0xf8>
+    7a90:      	mov	w19, #-0xc              // =-12
+    7a94:      	ldr	x0, [sp, #0x10]
+    7a98:      	bl	0x7a98 <richtap_file_mmap+0xfc>
+		0000000000007a98:  R_AARCH64_CALL26	haptic_lifetime_exit_file
+    7a9c:      	mov	w0, w19
+    7aa0:      	mrs	x8, SP_EL0
+    7aa4:      	ldr	x8, [x8, #0x710]
+    7aa8:      	ldur	x9, [x29, #-0x8]
+    7aac:      	cmp	x8, x9
+    7ab0:      	b.ne	0x7ae4 <richtap_file_mmap+0x148>
+    7ab4:      	ldp	x20, x19, [sp, #0x40]
+    7ab8:      	ldr	x21, [sp, #0x30]
+    7abc:      	ldp	x29, x30, [sp, #0x20]
+    7ac0:      	add	sp, sp, #0x50
+    7ac4:      	autiasp
+    7ac8:      	ret
+    7acc:      	mov	w19, w0
+    7ad0:      	ldr	x0, [x20, #0x320]
+    7ad4:      	adrp	x1, 0x7000 <haptic_lifetime_retire_state+0x130>
+		0000000000007ad4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1020
+    7ad8:      	add	x1, x1, #0x0
+		0000000000007ad8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1020
+    7adc:      	bl	0x7adc <richtap_file_mmap+0x140>
+		0000000000007adc:  R_AARCH64_CALL26	_dev_err
+    7ae0:      	b	0x7a94 <richtap_file_mmap+0xf8>
+    7ae4:      	bl	0x7ae4 <richtap_file_mmap+0x148>
+		0000000000007ae4:  R_AARCH64_CALL26	__stack_chk_fail
+    7ae8:      	brk	#0x1
+    7aec:      	brk	#0x800
+    7af0:      	b	0x79cc <richtap_file_mmap+0x30>
+    7af4:      	b	0x79d0 <richtap_file_mmap+0x34>
+    7af8:      	b	0x79d4 <richtap_file_mmap+0x38>
+    7afc: bb cd f6 2a  	.word	0x2af6cdbb
