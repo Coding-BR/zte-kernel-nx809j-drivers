@@ -5,13 +5,19 @@
 - **Classificação do mapa:** `PARTIAL_SOURCE_MAP`; revisão `PASS_WITH_HARDENING_DEVIATION`;
 - **Escopo e semântica:** `structural_identity_only`; `MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION`;
 - **Módulo stock:** SHA-256 `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`;
-- **Candidato atual:** SHA-256 `5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f`, `7264256` bytes; idêntico ao snapshot curado do Docker;
-- **Build canônico:** relatório para o mesmo hash, `2/2` ciclos reproduzíveis e sem divergências de sincronização da fonte: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_remove_null_guard_20261102/canonical_build_report.json`;
+- **Candidato atual:** SHA-256 `adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143`, `7259840` bytes; idêntico ao snapshot curado do Docker;
+- **Build canônico:** relatório para o mesmo hash, `2/2` ciclos reproduzíveis e sem divergências de sincronização da fonte: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/canonical_build_report.json`;
 - **Mapa de funções:** 367 identidades; 333 marcadas `PROMOTED_OFFLINE_EXACT` (28 ainda grafadas em minúsculas) e 34 `HARDENED_STOCK_DEVIATION`;
-- **Validações desta revisão:** `tpd_set_screen_off_awake` bateu com stock em extração Docker atual; a auditoria de teardown conferiu o buffer de evento, operações cdev, IRQ/workqueue e a desconexão dupla sequencial;
+- **Validações desta revisão:** `tpd_set_screen_off_awake` bateu com stock em extração Docker atual; a auditoria de teardown conferiu buffer de evento, cdev, IRQ/workqueue e desconexão dupla; o probe ganhou limpeza do buffer no erro de `misc_register`, com atestação estática e build canônico `2/2`;
 - **Gates abertos:** revisão humana independente, equivalência semântica integral e validação em hardware NX809J. Nenhum módulo foi carregado.
 
 `PARTIAL_SOURCE_MAP` e `MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION` descrevem o estado do mapa. O build reproduzível comprova compilação e sincronização do snapshot, não equivalência semântica integral.
+
+## Caminho de falha de `syna_dev_probe` — 2026-11-03
+
+O pseudocódigo stock aloca `0x32000` bytes em `tcm+0x460`, chama `misc_register` com o dispositivo em `tcm+0x4a0` e, em caso de erro, retorna antes do `kfree` comum. O candidato redireciona essa chamada para um helper que zera e libera o buffer no erro, preservando o código de retorno. A wrapper também desfaz o probe se o buffer ou a workqueue de recuperação estiverem ausentes.
+
+O corpo stock permanece com `1408` bytes e os `352` words de instrução são idênticos; a relocação da chamada em `+0x2b0` foi alterada intencionalmente. Por isso a comparação estrita continua marcada como divergente e o mapa classifica o probe como `HARDENED_STOCK_DEVIATION`. O build Docker passou `2/2` ciclos e o KCFI type ID da wrapper corresponde ao stock. Fault injection, boot e hardware NX809J não foram executados. Detalhes e hashes estão em `attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/`.
 
 ## Snapshot histórico — 2026-08-28
 

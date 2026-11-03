@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T03:47:56.501836+00:00",
+  "target": "syna_dev_probe",
+  "classification": "HARDENED_STOCK_DEVIATION",
+  "stock_evidence": {
+    "module": {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+    },
+    "ghidra_pseudocode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0156_00112038_syna_dev_probe.c",
+      "sha256": "01403b177143bebaa14e6c9389f5b5e025a3c23874b97eccefc44c443a810cb2"
+    },
+    "ghidra_pcode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/pcode/0156_00112038_syna_dev_probe.jsonl",
+      "sha256": "b9db1158fb8888528271bc9e88b6b2e84dbe9e65fc9a9238480d15f698766908"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0156_syna_dev_probe_00112038.asm",
+      "sha256": "485f65870e45e5b23fb128c406ba0d03e40ad477455b8d4531c22d681f7abe9d"
+    }
+  },
+  "stock_failure_path": {
+    "buffer_allocation": "__kmalloc_large_noprof(0x32000)",
+    "buffer_slot_offset": "0x460",
+    "miscdevice_offset": "0x4a0",
+    "misc_register_failure": "branches to LAB_001121dc and returns before the common kfree at the later connect/cdev/sysfs failure path",
+    "source_lines": {
+      "allocation": 82,
+      "registration": 92,
+      "later_kfree": 162
+    }
+  },
+  "candidate": {
+    "module": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/syna_dev_probe_misc_register_failure_cleanup_20261103/zte_tpd/zte_tpd.ko",
+      "sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+      "size": 7259840
+    },
+    "canonical_build": {
+      "report": "canonical_build_report.json",
+      "passed": true,
+      "reproducible": true,
+      "cycles": 2,
+      "source_sync_mismatches": {
+        "content_mismatch": [],
+        "missing_from_curated": [],
+        "unexpected_in_curated": []
+      }
+    },
+    "source_files": {
+      "syna_dev_probe_exact.S": {
+        "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe_exact.S",
+        "sha256": "85144d99545368ac4e310218226de273d5e7089e6f73e11898d0e85ac3ad3ec8"
+      },
+      "syna_dev_probe_wrapper.c": {
+        "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe_wrapper.c",
+        "sha256": "61958712e5e652df7a98bad7df949fc882c9ad99f18bc70ffb52f10043791c67"
+      },
+      "syna_input_agent.c": {
+        "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_input_agent.c",
+        "sha256": "2221b13fed6cf28e6656c8f8778586ac8b007197e6704451b6bdc5bb6e680d82"
+      }
+    },
+    "stock_exact_body": {
+      "stock_function_size": 1408,
+      "candidate_function_size": 1408,
+      "stock_opcode_count": 352,
+      "candidate_opcode_count": 352,
+      "opcode_words_identical": true,
+      "opcode_word_stream_sha256": "e0ef3b86de0d66edf5003f26e1ebe03b7cf93f74932858fc4c18a6751631c5c4",
+      "call_relocation_offset": "0x2b0",
+      "stock_call_target": "misc_register",
+      "candidate_call_target": "syna_dev_probe_misc_register",
+      "strict_comparison": {
+        "passed": false,
+        "checks": {
+          "instructions": false,
+          "relocations": false,
+          "section": true,
+          "symbol_size": true
+        },
+        "note": "The strict comparator intentionally reports the redirected call and four raw BSS relocation label differences; no exact-equivalence claim is made."
+      },
+      "raw_relocation_label_differences": [
+        {
+          "stock": "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x7b1",
+          "candidate": "R_AARCH64_ADR_PREL_PG_HI21 syna_dev_probe_wait_base+0x1"
+        },
+        {
+          "stock": "R_AARCH64_ADD_ABS_LO12_NC .bss+0x7b1",
+          "candidate": "R_AARCH64_ADD_ABS_LO12_NC syna_dev_probe_wait_base+0x1"
+        },
+        {
+          "stock": "R_AARCH64_ADR_PREL_PG_HI21 .bss+0x7b1",
+          "candidate": "R_AARCH64_ADR_PREL_PG_HI21 syna_dev_probe_wait_base+0x1"
+        },
+        {
+          "stock": "R_AARCH64_ADD_ABS_LO12_NC .bss+0x7b1",
+          "candidate": "R_AARCH64_ADD_ABS_LO12_NC syna_dev_probe_wait_base+0x1"
+        }
+      ]
+    },
+    "cleanup_helper": {
+      "assembly": "candidate_assembly/0002_syna_dev_probe_misc_register.asm",
+      "behavior": [
+        "calls misc_register",
+        "returns immediately on success",
+        "on error reads input buffer at miscdevice-0x40",
+        "writes NULL to the input buffer slot",
+        "calls kfree(buffer)",
+        "returns the original misc_register error"
+      ]
+    },
+    "success_resource_guard": {
+      "wrapper_assembly": "candidate_assembly/0001_syna_dev_probe.asm",
+      "checks": [
+        "helper workqueue at tcm+0x548",
+        "input buffer at tcm+0x460"
+      ],
+      "failure_action": "calls syna_dev_remove, clears platform drvdata, returns -ENOMEM"
+    },
+    "kcfi": {
+      "report": "kcfi_comparison.json",
+      "passed": true,
+      "type_id": "0xc7f8c87c",
+      "size_gate_ignored": true,
+      "stock_symbol_size": 1408,
+      "candidate_wrapper_size": 116
+    }
+  },
+  "source_sync": {
+    "report": "source_sync_plan.json",
+    "passed": true,
+    "applied": true,
+    "copied": [
+      "syna_dev_probe_exact.S",
+      "syna_dev_probe_wrapper.c",
+      "syna_input_agent.c"
+    ],
+    "removed_stale_source": []
+  },
+  "limits": [
+    "No runtime allocation fault injection was performed.",
+    "No Android boot or NX809J hardware validation was performed.",
+    "The strict assembly report remains a failure for the intentional call relocation and raw relocation label differences."
+  ]
+}

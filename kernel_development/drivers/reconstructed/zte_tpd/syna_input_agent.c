@@ -25,6 +25,28 @@ static DEFINE_MUTEX(syna_input_agent_misc_lock);
 static struct syna_input_buffer_owner *syna_input_owner;
 static DECLARE_WAIT_QUEUE_HEAD(syna_input_agent_poll_wait);
 
+/*
+ * Stock probe allocates this non-devm buffer before misc_register(). Its
+ * misc-registration error path returns without unwinding that allocation.
+ */
+int syna_dev_probe_misc_register(struct miscdevice *misc)
+{
+	void **buffer_slot;
+	void *buffer;
+	int ret;
+
+	ret = misc_register(misc);
+	if (!ret)
+		return 0;
+
+	buffer_slot = (void **)((char *)misc -
+		(SYNA_INPUT_AGENT_MISC_OFFSET - SYNA_INPUT_AGENT_BUFFER_OFFSET));
+	buffer = READ_ONCE(*buffer_slot);
+	WRITE_ONCE(*buffer_slot, NULL);
+	kfree(buffer);
+	return ret;
+}
+
 static void syna_input_owner_put(struct syna_input_buffer_owner *owner)
 {
 	if (owner && refcount_dec_and_test(&owner->refs)) {

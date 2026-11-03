@@ -247,7 +247,7 @@ syna_dev_probe_stock_exact:
     .inst 0xf9025a68
     .inst 0xf902667f
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, misc_register
+    .reloc .-4, R_AARCH64_CALL26, syna_dev_probe_misc_register
     .inst 0x35000240
     .inst 0x91004280
     .inst 0x52800021
