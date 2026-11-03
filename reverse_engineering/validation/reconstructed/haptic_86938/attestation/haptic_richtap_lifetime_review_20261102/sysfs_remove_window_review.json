@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-SYSFS-TEARDOWN-20261102",
+  "generated_local_date": "2026-11-02",
+  "parent_reviews": ["HAP-RICHTAP-LIFETIME-20261102", "HAP-RAM-FW-LIFETIME-20261102", "HAP-LED-LIFETIME-20261102"],
+  "driver": "haptic_86938",
+  "status": "LED_CHILD_SYSFS_REACHABILITY_AND_POST_CANCEL_SUBMISSIONS_CONFIRMED_STATIC",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_mount_mode": "read-only"
+  },
+  "target_kernel_files": [
+    {
+      "path": "kernel/kernel_platform/common/drivers/leds/led-class.c",
+      "sha256": "2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340",
+      "locations": ["524-525 creates the LED child with drvdata=led_cdev", "616-650 managed release unregisters the LED child"],
+      "observations": [
+        "the child is parented to the I2C device passed to devm_led_classdev_register_ext",
+        "devm_led_classdev_release calls led_classdev_unregister, which calls device_unregister on the LED child"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/core.c",
+      "sha256": "64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882",
+      "locations": ["4364-4393 device_create_groups_vargs stores drvdata and registers the child", "3809-3896 device_del/device_unregister removes the child and its sysfs surface"],
+      "observations": [
+        "device_create_with_groups records the supplied led_cdev pointer as child drvdata",
+        "device_unregister removes the LED child and its sysfs files when the managed LED release runs"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/dd.c",
+      "sha256": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930",
+      "locations": ["547-567 device_remove and device_unbind_cleanup", "698-724 remove/unbind sequence"],
+      "observations": [
+        "the I2C remove callback runs in device_remove",
+        "devres_release_all runs in device_unbind_cleanup after device_remove returns"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/firmware_loader/main.c",
+      "sha256": "271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f",
+      "locations": ["1329-1339", "1347-1385", "1412-1418"],
+      "observations": [
+        "request_firmware_nowait schedules a separate firmware work item and later invokes ram_load with the saved raw context",
+        "the firmware request holds a device reference but not a reference to the driver's devm state"
+      ]
+    }
+  ],
+  "stock_evidence": [
+    {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+      "tool": "llvm-readelf -r --wide and llvm-readelf -s --wide",
+      "raw_stock_relocation_observations": [
+        "vibrator_attribute_group is local .data symbol +0x4e0, size 0x28; its attrs pointer relocation at .data+0x4f8 targets .data+0x508",
+        "the generic group attrs array contains .data+0x560 -> .data+0x778; the ram_update_store callback relocation at .data+0x790 targets .text+0x8408",
+        "the generic group attrs array contains .data+0x5f8 -> .data+0x9d8; the activate_aw_store callback relocation at .data+0x9f0 targets .text+0xaca4",
+        "aw8693x_vibrator_attribute_group is local .data symbol +0x190, size 0x28; its attrs pointer relocation at .data+0x1a8 targets .data+0x1b8",
+        "the AW group attrs array contains .data+0x1d8 -> .data+0x268; the rtp_auto_sin_store callback relocation at .data+0x280 targets .text+0x40b0"
+      ]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locations": ["0x4ec4-0x4ef0 installs and calls the chip callback table", "0x5084-0x50a8 calls table slot +0x8 with the device state"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_func_list_20261101/callback_table_audit.json",
+      "sha256": "770a19cec349b7dc6cd327a5e3ddc95f0676aaffe41cc4ac743f87ff9f6a741c",
+      "locations": ["stock aw8693x_func_list slot 1, offset 0x8"],
+      "observations": ["the raw stock table relocation resolves slot 1 to aw8693x_creat_node"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0067_vibrator_init_00108468.asm",
+      "sha256": "ef8e5b8fe1da3e00657a631214dadb3558d3d7abd52aa9a1ba0ebe3de105e698",
+      "locations": ["0x56ac-0x56d4 registers the managed LED classdev", "0x56dc-0x56e8 creates vibrator_attribute_group on state+0xf8", "0x5750-0x5758 installs rtp_work_routine at state+0x3b8"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0001_aw8693x_creat_node_00103258.asm",
+      "sha256": "bb378f4d44ac95384ddee63310c0f6cd88de6647608543c4b0a1f34a1f3b4e24",
+      "locations": ["0x448-0x454 calls sysfs_create_group on state+0xf8 with aw8693x_vibrator_attribute_group"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0103_ram_update_store_0010b228.asm",
+      "sha256": "5e98b4b789ea94af33b22941273690f1e91bbc245654dc8fe3360eecf7ea21af",
+      "locations": ["0x8438 loads the child device's drvdata", "0x8454-0x8480 derives the raw state context and calls request_firmware_nowait"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0141_activate_aw_store_0010dac4.asm",
+      "sha256": "0ef33886cf4ce3be8987abb10961aa5fe1a1e23474373cb33e061e23a19fd11c",
+      "locations": ["0xad3c-0xad70 checks the ready bit and queues workqueue state+0x448, item state+0x428"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm",
+      "sha256": "e2451cacf414764489e6818414cb2eb03baad219806ace981b1744017201e462",
+      "locations": ["0x4158-0x4164 queues workqueue state+0x448, item state+0x3a0"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0079_rtp_work_routine_00109c48.asm",
+      "sha256": "dba567616cf9f8ac4f217a07f993092f787c6dec3404875e0b89b620b42a7693",
+      "locations": ["entry uses state fields derived from the work argument at state+0x3a0"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+      "locations": ["0x546c-0x5478 cancels state+0x3a0 and state+0x428", "later frees state-owned resources and returns without unregistering the managed LED child or removing its sysfs groups"]
+    }
+  ],
+  "candidate_evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_vibrator_init_support.inc",
+      "sha256": "498f712371bbc1b098a1a00b614b8bfc365aa01141d205600ade25f5bd8bae37",
+      "observation": "the exact support table binds vibrator_attribute_group and its attributes to the stock callbacks"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_093_ram_update_store.c",
+      "sha256": "353326daedfc21ab6e3da11fc04c1f160bfaa5fef1690e3741f5bc070d1e92a0",
+      "observation": "passes state derived from child drvdata as raw request_firmware_nowait context"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_109_activate_aw_store.c",
+      "sha256": "fa95de7b1d277ffb0eaf54c355ba833ac6b075e49700bf6fd00569282b4a6efd",
+      "observation": "queues the same state+0x428 item canceled by aw_remove"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_062_rtp_auto_sin_store.c",
+      "sha256": "4c8489e6151d379a64fa264b851d99d1445d625e0656c28f4ed59db440f37624",
+      "observation": "queues the same state+0x3a0 item canceled by aw_remove"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_126_aw8693x_creat_node.c",
+      "sha256": "91b9b01affd7ca2139ae30cc921273edb52612d3a9a585d41023ab3c7de05454",
+      "observation": "creates the second sysfs group on the same LED child kobject"
+    }
+  ],
+  "teardown_timeline": [
+    "The probe initializes aw8693x_func_list and reaches aw8693x_creat_node through slot 1; vibrator_init has already registered the LED child and created vibrator_attribute_group on that child's kobject.",
+    "The generic group exposes ram_update_store and activate_aw_store; the second AW group exposes rtp_auto_sin_store. Target device creation stores led_cdev as the child's drvdata, allowing these callbacks to derive the owning state.",
+    "aw_remove cancels state+0x3a0 and state+0x428, then continues resource teardown while both LED child groups remain registered.",
+    "The parent driver core invokes devres_release_all only after aw_remove returns. The managed LED release then unregisters the LED child and removes its sysfs groups.",
+    "A store during the remove window can therefore resubmit either canceled work item or submit ram_load asynchronously with raw state context. The sysfs callback returning does not drain the driver workqueue or the separate firmware callback."
+  ],
+  "finding": {
+    "id": "HAP-SYSFS-01",
+    "title": "managed LED sysfs groups remain active through aw_remove",
+    "severity": "high",
+    "confidence": "high_static_reachability_and_ordering",
+    "condition": "normal probe reaches the relevant sysfs_create_group call and a store runs after aw_remove begins but before the managed LED devres release",
+    "affected_submissions": [
+      {
+        "callback": "activate_aw_store",
+        "effect": "can queue state+0x428 after aw_remove canceled that work item",
+        "condition": "state+0x6 bit 0 is set"
+      },
+      {
+        "callback": "rtp_auto_sin_store",
+        "effect": "can queue state+0x3a0 after aw_remove canceled that work item",
+        "condition": "input parses successfully"
+      },
+      {
+        "callback": "ram_update_store",
+        "effect": "can submit ram_load through request_firmware_nowait with raw state context",
+        "condition": "input parses successfully and is nonzero"
+      }
+    ],
+    "impact": "work may run after its remove-time cancellation and access state or chip operations during teardown; the firmware callback can outlive remove and access devm state after release",
+    "relation_to_prior_findings": ["HAP-FW-01", "HAP-LED-01"],
+    "runtime_reproduced": false,
+    "hardware_tested": false
+  },
+  "limits": [
+    "The path is conditional on successful sysfs group creation and a userspace store during the remove window.",
+    "Stock reachability and ordering are statically established from raw module relocations, stock AArch64 assembly, and the pinned target-kernel source; no scheduler or hardware reproduction was performed.",
+    "This identifies additional producers for existing lifetime endpoints and is tracked as a sysfs exposure finding rather than a claim of a new firmware-loader defect.",
+    "No reconstruction source changed and no Docker rebuild was run."
+  ],
+  "hardening_follow_up": [
+    "In a separately identified hardening candidate, set a dying/admission gate before teardown so no sysfs store or LED callback can submit new work.",
+    "Unregister the managed LED child while state remains valid; then drain any sysfs store already in flight and all work items it may have submitted.",
+    "Track and drain asynchronous firmware callbacks before releasing the state allocation.",
+    "Only after every producer is quiesced, cancel state+0x3a0 and state+0x428 and destroy state+0x448 before freeing the owning state."
+  ]
+}

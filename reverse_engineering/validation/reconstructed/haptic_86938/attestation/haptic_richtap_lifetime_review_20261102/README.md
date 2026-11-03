@@ -72,3 +72,14 @@ The LED core flushes its own set_brightness_work, not the driver's state+0x428 w
 ## LED teardown hardening follow-up
 
 In a separate hardening candidate, set a per-device dying gate before teardown and have brightness_set reject new submissions once teardown starts. Unregister the LED while its state is still valid, stop all asynchronous producers, and cancel state+0x428 only after the LED callback can no longer queue it. Drain firmware callbacks and destroy state+0x448 before devres releases the state allocation. Keep this separate from the stock-exact reconstruction.
+### HAP-SYSFS-01 — LED child sysfs callbacks remain live through aw_remove
+
+Raw stock relocations establish that vibrator_attribute_group points to an attribute array containing ram_update_store and activate_aw_store. The AW-specific group also contains rtp_auto_sin_store. Stock aw_i2c_probe reaches aw8693x_creat_node through aw8693x_func_list slot 1, and both groups are created on state+0xf8, the LED class child device. The target LED core stores led_cdev as that child device's drvdata.
+
+aw_remove cancels state+0x3a0 and state+0x428, then frees resources and returns. The I2C device's devres is released only after remove returns; the managed LED release then unregisters the LED child and removes its sysfs groups. A store during this interval can therefore queue state+0x3a0 or state+0x428 after cancellation. ram_update_store can also submit ram_load through request_firmware_nowait with the raw state pointer.
+
+This confirms an additional live producer path into the previously recorded firmware and work lifetime findings. The path is conditional on successful group creation and a store during removal; runtime behavior remains unverified. Full raw-relocation, assembly, and target-kernel bindings are in sysfs_remove_window_review.json.
+
+## Sysfs teardown hardening follow-up
+
+In the separate hardening candidate, close admission to all LED-child sysfs callbacks before resource teardown, then unregister the LED child while state remains valid. Drain stores that were already in flight and any firmware callback or work they submitted. Cancel state+0x3a0 and state+0x428 only after those producers are stopped, then destroy state+0x448 before releasing its owning state.
