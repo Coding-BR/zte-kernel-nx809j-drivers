@@ -1,6 +1,6 @@
 # Status: `soc_fan`
 
-Estado atual: **HARDENED_CANDIDATE_BUILD_VERIFIED** — o source `5ed83dfc760f8b71ad425dcd1eacc26502c920f8ecf2d378702969a708e8a29c` e o artefato `05590b38635ef3c119e32414ec4084c2390023901d06a85f194814bba919caa6` incluem hardening de ciclo de vida e serialização sysfs. Dois builds Docker limpos são idênticos; 9/15 funções divergem intencionalmente do stock, 6/15 permanecem assembly-exact, e os 9 KCFI type IDs comparados coincidem. Revisão independente e hardware continuam pendentes. A baseline stock-exact abaixo pertence ao source antigo `eac22d90ae92b3e29f1d6254c4ef9f3e30d8bc6a25f745c60e8d6c5129ae0688`.
+Estado atual: **HARDENED_CANDIDATE_BUILD_VERIFIED** — o source `b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678` e o artefato `65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076` incluem hardening de ciclo de vida, serialização sysfs e acessos compartilhados timer/IRQ. Dois builds Docker limpos são idênticos; 9/15 funções divergem intencionalmente do stock, 6/15 permanecem assembly-exact, e os 9 KCFI type IDs comparados coincidem. Revisão independente e hardware continuam pendentes. A baseline stock-exact abaixo pertence ao source antigo `eac22d90ae92b3e29f1d6254c4ef9f3e30d8bc6a25f745c60e8d6c5129ae0688`.
 
 ## Baseline stock-exact histórica
 
@@ -45,3 +45,11 @@ A revisão Ghidra encontrou uma janela em que `fan_enable_store` publicava enabl
 Docker: dois builds idênticos, SHA-256 `05590b38635ef3c119e32414ec4084c2390023901d06a85f194814bba919caa6` (290024 bytes). Assembly: 15 funções comparadas, 6 idênticas e 9 desvios intencionais listados no mapa; `fan_hrtimer_hander` permaneceu byte-a-byte equivalente. KCFI: 9/9 type IDs iguais. O auditor de baseline não promoveu automaticamente devido às diferenças intencionais; o snapshot curado foi sincronizado com o artefato reproduzível. Relatórios: `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/README.md`, `driver_audit.json`, `assembly_comparison.json`, `kcfi_comparison.json` e `candidate_sync.json`.
 
 A revisão independente da variante e a validação runtime/hardware seguem pendentes. O protocolo de amostragem IRQ/timer não foi alterado neste batch.
+
+## Acessos compartilhados do timer e contador IRQ — batch 3 (2026-11-03)
+
+O Ghidra mostra `fan_speed_irq_proc` incrementando atomicamente o contador em `fan_state + 0x04`, enquanto o callback hrtimer stock zera/lê esse mesmo contador com loads/stores ordinários. O byte de fase em `fan_state + 0x02` também é compartilhado com `fan_speed_show` durante o período de amostragem. O callback agora usa `atomic_set`/`atomic_read` no contador e `READ_ONCE`/`WRITE_ONCE` na fase e no snapshot.
+
+Validação: dois builds Docker limpos deram SHA-256 `65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076` (290368 bytes). O comparador verificou 15 funções: 6 assembly-exact e os mesmos 9 desvios intencionais dos batches anteriores; `fan_hrtimer_hander` manteve as 70 instruções e 280 bytes do stock. KCFI: 9/9 type IDs iguais. Source e `.ko` foram sincronizados com a árvore curada Docker e o artefato versionado do repositório. Relatórios: `reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/`.
+
+O auditor geral ainda não marca o driver como `static_verified`: os desvios de símbolos e as funções de hardening continuam fora da paridade stock estrita. Não houve execução KCSAN, validação runtime ou teste em hardware; equivalência funcional total continua sem prova.

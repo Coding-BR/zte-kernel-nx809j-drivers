@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "batch": "soc_fan_timer_shared_state_atomicity_20261103",
+  "generated_utc": "2026-11-03T03:13:41Z",
+  "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+  "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+  "candidate_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+  "review_kind": "offline_static_synchronization_review",
+  "review_status": "STATIC_CHANGE_VALIDATED; RUNTIME_KCSAN_AND_HARDWARE_PENDING",
+  "independent_review": "PENDING",
+  "findings": [
+    {
+      "shared_state": "fan_state[0x02] sampling phase",
+      "stock_writer_reader": {
+        "process_context": "Ghidra fan_speed_show sets phase 1 before arming the 1 ms hrtimer and sleeping for the sampling interval.",
+        "timer_context": "Ghidra fan_hrtimer_hander reads the phase and writes values 2 and 3 without a lock shared with fan_speed_show."
+      },
+      "risk": "The phase is intentionally shared across process and timer contexts, but ordinary C accesses do not express single-copy access semantics to the compiler or kernel race tooling.",
+      "change": "The callback snapshots the phase with READ_ONCE and publishes transitions with WRITE_ONCE. Timer state values, delays, rearm behavior, and IRQ ordering are unchanged.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0005_00100f80_fan_hrtimer_hander.c",
+        "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0012_001017f4_fan_speed_show.c"
+      ]
+    },
+    {
+      "shared_state": "fan_state[0x04] tachometer counter",
+      "stock_writer_reader": {
+        "irq_context": "Ghidra fan_speed_irq_proc increments the 32-bit counter through an exclusive-monitor retry loop.",
+        "timer_context": "Ghidra fan_hrtimer_hander resets and samples the same 32-bit counter through ordinary loads/stores."
+      },
+      "risk": "Mixing the IRQ's atomic read-modify-write with plain C accesses leaves the shared counter outside a consistent atomic API contract and creates a compiler-visible data race.",
+      "change": "The callback uses atomic_set and atomic_read on the aligned counter at offset +0x04; the sampled snapshot at +0x08 is published with WRITE_ONCE.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0000_001004ec_fan_speed_irq_proc.c",
+        "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0005_00100f80_fan_hrtimer_hander.c"
+      ]
+    }
+  ],
+  "code_generation": {
+    "stock_function": "fan_hrtimer_hander",
+    "stock_entry": "00100f80",
+    "candidate_function": "fan_hrtimer_hander",
+    "instruction_count_stock": 70,
+    "instruction_count_candidate": 70,
+    "symbol_size_stock": 280,
+    "symbol_size_candidate": 280,
+    "instructions_match": true,
+    "relocations_match": true,
+    "section_match": true,
+    "evidence": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/assembly_comparison.json"
+  },
+  "build": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225",
+    "cycle_1_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+    "cycle_2_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+    "artifact_size": 290368,
+    "reproducible": true
+  },
+  "limitations": [
+    "The full-driver stock-parity audit remains incomplete because the hardened candidate has intentional undefined-symbol differences; it is not marked static_verified.",
+    "Nine other function bodies remain documented hardening deviations from stock and still require independent review.",
+    "No KCSAN, runtime, or NX809J hardware validation was run; full behavioral equivalence is not proven."
+  ]
+}

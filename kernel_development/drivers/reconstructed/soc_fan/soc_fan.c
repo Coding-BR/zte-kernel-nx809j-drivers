@@ -1474,16 +1474,17 @@ __used int __init init_module(void)
 static __used enum hrtimer_restart fan_hrtimer_hander(struct hrtimer *timer)
 {
 	u8 *state = *(u8 **)((u8 *)chip + 0x08);
+	u8 phase = READ_ONCE(state[0x02]);
 
-	if (state[0x02] == 0x02)
+	if (phase == 0x02)
 		goto stop_calculation;
-	if (state[0x02] == 0x01)
+	if (phase == 0x01)
 		goto start_calculation;
 	return HRTIMER_NORESTART;
 
 start_calculation:
-	*(u32 *)(state + 0x04) = 0;
-	(*(u8 **)((u8 *)chip + 0x08))[0x02] = 0x02;
+	atomic_set((atomic_t *)(state + 0x04), 0);
+	WRITE_ONCE((*(u8 **)((u8 *)chip + 0x08))[0x02], 0x02);
 	hrtimer_start_range_ns(
 		(struct hrtimer *)(*(u8 **)((u8 *)chip + 0x08) + 0x28),
 		500000000, 0, HRTIMER_MODE_REL);
@@ -1491,20 +1492,21 @@ start_calculation:
 	printk(KERN_DEBUG "[%s] [%s:%d] fan_level=%d start calculate, count=%d.",
 	       "NB_FAN", "fan_hrtimer_hander", 0x82,
 	       READ_ONCE((*(u8 **)((u8 *)chip + 0x08))[0]),
-	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
+	       atomic_read((atomic_t *)(*(u8 **)((u8 *)chip + 0x08) + 0x04)));
 	return HRTIMER_RESTART;
 
 stop_calculation:
-	state[0x02] = 0x03;
+	WRITE_ONCE((*(u8 **)((u8 *)chip + 0x08))[0x02], 0x03);
 	u8 *root = (u8 *)chip;
 	u8 *stop_state = *(u8 **)(root + 0x08);
-	*(u32 *)(stop_state + 0x08) = *(u32 *)(stop_state + 0x04);
+	WRITE_ONCE(*(u32 *)(stop_state + 0x08),
+		   (u32)atomic_read((atomic_t *)(stop_state + 0x04)));
 	disable_irq_nosync(
 		*(int *)(*(u8 **)(root + 0x08) + 0x1c));
 	printk(KERN_DEBUG "[%s] [%s:%d] fan_level=%d stop calculate, count=%d.",
 	       "NB_FAN", "fan_hrtimer_hander", 0x89,
 	       READ_ONCE((*(u8 **)((u8 *)chip + 0x08))[0]),
-	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
+	       atomic_read((atomic_t *)(*(u8 **)((u8 *)chip + 0x08) + 0x04)));
 	return HRTIMER_NORESTART;
 }
 
