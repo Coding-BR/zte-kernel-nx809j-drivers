@@ -31,3 +31,7 @@ The helper harness and bounded model pass, but they do not prove runtime IRQ beh
 ## Current-candidate userspace publication review
 
 The earlier [userspace publication review](../haptic_richtap_userspace_fifo_publication_review_20261103/README.md) was bound to candidate `37fc8692…`, before this FIFO hardening. Its open conclusion still applies, but its candidate/source hashes do not describe the current module. The current module and worker/helper disassembly were rechecked in [userspace_publication_revalidation.json](userspace_publication_revalidation.json): the search found no producer source or Android client package in the repository/Docker roots, and the changed functions contain no explicit ARM acquire/release or barrier instructions around the mapped FIFO fields. This remains an unverified publication contract; no race or runtime failure is asserted.
+
+## Current-candidate VMA lifetime revalidation
+
+The current candidate’s PFN-mapped FIFO page lifetime was revalidated against the pinned Docker kernel source and current candidate disassembly. See [the current VMA revalidation report](../haptic_richtap_vma_teardown_revalidation_20261103/vma_lifetime_revalidation_current_candidate.json). The older VMA report in that directory is explicitly historical and remains bound to candidate `7e0af6fc…`.

@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T13:22:29.401976+00:00",
+  "driver": "haptic_86938",
+  "finding": "HAP-RICHTAP-04",
+  "disposition": "STATICALLY_ADDRESSED_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b",
+    "size_bytes": 6705480,
+    "reconstruction_map_sha256": "24c92332a325af07d6f15becc0976d06fe383a00ce2470f542f4cf67a9f40d01"
+  },
+  "external_docker_curated_snapshot": {
+    "module_sha256": "3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b",
+    "reconstruction_map_sha256": "24c92332a325af07d6f15becc0976d06fe383a00ce2470f542f4cf67a9f40d01",
+    "module_and_map_match_repository": true
+  },
+  "stock_module": {
+    "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+  },
+  "source_sha256": {
+    "haptic_86938_fn_133_richtap_file_mmap.c": "45f44b7c153a6c68dcd053c5ff77a5a2e1a8a53ce5f9048c44c0cda389301c3c",
+    "haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "haptic_86938_lifetime.c": "c04d81bc4f14e8d4dc060374d33974744590fbf78f36dc9eaaa7f3ccee722580",
+    "haptic_86938_internal.h": "cb8817dfb05175928002bea271068c408befcfbb9d45a739ae58a2778eebf960"
+  },
+  "target_kernel": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_read_only_probe": {
+      "passed": true,
+      "file_sha256": {
+        "kernel_platform/common/mm/vma.c": "d4a34240fafebcecdb7f48017d07a4cc11d276b0232357e9923d8354823f63d9",
+        "kernel_platform/common/mm/mmap.c": "63f897f869c39a9cd587445f4796268989678965c1bb169ddd621f8246b6a56d",
+        "kernel_platform/common/mm/internal.h": "469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e"
+      }
+    },
+    "callbacks": {
+      "clone_open": "mm/vma.c:411-412",
+      "split_open": "mm/vma.c:1681-1682",
+      "munmap_vma_close": "mm/vma.c:1118-1119",
+      "close_dispatch": "mm/internal.h:144-148"
+    },
+    "evidence_file": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/target_kernel_vma_callbacks.txt",
+      "sha256": "680cf3ffe1c96c155afdf63c42ed17d1ccfdf544a8d0e36a43438fd8bd903d66"
+    }
+  },
+  "lifetime_contract": {
+    "initial_mapping": "richtap_file_mmap calls remap_pfn_range; on success it attaches the initial VMA lifetime reference before haptic_lifetime_exit_file ends active file accounting.",
+    "cloned_or_split_mapping": "target kernel dispatches vm_ops.open on clone and split; haptic_vma_open increments the lifetime and VMA references under the lifetime mutex.",
+    "remove": "aw_remove blocks new file access and drains active file operations before haptic_lifetime_retire_state clears state+0x610; pages move to retired_pages while vma_refs remain.",
+    "last_close": "haptic_vma_close decrements vma_refs; when it reaches zero after retirement, it detaches and frees retired_pages and drops the lifetime reference.",
+    "lock_review": "The reviewed VMA callbacks take the lifetime mutex; retirement takes the registry lock before the lifetime mutex. VMA close releases pages after dropping the lifetime mutex. No lock-order cycle was found in this scoped static review."
+  },
+  "candidate_disassembly": {
+    "manifest_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/manifest.json",
+    "manifest_sha256": "d126cab5c36849f650c9d012e45018c6188d592acdf98933de8740f308d7b651",
+    "tool": {
+      "clang_revision": "clang-r536225",
+      "entrypoint": "/toolchains/clang-r536225/bin/llvm-objdump",
+      "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+      "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "toolchain_volume": "nubia_sm8850_kernel_toolchains"
+    },
+    "records": [
+      {
+        "function": "richtap_file_mmap",
+        "file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/0000_richtap_file_mmap.asm",
+        "sha256": "41d9e4b3038d8d7a884a81d05c53a5d70c4d12539bc45733d0fae8c8da1ede6e",
+        "symbol_start": "0x7960",
+        "symbol_size": 340,
+        "complete": true,
+        "found": true
+      },
+      {
+        "function": "haptic_lifetime_attach_vma",
+        "file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/0001_haptic_lifetime_attach_vma.asm",
+        "sha256": "495e81a146a9ce93c702d7c43027f43eac470f5215b6ea70385a819860f4b5fb",
+        "symbol_start": "0x6c88",
+        "symbol_size": 160,
+        "complete": true,
+        "found": true
+      },
+      {
+        "function": "haptic_vma_open",
+        "file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/0002_haptic_vma_open.asm",
+        "sha256": "9b2fd86afc4332b571a7ea43f795d06a8e32973cfd0e4a41fe488f1318c9f1ec",
+        "symbol_start": "0x776c",
+        "symbol_size": 140,
+        "complete": true,
+        "found": true
+      },
+      {
+        "function": "haptic_vma_close",
+        "file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/0003_haptic_vma_close.asm",
+        "sha256": "6a236b0221790d0732b60dde1f0d1a89660d7f64821cf83da4506cf4c9064973",
+        "symbol_start": "0x77fc",
+        "symbol_size": 352,
+        "complete": true,
+        "found": true
+      },
+      {
+        "function": "haptic_lifetime_retire_state",
+        "file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/0004_haptic_lifetime_retire_state.asm",
+        "sha256": "7f080b9936ae4271c38cfe51ba2338be88c505fc085806b9378e9f340defb97e",
+        "symbol_start": "0x6e94",
+        "symbol_size": 436,
+        "complete": true,
+        "found": true
+      },
+      {
+        "function": "haptic_lifetime_block_file_access",
+        "file": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/current_candidate_3dad/0005_haptic_lifetime_block_file_access.asm",
+        "sha256": "646522b3623c536820ab9e8bd2153268318e57cedfc15389502fb2e0ffe64c7c",
+        "symbol_start": "0x6d2c",
+        "symbol_size": 356,
+        "complete": true,
+        "found": true
+      }
+    ],
+    "call_order": "richtap_file_mmap: remap_pfn_range -> haptic_lifetime_attach_vma on success -> haptic_lifetime_exit_file"
+  },
+  "canonical_docker_build": {
+    "audit_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/docker_curated_build_final.json",
+    "audit_sha256": "8a3a2b07a6f14a889ba5e7c210df4979773235f35c2e71fbc6bd037f48431b07",
+    "status": "incomplete_or_failed",
+    "two_builds_passed": true,
+    "reproducible": true,
+    "build_sha256": [
+      "3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b",
+      "3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b"
+    ],
+    "candidate_hash_binding_matches": true,
+    "target_kernel_source_identity_passed": true,
+    "strict_undefined_symbol_parity": false,
+    "missing_imports": [
+      "gpio_free"
+    ],
+    "unexpected_imports": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ],
+    "full_driver_status": "INCOMPLETE",
+    "audit_context": "This audit predates documentation-only status updates in this follow-up; candidate module, reconstruction map and C source identities are unchanged."
+  },
+  "historical_report": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/vma_lifetime_revalidation.json",
+    "sha256": "dc31fa01c7b67ddd096183f846af1fa9b376c5816f83b04559eeeae855cbaf5a",
+    "candidate_sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "superseded_for_current_candidate_claims": true
+  },
+  "limitations": [
+    "Static evidence only; no runtime VMA clone/unmap/unbind race validation.",
+    "No NX809J hardware validation.",
+    "Strict stock undefined-symbol parity remains false (gpio_free absent and nine lifetime-support imports added).",
+    "Independent whole-driver review, full semantic equivalence and other driver completion gates remain open."
+  ]
+}
