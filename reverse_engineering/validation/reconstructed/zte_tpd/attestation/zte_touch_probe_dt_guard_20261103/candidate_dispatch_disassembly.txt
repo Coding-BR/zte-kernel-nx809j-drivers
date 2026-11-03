@@ -1,0 +1,64 @@
+
+/work/zte_tpd.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000104c8 <zte_touch_probe_dispatch>:
+   104c8: b40002c0     	cbz	x0, 0x10520 <zte_touch_probe_dispatch+0x58>
+   104cc: aa0003e8     	mov	x8, x0
+   104d0: f9417c00     	ldr	x0, [x0, #0x2f8]
+   104d4: b4000260     	cbz	x0, 0x10520 <zte_touch_probe_dispatch+0x58>
+   104d8: d503233f     	paciasp
+   104dc: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+   104e0: f9000bf3     	str	x19, [sp, #0x10]
+   104e4: 910003fd     	mov	x29, sp
+   104e8: 90000001     	adrp	x1, 0x10000 <ufp_mac_init+0xa8>
+		00000000000104e8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1a100
+   104ec: 91000021     	add	x1, x1, #0x0
+		00000000000104ec:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1a100
+   104f0: aa0803f3     	mov	x19, x8
+   104f4: 94000000     	bl	0x104f4 <zte_touch_probe_dispatch+0x2c>
+		00000000000104f4:  R_AARCH64_CALL26	of_device_is_compatible
+   104f8: 34000180     	cbz	w0, 0x10528 <zte_touch_probe_dispatch+0x60>
+   104fc: 90000008     	adrp	x8, 0x10000 <ufp_mac_init+0xa8>
+		00000000000104fc:  R_AARCH64_ADR_PREL_PG_HI21	tpd_cdev
+   10500: aa1303e0     	mov	x0, x19
+   10504: f9400108     	ldr	x8, [x8]
+		0000000000010504:  R_AARCH64_LDST64_ABS_LO12_NC	tpd_cdev
+   10508: b4000088     	cbz	x8, 0x10518 <zte_touch_probe_dispatch+0x50>
+   1050c: f946e908     	ldr	x8, [x8, #0xdd0]
+   10510: eb00011f     	cmp	x8, x0
+   10514: 540000a0     	b.eq	0x10528 <zte_touch_probe_dispatch+0x60>
+   10518: 94000000     	bl	0x10518 <zte_touch_probe_dispatch+0x50>
+		0000000000010518:  R_AARCH64_CALL26	zte_touch_probe
+   1051c: 14000004     	b	0x1052c <zte_touch_probe_dispatch+0x64>
+   10520: 12800240     	mov	w0, #-0x13              // =-19
+   10524: d65f03c0     	ret
+   10528: 12800240     	mov	w0, #-0x13              // =-19
+   1052c: f9400bf3     	ldr	x19, [sp, #0x10]
+   10530: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+   10534: d50323bf     	autiasp
+   10538: d65f03c0     	ret
+
+/work/zte_tpd.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000001048c <zte_touch_pdev_unregister>:
+   1048c: 90000008     	adrp	x8, 0x10000 <ufp_mac_init+0xa8>
+		000000000001048c:  R_AARCH64_ADR_PREL_PG_HI21	tpd_cdev
+   10490: f9400108     	ldr	x8, [x8]
+		0000000000010490:  R_AARCH64_LDST64_ABS_LO12_NC	tpd_cdev
+   10494: b4000168     	cbz	x8, 0x104c0 <zte_touch_pdev_unregister+0x34>
+   10498: f946e900     	ldr	x0, [x8, #0xdd0]
+   1049c: b4000120     	cbz	x0, 0x104c0 <zte_touch_pdev_unregister+0x34>
+   104a0: d503233f     	paciasp
+   104a4: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+   104a8: 910003fd     	mov	x29, sp
+   104ac: f906e91f     	str	xzr, [x8, #0xdd0]
+   104b0: f907511f     	str	xzr, [x8, #0xea0]
+   104b4: 94000000     	bl	0x104b4 <zte_touch_pdev_unregister+0x28>
+		00000000000104b4:  R_AARCH64_CALL26	platform_device_unregister
+   104b8: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+   104bc: d50323bf     	autiasp
+   104c0: d65f03c0     	ret

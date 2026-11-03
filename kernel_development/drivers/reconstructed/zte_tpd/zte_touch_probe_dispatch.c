@@ -4,7 +4,9 @@ int zte_touch_probe_dispatch(struct platform_device *pdev)
 {
 	char *cdev;
 
-	if (!pdev)
+	/* The synthetic uevent child has no target touch DT node. */
+	if (!pdev || !pdev->dev.of_node ||
+	    !of_device_is_compatible(pdev->dev.of_node, "zte_tp"))
 		return -ENODEV;
 
 	cdev = (char *)(unsigned long)READ_ONCE(tpd_cdev);

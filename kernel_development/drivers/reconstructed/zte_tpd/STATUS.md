@@ -1695,3 +1695,9 @@ executado nesta revisao.
 - Hardware não foi testado. `static_verified` não significa equivalência
   semântica integral nem declaração de 100%.
 - Evidência: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/docker_strict_audit_20261102/`.
+
+## Guard OF do dispatcher de probe — 2026-11-03
+
+`zte_touch_probe_dispatch` agora exige nó OF compatível com `zte_tp` antes de encaminhar ao probe principal. O filho sintético criado por `platform_device_alloc("zte_touch", ...)` não recebe `of_node`; a checagem continua bloqueando o probe mesmo após `zte_touch_pdev_unregister` limpar o slot do filho. O módulo foi compilado em dois ciclos canônicos Docker idênticos: SHA-256 `58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38`; vermagic do alvo aceita. O tipo KCFI do callback permanece `0xc7f8c87c`.
+
+O mapeamento `zte_touch_pdev_unregister` continua `HARDENED_STOCK_DEVIATION` / `INTENTIONAL_HARDENING_DEVIATION`; o mapa geral permanece `PARTIAL_SOURCE_MAP` com 367 funções. A atestação focal está em `reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/`. Sem validação runtime ou hardware.

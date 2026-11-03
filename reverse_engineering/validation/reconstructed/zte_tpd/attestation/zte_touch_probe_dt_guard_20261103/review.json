@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_id": "zte_touch_probe_dt_guard_20261103",
+  "status": "PASS_STATIC_DISPATCH_GUARD_AND_CANONICAL_BUILD_WITH_RUNTIME_LIMITS",
+  "reviewer": "Codex focused static review; not independent human review",
+  "scope": "Current-candidate revalidation of the synthetic zte_touch child-device teardown and the probe dispatcher race window.",
+  "previous_candidate_sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+  "candidate_source_sha256": "624ccd5aa9188f437d3807c8a370d9f4c7e09457bfae1f119b0a07be3f7e5aa8",
+  "candidate_module_sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+  "stock_module_sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+  "finding": {
+    "risk": "zte_touch_pdev_unregister clears cdev+0xdd0 before platform_device_unregister. A manual bind in that interval could otherwise make the name-matched synthetic child pass the slot-identity check and enter the main touchscreen probe.",
+    "change": "zte_touch_probe_dispatch now rejects a missing OF node or a node that is not compatible with zte_tp before consulting tpd_cdev. The synthetic child is created by platform_device_alloc(\"zte_touch\", PLATFORM_DEVID_NONE), receives no OF node, and the registration helper does not assign one. The real target node uses compatible = \"zte_tp\".",
+    "result": "The current candidate disassembly contains the OF-node null check, the direct of_device_is_compatible call and the existing child-slot check. The synthetic child therefore remains rejected even after the slot is cleared. The dispatch callback KCFI type ID is 0xc7f8c87c, matching the stock zte_touch_probe callback type.",
+    "status_effect": "The zte_touch_pdev_unregister mapping remains HARDENED_STOCK_DEVIATION / INTENTIONAL_HARDENING_DEVIATION. The global map remains PARTIAL_SOURCE_MAP; this focused review does not revalidate or promote all 367 mappings."
+  },
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/canonical_build_report.json",
+    "passed": true,
+    "reproducible": true,
+    "cycles": 2,
+    "module_sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+    "module_size": 7274192,
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_sync_mismatches": 0
+  },
+  "limitations": [
+    "No Android runtime, NX809J hardware, or concurrent sysfs bind/unbind stress was run.",
+    "The report establishes the target-compatible guard statically; it does not claim full-driver equivalence or hardware behavior.",
+    "Other driver mappings retain their existing statuses and are not revalidated by this focused batch."
+  ],
+  "repo_evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_dispatch.c",
+      "sha256": "624ccd5aa9188f437d3807c8a370d9f4c7e09457bfae1f119b0a07be3f7e5aa8"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+      "sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38"
+    },
+    {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342"
+    },
+    {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_pdev_register.c",
+      "sha256": "3033ba50d6b37d3f4069087d52f31c2772f866d0e48bd9e4c2fa56b57051bfdd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_pdev_unregister.c",
+      "sha256": "32f7942a2642af66d6d5f2a534a42c2ad2bf4eb22eb0b891575895361c15d44c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe_failure_cleanup.c",
+      "sha256": "a9b73214b2163f0165da83c12c9c05499e28c63eba7c9ab39f8686f5df26fe28"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/globals.c",
+      "sha256": "6d2d6ee02943eac06df34e2477cd4a1cb500c5c0651d19e29dda71f6a9c44e92"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0015_001081c8_zte_touch_pdev_register.c",
+      "sha256": "137a92fddb753aeec748cce5b8e950d0135c9fb29b84680e7ef8a7b9525a82d0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0017_001083b4_zte_touch_pdev_unregister.c",
+      "sha256": "a420b11a7b7ef2add2094f919ef4b1b83db856d2f9b88ef5254c429a48aadc52"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0015_zte_touch_pdev_register_001081c8.asm",
+      "sha256": "4315457796a09631f8481c20855c0e48d2fce05db6049de46a249dec945fd5f5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0017_zte_touch_pdev_unregister_001083b4.asm",
+      "sha256": "04c6509ef14e82b77f8e83832c2d51388aa2aefa18a7e2f58f0023e14ad84d20"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/canonical_build_report.json",
+      "sha256": "ca1194710dfd0253cc1304b903d38cf0888a0580fd09ff1aa4626c2bfb1cc7a9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/candidate_dispatch_disassembly.txt",
+      "sha256": "bc65c5d60c6a1417932ca180c8ab207189a9e93270df41ea9df703ffd7bec1ae"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/candidate_symbols.txt",
+      "sha256": "1aa4595d18be40b86ab483dc3309611842e341ba806dc58b58bcf9024f55f45a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json",
+      "sha256": "6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e"
+    }
+  ],
+  "docker_source_evidence": [
+    {
+      "path": "/kernel/kernel/kernel_platform/common/drivers/base/platform.c",
+      "sha256": "deb56bde49fca1e12ec4e81fb7107713db3d3e8e6a953ddc6d8218c3d6dfc1c8"
+    },
+    {
+      "path": "/kernel/kernel/.codex-kbuild/identity/Module.symvers",
+      "sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83"
+    },
+    {
+      "path": "/kernel/kernel/vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+      "sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d"
+    }
+  ]
+}

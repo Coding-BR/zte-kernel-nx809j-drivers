@@ -1,5 +1,5 @@
 {
-  "candidate_sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+  "candidate_sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
   "driver": "zte_tpd",
   "function_count": 367,
   "generated_utc": "2026-11-03T03:48:32Z",
@@ -579,7 +579,8 @@
         "canonical-build:attestation/pdev_unregister_hardening_20261102/canonical_build_report.json:sha256:94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3",
         "kcfi:attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json:sha256:6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e",
         "source-sync:attestation/pdev_unregister_hardening_20261102/source_sync_plan.json:sha256:9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93",
-        "hardening-review:attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json:sha256:bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
+        "hardening-review:attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json:sha256:bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2",
+        "current-candidate-review:attestation/zte_touch_probe_dt_guard_20261103/review.json:sha256:506cb9b74d22c26ab7dafbbd7a4e52fb785352cc3feaa9d6b3ec88d71634220e"
       ],
       "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence plus hardened pdev lifecycle, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "offline_exact_function_level",
@@ -590,7 +591,7 @@
       "stock_body_bytes": 96,
       "stock_entry": "001083b4",
       "stock_function": "zte_touch_pdev_unregister",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: the linked C implementation returns for a null cdev/child, clears cdev+0xdd0 and callback cdev+0xea0 before unregistering the valid child. The Makefile no longer links the inverted stock exact assembly."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: the linked C implementation returns for a null cdev/child, clears cdev+0xdd0 and callback cdev+0xea0 before unregistering the valid child. The Makefile no longer links the inverted stock exact assembly. Current candidate guard: zte_touch_probe_dispatch rejects devices without the zte_tp OF compatible, including the synthetic child after its slot is cleared; status remains HARDENED_STOCK_DEVIATION. Review: attestation/zte_touch_probe_dt_guard_20261103/review.json."
     },
     {
       "evidence": [
