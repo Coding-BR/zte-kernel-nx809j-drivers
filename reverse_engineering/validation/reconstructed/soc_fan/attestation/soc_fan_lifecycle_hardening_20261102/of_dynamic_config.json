@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T02:43:33.364847+00:00",
+  "driver": "soc_fan",
+  "function": "nb_fan_parse_dt",
+  "finding": "NO_DYNAMIC_OF_REFCOUNT_LEAK_FOR_PINNED_TARGET_CONFIG",
+  "scope": "Pinned NX809J build only; this does not establish safety for a kernel built with CONFIG_OF_DYNAMIC=y.",
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_revision": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k"
+  },
+  "config": {
+    "path": "/work/src/kernel/.codex-kbuild/identity/.config",
+    "sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+    "CONFIG_OF": "y",
+    "CONFIG_OF_DYNAMIC": "undef",
+    "CONFIG_OF_OVERLAY": "n",
+    "query": "kernel_platform/common/scripts/config --file <config> --state OF_DYNAMIC"
+  },
+  "kernel_source_evidence": {
+    "drivers/of/Kconfig": {
+      "sha256": "fb97aeadde47e2ecac0260a3758b763bff62a40a6ff3432e3059e8b74a164fba",
+      "finding": "OF_DYNAMIC is a bool with no default; it is selected only on platforms/features that require dynamic trees."
+    },
+    "include/linux/of.h": {
+      "sha256": "0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc",
+      "finding": "When CONFIG_OF_DYNAMIC is undefined, of_node_get(node) returns node and of_node_put(node) is empty."
+    },
+    "drivers/of/base.c": {
+      "sha256": "dfeb8e30035a356295c52bfb4dd90a9f6d1cd1e1b0ef9b89dc855e648b1f4e15",
+      "finding": "of_get_next_available_child delegates to the child traversal that calls of_node_get(next) and of_node_put(prev); under this config both are no-ops."
+    }
+  },
+  "stock_evidence": "Ghidra decompilation of nb_fan_parse_dt shows repeated of_get_next_available_child calls and no explicit of_node_put; that is safe for this pinned config because OF_DYNAMIC reference counting is compiled out.",
+  "disposition": "No source change needed for pinned target. If CONFIG_OF_DYNAMIC is enabled in another target build, re-evaluate the child traversal and add balanced references before claiming lifecycle safety.",
+  "hardware_validation": "DEFERRED"
+}

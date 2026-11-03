@@ -28,10 +28,14 @@ The first two build attempts and their corrections are recorded in `lifecycle_ha
 - Independent review of this hardening branch is pending.
 - No NX809J hardware validation or runtime equivalence proof was performed.
 - If `regulator_disable` fails during teardown, the failure is logged and shutdown cannot be guaranteed.
-- The conditional OF-node reference question remains open until the target `CONFIG_OF_DYNAMIC` setting is established.
+- The pinned NX809J config has `CONFIG_OF_DYNAMIC=undef`, so OF get/put reference counting is compiled out for `nb_fan_parse_dt`; this conclusion does not apply to kernels built with `CONFIG_OF_DYNAMIC=y`. See `of_dynamic_config.json`.
 
 ## Evidence
 
 - `driver_audit.json` and `driver_audit.md`: pinned-source identity, two build cycles, artifact and parity checks.
 - `candidate_sync.json`: proof that the curated module hash equals the reproducible Docker artifact.
 - `lifecycle_hardening_review.json`: Ghidra-backed change rationale, deviations and open questions.
+
+## OF child reference check
+
+The immutable NX809J build config reports `CONFIG_OF=y`, `CONFIG_OF_DYNAMIC=undef`, and `CONFIG_OF_OVERLAY=n`. In the matching kernel headers, `of_node_get()` returns the pointer unchanged and `of_node_put()` is empty when `CONFIG_OF_DYNAMIC` is not defined. The stock loop in `nb_fan_parse_dt` therefore does not leak dynamic node references in this target build. Hashes and scope are recorded in `of_dynamic_config.json`.
