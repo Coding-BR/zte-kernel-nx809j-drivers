@@ -93,13 +93,14 @@
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
         "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
-        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
+        "regulator-contract-review:attestation/soc_fan_regulator_disable_contract_20261103/review.json:sha256:cd838af2fdc351f8534584a5abc70b257bde179ce8fdcc642b126a919e260c75"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
       "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
-      "mapping_note": "Remove o grupo sysfs e drena callbacks, cancela o hrtimer, tenta desligar o nível do fan, drena as referências de enable do regulador, limpa drvdata, libera o kobject e despublica chip. Divergência intencional do stock; não declarar OFFLINE_EXACT nesta revisão. Evidência detalhada em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json e build em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json."
+      "mapping_note": "Remove o grupo sysfs e drena callbacks, cancela o hrtimer, tenta desligar o nível do fan, drena as referências de enable do regulador, limpa drvdata, libera o kobject e despublica chip. Divergência intencional do stock; não declarar OFFLINE_EXACT nesta revisão. Evidência detalhada em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json e build em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json. Supplemental target-kernel API review: regulator_disable errors can occur before or after the consumer count changes; the bounded drain stops on ambiguity. regulator_force_disable is not safe for shared consumers. Residual retained; no status promotion. Evidence: attestation/soc_fan_regulator_disable_contract_20261103/review.json."
     },
     {
       "stock_function": "nb_fan_parse_dt",
@@ -278,13 +279,14 @@
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
         "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
-        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
+        "regulator-contract-review:attestation/soc_fan_regulator_disable_contract_20261103/review.json:sha256:cd838af2fdc351f8534584a5abc70b257bde179ce8fdcc642b126a919e260c75"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
       "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: regulator enable references are routed through ownership-counting wrappers and drained during teardown. The current-level byte is published with WRITE_ONCE and read with READ_ONCE by the timer diagnostic; function-level assembly differs from stock intentionally due to regulator wrapper calls. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: regulator enable references are routed through ownership-counting wrappers and drained during teardown. The current-level byte is published with WRITE_ONCE and read with READ_ONCE by the timer diagnostic; function-level assembly differs from stock intentionally due to regulator wrapper calls. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json. Stock Ghidra confirms a regulator error can be masked by a later successful PWM apply; this stock behavior is retained and remains a declared hardening deviation. Evidence: attestation/soc_fan_regulator_disable_contract_20261103/review.json."
     },
     {
       "stock_function": "fan_level_show",

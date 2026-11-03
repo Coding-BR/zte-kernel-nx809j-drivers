@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T04:50:34Z",
+  "target": "soc_fan regulator disable and remove error contract",
+  "status": "PASS_STATIC_CONTRACT_REVIEW_WITH_DECLARED_RESIDUAL",
+  "reviewer": "Codex static source and target-kernel review; not independent human approval",
+  "candidate": {
+    "source_path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+    "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+    "docker_source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+    "module_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+    "docker_module_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+    "module_matches_docker": true,
+    "source_matches_docker": true,
+    "map_status": "candidate_hardening_deviation",
+    "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION"
+  },
+  "build_binding": {
+    "docker_validation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json",
+    "docker_validation_sha256": "29bcc0c3642edc36debd253ca113f7554be376aa4661c53401a4ce6876b6e817",
+    "two_cycles_passed": true,
+    "candidate_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+    "driver_audit": "incomplete_or_failed",
+    "driver_audit_reason": "undefined_symbols_match: declared hardening imports",
+    "static_verified": false,
+    "source_change_in_this_review": false
+  },
+  "kernel_identity": {
+    "device_model": "NX809J",
+    "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git",
+    "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "core_c_sha256": "ac7b4b2956a253bb31849b5db5f61239bd924df09ccd4be1f05e68dfff1c83c6",
+    "consumer_header_sha256": "15a558c1e7494c1b49a6fb21a645408171bc173eea95685a209a8cc95ce89d7d"
+  },
+  "kernel_api_contract": {
+    "regulator_disable": "Returns a negative error, but the target core can return before decrementing the handle count when the physical disable fails; it can also return an error after _regulator_handle_consumer_disable has decremented regulator->enable_count (for example, a later load update error). On nonzero ret, the driver therefore cannot infer whether its per-handle enable reference still exists.",
+    "supply_propagation": "When a later error is returned, the core skips coupled balancing and recursive upstream-supply disable; this can leave upstream resources enabled even after the child handle count changed.",
+    "force_disable": "regulator_force_disable bypasses normal sharing and may turn off a rail used by other consumers; it is not a safe generic remove fallback."
+  },
+  "stock_contract": {
+    "nb_fan_remove": "Stock Ghidra remove only removes the sysfs group; the candidate adds timer cancellation, regulator reference drainage, drvdata cleanup, and global-pointer retirement as a declared hardening deviation.",
+    "fan_level_set": "Stock calls regulator_disable and logs its result before applying PWM; the later PWM result controls the function return, so a successful PWM apply can mask the regulator error. This is preserved stock behavior and remains a declared deviation where wrappers are used."
+  },
+  "target_overlay": {
+    "path": "/kernel/kernel/vendor/qcom/proprietary/zte-devicetree/qwjujube/zte-qwjujube-overlay.dtsi",
+    "sha256": "f30280025993da2264f1f9b6d865a61c989273d53b5ee41f96303d195492392d",
+    "scope": "one matching compatible was found in the mounted zte-devicetree source tree; this does not prove which overlay was applied on the running device",
+    "matching_soc_fan_nodes_in_target_source_tree": 1
+  },
+  "findings": [
+    {
+      "id": "disable-error-ambiguity",
+      "result": "CONFIRMED_STATIC",
+      "detail": "A negative regulator_disable return is ambiguous about whether the regulator handle enable count was decremented. The candidate wrapper conservatively updates its private ownership counter only on success."
+    },
+    {
+      "id": "bounded-remove-loop",
+      "result": "PASS_STATIC_WITH_RESIDUAL",
+      "detail": "nb_fan_remove stops when disable returns an error or the private counter makes no progress, avoiding an unbounded teardown loop. Since fan_level_set retains stock return behavior, teardown may still encounter a regulator error after its internal call."
+    },
+    {
+      "id": "no-safe-force-disable-fallback",
+      "result": "NO_GENERIC_FIX_JUSTIFIED",
+      "detail": "The target kernel documents force-disable as overriding other consumers; using it would risk disrupting shared rails. The API exposes no per-consumer count reconciliation after the ambiguous error."
+    },
+    {
+      "id": "single-instance-source-context",
+      "result": "NARROWED_FOR_TARGET_TREE",
+      "detail": "The mounted qwjujube device-tree source contains one soc,fan compatible node. This narrows the global-chip concern for that source tree, but does not prove runtime overlay selection or generic multi-instance safety."
+    }
+  ],
+  "disposition": "No source change is justified for this failure contract: neither retrying an ambiguous error nor forcing the regulator off is safe for every target-kernel/provider/sharing path. Retain the declared hardening-deviation status and document the provider-failure residual.",
+  "limitations": [
+    "No runtime regulator fault injection, KCSAN, Android boot, or NX809J hardware test.",
+    "The review does not promote the driver to static_verified or claim full functional equivalence.",
+    "Runtime overlay selection is not established by the source-tree node count."
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    },
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+      "sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.ko",
+      "sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0002_00100a54_nb_fan_remove.c",
+      "sha256": "18527b61687144d07809fa27053237e9e26776914c6843cd5546223282b98c24"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0008_0010127c_fan_level_set.c",
+      "sha256": "62f504499ebf5c93bad596af8b1c5932685c7ed35c0e5235a40a6cb7e5679513"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0002_nb_fan_remove_00100a54.asm",
+      "sha256": "75955d670c2ad985787080e0db0dad25e896b2f1f584f0fc3783621c8c953d8f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/stock_assembly/0008_fan_level_set_0010127c.asm",
+      "sha256": "58909b910ec70d342ecee1713a01df1f5fdf5a1a323e711e34829952e2a7c09b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/assembly_comparison.json",
+      "sha256": "927e0c2e600f63e082dc90ab08016053e194538a537196cbe8a55172628a8bc0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
+      "sha256": "e2fed2cb20ecab1be7d58555bac25f8cc6754b401fadf61c0caff278f1904c23"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json",
+      "sha256": "29bcc0c3642edc36debd253ca113f7554be376aa4661c53401a4ce6876b6e817"
+    }
+  ]
+}
