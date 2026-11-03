@@ -455,6 +455,16 @@ void haptic_lifetime_irq_stop_unlock(void)
 	mutex_unlock(&haptic_irq_stop_lock);
 }
 
+void haptic_lifetime_richtap_stream_lock(void)
+{
+	mutex_lock(&haptic_richtap_stream_lock);
+}
+
+void haptic_lifetime_richtap_stream_unlock(void)
+{
+	mutex_unlock(&haptic_richtap_stream_lock);
+}
+
 irqreturn_t irq_handle(int irq, void *data)
 {
 	irqreturn_t ret;

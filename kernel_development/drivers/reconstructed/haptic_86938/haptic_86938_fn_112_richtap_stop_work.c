@@ -23,9 +23,16 @@ void richtap_stop_work(struct work_struct *work)
 
 	if (haptic_lifetime_is_shutting_down())
 		return;
+	/* Lock stream mode before IRQ/stop; RTP start must still receive IRQs. */
+	haptic_lifetime_richtap_stream_lock();
+	if (haptic_lifetime_is_shutting_down()) {
+		haptic_lifetime_richtap_stream_unlock();
+		return;
+	}
 	haptic_lifetime_irq_stop_lock();
 	if (haptic_lifetime_is_shutting_down()) {
 		haptic_lifetime_irq_stop_unlock();
+		haptic_lifetime_richtap_stream_unlock();
 		return;
 	}
 
@@ -42,4 +49,5 @@ void richtap_stop_work(struct work_struct *work)
 	operation_110(haptic, 0);
 	*(u32 *)(work_address + 0x54) = 0;
 	haptic_lifetime_irq_stop_unlock();
+	haptic_lifetime_richtap_stream_unlock();
 }

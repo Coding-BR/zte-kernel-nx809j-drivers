@@ -1,0 +1,71 @@
+{
+  "schema": "haptic-richtap-start-stop-serialization/v1",
+  "finding": "Stock ioctl 0x5212 queues stop work at state+0x668 without ordering it against ioctl 0x5209 playback-mode/RTP start.",
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "evidence": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+        "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+        "sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0071_00108ba0_richtap_stop_work.c",
+        "sha256": "ded7c7d4f14825b14120c2d0e45dc9abb6a5001e55f6ca28bd71b5cfa38718a0"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0071_richtap_stop_work_00108ba0.asm",
+        "sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14"
+      }
+    ]
+  },
+  "candidate": {
+    "module_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "module_sha256": "25b2ff207e3cd56368e8f9256bb5a534e9c6486bf1a5a3004137399c9e2fc7d2",
+    "module_bytes": 6715128,
+    "reconstruction_map_sha256": "305c85eeb85be39b5d4cca274b4150689f756cac0594ad49faef1c017d0c1648",
+    "source_files": [
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_112_richtap_stop_work.c",
+        "sha256": "b828e4ff126421cb2c268ab4e159f275e260ac36fefe03141514ef6ceb6cff49"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+        "sha256": "69036bfe6b14cb635776ec800d5d5f4bbcd378c63b862ea48a8471eb5fb313d3"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+        "sha256": "9a3222a3b44a6533ff0b95d799786bc3c3d4f8b4854febe6e46bf5a73a5b586b"
+      }
+    ],
+    "lock_order": [
+      "haptic_richtap_stream_lock",
+      "haptic_irq_stop_lock",
+      "device mutex around callbacks +0xf0 and +0x38",
+      "unlock device mutex",
+      "callback +0x110 to disable RTP AEI",
+      "unlock haptic_irq_stop_lock",
+      "unlock haptic_richtap_stream_lock"
+    ],
+    "shutdown_exits": "Before any lock: direct return. After stream lock: stream unlock then return. After IRQ/stop lock: IRQ/stop unlock, stream unlock, then return. Normal path releases IRQ/stop then stream."
+  },
+  "candidate_disassembly": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_start_stop_serialization_20261103/candidate_richtap_stop_work_disassembly.txt",
+      "sha256": "249bc2a039a10ca56a2bc225a9cffdd48fa51dc2a0c5b62525605794495fb842"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_start_stop_serialization_20261103/candidate_richtap_file_unlocked_ioctl_disassembly.txt",
+      "sha256": "2d910af32ef5b2b391045da30dc613bdb37413b42c54f5c1f87fc06f849c7dd4"
+    }
+  ],
+  "build_report_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_start_stop_serialization_20261103/docker_builds.json",
+  "build_report_sha256": "85b500f9573f3c1f465fc3ed87e340db0ff9f7566facec04524ec3c0dc3b6dd0",
+  "independent_build_result": "PASS_BYTE_IDENTICAL_INDEPENDENT_DOCKER_BUILDS",
+  "runtime_validation": "NOT_PERFORMED",
+  "hardware_validation": "NOT_PERFORMED",
+  "reconstruction_status": "INCOMPLETE_HARDENED_DEVIATION"
+}

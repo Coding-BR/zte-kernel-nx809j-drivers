@@ -1,0 +1,74 @@
+
+/work/validation/haptic_86938/source/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000000445c <richtap_stop_work>:
+    445c: d503233f     	paciasp
+    4460: a9bd7bfd     	stp	x29, x30, [sp, #-0x30]!
+    4464: f9000bf5     	str	x21, [sp, #0x10]
+    4468: a9024ff4     	stp	x20, x19, [sp, #0x20]
+    446c: 910003fd     	mov	x29, sp
+    4470: aa0003f3     	mov	x19, x0
+    4474: 94000000     	bl	0x4474 <richtap_stop_work+0x18>
+		0000000000004474:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    4478: 370005e0     	tbnz	w0, #0x0, 0x4534 <richtap_stop_work+0xd8>
+    447c: 94000000     	bl	0x447c <richtap_stop_work+0x20>
+		000000000000447c:  R_AARCH64_CALL26	haptic_lifetime_richtap_stream_lock
+    4480: 94000000     	bl	0x4480 <richtap_stop_work+0x24>
+		0000000000004480:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    4484: 37000560     	tbnz	w0, #0x0, 0x4530 <richtap_stop_work+0xd4>
+    4488: 94000000     	bl	0x4488 <richtap_stop_work+0x2c>
+		0000000000004488:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_lock
+    448c: 94000000     	bl	0x448c <richtap_stop_work+0x30>
+		000000000000448c:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    4490: 370004e0     	tbnz	w0, #0x0, 0x452c <richtap_stop_work+0xd0>
+    4494: d10de275     	sub	x21, x19, #0x378
+    4498: d119a274     	sub	x20, x19, #0x668
+    449c: aa1503e0     	mov	x0, x21
+    44a0: 94000000     	bl	0x44a0 <richtap_stop_work+0x44>
+		00000000000044a0:  R_AARCH64_CALL26	mutex_lock
+    44a4: f8560268     	ldur	x8, [x19, #-0xa0]
+    44a8: aa1403e0     	mov	x0, x20
+    44ac: f9407908     	ldr	x8, [x8, #0xf0]
+    44b0: b85fc110     	ldur	w16, [x8, #-0x4]
+    44b4: 72810611     	movk	w17, #0x830
+    44b8: 72b08f51     	movk	w17, #0x847a, lsl #16
+    44bc: 6b11021f     	cmp	w16, w17
+    44c0: 54000040     	b.eq	0x44c8 <richtap_stop_work+0x6c>
+    44c4: d4304500     	brk	#0x8228
+    44c8: d63f0100     	blr	x8
+    44cc: f8560268     	ldur	x8, [x19, #-0xa0]
+    44d0: aa1403e0     	mov	x0, x20
+    44d4: f9401d08     	ldr	x8, [x8, #0x38]
+    44d8: b85fc110     	ldur	w16, [x8, #-0x4]
+    44dc: 72810611     	movk	w17, #0x830
+    44e0: 72b08f51     	movk	w17, #0x847a, lsl #16
+    44e4: 6b11021f     	cmp	w16, w17
+    44e8: 54000040     	b.eq	0x44f0 <richtap_stop_work+0x94>
+    44ec: d4304500     	brk	#0x8228
+    44f0: d63f0100     	blr	x8
+    44f4: aa1503e0     	mov	x0, x21
+    44f8: 94000000     	bl	0x44f8 <richtap_stop_work+0x9c>
+		00000000000044f8:  R_AARCH64_CALL26	mutex_unlock
+    44fc: f8560268     	ldur	x8, [x19, #-0xa0]
+    4500: aa1403e0     	mov	x0, x20
+    4504: 2a1f03e1     	mov	w1, wzr
+    4508: f9408908     	ldr	x8, [x8, #0x110]
+    450c: b85fc110     	ldur	w16, [x8, #-0x4]
+    4510: 729bedd1     	movk	w17, #0xdf6e
+    4514: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    4518: 6b11021f     	cmp	w16, w17
+    451c: 54000040     	b.eq	0x4524 <richtap_stop_work+0xc8>
+    4520: d4304500     	brk	#0x8228
+    4524: d63f0100     	blr	x8
+    4528: b900567f     	str	wzr, [x19, #0x54]
+    452c: 94000000     	bl	0x452c <richtap_stop_work+0xd0>
+		000000000000452c:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_unlock
+    4530: 94000000     	bl	0x4530 <richtap_stop_work+0xd4>
+		0000000000004530:  R_AARCH64_CALL26	haptic_lifetime_richtap_stream_unlock
+    4534: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+    4538: f9400bf5     	ldr	x21, [sp, #0x10]
+    453c: a8c37bfd     	ldp	x29, x30, [sp], #0x30
+    4540: d50323bf     	autiasp
+    4544: d65f03c0     	ret
