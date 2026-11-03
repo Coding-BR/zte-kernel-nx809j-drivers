@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "zte_fingerprint_notifier_irq_teardown_20261103",
+  "driver": "zte_fingerprint",
+  "date": "2026-11-03",
+  "source_changed": false,
+  "runtime_failure_reproduced": false,
+  "candidate_status_reconciled": true,
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030"
+  },
+  "candidate_identity": {
+    "source_sha256": "e5a7bc3464247a17943faf0cb1cec512133187b973a8eb6a116b2d2a233ee35f",
+    "reconstruction_map_sha256": "4adb639b97f1284979ad57161552acba1695d6ee6bbd7a675c265b895ec042b5",
+    "module_sha256": "8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247",
+    "module_size": 393544,
+    "canonical_docker_snapshot": "source, map and module hashes match the repository candidate"
+  },
+  "status_reconciliation": {
+    "previous_status_candidate_sha256": "61a330c960f29a145e8db823e667ded35d476d0eb442ef844730f6fa8d8c804b",
+    "previous_status_size": 393120,
+    "current_candidate_sha256": "8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247",
+    "current_candidate_size": 393544,
+    "current_map_candidate_sha256": "8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247",
+    "full_static_audit": "attestation/next090_full_static_validation_20261003/independent_static_audit.json",
+    "full_static_audit_sha256": "f0839bb60afe42a69497042287461c8e03550b67fcbd2682018288744d056b38",
+    "full_static_audit_verdict": "static_verified; candidate_matches_fresh=true; two Docker builds reproducible; traceability 30/30; no warnings"
+  },
+  "stock_identity": {
+    "module_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
+    "module_size": 62600
+  },
+  "ghidra_stock_pseudocode": {
+    "gf_remove": {
+      "entry": "00101968",
+      "path": "offline_static/ghidra_stock/decompiled/0011_00101968_gf_remove.c",
+      "sha256": "1440324c682faf4f8cc934063577237c409f53de5b7cb4bfd723145b155e72fa"
+    },
+    "goodixfp_init_drm_notifier": {
+      "entry": "00101ac0",
+      "path": "offline_static/ghidra_stock/decompiled/0012_00101ac0_goodixfp_init_drm_notifier.c",
+      "sha256": "317bf163762f162c2539d7513e5512bfcfd25bbd1c0cf5aa773ba65cf3f02411"
+    },
+    "cleanup_module": {
+      "entry": "00102ac8",
+      "path": "offline_static/ghidra_stock/decompiled/0029_00102ac8_cleanup_module.c",
+      "sha256": "4e7e0f6f674dace58930c7136b97b2dd1c52cb41d9f701f20c8d060fcd6532cf"
+    }
+  },
+  "fresh_current_candidate_assembly": {
+    "tool": "workspace_tools/reconstruction_pipeline/extract_module_assembly.py and compare_function_assembly.py",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "stock_manifest_sha256": "7e822f08b95fc71fa182ef44b59f9a4054affd06b936552deeb2291af0402c96",
+    "candidate_manifest_sha256": "3820f1944bf26f900160ec6f36ac088f90e56b064b429fb64af259ac7026289a",
+    "comparison_path": "attestation/lifetime_sync_risk_audit_20261103/assembly_comparison.json",
+    "comparison_sha256": "fd4ae2c2d342fe11ea01723c142ea96b133a3572cde945bacf2548a86ec3945f",
+    "passed": true,
+    "checked_functions": 3,
+    "failures": 0,
+    "functions": {
+      "gf_remove": "85/85 instructions and 340/340 bytes; opcode, relocation, section and symbol-size checks pass",
+      "goodixfp_init_drm_notifier": "78/78 instructions and 312/312 bytes; opcode, relocation, section and symbol-size checks pass",
+      "cleanup_module": "22/22 instructions and 88/88 bytes; opcode, relocation, section and symbol-size checks pass"
+    }
+  },
+  "finding_1": {
+    "classification": "POTENTIAL_STOCK_INHERITED_NOTIFIER_REGISTRATION_AFTER_UNREGISTER",
+    "confidence": "HIGH_FOR_STATIC_INTERLEAVING",
+    "sequence": [
+      "gf_probe queues screen_state_work with delay 1250",
+      "goodixfp_init_drm_notifier may retry panel discovery with up to 25 one-second waits and then stores the cookie returned by panel_event_notifier_register",
+      "gf_remove calls panel_event_notifier_unregister(cookie) before cancel_delayed_work_sync(screen_state_work)",
+      "if the work is running before it stores the cookie, remove can miss the registration; cancel_delayed_work_sync then waits for that worker but does not unregister the cookie it stores later",
+      "the workqueue is destroyed and remove returns while the notifier may remain registered"
+    ],
+    "impact": "A panel callback can outlive device removal. If the module is later unloaded, the notifier may retain callback and client-data addresses in released module text/data. The module-exit path also calls netlink_exit before platform_driver_unregister, so notifier callbacks can overlap netlink teardown. No runtime failure was reproduced."
+  },
+  "finding_2": {
+    "classification": "CONDITIONAL_IRQ_TEARDOWN_GAP_ON_UNBIND_WITH_OPEN_FILE",
+    "confidence": "MEDIUM_STATIC_ORDERING",
+    "sequence": [
+      "the first character-device open requests the IRQ",
+      "the last file release disables and frees the IRQ",
+      "gf_remove removes fp_wakelock and other device resources but does not disable or free the IRQ",
+      "gf_irq calls __pm_wakeup_event and sendnlmsg"
+    ],
+    "impact": "If the platform device is unbound while a file is open, the IRQ may remain live until that file closes and can run after the wakeup source has been removed. This is an unverified lifetime/teardown gap, not a demonstrated invalid memory access."
+  },
+  "module_exit_order": [
+    "Ghidra stock cleanup_module and source zte_fp_exit call netlink_exit first",
+    "platform_driver_unregister runs afterwards and invokes gf_remove",
+    "the notifier worker and any live IRQ have not been drained before netlink teardown begins"
+  ],
+  "limits": [
+    "The risks follow stock Ghidra pseudocode and were reproduced in a fresh assembly comparison against the current 8fbc779e candidate; they are inherited stock behavior, not reconstruction mismatches.",
+    "No device unbind, module load/unload, notifier event, IRQ stimulus, or hardware test was performed.",
+    "The driver remains STATIC_VERIFIED_OFFLINE; independent human review and hardware validation remain pending."
+  ],
+  "recommended_correction": "For hardening, cancel and drain screen_state_work before unregistering the final panel cookie; synchronize open-time IRQ teardown with last-file release without allowing double-free; and unregister the platform driver before tearing down netlink. Rebuild in the canonical Docker workspace and independently review any behavior change before promotion.",
+  "reconstruction_status": "Current candidate identity is 8fbc779e…c34247 (393544 bytes). Exact-stock function mappings remain; lifecycle risks are open and unverified at runtime."
+}
