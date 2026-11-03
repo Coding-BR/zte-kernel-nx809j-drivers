@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_hal_fifo_writer_order_20261103",
+  "review_date": "2026-11-03",
+  "result": "PROGRAM_ORDER_ESTABLISHED_CROSS_BOUNDARY_HANDOFF_UNPAIRED",
+  "device": {
+    "model": "NX809J",
+    "android_major": 16,
+    "rooted_adb": true,
+    "producer_live_reachability_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_advanced_envelope_live_probe_20261103/advanced_envelope_live_probe.json",
+    "producer_live_samples": 1077,
+    "candidate_installed": false
+  },
+  "producer": {
+    "artifact": "/vendor/lib64/libaacvibrator.so",
+    "sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "service": "vendor.qti.hardware.vibrator.service",
+    "writer": "write_data_to_buffer(tiktap_operation*, signed char)",
+    "writer_entry": "0x1c194",
+    "writer_body": "0x1c198",
+    "instructions": {
+      "state_load": {
+        "vma": "0x1c208",
+        "instruction": "LDRB"
+      },
+      "payload_store": {
+        "vma": "0x1c38c",
+        "instruction": "STRB",
+        "node_offset": "+0x18"
+      },
+      "length_increment": {
+        "vma": "0x1c398",
+        "instruction": "STRH",
+        "node_offset": "+0x2"
+      },
+      "ready_state_publish": {
+        "vma": "0x1c22c",
+        "instruction": "STRB",
+        "value": "0x55 (U)"
+      }
+    },
+    "program_order": "For a full node, the 1,000th payload byte and final length update occur on a call with count 999; the next call observes count 1000 and stores state U before advancing to the next node.",
+    "writer_contains_explicit_dmb_dsb_or_acquire_release": false,
+    "hal_thread_path": {
+      "tiktap_start": "0x1d0a4",
+      "worker_entry": "0x1fb18",
+      "generate_wave_with_brake": "0x1c664",
+      "pthread_mutex_lock_sites": [
+        "0x1d190",
+        "0x1d1a8"
+      ],
+      "pthread_create_sites": [
+        "0x1d4b8",
+        "0x1d5b4",
+        "0x1d6e0"
+      ],
+      "worker_exit_mutex_unlock_sites": [
+        "0x21cd8",
+        "0x21ce8",
+        "0x21dcc",
+        "0x21ddc"
+      ],
+      "producer_writer_has_local_mutex_calls": false,
+      "interpretation": "HAL mutex activity is process-local and not shared with the kernel FIFO consumers; this disassembly does not establish that producer threads overlapped."
+    }
+  },
+  "kernel_candidate": {
+    "identity": "C6",
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3",
+    "richtap_update_fifo_data": {
+      "state_load": "LDARB @ 0x8300",
+      "free_state_store": "STLRB @ 0x83c0"
+    },
+    "richtap_rtp_work": {
+      "state_loads": [
+        "LDARB @ 0x8580",
+        "LDARB @ 0x8774"
+      ],
+      "free_state_store": "STLRB @ 0x8640"
+    },
+    "reverse_handoff_release_acquire_pair": false,
+    "forward_handoff_release_acquire_pair": false
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "richtap_rtp_work_assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+    "richtap_update_fifo_data_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2"
+  },
+  "reconstruction": {
+    "map_path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "map_sha256": "8205740233a5a72b668bb99b56cd5bba58bd668f575b84a44c752cf38ee9f0cd",
+    "function_statuses": {
+      "richtap_rtp_work": "candidate_under_static_validation",
+      "richtap_update_fifo_data": "candidate_under_static_validation"
+    },
+    "source_changed": false,
+    "module_rebuild": "NOT_REQUIRED_EVIDENCE_ONLY",
+    "runtime_race_reproduced": false,
+    "data_corruption_observed": false
+  },
+  "evidence_files_sha256": {
+    "hal_writer_disassembly.txt": "478bccbe97d8ce044c93125227bcada66fabb83a8729228f5c2e3a4080e7d6ab",
+    "hal_tiktap_start_thread_mutex_disassembly.txt": "51448ae77696769fa7d6c744ec3d070f5c2c459433c434ef44256c5a1716713e",
+    "hal_tiktap_worker_disassembly.txt": "e53bc60b6d9f0464bf6f41bda6b43f9b0a000d069694e0188c849bb87211ddaa",
+    "candidate_c6_fifo_disassembly.txt": "b4b50ce76d04a752ffa3a90690661aac9c7048fc2cdb8a053b418125fd40f0bf"
+  },
+  "limitations": [
+    "Static program order and live writer reachability are established; cross-CPU visibility is not.",
+    "No matching release/acquire pair exists in either HAL-kernel ownership direction in the inspected instructions.",
+    "The HAL memory mapping attributes were not revalidated in this review.",
+    "Multiple producer thread overlap, stale data, and corruption were not observed or established.",
+    "The reconstructed candidate was not loaded on the phone."
+  ]
+}
