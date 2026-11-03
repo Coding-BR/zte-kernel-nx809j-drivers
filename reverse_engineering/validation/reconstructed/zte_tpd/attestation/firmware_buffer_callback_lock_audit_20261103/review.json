@@ -1,0 +1,265 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "review_date": "2026-11-03",
+  "review_type": "Firmware descriptor lifetime, callback initialization, and lock-order audit",
+  "review_status": "STATIC_REVIEW_NO_NEW_DEFECT_IN_SCOPE;_RUNTIME_AND_CURRENT_JOERN_REANALYSIS_DEFERRED",
+  "new_source_change": false,
+  "branch_context": {
+    "branch": "codex/zte-tpd-firmware-allocation-hardening",
+    "head": "3f40da64a3e4b21966e10e35e10dd6473010b6b6",
+    "candidate_module_sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+    "map_sha256_before_update": "203e25b07c241f187005d5fea8d7ea2a5344906ef61eb52de0e3dae7a3c66bce"
+  },
+  "scope": {
+    "descriptor_slot": "tpd_cdev + 0xc58",
+    "position": "tpd_cdev + 0x448",
+    "command_mutex": "tpd_cdev + 0xc60",
+    "global_mutex": "tp_firmware_data_mutex",
+    "functions": [
+      "tp_alloc_tp_firmware_data",
+      "tpd_copy_to_tp_firmware_data",
+      "tp_self_test_read",
+      "tp_self_test_write",
+      "tpd_sysfs_fwimage_show",
+      "tpd_sysfs_fwimage_store",
+      "get_tp_noise_show",
+      "get_tp_noise_store",
+      "tpfwupgrade_store"
+    ]
+  },
+  "findings": [
+    {
+      "id": "stock-cdev-zero-initialization",
+      "result": "CONFIRMED_STATICALLY",
+      "details": "Ghidra stock zte_touch_probe allocates 0x1008 bytes with flags 0xdc0. In the mounted target kernel headers, GFP_KERNEL is 0xcc0 and __GFP_ZERO is 0x100 (___GFP_ZERO_BIT is bit 8); devm_kmalloc passes its gfp mask into the devres allocation. Thus the callback fields at +0xe18 and +0xee8 begin as zero in this initialization path."
+    },
+    {
+      "id": "optional-callback-slots",
+      "result": "NULL_GUARDED_AND_UNASSIGNED_IN_REVIEWED_STOCK_PATH",
+      "details": "The stock Ghidra registration function assigns callback fields including +0xf98 and +0xfa0 but does not assign +0xe18 or +0xee8. Full stock assembly scan found exactly two accesses to those offsets and both are LDR instructions in tpfwupgrade_store and get_tp_noise_show; both functions guard the indirect call against NULL. No candidate C assignment to these slots was found."
+    },
+    {
+      "id": "slot-lifetime-locking",
+      "result": "CONSISTENT_STATIC_LOCK_ORDER",
+      "details": "High-level fwimage, get_noise, FW_upgrade and self-test paths acquire tp_firmware_data_mutex before cmd_mutex where both are needed. tp_alloc_tp_firmware_data and tpd_copy_to_tp_firmware_data acquire cmd_mutex only and do not acquire the outer lock. The preserved stock call inventory shows tp_alloc is called only from tp_self_test_write; tpd_copy is called only from the three testing routines reached by tpd_test_cmd_store. The self-test write callback runs while the outer mutex is held, but releases cmd_mutex before calling the test callback, so the callback’s copy helper does not recursively acquire cmd_mutex."
+    },
+    {
+      "id": "prior-vmalloc-retry-fixes",
+      "result": "PRESENT_IN_CURRENT_SOURCE",
+      "details": "Both allocation-failure paths clear descriptor slot +0xc58 before freeing the descriptor. The nine reviewed map entries remain HARDENED_STOCK_DEVIATION; this audit does not promote them to stock-exact."
+    }
+  ],
+  "lock_order": "tp_firmware_data_mutex -> tpd_cdev+0xc60; no reverse acquisition in the reviewed paths",
+  "call_inventory": {
+    "sha256": "91036ccf7524b9446063248adf032fbe7c568d2c6b3a32d00cc54ef57853bc96",
+    "direct_callers": {
+      "tp_alloc_tp_firmware_data": [
+        "tp_self_test_write"
+      ],
+      "tpd_copy_to_tp_firmware_data": [
+        "syna_testing_pt01_zte",
+        "syna_testing_pt05_zte",
+        "syna_testing_pt0a_zte"
+      ]
+    },
+    "tpd_test_cmd_store_test_targets": [
+      "syna_testing_pt01_zte",
+      "syna_testing_pt05_zte",
+      "syna_testing_pt0a_zte"
+    ]
+  },
+  "callback_slot_stock_assembly_accesses": [
+    {
+      "file": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0034_tpfwupgrade_store_00109f80.asm",
+      "line": 101,
+      "instruction": "3830: f9470e88     \tldr\tx8, [x20, #0xe18]"
+    },
+    {
+      "file": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0050_get_tp_noise_show_0010afc0.asm",
+      "line": 33,
+      "instruction": "4794: f94776c8     \tldr\tx8, [x22, #0xee8]"
+    }
+  ],
+  "docker_validation": {
+    "read_only_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_header_sha256": {
+      "kernel/kernel_platform/common/include/linux/gfp_types.h": "7a1859355beccb5185b9a8a0f2884dc22abab15d4e7f5bc1b4244758e03a5876",
+      "kernel/kernel_platform/common/include/linux/gfp.h": "157a9235787c05db472065c3499a0b6feb7e101e20a7a3e07810c7854c9bec92",
+      "kernel/kernel_platform/common/drivers/base/devres.c": "39dee6dfc6f46c7ac8ab2a6b79b8fc7f12136db892e5b7bb733cee89c7d41f24"
+    },
+    "curated_source_files_checked": {
+      "tp_alloc_tp_firmware_data.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "4461fd6abb4cb80fcdfebbfed34cf710a7eb74450d7117194c6ba484069d0c43"
+      },
+      "tpd_copy_to_tp_firmware_data.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "45e724d31d7aff53d2b03b7bd62c69bbd496dc14925124493627904987297a59"
+      },
+      "tp_self_test_read.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "a174e2c9dfdf794f6bb0cd4ac06195d23dce25cc70e827d2fb1e837ce8d41ae0"
+      },
+      "tp_self_test_write.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "f712eb211c4b362b054f898a008cad2c6735aed22c2d0b95f4f7c0eb037db5d5"
+      },
+      "tpd_sysfs_fwimage_show.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "f82a201bbac0da49e1324b692e448ee300a7d3c0927bb5d915f2f3512f2f7e28"
+      },
+      "tpd_sysfs_fwimage_store.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "649f2bd16c6412207b8c46a94ef9de57c30601b162140702058533173fa58ac1"
+      },
+      "get_tp_noise_show.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "ac7a2f3084b3c5b8fcdd65cdebe7647e75c1d053960799e8f310549736ddd650"
+      },
+      "get_tp_noise_store.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "d300ff7161cdc1da04ce820f4ac8d5d9bfc7e47504de0d6586fe1d3d94576757"
+      },
+      "tpfwupgrade_store.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "40406560045812d2cad64394dd397e9d2e651365655485d0a578aa97628c0de6"
+      },
+      "syna_tpd_register_fw_class.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "5cc184790390392e6fae875a9efe24b0795774ae0ee9a270da89fe0a70c9cc5a"
+      },
+      "globals.c": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "6d2d6ee02943eac06df34e2477cd4a1cb500c5c0651d19e29dda71f6a9c44e92"
+      },
+      "globals.h": {
+        "present": true,
+        "matches_repository": true,
+        "sha256": "eda8785be3ca244e538bb094c5f43f8bebe6a3f5fae6586066945194590a3d68"
+      }
+    },
+    "curated_source_match_count": 12,
+    "latest_canonical_build_report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_probe_misc_register_failure_cleanup_20261103/canonical_build_report.json",
+    "latest_canonical_build_report_sha256": "44980323146dab790e5878ac4e4ae19660df2fb2936b84275e2454fd67408646",
+    "latest_build_passed": true,
+    "latest_build_cycles_requested": 2,
+    "latest_candidate_sha256": "adaccd92ac5b2b657626d0e3912441d386a1ef04a7326abfd3251ac4c660c143",
+    "latest_docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "latest_build_source_files_match_audit": {
+      "tp_alloc_tp_firmware_data.c": true,
+      "tpd_copy_to_tp_firmware_data.c": true,
+      "tp_self_test_read.c": true,
+      "tp_self_test_write.c": true,
+      "tpd_sysfs_fwimage_show.c": true,
+      "tpd_sysfs_fwimage_store.c": true,
+      "get_tp_noise_show.c": true,
+      "get_tp_noise_store.c": true,
+      "tpfwupgrade_store.c": true,
+      "syna_tpd_register_fw_class.c": true,
+      "globals.c": true,
+      "globals.h": true
+    },
+    "note": "No source changed during this audit, so no redundant module rebuild was run. The cited two-cycle Docker build is from the same source hashes for all audited code inputs."
+  },
+  "historical_joern_findings_not_reclassified": {
+    "tpfwupgrade_store": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next035_tpfwupgrade_store_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+      "sha256": "36b24f11a0a3c5317d2c5dd24416ca6ce043b1de28c5143f5073616d9fa733b2",
+      "generated_utc": "2026-08-30T15:59:20.590548+00:00",
+      "finding_counts": [
+        {
+          "category": "lifetime",
+          "count": 3,
+          "severity": "high"
+        },
+        {
+          "category": "synchronization",
+          "count": 2,
+          "severity": "high"
+        }
+      ],
+      "scope_note": "historical exact-v4 analysis predates the 2026-11-02 hardening; not rerun against this branch"
+    },
+    "get_tp_noise_show": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next051_get_tp_noise_show_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+      "sha256": "97ea1c674684268703e311543d6899a9b5b22fcd8f849e2f837677e3ff769b29",
+      "generated_utc": "2026-08-30T18:17:14.320073+00:00",
+      "finding_counts": [
+        {
+          "category": "synchronization",
+          "count": 2,
+          "severity": "high"
+        },
+        {
+          "category": "userspace_egress",
+          "count": 1,
+          "severity": "high"
+        }
+      ],
+      "scope_note": "historical exact-v4 analysis predates the 2026-11-02 hardening; not rerun against this branch"
+    },
+    "get_tp_noise_store": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/next052_get_tp_noise_store_exact_v4/exact_revalidation_20260830/joern/joern_gate_summary.json",
+      "sha256": "e4e71f169de642416665d109442db4bdabe52e5b76c111d0b74f79ec672230cb",
+      "generated_utc": "2026-08-30T18:25:32.847023+00:00",
+      "finding_counts": [
+        {
+          "category": "lifetime",
+          "count": 1,
+          "severity": "high"
+        },
+        {
+          "category": "synchronization",
+          "count": 2,
+          "severity": "high"
+        }
+      ],
+      "scope_note": "historical exact-v4 analysis predates the 2026-11-02 hardening; not rerun against this branch"
+    }
+  },
+  "inputs": {
+    "candidate_sources_sha256": {
+      "tp_alloc_tp_firmware_data.c": "4461fd6abb4cb80fcdfebbfed34cf710a7eb74450d7117194c6ba484069d0c43",
+      "tpd_copy_to_tp_firmware_data.c": "45e724d31d7aff53d2b03b7bd62c69bbd496dc14925124493627904987297a59",
+      "tp_self_test_read.c": "a174e2c9dfdf794f6bb0cd4ac06195d23dce25cc70e827d2fb1e837ce8d41ae0",
+      "tp_self_test_write.c": "f712eb211c4b362b054f898a008cad2c6735aed22c2d0b95f4f7c0eb037db5d5",
+      "tpd_sysfs_fwimage_show.c": "f82a201bbac0da49e1324b692e448ee300a7d3c0927bb5d915f2f3512f2f7e28",
+      "tpd_sysfs_fwimage_store.c": "649f2bd16c6412207b8c46a94ef9de57c30601b162140702058533173fa58ac1",
+      "get_tp_noise_show.c": "ac7a2f3084b3c5b8fcdd65cdebe7647e75c1d053960799e8f310549736ddd650",
+      "get_tp_noise_store.c": "d300ff7161cdc1da04ce820f4ac8d5d9bfc7e47504de0d6586fe1d3d94576757",
+      "tpfwupgrade_store.c": "40406560045812d2cad64394dd397e9d2e651365655485d0a578aa97628c0de6",
+      "syna_tpd_register_fw_class.c": "5cc184790390392e6fae875a9efe24b0795774ae0ee9a270da89fe0a70c9cc5a",
+      "globals.c": "6d2d6ee02943eac06df34e2477cd4a1cb500c5c0651d19e29dda71f6a9c44e92",
+      "globals.h": "eda8785be3ca244e538bb094c5f43f8bebe6a3f5fae6586066945194590a3d68"
+    },
+    "stock_ghidra_sha256": {
+      "decompiled/0024_001087e4_zte_touch_probe.c": "584967d0cf254af8a107ca1ed3d7a1e587ea030b64019c7e205a290e3bed8b8f",
+      "decompiled/0034_00109f80_tpfwupgrade_store.c": "e6e2975fc87e722a2e35472928b7e307c8a8b45ad0916fdc968a97836144efad",
+      "decompiled/0050_0010afc0_get_tp_noise_show.c": "5e0d66ac8a5cc2a58aeae8e2755a1a28940157d29e56905094bd7d78d0c6f0b8",
+      "decompiled/0326_0012b55c_syna_tpd_register_fw_class.c": "9ec97577539f12781bd4013d18fd5d5d3e81ea99a15ffef0f8c66c42fcfad54d",
+      "decompiled/0339_0012bf7c_tpd_test_cmd_store.c": "b6f84af1f6e8219e0de163d0a80f21a7e8886562a8ec97d6ca660fabbe0dd2ef",
+      "decompiled/0340_0012c050_tpd_test_cmd_show.c": "71876e1d047958459432aee33064cfadef41d6beca690cbac9901496cbe45027",
+      "calls.jsonl": "91036ccf7524b9446063248adf032fbe7c568d2c6b3a32d00cc54ef57853bc96"
+    },
+    "stock_assembly_manifest_sha256": "8167e0357db7be7f872131dff34f233f8be8403eefb32193cad2281d19ac469b",
+    "hardening_review_sha256": "f0abdb907cf18768640e7003e8c8e09d8c74162e20e909d58c8c7165364763a1",
+    "map_sha256_before_update": "203e25b07c241f187005d5fea8d7ea2a5344906ef61eb52de0e3dae7a3c66bce"
+  },
+  "limitations": [
+    "No NX809J hardware execution, forced allocation failure, runtime concurrency stress, KASAN/UBSAN run, or independent human review was performed in this audit.",
+    "Historical Joern high-severity counts are from pre-hardening exact-v4 reports and were not rerun on the current hardening branch. They remain recorded, not waived.",
+    "The audit establishes static initialization and locking evidence only for the listed buffer/callback paths; it does not prove whole-driver semantic equivalence or runtime behavior."
+  ]
+}
