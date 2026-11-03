@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "zte_power_supply_lifetime_sync_risk_20261103",
+  "driver": "zte_power_supply",
+  "date": "2026-11-03",
+  "classification": "POTENTIAL_STOCK_INHERITED_WORK_LIFETIME_RACE",
+  "risk": "A delayed registration callback can queue changed_work after unregister has already completed cancel_work_sync(changed_work). device_unregister may then release the object while changed_work is pending or running.",
+  "confidence": "HIGH_FOR_STATIC_INTERLEAVING",
+  "runtime_failure_reproduced": false,
+  "source_changed": false,
+  "build_validation": "NOT_RUN_NO_SOURCE_CHANGE",
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030"
+  },
+  "candidate_identity": {
+    "source_sha256": "15d0a2cdb6f1272e68ba16d5bd5b9e92a508ea36a6da21b7598e5ccd0307670a",
+    "reconstruction_map_sha256": "8407e9d9e90e16916551641f6f6c31190e20c905469ec4b794f4c8dbe9345580",
+    "module_sha256": "31d11d8b944d2a2492291173b7bbb3c525e4ffdd868dca30c6d75d5535a6abca",
+    "canonical_docker_snapshot": "source, map and module hashes match the repository candidate"
+  },
+  "stock_identity": {
+    "module_sha256": "2ae6f7615c9a4fea48a84fb2595d2f52dd049c11749b7cd2a3d9037dfcd813e8"
+  },
+  "evidence": {
+    "ghidra_stock_unregister_pseudocode_sha256": "0a8a8fd767ed78dd8198e74c0fb953ae26654af087c1c6a430cd5f85b9da0f3a",
+    "ghidra_stock_deferred_work_pseudocode_sha256": "deb6661209773321dd92bf9b5c183d3c8ed21afa8859532394adc99d7177978a",
+    "unregister_stock_assembly_sha256": "43d93ef0c75ff7749666f2eb6b0acb069007d140ea4c1d2625bdcc503fb39331",
+    "unregister_candidate_assembly_sha256": "7b32f58f54ac4723514e0e520d729309062e490d20959787fd3d81883d3179ca",
+    "deferred_work_stock_assembly_sha256": "45e9915261760d5d160773af8c8cb9916cf45798bef59b70844fd17c7fe5450a",
+    "deferred_work_candidate_assembly_sha256": "2012924d3eeec4b6a7bffeebd1e72cc01c7d99625f434e1f00e7a08ece6dfdc7",
+    "pinned_kernel_workqueue_c_sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+    "pinned_kernel_workqueue_h_sha256": "c9a6746167853c27900f767ab84a836d303e948625f926111a20c44762f5a6cb",
+    "pinned_kernel_device_core_c_sha256": "64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882"
+  },
+  "observed_order": {
+    "zte_power_supply_unregister": [
+      "sets psy->removing = true",
+      "cancel_work_sync(&psy->changed_work)",
+      "cancel_delayed_work_sync(&psy->deferred_register_work)",
+      "device_unregister(&psy->dev)"
+    ],
+    "zte_power_supply_deferred_register_work": [
+      "when parent is absent, skips the removing check",
+      "when device_trylock(parent) succeeds, skips the removing check",
+      "on either path calls zte_power_supply_changed(psy)"
+    ],
+    "zte_power_supply_changed": [
+      "sets event_pending and calls pm_stay_awake under psy->lock",
+      "queues psy->changed_work after unlocking"
+    ],
+    "release": "The pinned device core implements device_unregister as device_del followed by put_device; the final reference invokes device_release. zte_power_supply_dev_release frees the containing zte_power_supply with kfree. The changed_work callback does not acquire a device reference for its own psy."
+  },
+  "interleaving": [
+    "unregister sets removing and cancel_work_sync returns while changed_work is idle",
+    "the delayed callback is already running and takes a path that does not test removing",
+    "the delayed callback calls zte_power_supply_changed and queues changed_work",
+    "cancel_delayed_work_sync waits for the delayed callback but does not cancel the newly queued changed_work",
+    "device_unregister may drop the final device reference and free psy before changed_work runs"
+  ],
+  "kernel_contract": "The pinned kernel documents cancel_work_sync as guaranteeing no pending/executing work only when there are no racing enqueues. The delayed callback is an internal racing enqueuer because it is drained only after cancel_work_sync(changed_work).",
+  "scope_and_limits": [
+    "This is a statically derived lifetime window inherited from the OEM stock ordering; the reconstructed unregister and deferred-work functions match the stock assembly evidence.",
+    "The interleaving and use-after-free were not reproduced at runtime.",
+    "This finding covers the internal deferred-work producer. Callers of the exported change API must still stop using psy before unregister, according to the caller lifetime contract.",
+    "No device operation, module load/unload, or hardware test was performed."
+  ],
+  "recommended_correction": "If hardening is selected, set the removal state with explicit single-access semantics, drain deferred_register_work before changed_work, then update the function mapping as a declared non-stock hardening deviation; rebuild and re-review the candidate before promotion.",
+  "reconstruction_status": "The candidate remains an offline static reconstruction; exact stock mapping is preserved and this inherited lifetime risk is open. Independent review and hardware validation remain pending."
+}

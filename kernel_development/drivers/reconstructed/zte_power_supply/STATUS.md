@@ -37,3 +37,7 @@ Nao executar unload/reload automatico da pilha stock de energia. A validacao no 
 - `../../validation/zte_power_supply/ghidra_stock_candidate_comparison.json`
 - `../../validation/zte_power_supply/kcfi_callback_surface.json`
 - `../../validation/zte_power_supply/host_test_report.json`
+
+## Lifetime/synchronization risk audit — 2026-11-03
+
+A static review found a potential stock-inherited use-after-free window: unregister cancels `changed_work` before it drains `deferred_register_work`, while the deferred callback can queue `changed_work` after the first cancellation returns. The pinned kernel documents that `cancel_work_sync` does not cover racing enqueues; `device_unregister` can drop the final reference and release the object while the newly queued work still points into it. Stock Ghidra and stock/candidate assembly confirm that this order is exact in the current reconstruction. This is a possible interleaving, not a reproduced failure. The source/map were left unchanged to preserve exact-stock status; see the [lifetime/synchronization audit](../../../../reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_risk_audit_20261103/README.md). Any correction must be marked as a hardening deviation and rebuilt/re-reviewed. Independent review and hardware validation remain pending.
